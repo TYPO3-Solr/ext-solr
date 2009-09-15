@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for extension &quot;solr&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="scheduler_optimizer_title">Optimze Solr Index</label>
+			<label index="scheduler_optimizer_description">Executes an optimize command. Should be run once a day for sites with low activity. Sites with high activity can run it more often. Beware though, that the task can take some seconds on large indexes.</label>
+			<label index="scheduler_field_host">Solr Host</label>
+			<label index="scheduler_field_port">Solr Port</label>
+			<label index="scheduler_field_path">Solr Path</label>
+		</languageKey>
+	</data>
+</T3locallang>

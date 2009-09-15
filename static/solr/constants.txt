@@ -1,0 +1,15 @@
+
+plugin.tx_solr {
+
+	solr {
+		host = localhost
+		port = 8983
+		path = /solr/
+	}
+
+	search {
+		results {
+			resultsPerPage = 10
+		}
+	}
+}

@@ -1,0 +1,215 @@
+
+plugin.tx_solr {
+
+	solr {
+		host = {$plugin.tx_solr.solr.host}
+		port = {$plugin.tx_solr.solr.port}
+		path = {$plugin.tx_solr.solr.path}
+	}
+
+	templateFile {
+		results = EXT:solr/resources/templates/pi_results/results.htm
+	}
+
+	addDefaultCss = 1
+	addDefaultJs = 1
+
+	general {
+		dateFormat.date = d.m.Y H:i
+	}
+
+	index {
+		enablePageIndexing = 1
+		enableIndexingWhileBeUserLoggedIn = 1
+
+		additionalFields {
+
+		}
+	}
+
+	search {
+		# TODO: move filter into query{}
+		filter =
+
+		targetPage = 0
+
+		query {
+			fields = content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0
+		}
+
+		results {
+			resultsPerPage = {$plugin.tx_solr.search.results.resultsPerPage}
+			resultsPerPageSwitchOptions = 10, 20, 30, 50
+
+			# fieldname => processing instruction, available instructions: timestamp, utf8Decode, skip (removes the field from the result)
+			fieldProcessingInstructions {
+				title = utf8Decode
+				content = utf8Decode
+				changed = timestamp
+				created = timestamp
+				indexed = timestamp
+				# TODO rename the skip instruction to remove?!
+				spell = skip
+			}
+
+			fieldRenderingInstructions {
+
+				# overwriting the default rendering of the title field
+				title = TEXT
+				title {
+					field = title
+					wrap = <span class="title">|</span>
+				}
+
+
+				# additional rendering for the title field
+				title2 = TEXT
+				title2 {
+					field = title
+					case = upper
+				}
+			}
+
+			pagebrowser {
+				templateFile = EXT:solr/resources/templates/pi_results/pagebrowser.htm
+			}
+
+			ignorePageBrowser = 0
+		}
+
+		highlighting = 0
+		highlighting {
+				# title and content are set as default in solrconfig.xml already
+#			highlightFields = title,content
+			fragmentSize = 200
+
+			wrap = <em style="background: #fdee53;">|</em>
+		}
+
+		spellchecking = 0
+		spellchecking {
+			wrap = |<div class="spelling-suggestions">###LLL:didYouMean### |</div>|
+		}
+
+		// not implemented yet
+		contentElevation = 0
+		contentElevation {
+			forceElevation = 0
+		}
+
+		sorting = 0
+		sorting {
+			defaultOrder = asc
+
+			fields {
+				relevancy = 1
+				relevancy {
+					label = sorting_relevancy
+				}
+
+				stitle = 1
+				stitle {
+					label = sorting_title
+				}
+
+				type = 1
+				type {
+					label = sorting_type
+				}
+
+				# field does not exist yet
+				author = 0
+				author {
+					label = sorting_author
+				}
+
+				created = 1
+				created {
+					label = sorting_created
+				}
+			}
+		}
+
+		faceting = 0
+		faceting {
+			minimumCount = 1
+			sortBy = count
+			limit = 10
+
+			facetOrder = type, author
+			facets {
+				type {
+					label = Content Type
+					field = type
+					limit = 10
+					missing = 0
+				}
+
+				author {
+					label = Author
+					field = f_author
+					limit = 20
+				}
+
+/*
+				lastChanged {
+					label = Last Changed
+					date =
+				}
+
+				feuser {
+					label = Created by FE User
+					query =
+
+					 TODO
+					renderingInstruction = TEXT
+					renderingInstruction {
+						wrap = <span class="user-{uid}">|</span>
+						insertData = 1
+					}
+
+				}
+*/
+			}
+
+				// available place holders: @facetValue, @facetName, @facetText
+			removeFacetLinkText = @facetText (remove)
+
+			showAllLink.wrap = <li>|</li>
+		}
+	}
+
+	searchForm = simple
+
+		// TODO move to search.results
+	searchResultsViewComponents {
+		faceting = 1
+		sorting = 1
+	}
+
+	viewhelpers {
+		crop {
+			maxLength = 30
+			cropIndicator = ...
+		}
+	}
+
+	logging {
+		indexing = 0
+		exceptions = 1
+
+		query {
+			filters = 0
+			searchWords = 0
+			queryString = 0
+			rawPost = 0
+			rawGet = 0
+		}
+
+		scheduler {
+				// TODO add logging to the optimize task
+			optimize = 0
+		}
+	}
+}
+

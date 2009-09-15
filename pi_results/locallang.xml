@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_solr_pi_results&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="searchUnavailable">Search is currently not available.</label>
+			<label index="searchWord">Search Term</label>
+			<label index="didYouMean">Did you mean</label>
+			<label index="submit">Search</label>
+			<label index="sorting_sortBy">Sort by</label>
+			<label index="sorting_relevancy">Relevancy</label>
+			<label index="sorting_title">Title</label>
+			<label index="sorting_type">Type</label>
+			<label index="sorting_author">Author</label>
+			<label index="sorting_created">Date</label>
+			<label index="faceting_narrowSearch">Narrow Search</label>
+			<label index="faceting_resultsNarrowedBy">Results narrowed by</label>
+			<label index="faceting_showMore">Show more</label>
+			<label index="faceting_showFewer">Show fewer</label>
+			<label index="results_range">Displaying results @resultsFrom to @resultsTo of @resultsTotal.</label>
+			<label index="results_searched_for">Searched for "@searchWord".</label>
+			<label index="no_results_nothing_found">Nothing found for "@searchWord".</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="searchUnavailable">Die Suche steht im Moment nicht zur Verfügung.</label>
+			<label index="searchWord">Suchbegriff</label>
+			<label index="didYouMean">Meinten Sie</label>
+			<label index="submit">Suche</label>
+			<label index="sorting_sortBy">Sortieren nach</label>
+			<label index="sorting_relevancy">Relevanz</label>
+			<label index="sorting_title">Titel</label>
+			<label index="sorting_type">Typ</label>
+			<label index="sorting_author">Autor</label>
+			<label index="sorting_created">Datum</label>
+			<label index="faceting_narrowSearch">Suchfilter</label>
+			<label index="faceting_resultsNarrowedBy">Aktive Filter</label>
+			<label index="faceting_showMore">Mehr zeigen</label>
+			<label index="faceting_showFewer">Weniger zeigen</label>
+			<label index="results_range">Zeige Ergebnisse @resultsFrom bis @resultsTo von @resultsTotal.</label>
+			<label index="results_searched_for">Gesucht nach "@searchWord".</label>
+			<label index="no_results_nothing_found">Nichts gefunden für "@searchWord".</label>
+		</languageKey>
+	</data>
+</T3locallang>
