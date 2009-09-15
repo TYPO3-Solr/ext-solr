@@ -1,6 +1,7 @@
 2009-09-16  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed an XSS issue
+	* Bumped version to 1.0.1 after release in TER
 
 2009-09-15  Ingo Renner  <ingo.renner@dkd.de>
 
