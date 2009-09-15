@@ -1,3 +1,7 @@
+2009-09-16  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed an XSS issue
+
 2009-09-15  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Initial Public Release of the community version
