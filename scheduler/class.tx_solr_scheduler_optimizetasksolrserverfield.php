@@ -43,7 +43,7 @@ class tx_solr_scheduler_OptimizeTaskSolrServerField implements tx_scheduler_Addi
 	 *									The array is multidimensional, keyed to the task class name and each field's id
 	 *									For each field it provides an associative sub-array with the following:
 	 */
-	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_module1 $schedulerModule) {
+	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $schedulerModule) {
 		$fields = array('host', 'port', 'path');
 
 		if ($schedulerModule->CMD == 'add') {
@@ -84,7 +84,7 @@ class tx_solr_scheduler_OptimizeTaskSolrServerField implements tx_scheduler_Addi
 	 * @param	tx_scheduler_module1	$parentObject: reference to the calling object (Scheduler's BE module)
 	 * @return	boolean					True if validation was ok (or selected class is not relevant), false otherwise
 	 */
-	public function validateAdditionalFields(array &$submittedData, tx_scheduler_module1 $schedulerModule) {
+	public function validateAdditionalFields(array &$submittedData, tx_scheduler_Module $schedulerModule) {
 		$result = false;
 		$submittedData['solrPort'] = intval($submittedData['solrPort']);
 

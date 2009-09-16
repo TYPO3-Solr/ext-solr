@@ -2,6 +2,7 @@
 
 	* Fixed an XSS issue
 	* Bumped version to 1.0.1 after release in TER
+	* Fixed compatibility with EXT:scheduler v1.0.0
 
 2009-09-15  Ingo Renner  <ingo.renner@dkd.de>
 
