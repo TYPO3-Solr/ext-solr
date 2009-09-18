@@ -42,5 +42,6 @@ return array(
 	'tx_solr_pi_results_spellcheckformmodifier' => $extensionPath . 'pi_results/class.tx_solr_pi_results_spellcheckformmodifier.php',
 	'tx_solr_scheduler_optimizetask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetask.php',
 	'tx_solr_scheduler_optimizetasksolrserverfield' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetasksolrserverfield.php',
+	'tx_solr_report_solrstatus' => $extensionPath . 'report/class.tx_solr_report_solrstatus.php',
 );
 ?>
