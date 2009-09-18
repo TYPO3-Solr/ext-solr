@@ -71,7 +71,7 @@ class  tx_solr_moduleAdmin extends t3lib_SCbase {
 
 		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
 
-			// find solr configurations and them as function menu entries
+			// find solr configurations and add them as function menu entries
 		foreach ($rootPages as $rootPage) {
 			$rootLine = $pageSelect->getRootLine($rootPage['uid']);
 
