@@ -133,7 +133,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		$resultParameters = t3lib_div::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
-			$filterParameters = explode(',', $resultParameters['filter']);
+			$filterParameters = json_decode($resultParameters['filter']);
 		}
 
 		$facetsInUse = array();
