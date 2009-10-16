@@ -76,13 +76,13 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 							$facetField,
 							$facetCounts->facet_fields->$facetField
 						),
-						'count' => count((array)$facetCounts->facet_fields->$facetField)
+						'count' => count((array) $facetCounts->facet_fields->$facetField)
 					);
 				}
 			}
 
 			$marker['subpart_available_facets'] = $this->renderAvailableFacets($facets);
-			$marker['subpart_used_facets'] = $this->renderUsedFacets();
+			$marker['subpart_used_facets']      = $this->renderUsedFacets();
 
 			$this->addFacetsJavascript();
 		}
@@ -133,7 +133,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		$resultParameters = t3lib_div::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
-			$filterParameters = json_decode($resultParameters['filter']);
+			$filterParameters = (array) json_decode($resultParameters['filter']);
 		}
 
 		$facetsInUse = array();
@@ -242,7 +242,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		$resultParameters = t3lib_div::GParrayMerged('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
-			$filterParameters = json_decode($resultParameters['filter']);
+			$filterParameters = (array) json_decode($resultParameters['filter']);
 		}
 
 		$filterParameters[] = $facetToAdd;
@@ -258,7 +258,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		$resultParameters = t3lib_div::GParrayMerged('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
-			$filterParameters = json_decode($resultParameters['filter']);
+			$filterParameters = (array) json_decode($resultParameters['filter']);
 		}
 
 		$filterParameters[] = $facetToAdd;
@@ -271,7 +271,8 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 
 	protected function buildRemoveFacetLink($query, $linkText, $facetToRemove) {
 		$resultParameters = t3lib_div::GParrayMerged('tx_solr');
-		$filterParameters = json_decode($resultParameters['filter']);
+			// decoding json, converting to array if json_decode returns an object an object, rebuilding index
+		$filterParameters = array_values((array) json_decode($resultParameters['filter']));
 
 		$filterParameters = array_unique($filterParameters);
 		$indexToRemove = array_search($facetToRemove, $filterParameters);
@@ -288,7 +289,8 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 
 	protected function buildRemoveFacetUrl($query, $facetToRemove) {
 		$resultParameters = t3lib_div::GParrayMerged('tx_solr');
-		$filterParameters = json_decode($resultParameters['filter']);
+			// decoding json, converting to array if json_decode returns an object an object, rebuilding index
+		$filterParameters = array_values((array) json_decode($resultParameters['filter']));
 
 		$filterParameters = array_unique($filterParameters);
 		$indexToRemove = array_search($facetToRemove, $filterParameters);
