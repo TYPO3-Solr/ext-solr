@@ -1,3 +1,7 @@
+2009-10-16  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed a bug with facet values containing commas
+
 2009-09-18  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added a Status check for Solr server availability

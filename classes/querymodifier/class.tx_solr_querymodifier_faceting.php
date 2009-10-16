@@ -133,7 +133,7 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 			// format for filter URL parameter:
 			// tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
 		if (isset($resultParameters['filter'])) {
-			$filters = explode(',', $resultParameters['filter']);
+			$filters = json_decode($resultParameters['filter']);
 			$configuredFacets = $this->getConfigurredFacets();
 
 			foreach ($filters as $filter) {
