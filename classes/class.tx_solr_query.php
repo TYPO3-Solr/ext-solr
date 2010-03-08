@@ -632,7 +632,7 @@ class tx_solr_Query {
 	}
 
 	public function removeUnwantedUrlParameters($urlParameters) {
-		$unwantedUrlParameters = array('resultsPerPage');
+		$unwantedUrlParameters = array('resultsPerPage', 'page');
 
 		foreach ($unwantedUrlParameters as $unwantedUrlParameter) {
 			unset($urlParameters[$unwantedUrlParameter]);

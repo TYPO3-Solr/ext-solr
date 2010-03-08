@@ -2,6 +2,7 @@
 
 	* Changed the constructor of tx_solr_SolrService to accept connection parameters instead of always getting them from TSFE
 	* Removed the tx_solr_SolrService from tx_solr_Query, was not used
+	* Fixed building of query URLs by removing the page parameter, previously that parameter could cause trouble when adding a new filter and being on a page that would not exist when the filter is applied, credits Timo Schmidt
 
 2009-10-16  Ingo Renner  <ingo.renner@dkd.de>
 
