@@ -1,6 +1,7 @@
 2010-03-08  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed the constructor of tx_solr_SolrService to accept connection parameters instead of always getting them from TSFE
+	* Removed the tx_solr_SolrService from tx_solr_Query, was not used
 
 2009-10-16  Ingo Renner  <ingo.renner@dkd.de>
 

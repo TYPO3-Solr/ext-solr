@@ -41,7 +41,6 @@ class tx_solr_Query {
 	protected static $idCount = 0;
 	protected $id;
 
-	protected $solr;
 	protected $solrConfiguration;
 
 	protected $keywords;
@@ -72,8 +71,6 @@ class tx_solr_Query {
 	 * constructor for class tx_solr_Query
 	 */
 	public function __construct($keywords) {
-		$this->solr = t3lib_div::makeInstance('tx_solr_SolrService');
-
 		$this->solrConfiguration = tx_solr_Util::getSolrConfiguration();
 
 			// TODO specify which fields to get exactly
