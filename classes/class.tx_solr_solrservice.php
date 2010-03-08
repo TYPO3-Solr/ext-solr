@@ -48,17 +48,23 @@ class tx_solr_SolrService extends Apache_Solr_Service implements t3lib_Singleton
 
 
 	/**
-	 * constructor for class tx_solr_SolrService
+	 * Constructor for class tx_solr_SolrService.
+	 *
+	 * @param	string	Solr host
+	 * @param	string	Solr port
+	 * @param	string	Solr path
 	 */
-	public function __construct() {
-			// FIXME move this to the constructor parameters
-		$solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
+	public function __construct($host = '', $port = '8080', $path = '/solr/') {
 
-		parent::__construct(
-			$solrConfiguration['host'],
-			$solrConfiguration['port'],
-			$solrConfiguration['path']
-		);
+		if (empty($host)) {
+			$solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
+
+			$host = $solrConfiguration['host'];
+			$port = $solrConfiguration['port'];
+			$path = $solrConfiguration['path'];
+		}
+
+		parent::__construct($host, $port, $path);
 	}
 
 	public function __destruct() {

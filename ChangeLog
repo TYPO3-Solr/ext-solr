@@ -1,3 +1,7 @@
+2010-03-08  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Changed the constructor of tx_solr_SolrService to accept connection parameters instead of always getting them from TSFE
+
 2009-10-16  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed a bug with facet values containing commas
