@@ -501,20 +501,17 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * Adds a field to the list of fields to query. Also checks whether * is set
-	 * for the fields, if so it's removed from the field list.
+	 * Adds a field to the list of fields to return. Also checks whether * is
+	 * set for the fields, if so it's removed from the field list.
 	 *
 	 * @param	string	the field name
 	 */
 	public function addReturnField($fieldName) {
 		if (in_array('*', $this->returnFields)) {
-			while($index = array_search('*', $this->returnFields)) {
-				unset($this->returnFields[$index]);
-			}
+			$this->returnFields = array_diff($this->returnFields, array('*'));
 		}
 
 			// TODO check whether the field exists (using luke?)
-
 		$this->returnFields[] = $fieldName;
 	}
 
