@@ -36,11 +36,34 @@ class tx_solr_Util {
 	 * Generates a site specific key using the site url, encryption key, and
 	 * the extension key sent through md5.
 	 *
+	 * @param	integer	Optional page ID, if a page ID is provided it is used to determine the site hash, otherwise we try to use TSFE
 	 * @return	string	a site specific hash
 	 */
-	public static function getSiteHash() {
+	public static function getSiteHash($pageId = 0) {
+		$rootline = array();
+
+		if ($pageId == 0 && empty($GLOBALS['TSFE']->rootLine)) {
+			throw new RuntimeException(
+				'Unable to retrieve a rootline while calculating the site hash.',
+				1268673589
+			);
+		}
+
+			// frontend
+		if (!empty($GLOBALS['TSFE']->rootLine)) {
+			$rootline = $GLOBALS['TSFE']->rootLine;
+		}
+
+			// fallback, backend
+		if (empty($rootline) && $pageId != 0) {
+			$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+			$rootLine   = $pageSelect->getRootLine($pageId);
+		}
+
+		$domain = t3lib_BEfunc::firstDomainRecord($rootLine);
+
 		return md5(
-			t3lib_div::getIndpEnv('TYPO3_SITE_URL') .
+			$domain .
 			$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
 			'tx_solr'
 		);
