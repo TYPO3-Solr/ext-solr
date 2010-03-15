@@ -79,7 +79,7 @@ class tx_solr_Util {
 	 * @return	string	the document id for that page
 	 */
 	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1') {
-		return self::getSiteHash() . '/pages/' . $uid . '/' . $typeNum . '/' . $language . '/' . $accessGroups;
+		return self::getSiteHash($uid) . '/pages/' . $uid . '/' . $typeNum . '/' . $language . '/' . $accessGroups;
 	}
 
 	/**
@@ -92,7 +92,7 @@ class tx_solr_Util {
 	 * @return	string	a document id
 	 */
 	public static function getDocumentId($table, $pid, $uid, $type = '') {
-		$id = self::getSiteHash() . '/' . $table . '/' . $pid . '/' . $uid;
+		$id = self::getSiteHash($pid) . '/' . $table . '/' . $pid . '/' . $uid;
 
 		if (!empty($type)) {
 			$id .= '/' . $type;

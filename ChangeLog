@@ -1,6 +1,7 @@
 2010-03-15  Ingo Renner  <ingo.renner@dkd.de>
 
 	* !!! Changed the way the site hash is calculated, requires reindexing
+	* Changed document ID generation to provide page IDs to site hash generation
 
 2010-03-12  Ingo Renner  <ingo.renner@dkd.de>
 
