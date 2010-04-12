@@ -335,9 +335,27 @@ class tx_solr_Indexer {
 		if (is_array($additionalFields)) {
 			foreach ($documents as $document) {
 				foreach ($additionalFields as $fieldName => $fieldValue) {
+						// if its just the configuration array skip this field
+					if (is_array($fieldValue)) {
+						continue;
+					}
+						// support for cObject if the value is a configuration
+					if (is_array($additionalFields[$fieldName . '.'])) {
+						$fieldValue = $GLOBALS['TSFE']->cObj->cObjGetSingle(
+							$fieldValue,
+							$additionalFields[$fieldName . '.']
+						);
+					}
+
 					if (substr($fieldName, -2) == '_s') {
 							// utf8 encode string fields
-						$document->addField($fieldName, $GLOBALS['TSFE']->csConvObj->utf8_encode($fieldValue, $GLOBALS['TSFE']->renderCharset));
+						$document->addField(
+							$fieldName,
+							$GLOBALS['TSFE']->csConvObj->utf8_encode(
+								$fieldValue,
+								$GLOBALS['TSFE']->renderCharset
+							)
+						);
 					} else {
 						$document->addField($fieldName, $fieldValue);
 					}
