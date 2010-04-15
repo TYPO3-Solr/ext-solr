@@ -76,10 +76,12 @@ class tx_solr_Util {
 	 * @param	integer The page's typeNum
 	 * @param	integer	$language the language id, defaults to 0
 	 * @param	string	$accessGroups comma separated list of uids of groups that have access to that page
+	 * @param	string 	$cHash cHash of the page
 	 * @return	string	the document id for that page
 	 */
-	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1') {
-		return self::getSiteHash($uid) . '/pages/' . $uid . '/' . $typeNum . '/' . $language . '/' . $accessGroups;
+	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1', $cHash = '') {
+			// TODO check for non-empty cHash before appending
+		return self::getSiteHash($uid) . '/pages/' . $uid . '/' . $typeNum . '/' . $language . '/' . $accessGroups. '/' . $cHash;
 	}
 
 	/**

@@ -220,17 +220,20 @@ class tx_solr_Indexer {
 
 
 		$document = t3lib_div::makeInstance('Apache_Solr_Document');
+		$cHash    = $this->filterInvalidContentHash($page->cHash);
 
 		$document->addField('id', tx_solr_Util::getPageDocumentId(
 			$page->id,
 			$page->type,
 			$page->sys_language_uid,
-			$page->gr_list
+			$page->gr_list,
+			$cHash
 		));
-		$document->addField('site',     t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
-		$document->addField('siteHash', tx_solr_Util::getSiteHash());
-		$document->addField('appKey',   'EXT:solr'); // TODO add a more meaningful app key
-		$document->addField('type',     'pages');
+		$document->addField('site',        t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
+		$document->addField('siteHash',    tx_solr_Util::getSiteHash());
+		$document->addField('appKey',      'EXT:solr'); // TODO add a more meaningful app key
+		$document->addField('type',        'pages');
+		$document->addField('contentHash', $cHash);
 
 			// system fields
 		$document->addField('uid',      $page->id);
@@ -456,6 +459,28 @@ class tx_solr_Indexer {
 		$pageContent = $GLOBALS['TSFE']->content;
 
 		return stristr($pageContent, '<body');
+	}
+
+
+	// retrieving content
+
+
+	/**
+	 * Checks whether a given string is a valid cHash.
+	 * If the hash is valid it will be returned as is, an empty string will be
+	 * returned otherwise.
+	 *
+	 * @param	string	The cHash to check for validity
+	 * @return	string	The passed cHash if valid, an empty string if invalid
+	 * @see tslib_fe->makeCacheHash
+	 */
+	protected function filterInvalidContentHash($cHash) {
+		$urlParameters   = t3lib_div::_GET();
+		$cHashParameters = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $urlParameters));
+
+		$calculatedCHash = t3lib_div::calculateCHash($cHashParameters);
+
+		return ($calculatedCHash == $cHash) ? $cHash : '';
 	}
 
 

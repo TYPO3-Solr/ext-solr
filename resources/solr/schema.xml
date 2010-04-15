@@ -340,6 +340,13 @@
 		<field name="type" type="string" indexed="true" stored="true" required="true" />
 
 		<!--
+			The content hashs or more known as cHash in short is used to store
+			a hash over the GET parameters used to request a URL and identify a
+			cache entry for the generated page.
+		-->
+		<field name="contentHash" type="string" indexed="false" stored="true" />
+
+		<!--
 			Here, default is used to create a "timestamp" field indicating when
 			the document was indexed.
 		-->
