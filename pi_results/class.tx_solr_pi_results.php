@@ -328,13 +328,13 @@ class tx_solr_pi_results extends tslib_pibase {
 			// check which commands / components of the result view to show
 		if ($this->search->hasSearched()) {
 			if ($this->search->getNumberOfResults() > 0) {
-				$commandList[] = 'results';
-
 				foreach ($this->conf['searchResultsViewComponents.'] as $commandName => $enabled) {
 					if ($enabled) {
 						$commandList[] = $commandName;
 					}
 				}
+
+				$commandList[] = 'results';
 			} else {
 				$commandList[] = 'no_results';
 			}
