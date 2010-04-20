@@ -80,8 +80,17 @@ class tx_solr_Util {
 	 * @return	string	the document id for that page
 	 */
 	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1', $cHash = '') {
-			// TODO check for non-empty cHash before appending
-		return self::getSiteHash($uid) . '/pages/' . $uid . '/' . $typeNum . '/' . $language . '/' . $accessGroups. '/' . $cHash;
+		$partialPageRecord = t3lib_BEfunc::getRecord('pages', $uid, 'pid');
+
+		$documentId = self::getSiteHash($uid)
+			. '/pages/' . $partialPageRecord['pid'] . '/' . $uid . '/'
+			. $typeNum . '/' . $language . '/' . $accessGroups;
+
+		if (!empty($cHash)) {
+			$documentId .= '/' . $cHash;
+		}
+
+		return $documentId;
 	}
 
 	/**

@@ -1,3 +1,7 @@
+2010-04-20  Ingo Renner  <ingo.renner@dkd.de>
+
+	* !!! Changed the format of the page document IDs, requires reindexing
+
 2010-04-19  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed component resolving in the results plugin to process the results list as the last component so that one can build result lists as table where headers can be used to sort the table
