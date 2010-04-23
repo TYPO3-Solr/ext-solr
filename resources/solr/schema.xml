@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id$ -->
+<!-- $Id: schema.xml 60854 2010-04-20 15:45:25Z dkd-renner $ -->
 
 <!--
 	This is the Solr schema file. This file should be named "schema.xml"
@@ -9,7 +9,7 @@
 	customize this file, please see http://wiki.apache.org/solr/SchemaXml
 -->
 
-<schema name="tx_solr" version="1.1">
+<schema name="tx_solr-1-4-0--20100420" version="1.1">
 	<!--
 		attribute "name" is the name of this schema and is only used for
 		display purposes. Applications should change this to reflect the
@@ -34,7 +34,7 @@
 			 limits compression (if enabled in the derived fields) to values which
 			 exceed a certain size (in characters).
 		-->
-		<fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+		<fieldType name="string"  class="solr.StrField"  sortMissingLast="true" omitNorms="true"/>
 
 		<!-- boolean type: "true" or "false" -->
 		<fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
@@ -56,19 +56,19 @@
 		<!-- numeric field types that store and index the text
 			 value verbatim (and hence don't support range queries, since the
 			 lexicographic ordering isn't equal to the numeric ordering) -->
-		<fieldType name="integer" class="solr.IntField" omitNorms="true"/>
-		<fieldType name="long" class="solr.LongField" omitNorms="true"/>
-		<fieldType name="float" class="solr.FloatField" omitNorms="true"/>
-		<fieldType name="double" class="solr.DoubleField" omitNorms="true"/>
+		<fieldType name="integer" class="solr.IntField"    omitNorms="true"/>
+		<fieldType name="long"    class="solr.LongField"   omitNorms="true"/>
+		<fieldType name="float"   class="solr.FloatField"  omitNorms="true"/>
+		<fieldType name="double"  class="solr.DoubleField" omitNorms="true"/>
 
 
 		<!-- Numeric field types that manipulate the value into
 			 a string value that isn't human-readable in its internal form,
 			 but with a lexicographic ordering the same as the numeric ordering,
 			 so that range queries work correctly. -->
-		<fieldType name="sint" class="solr.SortableIntField" sortMissingLast="true" omitNorms="true"/>
-		<fieldType name="slong" class="solr.SortableLongField" sortMissingLast="true" omitNorms="true"/>
-		<fieldType name="sfloat" class="solr.SortableFloatField" sortMissingLast="true" omitNorms="true"/>
+		<fieldType name="sint"    class="solr.SortableIntField"    sortMissingLast="true" omitNorms="true"/>
+		<fieldType name="slong"   class="solr.SortableLongField"   sortMissingLast="true" omitNorms="true"/>
+		<fieldType name="sfloat"  class="solr.SortableFloatField"  sortMissingLast="true" omitNorms="true"/>
 		<fieldType name="sdouble" class="solr.SortableDoubleField" sortMissingLast="true" omitNorms="true"/>
 
 
@@ -109,10 +109,10 @@
 			Note that if you use a precisionStep of 32 for int/float and 64 for long/double, then multiple terms
 			will not be generated, and range search will be no faster than any other number field.
 		 -->
-		<fieldType name="tint" class="solr.TrieField" type="integer" omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
-		<fieldType name="tfloat" class="solr.TrieField" type="float" omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
-		<fieldType name="tlong" class="solr.TrieField" type="long" omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
-		<fieldType name="tdouble" class="solr.TrieField" type="double" omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
+		<fieldType name="tint"     class="solr.TrieField" type="integer" omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
+		<fieldType name="tfloat"   class="solr.TrieField" type="float"   omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
+		<fieldType name="tlong"    class="solr.TrieField" type="long"    omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
+		<fieldType name="tdouble"  class="solr.TrieField" type="double"  omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
 
 		<fieldType name="tdouble4" class="solr.TrieField" type="double" precisionStep="4" omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
 
@@ -124,7 +124,7 @@
 
 
 		<!-- The "RandomSortField" is not used to store or search any
-			 data.	You can declare fields of this type it in your schema
+			 data.	You can declare fields of this type in your schema
 			 to generate psuedo-random orderings of your docs for sorting
 			 purposes.	The ordering is generated based on the field name
 			 and the version of the index, As long as the index version
@@ -155,15 +155,6 @@
 		</fieldType>
 		-->
 
-		<!-- A text field that only splits on whitespace for exact matching of words -->
-		<fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
-			<analyzer>
-				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
-				<filter class="solr.LowerCaseFilterFactory"/>
-				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
-			</analyzer>
-		</fieldType>
-
 		<!-- A text field that uses WordDelimiterFilter to enable splitting and matching of
 			words on case-change, alpha numeric boundaries, and non-alphanumeric chars,
 			so that a query of "wifi" or "wi fi" could match a document containing "Wi-Fi".
@@ -174,37 +165,38 @@
 		<fieldType name="text" class="solr.TextField" positionIncrementGap="100">
 			<analyzer type="index">
 				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
 				<filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
 				<!-- Case insensitive stop word removal.
 					add enablePositionIncrements=true in both the index and query
 					analyzers to leave a 'gap' for more accurate phrase queries.
 				-->
+				<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
 				<filter class="solr.StopFilterFactory"
 						ignoreCase="true"
 						words="stopwords.txt"
 						enablePositionIncrements="true"
-						/>
-				<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+				/>
 				<filter class="solr.LowerCaseFilterFactory"/>
-				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 				<filter class="solr.SnowballPorterFilterFactory" language="English" protected="protwords.txt"/>
+				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
 			<analyzer type="query">
 				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
 				<filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1"/>
+				<!--
+				best practice (currently) for synonyms is to add them by expansions during index time
+	 			<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+				-->
 				<filter class="solr.StopFilterFactory"
 						ignoreCase="true"
 						words="stopwords.txt"
 						enablePositionIncrements="true"
-						/>
-<!--
-				besst practice for synonyms is to add them by expansions during index time
-
-	 			<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
--->
+				/>
 				<filter class="solr.LowerCaseFilterFactory"/>
-				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 				<filter class="solr.SnowballPorterFilterFactory" language="English" protected="protwords.txt"/>
+				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
 		</fieldType>
 
@@ -214,6 +206,7 @@
 		<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
 			<analyzer>
 				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
 				<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="false"/>
 				<filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
 				<filter class="solr.WordDelimiterFilterFactory" generateWordParts="0" generateNumberParts="0" catenateWords="1" catenateNumbers="1" catenateAll="0"/>
@@ -229,6 +222,19 @@
 		<fieldType name="textSpell" class="solr.TextField" positionIncrementGap="100" >
 			<analyzer>
 				<tokenizer class="solr.StandardTokenizerFactory"/>
+
+				<filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
+				<filter class="solr.LengthFilterFactory" min="4" max="20" />
+				<filter class="solr.LowerCaseFilterFactory"/>
+				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+			</analyzer>
+		</fieldType>
+
+		<!-- A text field that only splits on whitespace for exact matching of words -->
+		<fieldType name="textWhiteSpaceTokenized" class="solr.TextField" positionIncrementGap="100">
+			<analyzer>
+				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
 				<filter class="solr.LowerCaseFilterFactory"/>
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
@@ -248,12 +254,13 @@
 			 With various TokenFilterFactories to produce a sortable field
 			 that does not include some properties of the source text
 		-->
-		<fieldType name="alphaOnlySort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+		<fieldType name="textSort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
 			<analyzer>
 				<!-- KeywordTokenizer does no actual tokenizing, so the entire
 					 input string is preserved as a single token
 				-->
 				<tokenizer class="solr.KeywordTokenizerFactory"/>
+
 				<!-- The LowerCase TokenFilter does what you expect, which can be
 					 when you want your sorting to be case insensitive
 				-->
@@ -270,16 +277,18 @@
 					 infomation on pattern and replacement string syntax.
 
 					 http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/package-summary.html
-				-->
+
 				<filter class="solr.PatternReplaceFilterFactory"
-								pattern="([^a-z])" replacement="" replace="all"
+						pattern="(^\p{Punct}+)" replacement="" replace="all"
 				/>
+				-->
 			</analyzer>
 		</fieldType>
 
 		<fieldtype name="phonetic" stored="false" indexed="true" class="solr.TextField" >
 			<analyzer>
 				<tokenizer class="solr.StandardTokenizerFactory"/>
+
 				<filter class="solr.DoubleMetaphoneFilterFactory" inject="false"/>
 			</analyzer>
 		</fieldtype>
@@ -313,9 +322,9 @@
 		-->
 
 		<!--
-			The document id is derived from a site-spcific key (hash) and the
-			record uid like:
-			$document->id = $hash . '/' . $recordType . '/' . $record->uid;
+			The document id is derived from a site-spcific key (hash) and some
+			record properties like:
+			$document->id = $siteHash . '/' . $type . '/' . $record['pid'] . '/' . $record['uid'];
 		-->
 		<field name="id" type="string" indexed="true" stored="true" required="true" />
 
@@ -365,18 +374,16 @@
 		<field name="typeNum"  type="integer" indexed="true" stored="true" />
 		<field name="created"  type="date"    indexed="true" stored="true" />
 		<field name="changed"  type="date"    indexed="true" stored="true" />
-		<field name="language" type="string"  indexed="true" stored="true" />
+		<field name="language" type="string"  indexed="true" stored="true" default="0" />
 
 		<!-- access fields -->
-		<field name="group"   type="integer" indexed="true" stored="true" multiValued="true"/>
+		<field name="group"   type="integer" indexed="true" stored="true" multiValued="true" default="0" />
 		<!-- we only need endtime as records with a starttime > indexing time will not get indexed -->
 		<field name="endtime" type="date" indexed="true" stored="true" />
 
 		<!-- content fields -->
 		<field name="title"       type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
-		<field name="stitle"      type="string" indexed="true"  stored="true" />
 		<field name="subTitle"    type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
-		<field name="ssubTitle"   type="string" indexed="true"  stored="true" />
 		<field name="navTitle"    type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
 		<field name="content"     type="text"   indexed="true"  stored="true" />
 		<field name="teaser"      type="text"   indexed="false" stored="true"/>
@@ -400,29 +407,30 @@
 
 
 		<!--
-			This field is used to build the spellchecker index
+			Used to build the spellchecker index
 		-->
 		<field name="spell" type="textSpell" indexed="true" stored="true" multiValued="true" />
-
-
-		<!--
-			Facet fields
-		-->
-		<field name="f_author" type="string" indexed="true" stored="true" />
-		<copyField source="author" dest="f_author" />
-
-
-		<!--
-			copy fields
-		-->
-
-		<!-- The string versions of title and subtitle are used for sorting / faceting -->
-		<copyField source="title"    dest="stitle" />
-		<copyField source="subTitle" dest="ssubTitle" />
-
 		<copyField source="title"    dest="spell" />
-		<copyField source="subtitle" dest="spell" />
+		<copyField source="subTitle" dest="spell" />
 		<copyField source="content"  dest="spell" />
+
+
+		<!--
+			Facetting and Sorting fields
+		-->
+		<field name="sortAuthor" type="textSort" indexed="true" stored="true" />
+		<copyField source="author" dest="sortAuthor" />
+
+		<field name="sortTitle"    type="textSort" indexed="true"  stored="true" />
+		<copyField source="title" dest="sortTitle" />
+
+		<field name="sortSubTitle" type="textSort" indexed="true"  stored="true" />
+		<copyField source="subTitle" dest="sortSubTitle" />
+
+
+		<!--
+			Copy fields
+		-->
 
 		<!-- The teaser can be used when a better snippet is not available -->
 		<copyField source="content" dest="teaser" maxChars="300" />
@@ -437,15 +445,66 @@
 			first. if equal size patterns both match, the first appearing in the
 			schema will be used.
 		-->
-		<dynamicField name="*_i"   type="sint"    indexed="true" stored="true" />
-		<dynamicField name="*_s"   type="string"  indexed="true" stored="true" />
-		<dynamicField name="*_l"   type="slong"   indexed="true" stored="true" />
-		<dynamicField name="*_t"   type="text"    indexed="true" stored="true" />
-		<dynamicField name="*_tws" type="text_ws" indexed="true" stored="true" />
-		<dynamicField name="*_b"   type="boolean" indexed="true" stored="true" />
-		<dynamicField name="*_f"   type="sfloat"  indexed="true" stored="true" />
-		<dynamicField name="*_d"   type="sdouble" indexed="true" stored="true" />
-		<dynamicField name="*_dt"  type="date"    indexed="true" stored="true" />
+		<dynamicField name="*_stringS"   type="string"    indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_stringM"   type="string"    indexed="true" stored="true" multiValued="true" />
+
+		<dynamicField name="*_boolS"     type="boolean"   indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_boolM"     type="boolean"   indexed="true" stored="true" multiValued="true" />
+
+
+		<dynamicField name="*_intS"      type="integer"   indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_intM"      type="integer"   indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_sIntS"     type="sint"      indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_sIntM"     type="sint"      indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_tIntS"     type="tint"      indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_tIntM"     type="tint"      indexed="true" stored="true" multiValued="true" />
+
+		<dynamicField name="*_longS"     type="long"      indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_longM"     type="long"      indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_sLongS"    type="slong"     indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_sLongM"    type="slong"     indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_tLongS"    type="tlong"     indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_tLongM"    type="tlong"     indexed="true" stored="true" multiValued="true" />
+
+		<dynamicField name="*_floatS"    type="float"     indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_floatM"    type="float"     indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_sFloatS"   type="sfloat"    indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_sFloatM"   type="sfloat"    indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_tFloatS"   type="tfloat"    indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_tFloatM"   type="tfloat"    indexed="true" stored="true" multiValued="true" />
+
+		<dynamicField name="*_doubleS"   type="double"    indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_doubleM"   type="double"    indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_sDoubleS"  type="sdouble"   indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_sDoubleM"  type="sdouble"   indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_tDoubleS"  type="tdouble"   indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_tDoubleM"  type="tdouble"   indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_tDouble4S" type="tdouble4"  indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_tDouble4M" type="tdouble4"  indexed="true" stored="true" multiValued="true" />
+
+
+		<dynamicField name="*_dateS"     type="date"      indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_dateM"     type="date"      indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_tDateS"    type="tdate"     indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_tDateM"    type="tdate"     indexed="true" stored="true" multiValued="true" />
+
+
+		<dynamicField name="*_random"    type="random"    indexed="true" stored="true" multiValued="false" />
+
+
+		<dynamicField name="*_textS"     type="text"      indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_textM"     type="text"      indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_textTS"    type="textTight" indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_textTM"    type="textTight" indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_textSortS" type="textSort"  indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_textSortM" type="textSort"  indexed="true" stored="true" multiValued="true" />
+		<dynamicField name="*_textWstS"  type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_textWstM"  type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="true" />
+
+
+		<dynamicField name="*_phoneticS" type="phonetic"  indexed="true" stored="true" multiValued="false" />
+		<dynamicField name="*_phoneticM" type="phonetic"  indexed="true" stored="true" multiValued="true" />
+
 
 		<!--
 			The following causes solr to ignore any fields that don't already

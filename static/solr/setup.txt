@@ -107,8 +107,8 @@ plugin.tx_solr {
 					label = sorting_relevancy
 				}
 
-				stitle = 1
-				stitle {
+				sortTitle = 1
+				sortTitle {
 					label = sorting_title
 				}
 
@@ -147,7 +147,7 @@ plugin.tx_solr {
 
 				author {
 					label = Author
-					field = f_author
+					field = sortAuthor
 					limit = 20
 				}
 

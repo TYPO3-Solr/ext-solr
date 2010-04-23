@@ -1,3 +1,7 @@
+2010-04-23  Ingo Renner  <ingo.renner@dkd.de>
+
+	* !!! Changed some fields and added a lot of dynamic fields in schema.xml, requires reindexing
+
 2010-04-20  Ingo Renner  <ingo.renner@dkd.de>
 
 	* !!! Changed the format of the page document IDs, requires reindexing
