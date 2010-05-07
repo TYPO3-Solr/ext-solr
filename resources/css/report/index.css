@@ -1,0 +1,21 @@
+#typo3-inner-docbody p {
+	margin: 7px 0px;
+}
+
+table.tx_solr_index_list {
+	width: 100%;
+}
+
+.tx_solr_index_list td {
+	padding: 2px 4px;
+	vertical-align: middle;
+	height: 20px;
+	font-size: 11px;
+	border-bottom: 1px solid #dee0e1;
+}
+
+.tx_solr_index_list .bgColor2 td {
+	text-align: left;
+	font-weight: bold;
+	color: #fff;
+}

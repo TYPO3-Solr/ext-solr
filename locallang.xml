@@ -6,7 +6,10 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-
+			<label index="report_index_title">Apache Solr Index</label>
+			<label index="report_index_description">View the number of documents and fields in your index</label>
+			<label index="report_statistics_title">Apache Solr Statistics</label>
+			<label index="report_statistics_description">Provides several Solr usage statistics</label>
 		</languageKey>
 	</data>
 </T3locallang>
