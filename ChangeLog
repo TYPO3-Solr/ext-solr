@@ -1,3 +1,7 @@
+2010-05-07  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Changed all places where Solr connections were created to use the new connection manager. The connection manager automatically detects all configured connections when clearing the configuration cache (green flash)
+
 2010-04-23  Ingo Renner  <ingo.renner@dkd.de>
 
 	* !!! Changed some fields and added a lot of dynamic fields in schema.xml, requires reindexing

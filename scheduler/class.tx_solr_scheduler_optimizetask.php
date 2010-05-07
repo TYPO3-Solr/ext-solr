@@ -49,20 +49,12 @@ class tx_solr_scheduler_OptimizeTask extends tx_scheduler_Task {
 	 * @return	void
 	 */
 	protected function initializeSolr() {
-				// faking configuration
-		if (!isset($GLOBALS['TSFE'])) {
-			$GLOBALS['TSFE'] = new stdClass();
-			$GLOBALS['TSFE']->tmpl = new stdClass();
-
-			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'] = array (
-				'host' => $this->solrHost,
-				'port' => $this->solrPort,
-				'path' => $this->solrPath
-			);
-		}
-
 		if (is_null($this->solr)) {
-			$this->solr = t3lib_div::makeInstance('tx_solr_SolrService');
+			$this->solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnection(
+				$this->solrHost,
+				$this->solrPort,
+				$this->solrPath
+			);
 		}
 	}
 

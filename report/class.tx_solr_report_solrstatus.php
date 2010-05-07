@@ -33,7 +33,6 @@
  */
 class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 
-
 	/**
 	 * Compiles a collection of status checks against each configured Solr server.
 	 *
@@ -41,79 +40,46 @@ class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 	 */
 	public function getStatus() {
 		$reports = array();
-		$solrServers = $this->getConfiguredSolrServers();
+		$solrConnections = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getAllConnections();
 
-		foreach ($solrServers as $solrServer) {
-			$reports[] = $this->getConnectionStatus($solrServer);
+		foreach ($solrConnections as $solrConnection) {
+			$reports[] = $this->getConnectionStatus($solrConnection);
 		}
 
 		return $reports;
 	}
 
 	/**
-	 * Finds all configured Solr servers in the BE
+	 * Checks whether a Solr server is available and provides some information.
 	 *
-	 * @return	array	An array of configured Solr server connections
+	 * @param	tx_solr_SolrService	Solr connection
+	 * @return	tx_reports_reports_status_Status Status of the Solr connection
 	 */
-	protected function getConfiguredSolrServers() {
-		$solrServers = array();
-
-			// find website roots
-		$rootPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid, title',
-			'pages',
-			'is_siteroot = 1 AND deleted = 0'
-		);
-
-		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
-
-			// find solr configurations and them as function menu entries
-		foreach ($rootPages as $rootPage) {
-			$rootLine = $pageSelect->getRootLine($rootPage['uid']);
-
-			$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
-			$tmpl->tt_track = false; // Do not log time-performance information
-			$tmpl->init();
-			$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
-			$tmpl->generateConfig();
-
-			list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.solr');
-
-			if (!empty($solrSetup)) {
-				$solrServers[] = $solrSetup;
-			}
-		}
-
-		return $solrServers;
-	}
-
-	protected function getConnectionStatus(array $solrServer) {
+	protected function getConnectionStatus(tx_solr_SolrService $solr) {
 		$value    = 'Your site was unable to contact the Apache Solr server.';
 		$severity = tx_reports_reports_status_Status::ERROR;
 
 		$message  = '<ul>'
-			. '<li>Host: ' . $solrServer['host'] . '</li>'
-			. '<li>Port: ' . $solrServer['port'] . '</li>'
-			. '<li>Path: ' . $solrServer['path'] . '</li>'
-			. '</ul>';
+			. '<li>Host: ' . $solr->getHost() . '</li>'
+			. '<li>Port: ' . $solr->getPort() . '</li>'
+			. '<li style="padding-bottom: 10px;">Path: ' . $solr->getPath() . '</li>';
 
-		if (!isset($GLOBALS['TSFE'])) {
-			$GLOBALS['TSFE'] = new stdClass();
-			$GLOBALS['TSFE']->tmpl = new stdClass();
-		}
-
-		$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'] = array (
-			'host' => $solrServer['host'],
-			'port' => $solrServer['port'],
-			'path' => $solrServer['path']
-		);
-
-		$search        = t3lib_div::makeInstance('tx_solr_Search');
-
-		if ($search->ping()) {
+		if ($solr->ping()) {
 			$severity = tx_reports_reports_status_Status::OK;
 			$value = 'Your site has contacted the Apache Solr server.';
+
+			$completeSolrVersion = $solr->getSolrServerVersion();
+
+			$explodedSolrVersion = explode('.', $completeSolrVersion);
+			$shortSolrVersion = $explodedSolrVersion[0]
+				. '.' . $explodedSolrVersion[1]
+				. '.' . $explodedSolrVersion[2];
+
+			$message .= '<li>Solr: ' . $shortSolrVersion . ' (' . $completeSolrVersion . ')</li>';
+			$message .= '<li>Schema: ' . $solr->getSchemaName() . '</li>';
 		}
+
+		$message .= '</ul>';
 
 		return t3lib_div::makeInstance('tx_reports_reports_status_Status',
 			'Apache Solr',

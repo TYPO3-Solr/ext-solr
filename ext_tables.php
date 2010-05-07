@@ -37,7 +37,19 @@ if (TYPO3_MODE == 'BE') {
 	t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
 	t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
 
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['solr'] = 'tx_solr_report_SolrStatus';
+		// adding reports
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'][] = 'tx_solr_report_SchemaStatus';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'][] = 'tx_solr_report_SolrStatus';
+
+		// adding the index report to the reports module
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_solr']['index'] = array(
+		'title'       => 'LLL:EXT:solr/locallang.xml:report_index_title',
+		'description' => 'LLL:EXT:solr/locallang.xml:report_index_description',
+		'report'      => 'tx_solr_report_IndexReport'
+	);
+
+		// hooking into cache clearing to update detected configuration
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:tx_solr_ConnectionManager->updateConnections';
 }
 
 ?>

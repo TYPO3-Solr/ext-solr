@@ -109,7 +109,7 @@ class tx_solr_Indexer {
 
 		try {
 				// get a solr instance
-			$solr = t3lib_div::makeInstance('tx_solr_SolrService');
+			$solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnection();
 
 				// do not continue if no server is available
 			if (!$solr->ping()) {
