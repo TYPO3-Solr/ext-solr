@@ -15,6 +15,7 @@ return array(
 	'tx_solr_query' => $extensionPath . 'classes/class.tx_solr_query.php',
 	'tx_solr_search' => $extensionPath . 'classes/class.tx_solr_search.php',
 	'tx_solr_solrservice' => $extensionPath . 'classes/class.tx_solr_solrservice.php',
+	'tx_solr_suggestquery' => $extensionPath . 'classes/class.tx_solr_suggestquery.php',
 	'tx_solr_template' => $extensionPath . 'classes/class.tx_solr_template.php',
 	'tx_solr_util' => $extensionPath . 'classes/class.tx_solr_util.php',
 

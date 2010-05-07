@@ -60,6 +60,11 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 			'q'              => $searchWord
 		);
 
+			// TODO maybe move into a form modifier
+		if ($this->parentPlugin->conf['suggest']) {
+			$this->addSuggestJavascript();
+		}
+
 			// hook to modify the search form
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'] as $classReference) {
@@ -73,6 +78,34 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 		}
 
 		return $marker;
+	}
+
+	protected function addSuggestJavascript() {
+		$suggestUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+		if ($this->parentPlugin->conf['suggest.']['forceHttps']) {
+			$suggestUrl = str_replace('http://', 'https://', $suggestUrl);
+		}
+
+		$suggestUrl .= '?eID=tx_solr_suggest&id=' . $GLOBALS['TSFE']->id;
+
+		$jsFilePath = t3lib_extMgm::siteRelPath('solr') . 'resources/javascript/eid_suggest/suggest.js';
+
+			// TODO make configurable once someone wants to use something other than jQuery
+		$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_suggest'] =
+			'
+			<script type="text/javascript">
+			/*<![CDATA[*/
+
+			var tx_solr_suggestUrl = \'' . $suggestUrl . '\';
+
+			/*]]>*/
+			</script>
+			';
+
+		if ($this->parentPlugin->conf['addDefaultJs']) {
+			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_suggest'] .=
+				'<script type="text/javascript" src="' . $jsFilePath . '"></script>';
+		}
 	}
 }
 

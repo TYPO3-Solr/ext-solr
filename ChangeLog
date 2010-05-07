@@ -3,6 +3,7 @@
 	* Changed all places where Solr connections were created to use the new connection manager. The connection manager automatically detects all configured connections when clearing the configuration cache (green flash)
 	* Added a status report to check whether the current schema is installed
 	* Added an index report
+	* Added auto suggest
 
 2010-04-23  Ingo Renner  <ingo.renner@dkd.de>
 

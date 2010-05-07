@@ -179,6 +179,13 @@ plugin.tx_solr {
 		}
 	}
 
+	suggest = 0
+	suggest {
+		numberOfSuggestions = 10
+		suggestField = spell
+		forceHttps = 0
+	}
+
 	searchForm = simple
 
 		// TODO move to search.results
