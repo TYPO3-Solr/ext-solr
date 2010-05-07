@@ -9,6 +9,7 @@
 	customize this file, please see http://wiki.apache.org/solr/SchemaXml
 -->
 
+<!-- the name property must be updated when changing the schema, also need to update the schema status report -->
 <schema name="tx_solr-1-4-0--20100420" version="1.1">
 	<!--
 		attribute "name" is the name of this schema and is only used for
