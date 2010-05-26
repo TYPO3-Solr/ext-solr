@@ -1,3 +1,7 @@
+2010-05-26  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed issue #7815: Code injection possible in Search field
+
 2010-05-07  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed all places where Solr connections were created to use the new connection manager. The connection manager automatically detects all configured connections when clearing the configuration cache (green flash)
