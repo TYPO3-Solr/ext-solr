@@ -54,7 +54,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 		$searchedFor = strtr(
 			$this->parentPlugin->pi_getLL('results_searched_for'),
 			array(
-				'@searchWord' => htmlspecialchars(trim($this->parentPlugin->piVars['q']))
+				'@searchWord' => htmlentities(trim($this->parentPlugin->piVars['q']), ENT_QUOTES)
 			)
 		);
 

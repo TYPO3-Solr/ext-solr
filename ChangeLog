@@ -1,6 +1,7 @@
 2010-05-26  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #7815: Code injection possible in Search field
+	* Improved security by consistently using htmlentities() with ENT_QUOTES option
 
 2010-05-07  Ingo Renner  <ingo.renner@dkd.de>
 
