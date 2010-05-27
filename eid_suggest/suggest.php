@@ -5,7 +5,8 @@
 # TSFE initialization
 
 tslib_eidtools::connectDB();
-$pageId = (int) t3lib_div::_GET('id');
+$pageId     = (int) t3lib_div::_GET('id');
+$languageId = (int) t3lib_div::_GET('L');
 
 $TSFE = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, true);
 
@@ -15,6 +16,7 @@ $TSFE->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
 $TSFE->rootLine = $TSFE->sys_page->getRootLine($pageId, '');
 $TSFE->initTemplate();
 $TSFE->getConfigArray();
+$TSFE->sys_language_uid = $languageId;
 
 $solrConfiguration = tx_solr_Util::getSolrConfiguration();
 

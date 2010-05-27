@@ -89,6 +89,11 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 
 		$suggestUrl .= '?eID=tx_solr_suggest&id=' . $GLOBALS['TSFE']->id;
 
+			// adds the language parameter to the suggest URL
+		if ($GLOBALS['TSFE']->sys_language_uid > 0) {
+			$suggestUrl .= '&L=' . $GLOBALS['TSFE']->sys_language_uid;
+		}
+
 		$jsFilePath = t3lib_extMgm::siteRelPath('solr') . 'resources/javascript/eid_suggest/suggest.js';
 
 			// TODO make configurable once someone wants to use something other than jQuery

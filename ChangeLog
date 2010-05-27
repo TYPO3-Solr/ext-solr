@@ -1,3 +1,7 @@
+2010-05-27  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed issue #7763: Suggest functionality does not take language into account (credits Mario Rimann)
+
 2010-05-26  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #7815: Code injection possible in Search field
