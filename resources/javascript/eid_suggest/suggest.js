@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-	$("#tx-solr-q").autocomplete(
+	$(".tx-solr-q").autocomplete(
 		tx_solr_suggestUrl,
 		{
 			width: 300,
@@ -33,5 +33,5 @@ $(document).ready(function(){
 	);
 
 }).result(function(event, data, formatted){
-	$("#tx-solr-search-form").submit();
+	$(event.target).closest('form').submit();
 });
