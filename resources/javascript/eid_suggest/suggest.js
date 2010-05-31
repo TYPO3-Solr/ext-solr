@@ -7,6 +7,7 @@ $(document).ready(function(){
 			scroll: false,
 			dataType: "json",
 			minChars: 3,
+			selectFirst: false,
 
 			formatItem: function(data, i, max, value, term) {
 				return value;
