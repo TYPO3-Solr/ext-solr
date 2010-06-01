@@ -2,6 +2,7 @@
 
 	* Fixed issue #7786: searchForm = advanced fails
 	* Fixed issue #7787: Markup of search results can be semantically optimized
+	* Added a marker ###RESULTS.queryTime#### in the results command to show the query time
 
 2010-05-31  Ingo Renner  <ingo.renner@dkd.de>
 

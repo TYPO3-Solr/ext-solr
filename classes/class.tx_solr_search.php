@@ -130,6 +130,15 @@ class tx_solr_Search implements t3lib_Singleton {
 		return $this->solr->getResponse()->responseHeader;
 	}
 
+	/**
+	 * Gets the time Solr took to execute the query and return the result.
+	 *
+	 * @return	integer	Query time in milliseconds
+	 */
+	public function getQueryTime() {
+		return $this->solr->getResponse()->responseHeader->QTime;
+	}
+
 	public function getFacetCounts() {
 		return $this->solr->getResponse()->facet_counts;
 	}
