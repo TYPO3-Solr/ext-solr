@@ -1,3 +1,7 @@
+2010-06-01  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed isssue #7786: searchForm = advanced fails
+
 2010-05-31  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed the default schema.xml, adding the preserveOriginal="1" option to all solr.WordDelimiterFilterFactory filters

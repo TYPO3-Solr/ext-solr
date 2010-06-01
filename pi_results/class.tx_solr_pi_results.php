@@ -317,12 +317,13 @@ class tx_solr_pi_results extends tslib_pibase {
 	 */
 	protected function getResultviewCommandList() {
 		$commandList = array();
+		$formStyle   = $this->conf['search.']['form'];
 
 			// always show the form
-		if ($this->conf['searchForm'] == 'simple') {
+		if ($formStyle == 'simple') {
 			$commandList[] = 'form';
-		} elseif($this->conf['searchForm'] == 'advanced') {
-			$commandList[] = 'advancedForm';
+		} elseif($formStyle == 'advanced') {
+			$commandList[] = 'advanced_form';
 		}
 
 			// check which commands / components of the result view to show
