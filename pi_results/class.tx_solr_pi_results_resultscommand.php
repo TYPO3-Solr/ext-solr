@@ -62,6 +62,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 			'searched_for' => $searchedFor,
 			'range' => $this->getPageBrowserRange(),
 			'count' => $this->search->getNumberOfResults(),
+			'offset' => ($this->search->getResultOffset() + 1),
 				/* construction of the array key:
 				 * loop_ : tells the plugin that the content of that field should be processed in a loop
 				 * result_documents : is the loop name as in the template

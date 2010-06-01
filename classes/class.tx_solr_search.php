@@ -138,6 +138,15 @@ class tx_solr_Search implements t3lib_Singleton {
 		return $this->solr->getResponse()->response->numFound;
 	}
 
+	/**
+	 * Gets the result offset.
+	 *
+	 * @return	integer	Result offset
+	 */
+	public function getResultOffset() {
+		return $this->solr->getResponse()->response->start;
+	}
+
 	public function getMaximumResultScore() {
 		return $this->solr->getResponse()->response->maxScore;
 	}
