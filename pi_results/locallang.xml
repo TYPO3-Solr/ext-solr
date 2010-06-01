@@ -45,6 +45,28 @@
 			<label index="no_results_nothing_found">Nichts gefunden für "@searchWord".</label>
 			<label index="results_per_page">Ergebnisse pro Seite:</label>
 		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="searchUnavailable">Zoeken is op dit moment niet beschikbaar.</label>
+			<label index="searchFailed">Het spijt ons. Uw verzoek kon niet worden verwerkt.</label>
+			<label index="searchWord">Zoekwoord</label>
+			<label index="didYouMean">Bedoelde u</label>
+			<label index="submit">Zoek</label>
+			<label index="sorting_sortBy">Sorteer op</label>
+			<label index="sorting_relevancy">Relevantie</label>
+			<label index="sorting_title">Titel</label>
+			<label index="sorting_type">Type</label>
+			<label index="sorting_author">Auteur</label>
+			<label index="sorting_created">Datum</label>
+			<label index="faceting_narrowSearch">Resultaat verfijnen</label>
+			<label index="faceting_resultsNarrowedBy">Resultaat verfijnd op</label>
+			<label index="faceting_showMore">Toon meer</label>
+			<label index="faceting_showFewer">Toon minder</label>
+			<label index="results_range">Resultaat @resultsFrom tot @resultsTo van @resultsTotal.</label>
+			<label index="results_searched_for">Gezocht naar "@searchWord".</label>
+			<label index="no_results_nothing_found">Niets gevonden voor "@searchWord".</label>
+			<label index="lastSearches">Laatste zoekopdrachten</label>
+			<label index="commonTerms">Vaak gezocht</label>
+		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="searchUnavailable">La recherche n'est actuellement pas disponible.</label>
 			<label index="searchFailed">Nous le regrettons. Votre demande n'a pas pu être traitée.</label>

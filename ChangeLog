@@ -4,6 +4,7 @@
 	* Fixed issue #7787: Markup of search results can be semantically optimized
 	* Added a marker ###RESULTS.queryTime#### in the results command to show the query time
 	* Fixed issue #7805: Add French and Italian translation
+	* Added dutch translation
 
 2010-05-31  Ingo Renner  <ingo.renner@dkd.de>
 
