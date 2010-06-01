@@ -130,9 +130,13 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 						$parsedTime['tm_hour'],
 						$parsedTime['tm_min'],
 						$parsedTime['tm_sec'],
-						$parsedTime['tm_mon'],
+							// strptime returns the "Months since January (0-11)"
+							// while mktime expects the month to be a value
+							// between 1 and 12. Adding 1 to solve the problem
+						$parsedTime['tm_mon'] + 1,
 						$parsedTime['tm_mday'],
-						$parsedTime['tm_year']
+							// strptime returns the "Years since 1900"
+						$parsedTime['tm_year'] + 1900
 					);
 					break;
 				case 'utf8Decode':

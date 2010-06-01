@@ -5,6 +5,7 @@
 	* Added a marker ###RESULTS.queryTime#### in the results command to show the query time
 	* Fixed issue #7805: Add French and Italian translation
 	* Added dutch translation
+	* Fixed issues #5767, #6360, and #7834: Wrong date handling in search result
 
 2010-05-31  Ingo Renner  <ingo.renner@dkd.de>
 
