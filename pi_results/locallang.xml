@@ -23,6 +23,7 @@
 			<label index="results_range">Displaying results @resultsFrom to @resultsTo of @resultsTotal.</label>
 			<label index="results_searched_for">Searched for "@searchWord".</label>
 			<label index="no_results_nothing_found">Nothing found for "@searchWord".</label>
+			<label index="results_per_page">Results per page:</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="searchUnavailable">Die Suche steht im Moment nicht zur Verfügung.</label>
@@ -42,6 +43,59 @@
 			<label index="results_range">Zeige Ergebnisse @resultsFrom bis @resultsTo von @resultsTotal.</label>
 			<label index="results_searched_for">Gesucht nach "@searchWord".</label>
 			<label index="no_results_nothing_found">Nichts gefunden für "@searchWord".</label>
+			<label index="results_per_page">Ergebnisse pro Seite:</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="searchUnavailable">La recherche n'est actuellement pas disponible.</label>
+			<label index="searchFailed">Nous le regrettons. Votre demande n'a pas pu être traitée.</label>
+			<label index="searchWord">Critère de recherche</label>
+			<label index="didYouMean">Pensiez-vous à</label>
+			<label index="submit">Recherche</label>
+			<label index="sorting_sortBy">Trier par</label>
+			<label index="sorting_relevancy">Pertinence</label>
+			<label index="sorting_title">Titre</label>
+			<label index="sorting_type">Type</label>
+			<label index="sorting_author">Auteur</label>
+			<label index="sorting_created">Date</label>
+			<label index="faceting_narrowSearch">Filtre de recherche</label>
+			<label index="faceting_resultsNarrowedBy">Filtres actifs</label>
+			<label index="faceting_showMore">Afficher plus</label>
+			<label index="faceting_showFewer">Afficher moins</label>
+			<label index="faceting_removeAllFilters">Supprimer tous les filtres</label>
+			<label index="results_range">Afficher les résultats de @resultsFrom à @resultsTo sur @resultsTotal.</label>
+			<label index="results_found">@resultsTotal résultats ont été trouvés en @resultsTime millisecondes.</label>
+			<label index="results_searched_for">Recherché par "@searchWord".</label>
+			<label index="no_results_nothing_found">Rien trouvé pour "@searchWord".</label>
+			<label index="lastSearches">Dernières recherches</label>
+			<label index="commonTerms">Recherches fréquentes</label>
+			<label index="relevance">Pertinence</label>
+			<label index="results_per_page">Résultats par page:</label>
+		</languageKey>
+		<languageKey index="it" type="array">
+			<label index="searchUnavailable">La ricerca non è al momento disponibile.</label>
+			<label index="searchFailed">Errore. Impossibile elaborare la query di ricerca.</label>
+			<label index="searchWord">Termine di ricerca</label>
+			<label index="didYouMean">Forse cercavi:</label>
+			<label index="submit">Ricerca</label>
+			<label index="sorting_sortBy">Ordina</label>
+			<label index="sorting_relevancy">Rilevanza</label>
+			<label index="sorting_title">Titolo</label>
+			<label index="sorting_type">Tipo</label>
+			<label index="sorting_author">Autore</label>
+			<label index="sorting_created">Data</label>
+			<label index="faceting_narrowSearch">Filtro di ricerca</label>
+			<label index="faceting_resultsNarrowedBy">Filtro attivo</label>
+			<label index="faceting_showMore">Espandi</label>
+			<label index="faceting_showFewer">Riduci</label>
+			<label index="faceting_removeAllFilters">Rimuovi tutti i filtri</label>
+			<label index="results_range">Mostra risultati @resultsFrom a @resultsTo di @resultsTotal.</label>
+			<label index="results_found">@resultsTotal risultati trovati in @resultsTime millisecondi.</label>
+			<label index="results_searched_for">Eseguita ricerca di "@searchWord".</label>
+			<label index="no_results_nothing_found">La ricerca di "@searchWord" non ha prodotto risultati in nessun documento.</label>
+			<label index="lastSearches">Ultime ricerche</label>
+			<label index="commonTerms">Ricerche più frequenti</label>
+			<label index="relevance">Rilevanza</label>
+			<label index="results_per_page">Risultati per pagina:</label>
 		</languageKey>
 	</data>
 </T3locallang>
