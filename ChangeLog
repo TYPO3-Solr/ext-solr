@@ -1,6 +1,7 @@
 2010-06-02  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #8029: PHP fatal errors in reports module
+	* Fixed issue #8036: UTF8 chars in search string are not displayed correct in result
 
 2010-06-01  Ingo Renner  <ingo.renner@dkd.de>
 

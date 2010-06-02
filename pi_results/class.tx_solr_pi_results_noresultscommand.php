@@ -47,14 +47,14 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_Command {
 		$nothingFound = strtr(
 			$this->parentPlugin->pi_getLL('no_results_nothing_found'),
 			array(
-				'@searchWord' => htmlentities($searchWord, ENT_QUOTES)
+				'@searchWord' => htmlentities($searchWord, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset)
 			)
 		);
 
 		$searchedFor = strtr(
 			$this->parentPlugin->pi_getLL('results_searched_for'),
 			array(
-				'@searchWord' => htmlentities($searchWord, ENT_QUOTES)
+				'@searchWord' => htmlentities($searchWord, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset)
 			)
 		);
 
