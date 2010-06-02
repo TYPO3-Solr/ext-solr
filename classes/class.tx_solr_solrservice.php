@@ -32,11 +32,24 @@ require_once($GLOBALS['PATH_solr'] . 'lib/SolrPhpClient/Apache/Solr/Service.php'
  * @package TYPO3
  * @subpackage solr
  */
-class tx_solr_SolrService extends Apache_Solr_Service implements t3lib_Singleton {
+class tx_solr_SolrService extends Apache_Solr_Service {
 
 	const LUKE_SERVLET = 'admin/luke';
-	protected $luke = array();
-	protected $lukeUrl;
+	const SYSTEM_SERVLET = 'admin/system';
+
+	/**
+	 * Constructed servlet URL for Luke
+	 *
+	 * @var string
+	 */
+	protected $_lukeUrl;
+
+	/**
+	 * Constructed servlet URL for system information
+	 *
+	 * @var string
+	 */
+	protected $_systemUrl;
 
 	protected $debug;
 
@@ -45,6 +58,9 @@ class tx_solr_SolrService extends Apache_Solr_Service implements t3lib_Singleton
 	 */
 	protected $responseCache = null;
 	protected $hasSearched = false;
+
+	protected $lukeData = array();
+	protected $systemData = null;
 
 
 	/**
@@ -81,10 +97,18 @@ class tx_solr_SolrService extends Apache_Solr_Service implements t3lib_Singleton
 	protected function _initUrls() {
 		parent::_initUrls();
 
-		$this->lukeUrl = $this->_constructUrl(self::LUKE_SERVLET, array(
-			'numTerms' => '0',
-			'wt' => self::SOLR_WRITER
-		));
+		$this->_lukeUrl = $this->_constructUrl(
+			self::LUKE_SERVLET,
+			array(
+				'numTerms' => '0',
+				'wt' => self::SOLR_WRITER
+			)
+		);
+
+		$this->_systemUrl  = $this->_constructUrl(
+			self::SYSTEM_SERVLET,
+			array('wt' => self::SOLR_WRITER)
+		);
 	}
 
 	public function search($query, $offset = 0, $limit = 10, $params = array()) {
@@ -95,21 +119,25 @@ class tx_solr_SolrService extends Apache_Solr_Service implements t3lib_Singleton
 	}
 
 	/**
-	 * retrievs meta data about the index from Luke
+	 * Retrieves meta data about the index from the luke request handler
 	 *
 	 * @param	integer	Number of top terms to fetch for each field
-	 * @return
+	 * @return	array	An array of index meta data
 	 */
-	public function getLukeMetaData($numberOfTerms) {
+	public function getLukeMetaData($numberOfTerms = 0) {
 		if (!isset($this->luke[$numberOfTerms])) {
-			$lukeUrl = $this->_constructUrl(self::LUKE_SERVLET, array(
-				'numTerms' => $numberOfTerms,
-				'wt' => self::SOLR_WRITER
-			));
-			$this->luke[$numberOfTerms] = $this->_sendRawGet($lukeUrl);
+			$lukeUrl = $this->_constructUrl(
+				self::LUKE_SERVLET,
+				array(
+					'numTerms' => $numberOfTerms,
+					'wt'       => self::SOLR_WRITER
+				)
+			);
+
+			$this->lukeData[$numberOfTerms] = $this->_sendRawGet($lukeUrl);
 		}
 
-		return $this->luke[$numberOfTerms];
+		return $this->lukeData[$numberOfTerms];
 	}
 
 	/**
@@ -132,6 +160,48 @@ class tx_solr_SolrService extends Apache_Solr_Service implements t3lib_Singleton
 
 	public function setDebug($debug) {
 		$this->debug = (boolean) $debug;
+	}
+
+	/**
+	 * Gets some information about the Solr server
+	 *
+	 * @return	array	A nested array of system data.
+	 */
+	public function getSystemInformation() {
+
+		if (empty($this->systemData)) {
+			$systemInformation = $this->_sendRawGet($this->_systemUrl);
+
+				// access a random property to trigger response parsing
+			$systemInformation->responseHeader;
+			$this->systemData = $systemInformation;
+		}
+
+		return $this->systemData;
+	}
+
+	/**
+	 * Gets the name of the schema installed and in use on the Solr server.
+	 *
+	 * @return	string	Name of the active schema
+	 */
+	public function getSchemaName() {
+		$systemInformation = $this->getSystemInformation();
+
+		return $systemInformation->core->schema;
+	}
+
+	/**
+	 * Gets the Solr server's version number.
+	 *
+	 * @return	string	Solr version number
+	 */
+	public function getSolrServerVersion() {
+		$systemInformation = $this->getSystemInformation();
+
+			// don't know why $systemInformation->lucene->solr-spec-version won't work
+		$luceneInformation = (array) $systemInformation->lucene;
+		return $luceneInformation['solr-spec-version'];
 	}
 }
 
