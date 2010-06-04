@@ -1,16 +1,16 @@
 2010-06-02  Ingo Renner  <ingo.renner@dkd.de>
 
-	* Fixed issue #8029: PHP fatal errors in reports module
-	* Fixed issue #8036: UTF8 chars in search string are not displayed correct in result
+	* Fixed issue #8029: PHP fatal errors in reports module, credits Marc Bastian Heinrichs
+	* Fixed issue #8036: UTF8 chars in search string are not displayed correct in result, credits Marc Bastian Heinrichs
 
 2010-06-01  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #7786: searchForm = advanced fails
 	* Fixed issue #7787: Markup of search results can be semantically optimized
 	* Added a marker ###RESULTS.queryTime#### in the results command to show the query time
-	* Fixed issue #7805: Add French and Italian translation
+	* Fixed issue #7805: Add French and Italian translation, credits Mario Rimann
 	* Added dutch translation
-	* Fixed issues #5767, #6360, and #7834: Wrong date handling in search result
+	* Fixed issues #5767, #6360, and #7834: Wrong date handling in search result, credits "Thomas" and Michael Knabe
 
 2010-05-31  Ingo Renner  <ingo.renner@dkd.de>
 
@@ -20,7 +20,7 @@
 
 2010-05-27  Ingo Renner  <ingo.renner@dkd.de>
 
-	* Fixed issue #7763: Suggest functionality does not take language into account (credits Mario Rimann)
+	* Fixed issue #7763: Suggest functionality does not take language into account, credits Mario Rimann
 
 2010-05-26  Ingo Renner  <ingo.renner@dkd.de>
 
