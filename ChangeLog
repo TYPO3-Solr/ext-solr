@@ -1,3 +1,7 @@
+2010-06-15  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Updated Tomcat / Solr install script
+
 2010-06-02  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #8029: PHP fatal errors in reports module, credits Marc Bastian Heinrichs
