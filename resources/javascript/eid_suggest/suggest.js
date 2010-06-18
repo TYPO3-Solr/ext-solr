@@ -1,5 +1,4 @@
-$(document).ready(function(){
-
+jQuery(document).ready(function($){
 	$(".tx-solr-q").autocomplete(
 		tx_solr_suggestUrl,
 		{
@@ -27,12 +26,10 @@ $(document).ready(function(){
 					};
 					i++;
 				}
-
 				return output;
 			}
 		}
 	);
-
 }).result(function(event, data, formatted){
-	$(event.target).closest('form').submit();
+	jQuery(event.target).closest('form').submit();
 });

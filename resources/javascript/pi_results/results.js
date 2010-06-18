@@ -1,7 +1,5 @@
-$(document).ready(function() {
-
+jQuery(document).ready(function($){
   $('.tx-solr-facet-hidden').hide();
-
   $('a.tx-solr-facet-show-all').click(function() {
 	  if ($(this).parent().siblings('.tx-solr-facet-hidden:visible').length == 0) {
 	      $(this).parent().siblings('.tx-solr-facet-hidden').show();
@@ -13,5 +11,4 @@ $(document).ready(function() {
 	    }
 	    return false;
   }).appendTo($('#tx-solr-facets-available:has(.tx-solr-facet-hidden)'));
-
 });

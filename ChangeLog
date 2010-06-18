@@ -1,3 +1,6 @@
+2010-06-18 Timo Schmidt <timo.schmidt@aoemedia.de>
+	* Applied patch to be able to use noConflict mode, credits Mario Rimann
+
 2010-06-15  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Updated Tomcat / Solr install script
