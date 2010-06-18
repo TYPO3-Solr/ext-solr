@@ -1,4 +1,9 @@
+2010-06-18  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added manual.sxw, providing a general overview of the extension and pointing to the actual documentation in the wiki
+
 2010-06-18 Timo Schmidt <timo.schmidt@aoemedia.de>
+
 	* Applied patch to be able to use noConflict mode, credits Mario Rimann
 
 2010-06-15  Ingo Renner  <ingo.renner@dkd.de>
