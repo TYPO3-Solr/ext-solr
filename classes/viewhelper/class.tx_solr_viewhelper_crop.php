@@ -72,8 +72,11 @@ class tx_solr_viewhelper_Crop implements tx_solr_ViewHelper {
 			$cropIndicator = $arguments[2];
 		}
 
-		$croppedString = t3lib_div::fixed_lgd_cs(
-			$stringToCrop, $maxLength, $cropIndicator
+		$contentObject = t3lib_div::makeInstance('tslib_cObj');
+		$contentObject->start(array(), '');
+		$croppedString = $contentObject->cropHTML(
+			$stringToCrop,
+			$maxLength . '|' . $cropIndicator
 		);
 
 		return $croppedString;
