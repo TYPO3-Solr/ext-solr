@@ -303,7 +303,7 @@ class Apache_Solr_Service
 		$response = new Apache_Solr_Response(@file_get_contents($url, false, $context), $http_response_header, $this->_createDocuments, $this->_collapseSingleValueArrays);
 
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawGet']) {
-			t3lib_div::devLog('querying solr through HTTP GET', 'tx_solr', 0, array(
+			t3lib_div::devLog('Querying Solr using GET', 'tx_solr', 0, array(
 				'query url' => $url,
 				'response' => (array) $response
 			));
@@ -361,8 +361,9 @@ class Apache_Solr_Service
 		$response = new Apache_Solr_Response(@file_get_contents($url, false, $context), $http_response_header, $this->_createDocuments, $this->_collapseSingleValueArrays);
 
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawPost']) {
-			t3lib_div::devLog('querying solr through HTTP POST', 'tx_solr', 0, array(
+			t3lib_div::devLog('Querying Solr using POST', 'tx_solr', 0, array(
 				'query url' => $url,
+				'content' => $rawPost,
 				'response' => (array) $response
 			));
 		}
@@ -591,13 +592,13 @@ class Apache_Solr_Service
 		$context = stream_context_create(
 			array(
 				'http' => array(
-					'method' => 'HEAD',
+					'method' => 'GET',
 					'timeout' => $timeout
 				)
 			)
 		);
 
-		// attempt a HEAD request to the solr ping page
+		// attempt a GET request to the solr ping page
 		$ping = @file_get_contents($this->_pingUrl, false, $context);
 
 		// result is false if there was a timeout
