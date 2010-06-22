@@ -48,7 +48,7 @@ class tx_solr_scheduler_OptimizeTaskSolrServerField implements tx_scheduler_Addi
 
 		if ($schedulerModule->CMD == 'add') {
 			$taskInfo['solrHost'] = 'localhost';
-			$taskInfo['solrPort'] = '8983';
+			$taskInfo['solrPort'] = '8080';
 			$taskInfo['solrPath'] = '/';
 		}
 
