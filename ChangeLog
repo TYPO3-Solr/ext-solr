@@ -4,7 +4,7 @@
 	* Added a COMMIT scheduler task, credits Georg Kuehnberger
 	* Fixed issue #8118: Autosuggest replacement only works when search term is lower case
 	* Changed HTTP method in Solr ping function from HEAD to GET
-	* Fixed issue #8102:Autosuggest JS conflicting with scriptmerger, credits Mario Rimann
+	* Fixed issue #8102: Autosuggest JS conflicting with scriptmerger, credits Mario Rimann
 
 2010-06-18  Ingo Renner  <ingo.renner@dkd.de>
 
