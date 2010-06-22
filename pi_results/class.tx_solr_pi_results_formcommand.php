@@ -48,7 +48,7 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 	public function execute() {
 		$searchWord = '';
 
-		$testSearchWord = t3lib_div::GParrayMerged('tx_solr');
+		$testSearchWord = t3lib_div::_GPmerged('tx_solr');
 		if (trim($testSearchWord['q'])) {
 			$searchWord = t3lib_div::removeXSS(trim($testSearchWord['q']));
 			$searchWord = htmlentities($searchWord, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
