@@ -2,6 +2,7 @@
 
 	* Fixed issues #8162 and #8316, usage of deprecated APIs, credits Marc Bastian Heinrichs
 	* Added a COMMIT scheduler task, credits Georg Kuehnberger
+	* Fixed issue #8118: Autosuggest replacement only works when search term is lower case
 
 2010-06-18  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -55,7 +55,7 @@ class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier 
 				$suggestion = $query->getKeywords();
 
 				foreach($suggestions as $word => $meta) {
-					$suggestion = str_replace($word, $meta->suggestion[0], $suggestion);
+					$suggestion = str_ireplace($word, $meta->suggestion[0], $suggestion);
 				}
 				$query->setKeywords($suggestion);
 
