@@ -33,6 +33,14 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_schedul
 	'additionalFields' => 'tx_solr_scheduler_OptimizeTaskSolrServerField'
 );
 
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_CommitTask'] = array(
+	'extension'        => $_EXTKEY,
+	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_commit_title',
+	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_commit_description',
+		// TODO needs to be provided with arguments of which solr server to commit to
+		// might be a nice usability feature to have the same select as in the Solr BE admin module
+	'additionalFields' => 'tx_solr_scheduler_CommitTaskSolrServerField'
+);
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// TODO move into pi_results, initializeSearch, add only when highlighting is activated

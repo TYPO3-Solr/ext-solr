@@ -7,7 +7,9 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="scheduler_optimizer_title">Optimze Solr Index</label>
-			<label index="scheduler_optimizer_description">Executes an optimize command. Should be run once a day for sites with low activity. Sites with high activity can run it more often. Beware though, that the task can take some seconds on large indexes.</label>
+			<label index="scheduler_optimizer_description">Executes an OPTIMIZE command on the Solr index. Should be run once a day for sites with low activity. Sites with high activity can run it more often. Beware though, that the task can take some seconds on large indexes.</label>
+			<label index="scheduler_commit_title">Commit Solr Index</label>
+			<label index="scheduler_commit_description">Executes a COMMIT command on the Solr index. Could be run anywhere between 1 min and every hour. Should take shorter than the OPTIMIZE Command, which also does a COMMIT before doing the OPTIMIZE.</label>
 			<label index="scheduler_field_host">Solr Host</label>
 			<label index="scheduler_field_port">Solr Port</label>
 			<label index="scheduler_field_path">Solr Path</label>

@@ -1,6 +1,7 @@
 2010-06-22  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issues #8162 and #8316, usage of deprecated APIs, credits Marc Bastian Heinrichs
+	* Added a COMMIT scheduler task, credits Georg Kuehnberger
 
 2010-06-18  Ingo Renner  <ingo.renner@dkd.de>
 
