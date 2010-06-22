@@ -6,6 +6,7 @@
 	* Changed HTTP method in Solr ping function from HEAD to GET
 	* Fixed issue #8102: Autosuggest JS conflicting with scriptmerger, credits Mario Rimann
 	* Fixed issue #8080: Crop viewhelper doesn't respect html tags, credits Marc Bastian Heinrichs
+	* Fixed issue #8041: Typo in tx_solr_Util causing PHP Warnings in log, credits Marc Bastian Heinrichs
 
 2010-06-18  Ingo Renner  <ingo.renner@dkd.de>
 

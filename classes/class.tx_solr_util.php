@@ -40,7 +40,7 @@ class tx_solr_Util {
 	 * @return	string	a site specific hash
 	 */
 	public static function getSiteHash($pageId = 0) {
-		$rootline = array();
+		$rootLine = array();
 
 		if ($pageId == 0 && empty($GLOBALS['TSFE']->rootLine)) {
 			throw new RuntimeException(
@@ -51,11 +51,11 @@ class tx_solr_Util {
 
 			// frontend
 		if (!empty($GLOBALS['TSFE']->rootLine)) {
-			$rootline = $GLOBALS['TSFE']->rootLine;
+			$rootLine = $GLOBALS['TSFE']->rootLine;
 		}
 
 			// fallback, backend
-		if (empty($rootline) && $pageId != 0) {
+		if (empty($rootLine) && $pageId != 0) {
 			$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
 			$rootLine   = $pageSelect->getRootLine($pageId);
 		}
