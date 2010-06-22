@@ -64,6 +64,12 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 			// TODO maybe move into a form modifier
 		if ($this->parentPlugin->conf['suggest']) {
 			$this->addSuggestJavascript();
+			$marker['suggest_url'] = '<script type="text/javascript">
+				/*<![CDATA[*/
+				var tx_solr_suggestUrl = \'' . $this->getSuggestUrl() . '\';
+				/*]]>*/
+				</script>
+			';
 		}
 
 			// hook to modify the search form
@@ -81,8 +87,15 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 		return $marker;
 	}
 
-	protected function addSuggestJavascript() {
+	/**
+	 * Returns the URL to which the Ajax request for the suggest functionality should be sent.
+	 *
+	 * @author Mario Rimann <mario.rimann@internezzo.ch>
+	 * @return string the full URL to the eID script including the needed parameters
+	 */
+	protected function getSuggestUrl() {
 		$suggestUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+
 		if ($this->parentPlugin->conf['suggest.']['forceHttps']) {
 			$suggestUrl = str_replace('http://', 'https://', $suggestUrl);
 		}
@@ -94,19 +107,16 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 			$suggestUrl .= '&L=' . $GLOBALS['TSFE']->sys_language_uid;
 		}
 
+			// adds the language parameter to the suggest URL
+		if ($GLOBALS['TSFE']->sys_language_uid > 0) {
+			$suggestUrl .= '&L=' . $GLOBALS['TSFE']->sys_language_uid;
+		}
+
+		return $suggestUrl;
+	}
+
+	protected function addSuggestJavascript() {
 		$jsFilePath = t3lib_extMgm::siteRelPath('solr') . 'resources/javascript/eid_suggest/suggest.js';
-
-			// TODO make configurable once someone wants to use something other than jQuery
-		$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_suggest'] =
-			'
-			<script type="text/javascript">
-			/*<![CDATA[*/
-
-			var tx_solr_suggestUrl = \'' . $suggestUrl . '\';
-
-			/*]]>*/
-			</script>
-			';
 
 		if ($this->parentPlugin->conf['addDefaultJs']) {
 			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_suggest'] .=
