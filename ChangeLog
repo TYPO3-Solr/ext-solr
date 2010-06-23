@@ -2,6 +2,7 @@
 
 	* Fixed issue #8060: Page title defined twice in tx_solr_Indexer, credits Marc Bastian Heinrichs
 	* Added feature #8466: Add a TypoScript view helper
+	* Updated ext_emconf.php
 
 2010-06-22  Ingo Renner  <ingo.renner@dkd.de>
 

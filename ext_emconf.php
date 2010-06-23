@@ -11,8 +11,8 @@
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Apache Solr Search',
-	'description' => 'Search with Solr',
+	'title' => 'Apache Solr for TYPO3',
+	'description' => 'Apache Solr for TYPO3 is the enterprise search engine you were looking for with special features such as Facetted Search or Synonym Support and incredibly fast response times of results within milliseconds.',
 	'category' => 'plugin',
 	'author' => 'Ingo Renner',
 	'author_email' => 'ingo@typo3.org',
@@ -28,7 +28,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
-	'author_company' => '',
+	'author_company' => 'd.k.d Internet Service GmbH',
 	'version' => '1.0.1',
 	'constraints' => array(
 		'depends' => array(
