@@ -1,6 +1,7 @@
 2010-06-23  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #8060: Page title defined twice in tx_solr_Indexer, credits Marc Bastian Heinrichs
+	* Added feature #8466: Add a TypoScript view helper
 
 2010-06-22  Ingo Renner  <ingo.renner@dkd.de>
 

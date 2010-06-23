@@ -32,6 +32,7 @@ return array(
 	'tx_solr_viewhelper_sortindicator' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_sortindicator.php',
 	'tx_solr_viewhelper_solrlink' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_solrlink.php',
 	'tx_solr_viewhelper_sorturl' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_sorturl.php',
+	'tx_solr_viewhelper_ts' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_ts.php',
 
 	'tx_solr_additionalindexer' => $extensionPath . 'interfaces/interface.tx_solr_additionalindexer.php',
 	'tx_solr_command' => $extensionPath . 'interfaces/interface.tx_solr_command.php',
