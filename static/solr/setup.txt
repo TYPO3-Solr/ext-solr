@@ -56,19 +56,12 @@ plugin.tx_solr {
 
 			fieldRenderingInstructions {
 
-				# overwriting the default rendering of the title field
-				title = TEXT
-				title {
-					field = title
-					wrap = <span class="title">|</span>
-				}
-
-
-				# additional rendering for the title field
+				# additional example rendering for the title field
 				title2 = TEXT
 				title2 {
 					field = title
 					case = upper
+					wrap = <span class="title">|</span>
 				}
 			}
 
