@@ -209,9 +209,7 @@ class tx_solr_Indexer {
 		$page     = $GLOBALS['TSFE'];
 		$document = false;
 
-		$title = $this->getPageTitle();
-		$body  = $this->getPageBody();
-
+		$body    = $this->getPageBody();
 		$content = $this->getIndexableContent($body);
 
 			// converts the content to utf8 if necessary
@@ -258,8 +256,7 @@ class tx_solr_Indexer {
 		}
 
 			// content
-		$title = ($page->indexedDocTitle ? $page->indexedDocTitle :
-			($page->altPageTitle ? $page->altPageTitle : $page->page['title']));
+		$title = $this->getPageTitle();
 		$document->addField('title',       $GLOBALS['TSFE']->csConvObj->utf8_encode($title, $GLOBALS['TSFE']->renderCharset));
 		$document->addField('subTitle',    $GLOBALS['TSFE']->csConvObj->utf8_encode($page->page['subtitle'], $GLOBALS['TSFE']->renderCharset));
 		$document->addField('navTitle',    $GLOBALS['TSFE']->csConvObj->utf8_encode($page->page['nav_title'], $GLOBALS['TSFE']->renderCharset));
