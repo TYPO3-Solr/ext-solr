@@ -45,7 +45,8 @@ if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_solr']['index'] = array(
 		'title'       => 'LLL:EXT:solr/locallang.xml:report_index_title',
 		'description' => 'LLL:EXT:solr/locallang.xml:report_index_description',
-		'report'      => 'tx_solr_report_IndexReport'
+		'report'      => 'tx_solr_report_IndexReport',
+		'icon'        => 'EXT:solr/report/tx_solr_report.gif'
 	);
 
 		// hooking into cache clearing to update detected configuration
