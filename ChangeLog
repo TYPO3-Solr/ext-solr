@@ -1,3 +1,7 @@
+2010-07-02  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Updated the install script to get Solr 1.4.1
+
 2010-06-25  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added Solr icons to the Solr reports in the reports module

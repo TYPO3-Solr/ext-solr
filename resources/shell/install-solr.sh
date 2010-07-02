@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOMCAT_VER=6.0.26
-SOLR_VER=1.4.0
+SOLR_VER=1.4.1
 
 cd /opt
 mkdir solr-tomcat
