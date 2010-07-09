@@ -8,3 +8,29 @@
 	width: 25%;
 	float: right;
 }
+
+
+
+.tx-solr-relevance-bar {
+	width: 100px;
+	height: 8px;
+	border: 1px solid #ccc;
+	font-size: 1px;
+	padding: 1px;
+}
+
+.tx-solr-relevance,
+.tx-solr-relevance-fill {
+	margin-right: 0px !important;
+	height: 8px;
+	padding: 0px;
+	float: left;
+}
+
+.tx-solr-relevance {
+	background-color: #aac402;
+}
+
+.tx-solr-relevance-fill {
+	background-color: #ccc;
+}
