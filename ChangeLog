@@ -25,7 +25,7 @@
 
 	* Fixed issues #8162 and #8316, usage of deprecated APIs, credits Marc Bastian Heinrichs
 	* Added a COMMIT scheduler task, credits Georg Kuehnberger
-	* Fixed issue #8118: Autosuggest replacement only works when search term is lower case
+	* Fixed issue #8118: Autosuggest replacement only works when search term is lower case, credits Michael Telgkamp
 	* Changed HTTP method in Solr ping function from HEAD to GET
 	* Fixed issue #8102: Autosuggest JS conflicting with scriptmerger, credits Mario Rimann
 	* Fixed issue #8080: Crop viewhelper doesn't respect html tags, credits Marc Bastian Heinrichs
@@ -70,7 +70,7 @@
 
 2010-05-26  Ingo Renner  <ingo.renner@dkd.de>
 
-	* Fixed issue #7815: Code injection possible in Search field
+	* Fixed issue #7815: Code injection possible in Search field, credits Michael Telgkamp
 	* Improved security by consistently using htmlentities() with ENT_QUOTES option
 
 2010-05-07  Ingo Renner  <ingo.renner@dkd.de>
