@@ -1,3 +1,7 @@
+2010-07-13  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Changed solrconfig.xml. Minor tweaks for Solr admin and removed unused cache warming queries
+
 2010-07-12  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added loading of TCA in eID suggest script to prevent issues with failing suggestions, credits Markus Kleinhenz

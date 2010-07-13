@@ -407,9 +407,19 @@
     <listener event="newSearcher" class="solr.QuerySenderListener">
       <arr name="queries">
         <!--
-        <lst> <str name="q">solr</str> <str name="start">0</str> <str name="rows">10</str> </lst>
-        <lst> <str name="q">rocks</str> <str name="start">0</str> <str name="rows">10</str> </lst>
-        <lst><str name="q">static newSearcher warming query from solrconfig.xml</str></lst>
+        <lst>
+            <str name="q">solr</str>
+            <str name="start">0</str>
+            <str name="rows">10</str>
+        </lst>
+        <lst>
+            <str name="q">rocks</str>
+            <str name="start">0</str>
+            <str name="rows">10</str>
+        </lst>
+        <lst>
+            <str name="q">static newSearcher warming query from solrconfig.xml</str>
+        </lst>
         -->
       </arr>
     </listener>
@@ -419,8 +429,16 @@
          requests or to gain autowarming data from. -->
     <listener event="firstSearcher" class="solr.QuerySenderListener">
       <arr name="queries">
-        <lst> <str name="q">solr rocks</str><str name="start">0</str><str name="rows">10</str></lst>
-        <lst><str name="q">static firstSearcher warming query from solrconfig.xml</str></lst>
+        <!--
+        <lst>
+            <str name="q">solr rocks</str>
+            <str name="start">0</str>
+            <str name="rows">10</str>
+        </lst>
+        <lst>
+            <str name="q">static firstSearcher warming query from solrconfig.xml</str>
+        </lst>
+        -->
       </arr>
     </listener>
 
@@ -1005,7 +1023,7 @@
 
   <!-- config for the admin interface -->
   <admin>
-    <defaultQuery>solr</defaultQuery>
+    <defaultQuery>*:*</defaultQuery>
 
     <!-- configure a healthcheck file for servers behind a loadbalancer
     <healthcheck type="file">server-enabled</healthcheck>
