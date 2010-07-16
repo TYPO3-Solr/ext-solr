@@ -1,3 +1,7 @@
+2010-07-16  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Changed extension status to stable
+
 2010-07-13  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed solrconfig.xml. Minor tweaks for Solr admin and removed unused cache warming queries
