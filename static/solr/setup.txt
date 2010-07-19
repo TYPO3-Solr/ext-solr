@@ -176,6 +176,8 @@ plugin.tx_solr {
 
 	suggest = 0
 	suggest {
+		loadJQuery = 1
+
 		numberOfSuggestions = 10
 		suggestField = spell
 		forceHttps = 0

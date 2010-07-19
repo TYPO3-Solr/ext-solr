@@ -115,12 +115,33 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 		return $suggestUrl;
 	}
 
+	/**
+	 * Adds the Javascript necessary for the suggestions
+	 *
+	 * By default will also load jQuery, but this can be disabled through
+	 * TypoScript.
+	 */
 	protected function addSuggestJavascript() {
-		$jsFilePath = t3lib_extMgm::siteRelPath('solr') . 'resources/javascript/eid_suggest/suggest.js';
-
 		if ($this->parentPlugin->conf['addDefaultJs']) {
+			if ($this->parentPlugin->conf['suggest.']['loadJQuery']) {
+				$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQuery'] .=
+					'<script type="text/javascript" src="'
+					. t3lib_extMgm::siteRelPath($this->parentPlugin->extKey)
+					. 'resources/javascript/jquery-1.3.2.min.js'
+					. '"></script>';
+			}
+
+			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQuerySuggest'] .=
+				'<script type="text/javascript" src="'
+				. t3lib_extMgm::siteRelPath($this->parentPlugin->extKey)
+				. 'resources/javascript/eid_suggest/jquery-autocomplete/jquery.autocomplete.min.js'
+				. '"></script>';
+
 			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_suggest'] .=
-				'<script type="text/javascript" src="' . $jsFilePath . '"></script>';
+				'<script type="text/javascript" src="'
+				. t3lib_extMgm::siteRelPath($this->parentPlugin->extKey)
+				. 'resources/javascript/eid_suggest/suggest.js'
+				. '"></script>';
 		}
 	}
 }
