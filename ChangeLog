@@ -1,3 +1,7 @@
+2010-07-19  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added a missing file indicator.gif for the jQuery autcomplete plugin which caused 404s
+
 2010-07-19  Markus Goldbach <markus.goldbach@dkd.de>
 
 	* Moved Solr schema.xml and solrconfig.xml into EXT:solr/resources/solr/singlecore/
