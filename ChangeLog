@@ -2,7 +2,7 @@
 
 	* Added a missing file indicator.gif for the jQuery autcomplete plugin which caused 404s
 	* Added TYPO3 as a protected word in protwords.txt
-	* Fixed automatic loading of all necessary Javascript for suggestions if activated
+	* Fixed issue #8620: automatic loading of all necessary Javascript for suggestions if activated
 
 2010-07-19  Markus Goldbach <markus.goldbach@dkd.de>
 
