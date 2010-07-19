@@ -1,3 +1,7 @@
+2010-07-19  Markus Goldbach <markus.goldbach@dkd.de>
+
+	* Moved Solr schema.xml and solrconfig.xml into EXT:solr/resources/solr/singlecore/
+
 2010-07-16  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed extension status to stable
