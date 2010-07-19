@@ -33,7 +33,17 @@
  */
 class tx_solr_report_SchemaStatus implements tx_reports_StatusProvider {
 
-		// must be updated when changing the schema
+	/**
+	 * The schema name property is constructed as follows:
+	 *
+	 * tx_solr	- The extension key
+	 * x-y-z	- The Solr version this schema is meant to work with
+	 * YYYYMMDD	- The date the schema file was changed the last time
+	 *
+	 * Must be updated when changing the schema.
+	 *
+	 * @var	string
+	 */
 	const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-1-4-0--20100531';
 
 	/**
