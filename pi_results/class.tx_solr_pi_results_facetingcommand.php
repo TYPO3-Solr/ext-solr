@@ -129,6 +129,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		$template = clone $this->parentPlugin->getTemplate();
 		$template->workOnSubpart('used_facets');
 		$query = $this->search->getQuery();
+		$query->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
 		$resultParameters = t3lib_div::_GET('tx_solr');
 		$filterParameters = array();
@@ -181,6 +182,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		$template = clone $this->parentPlugin->getTemplate();
 		$template->workOnSubpart('single_facet_option');
 		$query = $this->search->getQuery();
+		$query->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
 		$facetOptionLinks = array();
 		$i = 0;

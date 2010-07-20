@@ -13,6 +13,7 @@
 	* Added getter and setter for the link target page id in tx_solr_Query
 	* Fixed issue #7327: Sorting component does not respect target page setting from flexform
 	* Added tx_solr_pi_results->getLinkTargetPageId()
+	* Fixed issue where facetting links didn't respect the target page set by the flexform
 
 2010-07-19  Ingo Renner  <ingo.renner@dkd.de>
 
