@@ -658,6 +658,7 @@
     <lst name="spellchecker">
       <str name="name">default</str>
       <str name="field">spell</str>
+      <str name="buildOnOptimize">true</str>
       <str name="spellcheckIndexDir">./spellchecker1</str>
     </lst>
 
