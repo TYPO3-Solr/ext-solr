@@ -351,6 +351,16 @@ class tx_solr_pi_results extends tslib_pibase {
 	}
 
 	/**
+	 * Gets the target page Id for links. Might have been set through either
+	 * flexform or TypoScript. If none is set, TSFE->id is used.
+	 *
+	 * @return	integer	The page Id to be used for links
+	 */
+	public function getLinkTargetPageId() {
+		return $this->conf['search.']['targetPage'];
+	}
+
+	/**
 	 * Gets a list of EXT:solr variables like theprefix ID.
 	 *
 	 * @return	array	array of EXT:solr variables
