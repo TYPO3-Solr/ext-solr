@@ -12,7 +12,7 @@
 
 2010-07-19  Ingo Renner  <ingo.renner@dkd.de>
 
-	* Added a missing file indicator.gif for the jQuery autcomplete plugin which caused 404s
+	* Added a missing file indicator.gif for the jQuery autocomplete plugin which caused 404s
 	* Added TYPO3 as a protected word in protwords.txt
 	* Fixed issue #8620: automatic loading of all necessary Javascript for suggestions if activated
 
