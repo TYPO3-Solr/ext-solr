@@ -538,11 +538,18 @@ class tx_solr_Query {
 		}
 	}
 
+	/**
+	 * Enables or disables spellchecking for the query.
+	 *
+	 * @param	boolean	Enables spellchecking when set to true, deactivates spellchecking when set to false.
+	 */
 	public function setSpellchecking($spellchecking = true) {
 		if ($spellchecking) {
 			$this->queryParameters['spellcheck'] = 'true';
+			$this->queryParameters['spellcheck.collate'] = 'true';
 		} else {
 			unset($this->queryParameters['spellcheck']);
+			unset($this->queryParameters['spellcheck.collate']);
 		}
 	}
 
