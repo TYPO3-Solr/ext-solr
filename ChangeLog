@@ -9,6 +9,7 @@
 	* Changed the spellcheck form modifier to use the collation suggestions returned by Solr
 	* Added several methods in tx_solr_Query from v2.0-dev
 	* Fixed an issue where sorting and facetting links didn't work out of the box because tx_solr.search.targetPage was not set. Falling back to TSFE->id now.
+	* Fixed issue #4753: Standard page browser CSS is not inserted
 
 2010-07-19  Ingo Renner  <ingo.renner@dkd.de>
 

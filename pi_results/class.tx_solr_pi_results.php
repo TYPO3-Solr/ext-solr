@@ -73,11 +73,17 @@ class tx_solr_pi_results extends tslib_pibase {
 		}
 
 		if ($this->conf['addDefaultCss']) {
-			$pathToCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
+			$pathToResultsCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
 				. t3lib_extMgm::siteRelPath($this->extKey)
 				. 'resources/templates/pi_results/results.css';
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultCss'] =
-				'<link href="' . $pathToCssFile . '" rel="stylesheet" type="text/css" />';
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultResultsCss'] =
+				'<link href="' . $pathToResultsCssFile . '" rel="stylesheet" type="text/css" />';
+
+			$pathToPageBrowserCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
+				. t3lib_extMgm::siteRelPath('pagebrowse')
+				. 'res/styles_min.css';
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultPageBrowserCss'] =
+				'<link href="' . $pathToPageBrowserCssFile . '" rel="stylesheet" type="text/css" />';
 		}
 
 		return $this->pi_wrapInBaseClass($content);
