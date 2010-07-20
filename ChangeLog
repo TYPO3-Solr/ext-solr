@@ -2,6 +2,7 @@
 
 	* Changed solrconfig.xml so that spellchecker dictionaries are built on OPTIMIZE
 	* Added spellcheck.collate=true when using spellchecking
+	* Changed the spellcheck form modifier to use the collation suggestions returned by Solr
 
 2010-07-19  Ingo Renner  <ingo.renner@dkd.de>
 

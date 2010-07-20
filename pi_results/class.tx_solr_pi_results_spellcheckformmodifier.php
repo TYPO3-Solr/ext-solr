@@ -46,18 +46,21 @@ class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier 
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 	}
 
+	/**
+	 * Modifies the search form by providing an additional marker linking to a
+	 * new query with the suggestions provided by Solr as the search terms.
+	 *
+	 * @param	array	An array of existing form markers
+	 * @param	tx_solr_Template	An isntance of the tempalte engine
+	 * @return	array	Array with additional markers for suggestions
+	 */
 	public function modifyForm(array $markers, tx_solr_Template $template) {
 		if ($this->search->hasSearched()) {
 			$suggestions = $this->search->getSpellcheckingSuggestions();
 
 			if($suggestions) {
-				$query      = clone $this->search->getQuery();
-				$suggestion = $query->getKeywords();
-
-				foreach($suggestions as $word => $meta) {
-					$suggestion = str_ireplace($word, $meta->suggestion[0], $suggestion);
-				}
-				$query->setKeywords($suggestion);
+				$query = clone $this->search->getQuery();
+				$query->setKeywords($suggestions['collation']);
 
 				$markers['suggestion'] = tslib_cObj::noTrimWrap(
 					$query->getQueryLink($query->getKeywords()),
