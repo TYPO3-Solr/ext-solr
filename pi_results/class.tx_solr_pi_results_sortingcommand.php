@@ -69,7 +69,7 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_Command {
 		$configuration = tx_solr_Util::getSolrConfiguration();
 		$configuredSortingFields = $configuration['search.']['sorting.']['fields.'];
 		$query = $this->search->getQuery();
-		$query->setLinkTargetPageId($this->parentPlugin->conf['search.']['targetPage']);
+		$query->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 		$sortingFields = array();
 
 		$urlParameters = t3lib_div::_GP('tx_solr');
