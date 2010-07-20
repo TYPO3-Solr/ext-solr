@@ -32,7 +32,7 @@
  */
 class tx_solr_Query {
 
-	const SORT_ASC = 'ASC';
+	const SORT_ASC  = 'ASC';
 	const SORT_DESC = 'DESC';
 
 	/**
@@ -53,6 +53,8 @@ class tx_solr_Query {
 
 	protected $resultsPerPage;
 	protected $page;
+
+	protected $linkTargetPage;
 
 	/**
 	 * holds the query fields with their associated boosts. The key represents
@@ -81,6 +83,11 @@ class tx_solr_Query {
 
 		if (!empty($this->solrConfiguration['search.']['query.']['fields'])) {
 			$this->setQueryFieldsFromString($this->solrConfiguration['search.']['query.']['fields']);
+		}
+
+		$this->linkTargetPage = $this->solrConfiguration['search.']['targetPage'];
+		if (empty($this->linkTargetPage)) {
+			$this->linkTargetPage = $GLOBALS['TSFE']->id;
 		}
 
 		$this->id = ++self::$idCount;
@@ -272,7 +279,7 @@ class tx_solr_Query {
 	/**
 	 * Adds a filter parameter.
 	 *
-	 * @param	string	the filter to add, in the form of field:value
+	 * @param	string	The filter to add, in the form of field:value
 	 * @return	void
 	 */
 	public function addFilter($filterString) {
@@ -287,15 +294,24 @@ class tx_solr_Query {
 	/**
 	 * Removes a filter on a field
 	 *
-	 * @param	string	the field name the filter should be removed for
+	 * @param	string	The field name the filter should be removed for
 	 * @return	void
 	 */
 	public function removeFilter($filterFieldName) {
 		foreach ($this->filters as $key => $filterString) {
-			if (t3lib_div::isFirstPartOfStr($filterString, $filterFieldName)) {
+			if (t3lib_div::isFirstPartOfStr($filterString, $filterFieldName . ':')) {
 				unset($this->filters[$key]);
 			}
 		}
+	}
+
+	/**
+	 * Gets all currently applied filters.
+	 *
+	 * @return	array	Array of filters
+	 */
+	public function getFilters() {
+		return $this->filters ? $this->filters : array();
 	}
 
 	/**
@@ -310,7 +326,7 @@ class tx_solr_Query {
 		}
 		$accessFilter = implode(' OR ', $accessFilter);
 
-		if (!in_array('-1', $groups)) {
+		if (in_array('-2', $groups)) {
 				// if the user is logged in, don't let him find pages that
 				// are "hidden at login"
 			$accessFilter .= ' -group:"-1"';
@@ -515,6 +531,19 @@ class tx_solr_Query {
 		$this->returnFields[] = $fieldName;
 	}
 
+	/**
+	 * Sets the fields returned in the documents.
+	 *
+	 * @param	array|string	Accepts an array of return field names or a commy separated list of field names
+	 */
+	public function setReturnFields($returnFields) {
+		if (is_string($returnFields)) {
+			$returnFields = t3lib_div::trimExplode(',', $returnFields);
+		}
+
+		$this->returnFields = $returnFields;
+	}
+
 	public function setHighlighting($highlighting = true, $fragmentSize = 200) {
 
 		if ($highlighting) {
@@ -601,7 +630,7 @@ class tx_solr_Query {
 		$linkConfiguration = array(
 			'useCacheHash'     => false,
 			'no_cache'         => false,
-			'parameter'        => $this->solrConfiguration['search.']['targetPage'],
+			'parameter'        => $this->linkTargetPage,
 			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', true)
 		);
 
@@ -626,7 +655,7 @@ class tx_solr_Query {
 		$linkConfiguration = array(
 			'useCacheHash'     => false,
 			'no_cache'         => false,
-			'parameter'        => $this->solrConfiguration['search.']['targetPage'],
+			'parameter'        => $this->linkTargetPage,
 			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', true)
 		);
 
@@ -635,6 +664,12 @@ class tx_solr_Query {
 		return $cObj->lastTypoLinkUrl;
 	}
 
+	/**
+	 * Filters out unwanted parameters when building query URLs
+	 *
+	 * @param	array	An array of parameters that shall be used to build a URL.
+	 * @return	array	Array with wanted parameters only, ready to be used for URL building.
+	 */
 	public function removeUnwantedUrlParameters($urlParameters) {
 		$unwantedUrlParameters = array('resultsPerPage', 'page');
 
@@ -644,7 +679,6 @@ class tx_solr_Query {
 
 		return $urlParameters;
 	}
-
 }
 
 
