@@ -10,6 +10,7 @@
 	* Added several methods in tx_solr_Query from v2.0-dev
 	* Fixed an issue where sorting and facetting links didn't work out of the box because tx_solr.search.targetPage was not set. Falling back to TSFE->id now.
 	* Fixed issue #4753: Standard page browser CSS is not inserted
+	* Added getter and setter for the link target page id in tx_solr_Query
 
 2010-07-19  Ingo Renner  <ingo.renner@dkd.de>
 

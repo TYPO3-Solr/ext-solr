@@ -54,7 +54,7 @@ class tx_solr_Query {
 	protected $resultsPerPage;
 	protected $page;
 
-	protected $linkTargetPage;
+	protected $linkTargetPageId;
 
 	/**
 	 * holds the query fields with their associated boosts. The key represents
@@ -85,9 +85,9 @@ class tx_solr_Query {
 			$this->setQueryFieldsFromString($this->solrConfiguration['search.']['query.']['fields']);
 		}
 
-		$this->linkTargetPage = $this->solrConfiguration['search.']['targetPage'];
-		if (empty($this->linkTargetPage)) {
-			$this->linkTargetPage = $GLOBALS['TSFE']->id;
+		$this->linkTargetPageId = $this->solrConfiguration['search.']['targetPage'];
+		if (empty($this->linkTargetPageId)) {
+			$this->linkTargetPageId = $GLOBALS['TSFE']->id;
 		}
 
 		$this->id = ++self::$idCount;
@@ -613,6 +613,24 @@ class tx_solr_Query {
 	// output
 
 
+	/**
+	 * Sets the target page Id for links
+	 *
+	 * @param	integer	Page Id links shall point to.
+	 */
+	public function setLinkTargetPageId($pageId) {
+		$this->linkTargetPageId = intval($pageId);
+	}
+
+	/**
+	 * Gets the target page Id for links.
+	 *
+	 * @return	integer	Page Id links are going to point to.
+	 */
+	public function getLinkTargetPageId() {
+		return $this->linkTargetPageId;
+	}
+
 	public function getQueryLink($linkText, array $additionalQueryParameters = array()) {
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 
@@ -630,7 +648,7 @@ class tx_solr_Query {
 		$linkConfiguration = array(
 			'useCacheHash'     => false,
 			'no_cache'         => false,
-			'parameter'        => $this->linkTargetPage,
+			'parameter'        => $this->linkTargetPageId,
 			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', true)
 		);
 
@@ -655,7 +673,7 @@ class tx_solr_Query {
 		$linkConfiguration = array(
 			'useCacheHash'     => false,
 			'no_cache'         => false,
-			'parameter'        => $this->linkTargetPage,
+			'parameter'        => $this->linkTargetPageId,
 			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', true)
 		);
 
