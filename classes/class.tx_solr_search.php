@@ -42,7 +42,10 @@ class tx_solr_Search implements t3lib_Singleton {
 	protected $query;
 
 	public function __construct() {
-		$this->solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnection();
+		$this->solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByPageId(
+			$GLOBALS['TSFE']->id,
+			$GLOBALS['TSFE']->sys_language_uid
+		);
 	}
 
 	public function search(tx_solr_Query $query, $offset = 0, $limit = 10) {

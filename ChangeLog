@@ -1,3 +1,7 @@
+2010-07-21  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Changed the frontend indexer and tx_solr_Search to use tx_solr_ConnectionManager->getConnectionByPageId() to get a Solr connection
+
 2010-07-20  Markus Goldbach  <markus.goldbach@dkd.de>
 
 	* Changed the default schema.xml for mulitcore and singelcore, the spell field's content is not stored anymore
