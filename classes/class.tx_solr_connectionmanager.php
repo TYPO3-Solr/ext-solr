@@ -47,18 +47,39 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	 * @param	string	Solr host (optional)
 	 * @param	integer	Solr port (optional)
 	 * @param	string	Solr path (optional)
+	 * @param	string	Solr scheme, defaults to http, can be https (optional)
 	 * @return	tx_solr_SolrService	A solr connection.
 	 */
-	public function getConnection($host = '', $port = '8080', $path = '/solr/') {
+	public function getConnection($host = '', $port = '8080', $path = '/solr/', $scheme = 'http') {
 		$connection     = null;
-		$connectionHash = md5($host . $port . $path);
+
+		if (empty($host)) {
+			t3lib_div::devLog(
+				'tx_solr_ConnectionManager::getConnection() called with empty
+				host parameter. Using configuration from TSFE, might be
+				inaccurate. Always provide a host or use the getConnectionBy*
+				methods.',
+				'tx_solr',
+				2
+			);
+
+			$solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
+
+			$host   = $solrConfiguration['host'];
+			$port   = $solrConfiguration['port'];
+			$path   = $solrConfiguration['path'];
+			$scheme = $solrConfiguration['scheme'];
+		}
+
+		$connectionHash = md5($scheme . '://' . $host . $port . $path);
 
 		if (!isset(self::$connections[$connectionHash])) {
 			$connection = t3lib_div::makeInstance(
 				'tx_solr_SolrService',
 				$host,
 				$port,
-				$path
+				$path,
+				$scheme
 			);
 
 			self::$connections[$connectionHash] = $connection;
@@ -101,7 +122,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 			$solrConnection = $this->getConnection(
 				$solrServers[$connectionKey]['solrHost'],
 				$solrServers[$connectionKey]['solrPort'],
-				$solrServers[$connectionKey]['solrPath']
+				$solrServers[$connectionKey]['solrPath'],
+				$solrServers[$connectionKey]['solrScheme']
 			);
 		}
 
@@ -123,7 +145,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 			$connections[] = $this->getConnection(
 				$solrServer['solrHost'],
 				$solrServer['solrPort'],
-				$solrServer['solrPath']
+				$solrServer['solrPath'],
+				$solrServer['solrScheme']
 			);
 		}
 
@@ -191,6 +214,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 						'rootPageTitle' => $rootPage['title'],
 						'rootPageUid'   => $rootPage['uid'],
 
+						'solrScheme'    => $solrSetup['scheme'],
 						'solrHost'      => $solrSetup['host'],
 						'solrPort'      => $solrSetup['port'],
 						'solrPath'      => $solrSetup['path'],

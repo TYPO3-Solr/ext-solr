@@ -2,6 +2,7 @@
 plugin.tx_solr {
 
 	solr {
+		scheme = http
 		host = {$plugin.tx_solr.solr.host}
 		port = {$plugin.tx_solr.solr.port}
 		path = {$plugin.tx_solr.solr.path}

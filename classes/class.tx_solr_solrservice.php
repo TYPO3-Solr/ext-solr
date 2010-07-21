@@ -38,6 +38,13 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	const SYSTEM_SERVLET = 'admin/system';
 
 	/**
+	 * Server connection scheme
+	 *
+	 * @var string
+	 */
+	protected $_scheme = 'http';
+
+	/**
 	 * Constructed servlet URL for Luke
 	 *
 	 * @var string
@@ -69,16 +76,10 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * @param	string	Solr host
 	 * @param	string	Solr port
 	 * @param	string	Solr path
+	 * @param	string	Scheme, defaults to http, can be https
 	 */
-	public function __construct($host = '', $port = '8080', $path = '/solr/') {
-
-		if (empty($host)) {
-			$solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
-
-			$host = $solrConfiguration['host'];
-			$port = $solrConfiguration['port'];
-			$path = $solrConfiguration['path'];
-		}
+	public function __construct($host = '', $port = '8080', $path = '/solr/', $scheme = 'http') {
+		$this->setScheme($scheme);
 
 		parent::__construct($host, $port, $path);
 	}
@@ -111,11 +112,63 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		);
 	}
 
+	/**
+	 * Return a valid http URL given this server's scheme, host, port, and path
+	 * and a provided servlet name.
+	 *
+	 * @param string $servlet
+	 * @return string
+	 */
+	protected function _constructUrl($servlet, $params = array()) {
+		$url = parent::_constructUrl($servlet, $params);
+
+		if (!t3lib_div::isFirstPartOfStr($url, $this->_scheme)) {
+			$parsedUrl = parse_url($url);
+
+				// unfortunately can't use str_replace as it replace all
+				// occurances of $needle and can't be limited to replace only once
+			$url = $this->_scheme . substr($url, strlen($parsedUrl['scheme']));
+		}
+
+		return $url;
+	}
+
 	public function search($query, $offset = 0, $limit = 10, $params = array()) {
 		$this->responseCache = parent::search($query, $offset, $limit, $params);
 		$this->hasSearched = true;
 
 		return $this->responseCache;
+	}
+
+	/**
+	 * Returns the set scheme
+	 *
+	 * @return string
+	 */
+	public function getScheme() {
+		return $this->_scheme;
+	}
+
+	/**
+	 * Set the scheme used. If empty will fallback to constants
+	 *
+	 * @param	string	$scheme
+	 */
+	public function setScheme($scheme) {
+			// Use the provided scheme or use the default
+		if (empty($scheme)) {
+			throw new Exception('Scheme parameter is empty');
+		} else {
+			if (in_array($scheme, array('http', 'https'))) {
+				$this->_scheme = $scheme;
+			} else {
+				throw new Exception('Unsupported scheme parameter');
+			}
+		}
+
+		if ($this->_urlsInited) {
+			$this->_initUrls();
+		}
 	}
 
 	/**
