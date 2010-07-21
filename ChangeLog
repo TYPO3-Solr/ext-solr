@@ -6,6 +6,7 @@
 
 	* Changed the frontend indexer and tx_solr_Search to use tx_solr_ConnectionManager->getConnectionByPageId() to get a Solr connection
 	* Added support for https Solr connections
+	* Added support for the minimum match parameter (mm)
 
 2010-07-20  Markus Goldbach  <markus.goldbach@dkd.de>
 

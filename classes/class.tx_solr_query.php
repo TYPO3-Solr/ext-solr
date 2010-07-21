@@ -415,6 +415,17 @@ class tx_solr_Query {
 	}
 
 	/**
+	 * Sets the mm parameter
+	 *
+	 * @param	string	Minimum match parameter
+	 * @see	http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
+	 */
+	public function setMinimumMatch($minimumMatch) {
+			// hard to validate
+		$this->queryParameters['mm'] = $minimumMatch;
+	}
+
+	/**
 	 * Sets a query field and its boost. If the field doesn't exist yet, it
 	 * gets added. Boost is optional, if left out a default boost of 1.0 is
 	 * applied.

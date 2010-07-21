@@ -22,6 +22,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+			if (!empty($this->conf['search.']['query.']['minimumMatch'])) {
+				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
+			}
 
 /**
  * Plugin 'Solr Search' for the 'solr' extension.
