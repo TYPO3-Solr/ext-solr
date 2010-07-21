@@ -1,3 +1,7 @@
+2010-07-21  Markus Goldbach <markus.godlbach@dkd.de>
+
+	* Changed install script, copy schema.xml and solrconfig.xml from svn and cleanup solr-tomcat directory
+
 2010-07-21  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed the frontend indexer and tx_solr_Search to use tx_solr_ConnectionManager->getConnectionByPageId() to get a Solr connection
