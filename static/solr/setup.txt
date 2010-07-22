@@ -67,6 +67,14 @@ plugin.tx_solr {
 					case = upper
 					wrap = <span class="title">|</span>
 				}
+				
+				url = TEXT
+    			url {
+        			field = url
+        			htmlSpecialChars = 1
+        			htmlSpecialChars.preserveEntities = 1
+    			}
+				
 			}
 
 			pagebrowser {

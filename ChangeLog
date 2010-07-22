@@ -1,3 +1,7 @@
+2010-07-22  Stefan Sprenger <stefan.sprenger@dkd.de>
+
+	* Fixed issue #6253: Result links must be made XHTML strict
+
 2010-07-21  Markus Goldbach <markus.godlbach@dkd.de>
 
 	* Changed install script, copy schema.xml and solrconfig.xml from svn and cleanup solr-tomcat directory
