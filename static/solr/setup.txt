@@ -69,11 +69,11 @@ plugin.tx_solr {
 				}
 				
 				url = TEXT
-    			url {
-        			field = url
-        			htmlSpecialChars = 1
-        			htmlSpecialChars.preserveEntities = 1
-    			}
+				url {
+					field = url
+					htmlSpecialChars = 1
+					htmlSpecialChars.preserveEntities = 1
+				}
 				
 			}
 
