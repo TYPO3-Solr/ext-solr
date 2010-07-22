@@ -56,6 +56,13 @@ class tx_solr_pi_results extends tslib_pibase {
 	protected $solrAvailable;
 
 	/**
+	 * Track, if the number of results per page has been changed by the current request
+	 *
+	 * @var Boolean
+	 */
+	protected $resultsPerPageChanged = false;
+
+	/**
 	 * The main method of the PlugIn
 	 *
 	 * @param	string		$content: The PlugIn content
@@ -293,6 +300,12 @@ class tx_solr_pi_results extends tslib_pibase {
 
 			$currentPage    = max(0, intval($this->piVars['page']));
 			$resultsPerPage = $this->getNumberOfResultsPerPage();
+
+			// if the number of results per page has been changed by the current request, reset the pagebrowser
+			if($this->resultsPerPageChanged) {
+				$currentPage = 0;
+			}
+
 			$offSet         = $currentPage * $resultsPerPage;
 
 				// ignore page browser?
@@ -391,6 +404,7 @@ class tx_solr_pi_results extends tslib_pibase {
 		$solrPostParameters = t3lib_div::_POST('tx_solr');
 		if (isset($solrPostParameters['resultsPerPage']) && in_array($solrPostParameters['resultsPerPage'], $resultsPerPageSwitchOptions)) {
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_solr_resultsPerPage', intval($solrPostParameters['resultsPerPage']));
+			$this->resultsPerPageChanged = true;
 		}
 
 		$defaultNumberOfResultsShown = $configuration['search.']['results.']['resultsPerPage'];

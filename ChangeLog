@@ -1,6 +1,7 @@
-2010-07-22  Stefan Sprenger <stefan.sprenger@dkd.de>
+2010-07-22  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* Fixed issue #6253: Result links must be made XHTML strict
+	* Fixed issue #7795: Switching the number of results per page breaks pagebrowser
 
 2010-07-21  Markus Goldbach <markus.godlbach@dkd.de>
 
