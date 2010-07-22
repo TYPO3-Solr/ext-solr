@@ -22,9 +22,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-			if (!empty($this->conf['search.']['query.']['minimumMatch'])) {
-				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
-			}
 
 /**
  * Plugin 'Solr Search' for the 'solr' extension.
@@ -254,6 +251,11 @@ class tx_solr_pi_results extends tslib_pibase {
 			}
 
 			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);
+
+			if (!empty($this->conf['search.']['query.']['minimumMatch'])) {
+				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
+			}
+
 
 			if ($this->conf['search.']['highlighting']) {
 				$query->setHighlighting(true, $this->conf['search.']['highlighting.']['fragmentSize']);
