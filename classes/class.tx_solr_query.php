@@ -417,12 +417,16 @@ class tx_solr_Query {
 	/**
 	 * Sets the mm parameter
 	 *
-	 * @param	string	Minimum match parameter
+	 * @param	mixed	Minimum match parameter as string or boolean FALSE to disable / reset the mm parameter
 	 * @see	http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
 	 */
 	public function setMinimumMatch($minimumMatch) {
-			// hard to validate
-		$this->queryParameters['mm'] = $minimumMatch;
+		if ($minimumMatch) {
+				// hard to validate
+			$this->queryParameters['mm'] = $minimumMatch;
+		} else {
+			unset($this->queryParameters['mm']);
+		}
 	}
 
 	/**
