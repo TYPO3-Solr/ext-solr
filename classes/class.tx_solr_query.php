@@ -415,7 +415,7 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * Sets the mm parameter
+	 * Sets the minimum match mm parameter
 	 *
 	 * @param	mixed	Minimum match parameter as string or boolean FALSE to disable / reset the mm parameter
 	 * @see	http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
@@ -426,6 +426,20 @@ class tx_solr_Query {
 			$this->queryParameters['mm'] = $minimumMatch;
 		} else {
 			unset($this->queryParameters['mm']);
+		}
+	}
+
+	/**
+	 * Sets the boost function bf parameter
+	 *
+	 * @param	mixed	boost function parameter as string or boolean FALSE to disable / reset the bf parameter
+	 * @see	http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
+	 */
+	public function setBoostFunction($boostFunction) {
+		if ($boostFunction) {
+			$this->queryParameters['bf'] = $boostFunction;
+		} else {
+			unset($this->queryParameters['bf']);
 		}
 	}
 

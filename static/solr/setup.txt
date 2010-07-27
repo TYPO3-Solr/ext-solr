@@ -39,6 +39,9 @@ plugin.tx_solr {
 
 			# see http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
 			minimumMatch =
+
+			# see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
+			boostFunction =
 		}
 
 		form = simple
@@ -67,14 +70,14 @@ plugin.tx_solr {
 					case = upper
 					wrap = <span class="title">|</span>
 				}
-				
+
 				url = TEXT
 				url {
 					field = url
 					htmlSpecialChars = 1
 					htmlSpecialChars.preserveEntities = 1
 				}
-				
+
 			}
 
 			pagebrowser {

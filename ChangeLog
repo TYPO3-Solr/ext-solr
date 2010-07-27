@@ -1,6 +1,7 @@
 2010-07-27  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added a way to disable / reset the minimum match mm query parameter
+	* Added support for the boost function parameter (bf). Can be set through API tx_solr_Query->setBoostFunction(), TypoScript, and Flexform
 
 2010-07-22  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

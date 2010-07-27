@@ -188,6 +188,12 @@ class tx_solr_pi_results extends tslib_pibase {
 		} else {
 			$this->conf['search.']['targetPage'] = $GLOBALS['TSFE']->id;
 		}
+
+			// boost function
+		$boostFunction = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'boostFunction', 'sQuery');
+		if ($boostFunction) {
+			$this->conf['search.']['query.']['boostFunction'] = $boostFunction;
+		}
 	}
 
 	/**
@@ -263,6 +269,9 @@ class tx_solr_pi_results extends tslib_pibase {
 				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
 			}
 
+			if (!empty($this->conf['search.']['query.']['boostFunction'])) {
+				$query->setBoostFunction($this->conf['search.']['query.']['boostFunction']);
+			}
 
 			if ($this->conf['search.']['highlighting']) {
 				$query->setHighlighting(true, $this->conf['search.']['highlighting.']['fragmentSize']);
