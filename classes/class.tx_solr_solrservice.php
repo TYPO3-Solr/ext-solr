@@ -256,6 +256,21 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		$luceneInformation = (array) $systemInformation->lucene;
 		return $luceneInformation['solr-spec-version'];
 	}
+
+	/**
+	 * Deletes all index documents of a certain type and does a commit
+	 * afterwards.
+	 *
+	 * @param	string	The type of documents to delete, usually a table name.
+	 * @param	boolean	Will commit imidiately after deleting the documents if set, defautls to true
+	 */
+	public function deleteByType($type, $commit = true) {
+		$this->deleteByQuery('type:' . trim($type));
+
+		if ($commit) {
+			$this->commit();
+		}
+	}
 }
 
 

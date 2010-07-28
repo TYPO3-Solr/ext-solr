@@ -1,3 +1,7 @@
+2010-07-28  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added method tx_solr_SolrService::deleteByType()
+
 2010-07-28  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* !!! Fixed issue #7698: Upgrade auto suggest to use jQuery UI 1.8
