@@ -1,35 +1,38 @@
-jQuery(document).ready(function($){
-	$(".tx-solr-q").autocomplete(
-		tx_solr_suggestUrl,
+jQuery(document).ready(function(){
+	jQuery('.tx-solr-q').autocomplete(
 		{
-			width: 300,
-			scroll: false,
-			dataType: "json",
-			minChars: 3,
-			selectFirst: false,
+			source: function(request, response) {
+				jQuery.ajax({
+					url: tx_solr_suggestUrl,
+					dataType: 'json',
+					data: {
+							// TODO 
+						term: request.term.toLowerCase()
+					},
+					success: function(data) {
+						var rs = new Array();
+						var output = new Array();
 
-			formatItem: function(data, i, max, value, term) {
-				return value;
+						i = 0;
+						for (var term in data) {
+							var unformatted_label = term + ' <span class="result_count">(' + data[term] + ')</span>';
+							output[i++] = {
+								label	: unformatted_label.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' + 
+											jQuery.ui.autocomplete.escapeRegex(request.term) + 
+											')(?![^<>]*>)(?![^&;]+;)', 'gi'), '<strong>$1</strong>'),
+								value  : term
+							};
+						}
+
+						response(output);
+					}
+				})
 			},
-
-			parse: function(data) {
-				var rs = new Array();
-				var output = new Array();
-
-				i = 0;
-				for (var term in data) {
-					output[i] = {
-						data   : term,
-						value  : term + ' (' + data[term] + ')',
-						result : term,
-						count  : data[term]
-					};
-					i++;
-				}
-				return output;
-			}
+			select: function(event, ui) {
+				jQuery(event.target).closest('form').submit();
+			},
+			delay: 0,
+			minLength: 3
 		}
 	);
-}).result(function(event, data, formatted){
-	jQuery(event.target).closest('form').submit();
 });

@@ -63,6 +63,7 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 
 			// TODO maybe move into a form modifier
 		if ($this->parentPlugin->conf['suggest']) {
+			$this->addSuggestStylesheets();
 			$this->addSuggestJavascript();
 			$marker['suggest_url'] = '<script type="text/javascript">
 				/*<![CDATA[*/
@@ -116,6 +117,18 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 	}
 
 	/**
+	 * Adds the stylesheets necessary for the suggestions
+	 */
+	protected function addSuggestStylesheets() {
+		if ($this->parentPlugin->conf['addDefaultCss']) {
+			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQueryUIStylesheet'] .=
+				'<link rel="stylesheet" type="text/css" href="'
+				. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['stylesheet'])
+				. '" media="all" />';
+		}
+	}
+
+	/**
 	 * Adds the Javascript necessary for the suggestions
 	 *
 	 * By default will also load jQuery, but this can be disabled through
@@ -126,21 +139,18 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 			if ($this->parentPlugin->conf['suggest.']['loadJQuery']) {
 				$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQuery'] .=
 					'<script type="text/javascript" src="'
-					. t3lib_extMgm::siteRelPath($this->parentPlugin->extKey)
-					. 'resources/javascript/jquery-1.3.2.min.js'
+					. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['javaScriptFiles.']['library'])
 					. '"></script>';
 			}
 
 			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQuerySuggest'] .=
 				'<script type="text/javascript" src="'
-				. t3lib_extMgm::siteRelPath($this->parentPlugin->extKey)
-				. 'resources/javascript/eid_suggest/jquery-autocomplete/jquery.autocomplete.min.js'
+				. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['javaScriptFiles.']['ui'])
 				. '"></script>';
 
 			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_suggest'] .=
 				'<script type="text/javascript" src="'
-				. t3lib_extMgm::siteRelPath($this->parentPlugin->extKey)
-				. 'resources/javascript/eid_suggest/suggest.js'
+				. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['javaScriptFiles.']['suggest'])
 				. '"></script>';
 		}
 	}

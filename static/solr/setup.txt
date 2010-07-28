@@ -196,6 +196,14 @@ plugin.tx_solr {
 		numberOfSuggestions = 10
 		suggestField = spell
 		forceHttps = 0
+
+		stylesheet = EXT:solr/resources/css/jquery-ui/jquery-ui-1.8.2.custom.css
+
+		javaScriptFiles {
+			library	= EXT:solr/resources/javascript/jquery-1.4.2.min.js
+			ui		= EXT:solr/resources/javascript/jquery-ui-1.8.2.custom.min.js
+			suggest	= EXT:solr/resources/javascript/eid_suggest/suggest.js
+		}
 	}
 
 		// TODO move to search.results

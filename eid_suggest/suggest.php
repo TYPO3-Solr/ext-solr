@@ -25,7 +25,7 @@ $solrConfiguration = tx_solr_Util::getSolrConfiguration();
 
 # Building Suggest Query
 
-$q = trim(t3lib_div::_GET('q'));
+$q = trim(t3lib_div::_GET('term'));
 
 $suggestQuery = t3lib_div::makeInstance('tx_solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));

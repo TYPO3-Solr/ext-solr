@@ -1,3 +1,9 @@
+2010-07-28  Stefan Sprenger  <stefan.sprenger@dkd.de>
+
+	* !!! Fixed issue #7698: Upgrade auto suggest to use jQuery UI 1.8
+	* !!! Upgraded to jQuery 1.4.2
+	* Added configuration options to change javascript files and stylesheets used by suggestions
+
 2010-07-27  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added a way to disable / reset the minimum match mm query parameter
