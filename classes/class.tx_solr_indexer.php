@@ -34,12 +34,6 @@ class tx_solr_Indexer {
 
 	protected $page;
 
-	/**
-	 * Constructor for class tx_solr_Indexer
-	 */
-	public function __construct() {
-
-	}
 
 	/**
 	 * Handles the indexing of the page content during post processing of
@@ -350,8 +344,12 @@ class tx_solr_Indexer {
 						);
 					}
 
-					if (substr($fieldName, -2) == '_s') {
-							// utf8 encode string fields
+					if (substr($fieldName, -8) == '_stringS'
+						|| substr($fieldName, -6) == '_textS'
+						|| substr($fieldName, -7) == '_textTS'
+						|| substr($fieldName, -10) == '_textSortS'
+						|| substr($fieldName, -9) == '_textWstS') {
+							// utf8 encode string and text fields
 						$document->addField(
 							$fieldName,
 							$GLOBALS['TSFE']->csConvObj->utf8_encode(
