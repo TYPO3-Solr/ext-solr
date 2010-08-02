@@ -208,8 +208,10 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$tmpl->generateConfig();
 
 				list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.solr');
+				list(, $solrEnabled) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.enabled');
+				$solrEnabled = !empty($solrEnabled) ? true : false;
 
-				if (!empty($solrSetup)) {
+				if (!empty($solrSetup) && $solrEnabled) {
 					$configuredSolrConnections[$connectionKey] = array(
 						'rootPageTitle' => $rootPage['title'],
 						'rootPageUid'   => $rootPage['uid'],

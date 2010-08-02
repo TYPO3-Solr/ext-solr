@@ -1,6 +1,8 @@
 
 plugin.tx_solr {
 
+	enabled = 1
+
 	solr {
 		scheme = http
 		host = {$plugin.tx_solr.solr.host}

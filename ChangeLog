@@ -1,3 +1,7 @@
+2010-08-02  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added an option to completely en/disable EXT:solr - Useful for multi site installation where you want to enable EXT:solr for some sites only
+
 2010-07-29  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed utf-8 encoding for dynamic string and text fields added through TypoScript configuration in the frontend indexer
