@@ -57,6 +57,18 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 			$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 			$facetCounts      = $this->search->getFacetCounts();
 
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'])) {
+				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
+					$facetsModifier = t3lib_div::getUserObj($classReference);
+
+					if ($facetsModifier instanceof tx_solr_FacetsModifier) {
+						$responseDocuments = $facetsModifier->modifyFacets($this, $facetCounts);
+					} else {
+						// TODO throw exception
+					}
+				}
+			}
+
 			$facets = array();
 			foreach ($configuredFacets as $facetName => $facetConfiguration) {
 				$facetName = substr($facetName, 0, -1);

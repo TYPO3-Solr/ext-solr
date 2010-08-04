@@ -1,3 +1,7 @@
+2010-08-04  Markus Godlbach  <markus.goldbach@dkd.de>
+
+	* Added a hook and interface to modify facets before rendering them
+
 2010-08-02  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added an option to completely en/disable EXT:solr - Useful for multi site installation where you want to enable EXT:solr for some sites only
