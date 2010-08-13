@@ -1,6 +1,7 @@
 2010-08-13  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed an issue where 0 was not accepted for the minimumMatch TypoScript parameter
+	* Added setting of Solr parameter echoParams=all when enabling debugMode
 
 2010-08-04  Markus Godlbach  <markus.goldbach@dkd.de>
 

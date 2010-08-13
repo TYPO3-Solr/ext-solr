@@ -633,8 +633,10 @@ class tx_solr_Query {
 	public function setDebugMode($debugMode = true) {
 		if ($debugMode) {
 			$this->queryParameters['debugQuery'] = 'true';
+			$this->queryParameters['echoParams'] = 'all';
 		} else {
 			unset($this->queryParameters['debugQuery']);
+			unset($this->queryParameters['echoParams']);
 		}
 	}
 
