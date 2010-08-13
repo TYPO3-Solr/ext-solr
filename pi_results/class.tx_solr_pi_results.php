@@ -265,7 +265,8 @@ class tx_solr_pi_results extends tslib_pibase {
 
 			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);
 
-			if (!empty($this->conf['search.']['query.']['minimumMatch'])) {
+			if (isset($this->conf['search.']['query.']['minimumMatch'])
+				&& strlen($this->conf['search.']['query.']['minimumMatch'])) {
 				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
 			}
 

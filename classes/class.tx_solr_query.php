@@ -421,7 +421,7 @@ class tx_solr_Query {
 	 * @see	http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
 	 */
 	public function setMinimumMatch($minimumMatch) {
-		if ($minimumMatch) {
+		if ($minimumMatch !== FALSE) {
 				// hard to validate
 			$this->queryParameters['mm'] = $minimumMatch;
 		} else {
