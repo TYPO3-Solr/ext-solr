@@ -1,3 +1,7 @@
+2010-08-25  Markus Goldbach <markus.goldbach@dkd.de>
+
+	* Added ISOLatin mapping to scheam.xml
+
 2010-08-13  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed an issue where 0 was not accepted for the minimumMatch TypoScript parameter
