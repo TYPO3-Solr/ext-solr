@@ -142,6 +142,15 @@ class tx_solr_Search implements t3lib_Singleton {
 		return $this->solr->getResponse()->responseHeader->QTime;
 	}
 
+	/**
+	 * Gets the number of results per page.
+	 *
+	 * @return	integer	Number of results per page
+	 */
+	public function getResultsPerPage() {
+		return $this->solr->getResponse()->responseHeader->params->rows;
+	}
+
 	public function getFacetCounts() {
 		return $this->solr->getResponse()->facet_counts;
 	}

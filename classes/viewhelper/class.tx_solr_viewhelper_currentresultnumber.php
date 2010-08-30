@@ -45,8 +45,6 @@ class tx_solr_viewhelper_CurrentResultNumber implements tx_solr_ViewHelper {
 	 */
 	public function __construct(array $arguments = array()) {
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
-
-		$this->configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
 	}
 
 	/**
@@ -59,7 +57,7 @@ class tx_solr_viewhelper_CurrentResultNumber implements tx_solr_ViewHelper {
 	public function execute(array $arguments = array()) {
 		$numberOfResults = $this->search->getNumberOfResults();
 		$currentIterationIndex = $arguments[0];
-		$resultsPerPage = $this->configuration['search.']['results.']['resultsPerPage'];
+		$resultsPerPage = $this->search->getResultsPerPage();
 		$currentPage = 0;
 		$getParameters = t3lib_div::_GET('tx_solr');
 
