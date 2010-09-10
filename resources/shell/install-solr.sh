@@ -1,12 +1,50 @@
 #!/bin/bash
 
-TOMCAT_VER=6.0.26
+TOMCAT_VER=6.0.29
 SOLR_VER=1.4.1
 EXT_SOLR_VER=1.2
 
 SVNBRANCH_PATH="branches/$EXT_SOLR_VER"
 
 TOMCAT_MAINVERSION=`echo "$TOMCAT_VER" | cut -d'.' -f1`
+
+#test if required tools java unzip and wget are installed
+
+echo "check that all requirements are installed"
+
+PASSALLCHECKS=1
+
+java -version > /dev/null 2>&1
+CHECK=$?
+if [ $CHECK -ne "0"  ]
+then
+	echo "ERROR couldn't find java (sun java is recommended)"
+	PASSALLCHECKS=0
+fi
+
+wget --version > /dev/null 2>&1
+CHECK=$?
+if [ $CHECK -ne "0"  ]
+then
+	echo "ERROR couldn't find wget"
+	PASSALLCHECKS=0
+fi
+
+unzip -v > /dev/null 2>&1
+CHECK=$?
+if [ $CHECK -ne "0"  ]
+then
+	echo "ERROR: couldn't find unzip"
+	PASSALLCHECKS=0
+fi
+
+if [ $PASSALLCHECKS -eq "0"  ]
+then
+	echo "please install all missing packages and try again"
+	exit 1
+else
+	echo "all requirements are installed, start to install solr"
+fi
 
 cd /opt
 mkdir solr-tomcat
@@ -21,7 +59,10 @@ wget http://www.apache.org/dist/lucene/solr/$SOLR_VER/apache-solr-$SOLR_VER.zip
 unzip apache-tomcat-$TOMCAT_VER.zip
 unzip apache-solr-$SOLR_VER.zip
 
-cp apache-solr-$SOLR_VER/dist/apache-solr-$SOLR_VER.war apache-tomcat-$TOMCAT_VER/webapps/solr.war
+#rename dirctory of tomcat to resolve problems when update the tomcat
+mv apache-tomcat-$TOMCAT_VER apache-tomcat$TOMCAT_MAINVERSION
+
+cp apache-solr-$SOLR_VER/dist/apache-solr-$SOLR_VER.war apache-tomcat$TOMCAT_MAINVERSION/webapps/solr.war
 cp -r apache-solr-$SOLR_VER/example/solr .
 
 #Download the TYOP3 Solrconfig
@@ -50,10 +91,10 @@ fi
 
 cd /opt/solr-tomcat/
 
-mkdir apache-tomcat-$TOMCAT_VER/conf/Catalina
-mkdir apache-tomcat-$TOMCAT_VER/conf/Catalina/localhost
+mkdir apache-tomcat$TOMCAT_MAINVERSION/conf/Catalina
+mkdir apache-tomcat$TOMCAT_MAINVERSION/conf/Catalina/localhost
 
-cd apache-tomcat-$TOMCAT_VER/conf/Catalina/localhost
+cd apache-tomcat$TOMCAT_MAINVERSION/conf/Catalina/localhost
 
 if [ $BRANCH_TEST_RETURN -eq "0" ]
 then
@@ -71,8 +112,8 @@ cp apache-solr-$SOLR_VER/dist/apache-solr-cell-$SOLR_VER.jar solr/dist
 cp apache-solr-$SOLR_VER/dist/apache-solr-clustering-$SOLR_VER.jar solr/dist
 cp -r apache-solr-$SOLR_VER/contrib solr/
 
-chmod a+x apache-tomcat-$TOMCAT_VER/bin/*
-./apache-tomcat-$TOMCAT_VER/bin/startup.sh
+chmod a+x apache-tomcat$TOMCAT_MAINVERSION/bin/*
+./apache-tomcat$TOMCAT_MAINVERSION/bin/startup.sh
 
 echo "Now browse to http://localhost:8080/solr/admin/"
 
