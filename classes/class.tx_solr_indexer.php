@@ -187,7 +187,7 @@ class tx_solr_Indexer {
 				$substituteIndexer = &t3lib_div::getUserObj($classReference);
 
 				if ($substituteIndexer instanceof tx_solr_SubstitutePageIndexer) {
-					$substituteDocument = $substituteIndexer->getPageDocument();
+					$substituteDocument = $substituteIndexer->getPageDocument($pageDocument);
 
 					if ($substituteDocument instanceof Apache_Solr_Document) {
 						$pageDocument = $substituteDocument;
@@ -206,7 +206,7 @@ class tx_solr_Indexer {
 				$additionalIndexer = &t3lib_div::getUserObj($classReference);
 
 				if ($additionalIndexer instanceof tx_solr_AdditionalIndexer) {
-					$additionalDocuments = $additionalIndexer->getAdditionalDocuments();
+					$additionalDocuments = $additionalIndexer->getAdditionalDocuments($pageDocument, $documents);
 
 					if (is_array($additionalDocuments)) {
 						$documents = array_merge($documents, $additionalDocuments);

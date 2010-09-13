@@ -39,9 +39,10 @@ interface tx_solr_SubstitutePageIndexer {
 	/**
 	 * returns a substitute document for the currently being indexed page
 	 *
+	 * @param	Apache_Solr_Document	The original page document.
 	 * @return	Apache_Solr_Document	returns an Apache_Solr_Document object that replace the default page document
 	 */
-	public function getPageDocument();
+	public function getPageDocument(Apache_Solr_Document $originalPageDocument);
 }
 
 ?>

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -39,9 +39,11 @@ interface tx_solr_AdditionalIndexer {
 	/**
 	 * provides additional documents that should be sent to the Solr server
 	 *
+	 * @param	Apache_Solr_Document	The original page document.
+	 * @param	array	An array containing all the documents collected until here, including the page document
 	 * @return	array	returns an array of additional Apache_Solr_Document objects
 	 */
-	public function getAdditionalDocuments();
+	public function getAdditionalDocuments(Apache_Solr_Document $pageDocument, array $allDocuments);
 }
 
 ?>
