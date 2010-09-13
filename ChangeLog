@@ -3,6 +3,7 @@
 	* Added a content extraction class for TYPO3 pages
 	* Changed SolrPhpClient library to be in sync with r38 at http://code.google.com/p/solr-php-client/
 	* Added a field processor service and an actual timestamp to ISO date field processor
+	* Changed the indexer to use the field processor service
 
 2010-09-10  Markus Goldbach  <markus.goldbach@dkd.de>
 

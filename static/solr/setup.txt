@@ -28,6 +28,13 @@ plugin.tx_solr {
 		additionalFields {
 
 		}
+		
+			// assigns processing instructions to Solr fields during indexing, Solr field = processing instruction
+		fieldProcessingInstructions {
+			changed = timestampToIsoDate
+			created = timestampToIsoDate
+			endtime = timestampToIsoDate
+		}
 	}
 
 	search {

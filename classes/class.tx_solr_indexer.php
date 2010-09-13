@@ -24,9 +24,11 @@
 
 
 /**
- * Indexer
+ * General frontend page indexer.
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
+ * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
+ * @author	Timo Schmidt <schmidt@aoemedia.de>
  * @package TYPO3
  * @subpackage solr
  */
@@ -170,6 +172,7 @@ class tx_solr_Indexer {
 		}
 
 		$documents = $this->addTypoScriptConfiguredFieldsToDocuments($documents);
+		$this->processDocuments($documents);
 
 		if (count($documents)) {
 			try {
@@ -194,6 +197,22 @@ class tx_solr_Indexer {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Sends the given documents to the field processing service which takes
+	 * care of manipulating fields as defined in the field's configuration.
+	 *
+	 * @param	array	An array of documents to manipulate
+	 */
+	protected function processDocuments(array $documents) {
+		if (is_array($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.'])) {
+			$service = t3lib_div::makeInstance('tx_solr_fieldprocessor_Service');
+			$service->processDocuments(
+				$documents,
+				$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.']
+			);
+		}
 	}
 
 	/**
@@ -234,8 +253,8 @@ class tx_solr_Indexer {
 		$document->addField('uid',      $page->id);
 		$document->addField('pid',      $page->page['pid']);
 		$document->addField('typeNum',  $page->type);
-		$document->addField('created',  tx_solr_Util::timestampToIso($page->page['crdate']));
-		$document->addField('changed',  tx_solr_Util::timestampToIso($page->page['tstamp']));
+		$document->addField('created',  $page->page['crdate']);
+		$document->addField('changed',  $page->page['tstamp']);
 		$document->addField('language', $page->sys_language_uid);
 
 			// access
@@ -249,7 +268,7 @@ class tx_solr_Indexer {
 		}
 
 		if ($page->page['endtime']) {
-			$document->addField('endtime', tx_solr_Util::timestampToIso($page->page['endtime']));
+			$document->addField('endtime', $page->page['endtime']);
 		}
 
 			// content
