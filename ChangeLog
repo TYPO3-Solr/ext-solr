@@ -1,3 +1,7 @@
+2010-09-13  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added a content extraction class for TYPO3 pages
+
 2010-09-10  Markus Goldbach  <markus.goldbach@dkd.de>
 
 	* Changed install script, check if all required packages are installed, update Tomcat to 6.0.29 and rename Tomcat directory to simplify updates, credits Michel Tremblay
