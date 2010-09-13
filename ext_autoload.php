@@ -4,9 +4,15 @@
 
 $extensionPath = t3lib_extMgm::extPath('solr');
 return array(
-	'apache_solr_service' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Service.php',
+	'apache_solr_service_balancer' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Service/Balancer.php',
 	'apache_solr_document' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Document.php',
+	'apache_solr_exception' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Exception.php',
+	'apache_solr_httptransportexception' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/HttpTransportException.php',
+	'apache_solr_invalidargumentexception' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/InvalidArgumentException.php',
+	'apache_solr_noserviceavailableexception' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/NoServiceAvailableException.php',
+	'apache_solr_parserexception' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/ParserException.php',
 	'apache_solr_response' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Response.php',
+	'apache_solr_service' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Service.php',
 
 	'tx_solr_commandresolver' => $extensionPath . 'classes/class.tx_solr_commandresolver.php',
 	'tx_solr_connectionmanager' => $extensionPath . 'classes/class.tx_solr_connectionmanager.php',

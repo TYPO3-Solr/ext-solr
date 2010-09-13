@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2007-2009, Conduit Internet Technologies, Inc.
+ * Copyright (c) 2007-2010, Conduit Internet Technologies, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @copyright Copyright 2007-2009 Conduit Internet Technologies, Inc. (http://conduit-it.com)
+ * @copyright Copyright 2007-2010 Conduit Internet Technologies, Inc. (http://conduit-it.com)
  * @license New BSD (http://solr-php-client.googlecode.com/svn/trunk/COPYING)
  * @version $Id$
  *
@@ -79,7 +79,7 @@ class Apache_Solr_Document implements IteratorAggregate
 	 *
 	 * @var array
 	 */
-	public $_fields = array();
+	protected $_fields = array();
 
 	/**
 	 * Document field boost values, indexed by name
@@ -314,7 +314,12 @@ class Apache_Solr_Document implements IteratorAggregate
 	 */
 	public function __get($key)
 	{
-		return $this->_fields[$key];
+		if (isset($this->_fields[$key]))
+		{
+			return $this->_fields[$key];
+		}
+		
+		return null;
 	}
 
 	/**

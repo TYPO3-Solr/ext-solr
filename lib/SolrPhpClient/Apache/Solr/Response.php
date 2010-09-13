@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2007-2009, Conduit Internet Technologies, Inc.
+ * Copyright (c) 2007-2010, Conduit Internet Technologies, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @copyright Copyright 2007-2009 Conduit Internet Technologies, Inc. (http://conduit-it.com)
+ * @copyright Copyright 2007-2010 Conduit Internet Technologies, Inc. (http://conduit-it.com)
  * @license New BSD (http://solr-php-client.googlecode.com/svn/trunk/COPYING)
  * @version $Id$
  *
@@ -220,8 +220,8 @@ class Apache_Solr_Response
 	/**
 	 * Magic get to expose the parsed data and to lazily load it
 	 *
-	 * @param unknown_type $key
-	 * @return unknown
+	 * @param string $key
+	 * @return mixed
 	 */
 	public function __get($key)
 	{
@@ -240,12 +240,37 @@ class Apache_Solr_Response
 	}
 
 	/**
+	 * Magic function for isset function on parsed data
+	 *
+	 * @param string $key
+	 * @return boolean
+	 */
+	public function __isset($key)
+	{
+		if (!$this->_isParsed)
+		{
+			$this->_parseData();
+			$this->_isParsed = true;
+		}
+
+		return isset($this->_parsedData->$key);
+	}
+
+	/**
 	 * Parse the raw response into the parsed_data array for access
+	 *
+	 * @throws Apache_Solr_ParserException If the data could not be parsed
 	 */
 	protected function _parseData()
 	{
 		//An alternative would be to use Zend_Json::decode(...)
 		$data = json_decode($this->_rawResponse);
+
+		// check that we receive a valid JSON response - we should never receive a null
+		if ($data === null)
+		{
+			throw new Apache_Solr_ParserException('Solr response does not appear to be valid JSON, please examine the raw response with getRawResponse() method');
+		}
 
 		//if we're configured to collapse single valued arrays or to convert them to Apache_Solr_Document objects
 		//and we have response documents, then try to collapse the values and / or convert them now
