@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2010 Daniel Poetzinger <poetzinger@aoemedia.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,45 +22,50 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once(t3lib_extMgm::extPath("solr").'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php');
-require_once(t3lib_extMgm::extPath("solr").'lib/SolrPhpClient/Apache/Solr/Document.php');
+require_once($GLOBALS['PATH_solr'] . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php');
+require_once($GLOBALS['PATH_solr'] . 'lib/SolrPhpClient/Apache/Solr/Document.php');
 
 
 /**
  * tests the processing Service class
  *
- * @author 	Daniel Ptzinger <poetzinger@aoemedia.de>
+ * @author Daniel Poetzinger <poetzinger@aoemedia.de>
  * @package TYPO3
  * @subpackage solr
  */
 class tx_solr_fieldprocessor_Service_testcase extends tx_phpunit_testcase {
+
 	/**
-	* @var Apache_Solr_Document
-	*/
+	 * @var	Apache_Solr_Document
+	 */
 	private $documentMock;
 
 	/**
 	 * the service
 	 *
-	 * @var tx_solr_fieldprocessor_Service
+	 * @var	tx_solr_fieldprocessor_Service
 	 */
 	private $service;
 
 	public function setUp() {
-		$this->documentMock=new Apache_Solr_Document(); //$this->getMock('Apache_Solr_Document');
-		$this->service=new tx_solr_fieldprocessor_Service();
+		$this->documentMock = new Apache_Solr_Document();
+		$this->service = new tx_solr_fieldprocessor_Service();
 	}
 
 	/**
-	* @test
-	*/
+	 * @test
+	 */
 	public function canProcessDocument() {
-		$this->documentMock->addField('fieldname','fieldvalue');
-		$configuration=array('fieldname'=>'uppercase');
+		$this->documentMock->addField('fieldname', 'fieldvalue');
+		$configuration = array('fieldname' => 'uppercase');
 
-		$this->service->processDocument($this->documentMock,$configuration);
-		$value=$this->documentMock->getField('fieldname');
-		$this->assertEquals($value['value'][0],'FIELDVALUE','field was not processed with uppercase');
+		$this->service->processDocument($this->documentMock, $configuration);
+		$value = $this->documentMock->getField('fieldname');
+		$this->assertEquals(
+			$value['value'][0],
+			'FIELDVALUE',
+			'field was not processed with uppercase'
+		);
 	}
 
 }
