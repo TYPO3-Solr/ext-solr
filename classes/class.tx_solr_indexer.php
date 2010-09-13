@@ -466,14 +466,14 @@ class tx_solr_Indexer {
 			$GLOBALS['TT']->setTSlogMessage('tx_solr: ' . $message, $errorNum);
 		}
 
-		if (!empty($data)) {
-			$logData = array();
-			foreach ($data as $value) {
-				$logData[] = (array) $value;
-			}
-		}
-
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing']) {
+			if (!empty($data)) {
+				$logData = array();
+				foreach ($data as $value) {
+					$logData[] = (array) $value;
+				}
+			}
+
 			t3lib_div::devLog($message, 'tx_solr', $errorNum, $logData);
 		}
 	}
