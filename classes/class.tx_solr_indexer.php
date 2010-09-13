@@ -41,12 +41,13 @@ class tx_solr_Indexer {
 	 * Handles the indexing of the page content during post processing of
 	 * a generated page.
 	 *
-	 * @param	tslib_fe	Typoscript Front End
+	 * @param	tslib_fe	Typoscript frontend
 	 */
 	public function hook_indexContent(tslib_fe $page) {
 		$this->page = $page;
 
-		if ($page->config['config']['index_enable'] && $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['enablePageIndexing']) {
+			//determine if the current page should be indexed
+		if ($this->indexingEnabled($this->page)) {
 			try {
 
 					// do some checks first
@@ -91,6 +92,53 @@ class tx_solr_Indexer {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Determines whether indexing is enabled for a given page.
+	 *
+	 * @param	tslib_fe	Typoscript frontend
+	 * @return	boolean	Indicator whether the page should be indexed or not.
+	 */
+	protected function indexingEnabled(tslib_fe $page) {
+		$indexingEnabled = false;
+
+		if ($page->config['config']['index_enable']) {
+			if (is_array($page->applicationData['tx_crawler'])) {
+				$crawlerActive = t3lib_extMgm::isLoaded('crawler') && $page->applicationData['tx_crawler']['running'];
+			}
+
+			$solrPageIndexingEnabled    = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['enablePageIndexing'];
+			$solrCrawlerIndexingEnabled = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['enableCrawlerIndexing'];
+
+			/*
+			 * A page can be indexed by a normal frontend call or by the crawler.
+			 * In case of the crawler the following requirements need to fit:
+			 *   - Indexing of page in generall enabled
+			 *   - Indexing with the crawler needs to be enabled in the settings
+			 *   - Crawler needs to be loaded
+			 *   - Crawler needs to be active
+			 *   - Processing instruction needs to be active
+			 * In case of an normal frontend indexing call the following requirements need to fit:
+			 *   - Indexing of page in generall enabled
+			 *   - The pageIndexing needs to be enabled in the solr config
+			 */
+			if ($solrCrawlerIndexingEnabled && $crawlerActive) {
+				$solrProcessingInstructionActive = in_array(
+					'tx_solr_reindex',
+					$page->applicationData['tx_crawler']['parameters']['procInstructions']
+				);
+				$page->applicationData['tx_crawler']['log'][] = 'Solr is indexing';
+
+				if ($solrProcessingInstructionActive) {
+					$indexingEnabled = true;
+				}
+			} elseif ($solrPageIndexingEnabled) {
+				$indexingEnabled = true;
+			}
+		}
+
+		return $indexingEnabled;
 	}
 
 	/**
