@@ -26,6 +26,9 @@ return array(
 	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'classes/class.tx_solr_typo3pagecontentextractor.php',
 	'tx_solr_util' => $extensionPath . 'classes/class.tx_solr_util.php',
 
+	'tx_solr_fieldprocessor_service' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php',
+	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_timestamptoisodate.php',
+
 	'tx_solr_querymodifier_faceting' => $extensionPath . 'classes/querymodifier/class.tx_solr_querymodifier_faceting.php',
 
 	'tx_solr_viewhelper_crop' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_crop.php',
@@ -43,6 +46,7 @@ return array(
 
 	'tx_solr_additionalindexer' => $extensionPath . 'interfaces/interface.tx_solr_additionalindexer.php',
 	'tx_solr_command' => $extensionPath . 'interfaces/interface.tx_solr_command.php',
+	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
 	'tx_solr_formmodifier' => $extensionPath . 'interfaces/interface.tx_solr_formmodifier.php',
 	'tx_solr_querymodifier' => $extensionPath . 'interfaces/interface.tx_solr_querymodifier.php',
 	'tx_solr_substitutepageindexer' => $extensionPath . 'interfaces/interface.tx_solr_substitutepageindexer.php',
