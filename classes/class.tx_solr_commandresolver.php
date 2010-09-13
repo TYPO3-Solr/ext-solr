@@ -49,7 +49,7 @@ class tx_solr_CommandResolver {
 	 *
 	 * @param	string	command name
 	 * @param	object	parent object, most likely a plugin object
-	 * @return 	tx_solr_Command the requested command if found, or null othwise
+	 * @return	tx_solr_Command the requested command if found, or null othwise
 	 */
 	public function getCommand($commandName, $parent) {
 		$command = null;
