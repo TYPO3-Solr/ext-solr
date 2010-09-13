@@ -310,18 +310,18 @@ class tx_solr_Indexer {
 	static public function addTagsToDocument(Apache_Solr_Document $document, $content) {
 
 		$tagMapping = array(
-			'h1'      => 'tagsH1',
-			'h2'      => 'tagsH2H3',
-			'h3'      => 'tagsH2H3',
-			'h4'      => 'tagsH4H5H6',
-			'h5'      => 'tagsH4H5H6',
-			'h6'      => 'tagsH4H5H6',
-			'u'       => 'tagsInline',
-			'b'       => 'tagsInline',
-			'strong'  => 'tagsInline',
-			'i'       => 'tagsInline',
-			'em'      => 'tagsInline',
-			'a'       => 'tagsA',
+			'h1'     => 'tagsH1',
+			'h2'     => 'tagsH2H3',
+			'h3'     => 'tagsH2H3',
+			'h4'     => 'tagsH4H5H6',
+			'h5'     => 'tagsH4H5H6',
+			'h6'     => 'tagsH4H5H6',
+			'u'      => 'tagsInline',
+			'b'      => 'tagsInline',
+			'strong' => 'tagsInline',
+			'i'      => 'tagsInline',
+			'em'     => 'tagsInline',
+			'a'      => 'tagsA',
 		);
 
 			// strip all ignored tags
