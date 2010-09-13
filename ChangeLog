@@ -10,6 +10,7 @@
 	* Added the Solr Access Filter Plugin
 	* Changed the schema.xml introducing the new access field for use with the Solr Access Filter Plugin
 	* Changed the indexer to use the new access field
+	* Changed the query class to generate an access filter for the new Solr plugin
 
 2010-09-10  Markus Goldbach  <markus.goldbach@dkd.de>
 

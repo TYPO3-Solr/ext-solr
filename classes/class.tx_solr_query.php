@@ -44,7 +44,7 @@ class tx_solr_Query {
 	protected $solrConfiguration;
 
 	protected $keywords;
-	protected $filters;
+	protected $filters = array();
 	protected $sorting;
 
 	protected $queryString;
@@ -78,7 +78,6 @@ class tx_solr_Query {
 			// TODO specify which fields to get exactly
 		$this->returnFields = array('*', 'score');
 		$this->setKeywords($keywords);
-		$this->filters  = array();
 		$this->sorting  = '';
 
 		if (!empty($this->solrConfiguration['search.']['query.']['fields'])) {
@@ -235,6 +234,7 @@ class tx_solr_Query {
 
 	// faceting
 
+
 	/**
 	 * Activates and deactivates faceting for the current query.
 	 *
@@ -311,25 +311,26 @@ class tx_solr_Query {
 	 * @return	array	Array of filters
 	 */
 	public function getFilters() {
-		return $this->filters ? $this->filters : array();
+		return $this->filters;
 	}
 
 	/**
-	 * sets access restrictions for a frontend user
+	 * Sets access restrictions for a frontend user.
 	 *
 	 * @param	array	an array of groups a user has been assigned to
 	 */
 	public function setUserAccessGroups(array $groups) {
-		$accessFilter = array();
-		foreach ($groups as $group) {
-			$accessFilter[] = 'group:"' . $group . '"';
-		}
-		$accessFilter = implode(' OR ', $accessFilter);
+		$groups = array_map('intval', $groups);
+		$groups[] = 0; // always grant access to public documents
+		$groups = array_unique($groups);
+		sort($groups, SORT_NUMERIC);
 
-		if (in_array('-2', $groups)) {
-				// if the user is logged in, don't let him find pages that
-				// are "hidden at login"
-			$accessFilter .= ' -group:"-1"';
+		$accessFilter = '{!typo3access}' . implode(',', $groups);
+
+		foreach ($this->filters as $key => $filter) {
+			if (t3lib_div::isFirstPartOfStr($filter, '{!typo3access}')) {
+				unset($this->filters[$key]);
+			}
 		}
 
 		$this->addFilter($accessFilter);
