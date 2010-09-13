@@ -58,7 +58,7 @@ class tx_solr_CommandResolver {
 			$command = $this->loadCommand($commandName, $parent);
 
 			if (!($command instanceof tx_solr_Command)) {
-				$command = $this->loadCommand($this->defaultCommand);
+				$command = $this->loadCommand($this->defaultCommand, $parent);
 			}
 		}
 
