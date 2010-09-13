@@ -266,20 +266,18 @@ class tx_solr_Indexer {
 	/**
 	 * Given a page id, returns a document representing that page.
 	 *
-	 * @param	integer	page id
-	 * @return	Apache_Solr_Document	a documment representing the page
+	 * @param	integer	Page id
+	 * @return	Apache_Solr_Document	A documment representing the page
 	 */
 	protected function pageToDocument($pageId) {
 		$page     = $GLOBALS['TSFE'];
-		$document = false;
+		$document = null;
 
-		$body    = $this->getPageBody();
-		$content = $this->getIndexableContent($body);
-
-			// converts the content to utf8 if necessary
-		$content = $GLOBALS['TSFE']->csConvObj->utf8_encode($content, $GLOBALS['TSFE']->renderCharset);
-		$content = $this->stripControlChars($content);
-
+		$contentExtractor = t3lib_div::makeInstance(
+			'tx_solr_Typo3PageContentExtractor',
+			$GLOBALS['TSFE']->content,
+			$GLOBALS['TSFE']->renderCharset
+		);
 
 		$document = t3lib_div::makeInstance('Apache_Solr_Document');
 		$cHash    = $this->filterInvalidContentHash($page->cHash);
@@ -320,7 +318,7 @@ class tx_solr_Indexer {
 		}
 
 			// content
-		$title = $this->getPageTitle();
+		$title = $contentExtractor->getPageTitle();
 		$document->addField('title',       $GLOBALS['TSFE']->csConvObj->utf8_encode($title, $GLOBALS['TSFE']->renderCharset));
 		$document->addField('subTitle',    $GLOBALS['TSFE']->csConvObj->utf8_encode($page->page['subtitle'], $GLOBALS['TSFE']->renderCharset));
 		$document->addField('navTitle',    $GLOBALS['TSFE']->csConvObj->utf8_encode($page->page['nav_title'], $GLOBALS['TSFE']->renderCharset));
@@ -332,16 +330,12 @@ class tx_solr_Indexer {
 		$document->addField('description', trim($GLOBALS['TSFE']->csConvObj->utf8_encode($page->page['description'], $GLOBALS['TSFE']->renderCharset)));
 		$document->addField('abstract',    trim($GLOBALS['TSFE']->csConvObj->utf8_encode($page->page['abstract'], $GLOBALS['TSFE']->renderCharset)));
 
-			// content field
-		$contentField = $this->cleanContent($content);
-		$contentField = html_entity_decode($contentField, ENT_QUOTES, 'UTF-8');
-		$contentField = strip_tags($contentField); // after entity decoding we might have tags again
-		$contentField = trim($contentField);
-		$document->addField('content', $contentField);
+		$document->addField('content', $contentExtractor->getIndexableContent());
 
 		$document->addField('url', t3lib_div::getIndpEnv('TYPO3_REQUEST_URL'));
 
-		$document = $this->addTagsToDocument($document, $content);
+		$indexableMarkup = $contentExtractor->getContentMarkedForIndexing();
+		$document = self::addTagsToDocument($document, $indexableMarkup);
 
 			// TODO add a hook to allow post processing of the document
 
@@ -432,98 +426,6 @@ class tx_solr_Indexer {
 		}
 
 		return $documents;
-	}
-
-
-	// retrieving content
-
-
-	/**
-	 * Strips control characters that cause Jetty/Solr to fail.
-	 *
-	 * @param	string	the content to sanitize
-	 * @return	string	the sanitized content
-	 * @see	http://w3.org/International/questions/qa-forms-utf-8.html
-	 */
-	static public function stripControlChars($content) {
-			// Printable utf-8 does not include any of these chars below x7F
- 		return preg_replace('@[\x00-\x08\x0B\x0C\x0E-\x1F]@', ' ', $content);
-	}
-
-	/**
-	 * Strips html tags and also control characters that cause Jetty/Solr to fail.
-	 *
-	 * @param	string	content to clean
-	 * @return	string	content cleaned from tags and special characters
-	 */
-	static public function cleanContent($content) {
-		$content = self::stripControlChars($content);
-		$content = str_replace('>', '> ', $content); // prevents concatenated words after stripping tags
-		$content = strip_tags($content);
-		$content = str_replace(array("\t", "\n", "\r"), array(), $content);
-
-		return $content;
-	}
-
-	/**
-	 * Removes content that shouldn't be indexed according to TYPO3SEARCH-tags.
-	 *
-	 * @param	string		HTML Content, passed by reference
-	 * @return	boolean		Returns true if a TYPOSEARCH_ tag was found, otherwise false.
-	 */
-	protected function getIndexableContent($content) {
-		$explodedContent  = preg_split('/\<\!\-\-[\s]?TYPO3SEARCH_/', $content);
-		$indexableContent = '';
-
-		if(count($explodedContent) > 1) {
-
-			foreach($explodedContent as $explodedContentPart) {
-				$contentPart = explode('-->', $explodedContentPart, 2);
-
-				if (trim($contentPart[0]) == 'begin') {
-					$indexableContent .= $contentPart[1];
-					$previousExplodedContentPart = '';
-				} elseif (trim($contentPart[0]) == 'end') {
-					$indexableContent .= $previousExplodedContentPart;
-				} else {
-					$previousExplodedContentPart = $explodedContentPart;
-				}
-			}
-		}
-
-		return $indexableContent;
-	}
-
-	/**
-	 * Retrieves the page's title by checking the indexedDocTitle, altPageTitle,
-	 * and regular page title - in that order.
-	 *
-	 * @return	string	the page's title
-	 */
-	protected function getPageTitle() {
-		$page      = $GLOBALS['TSFE'];
-		$pageTitle = '';
-
-		if ($page->indexedDocTitle) {
-			$pageTitle = $page->indexedDocTitle;
-		} elseif ($page->altPageTitle) {
-			$pageTitle = $page->altPageTitle;
-		} else {
-			$pageTite = $page->page['title'];
-		}
-
-		return $pageTitle;
-	}
-
-	/**
-	 * Retrieves the page's body
-	 *
-	 * @return	string	the page's body
-	 */
-	protected function getPageBody() {
-		$pageContent = $GLOBALS['TSFE']->content;
-
-		return stristr($pageContent, '<body');
 	}
 
 
