@@ -40,6 +40,7 @@ if (TYPO3_MODE == 'BE') {
 		// adding reports
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'][] = 'tx_solr_report_SchemaStatus';
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'][] = 'tx_solr_report_SolrStatus';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'][] = 'tx_solr_report_AccessFilterPluginInstalledStatus';
 
 		// adding the index report to the reports module
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_solr']['index'] = array(

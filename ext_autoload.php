@@ -69,7 +69,7 @@ return array(
 	'tx_solr_scheduler_committask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_committask.php',
 	'tx_solr_scheduler_committasksolrserverfield' => $extensionPath . 'scheduler/class.tx_solr_scheduler_committasksolrserverfield.php',
 
-
+	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'report/class.tx_solr_report_accessfilterplugininstalledstatus.php',
 	'tx_solr_report_indexreport' => $extensionPath . 'report/class.tx_solr_report_indexreport.php',
 	'tx_solr_report_schemastatus' => $extensionPath . 'report/class.tx_solr_report_schemastatus.php',
 	'tx_solr_report_solrstatus' => $extensionPath . 'report/class.tx_solr_report_solrstatus.php',
