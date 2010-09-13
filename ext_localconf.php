@@ -7,6 +7,16 @@ $PATH_solr = t3lib_extMgm::extPath('solr');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
+switch (TYPO3_branch) {
+	case '4.3':
+			// adding a hook that was added in TYPO3 4.4
+		require_once($PATH_solr . 'compat/interface.tslib_content_postinithook.php');
+		require_once($PATH_solr . 'compat/class.ux_tslib_cobj.php');
+		break;
+}
+
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
 	// adding the search plugin
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,

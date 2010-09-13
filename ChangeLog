@@ -9,6 +9,7 @@
 	* Changed interfaces tx_solr_AdditionalIndexer and tx_solr_SubstitutePageIndexer to accept documents currently being indexed
 	* Added the Solr Access Filter Plugin
 	* Changed the schema.xml introducing the new access field for use with the Solr Access Filter Plugin
+	* Changed the indexer to use the new access field
 
 2010-09-10  Markus Goldbach  <markus.goldbach@dkd.de>
 

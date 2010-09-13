@@ -32,9 +32,17 @@
  * @package TYPO3
  * @subpackage solr
  */
-class tx_solr_Indexer {
+class tx_solr_Indexer implements tslib_content_PostInitHook {
 
 	protected $page;
+
+	/**
+	 * Collects the frontens user group IDs used in content elements on the
+	 * page (and the currently logged in user has access to).
+	 *
+	 * @var	array
+	 */
+	protected static $contentFrontendUserAccessGroups = array();
 
 
 	/**
@@ -49,7 +57,6 @@ class tx_solr_Indexer {
 			//determine if the current page should be indexed
 		if ($this->indexingEnabled($this->page)) {
 			try {
-
 					// do some checks first
 				if ($page->page['no_search']) {
 					throw new Exception(
@@ -282,11 +289,13 @@ class tx_solr_Indexer {
 		$document = t3lib_div::makeInstance('Apache_Solr_Document');
 		$cHash    = $this->filterInvalidContentHash($page->cHash);
 
+		$accessGroups = $this->getAccessGroups();
+
 		$document->addField('id', tx_solr_Util::getPageDocumentId(
 			$page->id,
 			$page->type,
 			$page->sys_language_uid,
-			$page->gr_list,
+			implode(',', $accessGroups),
 			$cHash
 		));
 		$document->addField('site',        t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
@@ -304,14 +313,7 @@ class tx_solr_Indexer {
 		$document->addField('language', $page->sys_language_uid);
 
 			// access
-			// TODO calculate access from content elements
-		$access = t3lib_div::intExplode(',', $page->page['fe_group']);
-		if ($page->page['fe_group'] == '-1') {
-			$access[] = 0;	// make sure that access settings are complete
-		}
-		foreach ($access as $group) {
-			$document->addField('group', $group);
-		}
+		$document->addField('access', implode(',', $accessGroups));
 
 		if ($page->page['endtime']) {
 			$document->addField('endtime', $page->page['endtime']);
@@ -448,6 +450,143 @@ class tx_solr_Indexer {
 		$calculatedCHash = t3lib_div::calculateCHash($cHashParameters);
 
 		return ($calculatedCHash == $cHash) ? $cHash : '';
+	}
+
+
+	// Access Restrictions
+
+
+	/**
+	 * Gets the groups that have access to this page.
+	 *
+	 * @return	array	An array of FE user group IDs.
+	 */
+	protected function getAccessGroups() {
+		$groups = array();
+
+		$groups = array_merge(
+			$groups,
+			$this->getAccessGroupsFromContent(),
+			$this->getAccessGroupsFromCurrentPage(),
+			$this->getAccessGroupsFromParentPages()
+		);
+
+		/*
+		If any access restrictions have been set for a page or content element,
+		we must remove public access (virtual group 0) from the whole document.
+		*/
+		$accessRestrictingGroups = array_diff($groups, array(0));
+		if (count($accessRestrictingGroups)) {
+			$groups = array_filter($groups); // removes group 0 / public access
+		}
+
+		/*
+		We need to remove groups which are not in TSFE->gr_list, otherwise
+		access might be restricted more than it needs to be:
+
+		If a page is set to be restricted for multiple groups (1,2) this means
+		that a user with either group 1 OR group 2 can see this page. Until now
+		we have collected ALL the groups that have been set, which would work
+		like an AND. If a user which is member of only one group hits such a
+		page, this would result in a document requiring more access groups than
+		necessary: 1 AND 2 instead of 1 OR 2. Thus we filter out groups that the
+		current user is not a member of. As these are not in TSEF->gr_list, we
+		can simply use the gr_list as a filter.
+		*/
+		$grList = t3lib_div::intExplode(',', $GLOBALS['TSFE']->gr_list);
+		$groups = array_intersect($grList, $groups);
+
+		return $this->cleanGroupArray($groups);
+	}
+
+	/**
+	 * Hook for post processing the initialization of tslib_cObj
+	 *
+	 * @param	tslib_cObj	parent content object
+	 */
+	public function postProcessContentObjectInitialization(tslib_cObj &$parentObject) {
+		if (!empty($parentObject->currentRecord)) {
+			list($table) = explode(':', $parentObject->currentRecord);
+
+			if (!empty($table)
+				&& $table != 'pages'
+				&& $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group']
+			) {
+				self::$contentFrontendUserAccessGroups[] = $parentObject->data[$GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group']];
+			}
+		}
+	}
+
+	/**
+	 * Gets the groups set as access restrictions on content elements present
+	 * on the current page.
+	 *
+	 * @return	array	An array of fe group IDs.
+	 */
+	protected function getAccessGroupsFromContent() {
+		$groupList = implode(',', self::$contentFrontendUserAccessGroups);
+		$groups    = t3lib_div::intExplode(',', $groupList);
+
+		return $this->cleanGroupArray($groups);
+	}
+
+
+	/**
+	 * Gets groups set for the current page.
+	 *
+	 * @return	array	An array of fe group IDs.
+	 */
+	protected function getAccessGroupsFromCurrentPage() {
+		$groups = t3lib_div::intExplode(
+			',',
+			$GLOBALS['TSFE']->page['fe_group']
+		);
+
+		return $this->cleanGroupArray($groups);
+	}
+
+	/**
+	 * Gets groups which have been inherited from pages up in the rootline
+	 * through the extendToSubpages flag.
+	 *
+	 * @return	array	An array of fe group IDs.
+	 */
+	protected function getAccessGroupsFromParentPages() {
+		$groups = array();
+
+		$rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($GLOBALS['TSFE']->id);
+		foreach ($rootLine as $pageRecord) {
+			if ($pageRecord['fe_group']
+			&& $pageRecord['extendToSubpages']
+			&& $pageRecord['uid'] != $GLOBALS['TSFE']->id
+			) {
+				$groupsOnPageUpInRootline = t3lib_div::intExplode(
+					',', $pageRecord['fe_group']
+				);
+
+				$groups = array_merge(
+					$groups,
+					$groupsOnPageUpInRootline
+				);
+			}
+		}
+
+		return $this->cleanGroupArray($groups);
+	}
+
+	/**
+	 * Cleans an array of frontend user group IDs. Removes duplicates, sorts,
+	 * and reindexes the array.
+	 *
+	 * @param	array	An array of fe group IDs
+	 * @return	array	An array of cleaned fe group IDs, unique, no 0, sorted, indexed.
+	 */
+	protected function cleanGroupArray(array $groups) {
+		$groups = array_unique($groups); // removes duplicates
+		sort($groups, SORT_NUMERIC);     // sort
+		$groups = array_values($groups); // rebuilds the numerical index
+
+		return $groups;
 	}
 
 
