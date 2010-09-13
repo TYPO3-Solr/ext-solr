@@ -152,7 +152,7 @@ class tx_solr_Indexer {
 		$documents = array(); // this will become usefull as soon as when starting to index individual records instead of whole pages
 
 		try {
-				// get a solr instance
+				// get a solr connection
 			$solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByPageId(
 				$pageId,
 				$GLOBALS['TSFE']->sys_language_uid
