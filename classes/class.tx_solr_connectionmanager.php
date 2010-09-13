@@ -205,24 +205,23 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	 */
 	protected function getConfiguredSolrConnections() {
 		$configuredSolrConnections = array();
-		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
 
 			// find website roots and languages for this installation
 		$rootPages = $this->getRootPages();
 		$languages = $this->getSiteLanguages();
 
-		$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
-		$tmpl->tt_track = false; // Do not log time-performance information
-		$tmpl->init();
-
 			// find solr configurations and add them as function menu entries
 		foreach ($rootPages as $rootPage) {
-			$rootLine = $pageSelect->getRootLine($rootPage['uid']);
+			$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+			$rootLine   = $pageSelect->getRootLine($rootPage['uid']);
 
 			foreach ($languages as $languageId) {
 				t3lib_div::_GETset($languageId, 'L');
 				$connectionKey = $rootPage['uid'] . '|' . $languageId;
 
+				$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
+				$tmpl->tt_track = false; // Do not log time-performance information
+				$tmpl->init();
 				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
 				$tmpl->generateConfig();
 
