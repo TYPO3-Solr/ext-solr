@@ -13,6 +13,7 @@
 	* Changed the query class to generate an access filter for the new Solr plugin
 	* Changed solrconfig.xml to load the Access Filter Plugin
 	* Added a status report to check whether the Solr Access Filter plugin is installed
+	* Added tx_solr_NoSolrConnectionFoundException for cases when the connection manager can not find a Solr connection
 
 2010-09-10  Markus Goldbach  <markus.goldbach@dkd.de>
 

@@ -94,6 +94,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	 * @param	integer	A page ID.
 	 * @param	integer	The language ID to get the connection for as the path may differ. Optional, defaults to 0.
 	 * @return	tx_solr_SolrService	A solr connection.
+	 * @throws	tx_solr_NoSolrConnectionFoundException
 	 */
 	public function getConnectionByPageId($pageId, $language = 0) {
 			// find the root page
@@ -101,7 +102,17 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 		$rootLine       = $pageSelect->getRootLine($pageId);
 		$siteRootPageId = $this->getSiteRootPageIdFromRootLine($rootLine);
 
-		return $this->getConnectionByRootPageId($siteRootPageId, $language);
+		try {
+			$connection = $this->getConnectionByRootPageId($siteRootPageId, $language);
+		} catch (tx_solr_NoSolrConnectionFoundException $nscfe) {
+			throw t3lib_div::makeInstance(
+				'tx_solr_NoSolrConnectionFoundException',
+				$nscfe->getMessage() . ' Initial page used was [' . $pageId . ']',
+				1275399922
+			);
+		}
+
+		return $connection;
 	}
 
 	/**
@@ -110,6 +121,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	 * @param	integer	A root page ID.
 	 * @param	integer	The language ID to get the connection for as the path may differ. Optional, defaults to 0.
 	 * @return	tx_solr_SolrService	A solr connection.
+	 * @throws	tx_solr_NoSolrConnectionFoundException
 	 */
 	public function getConnectionByRootPageId($pageId, $language = 0) {
 		$solrConnection = null;
@@ -124,6 +136,13 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$solrServers[$connectionKey]['solrPort'],
 				$solrServers[$connectionKey]['solrPath'],
 				$solrServers[$connectionKey]['solrScheme']
+			);
+		} else {
+			throw t3lib_div::makeInstance(
+				'tx_solr_NoSolrConnectionFoundException',
+				'Could not find a Solr connection for root page ['
+					. $pageId . '] and language [' . $language . '].',
+				1275396474
 			);
 		}
 

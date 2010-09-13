@@ -18,6 +18,7 @@ return array(
 	'tx_solr_connectionmanager' => $extensionPath . 'classes/class.tx_solr_connectionmanager.php',
 	'tx_solr_indexer' => $extensionPath . 'classes/class.tx_solr_indexer.php',
 	'tx_solr_languagefileunavailableexception' => $extensionPath . 'classes/class.tx_solr_languagefileunavailableexception.php',
+	'tx_solr_nosolrconnectionfoundexception' => $extensionPath . 'classes/class.tx_solr_nosolrconnectionfoundexception.php',
 	'tx_solr_query' => $extensionPath . 'classes/class.tx_solr_query.php',
 	'tx_solr_search' => $extensionPath . 'classes/class.tx_solr_search.php',
 	'tx_solr_solrservice' => $extensionPath . 'classes/class.tx_solr_solrservice.php',
