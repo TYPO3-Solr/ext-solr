@@ -7,6 +7,7 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="searchUnavailable">Search is currently not available.</label>
+			<label index="searchFailed">We're sorry. The request you tried to make could not be processed.</label>
 			<label index="searchWord">Search Term</label>
 			<label index="didYouMean">Did you mean</label>
 			<label index="submit">Search</label>
@@ -20,13 +21,17 @@
 			<label index="faceting_resultsNarrowedBy">Results narrowed by</label>
 			<label index="faceting_showMore">Show more</label>
 			<label index="faceting_showFewer">Show fewer</label>
+			<label index="faceting_removeAllFilters">Remove all filters</label>
 			<label index="results_range">Displaying results @resultsFrom to @resultsTo of @resultsTotal.</label>
+			<label index="results_found">Found @resultsTotal results in @resultsTime milliseconds.</label>
 			<label index="results_searched_for">Searched for "@searchWord".</label>
 			<label index="no_results_nothing_found">Nothing found for "@searchWord".</label>
+			<label index="relevance">Relevance</label>
 			<label index="results_per_page">Results per page:</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="searchUnavailable">Die Suche steht im Moment nicht zur Verfügung.</label>
+			<label index="searchFailed">Es tut uns leid. Ihre Suchanfrage konnte nicht verarbeitet werden.</label>
 			<label index="searchWord">Suchbegriff</label>
 			<label index="didYouMean">Meinten Sie</label>
 			<label index="submit">Suche</label>
@@ -40,9 +45,12 @@
 			<label index="faceting_resultsNarrowedBy">Aktive Filter</label>
 			<label index="faceting_showMore">Mehr zeigen</label>
 			<label index="faceting_showFewer">Weniger zeigen</label>
+			<label index="faceting_removeAllFilters">Alle Filter entfernen</label>
 			<label index="results_range">Zeige Ergebnisse @resultsFrom bis @resultsTo von @resultsTotal.</label>
+			<label index="results_found">Es wurden @resultsTotal Ergebnisse in @resultsTime Millisekunden gefunden.</label>
 			<label index="results_searched_for">Gesucht nach "@searchWord".</label>
 			<label index="no_results_nothing_found">Nichts gefunden für "@searchWord".</label>
+			<label index="relevance">Relevanz</label>
 			<label index="results_per_page">Ergebnisse pro Seite:</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
