@@ -27,296 +27,60 @@
  * Plugin 'Solr Search' for the 'solr' extension.
  *
  * @author	Ingo Renner <ingo@typo3.org>
+ * @author	Timo Schmidt <timo.schmidt@aoemedia.de>
  * @package	TYPO3
  * @subpackage	tx_solr
  */
-class tx_solr_pi_results extends tslib_pibase {
-
-	public $prefixId      = 'tx_solr';
-	public $scriptRelPath = 'pi_results/class.tx_solr_pi_results.php';	// Path to this script relative to the extension dir.
-	public $extKey        = 'solr';	// The extension key.
+class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 	/**
-	 * an instance of tx_solr_Search
+	 * Path to this script relative to the extension dir.
 	 *
-	 * @var tx_solr_Search
+	 * @var	string
 	 */
-	protected $search;
+	public $scriptRelPath = 'pi_results/class.tx_solr_pi_results.php';
 
 	/**
-	 * an instance of tx_solr_Template
+	 * The plugin's query
 	 *
-	 * @var tx_solr_Template
+	 * @var	tx_solr_Query
 	 */
-	protected $template;
-
-	/**
-	 * Determines whether the solr server is available or not.
-	 */
-	protected $solrAvailable;
+	protected $query = null;
 
 	/**
 	 * Track, if the number of results per page has been changed by the current request
 	 *
-	 * @var Boolean
+	 * @var	boolean
 	 */
 	protected $resultsPerPageChanged = false;
 
-	/**
-	 * The main method of the PlugIn
-	 *
-	 * @param	string		$content: The PlugIn content
-	 * @param	array		$conf: The PlugIn configuration
-	 * @return	The content that is displayed on the website
-	 */
-	public function main($content, $configuration) {
-		$this->initialize($configuration);
-
-		$content = '';
-		if ($this->solrAvailable) {
-			$content = $this->render();
-		} else {
-			$content = $this->renderSolrError();
-		}
-
-		if ($this->conf['addDefaultCss']) {
-			$pathToResultsCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
-				. t3lib_extMgm::siteRelPath($this->extKey)
-				. 'resources/templates/pi_results/results.css';
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultResultsCss'] =
-				'<link href="' . $pathToResultsCssFile . '" rel="stylesheet" type="text/css" />';
-
-			$pathToPageBrowserCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
-				. t3lib_extMgm::siteRelPath('pagebrowse')
-				. 'res/styles_min.css';
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultPageBrowserCss'] =
-				'<link href="' . $pathToPageBrowserCssFile . '" rel="stylesheet" type="text/css" />';
-		}
-
-		return $this->pi_wrapInBaseClass($content);
-	}
-
-	protected function render() {
-		$commandList = $this->getResultviewCommandList();
-
-		$commandResolver = t3lib_div::makeInstance(
-			'tx_solr_CommandResolver',
-			$GLOBALS['PATH_solr'] . 'pi_results/',
-			'tx_solr_pi_results_'
-		);
-
-		foreach ($commandList as $commandName) {
-			$command = $commandResolver->getCommand($commandName, $this);
-			$commandVariables = $command->execute();
-
-			$subpartTemplate = clone $this->template;
-			$subpartTemplate->setWorkingTemplateContent(
-				$this->template->getSubpart('solr_search_' . $commandName)
-			);
-
-			if (!is_null($commandVariables)) {
-				foreach ($commandVariables as $variableName => $commandVariable) {
-					if (t3lib_div::isFirstPartOfStr($variableName, 'loop_')) {
-						$dividerPosition  = strpos($variableName, '|');
-						$loopName         = substr($variableName, 5, ($dividerPosition - 5));
-						$loopedMarkerName = substr($variableName, ($dividerPosition + 1));
-
-						$subpartTemplate->addLoop($loopName, $loopedMarkerName, $commandVariable);
-					} else if (t3lib_div::isFirstPartOfStr($variableName, 'subpart_')) {
-						$subpartName = substr($variableName, 8);
-						$subpartTemplate->addSubpart($subpartName, $commandVariable);
-					} else {
-						$subpartTemplate->addVariable($commandName, $commandVariables);
-					}
-				}
-
-				$this->template->addSubpart('solr_search_' . $commandName, $subpartTemplate->render());
-			}
-
-			unset($subpartTemplate);
-		}
-
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['pi_results']['renderTemplate'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['pi_results']['renderTemplate'] as $classReference) {
-				$templateModifier = &t3lib_div::getUserObj($classReference);
-
-				if ($templateModifier instanceof tx_solr_TemplateModifier) {
-					$templateModifier->modifyTemplate($this->template);
-				}
-			}
-		}
-
-		return $this->template->render();
-	}
-
-	protected function renderSolrError() {
-		$this->template->workOnSubpart('solr_search_unavailable');
-
-		return $this->template->render();
-	}
 
 	/**
-	 * Initializes the plugin - configuration, language, caching, search...
+	 * Perform the action for the plugin. In this case it calls the search()
+	 * method which internally performs the search.
 	 *
-	 * @param	array	configuration array as provided by the TYPO3 core
 	 * @return	void
 	 */
-	protected function initialize($configuration) {
-		$this->conf = $configuration;
-
-		$this->conf = array_merge(
-			$this->conf,
-			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']
-		);
-
-		$this->pi_setPiVarDefaults();
-		$this->pi_loadLL();
-		$this->pi_initPIflexForm();
-		$this->pi_USER_INT_obj = 1;	// disable caching
-
-		$this->initializeSearch();
-		$this->initializeTemplateEngine();
-
-			// target page
-		$targetPage = (int) $this->conf['search.']['targetPage'];
-		$flexformTargetPage = (int) $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'targetPage');
-		if ($flexformTargetPage) {
-			$targetPage = $flexformTargetPage;
-		}
-		if (!empty($targetPage)) {
-			$this->conf['search.']['targetPage'] = $targetPage;
-		} else {
-			$this->conf['search.']['targetPage'] = $GLOBALS['TSFE']->id;
-		}
-
-			// boost function
-		$boostFunction = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'boostFunction', 'sQuery');
-		if ($boostFunction) {
-			$this->conf['search.']['query.']['boostFunction'] = $boostFunction;
-		}
+	protected function performAction() {
+			//perform the current search.
+		$this->search();
 	}
 
 	/**
-	 * Initializes the template engine and returns the initialized instance.
+	 * Executes the actual search.
 	 *
-	 * @return	tx_solr_Template
 	 */
-	protected function initializeTemplateEngine() {
-		$templateFile = $this->conf['templateFile.']['results'];
-
-		$flexformTemplateFile = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'templateFile', 'sOptions');
-		if (!empty($flexformTemplateFile)) {
-			$templateFile = $flexformTemplateFile;
-		}
-
-		$template = t3lib_div::makeInstance(
-			'tx_solr_Template',
-			$this->cObj,
-			$templateFile,
-			'solr_search'
-		);
-
-		$template->addViewHelperIncludePath($this->extKey, 'classes/viewhelper/');
-		$template->addViewHelper('LLL', array(
-			'languageFile' => $GLOBALS['PATH_solr'] . 'pi_results/locallang.xml',
-			'llKey'        => $this->LLkey
-		));
-
-		$template->addVariable('solr', $this->getSolrVariables());
-
-			// can be used for view helpers that need configuration during initialization
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['pi_results']['addViewHelpers'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['pi_results']['addViewHelpers'] as $classReference) {
-				$viewHelperProvider = &t3lib_div::getUserObj($classReference);
-
-				if ($viewHelperProvider instanceof tx_solr_ViewHelperProvider) {
-					$viewHelpers = $viewHelperProvider->getViewHelpers();
-					foreach ($viewHelpers as $helperName => $helperObject) {
-						$helperAdded = $template->addViewHelperObject($helperName, $helperObject);
-							// TODO check whether $helperAdded is true, throw an exception if not
-					}
-				} else {
-					// TODO throw an exception
-				}
-			}
-		}
-
-		$this->template = $template;
-	}
-
-	protected function initializeSearch() {
-		$this->search = t3lib_div::makeInstance('tx_solr_Search');
-		$this->solrAvailable = $this->search->ping();
-
-			// TODO provide the option in TS, too
-		$emptyQuery = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'emptyQuery', 'sQuery');
-
-			// TODO check whether a search has been conducted already?
-		if ($this->solrAvailable && (isset($this->piVars['q']) || $emptyQuery)) {
-			$this->piVars['q'] = trim($this->piVars['q']);
-
-			if ($emptyQuery) {
-					// TODO set rows to retrieve when searching to 0
-			}
-
-			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
-				t3lib_div::devLog('received search query', 'tx_solr', 0, array($this->piVars['q']));
-			}
-
-			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);
-
-			if (isset($this->conf['search.']['query.']['minimumMatch'])
-				&& strlen($this->conf['search.']['query.']['minimumMatch'])) {
-				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
-			}
-
-			if (!empty($this->conf['search.']['query.']['boostFunction'])) {
-				$query->setBoostFunction($this->conf['search.']['query.']['boostFunction']);
-			}
-
-			if ($this->conf['search.']['highlighting']) {
-				$query->setHighlighting(true, $this->conf['search.']['highlighting.']['fragmentSize']);
-			}
-
-			if ($this->conf['search.']['spellchecking']) {
-				$query->setSpellchecking();
-			}
-
-			if ($this->conf['search.']['faceting']) {
-				$query->setFaceting();
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'EXT:solr/classes/querymodifier/class.tx_solr_querymodifier_faceting.php:tx_solr_querymodifier_Faceting';
-			}
-
-			$query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
-			$query->setSiteHash(tx_solr_Util::getSiteHash());
-
-			$language = 0;
-			if ($GLOBALS['TSFE']->sys_language_uid) {
-				$language = $GLOBALS['TSFE']->sys_language_uid;
-			}
-			$query->addFilter('language:' . $language);
-
-			$additionalFilters = $this->conf['search.']['filter'];
-			$flexformFilters   = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filter', 'sQuery');
-			if (!empty($flexformFilters)) {
-				$additionalFilters = $flexformFilters;
-			}
-			if (!empty($additionalFilters)) {
-				$additionalFilters = explode('|', $additionalFilters);
-				foreach($additionalFilters as $additionalFilter) {
-					$query->addFilter($additionalFilter);
-				}
-			}
-
+	protected function search() {
+		if (!is_null($this->query)) {
 			$currentPage    = max(0, intval($this->piVars['page']));
 			$resultsPerPage = $this->getNumberOfResultsPerPage();
 
-			// if the number of results per page has been changed by the current request, reset the pagebrowser
+				// if the number of results per page has been changed by the current request, reset the pagebrowser
 			if($this->resultsPerPageChanged) {
 				$currentPage = 0;
 			}
 
-			$offSet         = $currentPage * $resultsPerPage;
+			$offSet = $currentPage * $resultsPerPage;
 
 				// ignore page browser?
 			$ignorePageBrowser = (boolean) $this->conf['search.']['results.']['ignorePageBrowser'];
@@ -328,28 +92,78 @@ class tx_solr_pi_results extends tslib_pibase {
 				$offSet = 0;
 			}
 
-				// sorting
-			if ($this->conf['searchResultsViewComponents.']['sorting']) {
-				$query->setSorting();
-			}
-
-			$flexformSorting = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'sortBy', 'sQuery');
-			if (!empty($flexformSorting)) {
-				$query->addQueryParameter('sort', $flexformSorting);
-			}
-
-			$query = $this->modifyQuery($query);
-
+			$query    = $this->modifyQuery($this->query);
 			$response = $this->search->search($query, $offSet, $resultsPerPage);
+
+			$this->processResponse($query, $response);
 		}
 	}
 
 	/**
-	 * retrievs the list of commands we have to process for the results view
+	 * Provides a hook for other classes to process the search's response.
 	 *
-	 * @return array	array of command names to process for the result view
+	 * @param	tx_solr_Query	The query that has been searched for.
+	 * @param	Apache_Solr_Response	The search's reponse.
 	 */
-	protected function getResultviewCommandList() {
+	protected function processResponse(tx_solr_Query $query, Apache_Solr_Response &$response) {
+		if ($this->conf['search.']['allowEmptyQuery'] && empty($this->piVars['q'])) {
+				// set number of results to 0 for empty queries as we've set number of rows to 0 too
+			$response->response->numFound = 0;
+		}
+
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
+				$responseProcessor = t3lib_div::getUserObj($classReference);
+
+				if ($responseProcessor instanceof tx_solr_ResponseProcessor) {
+					$query = $responseProcessor->processResponse($query, $response);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Implementation of preRender() method. Used to include css
+	 *
+	 * @see	classes/pluginbase/tx_solr_pluginbase_CommandPluginBase#preRender()
+	 */
+	protected function preRender() {
+		if ($this->conf['addDefaultCss']) {
+			$pathToResultsCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
+				. t3lib_extMgm::siteRelPath($this->extKey)
+				. 'resources/templates/'.$this->getPluginKey().'/results.css';
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultResultsCss'] =
+				'<link href="' . $pathToResultsCssFile . '" rel="stylesheet" type="text/css" />';
+
+			$pathToPageBrowserCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
+				. t3lib_extMgm::siteRelPath('pagebrowse')
+				. 'res/styles_min.css';
+			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultPageBrowserCss'] =
+				'<link href="' . $pathToPageBrowserCssFile . '" rel="stylesheet" type="text/css" />';
+		}
+	}
+
+	/**
+	 * Returns an initialized CommandResolver.
+	 *
+	 * @see	classes/pluginbase/tx_solr_pluginbase_CommandPluginBase#getCommandResolver()
+	 */
+	protected function getCommandResolver() {
+		$commandResolver = t3lib_div::makeInstance(
+			'tx_solr_CommandResolver',
+			$GLOBALS['PATH_solr'] . 'pi_results/',
+			'tx_solr_pi_results_'
+		);
+
+		return $commandResolver;
+	}
+
+	/**
+	 * Retrieves the list of commands to process for the results view.
+	 *
+	 * @return	array	An array of command names to process for the result view
+	 */
+	protected function getCommandList() {
 		$commandList = array();
 		$formStyle   = $this->conf['search.']['form'];
 
@@ -379,6 +193,141 @@ class tx_solr_pi_results extends tslib_pibase {
 	}
 
 	/**
+	 * Performs special search initialization for the result plugin.
+	 *
+	 * @see	classes/pluginbase/tx_solr_pluginbase_PluginBase#initializeSearch()
+	 */
+	protected function initializeSearch() {
+		parent::initializeSearch();
+
+			// TODO check whether a search has been conducted already?
+		if ($this->solrAvailable && (isset($this->piVars['q']) || $this->conf['search.']['allowEmptyQuery'])) {
+			$this->piVars['q'] = trim($this->piVars['q']);
+
+			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
+				t3lib_div::devLog('received search query', 'tx_solr', 0, array($this->piVars['q']));
+			}
+
+			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);
+
+			if (isset($this->conf['search.']['query.']['minimumMatch'])
+				&& strlen($this->conf['search.']['query.']['minimumMatch'])) {
+				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
+			}
+
+			if (!empty($this->conf['search.']['query.']['boostFunction'])) {
+				$query->setBoostFunction($this->conf['search.']['query.']['boostFunction']);
+			}
+
+			if ($this->conf['enableDebugMode']) {
+				$query->setDebugMode();
+			}
+
+			if ($this->conf['search.']['highlighting']) {
+				$query->setHighlighting(true, $this->conf['search.']['highlighting.']['fragmentSize']);
+			}
+
+			if ($this->conf['search.']['spellchecking']) {
+				$query->setSpellchecking();
+			}
+
+			if ($this->conf['search.']['faceting']) {
+				$query->setFaceting();
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'EXT:solr/classes/querymodifier/class.tx_solr_querymodifier_faceting.php:tx_solr_querymodifier_Faceting';
+			}
+
+				// access
+			$query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
+			$query->setSiteHash(tx_solr_Util::getSiteHash());
+
+			$language = 0;
+			if ($GLOBALS['TSFE']->sys_language_uid) {
+				$language = $GLOBALS['TSFE']->sys_language_uid;
+			}
+			$query->addFilter('language:' . $language);
+
+			$additionalFilters = $this->conf['search.']['filter'];
+			$flexformFilters   = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filter', 'sQuery');
+			if (!empty($flexformFilters)) {
+				$additionalFilters = $flexformFilters;
+			}
+			if (!empty($additionalFilters)) {
+				$additionalFilters = explode('|', $additionalFilters);
+				foreach($additionalFilters as $additionalFilter) {
+					$query->addFilter($additionalFilter);
+				}
+			}
+
+				// sorting
+			if ($this->conf['searchResultsViewComponents.']['sorting']) {
+				$query->setSorting();
+			}
+
+			$flexformSorting = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'sortBy', 'sQuery');
+			if (!empty($flexformSorting)) {
+				$query->addQueryParameter('sort', $flexformSorting);
+			}
+
+			$this->query = $query;
+		}
+	}
+
+	/**
+	 * Performs post initialization.
+	 *
+	 * @see classes/pibase/tx_solr_pibase#postInitialize()
+	 */
+	protected function postInitialize() {
+			// disable caching
+		$this->pi_USER_INT_obj = 1;
+	}
+
+	/**
+	 * Overrides certain TypoScript configuration options with their values
+	 * from FlexForms.
+	 *
+	 */
+	protected function overrideTyposcriptWithFlexformSettings() {
+			// empty query, useful when no search has been conducted yet but one
+			// wants to show facets already. Then rows needs to be set to 0
+		$emptyQueryAllowed = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'emptyQuery', 'sQuery');
+		if ($emptyQueryAllowed) {
+			$this->conf['search.']['allowEmptyQuery'] = 1;
+		}
+
+			// target page
+		$targetPage = (int) $this->conf['search.']['targetPage'];
+		$flexformTargetPage = (int) $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'targetPage');
+		if ($flexformTargetPage) {
+			$targetPage = $flexformTargetPage;
+		}
+		if (!empty($targetPage)) {
+			$this->conf['search.']['targetPage'] = $targetPage;
+		} else {
+			$this->conf['search.']['targetPage'] = $GLOBALS['TSFE']->id;
+		}
+
+			// boost function
+		$boostFunction = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'boostFunction', 'sQuery');
+		if ($boostFunction) {
+			$this->conf['search.']['query.']['boostFunction'] = $boostFunction;
+		}
+	}
+
+	/**
+	 * Post initialization of the template engine, adding some Solr variables.
+	 *
+	 * @see	classes/pluginbase/tx_solr_pluginbase_PluginBase#postInitializeTemplate($template)
+	 * @param	tx_solr_Template	The template object as initialized thus far.
+	 * @return	tx_solr_Template	The modified template instance with additional variables available for rendering.
+	 */
+	protected function postInitializeTemplateEngine($template) {
+		$template->addVariable('solr', $this->getSolrVariables());
+
+		return $template;
+	}
+
+	/**
 	 * Gets the target page Id for links. Might have been set through either
 	 * flexform or TypoScript. If none is set, TSFE->id is used.
 	 *
@@ -400,20 +349,35 @@ class tx_solr_pi_results extends tslib_pibase {
 			$currentUrl = $this->search->getQuery()->getQueryUrl();
 		}
 
-
 		return array(
-			'prefix' => $this->prefixId,
+			'prefix'      => $this->prefixId,
 			'current_url' => $currentUrl
 		);
 	}
 
+	/**
+	 * Returns the number of results per Page.
+	 *
+	 * @return	int	number of results to show per page
+	 */
 	public function getNumberOfResultsPerPage() {
 		$configuration = tx_solr_Util::getSolrConfiguration();
 		$resultsPerPageSwitchOptions = t3lib_div::intExplode(',', $configuration['search.']['results.']['resultsPerPageSwitchOptions']);
 
+		$solrParameters     = array();
 		$solrPostParameters = t3lib_div::_POST('tx_solr');
-		if (isset($solrPostParameters['resultsPerPage']) && in_array($solrPostParameters['resultsPerPage'], $resultsPerPageSwitchOptions)) {
-			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_solr_resultsPerPage', intval($solrPostParameters['resultsPerPage']));
+		$solrGetParameters  = t3lib_div::_GET('tx_solr');
+
+			// check for GET parameters, POST takes precedence
+		if (isset($solrGetParameters) && is_array($solrGetParameters)) {
+			$solrParameters = $solrGetParameters;
+		}
+		if (isset($solrPostParameters) && is_array($solrPostParameters)) {
+			$solrParameters = $solrPostParameters;
+		}
+
+		if (isset($solrParameters['resultsPerPage']) && in_array($solrParameters['resultsPerPage'], $resultsPerPageSwitchOptions)) {
+			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_solr_resultsPerPage', intval($solrParameters['resultsPerPage']));
 			$this->resultsPerPageChanged = true;
 		}
 
@@ -425,26 +389,51 @@ class tx_solr_pi_results extends tslib_pibase {
 			$currentNumberOfResultsShown = (int) $userSetNumberOfResultsShown;
 		}
 
+		if ($this->conf['search.']['allowEmptyQuery'] && empty($this->piVars['q'])) {
+				// set number of rows to return to 0
+			$currentNumberOfResultsShown = 0;
+		}
+
 		return $currentNumberOfResultsShown;
 	}
 
-	protected function modifyQuery($query) {
-			// hook to modify the search query
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
-				$queryModifier = t3lib_div::getUserObj($classReference);
-
-				if ($queryModifier instanceof tx_solr_QueryModifier) {
-					$query = $queryModifier->modifyQuery($query);
-				}
-			}
-		}
-
-		return $query;
+	/**
+	 * Returns the key which is used to determine the templatefile from the typoscript setup.
+	 *
+	 * @see classes/pibase/tx_solr_pibase#getTemplateFileKey()
+	 * @return string
+	 */
+	protected function getTemplateFileKey() {
+		return 'results';
 	}
 
-	public function getTemplate() {
-		return $this->template;
+	/**
+	 * Returns the plugin key, used in various base methods.
+	 *
+	 * @see classes/pibase/tx_solr_pibase#getPluginKey()
+	 * @return string
+	 */
+	protected function getPluginKey() {
+		return 'pi_results';
+	}
+
+	/**
+	 * Returns the main subpart to work on.
+	 *
+	 * @see classes/pibase/tx_solr_pibase#getSubpart()
+	 */
+	protected function getSubpart() {
+		return 'solr_search';
+	}
+
+	/**
+	 * Gets the tx_solr_Search instance used for the query. Mainly used as a
+	 * helper function for result document modifiers.
+	 *
+	 * @return	tx_solr_Search
+	 */
+	public function getSearch() {
+		return $this->search;
 	}
 }
 
