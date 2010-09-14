@@ -50,15 +50,18 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 
 		$testSearchWord = t3lib_div::_GPmerged('tx_solr');
 		if (trim($testSearchWord['q'])) {
-			$searchWord = t3lib_div::removeXSS(trim($testSearchWord['q']));
+			$searchWord = trim($this->parentPlugin->piVars['q']);
+			$searchWord = t3lib_div::removeXSS($searchWord);
 			$searchWord = htmlentities($searchWord, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
 		}
 
 		$marker = array(
-			'action'         => $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']),
-			'action_id'      => $this->parentPlugin->conf['search.']['targetPage'],
-			'accept-charset' => $GLOBALS['TSFE']->metaCharset,
-			'q'              => $searchWord
+			'action'                    => $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']),
+			'action_id'                 => intval($this->parentPlugin->conf['search.']['targetPage']),
+			'action_language'           => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
+			'action_language_parameter' => 'L', // FIXME L is not necessarily the language parameter
+			'accept-charset'            => $GLOBALS['TSFE']->metaCharset,
+			'q'                         => $searchWord
 		);
 
 			// TODO maybe move into a form modifier
@@ -78,10 +81,14 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'] as $classReference) {
 				$formModifier = t3lib_div::getUserObj($classReference);
 
-					// FIXME, check whether the search form modifier interface is implemented
-					// maybe add (inject) the template during instanciation
-
-				$marker = $formModifier->modifyForm($marker, $this->parentPlugin->getTemplate());
+				if ($formModifier instanceof tx_solr_FormModifier) {
+					$marker = $formModifier->modifyForm($marker, $this->parentPlugin->getTemplate());
+				} else {
+					throw new InvalidArgumentException(
+						'Form modifier "' . $classReference . '" must implement the tx_solr_FormModifier interface.',
+						1262864703
+					);
+				}
 			}
 		}
 
