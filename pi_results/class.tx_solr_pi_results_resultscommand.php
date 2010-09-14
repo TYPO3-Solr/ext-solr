@@ -50,16 +50,25 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 
 	public function execute() {
 		$numberOfResults = $this->search->getNumberOfResults();
+		$query = htmlentities(trim($this->parentPlugin->piVars['q']), ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
 
 		$searchedFor = strtr(
 			$this->parentPlugin->pi_getLL('results_searched_for'),
+			array('@searchWord' => $query)
+		);
+
+		$foundResultsInfo = strtr(
+			$this->parentPlugin->pi_getLL('results_found'),
 			array(
-				'@searchWord' => htmlentities(trim($this->parentPlugin->piVars['q']), ENT_QUOTES, $GLOBALS['TSFE']->metaCharset)
+				'@resultsTotal' => $this->search->getNumberOfResults(),
+				'@resultsTime'  => $this->search->getQueryTime()
 			)
 		);
 
 		return array(
 			'searched_for' => $searchedFor,
+			'query' => $query,
+			'found' => $foundResultsInfo,
 			'range' => $this->getPageBrowserRange(),
 			'count' => $this->search->getNumberOfResults(),
 			'offset' => ($this->search->getResultOffset() + 1),
@@ -71,32 +80,58 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 				 */
 			'loop_result_documents|result_document' => $this->getResultDocuments(),
 			'pagebrowser' => $this->getPageBrowser($numberOfResults),
-			'subpart_results_per_page_switch' => $this->getResultsPerPageSwitch()
+			'subpart_results_per_page_switch' => $this->getResultsPerPageSwitch(),
+			'filtered' => $this->isFiltered(),
+			'filtered_by_user' => $this->isFilteredByUser()
 		);
 	}
 
 	protected function getResultDocuments() {
-		$processingInstructions = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['results.']['fieldProcessingInstructions.'];
 		$searchResponse  = $this->search->getResponse();
 		$resultDocuments = array();
 
 			// TODO check whether highlighting is enabled in TS at all
 		$highlightedContent = $this->search->getHighlightedContent();
 
-		foreach ($searchResponse->docs as $resultDocument) {
-			$temporaryResult = array();
-			$temporaryResult = $this->processDocumentFieldsToArray($resultDocument);
+		$responseDocuments = $searchResponse->docs;
 
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
+				$resultSetModifier = t3lib_div::getUserObj($classReference);
+
+				if ($resultSetModifier instanceof tx_solr_ResultSetModifier) {
+					$responseDocuments = $resultSetModifier->modifyResultSet($this, $responseDocuments);
+				} else {
+					// TODO throw exception
+				}
+			}
+		}
+
+		foreach ($responseDocuments as $resultDocument) {
+			$temporaryResultDocument = array();
+			$temporaryResultDocument = $this->processDocumentFieldsToArray($resultDocument);
+
+				// TODO implement as tx_solr_ResultDocumentModifier, move into highlighting command
 			if ($highlightedContent->{$resultDocument->id}->content[0]) {
-				$temporaryResult['content'] = $this->utf8Decode(
+				$temporaryResultDocument['content'] = $this->utf8Decode(
 					$highlightedContent->{$resultDocument->id}->content[0]
 				);
 			}
 
-				// TODO add a hook to further modify the search result document
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'])) {
+				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'] as $classReference) {
+					$resultDocumentModifier = t3lib_div::getUserObj($classReference);
 
-			$resultDocuments[] = $this->renderDocumentFields($temporaryResult);
-			unset($temporaryResult);
+					if ($resultDocumentModifier instanceof tx_solr_ResultDocumentModifier) {
+						$temporaryResultDocument = $resultDocumentModifier->modifyResultDocument($this, $temporaryResultDocument);
+					} else {
+						// TODO throw exception
+					}
+				}
+			}
+
+			$resultDocuments[] = $this->renderDocumentFields($temporaryResultDocument);
+			unset($temporaryResultDocument);
 		}
 
 		return $resultDocuments;
@@ -122,10 +157,12 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 		foreach ($availableFields as $fieldName) {
 			$processingInstruction = $processingInstructions[$fieldName];
 
+				// TODO switch to field processors
 				// TODO allow to have multiple (commaseparated) instructions for each field
 			switch ($processingInstruction) {
 				case 'timestamp':
-					$parsedTime = strptime($document->{$fieldName}, '%Y-%m-%dT%TZ');
+					$parsedTime = strptime($document->{$fieldName}, '%Y-%m-%dT%H:%M:%SZ');
+
 					$processedFieldValue = mktime(
 						$parsedTime['tm_hour'],
 						$parsedTime['tm_min'],
@@ -253,6 +290,44 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 		}
 
 		return $string;
+	}
+
+	/**
+	 * Gets the parent plugin.
+	 *
+	 * @return	tx_solr_pi_results
+	 */
+	public function getParentPlugin() {
+		return $this->parentPlugin;
+	}
+
+	/**
+	 * Determines whether filters have been applied to the query or not.
+	 *
+	 * @return	string	1 if filters are applied, 0 if not (for use in templates)
+	 */
+	protected function isFiltered() {
+		$filters = $this->search->getQuery()->getFilters();
+		$filtered = !empty($filters);
+
+		return ($filtered ? '1' : '0');
+	}
+
+	/**
+	 * Determines whether filters have been applied by the user (facets for
+	 * example) to the query or not.
+	 *
+	 * @return	string	1 if filters are applied, 0 if not (for use in templates)
+	 */
+	protected function isFilteredByUser() {
+		$userFiltered = false;
+		$resultParameters = t3lib_div::_GET('tx_solr');
+
+		if (isset($resultParameters['filter'])) {
+			$userFiltered = true;
+		}
+
+		return ($userFiltered ? '1' : '0');
 	}
 }
 
