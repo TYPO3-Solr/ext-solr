@@ -51,7 +51,7 @@ plugin.tx_solr {
 
 			# see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
 			boostFunction =
-			
+
 			// TODO implement multiple filters
 #			filter {
 #				10 = x:y
@@ -237,7 +237,7 @@ plugin.tx_solr {
 
 	logging {
 		exceptions = 1
-		
+
 			// TODO change "indexing" to enable all indexing logging, split up into several options
 		indexing = 0
 		indexing {
