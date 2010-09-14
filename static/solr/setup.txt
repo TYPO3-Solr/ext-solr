@@ -17,6 +17,8 @@ plugin.tx_solr {
 	addDefaultCss = 1
 	addDefaultJs = 1
 
+	enableDebugMode = 0
+
 	general {
 		dateFormat.date = d.m.Y H:i
 	}

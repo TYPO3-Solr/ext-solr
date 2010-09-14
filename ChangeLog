@@ -15,6 +15,7 @@
 	* Changed the default template to show more features by default
 	* Changed the default highlighting wrap to use a CSS class instead of a style attribute
 	* Added EXT:crawler support
+	* Added an option to enable query debug mode
 
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 
