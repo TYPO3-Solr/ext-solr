@@ -363,18 +363,22 @@ class tx_solr_Template {
 				'###|###'
 			);
 
-			$processInLoopMarkers = $this->getMarkersFromTemplate(
+			$inLoopMarkers = $this->getMarkersFromTemplate(
 				$currentIterationContent,
 				'LOOP:',
 				false
 			);
 
+			$inLoopMarkers = $this->filterProtectedLoops($inLoopMarkers);
+
 			$currentIterationContent = $this->processInLoopMarkers(
 				$currentIterationContent,
 				$loopName,
-				$processInLoopMarkers,
+				$inLoopMarkers,
 				$value
 			);
+
+			$currentIterationContent = $this->processConditions($currentIterationContent);
 
 			$loopContent .= $currentIterationContent;
 		}
@@ -426,6 +430,27 @@ class tx_solr_Template {
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Some marker subparts must be protected and only rendered by their
+	 * according commands. This method filters these protected markers from
+	 * others when rendering loops so that they are not replaced and left in
+	 * the template for rendering by the correct command.
+	 *
+	 * @param	array	An arry of loop markers found during rendering of a loop.
+	 * @return	array	The array with protected subpart markers removed.
+	 */
+	protected function filterProtectedLoops($loopMarkers) {
+		$protectedMarkers = array('result_documents');
+
+		foreach ($loopMarkers as $key => $loopMarker) {
+			if (in_array(strtolower($loopMarker), $protectedMarkers)) {
+				unset($loopMarkers[$key]);
+			}
+		}
+
+		return $loopMarkers;
 	}
 
 	/**
