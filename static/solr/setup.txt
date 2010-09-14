@@ -236,8 +236,13 @@ plugin.tx_solr {
 	}
 
 	logging {
-		indexing = 0
 		exceptions = 1
+		
+			// TODO change "indexing" to enable all indexing logging, split up into several options
+		indexing = 0
+		indexing {
+
+		}
 
 		query {
 			filters = 0
