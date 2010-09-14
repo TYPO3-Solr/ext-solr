@@ -171,14 +171,12 @@ plugin.tx_solr {
 				type {
 					label = Content Type
 					field = type
-					limit = 10
 					missing = 0
 				}
 
 				author {
 					label = Author
 					field = sortAuthor
-					limit = 20
 				}
 
 /* Not implemented yet
