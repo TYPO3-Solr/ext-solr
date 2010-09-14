@@ -10,6 +10,7 @@
 	* Changed tx_solr_Template to accept markers in whatver notation
 	* Added tx_solr_Util::lcfirst()
 	* Added tx_solr_Util::getSolrConfigurationFromPageId() and tx_solr_Util::initializeTsfe()
+	* Added base classes for plugins
 
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 
