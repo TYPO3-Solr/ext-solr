@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- $Id: schema.xml 64431 2010-07-20 15:04:52Z dkd-goldbach $ -->
 
 <!--
 	This is the Solr schema file. This file should be named "schema.xml"
