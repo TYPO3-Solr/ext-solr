@@ -391,9 +391,10 @@ class tx_solr_Template {
 	}
 
 	/**
-	 * processes marker in a loop that start with LOOP:, this is useful
-	 * especially for calling view helper with the current iteration's value
-	 * as a parameter
+	 * Processes marker in a loop that start with LOOP:.
+	 *
+	 * This is useful especially for calling view helpers with the current
+	 * iteration's value as a parameter.
 	 *
 	 * @param unknown_type $content
 	 * @param unknown_type $loopName
