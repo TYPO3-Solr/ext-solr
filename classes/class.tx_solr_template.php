@@ -289,7 +289,13 @@ class tx_solr_Template {
 
 		foreach ($viewHelpersFound as $helperKey) {
 			if (!isset($this->helpers[strtolower($helperKey)])) {
-				$this->loadViewHelper($helperKey);
+				$viewHelperLoaded = $this->loadViewHelper($helperKey);
+
+				if (!$viewHelperLoaded) {
+						// skipping processing in case we couldn't find a class
+						// to handle the view helper
+					continue;
+				}
 				$this->addViewHelper($helperKey);
 			}
 
