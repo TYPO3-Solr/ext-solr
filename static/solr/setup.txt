@@ -122,12 +122,6 @@ plugin.tx_solr {
 			wrap = |<div class="spelling-suggestions">###LLL:didYouMean### |</div>|
 		}
 
-		// not implemented yet
-		contentElevation = 0
-		contentElevation {
-			forceElevation = 0
-		}
-
 		sorting = 0
 		sorting {
 			defaultOrder = asc
