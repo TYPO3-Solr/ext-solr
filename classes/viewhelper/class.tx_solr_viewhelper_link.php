@@ -57,14 +57,26 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 	 */
 	public function execute(array $arguments = array()) {
 		$linkText             = $arguments[0];
-		$pageId               = $arguments[1] ? intval($arguments[1]) : $GLOBALS['TSFE']->id;
 		$additionalParameters = $arguments[2] ? $arguments[2] : '';
 		$useCache             = $arguments[3] ? true : false;
+
+			// by default or if no link target is set, link to the current page
+		$linkTarget = $GLOBALS['TSFE']->id;
+
+			// if the link target is a number, interprete it as a page ID
+		if (is_numeric($arguments[1])) {
+			$linkTarget = intval($arguments[1]);
+		}
+
+			// treat everything else as an URL
+		if (filter_var($arguments[1], FILTER_VALIDATE_URL)) {
+			$linkTarget = filter_var($arguments[1], FILTER_SANITIZE_URL);
+		}
 
 		$linkConfiguration = array(
 			'useCacheHash'     => $useCache,
 			'no_cache'         => false,
-			'parameter'        => $pageId,
+			'parameter'        => $linkTarget,
 			'additionalParams' => $additionalParameters
 		);
 
