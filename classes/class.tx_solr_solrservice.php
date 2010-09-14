@@ -22,8 +22,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once($GLOBALS['PATH_solr'] . 'lib/SolrPhpClient/Apache/Solr/Service.php');
-
 
 /**
  * Solr Service Access
@@ -38,7 +36,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	const SYSTEM_SERVLET = 'admin/system';
 
 	/**
-	 * Server connection scheme
+	 * Server connection scheme. http or https.
 	 *
 	 * @var string
 	 */
@@ -133,6 +131,50 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		return $url;
 	}
 
+	/**
+	 * Make a request to a servlet (a path) that's not a standard path.
+	 *
+	 * @param	string	Path to be added to the base Solr path.
+	 * @param	array	Optional, additional request parameters when constructing the URL.
+	 * @param	string	HTTP method to use, defaults to GET.
+	 * @param	string	Key value pairs of header names and values. Should include 'Content-Type' for POST and PUT.
+	 * @param	string	Must be an empty string unless method is POST or PUT.
+	 * @param	float	Read timeout in seconds, defaults to FALSE.
+	 * @return	Apache_Solr_Response	Response object
+	 */
+	public function requestServlet($servlet, $parameters = array(), $method = 'GET', $requestHeaders = array(), $rawPost = '', $timeout = FALSE) {
+		$response = null;
+
+		if ($method == 'GET' || $method == 'HEAD') {
+				// Make sure we are not sending a request body.
+			$rawPost = '';
+		}
+
+			// Add default paramseters
+		$parameters['wt'] = self::SOLR_WRITER;
+		$parameters['json.nl'] = $this->_namedListTreatment;
+		$parameters['version'] = self::SOLR_VERSION;
+		$url = $this->_constructUrl($servlet, $parameters);
+
+		if ($method == self::METHOD_GET) {
+			$response = $this->_sendRawGet($url);
+		} else if ($method == self::METHOD_POST) {
+				// FIXME should respect all headers, not only Content-Type
+			$response = $this->_sendRawPost($url, $rawPost, $timeout, $requestHeaders['Content-Type']);
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Performs a search.
+	 *
+	 * @param	string	query string / search term
+	 * @param	integer	result offset for pagination
+	 * @param	integer	number of results to retrieve
+	 * @param	array	additional HTTP GET parameters
+	 * @return	Apache_Solr_Response	Solr response
+	 */
 	public function search($query, $offset = 0, $limit = 10, $params = array()) {
 		$this->responseCache = parent::search($query, $offset, $limit, $params);
 		$this->hasSearched = true;
