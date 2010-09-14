@@ -187,6 +187,76 @@ class tx_solr_Util {
 			// TODO merge flexform configuration
 		return $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
 	}
+
+	/**
+	 * Gets the Solr configuration for a specific root page id.
+	 * To be used from the backend.
+	 *
+	 * @param	integer	Id of the (root) page to get the Solr configuration from.
+	 * @param	boolean	Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+	 * @return	array	The Solr configuration for the requested tree.
+	 */
+	public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false) {
+		static $configurationCache = array();
+		$solrConfiguration         = array();
+
+			// TODO needs some caching -> caching framework?
+
+		if ($initializeTsfe) {
+			self::initializeTsfe($pageId);
+			$configurationCache[$pageId] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
+		} else {
+			if (!isset($configurationCache[$pageId])) {
+				$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+				$rootLine   = $pageSelect->getRootLine($pageId);
+
+				if (empty($GLOBALS['TSFE']->sys_page)) {
+					$GLOBALS['TSFE']->sys_page = $pageSelect;
+				}
+
+				$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
+				$tmpl->tt_track = false; // Do not log time-performance information
+				$tmpl->init();
+				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
+				$tmpl->generateConfig();
+
+				$solrConfiguration = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr');
+
+				$configurationCache[$pageId] = $solrConfiguration[0];
+			}
+		}
+
+		return $configurationCache[$pageId];
+	}
+
+	/**
+	 * Initializes the TSFE for a given page Id
+	 *
+	 * @param	integer	The page id to initialize the TSFE for
+	 */
+	public static function initializeTsfe($pageId) {
+		static $tsfeCache = array();
+
+		if (!is_object($GLOBALS['TT'])) {
+			$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_TimeTrackNull');
+		}
+
+		if (!isset($tsfeCache[$pageId])) {
+			$GLOBALS['TSFE'] = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
+			$GLOBALS['TSFE']->initFEuser();
+			$GLOBALS['TSFE']->determineId();
+			$GLOBALS['TSFE']->initTemplate();
+			$GLOBALS['TSFE']->getConfigArray();
+
+			$tsfeCache[$pageId] = $GLOBALS['TSFE'];
+		}
+
+			// resetting, a TSFE instance with data from a different page Id could be set already
+		unset($GLOBALS['TSFE']);
+
+			// use the requested TSFE instance
+		$GLOBALS['TSFE'] = $tsfeCache[$pageId];
+	}
 }
 
 
