@@ -61,6 +61,7 @@ plugin.tx_solr {
 
 		form = simple
 
+		# TODO make it a top level configuration section
 		results {
 			resultsPerPage = {$plugin.tx_solr.search.results.resultsPerPage}
 			resultsPerPageSwitchOptions = 10, 20, 30, 50
