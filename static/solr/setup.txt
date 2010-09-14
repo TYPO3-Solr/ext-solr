@@ -144,9 +144,8 @@ plugin.tx_solr {
 					label = sorting_type
 				}
 
-				# field does not exist yet
-				author = 0
-				author {
+				sortAuthor = 0
+				sortAuthor {
 					label = sorting_author
 				}
 
