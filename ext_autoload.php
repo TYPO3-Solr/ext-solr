@@ -44,8 +44,8 @@ return array(
 	'tx_solr_viewhelper_relevance' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_relevance.php',
 	'tx_solr_viewhelper_relevancebar' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_relevancebar.php',
 	'tx_solr_viewhelper_solrlink' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_solrlink.php',
-	'tx_solr_viewhelper_sorturl' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_sorturl.php',
 	'tx_solr_viewhelper_sortindicator' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_sortindicator.php',
+	'tx_solr_viewhelper_sorturl' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_sorturl.php',
 	'tx_solr_viewhelper_ts' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_ts.php',
 
 	'tx_solr_additionalindexer' => $extensionPath . 'interfaces/interface.tx_solr_additionalindexer.php',
