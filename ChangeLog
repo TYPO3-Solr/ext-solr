@@ -18,6 +18,7 @@
 	* Added an option to enable query debug mode
 	* Added an option to set allowEmptyQuery via TypoScript
 	* Changed the results plugin by refactoring to use the tx_solr_pluginbase_CommandPluginBase class, credits Timo Schmidt
+	* Added new interfaces to extend the functionality of EXT:solr
 
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 
