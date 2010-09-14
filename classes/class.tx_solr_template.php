@@ -594,12 +594,24 @@ class tx_solr_Template {
 			$dotPosition = strpos($marker, '.');
 
 			if ($dotPosition !== false) {
+				$resolvedValue = null;
+
 					// the marker contains a dot, thus we have to resolve the
 					// second part of the marker
-				$valueSelector = strtolower(substr($marker, $dotPosition + 1));
+				$valueSelector = substr($marker, $dotPosition + 1);
+				$valueSelector = $this->normalizeString($valueSelector);
 
 				if (is_array($variableValue)) {
-					$resolvedValue = $variableValue[$valueSelector];
+
+					$normalizedKeysArray = array();
+					foreach($variableValue as $key => $value) {
+						$key = $this->normalizeString($key);
+						$normalizedKeysArray[$key] = $value;
+					}
+
+					if (array_key_exists($valueSelector, $normalizedKeysArray)) {
+						$resolvedValue = $normalizedKeysArray[$valueSelector];
+					}
 				} else if (is_object($variableValue)) {
 					$resolveMethod = 'get' . tx_solr_Util::camelize($valueSelector);
 					$resolvedValue = $variableValue->$resolveMethod();
@@ -620,6 +632,31 @@ class tx_solr_Template {
 		}
 
 		return $resolvedMarkers;
+	}
+
+	/**
+	 * Normalizes the various input formats of the markers to a common format.
+	 *
+	 * Example:
+	 *
+	 * FILE_MIME_TYPE_STRING_S => file_mime_type_string_s
+	 * file_mime_type_string_s => file_mime_type_string_s
+	 * fileMimeType_stringS    => file_mime_type_string_s
+	 *
+	 * @param	string	A string in upper case with underscores, lowercase with underscores, camel case, or a mix.
+	 * @return	string	A lowercased, underscorized version of the given string
+	 */
+	protected function normalizeString($selector) {
+		$selector = str_replace('-', '_', $selector);
+
+			// when switching from lowercase to Uppercase in camel cased
+			// strings, insert an underscore
+		$underscorized = preg_replace('/([a-z])([A-Z])/', '\\1_\\2', $selector);
+
+			// for all other cases - all upper or all lower case
+			// we simply lowercase the complete string
+
+		return strtolower($underscorized);
 	}
 
 	/**
