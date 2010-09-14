@@ -110,7 +110,7 @@ plugin.tx_solr {
 #			highlightFields = title,content
 			fragmentSize = 200
 
-			wrap = <em style="background: #fdee53;">|</em>
+			wrap = <span class="results-highlight">|</span>
 		}
 
 		spellchecking = 0
