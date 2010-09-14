@@ -35,7 +35,6 @@
  * @package	TYPO3
  * @subpackage	tx_solr
  */
-
 abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_PluginBase{
 
 	/**
@@ -49,7 +48,7 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 	/**
 	 * Should return an array with commands that should be executed.
 	 *
-	 * @return array
+	 * @return	array
 	 */
 	abstract protected function getCommandList();
 
@@ -57,7 +56,7 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 	 * This method executes the requested commands and applies the changes to
 	 * the template.
 	 *
-	 * @todo This method should be located some where in a base view
+	 * TODO This method should be located somewhere in a base view
 	 */
 	protected function render($actionResult) {
 		$commandList     = $this->getCommandList();
