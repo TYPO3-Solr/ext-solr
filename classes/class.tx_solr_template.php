@@ -296,6 +296,7 @@ class tx_solr_Template {
 						// to handle the view helper
 					continue;
 				}
+
 				$this->addViewHelper($helperKey);
 			}
 
@@ -340,7 +341,13 @@ class tx_solr_Template {
 	protected function renderLoop($loopName) {
 		$loopContent    = '';
 		$loopTemplate   = $this->getSubpart('LOOP:' . $loopName);
-		$loopSingleItem = $this->getSubpart('loop_content', $loopTemplate);
+
+		$loopSingleItem = $this->getSubpart('loop_content:' . $loopName, $loopTemplate);
+		if (empty($loopSingleItem)) {
+				// backwards compatible fallback for unnamed loops
+			$loopSingleItem = $this->getSubpart('loop_content', $loopTemplate);
+		}
+
 		$loopMarker     = $this->loops[$loopName]['marker'];
 		$loopVariables  = $this->loops[$loopName]['data'];
 		$foundMarkers   = $this->getMarkersFromTemplate($loopSingleItem, $loopMarker . '\.');
