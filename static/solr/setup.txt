@@ -28,7 +28,7 @@ plugin.tx_solr {
 		additionalFields {
 
 		}
-		
+
 			// assigns processing instructions to Solr fields during indexing, Solr field = processing instruction
 		fieldProcessingInstructions {
 			changed = timestampToIsoDate
@@ -51,6 +51,12 @@ plugin.tx_solr {
 
 			# see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
 			boostFunction =
+			
+			// TODO implement multiple filters
+#			filter {
+#				10 = x:y
+#				20 = a:b
+#			}
 		}
 
 		form = simple
