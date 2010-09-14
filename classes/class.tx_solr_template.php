@@ -33,6 +33,9 @@
  */
 class tx_solr_Template {
 
+	const CLEAN_TEMPLATE_YES = true;
+	const CLEAN_TEMPLATE_NO  = false;
+
 	protected $prefix;
 	protected $cObj;
 	protected $templateFile;
@@ -191,7 +194,7 @@ class tx_solr_Template {
 	 *
 	 * @return	string the rendered html template with markers replaced with their content
 	 */
-	public function render($cleanTemplate = true) {
+	public function render($cleanTemplate = false) {
 
 			// process loops
 		foreach ($this->loops as $key => $loopVariables) {
@@ -226,6 +229,9 @@ class tx_solr_Template {
 				$content
 			);
 		}
+
+			// process conditions
+		$this->workOnSubpart = $this->processConditions($this->workOnSubpart);
 
 			// process view helpers, they need to be the last objects processing the template
 		$this->workOnSubpart = $this->processViewHelpers($this->workOnSubpart);
@@ -409,6 +415,129 @@ class tx_solr_Template {
 		return $content;
 	}
 
+	/**
+	 * Processes conditions: finds and evaluates them in HTML code.
+	 *
+	 * @param	string	HTML
+	 */
+	protected function processConditions($content) {
+			// find conditions
+		$conditions = $this->findConditions($content);
+
+			// evaluate conditions
+		foreach ($conditions as $condition) {
+			$conditionResult = $this->evaluateCondition(
+				$condition['comparand1'],
+				$condition['comparand2'],
+				$condition['operator']
+			);
+
+			if ($conditionResult) {
+					// if condition evaluates to true, simply replace it with
+					// the original content to have the surrounding markers removed
+				$content = t3lib_parsehtml::substituteSubpart(
+					$content,
+					$condition['marker'],
+					$condition['content']
+				);
+			} else {
+					// if condition evaluates to false, remove the content from the template
+				$content = t3lib_parsehtml::substituteSubpart(
+					$content,
+					$condition['marker'],
+					''
+				);
+			}
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Finds conditions in HTML code.
+	 *
+	 * Conditions are subparts with markers in the form of
+	 *
+	 * ###IF:comparand1|operator|comparand2###
+	 * Some content only visible if the condition evaluates as true
+	 * ###IF:comparand1|operator|comparand2###
+	 *
+	 * The returned result is an array of arrays describing a found condition.
+	 * Each conditions is described as follows:
+	 * [marker] the complete marker used to specify the condition
+	 * [content] the content wrapped by the condition
+	 * [operator] the condition operator
+	 * [comparand1] and [comparand2] the comparands.
+	 *
+	 * @param	string	HTML
+	 * @return	array	An array describing the conditions found
+	 */
+	protected function findConditions($content) {
+		$conditions = array();
+		$ifMarkers  = $this->getHelperMarkers('IF', $content, false);
+
+		foreach ($ifMarkers as $ifMarker) {
+			list($comparand1, $operator, $comparand2) = explode('|', $ifMarker);
+
+			$ifContent = t3lib_parsehtml::getSubpart(
+				$content,
+				'###IF:' . $ifMarker . '###'
+			);
+
+			$conditions[] = array(
+				'marker'     => '###IF:' . $ifMarker . '###',
+				'content'    => $ifContent,
+				'operator'   => trim($operator),
+				'comparand1' => $comparand1,
+				'comparand2' => $comparand2
+			);
+		}
+
+		return $conditions;
+	}
+
+	/**
+	 * Evaluates conditions.
+	 *
+	 * Supported operators are ==, !=, <, <=, >, >=, %
+	 *
+	 * @param	string	First comaprand
+	 * @param	string	Second comaprand
+	 * @param	string	Operator
+	 * @return	boolean	Boolean evaluation of the condition.
+	 */
+	protected function evaluateCondition($comparand1, $comparand2, $operator) {
+		$conditionResult = false;
+
+		switch($operator) {
+			case '==':
+				$conditionResult = ($comparand1 == $comparand2);
+				break;
+			case '!=';
+				$conditionResult = ($comparand1 != $comparand2);
+				break;
+			case '<';
+				$conditionResult = ($comparand1 < $comparand2);
+				break;
+			case '<=';
+				$conditionResult = ($comparand1 <= $comparand2);
+				break;
+			case '>';
+				$conditionResult = ($comparand1 > $comparand2);
+				break;
+			case '>=';
+				$conditionResult = ($comparand1 >= $comparand2);
+				break;
+			case '%';
+				$conditionResult = ($comparand1 % $comparand2);
+				break;
+		}
+
+			// explicit casting, just in case
+		$conditionResult = (boolean) $conditionResult;
+
+		return $conditionResult;
+	}
 
 	/**
 	 * Resolves variables to marker. Markers can be simple markers like
@@ -592,9 +721,10 @@ class tx_solr_Template {
 	 *
 	 * @param	string	marker name, can be lower case, doesn't need the ### delimiters
 	 * @param	string	subpartname
+	 * @param	boolean	Optionally determines whether duplicate view helpers are removed. Defaults to true.
 	 * @return	array	array of markers
 	 */
-	public function getHelperMarkers($helperMarker, $subpart) {
+	public function getHelperMarkers($helperMarker, $subpart, $removeDuplicates = true) {
 			// '!###' . $helperMarker . ':([A-Z0-9_-|.]*)\###!is'
 			// '!###' . $helperMarker . ':(.*?)\###!is',
 			// '!###' . $helperMarker . ':((.*?)+?(\###(.*?)\###(|.*?)?)?)?\###!is'
@@ -605,7 +735,11 @@ class tx_solr_Template {
 			$match,
 			PREG_PATTERN_ORDER
 		);
-		$markers = array_unique($match[1]);
+		$markers = $match[1];
+
+		if ($removeDuplicates) {
+			$markers = array_unique($markers);
+		}
 
 		return $markers;
 	}
