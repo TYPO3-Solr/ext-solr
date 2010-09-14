@@ -14,6 +14,7 @@
 	* Removed the backend module for now, didn't do anything anyways
 	* Changed the default template to show more features by default
 	* Changed the default highlighting wrap to use a CSS class instead of a style attribute
+	* Added EXT:crawler support
 
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 

@@ -17,7 +17,7 @@ switch (TYPO3_branch) {
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// adding the search plugin
+	// adding the Search plugin
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
 	'pi_results/class.tx_solr_pi_results.php',
@@ -30,6 +30,11 @@ t3lib_extMgm::addPItoST43(
 
 	// adding the indexer to the same hook that EXT:indexed_search would use
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing']['tx_solr_Indexer'] = 'EXT:solr/classes/class.tx_solr_indexer.php:tx_solr_Indexer';
+
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// registering with the "crawler" extension:
+$TYPO3_CONF_VARS['EXTCONF']['crawler']['procInstructions']['tx_solr_reindex'] = 'Solr Re-indexing';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
