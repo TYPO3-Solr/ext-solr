@@ -159,6 +159,7 @@ plugin.tx_solr {
 			minimumCount = 1
 			sortBy = count
 			limit = 10
+			singleFacetMode = 0
 
 			facetOrder = type, author
 			facets {

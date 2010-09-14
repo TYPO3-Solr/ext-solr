@@ -26,6 +26,7 @@
 	* Changed the faceting command to only execute when activated through TypoScript
 	* Added facet option "selectingSelectedFacetOptionRemovesFilter"
 	* Added facet option "operator"
+	* Added facet option "singleFacetMode"
 
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 
