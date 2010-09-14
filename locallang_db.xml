@@ -6,7 +6,7 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="tt_content.list_type_pi_results">Solr Search</label>
+			<label index="tt_content.list_type_pi_results">Solr: Form, Result, Additional Components</label>
 		</languageKey>
 	</data>
 </T3locallang>
