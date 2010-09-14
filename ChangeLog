@@ -1,3 +1,7 @@
+2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
+
+	* Changed solrconfig.xml deactivate dataDir
+
 2010-09-13  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added a content extraction class for TYPO3 pages
