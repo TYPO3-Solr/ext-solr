@@ -151,11 +151,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase{
 	 *
 	 */
 	protected function initializeSearch() {
-		if (SOLR_COMPAT) {
-			$this->search = tx_solr_compat_Compat::makeInstance('tx_solr_Search');
-		} else {
-			$this->search = t3lib_div::makeInstance('tx_solr_Search');
-		}
+		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
 		$this->solrAvailable = $this->search->ping();
 	}
@@ -178,22 +174,12 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase{
 			$templateFile = $flexformTemplateFile;
 		}
 
-		if (SOLR_COMPAT) {
-			$template = tx_solr_compat_Compat::makeInstance(
-				'tx_solr_Template',
-				$this->cObj,
-				$templateFile,
-				$subPart
-			);
-		} else {
-			$template = t3lib_div::makeInstance(
-				'tx_solr_Template',
-				$this->cObj,
-				$templateFile,
-				$subPart
-			);
-		}
-
+		$template = t3lib_div::makeInstance(
+			'tx_solr_Template',
+			$this->cObj,
+			$templateFile,
+			$subPart
+		);
 		$template->addViewHelperIncludePath($this->extKey, 'classes/viewhelper/');
 		$template->addViewHelper('LLL', array(
 			'languageFile' => $GLOBALS['PATH_solr'] . $this->getPluginKey() .'/locallang.xml',
@@ -216,6 +202,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase{
 				}
 			}
 		}
+
 		$template = $this->postInitializeTemplateEngine($template);
 
 		$this->template = $template;
