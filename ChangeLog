@@ -8,6 +8,7 @@
 	* Added support for named loops in tx_solr_Template
 	* Added support for conditions in loops
 	* Changed tx_solr_Template to accept markers in whatver notation
+	* Added tx_solr_Util::lcfirst()
 
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 
