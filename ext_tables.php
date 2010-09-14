@@ -34,8 +34,8 @@ t3lib_extMgm::addStaticFile($_EXTKEY, 'static/solr/', 'Apache Solr');
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 if (TYPO3_MODE == 'BE') {
-	t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
-	t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
+#	t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
+#	t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
 
 		// adding reports
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'][] = 'tx_solr_report_SchemaStatus';
