@@ -830,13 +830,13 @@ class tx_solr_Template {
 		preg_match_all('!###([\w]+):.*?\###!is', $content, $match);
 		$viewHelpers = array_unique($match[1]);
 
-			// remove LOOP
+			// remove / protect LOOP subparts
 		$loopIndex = array_search('LOOP', $viewHelpers);
 		if ($loopIndex !== false) {
 			unset($viewHelpers[$loopIndex]);
 		}
 
-			// remove IF
+			// remove / protect IF subparts
 		$loopIndex = array_search('IF', $viewHelpers);
 		if ($loopIndex !== false) {
 			unset($viewHelpers[$loopIndex]);
