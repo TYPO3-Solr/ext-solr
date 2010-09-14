@@ -15,6 +15,7 @@
 	<form id="tx-solr-search-form-pi-results" action="###FORM.ACTION###" method="get" accept-charset="###FORM.ACCEPT-CHARSET###">
 		###LLL:searchWord### <input type="text" class="tx-solr-q" name="###SOLR.PREFIX###[q]" value="###FORM.Q###" />
 		<input type="hidden" name="id" value="###FORM.ACTION_ID###" />
+		<input type="hidden" name="###FORM.ACTION_LANGUAGE_PARAMETER###" value="###FORM.ACTION_LANGUAGE###" />
 		<input type="submit" value="###LLL:submit###" />
 	</form>
 
@@ -32,6 +33,7 @@
 	<!-- ###SOLR_SEARCH_RESULTS### begin -->
 
 	###RESULTS.SEARCHED_FOR###
+	###RESULTS.FOUND###
 	###RESULTS.RANGE###
 
 	###RESULTS.PAGEBROWSER###
@@ -51,11 +53,13 @@
 	<ol start="###RESULTS.OFFSET###" class="results-list">
 		<!-- ###LOOP:RESULT_DOCUMENTS### begin -->
 		<!-- ###LOOP_CONTENT### -->
-		<li class="results-entry" style="background-color: transparent;">
+		<li class="results-entry">
 			<h5 class="results-topic">###CURRENT_RESULT_NUMBER:###LOOP_CURRENT_ITERATION_COUNT###### <a href="###RESULT_DOCUMENT.URL###">###RESULT_DOCUMENT.TITLE###</a></h5>
 			<div class="results-teaser">
 				<p>###RESULT_DOCUMENT.CONTENT###</p>
 				<p>Score: <em>###RESULT_DOCUMENT.SCORE###</em></p>
+				###RELEVANCE_BAR:###RESULT_DOCUMENT.SCORE######
+				###LLL:relevance###: ###RELEVANCE:###RESULT_DOCUMENT.SCORE######%
 			</div>
 		</li>
 		<!-- ###LOOP_CONTENT### -->
@@ -88,6 +92,10 @@
 				</li>
 				<!-- ###LOOP_CONTENT### -->
 				<!-- ###LOOP:FACETS_IN_USE### end -->
+
+				<li>
+					<a href="###REMOVE_ALL_FACETS.url###">###REMOVE_ALL_FACETS.text###</a>
+				</li>
 			</ul>
 		</div>
 		<!-- ###USED_FACETS### end -->
@@ -109,7 +117,7 @@
 						<!-- ###LOOP_CONTENT### -->
 						<!-- ###LOOP:FACET_LINKS### end -->
 						<!-- ###SINGLE_FACET_OPTION### end -->
-						<li>###FACET.showAllLink###</li>
+						###FACET.showAllLink###
 					</ul>
 				</li>
 				<!-- ###SINGLE_FACET### end -->
@@ -145,6 +153,10 @@
 <!-- ###SOLR_SEARCH_UNAVAILABLE### begin -->
 	###LLL:searchUnavailable###
 <!-- ###SOLR_SEARCH_UNAVAILABLE### end -->
+
+<!-- ###SOLR_SEARCH_ERROR### begin -->
+	###LLL:searchFailed###
+<!-- ###SOLR_SEARCH_ERROR### end -->
 
 </body>
 </html>
