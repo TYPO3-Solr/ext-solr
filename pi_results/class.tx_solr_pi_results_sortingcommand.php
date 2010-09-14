@@ -51,7 +51,8 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_Command {
 	public function execute() {
 		$marker = array();
 
-		if ($this->search->getNumberOfResults()) {
+		$configuration = tx_solr_Util::getSolrConfiguration();
+		if ($configuration['search.']['sorting'] != 0 && $this->search->getNumberOfResults()) {
 			$marker['loop_sort|sort'] = $this->getSortingLinks();
 		}
 
