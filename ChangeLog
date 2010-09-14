@@ -2,6 +2,7 @@
 
 	* Added a method to call arbitrary servlets to tx_solr_SolrService
 	* Changed the link viewhelper to handle the target argument in different ways
+	* Added "alpha" and "lex" as aliases for "index" to the facet sorting option
 
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 

@@ -246,8 +246,15 @@ class tx_solr_Query {
 			$this->queryParameters['facet'] = 'true';
 			$this->queryParameters['facet.mincount'] = $this->solrConfiguration['search.']['faceting.']['minimumCount'];
 
-			if (t3lib_div::inList('count,index,1,0,true,false', $this->solrConfiguration['search.']['faceting.']['sortBy'])) {
-				$this->queryParameters['facet.sort'] = $this->solrConfiguration['search.']['faceting.']['sortBy'];
+			if (t3lib_div::inList('count,index,alpha,lex,1,0,true,false', $this->solrConfiguration['search.']['faceting.']['sortBy'])) {
+				$sorting = $this->solrConfiguration['search.']['faceting.']['sortBy'];
+
+					// alpha and lex alias for index
+				if ($sorting == 'alpha' || $sorting == 'lex') {
+					$sorting = 'index';
+				}
+
+				$this->queryParameters['facet.sort'] = $sorting;
 			}
 		} else {
 			foreach ($this->queryParameters as $key => $value) {
