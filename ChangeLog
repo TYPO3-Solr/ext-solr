@@ -22,6 +22,10 @@
 	* Changed the form command: added new markers, enforced implementation of form modifier interface
 	* Changed the sorting command to only execute when activated through TypoScript
 	* Changed the results command: added new markers, added new hooks
+	* Changed the faceting command to use urlen/decode() for filter parmeters instead of json
+	* Changed the faceting command to only execute when activated through TypoScript
+	* Added facet option "selectingSelectedFacetOptionRemovesFilter"
+	* Added facet option "operator"
 
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 

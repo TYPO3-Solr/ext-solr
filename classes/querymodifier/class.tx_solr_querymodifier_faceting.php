@@ -27,6 +27,8 @@
  * Modifies a query to add faceting parameters
  *
  * @author	Ingo Renner <ingo@typo3.org>
+ * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
+ * @author	Sebastian Kurfuerst <sebastian@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
@@ -94,7 +96,6 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 	 * Builds facet parameters for date field facets
 	 *
 	 * @param	array	A facet configuration
-	 * @return	void
 	 */
 	protected function buildFacetDateParameters() {
 		// not implemented yet
@@ -104,18 +105,26 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 	 * Builds facet parameters for field facets
 	 *
 	 * @param	array	A facet configuration
-	 * @return	void
 	 */
 	protected function buildFacetFieldParameters(array $facetConfiguration) {
 			// very simple for now, may add overrides f.<field_name>.facet.* later
-		$this->facetParameters['facet.field'][] = $facetConfiguration['field'];
+		if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+			$this->facetParameters['facet.field'][] =
+				'{!ex=' . $facetConfiguration['field'] . '}'
+				. $facetConfiguration['field'];
+		} else {
+			$this->facetParameters['facet.field'][] = $facetConfiguration['field'];
+		}
+
+		if (in_array($facetConfiguration['sortBy'], array('alpha', 'index', 'lex'))) {
+			$this->facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = 'lex';
+		}
 	}
 
 	/**
 	 * Builds facet parameters for query facets
 	 *
 	 * @param	array	A facet configuration
-	 * @return	void
 	 */
 	protected function buildFacetQueryParameters() {
 
@@ -125,25 +134,44 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 	 * Adds filters specified through HTTP GET as filter query parameters to
 	 * the Solr query.
 	 *
-	 * @return void
 	 */
 	protected function addFacetQueryFilters() {
 		$resultParameters = t3lib_div::_GET('tx_solr');
 
 			// format for filter URL parameter:
 			// tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
-		if (isset($resultParameters['filter'])) {
-			$filters = json_decode($resultParameters['filter']);
+		if (is_array($resultParameters['filter'])) {
+			$filters = array_map('urldecode', $resultParameters['filter']);
+				// $filters look like array('name:value1','name:value2','fieldname2:lorem')
 			$configuredFacets = $this->getConfigurredFacets();
 
+				// first group the filters by filterName - so that we can
+				// dicide later wether we need to do AND or OR for multiple
+				// filters for a certain field
+				// $filtersByFieldName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('lorem'))
+			$filtersByFieldName = array();
 			foreach ($filters as $filter) {
-				list($filterName, $filterValue) = explode(':', $filter);
-
-				if (in_array($filterName, $configuredFacets)) {
-						// TODO support query and date facets
-					$this->facetFilters[] = $this->configuration['search.']['faceting.']['facets.'][$filterName . '.']['field']
-						. ':"' . $filterValue . '"';
+				list($filterFieldName, $filterValue) = explode(':', $filter);
+				if (in_array($filterFieldName, $configuredFacets)) {
+					$filtersByFieldName[$filterFieldName][] = $filterValue;
 				}
+			}
+
+			foreach ($filtersByFieldName as $fieldName => $filterValues) {
+				$fieldConfiguration = $this->configuration['search.']['faceting.']['facets.'][$fieldName . '.'];
+
+				$tag = '';
+				if ($fieldConfiguration['keepAllOptionsOnSelection'] == 1) {
+					$tag = '{!tag=' . addslashes( $fieldConfiguration['field'] ) . '}';
+				}
+
+				$filterParts = array();
+				foreach ($filterValues as $filterValue) {
+					$filterParts[] = $fieldConfiguration['field'] . ':"' . addslashes( $filterValue ) . '"';
+				}
+
+				$operator = ($fieldConfiguration['operator'] == 'OR') ? ' OR ' : ' AND ';
+				$this->facetFilters[] = $tag . '(' . implode($operator, $filterParts) . ')';
 			}
 		}
 	}

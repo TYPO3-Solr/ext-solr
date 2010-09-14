@@ -53,7 +53,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 	public function execute() {
 		$marker = array();
 
-		if ($this->search->getNumberOfResults()) {
+		if ($this->configuration['search.']['faceting'] != 0 && $this->search->getNumberOfResults()) {
 			$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 			$facetCounts      = $this->search->getFacetCounts();
 
@@ -82,13 +82,17 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 				$facetOptions = get_object_vars($facetCounts->facet_fields->$facetField);
 
 				if (!empty($facetOptions)) {
+					$facetContent = '';
+
+					$facetContent = $this->renderFacetOptions(
+						$facetName,
+						$facetField,
+						$facetCounts->facet_fields->$facetField
+					);
+
 					$facets[$facetName] = array(
-						'content' => $this->renderFacetOptions(
-							$facetName,
-							$facetField,
-							$facetCounts->facet_fields->$facetField
-						),
-						'count' => count((array) $facetCounts->facet_fields->$facetField)
+						'content' => $facetContent,
+						'count'   => count((array) $facetCounts->facet_fields->$facetField)
 					);
 				}
 			}
@@ -146,7 +150,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		$resultParameters = t3lib_div::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array) json_decode($resultParameters['filter']);
+			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
 		}
 
 		$facetsInUse = array();
@@ -180,6 +184,11 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		}
 		$template->addLoop('facets_in_use', 'remove_facet', $facetsInUse);
 
+		$template->addVariable('remove_all_facets', array(
+			'url'  => $query->getQueryUrl(array('filter' => array())),
+			'text' => '###LLL:faceting_removeAllFilters###'
+		));
+
 		$content = '';
 		if (count($facetsInUse)) {
 			$content = $template->render();
@@ -191,6 +200,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		// format for filter URL parameter:
 		// tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
 	protected function renderFacetOptions($facetName, $facetField, $facetOptions) {
+		$facetConfiguration = $this->configuration['search.']['faceting.']['facets.'][$facetName . '.'];
 		$template = clone $this->parentPlugin->getTemplate();
 		$template->workOnSubpart('single_facet_option');
 		$query = $this->search->getQuery();
@@ -214,13 +224,24 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 				$facetHidden = 'tx-solr-facet-hidden';
 			}
 
+			$facetSelected = $this->isSelectedFacetOption($facetName, $facetOption);
+
+				// negating the facet option links to remove a filter
+			if ($facetConfiguration['selectingSelectedFacetOptionRemovesFilter']
+				&& $facetSelected
+			) {
+				$facetLink    = $this->buildRemoveFacetLink($query, $facetText, $facetName . ':' . $facetOption);
+				$facetLinkUrl = $this->buildRemoveFacetUrl($query, $facetName . ':' . $facetOption);
+			}
+
 			$facetOptionLinks[] = array(
-				'hidden' => $facetHidden,
-				'link'   => $facetLink,
-				'url'    => $facetLinkUrl,
-				'text'   => $facetText,
-				'value'  => $facetOption,
-				'count'  => $facetOptionResultCount
+				'hidden'   => $facetHidden,
+				'link'     => $facetLink,
+				'url'      => $facetLinkUrl,
+				'text'     => $facetText,
+				'value'    => $facetOption,
+				'count'    => $facetOptionResultCount,
+				'selected' => $facetSelected ? '1' : '0'
 			);
 		}
 		$template->addLoop('facet_links', 'facet_link', $facetOptionLinks);
@@ -241,6 +262,8 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 
 		if (isset($this->configuration['search.']['faceting.']['facets.'][$facetName . '.']['renderingInstruction'])) {
 			$cObj = t3lib_div::makeInstance('tslib_cObj');
+
+				// TODO provide a data field with information about whether a facet option is selected, and possibly all information from the renderOptions method so that one can use that with TS
 			$cObj->start(array('optionValue' => $facetOption));
 
 			$renderedFacetOption = $cObj->cObjGetSingle(
@@ -252,70 +275,99 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 		return $renderedFacetOption;
 	}
 
+	/**
+	 * Creates a link tag to add a facet to a search result.
+	 *
+	 * @param	tx_solr_Query	$query
+	 * @param	string	$linkText
+	 * @param
+	 * @return	string	html link tag to add a facet to a search result
+	 */
 	protected function buildAddFacetLink($query, $linkText, $facetToAdd) {
-		$resultParameters = t3lib_div::_GPmerged('tx_solr');
-		$filterParameters = array();
-		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array) json_decode($resultParameters['filter']);
-		}
-
-		$filterParameters[] = $facetToAdd;
-		$filterParameters = array_unique($filterParameters);
-
-		return $query->getQueryLink(
-			$linkText,
-			array('filter' => json_encode($filterParameters))
-		);
+		$filterParameters = $this->addFacetAndEncodeFilterParameters($facetToAdd);
+		return $query->getQueryLink($linkText, array('filter' => $filterParameters));
 	}
 
+	/**
+	 * Create only the url to add a facet to a search result.
+	 *
+	 * @param	tx_solr_Query	$query
+	 * @param
+	 * @return	string	url to a a facet to a search result
+	 */
 	protected function buildAddFacetUrl($query, $facetToAdd) {
+		$filterParameters = $this->addFacetAndEncodeFilterParameters($facetToAdd);
+		return $query->getQueryUrl(array('filter' => $filterParameters));
+	}
+
+	/**
+	 * Returns a link tag with a link to remove a given facet from the search result array.
+	 *
+	 * @param	tx_solr_Query	$query
+	 * @param	string
+	 * @param
+	 * @return	string	html tag with link to remove a facet
+	 */
+	protected function buildRemoveFacetLink($query, $linkText, $facetToRemove) {
+		$filterParameters = $this->removeFacetAndEncodeFilterParameters($facetToRemove);
+		return $query->getQueryLink($linkText, array('filter' => $filterParameters));
+	}
+
+	/**
+	 * Build the url to remove a facet from a search result.
+	 *
+	 * @param	tx_solr_Query	$query
+	 * @param
+	 * @return	string
+	 */
+	protected function buildRemoveFacetUrl($query, $facetToRemove) {
+		$filterParameters = $this->removeFacetAndEncodeFilterParameters($facetToRemove);
+		return $query->getQueryUrl(array('filter' => $filterParameters));
+	}
+
+	/**
+	 * This method retrieves the filter parmeters from the url and adds an additional
+	 * facet to create a link to add additional facets to a search result.
+	 *
+	 * @param
+	 * @return array
+	 */
+	protected function addFacetAndEncodeFilterParameters($facetToAdd){
 		$resultParameters = t3lib_div::_GPmerged('tx_solr');
 		$filterParameters = array();
-		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array) json_decode($resultParameters['filter']);
+
+		if (isset($resultParameters['filter']) && !$this->configuration['search.']['faceting.']['singleFacetMode']) {
+			$filterParameters = array_map('urldecode', $resultParameters['filter']);
 		}
 
 		$filterParameters[] = $facetToAdd;
 		$filterParameters = array_unique($filterParameters);
+		$filterParameters = array_map('urlencode', $filterParameters);
 
-		return $query->getQueryUrl(
-			array('filter' => json_encode($filterParameters))
-		);
+		return $filterParameters;
 	}
 
-	protected function buildRemoveFacetLink($query, $linkText, $facetToRemove) {
+	/**
+	 * This method is used to remove a facet from to filter query.
+	 *
+	 * @param
+	 * @return	array
+	 */
+	protected function removeFacetAndEncodeFilterParameters($facetToRemove){
 		$resultParameters = t3lib_div::_GPmerged('tx_solr');
-			// decoding json, converting to array if json_decode returns an object an object, rebuilding index
-		$filterParameters = array_values((array) json_decode($resultParameters['filter']));
 
+			//urlencode the array to get the original representation
+		$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
 		$filterParameters = array_unique($filterParameters);
-		$indexToRemove = array_search($facetToRemove, $filterParameters);
+		$indexToRemove    = array_search($facetToRemove, $filterParameters);
 
 		if ($indexToRemove !== false) {
 			unset($filterParameters[$indexToRemove]);
 		}
 
-		return $query->getQueryLink(
-			$linkText,
-			array('filter' => json_encode($filterParameters))
-		);
-	}
+		$filterParameters = array_map('urlencode', $filterParameters);
 
-	protected function buildRemoveFacetUrl($query, $facetToRemove) {
-		$resultParameters = t3lib_div::_GPmerged('tx_solr');
-			// decoding json, converting to array if json_decode returns an object an object, rebuilding index
-		$filterParameters = array_values((array) json_decode($resultParameters['filter']));
-
-		$filterParameters = array_unique($filterParameters);
-		$indexToRemove = array_search($facetToRemove, $filterParameters);
-
-		if ($indexToRemove !== false) {
-			unset($filterParameters[$indexToRemove]);
-		}
-
-		return $query->getQueryUrl(
-			array('filter' => json_encode($filterParameters))
-		);
+		return $filterParameters;
 	}
 
 	protected function addFacetsJavascript() {
@@ -340,6 +392,37 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
 			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_faceting'] .=
 				'<script type="text/javascript" src="' . $jsFilePath . '"></script>';
 		}
+	}
+
+	/**
+	 * Determines whether a certain facet otpion is selected / whether it's
+	 * filter is active.
+	 *
+	 * @param	string	The facet configuration name
+	 * @param	string	The facet option to check whether it has been applied to the query.
+	 * @return	boolean	True if the facet is active, false otherwise
+	 */
+	protected function isSelectedFacetOption($facetName, $facetOptionValue) {
+		$isSelectedOption = false;
+
+		$resultParameters = t3lib_div::_GET('tx_solr');
+		$filterParameters = array();
+		if (isset($resultParameters['filter'])) {
+			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
+		}
+
+		$facetsInUse = array();
+		foreach ($filterParameters as $filter) {
+			list($filterName, $filterValue) = explode(':', $filter);
+
+			if ($filterName == $facetName && $filterValue == $facetOptionValue) {
+				$isSelectedOption = true;
+				break;
+			}
+
+		}
+
+		return $isSelectedOption;
 	}
 }
 
