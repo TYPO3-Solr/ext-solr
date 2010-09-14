@@ -1,6 +1,6 @@
 2010-09-14  Markus Goldbach  <markus.goldbach@dkd.de>
 
-	* Changed solrconfig.xml deactivate dataDir
+	* Changed solrconfig.xml deactivating dataDir
 
 2010-09-13  Ingo Renner  <ingo.renner@dkd.de>
 
