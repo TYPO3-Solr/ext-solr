@@ -39,6 +39,11 @@ class tx_solr_Search implements t3lib_Singleton {
 	 */
 	protected $solr;
 
+	/**
+	 * The search query
+	 *
+	 * @var	tx_solr_Query
+	 */
 	protected $query;
 
 	public function __construct() {
@@ -50,12 +55,14 @@ class tx_solr_Search implements t3lib_Singleton {
 
 	public function search(tx_solr_Query $query, $offset = 0, $limit = 10) {
 
-			// TODO add hook to manipulate the query, maybe rather in the plugin than here
+			// * get query string
+			// * do actual search by calling the parent's search method
+			// * obey the debug setting
 
 		$this->query = $query;
 
 		try {
-			$result = $this->solr->search(
+			$response = $this->solr->search(
 				$query->getQueryString(),
 				$offset,
 				$limit,
@@ -64,13 +71,13 @@ class tx_solr_Search implements t3lib_Singleton {
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['queryString']) {
 				t3lib_div::devLog('querying solr, getting result', 'tx_solr', 0, array(
-					'query string' => $query->getQueryString(),
+					'query string'     => $query->getQueryString(),
 					'query parameters' => $query->getQueryParameters(),
-					'result' => (array) $result
+					'response'         => json_decode($response->getRawResponse(), true)
 				));
 			}
 		} catch (Exception $e) {
-			// FIXME fix searches like "*.*"
+			// FIXME fix searches like "*.*", "-", "+"
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				t3lib_div::devLog('exception while querying solr', 'tx_solr', 3, array(
@@ -79,7 +86,7 @@ class tx_solr_Search implements t3lib_Singleton {
 			}
 		}
 
-		return $result;
+		return $response;
 	}
 
 	/**
