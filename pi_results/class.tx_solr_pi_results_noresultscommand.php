@@ -42,7 +42,8 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_Command {
 	}
 
 	public function execute() {
-		$searchWord = t3lib_div::removeXSS(trim($this->parentPlugin->piVars['q']));
+		$searchWord = trim($this->parentPlugin->piVars['q']);
+		$searchWord = t3lib_div::removeXSS($searchWord);
 
 		$nothingFound = strtr(
 			$this->parentPlugin->pi_getLL('no_results_nothing_found'),
