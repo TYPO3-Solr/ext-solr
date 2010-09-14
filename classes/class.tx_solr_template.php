@@ -836,6 +836,12 @@ class tx_solr_Template {
 			unset($viewHelpers[$loopIndex]);
 		}
 
+			// remove IF
+		$loopIndex = array_search('IF', $viewHelpers);
+		if ($loopIndex !== false) {
+			unset($viewHelpers[$loopIndex]);
+		}
+
 		return $viewHelpers;
 	}
 
