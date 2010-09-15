@@ -112,6 +112,18 @@ cp apache-solr-$SOLR_VER/dist/apache-solr-cell-$SOLR_VER.jar solr/dist
 cp apache-solr-$SOLR_VER/dist/apache-solr-clustering-$SOLR_VER.jar solr/dist
 cp -r apache-solr-$SOLR_VER/contrib solr/
 
+# copy accessfilterplugin
+mkdir solr/accessFilterPlugin
+cd solr/accessFilterPlugin
+if [ $BRANCH_TEST_RETURN -eq "0" ]
+then
+	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3-accessfilter-1.0.0.jar
+else
+	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3-accessfilter-1.0.0.jar
+fi
+
+cd /opt/solr-tomcat/
+
 chmod a+x apache-tomcat$TOMCAT_MAINVERSION/bin/*
 ./apache-tomcat$TOMCAT_MAINVERSION/bin/startup.sh
 
