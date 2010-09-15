@@ -3,6 +3,7 @@
 	* Changed install script to install the Solr Access Filter Plugin
 	* Added Solr Access Filter Plugin to libs in solrconfig.xml
 	* Changed path to libs in solrconfig.xml
+	* Changed install script exclude Solr Access Filter Plugin Version number to variable
 
 2010-09-14  Ingo Renner  <ingo.renner@dkd.de>
 

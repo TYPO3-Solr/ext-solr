@@ -3,6 +3,7 @@
 TOMCAT_VER=6.0.29
 SOLR_VER=1.4.1
 EXT_SOLR_VER=1.2
+SOLR_T3AP_VER=1.0.0
 
 SVNBRANCH_PATH="branches/$EXT_SOLR_VER"
 
@@ -117,9 +118,9 @@ mkdir solr/accessFilterPlugin
 cd solr/accessFilterPlugin
 if [ $BRANCH_TEST_RETURN -eq "0" ]
 then
-	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3-accessfilter-1.0.0.jar
+	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3-accessfilter-$SOLR_T3AP_VER.jar
 else
-	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3-accessfilter-1.0.0.jar
+	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3-accessfilter-$SOLR_T3AP_VER.jar
 fi
 
 cd /opt/solr-tomcat/
