@@ -34,6 +34,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 
 	const LUKE_SERVLET = 'admin/luke';
 	const SYSTEM_SERVLET = 'admin/system';
+	const PLUGINS_SERVLET = 'admin/plugins';
 
 	/**
 	 * Server connection scheme. http or https.
@@ -56,6 +57,13 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 */
 	protected $_systemUrl;
 
+	/**
+	 * Constructed servlet URL for plugin information
+	 *
+	 * @var string
+	 */
+	protected $_pluginsUrl;
+
 	protected $debug;
 
 	/**
@@ -66,6 +74,8 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 
 	protected $lukeData = array();
 	protected $systemData = null;
+	protected $pluginsData = null;
+	protected $solrconfigName = null;
 
 
 	/**
@@ -106,6 +116,11 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 
 		$this->_systemUrl  = $this->_constructUrl(
 			self::SYSTEM_SERVLET,
+			array('wt' => self::SOLR_WRITER)
+		);
+
+		$this->_pluginsUrl  = $this->_constructUrl(
+			self::PLUGINS_SERVLET,
 			array('wt' => self::SOLR_WRITER)
 		);
 	}
@@ -258,7 +273,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	}
 
 	/**
-	 * Gets some information about the Solr server
+	 * Gets information about the Solr server
 	 *
 	 * @return	array	A nested array of system data.
 	 */
@@ -276,14 +291,52 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	}
 
 	/**
-	 * Gets the name of the schema installed and in use on the Solr server.
+	 * Gets information about the plugins installed in Solr
 	 *
-	 * @return	string	Name of the active schema
+	 * @return	array	A nested array of plugin data.
+	 */
+	public function getPluginsInformation() {
+
+		if (empty($this->pluginsData)) {
+			$pluginsInformation = $this->_sendRawGet($this->_pluginsUrl);
+
+				// access a random property to trigger response parsing
+			$pluginsInformation->responseHeader;
+			$this->pluginsData = $pluginsInformation;
+		}
+
+		return $this->pluginsData;
+	}
+
+	/**
+	 * Gets the name of the schema.xml file installed and in use on the Solr
+	 * server.
+	 *
+	 * @return	string	Name of the active schema.xml
 	 */
 	public function getSchemaName() {
 		$systemInformation = $this->getSystemInformation();
 
 		return $systemInformation->core->schema;
+	}
+
+	/**
+	 * Gets the name of the solrconfig.xml file installed and in use on the Solr
+	 * server.
+	 *
+	 * @return	string	Name of the active solrconfig.xml
+	 */
+	public function getSolrconfigName() {
+		if (is_null($this->solrconfigName)) {
+			$solrconfigXmlUrl = $this->_scheme . '://'
+			. $this->_host . ':' . $this->_port
+			. $this->_path . 'admin/file/?file=solrconfig.xml';
+
+			$solrconfigXml = simplexml_load_file($solrconfigXmlUrl);
+			$this->solrconfigName = (string) $solrconfigXml->attributes()->name;
+		}
+
+		return $this->solrconfigName;
 	}
 
 	/**
