@@ -29,7 +29,7 @@
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package TYPO3
- * @subpackage tx_solr
+ * @subpackage solr
  */
 class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 
@@ -76,7 +76,13 @@ class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 				. '.' . $explodedSolrVersion[2];
 
 			$message .= '<li>Solr: ' . $shortSolrVersion . ' (' . $completeSolrVersion . ')</li>';
-			$message .= '<li>Schema: ' . $solr->getSchemaName() . '</li>';
+			$message .= '<li>schema.xml: ' . $solr->getSchemaName() . '</li>';
+			$message .= '<li>solrconfig.xml: ' . $solr->getSolrconfigName() . '</li>';
+
+			$accessFilterPluginStatus = t3lib_div::makeInstance('tx_solr_report_AccessFilterPluginInstalledStatus');
+			$accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solr);
+
+			$message .= '<li>Access Filter Plugin: ' . $accessFilterPluginVersion . '</li>';
 		}
 
 		$message .= '</ul>';
