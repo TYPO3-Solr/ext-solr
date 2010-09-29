@@ -306,7 +306,7 @@ class tx_solr_Template {
 			foreach ($helperMarkers as $marker) {
 				$helperArguments = explode('|', $marker);
 					// TODO check whether one of the parameters is a Helper
-					// itself, if so resolve it before handing it of to the
+					// itself, if so resolve it before handing it off to the
 					// actual helper, this way the order in which viewhelpers
 					// get added to the template do not matter anymore
 					// may use findViewHelpers()
