@@ -340,6 +340,16 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase{
 
 		return $query;
 	}
+
+	/**
+	 * Gets the target page Id for links. Might have been set through either
+	 * flexform or TypoScript. If none is set, TSFE->id is used.
+	 *
+	 * @return	integer	The page Id to be used for links
+	 */
+	public function getLinkTargetPageId() {
+		return $this->conf['search.']['targetPage'];
+	}
 }
 
 
