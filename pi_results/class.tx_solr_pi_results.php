@@ -29,7 +29,7 @@
  * @author	Ingo Renner <ingo@typo3.org>
  * @author	Timo Schmidt <timo.schmidt@aoemedia.de>
  * @package	TYPO3
- * @subpackage	tx_solr
+ * @subpackage	solr
  */
 class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
@@ -93,6 +93,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 			$query    = $this->modifyQuery($this->query);
+				// performing the actual search, sending the query to the Solr server
 			$response = $this->search->search($query, $offSet, $resultsPerPage);
 
 			$this->processResponse($query, $response);

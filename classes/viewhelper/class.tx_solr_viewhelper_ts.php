@@ -29,7 +29,7 @@
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package TYPO3
- * @subpackage community
+ * @subpackage solr
  */
 class tx_solr_viewhelper_Ts implements tx_solr_ViewHelper {
 

@@ -33,7 +33,7 @@
  * @author	Ingo Renner <ingo@typo3.org>
  * @author	Timo Schmidt <timo.schmidt@aoemedia.de
  * @package	TYPO3
- * @subpackage	tx_solr
+ * @subpackage	solr
  */
 abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_PluginBase{
 
