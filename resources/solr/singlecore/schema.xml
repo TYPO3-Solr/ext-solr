@@ -12,14 +12,14 @@
 	The schema name property is constructed as follows
 
 	tx_solr		- The extension key
-	x-y-z		- The Solr version this schema is meant to work with
+	x-y-z		- The extension version this schema is meant to work with
 	YYYYMMDD	- The date the schema file was changed the last time
 
 	When changing the schema the name property must be updated. There is a
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-1-4-0--20100909" version="1.1">
+<schema name="tx_solr-1-5-0--20100923" version="1.1">
 	<!--
 		attribute "name" is the name of this schema and is only used for
 		display purposes. Applications should change this to reflect the
@@ -399,7 +399,7 @@
 		<!--
 			access fields
 		-->
-		<field name="access"  type="string"  indexed="true" stored="true" default="0" />
+		<field name="access"  type="string"  indexed="true" stored="true" default="c:0" />
 		<!-- we only need endtime as records with a starttime > indexing time will not get indexed -->
 		<field name="endtime" type="date" indexed="true" stored="true" />
 
