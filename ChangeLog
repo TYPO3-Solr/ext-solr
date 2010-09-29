@@ -6,6 +6,7 @@
 	* Changed the Access Filter Plugin status report to use Solr's plugin information request handler
 	* Updated schema.xml version to "link" it to the 1.5.0 version of the extension
 	* Changed schema.xml access field default value to "c:0"
+	* Added a report status to check whether the used solrconfig.xml is current
 
 2010-09-15  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -22,7 +22,7 @@
      Specifically, the Solr Config can support XInclude, which may make it easier to manage
      the configuration.  See https://issues.apache.org/jira/browse/SOLR-1167
 -->
-<config name="tx_solr-1-4-0--20100720">
+<config name="tx_solr-1-5-0--20100922">
   <!-- Set this to 'false' if you want solr to continue working after it has
        encountered an severe configuration error.  In a production environment,
        you may want solr to keep working even if one handler is mis-configured.
@@ -59,11 +59,9 @@
   <lib dir="./contrib/clustering/lib/downloads/" />
   <lib dir="./contrib/clustering/lib/" />
   <lib dir="/total/crap/dir/ignored" />
+<!-- TYPO3 AccessFilterPlugin -->
   <lib dir="./typo3/" />
-  <!-- an exact path can be used to specify a specific file.  This will cause
-       a serious error to be logged if it can't be loaded.
-  <lib path="../a-jar-that-does-not-exist.jar" />
-  -->
+
 
 
   <!-- Used to specify an alternate directory to hold all index data
