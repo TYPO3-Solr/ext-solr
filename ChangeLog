@@ -3,6 +3,7 @@
 	* Moved the Access Filter Plugin from resources/solr/ to resources/solr/plugins/
 	* Updated Access Filter Plugin to version 1.1.0, brings extended access check support
 	* Changed the install Solr script to get the access filter from the new location
+	* Changed the Access Filter Plugin status report to use Solr's plugin information request handler
 
 2010-09-15  Ingo Renner  <ingo.renner@dkd.de>
 
