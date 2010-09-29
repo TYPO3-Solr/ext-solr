@@ -152,8 +152,9 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 
 	protected function getSolrConnectionMenu(array $solrConnections) {
 		$connectionMenuItems = array();
-		foreach ($solrConnections as $solrConnection) {
-			$connectionMenuItems[$solrConnection['rootPageUid']] =
+
+		foreach ($solrConnections as $key => $solrConnection) {
+			$connectionMenuItems[$key] =
 				$solrConnection['solrHost']
 				. ':' . $solrConnection['solrPort']
 				. $solrConnection['solrPath'];
@@ -189,8 +190,8 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 		$solrServer = current($solrConnections);
 
 		if (count($solrConnections) > 1) {
-			foreach ($solrConnections as $solrConnection) {
-				if ($solrConnection['rootPageUid'] == $this->reportsModule->MOD_SETTINGS['tx_solr_connection']) {
+			foreach ($solrConnections as $key => $solrConnection) {
+				if ($key == $this->reportsModule->MOD_SETTINGS['tx_solr_connection']) {
 					$solrServer = $solrConnection;
 					break;
 				}

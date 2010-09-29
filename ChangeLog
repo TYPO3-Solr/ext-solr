@@ -9,6 +9,7 @@
 	* Added a report status to check whether the used solrconfig.xml is current
 	* Added information about solrconfig.xml and Access Filter Plugin versions to the Solr status report status
 	* Moved getLinkTargetPageId() from tx_solr_pi_results to tx_solr_pluginbase_PluginBase
+	* Fixed the Solr index menu in the index report
 
 2010-09-15  Ingo Renner  <ingo.renner@dkd.de>
 
