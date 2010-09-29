@@ -80,7 +80,7 @@ class tx_solr_Util {
 	 * Generates a document id for documents representing page records.
 	 *
 	 * @param	integer	$uid The page's uid
-	 * @param	integer The page's typeNum
+	 * @param	integer $typeNum The page's typeNum
 	 * @param	integer	$language the language id, defaults to 0
 	 * @param	string	$accessGroups comma separated list of uids of groups that have access to that page
 	 * @param	string 	$cHash cHash of the page
