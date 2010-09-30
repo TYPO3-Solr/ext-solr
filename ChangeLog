@@ -2,6 +2,7 @@
 
 	* Fixed a missing class in ext_autoload.php
 	* Fixed branch definition for the install script
+	* Fixed status report check for current schema.xml
 
 2010-09-29  Ingo Renner  <ingo.renner@dkd.de>
 
