@@ -69,6 +69,9 @@ class tx_solr_Typo3PageContentExtractor {
 	public function getIndexableContent() {
 		$content = $this->extractContentMarkedForIndexing($this->pageHtml);
 
+			// remove Javascript
+		$content = preg_replace('@<script[^>]*>.*?<\/script>@msi', '', $content);
+
 			// clean content
 		$content = self::cleanContent($content);
 		$content = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
