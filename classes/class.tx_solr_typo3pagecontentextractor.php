@@ -129,6 +129,9 @@ class tx_solr_Typo3PageContentExtractor {
 	public static function cleanContent($content) {
 		$content = self::stripControlCharacters($content);
 
+			// remove Javascript
+		$content = preg_replace('@<script[^>]*>.*?<\/script>@msi', '', $content);
+
 			// prevents concatenated words when stripping tags afterwards
 		$content = str_replace(array('<', '>'), array(' <', '> '), $content);
 		$content = strip_tags($content);
