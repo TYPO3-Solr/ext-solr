@@ -1,5 +1,7 @@
 2010-10-04  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Release of version 1.2.1
+
 	* Changed page content extractor to remove javascript tags and their content, credits Markus Kleinhenz
 
 2010-09-30  Ingo Renner  <ingo.renner@dkd.de>
