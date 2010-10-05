@@ -33,7 +33,7 @@ $BE_USER->modAccess($MCONF, 1);
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
- * @subpackage	tx_solr
+ * @subpackage	solr
  */
 class  tx_solr_moduleAdmin extends t3lib_SCbase {
 	var $pageinfo;
