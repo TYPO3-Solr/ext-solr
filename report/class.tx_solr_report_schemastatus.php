@@ -29,7 +29,7 @@
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package TYPO3
- * @subpackage tx_solr
+ * @subpackage solr
  */
 class tx_solr_report_SchemaStatus implements tx_reports_StatusProvider {
 
