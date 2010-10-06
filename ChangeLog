@@ -2,7 +2,6 @@
 
 	* Fixed a missing hook registration resulting in user groups not being tracked and thus making protected results publicly visible
 	* Added a marker displaying the result document ID to the default template
-	* Changed the access field content to be prepended with "c:", reflecting the content part of the Access Rootline
 
 2010-10-06  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
