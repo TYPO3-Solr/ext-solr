@@ -313,7 +313,7 @@ class tx_solr_Indexer implements tslib_content_PostInitHook {
 		$document->addField('language', $page->sys_language_uid);
 
 			// access
-		$document->addField('access', implode(',', $accessGroups));
+		$document->addField('access', 'c:' . implode(',', $accessGroups));
 
 		if ($page->page['endtime']) {
 			$document->addField('endtime', $page->page['endtime']);
