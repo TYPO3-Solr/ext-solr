@@ -29,7 +29,7 @@ jQuery(document).ready(function(){
 				})
 			},
 			select: function(event, ui) {
-				this.value = ui.item.value;
+				this.value = jQuery.trim(ui.item.value);
 				jQuery(event.target).closest('form').submit();
 			},
 			delay: 0,
