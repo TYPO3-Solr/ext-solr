@@ -1,3 +1,7 @@
+2010-10-06  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added a marker displaying the result document ID to the default template
+
 2010-10-06  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* Removed whitespace from the start of a single word suggestion
