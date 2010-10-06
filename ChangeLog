@@ -1,5 +1,6 @@
 2010-10-06  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Fixed a missing hook registration resulting in user groups not being tracked and thus making protected results publicly visible
 	* Added a marker displaying the result document ID to the default template
 
 2010-10-06  Stefan Sprenger  <stefan.sprenger@dkd.de>
