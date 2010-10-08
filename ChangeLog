@@ -1,3 +1,7 @@
+2010-10-08  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed issue #10165 - Phrase queries not working as quotes are escaped in Solr queries
+
 2010-10-06  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed a missing hook registration resulting in user groups not being tracked and thus making protected results publicly visible

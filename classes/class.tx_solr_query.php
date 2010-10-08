@@ -162,7 +162,13 @@ class tx_solr_Query {
 		if (!is_numeric($string)) {
 			if (preg_match('/\W/', $string) == 1) {
 					// interpret as phrase, if it's not a single word
-				$string = Apache_Solr_Service::escapePhrase($string);
+
+				$stringLength = strlen($string);
+				if ($string{0} == '"' && $string{$stringLength - 1} == '"') {
+					$string = trim($string, '"');
+				}
+
+				$string = Apache_Solr_Service::phrase($string);
 			} else {
 				$string = Apache_Solr_Service::escape($string);
 			}
