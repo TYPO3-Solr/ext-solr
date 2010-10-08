@@ -6,7 +6,7 @@ jQuery(document).ready(function(){
 					url: tx_solr_suggestUrl,
 					dataType: 'json',
 					data: {
-							// TODO 
+							// TODO
 						term: request.term.toLowerCase()
 					},
 					success: function(data) {
@@ -17,8 +17,8 @@ jQuery(document).ready(function(){
 						for (var term in data) {
 							var unformatted_label = term + ' <span class="result_count">(' + data[term] + ')</span>';
 							output[i++] = {
-								label	: unformatted_label.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' + 
-											jQuery.ui.autocomplete.escapeRegex(request.term) + 
+								label	: unformatted_label.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' +
+											jQuery.ui.autocomplete.escapeRegex(request.term) +
 											')(?![^<>]*>)(?![^&;]+;)', 'gi'), '<strong>$1</strong>'),
 								value  : term
 							};
@@ -29,6 +29,7 @@ jQuery(document).ready(function(){
 				})
 			},
 			select: function(event, ui) {
+				this.value = ui.item.value;
 				jQuery(event.target).closest('form').submit();
 			},
 			delay: 0,
