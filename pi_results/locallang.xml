@@ -74,6 +74,12 @@
 			<label index="no_results_nothing_found">Niets gevonden voor "@searchWord".</label>
 			<label index="lastSearches">Laatste zoekopdrachten</label>
 			<label index="commonTerms">Vaak gezocht</label>
+			<label index="faceting_removeAllFilters">Verwijder alle filters</label>
+			<label index="results_found">Gevonden: @resultsTotal resultaten in @resultsTime milliseconden.</label>
+			<label index="relevance">Relevantiee</label>
+			<label index="results_per_page">Resultaten per pagina:</label>
+			<label index="file_mimetype">Bestandstype</label>
+			<label index="file_referenced">Geplaatst op</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="searchUnavailable">La recherche n'est actuellement pas disponible.</label>
