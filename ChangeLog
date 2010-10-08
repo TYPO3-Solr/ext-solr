@@ -1,5 +1,6 @@
 2010-10-06  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
+	* Removed whitespace from the start of a single word suggestion
 	* Fixed issue #9208: autocomplete does not work when choosing term using the mouse, credits Michiel Roos
 	* Fixed the path to ui-anim_basic_16x16.gif
 
