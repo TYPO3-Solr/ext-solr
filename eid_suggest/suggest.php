@@ -61,7 +61,8 @@ if ($search->ping()) {
 
 	$suggestions = array();
 	foreach($facetSuggestions as $partialKeyword => $value){
-		$suggestions[$suggestQuery->getKeywords() . ' ' . $partialKeyword] = $facetSuggestions[$partialKeyword];
+		$suggestionKey = trim($suggestQuery->getKeywords() . ' ' . $partialKeyword);
+		$suggestions[$suggestionKey] = $facetSuggestions[$partialKeyword];
 	}
 
 	$ajaxReturnData = json_encode($suggestions);

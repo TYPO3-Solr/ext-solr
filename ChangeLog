@@ -1,3 +1,7 @@
+2010-10-12  Stefan Sprenger  <stefan.sprenger@dkd.de>
+
+	* Finally removed whitespace from the start of a single word suggestion
+
 2010-10-08  Markus Goldbach  <markus.goldbach@dkd.de>
 
 	* Added missing translations for dutch, credits Bart Gijswijt
