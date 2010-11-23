@@ -1,6 +1,7 @@
 2010-11-23  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added a parameter to the constructor of tx_solr_Search to explicitly set the tx_solr_SolrService connection to use when searching
+	* Moved logging modifications from the SolrPhpClient library to its subclass tx_solr_SolrService
 
 2010-10-12  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

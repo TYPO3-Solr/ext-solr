@@ -368,13 +368,6 @@ class Apache_Solr_Service
 
 		$response = new Apache_Solr_Response(@file_get_contents($url, false, $this->_getContext), $http_response_header, $this->_createDocuments, $this->_collapseSingleValueArrays);
 
-		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawGet']) {
-			t3lib_div::devLog('Querying Solr using GET', 'tx_solr', 0, array(
-				'query url' => $url,
-				'raw response' => (array) $response
-			));
-		}
-
 		if ($response->getHttpStatus() != 200)
 		{
 			throw new Apache_Solr_HttpTransportException($response);
@@ -428,13 +421,6 @@ class Apache_Solr_Service
 		$http_response_header = null;
 
 		$response = new Apache_Solr_Response(@file_get_contents($url, false, $this->_postContext), $http_response_header, $this->_createDocuments, $this->_collapseSingleValueArrays);
-		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawPost']) {
-			t3lib_div::devLog('Querying Solr using POST', 'tx_solr', 0, array(
-				'query url' => $url,
-				'content' => $rawPost,
-				'response' => (array) $response
-			));
-		}
 
 		if ($response->getHttpStatus() != 200)
 		{

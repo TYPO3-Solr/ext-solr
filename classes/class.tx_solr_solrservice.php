@@ -198,6 +198,61 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	}
 
 	/**
+	 * Central method for making a get operation against this Solr Server
+	 *
+	 * @param	string	$url
+	 * @param	float	$timeout Read timeout in seconds
+	 * @return	Apache_Solr_Response
+	 */
+	protected function _sendRawGet($url, $timeout = FALSE) {
+		$logSeverity = 0; // info
+
+		try {
+			$response = parent::_sendRawGet($url, $timeout);
+		} catch (Apache_Solr_HttpTransportException $e) {
+			$logSeverity = 3; // fatal error
+		}
+
+		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawGet']) {
+			t3lib_div::devLog('Querying Solr using GET', 'tx_solr', $logSeverity, array(
+				'query url'    => $url,
+				'raw response' => (array) $response
+			));
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Central method for making a post operation against this Solr Server
+	 *
+	 * @param	string	$url
+	 * @param	string	$rawPost
+	 * @param	float	$timeout Read timeout in seconds
+	 * @param	string	$contentType
+	 * @return	Apache_Solr_Response
+	 */
+	protected function _sendRawPost($url, $rawPost, $timeout = FALSE, $contentType = 'text/xml; charset=UTF-8') {
+		$logSeverity = 0; // info
+
+		try {
+			$response = parent::_sendRawPost($url, $rawPost, $timeout, $contentType);
+		} catch (Apache_Solr_HttpTransportException $e) {
+			$logSeverity = 3; // fatal error
+		}
+
+		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawPost']) {
+			t3lib_div::devLog('Querying Solr using POST', 'tx_solr', $logSeverity, array(
+				'query url' => $url,
+				'content'   => $rawPost,
+				'response'  => (array) $response
+			));
+		}
+
+		return $response;
+	}
+
+	/**
 	 * Returns the set scheme
 	 *
 	 * @return string
