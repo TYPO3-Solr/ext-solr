@@ -46,13 +46,31 @@ class tx_solr_Search implements t3lib_Singleton {
 	 */
 	protected $query;
 
-	public function __construct() {
-		$this->solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByPageId(
-			$GLOBALS['TSFE']->id,
-			$GLOBALS['TSFE']->sys_language_uid
-		);
+	/**
+	 * Constructor
+	 *
+	 * @param	tx_solr_SolrService	$solrConnection The Solr connection to use for searching
+	 */
+	public function __construct(tx_solr_SolrService $solrConnection = NULL) {
+		$this->solr = $solrConnection;
+
+		if (is_null($solrConnection)) {
+			$this->solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByPageId(
+				$GLOBALS['TSFE']->id,
+				$GLOBALS['TSFE']->sys_language_uid
+			);
+
+		}
 	}
 
+	/**
+	 * Executes a search against a Solr server.
+	 *
+	 * @param	tx_solr_Query	$query The query with keywords, filters, and so on.
+	 * @param	integer	$offset Result offset for pagination.
+	 * @param	integer	$limit Maximum number of results to return.
+	 * @return	Apache_Solr_Response	Solr response
+	 */
 	public function search(tx_solr_Query $query, $offset = 0, $limit = 10) {
 
 			// * get query string

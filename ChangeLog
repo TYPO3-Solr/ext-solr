@@ -1,3 +1,7 @@
+2010-11-23  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added a parameter to the constructor of tx_solr_Search to explicitly set the tx_solr_SolrService connection to use when searching
+
 2010-10-12  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* Finally removed whitespace from the start of a single word suggestion
