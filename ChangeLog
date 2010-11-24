@@ -1,3 +1,7 @@
+2010-11-24  Markus Goldbach <markus.goldbach@dkd.de>
+
+	* Changed Schema, remove ISOLatin mapping from type textSpell, after problems with umlauts in suggestion
+
 2010-11-23  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added a parameter to the constructor of tx_solr_Search to explicitly set the tx_solr_SolrService connection to use when searching

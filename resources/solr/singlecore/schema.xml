@@ -19,7 +19,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-1-5-0--20100923" version="1.1">
+<schema name="tx_solr-1-5-0--20101124" version="1.1">
 	<!--
 		attribute "name" is the name of this schema and is only used for
 		display purposes. Applications should change this to reflect the
@@ -233,7 +233,6 @@
 				<tokenizer class="solr.StandardTokenizerFactory"/>
 
 				<filter class="solr.LowerCaseFilterFactory"/>
-				<charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
 				<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
 				<filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
 				<filter class="solr.StandardFilterFactory" />
