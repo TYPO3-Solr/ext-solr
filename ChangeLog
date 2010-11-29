@@ -6,6 +6,7 @@
 2010-11-29  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #9808: Plugin does not work when on a mounted page
+	* Changed autowarmCount for solr.FastLRUCache in solrconfig.xml for better performance of newly opened searchers
 
 2010-11-24  Markus Goldbach <markus.goldbach@dkd.de>
 
