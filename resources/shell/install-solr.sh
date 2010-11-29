@@ -2,7 +2,7 @@
 
 TOMCAT_VER=6.0.29
 SOLR_VER=1.4.1
-EXT_SOLR_VER=1.2
+EXT_SOLR_VER=1.3
 EXT_SOLR_AFP_VER=1.1.0
 
 SVNBRANCH_PATH="branches/solr_$EXT_SOLR_VER.x"
@@ -86,6 +86,19 @@ else
 	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/singlecore/schema.xml
 	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/singlecore/solrconfig.xml
 	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/singlecore/protwords.txt
+fi
+
+#Configure tomcat for UTF-8 URL encoding
+
+cd /opt/solr-tomcat/apache-tomcat$TOMCAT_MAINVERSION/conf
+
+rm server.xml
+
+if [ $BRANCH_TEST_RETURN -eq "0" ]
+then
+	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/tomcat/server.xml
+else
+	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/tomcat/server.xml
 fi
 
 #Set the solr.home property

@@ -1,3 +1,8 @@
+2010-11-29  Markus Goldbach <markus.goldbach@dkd.de>
+
+	* Added Tomcat configuration to setup UTF-8 URL support and bind Tomcat to localhost for security reason
+	* Changed install script to deploy the Tomcat configuration
+
 2010-11-29  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #9808: Plugin does not work when on a mounted page
