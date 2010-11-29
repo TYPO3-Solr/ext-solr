@@ -151,7 +151,12 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase{
 	 *
 	 */
 	protected function initializeSearch() {
-		$this->search = t3lib_div::makeInstance('tx_solr_Search');
+		$solrConnection = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByPageId(
+			$GLOBALS['TSFE']->id,
+			$GLOBALS['TSFE']->sys_language_uid,
+			$GLOBALS['TSFE']->MP
+		);
+		$this->search = t3lib_div::makeInstance('tx_solr_Search', $solrConnection);
 
 		$this->solrAvailable = $this->search->ping();
 	}

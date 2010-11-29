@@ -93,13 +93,14 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	 *
 	 * @param	integer	A page ID.
 	 * @param	integer	The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+	 * @param	string	$mount Comma list of MountPoint parameters
 	 * @return	tx_solr_SolrService	A solr connection.
 	 * @throws	tx_solr_NoSolrConnectionFoundException
 	 */
-	public function getConnectionByPageId($pageId, $language = 0) {
+	public function getConnectionByPageId($pageId, $language = 0, $mount = '') {
 			// find the root page
 		$pageSelect     = t3lib_div::makeInstance('t3lib_pageSelect');
-		$rootLine       = $pageSelect->getRootLine($pageId);
+		$rootLine       = $pageSelect->getRootLine($pageId, $mount);
 		$siteRootPageId = $this->getSiteRootPageIdFromRootLine($rootLine);
 
 		try {
