@@ -115,11 +115,6 @@ class tx_solr_pi_results_FormCommand implements tx_solr_Command {
 			$suggestUrl .= '&L=' . $GLOBALS['TSFE']->sys_language_uid;
 		}
 
-			// adds the language parameter to the suggest URL
-		if ($GLOBALS['TSFE']->sys_language_uid > 0) {
-			$suggestUrl .= '&L=' . $GLOBALS['TSFE']->sys_language_uid;
-		}
-
 		return $suggestUrl;
 	}
 
