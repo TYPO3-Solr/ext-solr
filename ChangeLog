@@ -1,3 +1,7 @@
+2011-01-20  Markus Goldbach  <markus.goldbach@dkd.de>
+
+	* Fixed issue where xclass declaration of tslib_cObj produce fatal php errors in backend mode.
+
 2010-11-29  Markus Goldbach <markus.goldbach@dkd.de>
 
 	* Added Tomcat configuration to setup UTF-8 URL support and bind Tomcat to localhost for security reason

@@ -11,7 +11,9 @@ switch (TYPO3_branch) {
 	case '4.3':
 			// adding a hook that was added in TYPO3 4.4
 		require_once($PATH_solr . 'compat/interface.tslib_content_postinithook.php');
-		require_once($PATH_solr . 'compat/class.ux_tslib_cobj.php');
+		if (TYPO3_MODE == 'FE') {
+			require_once($PATH_solr . 'compat/class.ux_tslib_cobj.php');
+		}
 		break;
 }
 
