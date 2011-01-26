@@ -1,3 +1,7 @@
+2011-01-26  Stefan Sprenger  <stefan.sprenger@dkd.de>
+
+	* Fixed bug #10668: Queries that don't return any results cause rendering of JavaScript code inside of the suggestion box
+
 2011-01-20  Markus Goldbach  <markus.goldbach@dkd.de>
 
 	* Fixed issue where xclass declaration of tslib_cObj produce fatal php errors in backend mode.
