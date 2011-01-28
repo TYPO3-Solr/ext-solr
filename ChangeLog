@@ -1,3 +1,8 @@
+2011-01-28  Stefan Sprenger  <stefan.sprenger@dkd.de>
+
+	* Updated jQuery UI to 1.8.9
+	* Refactored provided jQuery UI JavaScript files and stylesheets
+
 2011-01-26  Markus Goldbach  <markus.goldbach@dkd.de>
 
 	* Changed schema, remove the ISOLatin mapping from the schema after problems with umlauts
