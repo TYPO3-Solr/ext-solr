@@ -2,6 +2,7 @@
 
 	* Added file meta data fields to schema.xml
 	* Changed the flash message for failed connections in the index report to show the server connection's parameters
+	* Changed the schema status check to check for the current schema version
 
 2011-01-31  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
