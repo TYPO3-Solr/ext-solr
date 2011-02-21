@@ -31,6 +31,9 @@ return array(
 	'tx_solr_access_rootlineelement' => $extensionPath . 'classes/access/class.tx_solr_access_rootlineelement.php',
 	'tx_solr_access_rootlineelementformatexception' => $extensionPath . 'classes/access/class.tx_solr_access_rootlineelementformatexception.php',
 
+	'tx_solr_facet_facetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrenderer.php',
+	'tx_solr_facet_simplefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetrenderer.php',
+	'tx_solr_facet_usedfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_usedfacetrenderer.php',
 
 	'tx_solr_fieldprocessor_service' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php',
 	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_timestamptoisodate.php',
@@ -54,6 +57,7 @@ return array(
 	'tx_solr_viewhelper_ts' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_ts.php',
 
 	'tx_solr_additionalindexer' => $extensionPath . 'interfaces/interface.tx_solr_additionalindexer.php',
+	'tx_solr_facetrenderer' => $extensionPath . 'interfaces/interface.tx_solr_facetrenderer.php',
 	'tx_solr_command' => $extensionPath . 'interfaces/interface.tx_solr_command.php',
 	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
 	'tx_solr_formmodifier' => $extensionPath . 'interfaces/interface.tx_solr_formmodifier.php',

@@ -180,6 +180,10 @@ class tx_solr_Search implements t3lib_Singleton {
 		return $this->solr->getResponse()->facet_counts;
 	}
 
+	public function getFacetFieldOptions($facetField) {
+		return get_object_vars($this->getFacetCounts()->facet_fields->$facetField);
+	}
+
 	public function getNumberOfResults() {
 		return $this->solr->getResponse()->response->numFound;
 	}
