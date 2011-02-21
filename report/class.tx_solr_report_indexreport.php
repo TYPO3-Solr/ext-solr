@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,12 +27,18 @@
  * A report to get an overview of the Apache Solr Index
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_report_IndexReport implements tx_reports_Report {
 
 	protected $reportsModule;
+
+	/**
+	 * Solr server connection
+	 *
+	 * @var	tx_solr_SolrService
+	 */
 	protected $solr;
 
 	/**
@@ -64,10 +70,10 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 		} catch (Exception $e) {
 			$message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
-				$e->getMessage(),
+				'Solr server: ' . $this->solr->getScheme() . '://' . $this->solr->getHost() . ':' . $this->solr->getPort() . $this->solr->getPath(),
 				'Failed to establish Solr connection.',
 				t3lib_FlashMessage::ERROR,
-				true
+				TRUE
 			);
 
 			$content = $message->render();
