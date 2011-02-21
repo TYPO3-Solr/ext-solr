@@ -160,7 +160,7 @@ class tx_solr_Typo3PageContentExtractor {
 			// prevents concatenated words when stripping tags afterwards
 		$content = str_replace(array('<', '>'), array(' <', '> '), $content);
 		$content = strip_tags($content);
-		$content = str_replace(array("\t", "\n", "\r"), array(), $content);
+		$content = str_replace(array("\t", "\n", "\r", '&nbsp;'), array(), $content);
 		$content = trim($content);
 
 		return $content;
