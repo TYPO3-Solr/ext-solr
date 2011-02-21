@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2008-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,13 +28,13 @@
  * engine supports easy management of markers, subparts, and even loops.
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_Template {
 
-	const CLEAN_TEMPLATE_YES = true;
-	const CLEAN_TEMPLATE_NO  = false;
+	const CLEAN_TEMPLATE_YES = TRUE;
+	const CLEAN_TEMPLATE_NO  = FALSE;
 
 	protected $prefix;
 	protected $cObj;
@@ -49,7 +49,7 @@ class tx_solr_Template {
 	protected $subparts          = array();
 	protected $loops             = array();
 
-	protected $debugMode         = false;
+	protected $debugMode         = FALSE;
 
 	/**
 	 * Constructor for the html marker template engine.
@@ -66,8 +66,13 @@ class tx_solr_Template {
 		$this->workOnSubpart($subpart);
 	}
 
-	public function __destruct() {
-
+	/**
+	 * Copy constructor, sets the clone object's template content to original
+	 * object's work subpart.
+	 *
+	 */
+	public function __clone() {
+		$this->setTemplateContent($this->getWorkOnSubpart());
 	}
 
 	/**
@@ -91,6 +96,29 @@ class tx_solr_Template {
 	}
 
 	/**
+	 * Finds the view helpers in the template and loads them.
+	 *
+	 * @return	void
+	 */
+	protected function initializeViewHelpers($content) {
+		$viewHelpersFound = $this->findViewHelpers($content);
+
+		foreach ($viewHelpersFound as $helperKey) {
+			if (!isset($this->helpers[strtolower($helperKey)])) {
+				$viewHelperLoaded = $this->loadViewHelper($helperKey);
+
+				if (!$viewHelperLoaded) {
+						// skipping processing in case we couldn't find a class
+						// to handle the view helper
+					continue;
+				}
+
+				$this->addViewHelper($helperKey);
+			}
+		}
+	}
+
+	/**
 	 * Adds an inlcude path where the template engine should look for template
 	 * view helpers.
 	 *
@@ -108,12 +136,12 @@ class tx_solr_Template {
 	 * @param	array	optional array of arguments
 	 */
 	public function addViewHelper($helperName, array $arguments = array()) {
-		$success = false;
+		$success = FALSE;
 
 		if (!isset($this->helpers[strtolower($helperName)])) {
 			$viewHelperClassName = $this->loadViewHelper($helperName);
 
-				// could be false if not matching view helper class was found
+				// could be FALSE if not matching view helper class was found
 			if ($viewHelperClassName) {
 				try {
 					$helperInstance = t3lib_div::makeInstance($viewHelperClassName, $arguments);
@@ -166,7 +194,7 @@ class tx_solr_Template {
 		}
 
 			// viewhelper could not be found
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -174,16 +202,16 @@ class tx_solr_Template {
 	 *
 	 * @param $helperName
 	 * @param $helperObject
-	 * @return unknown_type
+	 * @return	boolean
 	 */
 	public function addViewHelperObject($helperName, tx_solr_ViewHelper $helperObject) {
-		$success = false;
+		$success = FALSE;
 
 		$helperName = strtolower($helperName);
 
 		if (!isset($this->helpers[$helperName])) {
 			$this->helpers[$helperName] = $helperObject;
-			$success = true;
+			$success = TRUE;
 		}
 
 		return $success;
@@ -194,7 +222,7 @@ class tx_solr_Template {
 	 *
 	 * @return	string the rendered html template with markers replaced with their content
 	 */
-	public function render($cleanTemplate = false) {
+	public function render($cleanTemplate = FALSE) {
 
 			// process loops
 		foreach ($this->loops as $key => $loopVariables) {
@@ -234,7 +262,8 @@ class tx_solr_Template {
 		$this->workOnSubpart = $this->processConditions($this->workOnSubpart);
 
 			// process view helpers, they need to be the last objects processing the template
-		$this->workOnSubpart = $this->processViewHelpers($this->workOnSubpart);
+		$this->initializeViewHelpers($this->workOnSubpart);
+		$this->workOnSubpart = $this->renderViewHelpers($this->workOnSubpart);
 
 			// finally, do a cleanup if not disable
 		if ($cleanTemplate) {
@@ -278,55 +307,108 @@ class tx_solr_Template {
 	}
 
 	/**
-	 * processes view helper, hands variables over if needed
+	 * Renders view helpers, detects whether it is a regular marker view helper
+	 * or a subpart viewhelper and passes rendering on to more specialized
+	 * render methods for each type.
 	 *
 	 * @param	string	the content to process by view helpers
 	 * @return	string	the view helper processed content
-	 * @author	Ingo Renner <ingo@typo3.org>
 	 */
-	protected function processViewHelpers($content) {
+	protected function renderViewHelpers($content) {
 		$viewHelpersFound = $this->findViewHelpers($content);
 
 		foreach ($viewHelpersFound as $helperKey) {
-			if (!isset($this->helpers[strtolower($helperKey)])) {
-				$viewHelperLoaded = $this->loadViewHelper($helperKey);
-
-				if (!$viewHelperLoaded) {
-						// skipping processing in case we couldn't find a class
-						// to handle the view helper
-					continue;
-				}
-
-				$this->addViewHelper($helperKey);
-			}
-
 			$helper = $this->helpers[strtolower($helperKey)];
 
-			$helperMarkers = $this->getHelperMarkers($helperKey, $content);
-			foreach ($helperMarkers as $marker) {
-				$helperArguments = explode('|', $marker);
-					// TODO check whether one of the parameters is a Helper
-					// itself, if so resolve it before handing it off to the
-					// actual helper, this way the order in which viewhelpers
-					// get added to the template do not matter anymore
-					// may use findViewHelpers()
+			if ($helper instanceof tx_solr_SubpartViewHelper) {
+				$content = $this->renderSubpartViewHelper($helper, $helperKey, $content);
+			} else {
+				$content = $this->renderMarkerViewHelper($helper, $helperKey, $content);
+			}
+		}
 
-					// checking whether any of the helper arguments should be
-					// replaced by a variable available to the template
-				foreach ($helperArguments as $i => $helperArgument) {
-					$lowercaseHelperArgument = strtolower($helperArgument);
-					if (array_key_exists($lowercaseHelperArgument, $this->variables)) {
-						$helperArguments[$i] = $this->variables[$lowercaseHelperArgument];
-					}
+		return $content;
+	}
+
+	/**
+	 * Renders single marker view helpers.
+	 *
+	 * @param	tx_solr_ViewHelper	$viewHelper View helper instance to execute.
+	 * @param	string	$helperKey The view helper marker key.
+	 * @param	string	$content Markup that contains the unsubstituted view helper marker.
+	 * @return	string	Markup with the view helper replaced by the content it returned.
+	 */
+	protected function renderMarkerViewHelper(tx_solr_ViewHelper $viewHelper, $helperKey, $content) {
+		$viewHelperArgumentLists = $this->getViewHelperArgumentLists($helperKey, $content);
+
+		foreach ($viewHelperArgumentLists as $viewHelperArgumentList) {
+			$viewHelperArguments = explode('|', $viewHelperArgumentList);
+				// TODO check whether one of the parameters is a Helper
+				// itself, if so resolve it before handing it off to the
+				// actual helper, this way the order in which viewhelpers
+				// get added to the template do not matter anymore
+				// may use findViewHelpers()
+
+				// checking whether any of the helper arguments should be
+				// replaced by a variable available to the template
+			foreach ($viewHelperArguments as $i => $helperArgument) {
+				$lowercaseHelperArgument = strtolower($helperArgument);
+				if (array_key_exists($lowercaseHelperArgument, $this->variables)) {
+					$viewHelperArguments[$i] = $this->variables[$lowercaseHelperArgument];
 				}
+			}
 
-				$viewHelperContent = $helper->execute($helperArguments);
+			$viewHelperContent = $viewHelper->execute($viewHelperArguments);
 
-				$content = t3lib_parsehtml::substituteMarker(
-					$content,
-					'###' . $helperKey . ':' . $marker . '###',
-					$viewHelperContent
-				);
+			$content = t3lib_parsehtml::substituteMarker(
+				$content,
+				'###' . $helperKey . ':' . $viewHelperArgumentList . '###',
+				$viewHelperContent
+			);
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Renders subpart view helpers.
+	 *
+	 * @param	tx_solr_ViewHelper	$viewHelper View helper instance to execute.
+	 * @param	string	$helperKey The view helper marker key.
+	 * @param	string	$content Markup that contains the unsubstituted view helper subpart.
+	 * @return	string	Markup with the view helper replaced by the content it returned.
+	 */
+	protected function renderSubpartViewHelper(tx_solr_SubpartViewHelper $viewHelper, $helperKey, $content) {
+		$viewHelperArgumentLists = $this->getViewHelperArgumentLists($helperKey, $content);
+
+		foreach ($viewHelperArgumentLists as $viewHelperArgumentList) {
+			$subpartMarker = '###' . $helperKey . ':' . $viewHelperArgumentList . '###';
+
+			$subpart = t3lib_parsehtml::getSubpart(
+				$content,
+				$subpartMarker
+			);
+
+			$viewHelperArguments = explode('|', $viewHelperArgumentList);
+
+			$subpartTemplate = clone $this;
+			$subpartTemplate->setWorkingTemplateContent($subpart);
+			$viewHelper->setTemplate($subpartTemplate);
+			$viewHelperContent = $viewHelper->execute($viewHelperArguments);
+
+			$content = t3lib_parsehtml::substituteSubpart(
+				$content,
+				$subpartMarker,
+				$viewHelperContent,
+				FALSE
+			);
+
+				// there might be more occurences of the same subpart maker with
+				// the same arguments but different amrkup to be used...
+				// that's the case with the facet subpart vierw helper f.e.
+			$furtherOccurences = strpos($content, $subpartMarker);
+			if ($furtherOccurences !== FALSE) {
+				$content = $this->renderSubpartViewHelper($viewHelper, $helperKey, $content);
 			}
 		}
 
@@ -366,7 +448,7 @@ class tx_solr_Template {
 			$inLoopMarkers = $this->getMarkersFromTemplate(
 				$currentIterationContent,
 				'LOOP:',
-				false
+				FALSE
 			);
 
 			$inLoopMarkers = $this->filterProtectedLoops($inLoopMarkers);
@@ -472,7 +554,7 @@ class tx_solr_Template {
 			);
 
 			if ($conditionResult) {
-					// if condition evaluates to true, simply replace it with
+					// if condition evaluates to TRUE, simply replace it with
 					// the original content to have the surrounding markers removed
 				$content = t3lib_parsehtml::substituteSubpart(
 					$content,
@@ -480,7 +562,7 @@ class tx_solr_Template {
 					$condition['content']
 				);
 			} else {
-					// if condition evaluates to false, remove the content from the template
+					// if condition evaluates to FALSE, remove the content from the template
 				$content = t3lib_parsehtml::substituteSubpart(
 					$content,
 					$condition['marker'],
@@ -498,7 +580,7 @@ class tx_solr_Template {
 	 * Conditions are subparts with markers in the form of
 	 *
 	 * ###IF:comparand1|operator|comparand2###
-	 * Some content only visible if the condition evaluates as true
+	 * Some content only visible if the condition evaluates as TRUE
 	 * ###IF:comparand1|operator|comparand2###
 	 *
 	 * The returned result is an array of arrays describing a found condition.
@@ -513,7 +595,7 @@ class tx_solr_Template {
 	 */
 	protected function findConditions($content) {
 		$conditions = array();
-		$ifMarkers  = $this->getHelperMarkers('IF', $content, false);
+		$ifMarkers  = $this->getViewHelperArgumentLists('IF', $content, FALSE);
 
 		foreach ($ifMarkers as $ifMarker) {
 			list($comparand1, $operator, $comparand2) = explode('|', $ifMarker);
@@ -546,7 +628,7 @@ class tx_solr_Template {
 	 * @return	boolean	Boolean evaluation of the condition.
 	 */
 	protected function evaluateCondition($comparand1, $comparand2, $operator) {
-		$conditionResult = false;
+		$conditionResult = FALSE;
 
 		switch($operator) {
 			case '==':
@@ -593,8 +675,8 @@ class tx_solr_Template {
 		foreach ($markers as $marker) {
 			$dotPosition = strpos($marker, '.');
 
-			if ($dotPosition !== false) {
-				$resolvedValue = null;
+			if ($dotPosition !== FALSE) {
+				$resolvedValue = NULL;
 
 					// the marker contains a dot, thus we have to resolve the
 					// second part of the marker
@@ -763,7 +845,7 @@ class tx_solr_Template {
 	 * @param	string	marker name
 	 * @return	array	array of markers
 	 */
-	public function getMarkersFromTemplate($template, $markerPrefix = '', $capturePrefix = true) {
+	public function getMarkersFromTemplate($template, $markerPrefix = '', $capturePrefix = TRUE) {
 		$regex = '!###([A-Z0-9_-|:.]*)\###!is';
 
 		if (!empty($markerPrefix)) {
@@ -785,22 +867,23 @@ class tx_solr_Template {
 	 *
 	 * @param	string	a prefix to limit the result to markers beginning with the specified prefix
 	 * @return	array	array of markers names
-	 * @todo TODO rename to findMarkers and merge with getMarkersFromTemplate()
-	 * @todo TODO create a method findSubparts()
+	 * @todo rename to findMarkers and merge with getMarkersFromTemplate()
+	 * @todo create a method findSubparts()
 	 */
 	public function findMarkers($markerPrefix = '') {
 		return $this->getMarkersFromTemplate($this->workOnSubpart, $markerPrefix);
 	}
 
 	/**
-	 * Gets a list of helper markers from the selected subpart.
+	 * Gets a list of view helper marker arguments for a given view helper from
+	 * the selected subpart.
 	 *
 	 * @param	string	marker name, can be lower case, doesn't need the ### delimiters
-	 * @param	string	subpartname
-	 * @param	boolean	Optionally determines whether duplicate view helpers are removed. Defaults to true.
+	 * @param	string	subpart markup to search in
+	 * @param	boolean	Optionally determines whether duplicate view helpers are removed. Defaults to TRUE.
 	 * @return	array	array of markers
 	 */
-	public function getHelperMarkers($helperMarker, $subpart, $removeDuplicates = true) {
+	protected function getViewHelperArgumentLists($helperMarker, $subpart, $removeDuplicates = TRUE) {
 			// '!###' . $helperMarker . ':([A-Z0-9_-|.]*)\###!is'
 			// '!###' . $helperMarker . ':(.*?)\###!is',
 			// '!###' . $helperMarker . ':((.*?)+?(\###(.*?)\###(|.*?)?)?)?\###!is'
@@ -832,13 +915,13 @@ class tx_solr_Template {
 
 			// remove / protect LOOP subparts
 		$loopIndex = array_search('LOOP', $viewHelpers);
-		if ($loopIndex !== false) {
+		if ($loopIndex !== FALSE) {
 			unset($viewHelpers[$loopIndex]);
 		}
 
 			// remove / protect IF subparts
 		$loopIndex = array_search('IF', $viewHelpers);
-		if ($loopIndex !== false) {
+		if ($loopIndex !== FALSE) {
 			unset($viewHelpers[$loopIndex]);
 		}
 
@@ -863,6 +946,10 @@ class tx_solr_Template {
 		return $markers;
 	}
 
+	public function setTemplateContent($templateContent) {
+		return $this->template = $templateContent;
+	}
+
 	public function getTemplateContent() {
 		return $this->template;
 	}
@@ -874,7 +961,7 @@ class tx_solr_Template {
 	/**
 	 * Sets the debug mode on or off.
 	 *
-	 * @param	boolean	debug mode, true to enable debug mode, false to turn off again, off by default
+	 * @param	boolean	debug mode, TRUE to enable debug mode, FALSE to turn off again, off by default
 	 */
 	public function setDebugMode($mode) {
 		$this->debugMode = (boolean) $mode;
