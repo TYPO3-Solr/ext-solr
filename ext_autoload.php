@@ -81,5 +81,6 @@ return array(
 	'tx_solr_report_schemastatus' => $extensionPath . 'report/class.tx_solr_report_schemastatus.php',
 	'tx_solr_report_solrstatus' => $extensionPath . 'report/class.tx_solr_report_solrstatus.php',
 	'tx_solr_report_solrconfigstatus' => $extensionPath . 'report/class.tx_solr_report_solrconfigstatus.php',
+	'tx_solr_report_solrconfigurationstatus' => $extensionPath . 'report/class.tx_solr_report_solrconfigurationstatus.php',
 );
 ?>
