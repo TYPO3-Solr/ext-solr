@@ -7,6 +7,7 @@
 	* Changed the Solr status check to only show the complete version number, if it is different from the short version number, this is the case with custom builds
 	* Added a PHP port of the Acccess Rootline
 	* Added refactored facet renderer architecture to allow custom facet renderers
+	* Added support for multi / single value field auto-detection in field processors
 
 2011-01-31  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

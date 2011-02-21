@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Daniel Poetzinger <poetzinger@aoemedia.de>
+*  (c) 2009-2011 Daniel Poetzinger <poetzinger@aoemedia.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,8 +28,8 @@
  * common field processing during indexing or resolving
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_fieldprocessor_Service {
 
@@ -53,27 +53,34 @@ class tx_solr_fieldprocessor_Service {
 	 */
 	public function processDocument(Apache_Solr_Document $document, array $processingConfiguration) {
 		foreach ($processingConfiguration as $fieldName => $instruction) {
-			$fieldData = $document->getField($fieldName);
+			$fieldInformation = $document->getField($fieldName);
+			$isSingleValueField = FALSE;
 
-			if ($fieldData !== false) {
-				/*
-				 * $fieldData['value'] has the value of the field that needs to
-				 * be set later, this is normally an array	because it can be
-				 * a multivalued field
-				 */
-				if (is_array($fieldData['value'])) {
-					switch ($instruction) {
-						case 'timestampToIsoDate':
-							$processor = t3lib_div::makeInstance('tx_solr_fieldprocessor_TimestampToIsoDate');
-							$fieldData['value'] = $processor->process($fieldData['value']);
-							break;
-						case 'uppercase':
-							$fieldData['value'][0] = strtoupper($fieldData['value'][0]);
-							break;
-					}
+			if ($fieldInformation !== FALSE) {
+				$fieldValue = $fieldInformation['value'];
+
+				if (!is_array($fieldValue)) {
+						// turn single value field into multi value field
+					$fieldValue = array($fieldValue);
+					$isSingleValueField = TRUE;
 				}
 
-				$document->setField($fieldName, $fieldData['value']);
+				switch ($instruction) {
+					case 'timestampToIsoDate':
+						$processor = t3lib_div::makeInstance('tx_solr_fieldprocessor_TimestampToIsoDate');
+						$fieldValue = $processor->process($fieldValue);
+						break;
+					case 'uppercase':
+						$fieldValue = array_map('strtoupper', $fieldValue);
+						break;
+				}
+
+				if ($isSingleValueField) {
+						// turn multi value field back into single value field
+					$fieldValue = $fieldValue[0];
+				}
+
+				$document->setField($fieldName, $fieldValue);
 			}
 		}
 	}
