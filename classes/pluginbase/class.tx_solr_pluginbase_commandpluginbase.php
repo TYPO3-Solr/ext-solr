@@ -3,7 +3,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Timo Schmidt <timo.schmidt@aoemedia.de>
+*  (c) 2010-2011 Timo Schmidt <timo.schmidt@aoemedia.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is

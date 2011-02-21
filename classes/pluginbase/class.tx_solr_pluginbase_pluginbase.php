@@ -3,7 +3,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Timo Schmidt <timo.schmidt@aoemedia.de>
+*  (c) 2010-2011 Timo Schmidt <timo.schmidt@aoemedia.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -200,7 +200,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase{
 					$viewHelpers = $viewHelperProvider->getViewHelpers();
 					foreach ($viewHelpers as $helperName => $helperObject) {
 						$helperAdded = $template->addViewHelperObject($helperName, $helperObject);
-							// TODO check whether $helperAdded is true, throw an exception if not
+							// TODO check whether $helperAdded is TRUE, throw an exception if not
 					}
 				} else {
 					// TODO throw an exception
