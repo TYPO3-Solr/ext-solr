@@ -8,6 +8,7 @@
 	* Added a PHP port of the Acccess Rootline
 	* Added refactored facet renderer architecture to allow custom facet renderers
 	* Added support for multi / single value field auto-detection in field processors
+	* Added refactored structure for query filter parsers and query modifiers
 
 2011-01-31  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

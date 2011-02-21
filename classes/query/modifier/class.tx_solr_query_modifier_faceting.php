@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,24 +22,26 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+require_once($GLOBALS['PATH_solr'] . 'interfaces/interface.tx_solr_querymodifier.php');
+
 
 /**
  * Modifies a query to add faceting parameters
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
- * @author	Sebastian Kurfuerst <sebastian@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @author 	Daniel Poetzinger <poetzinger@aoemedia.de>
+ * @author 	Sebastian Kurfuerst <sebastian@typo3.org>
+ * @package	TYPO3
+ * @subpackage	solr
  */
-class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
+class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 
 	protected $configuration;
 	protected $facetParameters = array();
 	protected $facetFilters    = array();
 
 	/**
-	 * constructor for class tx_solr_querymodifier_Faceting
+	 * constructor for class tx_solr_query_modifier_Faceting
 	 */
 	public function __construct() {
 		$this->configuration = tx_solr_Util::getSolrConfiguration();
@@ -47,7 +49,7 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 
 	/**
 	 * Modifies the given query and adds the parameters necessary for faceted
-	 * search
+	 * search.
 	 *
 	 * @param	tx_solr_Query	The query to modify
 	 * @return	tx_solr_Query	The modified query with faceting parameters
@@ -93,15 +95,6 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 	}
 
 	/**
-	 * Builds facet parameters for date field facets
-	 *
-	 * @param	array	A facet configuration
-	 */
-	protected function buildFacetDateParameters() {
-		// not implemented yet
-	}
-
-	/**
 	 * Builds facet parameters for field facets
 	 *
 	 * @param	array	A facet configuration
@@ -119,15 +112,6 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 		if (in_array($facetConfiguration['sortBy'], array('alpha', 'index', 'lex'))) {
 			$this->facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = 'lex';
 		}
-	}
-
-	/**
-	 * Builds facet parameters for query facets
-	 *
-	 * @param	array	A facet configuration
-	 */
-	protected function buildFacetQueryParameters() {
-
 	}
 
 	/**
@@ -167,7 +151,18 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 
 				$filterParts = array();
 				foreach ($filterValues as $filterValue) {
-					$filterParts[] = $fieldConfiguration['field'] . ':"' . addslashes( $filterValue ) . '"';
+					if ($fieldConfiguration['filterParameterParser']) {
+						$parserClassname = 'tx_solr_query_filterparser_' .
+							ucfirst($fieldConfiguration['filterParameterParser']);
+						$filterParser = t3lib_div::makeInstance($parserClassname);
+
+						$filterOptions= $fieldConfiguration['renderer.'];
+
+						$filterValue = $filterParser->parseFilter($filterValue, $filterOptions);
+						$filterParts[] = $fieldConfiguration['field'] . ':' . addslashes( $filterValue );
+					} else {
+						$filterParts[] = $fieldConfiguration['field'] . ':"' . addslashes( $filterValue ) . '"';
+					}
 				}
 
 				$operator = ($fieldConfiguration['operator'] == 'OR') ? ' OR ' : ' AND ';
@@ -201,8 +196,8 @@ class tx_solr_querymodifier_Faceting implements tx_solr_QueryModifier {
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/querymodifier/class.tx_solr_querymodifier_faceting.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/querymodifier/class.tx_solr_querymodifier_faceting.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/query/modifier/class.tx_solr_query_modifier_faceting.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/query/modifier/class.tx_solr_query_modifier_faceting.php']);
 }
 
 ?>

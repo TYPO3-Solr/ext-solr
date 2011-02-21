@@ -41,7 +41,7 @@ return array(
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_commandpluginbase.php',
 
-	'tx_solr_querymodifier_faceting' => $extensionPath . 'classes/querymodifier/class.tx_solr_querymodifier_faceting.php',
+	'tx_solr_query_modifier_faceting' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_faceting.php',
 
 	'tx_solr_viewhelper_crop' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_crop.php',
 	'tx_solr_viewhelper_currentresultnumber' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_currentresultnumber.php',
@@ -61,6 +61,7 @@ return array(
 	'tx_solr_command' => $extensionPath . 'interfaces/interface.tx_solr_command.php',
 	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
 	'tx_solr_formmodifier' => $extensionPath . 'interfaces/interface.tx_solr_formmodifier.php',
+	'tx_solr_queryfilterparser' => $extensionPath . 'interfaces/interface.tx_solr_queryfilterparser.php',
 	'tx_solr_querymodifier' => $extensionPath . 'interfaces/interface.tx_solr_querymodifier.php',
 	'tx_solr_responseprocessor' => $extensionPath . 'interfaces/interface.tx_solr_responseprocessor.php',
 	'tx_solr_resultdocumentmodifier' => $extensionPath . 'interfaces/interface.tx_solr_resultdocumentmodifier.php',
