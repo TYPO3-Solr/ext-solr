@@ -10,6 +10,7 @@
 	* Added support for multi / single value field auto-detection in field processors
 	* Added refactored structure for query filter parsers and query modifiers
 	* Added support for subpart viewhelpers
+	* Added a facet subpart viewhelper to render single facets independently from the regular facet list
 
 2011-01-31  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
