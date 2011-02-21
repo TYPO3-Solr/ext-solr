@@ -19,7 +19,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-1-6-0--20110126" version="1.1">
+<schema name="tx_solr-1-6-0--20110208" version="1.1">
 	<!--
 		attribute "name" is the name of this schema and is only used for
 		display purposes. Applications should change this to reflect the
@@ -176,7 +176,15 @@
 			<analyzer type="index">
 				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-				<filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1" preserveOriginal="1"/>
+				<filter class="solr.WordDelimiterFilterFactory"
+					generateWordParts="1"
+					generateNumberParts="1"
+					catenateWords="1"
+					catenateNumbers="1"
+					catenateAll="0"
+					splitOnCaseChange="1"
+					preserveOriginal="1"
+				/>
 				<!-- Case insensitive stop word removal.
 					add enablePositionIncrements=true in both the index and query
 					analyzers to leave a 'gap' for more accurate phrase queries.
@@ -194,7 +202,15 @@
 			<analyzer type="query">
 				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-				<filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="0" catenateNumbers="0" catenateAll="0" splitOnCaseChange="1" preserveOriginal="1"/>
+				<filter class="solr.WordDelimiterFilterFactory"
+					generateWordParts="1"
+					generateNumberParts="1"
+					catenateWords="0"
+					catenateNumbers="0"
+					catenateAll="0"
+					splitOnCaseChange="1"
+					preserveOriginal="1"
+				/>
 				<!--
 				best practice (currently) for synonyms is to add them by expansions during index time
 				<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
@@ -424,6 +440,20 @@
 		<!-- Inline tags are typically u, b, i, em, strong -->
 		<field name="tagsInline" type="text" indexed="true" stored="false" omitNorms="true" />
 
+		<!--
+			File meta data fields
+		-->
+		<field name="fileName"                type="string"  indexed="true"  stored="true" />
+		<field name="fileExtension"           type="string"  indexed="true"  stored="true" />
+		<field name="fileMimeType"            type="string"  indexed="true"  stored="true" />
+		<field name="fileReferenceDocumentId" type="string"  indexed="true"  stored="true" />
+		<field name="fileReferenceTitle"      type="string"  indexed="true"  stored="true" />
+		<field name="fileReferenceUid"        type="integer" indexed="true"  stored="true" />
+		<field name="fileReferenceType"       type="string"  indexed="true"  stored="true" />
+		<field name="fileReferenceUrl"        type="string"  indexed="false" stored="true" />
+		<field name="fileRelativePath"        type="string"  indexed="false" stored="true" />
+		<field name="fileRelativePathOnly"    type="string"  indexed="false" stored="true" />
+		<field name="fileSha1"                type="string"  indexed="false" stored="true" />
 
 		<!--
 			Used to build the spellchecker index
