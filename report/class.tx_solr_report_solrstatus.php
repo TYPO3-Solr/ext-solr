@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,8 +28,8 @@
  * be established.
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 
@@ -68,14 +68,9 @@ class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 			$severity = tx_reports_reports_status_Status::OK;
 			$value = 'Your site has contacted the Apache Solr server.';
 
-			$completeSolrVersion = $solr->getSolrServerVersion();
+			$solrVersion = $this->formatSolrVersion($solr->getSolrServerVersion());
 
-			$explodedSolrVersion = explode('.', $completeSolrVersion);
-			$shortSolrVersion = $explodedSolrVersion[0]
-				. '.' . $explodedSolrVersion[1]
-				. '.' . $explodedSolrVersion[2];
-
-			$message .= '<li>Solr: ' . $shortSolrVersion . ' (' . $completeSolrVersion . ')</li>';
+			$message .= '<li>Apache Solr: ' . $solrVersion . '</li>';
 			$message .= '<li>schema.xml: ' . $solr->getSchemaName() . '</li>';
 			$message .= '<li>solrconfig.xml: ' . $solr->getSolrconfigName() . '</li>';
 
@@ -93,6 +88,31 @@ class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 			$message,
 			$severity
 		);
+	}
+
+	/**
+	 * Formats the Apache Solr server version number. By default this is going
+	 * to be the simple major.minor.patch-level version. Custom Builds provide
+	 * more information though, in case of custom builds, their complete
+	 * version will be added, too.
+	 *
+	 * @param	string	$solrVersion Unformatted Apache Solr version number as provided by Solr.
+	 * @return	string	formatted short version number, in case of custom builds followed by the complete version number
+	 */
+	protected function formatSolrVersion($solrVersion) {
+		$explodedSolrVersion = explode('.', $solrVersion);
+
+		$shortSolrVersion = $explodedSolrVersion[0]
+			. '.' . $explodedSolrVersion[1]
+			. '.' . $explodedSolrVersion[2];
+
+		$formattedSolrVersion = $shortSolrVersion;
+
+		if ($solrVersion != $shortSolrVersion) {
+			$formattedSolrVersion .= ' (' . $solrVersion . ')';
+		}
+
+		return $formattedSolrVersion;
 	}
 }
 
