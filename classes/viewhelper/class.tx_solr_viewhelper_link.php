@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,8 +28,8 @@
  * Replaces viewhelpers ###LINK:LinkText|Pid|AdditionalParameters|useCache###
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 
@@ -38,7 +38,7 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 	 *
 	 * @var tslib_cObj
 	 */
-	protected $contentObject = null;
+	protected $contentObject = NULL;
 
 	/**
 	 * constructor for class tx_solr_viewhelper_Date
@@ -52,13 +52,13 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 	/**
 	 * Creates a link to a given page with a given link text
 	 *
-	 * @param	array	Array of arguments, [0] is the link text, [1] is the (optional) page Id to link to (otherwise TSFE->id), [2] are additional URL parameters, [3] use cache, defaults to false
+	 * @param	array	Array of arguments, [0] is the link text, [1] is the (optional) page Id to link to (otherwise TSFE->id), [2] are additional URL parameters, [3] use cache, defaults to FALSE
 	 * @return	string	complete anchor tag with URL and link text
 	 */
 	public function execute(array $arguments = array()) {
 		$linkText             = $arguments[0];
 		$additionalParameters = $arguments[2] ? $arguments[2] : '';
-		$useCache             = $arguments[3] ? true : false;
+		$useCache             = $arguments[3] ? TRUE : FALSE;
 
 			// by default or if no link target is set, link to the current page
 		$linkTarget = $GLOBALS['TSFE']->id;
@@ -75,7 +75,7 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 
 		$linkConfiguration = array(
 			'useCacheHash'     => $useCache,
-			'no_cache'         => false,
+			'no_cache'         => FALSE,
 			'parameter'        => $linkTarget,
 			'additionalParams' => $additionalParameters
 		);
