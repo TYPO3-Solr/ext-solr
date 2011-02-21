@@ -5,6 +5,7 @@
 	* Changed the schema status check to check for the current schema version
 	* Added a configuration check status
 	* Changed the Solr status check to only show the complete version number, if it is different from the short version number, this is the case with custom builds
+	* Added a PHP port of the Acccess Rootline
 
 2011-01-31  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
