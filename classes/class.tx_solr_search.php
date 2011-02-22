@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo.renner@dkd.de>
+*  (c) 2009-2011 Ingo Renner <ingo.renner@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,8 +27,8 @@
  * Class to handle solr search requests
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_Search implements t3lib_Singleton {
 
@@ -91,7 +91,7 @@ class tx_solr_Search implements t3lib_Singleton {
 				t3lib_div::devLog('querying solr, getting result', 'tx_solr', 0, array(
 					'query string'     => $query->getQueryString(),
 					'query parameters' => $query->getQueryParameters(),
-					'response'         => json_decode($response->getRawResponse(), true)
+					'response'         => json_decode($response->getRawResponse(), TRUE)
 				));
 			}
 		} catch (Exception $e) {
@@ -110,18 +110,18 @@ class tx_solr_Search implements t3lib_Singleton {
 	/**
 	 * Sends a ping to the solr server to see whether it is available.
 	 *
-	 * @return	boolean	Returns true on successful ping.
+	 * @return	boolean	Returns TRUE on successful ping.
 	 * @throws	Exception	Throws an exception in case ping was not successful.
 	 */
 	public function ping() {
-		$solrAvailable = false;
+		$solrAvailable = FALSE;
 
 		try {
 			if (!$this->solr->ping()) {
 				throw new Exception('Solr Server not responding.', 1237475791);
 			}
 
-			$solrAvailable = true;
+			$solrAvailable = TRUE;
 		} catch (Exception $e) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				t3lib_div::devLog('exception while trying to ping the solr server', 'tx_solr', 3, array(
@@ -136,7 +136,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	/**
 	 * checks whether a search has been executed
 	 *
-	 * @return boolean	true if there was a search, false otherwise (if the user just visited the search page f.e.)
+	 * @return boolean	TRUE if there was a search, FALSE otherwise (if the user just visited the search page f.e.)
 	 */
 	public function hasSearched() {
 		return $this->solr->hasSearched();
@@ -176,6 +176,11 @@ class tx_solr_Search implements t3lib_Singleton {
 		return $this->solr->getResponse()->responseHeader->params->rows;
 	}
 
+	/**
+	 * Gets all facets with their fields, options, and counts.
+	 *
+	 * @return
+	 */
 	public function getFacetCounts() {
 		return $this->solr->getResponse()->facet_counts;
 	}
@@ -206,7 +211,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	}
 
 	public function getHighlightedContent() {
-		$highlightedContent = false;
+		$highlightedContent = FALSE;
 
 		if ($this->solr->getResponse()->highlighting) {
 			$highlightedContent = $this->solr->getResponse()->highlighting;
@@ -216,7 +221,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	}
 
 	public function getSpellcheckingSuggestions() {
-		$spellcheckingSuggestions = false;
+		$spellcheckingSuggestions = FALSE;
 
 		$suggestions = (array) $this->solr->getResponse()->spellcheck->suggestions;
 		if (!empty($suggestions)) {
