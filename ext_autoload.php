@@ -19,6 +19,7 @@ return array(
 
 		// EXT:solr
 
+	'tx_solr_additionalfieldsindexer' => $extensionPath . 'classes/class.tx_solr_additionalfieldsindexer.php',
 	'tx_solr_commandresolver' => $extensionPath . 'classes/class.tx_solr_commandresolver.php',
 	'tx_solr_connectionmanager' => $extensionPath . 'classes/class.tx_solr_connectionmanager.php',
 	'tx_solr_indexer' => $extensionPath . 'classes/class.tx_solr_indexer.php',

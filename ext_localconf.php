@@ -28,6 +28,10 @@ t3lib_extMgm::addPItoST43(
 	false
 );
 
+if (TYPO3_MODE == 'FE') {
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_AdditionalFieldsIndexer'] = 'EXT:solr/classes/class.tx_solr_additionalfieldsindexer.php:tx_solr_AdditionalFieldsIndexer';
+}
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding the indexer to the same hook that EXT:indexed_search would use
