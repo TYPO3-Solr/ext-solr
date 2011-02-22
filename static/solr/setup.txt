@@ -57,6 +57,9 @@ plugin.tx_solr {
 			# see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
 			boostFunction =
 
+			# see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
+			boostQuery =
+
 			// TODO implement multiple filters
 #			filter {
 #				10 = x:y
@@ -84,7 +87,7 @@ plugin.tx_solr {
 
 			fieldRenderingInstructions {
 
-				# additional example rendering for the title field
+				# additional example rendering instruction for the title field
 				title2 = TEXT
 				title2 {
 					field = title

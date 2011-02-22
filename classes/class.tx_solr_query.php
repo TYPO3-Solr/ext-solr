@@ -466,6 +466,20 @@ class tx_solr_Query {
 	}
 
 	/**
+	 * Sets the boost query bq parameter
+	 *
+	 * @param	mixed	boost query parameter as string or boolean FALSE to disable / reset the bq parameter
+	 * @see	http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
+	 */
+	public function setBoostQuery($boostQuery) {
+		if ($boostQuery) {
+			$this->queryParameters['bq'] = $boostQuery;
+		} else {
+			unset($this->queryParameters['bq']);
+		}
+	}
+
+	/**
 	 * Sets a query field and its boost. If the field doesn't exist yet, it
 	 * gets added. Boost is optional, if left out a default boost of 1.0 is
 	 * applied.

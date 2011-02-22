@@ -207,6 +207,10 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$query->setBoostFunction($this->conf['search.']['query.']['boostFunction']);
 			}
 
+			if (!empty($this->conf['search.']['query.']['boostQuery'])) {
+				$query->setBoostQuery($this->conf['search.']['query.']['boostQuery']);
+			}
+
 			if ($this->conf['enableDebugMode']) {
 				$query->setDebugMode();
 			}
@@ -299,6 +303,12 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 		$boostFunction = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'boostFunction', 'sQuery');
 		if ($boostFunction) {
 			$this->conf['search.']['query.']['boostFunction'] = $boostFunction;
+		}
+
+			// boost query
+		$boostQuery = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'boostQuery', 'sQuery');
+		if ($boostQuery) {
+			$this->conf['search.']['query.']['boostQuery'] = $boostQuery;
 		}
 	}
 
