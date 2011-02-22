@@ -18,6 +18,7 @@
 	* Added a check for Solr responses and throwing an exception if no response could be received, credits Marcus Krause
 	* Changed inclusion of Javascript and Stylesheets in tx_solr_pi_results_FormCommand
 	* Added feature #10898: Option to create normal links with getResultsPerPageSwitch, credits David Rühr
+	* Updated jQuery UI icons
 
 2011-02-21  Ingo Renner  <ingo.renner@dkd.de>
 
