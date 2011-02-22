@@ -9,6 +9,7 @@
 	* Changed the command resolver to support loading commands registered through registerPluginCommand()
 	* Added a plugin that provides a search input field, credits Timo Schmidt
 	* Fixed issue #12543: Facets links "Show more" not working (results page), credits Pierrick Caillon
+	* Added support to replace the core search content element with the EXT:solr search plugin
 
 2011-02-21  Ingo Renner  <ingo.renner@dkd.de>
 

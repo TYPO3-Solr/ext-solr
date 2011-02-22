@@ -126,4 +126,24 @@ $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck'] = 'EXT:sol
 	// registering the eID script for auto suggest
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/eid_suggest/suggest.php';
 
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// replace the built-in search content element
+$searchReplacementTypoScript = trim('
+tt_content.search = COA
+tt_content.search {
+	10 = < lib.stdheader
+	20 >
+	20 = < plugin.tx_solr_pi_results
+	30 >
+}
+');
+
+t3lib_extMgm::addTypoScript(
+	$_EXTKEY,
+	'setup',
+	'# Setting ' . $_EXTKEY . ' plugin TypoScript' . $searchReplacementTypoScript,
+	43
+);
+
 ?>

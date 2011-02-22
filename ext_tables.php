@@ -39,7 +39,7 @@ t3lib_extMgm::addPlugin(
 );
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_search'] = 'layout,select_key,pages,recursive';
 
-  # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 t3lib_extMgm::addStaticFile($_EXTKEY, 'static/solr/', 'Apache Solr');
 
@@ -68,6 +68,36 @@ if (TYPO3_MODE == 'BE') {
 
 		// hooking into cache clearing to update detected configuration
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:tx_solr_ConnectionManager->updateConnections';
+
+}
+
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// replace the built-in search content element
+t3lib_extMgm::addPiFlexFormValue(
+	'*',
+	'FILE:EXT:' . $_EXTKEY . '/flexforms/pi_results.xml',
+	'search'
+);
+
+if(t3lib_div::int_from_ver(TYPO3_version) >= 4005000) {
+	$TCA['tt_content']['types']['search']['showitem'] =
+		'--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
+		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
+		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.plugin,
+			pi_flexform;;;;1-1-1,
+		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
+			--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.visibility;visibility,
+			--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.access;access,
+		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.appearance,
+			--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
+		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.behaviour,
+		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended';
+} else {
+	$TCA['tt_content']['types']['search']['showitem'] =
+		'CType;;4;;1-1-1, hidden, header;;3;;2-2-2, linkToTop;;;;3-3-3,
+		--div--;LLL:EXT:cms/locallang_ttc.xml:CType.I.9, pi_flexform;;;;1-1-1,
+		--div--;LLL:EXT:cms/locallang_tca.xml:pages.tabs.access, starttime, endtime, fe_group';
 }
 
 ?>
