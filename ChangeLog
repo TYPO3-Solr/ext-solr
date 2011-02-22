@@ -36,7 +36,6 @@
 	* Added refactored structure for query filter parsers and query modifiers
 	* Added support for subpart viewhelpers
 	* Added a facet subpart viewhelper to render single facets independently from the regular facet list
-	* Added class tx_solr_Typo3Environment to check against several TYPO3 environment conditions the extension depends on
 	* Added tx_solr_Typo3PageContentExtractor::getTagContent()
 	* Fixed issue #7362: nbsp are not detected to split words
 
