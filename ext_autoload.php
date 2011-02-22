@@ -46,8 +46,8 @@ return array(
 	'tx_solr_fieldprocessor_service' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php',
 	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_timestamptoisodate.php',
 
-	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_commandpluginbase.php',
+	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_faceting.php',
 
@@ -94,14 +94,15 @@ return array(
 	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'report/class.tx_solr_report_accessfilterplugininstalledstatus.php',
 	'tx_solr_report_indexreport' => $extensionPath . 'report/class.tx_solr_report_indexreport.php',
 	'tx_solr_report_schemastatus' => $extensionPath . 'report/class.tx_solr_report_schemastatus.php',
-	'tx_solr_report_solrstatus' => $extensionPath . 'report/class.tx_solr_report_solrstatus.php',
 	'tx_solr_report_solrconfigstatus' => $extensionPath . 'report/class.tx_solr_report_solrconfigstatus.php',
 	'tx_solr_report_solrconfigurationstatus' => $extensionPath . 'report/class.tx_solr_report_solrconfigurationstatus.php',
+	'tx_solr_report_solrstatus' => $extensionPath . 'report/class.tx_solr_report_solrstatus.php',
 
 		// interfaces
 
 	'tx_solr_additionalindexer' => $extensionPath . 'interfaces/interface.tx_solr_additionalindexer.php',
 	'tx_solr_facetrenderer' => $extensionPath . 'interfaces/interface.tx_solr_facetrenderer.php',
+	'tx_solr_facetsmodifier' =>  $extensionPath . 'interfaces/interface.tx_solr_facetsmodifier.php',
 	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
 	'tx_solr_formmodifier' => $extensionPath . 'interfaces/interface.tx_solr_formmodifier.php',
 	'tx_solr_plugincommand' => $extensionPath . 'interfaces/interface.tx_solr_plugincommand.php',
