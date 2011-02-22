@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,8 +27,8 @@
  * Scheduler task to execute an index <optimize /> command on a regular basis
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_scheduler_OptimizeTask extends tx_scheduler_Task {
 
@@ -41,7 +41,7 @@ class tx_solr_scheduler_OptimizeTask extends tx_scheduler_Task {
 	 *
 	 * @var	tx_solr_SolrService
 	 */
-	protected $solr  = null;
+	protected $solr  = NULL;
 
 	/**
 	 * Initializes a Solr Connection
@@ -59,13 +59,13 @@ class tx_solr_scheduler_OptimizeTask extends tx_scheduler_Task {
 	}
 
 	/**
-	 * Executes the optimize task and returns true if the execution was
+	 * Executes the optimize task and returns TRUE if the execution was
 	 * succesfull
 	 *
-	 * @return	boolean	returns true on success, false on failure
+	 * @return	boolean	returns TRUE on success, FALSE on failure
 	 */
 	public function execute() {
-		$result = false;
+		$result = FALSE;
 
 		if (is_null($this->solr)) {
 			$this->initializeSolr();
@@ -74,7 +74,7 @@ class tx_solr_scheduler_OptimizeTask extends tx_scheduler_Task {
 		$this->solr->commit();
 		$response = $this->solr->optimize();
 		if ($response->responseHeader->status === 0) {
-			$result = true;
+			$result = TRUE;
 		}
 
 		return $result;

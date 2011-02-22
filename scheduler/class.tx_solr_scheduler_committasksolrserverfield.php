@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Georg Kuehnberger <georg@georg.org>
+*  (c) 2010-2011 Georg Kuehnberger <georg@georg.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,8 +27,8 @@
  * Adds an additional field to specify the Solr server to commit to
  *
  * @author	Georg Kuehnberger <georg@georg.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_scheduler_CommitTaskSolrServerField implements tx_scheduler_AdditionalFieldProvider {
 
@@ -78,20 +78,20 @@ class tx_solr_scheduler_CommitTaskSolrServerField implements tx_scheduler_Additi
 
 	/**
 	 * Checks any additional data that is relevant to this task. If the task
-	 * class is not relevant, the method is expected to return true
+	 * class is not relevant, the method is expected to return TRUE
 	 *
 	 * @param	array					$submittedData: reference to the array containing the data submitted by the user
 	 * @param	tx_scheduler_module1	$parentObject: reference to the calling object (Scheduler's BE module)
-	 * @return	boolean					True if validation was ok (or selected class is not relevant), false otherwise
+	 * @return	boolean					True if validation was ok (or selected class is not relevant), FALSE otherwise
 	 */
 	public function validateAdditionalFields(array &$submittedData, tx_scheduler_Module $schedulerModule) {
-		$result = false;
+		$result = FALSE;
 		$submittedData['solrPort'] = intval($submittedData['solrPort']);
 
 		if ($submittedData['solrPort'] < 0) {
 			$schedulerModule->addMessage('Invalid Port given', 3);
 		} else {
-			$result = true;
+			$result = TRUE;
 		}
 
 		return $result;
