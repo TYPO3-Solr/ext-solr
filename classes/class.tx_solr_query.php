@@ -109,10 +109,16 @@ class tx_solr_Query {
 	 */
 	protected function buildQueryString() {
 			// very simple for now
-		$this->queryString = $GLOBALS['TSFE']->csConvObj->utf8_encode(
-			$this->keywords,
-			$GLOBALS['TSFE']->metaCharset
-		);
+		if (!isset($GLOBALS['TSFE']) || !isset($GLOBALS['TSFE']->csConvObj)) {
+				// detecting TSFE prevents trouble with EXT:devlog
+				// @see http://forge.typo3.org/issues/13141
+			$this->queryString = $this->keywords;
+		} else {
+			$this->queryString = $GLOBALS['TSFE']->csConvObj->utf8_encode(
+				$this->keywords,
+				$GLOBALS['TSFE']->metaCharset
+			);
+		}
 	}
 
 	/**
