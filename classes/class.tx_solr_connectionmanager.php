@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2010-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,8 +30,8 @@
  * duplicate connections are created.
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_ConnectionManager implements t3lib_Singleton {
 
@@ -51,7 +51,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	 * @return	tx_solr_SolrService	A solr connection.
 	 */
 	public function getConnection($host = '', $port = '8080', $path = '/solr/', $scheme = 'http') {
-		$connection     = null;
+		$connection = NULL;
 
 		if (empty($host)) {
 			t3lib_div::devLog(
@@ -125,7 +125,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	 * @throws	tx_solr_NoSolrConnectionFoundException
 	 */
 	public function getConnectionByRootPageId($pageId, $language = 0) {
-		$solrConnection = null;
+		$solrConnection = NULL;
 		$connectionKey  = $pageId . '|' . $language;
 
 		$registry = t3lib_div::makeInstance('t3lib_Registry');
@@ -221,14 +221,14 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$connectionKey = $rootPage['uid'] . '|' . $languageId;
 
 				$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
-				$tmpl->tt_track = false; // Do not log time-performance information
+				$tmpl->tt_track = FALSE; // Do not log time-performance information
 				$tmpl->init();
 				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
 				$tmpl->generateConfig();
 
 				list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.solr');
 				list(, $solrEnabled) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.enabled');
-				$solrEnabled = !empty($solrEnabled) ? true : false;
+				$solrEnabled = !empty($solrEnabled) ? TRUE : FALSE;
 
 				if (!empty($solrSetup) && $solrEnabled) {
 					$configuredSolrConnections[$connectionKey] = array(
