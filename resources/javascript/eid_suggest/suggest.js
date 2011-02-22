@@ -1,4 +1,14 @@
 jQuery(document).ready(function(){
+
+	// Change back to the old behavoir of autocomplete
+	// http://jqueryui.com/docs/Upgrade_Guide_184#Autocomplete
+	jQuery.ui.autocomplete.prototype._renderItem = function( ul, item ) {
+			return jQuery( "<li></li>" )
+				.data( "item.autocomplete", item )
+				.append( "<a>" + item.label + "</a>" )
+				.appendTo( ul );
+		};
+
 	jQuery('.tx-solr-q').autocomplete(
 		{
 			source: function(request, response) {
