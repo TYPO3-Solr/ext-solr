@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,8 +27,8 @@
  * A Solr search query
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_Query {
 
@@ -244,10 +244,10 @@ class tx_solr_Query {
 	/**
 	 * Activates and deactivates faceting for the current query.
 	 *
-	 * @param	boolean	True to enable faceting, false to disable faceting
+	 * @param	boolean	TRUE to enable faceting, FALSE to disable faceting
 	 * @return	void
 	 */
-	public function setFaceting($faceting = true) {
+	public function setFaceting($faceting = TRUE) {
 		if ($faceting) {
 			$this->queryParameters['facet'] = 'true';
 			$this->queryParameters['facet.mincount'] = $this->solrConfiguration['search.']['faceting.']['minimumCount'];
@@ -270,7 +270,7 @@ class tx_solr_Query {
 				}
 
 					// remove all f.*.facet.* settings (overrides for individual fields)
-				if (t3lib_div::isFirstPartOfStr($key, 'f.') && strpos($key, '.facet.') !== false) {
+				if (t3lib_div::isFirstPartOfStr($key, 'f.') && strpos($key, '.facet.') !== FALSE) {
 					unset($this->queryParameters[$key]);
 				}
 			}
@@ -407,7 +407,7 @@ class tx_solr_Query {
 
 	// query parameters
 
-	public function setOmitHeader($omitHeader = true) {
+	public function setOmitHeader($omitHeader = TRUE) {
 		if ($omitHeader) {
 			$this->queryParameters['omitHeader'] = 'true';
 		} else {
@@ -485,7 +485,7 @@ class tx_solr_Query {
 	 * @return	void
 	 */
 	public function setQueryFieldsFromString($queryFields) {
-		$fields = t3lib_div::trimExplode(',', $queryFields, true);
+		$fields = t3lib_div::trimExplode(',', $queryFields, TRUE);
 
 		foreach ($fields as $field) {
 			$fieldNameAndBoost = explode('^', $field);
@@ -546,10 +546,10 @@ class tx_solr_Query {
 	 * Gets a specific query parameter by its name.
 	 *
 	 * @param	string	The parameter to return
-	 * @return	string	The parameter's value or null if not set
+	 * @return	string	The parameter's value or NULL if not set
 	 */
 	public function getQueryParameter($parameterName) {
-		$requestedParameter = null;
+		$requestedParameter = NULL;
 		$parameters = $this->getQueryParameters();
 
 		if (isset($parameters[$parameterName])) {
@@ -587,7 +587,7 @@ class tx_solr_Query {
 		$this->returnFields = $returnFields;
 	}
 
-	public function setHighlighting($highlighting = true, $fragmentSize = 200) {
+	public function setHighlighting($highlighting = TRUE, $fragmentSize = 200) {
 
 		if ($highlighting) {
 			$this->queryParameters['hl'] = 'true';
@@ -613,9 +613,9 @@ class tx_solr_Query {
 	/**
 	 * Enables or disables spellchecking for the query.
 	 *
-	 * @param	boolean	Enables spellchecking when set to true, deactivates spellchecking when set to false.
+	 * @param	boolean	Enables spellchecking when set to TRUE, deactivates spellchecking when set to FALSE.
 	 */
-	public function setSpellchecking($spellchecking = true) {
+	public function setSpellchecking($spellchecking = TRUE) {
 		if ($spellchecking) {
 			$this->queryParameters['spellcheck'] = 'true';
 			$this->queryParameters['spellcheck.collate'] = 'true';
@@ -625,7 +625,7 @@ class tx_solr_Query {
 		}
 	}
 
-	public function setSorting($sort = true) {
+	public function setSorting($sort = TRUE) {
 		if ($sort) {
 			$piVars = t3lib_div::_GP('tx_solr');
 
@@ -642,9 +642,9 @@ class tx_solr_Query {
 	/**
 	 * Enables or disables the debug parameter for the query.
 	 *
-	 * @param	boolean	Enables debugging when set to true, deactivates debugging when set to false.
+	 * @param	boolean	Enables debugging when set to TRUE, deactivates debugging when set to FALSE.
 	 */
-	public function setDebugMode($debugMode = true) {
+	public function setDebugMode($debugMode = TRUE) {
 		if ($debugMode) {
 			$this->queryParameters['debugQuery'] = 'true';
 			$this->queryParameters['echoParams'] = 'all';
@@ -691,10 +691,10 @@ class tx_solr_Query {
 		$queryParameters = $this->removeUnwantedUrlParameters($queryParameters);
 
 		$linkConfiguration = array(
-			'useCacheHash'     => false,
-			'no_cache'         => false,
+			'useCacheHash'     => FALSE,
+			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', true)
+			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
 		);
 
 		return $cObj->typoLink($linkText, $linkConfiguration);
@@ -716,10 +716,10 @@ class tx_solr_Query {
 		$queryParameters = $this->removeUnwantedUrlParameters($queryParameters);
 
 		$linkConfiguration = array(
-			'useCacheHash'     => false,
-			'no_cache'         => false,
+			'useCacheHash'     => FALSE,
+			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', true)
+			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
 		);
 
 		$cObj->typoLink('|', $linkConfiguration);
