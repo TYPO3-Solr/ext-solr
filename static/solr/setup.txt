@@ -12,6 +12,7 @@ plugin.tx_solr {
 
 	templateFile {
 		results = EXT:solr/resources/templates/pi_results/results.htm
+		search = EXT:solr/resources/templates/pi_search/search.htm
 	}
 
 	addDefaultCss = 1

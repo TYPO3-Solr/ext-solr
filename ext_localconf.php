@@ -28,6 +28,16 @@ t3lib_extMgm::addPItoST43(
 	FALSE
 );
 
+	// adding the Search Form plugin
+t3lib_extMgm::addPItoST43(
+	$_EXTKEY,
+	'pi_search/class.tx_solr_pi_search.php',
+	'_pi_search',
+	'list_type',
+	TRUE
+);
+
+
 if (TYPO3_MODE == 'FE') {
 		// select and register the page indexer
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_IndexerSelector'] = 'EXT:solr/classes/class.tx_solr_indexerselector.php:tx_solr_IndexerSelector->registerIndexer';

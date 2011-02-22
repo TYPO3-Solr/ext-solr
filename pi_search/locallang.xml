@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for plugin &quot;tx_solr_pi_search&quot;</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="submit">Search</label>
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="submit">Suchen</label>
+		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="submit">Zoek</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="submit">Rechercher</label>
+		</languageKey>
+
+	</data>
+</T3locallang>

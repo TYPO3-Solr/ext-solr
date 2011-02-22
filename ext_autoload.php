@@ -73,6 +73,7 @@ return array(
 		// plugins
 
 	'tx_solr_pi_results' => $extensionPath . 'pi_results/class.tx_solr_pi_results.php',
+	'tx_solr_pi_search' => $extensionPath . 'pi_search/class.tx_solr_pi_search.php',
 
 	'tx_solr_pi_results_facetingcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_facetingcommand.php',
 	'tx_solr_pi_results_formcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_formcommand.php',

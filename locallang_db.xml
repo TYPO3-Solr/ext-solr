@@ -7,6 +7,14 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="tt_content.list_type_pi_results">Solr: Form, Result, Additional Components</label>
+			<label index="tt_content.list_type_pi_search">Solr: Form only</label>
+		</languageKey>
+		<languageKey index="dk" type="array">
+			<label index="tt_content.list_type_pi_results">Solr: Søgeformular, Resultater, Yderligere komponenter</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="tt_content.list_type_pi_results">Solr: Formulaire, Résultats, Composants additionnels</label>
+			<label index="tt_content.list_type_pi_search">Solr: Formulaire seul</label>
 		</languageKey>
 	</data>
 </T3locallang>

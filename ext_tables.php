@@ -29,6 +29,18 @@ t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi_results', 'FILE:EXT:solr/flexfo
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
+	// adding the Search Form plugin
+t3lib_extMgm::addPlugin(
+	array(
+		'LLL:EXT:solr/locallang_db.xml:tt_content.list_type_pi_search',
+		$_EXTKEY . '_pi_search'
+	),
+	'list_type'
+);
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_search'] = 'layout,select_key,pages,recursive';
+
+  # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
 t3lib_extMgm::addStaticFile($_EXTKEY, 'static/solr/', 'Apache Solr');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -37,7 +49,7 @@ if (TYPO3_MODE == 'BE') {
 #	t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
 #	t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
 
-		// adding reports
+		// registering reports
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
 		'tx_solr_report_SchemaStatus',
 		'tx_solr_report_SolrconfigStatus',
@@ -46,8 +58,7 @@ if (TYPO3_MODE == 'BE') {
 		'tx_solr_report_AccessFilterPluginInstalledStatus'
 	);
 
-
-		// adding the index report to the reports module
+		// registering the index report with the reports module
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_solr']['index'] = array(
 		'title'       => 'LLL:EXT:solr/locallang.xml:report_index_title',
 		'description' => 'LLL:EXT:solr/locallang.xml:report_index_description',

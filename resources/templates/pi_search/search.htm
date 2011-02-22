@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Template for the search form view for EXT:solr</title>
+</head>
+<body>
+
+<!-- ###SOLR_SEARCH### begin -->
+
+	<!-- ###SOLR_SEARCH_FORM### begin -->
+	<div class="tx-solr-searchbox">
+		###FORM.SUGGEST_URL###
+		<form id="tx-solr-search-form-pi-search" action="###FORM.ACTION###" method="get" accept-charset="###FORM.ACCEPT-CHARSET###">
+			###LLL:searchWord### <input type="text" class="tx-solr-q" name="###SOLR.PREFIX###[q]" value="" />
+			<input type="hidden" name="id" value="###FORM.ACTION_ID###" />
+			<input type="hidden" name="###FORM.ACTION_LANGUAGE_PARAMETER###" value="###FORM.ACTION_LANGUAGE###" />
+			<input type="submit" value="###LLL:submit###" />
+		</form>
+	</div>
+	<!-- ###SOLR_SEARCH_FORM### end -->
+
+<!-- ###SOLR_SEARCH### end -->
+
+<!-- ###SOLR_SEARCH_ERROR### begin -->
+	###LLL:searchFailed###
+<!-- ###SOLR_SEARCH_ERROR### end -->
+
+</body>
+</html>
