@@ -100,6 +100,29 @@ plugin.tx_solr {
 					htmlSpecialChars.preserveEntities = 1
 				}
 
+				link = CASE
+				link {
+					key.field = type
+
+					pages  = TEXT
+					pages {
+						field = title
+
+						typolink {
+							parameter.field = uid
+						}
+					}
+
+					default  = TEXT
+					default {
+						field = title
+
+						typolink {
+							parameter.field = url
+							extTarget =
+						}
+					}
+				}
 			}
 
 			pagebrowser {

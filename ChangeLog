@@ -20,6 +20,7 @@
 	* Added feature #10898: Option to create normal links with getResultsPerPageSwitch, credits David Rühr
 	* Updated jQuery UI icons
 	* Removed option to switch between simple and advanced form
+	* Added a new "virtual" link marker added through renderingInstructions (###RESULT_DOCUMENT.LINK###)
 
 2011-02-21  Ingo Renner  <ingo.renner@dkd.de>
 
