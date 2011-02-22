@@ -23,6 +23,7 @@ return array(
 	'tx_solr_commandresolver' => $extensionPath . 'classes/class.tx_solr_commandresolver.php',
 	'tx_solr_connectionmanager' => $extensionPath . 'classes/class.tx_solr_connectionmanager.php',
 	'tx_solr_indexer' => $extensionPath . 'classes/class.tx_solr_indexer.php',
+	'tx_solr_indexerselector' => $extensionPath . 'classes/class.tx_solr_indexerselector.php',
 	'tx_solr_languagefileunavailableexception' => $extensionPath . 'classes/class.tx_solr_languagefileunavailableexception.php',
 	'tx_solr_nosolrconnectionfoundexception' => $extensionPath . 'classes/class.tx_solr_nosolrconnectionfoundexception.php',
 	'tx_solr_query' => $extensionPath . 'classes/class.tx_solr_query.php',
@@ -31,6 +32,7 @@ return array(
 	'tx_solr_suggestquery' => $extensionPath . 'classes/class.tx_solr_suggestquery.php',
 	'tx_solr_template' => $extensionPath . 'classes/class.tx_solr_template.php',
 	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'classes/class.tx_solr_typo3pagecontentextractor.php',
+	'tx_solr_typo3pageindexer' => $extensionPath . 'classes/class.tx_solr_typo3pageindexer.php',
 	'tx_solr_util' => $extensionPath . 'classes/class.tx_solr_util.php',
 
 	'tx_solr_access_rootline' => $extensionPath . 'classes/access/class.tx_solr_access_rootline.php',

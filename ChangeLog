@@ -2,6 +2,7 @@
 
 	* Added tx_solr_AdditionalFieldsIndexer to take care of indexing fields as defined in plugin.tx_solr.index.additionalFields
 	* Removed unused method tx_solr_Typo3Environment::isFileadminEnabledWhileUsingDam()
+	* Added refactored indexer
 
 2011-02-21  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -29,15 +29,11 @@ t3lib_extMgm::addPItoST43(
 );
 
 if (TYPO3_MODE == 'FE') {
+		// select and register the page indexer
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_IndexerSelector'] = 'EXT:solr/classes/class.tx_solr_indexerselector.php:tx_solr_IndexerSelector->registerIndexer';
+
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_AdditionalFieldsIndexer'] = 'EXT:solr/classes/class.tx_solr_additionalfieldsindexer.php:tx_solr_AdditionalFieldsIndexer';
 }
-
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-	// adding the indexer to the same hook that EXT:indexed_search would use
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing']['tx_solr_Indexer'] = 'EXT:solr/classes/class.tx_solr_indexer.php:tx_solr_Indexer';
-	// tracking FE user groups used to protect content on a page
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit']['tx_solr_Indexer'] = 'EXT:solr/classes/class.tx_solr_indexer.php:&tx_solr_Indexer';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
