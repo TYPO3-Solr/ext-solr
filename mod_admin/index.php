@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -35,7 +35,7 @@ $BE_USER->modAccess($MCONF, 1);
  * @package	TYPO3
  * @subpackage	solr
  */
-class  tx_solr_moduleAdmin extends t3lib_SCbase {
+class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	var $pageinfo;
 
 	/**
@@ -165,7 +165,7 @@ class  tx_solr_moduleAdmin extends t3lib_SCbase {
 	 * @return	void
 	 */
 	protected function getModuleContent() {
-		$pageRoot = (string)$this->MOD_SETTINGS['function'];
+		$pageRoot = (string) $this->MOD_SETTINGS['function'];
 
 		$content = '<div align="center"><strong>Hello World!</strong></div><br />
 			The "Kickstarter" has made this module automatically, it contains a default framework for a backend module but apart from that it does nothing useful until you open the script '.substr(t3lib_extMgm::extPath('solr'),strlen(PATH_site)).'mod_admin/index.php and edit it!
@@ -224,7 +224,7 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/mo
 
 
 // Make instance:
-$SOBE = t3lib_div::makeInstance('tx_solr_moduleAdmin');
+$SOBE = t3lib_div::makeInstance('tx_solr_ModuleAdmin');
 $SOBE->init();
 
 // Include files?
