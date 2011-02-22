@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Markus Goldbach <markus.goldbach@dkd.de>
+*  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,8 +30,8 @@
  * ResultSetModifier interface, allows to modify search result set
  *
  * @author	Markus Goldbach <markus.goldbach@dkd.de>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 interface tx_solr_ResultSetModifier {
 
