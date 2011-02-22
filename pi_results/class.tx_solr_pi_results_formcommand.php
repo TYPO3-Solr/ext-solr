@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,17 +27,37 @@
  * form command class to render the "simple" search form
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
-class tx_solr_pi_results_FormCommand implements tx_solr_Command {
+class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 
 	protected $cObj;
+
+	/**
+	 * Parent plugin
+	 *
+	 * @var	tx_solr_pi_results
+	 */
 	protected $parentPlugin;
 
+	/**
+	 * Configuration
+	 *
+	 * @var	array
+	 */
+	protected $configuration;
+
+	/**
+	 * Constructor for class tx_solr_pi_results_FormCommand
+	 *
+	 * @param	tslib_pibase	$parentPlugin parent plugin
+	 */
 	public function __construct(tslib_pibase $parentPlugin) {
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
-		$this->parentPlugin = $parentPlugin;
+
+		$this->parentPlugin  = $parentPlugin;
+		$this->configuration = $parentPlugin->conf;
 	}
 
 	/**

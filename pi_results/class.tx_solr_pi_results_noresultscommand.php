@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,15 +27,22 @@
  * No Results found view command
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
-class tx_solr_pi_results_NoResultsCommand implements tx_solr_Command {
+class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 
+	/**
+	 * Parent plugin
+	 *
+	 * @var	tx_solr_pi_results
+	 */
 	protected $parentPlugin;
 
 	/**
-	 * constructor for class tx_solr_pi_results_ResultsCommand
+	 * Constructor for class tx_solr_pi_results_ResultsCommand
+	 *
+	 * @param	tslib_pibase	$parentPlugin parent plugin
 	 */
 	public function __construct(tslib_pibase $parentPlugin) {
 		$this->parentPlugin = $parentPlugin;

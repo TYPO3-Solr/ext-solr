@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -45,14 +45,14 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 *
 	 * @var	tx_solr_Query
 	 */
-	protected $query = null;
+	protected $query = NULL;
 
 	/**
 	 * Track, if the number of results per page has been changed by the current request
 	 *
 	 * @var	boolean
 	 */
-	protected $resultsPerPageChanged = false;
+	protected $resultsPerPageChanged = FALSE;
 
 
 	/**
@@ -150,13 +150,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 * @see	classes/pluginbase/tx_solr_pluginbase_CommandPluginBase#getCommandResolver()
 	 */
 	protected function getCommandResolver() {
-		$commandResolver = t3lib_div::makeInstance(
-			'tx_solr_CommandResolver',
-			$GLOBALS['PATH_solr'] . 'pi_results/',
-			'tx_solr_pi_results_'
-		);
-
-		return $commandResolver;
+		return t3lib_div::makeInstance('tx_solr_CommandResolver');
 	}
 
 	/**
@@ -165,30 +159,23 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 * @return	array	An array of command names to process for the result view
 	 */
 	protected function getCommandList() {
-		$commandList = array();
-		$formStyle   = $this->conf['search.']['form'];
+		$requirements = tx_solr_PluginCommand::REQUIREMENT_NONE;
+		$commandList  = array();
 
-			// always show the form
-		if ($formStyle == 'simple') {
-			$commandList[] = 'form';
-		} elseif($formStyle == 'advanced') {
-			$commandList[] = 'advanced_form';
-		}
-
-			// check which commands / components of the result view to show
 		if ($this->search->hasSearched()) {
-			if ($this->search->getNumberOfResults() > 0) {
-				foreach ($this->conf['searchResultsViewComponents.'] as $commandName => $enabled) {
-					if ($enabled) {
-						$commandList[] = $commandName;
-					}
-				}
+			$requirements = tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED;
 
-				$commandList[] = 'results';
+			if ($this->search->getNumberOfResults() > 0) {
+				$requirements += tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS;
 			} else {
-				$commandList[] = 'no_results';
+				$requirements += tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS;
 			}
 		}
+
+		$commandList = tx_solr_CommandResolver::getPluginCommands(
+			'results',
+			$requirements
+		);
 
 		return $commandList;
 	}
@@ -225,7 +212,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 			if ($this->conf['search.']['highlighting']) {
-				$query->setHighlighting(true, $this->conf['search.']['highlighting.']['fragmentSize']);
+				$query->setHighlighting(TRUE, $this->conf['search.']['highlighting.']['fragmentSize']);
 			}
 
 			if ($this->conf['search.']['spellchecking']) {
@@ -369,7 +356,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 		if (isset($solrParameters['resultsPerPage']) && in_array($solrParameters['resultsPerPage'], $resultsPerPageSwitchOptions)) {
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_solr_resultsPerPage', intval($solrParameters['resultsPerPage']));
-			$this->resultsPerPageChanged = true;
+			$this->resultsPerPageChanged = TRUE;
 		}
 
 		$defaultNumberOfResultsShown = $configuration['search.']['results.']['resultsPerPage'];

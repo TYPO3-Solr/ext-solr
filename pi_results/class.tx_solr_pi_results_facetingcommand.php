@@ -30,7 +30,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class tx_solr_pi_results_FacetingCommand implements tx_solr_Command {
+class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 
 	/**
 	 * Search instance

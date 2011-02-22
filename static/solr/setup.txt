@@ -219,12 +219,6 @@ plugin.tx_solr {
 		}
 	}
 
-		// TODO move to search.results
-	searchResultsViewComponents {
-		faceting = 1
-		sorting = 1
-	}
-
 	viewhelpers {
 		crop {
 			maxLength = 30

@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,48 +27,63 @@
  * sorting view command
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
-class tx_solr_pi_results_SortingCommand implements tx_solr_Command {
+class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 
 	/**
+	 * Search instance
+	 *
 	 * @var tx_solr_Search
 	 */
 	protected $search;
 
+	/**
+	 * Parent plugin
+	 *
+	 * @var	tx_solr_pi_results
+	 */
 	protected $parentPlugin;
 
 	/**
-	 * constructor for class tx_solr_pi_results_SortingCommand
+	 * Configuration
+	 *
+	 * @var	array
+	 */
+	protected $configuration;
+
+	/**
+	 * Constructor for class tx_solr_pi_results_SortingCommand
+	 *
+	 * @param	tslib_pibase	$parentPlugin parent plugin
 	 */
 	public function __construct(tslib_pibase $parentPlugin) {
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
-		$this->parentPlugin = $parentPlugin;
+		$this->parentPlugin  = $parentPlugin;
+		$this->configuration = $parentPlugin->conf;
 	}
 
 	public function execute() {
 		$marker = array();
 
-		$configuration = tx_solr_Util::getSolrConfiguration();
-		if ($configuration['search.']['sorting'] != 0 && $this->search->getNumberOfResults()) {
+		if ($this->configuration['search.']['sorting'] != 0 && $this->search->getNumberOfResults()) {
 			$marker['loop_sort|sort'] = $this->getSortingLinks();
 		}
 
 		if (count($marker) === 0) {
 				// in case we didn't fill any markers - like when there are no
-				// search results - we set markers to null to signal that we
+				// search results - we set markers to NULL to signal that we
 				// want to have the subpart removed completely
-			$marker = null;
+			$marker = NULL;
 		}
 
 		return $marker;
 	}
 
 	protected function getSortingLinks() {
-		$configuration = tx_solr_Util::getSolrConfiguration();
-		$configuredSortingFields = $configuration['search.']['sorting.']['fields.'];
+		$configuredSortingFields = $this->configuration['search.']['sorting.']['fields.'];
 		$query = $this->search->getQuery();
 		$query->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 		$sortingFields = array();
@@ -80,7 +95,7 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_Command {
 		foreach ($configuredSortingFields as $fieldName => $enabled) {
 			if (substr($fieldName, -1) != '.' && $enabled) {
 
-				$sortDirection = $configuration['search.']['sorting.']['defaultOrder'];
+				$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
 				$sortIndicator = $sortDirection;
 				$sortParameter = $fieldName . ' ' . $sortDirection;
 
@@ -127,7 +142,7 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_Command {
 				if ($fieldName == 'relevancy') {
 					$temp['link'] = $query->getQueryLink(
 						'###LLL:' . $configuredSortingFields[$fieldName . '.']['label'] . '###',
-						array('sort' => null)
+						array('sort' => NULL)
 					);
 					unset($temp['direction'], $temp['indicator']);
 				}

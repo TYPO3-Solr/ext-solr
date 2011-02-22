@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,13 +27,20 @@
 
 
 /**
- * Command interface
+ * Plugin command interface
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
-interface tx_solr_Command {
+interface tx_solr_PluginCommand {
+
+	const REQUIREMENTS_NUM_BITS    = 4;
+
+	const REQUIREMENT_NONE         = 1;
+	const REQUIREMENT_HAS_SEARCHED = 2;
+	const REQUIREMENT_NO_RESULTS   = 4;
+	const REQUIREMENT_HAS_RESULTS  = 8;
 
 	/**
 	 * constructor

@@ -4,6 +4,9 @@
 	* Removed unused method tx_solr_Typo3Environment::isFileadminEnabledWhileUsingDam()
 	* Added refactored indexer
 	* Added utility method tx_solr_Util::getRootPageId()
+	* Added a way to register additional plugin commands
+	* Renamed tx_solr_Command interface to tx_solr_PluginCommand
+	* Changed the command resolver to support loading commands registered through registerPluginCommand()
 
 2011-02-21  Ingo Renner  <ingo.renner@dkd.de>
 

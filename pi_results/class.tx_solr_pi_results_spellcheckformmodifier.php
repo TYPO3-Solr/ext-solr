@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,23 +27,32 @@
  * Spellcheck form modifier, suggests spell checked queries
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier {
 
 	/**
-	 * an instance of tx_solr_Search
+	 * Search instance
 	 *
 	 * @var tx_solr_Search
 	 */
 	protected $search;
 
 	/**
-	 * constructor for class tx_solr_pi_results_SpellcheckFormModifier
+	 * Configuration
+	 *
+	 * @var	array
+	 */
+	protected $configuration;
+
+	/**
+	 * Constructor for class tx_solr_pi_results_SpellcheckFormModifier
+	 *
 	 */
 	public function __construct() {
-		$this->search = t3lib_div::makeInstance('tx_solr_Search');
+		$this->search        = t3lib_div::makeInstance('tx_solr_Search');
+		$this->configuration = tx_solr_Util::getSolrConfiguration();
 	}
 
 	/**
@@ -55,7 +64,9 @@ class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier 
 	 * @return	array	Array with additional markers for suggestions
 	 */
 	public function modifyForm(array $markers, tx_solr_Template $template) {
-		if ($this->search->hasSearched()) {
+		$spellCheckingEnabled = $this->configuration['search.']['spellchecking'];
+
+		if ($spellCheckingEnabled && $this->search->hasSearched()) {
 			$suggestions = $this->search->getSpellcheckingSuggestions();
 
 			if($suggestions) {
@@ -64,7 +75,7 @@ class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier 
 
 				$markers['suggestion'] = tslib_cObj::noTrimWrap(
 					$query->getQueryLink($query->getKeywords()),
-					$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['spellchecking.']['wrap']
+					$this->configuration['search.']['spellchecking.']['wrap']
 				);
 			}
 		}

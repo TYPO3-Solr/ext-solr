@@ -25,7 +25,7 @@ t3lib_extMgm::addPItoST43(
 	'pi_results/class.tx_solr_pi_results.php',
 	'_pi_results',
 	'list_type',
-	false
+	FALSE
 );
 
 if (TYPO3_MODE == 'FE') {
@@ -34,6 +34,52 @@ if (TYPO3_MODE == 'FE') {
 
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_AdditionalFieldsIndexer'] = 'EXT:solr/classes/class.tx_solr_additionalfieldsindexer.php:tx_solr_AdditionalFieldsIndexer';
 }
+
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// register plugin commands
+
+#tx_solr_CommandResolver::registerPluginCommand(
+#	'results',
+#	'advanced_form',
+#	'tx_solr_pi_results_AdvancedFormCommand',
+#	tx_solr_PluginCommand::REQUIREMENT_NONE
+#);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results',
+	'faceting',
+	'tx_solr_pi_results_FacetingCommand',
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED + tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'search, results',
+	'form',
+	'tx_solr_pi_results_FormCommand',
+	tx_solr_PluginCommand::REQUIREMENT_NONE
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results',
+	'no_results',
+	'tx_solr_pi_results_NoResultsCommand',
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED + tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results',
+	'results',
+	'tx_solr_pi_results_ResultsCommand',
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED + tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results',
+	'sorting',
+	'tx_solr_pi_results_SortingCommand',
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED + tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+);
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 

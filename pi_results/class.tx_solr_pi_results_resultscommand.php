@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,17 +27,29 @@
  * Results view command
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
-class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
+class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 
 	/**
 	 * @var tx_solr_Search
 	 */
 	protected $search;
 
+	/**
+	 * Parent plugin
+	 *
+	 * @var	tx_solr_pi_results
+	 */
 	protected $parentPlugin;
+
+	/**
+	 * Configuration
+	 *
+	 * @var	array
+	 */
+	protected $configuration;
 
 	/**
 	 * constructor for class tx_solr_pi_results_ResultsCommand
@@ -45,7 +57,8 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 	public function __construct(tslib_pibase $parentPlugin) {
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
-		$this->parentPlugin = $parentPlugin;
+		$this->parentPlugin  = $parentPlugin;
+		$this->configuration = $parentPlugin->conf;
 	}
 
 	public function execute() {
@@ -66,32 +79,29 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 		);
 
 		return array(
-			'searched_for' => $searchedFor,
-			'query' => $query,
-			'found' => $foundResultsInfo,
-			'range' => $this->getPageBrowserRange(),
-			'count' => $this->search->getNumberOfResults(),
-			'offset' => ($this->search->getResultOffset() + 1),
-			'query_time' => $this->search->getQueryTime(),
+			'searched_for'                    => $searchedFor,
+			'query'                           => $query,
+			'found'                           => $foundResultsInfo,
+			'range'                           => $this->getPageBrowserRange(),
+			'count'                           => $this->search->getNumberOfResults(),
+			'offset'                          => ($this->search->getResultOffset() + 1),
+			'query_time'                      => $this->search->getQueryTime(),
+			'pagebrowser'                     => $this->getPageBrowser($numberOfResults),
+			'subpart_results_per_page_switch' => $this->getResultsPerPageSwitch(),
+			'filtered'                        => $this->isFiltered(),
+			'filtered_by_user'                => $this->isFilteredByUser(),
 				/* construction of the array key:
 				 * loop_ : tells the plugin that the content of that field should be processed in a loop
 				 * result_documents : is the loop name as in the template
 				 * result_document : is the marker name for the single items in the loop
 				 */
-			'loop_result_documents|result_document' => $this->getResultDocuments(),
-			'pagebrowser' => $this->getPageBrowser($numberOfResults),
-			'subpart_results_per_page_switch' => $this->getResultsPerPageSwitch(),
-			'filtered' => $this->isFiltered(),
-			'filtered_by_user' => $this->isFilteredByUser()
+			'loop_result_documents|result_document' => $this->getResultDocuments()
 		);
 	}
 
 	protected function getResultDocuments() {
 		$searchResponse  = $this->search->getResponse();
 		$resultDocuments = array();
-
-			// TODO check whether highlighting is enabled in TS at all
-		$highlightedContent = $this->search->getHighlightedContent();
 
 		$responseDocuments = $searchResponse->docs;
 
@@ -106,6 +116,9 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 				}
 			}
 		}
+
+			// TODO check whether highlighting is enabled in TS at all
+		$highlightedContent = $this->search->getHighlightedContent();
 
 		foreach ($responseDocuments as $resultDocument) {
 			$temporaryResultDocument = array();
@@ -192,7 +205,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 	}
 
 	protected function renderDocumentFields(array $document) {
-		$renderingInstructions = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['results.']['fieldRenderingInstructions.'];
+		$renderingInstructions = $this->configuration['search.']['results.']['fieldRenderingInstructions.'];
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start($document);
 
@@ -211,20 +224,18 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 	}
 
 	protected function getPageBrowser($numberOfResults) {
-		$configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
-
 		$resultsPerPage = $this->parentPlugin->getNumberOfResultsPerPage();
 		$numberOfPages  = intval($numberOfResults / $resultsPerPage)
 			+ (($numberOfResults % $resultsPerPage) == 0 ? 0 : 1);
 
 		$pageBrowserConfiguration = array_merge(
 			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1.'],
-			$configuration['search.']['results.']['pagebrowser.'],
+			$this->configuration['search.']['results.']['pagebrowser.'],
 			array(
 				'pageParameterName' => 'tx_solr|page',
 				'numberOfPages'     => $numberOfPages,
 				'extraQueryString'  => '&tx_solr[q]=' . $this->search->getQuery()->getKeywords(),
-				'disableCacheHash'  => true,
+				'disableCacheHash'  => TRUE,
 			)
 		);
 
@@ -320,11 +331,11 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_Command {
 	 * @return	string	1 if filters are applied, 0 if not (for use in templates)
 	 */
 	protected function isFilteredByUser() {
-		$userFiltered = false;
+		$userFiltered = FALSE;
 		$resultParameters = t3lib_div::_GET('tx_solr');
 
 		if (isset($resultParameters['filter'])) {
-			$userFiltered = true;
+			$userFiltered = TRUE;
 		}
 
 		return ($userFiltered ? '1' : '0');
