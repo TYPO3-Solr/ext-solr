@@ -1,5 +1,9 @@
 2011-02-22  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Changed version number to 1.4.0-dev
+
+2011-02-22  Ingo Renner  <ingo.renner@dkd.de>
+
 	* Release of v1.3.0
 
 	* Added tx_solr_AdditionalFieldsIndexer to take care of indexing fields as defined in plugin.tx_solr.index.additionalFields
