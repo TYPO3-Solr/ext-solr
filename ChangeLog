@@ -15,6 +15,7 @@
 	* Added support for boost query bq parameter
 	* Fixed issue #9971: suggest ignores search.filter
 	* !!! Changed interface tx_solr_FacetsModifier and moved the corresponding hook from tx_solr_pi_results_FacetingCommand to tx_solr_Search
+	* Added a check for Solr responses and throwing an exception if no response could be received, credits Marcus Krause
 
 2011-02-21  Ingo Renner  <ingo.renner@dkd.de>
 

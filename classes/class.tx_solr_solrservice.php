@@ -191,10 +191,19 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * @return	Apache_Solr_Response	Solr response
 	 */
 	public function search($query, $offset = 0, $limit = 10, $params = array()) {
-		$this->responseCache = parent::search($query, $offset, $limit, $params);
+		$response = parent::search($query, $offset, $limit, $params);
 		$this->hasSearched = TRUE;
 
-		return $this->responseCache;
+		if (!is_object($response)) {
+			throw new RuntimeException(
+				'Solr server not responding.',
+				1293109870
+			);
+		}
+
+		$this->responseCache = $response;
+
+		return $response;
 	}
 
 	/**
