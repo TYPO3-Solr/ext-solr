@@ -182,7 +182,33 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return
 	 */
 	public function getFacetCounts() {
-		return $this->solr->getResponse()->facet_counts;
+		static $facetCountsModified = FALSE;
+		static $facetCounts         = NULL;
+
+		$unmodifiedFacetCounts = $this->solr->getResponse()->facet_counts;
+
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'])) {
+
+			if (!$facetCountsModified) {
+				$facetCounts = $unmodifiedFacetCounts;
+
+				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
+					$facetsModifier = t3lib_div::getUserObj($classReference);
+
+					if ($facetsModifier instanceof tx_solr_FacetsModifier) {
+						$facetCounts = $facetsModifier->modifyFacets($facetCounts);
+						$facetCountsModified = TRUE;
+					} else {
+						// TODO throw exception
+					}
+				}
+			}
+
+		} else {
+			$facetCounts = $unmodifiedFacetCounts;
+		}
+
+		return $facetCounts;
 	}
 
 	public function getFacetFieldOptions($facetField) {

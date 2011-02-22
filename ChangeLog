@@ -14,6 +14,7 @@
 	* Fixed issue #10665, changed handling of multiple word queries, escpaes phrases only when quotes are found at the beginning and end of a query
 	* Added support for boost query bq parameter
 	* Fixed issue #9971: suggest ignores search.filter
+	* !!! Changed interface tx_solr_FacetsModifier and moved the corresponding hook from tx_solr_pi_results_FacetingCommand to tx_solr_Search
 
 2011-02-21  Ingo Renner  <ingo.renner@dkd.de>
 

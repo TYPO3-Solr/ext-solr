@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010 Markus Goldbach <markus.goldbach@dkd.de>
+*  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,21 +27,21 @@
 
 
 /**
- * FacetstModifier interface, allows to modify the facets
+ * FacetstModifier interface, allows to modify facet fields and their counts.
  *
  * @author	Markus Goldbach <markus.goldbach@dkd.de>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 interface tx_solr_FacetsModifier {
 
 	/**
-	 * Modifies the given factes and returns the modified facets as array
+	 * Modifies the given facets and returns the modified facets as array
 	 *
-	 * @param	tx_solr_pi_results_FacetingCommand	The search facet command
+	 * @param	array	$facets
 	 * @return	array	The facets with fields as array
 	 */
-	public function modifyFacets($resultCommand, $facets);
+	public function modifyFacets($facets);
 
 }
 
