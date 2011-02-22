@@ -277,14 +277,18 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 
 		$selectOptions = array();
 		foreach ($resultsPerPageSwitchOptions as $option) {
-			$selected = '';
+			$selected      = '';
+			$selectedClass = '';
 			if ($option == $currentNumberOfResultsShown) {
-				$selected = ' selected="selected"';
+				$selected      = ' selected="selected"';
+				$selectedClass = ' class="currentNumberOfResults"';
 			}
 
 			$selectOptions[] = array(
-				'value'    => $option,
-				'selected' => $selected
+				'value'         => $option,
+				'selected'      => $selected,
+				'selectedClass' => $selectedClass,
+				'url'           => $this->parentPlugin->pi_linkTP_keepPIvars_url(array('resultsPerPage' => $option)),
 			);
 		}
 		$template->addLoop('options', 'option', $selectOptions);
