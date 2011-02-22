@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo.renner@dkd.de>
+*  (c) 2009-2011 Ingo Renner <ingo.renner@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,8 +27,8 @@
  * Solr Service Access
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_SolrService extends Apache_Solr_Service {
 
@@ -69,13 +69,13 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * @var Apache_Solr_Response
 	 */
-	protected $responseCache = null;
-	protected $hasSearched = false;
+	protected $responseCache = NULL;
+	protected $hasSearched   = FALSE;
 
-	protected $lukeData = array();
-	protected $systemData = null;
-	protected $pluginsData = null;
-	protected $solrconfigName = null;
+	protected $lukeData       = array();
+	protected $systemData     = NULL;
+	protected $pluginsData    = NULL;
+	protected $solrconfigName = NULL;
 
 
 	/**
@@ -158,7 +158,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * @return	Apache_Solr_Response	Response object
 	 */
 	public function requestServlet($servlet, $parameters = array(), $method = 'GET', $requestHeaders = array(), $rawPost = '', $timeout = FALSE) {
-		$response = null;
+		$response = NULL;
 
 		if ($method == 'GET' || $method == 'HEAD') {
 				// Make sure we are not sending a request body.
@@ -192,7 +192,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 */
 	public function search($query, $offset = 0, $limit = 10, $params = array()) {
 		$this->responseCache = parent::search($query, $offset, $limit, $params);
-		$this->hasSearched = true;
+		$this->hasSearched = TRUE;
 
 		return $this->responseCache;
 	}
@@ -412,9 +412,9 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * afterwards.
 	 *
 	 * @param	string	The type of documents to delete, usually a table name.
-	 * @param	boolean	Will commit imidiately after deleting the documents if set, defautls to true
+	 * @param	boolean	Will commit imidiately after deleting the documents if set, defautls to TRUE
 	 */
-	public function deleteByType($type, $commit = true) {
+	public function deleteByType($type, $commit = TRUE) {
 		$this->deleteByQuery('type:' . trim($type));
 
 		if ($commit) {
