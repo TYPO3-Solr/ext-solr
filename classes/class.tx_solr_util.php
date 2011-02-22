@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2010 Ingo Renner <ingo.renner@dkd.de>
+*  (c) 2009-2011 Ingo Renner <ingo.renner@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,8 +27,8 @@
  * Utility class for tx_solr
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class tx_solr_Util {
 
@@ -196,7 +196,7 @@ class tx_solr_Util {
 	 * @param	boolean	Optionally initializes a full TSFE to get the configuration, defaults to FALSE
 	 * @return	array	The Solr configuration for the requested tree.
 	 */
-	public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false) {
+	public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = FALSE) {
 		static $configurationCache = array();
 		$solrConfiguration         = array();
 
@@ -215,7 +215,7 @@ class tx_solr_Util {
 				}
 
 				$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
-				$tmpl->tt_track = false; // Do not log time-performance information
+				$tmpl->tt_track = FALSE; // Do not log time-performance information
 				$tmpl->init();
 				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
 				$tmpl->generateConfig();
@@ -256,6 +256,26 @@ class tx_solr_Util {
 
 			// use the requested TSFE instance
 		$GLOBALS['TSFE'] = $tsfeCache[$pageId];
+	}
+
+	/**
+	 * Determines the rootpage ID for a given page.
+	 *
+	 * @param	integer	A page ID somewhere in a tree.
+	 * @return	integer	The page's tree branch's root page ID
+	 */
+	public static function getRootPageId($pageId) {
+		$rootPageId = $pageId;
+		$rootline   = t3lib_BEfunc::BEgetRootLine($pageId);
+
+		$rootline = array_reverse($rootline);
+		foreach ($rootline as $page) {
+			if ($page['is_siteroot']) {
+				$rootPageId = $page['uid'];
+			}
+		}
+
+		return $rootPageId;
 	}
 }
 
