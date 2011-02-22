@@ -67,8 +67,6 @@ plugin.tx_solr {
 #			}
 		}
 
-		form = simple
-
 		# TODO make it a top level configuration section
 		results {
 			resultsPerPage = {$plugin.tx_solr.search.results.resultsPerPage}
@@ -217,9 +215,9 @@ plugin.tx_solr {
 		stylesheet = EXT:solr/resources/css/jquery-ui/jquery-ui.custom.css
 
 		javaScriptFiles {
-			library	= EXT:solr/resources/javascript/jquery-1.4.2.min.js
-			ui		= EXT:solr/resources/javascript/jquery-ui-1.8.9.custom.min.js
-			suggest	= EXT:solr/resources/javascript/eid_suggest/suggest.js
+			library = EXT:solr/resources/javascript/jquery-1.4.2.min.js
+			ui      = EXT:solr/resources/javascript/jquery-ui-1.8.9.custom.min.js
+			suggest = EXT:solr/resources/javascript/eid_suggest/suggest.js
 		}
 	}
 
