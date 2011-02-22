@@ -151,8 +151,8 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 	 * Adds the stylesheets necessary for the suggestions
 	 */
 	protected function addSuggestStylesheets() {
-		if ($this->parentPlugin->conf['addDefaultCss']) {
-			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQueryUIStylesheet'] .=
+		if ($this->parentPlugin->conf['addDefaultCss'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQueryUIStylesheet']) {
+			$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQueryUIStylesheet'] .=
 				'<link rel="stylesheet" type="text/css" href="'
 				. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['stylesheet'])
 				. '" media="all" />';
@@ -167,22 +167,26 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 	 */
 	protected function addSuggestJavascript() {
 		if ($this->parentPlugin->conf['addDefaultJs']) {
-			if ($this->parentPlugin->conf['suggest.']['loadJQuery']) {
+			if ($this->parentPlugin->conf['suggest.']['loadJQuery'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuery']) {
 				$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQuery'] .=
 					'<script type="text/javascript" src="'
 					. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['javaScriptFiles.']['library'])
 					. '"></script>';
 			}
 
-			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQuerySuggest'] .=
-				'<script type="text/javascript" src="'
-				. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['javaScriptFiles.']['ui'])
-				. '"></script>';
+			if (!$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuerySuggest']) {
+				$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuerySuggest'] .=
+					'<script type="text/javascript" src="'
+					. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['javaScriptFiles.']['ui'])
+					. '"></script>';
+			}
 
-			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_suggest'] .=
-				'<script type="text/javascript" src="'
-				. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['javaScriptFiles.']['suggest'])
-				. '"></script>';
+			if (!$GLOBALS['TSFE']->additionalHeaderData['tx_solr_suggest']) {
+				$GLOBALS['TSFE']->additionalHeaderData['tx_solr_suggest'] .=
+					'<script type="text/javascript" src="'
+					. $GLOBALS['TSFE']->tmpl->getFileName($this->parentPlugin->conf['suggest.']['javaScriptFiles.']['suggest'])
+					. '"></script>';
+			}
 		}
 	}
 }
