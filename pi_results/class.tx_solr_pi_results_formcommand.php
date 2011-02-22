@@ -130,6 +130,15 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 
 		$suggestUrl .= '?eID=tx_solr_suggest&id=' . $GLOBALS['TSFE']->id;
 
+			// add filters
+		$additionalFilters = $this->parentPlugin->getAdditionalFilters();
+		if (!empty($additionalFilters)) {
+			$additionalFilters = json_encode($additionalFilters);
+			$additionalFilters = urlencode($additionalFilters);
+
+			$suggestUrl .= '&filters=' . $additionalFilters;
+		}
+
 			// adds the language parameter to the suggest URL
 		if ($GLOBALS['TSFE']->sys_language_uid > 0) {
 			$suggestUrl .= '&L=' . $GLOBALS['TSFE']->sys_language_uid;

@@ -48,6 +48,14 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	protected $query = NULL;
 
 	/**
+	 * Additional filters, which will be added to the query, as well as to
+	 * suggest queries.
+	 *
+	 * @var	 array
+	 */
+	protected $additionalFilters = array();
+
+	/**
 	 * Track, if the number of results per page has been changed by the current request
 	 *
 	 * @var	boolean
@@ -187,6 +195,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 */
 	protected function initializeSearch() {
 		parent::initializeSearch();
+		$this->initializeAdditionalFilters();
 
 			// TODO check whether a search has been conducted already?
 		if ($this->solrAvailable && (isset($this->piVars['q']) || $this->conf['search.']['allowEmptyQuery'])) {
@@ -238,16 +247,8 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 			$query->addFilter('language:' . $language);
 
-			$additionalFilters = $this->conf['search.']['filter'];
-			$flexformFilters   = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filter', 'sQuery');
-			if (!empty($flexformFilters)) {
-				$additionalFilters = $flexformFilters;
-			}
-			if (!empty($additionalFilters)) {
-				$additionalFilters = explode('|', $additionalFilters);
-				foreach($additionalFilters as $additionalFilter) {
-					$query->addFilter($additionalFilter);
-				}
+			foreach($this->additionalFilters as $additionalFilter) {
+				$query->addFilter($additionalFilter);
 			}
 
 				// sorting
@@ -262,6 +263,35 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 			$this->query = $query;
 		}
+	}
+
+	/**
+	 * Initializes additional filters configured through TypoScript and
+	 * Flexforms for use in regular queries and suggest queries.
+	 *
+	 * @return	void
+	 */
+	protected function initializeAdditionalFilters() {
+		$additionalFilters = $this->conf['search.']['filter'];
+
+		$flexformFilters   = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filter', 'sQuery');
+		if (!empty($flexformFilters)) {
+			$additionalFilters = $flexformFilters;
+		}
+
+		if (!empty($additionalFilters)) {
+			$this->additionalFilters = explode('|', $additionalFilters);
+		}
+	}
+
+	/**
+	 * Gets additional filters configured through TypoScript and
+	 * Flexforms.
+	 *
+	 * @return	array	An array of additional filters to use for queries.
+	 */
+	public function getAdditionalFilters() {
+		return $this->additionalFilters;
 	}
 
 	/**

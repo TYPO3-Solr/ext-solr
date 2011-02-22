@@ -5,11 +5,14 @@
 # TSFE initialization
 
 tslib_eidtools::connectDB();
-$pageId     = (int) t3lib_div::_GET('id');
-$languageId = (int) t3lib_div::_GET('L');
+$pageId     = filter_var(t3lib_div::_GET('id'), FILTER_SANITIZE_NUMBER_INT);
+$languageId = filter_var(
+	t3lib_div::_GET('L'),
+	FILTER_VALIDATE_INT,
+	array('options' => array('default' => 0, 'min_range' => 0))
+);
 
-$TSFE = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, true);
-
+$TSFE = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, TRUE);
 $TSFE->initFEuser();
 $TSFE->initUserGroups();
 $TSFE->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
@@ -25,6 +28,7 @@ $solrConfiguration = tx_solr_Util::getSolrConfiguration();
 
 # Building Suggest Query
 
+$suggestQuery = NULL;
 $q = trim(t3lib_div::_GP('term'));
 
 $suggestQuery = t3lib_div::makeInstance('tx_solr_SuggestQuery', $q);
@@ -38,10 +42,17 @@ if ($TSFE->sys_language_uid) {
 $suggestQuery->addFilter('language:' . $language);
 $suggestQuery->setOmitHeader();
 
+$additionalFilters = t3lib_div::_GET('filters');
+if (!empty($additionalFilters)) {
+	$additionalFilters = json_decode($additionalFilters);
+	foreach ($additionalFilters as $additionalFilter) {
+		$suggestQuery->addFilter($additionalFilter);
+	}
+}
+
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-# Search
-
+	// Search
 $search = t3lib_div::makeInstance('tx_solr_Search');
 
 if ($search->ping()) {
@@ -67,7 +78,7 @@ if ($search->ping()) {
 
 	$ajaxReturnData = json_encode($suggestions);
 } else {
-	$ajaxReturnData = json_encode(array('status' => false));
+	$ajaxReturnData = json_encode(array('status' => FALSE));
 }
 
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
