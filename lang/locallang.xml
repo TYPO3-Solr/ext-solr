@@ -15,5 +15,15 @@
 			<label index="scheduler_field_path">Solr Path</label>
 			<label index="scheduler_field_server">Solr Server</label>
 		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="scheduler_optimizer_title">Optimiser l'index de Solr</label>
+			<label index="scheduler_optimizer_description">Exécute une commande OPTIMIZE sur l'index Solr. Doit être exécuté une fois par jour sur les site à faible activité. Les sites à forte activité peuvent l'exécuter plus souvent. Attention, l'action peut durer quelques secondes sur les gros index.</label>
+			<label index="scheduler_commit_title">Valider l'index de Solr</label>
+			<label index="scheduler_commit_description">Exécute une commande COMMIT sur l'index Solr. Peut être exécutere entre à chaque minute et toutes les heures. Doit prendre moins longtemps à s'exécutere que la commande OPTIMIZE, qui effectue un COMMIT avant sont propre traitement.</label>
+			<label index="scheduler_field_host">Hôte Solr</label>
+			<label index="scheduler_field_port">Port Solr</label>
+			<label index="scheduler_field_path">URI Solr</label>
+			<label index="scheduler_field_server">Serveur Solr</label>
+		</languageKey>
 	</data>
 </T3locallang>
