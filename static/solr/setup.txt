@@ -258,7 +258,7 @@ plugin.tx_solr {
 			// TODO change "indexing" to enable all indexing logging, split up into several options
 		indexing = 0
 		indexing {
-
+			missingTypo3SearchMarkers = 1
 		}
 
 		query {
