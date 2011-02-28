@@ -1,3 +1,7 @@
+2011-02-28  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed an issue which resulted in sorting not working anymore
+
 2011-02-22  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Release of v1.3.0

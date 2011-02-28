@@ -252,7 +252,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 				// sorting
-			if ($this->conf['searchResultsViewComponents.']['sorting']) {
+			if ($this->conf['search.']['sorting'] != 0) {
 				$query->setSorting();
 			}
 
