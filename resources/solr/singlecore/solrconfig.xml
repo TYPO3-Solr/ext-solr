@@ -22,7 +22,7 @@
      Specifically, the Solr Config can support XInclude, which may make it easier to manage
      the configuration.  See https://issues.apache.org/jira/browse/SOLR-1167
 -->
-<config name="tx_solr-1-5-0--20101129">
+<config name="tx_solr-1-7-0--20110325">
   <!-- Set this to 'false' if you want solr to continue working after it has
        encountered an severe configuration error.  In a production environment,
        you may want solr to keep working even if one handler is mis-configured.
@@ -60,7 +60,7 @@
   <lib dir="./contrib/clustering/lib/" />
   <lib dir="/total/crap/dir/ignored" />
 <!-- TYPO3 AccessFilterPlugin -->
-  <lib dir="./typo3/" />
+  <lib dir="./typo3lib/" />
 
 
 
@@ -570,7 +570,6 @@
      <!-- <int name="timeAllowed">4000</int>  -->
 
      <str name="mm">2&lt;-35%</str>
-     <str name="q.alt">*:*</str>
 
      <!-- example highlighter config, enable per-query with hl=true -->
      <str name="hl.fl">title,content</str>
@@ -811,6 +810,7 @@
     <!-- pick a fieldType to analyze queries -->
     <str name="queryFieldType">string</str>
     <str name="config-file">elevate.xml</str>
+    <str name="forceElevation">true</str>
   </searchComponent>
 
   <!-- a request handler utilizing the elevator component -->
@@ -1016,7 +1016,11 @@
   <!-- example of registering a query parser
   <queryParser name="lucene" class="org.apache.solr.search.LuceneQParserPlugin"/>
   -->
+
+  <!-- TYPO3 specific plugins, request handlers -->
   <queryParser name="typo3access" class="org.typo3.solr.search.AccessFilterQParserPlugin"/>
+
+  <requestHandler name="/configuration" class="org.typo3.solr.handler.admin.ConfigurationHandler" />
 
   <!-- example of registering a custom function parser
   <valueSourceParser name="myfunc" class="com.mycompany.MyValueSourceParser" />

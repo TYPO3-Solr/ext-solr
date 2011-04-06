@@ -1,3 +1,7 @@
+2011-04-06  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Updated schema.xml and solrconfig.xml to match the EAP version
+
 2011-02-28  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed an issue which resulted in sorting not working anymore
