@@ -1,3 +1,7 @@
+2011-04-12  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Cleaned up solrconfig.xml, removed unnecessary example configuration, enabled php and phpcs response writers, data import handler
+
 2011-04-06  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Updated schema.xml and solrconfig.xml to match the EAP version

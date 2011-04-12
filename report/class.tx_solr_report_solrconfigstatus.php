@@ -34,17 +34,17 @@
 class tx_solr_report_SolrconfigStatus implements tx_reports_StatusProvider {
 
 	/**
-	 * The solrconfig name property is constructed as follows:
+	 * The config name property is constructed as follows:
 	 *
 	 * tx_solr	- The extension key
-	 * x-y-z	- The extension version this schema is meant to work with
-	 * YYYYMMDD	- The date the schema file was changed the last time
+	 * x-y-z	- The extension version this config is meant to work with
+	 * YYYYMMDD	- The date the config file was changed the last time
 	 *
 	 * Must be updated when changing the solrconfig.
 	 *
 	 * @var	string
 	 */
-	const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-1-7-0--20110325';
+	const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-1-7-0--20110412';
 
 	/**
 	 * Compiles a collection of solrconfig version checks against each configured
