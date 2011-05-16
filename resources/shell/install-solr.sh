@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TOMCAT_VER=6.0.29
+TOMCAT_VER=6.0.32
 SOLR_VER=1.4.1
 EXT_SOLR_VER=1.4
 EXT_SOLR_AFP_VER=1.1.0
@@ -127,8 +127,8 @@ cp apache-solr-$SOLR_VER/dist/apache-solr-clustering-$SOLR_VER.jar solr/dist
 cp -r apache-solr-$SOLR_VER/contrib solr/
 
 # copy accessfilterplugin
-mkdir solr/typo3
-cd solr/typo3
+mkdir solr/typo3lib
+cd solr/typo3lib
 if [ $BRANCH_TEST_RETURN -eq "0" ]
 then
 	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/plugins/typo3-accessfilter-$EXT_SOLR_AFP_VER.jar
