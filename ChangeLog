@@ -1,6 +1,7 @@
 2012-05-16  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Updated install-solr.sh to use the current tomcat version and Solr plugin install directory
+	* Added Solr multicore configuration
 
 2011-04-12  Ingo Renner  <ingo.renner@dkd.de>
 
