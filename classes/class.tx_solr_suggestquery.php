@@ -50,6 +50,8 @@ class tx_solr_SuggestQuery extends tx_solr_Query {
 
 		$this->setKeywords($fullKeywords);
 		$this->prefix = $partialKeyword;
+
+		$this->setAlternativeQuery('*:*');
 	}
 
 	public function getQueryParameters() {
