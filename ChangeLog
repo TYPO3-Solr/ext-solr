@@ -1,6 +1,7 @@
 2011-05-24  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #26807: Bug in try/catch in reports module
+	* Fixed issue #25723: Missing proper escaping in scheduler tasks, credits Georg Ringer
 
 2011-05-17  Ingo Renner  <ingo.renner@dkd.de>
 
