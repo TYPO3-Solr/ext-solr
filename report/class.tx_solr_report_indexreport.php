@@ -71,6 +71,7 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 			$message = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
 				'Failed to establish Solr connection.',
+				'',
 				t3lib_FlashMessage::ERROR,
 				TRUE
 			);
