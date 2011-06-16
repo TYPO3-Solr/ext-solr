@@ -29,7 +29,7 @@
 	<lib dir="../contrib/dataimporthandler/lib/" />
 
 	<!-- TYPO3 Plugins -->
-	<lib dir="typo3lib/" />
+	<lib dir="../typo3lib/" />
 
 
 	<indexDefaults>
