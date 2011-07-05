@@ -66,7 +66,7 @@ mv apache-tomcat-$TOMCAT_VER apache-tomcat$TOMCAT_MAINVERSION
 cp apache-solr-$SOLR_VER/dist/apache-solr-$SOLR_VER.war apache-tomcat$TOMCAT_MAINVERSION/webapps/solr.war
 cp -r apache-solr-$SOLR_VER/example/solr .
 
-#Download the TYOP3 Solrconfig
+#Download the TYPO3 Solrconfig
 
 cd solr/conf
 rm schema.xml
