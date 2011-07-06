@@ -228,6 +228,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 			$response = parent::_sendRawGet($url, $timeout);
 		} catch (Apache_Solr_HttpTransportException $e) {
 			$logSeverity = 3; // fatal error
+			$response    = $e->getResponse();
 		}
 
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawGet']) {
