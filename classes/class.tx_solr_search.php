@@ -163,6 +163,10 @@ class tx_solr_Search implements t3lib_Singleton {
 		return $this->solr->getResponse()->responseHeader;
 	}
 
+	public function getResultDocuments() {
+		return $this->getResponse()->docs;
+	}
+
 	/**
 	 * Gets the time Solr took to execute the query and return the result.
 	 *
