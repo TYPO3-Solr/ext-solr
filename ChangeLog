@@ -8,6 +8,7 @@
 	* Moved method getCleanUserQuery() from tx_solr_pi_results to tx_solr_pluginbase_PluginBase
 	* Added support for using a TypoScript path containing the link target parameter in the LINK and SOLRLINK viewhelpers (credits Timo Webler)
 	* Updated SolrPhpClient to r60
+	* Changed tx_solr_SolrService to use the new SolrPhpClient HTTP transport APIs
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

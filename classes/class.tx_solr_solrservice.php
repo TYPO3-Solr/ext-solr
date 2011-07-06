@@ -158,7 +158,8 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * @return	Apache_Solr_Response	Response object
 	 */
 	public function requestServlet($servlet, $parameters = array(), $method = 'GET', $requestHeaders = array(), $rawPost = '', $timeout = FALSE) {
-		$response = NULL;
+		$httpTransport = $this->getHttpTransport();
+		$solrResponse  = NULL;
 
 		if ($method == 'GET' || $method == 'HEAD') {
 				// Make sure we are not sending a request body.
@@ -172,13 +173,19 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		$url = $this->_constructUrl($servlet, $parameters);
 
 		if ($method == self::METHOD_GET) {
-			$response = $this->_sendRawGet($url);
+			$httpResponse = $httpTransport->performGetRequest($url, $timeout);
 		} else if ($method == self::METHOD_POST) {
 				// FIXME should respect all headers, not only Content-Type
-			$response = $this->_sendRawPost($url, $rawPost, $timeout, $requestHeaders['Content-Type']);
+			$httpResponse = $httpTransport->performPostRequest($url, $rawPost, $requestHeaders['Content-Type'], $timeout);
 		}
 
-		return $response;
+		$solrResponse = new Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
+
+		if ($solrResponse->getHttpStatus() != 200) {
+			throw new Apache_Solr_HttpTransportException($solrResponse);
+		}
+
+		return $solrResponse;
 	}
 
 	/**
