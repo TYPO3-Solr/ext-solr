@@ -269,14 +269,14 @@ class tx_solr_Util {
 	}
 
 	/**
-	 * Get parent TypoScript Object from $path.
+	 * Gets the parent TypoScript Object from a given TypoScript path.
+	 *
 	 * Example: plugin.tx_solr.search.targetPage
-	 *
-	 * return $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']
-	 *
-	 *
-	 * @param string $path
-	 * @return array
+	 * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']
+	 *	 *
+	 * @param	string	$path TypoScript path
+	 * @return	array	The TypoScript object defined by the given path
+	 * @throws	InvalidArgumentException
 	 */
 	public static function getTypoScriptObject($path) {
 		if (!is_string($path)) {
