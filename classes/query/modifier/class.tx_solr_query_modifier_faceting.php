@@ -22,15 +22,13 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once($GLOBALS['PATH_solr'] . 'interfaces/interface.tx_solr_querymodifier.php');
-
 
 /**
  * Modifies a query to add faceting parameters
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @author 	Daniel Poetzinger <poetzinger@aoemedia.de>
- * @author 	Sebastian Kurfuerst <sebastian@typo3.org>
+ * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
+ * @author	Sebastian Kurfuerst <sebastian@typo3.org>
  * @package	TYPO3
  * @subpackage	solr
  */
@@ -130,7 +128,7 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 			$configuredFacets = $this->getConfigurredFacets();
 
 				// first group the filters by filterName - so that we can
-				// dicide later wether we need to do AND or OR for multiple
+				// dicide later whether we need to do AND or OR for multiple
 				// filters for a certain field
 				// $filtersByFieldName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('lorem'))
 			$filtersByFieldName = array();
