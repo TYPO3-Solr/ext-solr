@@ -40,6 +40,7 @@
 	* Added a compatibility XCLASS to add a TYPO3 4.4 hook in TYPO3 4.3
 	* Added checkbox for showResultsOfInitialEmptyQuery in the plugin flexform
 	* Added an interface tx_solr_PluginAware to provide extension components with an instance of the currently active plugin
+	* Added new marker ###SOLR.Q###
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

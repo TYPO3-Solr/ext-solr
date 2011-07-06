@@ -396,7 +396,8 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 		return array(
 			'prefix'      => $this->prefixId,
-			'current_url' => $currentUrl
+			'current_url' => $currentUrl,
+			'q'           => $this->getCleanUserQuery()
 		);
 	}
 
