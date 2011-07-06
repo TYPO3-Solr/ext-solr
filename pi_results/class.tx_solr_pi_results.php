@@ -239,7 +239,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 				// access
 			$query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
-			$query->setSiteHash(tx_solr_Util::getSiteHash());
+			$query->setSiteHash(tx_solr_Site::getSiteByPageId($GLOBALS['TSFE']->id)->getSiteHash());
 
 			$language = 0;
 			if ($GLOBALS['TSFE']->sys_language_uid) {

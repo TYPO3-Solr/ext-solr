@@ -28,12 +28,12 @@ $solrConfiguration = tx_solr_Util::getSolrConfiguration();
 
 # Building Suggest Query
 
-$suggestQuery = NULL;
-$q = trim(t3lib_div::_GP('term'));
+$site = tx_solr_Site::getSiteByPageId($pageId);
+$q    = trim(t3lib_div::_GP('term'));
 
 $suggestQuery = t3lib_div::makeInstance('tx_solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));
-$suggestQuery->setSiteHash(tx_solr_Util::getSiteHash($pageId));
+$suggestQuery->setSiteHash($site->getSiteHash());
 
 $language = 0;
 if ($TSFE->sys_language_uid) {
