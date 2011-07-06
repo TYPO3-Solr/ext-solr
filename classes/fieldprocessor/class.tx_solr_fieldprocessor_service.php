@@ -27,7 +27,7 @@
  * Service class that modifies fields in a Apache_Solr_Document, used for
  * common field processing during indexing or resolving
  *
- * @author Daniel Poetzinger <poetzinger@aoemedia.de>
+ * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
  * @package	TYPO3
  * @subpackage	solr
  */
@@ -67,7 +67,7 @@ class tx_solr_fieldprocessor_Service {
 
 				switch ($instruction) {
 					case 'timestampToIsoDate':
-						$processor = t3lib_div::makeInstance('tx_solr_fieldprocessor_TimestampToIsoDate');
+						$processor  = t3lib_div::makeInstance('tx_solr_fieldprocessor_TimestampToIsoDate');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'uppercase':

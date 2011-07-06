@@ -45,8 +45,7 @@ class tx_solr_fieldprocessor_TimestampToIsoDate implements tx_solr_FieldProcesso
 		$results = array();
 
 		foreach ($values as $timestamp) {
-			$isoDate = tx_solr_Util::timestampToIso($timestamp);
-			$results[] = $isoDate;
+			$results[] = tx_solr_Util::timestampToIso($timestamp);
 		}
 
 		return $results;
