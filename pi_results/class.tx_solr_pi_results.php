@@ -212,7 +212,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);
 
-			if ($this->conf['search.']['initializeWithEmptyQuery']) {
+			if ($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['query.']['allowEmptyQuery']) {
 					// empty main query, but using a "return everything"
 					// alternative query in q.alt
 				$query->setAlternativeQuery('*:*');
@@ -326,9 +326,22 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	protected function overrideTyposcriptWithFlexformSettings() {
 			// initialize with empty query, useful when no search has been
 			// conducted yet but needs to show facets already.
-		$initializeWithEmptyQuery = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'initializeWithEmptyQuery', 'sQuery');
+		$initializeWithEmptyQuery = $this->pi_getFFvalue(
+			$this->cObj->data['pi_flexform'],
+			'initializeWithEmptyQuery',
+			'sQuery'
+		);
 		if ($initializeWithEmptyQuery) {
 			$this->conf['search.']['initializeWithEmptyQuery'] = 1;
+		}
+
+		$showResultsOfInitialEmptyQuery = $this->pi_getFFvalue(
+			$this->cObj->data['pi_flexform'],
+			'showResultsOfInitialEmptyQuery',
+			'sQuery'
+		);
+		if ($showResultsOfInitialEmptyQuery) {
+			$this->conf['search.']['showResultsOfInitialEmptyQuery'] = 1;
 		}
 
 			// target page
