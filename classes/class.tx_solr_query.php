@@ -766,7 +766,7 @@ class tx_solr_Query {
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
+			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters))
 		);
 
 		return $cObj->typoLink($linkText, $linkConfiguration);
@@ -791,7 +791,7 @@ class tx_solr_Query {
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
+			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters))
 		);
 
 		$cObj->typoLink('|', $linkConfiguration);
