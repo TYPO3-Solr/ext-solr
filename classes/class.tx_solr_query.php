@@ -501,31 +501,6 @@ class tx_solr_Query {
 		}
 	}
 
-	/**
-	 * Gets the alternative query, Solr's q.alt parameter.
-	 *
-	 * @return	string	Alternative query, q.alt parameter.
-	 */
-	public function getAlternativeQuery() {
-		return $this->queryParameters['q.alt'];
-	}
-
-	/**
-	 * Sets an alternative query, Solr's q.alt parameter.
-	 *
-	 * This query supports the complete Lucene Query Language.
-	 *
-	 * @param	mixed	$alternativeQuery String alternative query or boolean FALSE to disable / reset the q.alt parameter.
-	 * @see	http://wiki.apache.org/solr/DisMaxQParserPlugin#q.alt
-	 */
-	public function setAlternativeQuery($alternativeQuery) {
-		if ($alternativeQuery) {
-			$this->queryParameters['q.alt'] = $alternativeQuery;
-		} else {
-			unset($this->queryParameters['q.alt']);
-		}
-	}
-
 	public function setOmitHeader($omitHeader = TRUE) {
 		if ($omitHeader) {
 			$this->queryParameters['omitHeader'] = 'true';
@@ -869,9 +844,7 @@ class tx_solr_Query {
 			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters))
 		);
 
-		$cObj->typoLink('|', $linkConfiguration);
-
-		return $cObj->lastTypoLinkUrl;
+		return $cObj->typoLink_URL($linkConfiguration);
 	}
 
 	/**
