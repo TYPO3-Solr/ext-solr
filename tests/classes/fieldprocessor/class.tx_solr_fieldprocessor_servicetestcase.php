@@ -22,9 +22,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-require_once($GLOBALS['PATH_solr'] . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php');
-require_once($GLOBALS['PATH_solr'] . 'lib/SolrPhpClient/Apache/Solr/Document.php');
-
 
 /**
  * tests the processing Service class
