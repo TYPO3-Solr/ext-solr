@@ -37,6 +37,8 @@
 	* Added a class to retrieve information about the TYPO3 environment. Currently provides information on file download extensions.
 	* Added language awareness for several methods in tx_solr_Util
 	* Changed tx_solr_Util to use tx_solr_Site
+	* Added a compatibility XCLASS to add a TYPO3 4.4 hook in TYPO3 4.3
+	* Added checkbox for showResultsOfInitialEmptyQuery in the plugin flexform
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 
