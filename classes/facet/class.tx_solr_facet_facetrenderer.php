@@ -178,7 +178,9 @@ class tx_solr_facet_FacetRenderer {
 		$facetOptionsCount = count($facetOptions);
 
 			// facet options include '_empty_', if no options are given
-		if ($facetOptionsCount == 1 && array_key_exists('_empty_', $facetOptions)) {
+		if ($facetOptionsCount == 0
+			|| ($facetOptionsCount == 1 && array_key_exists('_empty_', $facetOptions))
+		) {
 			$isEmpty = TRUE;
 		}
 
