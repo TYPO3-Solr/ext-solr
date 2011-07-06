@@ -456,6 +456,32 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 			$this->commit();
 		}
 	}
+
+	/**
+	 * Creates a delete document based on a query and submits it.
+	 *
+	 * @param	string	$rawQuery Expected to be utf-8 encoded
+	 * @param	boolean	$fromPending
+	 * @param	boolean	$fromCommitted
+	 * @param	float	$timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
+	 * @return	Apache_Solr_Response
+	 * @throws	Apache_Solr_HttpTransportException If an error occurs during the service call
+	 */
+	public function deleteByQuery($rawQuery, $fromPending = true, $fromCommitted = true, $timeout = 3600) {
+		$response = parent::deleteByQuery($rawQuery, $fromPending, $fromCommitted, $timeout);
+
+		t3lib_div::devLog(
+			'Delete Query sent.',
+			'solr',
+			1,
+			array(
+				'query' => $rawQuery,
+				'response' => (array) $response
+			)
+		);
+
+		return $response;
+	}
 }
 
 
