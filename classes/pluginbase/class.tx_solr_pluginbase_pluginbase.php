@@ -35,7 +35,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase{
+abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 
 	public $prefixId = 'tx_solr';
 	public $extKey   = 'solr';
@@ -156,8 +156,8 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase{
 			$GLOBALS['TSFE']->sys_language_uid,
 			$GLOBALS['TSFE']->MP
 		);
-		$this->search = t3lib_div::makeInstance('tx_solr_Search', $solrConnection);
 
+		$this->search = t3lib_div::makeInstance('tx_solr_Search', $solrConnection);
 		$this->solrAvailable = $this->search->ping();
 	}
 
