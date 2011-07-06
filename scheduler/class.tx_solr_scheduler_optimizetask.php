@@ -32,6 +32,7 @@
  */
 class tx_solr_scheduler_OptimizeTask extends tx_scheduler_Task {
 
+		// TODO add support for curl HTTP Transport / Solr selector
 	public $solrHost = '';
 	public $solrPort = '';
 	public $solrPath = '';
