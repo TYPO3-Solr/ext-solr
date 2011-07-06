@@ -93,6 +93,10 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 				$formModifier = t3lib_div::getUserObj($classReference);
 
 				if ($formModifier instanceof tx_solr_FormModifier) {
+					if ($formModifier instanceof tx_solr_PluginAware) {
+						$formModifier->setParentPlugin($this->parentPlugin);
+					}
+
 					$marker = $formModifier->modifyForm($marker, $this->parentPlugin->getTemplate());
 				} else {
 					throw new InvalidArgumentException(
