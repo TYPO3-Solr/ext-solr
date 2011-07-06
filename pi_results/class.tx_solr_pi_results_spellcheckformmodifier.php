@@ -64,23 +64,39 @@ class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier 
 	 * @return	array	Array with additional markers for suggestions
 	 */
 	public function modifyForm(array $markers, tx_solr_Template $template) {
-		$spellCheckingEnabled = $this->configuration['search.']['spellchecking'];
+		$suggestionsLink = $this->getSpellcheckingSuggestions();
 
-		if ($spellCheckingEnabled && $this->search->hasSearched()) {
+		if (!empty($suggestionsLink)) {
+			$markers['suggestion'] = $suggestionsLink;
+		}
+
+		return $markers;
+	}
+
+	/**
+	 * Generates a link with spell checking suggestions if it is activated and
+	 * spell checking suggestions are returned by Solr.
+	 *
+	 * @return	string	A link to start over with a new search using the suggested keywords.
+	 */
+	public function getSpellcheckingSuggestions() {
+		$suggestionsLink = '';
+
+		if ($this->configuration['search.']['spellchecking'] && $this->search->hasSearched()) {
 			$suggestions = $this->search->getSpellcheckingSuggestions();
 
 			if($suggestions) {
 				$query = clone $this->search->getQuery();
 				$query->setKeywords($suggestions['collation']);
 
-				$markers['suggestion'] = tslib_cObj::noTrimWrap(
+				$suggestionsLink = tslib_cObj::noTrimWrap(
 					$query->getQueryLink($query->getKeywords()),
 					$this->configuration['search.']['spellchecking.']['wrap']
 				);
 			}
 		}
 
-		return $markers;
+		return $suggestionsLink;
 	}
 }
 

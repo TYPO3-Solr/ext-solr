@@ -43,6 +43,7 @@
 	* Added new marker ###SOLR.Q###
 	* Added an errors command for the results plugin
 	* Changed tx_solr_pi_results_FormCommand, moved suggest related code to tx_solr_pi_results_SuggestFormModifier
+	* Added spell check suggestions to the no results command / subpart
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

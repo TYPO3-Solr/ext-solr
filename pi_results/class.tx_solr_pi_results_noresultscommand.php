@@ -49,6 +49,8 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 	}
 
 	public function execute() {
+		$markers = array();
+
 		$searchWord = trim($this->parentPlugin->piVars['q']);
 		$searchWord = t3lib_div::removeXSS($searchWord);
 
@@ -66,10 +68,19 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 			)
 		);
 
-		return array(
+		$markers = array(
 			'nothing_found' => $nothingFound,
 			'searched_for'  => $searchedFor,
 		);
+
+		$spellchecker    = t3lib_div::makeInstance('tx_solr_pi_results_SpellcheckFormModifier');
+		$suggestionsLink = $spellchecker->getSpellcheckingSuggestions();
+
+		if (!empty($suggestionsLink)) {
+			$markers['suggestion'] = $suggestionsLink;
+		}
+
+		return $markers;
 	}
 }
 
