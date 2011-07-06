@@ -17,7 +17,8 @@ jQuery(document).ready(function(){
 					dataType: 'json',
 					data: {
 							// TODO
-						term: request.term.toLowerCase()
+						termLowercase: request.term.toLowerCase(),
+						termOriginal: request.term
 					},
 					success: function(data) {
 						var rs     = [],

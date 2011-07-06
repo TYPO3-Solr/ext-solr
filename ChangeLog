@@ -17,6 +17,7 @@
 	* Added a class tx_solr_Site to use when dealing with site information, like site root, ttile, label and so on
 	* Added method tx_solr_ConnectionManager::getConnectionsBySite()
 	* Replaced occurrences of tx_solr_Util::getSiteHash() with tx_solr_Site->getSiteHash()
+	* Changed the auto-complete script to now send a lowercased version of the term the user entered (renamed from term to termLowercase) and the original case version(termOriginal)
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

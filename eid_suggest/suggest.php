@@ -29,7 +29,7 @@ $solrConfiguration = tx_solr_Util::getSolrConfiguration();
 # Building Suggest Query
 
 $site = tx_solr_Site::getSiteByPageId($pageId);
-$q    = trim(t3lib_div::_GP('term'));
+$q    = trim(t3lib_div::_GP('termLowercase'));
 
 $suggestQuery = t3lib_div::makeInstance('tx_solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));
