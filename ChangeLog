@@ -33,6 +33,7 @@
 	* Added a method to the query class to activate query elevation
 	* Added tx_solr_Search::getResultDocuments()
 	* Added option suggest.treatMultipleTermsAsSingleTerm to use when using String suggest fields
+	* Fixed an issue in the templating engine where named loops were not rendered correctly
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

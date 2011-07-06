@@ -145,7 +145,6 @@ class tx_solr_Template {
 			if ($viewHelperClassName) {
 				try {
 					$helperInstance = t3lib_div::makeInstance($viewHelperClassName, $arguments);
-
 					$success = $this->addViewHelperObject($helperName, $helperInstance);
 				} catch(Exception $e) {
 					if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
@@ -258,14 +257,14 @@ class tx_solr_Template {
 			);
 		}
 
-			// process conditions
-		$this->workOnSubpart = $this->processConditions($this->workOnSubpart);
-
 			// process view helpers, they need to be the last objects processing the template
 		$this->initializeViewHelpers($this->workOnSubpart);
 		$this->workOnSubpart = $this->renderViewHelpers($this->workOnSubpart);
 
-			// finally, do a cleanup if not disable
+			// process conditions
+		$this->workOnSubpart = $this->processConditions($this->workOnSubpart);
+
+			// finally, do a cleanup if not disabled
 		if ($cleanTemplate) {
 			$this->cleanTemplate();
 		}
@@ -421,18 +420,21 @@ class tx_solr_Template {
 	 * @param	string	Key from $this->loops to render
 	 */
 	protected function renderLoop($loopName) {
-		$loopContent    = '';
-		$loopTemplate   = $this->getSubpart('LOOP:' . $loopName);
+		$loopContent  = '';
+		$loopTemplate = $this->getSubpart('LOOP:' . $loopName);
 
-		$loopSingleItem = $this->getSubpart('loop_content:' . $loopName, $loopTemplate);
+		$loopContentMarker = 'loop_content:' . $loopName;
+		$loopSingleItem    = $this->getSubpart($loopContentMarker, $loopTemplate);
 		if (empty($loopSingleItem)) {
 				// backwards compatible fallback for unnamed loops
-			$loopSingleItem = $this->getSubpart('loop_content', $loopTemplate);
+			$loopContentMarker = 'loop_content';
+			$loopSingleItem    = $this->getSubpart($loopContentMarker, $loopTemplate);
 		}
 
-		$loopMarker     = $this->loops[$loopName]['marker'];
-		$loopVariables  = $this->loops[$loopName]['data'];
-		$foundMarkers   = $this->getMarkersFromTemplate($loopSingleItem, $loopMarker . '\.');
+		$loopMarker    = $this->loops[$loopName]['marker'];
+		$loopVariables = $this->loops[$loopName]['data'];
+		$foundMarkers  = $this->getMarkersFromTemplate($loopSingleItem, $loopMarker . '\.');
+		$loopCount     = count($loopVariables);
 
 		$iterationCount = 0;
 		foreach ($loopVariables as $value) {
@@ -464,6 +466,18 @@ class tx_solr_Template {
 
 			$loopContent .= $currentIterationContent;
 		}
+
+		$loopContent = t3lib_parsehtml::substituteSubpart(
+			$loopTemplate,
+			'###' . strtoupper($loopContentMarker) . '###',
+			$loopContent
+		);
+
+		$loopContent = t3lib_parsehtml::substituteMarkerArray(
+			$loopContent,
+			array('LOOP_ELEMENT_COUNT' => $loopCount),
+			'###|###'
+		);
 
 		$this->workOnSubpart = t3lib_parsehtml::substituteSubpart(
 			$this->workOnSubpart,
@@ -913,16 +927,20 @@ class tx_solr_Template {
 		preg_match_all('!###([\w]+):.*?\###!is', $content, $match);
 		$viewHelpers = array_unique($match[1]);
 
-			// remove / protect LOOP subparts
+			// remove / protect LOOP, LOOP_CONTENT subparts
 		$loopIndex = array_search('LOOP', $viewHelpers);
 		if ($loopIndex !== FALSE) {
 			unset($viewHelpers[$loopIndex]);
 		}
+		$loopContentIndex = array_search('LOOP_CONTENT', $viewHelpers);
+		if ($loopContentIndex !== FALSE) {
+			unset($viewHelpers[$loopContentIndex]);
+		}
 
 			// remove / protect IF subparts
-		$loopIndex = array_search('IF', $viewHelpers);
-		if ($loopIndex !== FALSE) {
-			unset($viewHelpers[$loopIndex]);
+		$ifIndex = array_search('IF', $viewHelpers);
+		if ($ifIndex !== FALSE) {
+			unset($viewHelpers[$ifIndex]);
 		}
 
 		return $viewHelpers;
