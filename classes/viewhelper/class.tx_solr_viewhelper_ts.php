@@ -59,41 +59,42 @@ class tx_solr_viewhelper_Ts implements tx_solr_ViewHelper {
 	}
 
 	/**
-	 * resolves a TS path and returns its value
+	 * Resolves a TS path and returns its value
 	 *
 	 * @param	string	a TS path, separated with dots
 	 * @return	string
 	 * @author	Ingo Renner <ingo@typo3.org>
+	 * @throws	InvalidArgumentException
 	 */
 	protected function resolveTypoScriptPath($path, $arguments = NULL) {
-		$pathExploded = explode('.', trim($path));
-		$depth        = count($pathExploded);
-		$pathBranch   = $GLOBALS['TSFE']->tmpl->setup;
-		$value        = '';
+		$value           = '';
+		$pathExploded    = explode('.', trim($path));
+		$lastPathSegment = array_pop($pathExploded);
+		$pathBranch      = tx_solr_Util::getTypoScriptObject($path);
 
-		for($i = 0; $i < $depth; $i++) {
-			if ($i < ($depth -1 )) {
-				$pathBranch = $pathBranch[$pathExploded[$i] . '.'];
-			} elseif (empty($pathExploded[$i])) {
-					// path ends with a dot. We return the rest of the array
-				$value = $pathBranch;
-			} else {
-					// path ends without a dot. We return the value.
-				$value = $pathBranch[$pathExploded[$i]];
+			// generate ts content
+		$cObj = $this->getContentObject();
 
-				if (isset($pathBranch[$pathExploded[$i] . '.'])) {
-						// okay, seems to be a TS Content Element, let's run it
-					$cObj = $this->getContentObject();
-					if (count($arguments)) {
-						$cObj->start(array('arguments' => $arguments));
-					}
+		if (!isset($pathBranch[$lastPathSegment . '.'])) {
+			$value = htmlspecialchars($pathBranch[$lastPathSegment]);
+		} else {
+			if (count($arguments)) {
+				$data = array(
+					'arguments' => $arguments
+				);
 
-					$value = $cObj->cObjGetSingle(
-						$pathBranch[$pathExploded[$i]],
-						$pathBranch[$pathExploded[$i] . '.']
-					);
+				$numberOfArguments = count($arguments);
+				for ($i = 0; $i < $numberOfArguments; $i++) {
+					$data['argument_' . $i] = $arguments[$i];
 				}
+
+				$cObj->start($data);
 			}
+
+			$value = $cObj->cObjGetSingle(
+				$pathBranch[$lastPathSegment],
+				$pathBranch[$lastPathSegment . '.']
+			);
 		}
 
 		return $value;
