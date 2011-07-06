@@ -19,3 +19,11 @@ table.tx_solr_index_list {
 	font-weight: bold;
 	color: #fff;
 }
+
+#tx-solr-connection {
+	float: right;
+}
+
+#tx-solr-connection select {
+	max-width: 300px;
+}

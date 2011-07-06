@@ -102,7 +102,7 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 			$notFound = '<em>Omitted</em>';
 			$content .= '<p>You have more than ' . $limit . ' documents, so term frequencies are being omitted for performance reasons.</p>';
 		} elseif (isset($data->index->numDocs)) {
-			$notFound = 'Not indexed';
+			$notFound = 'Nothing indexed';
 				// below limit, so we get more data
 				// Note: we use 2 since 1 fails on Ubuntu Hardy.
 			$data = $this->solr->getLukeMetaData(2);
@@ -185,6 +185,8 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 			$this->reportsModule->MOD_MENU['tx_solr_connection']
 		);
 
+		$connectionMenu = '<div id="tx-solr-connection">' . $connectionMenu . '</div>';
+
 		return $connectionMenu;
 	}
 
@@ -205,6 +207,7 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 			$solrServer['solrHost'],
 			$solrServer['solrPort'],
 			$solrServer['solrPath'],
+			$solrServer['solrScheme'],
 			$solrServer['solrUseCurl']
 		);
 
