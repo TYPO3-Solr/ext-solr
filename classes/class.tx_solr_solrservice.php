@@ -267,14 +267,21 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 			$response = parent::_sendRawPost($url, $rawPost, $timeout, $contentType);
 		} catch (Apache_Solr_HttpTransportException $e) {
 			$logSeverity = 3; // fatal error
+			$response    = $e->getResponse();
 		}
 
-		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawPost']) {
-			t3lib_div::devLog('Querying Solr using POST', 'solr', $logSeverity, array(
+		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawPost'] || $response->getHttpStatus() != 200) {
+			$logData = array(
 				'query url' => $url,
 				'content'   => $rawPost,
 				'response'  => (array) $response
-			));
+			);
+
+			if (!empty($e)) {
+				$logData['exception'] = $e->__toString();
+			}
+
+			t3lib_div::devLog('Querying Solr using POST', 'solr', $logSeverity, $logData);
 		}
 
 		return $response;

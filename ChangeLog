@@ -10,6 +10,7 @@
 	* Updated SolrPhpClient to r60
 	* Changed tx_solr_SolrService to use the new SolrPhpClient HTTP transport APIs
 	* Fixed usage of (now) undefined class constant in tx_solr_SolrService caused by the update of SolrPhpClient
+	* Changed logging for Solr POST requests to log request responses != 200 even when logging for POST is deactivated
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 
