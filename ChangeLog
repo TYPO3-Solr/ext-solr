@@ -14,6 +14,7 @@
 	* Added logging for delete queries
 	* Added an option to use curl as HTTP transport
 	* Fixed issue #13091: Reduce Solr connection selection UI clutter
+	* Added a class tx_solr_Site to use when dealing with site information, like site root, ttile, label and so on
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 
