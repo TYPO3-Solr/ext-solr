@@ -160,13 +160,14 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 			}
 
 			$facetOptionLinks[] = array(
-				'hidden'   => $facetHidden,
-				'link'     => $facetLink,
-				'url'      => $facetLinkUrl,
-				'text'     => $facetText,
-				'value'    => $facetOption,
-				'count'    => $facetOptionResultCount,
-				'selected' => $facetSelected ? '1' : '0'
+				'hidden'     => $facetHidden,
+				'link'       => $facetLink,
+				'url'        => $facetLinkUrl,
+				'text'       => $facetText,
+				'value'      => $facetOption,
+				'count'      => $facetOptionResultCount,
+				'selected'   => $facetSelected ? '1' : '0',
+				'facet_name' => $this->facetName
 			);
 		}
 
@@ -306,7 +307,6 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 	 */
 	protected function addFacetAndEncodeFilterParameters($facetToAdd) {
 		$solrConfiguration = tx_solr_Util::getSolrConfiguration();
-
 		$resultParameters = t3lib_div::_GPmerged('tx_solr');
 		$filterParameters = array();
 
