@@ -736,15 +736,29 @@ class tx_solr_Query {
 		}
 	}
 
-	public function setSorting($sort = TRUE) {
-		if ($sort) {
-			$piVars = t3lib_div::_GP('tx_solr');
+	/**
+	 * Sets the sort parameter.
+	 *
+	 * A sort ordering must include a field name (or the pseudo-field score),
+	 * followed by a space,
+	 * followed by a sort direction (asc or desc).
+	 *
+	 * Multiple sort orderings can be separated by a comma,
+	 * ie: <field name> <direction>[,<field name> <direction>]...
+	 *
+	 * @param	string|boolean	$sorting Either a comma-separated list of sort fields and directions or FALSE to reset sorting to the default behavior (sort by score / relevancy)
+	 * @see	http://wiki.apache.org/solr/CommonQueryParameters#sort
+	 */
+	public function setSorting($sorting) {
+		if ($sorting) {
+			$sortParameter = $sorting;
 
-				// Validate sort parameter
-			if (isset($piVars['sort']) && preg_match('/^[a-z0-9_]+ (asc|desc)$/i', $piVars['sort'])) {
-				list($sortField) = explode(' ', $piVars['sort']);
-				$this->queryParameters['sort'] = $sortField == 'relevancy' ? '' : $piVars['sort'];
+			list($sortField) = explode(' ', $sorting);
+			if ($sortField == 'relevancy') {
+				$sortParameter = '';
 			}
+
+			$this->queryParameters['sort'] =  $sortParameter;
 		} else {
 			unset($this->queryParameters['sort']);
 		}

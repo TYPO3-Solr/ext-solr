@@ -1,5 +1,8 @@
 2011-07-06  Ingo Renner  <ingo.renner@dkd.de>
 
+	* !!! Changed tx_solr_Query::setSorting() to accept (require) the sorting string parameter to set the query's sort parameter
+
+
 	* Added garbage collection
 
 

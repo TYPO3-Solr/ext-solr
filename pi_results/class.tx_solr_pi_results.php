@@ -263,8 +263,11 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 				// sorting
-			if ($this->conf['search.']['sorting'] != 0) {
-				$query->setSorting();
+			if ($this->conf['search.']['sorting'] != 0
+				&& !empty($this->piVars['sort'])
+				&& preg_match('/^[a-z0-9_]+ (asc|desc)$/i', $this->piVars['sort'])
+			) {
+				$query->setSorting($this->piVars['sort']);
 			}
 
 			$flexformSorting = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'sortBy', 'sQuery');
