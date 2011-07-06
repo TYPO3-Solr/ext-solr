@@ -355,6 +355,17 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	public function getLinkTargetPageId() {
 		return $this->conf['search.']['targetPage'];
 	}
+
+	/**
+	 * Gets the tx_solr_Search instance used for the query. Mainly used as a
+	 * helper function for result document modifiers.
+	 *
+	 * @return	tx_solr_Search
+	 */
+	public function getSearch() {
+		return $this->search;
+	}
+
 }
 
 

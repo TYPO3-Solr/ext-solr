@@ -443,16 +443,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	protected function getSubpart() {
 		return 'solr_search';
 	}
-
-	/**
-	 * Gets the tx_solr_Search instance used for the query. Mainly used as a
-	 * helper function for result document modifiers.
-	 *
-	 * @return	tx_solr_Search
-	 */
-	public function getSearch() {
-		return $this->search;
-	}
 }
 
 
