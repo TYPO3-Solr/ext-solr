@@ -182,6 +182,33 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 		return $connections;
 	}
 
+	/**
+	 * Gets all connections configured for a given site.
+	 *
+	 * @param	tx_solr_Site	$site	A TYPO3 site
+	 * @return	array	An array of Solr connection objects (tx_solr_SolrService)
+	 */
+	public function getConnectionsBySite(tx_solr_Site $site) {
+		$connections = array();
+
+		$registry    = t3lib_div::makeInstance('t3lib_Registry');
+		$solrServers = $registry->get('tx_solr', 'servers');
+
+		foreach ($solrServers as $solrServer) {
+			if ($solrServer['rootPageUid'] == $site->getRootPageId()) {
+				$connections[] = $this->getConnection(
+					$solrServer['solrHost'],
+					$solrServer['solrPort'],
+					$solrServer['solrPath'],
+					$solrServer['solrScheme'],
+					$solrServer['solrUseCurl']
+				);
+			}
+		}
+
+		return $connections;
+	}
+
 
 	// updates
 
