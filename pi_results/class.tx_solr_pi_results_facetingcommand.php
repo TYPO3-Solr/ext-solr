@@ -102,9 +102,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 				continue;
 			}
 
-			$facetName = substr($facetName, 0, -1);
-
-
+			$facetName     = substr($facetName, 0, -1);
 			$facetRenderer = t3lib_div::makeInstance(
 				'tx_solr_facet_FacetRenderer',
 				$facetName,
