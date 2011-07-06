@@ -262,6 +262,28 @@ class tx_solr_Query {
 	}
 
 
+	// query elevation
+
+	/**
+	 * Activates and deactivates query elevation for the current query.
+	 *
+	 * @param	boolean	True to enable query elevation (default), FALSE to disable query elevation.
+	 * @param	boolean	Optionaly force elevation so that the elevated documents are always on top regardless of sorting, default to TRUE.
+	 * @return	void
+	 */
+	public function setQueryElevation($elevation = TRUE, $forceElevation = TRUE) {
+		if ($elevation) {
+			$this->queryParameters['enableElevation'] = 'true';
+			$this->queryParameters['forceElevation']  = 'true';
+		} else {
+			if (isset($this->queryParameters['enableElevation'])) {
+				unset($this->queryParameters['enableElevation']);
+				unset($this->queryParameters['forceElevation']);
+			}
+		}
+	}
+
+
 	// faceting
 
 
