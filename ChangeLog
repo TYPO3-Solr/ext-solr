@@ -32,6 +32,7 @@
 	* Added tx_solr_Query::useRawQueryString() to force usage of unescaped (raw) queries
 	* Added a method to the query class to activate query elevation
 	* Added tx_solr_Search::getResultDocuments()
+	* Added option suggest.treatMultipleTermsAsSingleTerm to use when using String suggest fields
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

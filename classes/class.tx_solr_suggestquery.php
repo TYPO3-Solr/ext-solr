@@ -43,13 +43,17 @@ class tx_solr_SuggestQuery extends tx_solr_Query {
 
 		$this->configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['suggest.'];
 
-		$matches = array();
-		preg_match('/^(:?(.* |))([^ ]+)$/', $keywords, $matches);
-		$fullKeywords   = trim($matches[2]);
-		$partialKeyword = trim($matches[3]);
+		if (!empty($this->configuration['treatMultipleTermsAsSingleTerm'])) {
+			$this->prefix = $this->escape($keywords);
+		} else {
+			$matches = array();
+			preg_match('/^(:?(.* |))([^ ]+)$/', $keywords, $matches);
+			$fullKeywords   = trim($matches[2]);
+			$partialKeyword = trim($matches[3]);
 
-		$this->setKeywords($fullKeywords);
-		$this->prefix = $partialKeyword;
+			$this->setKeywords($fullKeywords);
+			$this->prefix = $this->escape($partialKeyword);
+		}
 
 		$this->setAlternativeQuery('*:*');
 	}
