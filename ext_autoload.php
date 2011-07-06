@@ -7,6 +7,12 @@ return array(
 
 		// SolrPhpClient
 
+	'apache_solr_httptransport_abstract' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/HttpTransport/Abstract.php',
+	'apache_solr_httptransport_curl' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/HttpTransport/Curl.php',
+	'apache_solr_httptransport_curlnoreuse' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/HttpTransport/CurlNoReuse.php',
+	'apache_solr_httptransport_filegetcontents' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/HttpTransport/FileGetContents.php',
+	'apache_solr_httptransport_interface' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/HttpTransport/Interface.php',
+	'apache_solr_httptransport_response' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/HttpTransport/Response.php',
 	'apache_solr_service_balancer' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Service/Balancer.php',
 	'apache_solr_document' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Document.php',
 	'apache_solr_exception' => $extensionPath . 'lib/SolrPhpClient/Apache/Solr/Exception.php',
