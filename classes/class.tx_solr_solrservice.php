@@ -231,11 +231,21 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 			$response    = $e->getResponse();
 		}
 
-		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawGet']) {
-			t3lib_div::devLog('Querying Solr using GET', 'solr', $logSeverity, array(
-				'query url'    => $url,
-				'raw response' => (array) $response
-			));
+		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawGet'] || $response->getHttpStatus() != 200) {
+			$logData = array(
+				'query url' => $url,
+				'response'  => (array) $response
+			);
+
+			if (!empty($e)) {
+				$logData['exception'] = $e->__toString();
+			} else {
+					// trigger data parsing
+				$response->response;
+				$logData['response data'] = print_r($response, TRUE);
+			}
+
+			t3lib_div::devLog('Querying Solr using GET', 'solr', $logSeverity, $logData);
 		}
 
 		return $response;
