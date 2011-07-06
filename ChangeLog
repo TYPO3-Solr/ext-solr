@@ -34,6 +34,7 @@
 	* Added tx_solr_Search::getResultDocuments()
 	* Added option suggest.treatMultipleTermsAsSingleTerm to use when using String suggest fields
 	* Fixed an issue in the templating engine where named loops were not rendered correctly
+	* Added a class to retrieve information about the TYPO3 environment. Currently provides information on file download extensions.
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 
