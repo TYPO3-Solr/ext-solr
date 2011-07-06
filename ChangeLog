@@ -5,6 +5,7 @@
 	* Added new marker ###FACET_LINK.FACET_NAME###
 	* Fixed usage of extension key in DevLog calls
 	* Moved method getSearch() from tx_solr_pi_results to tx_solr_pluginbase_PluginBase
+	* Moved method getCleanUserQuery() from tx_solr_pi_results to tx_solr_pluginbase_PluginBase
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

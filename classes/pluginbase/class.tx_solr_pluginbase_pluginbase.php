@@ -366,6 +366,19 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 		return $this->search;
 	}
 
+	/**
+	 * Gets the user's query term and cleans it so that it can be used in
+	 * templates f.e.
+	 *
+	 * @return	string	The cleaned user query.
+	 */
+	public function getCleanUserQuery() {
+		$userQuery = trim($this->piVars['q']);
+		$userQuery = t3lib_div::removeXSS($userQuery);
+		$userQuery = htmlentities($userQuery, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+
+		return $userQuery;
+	}
 }
 
 
