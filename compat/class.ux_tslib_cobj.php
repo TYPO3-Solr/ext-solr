@@ -27,8 +27,8 @@
  * XCLASS for tslib_cObj to detect frontend groups used on a page
  *
  * @author	Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package	TYPO3
+ * @subpackage	solr
  */
 class ux_tslib_cObj extends tslib_cObj {
 
