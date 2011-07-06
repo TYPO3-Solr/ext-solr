@@ -12,13 +12,12 @@
 -->
 <config name="tx_solr-1-7-0--20110611">
 
-
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 
 
 	<!-- Tika / Solr Cell -->
-	<lib dir="../contrib/extraction/lib" />
 	<lib dir="../dist/" regex="apache-solr-cell-\d.*\.jar" />
+	<lib dir="../contrib/extraction/lib/" />
 
 	<!-- Clustering -->
 	<lib dir="../dist/" regex="apache-solr-clustering-\d.*\.jar" />
@@ -141,7 +140,7 @@
 
 
 	<requestHandler name="dismax" class="solr.SearchHandler" >
-			<lst name="defaults">
+		<lst name="defaults">
 			<str name="defType">dismax</str>
 			<str name="echoParams">explicit</str>
 		</lst>
@@ -346,7 +345,6 @@
 
 	<!-- TYPO3 specific plugins, request handlers -->
 	<queryParser name="typo3access" class="org.typo3.solr.search.AccessFilterQParserPlugin"/>
-
 
 	<admin>
 		<defaultQuery>*:*</defaultQuery>
