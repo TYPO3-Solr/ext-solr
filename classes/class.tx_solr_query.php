@@ -416,6 +416,29 @@ class tx_solr_Query {
 	// query parameters
 
 	/**
+	 * Gets the query type, Solr's qt parameter.
+	 *
+	 * @return	string	Query type, qt parameter.
+	 */
+	public function getQueryType() {
+		return $this->queryParameters['qt'];
+	}
+
+	/**
+	 * Sets the query type, Solr's qt parameter.
+	 *
+	 * @param	mixed	$queryType String query type or boolean FALSE to disable / reset the qt parameter.
+	 * @see	http://wiki.apache.org/solr/CoreQueryParameters#qt
+	 */
+	public function setQueryType($queryType) {
+		if ($queryType) {
+			$this->queryParameters['qt'] = $queryType;
+		} else {
+			unset($this->queryParameters['qt']);
+		}
+	}
+
+	/**
 	 * Gets the alternative query, Solr's q.alt parameter.
 	 *
 	 * @return	string	Alternative query, q.alt parameter.
