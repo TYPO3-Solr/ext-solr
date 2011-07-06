@@ -200,9 +200,11 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		$response = parent::search($query, $offset, $limit, $params);
 		$this->hasSearched = TRUE;
 
-		if (!is_object($response)) {
+		if ($response->getHttpStatus() != 200) {
 			throw new RuntimeException(
-				'Solr server not responding.',
+				'Invalid query. Solr returned an error: '
+					. $response->getHttpStatus() . ' '
+					. $response->getHttpStatusMessage(),
 				1293109870
 			);
 		}
