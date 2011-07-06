@@ -27,6 +27,9 @@
  * Odd / Even viewhelper to add Zebra stripes to table rows f.e.
  * Replaces viewhelpers ###ODD_EVEN:xxx###
  *
+ * To create alternating rows use this in your results loop:
+ * class="row-###ODD_EVEN:###LOOP_CURRENT_ITERATION_COUNT######"
+ *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
  * @subpackage	solr
