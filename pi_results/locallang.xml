@@ -28,6 +28,8 @@
 			<label index="no_results_nothing_found">Nothing found for "@searchWord".</label>
 			<label index="relevance">Relevance</label>
 			<label index="results_per_page">Results per page:</label>
+			<label index="error_errors">We're sorry, there were some errors:</label>
+			<label index="error_emptyQuery">Please enter your search term in the box above.</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="searchUnavailable">Die Suche steht im Moment nicht zur Verfügung.</label>
@@ -52,6 +54,8 @@
 			<label index="no_results_nothing_found">Nichts gefunden für "@searchWord".</label>
 			<label index="relevance">Relevanz</label>
 			<label index="results_per_page">Ergebnisse pro Seite:</label>
+			<label index="error_errors">Es tut uns leid, es gab einige Fehler:</label>
+			<label index="error_emptyQuery">Bitte geben Sie ihr Suchwort in das Suchfeld ein.</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="searchUnavailable">Zoeken is op dit moment niet beschikbaar.</label>

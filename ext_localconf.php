@@ -85,6 +85,13 @@ tx_solr_CommandResolver::registerPluginCommand(
 );
 
 tx_solr_CommandResolver::registerPluginCommand(
+	'search, results',
+	'errors',
+	'tx_solr_pi_results_ErrorsCommand',
+	tx_solr_PluginCommand::REQUIREMENT_NONE
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
 	'results',
 	'sorting',
 	'tx_solr_pi_results_SortingCommand',

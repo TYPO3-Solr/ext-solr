@@ -41,6 +41,7 @@
 	* Added checkbox for showResultsOfInitialEmptyQuery in the plugin flexform
 	* Added an interface tx_solr_PluginAware to provide extension components with an instance of the currently active plugin
 	* Added new marker ###SOLR.Q###
+	* Added an errors command for the results plugin
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 
