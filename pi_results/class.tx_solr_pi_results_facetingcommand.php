@@ -68,7 +68,9 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 	public function execute() {
 		$marker = array();
 
-		if ($this->configuration['search.']['faceting'] && $this->search->getNumberOfResults()) {
+		if ($this->configuration['search.']['faceting']
+		&& ($this->search->getNumberOfResults() || $this->configuration['search.']['initializeWithEmptyQuery'])
+		) {
 			$marker['subpart_available_facets'] = $this->renderAvailableFacets();
 			$marker['subpart_used_facets']      = $this->renderUsedFacets();
 

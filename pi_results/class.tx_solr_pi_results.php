@@ -115,8 +115,13 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 * @param	Apache_Solr_Response	The search's reponse.
 	 */
 	protected function processResponse(tx_solr_Query $query, Apache_Solr_Response &$response) {
-		if ($this->conf['search.']['allowEmptyQuery'] && empty($this->piVars['q'])) {
-				// set number of results to 0 for empty queries as we've set number of rows to 0 too
+		if ($this->conf['search.']['initializeWithEmptyQuery']
+		&& !$this->conf['search.']['showResultsOfInitialEmptyQuery']
+		&& empty($this->piVars['q'])
+		) {
+				// explicitly set number of results to 0 as we just wanted
+				// facets and the like according to configuration
+				// @see	getNumberOfResultsPerPage()
 			$response->response->numFound = 0;
 		}
 
@@ -198,7 +203,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 		$this->initializeAdditionalFilters();
 
 			// TODO check whether a search has been conducted already?
-		if ($this->solrAvailable && (isset($this->piVars['q']) || $this->conf['search.']['allowEmptyQuery'])) {
+		if ($this->solrAvailable && (isset($this->piVars['q']) || $this->conf['search.']['initializeWithEmptyQuery'])) {
 			$this->piVars['q'] = trim($this->piVars['q']);
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
@@ -206,6 +211,12 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);
+
+			if ($this->conf['search.']['initializeWithEmptyQuery']) {
+					// empty main query, but using a "return everything"
+					// alternative query in q.alt
+				$query->setAlternativeQuery('*:*');
+			}
 
 			if (isset($this->conf['search.']['query.']['minimumMatch'])
 				&& strlen($this->conf['search.']['query.']['minimumMatch'])) {
@@ -310,11 +321,11 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 *
 	 */
 	protected function overrideTyposcriptWithFlexformSettings() {
-			// empty query, useful when no search has been conducted yet but one
-			// wants to show facets already. Then rows needs to be set to 0
-		$emptyQueryAllowed = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'emptyQuery', 'sQuery');
-		if ($emptyQueryAllowed) {
-			$this->conf['search.']['allowEmptyQuery'] = 1;
+			// initialize with empty query, useful when no search has been
+			// conducted yet but needs to show facets already.
+		$initializeWithEmptyQuery = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'initializeWithEmptyQuery', 'sQuery');
+		if ($initializeWithEmptyQuery) {
+			$this->conf['search.']['initializeWithEmptyQuery'] = 1;
 		}
 
 			// target page
@@ -376,6 +387,9 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	/**
 	 * Returns the number of results per Page.
 	 *
+	 * Also influences how many result documents are returned by the Solr
+	 * server as the return value is used in the Solr "rows" GET parameter.
+	 *
 	 * @return	int	number of results to show per page
 	 */
 	public function getNumberOfResultsPerPage() {
@@ -407,8 +421,13 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			$currentNumberOfResultsShown = (int) $userSetNumberOfResultsShown;
 		}
 
-		if ($this->conf['search.']['allowEmptyQuery'] && empty($this->piVars['q'])) {
-				// set number of rows to return to 0
+		if ($this->conf['search.']['initializeWithEmptyQuery']
+		&& !$this->conf['search.']['showResultsOfInitialEmptyQuery']
+		&& empty($this->piVars['q'])
+		) {
+				// initialize search with an empty query, which would by default return all documents
+				// anyway, tell Solr to not return any result documents
+				// Solr will still return facets though
 			$currentNumberOfResultsShown = 0;
 		}
 

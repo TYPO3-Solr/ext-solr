@@ -43,14 +43,14 @@
 				</TCEforms>
 				<type>array</type>
 				<el>
-					<emptyQuery>
+					<initializeWithEmptyQuery>
 						<TCEforms>
-							<label>Allow empty Query</label>
+							<label>Initialize search with empty query</label>
 							<config>
 								<type>check</type>
 							</config>
 						</TCEforms>
-					</emptyQuery>
+					</initializeWithEmptyQuery>
 					<filter>
 						<TCEforms>
 							<exclude>1</exclude>
