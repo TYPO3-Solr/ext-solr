@@ -36,7 +36,7 @@ class tx_solr_Util {
 	 * Generates a site specific key using the site url, encryption key, and
 	 * the extension key sent through md5.
 	 *
-	 * @param	integer	Optional page ID, if a page ID is provided it is used to determine the site hash, otherwise we try to use TSFE
+	 * @param	integer	Optional page ID, if a page ID is provided it is used to determine the site hash, otherwise we try to use TSFE ID
 	 * @return	string	A site specific hash
 	 */
 	public static function getSiteHash($pageId = 0) {
@@ -194,19 +194,23 @@ class tx_solr_Util {
 	 *
 	 * @param	integer	Id of the (root) page to get the Solr configuration from.
 	 * @param	boolean	Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+	 * @param	integer	System language uid, optional, defaults to 0
 	 * @return	array	The Solr configuration for the requested tree.
 	 */
-	public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = FALSE) {
+	public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = FALSE, $language = 0) {
 		static $configurationCache = array();
 		$solrConfiguration         = array();
 
 			// TODO needs some caching -> caching framework?
+		$cacheId = $pageId . '|' . $language;
 
 		if ($initializeTsfe) {
-			self::initializeTsfe($pageId);
-			$configurationCache[$pageId] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
+			self::initializeTsfe($pageId, $language);
+			$configurationCache[$cacheId] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
 		} else {
-			if (!isset($configurationCache[$pageId])) {
+			if (!isset($configurationCache[$cacheId])) {
+				t3lib_div::_GETset($language, 'L');
+
 				$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
 				$rootLine   = $pageSelect->getRootLine($pageId);
 
@@ -222,40 +226,46 @@ class tx_solr_Util {
 
 				$solrConfiguration = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr');
 
-				$configurationCache[$pageId] = $solrConfiguration[0];
+				$configurationCache[$cacheId] = $solrConfiguration[0];
 			}
 		}
 
-		return $configurationCache[$pageId];
+		return $configurationCache[$cacheId];
 	}
 
 	/**
-	 * Initializes the TSFE for a given page Id
+	 * Initializes the TSFE for a given page ID and language.
 	 *
 	 * @param	integer	The page id to initialize the TSFE for
+	 * @param	integer	System language uid, optional, defaults to 0
+	 * @return	void
 	 */
-	public static function initializeTsfe($pageId) {
+	public static function initializeTsfe($pageId, $language = 0) {
 		static $tsfeCache = array();
+
+			// resetting, a TSFE instance with data from a different page Id could be set already
+		unset($GLOBALS['TSFE']);
+
+		$cacheId = $pageId . '|' . $language;
 
 		if (!is_object($GLOBALS['TT'])) {
 			$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_TimeTrackNull');
 		}
 
-		if (!isset($tsfeCache[$pageId])) {
+		if (!isset($tsfeCache[$cacheId])) {
+			t3lib_div::_GETset($language, 'L');
+
 			$GLOBALS['TSFE'] = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 			$GLOBALS['TSFE']->initFEuser();
 			$GLOBALS['TSFE']->determineId();
 			$GLOBALS['TSFE']->initTemplate();
 			$GLOBALS['TSFE']->getConfigArray();
 
-			$tsfeCache[$pageId] = $GLOBALS['TSFE'];
+			$tsfeCache[$cacheId] = $GLOBALS['TSFE'];
 		}
 
-			// resetting, a TSFE instance with data from a different page Id could be set already
-		unset($GLOBALS['TSFE']);
-
 			// use the requested TSFE instance
-		$GLOBALS['TSFE'] = $tsfeCache[$pageId];
+		$GLOBALS['TSFE'] = $tsfeCache[$cacheId];
 	}
 
 	/**
@@ -266,10 +276,20 @@ class tx_solr_Util {
 	 */
 	public static function getRootPageId($pageId) {
 		$rootPageId = $pageId;
-		$rootline   = t3lib_BEfunc::BEgetRootLine($pageId);
 
-		$rootline = array_reverse($rootline);
-		foreach ($rootline as $page) {
+			// frontend
+		if (!empty($GLOBALS['TSFE']->rootLine)) {
+			$rootLine = $GLOBALS['TSFE']->rootLine;
+		}
+
+			// fallback, backend
+		if (empty($rootLine) && $pageId != 0) {
+			$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+			$rootLine   = $pageSelect->getRootLine($pageId);
+		}
+
+		$rootLine = array_reverse($rootLine);
+		foreach ($rootLine as $page) {
 			if ($page['is_siteroot']) {
 				$rootPageId = $page['uid'];
 			}
@@ -277,7 +297,6 @@ class tx_solr_Util {
 
 		return $rootPageId;
 	}
-
 
 	/**
 	 * Get parent TypoScript Object from $path.
