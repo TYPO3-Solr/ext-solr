@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2007-2010, Conduit Internet Technologies, Inc.
+ * Copyright (c) 2007-2011, Servigistics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
  *  - Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *  - Neither the name of Conduit Internet Technologies, Inc. nor the names of
+ *  - Neither the name of Servigistics, Inc. nor the names of
  *    its contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -27,14 +27,16 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @copyright Copyright 2007-2010 Conduit Internet Technologies, Inc. (http://conduit-it.com)
- * @license New BSD (http://solr-php-client.googlecode.com/svn/trunk/COPYING)
+ * @copyright Copyright 2007-2011 Servigistics, Inc. (http://servigistics.com)
+ * @license http://solr-php-client.googlecode.com/svn/trunk/COPYING New BSD
  * @version $Id$
  *
  * @package Apache
  * @subpackage Solr
  * @author Donovan Jimenez <djimenez@conduit-it.com>
  */
+
+require_once(dirname(__FILE__) . '/ParserException.php');
 
 /**
  * Represents a Solr response.  Parses the raw response into a set of stdClass objects
@@ -58,16 +60,9 @@ class Apache_Solr_Response
 	/**
 	 * Holds the raw response used in construction
 	 *
-	 * @var string
+	 * @var Apache_Solr_HttpTransport_Response HTTP response
 	 */
-	protected $_rawResponse;
-
-	/**
-	 * Parsed values from the passed in http headers
-	 *
-	 * @var string
-	 */
-	protected $_httpStatus, $_httpStatusMessage, $_type, $_encoding;
+	protected $_response;
 
 	/**
 	 * Whether the raw response has been parsed
@@ -95,74 +90,13 @@ class Apache_Solr_Response
 	/**
 	 * Constructor. Takes the raw HTTP response body and the exploded HTTP headers
 	 *
-	 * @param string $rawResponse
-	 * @param array $httpHeaders
+	 * @return Apache_Solr_HttpTransport_Response HTTP response
 	 * @param boolean $createDocuments Whether to convert the documents json_decoded as stdClass instances to Apache_Solr_Document instances
 	 * @param boolean $collapseSingleValueArrays Whether to make multivalued fields appear as single values
 	 */
-	public function __construct($rawResponse, $httpHeaders = array(), $createDocuments = true, $collapseSingleValueArrays = true)
+	public function __construct(Apache_Solr_HttpTransport_Response $response, $createDocuments = true, $collapseSingleValueArrays = true)
 	{
-		//Assume 0, 'Communication Error', utf-8, and  text/plain
-		$status = 0;
-		$statusMessage = 'Communication Error';
-		$type = 'text/plain';
-		$encoding = 'UTF-8';
-
-		//iterate through headers for real status, type, and encoding
-		if (is_array($httpHeaders) && count($httpHeaders) > 0)
-		{
-			//look at the first headers for the HTTP status code
-			//and message (errors are usually returned this way)
-			//
-			//HTTP 100 Continue response can also be returned before
-			//the REAL status header, so we need look until we find
-			//the last header starting with HTTP
-			//
-			//the spec: http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.1
-			//
-			//Thanks to Daniel Andersson for pointing out this oversight
-			while (isset($httpHeaders[0]) && substr($httpHeaders[0], 0, 4) == 'HTTP')
-			{
-				$parts = explode(' ', substr($httpHeaders[0], 9), 2);
-
-				$status = $parts[0];
-				$statusMessage = trim($parts[1]);
-
-				array_shift($httpHeaders);
-			}
-
-			//Look for the Content-Type response header and determine type
-			//and encoding from it (if possible - such as 'Content-Type: text/plain; charset=UTF-8')
-			foreach ($httpHeaders as $header)
-			{
-				if (strncasecmp($header, 'Content-Type:', 13) == 0)
-				{
-					//split content type value into two parts if possible
-					$parts = explode(';', substr($header, 13), 2);
-
-					$type = trim($parts[0]);
-
-					if ($parts[1])
-					{
-						//split the encoding section again to get the value
-						$parts = explode('=', $parts[1], 2);
-
-						if ($parts[1])
-						{
-							$encoding = trim($parts[1]);
-						}
-					}
-
-					break;
-				}
-			}
-		}
-
-		$this->_rawResponse = $rawResponse;
-		$this->_type = $type;
-		$this->_encoding = $encoding;
-		$this->_httpStatus = $status;
-		$this->_httpStatusMessage = $statusMessage;
+		$this->_response = $response;
 		$this->_createDocuments = (bool) $createDocuments;
 		$this->_collapseSingleValueArrays = (bool) $collapseSingleValueArrays;
 	}
@@ -174,7 +108,7 @@ class Apache_Solr_Response
 	 */
 	public function getHttpStatus()
 	{
-		return $this->_httpStatus;
+		return $this->_response->getStatusCode();
 	}
 
 	/**
@@ -184,7 +118,7 @@ class Apache_Solr_Response
 	 */
 	public function getHttpStatusMessage()
 	{
-		return $this->_httpStatusMessage;
+		return $this->_response->getStatusMessage();
 	}
 
 	/**
@@ -194,7 +128,7 @@ class Apache_Solr_Response
 	 */
 	public function getType()
 	{
-		return $this->_type;
+		return $this->_response->getMimeType();
 	}
 
 	/**
@@ -204,7 +138,7 @@ class Apache_Solr_Response
 	 */
 	public function getEncoding()
 	{
-		return $this->_encoding;
+		return $this->_response->getEncoding();
 	}
 
 	/**
@@ -214,7 +148,7 @@ class Apache_Solr_Response
 	 */
 	public function getRawResponse()
 	{
-		return $this->_rawResponse;
+		return $this->_response->getBody();
 	}
 
 	/**
@@ -264,7 +198,7 @@ class Apache_Solr_Response
 	protected function _parseData()
 	{
 		//An alternative would be to use Zend_Json::decode(...)
-		$data = json_decode($this->_rawResponse);
+		$data = json_decode($this->_response->getBody());
 
 		// check that we receive a valid JSON response - we should never receive a null
 		if ($data === null)

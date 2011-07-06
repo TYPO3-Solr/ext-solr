@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2007-2010, Conduit Internet Technologies, Inc.
+ * Copyright (c) 2007-2011, Servigistics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
  *  - Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *  - Neither the name of Conduit Internet Technologies, Inc. nor the names of
+ *  - Neither the name of Servigistics, Inc. nor the names of
  *    its contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -27,8 +27,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @copyright Copyright 2007-2010 Conduit Internet Technologies, Inc. (http://conduit-it.com)
- * @license New BSD (http://solr-php-client.googlecode.com/svn/trunk/COPYING)
+ * @copyright Copyright 2007-2011 Servigistics, Inc. (http://servigistics.com)
+ * @license http://solr-php-client.googlecode.com/svn/trunk/COPYING New BSD
  * @version $Id$
  *
  * @package Apache
@@ -39,6 +39,8 @@
 // See Issue #1 (http://code.google.com/p/solr-php-client/issues/detail?id=1)
 // Doesn't follow typical include path conventions, but is more convenient for users
 require_once(dirname(dirname(__FILE__)) . '/Service.php');
+
+require_once(dirname(dirname(__FILE__)) . '/NoServiceAvailableException.php');
 
 /**
  * Reference Implementation for using multiple Solr services in a distribution. Functionality
@@ -449,10 +451,17 @@ class Apache_Solr_Service_Balancer
 		return $this->_writeableServices[$this->_currentWriteService];
 	}
 
+	/**
+	 * Set the create documents flag. This determines whether {@link Apache_Solr_Response} objects will
+	 * parse the response and create {@link Apache_Solr_Document} instances in place.
+	 *
+	 * @param boolean $createDocuments
+	 */
 	public function setCreateDocuments($createDocuments)
 	{
 		$this->_createDocuments = (bool) $createDocuments;
 
+		// set on current read service
 		if ($this->_currentReadService)
 		{
 			$service = $this->_selectReadService();
@@ -460,11 +469,16 @@ class Apache_Solr_Service_Balancer
 		}
 	}
 
+	/**
+	 * Get the current state of teh create documents flag.
+	 *
+	 * @return boolean
+	 */
 	public function getCreateDocuments()
 	{
 		return $this->_createDocuments;
 	}
-
+	
 	/**
 	 * Raw Add Method. Takes a raw post body and sends it to the update service.  Post body
 	 * should be a complete and well formed "add" xml document.
@@ -740,7 +754,93 @@ class Apache_Solr_Service_Balancer
 
 		return false;
 	}
+	
+	/**
+	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
+	 * to use Solr Cell and what parameters are available.
+	 *
+	 * NOTE: when passing an Apache_Solr_Document instance, field names and boosts will automatically be prepended by "literal." and "boost."
+	 * as appropriate. Any keys from the $params array will NOT be treated this way. Any mappings from the document will overwrite key / value
+	 * pairs in the params array if they have the same name (e.g. you pass a "literal.id" key and value in your $params array but you also
+	 * pass in a document isntance with an "id" field" - the document's value(s) will take precedence).
+	 *
+	 * @param string $file Path to file to extract data from
+	 * @param array $params optional array of key value pairs that will be sent with the post (see Solr Cell documentation)
+	 * @param Apache_Solr_Document $document optional document that will be used to generate post parameters (literal.* and boost.* params)
+	 * @param string $mimetype optional mimetype specification (for the file being extracted)
+	 *
+	 * @return Apache_Solr_Response
+	 *
+	 * @throws Apache_Solr_InvalidArgumentException if $file, $params, or $document are invalid.
+	 */
+	public function extract($file, $params = array(), $document = null, $mimetype = 'application/octet-stream')
+	{
+		$service = $this->_selectWriteService();
 
+		do
+		{
+			try
+			{
+				return $service->extract($file, $params, $document, $mimetype);
+			}
+			catch (Apache_Solr_HttpTransportException $e)
+			{
+				if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
+				{
+					throw $e;
+				}
+			}
+
+			$service = $this->_selectWriteService(true);
+		} while ($service);
+
+		return false;
+	}
+	
+	/**
+	 * Use Solr Cell to extract document contents. See {@link http://wiki.apache.org/solr/ExtractingRequestHandler} for information on how
+	 * to use Solr Cell and what parameters are available.
+	 *
+	 * NOTE: when passing an Apache_Solr_Document instance, field names and boosts will automatically be prepended by "literal." and "boost."
+	 * as appropriate. Any keys from the $params array will NOT be treated this way. Any mappings from the document will overwrite key / value
+	 * pairs in the params array if they have the same name (e.g. you pass a "literal.id" key and value in your $params array but you also
+	 * pass in a document isntance with an "id" field" - the document's value(s) will take precedence).
+	 *
+	 * @param string $data Data that will be passed to Solr Cell
+	 * @param array $params optional array of key value pairs that will be sent with the post (see Solr Cell documentation)
+	 * @param Apache_Solr_Document $document optional document that will be used to generate post parameters (literal.* and boost.* params)
+	 * @param string $mimetype optional mimetype specification (for the file being extracted)
+	 *
+	 * @return Apache_Solr_Response
+	 *
+	 * @throws Apache_Solr_InvalidArgumentException if $file, $params, or $document are invalid.
+	 *
+	 * @todo Should be using multipart/form-data to post parameter values, but I could not get my implementation to work. Needs revisisted.
+	 */
+	public function extractFromString($data, $params = array(), $document = null, $mimetype = 'application/octet-stream')
+	{
+		$service = $this->_selectWriteService();
+
+		do
+		{
+			try
+			{
+				return $service->extractFromString($data, $params, $document, $mimetype);
+			}
+			catch (Apache_Solr_HttpTransportException $e)
+			{
+				if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
+				{
+					throw $e;
+				}
+			}
+
+			$service = $this->_selectWriteService(true);
+		} while ($service);
+
+		return false;
+	}
+	
 	/**
 	 * Send an optimize command.  Will be synchronous unless both wait parameters are set
 	 * to false.

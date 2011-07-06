@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2007-2010, Conduit Internet Technologies, Inc.
+ * Copyright (c) 2007-2011, Servigistics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
  *  - Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *  - Neither the name of Conduit Internet Technologies, Inc. nor the names of
+ *  - Neither the name of Servigistics, Inc. nor the names of
  *    its contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -27,9 +27,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @copyright Copyright 2007-2010 Conduit Internet Technologies, Inc. (http://conduit-it.com)
- * @license New BSD (http://solr-php-client.googlecode.com/svn/trunk/COPYING)
- * @version $Id: Exception.php 28 2010-02-19 23:36:22Z donovan.jimenez $
+ * @copyright Copyright 2007-2011 Servigistics, Inc. (http://servigistics.com)
+ * @license http://solr-php-client.googlecode.com/svn/trunk/COPYING New BSD
+ * @version $Id: Exception.php 54 2011-02-04 16:29:18Z donovan.jimenez $
  *
  * @package Apache
  * @subpackage Solr
@@ -41,10 +41,10 @@ class Apache_Solr_Exception extends Exception
 	/**
 	 * SVN Revision meta data for this class
 	 */
-	const SVN_REVISION = '$Revision: 28 $';
+	const SVN_REVISION = '$Revision: 54 $';
 
 	/**
 	 * SVN ID meta data for this class
 	 */
-	const SVN_ID = '$Id: Exception.php 28 2010-02-19 23:36:22Z donovan.jimenez $';
+	const SVN_ID = '$Id: Exception.php 54 2011-02-04 16:29:18Z donovan.jimenez $';
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2007-2010, Conduit Internet Technologies, Inc.
+ * Copyright (c) 2007-2011, Servigistics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
  *  - Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *  - Neither the name of Conduit Internet Technologies, Inc. nor the names of
+ *  - Neither the name of Servigistics, Inc. nor the names of
  *    its contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
@@ -27,8 +27,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @copyright Copyright 2007-2010 Conduit Internet Technologies, Inc. (http://conduit-it.com)
- * @license New BSD (http://solr-php-client.googlecode.com/svn/trunk/COPYING)
+ * @copyright Copyright 2007-2011 Servigistics, Inc. (http://servigistics.com)
+ * @license http://solr-php-client.googlecode.com/svn/trunk/COPYING New BSD
  * @version $Id$
  *
  * @package Apache

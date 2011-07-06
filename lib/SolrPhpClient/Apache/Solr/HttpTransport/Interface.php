@@ -29,51 +29,66 @@
  *
  * @copyright Copyright 2007-2011 Servigistics, Inc. (http://servigistics.com)
  * @license http://solr-php-client.googlecode.com/svn/trunk/COPYING New BSD
- * @version $Id: HttpTransportException.php 54 2011-02-04 16:29:18Z donovan.jimenez $
+ * @version $Id: $
  *
  * @package Apache
  * @subpackage Solr
- * @author Donovan Jimenez <djimenez@conduit-it.com>
+ * @author Timo Schmidt <timo.schmidt@aoemedia.de>, Donovan Jimenez <djimenez@conduit-it.com>
  */
 
-class Apache_Solr_HttpTransportException extends Apache_Solr_Exception
+// require Apache_Solr_HttpTransport_Response
+require_once(dirname(__FILE__) . '/Response.php');
+
+/**
+ * Interface that all Transport (HTTP Requester) implementations must implement. These
+ * Implementations can then be plugged into the Service instance in order to user their
+ * the desired method for making HTTP requests
+ */
+interface Apache_Solr_HttpTransport_Interface
 {
 	/**
-	 * SVN Revision meta data for this class
-	 */
-	const SVN_REVISION = '$Revision: 54 $';
-
-	/**
-	 * SVN ID meta data for this class
-	 */
-	const SVN_ID = '$Id: HttpTransportException.php 54 2011-02-04 16:29:18Z donovan.jimenez $';
-
-	/**
-	 * Response for which exception was generated
+	 * Get the current default timeout for all HTTP requests
 	 *
-	 * @var Apache_Solr_Response
+	 * @return float
 	 */
-	private $_response;
-
+	public function getDefaultTimeout();
+	
 	/**
-	 * HttpTransportException Constructor
+	 * Set the current default timeout for all HTTP requests
 	 *
-	 * @param Apache_Solr_Response $response
+	 * @param float $timeout
 	 */
-	public function __construct(Apache_Solr_Response $response)
-	{
-		parent::__construct("'{$response->getHttpStatus()}' Status: {$response->getHttpStatusMessage()}", $response->getHttpStatus());
-
-		$this->_response = $response;
-	}
-
+	public function setDefaultTimeout($timeout);
+		
 	/**
-	 * Get the response for which this exception was generated
+	 * Perform a GET HTTP operation with an optional timeout and return the response
+	 * contents, use getLastResponseHeaders to retrieve HTTP headers
 	 *
-	 * @return Apache_Solr_Response
+	 * @param string $url
+	 * @param float $timeout
+	 * @return Apache_Solr_HttpTransport_Response HTTP response
 	 */
-	public function getResponse()
-	{
-		return $this->_response;
-	}
+	public function performGetRequest($url, $timeout = false);
+	
+	/**
+	 * Perform a HEAD HTTP operation with an optional timeout and return the response
+	 * headers - NOTE: head requests have no response body
+	 *
+	 * @param string $url
+	 * @param float $timeout
+	 * @return Apache_Solr_HttpTransport_Response HTTP response
+	 */
+	public function performHeadRequest($url, $timeout = false);
+	
+	/**
+	 * Perform a POST HTTP operation with an optional timeout and return the response
+	 * contents, use getLastResponseHeaders to retrieve HTTP headers
+	 *
+	 * @param string $url
+	 * @param string $rawPost
+	 * @param string $contentType
+	 * @param float $timeout
+	 * @return Apache_Solr_HttpTransport_Response HTTP response
+	 */
+	public function performPostRequest($url, $rawPost, $contentType, $timeout = false);
 }
