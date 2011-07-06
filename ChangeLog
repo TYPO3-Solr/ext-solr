@@ -1,3 +1,7 @@
+2011-07-06  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added support for Record Access Rootline Elements
+
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #27101: Error 500 at default installation via shell script, unable to load typo3-accessfilter

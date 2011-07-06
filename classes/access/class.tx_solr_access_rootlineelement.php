@@ -25,7 +25,7 @@
 
 /**
  * An element in the "Access Rootline". Represents the frontend user group
- * access restrictions for a page or a page's content.
+ * access restrictions for a page, a page's content, or a generic record.
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
@@ -46,6 +46,13 @@ class tx_solr_access_RootlineElement {
 	 * @var	integer
 	 */
 	const ELEMENT_TYPE_CONTENT = 2;
+
+	/**
+	 * Record access rootline element.
+	 *
+	 * @var	integer
+	 */
+	const ELEMENT_TYPE_RECORD = 3;
 
 	/**
 	 * Delimiter between the page ID and the groups set for a page.
@@ -96,11 +103,22 @@ class tx_solr_access_RootlineElement {
 			} else {
 				$elementGroups = $elementAccess[1];
 			}
-		} else {
-				// page element type
+		} else if($elementAccess[0] == 'r') {
+				// record element type
 			if (count($elementAccess) !== 2) {
 				throw new tx_solr_access_RootlineElementFormatException(
-					'Wrong Access Rootline Element format.',
+					'Wrong Access Rootline Element format for a record type element.',
+					1308342937
+				);
+			}
+
+			$this->type    = self::ELEMENT_TYPE_RECORD;
+			$elementGroups = $elementAccess[1];
+		} else {
+				// page element type
+			if (count($elementAccess) !== 2 || !is_numeric($elementAccess[0])) {
+				throw new tx_solr_access_RootlineElementFormatException(
+					'Wrong Access Rootline Element format for a page type element.',
 					1294421105
 				);
 			}
@@ -122,6 +140,8 @@ class tx_solr_access_RootlineElement {
 
 		if ($this->type == self::ELEMENT_TYPE_CONTENT) {
 			$rootlineElement .= 'c';
+		} else if ($this->type == self::ELEMENT_TYPE_RECORD) {
+			$rootlineElement .= 'r';
 		} else {
 			$rootlineElement .= $this->pageId;
 		}

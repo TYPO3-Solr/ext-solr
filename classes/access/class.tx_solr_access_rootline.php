@@ -42,6 +42,21 @@
  * The content access element does not have a page ID, instead it replaces
  * the ID by a lower case C.
  *
+ * The groups for page elements are compared using OR, so the user needs to be
+ * a member of only one of the groups listed for a page. The elements are
+ * checked combined using AND, so the user must be member of at least one
+ * group in each page element. However, the groups in the content access
+ * element are checked using AND. So the user must be member of all the groups
+ * listed in the content access element to see the document.
+ *
+ * An access rootline for a generic record could instead be short like this:
+ *
+ * r:group1,group2,groupN
+ *
+ * In this case the lower case R tells us that we're dealing with a record
+ * like tt_news or the like. For records the groups are checked using OR
+ * instead of using AND as it would be the case with content elements.
+ *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
  * @subpackage	solr
@@ -108,13 +123,20 @@ class tx_solr_access_Rootline {
 	public function push(tx_solr_access_RootlineElement $rootlineElement) {
 		$lastElementIndex = max(0, (count($this->rootlineElements) - 1));
 
-		if (!empty($this->rootlineElements[$lastElementIndex])
-			&& $this->rootlineElements[$lastElementIndex]->getType() == tx_solr_access_RootlineElement::ELEMENT_TYPE_CONTENT
-		) {
-			throw new RuntimeException(
-				'Can not add an element to an Access Rootline whose\' last element is a content type element.',
-				1294422132
-			);
+		if (!empty($this->rootlineElements[$lastElementIndex])) {
+			if ($this->rootlineElements[$lastElementIndex]->getType() == tx_solr_access_RootlineElement::ELEMENT_TYPE_CONTENT) {
+				throw new tx_solr_access_RootlineElementFormatException(
+					'Can not add an element to an Access Rootline whose\' last element is a content type element.',
+					1294422132
+				);
+			}
+
+			if ($this->rootlineElements[$lastElementIndex]->getType() == tx_solr_access_RootlineElement::ELEMENT_TYPE_RECORD) {
+				throw new tx_solr_access_RootlineElementFormatException(
+					'Can not add an element to an Access Rootline whose\' last element is a record type element.',
+					1308343423
+				);
+			}
 		}
 
 		$this->rootlineElements[] = $rootlineElement;
