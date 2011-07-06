@@ -240,7 +240,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$solrEnabled = !empty($solrEnabled) ? TRUE : FALSE;
 
 				if (!empty($solrSetup) && $solrEnabled) {
-					$configuredSolrConnections[$connectionKey] = array(
+					$connection = array(
 						'rootPageTitle' => $rootPage['title'],
 						'rootPageUid'   => $rootPage['uid'],
 
@@ -252,11 +252,57 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 
 						'language'      => $languageId
 					);
+					$connection['label'] = $this->buildConnectionLabel($connection);
+
+					$configuredSolrConnections[$connectionKey] = $connection;
 				}
 			}
 		}
 
 		return $configuredSolrConnections;
+	}
+
+	/**
+	 * Gets the language name for a given lanuguage ID.
+	 *
+	 * @param	integer	$languageId language ID
+	 * @return	string	Language name
+	 */
+	protected function getLanguageName($languageId) {
+		$languageName = '';
+
+		$language = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid, title',
+			'sys_language',
+			'uid = ' . (integer) $languageId
+		);
+
+		if (count($language)) {
+			$languageName = $language[0]['title'];
+		} else if ($languageId == 0) {
+			$languageName = 'default';
+		}
+
+		return $languageName;
+	}
+
+	/**
+	 * Creates a human readablelabel from the connections' configuration.
+	 *
+	 * @param	array	$connection Connection configuration
+	 * @return	string	Connection label
+	 */
+	protected function buildConnectionLabel(array $connection) {
+		$connectionLabel = $connection['rootPageTitle']
+			. ' (pid: ' . $connection['rootPageUid']
+			. ', language: ' . $this->getLanguageName($connection['language'])
+			.') - '
+#			. $connection['solrScheme'] . '://'
+			. $connection['solrHost'] . ':'
+			. $connection['solrPort']
+			. $connection['solrPath'];
+
+		return $connectionLabel;
 	}
 
 	/**

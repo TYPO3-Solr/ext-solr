@@ -13,6 +13,7 @@
 	* Changed logging for Solr POST requests to log request responses != 200 even when logging for POST is deactivated
 	* Added logging for delete queries
 	* Added an option to use curl as HTTP transport
+	* Fixed issue #13091: Reduce Solr connection selection UI clutter
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

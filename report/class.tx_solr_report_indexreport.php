@@ -160,10 +160,7 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 		$connectionMenuItems = array();
 
 		foreach ($solrConnections as $key => $solrConnection) {
-			$connectionMenuItems[$key] =
-				$solrConnection['solrHost']
-				. ':' . $solrConnection['solrPort']
-				. $solrConnection['solrPath'];
+			$connectionMenuItems[$key] = $solrConnection['label'];
 		}
 
 		$this->reportsModule->MOD_MENU = array_merge(
