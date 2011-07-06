@@ -1,6 +1,6 @@
 jQuery(document).ready(function(){
 
-	// Change back to the old behavoir of autocomplete
+	// Change back to the old behavior of auto-complete
 	// http://jqueryui.com/docs/Upgrade_Guide_184#Autocomplete
 	jQuery.ui.autocomplete.prototype._renderItem = function( ul, item ) {
 			return jQuery( "<li></li>" )
@@ -16,7 +16,6 @@ jQuery(document).ready(function(){
 					url: tx_solr_suggestUrl,
 					dataType: 'json',
 					data: {
-							// TODO
 						termLowercase: request.term.toLowerCase(),
 						termOriginal: request.term
 					},
@@ -28,8 +27,8 @@ jQuery(document).ready(function(){
 							var unformatted_label = term + ' <span class="result_count">(' + data[term] + ')</span>';
 							output.push({
 								label : unformatted_label.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' +
-									jQuery.ui.autocomplete.escapeRegex(request.term) +
-									')(?![^<>]*>)(?![^&;]+;)', 'gi'), '<strong>$1</strong>'),
+											jQuery.ui.autocomplete.escapeRegex(request.term) +
+											')(?![^<>]*>)(?![^&;]+;)', 'gi'), '<strong>$1</strong>'),
 								value : term
 							});
 						});
