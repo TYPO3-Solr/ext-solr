@@ -47,6 +47,7 @@ class tx_solr_Query {
 	protected $filters = array();
 	protected $sorting;
 
+	private   $rawQueryString = FALSE;
 	protected $queryString;
 
 	protected $queryParameters = array();
@@ -131,19 +132,34 @@ class tx_solr_Query {
 	}
 
 	/**
+	 * Sets whether a raw query sting should be used, that is, whether the query
+	 * string should be escaped or not.
+	 *
+	 * @param	boolean	$useRawQueryString TRUE to use raw queries (like Lucene Query Language) or FALSE for regular, escaped queries
+	 */
+	public function useRawQueryString($useRawQueryString) {
+		$this->rawQueryString = (boolean) $useRawQueryString;
+	}
+
+	/**
 	 * Builds the query string which is then used for Solr's q parameters
 	 *
 	 * @return	string	Solr query string
 	 */
 	public function getQueryString() {
-		$this->buildQueryString();
+		if (!$this->rawQueryString) {
+			$this->buildQueryString();
+		}
+
 		return $this->queryString;
 	}
 
 	/**
-	 * Sets the query string, be cautious with this function!
+	 * Sets the query string without any escaping.
 	 *
-	 * @param $queryString
+	 * Be cautious with this function!
+	 *
+	 * @param	$queryString	The raw query string.
 	 */
 	public function setQueryString($queryString) {
 		$this->queryString = $queryString;

@@ -26,6 +26,7 @@
 	* Added methods setAlternativeQuery() and getAlternativeQuery() to tx_solr_Query
 	* Fixed issue #13494: Facet link not working with empty query
 	* Added tx_solr_Query::setQueryType() and tx_solr_Query::getQueryType()
+	* Added tx_solr_Query::useRawQueryString() to force usage of unescaped (raw) queries
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 
