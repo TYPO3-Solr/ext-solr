@@ -63,25 +63,16 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 	/**
 	 * Provides the values for the markers in the simple form template
 	 *
-	 * @return array	an array containing values for markers in the simple form template
+	 * @return	array	an array containing values for markers in the simple form template
 	 */
 	public function execute() {
-		$searchWord = '';
-
-		$testSearchWord = t3lib_div::_GPmerged('tx_solr');
-		if (trim($testSearchWord['q'])) {
-			$searchWord = trim($this->parentPlugin->piVars['q']);
-			$searchWord = t3lib_div::removeXSS($searchWord);
-			$searchWord = htmlentities($searchWord, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
-		}
-
 		$marker = array(
 			'action'                    => $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']),
 			'action_id'                 => intval($this->parentPlugin->conf['search.']['targetPage']),
 			'action_language'           => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
 			'action_language_parameter' => 'L', // FIXME L is not necessarily the language parameter
 			'accept-charset'            => $GLOBALS['TSFE']->metaCharset,
-			'q'                         => $searchWord
+			'q'                         => $this->parentPlugin->getCleanUserQuery()
 		);
 
 			// TODO maybe move into a form modifier
