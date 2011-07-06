@@ -81,7 +81,9 @@ tx_solr_CommandResolver::registerPluginCommand(
 	'results',
 	'faceting',
 	'tx_solr_pi_results_FacetingCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED + tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	+ tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
 tx_solr_CommandResolver::registerPluginCommand(
@@ -89,20 +91,6 @@ tx_solr_CommandResolver::registerPluginCommand(
 	'form',
 	'tx_solr_pi_results_FormCommand',
 	tx_solr_PluginCommand::REQUIREMENT_NONE
-);
-
-tx_solr_CommandResolver::registerPluginCommand(
-	'results',
-	'no_results',
-	'tx_solr_pi_results_NoResultsCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED + tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
-);
-
-tx_solr_CommandResolver::registerPluginCommand(
-	'results',
-	'results',
-	'tx_solr_pi_results_ResultsCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED + tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
 tx_solr_CommandResolver::registerPluginCommand(
@@ -114,9 +102,26 @@ tx_solr_CommandResolver::registerPluginCommand(
 
 tx_solr_CommandResolver::registerPluginCommand(
 	'results',
+	'no_results',
+	'tx_solr_pi_results_NoResultsCommand',
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results',
+	'results',
+	'tx_solr_pi_results_ResultsCommand',
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results',
 	'sorting',
 	'tx_solr_pi_results_SortingCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED + tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
