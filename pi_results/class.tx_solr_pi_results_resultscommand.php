@@ -63,7 +63,8 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 
 	public function execute() {
 		$numberOfResults = $this->search->getNumberOfResults();
-		$query = htmlentities(trim($this->parentPlugin->piVars['q']), ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+		$rawQuery        = trim($this->parentPlugin->piVars['q']);
+		$query           = htmlentities($rawQuery, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
 
 		$searchedFor = strtr(
 			$this->parentPlugin->pi_getLL('results_searched_for'),
@@ -81,6 +82,8 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 		return array(
 			'searched_for'                    => $searchedFor,
 			'query'                           => $query,
+			'query_urlencoded'                => rawurlencode($rawQuery),
+			'query_raw'                       => $rawQuery,
 			'found'                           => $foundResultsInfo,
 			'range'                           => $this->getPageBrowserRange(),
 			'count'                           => $this->search->getNumberOfResults(),
@@ -100,10 +103,9 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	}
 
 	protected function getResultDocuments() {
-		$searchResponse  = $this->search->getResponse();
-		$resultDocuments = array();
+		$responseDocuments = $this->search->getResultDocuments();
+		$resultDocuments   = array();
 
-		$responseDocuments = $searchResponse->docs;
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
@@ -174,6 +176,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 				// TODO allow to have multiple (commaseparated) instructions for each field
 			switch ($processingInstruction) {
 				case 'timestamp':
+						// FIXME use DateTime::createFromFormat (PHP 5.3+)
 					$parsedTime = strptime($document->{$fieldName}, '%Y-%m-%dT%H:%M:%SZ');
 
 					$processedFieldValue = mktime(
