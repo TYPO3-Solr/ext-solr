@@ -169,7 +169,6 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 			// Add default paramseters
 		$parameters['wt'] = self::SOLR_WRITER;
 		$parameters['json.nl'] = $this->_namedListTreatment;
-		$parameters['version'] = self::SOLR_VERSION;
 		$url = $this->_constructUrl($servlet, $parameters);
 
 		if ($method == self::METHOD_GET) {
