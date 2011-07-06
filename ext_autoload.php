@@ -87,6 +87,7 @@ return array(
 	'tx_solr_pi_results_sortingcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_sortingcommand.php',
 
 	'tx_solr_pi_results_spellcheckformmodifier' => $extensionPath . 'pi_results/class.tx_solr_pi_results_spellcheckformmodifier.php',
+	'tx_solr_pi_results_suggestformmodifier' => $extensionPath . 'pi_results/class.tx_solr_pi_results_suggestformmodifier.php',
 
 		// scheduler tasks
 

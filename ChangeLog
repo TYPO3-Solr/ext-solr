@@ -42,6 +42,7 @@
 	* Added an interface tx_solr_PluginAware to provide extension components with an instance of the currently active plugin
 	* Added new marker ###SOLR.Q###
 	* Added an errors command for the results plugin
+	* Changed tx_solr_pi_results_FormCommand, moved suggest related code to tx_solr_pi_results_SuggestFormModifier
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

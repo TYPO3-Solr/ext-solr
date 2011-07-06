@@ -125,12 +125,14 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_schedul
 );
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// TODO move into pi_results, initializeSearch, add only when highlighting is activated
+	// TODO move into pi_results, initializeSearch, add only when features are activated
 $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck'] = 'EXT:solr/pi_results/class.tx_solr_pi_results_spellcheckformmodifier.php:tx_solr_pi_results_SpellcheckFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest'] = 'EXT:solr/pi_results/class.tx_solr_pi_results_suggestformmodifier.php:tx_solr_pi_results_SuggestFormModifier';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// registering the eID script for auto suggest
+	// TODO move to suggest form modifier
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/eid_suggest/suggest.php';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
