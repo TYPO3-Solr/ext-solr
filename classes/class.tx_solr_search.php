@@ -100,8 +100,11 @@ class tx_solr_Search implements t3lib_Singleton {
 			$response = t3lib_div::makeInstance('Apache_Solr_Response');
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-				t3lib_div::devLog('exception while querying solr', 'solr', 3, array(
-					$e->__toString()
+				t3lib_div::devLog('Exception while querying Solr', 'solr', 3, array(
+					'exception' => $e->__toString(),
+					'query'     => (array) $query,
+					'offset'    => $offset,
+					'limit'     => $limit
 				));
 			}
 		}
