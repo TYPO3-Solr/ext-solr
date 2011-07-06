@@ -66,6 +66,10 @@ class tx_solr_Search implements t3lib_Singleton {
 	/**
 	 * Executes a search against a Solr server.
 	 *
+	 * 1) Gets the query string
+	 * 2) Conducts the actual search
+	 * 3) Checks debug settings
+	 *
 	 * @param	tx_solr_Query	$query The query with keywords, filters, and so on.
 	 * @param	integer	$offset Result offset for pagination.
 	 * @param	integer	$limit Maximum number of results to return.
@@ -73,9 +77,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 */
 	public function search(tx_solr_Query $query, $offset = 0, $limit = 10) {
 
-			// * get query string
-			// * do actual search by calling the parent's search method
-			// * obey the debug setting
+			// FIXME fix searches like "*:*", "-", "+"
 
 		$this->query = $query;
 
@@ -88,14 +90,14 @@ class tx_solr_Search implements t3lib_Singleton {
 			);
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['queryString']) {
-				t3lib_div::devLog('querying solr, getting result', 'solr', 0, array(
+				t3lib_div::devLog('Querying Solr, getting result', 'solr', 0, array(
 					'query string'     => $query->getQueryString(),
 					'query parameters' => $query->getQueryParameters(),
 					'response'         => json_decode($response->getRawResponse(), TRUE)
 				));
 			}
 		} catch (Exception $e) {
-			// FIXME fix searches like "*.*", "-", "+"
+			$response = t3lib_div::makeInstance('Apache_Solr_Response');
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				t3lib_div::devLog('exception while querying solr', 'solr', 3, array(
