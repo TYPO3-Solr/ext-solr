@@ -6,6 +6,7 @@
 	* Fixed usage of extension key in DevLog calls
 	* Moved method getSearch() from tx_solr_pi_results to tx_solr_pluginbase_PluginBase
 	* Moved method getCleanUserQuery() from tx_solr_pi_results to tx_solr_pluginbase_PluginBase
+	* Added support for using a TypoScript path containing the link target parameter in the LINK and SOLRLINK viewhelpers (credits Timo Webler)
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

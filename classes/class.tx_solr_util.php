@@ -277,6 +277,39 @@ class tx_solr_Util {
 
 		return $rootPageId;
 	}
+
+
+	/**
+	 * Get parent TypoScript Object from $path.
+	 * Example: plugin.tx_solr.search.targetPage
+	 *
+	 * return $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']
+	 *
+	 *
+	 * @param string $path
+	 * @return array
+	 */
+	public static function getTypoScriptObject($path) {
+		if (!is_string($path)) {
+			throw new Apache_Solr_InvalidArgumentException('Parameter $path is not a string');
+		}
+
+		$pathExploded = explode('.', trim($path));
+			// remove last object
+		$lastPathSegment = array_pop($pathExploded);
+		$pathBranch      = $GLOBALS['TSFE']->tmpl->setup;
+
+		foreach ($pathExploded as $segment) {
+			if (!array_key_exists($segment . '.', $pathBranch)) {
+				throw new Apache_Solr_InvalidArgumentException(
+					'TypoScript object path "' . htmlspecialchars($path) . '" does not exist'
+				);
+			}
+			$pathBranch = $pathBranch[$segment . '.'];
+		}
+
+		return $pathBranch;
+	}
 }
 
 

@@ -24,7 +24,7 @@
 
 
 /**
- * viewhelper class to create links containing solr parameters
+ * Viewhelper class to create links
  * Replaces viewhelpers ###LINK:LinkText|Pid|AdditionalParameters|useCache###
  *
  * @author	Ingo Renner <ingo@typo3.org>
@@ -64,13 +64,25 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 		$linkTarget = $GLOBALS['TSFE']->id;
 
 			// if the link target is a number, interprete it as a page ID
-		if (is_numeric($arguments[1])) {
-			$linkTarget = intval($arguments[1]);
-		}
+		$linkArgument = trim($arguments[1]);
+		if (is_numeric($linkArgument)) {
+			$linkTarget = intval($linkArgument);
+		} elseif(filter_var($linkArgument, FILTER_VALIDATE_URL)) {
+				// $linkTarget is an URL
+			$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
+		} elseif (is_string($linkArgument)) {
+			try {
+				$typoscript      = tx_solr_Util::getTypoScriptObject($linkArgument);
+				$pathExploded    = explode('.', $linkArgument);
+				$lastPathSegment = array_pop($pathExploded);
 
-			// treat everything else as an URL
-		if (filter_var($arguments[1], FILTER_VALIDATE_URL)) {
-			$linkTarget = filter_var($arguments[1], FILTER_SANITIZE_URL);
+				$linkTarget = intval($typoscript[$lastPathSegment]);
+			} catch (InvalidArgumentException $e) {
+					// ignore exceptions caused by markers, but accept the exception for wrong TS paths
+				if (substr($linkArgument, 0, 3) != '###') {
+					throw $e;
+				}
+			}
 		}
 
 		$linkConfiguration = array(

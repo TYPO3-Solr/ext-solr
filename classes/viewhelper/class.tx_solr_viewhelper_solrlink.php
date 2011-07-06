@@ -69,27 +69,51 @@ class tx_solr_viewhelper_SolrLink implements tx_solr_ViewHelper {
 	 */
 	public function execute(array $arguments = array()) {
 		$linkText             = $arguments[0];
-		$pageId               = $arguments[1] ? intval($arguments[1]) : $GLOBALS['TSFE']->id;
+		$pageId               = $GLOBALS['TSFE']->id;
 		$additionalParameters = $arguments[2] ? $arguments[2] : '';
 		$useCache             = $arguments[3] ? TRUE : FALSE;
 
-		$query = $this->search->getQuery();
 
-		$prefix        = 'tx_solr';
-		$getParameters = t3lib_div::_GET($prefix);
-		$piVars        = is_array($getParameters) ? $getParameters : array();
+			// if the link target is a number, interprete it as a page ID
+		$linkArgument = trim($arguments[1]);
+		if (is_numeric($linkArgument)) {
+			$pageId = intval($linkArgument);
+		} elseif (is_string($linkArgument)) {
+			try {
+				$typoscript      = tx_solr_Util::getTypoScriptObject($linkArgument);
+				$pathExploded    = explode('.', $linkArgument);
+				$lastPathSegment = array_pop($pathExploded);
 
-		$queryParameters = array_merge(
-			$piVars,
-			array('q' => $query->getKeywords())
-		);
-		$queryParameters = $query->removeUnwantedUrlParameters($queryParameters);
+				$pageId = intval($typoscript[$lastPathSegment]);
+			} catch (InvalidArgumentException $e) {
+					// ignore exceptions caused by markers, but accept the exception for wrong TS paths
+				if (substr($linkArgument, 0, 3) != '###') {
+					throw $e;
+				}
+			}
+		}
+
+		if ($this->search->hasSearched()) {
+			$query = $this->search->getQuery();
+
+			$prefix        = 'tx_solr';
+			$getParameters = t3lib_div::_GET($prefix);
+			$piVars        = is_array($getParameters) ? $getParameters : array();
+
+			$queryParameters = array_merge(
+				$piVars,
+				array('q' => $query->getKeywords())
+			);
+			$queryParameters = $query->removeUnwantedUrlParameters($queryParameters);
+		} else {
+			$queryParameters = array();
+		}
 
 		$linkConfiguration = array(
 			'useCacheHash'     => $useCache,
 			'no_cache'         => FALSE,
 			'parameter'        => $pageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE) . $additionalParameters
+			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters)) . $additionalParameters
 		);
 
 		return $this->contentObject->typoLink($linkText, $linkConfiguration);
