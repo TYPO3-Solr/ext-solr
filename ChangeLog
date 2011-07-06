@@ -1,10 +1,11 @@
 2011-07-06  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Added Garbage Collection
+	* Added Index Queue
+	* Added a basic backend module
+
+
 	* !!! Changed tx_solr_Query::setSorting() to accept (require) the sorting string parameter to set the query's sort parameter
-
-
-	* Added garbage collection
-
 
 	* Added support for Record Access Rootline Elements
 	* Fixed an issue where empty facets were not detected correctly when using option showEmptyFacets

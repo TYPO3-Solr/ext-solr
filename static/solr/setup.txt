@@ -40,6 +40,54 @@ plugin.tx_solr {
 			created = timestampToIsoDate
 			endtime = timestampToIsoDate
 		}
+
+		queue {
+
+			// mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+			pages = 1
+			pages {
+				indexer = tx_solr_indexqueue_PageIndexer
+				indexer {
+					// add options for the indexer here
+				}
+
+					// only index standard pages
+				additionalWhereClause = doktype = 1 AND no_search = 0
+
+				fields {
+
+				}
+			}
+
+			tt_news = 0
+			tt_news {
+				fields {
+					abstract = short
+					author = author
+					changed = tstamp
+					content = TEXT
+					content {
+						field = bodytext
+						stripHtml = 1
+					}
+					created = crdate
+					description = short
+					keywords = keywords
+					pid = pid
+					title = title
+					uid = uid
+					url = TEXT
+					url {
+						typolink.parameter = {$plugin.tt_news.singlePid}
+						typolink.additionalParams = &tx_ttnews[tt_news]={field:uid}
+						typolink.additionalParams.insertData = 1
+						typolink.returnLast = url
+						typolink.useCacheHash = 1
+					}
+				}
+			}
+		}
 	}
 
 	search {
@@ -96,11 +144,16 @@ plugin.tx_solr {
 					wrap = <span class="title">|</span>
 				}
 
-				url = TEXT
+				url = CASE
 				url {
-					field = url
-					htmlSpecialChars = 1
-					htmlSpecialChars.preserveEntities = 1
+					key.field = type
+
+					default = TEXT
+					default {
+						field = url
+						htmlSpecialChars = 1
+						htmlSpecialChars.preserveEntities = 1
+					}
 				}
 
 				link = CASE
@@ -250,7 +303,7 @@ plugin.tx_solr {
 
 	viewhelpers {
 		crop {
-			maxLength = 30
+			maxLength = 300
 			cropIndicator = ...
 		}
 	}
@@ -262,6 +315,7 @@ plugin.tx_solr {
 		indexing = 0
 		indexing {
 			missingTypo3SearchMarkers = 1
+			indexQueuePageIndexerGetData = 0
 		}
 
 		query {

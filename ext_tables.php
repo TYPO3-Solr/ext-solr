@@ -46,8 +46,8 @@ t3lib_extMgm::addStaticFile($_EXTKEY, 'static/solr/', 'Apache Solr');
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 if (TYPO3_MODE == 'BE') {
-#	t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
-#	t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
+	t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
+	t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
 
 		// registering reports
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
@@ -69,6 +69,9 @@ if (TYPO3_MODE == 'BE') {
 		// hooking into cache clearing to update detected configuration
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:tx_solr_ConnectionManager->updateConnections';
 
+		// hooking into TCE Main to monitor record updates that may require reindexing by the index queue
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][]  = 'EXT:solr/classes/indexqueue/class.tx_solr_indexqueue_recordmonitor.php:tx_solr_indexqueue_RecordMonitor';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:solr/classes/indexqueue/class.tx_solr_indexqueue_recordmonitor.php:tx_solr_indexqueue_RecordMonitor';
 
 		// hooking into TCE Main to monitor record updates that may require deleting documents from the index
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][]  = 'EXT:solr/classes/class.tx_solr_garbagecollector.php:&tx_solr_GarbageCollector';

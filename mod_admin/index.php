@@ -22,9 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
 $GLOBALS['LANG']->includeLLFile('EXT:solr/mod_admin/locallang.xml');
-	// This checks permissions and exits if the users has no permission.
 $BE_USER->modAccess($MCONF, 1);
 
 
@@ -62,32 +60,13 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	 * @return	void
 	 */
 	public function menuConfig() {
-			// find website roots
-		$rootPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid, title',
-			'pages',
-			'is_siteroot = 1 AND deleted = 0'
-		);
+		$registry = t3lib_div::makeInstance('t3lib_Registry');
+		$servers  = $registry->get('tx_solr', 'servers', array());
 
-		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+			// TODO add a menu entry on top to manage all indexes, otherwise when selecting a specific index actions will only affect that specific one
 
-			// find solr configurations and add them as function menu entries
-		foreach ($rootPages as $rootPage) {
-			$rootLine = $pageSelect->getRootLine($rootPage['uid']);
-
-			$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
-			$tmpl->tt_track = false; // Do not log time-performance information
-			$tmpl->init();
-			$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
-			$tmpl->generateConfig();
-
-			list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.solr');
-
-			if (!empty($solrSetup)) {
-				$this->MOD_MENU['function'][$rootPage['uid']] =	$rootPage['title'] . ' '
-					. '(' . $solrSetup['host'] . ':' . $solrSetup['port']
-					. $solrSetup['path'] . ' [pid: ' . $rootPage['uid'] . '])';
-			}
+		foreach ($servers as $key => $server) {
+			$this->MOD_MENU['function'][$key] = $server['label'];
 		}
 
 		parent::menuConfig();
@@ -145,7 +124,6 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 				// Build the <body> for the module
 		$this->content  = $this->doc->startPage($LANG->getLL('title'));
 		$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
-		$this->content .= $this->doc->endPage();
 		$this->content  = $this->doc->insertStylesAndJS($this->content);
 	}
 
@@ -167,16 +145,182 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	protected function getModuleContent() {
 		$pageRoot = (string) $this->MOD_SETTINGS['function'];
 
-		$content = '<div align="center"><strong>Hello World!</strong></div><br />
-			The "Kickstarter" has made this module automatically, it contains a default framework for a backend module but apart from that it does nothing useful until you open the script '.substr(t3lib_extMgm::extPath('solr'),strlen(PATH_site)).'mod_admin/index.php and edit it!
-			<hr />
-			<br />This is the GET/POST vars sent to the script:<br />'.
-			'GET:'.t3lib_div::view_array($_GET).'<br />'.
-			'POST:'.t3lib_div::view_array($_POST).'<br />'.
-			'';
+			//// TEMPORARY
+			// TODO add a "discover/update Solr connections button to the global section"
+		$content = '
+			<input type="hidden" id="solraction" name="solraction" value="" />
 
-		$this->content .= $this->doc->section('Currently active tab name', $content, false, true);
+			Global actions:
+			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
+			<input type="submit" value="Initialize Index Queue" name="s_initializeIndexQueue" onclick="document.forms[0].solraction.value=\'initializeIndexQueue\';" /><br /><br />
+
+			<br />
+
+			Index specific actions:
+			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
+			<input type="submit" value="Empty Index and Commit" name="s_emptyIndex" onclick="Check = confirm(\'Are you sure?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
+			<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
+			<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
+
+			<br />
+			Delete document(s) from index:<br /><br />
+			<label for="delete_uid" style="display:block;width:60px;float:left">Item uid</label>
+			<input id="delete_uid" type="text" name="delete_uid" value="" /> (also accepts comma separated lists of uids)<br /><br />
+			<label for="delete_type" style="display:block;width:60px;float:left;">Item type</label>
+			<input id="delete_type" type="text" name="delete_type" value="" /><br /><br />
+			<input type="submit" value="Delete Document(s)"name="s_deleteDocument" onclick="document.forms[0].solraction.value=\'deleteDocument\';" /><br /><br />
+		';
+
+		switch($_POST['solraction']) {
+			case 'initializeIndexQueue':
+				$this->initializeIndexQueue();
+				break;
+			case 'emptyIndex':
+				$this->emptyIndex();
+				break;
+			case 'optimizeIndex':
+				$this->optimizeIndex();
+				break;
+			case 'commitPendingDocuments':
+				$this->commitPendingDocuments();
+				break;
+			case 'deleteDocument':
+				$this->deleteDocument();
+				break;
+			default:
+		}
+
+		$this->content .= $this->doc->section('Apache Solr for TYPO3', $content, FALSE, TRUE);
 	}
+
+
+	//// TEMPORARY
+
+	protected function getSolr() {
+		$solrConnectionKey = $this->MOD_SETTINGS['function'];
+
+		list($rootPageId, $language) = explode('|', $solrConnectionKey);
+
+		return t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByRootPageId(
+			$rootPageId,
+			$language
+		);
+	}
+
+	protected function initializeIndexQueue() {
+		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+		$itemIndexQueue->initialize();
+
+		$fileIndexQueue = t3lib_div::makeInstance('tx_solr_fileindexer_Queue');
+		$fileIndexQueue->initialize();
+
+		$flashMessage = t3lib_div::makeInstance(
+			't3lib_FlashMessage',
+			'Index Queue initialized.',
+			'',
+			t3lib_FlashMessage::OK
+		);
+		t3lib_FlashMessageQueue::addMessage($flashMessage);
+	}
+
+	protected function emptyIndex() {
+		$message = 'Index emptied.';
+		$severity = t3lib_FlashMessage::OK;
+
+		try {
+			$solr = $this->getSolr();
+			$solr->deleteByQuery('*:*');
+			$response = $solr->commit();
+		} catch (Exception $e) {
+			$message = '<p>An error occured while trying to empty the index:</p>'
+					 . '<p>' . $e->__toString() . '</p>';
+			$severity = t3lib_FlashMessage::ERROR;
+		}
+
+		$flashMessage = t3lib_div::makeInstance(
+			't3lib_FlashMessage',
+			$message,
+			'',
+			$severity
+		);
+		t3lib_FlashMessageQueue::addMessage($flashMessage);
+	}
+
+	protected function optimizeIndex() {
+		$message = 'Index optimized.';
+		$severity = t3lib_FlashMessage::OK;
+
+		try {
+			$solr = $this->getSolr();
+			$response = $solr->optimize();
+		} catch (Exception $e) {
+			$message = '<p>An error occured while trying to optimize the index:</p>'
+					 . '<p>' . $e->__toString() . '</p>';
+			$severity = t3lib_FlashMessage::ERROR;
+		}
+
+		$flashMessage = t3lib_div::makeInstance(
+			't3lib_FlashMessage',
+			$message,
+			'',
+			$severity
+		);
+		t3lib_FlashMessageQueue::addMessage($flashMessage);
+	}
+
+	protected function commitPendingDocuments() {
+		$message = 'Pending documents committed.';
+		$severity = t3lib_FlashMessage::OK;
+
+		try {
+			$solr = $this->getSolr();
+			$response = $solr->commit();
+		} catch (Exception $e) {
+			$message = '<p>An error occured while trying to commit:</p>'
+					 . '<p>' . $e->__toString() . '</p>';
+			$severity = t3lib_FlashMessage::ERROR;
+		}
+
+		$flashMessage = t3lib_div::makeInstance(
+			't3lib_FlashMessage',
+			$message,
+			'',
+			$severity
+		);
+		t3lib_FlashMessageQueue::addMessage($flashMessage);
+	}
+
+	protected function deleteDocument() {
+		$documentUid  = t3lib_div::_POST('delete_uid');
+		$documentType = t3lib_div::_POST('delete_type');
+
+		$message  = 'Document(s) with type '. $documentType . ' and id ' . $documentUid . ' deleted';
+		$severity = t3lib_FlashMessage::OK;
+
+		try {
+			$solr     = $this->getSolr();
+
+			$uids         = t3lib_div::trimExplode(',', $documentUid);
+			$uidCondition = implode(' OR ', $uids);
+			$response     = $solr->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
+
+			$solr->commit();
+		} catch (Exception $e) {
+			$message = '<p>An error occured while trying to delete:</p>'
+				. '<p>' . $e->__toString() . '</p>';
+			$severity = t3lib_FlashMessage::ERROR;
+		}
+
+		$flashMessage = t3lib_div::makeInstance(
+			't3lib_FlashMessage',
+			$message,
+			'',
+			$severity
+		);
+		t3lib_FlashMessageQueue::addMessage($flashMessage);
+	}
+
+	//// TEMPORARY END
 
 
 	/**

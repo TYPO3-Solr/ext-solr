@@ -49,7 +49,40 @@ class tx_solr_IndexerSelector {
 	 * @return	void
 	 */
 	public function __construct() {
+		$this->initializeDatabaseConnection();
 		$this->indexerStrategy = $this->selectIndexer();
+	}
+
+	/**
+	 * Initializes the database conection "manually" as it is not available at
+	 * the point where we need it.
+	 *
+	 * @return	void
+	 */
+	protected function initializeDatabaseConnection() {
+		if (!$this->isDatabaseConnected()) {
+			$GLOBALS['TYPO3_DB']->connectDB();
+		}
+	}
+
+	/**
+	 * Checks whether a database connection has been established already.
+	 *
+	 * @return	boolean	TRUE if the databse connection has been established already, FALSE otherwise
+	 */
+	protected function isDatabaseConnected() {
+		$isConnected = FALSE;
+
+		if (($GLOBALS['TYPO3_DB'] instanceof t3lib_DB)) {
+			if (method_exists($GLOBALS['TYPO3_DB'], 'isConnected')) {
+				$isConnected = $GLOBALS['TYPO3_DB']->isConnected();
+			} else {
+					// fallback for TYPO3 < 4.4
+				$isConnected = is_resource($GLOBALS['TYPO3_DB']->link);
+			}
+		}
+
+		return $isConnected;
 	}
 
 	/**
@@ -61,7 +94,10 @@ class tx_solr_IndexerSelector {
 			// default
 		$indexerStrategy = self::INDEXER_STRATEGY_FRONTEND;
 
-			// here would be code to detect a configured Index Queue
+		$typo3Environment = t3lib_div::makeInstance('tx_solr_Typo3Environment');
+		if ($typo3Environment->isUsingIndexQueue()) {
+			$indexerStrategy = self::INDEXER_STRATEGY_QUEUE;
+		}
 
 		return $indexerStrategy;
 	}

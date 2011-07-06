@@ -154,6 +154,10 @@ class tx_solr_Indexer implements tslib_content_PostInitHook {
 			}
 		}
 
+		if (t3lib_div::makeInstance('tx_solr_Typo3Environment')->isUsingIndexQueue()) {
+			$indexingEnabled = FALSE;
+		}
+
 		return $indexingEnabled;
 	}
 

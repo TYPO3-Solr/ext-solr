@@ -9,7 +9,9 @@ $PATH_solr = t3lib_extMgm::extPath('solr');
 
 switch (TYPO3_branch) {
 	case '4.3':
-			// adding a hook that was added in TYPO3 4.4
+			// the FE indexer is asking the Index Queue FE helper wether it's active, the helper is using this interface
+		require_once($PATH_solr . 'compat/interface.t3lib_pageselect_getpageoverlayhook.php');
+		require_once($PATH_solr . 'compat/class.ux_t3lib_page.php');
 		require_once($PATH_solr . 'compat/interface.tslib_content_postinithook.php');
 		if (TYPO3_MODE == 'FE') {
 			require_once($PATH_solr . 'compat/class.ux_tslib_cobj.php');
@@ -43,6 +45,25 @@ if (TYPO3_MODE == 'FE') {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_IndexerSelector'] = 'EXT:solr/classes/class.tx_solr_indexerselector.php:tx_solr_IndexerSelector->registerIndexer';
 
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_AdditionalFieldsIndexer'] = 'EXT:solr/classes/class.tx_solr_additionalfieldsindexer.php:tx_solr_AdditionalFieldsIndexer';
+}
+
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// registering Index Queue page indexer hooks
+
+if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
+		// TODO move into IndexerSelector if possible - depends on order of execution of hooks
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_indexqueue_PageIndexerRequestHandler'] = 'EXT:solr/classes/indexqueue/class.tx_solr_indexqueue_pageindexerrequesthandler.php:&tx_solr_indexqueue_PageIndexerRequestHandler->run';
+
+	tx_solr_indexqueue_frontendhelper_Manager::registerFrontendHelper(
+		'findUserGroups',
+		'tx_solr_indexqueue_frontendhelper_UserGroupDetector'
+	);
+
+	tx_solr_indexqueue_frontendhelper_Manager::registerFrontendHelper(
+		'indexPage',
+		'tx_solr_indexqueue_frontendhelper_PageIndexer'
+	);
 }
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -123,6 +144,16 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_schedul
 		// might be a nice usability feature to have the same select as in the Solr BE admin module
 	'additionalFields' => 'tx_solr_scheduler_CommitTaskSolrServerField'
 );
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_IndexQueueWorkerTask'] = array(
+	'extension'        => $_EXTKEY,
+	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_title',
+	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_description',
+		// TODO needs to be provided with arguments of which solr server to index to
+		// might be a nice usability feature to have the same select as in the Solr BE admin module
+	'additionalFields' => 'tx_solr_scheduler_IndexQueueWorkerTaskAdditionalFieldProvider'
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// TODO move into pi_results, initializeSearch, add only when features are activated
