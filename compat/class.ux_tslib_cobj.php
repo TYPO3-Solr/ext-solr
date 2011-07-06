@@ -26,7 +26,7 @@
 /**
  * XCLASS for tslib_cObj to detect frontend groups used on a page.
  *
- * Used for TYPO3 4.3
+ * Adds a TYPO3 4.4 hook in 4.3 installations
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
