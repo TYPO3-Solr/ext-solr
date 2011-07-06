@@ -88,7 +88,7 @@ class tx_solr_Search implements t3lib_Singleton {
 			);
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['queryString']) {
-				t3lib_div::devLog('querying solr, getting result', 'tx_solr', 0, array(
+				t3lib_div::devLog('querying solr, getting result', 'solr', 0, array(
 					'query string'     => $query->getQueryString(),
 					'query parameters' => $query->getQueryParameters(),
 					'response'         => json_decode($response->getRawResponse(), TRUE)
@@ -98,7 +98,7 @@ class tx_solr_Search implements t3lib_Singleton {
 			// FIXME fix searches like "*.*", "-", "+"
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-				t3lib_div::devLog('exception while querying solr', 'tx_solr', 3, array(
+				t3lib_div::devLog('exception while querying solr', 'solr', 3, array(
 					$e->__toString()
 				));
 			}
@@ -124,7 +124,7 @@ class tx_solr_Search implements t3lib_Singleton {
 			$solrAvailable = TRUE;
 		} catch (Exception $e) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-				t3lib_div::devLog('exception while trying to ping the solr server', 'tx_solr', 3, array(
+				t3lib_div::devLog('exception while trying to ping the solr server', 'solr', 3, array(
 					$e->__toString()
 				));
 			}

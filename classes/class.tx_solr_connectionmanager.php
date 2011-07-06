@@ -59,7 +59,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				host parameter. Using configuration from TSFE, might be
 				inaccurate. Always provide a host or use the getConnectionBy*
 				methods.',
-				'tx_solr',
+				'solr',
 				2
 			);
 

@@ -102,7 +102,7 @@ class tx_solr_Indexer implements tslib_content_PostInitHook {
 			} catch (Exception $e) {
 #				$this->log($e->getMessage() . ' Error code: ' . $e->getCode(), 3);
 				if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-					t3lib_div::devLog('Exception while trying to index a page', 'tx_solr', 3, array(
+					t3lib_div::devLog('Exception while trying to index a page', 'solr', 3, array(
 						$e->__toString()
 					));
 				}

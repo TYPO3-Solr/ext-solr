@@ -202,7 +202,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			$this->piVars['q'] = trim($this->piVars['q']);
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
-				t3lib_div::devLog('received search query', 'tx_solr', 0, array($this->piVars['q']));
+				t3lib_div::devLog('received search query', 'solr', 0, array($this->piVars['q']));
 			}
 
 			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);

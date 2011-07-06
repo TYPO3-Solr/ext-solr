@@ -90,7 +90,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				t3lib_div::devLog(
 					$e->getCode() . ': ' . $e->__toString(),
-					'tx_solr',
+					'solr',
 					3,
 					(array) $e
 				);

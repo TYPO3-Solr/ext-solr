@@ -149,7 +149,7 @@ class tx_solr_Template {
 					$success = $this->addViewHelperObject($helperName, $helperInstance);
 				} catch(Exception $e) {
 					if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-						t3lib_div::devLog('exception while adding a viewhelper', 'tx_solr', 3, array(
+						t3lib_div::devLog('exception while adding a viewhelper', 'solr', 3, array(
 							$e->__toString()
 						));
 					}

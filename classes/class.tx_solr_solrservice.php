@@ -223,7 +223,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		}
 
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawGet']) {
-			t3lib_div::devLog('Querying Solr using GET', 'tx_solr', $logSeverity, array(
+			t3lib_div::devLog('Querying Solr using GET', 'solr', $logSeverity, array(
 				'query url'    => $url,
 				'raw response' => (array) $response
 			));
@@ -251,7 +251,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		}
 
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawPost']) {
-			t3lib_div::devLog('Querying Solr using POST', 'tx_solr', $logSeverity, array(
+			t3lib_div::devLog('Querying Solr using POST', 'solr', $logSeverity, array(
 				'query url' => $url,
 				'content'   => $rawPost,
 				'response'  => (array) $response

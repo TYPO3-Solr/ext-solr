@@ -126,7 +126,7 @@ class tx_solr_Typo3PageContentExtractor {
 			}
 		} else {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['missingTypo3SearchMarkers']) {
-				t3lib_div::devLog('No TYPO3SEARCH markers found.', 'tx_solr', 2);
+				t3lib_div::devLog('No TYPO3SEARCH markers found.', 'solr', 2);
 			}
 		}
 

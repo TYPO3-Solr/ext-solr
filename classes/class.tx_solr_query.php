@@ -306,7 +306,7 @@ class tx_solr_Query {
 	public function addFilter($filterString) {
 			// TODO refactor to split filter field and filter value, @see Drupal
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['filters']) {
-			t3lib_div::devLog('adding filter', 'tx_solr', 0, array($filterString));
+			t3lib_div::devLog('adding filter', 'solr', 0, array($filterString));
 		}
 
 		$this->filters[] = $filterString;

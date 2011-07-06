@@ -108,7 +108,7 @@ class tx_solr_Typo3PageIndexer {
 
 				// TODO extract to a class "ExceptionLogger"
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-				t3lib_div::devLog('Exception while trying to index a page', 'tx_solr', 3, array(
+				t3lib_div::devLog('Exception while trying to index a page', 'solr', 3, array(
 					$e->__toString()
 				));
 			}
@@ -269,7 +269,7 @@ class tx_solr_Typo3PageIndexer {
 			$this->log($e->getMessage() . ' Error code: ' . $e->getCode(), 2);
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-				t3lib_div::devLog('Exception while adding documents', 'tx_solr', 3, array(
+				t3lib_div::devLog('Exception while adding documents', 'solr', 3, array(
 					$e->__toString()
 				));
 			}
@@ -378,7 +378,7 @@ class tx_solr_Typo3PageIndexer {
 				}
 			}
 
-			t3lib_div::devLog($message, 'tx_solr', $errorNum, $logData);
+			t3lib_div::devLog($message, 'solr', $errorNum, $logData);
 		}
 	}
 
