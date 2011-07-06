@@ -400,11 +400,7 @@ class tx_solr_Typo3PageIndexer {
 		$urlParameters   = t3lib_div::_GET();
 		$cHashParameters = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $urlParameters));
 
-		if (SOLR_COMPAT) {
-			$calculatedCHash = t3lib_div::shortMD5(serialize($cHashParameters));
-		} else {
-			$calculatedCHash = t3lib_div::calculateCHash($cHashParameters);
-		}
+		$calculatedCHash = t3lib_div::calculateCHash($cHashParameters);
 
 		return ($calculatedCHash == $cHash) ? $cHash : '';
 	}
