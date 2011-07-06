@@ -318,19 +318,19 @@
 			</analyzer>
 		</fieldType>
 
-		<fieldtype name="phonetic" stored="false" indexed="true" class="solr.TextField" >
+		<fieldType name="phonetic" stored="false" indexed="true" class="solr.TextField" >
 			<analyzer>
 				<tokenizer class="solr.StandardTokenizerFactory"/>
 
 				<filter class="solr.DoubleMetaphoneFilterFactory" inject="false"/>
 			</analyzer>
-		</fieldtype>
+		</fieldType>
 
 
 		<!-- since fields of this type are by default not stored or indexed, any data added to
 			them will be ignored outright
 		-->
-		<fieldtype name="ignored" stored="false" indexed="false" class="solr.StrField" />
+		<fieldType name="ignored" stored="false" indexed="false" class="solr.StrField" />
 
 	</types>
 
@@ -421,7 +421,7 @@
 		<field name="subTitle"    type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
 		<field name="navTitle"    type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
 		<field name="content"     type="text"   indexed="true"  stored="true" />
-		<field name="teaser"      type="text"   indexed="false" stored="true"/>
+		<field name="teaser"      type="text"   indexed="false" stored="true" />
 		<field name="author"      type="text"   indexed="true"  stored="true" />
 		<field name="keywords"    type="text"   indexed="true"  stored="true" multiValued="true" />
 		<field name="description" type="text"   indexed="true"  stored="true" />
