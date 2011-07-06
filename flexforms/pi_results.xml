@@ -116,6 +116,7 @@
 							<config>
 								<type>input</type>
 								<eval>trim</eval>
+								<size>45</size>
 							</config>
 						</TCEforms>
 					</templateFile>
