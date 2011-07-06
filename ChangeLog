@@ -12,6 +12,7 @@
 	* Fixed usage of (now) undefined class constant in tx_solr_SolrService caused by the update of SolrPhpClient
 	* Changed logging for Solr POST requests to log request responses != 200 even when logging for POST is deactivated
 	* Added logging for delete queries
+	* Added an option to use curl as HTTP transport
 
 2011-06-11  Ingo Renner  <ingo.renner@dkd.de>
 

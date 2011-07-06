@@ -48,9 +48,10 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	 * @param	integer	Solr port (optional)
 	 * @param	string	Solr path (optional)
 	 * @param	string	Solr scheme, defaults to http, can be https (optional)
+	 * @param	boolean	$useCurl TRUE to use curl as HTTP transport, defaults to FALSE (optional)
 	 * @return	tx_solr_SolrService	A solr connection.
 	 */
-	public function getConnection($host = '', $port = '8080', $path = '/solr/', $scheme = 'http') {
+	public function getConnection($host = '', $port = '8080', $path = '/solr/', $scheme = 'http', $useCurl = FALSE) {
 		$connection = NULL;
 
 		if (empty($host)) {
@@ -65,10 +66,11 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 
 			$solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
 
-			$host   = $solrConfiguration['host'];
-			$port   = $solrConfiguration['port'];
-			$path   = $solrConfiguration['path'];
-			$scheme = $solrConfiguration['scheme'];
+			$host    = $solrConfiguration['host'];
+			$port    = $solrConfiguration['port'];
+			$path    = $solrConfiguration['path'];
+			$scheme  = $solrConfiguration['scheme'];
+			$useCurl = $solrConfiguration['useCurlHttpTransport'];
 		}
 
 		$connectionHash = md5($scheme . '://' . $host . $port . $path);
@@ -81,6 +83,11 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$path,
 				$scheme
 			);
+
+			if ($useCurl) {
+				$curlHttpTransport = t3lib_div::makeInstance('Apache_Solr_HttpTransport_Curl');
+				$connection->setHttpTransport($curlHttpTransport);
+			}
 
 			self::$connections[$connectionHash] = $connection;
 		}
@@ -136,7 +143,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$solrServers[$connectionKey]['solrHost'],
 				$solrServers[$connectionKey]['solrPort'],
 				$solrServers[$connectionKey]['solrPath'],
-				$solrServers[$connectionKey]['solrScheme']
+				$solrServers[$connectionKey]['solrScheme'],
+				$solrServers[$connectionKey]['solrUseCurl']
 			);
 		} else {
 			throw t3lib_div::makeInstance(
@@ -166,7 +174,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$solrServer['solrHost'],
 				$solrServer['solrPort'],
 				$solrServer['solrPath'],
-				$solrServer['solrScheme']
+				$solrServer['solrScheme'],
+				$solrServer['solrUseCurl']
 			);
 		}
 
@@ -239,6 +248,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 						'solrHost'      => $solrSetup['host'],
 						'solrPort'      => $solrSetup['port'],
 						'solrPath'      => $solrSetup['path'],
+						'solrUseCurl'   => $solrSetup['useCurlHttpTransport'],
 
 						'language'      => $languageId
 					);

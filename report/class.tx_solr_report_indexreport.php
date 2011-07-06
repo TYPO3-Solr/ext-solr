@@ -207,7 +207,8 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 		$solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnection(
 			$solrServer['solrHost'],
 			$solrServer['solrPort'],
-			$solrServer['solrPath']
+			$solrServer['solrPath'],
+			$solrServer['solrUseCurl']
 		);
 
 		return $solr;
