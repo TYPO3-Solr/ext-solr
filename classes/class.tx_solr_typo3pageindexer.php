@@ -184,6 +184,7 @@ class tx_solr_Typo3PageIndexer {
 	 */
 	protected function getPageDocument() {
 		$document   = t3lib_div::makeInstance('Apache_Solr_Document');
+		$site       = tx_solr_Site::getSiteByPageId($this->page->id);
 		$cHash      = $this->filterInvalidContentHash($this->page->cHash);
 		$pageRecord = $this->page->page;
 
@@ -195,8 +196,8 @@ class tx_solr_Typo3PageIndexer {
 			$cHash
 		);
 		$document->setField('id',          $documentId);
-		$document->setField('site',        t3lib_div::getIndpEnv('TYPO3_SITE_URL'));
-		$document->setField('siteHash',    tx_solr_Util::getSiteHash());
+		$document->setField('site',        $site->getDomain());
+		$document->setField('siteHash',    $site->getSiteHash());
 		$document->setField('appKey',      'EXT:solr');
 		$document->setField('type',        'pages');
 		$document->setField('contentHash', $cHash);
