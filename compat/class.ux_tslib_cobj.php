@@ -24,7 +24,9 @@
 
 
 /**
- * XCLASS for tslib_cObj to detect frontend groups used on a page
+ * XCLASS for tslib_cObj to detect frontend groups used on a page.
+ *
+ * Used for TYPO3 4.3
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
