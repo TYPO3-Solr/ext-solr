@@ -1,3 +1,7 @@
+2011-07-07  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Changed Solr TYPO3 Plugin required version to 1.2.0
+
 2011-07-06  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed version number to 2.0.0-dev

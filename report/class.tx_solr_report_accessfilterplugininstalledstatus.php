@@ -40,7 +40,7 @@ class tx_solr_report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 	 *
 	 * @var	string
 	 */
-	const RECOMMENDED_PLUGIN_VERSION = '1.1.0';
+	const RECOMMENDED_PLUGIN_VERSION = '1.2.0';
 
 	/**
 	 * The plugin's Java class name.

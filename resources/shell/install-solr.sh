@@ -3,7 +3,7 @@
 TOMCAT_VER=6.0.32
 SOLR_VER=1.4.1
 EXT_SOLR_VER=2.0
-EXT_SOLR_AFP_VER=1.1.0
+EXT_SOLR_PLUGIN_VER=1.2.0
 
 SVNBRANCH_PATH="branches/solr_$EXT_SOLR_VER.x"
 
@@ -126,15 +126,10 @@ cp apache-solr-$SOLR_VER/dist/apache-solr-cell-$SOLR_VER.jar solr/dist
 cp apache-solr-$SOLR_VER/dist/apache-solr-clustering-$SOLR_VER.jar solr/dist
 cp -r apache-solr-$SOLR_VER/contrib solr/
 
-# copy accessfilterplugin
+# copy Solr TYPO3 plugin
 mkdir solr/typo3lib
 cd solr/typo3lib
-if [ $BRANCH_TEST_RETURN -eq "0" ]
-then
-	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/plugins/typo3-accessfilter-$EXT_SOLR_AFP_VER.jar
-else
-	wget --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/plugins/typo3-accessfilter-$EXT_SOLR_AFP_VER.jar
-fi
+wget http://www.typo3-solr.com/fileadmin/files/solr/solr-typo3-plugin-$EXT_SOLR_PLUGIN_VER.jar
 
 cd /opt/solr-tomcat/
 
