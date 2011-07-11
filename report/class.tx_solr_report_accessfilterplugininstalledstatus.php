@@ -98,6 +98,8 @@ class tx_solr_report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 				. '<li>Path: ' . $solrConnection->getPath() . '</li>
 				</ul>';
 
+			$message .= $this->getPluginDownloadMessage();
+
 			$status = t3lib_div::makeInstance('tx_reports_reports_status_Status',
 				'Access Filter Plugin',
 				'Not Installed',
@@ -129,6 +131,8 @@ class tx_solr_report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 				. '<li>Port: ' . $solrConnection->getPort() . '</li>'
 				. '<li>Path: ' . $solrConnection->getPath() . '</li>
 				</ul>';
+
+			$message .= $this->getPluginDownloadMessage();
 
 			$status = t3lib_div::makeInstance('tx_reports_reports_status_Status',
 				'Access Filter Plugin',
@@ -194,6 +198,20 @@ class tx_solr_report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 		$version = $explodedRawVersion[0];
 
 		return $version;
+	}
+
+	/**
+	 * Generates a paragraph with message containing a download link for the
+	 * current Solr TYPO3 plugin.
+	 */
+	protected function getPluginDownloadMessage() {
+		$pluginDownloadUrl = 'http://www.typo3-solr.com/fileadmin/files/solr/solr-typo3-plugin-' . self::RECOMMENDED_PLUGIN_VERSION . '.jar';
+
+		$pluginDownloadMessage = '<p>Please download and install the <a href="'
+			. $pluginDownloadUrl
+			.'">current version of the plugin</a>.</p>';
+
+		return $pluginDownloadMessage;
 	}
 }
 
