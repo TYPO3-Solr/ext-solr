@@ -1,6 +1,7 @@
 2011-07-11  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #27987: Add download link to access filter check report
+	* Added support for Index Queue access restriction from custom records
 
 2011-07-07  Ingo Renner  <ingo.renner@dkd.de>
 

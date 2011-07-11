@@ -278,9 +278,14 @@ class tx_solr_indexqueue_Indexer {
 	 * @return	string	The Access Rootline for the item
 	 */
 	protected function getAccessRootline(tx_solr_indexqueue_Item $item) {
-			// FIXME currently public, must use record groups
-			// TODO change to record access rootline element, r:... notation
-		return 'c:0';
+		$accessRestriction = '0';
+		$itemRecord        = $item->getRecord();
+
+		if (isset($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['fe_group'])) {
+			$accessRestriction = $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['fe_group']];
+		}
+
+		return 'r:' . $accessRestriction;
 	}
 
 	/**
