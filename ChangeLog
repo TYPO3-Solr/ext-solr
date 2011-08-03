@@ -3,6 +3,8 @@
 	* !!! Removed the singlecore configuration for Solr
 	* !!! Moved Solr multicore configuration up one level, making it the default
 
+	* Changed solr.xml to only one core (english)
+
 2011-07-11  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed issue #27987: Add download link to access filter check report

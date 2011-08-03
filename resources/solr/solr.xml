@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <solr persistent="true">
 	<cores adminPath="/admin/cores" shareSchema="true">
-		<core name="core_de" instanceDir="typo3cores" schema="german/schema.xml"    dataDir="data/core_de" />
-		<core name="core_en" instanceDir="typo3cores" schema="english/schema.xml"   dataDir="data/core_en" />
-		<core name="core_du" instanceDir="typo3cores" schema="dutch/schema.xml"     dataDir="data/core_du" />
-		<core name="core_fr" instanceDir="typo3cores" schema="french/schema.xml"    dataDir="data/core_fr" />
-		<core name="core_hu" instanceDir="typo3cores" schema="hungarian/schema.xml" dataDir="data/core_hu" />
-		<core name="core_it" instanceDir="typo3cores" schema="italian/schema.xml"   dataDir="data/core_it" />
-		<core name="core_ru" instanceDir="typo3cores" schema="russian/schema.xml"   dataDir="data/core_ru" />
-		<core name="core_es" instanceDir="typo3cores" schema="spanish/schema.xml"   dataDir="data/core_es" />
-		<core name="core_uk" instanceDir="typo3cores" schema="ukrainian/schema.xml"   dataDir="data/core_uk" />
+		<core name="core_en" instanceDir="typo3cores" schema="english/schema.xml" dataDir="data/core_en" />
 	</cores>
 </solr>
