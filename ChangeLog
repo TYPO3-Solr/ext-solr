@@ -3,6 +3,8 @@
 	* !!! Removed the singlecore configuration for Solr
 	* !!! Moved Solr multicore configuration up one level, making it the default
 
+	* Changed the install script to set up Apache Solr 3.3 with a multicore setup by default
+
 	* Changed solr.xml to only one core (english)
 	* Added ElisionFilterFactory infrench schema.xml
 	* Fixed encoding of french stopwords.txt
