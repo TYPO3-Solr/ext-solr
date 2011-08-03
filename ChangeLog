@@ -9,6 +9,7 @@
 	* Added StempelPolishStemFilterFactory stemmer in polish schema.xml
 	* Fixed typo in polish schema.xml
 	* Fixed encoding of spanish stopwords.txt
+	* Changed solrconfig.xml to include libraries necessary to analyze some languages, including Chinese and Polish (affects Solr 3.1+ only)
 
 2011-07-11  Ingo Renner  <ingo.renner@dkd.de>
 
