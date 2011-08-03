@@ -1,6 +1,7 @@
 2011-08-03  Ingo Renner  <ingo.renner@dkd.de>
 
 	* !!! Removed the singlecore configuration for Solr
+	* !!! Moved Solr multicore configuration up one level, making it the default
 
 2011-07-11  Ingo Renner  <ingo.renner@dkd.de>
 
