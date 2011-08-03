@@ -44,6 +44,7 @@
 		<fieldType name="text" class="solr.TextField" positionIncrementGap="100">
 			<analyzer type="index">
 				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+				<filter class="solr.ElisionFilterFactory"/>
 				<filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1" preserveOriginal="1"/>
 				<!-- Case insensitive stop word removal.
 					add enablePositionIncrements=true in both the index and query
@@ -61,6 +62,7 @@
 			</analyzer>
 			<analyzer type="query">
 				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+				<filter class="solr.ElisionFilterFactory"/>
 				<filter class="solr.WordDelimiterFilterFactory"
 					generateWordParts="1"
 					generateNumberParts="1"
@@ -93,6 +95,7 @@
 				<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 				<filter class="solr.SynonymFilterFactory" synonyms="french/synonyms.txt" ignoreCase="true" expand="false"/>
 				<filter class="solr.StopFilterFactory" ignoreCase="true" words="french/stopwords.txt"/>
+				<filter class="solr.ElisionFilterFactory"/>
 				<filter class="solr.WordDelimiterFilterFactory"
 					generateWordParts="0"
 					generateNumberParts="0"
@@ -113,6 +116,7 @@
 				<tokenizer class="solr.StandardTokenizerFactory"/>
 
 				<filter class="solr.LowerCaseFilterFactory"/>
+				<filter class="solr.ElisionFilterFactory"/>
 				<filter class="solr.SynonymFilterFactory" synonyms="french/synonyms.txt" ignoreCase="true" expand="true"/>
 				<filter class="solr.StopFilterFactory" ignoreCase="true" words="french/stopwords.txt"/>
 				<filter class="solr.StandardFilterFactory" />
@@ -124,6 +128,7 @@
 				<filter class="solr.LowerCaseFilterFactory"/>
 				<filter class="solr.StopFilterFactory" ignoreCase="true" words="french/stopwords.txt"/>
 				<filter class="solr.StandardFilterFactory" />
+				<filter class="solr.ElisionFilterFactory"/>
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
 		</fieldType>
