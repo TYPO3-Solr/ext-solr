@@ -5,8 +5,9 @@
 
 	* Changed solr.xml to only one core (english)
 	* Added ElisionFilterFactory infrench schema.xml
-	* Fixed typo in polish schema.xml
+	* Fixed encoding of french stopwords.txt
 	* Added StempelPolishStemFilterFactory stemmer in polish schema.xml
+	* Fixed typo in polish schema.xml
 
 2011-07-11  Ingo Renner  <ingo.renner@dkd.de>
 
