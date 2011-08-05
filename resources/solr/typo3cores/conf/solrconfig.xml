@@ -342,9 +342,9 @@
 	</highlighting>
 
 
-	<queryResponseWriter name="php" class="org.apache.solr.request.PHPResponseWriter"/>
-	<queryResponseWriter name="phps" class="org.apache.solr.request.PHPSerializedResponseWriter"/>
-	<queryResponseWriter name="xslt" class="org.apache.solr.request.XSLTResponseWriter">
+	<queryResponseWriter name="php" class="org.apache.solr.response.PHPResponseWriter"/>
+	<queryResponseWriter name="phps" class="org.apache.solr.response.PHPSerializedResponseWriter"/>
+	<queryResponseWriter name="xslt" class="org.apache.solr.response.XSLTResponseWriter">
 		<int name="xsltCacheLifetimeSeconds">5</int>
 	</queryResponseWriter>
 
