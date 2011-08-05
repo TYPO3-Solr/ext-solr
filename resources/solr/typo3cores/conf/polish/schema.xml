@@ -20,7 +20,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-1-7-0--20110324" version="1.1" >
+<schema name="tx_solr-2-5-0--20110805" version="1.1" >
 	<!--
 		attribute "name" is the name of this schema and is only used for
 		display purposes. Applications should change this to reflect the
@@ -32,7 +32,7 @@
 	-->
 
 <!-- xinclude fields -->
-<xi:include href="/opt/solr-tomcat/solr/typo3cores/conf/general_schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+<xi:include href="../general_schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
 <types>
 		<!-- A text field that uses WordDelimiterFilter to enable splitting and matching of
@@ -122,7 +122,7 @@
 </types>
 
 <!--  xinclude fields-->
-<xi:include href="/opt/solr-tomcat/solr/typo3cores/conf/general_schema_fields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+<xi:include href="../general_schema_fields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 	<!--
 		Field to use to determine and enforce document uniqueness. Unless this
 		field is marked with required="false", it will be a required field
