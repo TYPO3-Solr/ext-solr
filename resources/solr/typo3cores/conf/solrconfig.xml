@@ -328,20 +328,74 @@
 	</searchComponent>
 
 
-	<highlighting>
-		<fragmenter name="gap" class="org.apache.solr.highlight.GapFragmenter" default="true">
-			<lst name="defaults">
-				<int name="hl.fragsize">100</int>
-			</lst>
-		</fragmenter>
+	<!-- http://wiki.apache.org/solr/HighlightingParameters -->
+	<searchComponent name="highlight" class="solr.HighlightComponent">
+		<highlighting>
+			<fragmenter
+				name="gap"
+				default="true"
+				class="solr.highlight.GapFragmenter">
 
-		<formatter name="html" class="org.apache.solr.highlight.HtmlFormatter" default="true">
-			<lst name="defaults">
-				<str name="hl.simple.pre"><![CDATA[<em>]]></str>
-				<str name="hl.simple.post"><![CDATA[</em>]]></str>
-			</lst>
-		</formatter>
-	</highlighting>
+				<lst name="defaults">
+					<int name="hl.fragsize">100</int>
+				</lst>
+
+			</fragmenter>
+
+			<fragmenter name="regex" class="solr.highlight.RegexFragmenter">
+				<lst name="defaults">
+					<int name="hl.fragsize">70</int>
+					<float name="hl.regex.slop">0.5</float>
+					<str name="hl.regex.pattern">[-\w ,/\n\&quot;&apos;]{20,200}</str>
+				</lst>
+			</fragmenter>
+
+			<formatter
+				name="html"
+				default="true"
+				class="solr.highlight.HtmlFormatter">
+
+				<lst name="defaults">
+					<str name="hl.simple.pre"><![CDATA[<em>]]></str>
+					<str name="hl.simple.post"><![CDATA[</em>]]></str>
+				</lst>
+			</formatter>
+
+			<encoder name="html" class="solr.highlight.HtmlEncoder" />
+
+			<fragListBuilder
+				name="simple"
+				default="true"
+				class="solr.highlight.SimpleFragListBuilder"/>
+
+			<fragListBuilder
+				name="single"
+				class="solr.highlight.SingleFragListBuilder"/>
+
+			<fragmentsBuilder
+				name="default"
+				default="true"
+				class="solr.highlight.ScoreOrderFragmentsBuilder"/>
+
+			<fragmentsBuilder
+				name="colored"
+				class="solr.highlight.ScoreOrderFragmentsBuilder">
+
+				<lst name="defaults">
+					<str name="hl.tag.pre">
+						<![CDATA[
+						<b style="background:yellow">,<b style="background:lawgreen">,
+						<b style="background:aquamarine">,<b style="background:magenta">,
+						<b style="background:palegreen">,<b style="background:coral">,
+						<b style="background:wheat">,<b style="background:khaki">,
+						<b style="background:lime">,<b style="background:deepskyblue">
+						]]>
+					</str>
+					<str name="hl.tag.post"><![CDATA[</b>]]></str>
+				</lst>
+			</fragmentsBuilder>
+		</highlighting>
+	</searchComponent>
 
 
 	<queryResponseWriter name="php" class="org.apache.solr.response.PHPResponseWriter"/>
