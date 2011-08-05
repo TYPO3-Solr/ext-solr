@@ -12,6 +12,8 @@
 -->
 <config name="tx_solr-2-5-0--20110805">
 
+	<luceneMatchVersion>LUCENE_33</luceneMatchVersion>
+
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 
