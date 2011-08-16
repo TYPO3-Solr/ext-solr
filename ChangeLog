@@ -1,3 +1,7 @@
+2011-08-16  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed an issue in the Index Queue indexer which could lead to invalid access field values when indexing record. The access filter plugin would then fail to parse those.
+
 2011-08-05  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Changed the request handlers to use edismax

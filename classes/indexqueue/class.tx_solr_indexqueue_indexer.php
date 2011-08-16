@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-// TODO do not index items with starttime > indexing time
+// TODO do not index items with starttime > indexing time or add starttime support for schema and search
 
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
@@ -254,7 +254,7 @@ class tx_solr_indexqueue_Indexer {
 		$document->setField('uid', $itemRecord['uid']);
 		$document->setField('pid', $itemRecord['pid']);
 
-			// created, cahnged
+			// created, changed
 		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['crdate'])) {
 			$document->setField('created', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['crdate']]);
 		}
@@ -264,10 +264,21 @@ class tx_solr_indexqueue_Indexer {
 
 			// access, endtime
 		$document->setField('access', $this->getAccessRootline($item));
-		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime'])) {
+		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime'])
+		&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime']] != 0) {
 			$document->setField('endtime', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime']]);
 		}
 
+			// TODO implement start time support
+			// start time
+/*
+		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['starttime'])
+		&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['starttime']] != 0) {
+			$document->setField('starttime', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['starttime']]);
+		} else {
+			$document->setField('starttime', 'NOW');
+		}
+*/
 		return $document;
 	}
 
@@ -281,8 +292,15 @@ class tx_solr_indexqueue_Indexer {
 		$accessRestriction = '0';
 		$itemRecord        = $item->getRecord();
 
+			// TODO support access restrictions set on storage page
+
 		if (isset($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['fe_group'])) {
 			$accessRestriction = $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['fe_group']];
+
+			if (empty($accessRestriction)) {
+					// public
+				$accessRestriction = '0';
+			}
 		}
 
 		return 'r:' . $accessRestriction;
@@ -392,7 +410,7 @@ class tx_solr_indexqueue_Indexer {
 	protected function getSolrConnectionsByItem(tx_solr_indexqueue_Item $item) {
 		$solrConnections = array();
 
-		$pageId = $item->getRecordPageId();
+		$pageId = $item->getRootPageUid();
 		if ($item->getType() == 'pages') {
 			$pageId = $item->getRecordUid();
 		}
