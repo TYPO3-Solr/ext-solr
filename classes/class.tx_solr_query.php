@@ -189,16 +189,45 @@ class tx_solr_Query {
 				if ($string{0} == '"' && $string{$stringLength - 1} == '"') {
 						// phrase
 					$string = trim($string, '"');
-					$string = Apache_Solr_Service::phrase($string);
+					$string = $this->escapePhrase($string);
 				} else {
-					$string = Apache_Solr_Service::escape($string);
+					$string = $this->escapeSpecialCharacters($string);
 				}
 			} else {
-				$string = Apache_Solr_Service::escape($string);
+				$string = $this->escapeSpecialCharacters($string);
 			}
 		}
 
 		return $string;
+	}
+
+	/**
+	 * Escapes characters with special meanings in Lucene query syntax.
+	 *
+	 * @param	string	$value Unescaped - "dirty" - string
+	 * @return	string	Escaped - "clean" - string
+	 */
+	protected function escapeSpecialCharacters($value) {
+			// list taken from http://lucene.apache.org/java/3_3_0/queryparsersyntax.html#Escaping%20Special%20Characters
+			// not escaping *, &&, ||, ?, -, ! though
+		$pattern = '/(\+|\(|\)|\{|}|\[|]|\^|"|~|:|\\\)/';
+		$replace = '\\\$1';
+
+		return preg_replace($pattern, $replace, $value);
+	}
+
+	/**
+	 * Escapes a value meant to be contained in a phrase with characters with
+	 * special meanings in Lucene query syntax.
+	 *
+	 * @param	string	$value Unescaped - "dirty" - string
+	 * @return	string	Escaped - "clean" - string
+	 */
+	protected function escapePhrase($value) {
+		$pattern = '/("|\\\)/';
+		$replace = '\\\$1';
+
+		return '"' . preg_replace($pattern, $replace, $value) . '"';
 	}
 
 
