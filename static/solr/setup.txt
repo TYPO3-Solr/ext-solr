@@ -81,7 +81,6 @@ plugin.tx_solr {
 					uid = uid
 					sortAuthor_stringS = author
 					sortTitle_stringS  = title
-					sortSubTitle_stringS = short
 					url = TEXT
 					url {
 						typolink.parameter = {$plugin.tt_news.singlePid}

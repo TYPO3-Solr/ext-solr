@@ -1,5 +1,6 @@
 2011-08-24  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
+	* Removed sortSubTitle_stringS from tt_news fields
 	* !!! Fixed issue #28872: Remove static sort fields in schema.xml
 
 2011-08-23  Ingo Renner  <ingo.renner@dkd.de>
