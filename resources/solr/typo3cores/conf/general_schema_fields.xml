@@ -128,19 +128,6 @@
 
 
 		<!--
-			Facetting and Sorting fields
-		-->
-		<field name="sortAuthor" type="textSort" indexed="true" stored="true" />
-		<copyField source="author" dest="sortAuthor" />
-
-		<field name="sortTitle"    type="textSort" indexed="true"  stored="true" />
-		<copyField source="title" dest="sortTitle" />
-
-		<field name="sortSubTitle" type="textSort" indexed="true"  stored="true" />
-		<copyField source="subTitle" dest="sortSubTitle" />
-
-
-		<!--
 			Copy fields
 		-->
 

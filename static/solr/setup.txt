@@ -56,7 +56,9 @@ plugin.tx_solr {
 				additionalWhereClause = doktype = 1 AND no_search = 0
 
 				fields {
-
+					sortAuthor_stringS = author
+					sortTitle_stringS  = title
+					sortSubTitle_stringS = subtitle
 				}
 			}
 
@@ -77,6 +79,9 @@ plugin.tx_solr {
 					pid = pid
 					title = title
 					uid = uid
+					sortAuthor_stringS = author
+					sortTitle_stringS  = title
+					sortSubTitle_stringS = short
 					url = TEXT
 					url {
 						typolink.parameter = {$plugin.tt_news.singlePid}
@@ -213,8 +218,8 @@ plugin.tx_solr {
 					label = sorting_relevancy
 				}
 
-				sortTitle = 1
-				sortTitle {
+				sortTitle_stringS = 1
+				sortTitle_stringS {
 					label = sorting_title
 				}
 
@@ -223,8 +228,8 @@ plugin.tx_solr {
 					label = sorting_type
 				}
 
-				sortAuthor = 0
-				sortAuthor {
+				sortAuthor_stringS = 0
+				sortAuthor_stringS {
 					label = sorting_author
 				}
 
