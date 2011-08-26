@@ -5,7 +5,7 @@ plugin.tx_solr {
 		scheme = http
 		host = localhost
 		port = 8080
-		path = /solr/
+		path = /solr/core_en/
 	}
 
 	search {

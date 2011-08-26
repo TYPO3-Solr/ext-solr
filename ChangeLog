@@ -1,3 +1,7 @@
+2011-08-26  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed default Solr path for use with the provided install script, the core was missing after having introduced a multicore setup by default
+
 2011-08-24  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* Removed sortSubTitle_stringS from tt_news fields
