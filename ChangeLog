@@ -1,3 +1,7 @@
+2011-09-12  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed start stop script containing wrong paths to tomcat
+
 2011-08-26  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed default Solr path for use with the provided install script, the core was missing after having introduced a multicore setup by default
