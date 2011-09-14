@@ -3,8 +3,8 @@
 clear
 
 TOMCAT_VER=6.0.32
-SOLR_VER=3.3.0
-EXT_SOLR_VER=1.4
+SOLR_VER=3.4.0
+EXT_SOLR_VER=2.0
 EXT_SOLR_PLUGIN_VER=1.2.0
 
 SVNBRANCH_PATH="branches/solr_$EXT_SOLR_VER.x"
@@ -113,11 +113,11 @@ mkdir solr-tomcat
 cd solr-tomcat/
 
 cecho "Using the mirror at Oregon State University Open Source Lab - OSUOSL." $green
-cecho "Downloading Apache Tomcat." $green
+cecho "Downloading Apache Tomcat $TOMCAT_VER" $green
 TOMCAT_MAINVERSION=`echo "$TOMCAT_VER" | cut -d'.' -f1`
 wget --progress=bar:force http://apache.osuosl.org/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VER/bin/apache-tomcat-$TOMCAT_VER.zip 2>&1 | progressfilt
 
-cecho "Downloading Apache Solr." $green
+cecho "Downloading Apache Solr $SOLR_VER" $green
 wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR_VER/apache-solr-$SOLR_VER.zip 2>&1 | progressfilt
 
 cecho "Unpacking Apache Tomcat." $green
@@ -232,7 +232,7 @@ cp -r apache-solr-$SOLR_VER/contrib solr/
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-cecho "Downloading the Solr TYPO3 plugin for access control." $green
+cecho "Downloading the Solr TYPO3 plugin for access control. Version: $EXT_SOLR_PLUGIN_VER" $green
 mkdir solr/typo3lib
 cd solr/typo3lib
 wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/solr-typo3-plugin-$EXT_SOLR_PLUGIN_VER.jar 2>&1 | progressfilt
