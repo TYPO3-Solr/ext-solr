@@ -91,7 +91,7 @@ class tx_solr_indexqueue_frontendhelper_UserGroupDetector
 	 */
 	protected function activateContentObjectXclass() {
 		$GLOBALS['tx_solr_indexqueue_frontendhelper_UserGroupDetector'] = TRUE;
-		require_once($GLOBALS['PATH_solr'] . 'classes/indexqueue/class.ux_tslib_cobj.php');
+		require_once($GLOBALS['PATH_solr'] . 'compat/class.ux_tslib_cobj.php');
 	}
 
 	/**
