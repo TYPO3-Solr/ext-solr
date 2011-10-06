@@ -44,34 +44,22 @@ class tx_solr_scheduler_OptimizeTaskSolrServerField implements tx_scheduler_Addi
 	 *									For each field it provides an associative sub-array with the following:
 	 */
 	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $schedulerModule) {
-		$fields = array('host', 'port', 'path');
-
 		if ($schedulerModule->CMD == 'add') {
-			$taskInfo['solrHost'] = 'localhost';
-			$taskInfo['solrPort'] = '8080';
-			$taskInfo['solrPath'] = '/';
+			$taskInfo['site'] = NULL;
 		}
 
 		if ($schedulerModule->CMD == 'edit') {
-			$taskInfo['solrHost'] = $task->solrHost;
-			$taskInfo['solrPort'] = $task->solrPort;
-			$taskInfo['solrPath'] = $task->solrPath;
+			$taskInfo['site'] = $task->getSite();
 		}
 
-		$additionalFields = array();
-		foreach ($fields as $field) {
-			$fieldId = 'task_solr' . ucfirst($field);
-			$fieldHtml = '<input type="text" name="tx_scheduler[solr'
-				. ucfirst($field) . ']" id="' . $fieldId . '" value="'
-				. htmlspecialchars($taskInfo['solr' . ucfirst($field)]) . '" size="10" />';
-
-			$additionalFields[$fieldId] = array(
-				'code'     => $fieldHtml,
-				'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_field_' . $field,
+		$additionalFields = array(
+			'site' => array(
+				'code'     => tx_solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $taskInfo['site']),
+				'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_field_site',
 				'cshKey'   => '',
-				'cshLabel' => $fieldId
-			);
-		}
+				'cshLabel' => ''
+			)
+		);
 
 		return $additionalFields;
 	}
@@ -86,11 +74,10 @@ class tx_solr_scheduler_OptimizeTaskSolrServerField implements tx_scheduler_Addi
 	 */
 	public function validateAdditionalFields(array &$submittedData, tx_scheduler_Module $schedulerModule) {
 		$result = FALSE;
-		$submittedData['solrPort'] = intval($submittedData['solrPort']);
 
-		if ($submittedData['solrPort'] < 0) {
-			$schedulerModule->addMessage('Invalid Port given', 3);
-		} else {
+			// validate site
+		$sites = tx_solr_Site::getAvailableSites();
+		if (array_key_exists($submittedData['site'], $sites)) {
 			$result = TRUE;
 		}
 
@@ -105,9 +92,7 @@ class tx_solr_scheduler_OptimizeTaskSolrServerField implements tx_scheduler_Addi
 	 * @param	tx_scheduler_Task	$task: reference to the current task object
 	 */
 	public function saveAdditionalFields(array $submittedData, tx_scheduler_Task $task) {
-		$task->solrHost = $submittedData['solrHost'];
-		$task->solrPort = $submittedData['solrPort'];
-		$task->solrPath = $submittedData['solrPath'];
+		$task->setSite(t3lib_div::makeInstance('tx_solr_Site', $submittedData['site']));
 	}
 }
 

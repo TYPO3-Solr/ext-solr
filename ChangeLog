@@ -1,3 +1,106 @@
+2011-10-06  Ingo Renner  <ingo.renner@dkd.de>
+
+	* !!! Removed frontend indexing support (and thus also EXT:crawler support)
+
+	* !! Changed TypoScript option for result highlighting. tx_solr.search.highlighting has been moved to tx_solr.search.results.resultsHighlighting to be consistent with tx_solr.search.results.siteHighlighting. Usage of the old TS path is now deprecated and will be removed with the next minor release (v2.1 / v2.6-EAP) Resolves issue #29284, credits Stefan Sprenger
+	* !! Changed schema fields, enabling termVectors on some text fields for better performance in use with MorLikeThis and Highlighting
+	* !! Changed schema field author from text to string
+
+	* ! Changed search.faceting.showEmptyFacets to 0 by default
+	* ! Changed initialization of the Index Queue to be site specific
+
+	* Deprecated method tx_solr_Query::setReturnFields(), use tx_solr_Query::setFieldList() instead
+
+	* Fixed Solr install script to load the current Tomcat version (6.0.33)
+	* Fixed initialization of Index Queue for records which are available in all languages, those were not includeded before
+	* Added a feature to render a specific facet although it doesn't provide any options and although rendering empty facets has beeen turned off globally, credits Rolf Hofmann
+	* Added a strptime() user land implementation for Windows environments. Thanks to Lionel Sauron for granting us permission to do so.
+	* Added a marker ###FACET.RESET_URL### to create URLs/links to reset facet - deselecting all of its options, credits Rolf Hofmann
+	* Changed the schema status check to check for the current schema version
+	* Fixed issue #29345: Wrong filepath in frontendhelper leads to no pages and files getting indexed, credits Philipp Hanebrink
+	* Fixed issue #12546: Opimize menu name / record type detection in facet handling, credits Marcus Krause
+	* Fixed issue #12316: Generate pagebrowser links with cHashes, credits Marcus Krause
+	* Fixed an issue where the facet view helper would ignore markup wrapping the actual facet
+	* Changed the facet view helper to be aware of the properties of the facet it's rendering
+	* Added a new property to the facet renderer, providing information whether any of the facet's options is selected
+	* Added indexing of tt_news categories
+	* Changed news keywords to be multivalue
+	* Changed configuration of sorting options to be more like configuration for facets, resolves issue #29520
+	* Fixed issue #29521: Fix occurrences of "relevancy", should be "relevance"
+	* Fixed an issue where the LINK view helper would not fall back to the default link target (current page id) if link targete parameter was empty
+	* Fixed issue #28630: PHP Warnings in tx_solr_Util::getRootPageId in current public trunk, credits Tolleiv Nietsch
+	* Added time tracking for execution of plugin commands in admin panel
+	* Added option tx_solr.search.keepExistingParametersForNewSearches to allow search applications where results are filtered first and then refined using a search term, credits Stefan Sprenger
+	* Added method tx_solr_pluginbase_PluginBase::pi_setPiVarDefaults() to allow stdWrap on default piVars (credits Grigori Prokhorov and Ivan Kartolo)
+	* Fixed an issue due to which no facet filters containing a colon ":" could be used (credits Kristian Kriehl)
+	* Fixed the admin actions and scheduler tasks to affect all indexes of a site (credits Stefan Sprenger)
+	* Fixed some php warnings in tx_solr_facet_SimpleFacetRenderer
+	* Changed several places where an index could be selected for an operation to use sites instead. Fixes issue #27620, credits Stefan Sprenger
+	* Added feature #29003: Add a status check for the correct Apache Solr version (credits Stefan Sprenger)
+	* Added rel="nofollow" to faceting links by default to avoid search engines crawling those links endlessly
+	* Added feature #28522: Implement search word highlighting for target pages, credits Stefan Sprenger
+	* Changed uid fallback sorting of Index Queue items to index from ascending to descending
+	* Added TypoScript option facetLinkATagParams to set A tag attributes for facet option links (credits Dean Ranft)
+	* Fixed a possible issue with an alias in the install script
+	* Added a content object SOLR_RELATION to resolve relations between tables configured using the Index Queue
+	* Changed interface tx_solr_ResultSetModifier, adding a type hint for the first parameter
+	* Added a feature to mark result type boundaries - kind of fake/client side grouping when results are ordered by type
+	* Added an option to tx_solr_Util::initializeTsfe() to circumvent the cache when creating a TSFE instance
+	* Added a max width of 500px to the index selector in the search admin module
+	* Fixed TypoScript condition support when initializing Solr connections
+	* Changed the link view helper to use t3lib_div::isValidUrl instead of filter_var()
+	* Changed the suggest eID script to explicitly create a Solr connection using the page ID and language submitted by the AJAX call
+	* Changed tx_solr_Search to keep the response as member variable instead of fetching it from the Solr connection
+	* Changed solrconfig.xml (multi-core) to include libraries necessary to analyze some languages, including Chinese and Polish (affects Solr 3.1+ only)
+	* Extracted general parts of the tx_solr_Typo3PageContentExtractor to a more general tx_solr_HtmlContentExtractor
+	* Changed the tt_news Index Queue configuration to use SOLR_CONTENT for the content field
+	* Added a content object SOLR_CONTENT to use in Index Queue field mappings and easily clean content from a database field
+	* Added method tx_solr_Site::getSolrConfiguration()
+	* Removed fields from the tt_news Index Queue configuration which are automatically set by the indexer already
+	* Fixed the Index Queue indexer to only add the endtime field if it's got a value other than 0
+	* Changed initialization of Index Queue to not include items with start time > NOW and end time < NOW
+	* Added logging for Index Queue initialization
+	* Added logging and an exception in the Index Queue page indexer when building a URL to get data from the frontend
+	* Removed all cores from default solr.xml except core_en (english)
+	* Added additional default languages to Solr configuration:
+		- Arabic
+		- Armenian
+		- Basque
+		- Brazilian Portuguese
+		- Bulgarian
+		- Catalan
+		- Czech
+		- Finnish
+		- Galician
+		- Greek
+		- Hindi
+		- Indonesian
+		- Japanese
+		- Khmer
+		- Korean
+		- Lao
+		- Maynmar
+		- Norwegian
+		- Persian
+		- Portuguese
+		- Romanian
+		- Swedish
+		- Thai
+		- Turkish
+	* Changed facet configuration option filterParameterParser to filterParser
+	* Added an exception when not implementing a necessary filter parser interface
+	* Added methods tx_solr_Query::getFieldList(), tx_solr_Query::setFieldList()
+	* Moved tx_solr_pi_results_ResultsCommand::decodeUtf8() to tx_solr_Util::decodeUtf8()
+	* Changed the highlighter to be a separate tx_solr_ResultDocumentModifier instead of being part of tx_solr_pi_results_ResultsCommand
+	* Added logging in the Index Queue page indexer if config.index_enable = 0
+	* Added a logging option for page indexing (success / failure) for the Index Queue page indexer
+	* Added more detailed logging when indexing records using Index Queue
+	* Added a status report check for config.index_enable = 1
+	* Changed the order Index Queue items are indexed from "old first, new last" to "new first, old last"
+	* Added exceptions in tx_solr_Typo3PageIndexer
+	* Added deprecation logging for tx_solr_Util::getSiteHash()
+	* Added a content object SOLR_MULTIVALUE to fill multivalued Solr document fields using Index Queue
+
 2011-09-27  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* Updated Apache Tomcat version to 6.0.33

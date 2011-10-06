@@ -83,12 +83,12 @@
 		<field name="title"       type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
 		<field name="subTitle"    type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
 		<field name="navTitle"    type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
-		<field name="content"     type="text"   indexed="true"  stored="true" />
-		<field name="teaser"      type="text"   indexed="false" stored="true"/>
-		<field name="author"      type="text"   indexed="true"  stored="true" />
+		<field name="content"     type="text"   indexed="true"  stored="true" termVectors="true" />
+		<field name="teaser"      type="text"   indexed="false" stored="true" />
+		<field name="abstract"    type="text"   indexed="true"  stored="true" termVectors="true" />
+		<field name="description" type="text"   indexed="true"  stored="true" termVectors="true" />
 		<field name="keywords"    type="text"   indexed="true"  stored="true" multiValued="true" />
-		<field name="description" type="text"   indexed="true"  stored="true" />
-		<field name="abstract"    type="text"   indexed="true"  stored="true" />
+		<field name="author"      type="string" indexed="true"  stored="true" />
 
 		<field name="url"         type="string" indexed="true" stored="true" />
 

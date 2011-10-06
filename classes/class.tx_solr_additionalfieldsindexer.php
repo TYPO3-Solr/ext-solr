@@ -26,6 +26,8 @@
 /**
  * Additional fields indexer.
  *
+ * @todo	Move this to an Index Queue frontend helper
+ *
  * Adds page document fields as configured in
  * plugin.tx_solr.index.additionalFields.
  *

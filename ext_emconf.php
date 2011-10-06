@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "solr".
 #
-# Auto generated 22-02-2011 17:51
+# Auto generated 18-02-2011 15:22
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next

@@ -519,8 +519,10 @@ class tx_solr_Template {
 			if (array_key_exists($helperName, $this->helpers)) {
 				$markerContent = $this->helpers[$helperName]->execute($helperArguments);
 			} else {
-					// TODO turn this into an exception
-				$markerContent = 'no matching view helper found for marker "' . $marker . '"';
+				throw new RuntimeException(
+					'No matching view helper found for marker "' . $marker . '".',
+					1311005284
+				);
 			}
 
 			$content = str_replace('###LOOP:' . $marker . '###', $markerContent, $content);
@@ -830,7 +832,11 @@ class tx_solr_Template {
 		$key = strtolower($key);
 
 		if (array_key_exists($key, $this->variables)) {
-				// TODO throw an exception
+// FIXME currently causes too much trouble
+// 			throw new RuntimeException(
+// 				'Key "' . $key . '" cannot be assigned to the template, already used.',
+// 				1311005476
+// 			);
 		} else {
 			$this->variables[$key] = $value;
 		}
@@ -843,14 +849,10 @@ class tx_solr_Template {
 	 * @param	array	variables array
 	 */
 	public function addLoop($loopName, $markerName, array $variables) {
-			// TODO make loops objects so that they can be nested
 		$this->loops[$loopName] = array(
 			'marker' => $markerName,
 			'data'   => $variables
 		);
-
-		// use foreach with an "Iterator" to run through $variables
-
 	}
 
 	/**
@@ -881,8 +883,6 @@ class tx_solr_Template {
 	 *
 	 * @param	string	a prefix to limit the result to markers beginning with the specified prefix
 	 * @return	array	array of markers names
-	 * @todo rename to findMarkers and merge with getMarkersFromTemplate()
-	 * @todo create a method findSubparts()
 	 */
 	public function findMarkers($markerPrefix = '') {
 		return $this->getMarkersFromTemplate($this->workOnSubpart, $markerPrefix);
@@ -898,6 +898,7 @@ class tx_solr_Template {
 	 * @return	array	array of markers
 	 */
 	protected function getViewHelperArgumentLists($helperMarker, $subpart, $removeDuplicates = TRUE) {
+			// already tried (and failed) variants:
 			// '!###' . $helperMarker . ':([A-Z0-9_-|.]*)\###!is'
 			// '!###' . $helperMarker . ':(.*?)\###!is',
 			// '!###' . $helperMarker . ':((.*?)+?(\###(.*?)\###(|.*?)?)?)?\###!is'

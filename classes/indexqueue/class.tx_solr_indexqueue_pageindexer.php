@@ -30,19 +30,11 @@
  * retrieve the content that belongs to a page from tt_content, too. Also
  * plugins may be included on a page and thus may need to be executed.
  *
- * TODO	Check alternative, possibly more perfomant, ways to index pages and find
- * 		user groups used on a page. Maybe a solution through an eID script or an
- * 		extended index_ts.php could be a solution as well.
- *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
  * @subpackage	solr
  */
 class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
-
-	# FIXME move to tx_solr_access_Rootline
-	const ACCESS_ROOTLINE_ELEMENT_DELIMITER = '/';
-	const ACCESS_ROOTLINE_ELEMENT_PAGE_ID_GROUP_DELIMITER = ':';
 
 	/**
 	 * Indexes an item from the indexing queue.
@@ -71,6 +63,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 				$response = $this->indexPage($item, $systemLanguageUid, $userGroup);
 			}
 		}
+
 		$indexed = TRUE;
 
 		// FIXME do some logging!!!
@@ -85,7 +78,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 	 * @param	tx_solr_indexqueue_Item	The index queue item representing the page.
 	 * @param	integer	The language to use.
 	 * @param	integer	The frontend user group to use.
-	 * @return	Apache_Solr_Document	The page's Solr document representation. #FIXME fix return comment
+	 * @return	tx_solr_indexqueue_PageIndexerResponse	page indexer response
 	 */
 	protected function indexPage(tx_solr_indexqueue_Item $item, $language = 0, $userGroup = 0) {
 		$accessRootline = $this->getAccessRootline($item, $language, $userGroup);
@@ -106,6 +99,8 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 			$item->getRecordUid(),
 			$language
 		));
+
+			// TODO log response, success / failure
 
 		return $response;
 	}
@@ -176,12 +171,30 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 
 			// setting a path if TYPO3 is installed in a sub directory
 		if (!empty($this->options['frontendDataHelper.']['path'])) {
-				// TODO might be possible to detect this using t3lib_div::getIndpEnv()
 			$path = $this->options['frontendDataHelper.']['path'];
 		}
 
-			// TODO throw and log exception if a complete URL can't be constructed, stop indexing
 		$dataUrl = $scheme . '://' . $host . $path . 'index.php?id=' . $pageId;
+		if (!t3lib_div::isValidUrl($dataUrl)) {
+			t3lib_div::devLog(
+				'Could not create a valid URL to get frontend data while trying to index a page.',
+				'solr',
+				3,
+				array(
+					'constructed URL' => $dataUrl,
+					'scheme'          => $scheme,
+					'host'            => $host,
+					'path'            => $path,
+					'page ID'         => $pageId,
+					'indexer options' => $this->options
+				)
+			);
+
+			throw new RuntimeException(
+				'Could not create a valid URL to get frontend data while trying to index a page. Created URL: ' . $dataUrl,
+				1311080805
+			);
+		}
 
 		if ($language) {
 			$dataUrl .= '&L=' . $language;
@@ -235,8 +248,6 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 	 * user group IDs restricting access to the page.
 	 * The content access element does not have a page ID, instead it replaces
 	 * the ID by a lower case C.
-	 *
-	 * TODO extract into a class structure like in the Solr plugin
 	 *
 	 * @param	tx_solr_indexqueue_Item	Index queue item representing the current page
 	 * @param	integer	The sys_language_uid language ID

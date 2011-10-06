@@ -318,7 +318,7 @@ class Apache_Solr_Document implements IteratorAggregate
 		{
 			return $this->_fields[$key];
 		}
-		
+
 		return null;
 	}
 
@@ -365,14 +365,30 @@ class Apache_Solr_Document implements IteratorAggregate
 		unset($this->_fieldBoosts[$key]);
 	}
 
+	/**
+	 * Magic call method used to emulate getters as used by the template engine.
+	 *
+	 * @param	string	$name method name
+	 * @param	array	$arguments method arguments
+	 */
 	public function __call($name, $arguments) {
 		if (substr($name, 0, 3) == 'get') {
 			$field = substr($name, 3);
-			$field = strtolower(substr($field, 0, 1)) . substr($field, 1);
+			$field = strtolower($field[0]) . substr($field, 1);
+
+			if (!isset($this->_fields[$field])) {
+				throw new RuntimeException(
+					'Tried to access non-existent field "' . $field . '".',
+					1311006894
+				);
+			}
 
 			return $this->_fields[$field];
 		} else {
-				// TODO trigger error
+			throw new RuntimeException(
+				'Call to undefined method. Supports magic getters only.',
+				1311006605
+			);
 		}
 	}
 }

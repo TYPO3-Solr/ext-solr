@@ -133,7 +133,8 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 				// $filtersByFieldName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('lorem'))
 			$filtersByFieldName = array();
 			foreach ($filters as $filter) {
-				list($filterFieldName, $filterValue) = explode(':', $filter);
+					// only split by the first ":" to allow the use of colons in the filter value
+				list($filterFieldName, $filterValue) = explode(':', $filter, 2);
 				if (in_array($filterFieldName, $configuredFacets)) {
 					$filtersByFieldName[$filterFieldName][] = $filterValue;
 				}
@@ -149,12 +150,20 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 
 				$filterParts = array();
 				foreach ($filterValues as $filterValue) {
-					if ($fieldConfiguration['filterParameterParser']) {
-						$parserClassname = 'tx_solr_query_filterparser_' .
-							ucfirst($fieldConfiguration['filterParameterParser']);
-						$filterParser = t3lib_div::makeInstance($parserClassname);
+					if ($fieldConfiguration['filterParser']) {
+						$filterParser = t3lib_div::makeInstance($fieldConfiguration['filterParser']);
 
-						$filterOptions= $fieldConfiguration['renderer.'];
+						if (!($filterParser instanceof tx_solr_QueryFilterParser)) {
+							throw new RuntimeException(
+								$fieldConfiguration['filterParser'] . ' must implement inteface tx_solr_QueryFilterParser',
+								1311001833
+							);
+						}
+
+						$filterOptions = $fieldConfiguration['renderer.'];
+						if (empty($filterOptions)) {
+							$filterOptions = array();
+						}
 
 						$filterValue = $filterParser->parseFilter($filterValue, $filterOptions);
 						$filterParts[] = $fieldConfiguration['field'] . ':' . addslashes( $filterValue );

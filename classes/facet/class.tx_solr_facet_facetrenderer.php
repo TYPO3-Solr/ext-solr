@@ -87,26 +87,27 @@ class tx_solr_facet_FacetRenderer {
 	 */
 	public function renderFacet() {
 		$facetContent    = '';
-		$showEmptyFacets = $this->solrConfiguration['search.']['faceting.']['showEmptyFacets'];
 
-			// don't render the given facet if it doesn't have any options and
-			// rendering of empty facets is disabled
-		if ($showEmptyFacets != '0' || !$this->isEmpty()) {
+		$showEmptyFacets = FALSE;
+		if (!empty($this->solrConfiguration['search.']['faceting.']['showEmptyFacets'])) {
+			$showEmptyFacets = TRUE;
+		}
+
+		$showEvenWhenEmpty = FALSE;
+		if (!empty($this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['showEvenWhenEmpty'])) {
+			$showEvenWhenEmpty = TRUE;
+		}
+
+			// if the facet doesn't provide any options, don't render it unless
+			// it is configured to be rendered nevertheless
+		if (!$this->isEmpty() || $showEmptyFacets || $showEmptyFacet) {
 			$facetTemplate = clone $this->template;
 			$facetTemplate->workOnSubpart('single_facet');
 
 			$facetOptions = $this->renderFacetOptions();
 			$facetTemplate->addSubpart('single_facet_option', $facetOptions);
 
-			$facet = $this->facetConfiguration;
-			$facet['name']  = $this->facetName;
-			$facet['count'] = $this->getFacetOptionsCount();
-
-			if ($facet['count'] > $this->solrConfiguration['search.']['faceting.']['limit']) {
-				$showAllLink = '<a href="#" class="tx-solr-facet-show-all">###LLL:faceting_showMore###</a>';
-				$showAllLink = tslib_cObj::wrap($showAllLink, $this->solrConfiguration['search.']['faceting.']['showAllLink.']['wrap']);
-				$facet['show_all_link'] = $showAllLink;
-			}
+			$facet = $this->getFacet();
 
 			$facetTemplate->addVariable('facet', $facet);
 			$facetContent = $facetTemplate->render();
@@ -125,7 +126,7 @@ class tx_solr_facet_FacetRenderer {
 		$facetField   = $this->facetConfiguration['field'];
 		$facetOptions = $this->search->getFacetFieldOptions($facetField);
 
-		if (!empty($facetOptions)) {
+		if (!empty($facetOptions) || !empty($this->facetConfiguration['showEvenWhenEmpty'])) {
 				// default facet renderer
 			$facetRendererClass = 'tx_solr_facet_SimpleFacetRenderer';
 			if (!empty($this->facetConfiguration['renderer'])) {
@@ -143,13 +144,37 @@ class tx_solr_facet_FacetRenderer {
 			$facetRenderer->setLinkTargetPageId($this->linkTargetPageId);
 
 			if (!($facetRenderer instanceof tx_solr_FacetRenderer)) {
-				// TODO throw exception
+				throw new UnexpectedValueException(
+					get_class($facetRenderer) . ' must implement interface tx_solr_FacetRenderer',
+					1310387079
+				);
 			}
 
 			$facetContent = $facetRenderer->render();
 		}
 
 		return $facetContent;
+	}
+
+	/**
+	 * Gets the facet object markers for use in templates.
+	 *
+	 * @return	array	An array with facet object markers.
+	 */
+	public function getFacet() {
+		$facet = $this->facetConfiguration;
+		$facet['name']      = $this->facetName;
+		$facet['count']     = $this->getFacetOptionsCount();
+		$facet['active']    = $this->isActive() ? '1' : '0';
+		$facet['reset_url'] = $this->buildResetFacetUrl();
+
+		if ($facet['count'] > $this->solrConfiguration['search.']['faceting.']['limit']) {
+			$showAllLink = '<a href="#" class="tx-solr-facet-show-all">###LLL:faceting_showMore###</a>';
+			$showAllLink = tslib_cObj::wrap($showAllLink, $this->solrConfiguration['search.']['faceting.']['showAllLink.']['wrap']);
+			$facet['show_all_link'] = $showAllLink;
+		}
+
+		return $facet;
 	}
 
 	/**
@@ -187,6 +212,33 @@ class tx_solr_facet_FacetRenderer {
 		return $isEmpty;
 	}
 
+	/**
+	 * Checks whether an option of the facet has been selected by the user by
+	 * checking the URL GET parameters.
+	 *
+	 * @return	boolean	TRUE if any option of the facet is applied, FALSE otherwise
+	 */
+	protected function isActive() {
+		$isActive = FALSE;
+
+		$resultParameters = t3lib_div::_GET('tx_solr');
+		$filterParameters = array();
+		if (isset($resultParameters['filter'])) {
+			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
+		}
+
+		foreach ($filterParameters as $filter) {
+			list($filterName, $filterValue) = explode(':', $filter);
+
+			if ($filterName == $this->facetName) {
+				$isActive = TRUE;
+				break;
+			}
+		}
+
+		return $isActive;
+	}
+
 	/**	 * Gets the link target page id.
 	 *
 	 * @return	integer	link target page id.
@@ -204,6 +256,32 @@ class tx_solr_facet_FacetRenderer {
 	public function setLinkTargetPageId($linkTargetPageId){
 		$this->linkTargetPageId = intval($linkTargetPageId);
 	}
+
+	/**
+	 * Builds the URL to reset all options of a facet - removing all its applied
+	 * filters from a result set.
+	 *
+	 * @return string  Url to remove a facet
+	 */
+	public function buildResetFacetUrl() {
+		$resultParameters = t3lib_div::_GPmerged('tx_solr');
+
+			// urldecode the array to get the original representation
+		$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
+		$filterParameters = array_unique($filterParameters);
+
+			// find and remove all options for this facet
+		foreach ($filterParameters as $key => $filter) {
+			list($filterName, $filterValue) = explode(':', $filter);
+			if ($filterName == $this->facetName) {
+				unset($filterParameters[$key]);
+			}
+		}
+		$filterParameters = array_map('urlencode', $filterParameters);
+
+		return $this->search->getQuery()->getQueryUrl(array('filter' => $filterParameters));
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_facetrenderer.php'])	{

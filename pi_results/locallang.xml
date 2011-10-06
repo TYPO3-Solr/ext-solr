@@ -12,7 +12,7 @@
 			<label index="didYouMean">Did you mean</label>
 			<label index="submit">Search</label>
 			<label index="sorting_sortBy">Sort by</label>
-			<label index="sorting_relevancy">Relevancy</label>
+			<label index="sorting_relevance">Relevance</label>
 			<label index="sorting_title">Title</label>
 			<label index="sorting_type">Type</label>
 			<label index="sorting_author">Author</label>
@@ -38,7 +38,7 @@
 			<label index="didYouMean">Meinten Sie</label>
 			<label index="submit">Suche</label>
 			<label index="sorting_sortBy">Sortieren nach</label>
-			<label index="sorting_relevancy">Relevanz</label>
+			<label index="sorting_relevance">Relevanz</label>
 			<label index="sorting_title">Titel</label>
 			<label index="sorting_type">Typ</label>
 			<label index="sorting_author">Autor</label>
@@ -64,7 +64,7 @@
 			<label index="didYouMean">Bedoelde u</label>
 			<label index="submit">Zoek</label>
 			<label index="sorting_sortBy">Sorteer op</label>
-			<label index="sorting_relevancy">Relevantie</label>
+			<label index="sorting_relevance">Relevantie</label>
 			<label index="sorting_title">Titel</label>
 			<label index="sorting_type">Type</label>
 			<label index="sorting_author">Auteur</label>
@@ -92,7 +92,7 @@
 			<label index="didYouMean">Pensiez-vous à</label>
 			<label index="submit">Recherche</label>
 			<label index="sorting_sortBy">Trier par</label>
-			<label index="sorting_relevancy">Pertinence</label>
+			<label index="sorting_relevance">Pertinence</label>
 			<label index="sorting_title">Titre</label>
 			<label index="sorting_type">Type</label>
 			<label index="sorting_author">Auteur</label>
@@ -118,7 +118,7 @@
 			<label index="didYouMean">Forse cercavi:</label>
 			<label index="submit">Ricerca</label>
 			<label index="sorting_sortBy">Ordina</label>
-			<label index="sorting_relevancy">Rilevanza</label>
+			<label index="sorting_relevance">Rilevanza</label>
 			<label index="sorting_title">Titolo</label>
 			<label index="sorting_type">Tipo</label>
 			<label index="sorting_author">Autore</label>
@@ -144,7 +144,7 @@
 			<label index="didYouMean">検索語句の候補</label>
 			<label index="submit">検索</label>
 			<label index="sorting_sortBy">並び替え項目</label>
-			<label index="sorting_relevancy">関連</label>
+			<label index="sorting_relevance">関連</label>
 			<label index="sorting_title">表題</label>
 			<label index="sorting_type">種類</label>
 			<label index="sorting_author">作成者</label>
@@ -172,7 +172,7 @@
 			<label index="didYouMean">로 검색하겠습니까?</label>
 			<label index="submit">검색</label>
 			<label index="sorting_sortBy">분류</label>
-			<label index="sorting_relevancy">적합성</label>
+			<label index="sorting_relevance">적합성</label>
 			<label index="sorting_title">제목</label>
 			<label index="sorting_type">유형</label>
 			<label index="sorting_author">저자</label>
@@ -200,7 +200,7 @@
 			<label index="didYouMean">您想要</label>
 			<label index="submit">搜索</label>
 			<label index="sorting_sortBy">排序依据</label>
-			<label index="sorting_relevancy">关联内容</label>
+			<label index="sorting_relevance">关联内容</label>
 			<label index="sorting_title">标题</label>
 			<label index="sorting_type">类型</label>
 			<label index="sorting_author">作者</label>
@@ -228,7 +228,7 @@
 			<label index="didYouMean">Mente du</label>
 			<label index="submit">Søg</label>
 			<label index="sorting_sortBy">Sortér efter</label>
-			<label index="sorting_relevancy">Relevans</label>
+			<label index="sorting_relevance">Relevans</label>
 			<label index="sorting_title">Titel</label>
 			<label index="sorting_type">Type</label>
 			<label index="sorting_author">Forfatter</label>

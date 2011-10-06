@@ -167,7 +167,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 		$connections = array();
 
 		$registry = t3lib_div::makeInstance('t3lib_Registry');
-		$solrServers = $registry->get('tx_solr', 'servers');
+		$solrServers = $registry->get('tx_solr', 'servers', array());
 
 		foreach ($solrServers as $solrServer) {
 			$connections[] = $this->getConnection(
@@ -260,6 +260,15 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$tmpl->tt_track = FALSE; // Do not log time-performance information
 				$tmpl->init();
 				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
+
+					// fake micro TSFE to get correct condition parsing
+				$GLOBALS['TSFE'] = new stdClass();
+				$GLOBALS['TSFE']->tmpl = new stdClass();
+				$GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
+				$GLOBALS['TSFE']->sys_page       = $pageSelect;
+				$GLOBALS['TSFE']->id             = $rootPage['uid'];
+				$GLOBALS['TSFE']->page           = $rootPage;
+
 				$tmpl->generateConfig();
 
 				list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.solr');
@@ -363,6 +372,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	/**
 	 * Finds the site's languages.
 	 *
+	 * @todo Change to t3lib_BEfunc::getSystemLanguages()
 	 * @return	array	An array of language IDs
 	 */
 	protected function getSiteLanguages() {

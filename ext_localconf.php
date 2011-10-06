@@ -1,6 +1,6 @@
 <?php
 if (!defined ('TYPO3_MODE')) {
- 	die ('Access denied.');
+	die ('Access denied.');
 }
 
 $PATH_solr = t3lib_extMgm::extPath('solr');
@@ -17,6 +17,13 @@ switch (TYPO3_branch) {
 			require_once($PATH_solr . 'compat/class.ux_tslib_cobj.php');
 		}
 		break;
+}
+
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// Windows compatibility
+if(!function_exists('strptime')) {
+	require_once($PATH_solr . 'lib/strptime/strptime.php');
 }
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -41,9 +48,6 @@ t3lib_extMgm::addPItoST43(
 
 
 if (TYPO3_MODE == 'FE') {
-		// select and register the page indexer
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_IndexerSelector'] = 'EXT:solr/classes/class.tx_solr_indexerselector.php:tx_solr_IndexerSelector->registerIndexer';
-
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_AdditionalFieldsIndexer'] = 'EXT:solr/classes/class.tx_solr_additionalfieldsindexer.php:tx_solr_AdditionalFieldsIndexer';
 }
 
@@ -52,7 +56,6 @@ if (TYPO3_MODE == 'FE') {
 	// registering Index Queue page indexer hooks
 
 if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
-		// TODO move into IndexerSelector if possible - depends on order of execution of hooks
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_indexqueue_PageIndexerRequestHandler'] = 'EXT:solr/classes/indexqueue/class.tx_solr_indexqueue_pageindexerrequesthandler.php:&tx_solr_indexqueue_PageIndexerRequestHandler->run';
 
 	tx_solr_indexqueue_frontendhelper_Manager::registerFrontendHelper(
@@ -126,18 +129,11 @@ tx_solr_CommandResolver::registerPluginCommand(
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// registering with the "crawler" extension:
-$TYPO3_CONF_VARS['EXTCONF']['crawler']['procInstructions']['tx_solr_reindex'] = 'Solr Re-indexing';
-
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
 	// adding scheduler tasks
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_OptimizeTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_optimizer_title',
 	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_optimizer_description',
-		// TODO needs to be provided with arguments of which solr server to optimize
-		// might be a nice usability feature to have the same select as in the Solr BE admin module
 	'additionalFields' => 'tx_solr_scheduler_OptimizeTaskSolrServerField'
 );
 
@@ -145,8 +141,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_schedul
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_commit_title',
 	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_commit_description',
-		// TODO needs to be provided with arguments of which solr server to commit to
-		// might be a nice usability feature to have the same select as in the Solr BE admin module
 	'additionalFields' => 'tx_solr_scheduler_CommitTaskSolrServerField'
 );
 
@@ -154,8 +148,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_schedul
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_title',
 	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_description',
-		// TODO needs to be provided with arguments of which solr server to index to
-		// might be a nice usability feature to have the same select as in the Solr BE admin module
 	'additionalFields' => 'tx_solr_scheduler_IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 
@@ -190,5 +182,26 @@ t3lib_extMgm::addTypoScript(
 	'# Setting ' . $_EXTKEY . ' plugin TypoScript' . $searchReplacementTypoScript,
 	43
 );
+
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// add custom Solr content objects
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME] = array(
+	tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME,
+	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_multivalue.php:tx_solr_contentobject_Multivalue'
+);
+
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Content::CONTENT_OBJECT_NAME] = array(
+	tx_solr_contentobject_Content::CONTENT_OBJECT_NAME,
+	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_content.php:tx_solr_contentobject_Content'
+);
+
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME] = array(
+	tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME,
+	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_relation.php:tx_solr_contentobject_Relation'
+);
+
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
 
 ?>

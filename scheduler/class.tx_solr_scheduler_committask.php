@@ -32,32 +32,12 @@
  */
 class tx_solr_scheduler_CommitTask extends tx_scheduler_Task {
 
-		// TODO add support for curl HTTP Transport / Solr selector
-	public $solrHost = '';
-	public $solrPort = '';
-	public $solrPath = '';
-
 	/**
-	 * Solr Service Instance
+	 * The site this task is committing its indexes on.
 	 *
-	 * @var	tx_solr_SolrService
+	 * @var	tx_solr_Site
 	 */
-	protected $solr  = NULL;
-
-	/**
-	 * Initializes a Solr Connection
-	 *
-	 * @return	void
-	 */
-	protected function initializeSolr() {
-		if (is_null($this->solr)) {
-			$this->solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnection(
-				$this->solrHost,
-				$this->solrPort,
-				$this->solrPath
-			);
-		}
-	}
+	protected $site;
 
 	/**
 	 * Executes the commit task and returns TRUE if the execution was
@@ -68,16 +48,35 @@ class tx_solr_scheduler_CommitTask extends tx_scheduler_Task {
 	public function execute() {
 		$result = FALSE;
 
-		if (is_null($this->solr)) {
-			$this->initializeSolr();
-		}
+		$solrServers = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionsBySite($this->site);
 
-		$response = $this->solr->commit();
-		if ($response->responseHeader->status === 0) {
-			$result = TRUE;
+		foreach($solrServers as $solrServer) {
+			$response = $solrServer->commit();
+			if ($response->responseHeader->status === 0) {
+				$result = TRUE;
+			}
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Gets the site / the site's root page uid this task is optimizinh.
+	 *
+	 * @return	tx_solr_Site	The site's root page uid this task is optimizinh
+	 */
+	public function getSite() {
+		return $this->site;
+	}
+
+	/**
+	 * Sets the task's site to optimizing.
+	 *
+	 * @param	tx_solr_Site	$site The site to optimizing by this task
+	 * @return	void
+	 */
+	public function setSite(tx_solr_Site $site) {
+		$this->site = $site;
 	}
 
 	/**
@@ -89,10 +88,15 @@ class tx_solr_scheduler_CommitTask extends tx_scheduler_Task {
 	 * @return	string	Information to display
 	 */
 	public function getAdditionalInformation() {
-		return $this->solrHost . ':' . $this->solrPort . $this->solrPath;
-	}
-}
+		$information = 'Site: ';
 
+		if($this->site) {
+			$information .= $this->site->getLabel();
+	}
+
+		return $information;
+}
+}
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_committask.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_committask.php']);

@@ -124,7 +124,8 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 
 			$facetLink    = $this->buildAddFacetLink(
 				$facetText,
-				$this->facetName . ':' . $facetOption
+				$this->facetName,
+				$facetOption
 			);
 			$facetLinkUrl = $this->buildAddFacetUrl(
 				$this->facetName . ':' . $facetOption
@@ -142,7 +143,8 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 			&& $facetSelected) {
 				$facetLink    = $this->buildRemoveFacetLink(
 					$facetText,
-					$this->facetName . ':' . $facetOption
+					$this->facetName,
+					$facetOption
 				);
 				$facetLinkUrl = $this->buildRemoveFacetUrl(
 					$this->facetName . ':' . $facetOption
@@ -152,7 +154,8 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 			if ($this->facetConfiguration['singleOptionMode']) {
 				$facetLink    = $this->buildReplaceFacetLink(
 					$facetText,
-					$this->facetName . ':' . $facetOption
+					$this->facetName,
+					$facetOption
 				);
 				$facetLinkUrl = $this->buildReplaceFacetUrl(
 					$this->facetName . ':' . $facetOption
@@ -233,11 +236,15 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 	 *
 	 * @param	string	$linkText The link text
 	 * @param	string	$facetToAdd A filter string to be used as a link parameter
+	 * @param	string	$facetOptionValue A string with the facet option
 	 * @return	string	Html link tag to add a facet to a search result
 	 */
-	protected function buildAddFacetLink($linkText, $facetToAdd) {
+	protected function buildAddFacetLink($linkText, $facetName, $facetOptionValue) {
+		$facetToAdd       = $facetName . ':' . $facetOptionValue;
+		$typolinkOptions  = $this->getTypolinkOptions();
 		$filterParameters = $this->addFacetAndEncodeFilterParameters($facetToAdd);
-		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters));
+
+		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
 	}
 
 	/**
@@ -256,12 +263,16 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 	 * Returns a link tag with a link to remove a given facet from the search result array.
 	 *
 	 * @param	string	$linkText link text
-	 * @param	string	$facetToRemove A filter string to be removed from the link parameters
+	 * @param	string	$facetName A string with the name of the facet
+	 * @param	string	$facetOptionValue A string with the facet option
 	 * @return	string	Html tag with link to remove a facet
 	 */
-	protected function buildRemoveFacetLink($linkText, $facetToRemove) {
+	protected function buildRemoveFacetLink($linkText, $facetName, $facetOptionValue) {
+		$facetToRemove    = $facetName . ':' . $facetOptionValue;
+		$typolinkOptions  = $this->getTypolinkOptions();
 		$filterParameters = $this->removeFacetAndEncodeFilterParameters($facetToRemove);
-		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters));
+
+		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
 	}
 
 	/**
@@ -279,12 +290,16 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 	 * Returns a link tag with a link to a given facet from the search result array.
 	 *
 	 * @param	string	$linkText link text
-	 * @param	string	$facetToReplace A filter string to use in the link parameters
+	 * @param	string	$facetName A string with the name of the facet
+	 * @param	string	$facetOptionValue A string with the facet option
 	 * @return	string	Html tag with link to remove a facet
 	 */
-	protected function buildReplaceFacetLink($linkText, $facetToReplace) {
+	protected function buildReplaceFacetLink($linkText, $facetName, $facetOptionValue) {
+		$facetToReplace   = $facetName . ':' . $facetOptionValue;
+		$typolinkOptions  = $this->getTypolinkOptions();
 		$filterParameters = $this->replaceFacetAndEncodeFilterParameters($facetToReplace);
-		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters));
+
+		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
 	}
 
 	/**
@@ -330,11 +345,15 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 	 */
 	protected function removeFacetAndEncodeFilterParameters($facetToRemove) {
 		$resultParameters = t3lib_div::_GPmerged('tx_solr');
+		$filterParameters = array();
+		$indexToRemove    = FALSE;
 
-			// urlencode the array to get the original representation
-		$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
-		$filterParameters = array_unique($filterParameters);
-		$indexToRemove    = array_search($facetToRemove, $filterParameters);
+		if (isset($resultParameters['filter'])) {
+				// urldecode the array to get the original representation
+			$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
+			$filterParameters = array_unique($filterParameters);
+			$indexToRemove    = array_search($facetToRemove, $filterParameters);
+		}
 
 		if ($indexToRemove !== FALSE) {
 			unset($filterParameters[$indexToRemove]);
@@ -353,19 +372,22 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 	 */
 	protected function replaceFacetAndEncodeFilterParameters($facetToReplace) {
 		$resultParameters = t3lib_div::_GPmerged('tx_solr');
+		$filterParameters = array();
+		$indexToReplace   = FALSE;
 
-			// urlencode the array to get the original representation
-		$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
-		$filterParameters = array_unique($filterParameters);
+		if (isset($resultParameters['filter'])) {
+				// urlencode the array to get the original representation
+			$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
+			$filterParameters = array_unique($filterParameters);
 
-			// find the currently used option for this facet
-		$indexToReplace = FALSE;
-		foreach ($filterParameters as $key => $filter) {
-			list($filterName, $filterValue) = explode(':', $filter);
+				// find the currently used option for this facet
+			foreach ($filterParameters as $key => $filter) {
+				list($filterName, $filterValue) = explode(':', $filter);
 
-			if ($filterName == $this->facetName) {
-				$indexToReplace = $key;
-				break;
+				if ($filterName == $this->facetName) {
+					$indexToReplace = $key;
+					break;
+				}
 			}
 		}
 
@@ -380,6 +402,27 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 		$filterParameters = array_map('urlencode', $filterParameters);
 
 		return $filterParameters;
+	}
+
+	/**
+	 * Checks for the TypoScript option facetLinkATagParams and
+	 * creates an option array.
+	 *
+	 * @return array $typolinkOptions Array were the options ATagParams may included
+	 */
+	protected function getTypolinkOptions() {
+		$typolinkOptions   = array();
+		$solrConfiguration = tx_solr_Util::getSolrConfiguration();
+
+		if (!empty($solrConfiguration['search.']['faceting.']['facetLinkATagParams'])) {
+			$typolinkOptions['ATagParams'] = $solrConfiguration['search.']['faceting.']['facetLinkATagParams'];
+		}
+
+		if (!empty($this->facetConfiguration['facetLinkATagParams'])) {
+			$typolinkOptions['ATagParams'] = $this->facetConfiguration['facetLinkATagParams'];
+		}
+
+		return $typolinkOptions;
 	}
 
 }

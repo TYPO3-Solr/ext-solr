@@ -67,20 +67,25 @@ plugin.tx_solr {
 				fields {
 					abstract = short
 					author = author
-					changed = tstamp
-					content = TEXT
+					description = short
+					title = title
+
+					content = SOLR_CONTENT
 					content {
 						field = bodytext
-						stripHtml = 1
 					}
-					created = crdate
-					description = short
-					keywords = keywords
-					pid = pid
-					title = title
-					uid = uid
-					sortAuthor_stringS = author
-					sortTitle_stringS  = title
+
+					category_stringM = SOLR_RELATION
+					category_stringM {
+						localField = category
+						multiValue = 1
+					}
+
+					keywords = SOLR_MULTIVALUE
+					keywords {
+						field = keywords
+					}
+
 					url = TEXT
 					url {
 						typolink.parameter = {$plugin.tt_news.singlePid}
@@ -89,6 +94,9 @@ plugin.tx_solr {
 						typolink.returnLast = url
 						typolink.useCacheHash = 1
 					}
+
+					sortAuthor_stringS = author
+					sortTitle_stringS  = title
 				}
 			}
 		}
@@ -102,6 +110,7 @@ plugin.tx_solr {
 
 		initializeWithEmptyQuery = 0
 		showResultsOfInitialEmptyQuery = 0
+		keepExistingParametersForNewSearches = 0
 
 		query {
 			fields = content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0
@@ -124,6 +133,15 @@ plugin.tx_solr {
 
 		# TODO make it a top level configuration section
 		results {
+			resultsHighlighting = 0
+			resultsHighlighting {
+				highlightFields = title,content
+				fragmentSize = 200
+
+				wrap = <span class="results-highlight">|</span>
+			}
+			siteHighlighting = 0
+
 			resultsPerPage = {$plugin.tx_solr.search.results.resultsPerPage}
 			resultsPerPageSwitchOptions = 10, 20, 30, 50
 
@@ -191,15 +209,8 @@ plugin.tx_solr {
 			}
 
 			ignorePageBrowser = 0
-		}
 
-		highlighting = 0
-		highlighting {
-				# title and content are set as default in solrconfig.xml already
-#			highlightFields = title,content
-			fragmentSize = 200
-
-			wrap = <span class="results-highlight">|</span>
+			markResultTypeBoundaries = 0
 		}
 
 		spellchecking = 0
@@ -211,29 +222,29 @@ plugin.tx_solr {
 		sorting {
 			defaultOrder = asc
 
-			fields {
-				relevancy = 1
-				relevancy {
-					label = sorting_relevancy
+			options {
+				relevance {
+					field = relevance
+					label = sorting_relevance
 				}
 
-				sortTitle_stringS = 1
-				sortTitle_stringS {
+				title {
+					field = sortTitle_stringS
 					label = sorting_title
 				}
 
-				type = 1
 				type {
+					field = type
 					label = sorting_type
 				}
 
-				sortAuthor_stringS = 0
-				sortAuthor_stringS {
+				author {
+					field = sortAuthor_stringS
 					label = sorting_author
 				}
 
-				created = 1
 				created {
+					field = created
 					label = sorting_created
 				}
 			}
@@ -245,7 +256,9 @@ plugin.tx_solr {
 			sortBy = count
 			limit = 10
 			singleFacetMode = 0
-			showEmptyFacets = 1
+			showEmptyFacets = 0
+
+			facetLinkATagParams = rel="nofollow"
 
 			facetOrder = type, author
 			facets {
@@ -286,6 +299,8 @@ plugin.tx_solr {
 
 			showAllLink.wrap = <li>|</li>
 		}
+
+
 	}
 
 	suggest = 0
@@ -315,11 +330,10 @@ plugin.tx_solr {
 	logging {
 		exceptions = 1
 
-			// TODO change "indexing" to enable all indexing logging, split up into several options
-		indexing = 0
 		indexing {
 			missingTypo3SearchMarkers = 1
 			indexQueuePageIndexerGetData = 0
+			pageIndexed = 0
 		}
 
 		query {

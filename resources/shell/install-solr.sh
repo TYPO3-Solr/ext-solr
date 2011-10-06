@@ -108,9 +108,8 @@ fi
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-cd /opt
-mkdir solr-tomcat
-cd solr-tomcat/
+mkdir -p /opt/solr-tomcat
+cd /opt/solr-tomcat/
 
 cecho "Using the mirror at Oregon State University Open Source Lab - OSUOSL." $green
 cecho "Downloading Apache Tomcat $TOMCAT_VER" $green

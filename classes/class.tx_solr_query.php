@@ -64,7 +64,7 @@ class tx_solr_Query {
 	 * @var array
 	 */
 	protected $queryFields = array();
-	protected $returnFields = array();
+	protected $fieldList = array();
 	protected $filterFields;
 	protected $sortingFields;
 
@@ -76,8 +76,7 @@ class tx_solr_Query {
 	public function __construct($keywords) {
 		$this->solrConfiguration = tx_solr_Util::getSolrConfiguration();
 
-			// TODO specify which fields to get exactly
-		$this->returnFields = array('*', 'score');
+		$this->fieldList = array('*', 'score');
 		$this->setKeywords($keywords);
 		$this->sorting  = '';
 
@@ -293,6 +292,7 @@ class tx_solr_Query {
 
 	// query elevation
 
+
 	/**
 	 * Activates and deactivates query elevation for the current query.
 	 *
@@ -436,6 +436,7 @@ class tx_solr_Query {
 
 	// sorting
 
+
 	/**
 	 * Adds a sort field and the sorting direction for that field
 	 *
@@ -481,6 +482,62 @@ class tx_solr_Query {
 
 
 	// query parameters
+
+
+	/**
+	 * Gets the list of fields a query will return.
+	 *
+	 * @return	array	Array of fieldnames the query will return
+	 */
+	public function getFieldList() {
+		return $this->fieldList;
+	}
+
+	/**
+	 * Sets the fields to return by a query.
+	 *
+	 * @param	array|string	$fieldList an array or comma-separated list of fieldnames
+	 * @throws	UnexpectedValueException on parameters other than comma-separated lists and arrays
+	 */
+	public function setFieldList($fieldList = array('*', 'score')) {
+		if (is_string($fieldList)) {
+			$fieldList = t3lib_div::trimExplode(',', $fieldList);
+		}
+
+		if (!is_array($fieldList) || empty($fieldList)) {
+			throw new UnexpectedValueException(
+				'Field list must be a comma-separated list or array and must not be empty.',
+				1310740308
+			);
+		}
+
+		$this->fieldList = $fieldList;
+	}
+
+	/**
+	 * Adds a field to the list of fields to return. Also checks whether * is
+	 * set for the fields, if so it's removed from the field list.
+	 *
+	 * @param	string	the field name
+	 */
+	public function addReturnField($fieldName) {
+		if (in_array('*', $this->fieldList)) {
+			$this->fieldList = array_diff($this->fieldList, array('*'));
+		}
+
+		$this->fieldList[] = $fieldName;
+	}
+
+	/**
+	 * Sets the fields returned in the documents.
+	 *
+	 * @param	array|string	Accepts an array of return field names or a commy separated list of field names
+	 * @deprecated	Use setFieldList() instead
+	 */
+	public function setReturnFields($returnFields) {
+		t3lib_div::logDeprecatedFunction();
+		$this->setFieldList($returnFields);
+	}
 
 	/**
 	 * Gets the query type, Solr's qt parameter.
@@ -539,7 +596,6 @@ class tx_solr_Query {
 	}
 
 	public function addQueryParameter($parameterName, $parameterValue) {
-			// FIXME do some validation
 		$this->queryParameters[$parameterName] = $parameterValue;
 	}
 
@@ -604,7 +660,6 @@ class tx_solr_Query {
 	 * @return	void
 	 */
 	public function setQueryField($fieldName, $boost = 1.0) {
-			// TODO check whether field exists in index ... luke?
 		$this->queryFields[$fieldName] = (float) $boost;
 	}
 
@@ -665,7 +720,7 @@ class tx_solr_Query {
 	public function getQueryParameters() {
 		$queryParameters = array_merge(
 			array(
-				'fl' => implode(',', $this->returnFields),
+				'fl' => implode(',', $this->fieldList),
 				'fq' => $this->filters
 			),
 			$this->queryParameters
@@ -697,44 +752,24 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * Adds a field to the list of fields to return. Also checks whether * is
-	 * set for the fields, if so it's removed from the field list.
+	 * Enables or disables highlighting of search terms in result teasers.
 	 *
-	 * @param	string	the field name
+	 * @param	boolean	$highlighting Enables highlighting when set to TRUE, deactivates highlighting when set to FALSE.
+	 * @param	boolean	$fragmentSize Size, in characters, of fragments to consider for highlighting.
+	 * @see	http://wiki.apache.org/solr/HighlightingParameters
+	 * @return	void
 	 */
-	public function addReturnField($fieldName) {
-		if (in_array('*', $this->returnFields)) {
-			$this->returnFields = array_diff($this->returnFields, array('*'));
-		}
-
-			// TODO check whether the field exists (using luke?)
-		$this->returnFields[] = $fieldName;
-	}
-
-	/**
-	 * Sets the fields returned in the documents.
-	 *
-	 * @param	array|string	Accepts an array of return field names or a commy separated list of field names
-	 */
-	public function setReturnFields($returnFields) {
-		if (is_string($returnFields)) {
-			$returnFields = t3lib_div::trimExplode(',', $returnFields);
-		}
-
-		$this->returnFields = $returnFields;
-	}
-
 	public function setHighlighting($highlighting = TRUE, $fragmentSize = 200) {
 
 		if ($highlighting) {
 			$this->queryParameters['hl'] = 'true';
 			$this->queryParameters['hl.fragsize'] = (int) $fragmentSize;
 
-			if (isset($this->solrConfiguration['search.']['highlighting.']['highlightFields'])) {
-				$this->queryParameters['hl.fl'] = $this->solrConfiguration['search.']['highlighting.']['highlightFields'];
+			if (isset($this->solrConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'])) {
+				$this->queryParameters['hl.fl'] = $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'];
 			}
 
-			$wrap = explode('|', $this->solrConfiguration['search.']['highlighting.']['wrap']);
+			$wrap = explode('|', $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['wrap']);
 			$this->queryParameters['hl.simple.pre']  = $wrap[0];
 			$this->queryParameters['hl.simple.post'] = $wrap[1];
 		} else {
@@ -772,7 +807,7 @@ class tx_solr_Query {
 	 * Multiple sort orderings can be separated by a comma,
 	 * ie: <field name> <direction>[,<field name> <direction>]...
 	 *
-	 * @param	string|boolean	$sorting Either a comma-separated list of sort fields and directions or FALSE to reset sorting to the default behavior (sort by score / relevancy)
+	 * @param	string|boolean	$sorting Either a comma-separated list of sort fields and directions or FALSE to reset sorting to the default behavior (sort by score / relevance)
 	 * @see	http://wiki.apache.org/solr/CommonQueryParameters#sort
 	 */
 	public function setSorting($sorting) {
@@ -780,7 +815,7 @@ class tx_solr_Query {
 			$sortParameter = $sorting;
 
 			list($sortField) = explode(' ', $sorting);
-			if ($sortField == 'relevancy') {
+			if ($sortField == 'relevance') {
 				$sortParameter = '';
 			}
 
@@ -827,7 +862,16 @@ class tx_solr_Query {
 		return $this->linkTargetPageId;
 	}
 
-	public function getQueryLink($linkText, array $additionalQueryParameters = array()) {
+	/**
+	 * Generates a html link
+	 *
+	 * @param	string	$linkText
+	 * @param	array	$additionalQueryParameters
+	 * @param	array	$aTagParameters
+	 * @return	a html link
+	 * @todo	merge $additionalQueryParameters and $typolinkOptions into one parameter
+	 */
+	public function getQueryLink($linkText, array $additionalQueryParameters = array(), array $typolinkOptions = array()) {
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 
 		$prefix = 'tx_solr';
@@ -845,14 +889,17 @@ class tx_solr_Query {
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters))
+			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
 		);
+
+			// merge linkConfiguration with typolinkOptions
+		$linkConfiguration = array_merge($linkConfiguration, $typolinkOptions);
 
 		return $cObj->typoLink($linkText, $linkConfiguration);
 	}
 
+		// @todo	change $additionalQueryParameters to allow more typolink options / @see getQueryLink()
 	public function getQueryUrl(array $additionalQueryParameters = array()) {
-			// TODO find a way to remove duplicate code (@see getQueryLink)
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 
 		$prefix = 'tx_solr';
@@ -870,7 +917,7 @@ class tx_solr_Query {
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters))
+			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
 		);
 
 		return $cObj->typoLink_URL($linkConfiguration);

@@ -46,6 +46,22 @@ class tx_solr_Search implements t3lib_Singleton {
 	 */
 	protected $query;
 
+	// TODO Override __clone to reset $response and $hasSearched
+
+	/**
+	 * The search response
+	 *
+	 * @var	string
+	 */
+	protected $response = NULL;
+
+	/**
+	 * Flag for marking a search
+	 *
+	 * @var	boolean
+	 */
+	protected $hasSearched = FALSE;
+
 	/**
 	 * Constructor
 	 *
@@ -89,6 +105,9 @@ class tx_solr_Search implements t3lib_Singleton {
 				$query->getQueryParameters()
 			);
 
+			$this->response    = $response;
+			$this->hasSearched = TRUE;
+
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['queryString']) {
 				t3lib_div::devLog('Querying Solr, getting result', 'solr', 0, array(
 					'query string'     => $query->getQueryString(),
@@ -109,7 +128,7 @@ class tx_solr_Search implements t3lib_Singleton {
 			}
 		}
 
-		return $response;
+		return $this->response;
 	}
 
 	/**
@@ -144,7 +163,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return boolean	TRUE if there was a search, FALSE otherwise (if the user just visited the search page f.e.)
 	 */
 	public function hasSearched() {
-		return $this->solr->hasSearched();
+		return $this->hasSearched;
 	}
 
 	public function getQuery() {
@@ -152,15 +171,15 @@ class tx_solr_Search implements t3lib_Singleton {
 	}
 
 	public function getResponse() {
-		return $this->solr->getResponse()->response;
+		return $this->response->response;
 	}
 
 	public function getRawResponse() {
-		return $this->solr->getResponse()->getRawResponse();
+		return $this->response->getRawResponse();
 	}
 
 	public function getResponseHeader() {
-		return $this->solr->getResponse()->responseHeader;
+		return $this->response->responseHeader;
 	}
 
 	public function getResultDocuments() {
@@ -173,7 +192,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return	integer	Query time in milliseconds
 	 */
 	public function getQueryTime() {
-		return $this->solr->getResponse()->responseHeader->QTime;
+		return $this->response->responseHeader->QTime;
 	}
 
 	/**
@@ -182,7 +201,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return	integer	Number of results per page
 	 */
 	public function getResultsPerPage() {
-		return $this->solr->getResponse()->responseHeader->params->rows;
+		return $this->response->responseHeader->params->rows;
 	}
 
 	/**
@@ -194,7 +213,7 @@ class tx_solr_Search implements t3lib_Singleton {
 		static $facetCountsModified = FALSE;
 		static $facetCounts         = NULL;
 
-		$unmodifiedFacetCounts = $this->solr->getResponse()->facet_counts;
+		$unmodifiedFacetCounts = $this->response->facet_counts;
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'])) {
 
@@ -208,7 +227,10 @@ class tx_solr_Search implements t3lib_Singleton {
 						$facetCounts = $facetsModifier->modifyFacets($facetCounts);
 						$facetCountsModified = TRUE;
 					} else {
-						// TODO throw exception
+						throw new UnexpectedValueException(
+							get_class($facetsModifier) . ' must implement interface tx_solr_FacetsModifier',
+							1310387526
+						);
 					}
 				}
 			}
@@ -225,7 +247,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	}
 
 	public function getNumberOfResults() {
-		return $this->solr->getResponse()->response->numFound;
+		return $this->response->response->numFound;
 	}
 
 	/**
@@ -234,22 +256,22 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return	integer	Result offset
 	 */
 	public function getResultOffset() {
-		return $this->solr->getResponse()->response->start;
+		return $this->response->response->start;
 	}
 
 	public function getMaximumResultScore() {
-		return $this->solr->getResponse()->response->maxScore;
+		return $this->response->response->maxScore;
 	}
 
 	public function getDebugResponse() {
-		return $this->solr->getResponse()->debug;
+		return$this->response->debug;
 	}
 
 	public function getHighlightedContent() {
 		$highlightedContent = FALSE;
 
-		if ($this->solr->getResponse()->highlighting) {
-			$highlightedContent = $this->solr->getResponse()->highlighting;
+		if ($this->response->highlighting) {
+			$highlightedContent = $this->response->highlighting;
 		}
 
 		return $highlightedContent;
@@ -258,7 +280,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	public function getSpellcheckingSuggestions() {
 		$spellcheckingSuggestions = FALSE;
 
-		$suggestions = (array) $this->solr->getResponse()->spellcheck->suggestions;
+		$suggestions = (array) $this->response->spellcheck->suggestions;
 		if (!empty($suggestions)) {
 			$spellcheckingSuggestions = $suggestions;
 		}

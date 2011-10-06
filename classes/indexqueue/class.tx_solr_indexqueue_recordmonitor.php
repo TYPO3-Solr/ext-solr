@@ -93,7 +93,7 @@ class tx_solr_indexqueue_RecordMonitor {
 			$indexQueue->updateItem('pages', $recordPid);
 		}
 
-			// TODO might need to check for creation of "pages_language_overlay" records to trigger "pages" updates
+			// TODO need to check for creation of "pages_language_overlay" records to trigger "pages" updates
 	}
 
 	/**
@@ -106,6 +106,8 @@ class tx_solr_indexqueue_RecordMonitor {
 	protected function getMonitoredTables($pageId) {
 		$monitoredTables = array();
 
+			// FIXME!! $pageId might be outside of a site root and thus might not know about solr configuration
+			// -> leads to record not being queued for reindexing
 		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($pageId);
 		$indexingConfigurations = t3lib_div::makeInstance('tx_solr_indexqueue_Queue')
 			->getTableIndexingConfigurations($solrConfiguration);

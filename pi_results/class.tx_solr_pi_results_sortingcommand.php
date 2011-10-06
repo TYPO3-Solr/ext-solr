@@ -83,75 +83,80 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 	}
 
 	protected function getSortingLinks() {
-		$configuredSortingFields = $this->configuration['search.']['sorting.']['fields.'];
+		$sortHelper = t3lib_div::makeInstance('tx_solr_Sorting', $this->configuration['search.']['sorting.']['options.']);
+
 		$query = $this->search->getQuery();
 		$query->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
-		$sortingFields = array();
+		$sortOptions = array();
 
-		$urlParameters = t3lib_div::_GP('tx_solr');
-		$urlSortingParameter = $urlParameters['sort'];
-		list($currentSortByField, $currentSortDirection) = explode(' ', $urlSortingParameter);
+		$urlParameters       = t3lib_div::_GP('tx_solr');
+		$urlSortParameter = $urlParameters['sort'];
+		list($currentSortOption, $currentSortDirection) = explode(' ', $urlSortParameter);
 
-		foreach ($configuredSortingFields as $fieldName => $enabled) {
-			if (substr($fieldName, -1) != '.' && $enabled) {
+		$configuredSortOptions = $sortHelper->getSortOptions();
 
-				$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
-				$sortIndicator = $sortDirection;
-				$sortParameter = $fieldName . ' ' . $sortDirection;
+		foreach ($configuredSortOptions as $sortOptionName => $sortOption) {
+			$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
+			$sortIndicator = $sortDirection;
+			$sortParameter = $sortOptionName . ' ' . $sortDirection;
 
-					// toggle sorting direction for the current sorting field
-				if ($currentSortByField == $fieldName) {
-					switch ($currentSortDirection) {
-						case 'asc':
-							$sortDirection = 'desc';
-							$sortIndicator = 'asc';
-							break;
-						case 'desc':
-							$sortDirection = 'asc';
-							$sortIndicator = 'desc';
-							break;
-					}
-
-					$sortParameter = $fieldName . ' ' . $sortDirection;
+				// toggle sorting direction for the current sorting field
+			if ($currentSortOption == $sortOptionName) {
+				switch ($currentSortDirection) {
+					case 'asc':
+						$sortDirection = 'desc';
+						$sortIndicator = 'asc';
+						break;
+					case 'desc':
+						$sortDirection = 'asc';
+						$sortIndicator = 'desc';
+						break;
 				}
 
-				$temp = array(
-					'link'       => $query->getQueryLink(
-						'###LLL:' . $configuredSortingFields[$fieldName . '.']['label'] . '###',
-						array('sort' => $sortParameter)
-					),
-					'url'        =>  $query->getQueryUrl(
-						array('sort' => $sortParameter)
-					),
-					'field'      => $fieldName,
-					'label'      => '###LLL:' . $configuredSortingFields[$fieldName . '.']['label'] . '###',
-					'is_current' => $currentSortByField == $fieldName ? '1' : '0',
-					'direction'  => $sortDirection,
-					'indicator'  => $sortIndicator,
-					'current_direction' => ' '
-				);
-
-					// set sort indicator for the current sorting field
-				if ($currentSortByField == $fieldName) {
-					$temp['selected']          = 'selected="selected"';
-					$temp['current']           = 'current';
-					$temp['current_direction'] = $sortIndicator;
-				}
-
-					// special case relevancy: just reset the search to normal behavior
-				if ($fieldName == 'relevancy') {
-					$temp['link'] = $query->getQueryLink(
-						'###LLL:' . $configuredSortingFields[$fieldName . '.']['label'] . '###',
-						array('sort' => NULL)
-					);
-					unset($temp['direction'], $temp['indicator']);
-				}
-
-				$sortingFields[] = $temp;
+				$sortParameter = $sortOptionName . ' ' . $sortDirection;
 			}
+
+			$temp = array(
+				'link'       => $query->getQueryLink(
+					'###LLL:' . $sortOption['label'] . '###',
+					array('sort' => $sortParameter)
+				),
+				'url'        =>  $query->getQueryUrl(
+					array('sort' => $sortParameter)
+				),
+				'optionName' => $sortOptionName,
+				'field'      => $sortOption['field'],
+				'label'      => $sortOption['label'],
+				'is_current' => '0',
+				'direction'  => $sortDirection,
+				'indicator'  => $sortIndicator,
+				'current_direction' => ' '
+			);
+
+				// set sort indicator for the current sorting field
+			if ($currentSortOption == $sortOptionName) {
+				$temp['selected']          = 'selected="selected"';
+				$temp['current']           = 'current';
+				$temp['is_current']        = '1';
+				$temp['current_direction'] = $sortIndicator;
+			}
+
+				// special case relevance: just reset the search to normal behavior
+			if ($sortOptionName == 'relevance') {
+				$temp['link'] = $query->getQueryLink(
+					$label,
+					array('sort' => NULL)
+				);
+				$temp['url'] = $query->getQueryUrl(
+					array('sort' => NULL)
+				);
+				unset($temp['direction'], $temp['indicator']);
+			}
+
+			$sortOptions[] = $temp;
 		}
 
-		return $sortingFields;
+		return $sortOptions;
 	}
 }
 

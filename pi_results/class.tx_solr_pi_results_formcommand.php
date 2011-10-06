@@ -66,8 +66,19 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 	 * @return	array	an array containing values for markers in the simple form template
 	 */
 	public function execute() {
+		$url = $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']);
+
+		if($this->configuration['search.']['keepExistingParametersForNewSearches']) {
+			$url = $this->parentPlugin->pi_linkTP_keepPIvars_url(
+				array(),
+				FALSE,
+				FALSE,
+				$this->parentPlugin->conf['search.']['targetPage']
+			);
+		}
+
 		$marker = array(
-			'action'                    => $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']),
+			'action'                    => $url,
 			'action_id'                 => intval($this->parentPlugin->conf['search.']['targetPage']),
 			'action_language'           => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
 			'action_language_parameter' => 'L', // FIXME L is not necessarily the language parameter

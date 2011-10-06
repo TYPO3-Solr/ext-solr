@@ -93,7 +93,6 @@ class tx_solr_indexqueue_Indexer {
 	 */
 	public function index(tx_solr_indexqueue_Item $item) {
 		$indexed   = FALSE;
-		$documents = array();
 
 		$solrConnections = $this->getSolrConnectionsByItem($item);
 		$this->setLogging($item);
@@ -119,7 +118,7 @@ class tx_solr_indexqueue_Indexer {
 
 		$document = $this->itemToDocument($item, $language);
 
-			// document field processing like in the frontend indexer
+			// document field processing
 		$this->processDocument($item, $document);
 
 		$documents[] = $document;
@@ -329,6 +328,10 @@ class tx_solr_indexqueue_Indexer {
 				$itemIndexingConfiguration[$solrFieldName],
 				$itemIndexingConfiguration[$solrFieldName . '.']
 			);
+
+			if ($this->isSerializedValue($itemIndexingConfiguration, $solrFieldName)) {
+				$fieldValue = unserialize($fieldValue);
+			}
 		} else {
 			$fieldValue = $itemRecord[$itemIndexingConfiguration[$solrFieldName]];
 		}
@@ -500,13 +503,13 @@ class tx_solr_indexqueue_Indexer {
 	 * @param	array	An array of Solr documents created from the item's data
 	 * @param	Apache_Solr_Response	The Solr response for the particular index document
 	 */
-	protected function log(tx_solr_indexqueue_Item $item, array $itemDocuments, $response) {
+	protected function log(tx_solr_indexqueue_Item $item, array $itemDocuments, Apache_Solr_Response $response) {
 		$itemRecord        = $item->getRecord();
 		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($itemRecord['pid']);
 
 		if ($solrConfiguration['logging.']['indexing']) {
 			$message = 'Indexing ' . $item->getType() . ':'
-				. $item->getRecordUid() . ' using Index Queue';
+				. $item->getRecordUid() . ' using Index Queue: ';
 			$severity = 0; // info
 
 				// preparing data
@@ -521,8 +524,46 @@ class tx_solr_indexqueue_Indexer {
 				'response'  => (array) $response
 			);
 
+			if ($response->getHttpStatus() == 200) {
+				$severity = -1;
+				$message .= 'Success';
+			} else if ($response->getHttpStatus() >= 500) {
+				$severity = 3;
+				$message .= 'Failure';
+
+				$logData['status']         = $response->getHttpStatus();
+				$logData['status message'] = $response->getHttpStatusMessage();
+			}
+
 			t3lib_div::devLog($message, 'solr', $severity, $logData);
 		}
+	}
+
+	/**
+	 * Uses a field's configuration to detect whether its value returned by a
+	 * content object is expected to be serialized and thus needs to be
+	 * unserialized.
+	 *
+	 * @param	array	$indexingConfiguration Current item's indexing configuration
+	 * @param	string	$solrFieldName	Current field being indexed
+	 * @return	boolean	TRUE if the value is expected to be serialized, FALSE otherwise
+	 */
+	protected function isSerializedValue(array $indexingConfiguration, $solrFieldName) {
+		$isSerialized = FALSE;
+
+			// SOLR_MULTIVALUE - always returns serialized array
+		if ($indexingConfiguration[$solrFieldName] == tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME) {
+			$isSerialized = TRUE;
+		}
+
+			// SOLR_RELATION - returns serialized array if multiValue option is set
+		if ($indexingConfiguration[$solrFieldName] == tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME
+			&& !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])
+		) {
+			$isSerialized = TRUE;
+		}
+
+		return $isSerialized;
 	}
 }
 

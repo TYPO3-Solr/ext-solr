@@ -114,24 +114,17 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 				if ($resultSetModifier instanceof tx_solr_ResultSetModifier) {
 					$responseDocuments = $resultSetModifier->modifyResultSet($this, $responseDocuments);
 				} else {
-					// TODO throw exception
+					throw new UnexpectedValueException(
+						get_class($resultSetModifier) . ' must implement interface tx_solr_ResultSetModifier',
+						1310386927
+					);
 				}
 			}
 		}
 
-			// TODO check whether highlighting is enabled in TS at all
-		$highlightedContent = $this->search->getHighlightedContent();
-
 		foreach ($responseDocuments as $resultDocument) {
 			$temporaryResultDocument = array();
 			$temporaryResultDocument = $this->processDocumentFieldsToArray($resultDocument);
-
-				// TODO implement as tx_solr_ResultDocumentModifier, move into highlighting command
-			if ($highlightedContent->{$resultDocument->id}->content[0]) {
-				$temporaryResultDocument['content'] = $this->utf8Decode(
-					$highlightedContent->{$resultDocument->id}->content[0]
-				);
-			}
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'])) {
 				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'] as $classReference) {
@@ -140,7 +133,10 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 					if ($resultDocumentModifier instanceof tx_solr_ResultDocumentModifier) {
 						$temporaryResultDocument = $resultDocumentModifier->modifyResultDocument($this, $temporaryResultDocument);
 					} else {
-						// TODO throw exception
+						throw new UnexpectedValueException(
+							get_class($resultDocumentModifier) . ' must implement interface tx_solr_ResultDocumentModifier',
+							1310386725
+						);
 					}
 				}
 			}
@@ -193,7 +189,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 					);
 					break;
 				case 'utf8Decode':
-					$processedFieldValue = $this->utf8Decode($document->{$fieldName});
+					$processedFieldValue = tx_solr_Util::utf8Decode($document->{$fieldName});
 					break;
 				case 'skip':
 					continue 2;
@@ -238,7 +234,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 				'pageParameterName' => 'tx_solr|page',
 				'numberOfPages'     => $numberOfPages,
 				'extraQueryString'  => '&tx_solr[q]=' . $this->search->getQuery()->getKeywords(),
-				'disableCacheHash'  => TRUE,
+				'disableCacheHash'  => FALSE,
 			)
 		);
 
@@ -300,14 +296,6 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 		$template->addVariable('form', $form);
 
 		return $template->render();
-	}
-
-	protected function utf8Decode($string) {
-		if ($GLOBALS['TSFE']->metaCharset !== 'utf-8') {
-			$string = $GLOBALS['TSFE']->csConvObj->utf8_decode($string, $GLOBALS['TSFE']->renderCharset);
-		}
-
-		return $string;
 	}
 
 	/**

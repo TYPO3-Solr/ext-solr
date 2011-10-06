@@ -67,10 +67,10 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 		$linkArgument = trim($arguments[1]);
 		if (is_numeric($linkArgument)) {
 			$linkTarget = intval($linkArgument);
-		} elseif(filter_var($linkArgument, FILTER_VALIDATE_URL)) {
+		} elseif(t3lib_div::isValidUrl($linkArgument)) {
 				// $linkTarget is an URL
 			$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
-		} elseif (is_string($linkArgument)) {
+		} elseif (is_string($linkArgument) && !empty($linkArgument)) {
 			try {
 				$typoscript      = tx_solr_Util::getTypoScriptObject($linkArgument);
 				$pathExploded    = explode('.', $linkArgument);

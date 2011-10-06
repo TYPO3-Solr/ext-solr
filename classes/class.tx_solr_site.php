@@ -93,6 +93,42 @@ class tx_solr_Site {
 	}
 
 	/**
+	 * Creates a dropdown selector of available TYPO3 sites with Solr
+	 * configured.
+	 *
+	 * @param	string	$selectorName Name to be used in the select's name attribute
+	 * @param	tx_solr_Site	$selectedSite Optional, currently selected site
+	 * @return	string	Site selector HTML code
+	 */
+	public static function getAvailableSitesSelector($selectorName, tx_solr_Site $selectedSite = NULL) {
+		$sites    = self::getAvailableSites();
+		$selector = '<select name="' . $selectorName . '">';
+
+		foreach ($sites as $site) {
+			$selectedAttribute = '';
+			if ($site == $selectedSite) {
+				$selectedAttribute = ' selected="selected"';
+			}
+
+			$selector .= '<option value="' . $site->getRootPageId() . '"' . $selectedAttribute . '>'
+				. $site->getLabel()
+				. '</option>';
+		}
+
+		$selector .= '</select>';
+
+		return $selector;
+	}
+
+	/**	 * Gets the site's Solr TypoScript configuration.
+	 *
+	 * @return	array	The Solr TypoScript configuration
+	 */
+	public function getSolrConfiguration() {
+		return tx_solr_Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
+	}
+
+	/**
 	 * Gets the site's main domain. More specifically the first domain record in
 	 * the site tree.
 	 *
@@ -143,7 +179,7 @@ class tx_solr_Site {
 	}
 
 	/**
-	 * Gets the site's label. The label is build from the the site titla and root
+	 * Gets the site's label. The label is build from the the site title and root
 	 * page ID (uid).
 	 *
 	 * @return	string	The site's label.

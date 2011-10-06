@@ -17,7 +17,8 @@ jQuery(document).ready(function(){
 					dataType: 'json',
 					data: {
 						termLowercase: request.term.toLowerCase(),
-						termOriginal: request.term
+						termOriginal: request.term,
+						L: jQuery('div.tx-solr input[name="L"]').val()
 					},
 					success: function(data) {
 						var rs     = [],

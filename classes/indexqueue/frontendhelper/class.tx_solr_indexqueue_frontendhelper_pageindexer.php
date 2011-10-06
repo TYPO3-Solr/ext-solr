@@ -76,7 +76,7 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 		$GLOBALS['T3_VAR']['getUserObj'][$pageIndexingHookRegistration] = $this;
 
 		$this->registerAuthorizationService();
-# Since TypoScript is not available at this point we can not bind it to some TS configuration option whether to log or not
+# Since TypoScript is not available at this point we cannot bind it to some TS configuration option whether to log or not
 #		t3lib_div::devLog('Registered Solr Page Indexer authorization service', 'solr', 1, array(
 #			'auth services' => $GLOBALS['T3_SERVICES']['auth']
 #		));
@@ -246,12 +246,13 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 		$this->page = $page;
 
 		if (!$this->page->config['config']['index_enable']) {
+			t3lib_div::devLog('Indexing is disabled. Set config.index_enable = 1 .', 'solr', 3);
+
 			return;
 		}
 
 		try {
 			$indexer = t3lib_div::makeInstance('tx_solr_Typo3PageIndexer', $page);
-			$indexer->setIndexerMode(tx_solr_IndexerSelector::INDEXER_STRATEGY_QUEUE);
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
 
@@ -262,6 +263,13 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 					$e->__toString()
 				));
 			}
+		}
+
+		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['pageIndexed']) {
+			$success  = $this->pageIndexed ? 'Success' : 'Failed';
+			$severity = $this->pageIndexed ? -1 : 3;
+
+			t3lib_div::devLog('Page indexed: ' . $success, 'solr', $severity);
 		}
 	}
 }

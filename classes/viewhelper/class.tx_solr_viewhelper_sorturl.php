@@ -24,7 +24,7 @@
 
 
 /**
- * Creates a solr sorting URL by expanding a ###SOLR_URL:sort_field### marker.
+ * Creates a solr sorting URL by expanding a ###SOLR_URL:sort_option### marker.
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
@@ -64,26 +64,30 @@ class tx_solr_viewhelper_SortUrl implements tx_solr_ViewHelper {
 	}
 
 	/**
-	 * Returns an URL that switches sorting to the given sorting field
+	 * Returns an URL that switches sorting to the given sort option
 	 *
 	 * @param array $arguments
 	 * @return	string
 	 */
 	public function execute(array $arguments = array()) {
-		$sortUrl = '';
-		$configuredSortingFields = $this->configuration['search.']['sorting.']['fields.'];
-		$sortField = $arguments[0];
+		$sortOption = $arguments[0];
+		$sortUrl    = '';
+		$sortHelper = t3lib_div::makeInstance(
+			'tx_solr_Sorting',
+			$this->configuration['search.']['sorting.']['options.']
+		);
 
-		$urlParameters = t3lib_div::_GP('tx_solr');
-		$urlSortingParameter = $urlParameters['sort'];
-		list($currentSortByField, $currentSortDirection) = explode(' ', $urlSortingParameter);
+		$urlParameters    = t3lib_div::_GP('tx_solr');
+		$urlSortParameter = $urlParameters['sort'];
+		list($currentSortOption, $currentSortDirection) = explode(' ', $urlSortParameter);
 
-		if (array_key_exists($sortField, $configuredSortingFields) && $configuredSortingFields[$sortField] == 1) {
+		$configuredSortOptions = $sortHelper->getSortOptions();
+
+		if (array_key_exists($sortOption, $configuredSortOptions)) {
 			$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
-			$sortParameter = $sortField . ' ' . $sortDirection;
+			$sortParameter = $sortOption . ' ' . $sortDirection;
 
-				// toggle sorting direction for the current sorting field
-			if ($currentSortByField == $sortField) {
+			if ($currentSortOption == $sortOption) {
 				switch ($currentSortDirection) {
 					case 'asc':
 						$sortDirection = 'desc';
@@ -93,7 +97,7 @@ class tx_solr_viewhelper_SortUrl implements tx_solr_ViewHelper {
 						break;
 				}
 
-				$sortParameter = $sortField . ' ' . $sortDirection;
+				$sortParameter = $sortOption . ' ' . $sortDirection;
 			}
 
 			$sortUrl = $this->query->getQueryUrl(array('sort' => $sortParameter));

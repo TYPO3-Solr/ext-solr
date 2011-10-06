@@ -41,6 +41,7 @@ class tx_solr_Util {
 	 * @deprecated	Use tx_solr_Site->getSiteHash() instead
 	 */
 	public static function getSiteHash($pageId = 0) {
+		t3lib_div::logDeprecatedFunction();
 		$site = tx_solr_Site::getSiteByPageId($pageId);
 
 		return $site->getSiteHash();
@@ -148,6 +149,20 @@ class tx_solr_Util {
 	}
 
 	/**
+	 * Converts a utf-8 string to the current TYPO3 render charset.
+	 *
+	 * @param	string	$string utf-8 string
+	 * @return	string	Strng converted to current TYPO3 render charset
+	 */
+	public static function utf8Decode($string) {
+		if ($GLOBALS['TSFE']->metaCharset !== 'utf-8') {
+			$string = $GLOBALS['TSFE']->csConvObj->utf8_decode($string, $GLOBALS['TSFE']->renderCharset);
+		}
+
+		return $string;
+	}
+
+	/**
 	 * Shortcut to retrieve the configuration for EXT:solr from TSFE
 	 *
 	 * @return array	Solr configuration
@@ -208,9 +223,10 @@ class tx_solr_Util {
 	 *
 	 * @param	integer	The page id to initialize the TSFE for
 	 * @param	integer	System language uid, optional, defaults to 0
+	 * @param	boolean	Use cache to reuse TSFE
 	 * @return	void
 	 */
-	public static function initializeTsfe($pageId, $language = 0) {
+	public static function initializeTsfe($pageId, $language = 0, $useCache = TRUE) {
 		static $tsfeCache = array();
 
 			// resetting, a TSFE instance with data from a different page Id could be set already
@@ -222,7 +238,7 @@ class tx_solr_Util {
 			$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_TimeTrackNull');
 		}
 
-		if (!isset($tsfeCache[$cacheId])) {
+		if (!isset($tsfeCache[$cacheId]) || !$useCache) {
 			t3lib_div::_GETset($language, 'L');
 
 			$GLOBALS['TSFE'] = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
@@ -231,11 +247,14 @@ class tx_solr_Util {
 			$GLOBALS['TSFE']->initTemplate();
 			$GLOBALS['TSFE']->getConfigArray();
 
-			$tsfeCache[$cacheId] = $GLOBALS['TSFE'];
+			if ($useCache) {
+				$tsfeCache[$cacheId] = $GLOBALS['TSFE'];
+			}
 		}
 
-			// use the requested TSFE instance
-		$GLOBALS['TSFE'] = $tsfeCache[$cacheId];
+		if ($useCache) {
+			$GLOBALS['TSFE'] = $tsfeCache[$cacheId];
+		}
 	}
 
 	/**
@@ -244,8 +263,8 @@ class tx_solr_Util {
 	 * @param	integer	A page ID somewhere in a tree.
 	 * @return	integer	The page's tree branch's root page ID
 	 */
-	public static function getRootPageId($pageId) {
-		$rootPageId = $pageId;
+	public static function getRootPageId($pageId = 0) {
+		$rootPageId = intval($pageId) ? intval($pageId) : $GLOBALS['TSFE']->id;
 
 			// frontend
 		if (!empty($GLOBALS['TSFE']->rootLine)) {

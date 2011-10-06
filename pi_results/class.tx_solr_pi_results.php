@@ -211,6 +211,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);
+			/* @var	$query	tx_solr_Query */
 
 			if ($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['query.']['allowEmptyQuery']) {
 					// empty main query, but using a "return everything"
@@ -235,8 +236,24 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$query->setDebugMode();
 			}
 
-			if ($this->conf['search.']['highlighting']) {
-				$query->setHighlighting(TRUE, $this->conf['search.']['highlighting.']['fragmentSize']);
+			if ($this->conf['search.']['results.']['siteHighlighting']) {
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'EXT:solr/classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php:tx_solr_resultdocumentmodifier_SiteHighlighter';
+			}
+
+			if ($this->conf['search.']['results.']['markResultTypeBoundaries']) {
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['resultTypeBoundaryMarker'] = 'EXT:solr/classes/resultsetmodifier/class.tx_solr_resultsetmodifier_resulttypeboundarymarker.php:tx_solr_resultsetmodifier_ResultTypeBoundaryMarker';
+			}
+
+			if(!empty($this->conf['search.']['highlighting'])) {
+				t3lib_div::deprecationLog('Usage of `plugin.tx_solr.search.highlighting` is deprecated. Please use `plugin.tx_solr.search.results.resultsHighlighting instead. This option will be removed with v2.1 / v2.6-EAP');
+
+				$this->conf['search.']['results.']['resultsHighlighting']  = $this->conf['search.']['highlighting'];
+				$this->conf['search.']['results.']['resultsHighlighting.'] = $this->conf['search.']['highlighting.'];
+			}
+
+			if ($this->conf['search.']['results.']['resultsHighlighting']) {
+				$query->setHighlighting(TRUE, $this->conf['search.']['results.']['resultsHighlighting.']['fragmentSize']);
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'EXT:solr/pi_results/class.tx_solr_pi_results_highlightingresultdocumentmodifier.php:tx_solr_pi_results_HighlightingResultDocumentModifier';
 			}
 
 			if ($this->conf['search.']['spellchecking']) {
@@ -251,6 +268,8 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				// access
 			$query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 			$query->setSiteHash(tx_solr_Site::getSiteByPageId($GLOBALS['TSFE']->id)->getSiteHash());
+#			$query->addFilter('endtime:[NOW TO *]'); // what to do if no endtime is set (empty / no limit)?
+#			$query->addFilter('starttime:[* TO NOW]'); // would need support to index pages with future start times
 
 			$language = 0;
 			if ($GLOBALS['TSFE']->sys_language_uid) {
@@ -267,7 +286,10 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				&& !empty($this->piVars['sort'])
 				&& preg_match('/^[a-z0-9_]+ (asc|desc)$/i', $this->piVars['sort'])
 			) {
-				$query->setSorting($this->piVars['sort']);
+				$sortHelper = t3lib_div::makeInstance('tx_solr_Sorting', $this->conf['search.']['sorting.']['options.']);
+				$sortField = $sortHelper->getSortFieldFromUrlParameter($this->piVars['sort']);
+
+				$query->setSorting($sortField);
 			}
 
 			$flexformSorting = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'sortBy', 'sQuery');

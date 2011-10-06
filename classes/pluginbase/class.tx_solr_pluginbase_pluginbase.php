@@ -141,6 +141,25 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	}
 
 	/**
+	 * Overload pi_setPiVarDefaults to add stdWrap-functionality to _DEFAULT_PI_VARS
+	 *
+	 * @author Grigori Prokhorov <grigori.prokhorov@dkd.de>
+	 * @author Ivan Kartolo <ivan.kartolo@dkd.de>
+	 */
+	function pi_setPiVarDefaults() {
+		if (is_array($this->conf['_DEFAULT_PI_VARS.'])) {
+			foreach ($this->conf['_DEFAULT_PI_VARS.'] as $key => $defaultValue) {
+				$this->conf['_DEFAULT_PI_VARS.'][$key] = $this->cObj->cObjGetSingle($this->conf['_DEFAULT_PI_VARS.'][$key], $this->conf['_DEFAULT_PI_VARS.'][$key . '.']);
+			}
+
+			$this->piVars = t3lib_div::array_merge_recursive_overrule(
+				$this->conf['_DEFAULT_PI_VARS.'],
+				is_array($this->piVars) ? $this->piVars : array()
+			);
+		}
+	}
+
+	/**
 	 * Allows to override TypoScript settings with Flexform values.
 	 *
 	 */
@@ -203,7 +222,10 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 							// TODO check whether $helperAdded is TRUE, throw an exception if not
 					}
 				} else {
-					// TODO throw an exception
+					throw new UnexpectedValueException(
+						get_class($viewHelperProvider) . ' must implement interface tx_solr_ViewHelperProvider',
+						1310387296
+					);
 				}
 			}
 		}
@@ -338,7 +360,10 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 				if ($queryModifier instanceof tx_solr_QueryModifier) {
 					$query = $queryModifier->modifyQuery($query);
 				} else {
-					// TODO throw an exception
+					throw new UnexpectedValueException(
+						get_class($queryModifier) . ' must implement interface tx_solr_QueryModifier',
+						1310387414
+					);
 				}
 			}
 		}

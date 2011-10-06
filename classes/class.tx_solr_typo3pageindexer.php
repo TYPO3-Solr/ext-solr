@@ -24,7 +24,7 @@
 
 
 /**
- * General frontend page indexer.
+ * Page Indexer to index TYPO3 pages used by the Index Queue.
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
  * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
@@ -70,13 +70,6 @@ class tx_solr_Typo3PageIndexer {
 	protected $pageAccessRootline = NULL;
 
 	/**
-	 * Indexer mode, either Frontend or IndexQueue
-	 *
-	 * @var	string
-	 */
-	protected $indexerMode = '';
-
-	/**
 	 * ID of the current page's Solr document.
 	 *
 	 * @var	string
@@ -98,7 +91,6 @@ class tx_solr_Typo3PageIndexer {
 	 */
 	public function __construct(tslib_fe $page) {
 		$this->page        = $page;
-		$this->indexerMode = tx_solr_IndexerSelector::INDEXER_STRATEGY_FRONTEND;
 		$this->pageUrl     = t3lib_div::getIndpEnv('TYPO3_REQUEST_URL');
 
 		try {
@@ -184,6 +176,7 @@ class tx_solr_Typo3PageIndexer {
 	 */
 	protected function getPageDocument() {
 		$document   = t3lib_div::makeInstance('Apache_Solr_Document');
+		/* @var	$document	Apache_Solr_Document */
 		$site       = tx_solr_Site::getSiteByPageId($this->page->id);
 		$cHash      = $this->filterInvalidContentHash($this->page->cHash);
 		$pageRecord = $this->page->page;
@@ -226,7 +219,7 @@ class tx_solr_Typo3PageIndexer {
 		$document->setField('content',     $this->contentExtractor->getIndexableContent());
 		$document->setField('url',         $this->pageUrl);
 
-			// keywords
+			// keywords, multi valued
 		$keywords = array_unique(t3lib_div::trimExplode(
 			',',
 			$this->utf8encode($pageRecord['keywords'])
@@ -297,10 +290,16 @@ class tx_solr_Typo3PageIndexer {
 					if ($substituteDocument instanceof Apache_Solr_Document) {
 						$pageDocument = $substituteDocument;
 					} else {
-						// TODO throw an exception
+						throw new UnexpectedValueException(
+							'The document returned by ' . get_class($substituteIndexer) . ' is not a valid Apache_Solr_Document document.',
+							1310490952
+						);
 					}
 				} else {
-					// TODO throw an exception
+					throw new UnexpectedValueException(
+						get_class($substituteIndexer) . ' must implement interface tx_solr_SubstitutePageIndexer',
+						1310491001
+					);
 				}
 			}
 		}
@@ -330,7 +329,10 @@ class tx_solr_Typo3PageIndexer {
 						$documents = array_merge($documents, $additionalDocuments);
 					}
 				} else {
-					// TODO throw an exception
+					throw new UnexpectedValueException(
+						get_class($additionalIndexer) . ' must implement interface tx_solr_AdditionalIndexer',
+						1310491024
+					);
 				}
 			}
 		}
@@ -406,35 +408,7 @@ class tx_solr_Typo3PageIndexer {
 	}
 
 	/**
-	 * Gets the current indexer mode.
-	 *
-	 * @return	string	Either tx_solr_IndexerSelector::INDEXER_STRATEGY_FRONTEND or tx_solr_IndexerSelector::INDEXER_STRATEGY_QUEUE
-	 */
-	public function getIndexerMode() {
-		return $this->indexerMode;
-	}
-
-	/**
-	 * Sets the indexer mode.
-	 *
-	 * @param	string	$indexerMode Either tx_solr_IndexerSelector::INDEXER_STRATEGY_FRONTEND or tx_solr_IndexerSelector::INDEXER_STRATEGY_QUEUE
-	 */
-	public function setIndexerMode($indexerMode) {
-		if (!tx_solr_IndexerSelector::indexerStrategyExists($indexerMode)) {
-			throw new InvalidArgumentException(
-				'Invalid indexer mode.',
-				1295368419
-			);
-		}
-
-		$this->indexerMode = $indexerMode;
-	}
-
-	/**
 	 * Gets the current page's URL.
-	 *
-	 * Depending on the current indexer mode, Frontend or IndexQueue different
-	 * ways of retrieving the URL are chosen.
 	 *
 	 * @return	string	URL of the current page.
 	 */

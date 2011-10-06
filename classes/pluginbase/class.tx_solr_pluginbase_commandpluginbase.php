@@ -56,13 +56,14 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 	 * This method executes the requested commands and applies the changes to
 	 * the template.
 	 *
-	 * TODO This method should be located somewhere in a base view
 	 */
 	protected function render($actionResult) {
 		$commandList     = $this->getCommandList();
 		$commandResolver = $this->getCommandResolver();
 
 		foreach ($commandList as $commandName) {
+			$GLOBALS['TT']->push('solr-' . $commandName);
+
 			$command          = $commandResolver->getCommand($commandName, $this);
 			$commandVariables = $command->execute();
 
@@ -87,10 +88,12 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 					}
 				}
 
-				$this->template->addSubpart('solr_search_' . $commandName, $subpartTemplate->render());
+				$commandContent = $subpartTemplate->render();
+				$this->template->addSubpart('solr_search_' . $commandName, $commandContent);
 			}
 
 			unset($subpartTemplate);
+			$GLOBALS['TT']->pull($commandContent);
 		}
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['renderTemplate'])) {
@@ -100,7 +103,10 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 				if ($templateModifier instanceof tx_solr_TemplateModifier) {
 					$templateModifier->modifyTemplate($this->template);
 				} else {
-					// TODO throw exceptions
+					throw new UnexpectedValueException(
+						get_class($templateModifier) . ' must implement interface tx_solr_TemplateModifier',
+						1310387230
+					);
 				}
 			}
 		}

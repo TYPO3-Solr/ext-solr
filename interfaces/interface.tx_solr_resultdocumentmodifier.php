@@ -36,9 +36,10 @@
 interface tx_solr_ResultDocumentModifier {
 
 	/**
-	 * Modifies the given query and returns the modified query as result
+	 * Modifies the given document and returns the modified document as result.
 	 *
 	 * @param	tx_solr_pi_results_ResultsCommand	The search result command
+	 * @param	array	Result document as array
 	 * @return	array	The document with fields as array
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument);

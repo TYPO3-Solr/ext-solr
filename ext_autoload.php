@@ -29,17 +29,16 @@ return array(
 	'tx_solr_commandresolver' => $extensionPath . 'classes/class.tx_solr_commandresolver.php',
 	'tx_solr_connectionmanager' => $extensionPath . 'classes/class.tx_solr_connectionmanager.php',
 	'tx_solr_garbagecollector' => $extensionPath . 'classes/class.tx_solr_garbagecollector.php',
-	'tx_solr_indexer' => $extensionPath . 'classes/class.tx_solr_indexer.php',
-	'tx_solr_indexerselector' => $extensionPath . 'classes/class.tx_solr_indexerselector.php',
+	'tx_solr_htmlcontentextractor' => $extensionPath . 'classes/class.tx_solr_htmlcontentextractor.php',
 	'tx_solr_languagefileunavailableexception' => $extensionPath . 'classes/class.tx_solr_languagefileunavailableexception.php',
 	'tx_solr_nosolrconnectionfoundexception' => $extensionPath . 'classes/class.tx_solr_nosolrconnectionfoundexception.php',
 	'tx_solr_query' => $extensionPath . 'classes/class.tx_solr_query.php',
 	'tx_solr_search' => $extensionPath . 'classes/class.tx_solr_search.php',
 	'tx_solr_site' => $extensionPath . 'classes/class.tx_solr_site.php',
 	'tx_solr_solrservice' => $extensionPath . 'classes/class.tx_solr_solrservice.php',
+	'tx_solr_sorting' => $extensionPath . 'classes/class.tx_solr_sorting.php',
 	'tx_solr_suggestquery' => $extensionPath . 'classes/class.tx_solr_suggestquery.php',
 	'tx_solr_template' => $extensionPath . 'classes/class.tx_solr_template.php',
-	'tx_solr_typo3environment' => $extensionPath . 'classes/class.tx_solr_typo3environment.php',
 	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'classes/class.tx_solr_typo3pagecontentextractor.php',
 	'tx_solr_typo3pageindexer' => $extensionPath . 'classes/class.tx_solr_typo3pageindexer.php',
 	'tx_solr_util' => $extensionPath . 'classes/class.tx_solr_util.php',
@@ -47,6 +46,10 @@ return array(
 	'tx_solr_access_rootline' => $extensionPath . 'classes/access/class.tx_solr_access_rootline.php',
 	'tx_solr_access_rootlineelement' => $extensionPath . 'classes/access/class.tx_solr_access_rootlineelement.php',
 	'tx_solr_access_rootlineelementformatexception' => $extensionPath . 'classes/access/class.tx_solr_access_rootlineelementformatexception.php',
+
+	'tx_solr_contentobject_content' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_content.php',
+	'tx_solr_contentobject_multivalue' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_multivalue.php',
+	'tx_solr_contentobject_relation' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_relation.php',
 
 	'tx_solr_facet_facetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrenderer.php',
 	'tx_solr_facet_simplefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetrenderer.php',
@@ -76,6 +79,10 @@ return array(
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_faceting.php',
+	
+	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php',
+
+	'tx_solr_resultsetmodifier_resulttypeboundarymarker' => $extensionPath . 'ext/solr/classes/resultsetmodifier/class.tx_solr_resultsetmodifier_resulttypeboundarymarker.php',
 
 	'tx_solr_viewhelper_abstractsubpartviewhelper' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_abstractsubpartviewhelper.php',
 	'tx_solr_viewhelper_crop' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_crop.php',
@@ -96,15 +103,23 @@ return array(
 
 	'tx_solr_moduleadmin' => $extensionPath . 'mod_admin/index.php',
 
+	'tx_solr_mod_index_indexinspector' => $extensionPath . 'mod_index/class.tx_solr_mod_index_indexinspector.php',
+	'tx_solr_mod_index_indexinspectorremotecontroller' => $extensionPath . 'mod_index/class.tx_solr_mod_index_indexinspectorremotecontroller.php',
+
 		// plugins
 
+	'tx_solr_pi_commonterms' => $extensionPath . 'pi_commonterms/class.tx_solr_pi_commonterms.php',
+	'tx_solr_pi_mlt' => $extensionPath . 'pi_mlt/class.tx_solr_pi_mlt.php',
 	'tx_solr_pi_results' => $extensionPath . 'pi_results/class.tx_solr_pi_results.php',
 	'tx_solr_pi_search' => $extensionPath . 'pi_search/class.tx_solr_pi_search.php',
 
 	'tx_solr_pi_results_advancedformcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_advancedformcommand.php',
+	'tx_solr_pi_results_commontermscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_commontermscommand.php',
 	'tx_solr_pi_results_errorscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_errorscommand.php',
 	'tx_solr_pi_results_facetingcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_facetingcommand.php',
 	'tx_solr_pi_results_formcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_formcommand.php',
+	'tx_solr_pi_results_highlightingresultdocumentmodifier' => $extensionPath . 'pi_results/class.tx_solr_pi_results_highlightingresultdocumentmodifier.php',
+	'tx_solr_pi_results_lastsearchescommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_lastsearchescommand.php',
 	'tx_solr_pi_results_noresultscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_noresultscommand.php',
 	'tx_solr_pi_results_resultscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_resultscommand.php',
 	'tx_solr_pi_results_sortingcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_sortingcommand.php',
@@ -114,21 +129,26 @@ return array(
 
 		// scheduler tasks
 
-	'tx_solr_scheduler_optimizetask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetask.php',
-	'tx_solr_scheduler_optimizetasksolrserverfield' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetasksolrserverfield.php',
 	'tx_solr_scheduler_committask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_committask.php',
 	'tx_solr_scheduler_committasksolrserverfield' => $extensionPath . 'scheduler/class.tx_solr_scheduler_committasksolrserverfield.php',
+	'tx_solr_scheduler_fileindexqueueworkertask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_fileindexqueueworkertask.php',
+	'tx_solr_scheduler_fileindexqueueworkertaskadditionalfieldprovider' => $extensionPath . 'scheduler/class.tx_solr_scheduler_fileindexqueueworkertaskadditionalfieldprovider.php',
 	'tx_solr_scheduler_indexqueueworkertask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_indexqueueworkertask.php',
 	'tx_solr_scheduler_indexqueueworkertaskadditionalfieldprovider' => $extensionPath . 'scheduler/class.tx_solr_scheduler_indexqueueworkertaskadditionalfieldprovider.php',
+	'tx_solr_scheduler_optimizetask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetask.php',
+	'tx_solr_scheduler_optimizetasksolrserverfield' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetasksolrserverfield.php',
 
 		// reports
 
 	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'report/class.tx_solr_report_accessfilterplugininstalledstatus.php',
+	'tx_solr_report_fileindexerstatus' => $extensionPath . 'report/class.tx_solr_report_fileindexerstatus.php',
 	'tx_solr_report_indexreport' => $extensionPath . 'report/class.tx_solr_report_indexreport.php',
 	'tx_solr_report_schemastatus' => $extensionPath . 'report/class.tx_solr_report_schemastatus.php',
 	'tx_solr_report_solrconfigstatus' => $extensionPath . 'report/class.tx_solr_report_solrconfigstatus.php',
 	'tx_solr_report_solrconfigurationstatus' => $extensionPath . 'report/class.tx_solr_report_solrconfigurationstatus.php',
 	'tx_solr_report_solrstatus' => $extensionPath . 'report/class.tx_solr_report_solrstatus.php',
+	'tx_solr_report_solrversionstatus' => $extensionPath . 'report/class.tx_solr_report_solrversionstatus.php',
+	'tx_solr_report_statisticsreport' => $extensionPath . 'report/class.tx_solr_report_statisticsreport.php',
 
 		// interfaces
 
@@ -136,6 +156,7 @@ return array(
 	'tx_solr_facetrenderer' => $extensionPath . 'interfaces/interface.tx_solr_facetrenderer.php',
 	'tx_solr_facetsmodifier' =>  $extensionPath . 'interfaces/interface.tx_solr_facetsmodifier.php',
 	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
+	'tx_solr_filedetector' => $extensionPath . 'interfaces/interface.tx_solr_filedetector.php',
 	'tx_solr_formmodifier' => $extensionPath . 'interfaces/interface.tx_solr_formmodifier.php',
 	'tx_solr_indexqueuepageindexerdataurlmodifier' => $extensionPath . 'interfaces/interface.tx_solr_indexqueuepageindexerdataurlmodifier.php',
 	'tx_solr_indexqueuepageindexerdocumentsmodifier' => $extensionPath . 'interfaces/interface.tx_solr_indexqueuepageindexerdocumentsmodifier.php',

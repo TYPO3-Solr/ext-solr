@@ -41,7 +41,7 @@ interface tx_solr_ResultSetModifier {
 	 * @param	tx_solr_pi_results_ResultsCommand	The search result command
 	 * @return	array	The resultset with fields as array
 	 */
-	public function modifyResultSet($resultCommand, array $resultSet);
+	public function modifyResultSet(tx_solr_pi_results_ResultsCommand $resultCommand, array $resultSet);
 
 }
 

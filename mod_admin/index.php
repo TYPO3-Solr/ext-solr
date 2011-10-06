@@ -37,7 +37,18 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	var $pageinfo;
 
 	/**
+	 * @var	tx_solr_Site
+	 */
+	protected $site;
+
+	/**
+	 * @var	tx_solr_ConnectionManager
+	 */
+	protected $connectionManager;
+
+	/**
 	 * Initializes the Module
+	 *
 	 * @return	void
 	 */
 	public function init() {
@@ -61,12 +72,12 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	 */
 	public function menuConfig() {
 		$registry = t3lib_div::makeInstance('t3lib_Registry');
-		$servers  = $registry->get('tx_solr', 'servers', array());
+		$sites    = tx_solr_Site::getAvailableSites();
 
 			// TODO add a menu entry on top to manage all indexes, otherwise when selecting a specific index actions will only affect that specific one
 
-		foreach ($servers as $key => $server) {
-			$this->MOD_MENU['function'][$key] = $server['label'];
+		foreach ($sites as $key => $site) {
+			$this->MOD_MENU['function'][$site->getRootPageId()] = $site->getLabel();
 		}
 
 		parent::menuConfig();
@@ -86,6 +97,10 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
 		$access = is_array($this->pageinfo) ? 1 : 0;
 
+		$rootPageId = $this->MOD_SETTINGS['function'];
+
+		$this->site              = t3lib_div::makeInstance('tx_solr_Site', $rootPageId);
+		$this->connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
 
 		$docHeaderButtons = $this->getButtons();
 
@@ -109,6 +124,9 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 					if (top.fsMod) top.fsMod.recentIds["web"] = 0;
 				</script>
 			';
+
+			$this->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/resources/css/mod_admin/index.css');
+
 				// Render content:
 			$this->getModuleContent();
 		} else {
@@ -150,7 +168,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$content = '
 			<input type="hidden" id="solraction" name="solraction" value="" />
 
-			Global actions:
+			Site actions:
 			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
 			<input type="submit" value="Initialize Index Queue" name="s_initializeIndexQueue" onclick="document.forms[0].solraction.value=\'initializeIndexQueue\';" /><br /><br />
 
@@ -170,6 +188,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 			<input id="delete_type" type="text" name="delete_type" value="" /><br /><br />
 			<input type="submit" value="Delete Document(s)"name="s_deleteDocument" onclick="document.forms[0].solraction.value=\'deleteDocument\';" /><br /><br />
 		';
+			// TODO add a checkbox to the delete documents fields to also remove from Index Queue
 
 		switch($_POST['solraction']) {
 			case 'initializeIndexQueue':
@@ -196,24 +215,17 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 
 	//// TEMPORARY
 
-	protected function getSolr() {
-		$solrConnectionKey = $this->MOD_SETTINGS['function'];
-
-		list($rootPageId, $language) = explode('|', $solrConnectionKey);
-
-		return t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByRootPageId(
-			$rootPageId,
-			$language
-		);
-	}
-
 	protected function initializeIndexQueue() {
 		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
-		$itemIndexQueue->initialize();
+		$itemIndexQueue->initialize($this->site);
 
+		$fileIndexQueue = t3lib_div::makeInstance('tx_solr_fileindexer_Queue');
+		$fileIndexQueue->initialize($this->site);
+
+			// TODO make dependent on return vale of IQ init
 		$flashMessage = t3lib_div::makeInstance(
 			't3lib_FlashMessage',
-			'Index Queue initialized.',
+			'Index Queue initialized for site ' . $this->site->getLabel() . '.',
 			'',
 			t3lib_FlashMessage::OK
 		);
@@ -225,9 +237,13 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$severity = t3lib_FlashMessage::OK;
 
 		try {
-			$solr = $this->getSolr();
-			$solr->deleteByQuery('*:*');
-			$response = $solr->commit();
+			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
+			foreach($solrServers as $solrServer) {
+					// make sure maybe not-yet committed documents are committed
+				$solrServer->commit();
+				$solrServer->deleteByQuery('*:*');
+				$solrServer->commit();
+			}
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to empty the index:</p>'
 					 . '<p>' . $e->__toString() . '</p>';
@@ -248,8 +264,10 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$severity = t3lib_FlashMessage::OK;
 
 		try {
-			$solr = $this->getSolr();
-			$response = $solr->optimize();
+			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
+			foreach($solrServers as $solrServer) {
+				$solrServer->optimize();
+			}
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to optimize the index:</p>'
 					 . '<p>' . $e->__toString() . '</p>';
@@ -270,8 +288,10 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$severity = t3lib_FlashMessage::OK;
 
 		try {
-			$solr = $this->getSolr();
-			$response = $solr->commit();
+			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
+			foreach($solrServers as $solrServer) {
+				$solrServer->commit();
+			}
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to commit:</p>'
 					 . '<p>' . $e->__toString() . '</p>';
@@ -295,13 +315,14 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$severity = t3lib_FlashMessage::OK;
 
 		try {
-			$solr     = $this->getSolr();
+			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
+			foreach($solrServers as $solrServer) {
+				$uids         = t3lib_div::trimExplode(',', $documentUid);
+				$uidCondition = implode(' OR ', $uids);
+				$solrServer->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
 
-			$uids         = t3lib_div::trimExplode(',', $documentUid);
-			$uidCondition = implode(' OR ', $uids);
-			$response     = $solr->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
-
-			$solr->commit();
+				$solrServer->commit();
+			}
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to delete:</p>'
 				. '<p>' . $e->__toString() . '</p>';

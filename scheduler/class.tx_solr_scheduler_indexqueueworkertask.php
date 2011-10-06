@@ -70,9 +70,11 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 				}
 			} catch (Exception $e) {
 
-					// TODO decide on what to do when indexing of an item failed
-					// continue with next item, stop indexing?
-					// re-throwing for now
+					// TODO mark item as failed (new column)
+					// TODO make the IQ filter out failed items
+					// TODO add an IQ report: currently indexing, indexed, upcoming, failed
+					// TODO make the task display number of failed items
+
 				throw $e;
 			}
 		}
@@ -95,7 +97,7 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 			$this->initializeHttpHost($item);
 			$itemIndexed = $indexer->index($item);
 		} catch (Exception $e) {
-				// FIXME handle exception
+				// FIXME handle exception, log failed item
 			throw $e;
 		}
 

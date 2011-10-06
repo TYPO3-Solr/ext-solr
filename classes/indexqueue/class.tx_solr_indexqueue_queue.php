@@ -24,7 +24,8 @@
 
 
 /**
- * The Indexing Queue. It allows us to decouple from frontend indexing and reacting to changes faster.
+ * The Indexing Queue. It allows us to decouple from frontend indexing and
+ * reacting to changes faster.
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
@@ -90,72 +91,90 @@ class tx_solr_indexqueue_Queue {
 	 *
 	 * @return	void
 	 */
-	public function initialize() {
+	public function initialize(tx_solr_Site $site) {
 			// clear queue
-		$this->deleteAllItems();
+		$this->deleteItemsBySite($site);
 
-		$sites = tx_solr_Site::getAvailableSites();
+		$rootPageId = $site->getRootPageId();
 
-		if (!empty($sites)) {
-			foreach ($sites as $site) {
-				$rootPageId = $site->getRootPageId();
+			// get configuration for this branch
+		$solrConfiguration = $site->getSolrConfiguration();
+			// which tables to index?
+		$indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
 
-					// get configuration for this branch
-				$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($rootPageId);
-					// which tables to index?
-				$indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
+			// get pages in this branch
+		$pagesInTree = $this->getListOfPagesFromRoot($rootPageId);
+		array_unshift($pagesInTree, $rootPageId);
 
-					// get pages in this branch
-				$pagesInTree = $this->getListOfPagesFromRoot($rootPageId);
-				array_unshift($pagesInTree, $rootPageId);
-
-				foreach ($indexingConfigurations as $indexingConfigurationName) {
-					$tableToIndex = $indexingConfigurationName;
-					if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-							// table has been set explicitly. Allows to index the same table with different configurations
-						$tableToIndex = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
-					}
-
-					$lastChangedFieldName = $GLOBALS['TCA'][$tableToIndex]['ctrl']['tstamp'];
-					$deletedFieldName     = $GLOBALS['TCA'][$tableToIndex]['ctrl']['delete'];
-					$disabledFieldName    = $GLOBALS['TCA'][$tableToIndex]['ctrl']['enablecolumns']['disabled'];
-
-					$additionalWhereClause = '';
-					if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'])) {
-							// FIXME needs additional sanitization?
-						$additionalWhereClause = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'];
-					}
-
-					if (t3lib_BEfunc::isTableLocalizable($tableToIndex)) {
-						if (!empty($additionalWhereClause)) {
-							$additionalWhereClause .= ' AND ';
-						}
-
-						$additionalWhereClause .= $GLOBALS['TCA'][$tableToIndex]['ctrl']['languageField'] . ' = 0';
-					}
-
-					$additionalPageIds = array();
-					if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalPageIds'])) {
-						$additionalPageIds = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalPageIds'];
-						$additionalPageIds = t3lib_div::intExplode(',', $additionalPageIds);
-						$pagesInTree = array_merge($pagesInTree, $additionalPageIds);
-					}
-
-						// FIXME must exclude unpublished / versioned items (pid = -1)
-						// FIXME must include the root page itself for pages: OR uid = $rootPageId
-					$query = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, changed)
-						SELECT \'' . $rootPageId . '\' as root, \'' . $tableToIndex . '\' AS item_type, uid, \'' . $indexingConfigurationName . '\' as indexing_configuration, ' . $lastChangedFieldName . '
-						FROM ' . $tableToIndex . '
-						WHERE pid IN (' . implode(',', $pagesInTree) . ')
-							' . ($deletedFieldName ? 'AND ' . $deletedFieldName . ' = 0' : '') . '
-							' . ($disabledFieldName ? 'AND ' . $disabledFieldName . ' = 0' : '') . '
-							' . ($additionalWhereClause ? 'AND ' . $additionalWhereClause : '') . '
-					';
-
-					$GLOBALS['TYPO3_DB']->sql_query($query);
-				}
+		foreach ($indexingConfigurations as $indexingConfigurationName) {
+			$tableToIndex = $indexingConfigurationName;
+			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
+					// table has been set explicitly. Allows to index the same table with different configurations
+				$tableToIndex = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
 			}
+
+			$lastChangedFieldName = $GLOBALS['TCA'][$tableToIndex]['ctrl']['tstamp'];
+			$deletedFieldName     = $GLOBALS['TCA'][$tableToIndex]['ctrl']['delete'];
+			$disabledFieldName    = $GLOBALS['TCA'][$tableToIndex]['ctrl']['enablecolumns']['disabled'];
+			$startTimeFieldName   = $GLOBALS['TCA'][$tableToIndex]['ctrl']['enablecolumns']['starttime'];
+			$endTimeFieldName     = $GLOBALS['TCA'][$tableToIndex]['ctrl']['enablecolumns']['endtime'];
+
+				// FIXME exclude pid = -1 for versionized records
+
+			$additionalWhereClause = '';
+			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'])) {
+					// FIXME needs additional sanitization?
+				$additionalWhereClause = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'];
+			}
+
+			if (t3lib_BEfunc::isTableLocalizable($tableToIndex)) {
+				if (!empty($additionalWhereClause)) {
+					$additionalWhereClause .= ' AND ';
+				}
+
+				$additionalWhereClause .= '(' . $GLOBALS['TCA'][$tableToIndex]['ctrl']['languageField'] . ' = 0'
+										. ' OR ' . $GLOBALS['TCA'][$tableToIndex]['ctrl']['languageField'] . ' = -1)'; // all
+			}
+
+			$additionalPageIds = array();
+			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalPageIds'])) {
+				$additionalPageIds = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalPageIds'];
+				$additionalPageIds = t3lib_div::intExplode(',', $additionalPageIds);
+				$pagesInTree = array_merge($pagesInTree, $additionalPageIds);
+			}
+			sort($pagesInTree, SORT_NUMERIC);
+
+				// FIXME must exclude unpublished / versioned items (pid = -1)
+				// FIXME must include the root page itself for pages: OR uid = $rootPageId
+			$query = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, changed)
+				SELECT \'' . $rootPageId . '\' as root, \'' . $tableToIndex . '\' AS item_type, uid, \'' . $indexingConfigurationName . '\' as indexing_configuration, ' . $lastChangedFieldName . '
+				FROM ' . $tableToIndex . '
+				WHERE pid IN (' . implode(',', $pagesInTree) . ')
+					' . ($deletedFieldName ? 'AND ' . $deletedFieldName . ' = 0' : '') . '
+					' . ($disabledFieldName ? 'AND ' . $disabledFieldName . ' = 0' : '') . '
+					' . ($startTimeFieldName ? 'AND ' . $startTimeFieldName . ' < ' . time() : '') . '
+					' . ($endTimeFieldName ? 'AND (' . $endTimeFieldName . ' > ' . time() . ' OR ' . $endTimeFieldName . ' = 0)' : '') . '
+					' . ($additionalWhereClause ? 'AND ' . $additionalWhereClause : '') . '
+			';
+
+			$GLOBALS['TYPO3_DB']->sql_query($query);
+
+			$logSeverity = -1;
+			$logData     = array(
+				'query' => $query,
+				'rows'  => $GLOBALS['TYPO3_DB']->sql_affected_rows()
+			);
+			if ($GLOBALS['TYPO3_DB']->sql_errno()) {
+				$logSeverity      = 3;
+				$logData['error'] = $GLOBALS['TYPO3_DB']->sql_errno() . ': ' . $GLOBALS['TYPO3_DB']->sql_error();
+			}
+			t3lib_div::devLog('Index Queue initialized for indexing configuration ' . $indexingConfigurationName, 'solr', $logSeverity, $logData);
+
+
+				// TODO return success / failed depending on sql error, affected rows
+
 		}
+
 	}
 
 	/**
@@ -391,6 +410,18 @@ class tx_solr_indexqueue_Queue {
 	}
 
 	/**
+	 * Removes all items of a certain site from the Index Queue.
+	 *
+	 * @param	tx_solr_Site	$site The site to remove items for.
+	 */
+	public function deleteItemsBySite(tx_solr_Site $site) {
+		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+			'tx_solr_indexqueue_item',
+			'root = ' . $site->getRootPageId()
+		);
+	}
+
+	/**
 	 * Removes all items from the Index Queue.
 	 *
 	 */
@@ -419,7 +450,7 @@ class tx_solr_indexqueue_Queue {
 			'root = ' . $site->getRootPageId()
 				. ' AND changed > indexed',
 			'',
-			'changed ASC, uid ASC',
+			'changed DESC, uid DESC',
 			intval($limit)
 		);
 

@@ -53,7 +53,11 @@ if (!empty($additionalFilters)) {
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 	// Search
-$search = t3lib_div::makeInstance('tx_solr_Search');
+$solr   = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByPageId(
+	$pageId,
+	$languageId
+);
+$search = t3lib_div::makeInstance('tx_solr_Search', $solr);
 
 if ($search->ping()) {
 	if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {

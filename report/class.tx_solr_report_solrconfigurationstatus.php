@@ -44,11 +44,19 @@ class tx_solr_report_SolrConfigurationStatus implements tx_reports_StatusProvide
 		$rootPageFlagStatus = $this->getRootPageFlagStatus();
 		if (!is_null($rootPageFlagStatus)) {
 			$reports[] = $rootPageFlagStatus;
+
+				// intended early return, no sense in going on if there are no root pages
+			return $reports;
 		}
 
 		$domainRecordAvailableStatus = $this->getDomainRecordAvailableStatus();
 		if (!is_null($domainRecordAvailableStatus)) {
 			$reports[] = $domainRecordAvailableStatus;
+		}
+
+		$configIndexEnableStatus = $this->getConfigIndexEnableStatus();
+		if (!is_null($configIndexEnableStatus)) {
+			$reports[] = $configIndexEnableStatus;
 		}
 
 		return $reports;
@@ -66,8 +74,8 @@ class tx_solr_report_SolrConfigurationStatus implements tx_reports_StatusProvide
 
 		if (empty($rootPages)) {
 			$status = t3lib_div::makeInstance('tx_reports_reports_status_Status',
-				'Root Pages',
-				'No root pages found',
+				'Sites',
+				'No sites found',
 				'Connections to your Solr server are detected automatically.
 				To make this work you need to set the "Use as Root Page" page
 				property for your site root pages.',
@@ -118,8 +126,45 @@ class tx_solr_report_SolrConfigurationStatus implements tx_reports_StatusProvide
 				'Domain Records',
 				'Domain records missing',
 				'Domain records are needed to properly index pages. The following
-				pages are marked as root pages, but do not have a domain configured:
+				sites are marked as root pages, but do not have a domain configured:
 				<ul><li>' . implode('</li><li>', $rootPagesWithoutDomain) . '</li></ul>',
+				tx_reports_reports_status_Status::ERROR
+			);
+		}
+
+		return $status;
+	}
+
+	/**
+	 * Checks whether config.index_enable is set to 1, otherwise indexing will
+	 * not work.
+	 *
+	 * @return	NULL|tx_reports_reports_status_Status	An error status is returned for each site root page config.index_enable = 0.
+	 */
+	protected function getConfigIndexEnableStatus() {
+		$status                   = NULL;
+		$rootPages                = $this->getRootPages();
+		$rootPagesWithIndexingOff = array();
+
+		foreach ($rootPages as $rootPage) {
+			tx_solr_Util::initializeTsfe($rootPage['uid']);
+
+			if (!$GLOBALS['TSFE']->config['config']['index_enable']) {
+				$rootPagesWithIndexingOff[] = $rootPage;
+			}
+		}
+
+		if (!empty($rootPagesWithIndexingOff)) {
+			foreach ($rootPagesWithIndexingOff as $key => $rootPageWithIndexingOff) {
+				$rootPagesWithIndexingOff[$key] = '[' . $rootPageWithIndexingOff['uid'] . '] ' . $rootPageWithIndexingOff['title'];
+			}
+
+			$status = t3lib_div::makeInstance('tx_reports_reports_status_Status',
+				'Page Indexing',
+				'Indexing is disabled',
+				'You need to set config.index_enable = 1 to allow page indexing.
+				The following sites were found with indexing disabled:
+				<ul><li>' . implode('</li><li>', $rootPagesWithIndexingOff) . '</li></ul>',
 				tx_reports_reports_status_Status::ERROR
 			);
 		}

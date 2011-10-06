@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -57,7 +57,7 @@ class tx_solr_scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements t
 		}
 
 		$additionalFields['site'] = array(
-			'code'     => $this->getAvailableSitesSelector($taskInfo['site']),
+			'code'     => tx_solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $taskInfo['site']),
 			'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_field_site',
 			'cshKey'   => '',
 			'cshLabel' => ''
@@ -71,35 +71,6 @@ class tx_solr_scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements t
 		);
 
 		return $additionalFields;
-	}
-
-	/**
-	 * Creates a dropdown selector of available TYPO3 sites with Solr
-	 * configured.
-	 *
-	 * @todo	Move to tx_solr_Site? (need to have a select name parameter then)
-	 *
-	 * @param	tx_solr_Site	$selectedSite Optional, currently selected site
-	 * @return	string	Site selector HTML code
-	 */
-	protected function getAvailableSitesSelector($selectedSite = NULL) {
-		$sites    = tx_solr_Site::getAvailableSites();
-		$selector = '<select name="tx_scheduler[site]">';
-
-		foreach ($sites as $site) {
-			$selectedAttribute = '';
-			if ($site == $selectedSite) {
-				$selectedAttribute = ' selected="selected"';
-			}
-
-			$selector .= '<option value="' . $site->getRootPageId() . '"' . $selectedAttribute . '>'
-				. $site->getLabel()
-				. '</option>';
-		}
-
-		$selector .= '</select>';
-
-		return $selector;
 	}
 
 	/**
