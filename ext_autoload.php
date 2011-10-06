@@ -79,7 +79,7 @@ return array(
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_faceting.php',
-	
+
 	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php',
 
 	'tx_solr_resultsetmodifier_resulttypeboundarymarker' => $extensionPath . 'ext/solr/classes/resultsetmodifier/class.tx_solr_resultsetmodifier_resulttypeboundarymarker.php',
@@ -141,7 +141,6 @@ return array(
 		// reports
 
 	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'report/class.tx_solr_report_accessfilterplugininstalledstatus.php',
-	'tx_solr_report_fileindexerstatus' => $extensionPath . 'report/class.tx_solr_report_fileindexerstatus.php',
 	'tx_solr_report_indexreport' => $extensionPath . 'report/class.tx_solr_report_indexreport.php',
 	'tx_solr_report_schemastatus' => $extensionPath . 'report/class.tx_solr_report_schemastatus.php',
 	'tx_solr_report_solrconfigstatus' => $extensionPath . 'report/class.tx_solr_report_solrconfigstatus.php',

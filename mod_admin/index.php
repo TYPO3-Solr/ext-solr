@@ -219,9 +219,6 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 		$itemIndexQueue->initialize($this->site);
 
-		$fileIndexQueue = t3lib_div::makeInstance('tx_solr_fileindexer_Queue');
-		$fileIndexQueue->initialize($this->site);
-
 			// TODO make dependent on return vale of IQ init
 		$flashMessage = t3lib_div::makeInstance(
 			't3lib_FlashMessage',
