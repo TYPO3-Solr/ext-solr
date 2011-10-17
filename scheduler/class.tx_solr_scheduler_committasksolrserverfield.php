@@ -63,7 +63,7 @@ class tx_solr_scheduler_CommitTaskSolrServerField implements tx_scheduler_Additi
 			$fieldId = 'task_solr' . ucfirst($field);
 			$fieldHtml = '<input type="text" name="tx_scheduler[solr'
 				. ucfirst($field) . ']" id="' . $fieldId . '" value="'
-				. $taskInfo['solr' . ucfirst($field)] . '" size="10" />';
+				. htmlspecialchars($taskInfo['solr' . ucfirst($field)]) . '" size="10" />';
 
 			$additionalFields[$fieldId] = array(
 				'code'     => $fieldHtml,
