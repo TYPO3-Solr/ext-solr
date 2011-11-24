@@ -209,6 +209,10 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	 * @return	string	URL of the current page.
 	 */
 	protected function generatePageUrl() {
+		if ($this->request->getParameter('overridePageUrl')) {
+			return $this->request->getParameter('overridePageUrl');
+		}
+
 		$contentObject = t3lib_div::makeInstance('tslib_cObj');
 
 		$typolinkConfiguration = array(

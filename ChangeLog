@@ -1,3 +1,7 @@
+2011-11-24  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added an option override the URL stored in the index for a page
+
 2011-10-06  Ingo Renner  <ingo.renner@dkd.de>
 
 	* !!! Removed frontend indexing support (and thus also EXT:crawler support)
