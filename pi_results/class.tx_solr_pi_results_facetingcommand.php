@@ -132,7 +132,8 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 
 		$facetsInUse = array();
 		foreach ($filterParameters as $filter) {
-			list($filterName, $filterValue) = explode(':', $filter);
+				// only split by the first ":" to allow the use of colons
+			list($filterName, $filterValue) = explode(':', $filter, 2);
 
 			$facetConfiguration = $this->configuration['search.']['faceting.']['facets.'][$filterName . '.'];
 
