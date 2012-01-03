@@ -1,3 +1,11 @@
+2012-02-03  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Updated solrconfig.xml to use Lucene 3.5
+
+2012-02-03  Olivier Dobberkau  <olivier.dobberkau@dkd.de>
+
+	* Changed Apache Solr Version to 3.5 in install.sh
+
 2011-12-13  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* Changed rendering of facet values to only split by the first ":" to allow the use of colons
