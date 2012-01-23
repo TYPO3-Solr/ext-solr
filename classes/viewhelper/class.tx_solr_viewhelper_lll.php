@@ -149,6 +149,15 @@ class tx_solr_viewhelper_Lll implements tx_solr_ViewHelper {
 			$label = $this->localLang[$locallang]['default'][$labelKey];
 		}
 
+			// TYPO3 4.6 workaround until we support xliff
+		if (is_array($label)) {
+			if (!empty($label[0]['target'])) {
+				$label = $label[0]['target'];
+			} else {
+				$label = $label[0]['source'];
+			}
+		}
+
 		return $label;
 	}
 }

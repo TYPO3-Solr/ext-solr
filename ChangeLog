@@ -1,3 +1,7 @@
+2012-01-23  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed issue #32176: Labels in TYPO3 4.6 are rendered as "Array", credits Yves Poersch
+
 2012-01-05  Ingo Renner  <ingo.renner@dkd.de>
 
 	* ! Changed minimum required TYPO3 version to TYPO3 4.5
