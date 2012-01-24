@@ -89,7 +89,7 @@ plugin.tx_solr {
 					url = TEXT
 					url {
 						typolink.parameter = {$plugin.tt_news.singlePid}
-						typolink.additionalParams = &tx_ttnews[tt_news]={field:uid}
+						typolink.additionalParams = &tx_ttnews[tt_news]={field:uid}&L={field:__solr_index_language}
 						typolink.additionalParams.insertData = 1
 						typolink.returnLast = url
 						typolink.useCacheHash = 1

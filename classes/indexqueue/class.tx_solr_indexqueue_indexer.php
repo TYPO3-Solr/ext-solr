@@ -161,6 +161,7 @@ class tx_solr_indexqueue_Indexer {
 				$itemRecord,
 				$language
 			);
+			$itemRecord['__solr_index_language'] =  $language;
 		}
 
 		return $itemRecord;
