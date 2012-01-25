@@ -1,3 +1,7 @@
+2012-01-25  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added an exception if the tempalte file for a plugin could not be loaded
+
 2012-01-24  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added support for language parameter when indexing records with Index Queue, resolves #31382, credits Michael Voehringer
