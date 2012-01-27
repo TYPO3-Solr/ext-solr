@@ -47,6 +47,11 @@ class tx_solr_GarbageCollector {
 	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 		if ($command == 'delete') {
 			$this->collectGarbage($table, $uid);
+
+			if ($table == 'pages') {
+				$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+				$indexQueue->deleteItem($table, $uid);
+			}
 		}
 	}
 
@@ -253,77 +258,79 @@ class tx_solr_GarbageCollector {
 		return (boolean) $record['no_search'];
 	}
 
-	// TODO add methods to support workspaces, check for swap, unpublish, ...
-
 	/**
-	 * Tracks down index documents belonging to a particular record and removes
-	 * them from the index and the index queue.
+	 * Tracks down index documents belonging to a particular record or page and
+	 * removes them from the index and the Index Queue.
 	 *
 	 * @param	string	$table The record's table name.
 	 * @param	integer	$uid The record's uid.
-	 * @return	void
 	 */
 	public function collectGarbage($table, $uid) {
-		$record          = t3lib_BEfunc::getRecord($table, $uid, 'pid', '', FALSE);
-		$pageId          = $record['pid'];
-		$removeFromQueue = TRUE;
+		if ($table == 'tt_content' || $table == 'pages') {
+			$this->collectPageGarbage($table, $uid);
+		} else {
+			$this->collectRecordGarbage($table, $uid);
+		}
+	}
 
-		if ($pageId == 0) {
-				// can't get a connection on root, don't index records from root
-			return;
+	/**
+	 * Tracks down index documents belonging to a particular record and
+	 * removes them from the index and the Index Queue.
+	 *
+	 * @param	string	$table The record's table name.
+	 * @param	integer	$uid The record's uid.
+	 */
+	protected function collectRecordGarbage($table, $uid) {
+		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+
+		$this->deleteIndexDocuments($table, $uid);
+		$indexQueue->deleteItem($table, $uid);
+	}
+
+	/**
+	 * Tracks down index documents belonging to a particular page and
+	 * removes them from the index and the Index Queue.
+	 *
+	 * @param	string	$table The record's table name.
+	 * @param	integer	$uid The record's uid.
+	 */
+	protected function collectPageGarbage($table, $uid) {
+		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+
+		if ($table == 'tt_content') {
+				// changing a content element affects the complete page
+			$contentElement = t3lib_BEfunc::getRecord('tt_content', $uid, 'uid, pid', '', FALSE);
+
+			$table = 'pages';
+			$uid   = $contentElement['pid'];
 		}
 
-			// determine document id
-		switch ($table) {
-			case 'tt_content':
-				$pageRecord = t3lib_BEfunc::getRecord('pages', $record['pid'], 'uid, pid', '', FALSE);
+		$this->deleteIndexDocuments($table, $uid);
+		$indexQueue->updateItem($table, $uid);
+	}
 
-					// overwrite table, uid, and pid
-					// to remove the content element's page document
-				$table  = 'pages';
-				$uid    = $pageRecord['uid'];
-				$pageId = $pageRecord['pid'];
+	/**
+	 * Deletes index documents for a given record identification.
+	 *
+	 * @param	string	$table The record's table name.
+	 * @param	integer	$uid The record's uid.
+	 */
+	protected function deleteIndexDocuments($table, $uid) {
+		$indexQueue        = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+		$connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
 
-					// Do not remove the content element's page's Index Queue
-					// entry. We need to update the page's index document now.
-				$removeFromQueue = FALSE;
-			case 'pages':
-				$site = tx_solr_Site::getSiteByPageId($uid);
-				$recordDocumentId = $site->getSiteHash()
-					. '/' . $table . '/' . $pageId . '/' . $uid . '/*';
-				break;
-			default:
-				$recordDocumentId = tx_solr_Util::getDocumentId($table, $pageId, $uid);
-		}
+			// record can be indexed for multiple sites
+		$indexQueueItems = $indexQueue->getItems($table, $uid);
 
-		try {
-			if ($removeFromQueue) {
-					// remove the item from Index Queue
-				t3lib_div::makeInstance('tx_solr_indexqueue_Queue')->deleteItem($table, $uid);
-			}
+		foreach ($indexQueueItems as $indexQueueItem) {
+			$site = $indexQueueItem->getSite();
 
-				// get connection
-			$solr = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByPageId($pageId);
-
-			if ($solr->ping()) {
-					// delete document(s) from index, directly commit
-				$solr->deleteByQuery('id:' . $recordDocumentId);
+				// a site can have multiple connections (cores / languages)
+			$solrConnections = $connectionManager->getConnectionsBySite($site);
+			foreach ($solrConnections as $solr) {
+				$solr->deleteByQuery('type:' . $table . ' AND uid:' . intval($uid));
 				$solr->commit();
 			}
-		} catch (tx_solr_NoSolrConnectionFoundException $e) {
-			t3lib_div::devLog(
-				'Failed to get Solr connection while trying to collect garbage documents.',
-				'solr',
-				3,
-				array(
-					'Exception Message'  => $e->getMessage(),
-					'Exception Code'     => $e->getCode(),
-					'Exception Trace'    => $e->getTrace(),
-					'Record'             => $table . ':' . $uid,
-					'Page ID used to get Solr Connection' => $pageId,
-					'Record Document ID' => $recordDocumentId
-				)
-			);
 		}
 	}
 

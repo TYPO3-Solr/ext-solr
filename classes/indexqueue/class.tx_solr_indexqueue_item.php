@@ -121,6 +121,15 @@ class tx_solr_indexqueue_Item {
 		$this->rootPageUid = intval($uid);
 	}
 
+	/**
+	 * Gets the site the item belongs to.
+	 *
+	 * @return tx_solr_Site Site instance the item belongs to.
+	 */
+	public function getSite() {
+		return t3lib_div::makeInstance('tx_solr_Site', $this->rootPageUid);
+	}
+
 	public function getType() {
 		return $this->type;
 	}

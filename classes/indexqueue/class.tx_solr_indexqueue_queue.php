@@ -304,8 +304,7 @@ class tx_solr_indexqueue_Queue {
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				'tx_solr_indexqueue_item',
 				'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
-					. ' AND '
-					. 'item_uid = ' . (int) $itemUid ,
+					. ' AND item_uid = ' . (int) $itemUid ,
 				$changes
 			);
 		} else {
@@ -386,11 +385,22 @@ class tx_solr_indexqueue_Queue {
 	 * @param	integer	The uid of the item to remove
 	 */
 	public function deleteItem($itemType, $itemUid) {
-		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+		$uidList = array();
+
+			// get the item uids to use them in the deletes afterwards
+		$items = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid',
 			'tx_solr_indexqueue_item',
 			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
-				. ' AND '
-				. 'item_uid = ' . (int) $itemUid
+				. ' AND item_uid = ' . intval($itemUid)
+		);
+		foreach ($items as $item) {
+			$uidList[] = $item['uid'];
+		}
+
+		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+			'tx_solr_indexqueue_item',
+			'uid IN(' . implode(',', $uidList) . ')'
 		);
 	}
 
@@ -431,6 +441,24 @@ class tx_solr_indexqueue_Queue {
 		} else {
 			$GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_solr_indexqueue_item', '');
 		}
+	}
+
+	/**
+	 * Gets Index Queue items by type and uid.
+	 *
+	 * @param string $itemType item type, ususally  the table name
+	 * @param integer $itemUid item uid
+	 * @return array An array of items matching $itemType and $itemUid
+	 */
+	public function getItems($itemType, $itemUid) {
+		$indexQueueItemRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'*',
+			'tx_solr_indexqueue_item',
+			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
+				. ' AND item_uid = ' . intval($itemUid)
+		);
+
+		return $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
 	}
 
 	/**
