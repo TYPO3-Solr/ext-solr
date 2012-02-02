@@ -44,6 +44,7 @@ class tx_solr_Query {
 	protected $solrConfiguration;
 
 	protected $keywords;
+	protected $keywordsRaw;
 	protected $filters = array();
 	protected $sorting;
 
@@ -603,8 +604,13 @@ class tx_solr_Query {
 		return $this->keywords;
 	}
 
+	public function getKeywordsRaw() {
+		return $this->keywordsRaw;
+	}
+
 	public function setKeywords($keywords) {
-		$this->keywords = $this->escape($keywords);
+		$this->keywords    = $this->escape($keywords);
+		$this->keywordsRaw = $keywords;
 	}
 
 	/**

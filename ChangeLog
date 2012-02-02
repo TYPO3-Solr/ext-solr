@@ -1,5 +1,7 @@
 2012-02-02  Ingo Renner  <ingo.renner@dkd.de>
 
+	! Resolved an XSS security issue
+
 	* Updated schema and solrconfig
 
 2012-01-27  Ingo Renner  <ingo.renner@dkd.de>
