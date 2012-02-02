@@ -39,7 +39,7 @@ class tx_solr_report_SolrVersionStatus implements tx_reports_StatusProvider {
 	 *
 	 * @var	string
 	 */
-	const REQUIRED_SOLR_VERSION = '3.4.0';
+	const REQUIRED_SOLR_VERSION = '3.5.0';
 
 	/**
 	 * Compiles a version check against each configured Solr server.

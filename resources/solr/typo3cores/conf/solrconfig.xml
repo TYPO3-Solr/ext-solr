@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SolrconfigStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<config name="tx_solr-2-5-0--20120103">
+<config name="tx_solr-2-5-0--20120127">
 
 	<luceneMatchVersion>LUCENE_35</luceneMatchVersion>
 
@@ -312,7 +312,7 @@
 		<lst name="spellchecker">
 			<str name="name">default</str>
 			<str name="field">spell</str>
-			<str name="buildOnOptimize">true</str>
+			<str name="buildOnCommit">true</str>
 			<str name="spellcheckIndexDir">./spellchecker1</str>
 		</lst>
 	</searchComponent>
@@ -403,6 +403,7 @@
 	<queryResponseWriter name="xslt" class="org.apache.solr.response.XSLTResponseWriter">
 		<int name="xsltCacheLifetimeSeconds">5</int>
 	</queryResponseWriter>
+	<queryResponseWriter name="javabin" class="org.apache.solr.response.BinaryResponseWriter"/>
 
 
 	<!-- TYPO3 specific plugins, request handlers -->

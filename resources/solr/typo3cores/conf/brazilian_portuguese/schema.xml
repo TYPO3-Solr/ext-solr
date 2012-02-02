@@ -20,15 +20,16 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-2-5-0--20110927" version="1.1" >
-	<!--
-		attribute "name" is the name of this schema and is only used for
-		display purposes. Applications should change this to reflect the
-		nature of the search collection. version="1.1" is Solr's version
-		number for the schema syntax and semantics. It should not normally be
-		changed by applications. 1.0: multiValued attribute did not exist, all
-		fields are multiValued by nature 1.1: multiValued attribute
-		introduced, false by default
+<schema name="tx_solr-2-5-0--20120120" version="1.4" >
+	<!-- attribute "name" is the name of this schema and is only used for display purposes.
+		Applications should change this to reflect the nature of the search collection.
+		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
+		not normally be changed by applications.
+		1.0: multiValued attribute did not exist, all fields are multiValued by nature
+		1.1: multiValued attribute introduced, false by default 
+		1.2: omitTermFreqAndPositions attribute introduced, true by default except for text fields.
+		1.3: removed optional field compress feature
+		1.4: default auto-phrase (QueryParser feature) to off
 	-->
 
 <!-- xinclude fields -->
@@ -65,8 +66,7 @@
 				-->
 				<filter class="solr.StopFilterFactory" words="brazilian_portuguese/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
 				<filter class="solr.LowerCaseFilterFactory"/>
-				<filter class="solr.BrazilianStemFilterFactory"/>
-				<filter class="solr.SnowballPorterFilterFactory" language="Brazilian" protected="brazilian_portuguese/protwords.txt"/>
+				<filter class="solr.BrazilianStemFilterFactory" protected="brazilian_portuguese/protwords.txt"/>
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
 			<analyzer type="query">
@@ -83,8 +83,7 @@
 				/>
 				<filter class="solr.StopFilterFactory" words="brazilian_portuguese/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
 				<filter class="solr.LowerCaseFilterFactory"/>
-				<filter class="solr.BrazilianStemFilterFactory"/>
-				<filter class="solr.SnowballPorterFilterFactory" language="Brazilian" protected="brazilian_portuguese/protwords.txt"/>
+				<filter class="solr.BrazilianStemFilterFactory" protected="brazilian_portuguese/protwords.txt"/>
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
 		</fieldType>
@@ -107,8 +106,7 @@
 					preserveOriginal="1"
 				/>
 				<filter class="solr.LowerCaseFilterFactory"/>
-				<filter class="solr.BrazilianStemFilterFactory"/>
-				<filter class="solr.SnowballPorterFilterFactory" language="Brazilian" protected="brazilian_portuguese/protwords.txt"/>
+				<filter class="solr.BrazilianStemFilterFactory" protected="brazilian_portuguese/protwords.txt"/>
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
 		</fieldType>
@@ -119,7 +117,6 @@
 				<tokenizer class="solr.StandardTokenizerFactory"/>
 
 				<filter class="solr.LowerCaseFilterFactory"/>
-				<filter class="solr.BrazilianStemFilterFactory"/>
 				<filter class="solr.SynonymFilterFactory" synonyms="brazilian_portuguese/synonyms.txt" ignoreCase="true" expand="true"/>
 				<filter class="solr.StopFilterFactory" words="brazilian_portuguese/stopwords.txt" ignoreCase="true"/>
 				<filter class="solr.StandardFilterFactory" />
@@ -129,7 +126,6 @@
 				<tokenizer class="solr.StandardTokenizerFactory" />
 
 				<filter class="solr.LowerCaseFilterFactory"/>
-				<filter class="solr.BrazilianStemFilterFactory"/>
 				<filter class="solr.StopFilterFactory" words="brazilian_portuguese/stopwords.txt" ignoreCase="true"/>
 				<filter class="solr.StandardFilterFactory" />
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
