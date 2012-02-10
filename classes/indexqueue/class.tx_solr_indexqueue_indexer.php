@@ -324,11 +324,19 @@ class tx_solr_indexqueue_Indexer {
 
 		if (isset($itemIndexingConfiguration[$solrFieldName . '.'])) {
 				// configuration found => need to resolve a cObj
+
+				// need to change directory to make IMAGE content objects work in BE context
+				// see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
+			$currentWorkingDirectory = getcwd();
+			chdir(PATH_site);
+
 			$this->contentObject->start($itemRecord, $item->getType());
 			$fieldValue = $this->contentObject->cObjGetSingle(
 				$itemIndexingConfiguration[$solrFieldName],
 				$itemIndexingConfiguration[$solrFieldName . '.']
 			);
+
+			chdir($currentWorkingDirectory);
 
 			if ($this->isSerializedValue($itemIndexingConfiguration, $solrFieldName)) {
 				$fieldValue = unserialize($fieldValue);

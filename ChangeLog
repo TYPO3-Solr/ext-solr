@@ -1,3 +1,7 @@
+2012-02-10  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed issue #30577: IMAGE and (likely) IMG_RESOURCE do not work in Index Queue mapping, credits Rik Willems
+
 2012-02-02  Ingo Renner  <ingo.renner@dkd.de>
 
 	! Resolved an XSS security issue
