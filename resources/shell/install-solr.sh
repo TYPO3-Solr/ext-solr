@@ -90,6 +90,14 @@ then
 	PASSALLCHECKS=0
 fi
 
+ping -c 1 apache.osuosl.org > /dev/null 2>&1
+CHECK=$?
+if [ $CHECK -ne "0"  ]
+then
+	cecho "ERROR couldn't contact Apache download mirror at Oregon State University Open Source Lab - OSUOSL" $red
+	PASSALLCHECKS=0
+fi
+
 unzip -v > /dev/null 2>&1
 CHECK=$?
 if [ $CHECK -ne "0"  ]
@@ -100,7 +108,7 @@ fi
 
 if [ $PASSALLCHECKS -eq "0"  ]
 then
-	cecho "Please install all missing requirements listed above and try again." $red
+	cecho "Please install all missing requirements or fix any other errors listed above and try again." $red
 	exit 1
 else
 	cecho "All requirements met, starting to install Solr." $green
