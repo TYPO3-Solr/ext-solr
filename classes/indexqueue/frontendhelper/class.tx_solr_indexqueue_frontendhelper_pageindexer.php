@@ -214,6 +214,10 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	 */
 	protected function generatePageUrl() {
 		if ($this->request->getParameter('overridePageUrl')) {
+		if ($this->request->getParameter('overridePageUrl')) {
+			return $this->request->getParameter('overridePageUrl');
+		}
+
 			return $this->request->getParameter('overridePageUrl');
 		}
 
