@@ -6,15 +6,15 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="tt_content.list_type_pi_results">Solr: Form, Result, Additional Components</label>
-			<label index="tt_content.list_type_pi_search">Solr: Form only</label>
+			<label index="tt_content.list_type_pi_results">Search: Form, Result, Additional Components</label>
+			<label index="tt_content.list_type_pi_search">Search: Form only</label>
 		</languageKey>
 		<languageKey index="dk" type="array">
-			<label index="tt_content.list_type_pi_results">Solr: Søgeformular, Resultater, Yderligere komponenter</label>
+			<label index="tt_content.list_type_pi_results">Søg: Søgeformular, Resultater, Yderligere komponenter</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
-			<label index="tt_content.list_type_pi_results">Solr: Formulaire, Résultats, Composants additionnels</label>
-			<label index="tt_content.list_type_pi_search">Solr: Formulaire seul</label>
+			<label index="tt_content.list_type_pi_results">Rechercher: Formulaire, Résultats, Composants additionnels</label>
+			<label index="tt_content.list_type_pi_search">Rechercher: Formulaire seul</label>
 		</languageKey>
 	</data>
 </T3locallang>
