@@ -48,11 +48,12 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	protected $page;
 
 	/**
-	 * page indexing statuus.
+	 * Response data
 	 *
-	 * @var	boolean
+	 * @var	array
 	 */
-	protected $pageIndexed = FALSE;
+	protected $responseData = array();
+
 
 	/**
 	 * Activates a frontend helper by registering for hooks and other
@@ -88,9 +89,7 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	 * @return	array	page indexed status.
 	 */
 	public function getData() {
-			// TODO return more information about a status, success / failure
-
-		return array('pageIndexed' => (int) $this->pageIndexed);
+		return $this->responseData;
 	}
 
 
@@ -121,6 +120,11 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 
 		$GLOBALS['TSFE']->fe_user->user['username']  = tx_solr_indexqueue_frontendhelper_AuthorizationService::SOLR_INDEXER_USERNAME;
 		$GLOBALS['TSFE']->fe_user->user['usergroup'] = $groupList;
+
+		$this->responseData['authorization'] = array(
+			'username'   => $GLOBALS['TSFE']->fe_user->user['username'],
+			'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup']
+		);
 	}
 
 	/**
@@ -249,9 +253,9 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	public function hook_indexContent(tslib_fe $page) {
 		$this->page = $page;
 
-		if (!$this->page->config['config']['index_enable']) {
+		if (!$this->page->config['config']['index_enable']
+		&& $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['pageIndexed']) {
 			t3lib_div::devLog('Indexing is disabled. Set config.index_enable = 1 .', 'solr', 3);
-
 			return;
 		}
 
@@ -260,7 +264,13 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
 
-			$this->pageIndexed = $indexer->indexPage();
+			$this->responseData['pageIndexed']          = (int) $indexer->indexPage();
+			$this->responseData['originalPageDocument'] = $indexer->getPageSolrDocument();
+
+			$documentsSentToSolr = $indexer->getDocumentsSentToSolr();
+			foreach ($documentsSentToSolr as $document) {
+				$this->responseData['documentsSentToSolr'][] = (array) $document;
+			}
 		} catch (Exception $e) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				t3lib_div::devLog('Exception while trying to index page ' . $page->id, 'solr', 3, array(
@@ -270,8 +280,8 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 		}
 
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['pageIndexed']) {
-			$success  = $this->pageIndexed ? 'Success' : 'Failed';
-			$severity = $this->pageIndexed ? -1 : 3;
+			$success  = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
+			$severity = $this->responseData['pageIndexed'] ? -1 : 3;
 
 			t3lib_div::devLog('Page indexed: ' . $success, 'solr', $severity);
 		}

@@ -83,6 +83,13 @@ class tx_solr_Typo3PageIndexer {
 	 */
 	protected static $pageSolrDocument = NULL;
 
+	/**
+	 * Documents that have been sent to Solr
+	 *
+	 * @var	array
+	 */
+	protected $documentsSentToSolr = array();
+
 
 	/**
 	 * Constructor for class tx_solr_Indexer
@@ -165,6 +172,7 @@ class tx_solr_Typo3PageIndexer {
 		$this->processDocuments($documents);
 
 		$pageIndexed = $this->addDocumentsToSolrIndex($documents);
+		$this->documentsSentToSolr = $documents;
 
 		return $pageIndexed;
 	}
@@ -461,6 +469,15 @@ class tx_solr_Typo3PageIndexer {
 	 */
 	public static function getPageSolrDocument() {
 		return self::$pageSolrDocument;
+	}
+
+	/**
+	 * Gets the documents that have been sent to Solr
+	 *
+	 * @return	array	An array of Apache_Solr_Document objects
+	 */
+	public function getDocumentsSentToSolr() {
+		return $this->documentsSentToSolr;
 	}
 
 	/**
