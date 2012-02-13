@@ -4,6 +4,7 @@
 
 	* Fixed issue #27578: Remove references to Solr from editor facing UI
 
+	* Fixed an PHP warning due to a missing check whether a given URL parameter is an array when generation a facet reset URL
 	* Added the Index Inspector
 	* Removed backwardscompatibility for results.highlighting use search.resultsHighlighting instead
 	* Added log data to page index logging

@@ -264,22 +264,29 @@ class tx_solr_facet_FacetRenderer {
 	 * @return string  Url to remove a facet
 	 */
 	public function buildResetFacetUrl() {
+		$resetFacetUrl    = '';
 		$resultParameters = t3lib_div::_GPmerged('tx_solr');
 
-			// urldecode the array to get the original representation
-		$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
-		$filterParameters = array_unique($filterParameters);
+		if (is_array($resultParameters['filter'])) {
+				// urldecode the array to get the original representation
+			$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
+			$filterParameters = array_unique($filterParameters);
 
-			// find and remove all options for this facet
-		foreach ($filterParameters as $key => $filter) {
-			list($filterName, $filterValue) = explode(':', $filter);
-			if ($filterName == $this->facetName) {
-				unset($filterParameters[$key]);
+				// find and remove all options for this facet
+			foreach ($filterParameters as $key => $filter) {
+				list($filterName, $filterValue) = explode(':', $filter);
+				if ($filterName == $this->facetName) {
+					unset($filterParameters[$key]);
+				}
 			}
-		}
-		$filterParameters = array_map('urlencode', $filterParameters);
+			$filterParameters = array_map('urlencode', $filterParameters);
 
-		return $this->search->getQuery()->getQueryUrl(array('filter' => $filterParameters));
+			$resetFacetUrl = $this->search->getQuery()->getQueryUrl(array('filter' => $filterParameters));
+		} else {
+			$resetFacetUrl = $this->search->getQuery()->getQueryUrl();
+		}
+
+		return $resetFacetUrl;
 	}
 
 }
