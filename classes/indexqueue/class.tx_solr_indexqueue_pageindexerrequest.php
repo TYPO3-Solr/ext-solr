@@ -114,13 +114,23 @@ class tx_solr_indexqueue_PageIndexerRequest {
 	 * @return	tx_solr_indexqueue_PageIndexerResponse	Response
 	 */
 	public function send($url) {
-		$errors   = array();
 		$headers  = $this->getHeaders();
 		$response = t3lib_div::makeInstance('tx_solr_indexqueue_PageIndexerResponse');
 
-		$rawResponse = t3lib_div::getUrl($url, 0, $headers, $errors);
+		$parsedURL = parse_url($url);
+		if (!preg_match('/^https?/', $parsedURL['scheme'])) {
+			throw new RuntimeException(
+				'Cannot send request headers for HTTPS protocol',
+				1320319214
+			);
+		}
 
-			// FIXME log (and exit) if $rawResponse == FALSE
+		$context = stream_context_create(array(
+			'http' => array(
+				'header' => implode(CRLF, $headers)
+			)
+		));
+		$rawResponse = file_get_contents($url, FALSE, $context);
 
 			// convert JSON response to response object properties
 		$decodedResponse = $response->getResultsFromJson($rawResponse);
@@ -129,6 +139,18 @@ class tx_solr_indexqueue_PageIndexerRequest {
 
 		foreach ($decodedResponse['actionResults'] as $action => $actionResult) {
 			$response->addActionResult($action, $actionResult);
+		}
+
+		if ($rawResponse === FALSE) {
+			t3lib_div::devLog('Failed to execute Page Indexer Request.', 'solr', 3, array(
+				'request url'             => $url,
+				'request headers'         => $headers,
+				'response headers'        => $http_response_header,
+				'raw response body'       => $rawResponse,
+				'decoded response object' => (array) $response,
+			));
+
+			throw new RuntimeException('Failed to execute Page Indexer Request.', 1319116885);
 		}
 
 		return $response;
