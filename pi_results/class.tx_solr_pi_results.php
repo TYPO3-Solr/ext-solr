@@ -244,13 +244,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['resultTypeBoundaryMarker'] = 'EXT:solr/classes/resultsetmodifier/class.tx_solr_resultsetmodifier_resulttypeboundarymarker.php:tx_solr_resultsetmodifier_ResultTypeBoundaryMarker';
 			}
 
-			if(!empty($this->conf['search.']['highlighting'])) {
-				t3lib_div::deprecationLog('Usage of `plugin.tx_solr.search.highlighting` is deprecated. Please use `plugin.tx_solr.search.results.resultsHighlighting instead. This option will be removed with v2.1 / v2.6-EAP');
-
-				$this->conf['search.']['results.']['resultsHighlighting']  = $this->conf['search.']['highlighting'];
-				$this->conf['search.']['results.']['resultsHighlighting.'] = $this->conf['search.']['highlighting.'];
-			}
-
 			if ($this->conf['search.']['results.']['resultsHighlighting']) {
 				$query->setHighlighting(TRUE, $this->conf['search.']['results.']['resultsHighlighting.']['fragmentSize']);
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'EXT:solr/pi_results/class.tx_solr_pi_results_highlightingresultdocumentmodifier.php:tx_solr_pi_results_HighlightingResultDocumentModifier';
