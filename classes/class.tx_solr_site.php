@@ -142,6 +142,29 @@ class tx_solr_Site {
 	}
 
 	/**
+	 * Gets the system languages (IDs) for which Solr connections have been
+	 * configured.
+	 *
+	 * @return array Array of system language IDs for which connections have been configured on this site.
+	 */
+	public function getLanguages() {
+		$siteLanguages = array();
+
+		$registry        = t3lib_div::makeInstance('t3lib_Registry');
+		$solrConnections = $registry->get('tx_solr', 'servers');
+
+		foreach ($solrConnections as $connectionKey => $solrConnection) {
+			list($siteRootPageId, $systemLanguageId) = explode('|', $connectionKey);
+
+			if ($siteRootPageId == $this->rootPage['uid']) {
+				$siteLanguages[] = $systemLanguageId;
+			}
+		}
+
+		return $siteLanguages;
+	}
+
+	/**
 	 * Generates the site's unique Site Hash.
 	 *
 	 * The Site Hash is build from the site's main domain, the system encryption
