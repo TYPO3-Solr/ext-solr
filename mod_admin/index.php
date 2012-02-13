@@ -312,12 +312,12 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$severity = t3lib_FlashMessage::OK;
 
 		try {
+			$uids         = t3lib_div::trimExplode(',', $documentUid);
+			$uidCondition = implode(' OR ', $uids);
+
 			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 			foreach($solrServers as $solrServer) {
-				$uids         = t3lib_div::trimExplode(',', $documentUid);
-				$uidCondition = implode(' OR ', $uids);
 				$solrServer->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
-
 				$solrServer->commit();
 			}
 		} catch (Exception $e) {
