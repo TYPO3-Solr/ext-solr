@@ -290,7 +290,7 @@
  *
  * http://docs.jquery.com/UI/Autocomplete#theming
  */
-.ui-autocomplete { position: absolute; cursor: default; }
+.ui-autocomplete { position: absolute; cursor: default; text-align: left; }
 .ui-autocomplete-loading { background: white url(../../images/jquery-ui/ui-anim_basic_16x16.gif) right center no-repeat; }
 
 /* workarounds */
