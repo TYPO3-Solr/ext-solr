@@ -2,6 +2,7 @@
 
 	* Fixed issue #27578: Remove references to Solr from editor facing UI
 
+	* Added the Index Inspector
 	* Removed backwardscompatibility for results.highlighting use search.resultsHighlighting instead
 	* Added log data to page index logging
 	* Added more details when logging page indexing

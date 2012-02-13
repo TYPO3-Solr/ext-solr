@@ -67,6 +67,14 @@ if (TYPO3_MODE == 'BE') {
 		'icon'        => 'EXT:solr/report/tx_solr_report.gif'
 	);
 
+		// Index Inspector
+	t3lib_extMgm::insertModuleFunction(
+		'web_info',
+		'tx_solr_mod_index_IndexInspector',
+		$PATH_solr . 'mod_index/class.tx_solr_mod_index_indexinspector.php',
+		'LLL:EXT:solr/locallang.xml:module_indexinspector'
+	);
+
 		// hooking into cache clearing to update detected configuration
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:tx_solr_ConnectionManager->updateConnections';
 
