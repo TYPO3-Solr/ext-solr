@@ -35,6 +35,9 @@ class tx_solr_Query {
 	const SORT_ASC  = 'ASC';
 	const SORT_DESC = 'DESC';
 
+	const OPERATOR_AND = 'AND';
+	const OPERATOR_OR  = 'OR';
+
 	/**
 	 * Used to identify the queries.
 	 */
@@ -560,6 +563,22 @@ class tx_solr_Query {
 			$this->queryParameters['qt'] = $queryType;
 		} else {
 			unset($this->queryParameters['qt']);
+		}
+	}
+
+	/**
+	 * Sets the query operator to AND or OR. Unsets the query opertor (actually
+	 * sets it back to default) for FALSE.
+	 *
+	 * @param	string|boolean	$operator AND or OR, FALSE to unset
+	 */
+	public function setOperator($operator) {
+		if (in_array($operator, array(self::OPERATOR_AND, self::OPERATOR_OR))) {
+			$this->queryParameters['q.op'] = $operator;
+		}
+
+		if ($operator === FALSE) {
+			unset($this->queryParameters['q.op']);
 		}
 	}
 
