@@ -2,6 +2,7 @@
 
 	* Fixed issue #27578: Remove references to Solr from editor facing UI
 
+	* Added log data to page index logging
 	* Added more details when logging page indexing
 
 2012-02-10  Ingo Renner  <ingo.renner@dkd.de>

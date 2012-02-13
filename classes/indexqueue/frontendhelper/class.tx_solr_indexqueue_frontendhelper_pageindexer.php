@@ -283,7 +283,7 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 			$success  = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
 			$severity = $this->responseData['pageIndexed'] ? -1 : 3;
 
-			t3lib_div::devLog('Page indexed: ' . $success, 'solr', $severity);
+			t3lib_div::devLog('Page indexed: ' . $success, 'solr', $severity, $this->responseData);
 		}
 	}
 }
