@@ -4,6 +4,7 @@
 
 	* Fixed issue #27578: Remove references to Solr from editor facing UI
 
+	* Added maxHttpHeaderSize="65536" to server.xml to handle longer GET Request to solr. see also  http://serverfault.com/questions/56691/whats-the-maximum-url-length-in-tomcat
 	* Added an option to override the URL stored in the index for a page
 	* Changed the name of tx_solr_ConnectionManager::getSiteLanguages() to getSystemLanguages()
 	* Added method tx_solr_Site::getLanguages()
