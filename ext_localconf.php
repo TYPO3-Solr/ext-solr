@@ -7,20 +7,6 @@ $PATH_solr = t3lib_extMgm::extPath('solr');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-switch (TYPO3_branch) {
-	case '4.3':
-			// the FE indexer is asking the Index Queue FE helper wether it's active, the helper is using this interface
-		require_once($PATH_solr . 'compat/interface.t3lib_pageselect_getpageoverlayhook.php');
-		require_once($PATH_solr . 'compat/class.ux_t3lib_page.php');
-		require_once($PATH_solr . 'compat/interface.tslib_content_postinithook.php');
-		if (TYPO3_MODE == 'FE') {
-			require_once($PATH_solr . 'compat/class.ux_tslib_cobj.php');
-		}
-		break;
-}
-
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
 	// Windows compatibility
 if(!function_exists('strptime')) {
 	require_once($PATH_solr . 'lib/strptime/strptime.php');

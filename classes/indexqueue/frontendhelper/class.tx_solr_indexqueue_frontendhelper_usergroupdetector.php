@@ -68,11 +68,6 @@ class tx_solr_indexqueue_frontendhelper_UserGroupDetector
 	 * resources required by the frontend helper to work.
 	 */
 	public function activate() {
-		if (TYPO3_branch == '4.3') {
-				// TYPO3 4.3 compatibility
-			$this->activateContentObjectXclass();
-		}
-
 			// regsiter hooks
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__]        = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector->disableFrontendOutput';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__]   = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector->disableCaching';
@@ -82,16 +77,6 @@ class tx_solr_indexqueue_frontendhelper_UserGroupDetector
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__]    = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector';
 
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__]       = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector';
-	}
-
-	/**
-	 * Activates an XCLASS for tslib_cObj to track frontend user groups used in
-	 * content elements and records rendered on a page.
-	 *
-	 */
-	protected function activateContentObjectXclass() {
-		$GLOBALS['tx_solr_indexqueue_frontendhelper_UserGroupDetector'] = TRUE;
-		require_once($GLOBALS['PATH_solr'] . 'compat/class.ux_tslib_cobj.php');
 	}
 
 	/**

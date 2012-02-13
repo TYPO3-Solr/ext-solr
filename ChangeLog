@@ -1,5 +1,7 @@
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
+	!!! Removed compatibility for TYPO3 4.3
+
 	* Fixed issue #27578: Remove references to Solr from editor facing UI
 
 	* Added the Index Inspector

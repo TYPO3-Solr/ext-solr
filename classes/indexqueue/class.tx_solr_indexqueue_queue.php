@@ -436,11 +436,7 @@ class tx_solr_indexqueue_Queue {
 	 *
 	 */
 	public function deleteAllItems() {
-		if (TYPO3_branch == '4.3') {
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_solr_indexqueue_item', '');
-		} else {
-			$GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_solr_indexqueue_item', '');
-		}
+		$GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_solr_indexqueue_item', '');
 	}
 
 	/**
