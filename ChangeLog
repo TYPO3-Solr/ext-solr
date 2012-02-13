@@ -4,6 +4,7 @@
 
 	* Fixed issue #27578: Remove references to Solr from editor facing UI
 
+	* Changed the name of tx_solr_ConnectionManager::getSiteLanguages() to getSystemLanguages()
 	* Added method tx_solr_Site::getLanguages()
 	* Added an own implementation for making HTTP requests in tx_solr_indexqueue_PageIndexerRequest to provide better error handling/detection
 	* Added tx_solr_Query::setOperator()

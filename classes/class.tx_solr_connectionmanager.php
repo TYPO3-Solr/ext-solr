@@ -245,7 +245,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 
 			// find website roots and languages for this installation
 		$rootPages = $this->getRootPages();
-		$languages = $this->getSiteLanguages();
+		$languages = $this->getSystemLanguages();
 
 			// find solr configurations and add them as function menu entries
 		foreach ($rootPages as $rootPage) {
@@ -370,12 +370,12 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	}
 
 	/**
-	 * Finds the site's languages.
+	 * Finds the system's configured languages.
 	 *
 	 * @todo Change to t3lib_BEfunc::getSystemLanguages()
 	 * @return	array	An array of language IDs
 	 */
-	protected function getSiteLanguages() {
+	protected function getSystemLanguages() {
 		$languages = array(0);
 
 		$languageRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
