@@ -72,7 +72,7 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetRenderer 
 		);
 
 		$removeFacetLink = $this->buildRemoveFacetLink(
-			$removeFacetText, $this->filter
+			$removeFacetText, $this->filter, $this->filterValue
 		);
 		$removeFacetUrl = $this->buildRemoveFacetUrl($this->filter);
 

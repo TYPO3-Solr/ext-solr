@@ -4,6 +4,7 @@
 
 	* Fixed issue #27578: Remove references to Solr from editor facing UI
 
+	* Fixed issue #30922: PHP Error in Used Facet Renderer
 	* Added a check in the install script whether the download mirror can be contacted
 	* Fixed an PHP warning due to a missing check whether a given URL parameter is an array when generation a facet reset URL
 	* Added the Index Inspector
