@@ -49,6 +49,7 @@
 	* Fixed issue #31590: Usage of deprecated tx_solr_Util::getSiteHash()
 	* Added stdWrap support to plugin.tx_solr.search.query.filter, resolves #30034
 	* Added search.query.sortBy, resolves #30201, credits Stefan Sprenger
+	* Added support for language dependant field values (through conditions) when indexing records using the Index Queue, resolves #30205, credits Michiel Roos
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

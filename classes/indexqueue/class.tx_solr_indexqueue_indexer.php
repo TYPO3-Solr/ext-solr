@@ -171,6 +171,7 @@ class tx_solr_indexqueue_Indexer {
 	 * Gets the configuration how to process an item's fields for indexing.
 	 *
 	 * @param	tx_solr_indexqueue_Item	An index queue item
+	 * @param	integer	Language ID
 	 * @return	array	Configuration array from TypoScript
 	 */
 	protected function getItemTypeConfiguration(tx_solr_indexqueue_Item $item, $language = 0) {
@@ -210,7 +211,7 @@ class tx_solr_indexqueue_Indexer {
 				continue;
 			}
 
-			$fieldValue = $this->resolveFieldValue($item, $itemRecord, $solrFieldName);
+			$fieldValue = $this->resolveFieldValue($item, $itemRecord, $solrFieldName, $language);
 
 			if (is_array($fieldValue)) {
 					// multi value
@@ -316,10 +317,11 @@ class tx_solr_indexqueue_Indexer {
 	 * @param	tx_solr_indexqueue_Item	An index queue item
 	 * @param	array	The complete item record as an array
 	 * @param	string	The Solr field name to resolve the value from the item's record
+	 * @param	integer	The language uid of the documents
 	 * @return	string	The resolved string value to be indexed
 	 */
-	protected function resolveFieldValue(tx_solr_indexqueue_Item $item, array $itemRecord, $solrFieldName) {
-		$itemIndexingConfiguration = $this->getItemTypeConfiguration($item);
+	protected function resolveFieldValue(tx_solr_indexqueue_Item $item, array $itemRecord, $solrFieldName, $language) {
+		$itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
 		$fieldValue                = '';
 
 		if (isset($itemIndexingConfiguration[$solrFieldName . '.'])) {
