@@ -195,7 +195,12 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 	protected function buildPagesClause() {
 		$pages = $this->getPages();
 
-		return 'pid IN(' . implode(',', $pages) . ')';
+		$pageIdField = 'pid';
+		if ($this->type == 'pages') {
+			$pageIdField = 'uid';
+		}
+
+		return $pageIdField . ' IN(' . implode(',', $pages) . ')';
 	}
 
 	/**
