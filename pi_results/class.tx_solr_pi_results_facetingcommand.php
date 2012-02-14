@@ -174,7 +174,6 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 	protected function addFacetsJavascript() {
 		$jsFilePath = t3lib_extMgm::siteRelPath('solr') . 'resources/javascript/pi_results/results.js';
 
-			// TODO make configurable once someone wants to use something other than jQuery
 		$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_faceting'] =
 			'
 			<script type="text/javascript">
