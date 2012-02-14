@@ -134,8 +134,8 @@ class tx_solr_indexqueue_RecordMonitor {
 
 
 	/**
-	 * Handles updates of the Index Queue in case a newly created page is part
-	 * of a tree that is mounted into a another site.
+	 * Handles updates of the Index Queue in case a newly created or changed
+	 * page is part of a tree that is mounted into a another site.
 	 *
 	 * @param integer $pageId Page Id (uid).
 	 */
