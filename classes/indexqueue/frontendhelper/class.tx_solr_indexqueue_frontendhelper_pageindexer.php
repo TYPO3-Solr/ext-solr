@@ -60,9 +60,10 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	 * resources required by the frontend helper to work.
 	 */
 	public function activate() {
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__]        = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_pageindexer.php:&tx_solr_indexqueue_frontendhelper_PageIndexer->authorizeFrontendUser';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_pageindexer.php:&tx_solr_indexqueue_frontendhelper_PageIndexer->disableCaching';
-		$pageIndexingHookRegistration                                                                         = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_pageindexer.php:&tx_solr_indexqueue_frontendhelper_PageIndexer';
+		$pageIndexingHookRegistration = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_pageindexer.php:&tx_solr_indexqueue_frontendhelper_PageIndexer';
+
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__]        = $pageIndexingHookRegistration . '->authorizeFrontendUser';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = $pageIndexingHookRegistration . '->disableCaching';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__]      = $pageIndexingHookRegistration;
 
 			// indexes fields defined in plugin.tx_solr.index.queue.pages.fields
@@ -214,10 +215,6 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	 */
 	protected function generatePageUrl() {
 		if ($this->request->getParameter('overridePageUrl')) {
-		if ($this->request->getParameter('overridePageUrl')) {
-			return $this->request->getParameter('overridePageUrl');
-		}
-
 			return $this->request->getParameter('overridePageUrl');
 		}
 

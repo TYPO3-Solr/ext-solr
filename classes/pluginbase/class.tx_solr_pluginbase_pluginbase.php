@@ -93,7 +93,6 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 				$content = $this->renderError();
 			}
 		} catch(Exception $e) {
-				// TODO do something useful with the exception
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				t3lib_div::devLog(
 					$e->getCode() . ': ' . $e->__toString(),
@@ -153,6 +152,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 *
 	 * @author Grigori Prokhorov <grigori.prokhorov@dkd.de>
 	 * @author Ivan Kartolo <ivan.kartolo@dkd.de>
+	 * @return void
 	 */
 	function pi_setPiVarDefaults() {
 		if (is_array($this->conf['_DEFAULT_PI_VARS.'])) {

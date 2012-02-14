@@ -53,8 +53,8 @@ return array(
 	'tx_solr_contentobject_relation' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_relation.php',
 
 	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_abstractfacetrenderer.php',
-	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererfactory.php',
 	'tx_solr_facet_facetoption' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetoption.php',
+	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererfactory.php',
 	'tx_solr_facet_numericrangefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_numericrangefacetrenderer.php',
 	'tx_solr_facet_simplefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetrenderer.php',
 	'tx_solr_facet_simplefacetoptionsrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetoptionsrenderer.php',
@@ -121,13 +121,11 @@ return array(
 
 		// plugins
 
-	'tx_solr_pi_commonterms' => $extensionPath . 'pi_commonterms/class.tx_solr_pi_commonterms.php',
 	'tx_solr_pi_mlt' => $extensionPath . 'pi_mlt/class.tx_solr_pi_mlt.php',
 	'tx_solr_pi_results' => $extensionPath . 'pi_results/class.tx_solr_pi_results.php',
 	'tx_solr_pi_search' => $extensionPath . 'pi_search/class.tx_solr_pi_search.php',
 
 	'tx_solr_pi_results_advancedformcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_advancedformcommand.php',
-	'tx_solr_pi_results_commontermscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_commontermscommand.php',
 	'tx_solr_pi_results_errorscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_errorscommand.php',
 	'tx_solr_pi_results_facetingcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_facetingcommand.php',
 	'tx_solr_pi_results_formcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_formcommand.php',

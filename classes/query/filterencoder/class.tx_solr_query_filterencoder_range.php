@@ -52,19 +52,6 @@ class tx_solr_query_filterencoder_Range implements tx_solr_QueryFilterEncoder, t
 		return $filterValue;
 	}
 
-
-	/**
-	 * Takes a filter value and encodes it to a human readable format to be
-	 * used in an URL GET parameter.
-	 *
-	 * @param string $filterValue the filter value
-	 * @param array $options options set in a facet's configuration
-	 * @return string Value to be used in a URL GET parameter
-	 */
-	public function encodeFilter($filterValue, array $options = array()) {
-		return $filterValue;
-	}
-
 	/**
 	 * Parses the given range from a GET parameter and returns a Solr range
 	 * filter.

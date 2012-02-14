@@ -137,7 +137,7 @@ class tx_solr_indexqueue_Queue {
 		$tableToIndex = $indexingConfigurationName;
 
 		if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-			// table has been set explicitly. Allows to index the same table with different configurations
+				// table has been set explicitly. Allows to index the same table with different configurations
 			$tableToIndex = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
 		}
 
@@ -410,7 +410,6 @@ class tx_solr_indexqueue_Queue {
 				'item_id IN(' . implode(',', $uidList) . ')'
 			);
 		}
-
 	}
 
 	/**
@@ -470,24 +469,6 @@ class tx_solr_indexqueue_Queue {
 	 */
 	public function deleteAllItems() {
 		$GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_solr_indexqueue_item', '');
-	}
-
-	/**
-	 * Gets Index Queue items by type and uid.
-	 *
-	 * @param string $itemType item type, ususally  the table name
-	 * @param integer $itemUid item uid
-	 * @return array An array of items matching $itemType and $itemUid
-	 */
-	public function getItems($itemType, $itemUid) {
-		$indexQueueItemRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'*',
-			'tx_solr_indexqueue_item',
-			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
-				. ' AND item_uid = ' . intval($itemUid)
-		);
-
-		return $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
 	}
 
 	/**

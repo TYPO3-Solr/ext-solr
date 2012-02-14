@@ -62,7 +62,6 @@
 			<label index="results_searched_for">Gezocht naar "@searchWord".</label>
 			<label index="no_results_nothing_found">Niets gevonden voor "@searchWord".</label>
 			<label index="lastSearches">Laatste zoekopdrachten</label>
-			<label index="commonTerms">Vaak gezocht</label>
 			<label index="faceting_removeAllFilters">Verwijder alle filters</label>
 			<label index="results_found">Gevonden: @resultsTotal resultaten in @resultsTime milliseconden.</label>
 			<label index="relevance">Relevantiee</label>
@@ -87,7 +86,6 @@
 			<label index="results_searched_for">Recherche de "@searchWord".</label>
 			<label index="no_results_nothing_found">Rien trouvé pour "@searchWord".</label>
 			<label index="lastSearches">Dernières recherches</label>
-			<label index="commonTerms">Recherches fréquentes</label>
 			<label index="relevance">Pertinence</label>
 			<label index="results_per_page">Résultats par page:</label>
 		</languageKey>
@@ -108,7 +106,6 @@
 			<label index="results_searched_for">Eseguita ricerca di "@searchWord".</label>
 			<label index="no_results_nothing_found">La ricerca di "@searchWord" non ha prodotto risultati in nessun documento.</label>
 			<label index="lastSearches">Ultime ricerche</label>
-			<label index="commonTerms">Ricerche più frequenti</label>
 			<label index="relevance">Rilevanza</label>
 			<label index="results_per_page">Risultati per pagina:</label>
 		</languageKey>
@@ -129,7 +126,6 @@
 			<label index="results_searched_for">"@searchWord" を検索しました。</label>
 			<label index="no_results_nothing_found">"@searchWord" が見つかりません。</label>
 			<label index="lastSearches">前の検索</label>
-			<label index="commonTerms">共通検索</label>
 			<label index="relevance">関連</label>
 			<label index="file_mimetype">ファイルの種類</label>
 			<label index="file_referenced">参照元</label>
@@ -152,7 +148,6 @@
 			<label index="results_searched_for">"@searchWord"에 대한 검색내용.</label>
 			<label index="no_results_nothing_found">"@searchWord"에 대한 검색내용 없음.</label>
 			<label index="lastSearches">이전 검색</label>
-			<label index="commonTerms">일반 검색</label>
 			<label index="relevance">적합성</label>
 			<label index="file_mimetype">파일 유형</label>
 			<label index="file_referenced">에서 참조</label>
@@ -175,7 +170,6 @@
 			<label index="results_searched_for">搜索"@searchWord"</label>
 			<label index="no_results_nothing_found">没有找到任何关于"@searchWord"</label>
 			<label index="lastSearches">上次搜索</label>
-			<label index="commonTerms">常见搜索</label>
 			<label index="relevance">关联内容</label>
 			<label index="file_mimetype">文件类型</label>
 			<label index="file_referenced">参考地址</label>
@@ -201,25 +195,25 @@
 			<label index="results_per_page">Resultater per side:</label>
 		</languageKey>
 		<languageKey index="pl" type="array">
-			<label index="searchUnavailable">Wyszukiwarka nie jest w tej chwili dostÄpna.</label>
-			<label index="searchFailed">Przykro nam bardzo, ale Twoje wyszukiwanie nie moÅŒe zostaÄ zrealizowane.</label>
-			<label index="searchWord">Wyszukiwana treÅÄ</label>
-			<label index="didYouMean">Czy masz na myÅli</label>
+			<label index="searchUnavailable">Wyszukiwarka nie jest w tej chwili dostępna.</label>
+			<label index="searchFailed">Przykro nam bardzo, ale Twoje wyszukiwanie nie może zostać zrealizowane.</label>
+			<label index="searchWord">Wyszukiwana treść</label>
+			<label index="didYouMean">Czy masz na myśli</label>
 			<label index="submit">Szukaj</label>
 			<label index="sorting_sortBy">Sortuj wg.</label>
-			<label index="faceting_narrowSearch">ZawÄÅº wyniki</label>
-			<label index="faceting_resultsNarrowedBy">ZawÄÅŒone przez</label>
-			<label index="faceting_showMore">PokaÅŒ wiÄcej</label>
-			<label index="faceting_showFewer">PokaÅŒ mniej</label>
-			<label index="faceting_removeAllFilters">UsuÅ wszystkie filtry</label>
-			<label index="results_range">PokazujÄ wyniki od @resultsFrom do @resultsTo z @resultsTotal.</label>
-			<label index="results_found">RezultatÃ³w: @resultsTotal, czas wyszukiwania @resultsTime milisekund.</label>
-			<label index="results_searched_for">SzukaliÅmy "@searchWord".</label>
+			<label index="faceting_narrowSearch">Zawęź wyniki</label>
+			<label index="faceting_resultsNarrowedBy">Zawężone przez</label>
+			<label index="faceting_showMore">Pokaż więcej</label>
+			<label index="faceting_showFewer">Pokaż mniej</label>
+			<label index="faceting_removeAllFilters">Usuń wszystkie filtry</label>
+			<label index="results_range">Pokazuję wyniki od @resultsFrom do @resultsTo z @resultsTotal.</label>
+			<label index="results_found">Rezultatów: @resultsTotal, czas wyszukiwania @resultsTime milisekund.</label>
+			<label index="results_searched_for">Szukaliśmy "@searchWord".</label>
 			<label index="no_results_nothing_found">Nie znaleziono "@searchWord".</label>
 			<label index="relevance">Waga</label>
-			<label index="results_per_page">WynikÃ³w na stronÄ:</label>
-			<label index="error_errors">Przykro nam, natknÄliÅmy siÄ na bÅÄdy:</label>
-			<label index="error_emptyQuery">Wpisz sÅowa kluczowe w polu powyÅŒej.</label>
+			<label index="results_per_page">Wyników na stronę:</label>
+			<label index="error_errors">Przykro nam, natknęliśmy się na błędy:</label>
+			<label index="error_emptyQuery">Wpisz słowa kluczowe w polu powyżej.</label>
 		</languageKey>
 	</data>
 </T3locallang>

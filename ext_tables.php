@@ -111,7 +111,6 @@ t3lib_extMgm::addPiFlexFormValue(
 $TCA['tt_content']['types']['search']['showitem'] =
 	'--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
 	--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
-		// Index Inspector
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.plugin,
 		pi_flexform;;;;1-1-1,
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,

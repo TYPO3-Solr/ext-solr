@@ -559,7 +559,6 @@ class tx_solr_Query {
 	 * @deprecated	Use setFieldList() instead
 	 */
 	public function setReturnFields($returnFields) {
-		t3lib_div::logDeprecatedFunction();
 		$this->setFieldList($returnFields);
 	}
 
@@ -575,7 +574,7 @@ class tx_solr_Query {
 	/**
 	 * Sets the query type, Solr's qt parameter.
 	 *
-	 * @param	mixed	$queryType String query type or boolean FALSE to disable / reset the qt parameter.
+	 * @param	string|boolean	$queryType String query type or boolean FALSE to disable / reset the qt parameter.
 	 * @see	http://wiki.apache.org/solr/CoreQueryParameters#qt
 	 */
 	public function setQueryType($queryType) {

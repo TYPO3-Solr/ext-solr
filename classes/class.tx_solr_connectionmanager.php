@@ -182,7 +182,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Gets all connections found.
 	 *
-	 * @return	array	An array of initialized Solr connections
+	 * @return	array	An array of initialized tx_solr_SolrService connections
 	 */
 	public function getAllConnections() {
 		$connections = array();
@@ -293,7 +293,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 				$tmpl->init();
 				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
 
-					// fake micro TSFE to get correct condition parsing
+					// fake micro TSFE to get correct conditon parsing
 				$GLOBALS['TSFE'] = new stdClass();
 				$GLOBALS['TSFE']->tmpl = new stdClass();
 				$GLOBALS['TSFE']->tmpl->rootLine = $rootLine;

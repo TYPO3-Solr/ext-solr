@@ -53,8 +53,6 @@ plugin.tx_solr {
 	}
 
 	index {
-		enablePageIndexing = 1
-		enableIndexingWhileBeUserLoggedIn = 1
 
 		additionalFields {
 

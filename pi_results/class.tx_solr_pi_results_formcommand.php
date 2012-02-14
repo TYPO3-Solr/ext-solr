@@ -37,7 +37,7 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var	tx_solr_pluginbase_CommandPluginBase
+	 * @var tx_solr_pluginbase_CommandPluginBase
 	 */
 	protected $parentPlugin;
 

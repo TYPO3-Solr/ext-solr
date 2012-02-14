@@ -41,7 +41,7 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 	/**
 	 * The filter value that has been applied to a query.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $filterValue;
 
@@ -57,7 +57,7 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 	 * Renders the block of used / applied facets.
 	 *
 	 * @see tx_solr_FacetRenderer::render()
-	 * @return	string	Rendered HTML representing the used facet.
+	 * @return string Rendered HTML representing the used facet.
 	 */
 	public function render() {
 		$solrConfiguration = tx_solr_Util::getSolrConfiguration();

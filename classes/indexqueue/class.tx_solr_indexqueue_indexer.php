@@ -373,7 +373,6 @@ class tx_solr_indexqueue_Indexer {
 				$documents,
 				$fieldProcessingInstructions
 			);
-			$itemRecord['__solr_index_language'] =  $language;
 		}
 
 		return $documents;
@@ -479,11 +478,11 @@ class tx_solr_indexqueue_Indexer {
 	}
 
 	/**
-	* Finds the alternative page language overlay records for a page.
-	*
-	* @param	integer	Page ID.
-	* @return	array	An array of translation overlays found for the given page.
-	*/
+	 * Finds the alternative page language overlay records for a page.
+	 *
+	 * @param	integer	Page ID.
+	 * @return	array	An array of translation overlays found for the given page.
+	 */
 	protected function getTranslationOverlaysForPage($pageId) {
 		$translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid, pid, sys_language_uid',
@@ -497,12 +496,12 @@ class tx_solr_indexqueue_Indexer {
 	}
 
 	/**
-	* Checks for which languages connections have been configured and returns
-	* these connections.
-	*
-	* @param	array	An array of translation overlays to check for configured connections.
-	* @return	array	An array of tx_solr_SolrService connections.
-	*/
+	 * Checks for which languages connections have been configured and returns
+	 * these connections.
+	 *
+	 * @param	array	An array of translation overlays to check for configured connections.
+	 * @return	array	An array of tx_solr_SolrService connections.
+	 */
 	protected function getConnectionsForIndexableLanguages(array $translationOverlays) {
 		$connections = array();
 

@@ -121,7 +121,7 @@ class tx_solr_indexqueue_PageIndexerResponse {
 	 * Turns a JSON encoded result string back into its PHP representation.
 	 *
 	 * @param	string	$jsonEncodedResults JSON encoded result string
-	 * @return	array	An array of action => result pairs
+	 * @return	array|boolean	An array of action => result pairs or FALSE if the response could not be decoded
 	 */
 	public static function getResultsFromJson($jsonEncodedResponse) {
 		$responseData = json_decode($jsonEncodedResponse, TRUE);

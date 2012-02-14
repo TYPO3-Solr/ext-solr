@@ -85,7 +85,7 @@ class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier 
 		if ($this->configuration['search.']['spellchecking'] && $this->search->hasSearched()) {
 			$suggestions = $this->search->getSpellcheckingSuggestions();
 
-			if($suggestions) {
+			if($suggestions && !$suggestions['correctlySpelled']) {
 				$query = clone $this->search->getQuery();
 				$query->setKeywords($suggestions['collation']);
 

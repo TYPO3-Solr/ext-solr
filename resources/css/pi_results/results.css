@@ -159,6 +159,13 @@
 	clear: both;
 }
 
+.results-highlight {
+	background: #fdee53;
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+/* relevance */
+
 .relevance {
 	height: 20px;
 }
@@ -174,8 +181,6 @@
 	height: 20px;
 	padding-top: 3px;
 }
-/* frequent searches */
-/* relevance */
 
 .tx-solr-relevance-bar {
 	width: 100px;
@@ -202,10 +207,8 @@
 }
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
-/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
-.results-highlight {
-	background: #fdee53;
-}
+/* frequent searches */
+
 #tx-solr-frequent-searches ul {
 	padding-right: 10px;
 }
@@ -216,5 +219,71 @@
 	display: inline;
 }
 
+.tx-solr-frequent-term-14 {
+	font-size: 14px;
+}
+.tx-solr-frequent-term-15 {
+	font-size: 15px;
+}
+.tx-solr-frequent-term-16 {
+	font-size: 16px;
+}
+.tx-solr-frequent-term-16 {
+	font-size: 16px;
+}
+.tx-solr-frequent-term-17 {
+	font-size: 17px;
+}
+.tx-solr-frequent-term-18 {
+	font-size: 18px;
+}
+.tx-solr-frequent-term-19 {
+	font-size: 19px;
+}
+.tx-solr-frequent-term-20 {
+	font-size: 20px;
+}
+.tx-solr-frequent-term-21 {
+	font-size: 21px;
+}
+.tx-solr-frequent-term-22 {
+	font-size: 22px;
+}
+.tx-solr-frequent-term-23 {
+	font-size: 23px;
+}
+.tx-solr-frequent-term-24 {
+	font-size: 24px;
+}
+.tx-solr-frequent-term-25 {
+	font-size: 25px;
+}
+.tx-solr-frequent-term-26 {
+	font-size: 26px;
+}
+.tx-solr-frequent-term-27 {
+	font-size: 27px;
+}
+.tx-solr-frequent-term-28 {
+	font-size: 28px;
+}
+.tx-solr-frequent-term-29 {
+	font-size: 29px;
+}
+.tx-solr-frequent-term-30 {
+	font-size: 30px;
+}
+.tx-solr-frequent-term-31 {
+	font-size: 31px;
+}
+.tx-solr-frequent-term-32 {
+	font-size: 32px;
+}
+.tx-solr-frequent-term-33 {
+	font-size: 33px;
+}
+.tx-solr-frequent-term-34 {
+	font-size: 34px;
+}
 
 

@@ -8,6 +8,7 @@
 		<languageKey index="default" type="array">
 			<label index="report_index_title">Apache Solr Index</label>
 			<label index="report_index_description">View the number of documents and fields in your index</label>
+			<label index="module_indexinspector">Search Index Inspector</label>
 		</languageKey>
 		<languageKey index="dk" type="array">
 			<label index="report_index_title">Apache Solr Index</label>
