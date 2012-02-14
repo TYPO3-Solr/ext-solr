@@ -163,7 +163,7 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 						}
 
 						$filterValue = $filterEncoder->decodeFilter($filterValue, $filterOptions);
-						$filterParts[] = $facetConfiguration['field'] . ':' . addslashes( $filterValue );
+						$filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
 					} else {
 						$filterParts[] = $facetConfiguration['field'] . ':"' . addslashes( $filterValue ) . '"';
 					}
