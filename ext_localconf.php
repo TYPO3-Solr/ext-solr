@@ -57,6 +57,15 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
+t3lib_extMgm::registerExtDirectComponent(
+	'TYPO3.tx_solr.IndexInspector.Remote',
+	$PATH_solr . 'mod_index/class.tx_solr_mod_index_indexinspectorremotecontroller.php:tx_solr_mod_index_IndexInspectorRemoteController',
+	'web_info',
+	'user,group'
+);
+
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
 	// register plugin commands
 
 #tx_solr_CommandResolver::registerPluginCommand(
