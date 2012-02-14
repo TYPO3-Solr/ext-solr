@@ -85,6 +85,13 @@ class tx_solr_indexqueue_Item {
 	protected $indexingPropertiesLoaded = FALSE;
 
 	/**
+	 * Flag, whether indexing properties exits for this item.
+	 *
+	 * @var boolean
+	 */
+	protected $hasIndexingProperties = FALSE;
+
+	/**
 	 * The record itself
 	 *
 	 * @var	array
@@ -103,12 +110,114 @@ class tx_solr_indexqueue_Item {
 		$this->indexQueueUid = $itemMetaData['uid'];
 		$this->rootPageUid   = $itemMetaData['root'];
 		$this->type          = $itemMetaData['item_type'];
-		$this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
 		$this->changed       = $itemMetaData['changed'];
+
+		$this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
+		$this->hasIndexingProperties     = (boolean) $itemMetaData['has_indexing_properties'];
 
 		if (!empty($fullRecord)) {
 			$this->record = $fullRecord;
 		}
+	}
+
+	public function getIndexQueueUid() {
+		return $this->indexQueueUid;
+	}
+
+	/**
+	 * Gets the item's root page ID (uid)
+	 *
+	 * @return	integer	root page ID
+	 */
+	public function getRootPageUid() {
+		return $this->rootPageUid;
+	}
+
+	public function setRootPageUid($uid) {
+		$this->rootPageUid = intval($uid);
+	}
+
+	/**
+	 * Gets the site the item belongs to.
+	 *
+	 * @return tx_solr_Site Site instance the item belongs to.
+	 */
+	public function getSite() {
+		return t3lib_div::makeInstance('tx_solr_Site', $this->rootPageUid);
+	}
+
+	public function getType() {
+		return $this->type;
+	}
+
+	public function setType($type) {
+		$this->type = $type;
+	}
+
+	public function getIndexingConfigurationName() {
+		return $this->indexingConfigurationName;
+	}
+
+	public function setIndexingConfigurationName($indexingConfigurationName) {
+		$this->indexingConfigurationName = $indexingConfigurationName;
+	}
+
+	public function getChanged() {
+		return $this->changed;
+	}
+
+	public function setChanged($changed) {
+		$this->changed = intval($changed);
+	}
+
+	/**
+	 * Sets the timestamp of when an item has been indexed.
+	 *
+	 * @return	void
+	 */
+	public function updateIndexedTime() {
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tx_solr_indexqueue_item',
+			'uid = ' . (int) $this->indexQueueUid,
+			array('indexed' => time())
+		);
+	}
+
+	/**
+	 * Gets the item's full record.
+	 *
+	 * Uses lazy loading.
+	 *
+	 * @return	array	The item's DB record.
+	 */
+	public function getRecord() {
+		if (empty($this->record)) {
+			$this->record = t3lib_BEfunc::getRecord(
+				$this->type,
+				$this->uid,
+				'*',
+				'',
+				FALSE
+			);
+		}
+
+		return $this->record;
+	}
+
+	public function setRecord(array $record) {
+		$this->record = $record;
+	}
+
+	public function getRecordUid() {
+		$this->getRecord();
+
+		return $this->record['uid'];
+	}
+
+	public function getRecordPageId() {
+		$this->getRecord();
+
+		return $this->record['pid'];
 	}
 
 	/**
@@ -123,8 +232,10 @@ class tx_solr_indexqueue_Item {
 				'item_id = ' . intval($this->indexQueueUid)
 			);
 
-			foreach ($indexingProperties as $key => $value) {
-				$this->setIndexingProperty($key, $value);
+			if (!empty($indexingProperties)) {
+				foreach ($indexingProperties as $key => $value) {
+					$this->setIndexingProperty($key, $value);
+				}
 			}
 
 			$this->indexingPropertiesLoaded = TRUE;
@@ -220,117 +331,8 @@ class tx_solr_indexqueue_Item {
 		}
 	}
 
-	public function getIndexQueueUid() {
-		return $this->indexQueueUid;
-	}
-
-	/**
-	 * Gets the item's root page ID (uid)
-	 *
-	 * @return	integer	root page ID
-	 */
-	public function getRootPageUid() {
-		return $this->rootPageUid;
-	}
-
-	public function setRootPageUid($uid) {
-		$this->rootPageUid = intval($uid);
-	}
-
-	/**
-	 * Gets the site the item belongs to.
-	 *
-	 * @return tx_solr_Site Site instance the item belongs to.
-	 */
-	public function getSite() {
-		return t3lib_div::makeInstance('tx_solr_Site', $this->rootPageUid);
-	}
-
-	/**
-	 * Gets the site the item belongs to.
-	 *
-	 * @return tx_solr_Site Site instance the item belongs to.
-	 */
-	public function getSite() {
-		return t3lib_div::makeInstance('tx_solr_Site', $this->rootPageUid);
-	}
-
-	public function getType() {
-		return $this->type;
-	}
-
-	public function setType($type) {
-		$this->type = $type;
-	}
-
-	public function getIndexingConfigurationName() {
-		return $this->indexingConfigurationName;
-	}
-
-	public function setIndexingConfigurationName($indexingConfigurationName) {
-		$this->indexingConfigurationName = $indexingConfigurationName;
-	}
-
-	public function getChanged() {
-		return $this->changed;
-	}
-
-	public function setChanged($changed) {
-		$this->changed = intval($changed);
-	}
-
-	/**
-	 * Sets the timestamp of when an item has been indexed.
-	 *
-	 * @return	void
-	 */
-	public function updateIndexedTime() {
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'tx_solr_indexqueue_item',
-			'uid = ' . (int) $this->indexQueueUid,
-			array('indexed' => time())
-		);
-	}
-
-	/**
-	 * Gets the item's full record.
-	 *
-	 * Uses lazy loading.
-	 *
-	 * @return	array	The item's DB record.
-	 */
-	public function getRecord() {
-		if (empty($this->record)) {
-			$this->record = t3lib_BEfunc::getRecord(
-				$this->type,
-				$this->uid,
-				'*',
-				'',
-				FALSE
-			);
-		}
-
-		return $this->record;
-	}
-
-	public function setRecord(array $record) {
-		$this->record = $record;
-	}
-
-	public function getRecordUid() {
-		$this->getRecord();
-
-		return $this->record['uid'];
-	}
-
-	public function getRecordPageId() {
-		$this->getRecord();
-
-		return $this->record['pid'];
-	}
-
 	public function hasIndexingProperties() {
-		return !empty($this->indexingProperties);
+		return $this->hasIndexingProperties;
 	}
 
 	/**
@@ -341,11 +343,15 @@ class tx_solr_indexqueue_Item {
 	 * @throws InvalidArgumentException when $value is not string, integer or float
 	 */
 	public function setIndexingProperty($key, $value) {
+
+			// make sure to not interfere with existing indexing properties
+		$this->loadIndexingProperties();
+
 		$key = (string) $key; // Scalar typehints now!
 
 		if (!is_string($value) && !is_int($value) && !is_float($value)) {
 			throw new InvalidArgumentException(
-				'Cannot add indexing property "' . $key
+				'Cannot set indexing property "' . $key
 					. '", its value must be string, integer or float, '
 					. 'type given was "' . gettype($value) . '"',
 				1323173209
@@ -353,6 +359,7 @@ class tx_solr_indexqueue_Item {
 		}
 
 		$this->indexingProperties[$key] = $value;
+		$this->hasIndexingProperties    = TRUE;
 	}
 
 	/**
