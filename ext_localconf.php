@@ -160,6 +160,7 @@ $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest'] = 'EXT:solr/p
 	// registering the eID script for auto suggest
 	// TODO move to suggest form modifier
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/eid_suggest/suggest.php';
+$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api']     = 'EXT:solr/eid_api/dispatch.php';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
