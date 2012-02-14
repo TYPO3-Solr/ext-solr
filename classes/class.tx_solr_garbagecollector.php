@@ -116,7 +116,7 @@ class tx_solr_GarbageCollector {
 			|| $this->isStartTimeInFuture($table, $record)
 			|| $this->isEndTimeInPast($table, $record)
 			|| $this->hasFrontendGroupsRemoved($table, $record)
-			|| ($table == 'pages' && $this->isExcludedFromSearch($table, $record))
+			|| ($table == 'pages' && $this->isPageExcludedFromSearch($record))
 		) {
 			$this->collectGarbage($table, $uid);
 		}
@@ -242,19 +242,12 @@ class tx_solr_GarbageCollector {
 	}
 
 	/**
-	 * Checks whether the record is a page and if so, whether it has been
-	 * excluded from searching.
+	 * Checks whether the page has been excluded from searching.
 	 *
-	 * @param	string	The table name.
-	 * @param	array	An array with record fields that may affect visibility.
-	 * @return	boolean	True if the page has been excluded from searching, FALSE otherwise
+	 * @param array $record An array with record fields that may affect visibility.
+	 * @return boolean True if the page has been excluded from searching, FALSE otherwise
 	 */
-	protected function isExcludedFromSearch($table, $record) {
-		if ($table != 'pages') {
-				// ignore tables other than 'pages'
-			return FALSE;
-		}
-
+	protected function isPageExcludedFromSearch($record) {
 		return (boolean) $record['no_search'];
 	}
 
