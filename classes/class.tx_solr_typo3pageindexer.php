@@ -148,6 +148,24 @@ class tx_solr_Typo3PageIndexer {
 	}
 
 	/**
+	 * Allows to provide a Solr server connection other than the one
+	 * initialized by the constructor.
+	 *
+	 * @param tx_solr_SolrService $solrConnection Solr connection
+	 * @throws Exception if the Solr server cannot be reached
+	 */
+	public function setSolrConnection(tx_solr_SolrService $solrConnection) {
+		if (!$solrConnection->ping()) {
+			throw new Exception(
+				'Could not connect to Solr server.',
+				1323946472
+			);
+		}
+
+		$this->solrConnection = $solrConnection;
+	}
+
+	/**
 	 * Indexes a page.
 	 *
 	 * @return	boolean	TRUE after successfully indexing the page, FALSE on error
