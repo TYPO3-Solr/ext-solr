@@ -39,6 +39,7 @@
 	* Added tx_solr_Util::getTypoScriptValue()
 	* Changed the spellchecker configuration to build on commit instead of on optimize
 	* Disabled the configuration status report for now as it caused trouble with some installations
+	* Added an example solr.xml which defines cores for all available languages
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
