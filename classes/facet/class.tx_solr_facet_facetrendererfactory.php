@@ -69,12 +69,14 @@ class tx_solr_facet_FacetRendererFactory {
 	 * @param string $facetType Facet type that can be used in a TypoScript facet configuration
 	 * @param string $rendererClassName Class used to render the facet UI
 	 * @param string $filterParserClassName Class used to translate filter parameter from the URL to Lucene filter syntax
+	 * @param string $queryFacetBuilderClassName Class used to build the facet parameters according to the facet's configuration
 	 */
-	public static function registerFacetType($facetType, $rendererClassName, $filterParserClassName = '') {
+	public static function registerFacetType($facetType, $rendererClassName, $filterParserClassName = '', $queryFacetBuilderClassName = '') {
 		self::$facetTypes[$facetType] = array(
-			'type'         => $facetType,
-			'renderer'     => $rendererClassName,
-			'filterParser' => $filterParserClassName
+			'type'              => $facetType,
+			'renderer'          => $rendererClassName,
+			'filterParser'      => $filterParserClassName,
+			'queryFacetBuilder' => $queryFacetBuilderClassName
 		);
 	}
 
@@ -165,6 +167,43 @@ class tx_solr_facet_FacetRendererFactory {
 			throw new UnexpectedValueException(
 				get_class($object) . ' is not an implementation of tx_solr_QueryFilterParser',
 				1328105893
+			);
+		}
+	}
+
+	/**
+	 * Looks up a facet's configuration and gets an instance of a query facet
+	 * builder if one is configured.
+	 *
+	 * @param string $facetName Facet name
+	 * @return NULL|tx_solr_QueryFacetBuilder NULL if no query facet builder is configured for the facet's type or an instance of tx_solr_QueryFacetBuilder otherwise
+	 */
+	public function getQueryFacetBuilderByFacetName($facetName) {
+		$queryFacetBuilder  = NULL;
+		$facetConfiguration = $this->facetsConfiguration[$facetName . '.'];
+
+		if (isset($facetConfiguration['type'])
+		&& !empty(self::$facetTypes[$facetConfiguration['type']]['queryFacetBuilder'])) {
+			$queryFacetBuilderClassName = self::$facetTypes[$facetConfiguration['type']]['queryFacetBuilder'];
+
+			$queryFacetBuilder = t3lib_div::makeInstance($queryFacetBuilderClassName);
+			$this->validateObjectIsQueryFacetBuilder($queryFacetBuilder);
+		}
+
+		return $queryFacetBuilder;
+	}
+
+	/**
+	 * Validates an object for implementing the tx_solr_QueryFacetBuilder interface.
+	 *
+	 * @param object $object A potential query facet builder object to check for implementing the tx_solr_QueryFacetBuilder interface
+	 * @throws UnexpectedValueException if $object does not implement tx_solr_QueryFacetBuilder
+	 */
+	protected function validateObjectIsQueryFacetBuilder($object) {
+		if (!($object instanceof tx_solr_QueryFacetBuilder)) {
+			throw new UnexpectedValueException(
+				get_class($object) . ' is not an implementation of tx_solr_QueryFacetBuilder',
+				1328115265
 			);
 		}
 	}

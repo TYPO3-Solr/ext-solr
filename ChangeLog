@@ -93,6 +93,7 @@
 	* Added tx_solr_Search::getRangeFacetFieldOptions()
 	* Added support for filter parser regisration and retrieval through tx_solr_facet_FacetRendererFactory
 	* Added support for facet type configuration dependent filter parsers in tx_solr_query_modifier_Faceting
+	* Added support for facet type configuration dependent query facet parameter builders
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

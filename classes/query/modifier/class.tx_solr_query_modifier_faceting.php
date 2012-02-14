@@ -73,44 +73,47 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 	 * Delegates the parameter building to specialized functions depending on
 	 * the type of facet to add.
 	 *
-	 * @return	array	An array of query parameters
 	 */
 	protected function buildFacetingParameters() {
-		$facetingParameters = array();
+		$facetParameters  = array();
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 
 		foreach ($configuredFacets as $facetName => $facetConfiguration) {
 			$facetName = substr($facetName, 0, -1);
 
-			if (empty($facetConfiguration['field'])) {
-					// TODO later check for query and date, too
-				continue;
+			$facetParameterBuilder = $this->facetRendererFactory->getQueryFacetBuilderByFacetName($facetName);
+			if (!is_null($facetParameterBuilder)) {
+				$facetParameters = $facetParameterBuilder->buildFacetParameters($facetName, $facetConfiguration);
+			} else {
+				$facetParameters = $this->buildFacetParameters($facetConfiguration);
 			}
 
-			if (!empty($facetConfiguration['field'])) {
-				$this->buildFacetFieldParameters($facetConfiguration);
-			}
+			$this->facetParameters = array_merge_recursive($this->facetParameters, $facetParameters);
 		}
 	}
 
 	/**
 	 * Builds facet parameters for field facets
 	 *
-	 * @param	array	A facet configuration
+	 * @param array A facet configuration
 	 */
-	protected function buildFacetFieldParameters(array $facetConfiguration) {
+	protected function buildFacetParameters(array $facetConfiguration) {
+		$facetParameters = array();
+
 			// very simple for now, may add overrides f.<field_name>.facet.* later
 		if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
-			$this->facetParameters['facet.field'][] =
+			$facetParameters['facet.field'][] =
 				'{!ex=' . $facetConfiguration['field'] . '}'
 				. $facetConfiguration['field'];
 		} else {
-			$this->facetParameters['facet.field'][] = $facetConfiguration['field'];
+			$facetParameters['facet.field'][] = $facetConfiguration['field'];
 		}
 
 		if (in_array($facetConfiguration['sortBy'], array('alpha', 'index', 'lex'))) {
-			$this->facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = 'lex';
+			$facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = 'lex';
 		}
+
+		return $facetParameters;
 	}
 
 	/**
