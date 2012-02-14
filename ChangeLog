@@ -117,6 +117,7 @@
 	* Changed order of sorting and faceting
 	* Added a span to allow styling of the search term
 	* Changed positioning of pagination related elements
+	* Changed jQuery UI color scheme
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
