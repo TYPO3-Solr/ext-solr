@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Stefan Sprenger <stefan.sprenger@dkd.de>
+*  (c) 2011-2012 Stefan Sprenger <stefan.sprenger@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
