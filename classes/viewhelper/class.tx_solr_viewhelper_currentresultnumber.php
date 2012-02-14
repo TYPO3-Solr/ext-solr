@@ -24,8 +24,10 @@
 
 
 /**
- * viewhelper class to display the current result number
+ * Viewhelper class to display the current result number in the results loop.
  * Replaces viewhelpers ###CURRENT_RESULT_NUMBER:xxx###
+ *
+ * Example: ###CURRENT_RESULT_NUMBER:###LOOP_CURRENT_ITERATION_COUNT######
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
