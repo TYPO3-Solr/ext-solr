@@ -28,6 +28,7 @@
 	* Added support for Mount Page record monitoring
 	* Changed handling of labels for sorting options to be consitent with facet label configuration (now uses the label directly instead of pointing to an LLL label), fixes issue #31267
 	* Added search.query.allowEmptyQuery in TypoScript to make it "visible" in TypoScript object browser
+	* Fixed issue #30527: jQuery loads in wrong order, credits Rik Willems
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

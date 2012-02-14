@@ -67,15 +67,6 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 #);
 
 tx_solr_CommandResolver::registerPluginCommand(
-	'results',
-	'faceting',
-	'tx_solr_pi_results_FacetingCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
-	+ tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
-);
-
-tx_solr_CommandResolver::registerPluginCommand(
 	'search, results',
 	'form',
 	'tx_solr_pi_results_FormCommand',
@@ -94,6 +85,15 @@ tx_solr_CommandResolver::registerPluginCommand(
 	'no_results',
 	'tx_solr_pi_results_NoResultsCommand',
 	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results',
+	'faceting',
+	'tx_solr_pi_results_FacetingCommand',
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 	+ tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
