@@ -58,7 +58,6 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 		$this->buildFacetingParameters();
 		$this->addFacetQueryFilters();
 
-
 		foreach ($this->facetParameters as $facetParameter => $value) {
 			$query->addQueryParameter($facetParameter, $value);
 		}
