@@ -106,17 +106,8 @@ class tx_solr_indexqueue_Item {
 		$this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
 		$this->changed       = $itemMetaData['changed'];
 
-			// FIXME lazy load record if not provided
 		if (!empty($fullRecord)) {
 			$this->record = $fullRecord;
-		} else {
-			$this->record = t3lib_BEfunc::getRecord(
-				$this->type,
-				$this->uid,
-				'*',
-				'',
-				FALSE
-			);
 		}
 	}
 
@@ -304,9 +295,21 @@ class tx_solr_indexqueue_Item {
 	/**
 	 * Gets the item's full record.
 	 *
+	 * Uses lazy loading.
+	 *
 	 * @return	array	The item's DB record.
 	 */
 	public function getRecord() {
+		if (empty($this->record)) {
+			$this->record = t3lib_BEfunc::getRecord(
+				$this->type,
+				$this->uid,
+				'*',
+				'',
+				FALSE
+			);
+		}
+
 		return $this->record;
 	}
 
@@ -315,10 +318,14 @@ class tx_solr_indexqueue_Item {
 	}
 
 	public function getRecordUid() {
+		$this->getRecord();
+
 		return $this->record['uid'];
 	}
 
 	public function getRecordPageId() {
+		$this->getRecord();
+
 		return $this->record['pid'];
 	}
 
