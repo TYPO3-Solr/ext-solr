@@ -106,6 +106,25 @@
 </div>
 
 <div id="tx-solr-search-functions">
+
+	<!-- ###SOLR_SEARCH_SORTING### begin -->
+	<div id="tx-solr-sorting" class="secondaryContentSection">
+		<div class="csc-header">
+			<h3 class="csc-firstHeader">###LLL:sorting_sortBy###</h3>
+		</div>
+		<ul>
+			<!-- ###LOOP:SORT### begin -->
+			<!-- ###LOOP_CONTENT### -->
+			<li>
+				###SORT_INDICATOR:###SORT.CURRENT_DIRECTION###### ###SORT.LINK###
+			</li>
+			<!-- ###LOOP_CONTENT### -->
+			<!-- ###LOOP:SORT### end -->
+		</ul>
+	</div>
+	<!-- ###SOLR_SEARCH_SORTING### end -->
+
+
 	<!-- ###SOLR_SEARCH_FACETING### begin -->
 	<div id="tx-solr-faceting">
 		<!-- ###USED_FACETS### begin -->
@@ -158,25 +177,6 @@
 	</div>
 	<!-- ###SOLR_SEARCH_FACETING### end -->
 
-
-
-	<!-- ###SOLR_SEARCH_SORTING### begin -->
-	<div id="tx-solr-sorting" class="secondaryContentSection">
-		<div class="csc-header">
-			<h3 class="csc-firstHeader">###LLL:sorting_sortBy###</h3>
-		</div>
-		<ul>
-			<!-- ###LOOP:SORT### begin -->
-			<!-- ###LOOP_CONTENT### -->
-			<li>
-				###SORT_INDICATOR:###SORT.CURRENT_DIRECTION###### ###SORT.LINK###
-			</li>
-			<!-- ###LOOP_CONTENT### -->
-			<!-- ###LOOP:SORT### end -->
-		</ul>
-	</div>
-
-	<!-- ###SOLR_SEARCH_SORTING### end -->
 </div>
 
 <!-- ###SOLR_SEARCH### end -->
