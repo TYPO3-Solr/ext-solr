@@ -151,7 +151,7 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 				'url'        => $facetLinkUrl,
 				'text'       => $facetText,
 				'value'      => $facetOption->getValue(),
-				'count'      => $facetOptionResultCount,
+				'count'      => $facetOption->getNumberOfResults(),
 				'selected'   => $facetSelected ? '1' : '0',
 				'facet_name' => $this->facetName
 			);

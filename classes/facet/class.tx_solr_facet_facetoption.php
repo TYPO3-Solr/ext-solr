@@ -292,6 +292,15 @@ class tx_solr_facet_FacetOption {
 		return $this->value;
 	}
 
+	/**
+	 * Gets the number of results this option yields when applied to the query.
+	 *
+	 * @return integer Number of results
+	 */
+	public function getNumberOfResults() {
+		return $this->numberOfResults;
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_facetoption.php'])	{
