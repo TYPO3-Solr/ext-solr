@@ -85,7 +85,7 @@ if (TYPO3_MODE == 'BE') {
 		// register Clear Cache Menu hook
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:&tx_solr_ConnectionManager';
 
-		// register ajax call
+		// register Clear Cache Menu ajax call
 	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:tx_solr_ConnectionManager->updateConnections';
 
 
@@ -111,6 +111,7 @@ t3lib_extMgm::addPiFlexFormValue(
 $TCA['tt_content']['types']['search']['showitem'] =
 	'--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
 	--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
+		// Index Inspector
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.plugin,
 		pi_flexform;;;;1-1-1,
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
