@@ -82,7 +82,11 @@ class tx_solr_indexqueue_PageIndexerRequestHandler implements t3lib_Singleton {
 			t3lib_div::devLog(
 				'Invalid Index Queue Frontend Request detected!',
 				'solr',
-				3
+				3,
+				array(
+					'page indexer request' => (array) $this->request,
+					'index queue header'   => $_SERVER['HTTP_X_TX_SOLR_IQ']
+				)
 			);
 			die('Invalid Index Queue Request!');
 		}
