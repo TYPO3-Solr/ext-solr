@@ -36,6 +36,7 @@
 	* Fixed issue #30527: jQuery loads in wrong order, credits Rik Willems
 	* Added interface tx_solr_CommandPluginAware
 	* Added tx_solr_Util::getTypoScriptValue()
+	* Changed the spellchecker configuration to build on commit instead of on optimize
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
