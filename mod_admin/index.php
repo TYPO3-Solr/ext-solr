@@ -218,6 +218,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	}
 
 	protected function getModuleContentNoSiteConfigured() {
+		# TODO add button to init Solr connections
 		$this->content = 'No sites configured for Solr yet.';
 	}
 
