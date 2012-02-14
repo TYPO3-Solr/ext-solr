@@ -77,6 +77,7 @@
 	* Changed default options for results per page to 10, 25, 50
 	* Added an option for the crop viewhelper to only crop full words, defaults to TRUE
 	* Added a summary of a plugin's flexform settings in the backend page module (shamelessly stolen from Georg Ringer's EXT:news)
+	* Added the javabin response writer in solrconfig.xml
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
