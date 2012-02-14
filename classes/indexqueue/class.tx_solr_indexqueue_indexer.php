@@ -396,7 +396,11 @@ class tx_solr_indexqueue_Indexer {
 				$additionalIndexer = t3lib_div::getUserObj($classReference);
 
 				if ($additionalIndexer instanceof tx_solr_AdditionalIndexQueueItemIndexer) {
-					$documents = $additionalIndexer->getAdditionalItemDocuments($item, $language, $itemDocument);
+					$additionalDocuments = $additionalIndexer->getAdditionalItemDocuments($item, $language, $itemDocument);
+
+					if (is_array($additionalDocuments)) {
+						$documents = array_merge($documents, $additionalDocuments);
+					}
 				} else {
 					throw new UnexpectedValueException(
 						get_class($additionalIndexer) . ' must implement interface tx_solr_AdditionalIndexQueueItemIndexer',
