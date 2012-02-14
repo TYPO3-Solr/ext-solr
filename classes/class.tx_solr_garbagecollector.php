@@ -117,6 +117,7 @@ class tx_solr_GarbageCollector {
 			|| $this->isEndTimeInPast($table, $record)
 			|| $this->hasFrontendGroupsRemoved($table, $record)
 			|| ($table == 'pages' && $this->isPageExcludedFromSearch($record))
+			|| ($table == 'pages' && !$this->isIndexablePageType($record))
 		) {
 			$this->collectGarbage($table, $uid);
 		}
@@ -252,6 +253,22 @@ class tx_solr_GarbageCollector {
 	}
 
 	/**
+	 * Checks whether a page has a page type that can be indexed.
+	 * Currently standard apges and mount pages can be indexed.
+	 *
+	 * @param array $record A page record
+	 * @return boolean TRUE if the page can be indexed according to its page type, FALSE otherwise
+	 */
+	protected function isIndexablePageType(array $record) {
+		$allowedPagetype = array(
+			1, // standard page
+			7  // mount page
+		);
+
+		return in_array($record['doktype'], $allowedPagetype);
+	}
+
+	/**
 	 * Tracks down index documents belonging to a particular record or page and
 	 * removes them from the index and the Index Queue.
 	 *
@@ -290,16 +307,22 @@ class tx_solr_GarbageCollector {
 	protected function collectPageGarbage($table, $uid) {
 		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 
-		if ($table == 'tt_content') {
-				// changing a content element affects the complete page
-			$contentElement = t3lib_BEfunc::getRecord('tt_content', $uid, 'uid, pid', '', FALSE);
+		switch ($table) {
+			case 'tt_content':
+				$contentElement = t3lib_BEfunc::getRecord('tt_content', $uid, 'uid, pid', '', FALSE);
 
-			$table = 'pages';
-			$uid   = $contentElement['pid'];
+				$table = 'pages';
+				$uid   = $contentElement['pid'];
+
+				$this->deleteIndexDocuments($table, $uid);
+					// only a content element was removed, now update/re-index the page
+				$indexQueue->updateItem($table, $uid);
+				break;
+			case 'pages':
+				$this->deleteIndexDocuments($table, $uid);
+				$indexQueue->deleteItem($table, $uid);
+				break;
 		}
-
-		$this->deleteIndexDocuments($table, $uid);
-		$indexQueue->updateItem($table, $uid);
 	}
 
 	/**
