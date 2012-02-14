@@ -267,9 +267,13 @@ class tx_solr_indexqueue_PageIndexerRequest {
 	 * Sets a request's parameter and its value.
 	 *
 	 * @param	string	$parameter Parameter name
-	 * @param	string	$value Parameter value.
+	 * @param	mixed	$value Parameter value.
 	 */
 	public function setParameter($parameter, $value) {
+		if (is_bool($value)) {
+			$value = $value ? '1' : '0';
+		}
+
 		$this->parameters[$parameter] = $value;
 	}
 
