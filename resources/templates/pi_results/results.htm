@@ -53,8 +53,6 @@
 	###RESULTS.FOUND###
 	###RESULTS.RANGE###
 
-	###RESULTS.PAGEBROWSER###
-
 	<!-- ###RESULTS_PER_PAGE_SWITCH### beginn -->
 	<form action="###FORM.ACTION###" method="post">
 		###LLL:results_per_page###<select onchange="this.form.submit()" name="###TX_SOLR.PREFIX###[resultsPerPage]">
@@ -66,6 +64,8 @@
 		</select>
 	</form>
 	<!-- ###RESULTS_PER_PAGE_SWITCH### end -->
+
+	###RESULTS.PAGEBROWSER###
 
 	<ol start="###RESULTS.OFFSET###" class="results-list">
 		<!-- ###LOOP:RESULT_DOCUMENTS### begin -->
