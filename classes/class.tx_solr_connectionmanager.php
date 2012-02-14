@@ -293,6 +293,9 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$solrEnabled = !empty($solrEnabled) ? TRUE : FALSE;
 
 				if (!empty($solrSetup) && $solrEnabled) {
+					$solrPath = trim($solrSetup['path'], '/');
+					$solrPath = '/' . $solrPath . '/';
+
 					$connection = array(
 						'rootPageTitle' => $rootPage['title'],
 						'rootPageUid'   => $rootPage['uid'],
@@ -300,7 +303,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 						'solrScheme'    => $solrSetup['scheme'],
 						'solrHost'      => $solrSetup['host'],
 						'solrPort'      => $solrSetup['port'],
-						'solrPath'      => $solrSetup['path'],
+						'solrPath'      => $solrPath,
 						'solrUseCurl'   => $solrSetup['useCurlHttpTransport'],
 
 						'language'      => $languageId
