@@ -70,7 +70,7 @@ class tx_solr_indexqueue_frontendhelper_PageFieldMappingIndexer implements tx_so
 		$mappedFieldNames = $this->getMappedFieldNames();
 
 		foreach ($mappedFieldNames as $mappedFieldName) {
-			$fields[$mappedFieldName] = $this->getFieldValue($mappedFieldName);
+			$fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName);
 		}
 
 		return $fields;
@@ -104,25 +104,31 @@ class tx_solr_indexqueue_frontendhelper_PageFieldMappingIndexer implements tx_so
 	 * Allows to put the page record through cObj processing if wanted / needed.
 	 * Otherwise the plain page record field value is used.
 	 *
-	 * @param	string	The Solr index field name to resolve the value from the page record
-	 * @return	string	The resolved string value to be indexed
+	 * @param string $solrFieldName The Solr field name to resolve the value from the item's record
+	 * @return string The resolved string value to be indexed
 	 */
-	protected function getFieldValue($fieldName) {
-		$fieldValue   = '';
-		$mappedFields = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['fields.'];
-		$pageRecord   = $GLOBALS['TSFE']->page;
+	protected function resolveFieldValue($solrFieldName) {
+		$fieldValue = '';
 
-		if (isset($mappedFields[$fieldName . '.'])) {
+		$indexingConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['fields.'];
+		$pageRecord            = $GLOBALS['TSFE']->page;
+
+
+		if (isset($indexingConfiguration[$solrFieldName . '.'])) {
 				// configuration found => need to resolve a cObj
 			$contentObject = t3lib_div::makeInstance('tslib_cObj');
 			$contentObject->start($pageRecord, 'pages');
 
 			$fieldValue = $contentObject->cObjGetSingle(
-				$mappedFields[$fieldName],
-				$mappedFields[$fieldName . '.']
+				$indexingConfiguration[$solrFieldName],
+				$indexingConfiguration[$solrFieldName . '.']
 			);
+
+			if (tx_solr_indexqueue_Indexer::isSerializedValue($indexingConfiguration, $solrFieldName)) {
+				$fieldValue = unserialize($fieldValue);
+			}
 		} else {
-			$fieldValue = $pageRecord[$mappedFields[$fieldName]];
+			$fieldValue = $pageRecord[$indexingConfiguration[$solrFieldName]];
 		}
 
 		return $fieldValue;

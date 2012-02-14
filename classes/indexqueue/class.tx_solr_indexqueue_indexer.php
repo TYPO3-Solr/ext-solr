@@ -598,7 +598,7 @@ class tx_solr_indexqueue_Indexer {
 	 * @param	string	$solrFieldName	Current field being indexed
 	 * @return	boolean	TRUE if the value is expected to be serialized, FALSE otherwise
 	 */
-	protected function isSerializedValue(array $indexingConfiguration, $solrFieldName) {
+	public static function isSerializedValue(array $indexingConfiguration, $solrFieldName) {
 		$isSerialized = FALSE;
 
 			// SOLR_MULTIVALUE - always returns serialized array

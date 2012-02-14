@@ -101,6 +101,7 @@
 	* Added the number of results to tx_solr_facet_FacetOption
 	* Added tx_solr_QueryFilterEncoder::encodeFilter()
 	* Added a way to provide a value for facet options to be used in URLs
+	* Fixed an issue preventing SOLR_MULTIVALUE working correctly when used during page indexing
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
