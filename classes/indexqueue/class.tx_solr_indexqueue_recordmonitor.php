@@ -64,21 +64,21 @@ class tx_solr_indexqueue_RecordMonitor {
 	 * @return	void
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, t3lib_TCEmain $tceMain) {
-		$recordTable = $table;
-		$recordUid   = $uid;
-		$recordPid   = 0;
+		$recordTable  = $table;
+		$recordUid    = $uid;
+		$recordPageId = 0;
 
 		if ($status == 'new') {
 			$recordUid = $tceMain->substNEWwithIDs[$recordUid];
 		}
 
 		if ($status == 'update' && !isset($fields['pid'])) {
-			$recordPid = $tceMain->getPID($recordTable, $recordUid);
+			$recordPageId = $tceMain->getPID($recordTable, $recordUid);
 		} else {
-			$recordPid = $fields['pid'];
+			$recordPageId = $fields['pid'];
 		}
 
-		$monitoredTables = $this->getMonitoredTables($recordPid);
+		$monitoredTables = $this->getMonitoredTables($recordPageId);
 		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 
 		if (in_array($recordTable, $monitoredTables)) {
@@ -89,7 +89,7 @@ class tx_solr_indexqueue_RecordMonitor {
 
 			// when a content element changes we need to updated the page instead
 		if ($recordTable == 'tt_content' && in_array('pages', $monitoredTables)) {
-			$indexQueue->updateItem('pages', $recordPid);
+			$indexQueue->updateItem('pages', $recordPageId);
 		}
 
 			// TODO need to check for creation of "pages_language_overlay" records to trigger "pages" updates
