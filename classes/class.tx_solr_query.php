@@ -32,6 +32,8 @@
  */
 class tx_solr_Query {
 
+	// FIXME extract link building from the query, it's not the query's domain
+
 	const SORT_ASC  = 'ASC';
 	const SORT_DESC = 'DESC';
 
