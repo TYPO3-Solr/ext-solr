@@ -47,6 +47,7 @@
 	* Added method tx_solr_Site::getDefaultLanguage()
 	* Fixed issue #26080: Page is not getting reindexed when moved, credits Philipp Hanebrink
 	* Fixed issue #31590: Usage of deprecated tx_solr_Util::getSiteHash()
+	* Added stdWrap support to plugin.tx_solr.search.query.filter, resolves #30034
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
