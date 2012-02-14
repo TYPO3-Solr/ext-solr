@@ -25,7 +25,7 @@
 
 /**
  * Crop viewhelper to to shorten strings
- * Replaces viewhelpers ###CROP:string|length|cropIndicator###
+ * Replaces viewhelpers ###CROP:string|length|cropIndicator|cropFullWords###
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
@@ -36,6 +36,7 @@ class tx_solr_viewhelper_Crop implements tx_solr_ViewHelper {
 		// defaults if neather is given trough the view helper marker, nor through TS
 	protected $maxLength = 30;
 	protected $cropIndicator = '...';
+	protected $cropFullWords = TRUE;
 
 	/**
 	 * constructor for class tx_solr_viewhelper_Crop
@@ -49,6 +50,10 @@ class tx_solr_viewhelper_Crop implements tx_solr_ViewHelper {
 
 		if (!empty($configuration['viewhelpers.']['crop.']['cropIndicator'])) {
 			$this->cropIndicator = $configuration['viewhelpers.']['crop.']['cropIndicator'];
+		}
+
+		if (isset($configuration['viewhelpers.']['crop.']['cropFullWords'])) {
+			$this->cropFullWords = (boolean) $configuration['viewhelpers.']['crop.']['cropFullWords'];
 		}
 	}
 
@@ -72,11 +77,15 @@ class tx_solr_viewhelper_Crop implements tx_solr_ViewHelper {
 			$cropIndicator = $arguments[2];
 		}
 
+		if (!empty($arguments[3])) {
+			$this->cropFullWords = TRUE;
+		}
+
 		$contentObject = t3lib_div::makeInstance('tslib_cObj');
 		$contentObject->start(array(), '');
 		$croppedString = $contentObject->cropHTML(
 			$stringToCrop,
-			$maxLength . '|' . $cropIndicator
+			$maxLength . '|' . $cropIndicator . ($this->cropFullWords ? '|1' : '')
 		);
 
 		return $croppedString;
