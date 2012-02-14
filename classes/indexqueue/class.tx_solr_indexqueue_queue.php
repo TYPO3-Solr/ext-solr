@@ -318,11 +318,22 @@ class tx_solr_indexqueue_Queue {
 		// must not add items to the index queue which are excluded through additionalWhereClause
 		// requires construction of additionalWhereClause through multiple options instead of just one
 
+			# temporary until we have a query builder to take care of this
+		$additionalRecordFields = '';
+		if ($itemType == 'pages') {
+			$additionalRecordFields = ', doktype';
+		}
+
 		$record = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-			'pid',
+			'pid' . $additionalRecordFields,
 			$itemType,
 			'uid = ' . intval($itemUid) . t3lib_BEfunc::deleteClause($itemType)
 		);
+
+			# temporary until we have a query builder to take care of this
+		if ($itemType == 'pages' && !$this->isAllowedPageType($record)) {
+			return;
+		}
 
 		if ($record && $record['pid'] != 0) {
 			$rootPageId = tx_solr_Util::getRootPageId($record['pid']);
@@ -584,6 +595,19 @@ class tx_solr_indexqueue_Queue {
 		}
 
 		return $indexQueueItems;
+	}
+
+	// temporary
+
+	private function isAllowedPageType(array $pageRecord) {
+		$isAllowedPageType = FALSE;
+		$allowedPageTypes  = array(1, 7);
+
+		if (in_array($pageRecord['doktype'], $allowedPageTypes)) {
+			$isAllowedPageType = TRUE;
+		}
+
+		return $isAllowedPageType;
 	}
 }
 
