@@ -3,6 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
+*  (c) 2012 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,14 +26,17 @@
 /**
  * Query Parser Interface
  *
- * @author	Markus Goldbach <markus.goldbach@dkd.de>
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
 interface tx_solr_QueryFilterParser {
 
 	/**
-	 * Parses the query filter from GET parameters in the URL.
+	 * Parses the query filter from GET parameters in the URL and translates it
+	 * to a Lucene filter value.
 	 *
-	 * @param $filterQuery the filter query from plugin
+	 * @param string $filterQuery the filter query from plugin
+	 * @param array $options options set in a facet's configuration
+	 * @return string Value to be used in a Lucene filter
 	 */
 	public function parseFilter($filterQuery, array $options = array());
 }
