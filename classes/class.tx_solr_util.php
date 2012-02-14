@@ -194,10 +194,12 @@ class tx_solr_Util {
 			self::initializeTsfe($pageId, $language);
 
 			$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
-			$configurationCache[$cacheId] = $tmpl->ext_getSetup(
+			$configuration = $tmpl->ext_getSetup(
 				$GLOBALS['TSFE']->tmpl->setup,
 				$path
 			);
+
+			$configurationCache[$cacheId] = $configuration[0];
 		} else {
 			if (!isset($configurationCache[$cacheId])) {
 				if (is_int($language)) {

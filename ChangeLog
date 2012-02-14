@@ -53,6 +53,7 @@
 	* Added support for language parameter when indexing records with Index Queue, resolves #31382, credits Michael Voehringer
 	* Fixed issue #28541: Catch block throws an exception due to wrong construction of replacement response on error
 	* Fixed error logging when indexing through Index Queue
+	* Fixed a bug in tx_solr_Util::getConfigurationFromPageId() leading to wrong configuration to be returned when using an intialized TSFE to get the configuration
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
