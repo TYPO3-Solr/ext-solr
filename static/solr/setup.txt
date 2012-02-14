@@ -332,7 +332,6 @@ plugin.tx_solr {
 
 		indexing {
 			missingTypo3SearchMarkers = 1
-			indexQueuePageIndexerGetData = 0
 			pageIndexed = 0
 		}
 
