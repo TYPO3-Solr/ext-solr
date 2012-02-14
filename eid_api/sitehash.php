@@ -4,7 +4,7 @@ $domain     = t3lib_div::_GP('domain');
 $returnData = '';
 
 if (!empty($domain)) {
-	$sitehash = md5(
+	$sitehash = sha1(
 		$domain .
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
 		'tx_solr'

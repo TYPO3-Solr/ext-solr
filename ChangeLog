@@ -10,6 +10,7 @@
 	!! Changed the form command to use the tx_solr_CommandPluginAware interface to make form modifiers aware of the current plugin
 	!! Changed pagebrowser template file configuration from search.pagebrowser.templateFeile to templateFiles.pagebrowser
 	!! Removed compatibility code for TYPO3 version before 4.5
+	!! Changed calculation of site hashes, we're now using SHA-1 instead of MD5 - You have to reindex everything to support the changes
 	! Changed Index Queue tables to use InnoDB engine
 
 	* Added Polish Translations, credits Jan Slusarczyk

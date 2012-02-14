@@ -260,12 +260,12 @@ class tx_solr_Site {
 	 *
 	 * The Site Hash is build from the site's main domain, the system encryption
 	 * key, and the extension "tx_solr". These components are concatenated and
-	 * md5-hashed.
+	 * sha1-hashed.
 	 *
 	 * @return	string	Site Hash.
 	 */
 	public function getSiteHash() {
-		$siteHash = md5(
+		$siteHash = sha1(
 			$this->getDomain() .
 			$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
 			'tx_solr'
