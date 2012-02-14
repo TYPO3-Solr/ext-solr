@@ -302,7 +302,10 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 		}
 		$template->addLoop('options', 'option', $selectOptions);
 
-		$form = array('action' => $this->parentPlugin->pi_linkTP_keepPIvars_url());
+		$form = array('action' => $this->parentPlugin->pi_linkTP_keepPIvars_url(array(
+			'resultsPerPage' => '',
+			'page' => '',
+		)));
 		$template->addVariable('form', $form);
 
 		return $template->render();
