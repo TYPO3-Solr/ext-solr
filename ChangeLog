@@ -43,6 +43,7 @@
 	* Added an example solr.xml which defines cores for all available languages
 	* Fixed issue #8117: Changing a page to type Folder keeps it in Index Queue
 	* Added a scheduler task to re-index a site (f.e. after deployments), resolves issue #30342, credits Christoph Moeller
+	* Added method tx_solr_Site::getDefaultLanguage()
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

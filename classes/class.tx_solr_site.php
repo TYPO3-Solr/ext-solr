@@ -177,6 +177,35 @@ class tx_solr_Site {
 	}
 
 	/**
+	 * Gets the site's default language as configured in
+	 * config.sys_language_uid. If sys_language_uid is not set, 0 is assumed to
+	 * be the default.
+	 *
+	 * @return integer The site's default language.
+	 */
+	public function getDefaultLanguage() {
+		$siteDefaultLanguage = 0;
+
+		$configuration = tx_solr_Util::getConfigurationFromPageId(
+			$this->rootPage['uid'],
+			'config',
+			FALSE,
+			FALSE
+		);
+
+		if (isset($configuration['sys_language_uid'])) {
+			$siteDefaultLanguage = $configuration['sys_language_uid'];
+		}
+
+			// default language is set through default L GET parameter -> overruling config.sys_language_uid
+		if (isset($configuration['defaultGetVars.']['L'])) {
+			$siteDefaultLanguage = intval($configuration['defaultGetVars.']['L']);
+		}
+
+		return $siteDefaultLanguage;
+	}
+
+	/**
 	 * Generates a list of page IDs in this site. Attention, this includes
 	 * all page types! Deleted pages are not included.
 	 *

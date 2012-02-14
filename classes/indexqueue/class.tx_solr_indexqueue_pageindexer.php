@@ -184,6 +184,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 
 		$dataUrl = $scheme . '://' . $host . $path . 'index.php?id=' . $pageId;
 		$dataUrl .= $this->getMountPageDataUrlParameter($item);
+		$dataUrl .= '&L=' . $language;
 
 		if (!t3lib_div::isValidUrl($dataUrl)) {
 			t3lib_div::devLog(
@@ -206,11 +207,6 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 				1311080805
 			);
 		}
-
-		if ($language) {
-			$dataUrl .= '&L=' . $language;
-		}
-
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']) {
 			$dataUrlModifier = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);

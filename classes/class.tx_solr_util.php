@@ -183,18 +183,40 @@ class tx_solr_Util {
 	 * @return	array	The Solr configuration for the requested tree.
 	 */
 	public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = FALSE, $language = 0) {
+		return self::getConfigurationFromPageId($pageId, 'plugin.tx_solr', $initializeTsfe, $language);
+	}
+
+	/**
+	 * Loads the TypoScript configuration for a given page id and language.
+	 * Language usage may be disabled to get the default TypoScript
+	 * configuration.
+	 *
+	 * @param	integer	Id of the (root) page to get the Solr configuration from.
+	 * @param	string	The TypoScript configuration path to retrieve.
+	 * @param	boolean	Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+	 * @param	integer|boolean	System language uid or FALSE to disable language usage, optional, defaults to 0
+	 * @return	array	The Solr configuration for the requested tree.
+	 */
+	public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = FALSE, $language = 0) {
 		static $configurationCache = array();
-		$solrConfiguration         = array();
+		$configuration             = array();
 
 			// TODO needs some caching -> caching framework?
-		$cacheId = $pageId . '|' . $language;
+		$cacheId = $pageId . '|' . $path . '|' . $language;
 
 		if ($initializeTsfe) {
 			self::initializeTsfe($pageId, $language);
-			$configurationCache[$cacheId] = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
+
+			$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
+			$configurationCache[$cacheId] = $tmpl->ext_getSetup(
+				$GLOBALS['TSFE']->tmpl->setup,
+				$path
+			);
 		} else {
 			if (!isset($configurationCache[$cacheId])) {
-				t3lib_div::_GETset($language, 'L');
+				if (is_int($language)) {
+					t3lib_div::_GETset($language, 'L');
+				}
 
 				$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
 				$rootLine   = $pageSelect->getRootLine($pageId);
@@ -209,9 +231,9 @@ class tx_solr_Util {
 				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
 				$tmpl->generateConfig();
 
-				$solrConfiguration = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr');
+				$configuration = $tmpl->ext_getSetup($tmpl->setup, $path);
 
-				$configurationCache[$cacheId] = $solrConfiguration[0];
+				$configurationCache[$cacheId] = $configuration[0];
 			}
 		}
 
