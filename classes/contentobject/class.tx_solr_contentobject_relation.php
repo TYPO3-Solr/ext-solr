@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Ingo Renner <ingo.renner@dkd.de>
+*  (c) 2011-2012 Ingo Renner <ingo.renner@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -42,6 +42,13 @@ class tx_solr_contentobject_Relation {
 	const CONTENT_OBJECT_NAME = 'SOLR_RELATION';
 
 	/**
+	 * Content object configuration
+	 *
+	 * @var array
+	 */
+	protected $configuration = array();
+
+	/**
 	 * Executes the SOLR_RELATION content object.
 	 *
 	 * Resolves relations between records. Currently supported relations are
@@ -54,10 +61,12 @@ class tx_solr_contentobject_Relation {
 	 * @param	tslib_cObj	$contentObject parent content object
 	 * @return	string	serialized array representation of the given list
 	 */
-	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $contentObject) {
+	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $parentContentObject) {
 		$result = '';
 
-		$relatedItems = $this->getRelatedItems($configuration, $contentObject);
+		$this->configuration = $configuration;
+
+		$relatedItems = $this->getRelatedItems($parentContentObject);
 
 		if (empty($configuration['multiValue'])) {
 				// single value, need to concatenate related items
@@ -83,7 +92,7 @@ class tx_solr_contentobject_Relation {
 	 * @param	tslib_cObj	$parentContentObject parent content object
 	 * @return	array	Array of related items, values already resolved from related records
 	 */
-	protected function getRelatedItems($configuration, $parentContentObject) {
+	protected function getRelatedItems(tslib_cObj $parentContentObject) {
 		$relatedItems = array();
 
 		list($localTableName, $localRecordUid) = explode(':', $parentContentObject->currentRecord);
@@ -91,8 +100,73 @@ class tx_solr_contentobject_Relation {
 		t3lib_div::loadTCA($localTableName);
 		$localTableTca  = $GLOBALS['TCA'][$localTableName];
 
-		$localFieldName = $configuration['localField'];
+		$localFieldName = $this->configuration['localField'];
 		$localFieldTca  = $localTableTca['columns'][$localFieldName];
+
+		if (isset($localFieldTca['config']['MM']) && trim($localFieldTca['config']['MM']) !== '') {
+			$relatedItems = $this->getRelatedItemsFromMMTable($localTableName, $localRecordUid, $localFieldTca);
+		} else {
+			$relatedItems = $this->getRelatedItemsFromForeignTable($localFieldName, $localRecordUid, $localFieldTca, $parentContentObject);
+		}
+
+		return $relatedItems;
+	}
+
+	/**
+	 * Gets the related items from a table using a 1:n relation.
+	 *
+	 * @param string $localFieldName Local table field name
+	 * @param integer $localRecordUid Local record uid
+	 * @param array $localFieldTca The local table's TCA
+	 * @param tslib_cObj $parentContentObject parent content object
+	 * @return array Array of related items, values already resolved from related records
+	 */
+	protected function getRelatedItemsFromForeignTable($localFieldName, $localRecordUid, array $localFieldTca, tslib_cObj $parentContentObject) {
+		$relatedItems = array();
+
+		$foreignTableName = $localFieldTca['config']['foreign_table'];
+		$foreignTableTca  = $GLOBALS['TCA'][$foreignTableName];
+
+		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
+
+		$whereClause = '';
+		if (!empty($localFieldTca['config']['foreign_table_field'])) {
+			$foreignTableField = $localFieldTca['config']['foreign_table_field'];
+
+			$whereClause = $foreignTableName . '.' . $foreignTableField . ' = ' . (int) $localRecordUid;
+		} else {
+			$foreignTableUids = t3lib_div::intExplode(',', $parentContentObject->data[$localFieldName]);
+
+			if (count($foreignTableUids) > 1) {
+				$whereClause = $foreignTableName . '.uid IN (' . implode(',', $foreignTableUids) . ')';
+			} else {
+				$whereClause = $foreignTableName . '.uid = ' . (int) array_shift($foreignTableUids);
+			}
+		}
+
+		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$foreignTableName . '.' . $foreignTableLabelField,
+			$foreignTableName,
+			$whereClause
+		);
+
+		while ($relatedRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($relatedRecordsResource)) {
+			$relatedItems[] = $relatedRecord[$foreignTableLabelField];
+		}
+
+		return $relatedItems;
+	}
+
+	/**
+	 * Gets the related items from a table using a n:m relation.
+	 *
+	 * @param string $localTableName Local table name
+	 * @param integer $localRecordUid Local record uid
+	 * @param array $localFieldTca The local table's TCA
+	 * @return array Array of related items, values already resolved from related records
+	 */
+	protected function getRelatedItemsFromMMTable($localTableName, $localRecordUid, array $localFieldTca) {
+		$relatedItems = array();
 
 		$mmTableName = $localFieldTca['config']['MM'];
 
@@ -100,10 +174,7 @@ class tx_solr_contentobject_Relation {
 		t3lib_div::loadTCA($foreignTableName);
 		$foreignTableTca  = $GLOBALS['TCA'][$foreignTableName];
 
-		$foreignTableLabelField = $foreignTableTca['ctrl']['label'];
-		if (!empty($configuration['foreignLabelField'])) {
-			$foreignTableLabelField = $configuration['foreignLabelField'];
-		}
+		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
 		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
 			$foreignTableName . '.' . $foreignTableLabelField,
@@ -118,6 +189,23 @@ class tx_solr_contentobject_Relation {
 		}
 
 		return $relatedItems;
+	}
+
+	/**
+	 * Resolves the field to use as the related item's label depending on TCA
+	 * and TypoScript configuration
+	 *
+	 * @param array $foreignTableTca The foreign table's TCA
+	 * @return string The field to use for the related item's label
+	 */
+	protected function resolveForeignTableLabelField(array $foreignTableTca) {
+		$foreignTableLabelField = $foreignTableTca['ctrl']['label'];
+
+		if (!empty($this->configuration['foreignLabelField'])) {
+			$foreignTableLabelField = $this->configuration['foreignLabelField'];
+		}
+
+		return $foreignTableLabelField;
 	}
 
 }

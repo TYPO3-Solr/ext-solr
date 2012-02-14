@@ -64,6 +64,7 @@
 	* Added methods for setting/adding facet fields in tx_solr_Query, credits Michael Knoll
 	* Added a hook to provide additional documents when indexing Index Queue items
 	* Added API for retrieving a domain's sitehash, credits Stefan Sprenger
+	* Added feature #33335: Support for more relation types in SOLR_RELATION, credits Dominique Feyer
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
