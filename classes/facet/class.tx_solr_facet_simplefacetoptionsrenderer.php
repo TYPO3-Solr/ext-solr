@@ -69,16 +69,17 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 	/**
 	 * Constructor
 	 *
-	 * @param	string	$facetName The facet's name
-	 * @param	array	$facetOptions The facet's options.
-	 * @param	array	$facetConfiguration The facet's TypoScript configuration.
-	 * @param	tx_solr_Template	$template Template to use to render the facet
-	 * @param	tx_solr_Query	$query Query instance used to build links.
+	 * @param string $facetName The facet's name
+	 * @param array $facetOptions The facet's options.
+	 * @param tx_solr_Template $template Template to use to render the facet
+	 * @param tx_solr_Query $query Query instance used to build links.
 	 */
-	public function __construct($facetName, array $facetOptions, array $facetConfiguration, tx_solr_Template $template, tx_solr_Query $query) {
+	public function __construct($facetName, array $facetOptions, tx_solr_Template $template, tx_solr_Query $query) {
 		$this->facetName          = $facetName;
 		$this->facetOptions       = $facetOptions;
-		$this->facetConfiguration = $facetConfiguration;
+
+		$solrConfiguration        = tx_solr_Util::getSolrConfiguration();
+		$this->facetConfiguration = $solrConfiguration['search.']['faceting.']['facets.'][$facetName . '.'];
 
 		$this->query = $query;
 

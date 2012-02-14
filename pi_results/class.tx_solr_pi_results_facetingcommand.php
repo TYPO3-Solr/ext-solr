@@ -149,7 +149,6 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 				$filterName,
 				$filterValue,
 				$filter ,
-				$facetConfiguration,
 				$this->parentPlugin->getTemplate(),
 				$query
 			);

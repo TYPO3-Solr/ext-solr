@@ -32,6 +32,39 @@
 class tx_solr_facet_SimpleFacetRenderer extends tx_solr_facet_AbstractFacetRenderer {
 
 	/**
+	 * Renders the facet's options.
+	 *
+	 * @return string The rendered facet options.
+	 */
+	protected function renderFacetOptions() {
+		$facetContent = '';
+		$facetField   = $this->facetConfiguration['field'];
+		$facetOptions = $this->getFacetOptions();
+
+		if (!empty($facetOptions) || !empty($this->facetConfiguration['showEvenWhenEmpty'])) {
+			$facetOptionsRenderer = t3lib_div::makeInstance(
+				'tx_solr_facet_SimpleFacetOptionsRenderer',
+				$this->facetName,
+				$facetOptions,
+				$this->template,
+				$this->search->getQuery()
+			);
+			$facetOptionsRenderer->setLinkTargetPageId($this->linkTargetPageId);
+
+			if (!($facetOptionsRenderer instanceof tx_solr_FacetOptionsRenderer)) {
+				throw new UnexpectedValueException(
+					get_class($facetOptionsRenderer) . ' must implement interface tx_solr_FacetOptionsRenderer',
+					1310387079
+				);
+			}
+
+			$facetContent = $facetOptionsRenderer->renderFacetOptions();
+		}
+
+		return $facetContent;
+	}
+
+	/**
 	 * Provides a "show all link" if a certain limit of facet options is
 	 * reached.
 	 *

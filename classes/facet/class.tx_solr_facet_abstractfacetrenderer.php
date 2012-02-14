@@ -65,13 +65,6 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	 */
 	protected $linkTargetPageId = 0;
 
-	/**
-	 * Default facet options renderer
-	 *
-	 * @var string
-	 */
-	private $defaultFacetOptionsRendererClass = 'tx_solr_facet_SimpleFacetOptionsRenderer';
-
 
 	/**
 	 * Constructor.
@@ -127,44 +120,10 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	}
 
 	/**
-	 * Renders the facet's options.
+	 * Renders a numeric range facet by providing a slider
 	 *
-	 * @return	string	The rendered facet options.
 	 */
-	protected function renderFacetOptions() {
-		$facetContent = '';
-		$facetField   = $this->facetConfiguration['field'];
-		$facetOptions = $this->getFacetOptions();
-
-		if (!empty($facetOptions) || !empty($this->facetConfiguration['showEvenWhenEmpty'])) {
-				// TODO remove renderer option, renderer is now determined by type
-			$facetOptionsRendererClass = $this->defaultFacetOptionsRendererClass;
-			if (!empty($this->facetConfiguration['renderer'])) {
-				$facetOptionsRendererClass = $this->facetConfiguration['renderer'];
-			}
-
-			$facetOptionsRenderer = t3lib_div::makeInstance(
-				$facetOptionsRendererClass,
-				$this->facetName,
-				$facetOptions,
-				$this->facetConfiguration,
-				$this->template,
-				$this->search->getQuery()
-			);
-			$facetOptionsRenderer->setLinkTargetPageId($this->linkTargetPageId);
-
-			if (!($facetOptionsRenderer instanceof tx_solr_FacetOptionsRenderer)) {
-				throw new UnexpectedValueException(
-					get_class($facetOptionsRenderer) . ' must implement interface tx_solr_FacetOptionsRenderer',
-					1310387079
-				);
-			}
-
-			$facetContent = $facetOptionsRenderer->renderFacetOptions();
-		}
-
-		return $facetContent;
-	}
+	abstract protected function renderFacetOptions();
 
 	/**
 	 * (non-PHPdoc)
