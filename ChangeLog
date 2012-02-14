@@ -1,5 +1,7 @@
 2012-02-14  Ingo Renner  <ingo.renner@dkd.de>
 
+	! Changed Index Queue tables to use InnoDB engine
+
 	* Added a column in the Index Queue indexing properties table to identify which site a property belongs to
 	* Added a column in the Index Queue table to signal that an item has additional indexing properties
 	* Refactored initialization of the Index Queue to be more modular and allow finer control over what goes into the Index Queue

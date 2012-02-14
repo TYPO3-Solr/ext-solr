@@ -17,7 +17,7 @@ CREATE TABLE tx_solr_indexqueue_item (
 	PRIMARY KEY (uid),
 	KEY changed (changed),
 	KEY item_id (item_type,item_uid)
-);
+) ENGINE=InnoDB;
 
 
 #
@@ -34,4 +34,4 @@ CREATE TABLE tx_solr_indexqueue_indexing_property (
 
 	PRIMARY KEY (uid),
 	KEY item_id (item_id)
-);
+) ENGINE=InnoDB;
