@@ -37,6 +37,36 @@
 class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer_Abstract {
 
 	/**
+	 * Constructor, sets type and indexingConfigurationName to "pages".
+	 *
+	 */
+	public function __construct() {
+		$this->type = 'pages';
+		$this->indexingConfigurationName = 'pages';
+	}
+
+	/**
+	 * Overrides the general setType() implementation, forcing type to "pages".
+	 *
+	 * @param string $type Type to initialize (ignored).
+	 * @see tx_solr_IndexQueueInitializer::setType()
+	 */
+	public function setType($type) {
+		$this->type = 'pages';
+	}
+
+	/**
+	 * Overrides the general setIndexingConfigurationName() implementation,
+	 * forcing indexingConfigurationName to "pages".
+	 *
+	 * @param string $indexingConfigurationName Indexing configuration name (ignored)
+	 * @see tx_solr_IndexQueueInitializer::setIndexingConfigurationName()
+	 */
+	public function setIndexingConfigurationName($indexingConfigurationName) {
+		$this->indexingConfigurationName = 'pages';
+	}
+
+	/**
 	 * Initializes Index Queue page items for a site. Includes regular pages
 	 * and mounted pages - no nested mount page structures though.
 	 *
@@ -49,6 +79,19 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 		$mountPagesInitialized = $this->initializeMountPages();
 
 		return ($pagesInitialized && $mountPagesInitialized);
+	}
+
+	/**
+	 * Initialize a single page that is part of a mounted tree.
+	 *
+	 * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
+	 * @param integer $mountPageId The ID of the mounted page
+	 */
+	public function initializeMountedPage(array $mountProperties, $mountPageId) {
+		$mountedPages = array($mountPageId);
+
+		$this->addMountedPagesToIndexQueue($mountedPages);
+		$this->addIndexQueueItemIndexingProperties($mountProperties, $mountedPages);
 	}
 
 	/**

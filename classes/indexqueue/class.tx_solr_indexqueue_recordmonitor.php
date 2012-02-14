@@ -78,13 +78,17 @@ class tx_solr_indexqueue_RecordMonitor {
 			$recordPageId = $fields['pid'];
 		}
 
+		$indexQueue      = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 		$monitoredTables = $this->getMonitoredTables($recordPageId);
-		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 
 		if (in_array($recordTable, $monitoredTables)) {
 				// FIXME must respect the indexer's additionalWhereClause option: must not add items to the index queue which are excluded through additionalWhereClause
 
 			$indexQueue->updateItem($recordTable, $recordUid);
+
+			if ($recordTable == 'pages') {
+				$this->updateMountPages($recordUid);
+			}
 		}
 
 			// when a content element changes we need to updated the page instead
@@ -123,6 +127,74 @@ class tx_solr_indexqueue_RecordMonitor {
 		}
 
 		return array_unique($monitoredTables);
+	}
+
+
+	// Mount Page Handling
+
+
+	/**
+	 * Handles updates of the Index Queue in case a newly created page is part
+	 * of a tree that is mounted into a another site.
+	 *
+	 * @param integer $pageId Page Id (uid).
+	 */
+	protected function updateMountPages($pageId) {
+
+			// get the root line of the page, every parent page could be a Mount Page source
+		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+		$rootLine   = $pageSelect->getRootLine($pageId);
+
+			// remove the current page / newly created page
+		array_shift($rootLine);
+
+		$destinationMountProperties = $this->getDestinationMountPropertiesByRootLine($rootLine);
+
+		if (!empty($destinationMountProperties)) {
+			foreach ($destinationMountProperties as $destinationMount) {
+				$this->addPageToMountingSiteIndexQueue($pageId, $destinationMount);
+			}
+		}
+	}
+
+	/**
+	 * Finds Mount Pages that mount pages in a given root line.
+	 *
+	 * @param array $rootLine Root line of pages to check for usage as mount source
+	 * @return array Array of pages found to be mounting pages from the root line.
+	 */
+	protected function getDestinationMountPropertiesByRootLine(array $rootLine) {
+		$pageIds = array();
+		foreach ($rootLine as $pageRecord) {
+			$pageIds[] = $pageRecord['uid'];
+
+			if ($pageRecord['is_siteroot']) {
+				break;
+			}
+		}
+
+		$mountPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed',
+			'pages',
+			'doktype = 7 AND mount_pid IN(' . implode(',', $pageIds) . ')'
+		);
+
+		return $mountPages;
+	}
+
+	/**
+	 * Adds a page to the Index Queue of a site mounting the page.
+	 *
+	 * @param integer $mountedPageId ID (uid) of the mounted page.
+	 * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
+	 */
+	protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties) {
+		$mountingSite = tx_solr_Site::getSiteByPageId($mountProperties['mountPageDestination']);
+
+		$pageInitializer = t3lib_div::makeInstance('tx_solr_indexqueue_initializer_Page');
+		$pageInitializer->setSite($mountingSite);
+
+		$pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);
 	}
 
 }

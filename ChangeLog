@@ -25,6 +25,7 @@
 	* Added a method to the Index Queue to get a single Index Queue item by its ID
 	* Added support for indexing TYPO3 Mount Pages
 	* Added more logging when indexing pages
+	* Added support for Mount Page record monitoring
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
