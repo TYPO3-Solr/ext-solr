@@ -353,7 +353,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 		$hashedConnections   = array();
 		$filteredConnections = array();
 
-			// array_unique() doesn't work on multi dimensional arrays, so we need flatter it first
+			// array_unique() doesn't work on multi dimensional arrays, so we need to flatten it first
 		foreach ($connections as $key => $connection) {
 			unset($connection['language']);
 			$connectionHash = md5(implode('|', $connection));
