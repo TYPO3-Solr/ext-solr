@@ -231,12 +231,12 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 
 		$pageBrowserConfiguration = array_merge(
 			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1.'],
-			$this->configuration['search.']['results.']['pagebrowser.'],
 			array(
 				'pageParameterName' => 'tx_solr|page',
 				'numberOfPages'     => $numberOfPages,
 				'extraQueryString'  => '&tx_solr[q]=' . $this->search->getQuery()->getKeywords(),
 				'disableCacheHash'  => FALSE,
+				'templateFile'      => $this->configuration['templateFiles.']['pagebrowser']
 			)
 		);
 

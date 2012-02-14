@@ -14,6 +14,7 @@ plugin.tx_solr {
 
 	templateFiles {
 		results = EXT:solr/resources/templates/pi_results/results.htm
+		pagebrowser = EXT:solr/resources/templates/pi_results/pagebrowser.htm
 		search = EXT:solr/resources/templates/pi_search/search.htm
 	}
 
@@ -222,11 +223,6 @@ plugin.tx_solr {
 						}
 					}
 				}
-			}
-
-			pagebrowser {
-				# TODO move to top level templateFile options
-				templateFile = EXT:solr/resources/templates/pi_results/pagebrowser.htm
 			}
 
 			ignorePageBrowser = 0
