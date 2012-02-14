@@ -74,6 +74,7 @@
 	* Changed the Solr status report to also list the site a status belongs to
 	* Changed Solr connection detection to be more fault tolerant on missing slashes in the path configuration
 	* Added a multivalue view helper to output values of multivalued Solr document fields
+	* Changed default options for results per page to 10, 25, 50
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
