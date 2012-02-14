@@ -168,19 +168,17 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$content = '
 			<input type="hidden" id="solraction" name="solraction" value="" />
 
-			Site actions:
-			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
 			<input type="submit" value="Initialize Index Queue" name="s_initializeIndexQueue" onclick="document.forms[0].solraction.value=\'initializeIndexQueue\';" /><br /><br />
 
 			<br />
 
-			Index specific actions:
 			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
 			<input type="submit" value="Empty Index" name="s_emptyIndex" onclick="Check = confirm(\'This will commit documents which may be pending, clear the index and commit again afterwards. Are you sure you want to empty the index?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
 			<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
 			<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
 
 			<br />
+			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
 			Delete document(s) from index:<br /><br />
 			<label for="delete_uid" style="display:block;width:60px;float:left">Item uid</label>
 			<input id="delete_uid" type="text" name="delete_uid" value="" /> (also accepts comma separated lists of uids)<br /><br />
