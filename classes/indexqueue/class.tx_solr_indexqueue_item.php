@@ -41,7 +41,7 @@ class tx_solr_indexqueue_Item {
 	protected $indexQueueUid;
 
 	/**
-	 * The root page uid of the site the item belongs to (tx_solr_indexqueue_item.root)
+	 * The root page uid of the tree the item is located in (tx_solr_indexqueue_item.root)
 	 *
 	 * @var	integer
 	 */
