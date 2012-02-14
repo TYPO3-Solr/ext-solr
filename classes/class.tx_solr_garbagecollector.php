@@ -129,11 +129,13 @@ class tx_solr_GarbageCollector {
 			return;
 		}
 
-		$visibilityAffectingFields = $this->getVisibilityAffectingFieldsByTable($table);
+		$garbageCollectionRelevantFields = $this->getVisibilityAffectingFieldsByTable($table);
+		if ($table == 'pages') {
+			$garbageCollectionRelevantFields .= ', doktype';
+		}
 
-		$record = t3lib_BEfunc::getRecord($table, $uid, $visibilityAffectingFields, '', FALSE);
+		$record = t3lib_BEfunc::getRecord($table, $uid, $garbageCollectionRelevantFields, '', FALSE);
 		$record = $this->normalizeFrontendGroupField($table, $record);
-
 		if ($this->isHidden($table, $record)
 			|| $this->isStartTimeInFuture($table, $record)
 			|| $this->isEndTimeInPast($table, $record)
@@ -341,8 +343,9 @@ class tx_solr_GarbageCollector {
 				$indexQueue->updateItem($table, $uid);
 				break;
 			case 'pages':
-				$this->deleteIndexDocuments($table, $uid);
-				$indexQueue->deleteItem($table, $uid);
+debug('collecting page garbage');
+// 				$this->deleteIndexDocuments($table, $uid);
+// 				$indexQueue->deleteItem($table, $uid);
 				break;
 		}
 	}
