@@ -241,8 +241,8 @@ class tx_solr_indexqueue_Item {
 			);
 
 			if (!empty($indexingProperties)) {
-				foreach ($indexingProperties as $key => $value) {
-					$this->setIndexingProperty($key, $value);
+				foreach ($indexingProperties as $indexingProperty) {
+					$this->indexingProperties[$indexingProperty['property_key']] = $indexingProperty['property_value'];
 				}
 			}
 
