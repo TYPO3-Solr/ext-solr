@@ -166,15 +166,25 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 	}
 
 	/**
+	 * Gets all connection configurations found.
+	 *
+	 * @return	array	An array of connection configuraitons.
+	 */
+	public function getAllConnectionConfigurations() {
+		$registry = t3lib_div::makeInstance('t3lib_Registry');
+		$connectionConfigurations = $registry->get('tx_solr', 'servers', array());
+
+		return $connectionConfigurations;
+	}
+
+	/**
 	 * Gets all connections found.
 	 *
 	 * @return	array	An array of initialized Solr connections
 	 */
 	public function getAllConnections() {
 		$connections = array();
-
-		$registry = t3lib_div::makeInstance('t3lib_Registry');
-		$solrServers = $registry->get('tx_solr', 'servers', array());
+		$solrServers = $this->getAllConnectionConfigurations();
 
 		foreach ($solrServers as $solrServer) {
 			$connections[] = $this->getConnection(

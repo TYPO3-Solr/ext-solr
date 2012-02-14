@@ -34,13 +34,22 @@
 class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 
 	/**
+	 * Connection Manager
+	 *
+	 * @var tx_solr_ConnectionManager
+	 */
+	protected $connectionManager = NULL;
+
+	/**
 	 * Compiles a collection of status checks against each configured Solr server.
 	 *
 	 * @see typo3/sysext/reports/interfaces/tx_reports_StatusProvider::getStatus()
 	 */
 	public function getStatus() {
 		$reports = array();
-		$solrConnections = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getAllConnections();
+		$this->connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
+
+		$solrConnections = $this->connectionManager->getAllConnectionConfigurations();
 
 		foreach ($solrConnections as $solrConnection) {
 			$reports[] = $this->getConnectionStatus($solrConnection);
@@ -52,14 +61,25 @@ class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 	/**
 	 * Checks whether a Solr server is available and provides some information.
 	 *
-	 * @param	tx_solr_SolrService	Solr connection
+	 * @param	array	Solr connection parameters
 	 * @return	tx_reports_reports_status_Status Status of the Solr connection
 	 */
-	protected function getConnectionStatus(tx_solr_SolrService $solr) {
+	protected function getConnectionStatus(array $solrConection) {
 		$value    = 'Your site was unable to contact the Apache Solr server.';
 		$severity = tx_reports_reports_status_Status::ERROR;
 
+		$solr = $this->connectionManager->getConnection(
+			$solrConection['solrHost'],
+			$solrConection['solrPort'],
+			$solrConection['solrPath'],
+			$solrConection['solrScheme'],
+			$solrConection['solrUseCurl']
+		);
+
 		$message  = '<ul>'
+			. '<li style="padding-bottom: 10px;">Site: ' . $solrConection['label'] . '</li>'
+
+			. '<li>Scheme: ' . $solr->getScheme() . '</li>'
 			. '<li>Host: ' . $solr->getHost() . '</li>'
 			. '<li>Port: ' . $solr->getPort() . '</li>'
 			. '<li style="padding-bottom: 10px;">Path: ' . $solr->getPath() . '</li>';
