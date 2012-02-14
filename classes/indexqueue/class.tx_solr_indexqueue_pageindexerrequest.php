@@ -139,7 +139,7 @@ class tx_solr_indexqueue_PageIndexerRequest {
 			t3lib_div::devLog('Failed to execute Page Indexer Request.', 'solr', 3, array(
 				'request url'       => $url,
 				'request headers'   => $headers,
-				'response headers'  => $http_response_header,
+				'response headers'  => $http_response_header, // automagically defined by file_get_contents()
 				'raw response body' => $rawResponse,
 			));
 
