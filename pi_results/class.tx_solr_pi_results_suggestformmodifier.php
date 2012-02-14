@@ -111,7 +111,7 @@ class tx_solr_pi_results_SuggestFormModifier implements tx_solr_FormModifier, tx
 	protected function addSuggestJavascript() {
 		if ($this->configuration['addDefaultJs']) {
 			if ($this->configuration['suggest.']['loadJQuery'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuery']) {
-				$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_jQuery'] .=
+				$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuery'] .=
 					'<script type="text/javascript" src="'
 					. $GLOBALS['TSFE']->tmpl->getFileName($this->configuration['suggest.']['javaScriptFiles.']['library'])
 					. '"></script>';
