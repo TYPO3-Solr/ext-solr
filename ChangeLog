@@ -122,6 +122,7 @@
 	* Changed order of function and results column, moving the functions to the left to act as navigation
 	* Fixed an issue with garbage collection causing pages falsely being removed from Index Queue and index
 	* Changed the pi_search template to fit the Introduction Package
+	* Changed the search module to show a message instead of running into an exception when no Solr connections are configured
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

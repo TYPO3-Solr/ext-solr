@@ -37,14 +37,14 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	var $pageinfo;
 
 	/**
-	 * @var	tx_solr_Site
+	 * @var tx_solr_Site
 	 */
-	protected $site;
+	protected $site = NULL;
 
 	/**
-	 * @var	tx_solr_ConnectionManager
+	 * @var tx_solr_ConnectionManager
 	 */
-	protected $connectionManager;
+	protected $connectionManager = NULL;
 
 	/**
 	 * Initializes the Module
@@ -99,8 +99,10 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 
 		$rootPageId = $this->MOD_SETTINGS['function'];
 
-		$this->site              = t3lib_div::makeInstance('tx_solr_Site', $rootPageId);
-		$this->connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
+		if ($rootPageId) {
+			$this->site              = t3lib_div::makeInstance('tx_solr_Site', $rootPageId);
+			$this->connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
+		}
 
 		$docHeaderButtons = $this->getButtons();
 
@@ -128,7 +130,12 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 			$this->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/resources/css/mod_admin/index.css');
 
 				// Render content:
-			$this->getModuleContent();
+			if ($this->site) {
+				$this->getModuleContent();
+			} else {
+				$this->getModuleContentNoSiteConfigured();
+			}
+
 		} else {
 				// If no access or if ID == zero
 			$docHeaderButtons['save'] = '';
@@ -136,7 +143,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		}
 
 			// compile document
-		$markers['FUNC_MENU'] = t3lib_BEfunc::getFuncMenu(0, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']);
+		$markers['FUNC_MENU'] = $this->getFunctionMenu();
 		$markers['CONTENT'] = $this->content;
 
 				// Build the <body> for the module
@@ -210,6 +217,24 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$this->content .= $this->doc->section('Apache Solr for TYPO3', $content, FALSE, TRUE);
 	}
 
+	protected function getModuleContentNoSiteConfigured() {
+		$this->content = 'No sites configured for Solr yet.';
+	}
+
+	protected function getFunctionMenu() {
+		$functionMenu = 'No sites configured for Solr yet.';
+
+		if ($this->site) {
+			$functionMenu = t3lib_BEfunc::getFuncMenu(
+				0,
+				'SET[function]',
+				$this->MOD_SETTINGS['function'],
+				$this->MOD_MENU['function']
+			);
+		}
+
+		return $functionMenu;
+	}
 
 	//// TEMPORARY
 
