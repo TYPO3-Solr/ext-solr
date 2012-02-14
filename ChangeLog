@@ -2,6 +2,7 @@
 
 	!!! Changed plugin.tx_solr.templateFile to plugin.tx_solr.templateFiles - notice the S at the end
 	!!! Changed interface tx_solr_PluginCommand to expect an instance of tx_solr_pluginbase_CommandPluginBase as the parent plugin instead of tslib_pibase
+	!!! Updated jQuery to v1.7.1, updated jQuery UI to v1.8.16, separated jQuery UI components, restructured javascript resources
 	!! Changed the form command to use the tx_solr_CommandPluginAware interface to make form modifiers aware of the current plugin
 	! Changed Index Queue tables to use InnoDB engine
 
