@@ -8,6 +8,7 @@
 	!!! Replaced search.filter with search.query.filter, adding support for multiple filters through TypoScript
 	!! Changed the form command to use the tx_solr_CommandPluginAware interface to make form modifiers aware of the current plugin
 	!! Changed pagebrowser template file configuration from search.pagebrowser.templateFeile to templateFiles.pagebrowser
+	!! Removed compatibility code for TYPO3 version before 4.5
 	! Changed Index Queue tables to use InnoDB engine
 
 	* Added Polish Translations, credits Jan Slusarczyk

@@ -97,24 +97,18 @@ t3lib_extMgm::addPiFlexFormValue(
 	'search'
 );
 
-if(t3lib_div::int_from_ver(TYPO3_version) >= 4005000) {
-	$TCA['tt_content']['types']['search']['showitem'] =
-		'--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
-		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.plugin,
-			pi_flexform;;;;1-1-1,
-		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
-			--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.visibility;visibility,
-			--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.access;access,
-		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.appearance,
-			--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
-		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.behaviour,
-		--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended';
-} else {
-	$TCA['tt_content']['types']['search']['showitem'] =
-		'CType;;4;;1-1-1, hidden, header;;3;;2-2-2, linkToTop;;;;3-3-3,
-		--div--;LLL:EXT:cms/locallang_ttc.xml:CType.I.9, pi_flexform;;;;1-1-1,
-		--div--;LLL:EXT:cms/locallang_tca.xml:pages.tabs.access, starttime, endtime, fe_group';
-}
+$TCA['tt_content']['types']['search']['showitem'] =
+	'--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
+	--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
+	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.plugin,
+		pi_flexform;;;;1-1-1,
+	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
+		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.visibility;visibility,
+		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.access;access,
+	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.appearance,
+		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
+	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.behaviour,
+	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended';
+
 
 ?>
