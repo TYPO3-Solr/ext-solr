@@ -100,6 +100,12 @@ class tx_solr_indexqueue_RecordMonitor {
 		if (in_array($recordTable, $monitoredTables)) {
 				// FIXME must respect the indexer's additionalWhereClause option: must not add items to the index queue which are excluded through additionalWhereClause
 
+			$record = t3lib_BEfunc::getRecord($recordTable, $recordUid);
+			if ($this->isLocalizedRecord($recordTable, $record)) {
+					// if it's a localization overlay, update the original record instead
+				$recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
+			}
+
 			$indexQueue->updateItem($recordTable, $recordUid);
 
 			if ($recordTable == 'pages') {
@@ -213,6 +219,27 @@ class tx_solr_indexqueue_RecordMonitor {
 		$pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);
 	}
 
+	/**
+	 * Checks whether a record is a localization overlay.
+	 *
+	 * @param string $table The record's table name
+	 * @param array $record The record to check
+	 * @return boolean TRUE if the record is a language overlay, FALSE otherwise
+	 */
+	protected function isLocalizedRecord($table, array $record) {
+		$isLocalizedRecord = FALSE;
+		$translationOriginalPointerField = '';
+
+		if (isset($GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'])) {
+			$translationOriginalPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
+
+			if ($record[$translationOriginalPointerField] > 0) {
+				$isLocalizedRecord = TRUE;
+			}
+		}
+
+		return $isLocalizedRecord;
+	}
 }
 
 
