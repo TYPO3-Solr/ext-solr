@@ -112,6 +112,7 @@
 	* Added styling for the search form to match the introducion package
 	* Added plugin.tx_solr.search.results.pagebrowser to configure the page browser
 	* Added nicer styling for the page browser
+	* Added styling for used facets to match the introducion package
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

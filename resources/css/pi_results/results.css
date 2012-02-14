@@ -74,6 +74,15 @@
 	font-weight: bold;
 }
 
+#tx-solr-facets-in-use li {
+	list-style-type: none;
+	margin-left: 10px;
+}
+
+#tx-solr-facets-in-use .facets-remove-all {
+	margin-top: 10px;
+}
+
 #tx-solr-faceting .facets li {
 	list-style-type: none;
 	margin-left: 0px;
