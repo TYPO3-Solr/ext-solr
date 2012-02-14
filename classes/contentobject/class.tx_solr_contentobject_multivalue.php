@@ -33,6 +33,7 @@
  * keywords {
  *   field = tags # a comma separated field. instead of field you can also use "value"
  *   separator = , # comma is the default value
+ *   removeEmptyValues = 1 # a flag to remove empty strings from the list, on by default.
  * }
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
@@ -71,9 +72,15 @@ class tx_solr_contentobject_Multivalue {
 			$configuration['separator'] = ',';
 		}
 
+		$removeEmptyValues = TRUE;
+		if (isset($configuration['removeEmptyValues']) && $configuration['removeEmptyValues'] == 0) {
+			$removeEmptyValues = FALSE;
+		}
+
 		$listAsArray = t3lib_div::trimExplode(
 			$configuration['separator'],
-			$data
+			$data,
+			$removeEmptyValues
 		);
 
 		return serialize($listAsArray);
