@@ -83,6 +83,13 @@ class tx_solr_Template {
 	 */
 	public function loadHtmlFile($htmlFile) {
 		$this->template = $this->cObj->fileResource($htmlFile);
+
+		if (empty($this->template)) {
+			throw new RuntimeException(
+				'Could not load template file "' . htmlspecialchars($htmlFile) . '"',
+				1327490358
+			);
+		}
 	}
 
 	/**
