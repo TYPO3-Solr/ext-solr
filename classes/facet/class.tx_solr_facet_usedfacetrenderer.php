@@ -45,7 +45,7 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 	 */
 	protected $filterValue;
 
-		// FIXME join into default renderer as renderUsedFacetOption()
+		// FIXME merge into default renderer as renderUsedFacetOption()
 	public function __construct($facetName, $filterValue, $filter , array $facetConfiguration,  tx_solr_Template $template, tx_solr_Query $query) {
 		parent::__construct($facetName, array(), $facetConfiguration, $template, $query);
 
@@ -62,7 +62,13 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 	public function render() {
 		$solrConfiguration = tx_solr_Util::getSolrConfiguration();
 
-		$facetText = $this->renderOption($this->filterValue);
+		$facetOption = t3lib_div::makeInstance('tx_solr_facet_FacetOption',
+			$this->query,
+			$this->facetName,
+			$this->filterValue
+		);
+
+		$facetText = $facetOption->render($this->facetConfiguration);
 
 		$removeFacetText = strtr(
 			$solrConfiguration['search.']['faceting.']['removeFacetLinkText'],
@@ -73,10 +79,8 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 			)
 		);
 
-		$removeFacetLink = $this->buildRemoveFacetLink(
-			$removeFacetText, $this->filter, $this->filterValue
-		);
-		$removeFacetUrl = $this->buildRemoveFacetUrl($this->filter);
+		$removeFacetLink = $facetOption->getRemoveFacetOptionLink($removeFacetText);
+		$removeFacetUrl  = $facetOption->getRemoveFacetOptionUrl();
 
 		$facetToRemove = array(
 			'link' => $removeFacetLink,
