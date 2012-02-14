@@ -10,6 +10,7 @@
 	!!! Changed template variable object marker SOLR to TX_SOLR as it caused trouble when "solr" was used as argument in viewhelpers like the LINK viewhelper
 	!!! Removed version numbers from jQuery files
 	!!! Renamed tx_solr_facet_FacetRenderer to tx_solr_facet_FacetRendererAbstract
+	!!! Renamed tx_solr_facet_SimpleFacetRenderer to tx_solr_facet_SimpleFacetOptionsRenderer
 	!! Changed the form command to use the tx_solr_CommandPluginAware interface to make form modifiers aware of the current plugin
 	!! Changed pagebrowser template file configuration from search.pagebrowser.templateFeile to templateFiles.pagebrowser
 	!! Removed compatibility code for TYPO3 version before 4.5
