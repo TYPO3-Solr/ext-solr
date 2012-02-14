@@ -146,6 +146,7 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 
 		$logSeverity = -1;
 		$logData     = array(
+			'site'                        => $this->site->getLabel(),
 			'indexing configuration name' => $this->indexingConfigurationName,
 			'type'                        => $this->type,
 			'query'                       => $initializationQuery,
