@@ -23,6 +23,8 @@
 ***************************************************************/
 
 
+require_once(PATH_typo3 . 'interfaces/interface.backend_cacheActionsHook.php');
+
 /**
  * A class to easily create a connection to a Solr server.
  *
@@ -33,7 +35,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class tx_solr_ConnectionManager implements t3lib_Singleton {
+class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActionsHook {
 
 		// TODO add parameterized singleton capabilities to t3lib_div::makeInstance()
 
@@ -231,23 +233,38 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 
 
 	/**
+	 * Adds a menu entry to the clear cache menu to detect Solr connections.
+	 *
+	 * @param array $cacheActions Array of CacheMenuItems
+	 * @param array $optionValues Array of AccessConfigurations-identifiers (typically  used by userTS with options.clearCache.identifier)
+	 */
+	public function manipulateCacheActions(&$cacheActions, &$optionValues) {
+		if ($GLOBALS['BE_USER']->isAdmin()) {
+			$title = 'Initialize Solr connections';
+
+			$cacheActions[] = array(
+				'id'    => 'clearSolrConnectionCache',
+				'title' => $title,
+				'href'  => $GLOBALS['BACK_PATH'] . 'ajax.php?ajaxID=solr::clearSolrConnectionCache',
+				'icon'  => '<img '.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], t3lib_extMgm::extRelPath('solr') . 'resources/images/cache-init-solr-connections.png', 'width="16" height="16"').' title="'.$title.'" alt="'.$title.'" />'
+			);
+			$optionValues[] = 'clearSolrConnectionCache';
+		}
+	}
+
+
+	/**
 	 * Updates the connections in the registry when configuration cache is
 	 * cleared.
 	 *
-	 * @param	array	An array of commands from TCEmain.
-	 * @param	t3lib_TCEmain	Back reference to the TCEmain
 	 */
-	public function updateConnections(array $parameters, t3lib_TCEmain $tceMain) {
-		$clearCacheCommand = $parameters['cacheCmd'];
+	public function updateConnections() {
+		$solrConnections = $this->getConfiguredSolrConnections();
+		$solrConnections = $this->filterDuplicateConnections($solrConnections);
 
-		if ($clearCacheCommand == 'all' || $clearCacheCommand == 'temp_CACHED') {
-			$solrConnections = $this->getConfiguredSolrConnections();
-			$solrConnections = $this->filterDuplicateConnections($solrConnections);
-
-			if (!empty($solrConnections)) {
-				$registry = t3lib_div::makeInstance('t3lib_Registry');
-				$registry->set('tx_solr', 'servers', $solrConnections);
-			}
+		if (!empty($solrConnections)) {
+			$registry = t3lib_div::makeInstance('t3lib_Registry');
+			$registry->set('tx_solr', 'servers', $solrConnections);
 		}
 	}
 

@@ -75,8 +75,12 @@ if (TYPO3_MODE == 'BE') {
 		'LLL:EXT:solr/locallang.xml:module_indexinspector'
 	);
 
-		// hooking into cache clearing to update detected configuration
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:tx_solr_ConnectionManager->updateConnections';
+		// register Clear Cache Menu hook
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:&tx_solr_ConnectionManager';
+
+		// register ajax call
+	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:tx_solr_ConnectionManager->updateConnections';
+
 
 		// hooking into TCE Main to monitor record updates that may require reindexing by the index queue
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][]  = 'EXT:solr/classes/indexqueue/class.tx_solr_indexqueue_recordmonitor.php:tx_solr_indexqueue_RecordMonitor';
