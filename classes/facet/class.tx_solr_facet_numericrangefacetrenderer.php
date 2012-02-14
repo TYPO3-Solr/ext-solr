@@ -38,6 +38,8 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 	 * @see tx_solr_facet_AbstractFacetRenderer::renderFacet()
 	 */
 	protected function renderFacetOptions() {
+		$facetContent = '';
+
 		$this->loadJavaScriptFiles();
 		$handlePositions = $this->getHandlePositions();
 
@@ -48,14 +50,14 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 			''
 		);
 
-		$content = $this->getRangeSliderJavaScript($handlePositions['start'], $handlePositions['end']);
-		$content .= '
+		$facetContent .= $this->getRangeSliderJavaScript($handlePositions['start'], $handlePositions['end']);
+		$facetContent .= '
 			<input type="hidden" id="facet-' . $this->facetName . '-url" value="' . $incompleteFacetOption->getReplaceFacetOptionUrl() . '">
 			<div id="facet-' . $this->facetName . '-value" >' . $handlePositions['start'] . ' - ' . $handlePositions['end'] . '</div>
 			<div id="facet-' . $this->facetName . '-range"></div>
 		';
 
-		return $content;
+		return $facetContent;
 	}
 
 	/**
