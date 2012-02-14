@@ -2,38 +2,38 @@
 
 	! Changed Index Queue tables to use InnoDB engine
 
-	* Added Index Queue support for resolving Mount Pages and adding them to the queue
-	* Added support for persisting indexing properties of Index Queue items
-	* Changed the Index Queue to also remove indexing properties for existing Index Queue items when clearing the queue
-	* Added a column in the Index Queue indexing properties table to identify which site a property belongs to
-	* Added a column in the Index Queue table to signal that an item has additional indexing properties
-	* Refactored initialization of the Index Queue to be more modular and allow finer control over what goes into the Index Queue
-	* Added method tx_solr_Site::getPages() to get all pages (page IDs) of a site
-	* Changed logging of failed Index Queue page indexer requests to also log when invalid json was returned
-	* Changed logging of an invalid Index Queue request to also log the request object and Index Queue header
-	* Added tx_solr_indexqueue_Item::getSite()
-	* Added initial API for Index Queue Item Indexing Properties
 	* Added Polish Translations, credits Jan Slusarczyk
+	* Added initial API for Index Queue Item Indexing Properties
+	* Added tx_solr_indexqueue_Item::getSite()
+	* Changed logging of an invalid Index Queue request to also log the request object and Index Queue header
+	* Changed logging of failed Index Queue page indexer requests to also log when invalid json was returned
+	* Added method tx_solr_Site::getPages() to get all pages (page IDs) of a site
+	* Refactored initialization of the Index Queue to be more modular and allow finer control over what goes into the Index Queue
+	* Added a column in the Index Queue table to signal that an item has additional indexing properties
+	* Added a column in the Index Queue indexing properties table to identify which site a property belongs to
+	* Changed the Index Queue to also remove indexing properties for existing Index Queue items when clearing the queue
+	* Added support for persisting indexing properties of Index Queue items
+	* Added Index Queue support for resolving Mount Pages and adding them to the queue
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
 	!!! Removed compatibility for TYPO3 4.3
 
 	* Fixed issue #27578: Remove references to Solr from editor facing UI
-	* Changed text alignment of suggestions so that it is forced to be aligned left
-	* Added maxHttpHeaderSize="65536" to server.xml to handle longer GET Request to solr. see also  http://serverfault.com/questions/56691/whats-the-maximum-url-length-in-tomcat
-	* Added an option to override the URL stored in the index for a page
-	* Changed the name of tx_solr_ConnectionManager::getSiteLanguages() to getSystemLanguages()
-	* Added method tx_solr_Site::getLanguages()
-	* Added an own implementation for making HTTP requests in tx_solr_indexqueue_PageIndexerRequest to provide better error handling/detection
-	* Added tx_solr_Query::setOperator()
-	* Fixed issue #30922: PHP Error in Used Facet Renderer
-	* Added a check in the install script whether the download mirror can be contacted
-	* Fixed an PHP warning due to a missing check whether a given URL parameter is an array when generation a facet reset URL
-	* Added the Index Inspector
-	* Removed backwardscompatibility for results.highlighting use search.resultsHighlighting instead
-	* Added log data to page index logging
 	* Added more details when logging page indexing
+	* Added log data to page index logging
+	* Removed backwardscompatibility for results.highlighting use search.resultsHighlighting instead
+	* Added the Index Inspector
+	* Fixed an PHP warning due to a missing check whether a given URL parameter is an array when generation a facet reset URL
+	* Added a check in the install script whether the download mirror can be contacted
+	* Fixed issue #30922: PHP Error in Used Facet Renderer
+	* Added tx_solr_Query::setOperator()
+	* Added an own implementation for making HTTP requests in tx_solr_indexqueue_PageIndexerRequest to provide better error handling/detection
+	* Added method tx_solr_Site::getLanguages()
+	* Changed the name of tx_solr_ConnectionManager::getSiteLanguages() to getSystemLanguages()
+	* Added an option to override the URL stored in the index for a page
+	* Added maxHttpHeaderSize="65536" to server.xml to handle longer GET Request to solr. see also  http://serverfault.com/questions/56691/whats-the-maximum-url-length-in-tomcat
+	* Changed text alignment of suggestions so that it is forced to be aligned left
 
 2012-02-10  Ingo Renner  <ingo.renner@dkd.de>
 
