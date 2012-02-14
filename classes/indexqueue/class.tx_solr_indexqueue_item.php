@@ -92,6 +92,13 @@ class tx_solr_indexqueue_Item {
 	protected $hasIndexingProperties = FALSE;
 
 	/**
+	 * The record's uid.
+	 *
+	 * @var integer
+	 */
+	protected $recordUid = 0;
+
+	/**
 	 * The record itself
 	 *
 	 * @var	array
@@ -110,6 +117,7 @@ class tx_solr_indexqueue_Item {
 		$this->indexQueueUid = $itemMetaData['uid'];
 		$this->rootPageUid   = $itemMetaData['root'];
 		$this->type          = $itemMetaData['item_type'];
+		$this->recordUid     = $itemMetaData['item_uid'];
 		$this->changed       = $itemMetaData['changed'];
 
 		$this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
@@ -194,7 +202,7 @@ class tx_solr_indexqueue_Item {
 		if (empty($this->record)) {
 			$this->record = t3lib_BEfunc::getRecord(
 				$this->type,
-				$this->uid,
+				$this->recordUid,
 				'*',
 				'',
 				FALSE
