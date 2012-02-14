@@ -51,9 +51,9 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 	/**
 	 * Constructor for class tx_solr_pi_results_FormCommand
 	 *
-	 * @param	tslib_pibase	$parentPlugin parent plugin
+	 * @param tx_solr_pluginbase_CommandPluginBase $parentPlugin parent plugin
 	 */
-	public function __construct(tslib_pibase $parentPlugin) {
+	public function __construct(tx_solr_pluginbase_CommandPluginBase $parentPlugin) {
 		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
 
 		$this->parentPlugin  = $parentPlugin;
