@@ -45,6 +45,7 @@
 	* Added a scheduler task to re-index a site (f.e. after deployments), resolves issue #30342, credits Christoph Moeller
 	* Added method tx_solr_Site::getDefaultLanguage()
 	* Fixed issue #26080: Page is not getting reindexed when moved, credits Philipp Hanebrink
+	* Fixed issue #31590: Usage of deprecated tx_solr_Util::getSiteHash()
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -33,21 +33,6 @@
 class tx_solr_Util {
 
 	/**
-	 * Generates a site specific key using the site url, encryption key, and
-	 * the extension key sent through md5.
-	 *
-	 * @param	integer	Optional page ID, if a page ID is provided it is used to determine the site hash, otherwise we try to use TSFE ID
-	 * @return	string	A site specific hash
-	 * @deprecated	Use tx_solr_Site->getSiteHash() instead
-	 */
-	public static function getSiteHash($pageId = 0) {
-		t3lib_div::logDeprecatedFunction();
-		$site = tx_solr_Site::getSiteByPageId($pageId);
-
-		return $site->getSiteHash();
-	}
-
-	/**
 	 * Generates a document id for documents representing page records.
 	 *
 	 * @param	integer	$uid The page's uid
@@ -60,7 +45,7 @@ class tx_solr_Util {
 	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1', $cHash = '') {
 		$partialPageRecord = t3lib_BEfunc::getRecord('pages', $uid, 'pid');
 
-		$documentId = self::getSiteHash($uid)
+		$documentId = tx_solr_Site::getSiteByPageId($uid)->getSiteHash()
 			. '/pages/' . $partialPageRecord['pid'] . '/' . $uid . '/'
 			. $typeNum . '/' . $language . '/' . $accessGroups;
 
@@ -81,7 +66,8 @@ class tx_solr_Util {
 	 * @return	string	a document id
 	 */
 	public static function getDocumentId($table, $pid, $uid, $type = '') {
-		$id = self::getSiteHash($pid) . '/' . $table . '/' . $pid . '/' . $uid;
+		$siteHash = tx_solr_Site::getSiteByPageId($pid)->getSiteHash();
+		$id = $siteHash . '/' . $table . '/' . $pid . '/' . $uid;
 
 		if (!empty($type)) {
 			$id .= '/' . $type;
