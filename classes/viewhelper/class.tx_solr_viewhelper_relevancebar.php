@@ -65,7 +65,7 @@ class tx_solr_viewhelper_RelevanceBar implements tx_solr_ViewHelper {
 			$score           = floatval($arguments[0]);
 			$scorePercentage = round($score * 100 / $this->maxScore);
 
-			$content = '<div class="tx-solr-relevance-bar"><div class="tx-solr-relevance" style="width: '
+			$content = '<div class="tx-solr-relevance-bar"><div class="tx-solr-relevance themeColorBackground" style="width: '
 				. $scorePercentage . '%">&nbsp;</div><div class="tx-solr-relevance-fill" style="width: '
 				. (100 - $scorePercentage) . '%"></div></div>';
 		}
