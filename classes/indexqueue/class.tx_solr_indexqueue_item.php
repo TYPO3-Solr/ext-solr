@@ -41,7 +41,7 @@ class tx_solr_indexqueue_Item {
 	protected $indexQueueUid;
 
 	/**
-	 * The root page uid of the tree the item is located in (tx_solr_indexqueue_item.root)
+	 * The root page uid of the site the item belongs to (tx_solr_indexqueue_item.root)
 	 *
 	 * @var	integer
 	 */
@@ -106,6 +106,7 @@ class tx_solr_indexqueue_Item {
 		$this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
 		$this->changed       = $itemMetaData['changed'];
 
+			// FIXME lazy load record if not provided
 		if (!empty($fullRecord)) {
 			$this->record = $fullRecord;
 		} else {
@@ -122,7 +123,6 @@ class tx_solr_indexqueue_Item {
 	/**
 	 * Loads the indexing properties for the item - if not already loaded.
 	 *
-	 *
 	 */
 	public function loadIndexingProperties() {
 		if (!$this->indexingPropertiesLoaded) {
@@ -137,6 +137,95 @@ class tx_solr_indexqueue_Item {
 			}
 
 			$this->indexingPropertiesLoaded = TRUE;
+		}
+	}
+
+	/**
+	 * Stores the indexing properties.
+	 *
+	 */
+	public function storeIndexingProperties() {
+		$this->removeIndexingProperties();
+
+		if ($this->hasIndexingProperties()) {
+			$this->writeIndexingProperties();
+		}
+
+		$this->updateHasIndexingPropertiesFlag();
+	}
+
+	/**
+	 * Removes existing indexing properties.
+	 *
+	 * @throws RuntimeException when an SQL error occurs
+	 */
+	protected function removeIndexingProperties() {
+		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+			'tx_solr_indexqueue_indexing_property',
+			'root = ' . intval($this->rootPageUid)
+				. ' AND item_id = ' . intval($this->indexQueueUid)
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_error()) {
+			throw new RuntimeException(
+				'Could not remove indexing properties for item ' . $this->indexQueueUid,
+				1323802532
+			);
+		}
+	}
+
+	/**
+	 * Writes all indexing properties.
+	 *
+	 * @throws RuntimeException when an SQL error occurs
+	 */
+	protected function writeIndexingProperties() {
+		$properties = array();
+		foreach ($this->indexingProperties as $propertyKey => $propertyValue) {
+			$properties[] = array(
+				$this->rootPageUid,
+				$this->indexQueueUid,
+				$propertyKey,
+				$propertyValue
+			);
+		}
+
+		$GLOBALS['TYPO3_DB']->exec_INSERTmultipleRows(
+			'tx_solr_indexqueue_indexing_property',
+			array('root', 'item_id', 'property_key', 'property_value'),
+			$properties
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_error()) {
+			throw new RuntimeException(
+				'Could not insert indexing properties for item ' . $this->indexQueueUid,
+				1323802570
+			);
+		}
+	}
+
+	/**
+	 * Updates the "has_indexing_properties" flag in the Index Queue.
+	 *
+	 * @throws RuntimeException when an SQL error occurs
+	 */
+	protected function updateHasIndexingPropertiesFlag() {
+		$hasIndexingProperties = '0';
+		if ($this->hasIndexingProperties()) {
+			$hasIndexingProperties = '1';
+		}
+
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tx_solr_indexqueue_item',
+			'uid = ' . intval($this->indexQueueUid),
+			array('has_indexing_properties' => $hasIndexingProperties)
+		);
+
+		if ($GLOBALS['TYPO3_DB']->sql_error()) {
+			throw new RuntimeException(
+				'Could not update has_indexing_properties flag in Index Queue for item ' . $this->indexQueueUid,
+				1323802610
+			);
 		}
 	}
 
@@ -231,6 +320,10 @@ class tx_solr_indexqueue_Item {
 
 	public function getRecordPageId() {
 		return $this->record['pid'];
+	}
+
+	public function hasIndexingProperties() {
+		return !empty($this->indexingProperties);
 	}
 
 	/**
