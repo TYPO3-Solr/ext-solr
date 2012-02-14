@@ -236,19 +236,19 @@ class tx_solr_Typo3PageIndexer {
 		}
 
 			// content
-		$document->setField('title',       $this->utf8encode($this->contentExtractor->getPageTitle()));
-		$document->setField('subTitle',    $this->utf8encode($pageRecord['subtitle']));
-		$document->setField('navTitle',    $this->utf8encode($pageRecord['nav_title']));
-		$document->setField('author',      $this->utf8encode($pageRecord['author']));
-		$document->setField('description', $this->utf8encode($pageRecord['description']));
-		$document->setField('abstract',    $this->utf8encode($pageRecord['abstract']));
+		$document->setField('title',       $this->contentExtractor->getPageTitle());
+		$document->setField('subTitle',    $pageRecord['subtitle']);
+		$document->setField('navTitle',    $pageRecord['nav_title']);
+		$document->setField('author',      $pageRecord['author']);
+		$document->setField('description', $pageRecord['description']);
+		$document->setField('abstract',    $pageRecord['abstract']);
 		$document->setField('content',     $this->contentExtractor->getIndexableContent());
 		$document->setField('url',         $this->pageUrl);
 
 			// keywords, multi valued
 		$keywords = array_unique(t3lib_div::trimExplode(
 			',',
-			$this->utf8encode($pageRecord['keywords'])
+			$pageRecord['keywords']
 		));
 		foreach ($keywords as $keyword) {
 			$document->addField('keywords', $keyword);
@@ -515,21 +515,6 @@ class tx_solr_Typo3PageIndexer {
 		$groups = implode(',', $groups);
 
 		return $groups;
-	}
-
-	/**
-	 * Helper method to utf8 encode (and trim) a string.
-	 *
-	 * @param	string	$string String to utf8 encode, can be utf8 already, won't be touched then.
-	 * @return	string	utf8 encoded string.
-	 */
-	protected function utf8encode($string) {
-		$utf8EncodedString = $this->page->csConvObj->utf8_encode(
-			trim($string),
-			$this->page->renderCharset
-		);
-
-		return $utf8EncodedString;
 	}
 }
 

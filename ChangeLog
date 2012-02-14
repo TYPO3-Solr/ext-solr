@@ -20,6 +20,7 @@
 	!! Changed calculation of site hashes, we're now using SHA-1 instead of MD5 - You have to reindex everything to support the changes
 	!! Removed the renderer facet configuration option, this is now handled through facet types
 	! Changed Index Queue tables to use InnoDB engine
+	! Removed utf8 encoding from the TYPO3 page indexer, make sure you have a clean utf8 environment
 
 	* Added Polish Translations, credits Jan Slusarczyk
 	* Added initial API for Index Queue Item Indexing Properties
