@@ -8,6 +8,7 @@ $PATH_solr = t3lib_extMgm::extPath('solr');
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// Windows compatibility
+
 if(!function_exists('strptime')) {
 	require_once($PATH_solr . 'lib/strptime/strptime.php');
 }
@@ -63,6 +64,7 @@ t3lib_extMgm::registerExtDirectComponent(
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// page module plugin settings summary
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] =
 	'EXT:solr/classes/pluginbase/class.tx_solr_pluginbase_backendsummary.php:tx_solr_pluginbase_BackendSummary->getSummary';
 
@@ -139,6 +141,7 @@ tx_solr_facet_FacetRendererFactory::registerFacetType(
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding scheduler tasks
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_OptimizeTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_optimizer_title',
@@ -183,6 +186,7 @@ $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api']     = 'EXT:solr/eid_api/dis
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// replace the built-in search content element
+
 $searchReplacementTypoScript = trim('
 tt_content.search = COA
 tt_content.search {
@@ -203,6 +207,7 @@ t3lib_extMgm::addTypoScript(
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// add custom Solr content objects
+
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME] = array(
 	tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME,
 	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_multivalue.php:tx_solr_contentobject_Multivalue'
