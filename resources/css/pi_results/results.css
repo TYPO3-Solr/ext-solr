@@ -35,8 +35,32 @@
 }
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
-/* search functions */
+/* pagination */
 
+#tx-solr-pagination {
+	margin: 20px 0px;
+	height: 20px;
+}
+
+#tx-solr-pagination-results-per-page {
+	float: left;
+}
+
+#tx-solr-pagination-results-per-page select {
+	margin-left: 5px;
+}
+
+#tx-solr-pagination .tx-pagebrowse-pi1 {
+	float: right;
+}
+
+#tx-solr-search #tx-solr-pagination ul.tx-pagebrowse {
+	margin-top: 0px;
+	padding-top: 2px;
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+/* search functions */
 
 #tx-solr-search-functions div.secondaryContentSection {
 	padding: 0px 0px 10px 0px;

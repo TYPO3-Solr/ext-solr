@@ -55,19 +55,23 @@
 	###RESULTS.FOUND###
 	###RESULTS.RANGE###
 
-	<!-- ###RESULTS_PER_PAGE_SWITCH### beginn -->
-	<form action="###FORM.ACTION###" method="post">
-		###LLL:results_per_page###<select onchange="this.form.submit()" name="###TX_SOLR.PREFIX###[resultsPerPage]">
-			<!-- ###LOOP:OPTIONS### begin -->
-			<!-- ###LOOP_CONTENT### -->
-			<option value="###OPTION.VALUE###" ###OPTION.SELECTED###>###OPTION.VALUE###</option>
-			<!-- ###LOOP_CONTENT### -->
-			<!-- ###LOOP:OPTIONS### end -->
-		</select>
-	</form>
-	<!-- ###RESULTS_PER_PAGE_SWITCH### end -->
+	<div id="tx-solr-pagination">
+		<!-- ###RESULTS_PER_PAGE_SWITCH### beginn -->
+		<div id="tx-solr-pagination-results-per-page">
+		<form action="###FORM.ACTION###" method="post">
+			###LLL:results_per_page###<select onchange="this.form.submit()" name="###TX_SOLR.PREFIX###[resultsPerPage]">
+				<!-- ###LOOP:OPTIONS### begin -->
+				<!-- ###LOOP_CONTENT### -->
+				<option value="###OPTION.VALUE###" ###OPTION.SELECTED###>###OPTION.VALUE###</option>
+				<!-- ###LOOP_CONTENT### -->
+				<!-- ###LOOP:OPTIONS### end -->
+			</select>
+		</form>
+		</div>
+		<!-- ###RESULTS_PER_PAGE_SWITCH### end -->
 
-	###RESULTS.PAGEBROWSER###
+		###RESULTS.PAGEBROWSER###
+	</div>
 
 	<ol start="###RESULTS.OFFSET###" class="results-list">
 		<!-- ###LOOP:RESULT_DOCUMENTS### begin -->
