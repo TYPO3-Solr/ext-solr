@@ -37,12 +37,14 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 	protected $configuration;
 	protected $facetParameters = array();
 	protected $facetFilters    = array();
+	protected $facetRendererFactory = NULL;
 
 	/**
 	 * constructor for class tx_solr_query_modifier_Faceting
 	 */
 	public function __construct() {
 		$this->configuration = tx_solr_Util::getSolrConfiguration();
+		$this->facetRendererFactory = t3lib_div::makeInstance('tx_solr_facet_FacetRendererFactory', $this->configuration['search.']['faceting.']['facets.']);
 	}
 
 	/**
@@ -127,52 +129,45 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 				// $filters look like array('name:value1','name:value2','fieldname2:lorem')
 			$configuredFacets = $this->getConfigurredFacets();
 
-				// first group the filters by filterName - so that we can
+				// first group the filters by facetName - so that we can
 				// dicide later whether we need to do AND or OR for multiple
-				// filters for a certain field
-				// $filtersByFieldName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('lorem'))
-			$filtersByFieldName = array();
+				// filters for a certain facet/field
+				// $filtersByFacetName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('lorem'))
+			$filtersByFacetName = array();
 			foreach ($filters as $filter) {
-					// only split by the first ":" to allow the use of colons in the filter value
-				list($filterFieldName, $filterValue) = explode(':', $filter, 2);
-				if (in_array($filterFieldName, $configuredFacets)) {
-					$filtersByFieldName[$filterFieldName][] = $filterValue;
+					// only split by the first colon to allow using colons in the filter value itself
+				list($filterFacetName, $filterValue) = explode(':', $filter, 2);
+				if (in_array($filterFacetName, $configuredFacets)) {
+					$filtersByFacetName[$filterFacetName][] = $filterValue;
 				}
 			}
 
-			foreach ($filtersByFieldName as $fieldName => $filterValues) {
-				$fieldConfiguration = $this->configuration['search.']['faceting.']['facets.'][$fieldName . '.'];
+			foreach ($filtersByFacetName as $facetName => $filterValues) {
+				$facetConfiguration = $this->configuration['search.']['faceting.']['facets.'][$facetName . '.'];
+
+				$filterParser = $this->facetRendererFactory->getFacetFilterParserByFacetName($facetName);
 
 				$tag = '';
-				if ($fieldConfiguration['keepAllOptionsOnSelection'] == 1) {
-					$tag = '{!tag=' . addslashes( $fieldConfiguration['field'] ) . '}';
+				if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+					$tag = '{!tag=' . addslashes( $facetConfiguration['field'] ) . '}';
 				}
 
 				$filterParts = array();
 				foreach ($filterValues as $filterValue) {
-					if ($fieldConfiguration['filterParser']) {
-						$filterParser = t3lib_div::makeInstance($fieldConfiguration['filterParser']);
-
-						if (!($filterParser instanceof tx_solr_QueryFilterParser)) {
-							throw new RuntimeException(
-								$fieldConfiguration['filterParser'] . ' must implement inteface tx_solr_QueryFilterParser',
-								1311001833
-							);
-						}
-
-						$filterOptions = $fieldConfiguration['renderer.'];
+					if (!is_null($filterParser)) {
+						$filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
 						if (empty($filterOptions)) {
 							$filterOptions = array();
 						}
 
 						$filterValue = $filterParser->parseFilter($filterValue, $filterOptions);
-						$filterParts[] = $fieldConfiguration['field'] . ':' . addslashes( $filterValue );
+						$filterParts[] = $facetConfiguration['field'] . ':' . addslashes( $filterValue );
 					} else {
-						$filterParts[] = $fieldConfiguration['field'] . ':"' . addslashes( $filterValue ) . '"';
+						$filterParts[] = $facetConfiguration['field'] . ':"' . addslashes( $filterValue ) . '"';
 					}
 				}
 
-				$operator = ($fieldConfiguration['operator'] == 'OR') ? ' OR ' : ' AND ';
+				$operator = ($facetConfiguration['operator'] == 'OR') ? ' OR ' : ' AND ';
 				$this->facetFilters[] = $tag . '(' . implode($operator, $filterParts) . ')';
 			}
 		}
