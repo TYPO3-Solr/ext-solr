@@ -42,6 +42,8 @@ class tx_solr_indexqueue_frontendhelper_UserGroupDetector
 		t3lib_pageSelect_getPageHook,
 		t3lib_pageSelect_getPageOverlayHook {
 
+
+
 	/**
 	 * This frontend helper's executed action.
 	 */
