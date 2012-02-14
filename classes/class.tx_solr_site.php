@@ -50,7 +50,7 @@ class tx_solr_Site {
 	 *
 	 * @var array
 	 */
-	protected static $sitePagesCache = NULL;
+	protected static $sitePagesCache = array();
 
 
 	/**
@@ -188,7 +188,7 @@ class tx_solr_Site {
 		$pageIds  = array();
 		$maxDepth = intval($maxDepth);
 
-		if (is_null(self::$sitePagesCache)) {
+		if (empty(self::$sitePagesCache[$this->rootPage['uid']])) {
 			$recursionRootPageId = intval($rootPageId);
 			if ($rootPageId == 'SITE_ROOT') {
 				$recursionRootPageId = $this->rootPage['uid'];
@@ -215,12 +215,12 @@ class tx_solr_Site {
 				$GLOBALS['TYPO3_DB']->sql_free_result($result);
 			}
 		} else {
-			$pageIds = self::$sitePagesCache;
+			$pageIds = self::$sitePagesCache[$this->rootPage['uid']];
 		}
 
-		if (is_null(self::$sitePagesCache) && $rootPageId == 'SITE_ROOT') {
+		if (empty(self::$sitePagesCache[$this->rootPage['uid']]) && $rootPageId == 'SITE_ROOT') {
 				// exiting the recursion loop, may write to cache now
-			self::$sitePagesCache = $pageIds;
+			self::$sitePagesCache[$this->rootPage['uid']] = $pageIds;
 		}
 
 		return $pageIds;
