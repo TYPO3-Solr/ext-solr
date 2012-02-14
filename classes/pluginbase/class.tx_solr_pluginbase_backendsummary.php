@@ -65,7 +65,7 @@ class tx_solr_pluginbase_BackendSummary {
 		$content = '';
 
 		if (!empty($this->settings)) {
-			$content         = '<table class="typo3-dblist">';
+			$content         = '<table class="typo3-dblist" style="width:100%;">';
 			$isVisibleRecord = !$this->pluginContentElement['hidden'];
 
 			$i = 0;
@@ -76,7 +76,7 @@ class tx_solr_pluginbase_BackendSummary {
 
 				$content .= '
 					<tr ' . ($isVisibleRecord ? $classAttribute : '') . '>
-						<td style="' . ($isVisibleRecord ? 'font-weight:bold; ' : '') . 'width:40%;">' . $label . '</td>
+						<td style="' . ($isVisibleRecord ? 'font-weight:bold; ' : '') . 'width:40%; padding-right: 3px;">' . $label . '</td>
 						<td>' . $value . '</td>
 					</tr>
 				';
