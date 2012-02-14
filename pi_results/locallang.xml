@@ -13,7 +13,7 @@
 			<label index="submit">Search</label>
 			<label index="sorting_sortBy">Sort by</label>
 			<label index="faceting_narrowSearch">Narrow Search</label>
-			<label index="faceting_resultsNarrowedBy">Results narrowed by</label>
+			<label index="faceting_resultsNarrowedBy">Search narrowed by</label>
 			<label index="faceting_showMore">Show more</label>
 			<label index="faceting_showFewer">Show fewer</label>
 			<label index="faceting_removeAllFilters">Remove all filters</label>
