@@ -587,11 +587,15 @@ class tx_solr_indexqueue_Queue {
 
 			// creating index queue item objects and assigning / mapping records to index queue items
 		foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
-			$indexQueueItems[] = t3lib_div::makeInstance(
-				'tx_solr_indexqueue_Item',
-				$indexQueueItemRecord,
-				$tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
-			);
+			if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
+				$indexQueueItems[] = t3lib_div::makeInstance(
+					'tx_solr_indexqueue_Item',
+					$indexQueueItemRecord,
+					$tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
+				);
+			} else {
+				$this->deleteItem($indexQueueItemRecord['item_type'], $indexQueueItemRecord['item_uid']);
+			}
 		}
 
 		return $indexQueueItems;

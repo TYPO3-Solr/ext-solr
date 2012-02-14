@@ -129,6 +129,7 @@
 	* Task #28758: Move example TypoScript configuration into a separate static template
 	* Added feature #33711: Option to remove empty values in SOLR_MULTIVALUE
 	* Changed copyright year
+	* Fixed bug #28869: Index Queue Worker fails if actual item record is missing, credits Heiko Kromm
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
