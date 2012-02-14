@@ -10,6 +10,8 @@
 			<label index="scheduler_optimizer_description">Executes an OPTIMIZE command on the Solr index. Should be run once a day for sites with low activity. Sites with high activity can run it more often. Beware though, that the task can take some seconds on large indexes.</label>
 			<label index="scheduler_commit_title">Commit Solr Index</label>
 			<label index="scheduler_commit_description">Executes a COMMIT command on the Solr index. Could be run anywhere between 1 min and every hour. Should take shorter than the OPTIMIZE Command, which also does a COMMIT before doing the OPTIMIZE.</label>
+			<label index="scheduler_reindex_title">Force Re-Indexing of a site</label>
+			<label index="scheduler_reindex_description">Purges the Solr Index and initializes the Index Queue of a site.</label>
 			<label index="scheduler_indexqueueworker_title">Index Queue Worker</label>
 			<label index="scheduler_indexqueueworker_description">Processes the items in the Index Queue and sends them to Solr.</label>
 			<label index="scheduler_indexqueueworker_field_documentsToIndexLimit">Number of documents to index</label>

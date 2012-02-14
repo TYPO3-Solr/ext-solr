@@ -130,6 +130,13 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_schedul
 	'additionalFields' => 'tx_solr_scheduler_CommitTaskSolrServerField'
 );
 
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_ReIndexTask'] = array(
+	'extension'        => $_EXTKEY,
+	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_reindex_title',
+	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_reindex_description',
+	'additionalFields' => 'tx_solr_scheduler_ReIndexTaskSolrServerField'
+);
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_IndexQueueWorkerTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_title',
