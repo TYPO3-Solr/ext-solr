@@ -230,6 +230,10 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$query->setBoostQuery($this->conf['search.']['query.']['boostQuery']);
 			}
 
+			if (!empty($this->conf['search.']['query.']['sortBy'])) {
+				$query->addQueryParameter('sort', $this->conf['search.']['query.']['sortBy']);
+			}
+
 			if ($this->conf['enableDebugMode']) {
 				$query->setDebugMode();
 			}
@@ -281,11 +285,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$sortField = $sortHelper->getSortFieldFromUrlParameter($this->piVars['sort']);
 
 				$query->setSorting($sortField);
-			}
-
-			$flexformSorting = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'sortBy', 'sQuery');
-			if (!empty($flexformSorting)) {
-				$query->addQueryParameter('sort', $flexformSorting);
 			}
 
 			$this->query = $query;
@@ -391,6 +390,12 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 		$boostQuery = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'boostQuery', 'sQuery');
 		if ($boostQuery) {
 			$this->conf['search.']['query.']['boostQuery'] = $boostQuery;
+		}
+
+			// sorting
+		$flexformSorting = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'sortBy', 'sQuery');
+		if ($flexformSorting) {
+			$this->conf['search.']['query.']['sortBy'] = $flexformSorting;
 		}
 	}
 

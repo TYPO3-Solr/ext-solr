@@ -151,6 +151,8 @@ plugin.tx_solr {
 #				myFilter = myFilterField_stringS:stringFilterValue
 #				otherFilter = otherFilterField_intS:intFilterValue
 			}
+
+			sortBy =
 		}
 
 		# TODO make it a top level configuration section
