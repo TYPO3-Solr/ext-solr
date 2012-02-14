@@ -33,12 +33,11 @@
 class tx_solr_facet_FacetRendererFactory {
 
 	/**
-	 * Registration information for facet renderers.
-	 * A simple map of facet type => class name
+	 * Registration information for facet types.
 	 *
 	 * @var array
 	 */
-	protected static $facetRenderers = array();
+	protected static $facetTypes = array();
 
 	/**
 	 * The default facet render, good for most cases.
@@ -72,7 +71,7 @@ class tx_solr_facet_FacetRendererFactory {
 	 * @param string $filterParserClassName Class used to translate filter parameter from the URL to Lucene filter syntax
 	 */
 	public static function registerFacetType($facetType, $rendererClassName, $filterParserClassName = '') {
-		self::$facetRenderers[$facetType] = array(
+		self::$facetTypes[$facetType] = array(
 			'type'         => $facetType,
 			'renderer'     => $rendererClassName,
 			'filterParser' => $filterParserClassName
@@ -108,14 +107,14 @@ class tx_solr_facet_FacetRendererFactory {
 	 * @throws InvalidArgumentException
 	 */
 	protected function getFacetRendererClassNameByFacetType($facetType) {
-		if (!array_key_exists($facetType, self::$facetRenderers)) {
+		if (!array_key_exists($facetType, self::$facetTypes)) {
 			throw new InvalidArgumentException(
 				'No renderer configured for facet type "' . $facetType .'"',
 				1328041286
 			);
 		}
 
-		return self::$facetRenderers[$facetType]['renderer'];
+		return self::$facetTypes[$facetType]['renderer'];
 	}
 
 	/**
@@ -129,6 +128,43 @@ class tx_solr_facet_FacetRendererFactory {
 			throw new UnexpectedValueException(
 				get_class($object) . ' is not an implementation of tx_solr_FacetRenderer',
 				1328038100
+			);
+		}
+	}
+
+	/**
+	 * Looks up a facet's configuration and gets an instance of a filter parser
+	 * if one is configured.
+	 *
+	 * @param string $facetName Facet name
+	 * @return NULL|tx_solr_QueryFilterParser NULL if no filter parser is configured for the facet's type or an instance of tx_solr_QueryFilterParser otherwise
+	 */
+	public function getFacetFilterParserByFacetName($facetName) {
+		$filterParser       = NULL;
+		$facetConfiguration = $this->facetsConfiguration[$facetName . '.'];
+
+		if (isset($facetConfiguration['type'])
+		&& !empty(self::$facetTypes[$facetConfiguration['type']]['filterParser'])) {
+			$filterParserClassName = self::$facetTypes[$facetConfiguration['type']]['filterParser'];
+
+			$filterParser = t3lib_div::makeInstance($filterParserClassName);
+			$this->validateObjectIsQueryFilterParser($filterParser);
+		}
+
+		return $filterParser;
+	}
+
+	/**
+	 * Validates an object for implementing the tx_solr_QueryFilterParser interface.
+	 *
+	 * @param object $object A potential filter parser object to check for implementing the tx_solr_QueryFilterParser interface
+	 * @throws UnexpectedValueException if $object does not implement tx_solr_QueryFilterParser
+	 */
+	protected function validateObjectIsQueryFilterParser($object) {
+		if (!($object instanceof tx_solr_QueryFilterParser)) {
+			throw new UnexpectedValueException(
+				get_class($object) . ' is not an implementation of tx_solr_QueryFilterParser',
+				1328105893
 			);
 		}
 	}

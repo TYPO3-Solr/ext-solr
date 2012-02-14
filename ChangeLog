@@ -91,6 +91,7 @@
 	* Changed jQuery UI to v1.8.17
 	* Changed jQuery UI CSS to v1.8.17
 	* Added tx_solr_Search::getRangeFacetFieldOptions()
+	* Added support for filter parser regisration and retrieval through tx_solr_facet_FacetRendererFactory
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
