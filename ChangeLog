@@ -4,6 +4,7 @@
 	!!! Changed interface tx_solr_PluginCommand to expect an instance of tx_solr_pluginbase_CommandPluginBase as the parent plugin instead of tslib_pibase
 	!!! Updated jQuery to v1.7.1, updated jQuery UI to v1.8.16, separated jQuery UI components, restructured javascript resources
 	!!! Changed handling of javascript files, all files are now defined in plugin.tx_solr.javascriptFiles and handled by a new tx_solr_JavascriptManager
+	!!! Changed handling of CSS files to be consitent with templateFiles and javascriptFiles - now being handled via plugin.tx_solr.cssFiles, fixes issue #12761: Pagebrowse css loaded twice, credits Stefan Sprenger
 	!! Changed the form command to use the tx_solr_CommandPluginAware interface to make form modifiers aware of the current plugin
 	!! Changed pagebrowser template file configuration from search.pagebrowser.templateFeile to templateFiles.pagebrowser
 	! Changed Index Queue tables to use InnoDB engine

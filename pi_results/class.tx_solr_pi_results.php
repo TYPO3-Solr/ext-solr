@@ -137,23 +137,21 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	}
 
 	/**
-	 * Implementation of preRender() method. Used to include css
+	 * Implementation of preRender() method. Used to include CSS files.
 	 *
 	 * @see	classes/pluginbase/tx_solr_pluginbase_CommandPluginBase#preRender()
 	 */
 	protected function preRender() {
-		if ($this->conf['addDefaultCss']) {
-			$pathToResultsCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
-				. t3lib_extMgm::siteRelPath($this->extKey)
-				. 'resources/templates/'.$this->getPluginKey().'/results.css';
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultResultsCss'] =
-				'<link href="' . $pathToResultsCssFile . '" rel="stylesheet" type="text/css" />';
+		if($this->conf['cssFiles.']['results']) {
+			$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['results']);
+			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-resultsCss'] =
+				'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
+		}
 
-			$pathToPageBrowserCssFile = $GLOBALS['TSFE']->config['config']['absRefPrefix']
-				. t3lib_extMgm::siteRelPath('pagebrowse')
-				. 'res/styles_min.css';
-			$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId . '_defaultPageBrowserCss'] =
-				'<link href="' . $pathToPageBrowserCssFile . '" rel="stylesheet" type="text/css" />';
+		if($this->conf['cssFiles.']['pagebrowser']) {
+			$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['pagebrowser']);
+			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-pageBrowserCss'] =
+				'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
 		}
 	}
 
