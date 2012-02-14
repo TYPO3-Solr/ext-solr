@@ -115,6 +115,7 @@
 	* Added styling for used facets to match the introducion package
 	* Added a facet label placeholder to use in the remove facet text in the used facets listing
 	* Changed order of sorting and faceting
+	* Added a span to allow styling of the search term
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

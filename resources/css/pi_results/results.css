@@ -103,6 +103,10 @@
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 /* results */
 
+#tx-solr-search .tx-solr-search-word {
+	font-weight: bold;
+}
+
 #tx-solr-search .tx-pagebrowse {
 	margin-top: 10px;
 }

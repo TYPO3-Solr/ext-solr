@@ -70,7 +70,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 
 		$searchedFor = strtr(
 			$this->parentPlugin->pi_getLL('results_searched_for'),
-			array('@searchWord' => $query)
+			array('@searchWord' => '<span class="tx-solr-search-word">' . $query . '</span>')
 		);
 
 		$foundResultsInfo = strtr(
