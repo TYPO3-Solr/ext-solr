@@ -74,6 +74,10 @@
 	font-weight: bold;
 }
 
+#tx-solr-faceting .facets .facet-result-count {
+	color: #999;
+}
+
 #tx-solr-facets-in-use li {
 	list-style-type: none;
 	margin-left: 10px;
