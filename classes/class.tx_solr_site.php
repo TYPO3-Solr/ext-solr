@@ -40,6 +40,18 @@ class tx_solr_Site {
 	 */
 	protected $rootPage = array();
 
+	/**
+	 * Small cache for the list of pages in a site, so that the results of this
+	 * rather expensive operation can be used by all initializers without having
+	 * each initializer do it again.
+	 *
+	 * TODO Move to caching framework once TYPO3 4.6 is the minimum required
+	 * version.
+	 *
+	 * @var array
+	 */
+	protected static $sitePagesCache = NULL;
+
 
 	/**
 	 * Constructor.
@@ -162,6 +174,56 @@ class tx_solr_Site {
 		}
 
 		return $siteLanguages;
+	}
+
+	/**
+	 * Generates a list of page IDs in this site. Attention, this includes
+	 * all page types! Deleted pages are not included.
+	 *
+	 * @param	integer		Page ID from where to start collection sub pages
+	 * @param	integer		Maximum depth to decend into the site tree
+	 * @return	array		Array of pages (IDs) in this site
+	 */
+	public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999) {
+		$pageIds  = array();
+		$maxDepth = intval($maxDepth);
+
+		if (is_null(self::$sitePagesCache)) {
+			$recursionRootPageId = intval($rootPageId);
+			if ($rootPageId == 'SITE_ROOT') {
+				$recursionRootPageId = $this->rootPage['uid'];
+				$pageIds[]           = $this->rootPage['uid'];
+			}
+
+			if ($maxDepth > 0) {
+				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+							'uid',
+							'pages',
+							'pid = ' . $recursionRootPageId . ' ' . t3lib_BEfunc::deleteClause('pages')
+				);
+
+				while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+					$pageIds[] = $page['uid'];
+
+					if ($maxDepth > 1) {
+						$pageIds = array_merge(
+						$pageIds,
+						$this->getPages($page['uid'], $maxDepth - 1)
+						);
+					}
+				}
+				$GLOBALS['TYPO3_DB']->sql_free_result($result);
+			}
+		} else {
+			$pageIds = self::$sitePagesCache;
+		}
+
+		if (is_null(self::$sitePagesCache) && $rootPageId == 'SITE_ROOT') {
+				// exiting the recursion loop, may write to cache now
+			self::$sitePagesCache = $pageIds;
+		}
+
+		return $pageIds;
 	}
 
 	/**
