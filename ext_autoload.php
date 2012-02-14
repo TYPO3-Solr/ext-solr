@@ -88,6 +88,8 @@ return array(
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_commandpluginbase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 
+	'tx_solr_query_filterencoder_range' => $extensionPath . 'classes/query/filterencoder/class.tx_solr_query_filterencoder_range.php',
+
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_faceting.php',
 
 	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php',

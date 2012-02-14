@@ -30,10 +30,13 @@ plugin.tx_solr {
 		ui.datepicker.fr = EXT:solr/resources/javascript/jquery/ui-i18n/jquery.ui.datepicker-fr.js
 		ui.datepicker.nl = EXT:solr/resources/javascript/jquery/ui-i18n/jquery.ui.datepicker-nl.js
 
+		ui.slider = EXT:solr/resources/javascript/jquery/jquery-ui.slider.min.js
+
 		suggest = EXT:solr/resources/javascript/eid_suggest/suggest.js
 
 		faceting.limitExpansion = EXT:solr/resources/javascript/pi_results/results.js
 		faceting.dateRangeHelper = EXT:solr/resources/javascript/pi_results/date_range_facet.js
+		faceting.numericRangeHelper = EXT:solr/resources/javascript/pi_results/numeric_range_facet.js
 	}
 
 	cssFiles {

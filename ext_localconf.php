@@ -127,6 +127,17 @@ tx_solr_CommandResolver::registerPluginCommand(
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
+	// registering facet types
+
+tx_solr_facet_FacetRendererFactory::registerFacetType(
+	'numericRange',
+	'tx_solr_facet_NumericRangeFacetRenderer',
+	'tx_solr_query_filterparser_Range',
+	'tx_solr_query_filterparser_Range'
+);
+
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
 	// adding scheduler tasks
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_OptimizeTask'] = array(
 	'extension'        => $_EXTKEY,
