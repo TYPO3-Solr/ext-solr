@@ -47,17 +47,44 @@ class tx_solr_facet_FacetRendererFactory {
 	 */
 	private $defaultFacetRendererClassName = 'tx_solr_facet_SimpleFacetRenderer';
 
+	/**
+	 * Facets configuration from plugin.tx_solr.search.faceting.facets
+	 *
+	 * @var array
+	 */
 	protected $facetsConfiguration = array();
 
 
+	/**
+	 * Constructor.
+	 *
+	 * @param array $facetsConfiguration Facets configuration from plugin.tx_solr.search.faceting.facets
+	 */
 	public function __construct(array $facetsConfiguration) {
 		$this->facetsConfiguration = $facetsConfiguration;
 	}
 
-	public static function registerFacetRenderer($rendererClassName, $facetType) {
-		self::$facetRenderers[$facetType] = $rendererClassName;
+	/**
+	 * Register a facet type with its helper classes.
+	 *
+	 * @param string $facetType Facet type that can be used in a TypoScript facet configuration
+	 * @param string $rendererClassName Class used to render the facet UI
+	 * @param string $filterParserClassName Class used to translate filter parameter from the URL to Lucene filter syntax
+	 */
+	public static function registerFacetType($facetType, $rendererClassName, $filterParserClassName = '') {
+		self::$facetRenderers[$facetType] = array(
+			'type'         => $facetType,
+			'renderer'     => $rendererClassName,
+			'filterParser' => $filterParserClassName
+		);
 	}
 
+	/**
+	 * Looks up a facet's configuration and creates a facet renderer accordingly.
+	 *
+	 * @param string $facetName Facet name
+	 * @return tx_solr_FacetRenderer Facet renderer as definied by the facet's configuration
+	 */
 	public function getFacetRendererByFacetName($facetName) {
 		$facetRenderer      = NULL;
 		$facetConfiguration = $this->facetsConfiguration[$facetName . '.'];
@@ -73,6 +100,13 @@ class tx_solr_facet_FacetRendererFactory {
 		return $facetRenderer;
 	}
 
+	/**
+	 * Gets the facet renderer class name for a given facet type.
+	 *
+	 * @param string $facetType Facet type
+	 * @return string Facet renderer class name
+	 * @throws InvalidArgumentException
+	 */
 	protected function getFacetRendererClassNameByFacetType($facetType) {
 		if (!array_key_exists($facetType, self::$facetRenderers)) {
 			throw new InvalidArgumentException(
@@ -81,9 +115,15 @@ class tx_solr_facet_FacetRendererFactory {
 			);
 		}
 
-		return self::$facetRenderers[$facetType];
+		return self::$facetRenderers[$facetType]['renderer'];
 	}
 
+	/**
+	 * Validates an object for implementing the tx_solr_FacetRenderer interface.
+	 *
+	 * @param object $object A potential facet renderer object to check for implementing the tx_solr_FacetRenderer interface
+	 * @throws UnexpectedValueException if $object does not implement tx_solr_FacetRenderer
+	 */
 	protected function validateObjectIsFacetRenderer($object) {
 		if (!($object instanceof tx_solr_FacetRenderer)) {
 			throw new UnexpectedValueException(
