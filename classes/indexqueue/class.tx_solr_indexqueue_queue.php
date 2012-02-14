@@ -211,7 +211,7 @@ class tx_solr_indexqueue_Queue {
 	 *
 	 * @param	string	The item's type, usually a table name.
 	 * @param	string	The item's uid, usually an integer uid, could be a different value for non-database-record types.
-	 * @parma	integer	The configuration's page tree's root page id. Optional, not needed for all types.
+	 * @param	integer	The configuration's page tree's root page id. Optional, not needed for all types.
 	 * @return	string	The indexing configuration's name to use when indexing this item
 	 */
 	protected function getIndexingConfigurationByItem($itemType, $itemUid, $rootPageId = NULL) {
