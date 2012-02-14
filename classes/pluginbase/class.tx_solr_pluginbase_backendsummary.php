@@ -69,7 +69,7 @@ class tx_solr_pluginbase_BackendSummary {
 
 			$tableStyle = 'width:100%;';
 			if (!$isVisibleRecord) {
-				$tableStyle .= ' background: none; border-color: #e5e5e5';
+				$tableStyle .= ' background: none; border-color: #e5e5e5; color: #bbb';
 			}
 
 			$content = '<table class="typo3-dblist" style="' . $tableStyle . '">';
