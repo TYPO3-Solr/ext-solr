@@ -176,7 +176,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 
 			Index specific actions:
 			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
-			<input type="submit" value="Empty Index and Commit" name="s_emptyIndex" onclick="Check = confirm(\'Are you sure?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
+			<input type="submit" value="Empty Index" name="s_emptyIndex" onclick="Check = confirm(\'This will commit documents which may be pending, clear the index and commit again afterwards. Are you sure you want to empty the index?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
 			<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
 			<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
 
