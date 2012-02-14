@@ -62,7 +62,12 @@ class tx_solr_viewhelper_Multivalue implements tx_solr_ViewHelper {
 			$glue = $arguments[1];
 		}
 
-		return implode($glue, $multivalueFieldValue);
+		$unserializedMultivalueFieldValue = unserialize($multivalueFieldValue);
+		$value = is_array($unserializedMultivalueFieldValue)
+			? implode($glue, $unserializedMultivalueFieldValue)
+			: $multivalueFieldValue;
+
+		return $value;
 	}
 }
 
