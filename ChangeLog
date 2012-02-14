@@ -114,6 +114,7 @@
 	* Added nicer styling for the page browser
 	* Added styling for used facets to match the introducion package
 	* Added a facet label placeholder to use in the remove facet text in the used facets listing
+	* Changed order of sorting and faceting
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
