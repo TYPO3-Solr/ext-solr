@@ -156,6 +156,7 @@ return array(
 		// interfaces
 
 	'tx_solr_additionalindexer' => $extensionPath . 'interfaces/interface.tx_solr_additionalindexer.php',
+	'tx_solr_commandpluginaware' => $extensionPath . 'interfaces/interface.tx_solr_commandpluginaware.php',
 	'tx_solr_facetrenderer' => $extensionPath . 'interfaces/interface.tx_solr_facetrenderer.php',
 	'tx_solr_facetsmodifier' =>  $extensionPath . 'interfaces/interface.tx_solr_facetsmodifier.php',
 	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
