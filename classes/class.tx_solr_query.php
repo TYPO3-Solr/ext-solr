@@ -356,8 +356,26 @@ class tx_solr_Query {
 		}
 	}
 
+	/**
+	 * Sets facet fields for a query.
+	 *
+	 * @param array $facetFields Array of field names
+	 */
 	public function setFacetFields(array $facetFields) {
+		$this->queryParameters['facet.field'] = array();
 
+		foreach($facetFields as $facetField) {
+			$this->addFacetField($facetField);
+		}
+	}
+
+	/**
+	 * Adds a single facet field.
+	 *
+	 * @param string $facetField field name
+	 */
+	public function addFacetField($facetField) {
+		$this->queryParameters['facet.field'][] = $facetField;
 	}
 
 	public function addFacetFilter($field, $value) {
