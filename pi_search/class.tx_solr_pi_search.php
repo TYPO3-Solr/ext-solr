@@ -139,7 +139,7 @@ class tx_solr_pi_search extends tx_solr_pluginbase_CommandPluginBase{
 	 * @see classes/pluginbase/tx_solr_pluginbase_PluginBase#postInitializeTemplateEngine($template)
 	 */
 	protected function postInitializeTemplateEngine($template) {
-		$template->addVariable('solr', $this->getSolrVariables());
+		$template->addVariable('tx_solr', $this->getSolrVariables());
 
 		return $template;
 	}

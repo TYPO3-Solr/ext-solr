@@ -13,7 +13,7 @@
 	<!-- ###SOLR_SEARCH_FORM### begin -->
 	###FORM.SUGGEST_URL###
 	<form id="tx-solr-search-form-pi-results" action="###FORM.ACTION###" method="get" accept-charset="###FORM.ACCEPT-CHARSET###">
-		###LLL:searchWord### <input type="text" class="tx-solr-q" name="###SOLR.PREFIX###[q]" value="###FORM.Q###" />
+		###LLL:searchWord### <input type="text" class="tx-solr-q" name="###TX_SOLR.PREFIX###[q]" value="###FORM.Q###" />
 		<input type="hidden" name="id" value="###FORM.ACTION_ID###" />
 		<input type="hidden" name="###FORM.ACTION_LANGUAGE_PARAMETER###" value="###FORM.ACTION_LANGUAGE###" />
 		<input type="submit" value="###LLL:submit###" />
@@ -57,7 +57,7 @@
 
 	<!-- ###RESULTS_PER_PAGE_SWITCH### beginn -->
 	<form action="###FORM.ACTION###" method="post">
-		###LLL:results_per_page###<select onchange="this.form.submit()" name="###SOLR.PREFIX###[resultsPerPage]">
+		###LLL:results_per_page###<select onchange="this.form.submit()" name="###TX_SOLR.PREFIX###[resultsPerPage]">
 			<!-- ###LOOP:OPTIONS### begin -->
 			<!-- ###LOOP_CONTENT### -->
 			<option value="###OPTION.VALUE###" ###OPTION.SELECTED###>###OPTION.VALUE###</option>

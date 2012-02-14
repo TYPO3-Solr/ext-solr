@@ -407,7 +407,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 * @return	tx_solr_Template	The modified template instance with additional variables available for rendering.
 	 */
 	protected function postInitializeTemplateEngine($template) {
-		$template->addVariable('solr', $this->getSolrVariables());
+		$template->addVariable('tx_solr', $this->getSolrVariables());
 
 		return $template;
 	}

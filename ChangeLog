@@ -7,6 +7,7 @@
 	!!! Changed handling of CSS files to be consitent with templateFiles and javascriptFiles - now being handled via plugin.tx_solr.cssFiles, fixes issue #12761: Pagebrowse css loaded twice, credits Stefan Sprenger
 	!!! Replaced search.filter with search.query.filter, adding support for multiple filters through TypoScript
 	!!! Renamed interface tx_solr_AdditionalIndexer to tx_solr_AdditionalPageIndexer
+	!!! Changed template variable object marker SOLR to TX_SOLR as it caused trouble when "solr" was used as argument in viewhelpers like the LINK viewhelper
 	!! Changed the form command to use the tx_solr_CommandPluginAware interface to make form modifiers aware of the current plugin
 	!! Changed pagebrowser template file configuration from search.pagebrowser.templateFeile to templateFiles.pagebrowser
 	!! Removed compatibility code for TYPO3 version before 4.5
