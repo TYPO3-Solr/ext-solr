@@ -194,7 +194,7 @@ class tx_solr_facet_FacetOption {
 	 * @param string $linkText link text
 	 * @return string Html tag with link to replace a facet's active option with this option
 	 */
-	protected function getReplaceFacetOptionLink($linkText) {
+	public function getReplaceFacetOptionLink($linkText) {
 		$typolinkOptions  = $this->getTypolinkOptions();
 		$filterParameters = $this->replaceFacetAndEncodeFilterParameters();
 
@@ -207,7 +207,7 @@ class tx_solr_facet_FacetOption {
 	 *
 	 * @return string URL to replace a facet's active option with this option
 	 */
-	protected function getReplaceFacetOptionUrl() {
+	public function getReplaceFacetOptionUrl() {
 		$filterParameters = $this->replaceFacetAndEncodeFilterParameters();
 
 		return $this->query->getQueryUrl(array('filter' => $filterParameters));
