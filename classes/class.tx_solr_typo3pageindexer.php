@@ -196,7 +196,7 @@ class tx_solr_Typo3PageIndexer {
 	}
 
 	/**
-	 * Given a page id, returns a document representing that page.
+	 * Builds the Solr document for the current page.
 	 *
 	 * @return	Apache_Solr_Document	A documment representing the page
 	 */
