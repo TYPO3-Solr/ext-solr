@@ -143,7 +143,7 @@ class tx_solr_indexqueue_PageIndexerRequest {
 				'raw response body' => $rawResponse,
 			));
 
-			throw new RuntimeException('Failed to execute Page Indexer Request.', 1319116885);
+			throw new RuntimeException('Failed to execute Page Indexer Request. See log for details.', 1319116885);
 		}
 
 		$response->setRequestId($decodedResponse['requestId']);
