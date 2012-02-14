@@ -61,6 +61,7 @@
 	* Fixed an issues in Record Monitor and Garbage Collection which did not fully cover moving pages
 	* Added getters and setters for relevant data of tx_solr_NoSolrConnectionFoundException
 	* Added methods for setting/adding facet fields in tx_solr_Query, credits Michael Knoll
+	* Added a hook to provide additional documents when indexing Index Queue items
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

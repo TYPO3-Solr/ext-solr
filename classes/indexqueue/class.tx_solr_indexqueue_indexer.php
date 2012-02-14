@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2012 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -113,29 +113,32 @@ class tx_solr_indexqueue_Indexer {
 	 * @return	boolean	TRUE if item was indexed successfully, FALSE on failure
 	 */
 	protected function indexItem(tx_solr_indexqueue_Item $item, $language = 0) {
-		$indexed   = FALSE;
-		$documents = array();
+		$itemIndexed = FALSE;
+		$documents   = array();
 
-		$document = $this->itemToDocument($item, $language);
+		$itemDocument = $this->itemToDocument($item, $language);
+		$documents[]  = $itemDocument;
+		$documents    = array_merge($documents, $this->getAdditionalDocuments(
+			$item,
+			$language,
+			$itemDocument
+		));
+		$documents = $this->processDocuments($item, $documents);
 
-			// document field processing
-		$this->processDocument($item, $document);
-
-		$documents[] = $document;
 		$documents = $this->preAddModifyDocuments(
 			$item,
-			NULL,
+			$language,
 			$documents
 		);
 
 		$response = $this->solr->addDocuments($documents);
 		if ($response->getHttpStatus() == 200) {
-			$indexed = TRUE;
+			$itemIndexed = TRUE;
 		}
 
 		$this->log($item, $documents, $response);
 
-		return $indexed;
+		return $itemIndexed;
 	}
 
 	/**
@@ -351,17 +354,14 @@ class tx_solr_indexqueue_Indexer {
 	}
 
 	/**
-	 * Sends the document to the field processing service which takes care of
+	 * Sends the documents to the field processing service which takes care of
 	 * manipulating fields as defined in the field's configuration.
 	 *
-	 * FIXME make the method return the document instead of manipulation through references
-	 *
-	 * @param	tx_solr_indexqueue_Item	An index queue item
-	 * @param	Apache_Solr_Document	The Apache_Solr_Document document for the given item
+	 * @param tx_solr_indexqueue_Item An index queue item
+	 * @param array An array of Apache_Solr_Document objects to manipulate.
+	 * @return array Array of manipulated Apache_Solr_Document objects.
 	 */
-	protected function processDocument(tx_solr_indexqueue_Item $item, Apache_Solr_Document $document) {
-		$documents = array($document);
-
+	protected function processDocuments(tx_solr_indexqueue_Item $item, array $documents) {
 			// needs to respect the TS settings for the page the item is on, conditions may apply
 		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid());
 		$fieldProcessingInstructions = $solrConfiguration['index.']['fieldProcessingInstructions.'];
@@ -375,13 +375,45 @@ class tx_solr_indexqueue_Indexer {
 			);
 			$itemRecord['__solr_index_language'] =  $language;
 		}
+
+		return $documents;
+	}
+
+	/**
+	 * Allows third party extensions to provide additional documents which
+	 * should be indexed for the current item.
+	 *
+	 * @param tx_solr_indexqueue_Item The item currently being indexed.
+	 * @param integer The language uid currently being indexed.
+	 * @param Apache_Solr_Document	$itemDocument The document representing the item for the given language.
+	 * @return array An array of additional Apache_Solr_Document objects to index.
+	 */
+	protected function getAdditionalDocuments(tx_solr_indexqueue_Item $item, $language, Apache_Solr_Document $itemDocument) {
+		$documents = array();
+
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] as $classReference) {
+				$additionalIndexer = t3lib_div::getUserObj($classReference);
+
+				if ($additionalIndexer instanceof tx_solr_AdditionalIndexQueueItemIndexer) {
+					$documents = $additionalIndexer->getAdditionalItemDocuments($item, $language, $itemDocument);
+				} else {
+					throw new UnexpectedValueException(
+						get_class($additionalIndexer) . ' must implement interface tx_solr_AdditionalIndexQueueItemIndexer',
+						1326284551
+					);
+				}
+			}
+		}
+
+		return $documents;
 	}
 
 	/**
 	 * Provides a hook to manipulate documents right before they get added to
 	 * the Solr index.
 	 *
-	 * @param	tx_solr_indexqueue_Item	The currently being indexed item.
+	 * @param	tx_solr_indexqueue_Item	The item currently being indexed.
 	 * @param	integer	The language uid of the documents
 	 * @param	array	An array of documents to be indexed
 	 * @return	array	An array of modified documents
