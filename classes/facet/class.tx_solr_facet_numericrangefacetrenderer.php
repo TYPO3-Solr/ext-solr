@@ -37,7 +37,7 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 	 *
 	 * @see tx_solr_facet_AbstractFacetRenderer::renderFacet()
 	 */
-	public function renderFacetOptions() {
+	protected function renderFacetOptions() {
 		$this->loadJavaScriptFiles();
 		$handlePositions = $this->getHandlePositions();
 
