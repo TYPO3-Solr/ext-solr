@@ -135,22 +135,21 @@ class tx_solr_indexqueue_PageIndexerRequest {
 			// convert JSON response to response object properties
 		$decodedResponse = $response->getResultsFromJson($rawResponse);
 
+		if ($rawResponse === FALSE || $decodedResponse === FALSE) {
+			t3lib_div::devLog('Failed to execute Page Indexer Request.', 'solr', 3, array(
+				'request url'       => $url,
+				'request headers'   => $headers,
+				'response headers'  => $http_response_header,
+				'raw response body' => $rawResponse,
+			));
+
+			throw new RuntimeException('Failed to execute Page Indexer Request.', 1319116885);
+		}
+
 		$response->setRequestId($decodedResponse['requestId']);
 
 		foreach ($decodedResponse['actionResults'] as $action => $actionResult) {
 			$response->addActionResult($action, $actionResult);
-		}
-
-		if ($rawResponse === FALSE) {
-			t3lib_div::devLog('Failed to execute Page Indexer Request.', 'solr', 3, array(
-				'request url'             => $url,
-				'request headers'         => $headers,
-				'response headers'        => $http_response_header,
-				'raw response body'       => $rawResponse,
-				'decoded response object' => (array) $response,
-			));
-
-			throw new RuntimeException('Failed to execute Page Indexer Request.', 1319116885);
 		}
 
 		return $response;

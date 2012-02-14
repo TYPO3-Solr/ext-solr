@@ -130,8 +130,8 @@ class tx_solr_indexqueue_PageIndexerResponse {
 			foreach ($responseData['actionResults'] as $action => $serializedActionResult) {
 				$responseData['actionResults'][$action] = unserialize($serializedActionResult);
 			}
-		} else {
-			$responseData['actionResults'] = array();
+		} else if (is_null($responseData)) {
+			$responseData = FALSE;
 		}
 
 		return $responseData;
