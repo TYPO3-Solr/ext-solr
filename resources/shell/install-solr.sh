@@ -9,6 +9,9 @@ EXT_SOLR_PLUGIN_VER=1.2.0
 
 SVNBRANCH_PATH="branches/solr_$EXT_SOLR_VER.x"
 
+LANGUAGES=(
+english
+)
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -33,6 +36,21 @@ progressfilt ()
 			fi
 		fi
 	done
+}
+
+# ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+wgetresource ()
+{
+	if [ $BRANCH_TEST_RETURN -eq "0" ]
+	then
+		RESOURCE="https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/"$1
+	else
+		RESOURCE="https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/"$1
+	fi
+
+	echo "wget $RESOURCE"
+	wget --progress=bar:force --no-check-certificate $RESOURCE 2>&1 | progressfilt
 }
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -76,7 +94,7 @@ PASSALLCHECKS=1
 
 java -version > /dev/null 2>&1
 CHECK=$?
-if [ $CHECK -ne "0"  ]
+if [ $CHECK -ne "0" ]
 then
 	cecho "ERROR couldn't find Java (Oracle Java is recommended)." $red
 	PASSALLCHECKS=0
@@ -84,7 +102,7 @@ fi
 
 wget --version > /dev/null 2>&1
 CHECK=$?
-if [ $CHECK -ne "0"  ]
+if [ $CHECK -ne "0" ]
 then
 	cecho "ERROR couldn't find wget." $red
 	PASSALLCHECKS=0
@@ -92,21 +110,26 @@ fi
 
 ping -c 1 apache.osuosl.org > /dev/null 2>&1
 CHECK=$?
-if [ $CHECK -ne "0"  ]
+if [ $CHECK -ne "0" ]
 then
-	cecho "ERROR couldn't contact Apache download mirror at Oregon State University Open Source Lab - OSUOSL" $red
-	PASSALLCHECKS=0
+	cecho "ERROR couldn't ping Apache download mirror, try again using wget" $yellow
+	wget -q -O /dev/null http://apache.osuosl.org
+	if [ $? -ne "0" ]
+	then
+		cecho "ERROR also couldn't wget Apache download mirror at Oregon State University Open Source Lab - OSUOSL" $red
+		PASSALLCHECKS=0
+	fi
 fi
 
 unzip -v > /dev/null 2>&1
 CHECK=$?
-if [ $CHECK -ne "0"  ]
+if [ $CHECK -ne "0" ]
 then
 	cecho "ERROR: couldn't find unzip." $red
 	PASSALLCHECKS=0
 fi
 
-if [ $PASSALLCHECKS -eq "0"  ]
+if [ $PASSALLCHECKS -eq "0" ]
 then
 	cecho "Please install all missing requirements or fix any other errors listed above and try again." $red
 	exit 1
@@ -115,6 +138,10 @@ else
 fi
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+# test if release branch exists, if so we'll download from there
+wget --no-check-certificate -q -O /dev/null https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH
+BRANCH_TEST_RETURN=$?
 
 mkdir -p /opt/solr-tomcat
 cd /opt/solr-tomcat/
@@ -142,57 +169,38 @@ cp -r apache-solr-$SOLR_VER/example/solr .
 
 cecho "Downloading TYPO3 Solr configuration files." $green
 cd solr
+SOLRDIR=`pwd`
 
-# create / download english core configuration
-mkdir -p typo3cores/conf/english
-cd typo3cores/conf/english
+for LANGUAGE in ${LANGUAGES[*]}
+do
+	cecho "Downloading configuration for language: $LANGUAGE" $green
 
-# test if release branch exists, if so we'll download from there
-wget --no-check-certificate -q -O /dev/null https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH
-BRANCH_TEST_RETURN=$?
+	cd $SOLRDIR
+	# create / download $LANGUAGE core configuration
+	mkdir -p typo3cores/conf/$LANGUAGE
+	cd typo3cores/conf/$LANGUAGE
 
-# download english configuration in /opt/solr-tomcat/solr/typo3cores/conf/english/
-if [ $BRANCH_TEST_RETURN -eq "0" ]
-then
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/english/protwords.txt 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/english/schema.xml 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/english/stopwords.txt 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/english/synonyms.txt 2>&1 | progressfilt
-else
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/english/protwords.txt 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/english/schema.xml 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/english/stopwords.txt 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/english/synonyms.txt 2>&1 | progressfilt
-fi
+	wgetresource solr/typo3cores/conf/$LANGUAGE/protwords.txt
+	wgetresource solr/typo3cores/conf/$LANGUAGE/schema.xml
+	wgetresource solr/typo3cores/conf/$LANGUAGE/stopwords.txt
+	wgetresource solr/typo3cores/conf/$LANGUAGE/synonyms.txt
+
+done
 
 # download general configuration in /opt/solr-tomcat/solr/typo3cores/conf/
+cecho "Downloading general configruation" $green
 cd ..
-if [ $BRANCH_TEST_RETURN -eq "0" ]
-then
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/admin-extra.html 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/elevate.xml 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/general_schema_fields.xml 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/general_schema_types.xml 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/mapping-ISOLatin1Accent.txt 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/typo3cores/conf/solrconfig.xml 2>&1 | progressfilt
-else
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/admin-extra.html 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/elevate.xml 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/general_schema_fields.xml 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/general_schema_types.xml 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/mapping-ISOLatin1Accent.txt 2>&1 | progressfilt
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/typo3cores/conf/solrconfig.xml 2>&1 | progressfilt
-fi
+wgetresource solr/typo3cores/conf/admin-extra.html
+wgetresource solr/typo3cores/conf/elevate.xml
+wgetresource solr/typo3cores/conf/general_schema_fields.xml
+wgetresource solr/typo3cores/conf/general_schema_types.xml
+wgetresource solr/typo3cores/conf/mapping-ISOLatin1Accent.txt
+wgetresource solr/typo3cores/conf/solrconfig.xml
 
 # download core configuration file solr.xml in /opt/solr-tomcat/solr/
 cd ../..
 rm solr.xml
-if [ $BRANCH_TEST_RETURN -eq "0" ]
-then
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/solr/solr.xml 2>&1 | progressfilt
-else
-wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/solr/solr.xml 2>&1 | progressfilt
-fi
+wgetresource solr/solr.xml
 
 # clean up
 rm -rf bin
@@ -207,24 +215,14 @@ cd /opt/solr-tomcat/tomcat/conf
 
 rm server.xml
 
-if [ $BRANCH_TEST_RETURN -eq "0" ]
-then
-	wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/tomcat/server.xml 2>&1 | progressfilt
-else
-	wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/tomcat/server.xml 2>&1 | progressfilt
-fi
+wgetresource tomcat/server.xml
 
 cd /opt/solr-tomcat/
 mkdir -p tomcat/conf/Catalina/localhost
 cd tomcat/conf/Catalina/localhost
 
 # set property solr.home
-if [ $BRANCH_TEST_RETURN -eq "0" ]
-then
-	wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/tomcat/solr.xml 2>&1 | progressfilt
-else
-	wget --progress=bar:force --no-check-certificate https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/tomcat/solr.xml 2>&1 | progressfilt
-fi
+wgetresource tomcat/solr.xml
 
 # copy libs
 cd /opt/solr-tomcat/
