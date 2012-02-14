@@ -70,6 +70,21 @@ class tx_solr_indexqueue_Item {
 	protected $changed;
 
 	/**
+	 * Indexing properties to provide additional information for the item's
+	 * indexer / how to index the item.
+	 *
+	 * @var array
+	 */
+	protected $indexingProperties = array();
+
+	/**
+	 * Flag for lazy loading indexing properties.
+	 *
+	 * @var boolean
+	 */
+	protected $indexingPropertiesLoaded = FALSE;
+
+	/**
 	 * The record itself
 	 *
 	 * @var	array
@@ -101,6 +116,27 @@ class tx_solr_indexqueue_Item {
 				'',
 				FALSE
 			);
+		}
+	}
+
+	/**
+	 * Loads the indexing properties for the item - if not already loaded.
+	 *
+	 *
+	 */
+	public function loadIndexingProperties() {
+		if (!$this->indexingPropertiesLoaded) {
+			$indexingProperties = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'property_key, property_value',
+				'tx_solr_indexqueue_indexing_property',
+				'item_id = ' . intval($this->indexQueueUid)
+			);
+
+			foreach ($indexingProperties as $key => $value) {
+				$this->setIndexingProperty($key, $value);
+			}
+
+			$this->indexingPropertiesLoaded = TRUE;
 		}
 	}
 
@@ -186,6 +222,69 @@ class tx_solr_indexqueue_Item {
 
 	public function getRecordPageId() {
 		return $this->record['pid'];
+	}
+
+	/**
+	 * Sets an indexing property for the item.
+	 *
+	 * @param string $key Indexing property name
+	 * @param string|int|float $value Indexing property value
+	 * @throws InvalidArgumentException when $value is not string, integer or float
+	 */
+	public function setIndexingProperty($key, $value) {
+		$key = (string) $key; // Scalar typehints now!
+
+		if (!is_string($value) && !is_int($value) && !is_float($value)) {
+			throw new InvalidArgumentException(
+				'Cannot add indexing property "' . $key
+					. '", its value must be string, integer or float, '
+					. 'type given was "' . gettype($value) . '"',
+				1323173209
+			);
+		}
+
+		$this->indexingProperties[$key] = $value;
+	}
+
+	/**
+	 * Gets a specific indexing property by its name/key.
+	 *
+	 * @param string $key Indexing property name/key.
+	 * @throws InvalidArgumentException when the given $key does not exist.
+	 */
+	public function getIndexingProperty($key) {
+		$this->loadIndexingProperties();
+
+		if (!array_key_exists($key, $this->indexingProperties)) {
+			throw new InvalidArgumentException(
+				'No indexing property "' . $key . '".',
+				1323174143
+			);
+		}
+
+		return $this->indexingProperties[$key];
+	}
+
+	/**
+	 * Gets all indexing properties set for this item.
+	 *
+	 * @return array Array of indexing properties.
+	 */
+	public function getIndexingProperties() {
+		$this->loadIndexingProperties();
+
+		return $this->indexingProperties;
+	}
+
+	/**
+	 * Gets the names/keys of the item's indexing properties.
+	 *
+	 * @return array Array of indexing property names/keys
+	 */
+	public function getIndexingPropertyKeys() {
+		$this->loadIndexingProperties();
+
+		return array_keys($this->indexingProperties);
 	}
 }
 
