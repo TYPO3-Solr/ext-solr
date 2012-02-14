@@ -9,7 +9,43 @@
 	float: right;
 }
 
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
+#tx-solr-faceting .secondaryContentSection {
+	padding: 0px 0px 10px 0px;
+}
+
+#tx-solr-faceting .csc-header {
+	padding-left: 10px;
+}
+
+#tx-solr-faceting .facets .csc-header {
+	padding: 3px 0px 3px 10px;
+}
+
+#tx-solr-faceting .facets .facet-option-list {
+	padding: 5px 0px 10px 0px;
+}
+
+#tx-solr-faceting .facets .facet-type-numericRange .facet-option-list {
+	width: 85%;
+}
+
+#tx-solr-faceting .facets .facet-label {
+/* 	border-top: 1px solid #cfcecf; */
+/* 	border-bottom: 1px solid #cfcecf; */
+
+	background-color: #cfcecf;
+	color: #fff;
+	font-weight: bold;
+}
+
+#tx-solr-faceting .facets li {
+	list-style-type: none;
+	margin-left: 0px;
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
 .tx-solr-relevance-bar {
 	width: 100px;
@@ -35,8 +71,10 @@
 	background-color: #ccc;
 }
 
-
-
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 .results-highlight {
 	background: #fdee53;
 }
+
+
