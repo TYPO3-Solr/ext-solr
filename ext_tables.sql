@@ -26,6 +26,7 @@ CREATE TABLE tx_solr_indexqueue_item (
 CREATE TABLE tx_solr_indexqueue_indexing_property (
 	uid int(11) NOT NULL auto_increment,
 
+	root int(11) DEFAULT '0' NOT NULL,
 	item_id int(11) DEFAULT '0' NOT NULL,
 
 	property_key varchar(255) DEFAULT '' NOT NULL,
