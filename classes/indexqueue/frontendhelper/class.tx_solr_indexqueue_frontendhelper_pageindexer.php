@@ -268,8 +268,8 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
 
-			$this->responseData['pageIndexed']          = (int) $indexer->indexPage();
-			$this->responseData['originalPageDocument'] = $indexer->getPageSolrDocument();
+			$this->responseData['pageIndexed']          = (int)   $indexer->indexPage();
+			$this->responseData['originalPageDocument'] = (array) $indexer->getPageSolrDocument();
 
 			$documentsSentToSolr = $indexer->getDocumentsSentToSolr();
 			foreach ($documentsSentToSolr as $document) {
