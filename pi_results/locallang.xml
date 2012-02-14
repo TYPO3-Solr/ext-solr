@@ -245,5 +245,31 @@
 			<label index="relevance">Relevans</label>
 			<label index="results_per_page">Resultater per side:</label>
 		</languageKey>
+		<languageKey index="pl" type="array">
+			<label index="searchUnavailable">Wyszukiwarka nie jest w tej chwili dostÄpna.</label>
+			<label index="searchFailed">Przykro nam bardzo, ale Twoje wyszukiwanie nie moÅŒe zostaÄ zrealizowane.</label>
+			<label index="searchWord">Wyszukiwana treÅÄ</label>
+			<label index="didYouMean">Czy masz na myÅli</label>
+			<label index="submit">Szukaj</label>
+			<label index="sorting_sortBy">Sortuj wg.</label>
+			<label index="sorting_relevance">ZgodnoÅÄ</label>
+			<label index="sorting_title">TytuÅ</label>
+			<label index="sorting_type">Typ</label>
+			<label index="sorting_author">Autor</label>
+			<label index="sorting_created">Data</label>
+			<label index="faceting_narrowSearch">ZawÄÅº wyniki</label>
+			<label index="faceting_resultsNarrowedBy">ZawÄÅŒone przez</label>
+			<label index="faceting_showMore">PokaÅŒ wiÄcej</label>
+			<label index="faceting_showFewer">PokaÅŒ mniej</label>
+			<label index="faceting_removeAllFilters">UsuÅ wszystkie filtry</label>
+			<label index="results_range">PokazujÄ wyniki od @resultsFrom do @resultsTo z @resultsTotal.</label>
+			<label index="results_found">RezultatÃ³w: @resultsTotal, czas wyszukiwania @resultsTime milisekund.</label>
+			<label index="results_searched_for">SzukaliÅmy "@searchWord".</label>
+			<label index="no_results_nothing_found">Nie znaleziono "@searchWord".</label>
+			<label index="relevance">Waga</label>
+			<label index="results_per_page">WynikÃ³w na stronÄ:</label>
+			<label index="error_errors">Przykro nam, natknÄliÅmy siÄ na bÅÄdy:</label>
+			<label index="error_emptyQuery">Wpisz sÅowa kluczowe w polu powyÅŒej.</label>
+		</languageKey>
 	</data>
 </T3locallang>

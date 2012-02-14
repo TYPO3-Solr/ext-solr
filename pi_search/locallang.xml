@@ -17,5 +17,8 @@
 		<languageKey index="fr" type="array">
 			<label index="submit">Rechercher</label>
 		</languageKey>
+		<languageKey index="pl" type="array">
+			<label index="submit">Szukaj</label>
+		</languageKey>
 	</data>
 </T3locallang>
