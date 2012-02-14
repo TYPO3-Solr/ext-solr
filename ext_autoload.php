@@ -75,6 +75,10 @@ return array(
 	'tx_solr_indexqueue_frontendhelper_pagefieldmappingindexer' => $extensionPath . 'classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_pagefieldmappingindexer.php',
 	'tx_solr_indexqueue_frontendhelper_pageindexer' => $extensionPath . 'classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_pageindexer.php',
 
+	'tx_solr_indexqueue_initializer_abstract' => $extensionPath . 'classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_abstract.php',
+	'tx_solr_indexqueue_initializer_page' => $extensionPath . 'classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_page.php',
+	'tx_solr_indexqueue_initializer_record' => $extensionPath . 'classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_record.php',
+
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_commandpluginbase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 
@@ -157,6 +161,7 @@ return array(
 	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
 	'tx_solr_filedetector' => $extensionPath . 'interfaces/interface.tx_solr_filedetector.php',
 	'tx_solr_formmodifier' => $extensionPath . 'interfaces/interface.tx_solr_formmodifier.php',
+	'tx_solr_indexqueueinitializer' => $extensionPath . 'interfaces/interface.tx_solr_indexqueueinitializer.php',
 	'tx_solr_indexqueuepageindexerdataurlmodifier' => $extensionPath . 'interfaces/interface.tx_solr_indexqueuepageindexerdataurlmodifier.php',
 	'tx_solr_indexqueuepageindexerdocumentsmodifier' => $extensionPath . 'interfaces/interface.tx_solr_indexqueuepageindexerdocumentsmodifier.php',
 	'tx_solr_indexqueuepageindexerfrontendhelper' => $extensionPath . 'interfaces/interface.tx_solr_indexqueuepageindexerfrontendhelper.php',

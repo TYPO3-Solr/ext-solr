@@ -47,6 +47,8 @@ plugin.tx_solr {
 
 			pages = 1
 			pages {
+				initialization = tx_solr_indexqueue_initializer_Page
+
 				indexer = tx_solr_indexqueue_PageIndexer
 				indexer {
 					// add options for the indexer here
@@ -331,6 +333,7 @@ plugin.tx_solr {
 		exceptions = 1
 
 		indexing {
+			indexQueueInitialization = 0
 			missingTypo3SearchMarkers = 1
 			pageIndexed = 0
 		}

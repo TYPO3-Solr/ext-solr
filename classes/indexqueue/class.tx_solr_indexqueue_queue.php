@@ -85,96 +85,82 @@ class tx_solr_indexqueue_Queue {
 	/**
 	 * Truncate and rebuild the tx_solr_indexqueue_item table. This is the most
 	 * complete way to force reindexing, or to build the indexing table for
-	 * the first time.
+	 * the first time. The Index Queue initialization is site-specific.
 	 *
-	 * @todo	Needs refactoring
-	 *
-	 * @return	void
+	 * @param tx_solr_Site $site The site to initialize
+	 * @return array An array of booleans, each representing whether the initialization for an indexing configuration was successful
 	 */
 	public function initialize(tx_solr_Site $site) {
+		$initializationStatus = array();
+
 			// clear queue
 		$this->deleteItemsBySite($site);
 
-		$rootPageId = $site->getRootPageId();
-
-			// get configuration for this branch
-		$solrConfiguration = $site->getSolrConfiguration();
-			// which tables to index?
+		$solrConfiguration      = $site->getSolrConfiguration();
 		$indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
 
-			// get pages in this branch
-		$pagesInTree = $this->getListOfPagesFromRoot($rootPageId);
-		array_unshift($pagesInTree, $rootPageId);
-
 		foreach ($indexingConfigurations as $indexingConfigurationName) {
-			$tableToIndex = $indexingConfigurationName;
-			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-					// table has been set explicitly. Allows to index the same table with different configurations
-				$tableToIndex = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
-			}
+			$tableToIndex     = $this->resolveTableToIndex($solrConfiguration, $indexingConfigurationName);
+			$initializerClass = $this->resolveInitializerClass($solrConfiguration, $indexingConfigurationName);
 
-			$lastChangedFieldName = $GLOBALS['TCA'][$tableToIndex]['ctrl']['tstamp'];
-			$deletedFieldName     = $GLOBALS['TCA'][$tableToIndex]['ctrl']['delete'];
-			$disabledFieldName    = $GLOBALS['TCA'][$tableToIndex]['ctrl']['enablecolumns']['disabled'];
-			$startTimeFieldName   = $GLOBALS['TCA'][$tableToIndex]['ctrl']['enablecolumns']['starttime'];
-			$endTimeFieldName     = $GLOBALS['TCA'][$tableToIndex]['ctrl']['enablecolumns']['endtime'];
+			$initializer = t3lib_div::makeInstance($initializerClass);
+			$initializer->setSite($site);
+			$initializer->setType($tableToIndex);
+			$initializer->setIndexingConfigurationName($indexingConfigurationName);
+			$initializer->setIndexingConfiguration($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']);
 
-				// FIXME exclude pid = -1 for versionized records
-
-			$additionalWhereClause = '';
-			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'])) {
-					// FIXME needs additional sanitization?
-				$additionalWhereClause = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'];
-			}
-
-			if (t3lib_BEfunc::isTableLocalizable($tableToIndex)) {
-				if (!empty($additionalWhereClause)) {
-					$additionalWhereClause .= ' AND ';
-				}
-
-				$additionalWhereClause .= '(' . $GLOBALS['TCA'][$tableToIndex]['ctrl']['languageField'] . ' = 0'
-										. ' OR ' . $GLOBALS['TCA'][$tableToIndex]['ctrl']['languageField'] . ' = -1)'; // all
-			}
-
-			$additionalPageIds = array();
-			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalPageIds'])) {
-				$additionalPageIds = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalPageIds'];
-				$additionalPageIds = t3lib_div::intExplode(',', $additionalPageIds);
-				$pagesInTree = array_merge($pagesInTree, $additionalPageIds);
-			}
-			sort($pagesInTree, SORT_NUMERIC);
-
-				// FIXME must exclude unpublished / versioned items (pid = -1)
-				// FIXME must include the root page itself for pages: OR uid = $rootPageId
-			$query = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, changed)
-				SELECT \'' . $rootPageId . '\' as root, \'' . $tableToIndex . '\' AS item_type, uid, \'' . $indexingConfigurationName . '\' as indexing_configuration, ' . $lastChangedFieldName . '
-				FROM ' . $tableToIndex . '
-				WHERE pid IN (' . implode(',', $pagesInTree) . ')
-					' . ($deletedFieldName ? 'AND ' . $deletedFieldName . ' = 0' : '') . '
-					' . ($disabledFieldName ? 'AND ' . $disabledFieldName . ' = 0' : '') . '
-					' . ($startTimeFieldName ? 'AND ' . $startTimeFieldName . ' < ' . time() : '') . '
-					' . ($endTimeFieldName ? 'AND (' . $endTimeFieldName . ' > ' . time() . ' OR ' . $endTimeFieldName . ' = 0)' : '') . '
-					' . ($additionalWhereClause ? 'AND ' . $additionalWhereClause : '') . '
-			';
-
-			$GLOBALS['TYPO3_DB']->sql_query($query);
-
-			$logSeverity = -1;
-			$logData     = array(
-				'query' => $query,
-				'rows'  => $GLOBALS['TYPO3_DB']->sql_affected_rows()
-			);
-			if ($GLOBALS['TYPO3_DB']->sql_errno()) {
-				$logSeverity      = 3;
-				$logData['error'] = $GLOBALS['TYPO3_DB']->sql_errno() . ': ' . $GLOBALS['TYPO3_DB']->sql_error();
-			}
-			t3lib_div::devLog('Index Queue initialized for indexing configuration ' . $indexingConfigurationName, 'solr', $logSeverity, $logData);
-
-
-				// TODO return success / failed depending on sql error, affected rows
-
+			$initializationStatus[$indexingConfigurationName] = $initializer->initialize();
 		}
 
+		return $initializationStatus;
+	}
+
+	/**
+	 * Gets the the name of the table to index.
+	 *
+	 * Usually the indexing configuration's name implicitly reflects the name of
+	 * the tbale to index. However, this way it would not be possible to index
+	 * the same table with different indexing configurations. Therefore it is
+	 * possible to explicitly define the actual table name using the indexing
+	 * configuration's "table" property.
+	 *
+	 * @param array $solrConfiguration Solr TypoScript configuration
+	 * @param string $indexingConfigurationName Indexing configuration name
+	 * @return string Name of the table to index
+	 */
+	protected function resolveTableToIndex($solrConfiguration, $indexingConfigurationName) {
+		$tableToIndex = $indexingConfigurationName;
+
+		if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
+			// table has been set explicitly. Allows to index the same table with different configurations
+			$tableToIndex = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
+		}
+
+		return $tableToIndex;
+	}
+
+	/**
+	 * Gets the class name of the initializer class.
+	 *
+	 * For most cases the default initializer
+	 * "tx_solr_indexqueue_initializer_Record" will be enough. For special cases
+	 * like pages we need to do some more work though. In the case of pages we
+	 * also need to take care of resolving mount pages and their mounted sub
+	 * trees for example. For these cases it is possible to define a initializer
+	 * class using the indexing configuration's "initialization" property.
+	 *
+	 * @param array $solrConfiguration Solr TypoScript configuration
+	 * @param string $indexingConfigurationName Indexing configuration name
+	 * @return string Name of the initializer class
+	 */
+	protected function resolveInitializerClass($solrConfiguration, $indexingConfigurationName) {
+		$initializerClass = 'tx_solr_indexqueue_initializer_Record';
+
+		if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['initialization'])) {
+			$initializerClass = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['initialization'];
+		}
+
+		return $initializerClass;
 	}
 
 	/**
