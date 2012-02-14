@@ -200,6 +200,8 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		$response = parent::search($query, $offset, $limit, $params);
 		$this->hasSearched = TRUE;
 
+		$this->responseCache = $response;
+
 		if ($response->getHttpStatus() != 200) {
 			throw new RuntimeException(
 				'Invalid query. Solr returned an error: '
@@ -208,8 +210,6 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 				1293109870
 			);
 		}
-
-		$this->responseCache = $response;
 
 		return $response;
 	}

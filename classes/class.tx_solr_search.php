@@ -92,9 +92,6 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return	Apache_Solr_Response	Solr response
 	 */
 	public function search(tx_solr_Query $query, $offset = 0, $limit = 10) {
-
-			// FIXME fix searches like "*:*", "-", "+"
-
 		$this->query = $query;
 
 		try {
@@ -105,9 +102,6 @@ class tx_solr_Search implements t3lib_Singleton {
 				$query->getQueryParameters()
 			);
 
-			$this->response    = $response;
-			$this->hasSearched = TRUE;
-
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['queryString']) {
 				t3lib_div::devLog('Querying Solr, getting result', 'solr', 0, array(
 					'query string'     => $query->getQueryString(),
@@ -115,8 +109,8 @@ class tx_solr_Search implements t3lib_Singleton {
 					'response'         => json_decode($response->getRawResponse(), TRUE)
 				));
 			}
-		} catch (Exception $e) {
-			$response = t3lib_div::makeInstance('Apache_Solr_Response');
+		} catch (RuntimeException $e) {
+			$response = $this->solr->getResponse();
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				t3lib_div::devLog('Exception while querying Solr', 'solr', 3, array(
@@ -127,6 +121,9 @@ class tx_solr_Search implements t3lib_Singleton {
 				));
 			}
 		}
+
+		$this->response    = $response;
+		$this->hasSearched = TRUE;
 
 		return $this->response;
 	}
