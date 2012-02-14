@@ -293,6 +293,10 @@
 .ui-autocomplete { position: absolute; cursor: default; text-align: left; }
 .ui-autocomplete-loading { background: white url(../../images/jquery-ui/ui-anim_basic_16x16.gif) right center no-repeat; }
 
+.ui-autocomplete li {
+	list-style: none !important;
+}
+
 /* workarounds */
 * html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */
 

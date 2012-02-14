@@ -70,6 +70,7 @@
 	* Moved results.css from resources/templates/pi_results/ to resources/css/pi_results/
 	* Renamed resources/css/jquery-ui/ to resources/css/eid_suggest/
 	* Moved plugin.tx_solr.suggest.stylesheet to plugin.tx_solr.cssFiles.suggest
+	* Fixed styling of suggestions list, forcing list-style: none
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
