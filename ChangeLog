@@ -15,6 +15,7 @@
 	* Added support for persisting indexing properties of Index Queue items
 	* Added Index Queue support for resolving Mount Pages and adding them to the queue
 	* Added lazy loading for Index Queue item record data
+	* Added granular settings for logging Index Queue indexing
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

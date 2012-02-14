@@ -336,6 +336,11 @@ plugin.tx_solr {
 			indexQueueInitialization = 0
 			missingTypo3SearchMarkers = 1
 			pageIndexed = 0
+
+			queue {
+				pages = 0
+				tt_news = 0
+			}
 		}
 
 		query {

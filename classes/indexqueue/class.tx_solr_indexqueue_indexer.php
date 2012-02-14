@@ -494,12 +494,12 @@ class tx_solr_indexqueue_Indexer {
 	 * @return	void
 	 */
 	protected function setLogging(tx_solr_indexqueue_Item $item) {
-		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid());
-
 			// reset
 		$this->loggingEnabled = FALSE;
 
-		if ($solrConfiguration['logging.']['indexing']) {
+		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid());
+
+		if (!empty($solrConfiguration['logging.']['indexing.']['queue.'][$item->getIndexingConfigurationName()])) {
 			$this->loggingEnabled = TRUE;
 		}
 	}
