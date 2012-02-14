@@ -60,7 +60,14 @@ t3lib_extMgm::registerExtDirectComponent(
 	'user,group'
 );
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// page module plugin settings summary
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] =
+	'EXT:solr/classes/pluginbase/class.tx_solr_pluginbase_backendsummary.php:tx_solr_pluginbase_BackendSummary->getSummary';
+
+
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// register plugin commands
 

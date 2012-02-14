@@ -80,6 +80,7 @@ return array(
 	'tx_solr_indexqueue_initializer_page' => $extensionPath . 'classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_page.php',
 	'tx_solr_indexqueue_initializer_record' => $extensionPath . 'classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_record.php',
 
+	'tx_solr_pluginbase_backendsummary' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_backendsummary.php',
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_commandpluginbase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 
