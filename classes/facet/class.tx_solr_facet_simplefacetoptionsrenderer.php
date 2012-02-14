@@ -3,6 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
+*  (c) 2012 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,8 +27,9 @@
  * Default facet renderer.
  *
  * @author	Markus Goldbach <markus.goldbach@dkd.de>
+ * @author Ingo Renner <ingo@typo3.org>
  */
-class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
+class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRenderer {
 
 	/**
 	 * The facet's name as configured in TypoScript.
@@ -108,7 +110,7 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 	 * @see	tx_solr_FacetRenderer::render()
 	 * @return	string	Rendered HTML representing the facet.
 	 */
-	public function render() {
+	public function renderFacetOptions() {
 		$facetOptionLinks  = array();
 		$solrConfiguration = tx_solr_Util::getSolrConfiguration();
 		$this->template->workOnSubpart('single_facet_option');
@@ -431,8 +433,8 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_simplefacetrenderer.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_simplefacetrenderer.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_simplefacetoptionsrenderer.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_simplefacetoptionsrenderer.php']);
 }
 
 ?>

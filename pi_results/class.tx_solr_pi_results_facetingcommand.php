@@ -95,19 +95,21 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 
-		foreach ($configuredFacets as $facetName => $facetConfiguration) {
+		$facetRendererFactory = t3lib_div::makeInstance(
+			'tx_solr_facet_FacetRendererFactory',
+			$configuredFacets
+		);
 
-				// don't render facets that should not be included in available facets
+		foreach ($configuredFacets as $facetName => $facetConfiguration) {
 			if (isset($facetConfiguration['includeInAvailableFacets']) && $facetConfiguration['includeInAvailableFacets'] == '0') {
+					// don't render facets that should not be included in available facets
 				continue;
 			}
 
-			$facetName     = substr($facetName, 0, -1);
-			$facetRenderer = t3lib_div::makeInstance(
-				'tx_solr_facet_FacetRenderer',
-				$facetName,
-				$template
-			);
+			$facetName = substr($facetName, 0, -1);
+
+			$facetRenderer = $facetRendererFactory->getFacetRendererByFacetName($facetName);
+			$facetRenderer->setTemplate($template);
 			$facetRenderer->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
 			$facetContent .= $facetRenderer->renderFacet();

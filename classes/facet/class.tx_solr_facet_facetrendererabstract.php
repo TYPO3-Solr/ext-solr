@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011 Ingo Renner <ingo@typo3.org>
+*  (c) 2011-2012 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,11 +25,11 @@
 /**
  * Facet renderer.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
-class tx_solr_facet_FacetRenderer {
+abstract class tx_solr_facet_FacetRendererAbstract implements tx_solr_FacetRenderer {
 
 	/**
 	 * @var tx_solr_Search
@@ -52,9 +52,11 @@ class tx_solr_facet_FacetRenderer {
 	protected $solrConfiguration;
 
 	/**
-	 * @var	tx_solr_Template
+	 * Template
+	 *
+	 * @var tx_solr_Template
 	 */
-	protected $template;
+	protected $template = NULL;
 
 	/**
 	 * Link target page id.
@@ -64,16 +66,22 @@ class tx_solr_facet_FacetRenderer {
 	protected $linkTargetPageId = 0;
 
 	/**
-	 * Constructor for class tx_solr_facet_FacetRenderer
+	 * Default facet options renderer
 	 *
-	 * @param	string	$facetName The name of the facet to render.
-	 * @param	tx_solr_Template	$template The template to use to render the facet.
+	 * @var string
 	 */
-	public function __construct($facetName, tx_solr_Template $template) {
+	private $defaultFacetOptionsRendererClass = 'tx_solr_facet_SimpleFacetOptionsRenderer';
+
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $facetName The name of the facet to render.
+	 */
+	public function __construct($facetName) {
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
 		$this->facetName          = $facetName;
-		$this->template           = $template;
 
 		$this->solrConfiguration  = tx_solr_Util::getSolrConfiguration();
 		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$facetName . '.'];
@@ -86,7 +94,9 @@ class tx_solr_facet_FacetRenderer {
 	 * @return	string	Facet markup.
 	 */
 	public function renderFacet() {
-		$facetContent    = '';
+			// TODO must check whether $this->template is set
+
+		$facetContent = '';
 
 		$showEmptyFacets = FALSE;
 		if (!empty($this->solrConfiguration['search.']['faceting.']['showEmptyFacets'])) {
@@ -121,45 +131,44 @@ class tx_solr_facet_FacetRenderer {
 	 *
 	 * @return	string	The rendered facet options.
 	 */
-	public function renderFacetOptions() {
+	protected function renderFacetOptions() {
 		$facetContent = '';
 		$facetField   = $this->facetConfiguration['field'];
-		$facetOptions = $this->search->getFacetFieldOptions($facetField);
+		$facetOptions = $this->getFacetOptions();
 
 		if (!empty($facetOptions) || !empty($this->facetConfiguration['showEvenWhenEmpty'])) {
-				// default facet renderer
-			$facetRendererClass = 'tx_solr_facet_SimpleFacetRenderer';
+				// TODO remove renderer option, renderer is now determined by type
+			$facetOptionsRendererClass = $this->defaultFacetOptionsRendererClass;
 			if (!empty($this->facetConfiguration['renderer'])) {
-				$facetRendererClass = $this->facetConfiguration['renderer'];
+				$facetOptionsRendererClass = $this->facetConfiguration['renderer'];
 			}
 
-			$facetRenderer = t3lib_div::makeInstance(
-				$facetRendererClass,
+			$facetOptionsRenderer = t3lib_div::makeInstance(
+				$facetOptionsRendererClass,
 				$this->facetName,
 				$facetOptions,
 				$this->facetConfiguration,
 				$this->template,
 				$this->search->getQuery()
 			);
-			$facetRenderer->setLinkTargetPageId($this->linkTargetPageId);
+			$facetOptionsRenderer->setLinkTargetPageId($this->linkTargetPageId);
 
-			if (!($facetRenderer instanceof tx_solr_FacetRenderer)) {
+			if (!($facetOptionsRenderer instanceof tx_solr_FacetOptionsRenderer)) {
 				throw new UnexpectedValueException(
-					get_class($facetRenderer) . ' must implement interface tx_solr_FacetRenderer',
+					get_class($facetOptionsRenderer) . ' must implement interface tx_solr_FacetOptionsRenderer',
 					1310387079
 				);
 			}
 
-			$facetContent = $facetRenderer->render();
+			$facetContent = $facetOptionsRenderer->renderFacetOptions();
 		}
 
 		return $facetContent;
 	}
 
 	/**
-	 * Gets the facet object markers for use in templates.
-	 *
-	 * @return	array	An array with facet object markers.
+	 * (non-PHPdoc)
+	 * @see tx_solr_FacetRenderer::getFacet()
 	 */
 	public function getFacet() {
 		$facet = $this->facetConfiguration;
@@ -178,9 +187,19 @@ class tx_solr_facet_FacetRenderer {
 	}
 
 	/**
-	 * Gets the number of options for a facet.
-	 *
-	 * @return	integer	number of facet options for the current facet.
+	 * (non-PHPdoc)
+	 * @see tx_solr_FacetRenderer::getFacetOptions()
+	 */
+	public function getFacetOptions() {
+		$facetField   = $this->facetConfiguration['field'];
+		$facetOptions = $this->search->getFacetFieldOptions($facetField);
+
+		return $facetOptions;
+	}
+
+	/**
+	 * (non-PHPdoc)
+	 * @see tx_solr_FacetRenderer::getFacetOptionsCount()
 	 */
 	public function getFacetOptionsCount() {
 		$facetCounts = $this->search->getFacetCounts();
@@ -239,19 +258,17 @@ class tx_solr_facet_FacetRenderer {
 		return $isActive;
 	}
 
-	/**	 * Gets the link target page id.
-	 *
-	 * @return	integer	link target page id.
+	/**
+	 * (non-PHPdoc)
+	 * @see tx_solr_FacetRenderer::setTemplate()
 	 */
-	public function getLinkTargetPageId(){
-		return $this->linkTargetPageId;
+	public function setTemplate(tx_solr_Template $template) {
+		$this->template = $template;
 	}
 
 	/**
-	 * Sets the link target page id.
-	 *
-	 * @param	integer	$linkTargetPageId link target page id.
-	 * @return	void
+	 * (non-PHPdoc)
+	 * @see tx_solr_FacetRenderer::setLinkTargetPageId()
 	 */
 	public function setLinkTargetPageId($linkTargetPageId){
 		$this->linkTargetPageId = intval($linkTargetPageId);
@@ -263,7 +280,7 @@ class tx_solr_facet_FacetRenderer {
 	 *
 	 * @return string  Url to remove a facet
 	 */
-	public function buildResetFacetUrl() {
+	protected function buildResetFacetUrl() {
 		$resetFacetUrl    = '';
 		$resultParameters = t3lib_div::_GPmerged('tx_solr');
 

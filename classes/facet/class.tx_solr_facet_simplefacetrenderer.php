@@ -22,56 +22,19 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
 /**
- * Facet Renderer Interface
+ * The simple / default facet renderer.
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
-interface tx_solr_FacetRenderer {
+class tx_solr_facet_SimpleFacetRenderer extends tx_solr_facet_FacetRendererAbstract {
 
-	/**
-	 * Sets the template to use to render the facet.
-	 *
-	 * @param tx_solr_Template $template Template
-	 */
-	public function setTemplate(tx_solr_Template $template);
+}
 
-	/**
-	 * Sets the target page ID for all links generated
-	 *
-	 * @param integer $linkTargetPageId Target page ID for links
-	 */
-	public function setLinkTargetPageId($linkTargetPageId);
-
-	/**
-	 * Renders the complete facet.
-	 *
-	 * @return string The rendered facet
-	 */
-	public function renderFacet();
-
-	/**
-	 * Gets the facet object markers for use in templates.
-	 *
-	 * @return array An array with facet object markers.
-	 */
-	public function getFacet();
-
-	/**
-	 * Gets the facet's options
-	 *
-	 * @return array An array with facet options.
-	 */
-	public function getFacetOptions();
-
-	/**
-	 * Gets the number of options for a facet.
-	 *
-	 * @return integer Number of facet options for the current facet.
-	 */
-	public function getFacetOptionsCount();
-
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_simplefacetrenderer.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_simplefacetrenderer.php']);
 }
 
 ?>

@@ -3,6 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
+*  (c) 2012 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,9 +26,10 @@
 /**
  * Renderer for Used Facets.
  *
- * @author	Markus Goldbach  <markus.goldbach@dkd.de>
+ * @author Markus Goldbach  <markus.goldbach@dkd.de>
+ * @author Ingo Renner <ingo@typo3.org>
  */
-class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetRenderer {
+class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRenderer {
 
 	/**
 	 * The name of the facet the filter is applied to.

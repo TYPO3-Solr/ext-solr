@@ -52,8 +52,11 @@ return array(
 	'tx_solr_contentobject_multivalue' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_multivalue.php',
 	'tx_solr_contentobject_relation' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_relation.php',
 
-	'tx_solr_facet_facetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrenderer.php',
+	'tx_solr_facet_facetrendererabstract' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererabstract.php',
+	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererfactory.php',
+	'tx_solr_facet_numericrangefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_numericrangefacetrenderer.php',
 	'tx_solr_facet_simplefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetrenderer.php',
+	'tx_solr_facet_simplefacetoptionsrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetoptionsrenderer.php',
 	'tx_solr_facet_usedfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_usedfacetrenderer.php',
 
 	'tx_solr_fieldprocessor_service' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php',
@@ -163,6 +166,7 @@ return array(
 	'tx_solr_additionalindexqueueitemindexer' => $extensionPath . 'interfaces/interface.tx_solr_additionalindexqueueitemindexer.php',
 	'tx_solr_additionalpageindexer' => $extensionPath . 'interfaces/interface.tx_solr_additionalpageindexer.php',
 	'tx_solr_commandpluginaware' => $extensionPath . 'interfaces/interface.tx_solr_commandpluginaware.php',
+	'tx_solr_facetoptionsrenderer' => $extensionPath . 'interfaces/interface.tx_solr_facetoptionsrenderer.php',
 	'tx_solr_facetrenderer' => $extensionPath . 'interfaces/interface.tx_solr_facetrenderer.php',
 	'tx_solr_facetsmodifier' =>  $extensionPath . 'interfaces/interface.tx_solr_facetsmodifier.php',
 	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
