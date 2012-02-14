@@ -58,6 +58,7 @@
 	* Changed wording of the confirmation alert when emptying an index
 	* Fixed an issue in the Index Queue related to records created on system root (pid = 0)
 	* Fixed an issues in Record Monitor and Garbage Collection which did not fully cover moving pages
+	* Added getters and setters for relevant data of tx_solr_NoSolrConnectionFoundException
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

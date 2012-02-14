@@ -113,11 +113,14 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 		try {
 			$connection = $this->getConnectionByRootPageId($siteRootPageId, $language);
 		} catch (tx_solr_NoSolrConnectionFoundException $nscfe) {
-			throw t3lib_div::makeInstance(
+			$noSolrConnectionException = t3lib_div::makeInstance(
 				'tx_solr_NoSolrConnectionFoundException',
 				$nscfe->getMessage() . ' Initial page used was [' . $pageId . ']',
 				1275399922
 			);
+			$noSolrConnectionException->setPageId($pageId);
+
+			throw $noSolrConnectionException;
 		}
 
 		return $connection;
@@ -147,12 +150,16 @@ class tx_solr_ConnectionManager implements t3lib_Singleton {
 				$solrServers[$connectionKey]['solrUseCurl']
 			);
 		} else {
-			throw t3lib_div::makeInstance(
+			$noSolrConnectionException = t3lib_div::makeInstance(
 				'tx_solr_NoSolrConnectionFoundException',
 				'Could not find a Solr connection for root page ['
 					. $pageId . '] and language [' . $language . '].',
 				1275396474
 			);
+			$noSolrConnectionException->setRootPageId($pageId);
+			$noSolrConnectionException->setLanguageId($language);
+
+			throw $noSolrConnectionException;
 		}
 
 		return $solrConnection;

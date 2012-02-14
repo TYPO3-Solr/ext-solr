@@ -32,6 +32,37 @@
  */
 class tx_solr_NoSolrConnectionFoundException extends Exception {
 
+	protected $pageId;
+
+	protected $languageId;
+
+	protected $rootPageId;
+
+
+	public function setPageId($pageId) {
+		$this->pageId = intval($pageId);
+	}
+
+	public function getPageId() {
+		return $this->pageId;
+	}
+
+	public function setLanguageId($languageId) {
+		$this->languageId = intval($languageId);
+	}
+
+	public function getLanguageId() {
+		return $this->languageId;
+	}
+
+	public function setRootPageId($rootPageId) {
+		$this->rootPageId = intval($rootPageId);
+	}
+
+	public function getRootPageId() {
+		return $this->rootPageId;
+	}
+
 }
 
 
