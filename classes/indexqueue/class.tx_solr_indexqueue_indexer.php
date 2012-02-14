@@ -92,7 +92,7 @@ class tx_solr_indexqueue_Indexer {
 	 * @return	Apache_Solr_Response	The Apache Solr response
 	 */
 	public function index(tx_solr_indexqueue_Item $item) {
-		$indexed   = FALSE;
+		$indexed = FALSE;
 
 		$solrConnections = $this->getSolrConnectionsByItem($item);
 		$this->setLogging($item);
@@ -360,7 +360,7 @@ class tx_solr_indexqueue_Indexer {
 	 * @param	Apache_Solr_Document	The Apache_Solr_Document document for the given item
 	 */
 	protected function processDocument(tx_solr_indexqueue_Item $item, Apache_Solr_Document $document) {
-		$documents  = array($document);
+		$documents = array($document);
 
 			// needs to respect the TS settings for the page the item is on, conditions may apply
 		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid());
@@ -502,7 +502,10 @@ class tx_solr_indexqueue_Indexer {
 
 		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid());
 
-		if (!empty($solrConfiguration['logging.']['indexing.']['queue.'][$item->getIndexingConfigurationName()])) {
+		if (!empty($solrConfiguration['logging.']['indexing'])
+			|| !empty($solrConfiguration['logging.']['indexing.']['queue'])
+			|| !empty($solrConfiguration['logging.']['indexing.']['queue.'][$item->getIndexingConfigurationName()])
+		) {
 			$this->loggingEnabled = TRUE;
 		}
 	}
@@ -516,39 +519,38 @@ class tx_solr_indexqueue_Indexer {
 	 * @param	Apache_Solr_Response	The Solr response for the particular index document
 	 */
 	protected function log(tx_solr_indexqueue_Item $item, array $itemDocuments, Apache_Solr_Response $response) {
-		$itemRecord        = $item->getRecord();
-		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($itemRecord['pid']);
-
-		if ($solrConfiguration['logging.']['indexing']) {
-			$message = 'Indexing ' . $item->getType() . ':'
-				. $item->getRecordUid() . ' using Index Queue: ';
-			$severity = 0; // info
-
-				// preparing data
-			$documents = array();
-			foreach ($itemDocuments as $document) {
-				$documents[] = (array) $document;
-			}
-
-			$logData = array(
-				'item'      => (array) $item,
-				'documents' => $documents,
-				'response'  => (array) $response
-			);
-
-			if ($response->getHttpStatus() == 200) {
-				$severity = -1;
-				$message .= 'Success';
-			} else if ($response->getHttpStatus() >= 500) {
-				$severity = 3;
-				$message .= 'Failure';
-
-				$logData['status']         = $response->getHttpStatus();
-				$logData['status message'] = $response->getHttpStatusMessage();
-			}
-
-			t3lib_div::devLog($message, 'solr', $severity, $logData);
+		if (!$this->loggingEnabled) {
+			return;
 		}
+
+		$message = 'Index Queue indexing ' . $item->getType() . ':'
+			. $item->getRecordUid() . ' - ';
+		$severity = 0; // info
+
+			// preparing data
+		$documents = array();
+		foreach ($itemDocuments as $document) {
+			$documents[] = (array) $document;
+		}
+
+		$logData = array(
+			'item'      => (array) $item,
+			'documents' => $documents,
+			'response'  => (array) $response
+		);
+
+		if ($response->getHttpStatus() == 200) {
+			$severity = -1;
+			$message .= 'Success';
+		} else {
+			$severity = 3;
+			$message .= 'Failure';
+
+			$logData['status']         = $response->getHttpStatus();
+			$logData['status message'] = $response->getHttpStatusMessage();
+		}
+
+		t3lib_div::devLog($message, 'solr', $severity, $logData);
 	}
 
 	/**
