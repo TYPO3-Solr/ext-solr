@@ -327,8 +327,8 @@ plugin.tx_solr {
 */
 			}
 
-				// available place holders: @facetValue, @facetName, @facetText
-			removeFacetLinkText = @facetText (remove)
+				// available place holders: @facetValue, @facetName, @facetLabel, @facetText
+			removeFacetLinkText = @facetLabel: @facetText (remove)
 
 			showAllLink.wrap = <li>|</li>
 		}

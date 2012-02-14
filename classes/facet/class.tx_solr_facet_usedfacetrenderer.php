@@ -70,11 +70,14 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 
 		$facetText = $facetOption->render($this->facetConfiguration);
 
+		$facetLabel = $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label'];
+
 		$removeFacetText = strtr(
 			$solrConfiguration['search.']['faceting.']['removeFacetLinkText'],
 			array(
 				'@facetValue' => $this->filterValue,
 				'@facetName'  => $this->facetName,
+				'@facetLabel' => $facetLabel,
 				'@facetText'  => $facetText
 			)
 		);
