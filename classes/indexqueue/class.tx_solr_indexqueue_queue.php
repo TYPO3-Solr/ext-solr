@@ -318,15 +318,14 @@ class tx_solr_indexqueue_Queue {
 		// must not add items to the index queue which are excluded through additionalWhereClause
 		// requires construction of additionalWhereClause through multiple options instead of just one
 
-		$rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$record = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
 			'pid',
 			$itemType,
 			'uid = ' . intval($itemUid) . t3lib_BEfunc::deleteClause($itemType)
 		);
 
-		if (count($rows)) {
-			$recordPageId = $rows[0]['pid'];
-			$rootPageId   = tx_solr_Util::getRootPageId($recordPageId);
+		if ($record && $record['pid'] != 0) {
+			$rootPageId = tx_solr_Util::getRootPageId($record['pid']);
 
 			$item = array(
 				'root'      => $rootPageId,
