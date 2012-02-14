@@ -154,6 +154,10 @@
 	margin-bottom: 5px;
 }
 
+.result-content {
+	clear: both;
+}
+
 .relevance {
 	height: 20px;
 }
