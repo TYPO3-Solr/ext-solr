@@ -319,6 +319,8 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 			foreach($solrServers as $solrServer) {
 				$solrServer->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
 				$solrServer->commit();
+
+					// TODO check the response, throw an exception on anything != 200
 			}
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to delete:</p>'
