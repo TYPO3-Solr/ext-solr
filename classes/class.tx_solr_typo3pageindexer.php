@@ -222,12 +222,12 @@ class tx_solr_Typo3PageIndexer {
 		$document->setField('contentHash', $cHash);
 
 			// system fields
-		$document->setField('uid',      $this->page->id);
-		$document->setField('pid',      $pageRecord['pid']);
-		$document->setField('typeNum',  $this->page->type);
-		$document->setField('created',  $pageRecord['crdate']);
-		$document->setField('changed',  $pageRecord['tstamp']);
-		$document->setField('language', $this->page->sys_language_uid);
+		$document->setField('uid',         $this->page->id);
+		$document->setField('pid',         $pageRecord['pid']);
+		$document->setField('typeNum',     $this->page->type);
+		$document->setField('created',     $pageRecord['crdate']);
+		$document->setField('changed',     $pageRecord['tstamp']);
+		$document->setField('language',    $this->page->sys_language_uid);
 
 			// access
 		$document->setField('access',      (string) $this->pageAccessRootline);
