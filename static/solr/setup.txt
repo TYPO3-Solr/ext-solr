@@ -174,6 +174,15 @@ plugin.tx_solr {
 			resultsPerPage = {$plugin.tx_solr.search.results.resultsPerPage}
 			resultsPerPageSwitchOptions = 10, 25, 50
 
+			pagebrowser {
+				_LOCAL_LANG.default {
+					text_first = First
+					text_prev = Previous
+					text_next = Next
+					text_last = Last
+				}
+			}
+
 			# fieldname => processing instruction, available instructions: timestamp, utf8Decode, skip (removes the field from the result)
 			fieldProcessingInstructions {
 				title = utf8Decode

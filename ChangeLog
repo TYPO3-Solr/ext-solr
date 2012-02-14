@@ -111,6 +111,7 @@
 	* Added styling for sorting and frequent searches to match the introducion package
 	* Added styling for the search form to match the introducion package
 	* Added plugin.tx_solr.search.results.pagebrowser to configure the page browser
+	* Added nicer styling for the page browser
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
