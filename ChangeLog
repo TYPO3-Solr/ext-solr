@@ -38,6 +38,7 @@
 	* Added interface tx_solr_CommandPluginAware
 	* Added tx_solr_Util::getTypoScriptValue()
 	* Changed the spellchecker configuration to build on commit instead of on optimize
+	* Disabled the configuration status report for now as it caused trouble with some installations
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
