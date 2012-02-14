@@ -13,7 +13,7 @@
 		<core name="core_da" instanceDir="typo3cores" schema="danish/schema.xml" dataDir="data/core_da" />
 		<core name="core_nl" instanceDir="typo3cores" schema="dutch/schema.xml" dataDir="data/core_nl" />
 		<core name="core_en" instanceDir="typo3cores" schema="english/schema.xml" dataDir="data/core_en" />
-		<core name="core_fi" instanceDir="typo3cores" schema="finish/schema.xml" dataDir="data/core_fi" />
+		<core name="core_fi" instanceDir="typo3cores" schema="finnish/schema.xml" dataDir="data/core_fi" />
 		<core name="core_fr" instanceDir="typo3cores" schema="french/schema.xml" dataDir="data/core_fr" />
 		<core name="core_gl" instanceDir="typo3cores" schema="galician/schema.xml" dataDir="data/core_gl" />
 		<core name="core_de" instanceDir="typo3cores" schema="german/schema.xml" dataDir="data/core_de" />
