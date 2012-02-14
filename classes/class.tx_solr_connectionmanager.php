@@ -252,10 +252,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 		}
 	}
 
-
 	/**
-	 * Updates the connections in the registry when configuration cache is
-	 * cleared.
+	 * Updates the connections in the registry.
 	 *
 	 */
 	public function updateConnections() {
