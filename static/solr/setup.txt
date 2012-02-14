@@ -127,9 +127,6 @@ plugin.tx_solr {
 	}
 
 	search {
-		# TODO: move filter into query{}
-		filter =
-
 		targetPage = 0
 
 		initializeWithEmptyQuery = 0
@@ -150,11 +147,10 @@ plugin.tx_solr {
 			# see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
 			boostQuery =
 
-			// TODO implement multiple filters
-#			filter {
-#				10 = x:y
-#				20 = a:b
-#			}
+			filter {
+#				myFilter = myFilterField_stringS:stringFilterValue
+#				otherFilter = otherFilterField_intS:intFilterValue
+			}
 		}
 
 		# TODO make it a top level configuration section

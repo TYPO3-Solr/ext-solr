@@ -84,14 +84,17 @@ class tx_solr_pi_search extends tx_solr_pluginbase_CommandPluginBase{
 	 * Initializes additional filters configured through TypoScript for use in
 	 * suggest queries.
 	 *
-	 * @return	void
 	 */
 	protected function initializeAdditionalFilters() {
-		$additionalFilters = $this->conf['search.']['filter'];
+		$additionalFilters = array();
 
-		if (!empty($additionalFilters)) {
-			$this->additionalFilters = explode('|', $additionalFilters);
+		if(!empty($this->conf['search.']['query.']['filter.'])) {
+			foreach($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
+				$additionalFilters[$filterKey] = $filter;
+			}
 		}
+
+		$this->additionalFilters = $additionalFilters;
 	}
 
 	/**

@@ -296,19 +296,23 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 * Initializes additional filters configured through TypoScript and
 	 * Flexforms for use in regular queries and suggest queries.
 	 *
-	 * @return	void
 	 */
 	protected function initializeAdditionalFilters() {
-		$additionalFilters = $this->conf['search.']['filter'];
+		$additionalFilters = array();
 
-		$flexformFilters   = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filter', 'sQuery');
+		if(!empty($this->conf['search.']['query.']['filter.'])) {
+			foreach($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
+				$additionalFilters[$filterKey] = $filter;
+			}
+		}
+
+			// flexform overwrites _all_ filters set through TypoScript
+		$flexformFilters = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filter', 'sQuery');
 		if (!empty($flexformFilters)) {
-			$additionalFilters = $flexformFilters;
+			$additionalFilters = t3lib_div::trimExplode('|', $flexformFilters);
 		}
 
-		if (!empty($additionalFilters)) {
-			$this->additionalFilters = explode('|', $additionalFilters);
-		}
+		$this->additionalFilters = $additionalFilters;
 	}
 
 	/**
