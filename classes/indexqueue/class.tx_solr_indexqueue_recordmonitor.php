@@ -48,7 +48,6 @@ class tx_solr_indexqueue_RecordMonitor {
 		if ($command == 'delete' && $table == 'tt_content') {
 			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 			$indexQueue->updateItem('pages', $tceMain->getPID($table, $uid));
-
 		}
 	}
 
