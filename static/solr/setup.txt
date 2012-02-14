@@ -227,27 +227,27 @@ plugin.tx_solr {
 			options {
 				relevance {
 					field = relevance
-					label = sorting_relevance
+					label = Relevance
 				}
 
 				title {
 					field = sortTitle_stringS
-					label = sorting_title
+					label = Title
 				}
 
 				type {
 					field = type
-					label = sorting_type
+					label = Type
 				}
 
 				author {
 					field = sortAuthor_stringS
-					label = sorting_author
+					label = Author
 				}
 
 				created {
 					field = created
-					label = sorting_created
+					label = Creation Date
 				}
 			}
 		}

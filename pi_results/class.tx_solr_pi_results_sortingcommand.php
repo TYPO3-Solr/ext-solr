@@ -118,7 +118,7 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 
 			$temp = array(
 				'link'       => $query->getQueryLink(
-					'###LLL:' . $sortOption['label'] . '###',
+					$sortOption['label'],
 					array('sort' => $sortParameter)
 				),
 				'url'        =>  $query->getQueryUrl(
@@ -144,7 +144,7 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 				// special case relevance: just reset the search to normal behavior
 			if ($sortOptionName == 'relevance') {
 				$temp['link'] = $query->getQueryLink(
-					$label,
+					$sortOption['label'],
 					array('sort' => NULL)
 				);
 				$temp['url'] = $query->getQueryUrl(

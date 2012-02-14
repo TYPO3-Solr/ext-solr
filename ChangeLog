@@ -26,6 +26,7 @@
 	* Added support for indexing TYPO3 Mount Pages
 	* Added more logging when indexing pages
 	* Added support for Mount Page record monitoring
+	* Changed handling of labels for sorting options to be consitent with facet label configuration (now uses the label directly instead of pointing to an LLL label), fixes issue #31267
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
