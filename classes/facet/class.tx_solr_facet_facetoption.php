@@ -139,8 +139,9 @@ class tx_solr_facet_FacetOption {
 		}
 
 		$filterParameters[] = $this->facetName . ':' . $this->value;
-		$filterParameters   = array_unique($filterParameters);
-		$filterParameters   = array_map('urlencode', $filterParameters);
+
+		$filterParameters = array_unique($filterParameters);
+		$filterParameters = array_map('urlencode', $filterParameters);
 
 		return $filterParameters;
 	}
