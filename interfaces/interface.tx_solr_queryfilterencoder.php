@@ -2,7 +2,6 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
 *  (c) 2012 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
@@ -24,21 +23,31 @@
 ***************************************************************/
 
 /**
- * Query Parser Interface
+ * Query Filter Encoder Interface
  *
- * @author Markus Goldbach <markus.goldbach@dkd.de>
+ * @author Ingo Renner <ingo@typo3.org>
  */
-interface tx_solr_QueryFilterParser {
+interface tx_solr_QueryFilterEncoder {
+
+	/**
+	 * Takes a filter value and encodes it to a human readable format to be
+	 * used in an URL GET parameter.
+	 *
+	 * @param string $filterValue the filter value
+	 * @param array $options options set in a facet's configuration
+	 * @return string Value to be used in a URL GET parameter
+	 */
+	public function encodeFilter($filterValue, array $options = array());
 
 	/**
 	 * Parses the query filter from GET parameters in the URL and translates it
 	 * to a Lucene filter value.
 	 *
-	 * @param string $filterQuery the filter query from plugin
+	 * @param string $filterValue the filter query from plugin
 	 * @param array $options options set in a facet's configuration
 	 * @return string Value to be used in a Lucene filter
 	 */
-	public function parseFilter($filterQuery, array $options = array());
+	public function decodeFilter($filterValue, array $options = array());
 }
 
 ?>
