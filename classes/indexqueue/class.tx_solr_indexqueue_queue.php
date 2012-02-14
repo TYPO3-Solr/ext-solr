@@ -388,6 +388,11 @@ class tx_solr_indexqueue_Queue {
 			'tx_solr_indexqueue_item',
 			'uid IN(' . implode(',', $uidList) . ')'
 		);
+		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+			'tx_solr_indexqueue_indexing_property',
+			'item_id IN(' . implode(',', $uidList) . ')'
+		);
+
 	}
 
 	/**
@@ -396,12 +401,28 @@ class tx_solr_indexqueue_Queue {
 	 * @param	string	The type of items to remove, usually a table name.
 	 */
 	public function deleteItemsByType($itemType) {
-		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+		$uidList = array();
+
+			// get the item uids to use them in the deletes afterwards
+		$items = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid',
 			'tx_solr_indexqueue_item',
 			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr(
 				$itemType,
 				'tx_solr_indexqueue_item'
 			)
+		);
+		foreach ($items as $item) {
+			$uidList[] = $item['uid'];
+		}
+
+		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+			'tx_solr_indexqueue_item',
+			'uid IN(' . implode(',', $uidList) . ')'
+		);
+		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+			'tx_solr_indexqueue_indexing_property',
+			'item_id IN(' . implode(',', $uidList) . ')'
 		);
 	}
 
@@ -413,6 +434,11 @@ class tx_solr_indexqueue_Queue {
 	public function deleteItemsBySite(tx_solr_Site $site) {
 		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
 			'tx_solr_indexqueue_item',
+			'root = ' . $site->getRootPageId()
+		);
+
+		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+			'tx_solr_indexqueue_indexing_property',
 			'root = ' . $site->getRootPageId()
 		);
 	}
