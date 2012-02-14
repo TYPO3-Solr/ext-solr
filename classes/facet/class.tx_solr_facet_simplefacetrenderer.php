@@ -29,7 +29,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class tx_solr_facet_SimpleFacetRenderer extends tx_solr_facet_FacetRendererAbstract {
+class tx_solr_facet_SimpleFacetRenderer extends tx_solr_facet_AbstractFacetRenderer {
 
 }
 

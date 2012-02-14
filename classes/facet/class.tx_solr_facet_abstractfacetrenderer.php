@@ -29,7 +29,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-abstract class tx_solr_facet_FacetRendererAbstract implements tx_solr_FacetRenderer {
+abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRenderer {
 
 	/**
 	 * @var tx_solr_Search
@@ -308,8 +308,8 @@ abstract class tx_solr_facet_FacetRendererAbstract implements tx_solr_FacetRende
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_facetrenderer.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_facetrenderer.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_abstractfacetrenderer.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_abstractfacetrenderer.php']);
 }
 
 ?>

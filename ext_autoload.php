@@ -52,7 +52,7 @@ return array(
 	'tx_solr_contentobject_multivalue' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_multivalue.php',
 	'tx_solr_contentobject_relation' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_relation.php',
 
-	'tx_solr_facet_facetrendererabstract' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererabstract.php',
+	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_abstractfacetrenderer.php',
 	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererfactory.php',
 	'tx_solr_facet_numericrangefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_numericrangefacetrenderer.php',
 	'tx_solr_facet_simplefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetrenderer.php',
