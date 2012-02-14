@@ -52,9 +52,11 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	protected $configuration;
 
 	/**
-	 * constructor for class tx_solr_pi_results_ResultsCommand
+	 * Constructor.
+	 *
+	 * @param tx_solr_pluginbase_CommandPluginBase Parent plugin object.
 	 */
-	public function __construct(tslib_pibase $parentPlugin) {
+	public function __construct(tx_solr_pluginbase_CommandPluginBase $parentPlugin) {
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
 		$this->parentPlugin  = $parentPlugin;

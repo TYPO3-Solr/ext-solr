@@ -48,11 +48,11 @@ class tx_solr_pi_results_ErrorsCommand implements tx_solr_PluginCommand {
 	protected $configuration;
 
 	/**
-	 * Constructor for class tx_solr_pi_results_ErrorsCommand
+	 * Constructor.
 	 *
-	 * @param	tslib_pibase	$parentPlugin parent plugin
+	 * @param tx_solr_pluginbase_CommandPluginBase Parent plugin object.
 	 */
-	public function __construct(tslib_pibase $parentPlugin) {
+	public function __construct(tx_solr_pluginbase_CommandPluginBase $parentPlugin) {
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
 	}

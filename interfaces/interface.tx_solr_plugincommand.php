@@ -43,11 +43,11 @@ interface tx_solr_PluginCommand {
 	const REQUIREMENT_HAS_RESULTS  = 8;
 
 	/**
-	 * constructor
+	 * Constructor.
 	 *
-	 * @param	tslib_pibase	parent plugin object
+	 * @param tx_solr_pluginbase_CommandPluginBase Parent plugin object.
 	 */
-	public function __construct(tslib_pibase $parent);
+	public function __construct(tx_solr_pluginbase_CommandPluginBase $parent);
 
 	/**
 	 * execute method
