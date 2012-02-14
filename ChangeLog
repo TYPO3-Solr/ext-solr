@@ -126,6 +126,7 @@
 	* Added feature #33763: Support for german compound words
 	* Updated schema.xml name
 	* Added a separate clear cache menu to initialize Solr connections instead of hooking into configuration cache clearing
+	* Task #28758: Move example TypoScript configuration into a separate static template
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

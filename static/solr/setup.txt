@@ -90,44 +90,6 @@ plugin.tx_solr {
 				}
 			}
 
-			tt_news = 0
-			tt_news {
-				fields {
-					abstract = short
-					author = author
-					description = short
-					title = title
-
-					content = SOLR_CONTENT
-					content {
-						field = bodytext
-					}
-
-					category_stringM = SOLR_RELATION
-					category_stringM {
-						localField = category
-						multiValue = 1
-					}
-
-					keywords = SOLR_MULTIVALUE
-					keywords {
-						field = keywords
-					}
-
-					url = TEXT
-					url {
-						typolink.parameter = {$plugin.tt_news.singlePid}
-						typolink.additionalParams = &tx_ttnews[tt_news]={field:uid}&L={field:__solr_index_language}
-						typolink.additionalParams.insertData = 1
-						typolink.returnLast = url
-						typolink.useCacheHash = 1
-					}
-
-					sortAuthor_stringS = author
-					sortTitle_stringS  = title
-				}
-			}
-
 		}
 	}
 
@@ -143,24 +105,22 @@ plugin.tx_solr {
 
 			fields = content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0
 
-			# see http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
+				// see http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
 			minimumMatch =
 
-			# see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
+				// see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
 			boostFunction =
 
-			# see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
+				// see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
 			boostQuery =
 
 			filter {
-#				myFilter = myFilterField_stringS:stringFilterValue
-#				otherFilter = otherFilterField_intS:intFilterValue
+
 			}
 
 			sortBy =
 		}
 
-		# TODO make it a top level configuration section
 		results {
 			resultsHighlighting = 0
 			resultsHighlighting {
@@ -195,14 +155,6 @@ plugin.tx_solr {
 			}
 
 			fieldRenderingInstructions {
-
-				# additional example rendering instruction for the title field
-				title2 = TEXT
-				title2 {
-					field = title
-					case = upper
-					wrap = <span class="title">|</span>
-				}
 
 				url = CASE
 				url {
@@ -299,31 +251,6 @@ plugin.tx_solr {
 					label = Content Type
 					field = type
 				}
-
-				author {
-					label = Author
-					field = sortAuthor
-				}
-
-/* Not implemented yet
-				lastChanged {
-					label = Last Changed
-					date =
-				}
-
-				feuser {
-					label = Created by FE User
-					query =
-
-					 TODO
-					renderingInstruction = TEXT
-					renderingInstruction {
-						wrap = <span class="user-{uid}">|</span>
-						insertData = 1
-					}
-
-				}
-*/
 			}
 
 				// available place holders: @facetValue, @facetName, @facetLabel, @facetText

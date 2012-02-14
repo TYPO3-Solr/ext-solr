@@ -1,0 +1,47 @@
+
+plugin.tx_solr.index.queue {
+
+	tt_news = 1
+	tt_news {
+		fields {
+			abstract = short
+			author = author
+			description = short
+			title = title
+
+			content = SOLR_CONTENT
+			content {
+				field = bodytext
+			}
+
+			category_stringM = SOLR_RELATION
+			category_stringM {
+				localField = category
+				multiValue = 1
+			}
+
+			keywords = SOLR_MULTIVALUE
+			keywords {
+				field = keywords
+			}
+
+			url = TEXT
+			url {
+				typolink.parameter = {$plugin.tt_news.singlePid}
+				typolink.additionalParams = &tx_ttnews[tt_news]={field:uid}&L={field:__solr_index_language}
+				typolink.additionalParams.insertData = 1
+				typolink.returnLast = url
+				typolink.useCacheHash = 1
+			}
+
+			sortAuthor_stringS = author
+			sortTitle_stringS  = title
+		}
+
+		attachments {
+			fields = news_files
+		}
+	}
+
+}
+
