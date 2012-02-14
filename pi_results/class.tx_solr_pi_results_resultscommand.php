@@ -237,8 +237,14 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 		$numberOfPages  = intval($numberOfResults / $resultsPerPage)
 			+ (($numberOfResults % $resultsPerPage) == 0 ? 0 : 1);
 
+		$solrPageBrowserConfiguration = array();
+		if (isset($this->configuration['search.']['results.']['pagebrowser.'])) {
+			$solrPageBrowserConfiguration = $this->configuration['search.']['results.']['pagebrowser.'];
+		}
+
 		$pageBrowserConfiguration = array_merge(
 			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1.'],
+			$solrPageBrowserConfiguration,
 			array(
 				'pageParameterName' => 'tx_solr|page',
 				'numberOfPages'     => $numberOfPages,
