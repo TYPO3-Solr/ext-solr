@@ -19,13 +19,13 @@ plugin.tx_solr {
 	}
 
 	javascriptFiles {
-		library = EXT:solr/resources/javascript/jquery/jquery-1.7.1.min.js
+		library = EXT:solr/resources/javascript/jquery/jquery.min.js
 
-		ui = EXT:solr/resources/javascript/jquery/jquery-ui-1.8.16.core.min.js
+		ui = EXT:solr/resources/javascript/jquery/jquery-ui.core.min.js
 
-		ui.autocomplete = EXT:solr/resources/javascript/jquery/jquery-ui-1.8.16.autocomplete.min.js
+		ui.autocomplete = EXT:solr/resources/javascript/jquery/jquery-ui.autocomplete.min.js
 
-		ui.datepicker    = EXT:solr/resources/javascript/jquery/jquery-ui-1.8.16.datepicker.min.js
+		ui.datepicker    = EXT:solr/resources/javascript/jquery/jquery-ui.datepicker.min.js
 		ui.datepicker.de = EXT:solr/resources/javascript/jquery/ui-i18n/jquery.ui.datepicker-de.js
 		ui.datepicker.fr = EXT:solr/resources/javascript/jquery/ui-i18n/jquery.ui.datepicker-fr.js
 		ui.datepicker.nl = EXT:solr/resources/javascript/jquery/ui-i18n/jquery.ui.datepicker-nl.js
