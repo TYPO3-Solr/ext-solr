@@ -343,9 +343,8 @@ class tx_solr_GarbageCollector {
 				$indexQueue->updateItem($table, $uid);
 				break;
 			case 'pages':
-debug('collecting page garbage');
-// 				$this->deleteIndexDocuments($table, $uid);
-// 				$indexQueue->deleteItem($table, $uid);
+				$this->deleteIndexDocuments($table, $uid);
+				$indexQueue->deleteItem($table, $uid);
 				break;
 		}
 	}
