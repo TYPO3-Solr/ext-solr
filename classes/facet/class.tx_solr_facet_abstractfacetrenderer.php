@@ -177,12 +177,6 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 		$facet['active']    = $this->isActive() ? '1' : '0';
 		$facet['reset_url'] = $this->buildResetFacetUrl();
 
-		if ($facet['count'] > $this->solrConfiguration['search.']['faceting.']['limit']) {
-			$showAllLink = '<a href="#" class="tx-solr-facet-show-all">###LLL:faceting_showMore###</a>';
-			$showAllLink = tslib_cObj::wrap($showAllLink, $this->solrConfiguration['search.']['faceting.']['showAllLink.']['wrap']);
-			$facet['show_all_link'] = $showAllLink;
-		}
-
 		return $facet;
 	}
 
@@ -218,7 +212,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 
 		$facetCounts       = $this->search->getFacetCounts();
 		$facetField        = $this->facetConfiguration['field'];
-		$facetOptions      = (array) $facetCounts->facet_fields->$facetField;
+		$facetOptions      = $this->getFacetOptions();
 		$facetOptionsCount = count($facetOptions);
 
 			// facet options include '_empty_', if no options are given

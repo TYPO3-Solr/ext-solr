@@ -31,6 +31,25 @@
  */
 class tx_solr_facet_SimpleFacetRenderer extends tx_solr_facet_AbstractFacetRenderer {
 
+	/**
+	 * Provides a "show all link" if a certain limit of facet options is
+	 * reached.
+	 *
+	 * (non-PHPdoc)
+	 * @see tx_solr_facet_AbstractFacetRenderer::getFacet()
+	 */
+	public function getFacet() {
+		$facet = parent::getFacet();
+
+		if ($facet['count'] > $this->solrConfiguration['search.']['faceting.']['limit']) {
+			$showAllLink = '<a href="#" class="tx-solr-facet-show-all">###LLL:faceting_showMore###</a>';
+			$showAllLink = tslib_cObj::wrap($showAllLink, $this->solrConfiguration['search.']['faceting.']['showAllLink.']['wrap']);
+			$facet['show_all_link'] = $showAllLink;
+		}
+
+		return $facet;
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_simplefacetrenderer.php'])	{
