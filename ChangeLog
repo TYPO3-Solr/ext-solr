@@ -135,6 +135,7 @@
 	* Changed the facet view helper to work with refactored facet rendering
 	* Fixed bug #33729: Possible invalid SQL generated when trying delete Index Queue items
 	* Fixed a bug where the TYPO3 page indexer would add empty keywords fields
+	* Added a check whether function strptime exists to please syntax checks in CI processes
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
