@@ -248,7 +248,8 @@ class tx_solr_Typo3PageIndexer {
 			// keywords, multi valued
 		$keywords = array_unique(t3lib_div::trimExplode(
 			',',
-			$pageRecord['keywords']
+			$pageRecord['keywords'],
+			TRUE
 		));
 		foreach ($keywords as $keyword) {
 			$document->addField('keywords', $keyword);
