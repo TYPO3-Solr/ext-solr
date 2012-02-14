@@ -470,6 +470,33 @@ class tx_solr_indexqueue_Queue {
 	}
 
 	/**
+	 * Gets a single Index Queue item by its uid.
+	 *
+	 * @param integer $itemId Index Queue item uid
+	 * @return tx_solr_indexqueue_Item The request Index Queue item or NULL if no item with $itemId was found
+	 */
+	public function getItem($itemId) {
+		$item = NULL;
+
+		$indexQueueItemRecord = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'*',
+			'tx_solr_indexqueue_item',
+			'uid = ' . intval($itemId)
+		);
+
+		if (count($indexQueueItemRecord) == 1) {
+			$indexQueueItemRecord = $indexQueueItemRecord[0];
+
+			$item = t3lib_div::makeInstance(
+				'tx_solr_indexqueue_Item',
+				$indexQueueItemRecord
+			);
+		}
+
+		return $item;
+	}
+
+	/**
 	 * Gets $limit number of items to index for a particular $site.
 	 *
 	 * @param	tx_solr_Site	$site TYPO3 site

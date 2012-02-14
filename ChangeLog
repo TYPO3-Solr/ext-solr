@@ -22,6 +22,7 @@
 	* Added automatic conversion of boolean parameters to string in tx_solr_indexqueue_PageIndexerRequest::setParameter()
 	* Added Index Queue page indexer request logging in frontend helpers
 	* Added tx_solr_Typo3PageIndexer::setSolrConnection() to provide a Solr server connection other than the one initialized by the constructor
+	* Added a method to the Index Queue to get a single Index Queue item by its ID
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
