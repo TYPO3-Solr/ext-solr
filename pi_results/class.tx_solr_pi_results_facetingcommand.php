@@ -172,9 +172,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 	}
 
 	protected function addFacetsJavascript() {
-		$jsFilePath = t3lib_extMgm::siteRelPath('solr') . 'resources/javascript/pi_results/results.js';
-
-		$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_faceting'] =
+		$GLOBALS['TSFE']->additionalHeaderData['tx_solr_faceting'] =
 			'
 			<script type="text/javascript">
 			/*<![CDATA[*/
@@ -189,7 +187,9 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 			';
 
 		if ($this->parentPlugin->conf['addDefaultJs']) {
-			$GLOBALS['TSFE']->additionalHeaderData[$this->parentPlugin->prefixId . '_faceting'] .=
+			$jsFilePath = t3lib_extMgm::siteRelPath('solr') . 'resources/javascript/pi_results/results.js';
+
+			$GLOBALS['TSFE']->additionalHeaderData['tx_solr_faceting'] .=
 				'<script type="text/javascript" src="' . $jsFilePath . '"></script>';
 		}
 	}
