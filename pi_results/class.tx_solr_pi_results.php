@@ -139,7 +139,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	/**
 	 * Implementation of preRender() method. Used to include CSS files.
 	 *
-	 * @see	classes/pluginbase/tx_solr_pluginbase_CommandPluginBase#preRender()
+	 * @see	classes/pluginbase/tx_solr_pluginbase_PluginBase#preRender()
 	 */
 	protected function preRender() {
 		if($this->conf['cssFiles.']['results']) {
