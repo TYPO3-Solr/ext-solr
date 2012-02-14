@@ -343,11 +343,9 @@
  */
 .ui-autocomplete { position: absolute; cursor: default; text-align: left; }
 .ui-autocomplete-loading { background: white url(../../images/jquery-ui/ui-anim_basic_16x16.gif) right center no-repeat; }
-
 .ui-autocomplete li {
 	list-style: none !important;
 }
-
 .ui-autocomplete .ui-corner-all {
 	   -moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
