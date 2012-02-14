@@ -55,6 +55,14 @@
 }
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+/* sorting */
+
+#tx-solr-sorting li {
+	list-style-type: none;
+	margin-left: 10px;
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 /* results */
 
 #tx-solr-search .results-list li {
@@ -119,5 +127,15 @@
 .results-highlight {
 	background: #fdee53;
 }
+#tx-solr-frequent-searches ul {
+	padding-right: 10px;
+}
+
+#tx-solr-frequent-searches li {
+	list-style-type: none;
+	margin-left: 10px;
+	display: inline;
+}
+
 
 
