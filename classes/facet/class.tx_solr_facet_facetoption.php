@@ -73,7 +73,7 @@ class tx_solr_facet_FacetOption {
 	 * @param array $facetConfiguration The facet's configuration
 	 * @return string The facet option rendered according to rendering instructions if available
 	 */
-	public function render($facetConfiguration) {
+	public function render(array $facetConfiguration = array()) {
 		$renderedFacetOption = $this->value;
 
 		if (isset($facetConfiguration['renderingInstruction'])) {
