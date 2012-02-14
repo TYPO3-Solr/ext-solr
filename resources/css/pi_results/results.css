@@ -10,6 +10,31 @@
 }
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+/* search form */
+
+.tx-solr-search-form {
+	background-color: #f2f2f2;
+	border: 1px solid #cfcecf;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+.tx-solr-q {
+	border: 1px solid #cfcecf;
+	padding: 5px;
+	width: 80%;
+}
+
+.tx-solr-submit {
+	background-color: #cfcecf;
+	border: none;
+	padding: 6px;
+	color: #494949;
+	font-weight: bold;
+	width: 15%;
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 /* search functions */
 
 
@@ -64,6 +89,14 @@
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 /* results */
+
+#tx-solr-search .tx-pagebrowse {
+	margin-top: 10px;
+}
+
+#tx-solr-search .results-list {
+	margin-top: 10px;
+}
 
 #tx-solr-search .results-list li {
 	list-style: none inside;

@@ -11,13 +11,15 @@
 
 <div id="tx-solr-search">
 	<!-- ###SOLR_SEARCH_FORM### begin -->
-	###FORM.SUGGEST_URL###
-	<form id="tx-solr-search-form-pi-results" action="###FORM.ACTION###" method="get" accept-charset="###FORM.ACCEPT-CHARSET###">
-		###LLL:searchWord### <input type="text" class="tx-solr-q" name="###TX_SOLR.PREFIX###[q]" value="###FORM.Q###" />
-		<input type="hidden" name="id" value="###FORM.ACTION_ID###" />
-		<input type="hidden" name="###FORM.ACTION_LANGUAGE_PARAMETER###" value="###FORM.ACTION_LANGUAGE###" />
-		<input type="submit" value="###LLL:submit###" />
-	</form>
+	<div class="tx-solr-search-form">
+		###FORM.SUGGEST_URL###
+		<form id="tx-solr-search-form-pi-results" action="###FORM.ACTION###" method="get" accept-charset="###FORM.ACCEPT-CHARSET###">
+			<input type="text" class="tx-solr-q" name="###TX_SOLR.PREFIX###[q]" value="###FORM.Q###" />
+			<input type="hidden" name="id" value="###FORM.ACTION_ID###" />
+			<input type="hidden" name="###FORM.ACTION_LANGUAGE_PARAMETER###" value="###FORM.ACTION_LANGUAGE###" />
+			<input type="submit" class="tx-solr-submit" value="###LLL:submit###" />
+		</form>
+	</div>
 	<!-- ###SOLR_SEARCH_FORM### end -->
 
 
