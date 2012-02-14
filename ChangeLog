@@ -68,6 +68,8 @@
 	* Fixed an issue where editing or creating a localized record would update/add the localization in the Index Queue instead of the original language record
 	* Added an exception if the tempalte file for a plugin could not be loaded
 	* Moved results.css from resources/templates/pi_results/ to resources/css/pi_results/
+	* Renamed resources/css/jquery-ui/ to resources/css/eid_suggest/
+	* Moved plugin.tx_solr.suggest.stylesheet to plugin.tx_solr.cssFiles.suggest
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -92,13 +92,13 @@ class tx_solr_pi_results_SuggestFormModifier implements tx_solr_FormModifier, tx
 
 	/**
 	 * Adds the stylesheets necessary for the suggestions
+	 *
 	 */
 	protected function addSuggestStylesheets() {
-		if ($this->configuration['addDefaultCss'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQueryUIStylesheet']) {
-			$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQueryUIStylesheet'] .=
-				'<link rel="stylesheet" type="text/css" href="'
-				. $GLOBALS['TSFE']->tmpl->getFileName($this->configuration['suggest.']['stylesheet'])
-				. '" media="all" />';
+		if ($this->configuration['cssFiles.']['suggest'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-suggestCss']) {
+			$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->configuration['cssFiles.']['suggest']);
+			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-suggestCss'] =
+				'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
 		}
 	}
 
