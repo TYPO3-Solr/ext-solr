@@ -300,7 +300,7 @@ class tx_solr_Util {
 	 */
 	public static function getTypoScriptObject($path) {
 		if (!is_string($path)) {
-			throw new InvalidArgumentException('Parameter $path is not a string');
+			throw new InvalidArgumentException('Parameter $path is not a string', 1325627243);
 		}
 
 		$pathExploded = explode('.', trim($path));
@@ -311,7 +311,8 @@ class tx_solr_Util {
 		foreach ($pathExploded as $segment) {
 			if (!array_key_exists($segment . '.', $pathBranch)) {
 				throw new InvalidArgumentException(
-					'TypoScript object path "' . htmlspecialchars($path) . '" does not exist'
+					'TypoScript object path "' . htmlspecialchars($path) . '" does not exist',
+					1325627264
 				);
 			}
 			$pathBranch = $pathBranch[$segment . '.'];
