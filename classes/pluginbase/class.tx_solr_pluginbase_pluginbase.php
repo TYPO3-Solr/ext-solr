@@ -59,6 +59,13 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 */
 	protected $template;
 
+	/**
+	 * An instance of tx_solr_JavascriptManager
+	 *
+	 * @var tx_solr_JavascriptManager
+	 */
+	protected $javascriptManager;
+
 
 	// Main
 
@@ -137,6 +144,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 
 		$this->initializeSearch();
 		$this->initializeTemplateEngine();
+		$this->initializeJavascriptManager();
 		$this->postInitialize();
 	}
 
@@ -236,6 +244,14 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	}
 
 	/**
+	 * Initializes the javascript manager.
+	 *
+	 */
+	protected function initializeJavascriptManager() {
+		$this->javascriptManager = t3lib_div::makeInstance('tx_solr_JavascriptManager');
+	}
+
+	/**
 	 * This method is called after initializing in the initialize method.
 	 * Overwrite this method to do your own initialization.
 	 *
@@ -326,6 +342,15 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 */
 	public function getTemplate() {
 		return $this->template;
+	}
+
+	/**
+	 * Gets the plugin's javascript manager.
+	 *
+	 * @return tx_solr_JavascriptManager The plugin's javascript manager.
+	 */
+	public function getJavascriptManager() {
+		return $this->javascriptManager;
 	}
 
 	/**

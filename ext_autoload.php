@@ -30,6 +30,7 @@ return array(
 	'tx_solr_connectionmanager' => $extensionPath . 'classes/class.tx_solr_connectionmanager.php',
 	'tx_solr_garbagecollector' => $extensionPath . 'classes/class.tx_solr_garbagecollector.php',
 	'tx_solr_htmlcontentextractor' => $extensionPath . 'classes/class.tx_solr_htmlcontentextractor.php',
+	'tx_solr_javascriptmanager' => $extensionPath . 'classes/class.tx_solr_javascriptmanager.php',
 	'tx_solr_languagefileunavailableexception' => $extensionPath . 'classes/class.tx_solr_languagefileunavailableexception.php',
 	'tx_solr_nosolrconnectionfoundexception' => $extensionPath . 'classes/class.tx_solr_nosolrconnectionfoundexception.php',
 	'tx_solr_query' => $extensionPath . 'classes/class.tx_solr_query.php',

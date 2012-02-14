@@ -111,6 +111,8 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 			}
 		}
 
+		$this->javascriptManager->addJavascriptToPageHeader();
+
 		return $this->template->render(tx_solr_Template::CLEAN_TEMPLATE_YES);
 	}
 }

@@ -69,12 +69,12 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 		$marker = array();
 
 		if ($this->configuration['search.']['faceting']
-		&& ($this->search->getNumberOfResults() || $this->configuration['search.']['initializeWithEmptyQuery'])
+			&& ($this->search->getNumberOfResults() || $this->configuration['search.']['initializeWithEmptyQuery'])
 		) {
 			$marker['subpart_available_facets'] = $this->renderAvailableFacets();
 			$marker['subpart_used_facets']      = $this->renderUsedFacets();
 
-			$this->addFacetsJavascript();
+			$this->addFacetingJavascript();
 		}
 
 		if (count($marker) === 0) {
@@ -171,27 +171,17 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 		return $content;
 	}
 
-	protected function addFacetsJavascript() {
-		$GLOBALS['TSFE']->additionalHeaderData['tx_solr_faceting'] =
-			'
-			<script type="text/javascript">
-			/*<![CDATA[*/
+	protected function addFacetingJavascript() {
+		$javascriptManager = $this->parentPlugin->getJavascriptManager();
 
+		$expansionLabels = '
 			var tx_solr_facetLabels = {
 				\'showMore\' : \'' . $this->parentPlugin->pi_getLL('faceting_showMore') . '\',
 				\'showFewer\' : \'' . $this->parentPlugin->pi_getLL('faceting_showFewer') . '\'
 			};
-
-			/*]]>*/
-			</script>
-			';
-
-		if ($this->parentPlugin->conf['addDefaultJs']) {
-			$jsFilePath = t3lib_extMgm::siteRelPath('solr') . 'resources/javascript/pi_results/results.js';
-
-			$GLOBALS['TSFE']->additionalHeaderData['tx_solr_faceting'] .=
-				'<script type="text/javascript" src="' . $jsFilePath . '"></script>';
-		}
+		';
+		$javascriptManager->addJavascript('tx_solr-factingExpansionLabels', $expansionLabels);
+		$javascriptManager->loadFile('faceting.limitExpansion');
 	}
 
 }

@@ -30,7 +30,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class tx_solr_pi_results_SuggestFormModifier implements tx_solr_FormModifier, tx_solr_PluginAware {
+class tx_solr_pi_results_SuggestFormModifier implements tx_solr_FormModifier, tx_solr_CommandPluginAware {
 
 	/**
 	 * Configuration
@@ -105,32 +105,14 @@ class tx_solr_pi_results_SuggestFormModifier implements tx_solr_FormModifier, tx
 	/**
 	 * Adds the Javascript necessary for the suggestions
 	 *
-	 * By default will also load jQuery, but this can be disabled through
-	 * TypoScript.
 	 */
 	protected function addSuggestJavascript() {
-		if ($this->configuration['addDefaultJs']) {
-			if ($this->configuration['suggest.']['loadJQuery'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuery']) {
-				$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuery'] .=
-					'<script type="text/javascript" src="'
-					. $GLOBALS['TSFE']->tmpl->getFileName($this->configuration['suggest.']['javaScriptFiles.']['library'])
-					. '"></script>';
-			}
+		$javascriptManager = $this->parentPlugin->getJavascriptManager();
 
-			if (!$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuerySuggest']) {
-				$GLOBALS['TSFE']->additionalHeaderData['tx_solr_jQuerySuggest'] .=
-					'<script type="text/javascript" src="'
-					. $GLOBALS['TSFE']->tmpl->getFileName($this->configuration['suggest.']['javaScriptFiles.']['ui'])
-					. '"></script>';
-			}
-
-			if (!$GLOBALS['TSFE']->additionalHeaderData['tx_solr_suggest']) {
-				$GLOBALS['TSFE']->additionalHeaderData['tx_solr_suggest'] .=
-					'<script type="text/javascript" src="'
-					. $GLOBALS['TSFE']->tmpl->getFileName($this->configuration['suggest.']['javaScriptFiles.']['suggest'])
-					. '"></script>';
-			}
-		}
+		$javascriptManager->loadFile('library');
+		$javascriptManager->loadFile('ui');
+		$javascriptManager->loadFile('ui.autocomplete');
+		$javascriptManager->loadFile('suggest');
 	}
 
 	/**
