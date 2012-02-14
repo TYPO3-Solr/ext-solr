@@ -67,6 +67,7 @@
 	* Added feature #33335: Support for more relation types in SOLR_RELATION, credits Dominique Feyer
 	* Fixed an issue where editing or creating a localized record would update/add the localization in the Index Queue instead of the original language record
 	* Added an exception if the tempalte file for a plugin could not be loaded
+	* Moved results.css from resources/templates/pi_results/ to resources/css/pi_results/
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -37,7 +37,7 @@ plugin.tx_solr {
 	}
 
 	cssFiles {
-		results     = EXT:solr/resources/templates/pi_results/results.css
+		results     = EXT:solr/resources/css/pi_results/results.css
 		pagebrowser = EXT:pagebrowse/res/styles_min.css
 	}
 
@@ -123,6 +123,7 @@ plugin.tx_solr {
 					sortTitle_stringS  = title
 				}
 			}
+
 		}
 	}
 
