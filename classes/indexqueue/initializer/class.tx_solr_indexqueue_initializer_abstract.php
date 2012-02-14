@@ -296,7 +296,7 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 				10 {
 					field = pid
 					value = 2,3,5
-					condition = in / equals / notEquals / greaterThan / lessThan
+					condition = in / equals / notEquals / greaterThan / lessThan / greaterThanOrEqual / lessThanOrEqual
 				}
 
 				20 {
@@ -307,8 +307,8 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 					or {
 						10 {
 							field = ...
-							value ...
-							condition ...
+							value = ...
+							condition =  ...
 						}
 
 						20 {
