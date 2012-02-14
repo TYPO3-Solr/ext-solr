@@ -103,6 +103,7 @@
 	* Added a way to provide a value for facet options to be used in URLs
 	* Fixed an issue preventing SOLR_MULTIVALUE working correctly when used during page indexing
 	* Added a check in the index queue to only add pages of type "standard" and "mount page" to the Index Queue
+	* Changed the search functions column of the default template to adopt styles of the introduction package
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
