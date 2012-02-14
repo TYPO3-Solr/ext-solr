@@ -42,7 +42,7 @@ class tx_solr_pi_results_SuggestFormModifier implements tx_solr_FormModifier, tx
 	/**
 	 * The currently active plugin
 	 *
-	 * @var	tslib_pibase
+	 * @var	tx_solr_pluginbase_CommandPluginBase
 	 */
 	protected $parentPlugin;
 
@@ -57,9 +57,9 @@ class tx_solr_pi_results_SuggestFormModifier implements tx_solr_FormModifier, tx
 	/**
 	 * Sets the currently active parent plugin.
 	 *
-	 * @param	tslib_pibase	Currently active parent plugin
+	 * @param tx_solr_pluginbase_CommandPluginBase Currently active parent plugin
 	 */
-	public function setParentPlugin(tslib_pibase $parentPlugin) {
+	public function setParentPlugin(tx_solr_pluginbase_CommandPluginBase $parentPlugin) {
 		$this->parentPlugin = $parentPlugin;
 	}
 
