@@ -182,7 +182,7 @@ return array(
 	'tx_solr_plugincommand' => $extensionPath . 'interfaces/interface.tx_solr_plugincommand.php',
 	'tx_solr_pluginaware' => $extensionPath . 'interfaces/interface.tx_solr_pluginaware.php',
 	'tx_solr_queryfacetbuilder' => $extensionPath . 'interfaces/interface.tx_solr_queryfacetbuilder.php',
-	'tx_solr_queryfilterparser' => $extensionPath . 'interfaces/interface.tx_solr_queryfilterparser.php',
+	'tx_solr_queryfilterencoder' => $extensionPath . 'interfaces/interface.tx_solr_queryfilterencoder.php',
 	'tx_solr_querymodifier' => $extensionPath . 'interfaces/interface.tx_solr_querymodifier.php',
 	'tx_solr_responseprocessor' => $extensionPath . 'interfaces/interface.tx_solr_responseprocessor.php',
 	'tx_solr_resultdocumentmodifier' => $extensionPath . 'interfaces/interface.tx_solr_resultdocumentmodifier.php',

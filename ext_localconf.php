@@ -134,8 +134,8 @@ tx_solr_CommandResolver::registerPluginCommand(
 tx_solr_facet_FacetRendererFactory::registerFacetType(
 	'numericRange',
 	'tx_solr_facet_NumericRangeFacetRenderer',
-	'tx_solr_query_filterparser_Range',
-	'tx_solr_query_filterparser_Range'
+	'tx_solr_query_filterencoder_Range',
+	'tx_solr_query_filterencoder_Range'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

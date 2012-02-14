@@ -147,7 +147,7 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 			foreach ($filtersByFacetName as $facetName => $filterValues) {
 				$facetConfiguration = $this->configuration['search.']['faceting.']['facets.'][$facetName . '.'];
 
-				$filterParser = $this->facetRendererFactory->getFacetFilterParserByFacetName($facetName);
+				$filterEncoder = $this->facetRendererFactory->getFacetFilterEncoderByFacetName($facetName);
 
 				$tag = '';
 				if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
@@ -156,13 +156,13 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 
 				$filterParts = array();
 				foreach ($filterValues as $filterValue) {
-					if (!is_null($filterParser)) {
+					if (!is_null($filterEncoder)) {
 						$filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
 						if (empty($filterOptions)) {
 							$filterOptions = array();
 						}
 
-						$filterValue = $filterParser->parseFilter($filterValue, $filterOptions);
+						$filterValue = $filterEncoder->decodeFilter($filterValue, $filterOptions);
 						$filterParts[] = $facetConfiguration['field'] . ':' . addslashes( $filterValue );
 					} else {
 						$filterParts[] = $facetConfiguration['field'] . ':"' . addslashes( $filterValue ) . '"';
