@@ -342,11 +342,6 @@ plugin.tx_solr {
 			rawPost = 0
 			rawGet = 0
 		}
-
-		scheduler {
-				// TODO add logging to the optimize task
-			optimize = 0
-		}
 	}
 }
 
