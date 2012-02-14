@@ -17,6 +17,7 @@
 	* Added lazy loading for Index Queue item record data
 	* Added granular settings for logging Index Queue indexing
 	* Fixed missing item_uid / record uid in tx_solr_indexqueue_Item
+	* Added tx_solr_indexqueue_Item::hasIndexingProperty()
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

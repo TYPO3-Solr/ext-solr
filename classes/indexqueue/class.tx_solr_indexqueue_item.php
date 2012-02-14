@@ -343,6 +343,12 @@ class tx_solr_indexqueue_Item {
 		return $this->hasIndexingProperties;
 	}
 
+	public function hasIndexingProperty($key) {
+		$this->loadIndexingProperties();
+
+		return array_key_exists($key, $this->indexingProperties);
+	}
+
 	/**
 	 * Sets an indexing property for the item.
 	 *
