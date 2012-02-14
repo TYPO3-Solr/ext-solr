@@ -308,7 +308,7 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 	 * Builds the url to a facet from a search result.
 	 *
 	 * @param	string	$facetToReplace A filter string to use in the link parameters
-	 * @return	string	Url to remooce a facet
+	 * @return	string	Url to replace a facet
 	 */
 	protected function buildReplaceFacetUrl($facetToReplace) {
 		$filterParameters = $this->replaceFacetAndEncodeFilterParameters($facetToReplace);
@@ -395,7 +395,9 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 
 		if ($indexToReplace !== FALSE) {
 				// facet found, replace facet
-			$filterParameters[$indexToReplace] = $facetToReplace;
+				// move facet to the end of the uri so it may be manipulated using JavaScript
+			unset($filterParameters[$indexToReplace]);
+			$filterParameters[] = $facetToReplace;
 		} else {
 				// facet not found, add facet
 			$filterParameters[] = $facetToReplace;
