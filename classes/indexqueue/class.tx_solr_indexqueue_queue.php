@@ -33,6 +33,11 @@
  */
 class tx_solr_indexqueue_Queue {
 
+
+		// FIXME some of the methods should be renamed to plural forms
+		// FIXME singular form methods should deal with exactly one item only
+
+
 	/**
 	 * Returns the timestamp of the last indexing run.
 	 *
@@ -494,6 +499,24 @@ class tx_solr_indexqueue_Queue {
 		}
 
 		return $item;
+	}
+
+	/**
+	 * Gets Index Queue items by type and uid.
+	 *
+	 * @param string $itemType item type, ususally  the table name
+	 * @param integer $itemUid item uid
+	 * @return array An array of items matching $itemType and $itemUid
+	 */
+	public function getItems($itemType, $itemUid) {
+		$indexQueueItemRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'*',
+			'tx_solr_indexqueue_item',
+			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
+				. ' AND item_uid = ' . intval($itemUid)
+		);
+
+		return $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
 	}
 
 	/**
