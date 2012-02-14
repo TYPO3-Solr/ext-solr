@@ -252,6 +252,27 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 		return $mountPageUrlParameter;
 	}
 
+	/**
+	 * Gets the Solr connections applicaple for a page.
+	 *
+	 * The connections include the default connection and connections to be used
+	 * for translations of a page.
+	 *
+	 * @param tx_solr_indexqueue_Item $item An index queue item
+	 * @return array An array of tx_solr_SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+	 */
+	protected function getSolrConnectionsByItem(tx_solr_indexqueue_Item $item) {
+		$solrConnections = parent::getSolrConnectionsByItem($item);
+
+		$page = $item->getRecord();
+		if ($page['l18n_cfg'] & 1) {
+				// page is configured to hide the default translation
+			unset($solrConnections[0]);
+		}
+
+		return $solrConnections;
+	}
+
 
 	#
 	# Frontend User Groups Access
