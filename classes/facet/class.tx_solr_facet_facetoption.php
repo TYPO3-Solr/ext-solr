@@ -51,6 +51,14 @@ class tx_solr_facet_FacetOption {
 	protected $value;
 
 	/**
+	 * Facet option value encoded by a tx_solr_QueryFilterEncoder for use in
+	 * URLs.
+	 *
+	 * @var string
+	 */
+	protected $urlValue = '';
+
+	/**
 	 * Number of results that will be returned when applying this facet
 	 * option's filter to the query.
 	 *
@@ -138,7 +146,7 @@ class tx_solr_facet_FacetOption {
 			$filterParameters = array_map('urldecode', $resultParameters['filter']);
 		}
 
-		$filterParameters[] = $this->facetName . ':' . $this->value;
+		$filterParameters[] = $this->facetName . ':' . $this->getUrlValue();
 
 		$filterParameters = array_unique($filterParameters);
 		$filterParameters = array_map('urlencode', $filterParameters);
@@ -184,7 +192,7 @@ class tx_solr_facet_FacetOption {
 				// urldecode the array to get the original representation
 			$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
 			$filterParameters = array_unique($filterParameters);
-			$indexToRemove    = array_search($this->facetName . ':' . $this->value, $filterParameters);
+			$indexToRemove    = array_search($this->facetName . ':' . $this->getUrlValue(), $filterParameters);
 		}
 
 		if ($indexToRemove !== FALSE) {
@@ -252,10 +260,10 @@ class tx_solr_facet_FacetOption {
 				// facet found, replace facet
 				// move facet to the end of the uri so it may be manipulated using JavaScript
 			unset($filterParameters[$indexToReplace]);
-			$filterParameters[] = $this->facetName . ':' . $this->value;
+			$filterParameters[] = $this->facetName . ':' . $this->getUrlValue();
 		} else {
 				// facet not found, add facet
-			$filterParameters[] = $this->facetName . ':' . $this->value;
+			$filterParameters[] = $this->facetName . ':' . $this->getUrlValue();
 		}
 
 		$filterParameters = array_map('urlencode', $filterParameters);
@@ -291,6 +299,30 @@ class tx_solr_facet_FacetOption {
 	 */
 	public function getValue() {
 		return $this->value;
+	}
+
+	/**
+	 * Sets the option's value for use in URLs
+	 *
+	 * @param string $urlValue The option's URL value.
+	 */
+	public function setUrlValue($urlValue) {
+		$this->urlValue = $urlValue;
+	}
+
+	/**
+	 * Gets the option's value for use in URLs
+	 *
+	 * @return string The option's URL value.
+	 */
+	public function getUrlValue() {
+		$urlValue = $this->urlValue;
+
+		if (empty($urlValue)) {
+			$urlValue = $this->value;
+		}
+
+		return $urlValue;
 	}
 
 	/**

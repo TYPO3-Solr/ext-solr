@@ -100,6 +100,7 @@
 	* Changed the install script to allow installing multipple language configurations, improved pre-condition checks, credits Loek Hilgersom
 	* Added the number of results to tx_solr_facet_FacetOption
 	* Added tx_solr_QueryFilterEncoder::encodeFilter()
+	* Added a way to provide a value for facet options to be used in URLs
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
