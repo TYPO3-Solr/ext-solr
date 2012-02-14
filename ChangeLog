@@ -86,6 +86,7 @@
 	* Fixed issue #30559: Results don't listen to page browser when resultsPerPage is in URL, credits Jigal van Hemert
 	* Changed jQuery UI to v1.8.17
 	* Changed jQuery UI CSS to v1.8.17
+	* Added tx_solr_Search::getRangeFacetFieldOptions()
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
