@@ -36,7 +36,7 @@ class tx_solr_GarbageCollector {
 	protected $trackedRecords = array();
 
 	/**
-	 * Hooks into TCE main and tracks record deletions.
+	 * Hooks into TCE main and tracks record deletions and page moves.
 	 *
 	 * @param	string	The command.
 	 * @param	string	The table the record belongs to
@@ -52,6 +52,17 @@ class tx_solr_GarbageCollector {
 				$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 				$indexQueue->deleteItem($table, $uid);
 			}
+		}
+
+		if ($command == 'move' && $table == 'pages') {
+				// must be removed from index since the pid changes and
+				// is part of the Solr document ID
+			$this->deleteIndexDocuments($table, $uid);
+			$this->collectFileGarbage($table, $uid);
+
+				// now re-index with new properties
+			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+			$indexQueue->updateItem($table, $uid);
 		}
 	}
 

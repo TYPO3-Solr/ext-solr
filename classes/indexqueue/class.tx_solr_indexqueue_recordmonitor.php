@@ -49,6 +49,11 @@ class tx_solr_indexqueue_RecordMonitor {
 			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 			$indexQueue->updateItem('pages', $tceMain->getPID($table, $uid));
 		}
+
+		if ($command == 'move' && $table == 'pages') {
+			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+			$indexQueue->updateItem('pages', $uid);
+		}
 	}
 
 	/**
