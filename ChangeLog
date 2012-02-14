@@ -97,6 +97,7 @@
 	* Added support for facet type configuration dependent query facet parameter builders
 	* Added feature #30200: Support for range facets using jQuery ui sliders, credits Michiel Roos
 	* Changed the install script to allow installing multipple language configurations, improved pre-condition checks, credits Loek Hilgersom
+	* Added the number of results to tx_solr_facet_FacetOption
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

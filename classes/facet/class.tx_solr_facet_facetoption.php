@@ -50,6 +50,14 @@ class tx_solr_facet_FacetOption {
 	 */
 	protected $value;
 
+	/**
+	 * Number of results that will be returned when applying this facet
+	 * option's filter to the query.
+	 *
+	 * @var integer
+	 */
+	protected $numberOfResults;
+
 
 	/**
 	 * Constructor.
@@ -58,12 +66,12 @@ class tx_solr_facet_FacetOption {
 	 * @param string $facetName Facet Name
 	 * @param integer|string $facetOptionValue Facet option value
 	 */
-	public function __construct(tx_solr_Query $query, $facetName, $facetOptionValue) {
-			// FIXME extract link building from the query, it's not the query's domain
+	public function __construct(tx_solr_Query $query, $facetName, $facetOptionValue, $facetOptionNumberOfResults) {
 		$this->query = $query;
 
-		$this->facetName = $facetName;
-		$this->value     = $facetOptionValue;
+		$this->facetName       = $facetName;
+		$this->value           = $facetOptionValue;
+		$this->numberOfResults = intval($facetOptionNumberOfResults);
 	}
 
 	/**

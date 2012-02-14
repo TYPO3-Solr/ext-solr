@@ -118,7 +118,8 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 			$facetOption = t3lib_div::makeInstance('tx_solr_facet_FacetOption',
 				$this->query,
 				$this->facetName,
-				$facetOption
+				$facetOption,
+				$facetOptionResultCount
 			);	/* @var $facetOption tx_solr_facet_FacetOption */
 
 			$facetText    = $facetOption->render($this->facetConfiguration);
