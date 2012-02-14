@@ -82,7 +82,7 @@
 
 2011-12-13  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
-	* Changed rendering of facet values to only split by the first ":" to allow the use of colons
+	* Changed rendering of facet values to only split by the first colon to allow the use of colons in the filter/facet option value
 
 2011-12-09  Ingo Renner  <ingo.renner@dkd.de>
 
