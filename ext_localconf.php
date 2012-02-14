@@ -181,7 +181,7 @@ t3lib_extMgm::addTypoScript(
 	43
 );
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// add custom Solr content objects
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME] = array(
@@ -199,7 +199,7 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClas
 	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_relation.php:tx_solr_contentobject_Relation'
 );
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 
 ?>
