@@ -81,6 +81,12 @@ abstract class tx_solr_indexqueue_frontendhelper_Abstract implements tx_solr_Ind
 	public function processRequest(tx_solr_indexqueue_PageIndexerRequest $request, tx_solr_indexqueue_PageIndexerResponse $response) {
 		$this->request  = $request;
 		$this->response = $response;
+
+		if ($request->getParameter('loggingEnabled')) {
+			t3lib_div::devLog('Page indexer request received', 'solr', 0, array(
+				'request' => (array) $request,
+			));
+		}
 	}
 
 	/**
