@@ -131,6 +131,7 @@
 	* Changed copyright year
 	* Fixed bug #28869: Index Queue Worker fails if actual item record is missing, credits Heiko Kromm
 	* Fixed bug #33736: Index Queue fails when page is set to "Hide default translation of page"
+	* Changed the facet view helper to work with refactored facet rendering
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
