@@ -124,6 +124,7 @@
 	* Changed the pi_search template to fit the Introduction Package
 	* Changed the search module to show a message instead of running into an exception when no Solr connections are configured
 	* Added feature #33763: Support for german compound words
+	* Updated schema.xml name
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
