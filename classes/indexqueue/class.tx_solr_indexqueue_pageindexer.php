@@ -43,6 +43,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 	 * @return	Apache_Solr_Response	The Apache Solr response
 	 */
 	public function index(tx_solr_indexqueue_Item $item) {
+		$this->setLogging($item);
 
 			// check whether we should move on at all
 		if (!$this->isPageIndexable($item)) {
@@ -64,9 +65,8 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 			}
 		}
 
+			// FIXME indexed = TRUE only if all responses are 200/OK
 		$indexed = TRUE;
-
-		// FIXME do some logging!!!
 
 		return $indexed;
 	}
@@ -87,6 +87,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 		$request->setIndexQueueItem($item);
 		$request->addAction('indexPage');
 		$request->setParameter('accessRootline', (string) $accessRootline);
+		$request->setParameter('loggingEnabled', $this->loggingEnabled);
 
 		if (!empty($this->options['authorization.'])) {
 			$request->setAuthorizationCredentials(
@@ -95,12 +96,19 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 			);
 		}
 
-		$response = $request->send($this->getDataUrl(
-			$item->getRecordUid(),
-			$language
-		));
+		$indexRequestUrl = $this->getDataUrl($item, $language);
+		$response        = $request->send($indexRequestUrl);
 
-			// TODO log response, success / failure
+		if ($this->loggingEnabled) {
+			t3lib_div::devLog('Page Indexing', 'solr', 0, array(
+				'item'              => (array) $item,
+				'language'          => $language,
+				'user group'        => $userGroup,
+				'index request url' => $indexRequestUrl,
+				'request'           => (array) $request,
+				'response'          => (array) $response
+			));
+		}
 
 		return $response;
 	}
@@ -137,17 +145,17 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 	 * Tries to find a domain record to use to build an URL for a given page ID
 	 * and then actually build and return the page URL.
 	 *
-	 * @param	integer	The page id
-	 * @param	integer	The language id
-	 * @return	string	URL for a page ID
+	 * @param tx_solr_indexqueue_Item $item Item to index
+	 * @param integer $language The language id
+	 * @return string URL to send the index request to
 	 */
-	protected function getDataUrl($pageId, $language = 0) {
+	protected function getDataUrl(tx_solr_indexqueue_Item $item, $language = 0) {
 		$dataUrl = '';
-		$scheme  = 'http';
-		$path    = '/';
 
-		$rootline = t3lib_BEfunc::BEgetRootLine($pageId);
-		$host     = t3lib_BEfunc::firstDomainRecord($rootline);
+		$scheme = 'http';
+		$host   = $item->getSite()->getDomain();
+		$path   = '/';
+		$pageId = $item->getRecordUid();
 
 			// deprecated
 		if (!empty($this->options['scheme'])) {
@@ -175,12 +183,15 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 		}
 
 		$dataUrl = $scheme . '://' . $host . $path . 'index.php?id=' . $pageId;
+		$dataUrl .= $this->getMountPageDataUrlParameter($item);
+
 		if (!t3lib_div::isValidUrl($dataUrl)) {
 			t3lib_div::devLog(
 				'Could not create a valid URL to get frontend data while trying to index a page.',
 				'solr',
 				3,
 				array(
+					'item'            => (array) $item,
 					'constructed URL' => $dataUrl,
 					'scheme'          => $scheme,
 					'host'            => $host,
@@ -206,6 +217,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 
 			if ($dataUrlModifier instanceof tx_solr_IndexQueuePageIndexerDataUrlModifier) {
 				$dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, array(
+					'item'     => $item,
 					'scheme'   => $scheme,
 					'host'     => $host,
 					'path'     => $path,
@@ -213,16 +225,35 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 					'language' => $language
 				));
 			} else {
-					throw t3lib_div::makeInstance('RuntimeException',
-						$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']
+				throw new RuntimeException(
+					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']
 						. ' is not an implementation of tx_solr_IndexQueuePageIndexerDataUrlModifier',
-						1290523345
-					) ;
-
+					1290523345
+				);
 			}
 		}
 
 		return $dataUrl;
+	}
+
+	/**
+	 * Generates the MP URL parameter needed to access mount pages. If the item
+	 * is identified as being a mounted page, the &MP parameter is generated.
+	 *
+	 * @param tx_solr_indexqueue_Item $item Item to get an &MP URL parameter for
+	 * @return string &MP URL parameter if $item is a mounted page
+	 */
+	protected function getMountPageDataUrlParameter(tx_solr_indexqueue_Item $item) {
+		$mountPageUrlParameter = '';
+
+		if ($item->hasIndexingProperty('isMountedPage')) {
+			$mountPageUrlParameter = '&MP='
+				. $item->getIndexingProperty('mountPageSource')
+				. '-'
+				. $item->getIndexingProperty('mountPageDestination');
+		}
+
+		return $mountPageUrlParameter;
 	}
 
 
@@ -300,6 +331,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 			$request = t3lib_div::makeInstance('tx_solr_indexqueue_PageIndexerRequest');
 			$request->setIndexQueueItem($item);
 			$request->addAction('findUserGroups');
+			$request->setParameter('loggingEnabled', $this->loggingEnabled);
 
 			if (!empty($this->options['authorization.'])) {
 				$request->setAuthorizationCredentials(
@@ -308,14 +340,23 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 				);
 			}
 
-			$response = $request->send($this->getDataUrl(
-				$item->getRecordUid(),
-				$language
-			));
+			$indexRequestUrl = $this->getDataUrl($item, $language);
+			$response        = $request->send($indexRequestUrl);
 
 			$groups = $response->getActionResult('findUserGroups');
 			if (is_array($groups)) {
 				$accessGroupsCache[$accessGroupsCacheEntryId] = $groups;
+			}
+
+			if ($this->loggingEnabled) {
+				t3lib_div::devLog('Page Access Groups', 'solr', 0, array(
+					'item'              => (array) $item,
+					'language'          => $language,
+					'index request url' => $indexRequestUrl,
+					'request'           => (array) $request,
+					'response'          => (array) $response,
+					'groups'            => $groups
+				));
 			}
 		}
 

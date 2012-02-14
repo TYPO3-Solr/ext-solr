@@ -265,6 +265,7 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 
 		try {
 			$indexer = t3lib_div::makeInstance('tx_solr_Typo3PageIndexer', $page);
+			$indexer->setSolrConnection($this->getSolrConnection());
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
 
@@ -289,6 +290,28 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 
 			t3lib_div::devLog('Page indexed: ' . $success, 'solr', $severity, $this->responseData);
 		}
+	}
+
+	/**
+	 * Gets the solr connection to use for indexing the page based on the
+	 * Index Queue item's properties.
+	 *
+	 * @return tx_solr_SolrService Solr server connection
+	 */
+	protected function getSolrConnection() {
+		$indexQueue        = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+		$connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
+
+		$indexQueueItem = $indexQueue->getItem(
+			$this->request->getParameter('item')
+		);
+
+		$solrConnection = $connectionManager->getConnectionByRootPageId(
+			$indexQueueItem->getRootPageUid(),
+			$GLOBALS['TSFE']->sys_language_uid
+		);
+
+		return $solrConnection;
 	}
 }
 
