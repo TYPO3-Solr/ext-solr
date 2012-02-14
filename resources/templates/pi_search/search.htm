@@ -13,10 +13,10 @@
 	<div class="tx-solr-searchbox">
 		###FORM.SUGGEST_URL###
 		<form id="tx-solr-search-form-pi-search" action="###FORM.ACTION###" method="get" accept-charset="###FORM.ACCEPT-CHARSET###">
-			###LLL:searchWord### <input type="text" class="tx-solr-q" name="###TX_SOLR.PREFIX###[q]" value="" />
 			<input type="hidden" name="id" value="###FORM.ACTION_ID###" />
 			<input type="hidden" name="###FORM.ACTION_LANGUAGE_PARAMETER###" value="###FORM.ACTION_LANGUAGE###" />
-			<input type="submit" value="###LLL:submit###" />
+			<input type="text" id="inputText" class="tx-solr-q" name="###TX_SOLR.PREFIX###[q]" value="" />
+			<input type="image" id="inputButton" src="fileadmin/default/templates/images/bg_searchButton.gif" alt="Search" title="Search">
 		</form>
 	</div>
 	<!-- ###SOLR_SEARCH_FORM### end -->
