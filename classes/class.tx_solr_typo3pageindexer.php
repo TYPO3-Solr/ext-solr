@@ -348,15 +348,15 @@ class tx_solr_Typo3PageIndexer {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'] as $classReference) {
 				$additionalIndexer = t3lib_div::getUserObj($classReference);
 
-				if ($additionalIndexer instanceof tx_solr_AdditionalIndexer) {
-					$additionalDocuments = $additionalIndexer->getAdditionalDocuments($pageDocument, $documents);
+				if ($additionalIndexer instanceof tx_solr_AdditionalPageIndexer) {
+					$additionalDocuments = $additionalIndexer->getAdditionalPageDocuments($pageDocument, $documents);
 
 					if (is_array($additionalDocuments)) {
 						$documents = array_merge($documents, $additionalDocuments);
 					}
 				} else {
 					throw new UnexpectedValueException(
-						get_class($additionalIndexer) . ' must implement interface tx_solr_AdditionalIndexer',
+						get_class($additionalIndexer) . ' must implement interface tx_solr_AdditionalPageIndexer',
 						1310491024
 					);
 				}

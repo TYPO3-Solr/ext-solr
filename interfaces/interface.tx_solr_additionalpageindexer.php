@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2011 Ingo Renner <ingo@typo3.org>
+*  (c) 2012 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,22 +28,22 @@
 
 /**
  * Interface that defines the method an indexer must implement to provide
- * additional documents to index for the page currently being indexed
+ * additional documents to index for a page being indexed.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
-interface tx_solr_AdditionalIndexer {
+interface tx_solr_AdditionalPageIndexer {
 
 	/**
 	 * Provides additional documents that should be indexed together with a page.
 	 *
-	 * @param	Apache_Solr_Document	The original page document.
-	 * @param	array	An array containing all the documents collected until here, including the page document
-	 * @return	array	returns an array of additional Apache_Solr_Document objects
+	 * @param Apache_Solr_Document The original page document.
+	 * @param array An array containing all the documents collected until here, including the page document
+	 * @return array An array of additional Apache_Solr_Document objects
 	 */
-	public function getAdditionalDocuments(Apache_Solr_Document $pageDocument, array $allDocuments);
+	public function getAdditionalPageDocuments(Apache_Solr_Document $pageDocument, array $allDocuments);
 }
 
 ?>
