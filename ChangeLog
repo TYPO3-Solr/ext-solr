@@ -1,5 +1,6 @@
 2012-02-14  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Added a column in the Index Queue table to signal that an item has additional indexing properties
 	* Refactored initialization of the Index Queue to be more modular and allow finer control over what goes into the Index Queue
 	* Added method tx_solr_Site::getPages() to get all pages (page IDs) of a site
 	* Changed logging of failed Index Queue page indexer requests to also log when invalid json was returned
