@@ -12,7 +12,7 @@ plugin.tx_solr {
 		useCurlHttpTransport = 0
 	}
 
-	templateFile {
+	templateFiles {
 		results = EXT:solr/resources/templates/pi_results/results.htm
 		search = EXT:solr/resources/templates/pi_search/search.htm
 	}

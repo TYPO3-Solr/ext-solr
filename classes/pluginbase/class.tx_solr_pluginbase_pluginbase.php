@@ -307,7 +307,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 * @return	string	The template file name to be used for the plugin
 	 */
 	protected function getTemplateFile() {
-		return $this->conf['templateFile.'][$this->getTemplateFileKey()];
+		return $this->conf['templateFiles.'][$this->getTemplateFileKey()];
 	}
 
 	/**

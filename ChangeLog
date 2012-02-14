@@ -1,5 +1,6 @@
 2012-02-14  Ingo Renner  <ingo.renner@dkd.de>
 
+	!!! Changed plugin.tx_solr.templateFile to plugin.tx_solr.templateFiles - notice the S at the end
 	! Changed Index Queue tables to use InnoDB engine
 
 	* Added Polish Translations, credits Jan Slusarczyk
