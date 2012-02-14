@@ -298,7 +298,6 @@ plugin.tx_solr {
 				type {
 					label = Content Type
 					field = type
-					missing = 0
 				}
 
 				author {
