@@ -50,6 +50,7 @@
 	* Added stdWrap support to plugin.tx_solr.search.query.filter, resolves #30034
 	* Added search.query.sortBy, resolves #30201, credits Stefan Sprenger
 	* Added support for language dependant field values (through conditions) when indexing records using the Index Queue, resolves #30205, credits Michiel Roos
+	* Added support for language parameter when indexing records with Index Queue, resolves #31382, credits Michael Voehringer
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -373,6 +373,7 @@ class tx_solr_indexqueue_Indexer {
 				$documents,
 				$fieldProcessingInstructions
 			);
+			$itemRecord['__solr_index_language'] =  $language;
 		}
 	}
 
