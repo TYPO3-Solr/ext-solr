@@ -127,8 +127,8 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 			. 'FROM ' . $this->type . ' '
 			. 'WHERE '
 				. $this->buildPagesClause()
-				. $this->buildTcaWhereClause();
-#				. $this->buildUserWhereClause();
+				. $this->buildTcaWhereClause()
+				. $this->buildUserWhereClause();
 
 		$GLOBALS['TYPO3_DB']->sql_query($initializationQuery);
 
@@ -262,12 +262,6 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 			$conditions[] = 'pid != -1';
 		}
 
-			// FIXME move this into a section where every filter/clause is configured separately for easier usage in garbage collection
-			// @see buildUserWhereClause()
-		if (isset($this->indexingConfiguration['additionalWhereClause'])) {
-			$conditions[] = $this->indexingConfiguration['additionalWhereClause'];
-		}
-
 		return ' AND ' . implode(' AND ', $conditions);
 	}
 
@@ -278,6 +272,15 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 	 * @return string Conditions to add items to the Index Queue based on TypoScript configuration
 	 */
 	protected function buildUserWhereClause() {
+		$condition = '';
+
+			// FIXME replace this with the mechanism described below
+		if (isset($this->indexingConfiguration['additionalWhereClause'])) {
+			$condition = ' AND '  . $this->indexingConfiguration['additionalWhereClause'];
+		}
+
+		return $condition;
+
 		// TODO add a query builder implementation based on TypoScript configuration
 
 /* example TypoScript
