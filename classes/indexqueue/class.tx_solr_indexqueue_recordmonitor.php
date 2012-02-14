@@ -36,7 +36,7 @@
 class tx_solr_indexqueue_RecordMonitor {
 
 	/**
-	 * Hooks into TCE main and tracks record deletions.
+	 * Hooks into TCE main and tracks record deletion commands.
 	 *
 	 * @param	string	The command.
 	 * @param	string	The table the record belongs to
@@ -49,7 +49,18 @@ class tx_solr_indexqueue_RecordMonitor {
 			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 			$indexQueue->updateItem('pages', $tceMain->getPID($table, $uid));
 		}
+	}
 
+	/**
+	 * Hooks into TCE main and tracks page move commands.
+	 *
+	 * @param	string	The command.
+	 * @param	string	The table the record belongs to
+	 * @param	integer	The record's uid
+	 * @param	string
+	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
+	 */
+	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 		if ($command == 'move' && $table == 'pages') {
 			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 			$indexQueue->updateItem('pages', $uid);

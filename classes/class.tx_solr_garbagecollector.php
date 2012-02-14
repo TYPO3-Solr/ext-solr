@@ -36,7 +36,7 @@ class tx_solr_GarbageCollector {
 	protected $trackedRecords = array();
 
 	/**
-	 * Hooks into TCE main and tracks record deletions and page moves.
+	 * Hooks into TCE main and tracks record deletion commands.
 	 *
 	 * @param	string	The command.
 	 * @param	string	The table the record belongs to
@@ -53,14 +53,25 @@ class tx_solr_GarbageCollector {
 				$indexQueue->deleteItem($table, $uid);
 			}
 		}
+	}
 
+	/**
+	 * Hooks into TCE main and tracks page move commands.
+	 *
+	 * @param	string	The command.
+	 * @param	string	The table the record belongs to
+	 * @param	integer	The record's uid
+	 * @param	string
+	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
+	 */
+	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 		if ($command == 'move' && $table == 'pages') {
-				// must be removed from index since the pid changes and
-				// is part of the Solr document ID
+			// must be removed from index since the pid changes and
+			// is part of the Solr document ID
 			$this->deleteIndexDocuments($table, $uid);
 			$this->collectFileGarbage($table, $uid);
 
-				// now re-index with new properties
+			// now re-index with new properties
 			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 			$indexQueue->updateItem($table, $uid);
 		}
