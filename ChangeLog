@@ -81,6 +81,7 @@
 	* Added the javabin response writer in solrconfig.xml
 	* Changed tx_solr_indexqueue_Indexer::getAdditionalDocuments() to check whether the additionatl indexer returns additional documents
 	* Fixed multivalue field output using the MULTIVALUE view helper, credits Dmitri Ebert
+	* Fixed issue #33298: Facet option gets removed, if it has value 0
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -115,6 +115,8 @@ class tx_solr_facet_SimpleFacetRenderer implements tx_solr_FacetRenderer {
 
 		$i = 0;
 		foreach ($this->facetOptions as $facetOption => $facetOptionResultCount) {
+			$facetOption = (string) $facetOption;
+
 			if ($facetOption == '_empty_') {
 					// TODO - for now we don't handle facet missing.
 				continue;
