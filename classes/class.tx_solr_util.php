@@ -290,9 +290,10 @@ class tx_solr_Util {
 	/**
 	 * Gets the parent TypoScript Object from a given TypoScript path.
 	 *
-	 * Example: plugin.tx_solr.search.targetPage
-	 * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']
-	 *	 *
+	 * Example: plugin.tx_solr.index.queue.tt_news.fields.content
+	 * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content.']
+	 * which is a SOLR_CONTENT cObj.
+	 *
 	 * @param	string	$path TypoScript path
 	 * @return	array	The TypoScript object defined by the given path
 	 * @throws	InvalidArgumentException
@@ -314,6 +315,38 @@ class tx_solr_Util {
 				);
 			}
 			$pathBranch = $pathBranch[$segment . '.'];
+		}
+
+		return $pathBranch;
+	}
+
+	/**
+	 * Gets the value from a given TypoScript path.
+	 *
+	 * Example: plugin.tx_solr.search.targetPage
+	 * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage']
+	 *
+	 * @param string $path TypoScript path
+	 * @return array The TypoScript object defined by the given path
+	 * @throws InvalidArgumentException
+	 */
+	public static function getTypoScriptValue($path) {
+		if (!is_string($path)) {
+			throw new InvalidArgumentException('Parameter $path is not a string', 1325623321);
+		}
+
+		$pathExploded = explode('.', trim($path));
+		$pathBranch   = $GLOBALS['TSFE']->tmpl->setup;
+
+		$segmentCount = count($pathExploded);
+		for ($i = 0; $i < $segmentCount; $i++) {
+			$segment = $pathExploded[$i];
+
+			if ($i == ($segmentCount - 1)) {
+				$pathBranch = $pathBranch[$segment];
+			} else {
+				$pathBranch = $pathBranch[$segment . '.'];
+			}
 		}
 
 		return $pathBranch;

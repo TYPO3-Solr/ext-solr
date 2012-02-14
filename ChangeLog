@@ -33,6 +33,7 @@
 	* Added search.query.allowEmptyQuery in TypoScript to make it "visible" in TypoScript object browser
 	* Fixed issue #30527: jQuery loads in wrong order, credits Rik Willems
 	* Added interface tx_solr_CommandPluginAware
+	* Added tx_solr_Util::getTypoScriptValue()
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
