@@ -107,6 +107,7 @@
 	* Added a facet.type default value for use in templates, defaults to "default"
 	* Added styling for the facets to blend into introduction package styling
 	* Added a class in the relevance bar amrkup to use the theme background color when used in the introduction package
+	* Added styling for the result list to match the introducion package
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 

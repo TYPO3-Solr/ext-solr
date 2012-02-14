@@ -10,14 +10,26 @@
 }
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+/* search functions */
 
-#tx-solr-faceting .secondaryContentSection {
+
+#tx-solr-search-functions div.secondaryContentSection {
 	padding: 0px 0px 10px 0px;
+	width: 100%;
 }
 
-#tx-solr-faceting .csc-header {
+#tx-solr-search-functions .secondaryContentSection .csc-header {
 	padding-left: 10px;
 }
+
+#tx-solr-search-functions .secondaryContentSection .csc-header h1,
+#tx-solr-search-functions .secondaryContentSection .csc-header h2,
+#tx-solr-search-functions .secondaryContentSection .csc-header h3 {
+	width: 100%;
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+/* faceting */
 
 #tx-solr-faceting .facets .csc-header {
 	padding: 3px 0px 3px 10px;
@@ -32,9 +44,6 @@
 }
 
 #tx-solr-faceting .facets .facet-label {
-/* 	border-top: 1px solid #cfcecf; */
-/* 	border-bottom: 1px solid #cfcecf; */
-
 	background-color: #cfcecf;
 	color: #fff;
 	font-weight: bold;
@@ -46,6 +55,40 @@
 }
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+/* results */
+
+#tx-solr-search .results-list li {
+	list-style: none inside;
+	margin-left: 0px;
+}
+
+.results-entry {
+	border-bottom: 1px solid #cfcecf;
+	margin-bottom: 20px;
+}
+
+.results-topic {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.relevance {
+	height: 20px;
+}
+
+.relevance-label,
+.relevance-bar,
+.relevance-percent {
+	float: left;
+	margin-right: 3px;
+}
+
+.relevance-bar {
+	height: 20px;
+	padding-top: 3px;
+}
+/* frequent searches */
+/* relevance */
 
 .tx-solr-relevance-bar {
 	width: 100px;

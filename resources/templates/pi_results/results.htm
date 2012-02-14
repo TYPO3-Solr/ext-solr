@@ -71,15 +71,20 @@
 		<!-- ###LOOP:RESULT_DOCUMENTS### begin -->
 		<!-- ###LOOP_CONTENT### -->
 		<li class="results-entry">
-			<h5 class="results-topic">###CURRENT_RESULT_NUMBER:###LOOP_CURRENT_ITERATION_COUNT###### <a href="###RESULT_DOCUMENT.URL###">###RESULT_DOCUMENT.TITLE###</a></h5>
+			<!--
+			Score: ###RESULT_DOCUMENT.SCORE###
+			Document ID:  ###RESULT_DOCUMENT.ID###
+			-->
+
+			<h5 class="results-topic"><a href="###RESULT_DOCUMENT.URL###">###RESULT_DOCUMENT.TITLE###</a></h5>
 			<div class="results-teaser">
 				<p>###RESULT_DOCUMENT.CONTENT###</p>
-				<p>
-					Score: <em>###RESULT_DOCUMENT.SCORE###</em><br />
-					Document ID: <em>###RESULT_DOCUMENT.ID###</em>
-				</p>
-				###RELEVANCE_BAR:###RESULT_DOCUMENT.SCORE######
-				###LLL:relevance###: ###RELEVANCE:###RESULT_DOCUMENT.SCORE######%
+
+				<div class="relevance">
+					<div class="relevance-label">###LLL:relevance###: </div>
+					<div class="relevance-bar">###RELEVANCE_BAR:###RESULT_DOCUMENT.SCORE######</div>
+					<div class="relevance-percent">###RELEVANCE:###RESULT_DOCUMENT.SCORE######%</div>
+				</div>
 			</div>
 		</li>
 		<!-- ###LOOP_CONTENT### -->
