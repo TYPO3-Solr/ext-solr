@@ -46,12 +46,10 @@ class tx_solr_Search implements t3lib_Singleton {
 	 */
 	protected $query;
 
-	// TODO Override __clone to reset $response and $hasSearched
-
 	/**
 	 * The search response
 	 *
-	 * @var	string
+	 * @var Apache_Solr_Response
 	 */
 	protected $response = NULL;
 
@@ -61,6 +59,9 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @var	boolean
 	 */
 	protected $hasSearched = FALSE;
+
+
+	// TODO Override __clone to reset $response and $hasSearched
 
 	/**
 	 * Constructor
