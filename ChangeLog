@@ -2,6 +2,7 @@
 
 	! Changed Index Queue tables to use InnoDB engine
 
+	* Added Index Queue support for resolving Mount Pages and adding them to the queue
 	* Added support for persisting indexing properties of Index Queue items
 	* Changed the Index Queue to also remove indexing properties for existing Index Queue items when clearing the queue
 	* Added a column in the Index Queue indexing properties table to identify which site a property belongs to
