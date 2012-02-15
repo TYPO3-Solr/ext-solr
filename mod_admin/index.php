@@ -192,7 +192,10 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 			<label for="delete_type" style="display:block;width:60px;float:left;">Item type</label>
 			<input id="delete_type" type="text" name="delete_type" value="" /><br /><br />
 			<input type="submit" value="Delete Document(s)"name="s_deleteDocument" onclick="document.forms[0].solraction.value=\'deleteDocument\';" /><br /><br />
-		';
+
+			<br />
+			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
+			API Key: ' . tx_solr_Api::getApiKey();
 			// TODO add a checkbox to the delete documents fields to also remove from Index Queue
 
 		switch($_POST['solraction']) {
