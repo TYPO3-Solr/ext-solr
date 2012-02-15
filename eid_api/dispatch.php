@@ -29,6 +29,7 @@ $apiKey = trim(t3lib_div::_GP('apiKey'));
 if (!tx_solr_Api::isValidApiKey($apiKey)) {
 
 	header(t3lib_utility_Http::HTTP_STATUS_403);
+	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode(array('errorMessage' => 'Invalid API key'));
 
 } else {
@@ -41,6 +42,7 @@ if (!tx_solr_Api::isValidApiKey($apiKey)) {
 
 		default:
 			header(t3lib_utility_Http::HTTP_STATUS_400);
+			header('Content-Type: application/json; charset=utf-8');
 			echo json_encode(array('errorMessage' => 'You must provide an available API method, e.g. siteHash.'));
 			break;
 	}
