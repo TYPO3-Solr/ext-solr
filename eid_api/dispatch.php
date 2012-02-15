@@ -24,18 +24,27 @@
 
 
 $api = t3lib_div::_GP('api');
+$apiKey = trim(t3lib_div::_GP('apiKey'));
 
-switch($api) {
-	case 'siteHash':
-		include('sitehash.php');
+if (!tx_solr_Api::isValidApiKey($apiKey)) {
 
-		break;
-	default:
-		header(t3lib_utility_Http::HTTP_STATUS_400);
+	header(t3lib_utility_Http::HTTP_STATUS_403);
+	echo json_encode(array('errorMessage' => 'Invalid API key'));
 
-		echo json_encode(array('errorMessage' => 'You must provide an available API method, e.g. siteHash.'));
+} else {
 
-		break;
+	switch($api) {
+
+		case 'siteHash':
+			include('sitehash.php');
+			break;
+
+		default:
+			header(t3lib_utility_Http::HTTP_STATUS_400);
+			echo json_encode(array('errorMessage' => 'You must provide an available API method, e.g. siteHash.'));
+			break;
+	}
+
 }
 
 exit();

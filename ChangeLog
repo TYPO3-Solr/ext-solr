@@ -1,6 +1,7 @@
 2012-02-15  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added a class to generate and check API keys for use with the REST API
+	* Added an API key check for the REST API
 
 2012-02-14  Ingo Renner  <ingo.renner@dkd.de>
 
