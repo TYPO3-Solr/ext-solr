@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Usage:
+#	sudo ./install-solr.sh
+#	sudo ./install-solr.sh english german french
+
 clear
 
 TOMCAT_VER=6.0.35
@@ -9,9 +13,13 @@ EXT_SOLR_PLUGIN_VER=1.2.0
 
 SVNBRANCH_PATH="branches/solr_$EXT_SOLR_VER.x"
 
-LANGUAGES=(
-english
-)
+# Set default language for cores to download to english, if no commandline parameters are given
+if [ $# -eq 0 ]
+then
+	LANGUAGES=english
+else
+	LANGUAGES=$@
+fi
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -40,8 +48,13 @@ progressfilt ()
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
+# wgetresource
+# usage: wgetresource relative/filepath/inside/resourcesdir [justcheck]
+# second parameter is optional, if set, do not download, only check if resource exists
 wgetresource ()
 {
+	local wget_result
+
 	if [ $BRANCH_TEST_RETURN -eq "0" ]
 	then
 		RESOURCE="https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/"$1
@@ -49,8 +62,17 @@ wgetresource ()
 		RESOURCE="https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/"$1
 	fi
 
-	echo "wget $RESOURCE"
-	wget --progress=bar:force --no-check-certificate $RESOURCE 2>&1 | progressfilt
+	if [ "$2" ]
+	then
+		# If second parameter is set, just check if resource exists, no output
+		wget -q -O /dev/null --no-check-certificate $RESOURCE
+	else
+		echo "wget $RESOURCE"
+		wget --progress=bar:force --no-check-certificate $RESOURCE 2>&1 | progressfilt
+	fi
+
+	# return wget error code
+	return $?
 }
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -92,6 +114,17 @@ cecho "Checking requirements." $green
 
 PASSALLCHECKS=1
 
+# test if release branch exists, if so we'll download from there
+wget --no-check-certificate -q -O /dev/null https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH
+BRANCH_TEST_RETURN=$?
+
+# Make sure only root can run this script
+if [[ $EUID -ne 0 ]]
+then
+	cecho "This script must be run as root." $red
+	exit 1
+fi
+
 java -version > /dev/null 2>&1
 CHECK=$?
 if [ $CHECK -ne "0" ]
@@ -129,6 +162,19 @@ then
 	PASSALLCHECKS=0
 fi
 
+# Check if solr scheme files etc. for specified languages are available
+for LANGUAGE in ${LANGUAGES[*]}
+do
+	echo -n "Checking availability of language \"$LANGUAGE\": "
+	wgetresource solr/typo3cores/conf/"$LANGUAGE"/schema.xml justcheck
+	if [ $? -ne 0 ]
+	then
+		cecho "ERROR: Could not find Solr configuration files for language \"$LANGUAGE\"" $red
+		exit 1
+	else cecho "passed" $green
+	fi
+done
+
 if [ $PASSALLCHECKS -eq "0" ]
 then
 	cecho "Please install all missing requirements or fix any other errors listed above and try again." $red
@@ -138,10 +184,6 @@ else
 fi
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-# test if release branch exists, if so we'll download from there
-wget --no-check-certificate -q -O /dev/null https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH
-BRANCH_TEST_RETURN=$?
 
 mkdir -p /opt/solr-tomcat
 cd /opt/solr-tomcat/
@@ -184,6 +226,11 @@ do
 	wgetresource solr/typo3cores/conf/$LANGUAGE/schema.xml
 	wgetresource solr/typo3cores/conf/$LANGUAGE/stopwords.txt
 	wgetresource solr/typo3cores/conf/$LANGUAGE/synonyms.txt
+
+	if [ $LANGUAGE = "german" ]
+	then
+		wgetresource solr/typo3cores/conf/$LANGUAGE/german-common-nouns.txt
+	fi
 
 done
 

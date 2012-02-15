@@ -136,6 +136,7 @@
 	* Fixed bug #33729: Possible invalid SQL generated when trying delete Index Queue items
 	* Fixed a bug where the TYPO3 page indexer would add empty keywords fields
 	* Added a check whether function strptime exists to please syntax checks in CI processes
+	* Added feature #33611: Install script improvements: additional requirements checks and install multiple languages, credits Loek Hilgersom
 
 2012-02-13  Ingo Renner  <ingo.renner@dkd.de>
 
