@@ -1,10 +1,13 @@
-2012-02-15  Ingo Renner  <ingo.renner@dkd.de>
+2012-02-16  Ingo Renner  <ingo.renner@dkd.de>
 
 	!!! Renamed tx_solr_ConnectionManager::getAllConnectionConfigurations() to getAllConfigurations()
 
+	* Added tx_solr_ConnectionManager::getConfigurationsBySite()
+
+2012-02-15  Ingo Renner  <ingo.renner@dkd.de>
+
 	* Added a class to generate and check API keys for use with the REST API
 	* Added an API key check for the REST API
-	* Added tx_solr_ConnectionManager::getConfigurationsBySite()
 
 2012-02-14  Ingo Renner  <ingo.renner@dkd.de>
 
