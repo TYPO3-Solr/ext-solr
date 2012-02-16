@@ -3,6 +3,7 @@
 	!!! Renamed tx_solr_ConnectionManager::getAllConnectionConfigurations() to getAllConfigurations()
 
 	* Added tx_solr_ConnectionManager::getConfigurationsBySite()
+	* Added tx_solr_ConnectionManager::getConfigurationByPageId() and tx_solr_ConnectionManager::getConfigurationByRootPageId()
 
 2012-02-15  Ingo Renner  <ingo.renner@dkd.de>
 
