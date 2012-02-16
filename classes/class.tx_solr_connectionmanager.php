@@ -172,7 +172,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 *
 	 * @return	array	An array of connection configuraitons.
 	 */
-	public function getAllConnectionConfigurations() {
+	public function getAllConfigurations() {
 		$registry = t3lib_div::makeInstance('t3lib_Registry');
 		$connectionConfigurations = $registry->get('tx_solr', 'servers', array());
 
@@ -186,7 +186,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 */
 	public function getAllConnections() {
 		$connections = array();
-		$solrServers = $this->getAllConnectionConfigurations();
+		$solrServers = $this->getAllConfigurations();
 
 		foreach ($solrServers as $solrServer) {
 			$connections[] = $this->getConnection(
@@ -210,7 +210,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	public function getConfigurationsBySite(tx_solr_Site $site) {
 		$siteConfigurations = array();
 
-		$configurations = $this->getAllConnectionConfigurations();
+		$configurations = $this->getAllConfigurations();
 		foreach($configurations as $configuration) {
 			if ($configuration['rootPageUid'] == $site->getRootPageId()) {
 				$siteConfigurations[] = $configuration;

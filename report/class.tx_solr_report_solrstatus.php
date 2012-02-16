@@ -49,7 +49,7 @@ class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 		$reports = array();
 		$this->connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
 
-		$solrConnections = $this->connectionManager->getAllConnectionConfigurations();
+		$solrConnections = $this->connectionManager->getAllConfigurations();
 
 		foreach ($solrConnections as $solrConnection) {
 			$reports[] = $this->getConnectionStatus($solrConnection);
