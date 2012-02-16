@@ -454,8 +454,8 @@ class tx_solr_indexqueue_Indexer {
 	 * The connections include the default connection and connections to be used
 	 * for translations of an item.
 	 *
-	 * @param	tx_solr_indexqueue_Item	$item An index queue item
-	 * @return	array	An array of tx_solr_SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+	 * @param tx_solr_indexqueue_Item $item An index queue item
+	 * @return array An array of tx_solr_SolrService connections, the array's keys are the sys_language_uid of the language of the connection
 	 */
 	protected function getSolrConnectionsByItem(tx_solr_indexqueue_Item $item) {
 		$solrConnections = array();
@@ -465,8 +465,22 @@ class tx_solr_indexqueue_Indexer {
 			$pageId = $item->getRecordUid();
 		}
 
+			// Solr configurations possible for this item
+		$solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($item->getSite());
+
+		$siteLanguages = array();
+		foreach ($solrConfigurationsBySite as $solrConfiguration) {
+			$siteLanguages[] = $solrConfiguration['language'];
+		}
+
+		$translationOverlays = $this->getTranslationOverlaysForPage($pageId);
+		foreach ($translationOverlays as $key => $translationOverlay) {
+			if (!in_array($translationOverlay['sys_language_uid'], $siteLanguages)) {
+				unset($translationOverlays[$key]);
+			}
+		}
+
 		$defaultConnection      = $this->connectionManager->getConnectionByPageId($pageId);
-		$translationOverlays    = $this->getTranslationOverlaysForPage($pageId);
 		$translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
 
 		$solrConnections[0] = $defaultConnection;

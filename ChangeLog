@@ -4,6 +4,7 @@
 
 	* Added tx_solr_ConnectionManager::getConfigurationsBySite()
 	* Added tx_solr_ConnectionManager::getConfigurationByPageId() and tx_solr_ConnectionManager::getConfigurationByRootPageId()
+	* Fixed an issue where Solr connections where not detected correctly for translated mounted pages
 
 2012-02-15  Ingo Renner  <ingo.renner@dkd.de>
 
