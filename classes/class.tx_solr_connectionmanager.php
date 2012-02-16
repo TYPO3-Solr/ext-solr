@@ -202,6 +202,25 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	}
 
 	/**
+	 * Gets all connection configurations for a given site.
+	 *
+	 * @param tx_solr_Site $site A TYPO3 site
+	 * @return array An array of Solr connection configurations for a site
+	 */
+	public function getConfigurationsBySite(tx_solr_Site $site) {
+		$siteConfigurations = array();
+
+		$configurations = $this->getAllConnectionConfigurations();
+		foreach($configurations as $configuration) {
+			if ($configuration['rootPageUid'] == $site->getRootPageId()) {
+				$siteConfigurations[] = $configuration;
+			}
+		}
+
+		return $siteConfigurations;
+	}
+
+	/**
 	 * Gets all connections configured for a given site.
 	 *
 	 * @param	tx_solr_Site	$site	A TYPO3 site
