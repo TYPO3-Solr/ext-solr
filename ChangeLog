@@ -1,3 +1,7 @@
+2012-02-17  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed bug #34038: Realurls not resolved when index queue runs from cli on single site install, credits Michiel Roos
+
 2012-02-16  Ingo Renner  <ingo.renner@dkd.de>
 
 	!!! Renamed tx_solr_ConnectionManager::getAllConnectionConfigurations() to getAllConfigurations()

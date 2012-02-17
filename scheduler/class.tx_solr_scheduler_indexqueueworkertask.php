@@ -217,8 +217,8 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 	protected function initializeHttpHost(tx_solr_indexqueue_Item $item) {
 		static $hosts = array();
 
-			// relevant for realURL multi-domain environments, only
-		if (t3lib_extMgm::isLoaded('realurl') && $this->isMultiDomain()) {
+			// relevant for realURL environments, only
+		if (t3lib_extMgm::isLoaded('realurl')) {
 			$itemPageId = $item->getRecordPageId();
 			$hostFound  = !empty($hosts[$itemPageId]);
 
@@ -231,26 +231,6 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 
 			$_SERVER['HTTP_HOST'] = $hosts[$itemPageId];
 		}
-	}
-
-	/**
-	 * Checks if TYPO3 runs in a multi-domain environment.
-	 *
-	 * Copied from EXT:realurl.
-	 *
-	 * @return	boolean
-	 * @see EXT:realurl/class.tx_realurl.php:tx_realurl->isMultidomain()
-	 */
-	protected function isMultiDomain() {
-		static $isMultiDomain = NULL;
-
-		if ($isMultiDomain === NULL) {
-			list($row) = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('COUNT(distinct pid) AS t',
-				'sys_domain', 'redirectTo=\'\' AND hidden=0');
-			$isMultiDomain = ($row['t'] > 1);
-		}
-
-		return $isMultiDomain;
 	}
 }
 
