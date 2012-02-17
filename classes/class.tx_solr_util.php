@@ -298,6 +298,23 @@ class tx_solr_Util {
 	}
 
 	/**
+	 * Takes a page Id and checks whether the page is marked as root page.
+	 *
+	 * @param integer $pageId Page ID
+	 * @return boolean TRUE if the page is marked as root page, FALSE otherwise
+	 */
+	public static function isRootPage($pageId) {
+		$isRootPage = FALSE;
+
+		$page = t3lib_BEfunc::getRecord('pages', $pageId);
+		if ($page['is_siteroot']) {
+			$isRootPage = TRUE;
+		}
+
+		return $isRootPage;
+	}
+
+	/**
 	 * Gets the parent TypoScript Object from a given TypoScript path.
 	 *
 	 * Example: plugin.tx_solr.index.queue.tt_news.fields.content

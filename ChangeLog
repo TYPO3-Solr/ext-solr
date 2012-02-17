@@ -2,6 +2,7 @@
 
 	* Fixed bug #34038: Realurls not resolved when index queue runs from cli on single site install, credits Michiel Roos
 	* Added a User Agent header for Index Queue page indexer requests
+	* Fixed an issue where records where added to the Index Queue from trees without configured root page
 
 2012-02-16  Ingo Renner  <ingo.renner@dkd.de>
 

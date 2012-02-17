@@ -324,20 +324,16 @@ class tx_solr_indexqueue_Queue {
 			$additionalRecordFields = ', doktype';
 		}
 
-		$record = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-			'pid' . $additionalRecordFields,
-			$itemType,
-			'uid = ' . intval($itemUid) . t3lib_BEfunc::deleteClause($itemType)
-		);
+		$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
 
 			# temporary until we have a query builder to take care of this
 		if ($itemType == 'pages' && !$this->isAllowedPageType($record)) {
 			return;
 		}
 
-		if ($record && $record['pid'] != 0) {
-			$rootPageId = tx_solr_Util::getRootPageId($record['pid']);
+		$rootPageId = tx_solr_Util::getRootPageId($record['pid']);
 
+		if ($record && $record['pid'] != 0 && tx_solr_Util::isRootPage($rootPageId)) {
 			$item = array(
 				'root'      => $rootPageId,
 				'item_type' => $itemType,
