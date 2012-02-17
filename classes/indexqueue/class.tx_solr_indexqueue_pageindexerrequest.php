@@ -161,7 +161,7 @@ class tx_solr_indexqueue_PageIndexerRequest {
 	 * @return	array	Array of HTTP headers.
 	 */
 	protected function getHeaders() {
-		$headers = array();
+		$headers = array(TYPO3_user_agent);
 		$itemId  = $this->indexQueueItem->getIndexQueueUid();
 
 		$headerData = array(
