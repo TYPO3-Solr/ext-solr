@@ -25,7 +25,7 @@
 
 /**
  * viewhelper class to format unix timestamps as date
- * Replaces viewhelpers ###DATE:xxx###
+ * Replaces viewhelpers ###DATE:timestamp###
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3

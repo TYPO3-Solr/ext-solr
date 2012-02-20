@@ -25,7 +25,7 @@
 
 /**
  * Odd / Even viewhelper to add Zebra stripes to table rows f.e.
- * Replaces viewhelpers ###ODD_EVEN:xxx###
+ * Replaces viewhelpers ###ODD_EVEN:number###
  *
  * To create alternating rows use this in your results loop:
  * class="row-###ODD_EVEN:###LOOP_CURRENT_ITERATION_COUNT######"

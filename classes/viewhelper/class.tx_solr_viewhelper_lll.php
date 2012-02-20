@@ -25,7 +25,7 @@
 
 /**
  * view helper to replace label markers starting with "LLL:"
- * Replaces viewhelpers ###LLL:xxx###
+ * Replaces viewhelpers ###LLL:languageKey###
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3

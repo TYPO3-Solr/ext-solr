@@ -25,7 +25,7 @@
 
 /**
  * viewhelper class to turn a result's relevance score into a nicer visual bar
- * Replaces viewhelpers ###RELEVANCE_BAR:Score###
+ * Replaces viewhelpers ###RELEVANCE_BAR:resultDocumentScore###
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3

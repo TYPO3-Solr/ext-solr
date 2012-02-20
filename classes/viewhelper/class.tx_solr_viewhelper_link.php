@@ -25,7 +25,7 @@
 
 /**
  * Viewhelper class to create links
- * Replaces viewhelpers ###LINK:LinkText|Pid|AdditionalParameters|useCache###
+ * Replaces viewhelpers ###LINK:linkText|linkTarget|additionalParameters|useCache###
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3

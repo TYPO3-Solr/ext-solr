@@ -25,7 +25,8 @@
 
 /**
  * viewhelper class to create links containing solr parameters
- * Replaces viewhelpers ###SOLR_LINK:LinkText|Pid|AdditionalParameters|useCache###
+ * Replaces viewhelpers ###SOLR_LINK:linkText|linkTarget|additionalParameters|useCache###
+ *
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3

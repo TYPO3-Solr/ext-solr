@@ -24,7 +24,7 @@
 
 
 /**
- * Creates a solr sorting URL by expanding a ###SOLR_URL:sort_option### marker.
+ * Creates a solr sorting URL by expanding a ###SOLR_URL:sortOption### marker.
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3

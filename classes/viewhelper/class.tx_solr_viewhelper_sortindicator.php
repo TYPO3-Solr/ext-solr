@@ -25,7 +25,7 @@
 
 /**
  * Creates a graphical representation of the current sorting direction by
- * expanding a ###SORT_INDICATOR:sort_indicator### marker.
+ * expanding a ###SORT_INDICATOR:sortDirection### marker.
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3

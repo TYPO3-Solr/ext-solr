@@ -25,7 +25,7 @@
 
 /**
  * viewhelper class to turn a result's relevance score into a percent value
- * Replaces viewhelpers ###RELEVANCE:Score###
+ * Replaces viewhelpers ###RELEVANCE:resultDocumentScore###
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
