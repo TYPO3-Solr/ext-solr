@@ -1,3 +1,7 @@
+2012-02-20  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Changed the shebang line of the install script to use the environment instead of assuming a specific location for bash
+
 2012-02-17  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed bug #34038: Realurls not resolved when index queue runs from cli on single site install, credits Michiel Roos
