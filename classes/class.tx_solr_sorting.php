@@ -75,15 +75,20 @@ class tx_solr_Sorting {
 		$contentObject = t3lib_div::makeInstance('tslib_cObj');
 
 		foreach ($this->configuration as $optionName => $optionConfiguration) {
-			$fieldName = $contentObject->stdWrap(
+			$optionField = $contentObject->stdWrap(
 				$optionConfiguration['field'],
 				$optionConfiguration['field.']
 			);
 
+			$optionLabel = $contentObject->stdWrap(
+				$optionConfiguration['label'],
+				$optionConfiguration['label.']
+			);
+
 			$optionName = substr($optionName, 0, -1);
 			$sortOptions[$optionName] = array(
-				'field' => $fieldName,
-				'label' => $optionConfiguration['label']
+				'field' => $optionField,
+				'label' => $optionLabel
 			);
 		}
 

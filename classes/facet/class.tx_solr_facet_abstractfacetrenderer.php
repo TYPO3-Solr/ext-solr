@@ -136,6 +136,12 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 		$facet['active']    = $this->isActive() ? '1' : '0';
 		$facet['reset_url'] = $this->buildResetFacetUrl();
 
+		$contentObject = t3lib_div::makeInstance('tslib_cObj');
+		$facet['label'] = $contentObject->stdWrap(
+			$this->facetConfiguration['label'],
+			$this->facetConfiguration['label.']
+		);
+
 		$facet['type'] = 'default';
 		if (!empty($this->facetConfiguration['type'])) {
 			$facet['type'] = $this->facetConfiguration['type'];
