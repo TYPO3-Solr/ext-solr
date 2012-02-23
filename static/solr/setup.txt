@@ -3,6 +3,12 @@ plugin.tx_solr {
 
 	enabled = 1
 
+	enableDebugMode = 0
+
+	general {
+		dateFormat.date = d.m.Y H:i
+	}
+
 	solr {
 		scheme = {$plugin.tx_solr.solr.scheme}
 		host = {$plugin.tx_solr.solr.host}
@@ -13,9 +19,17 @@ plugin.tx_solr {
 	}
 
 	templateFiles {
-		results = EXT:solr/resources/templates/pi_results/results.htm
+		frequentSearches = EXT:solr/resources/templates/pi_frequentsearches/frequentsearches.htm
+		moreLikeThis = EXT:solr/resources/templates/pi_mlt/mlt.htm
 		pagebrowser = EXT:solr/resources/templates/pi_results/pagebrowser.htm
+		results = EXT:solr/resources/templates/pi_results/results.htm
 		search = EXT:solr/resources/templates/pi_search/search.htm
+	}
+
+	cssFiles {
+		results     = EXT:solr/resources/css/pi_results/results.css
+		pagebrowser = EXT:pagebrowse/res/styles_min.css
+		suggest     = EXT:solr/resources/css/eid_suggest/jquery-ui.custom.css
 	}
 
 	javascriptFiles {
@@ -39,20 +53,9 @@ plugin.tx_solr {
 		faceting.numericRangeHelper = EXT:solr/resources/javascript/pi_results/numeric_range_facet.js
 	}
 
-	cssFiles {
-		results     = EXT:solr/resources/css/pi_results/results.css
-		pagebrowser = EXT:pagebrowse/res/styles_min.css
-		suggest     = EXT:solr/resources/css/eid_suggest/jquery-ui.custom.css
-	}
-
-
-	enableDebugMode = 0
-
-	general {
-		dateFormat.date = d.m.Y H:i
-	}
-
 	index {
+		enableFileIndexing = 1
+
 
 		additionalFields {
 
@@ -79,7 +82,7 @@ plugin.tx_solr {
 				}
 
 					// only index standard pages
-				additionalWhereClause = doktype = 1 AND no_search = 0
+				additionalWhereClause = doktype IN (1,7) AND no_search = 0
 
 				fields {
 					sortAuthor_stringS = author
@@ -256,7 +259,6 @@ plugin.tx_solr {
 
 			showAllLink.wrap = <li>|</li>
 		}
-
 
 	}
 
