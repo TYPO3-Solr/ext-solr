@@ -7,6 +7,7 @@
 	* Fixed issue #34435: Failed items in Index Queue stop whole indexing process
 	* Improved logging of failures during page indexing
 	* Fixed issue #30481: RealURL fails when indexing records outside the site root
+	* Fixed bug #34558: Wrong processing of plugin.tx_solr.search.query.filter stdWrap, credits Jochem de Groot
 
 2012-02-23  Ingo Renner  <ingo.renner@dkd.de>
 
