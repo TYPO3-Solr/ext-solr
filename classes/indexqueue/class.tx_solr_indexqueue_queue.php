@@ -495,36 +495,6 @@ class tx_solr_indexqueue_Queue {
 	}
 
 	/**
-	 * Marks an item as failed and causes the indexer to skip the item in the
-	 * next run.
-	 *
-	 * @param int|tx_solr_indexqueue_Item $item Either the item's Index Queue uid or the complete item
-	 * @param string Error message
-	 */
-	public function markItemAsFailed($item, $errorMessage = '') {
-		$itemUid = 0;
-
-		if ($item instanceof tx_solr_indexqueue_Item) {
-			$itemUid = $item->getIndexQueueUid();
-		} else {
-			$itemUid = (int) $item;
-		}
-
-		if (empty($errorMessage)) {
-				// simply set to "TRUE"
-			$errorMessage = '1';
-		}
-
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'tx_solr_indexqueue_item',
-			'uid = ' . $itemUid ,
-			array(
-				'errors' => $errorMessage
-			)
-		);
-	}
-
-	/**
 	 * Gets Index Queue items by type and uid.
 	 *
 	 * @param string $itemType item type, ususally  the table name
@@ -614,6 +584,36 @@ class tx_solr_indexqueue_Queue {
 		}
 
 		return $indexQueueItems;
+	}
+
+	/**
+	 * Marks an item as failed and causes the indexer to skip the item in the
+	 * next run.
+	 *
+	 * @param int|tx_solr_indexqueue_Item $item Either the item's Index Queue uid or the complete item
+	 * @param string Error message
+	 */
+	public function markItemAsFailed($item, $errorMessage = '') {
+		$itemUid = 0;
+
+		if ($item instanceof tx_solr_indexqueue_Item) {
+			$itemUid = $item->getIndexQueueUid();
+		} else {
+			$itemUid = (int) $item;
+		}
+
+		if (empty($errorMessage)) {
+				// simply set to "TRUE"
+			$errorMessage = '1';
+		}
+
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tx_solr_indexqueue_item',
+			'uid = ' . $itemUid ,
+			array(
+				'errors' => $errorMessage
+			)
+		);
 	}
 
 	// temporary
