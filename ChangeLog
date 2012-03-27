@@ -13,6 +13,7 @@
 	* Removed the result count from the suggest drop down - caused too much confusion
 	* Added french translation, credits Pierrick Caillon
 	* Fixed bug #29109: Form action url results per page selector is not html encoded, credits Jigal van Hemert
+	* Fixed bug #30398: Suggest issue with character sets
 
 2012-02-23  Ingo Renner  <ingo.renner@dkd.de>
 

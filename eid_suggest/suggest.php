@@ -111,7 +111,7 @@ header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Cache-Control: no-cache, must-revalidate');
 header('Pragma: no-cache');
 header('Content-Length: ' . strlen($ajaxReturnData));
-header('Content-Type: application/json; charset=' . $TSFE->renderCharset);
+header('Content-Type: application/json; charset=utf-8');
 header('Content-Transfer-Encoding: 8bit');
 echo $ajaxReturnData;
 
