@@ -234,29 +234,30 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 	 * @return string Conditions to only add indexable items to the Index Queue
 	 */
 	protected function buildTcaWhereClause() {
-		$conditions = array();
+		$tcaWhereClause = '';
+		$conditions     = array();
 
 		if (isset($GLOBALS['TCA'][$this->type]['ctrl']['delete'])) {
-			$conditions[] = $GLOBALS['TCA'][$this->type]['ctrl']['delete'] . ' = 0';
+			$conditions['delete'] = $GLOBALS['TCA'][$this->type]['ctrl']['delete'] . ' = 0';
 		}
 
 		if (isset($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['disabled'])) {
-			$conditions[] = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['disabled'] . ' = 0';
+			$conditions['disabled'] = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['disabled'] . ' = 0';
 		}
 
 			// TODO the indexer should take care of starttime instead of the initializer
 			// index as soon as starttime is reached
 		if (isset($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'])) {
-			$conditions[] = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'] . ' < ' . time();
+			$conditions['starttime'] = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'] . ' < ' . time();
 		}
 
 		if (isset($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['endtime'])) {
 			$endTimeFieldName = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['endtime'];
-			$conditions[] = '(' . $endTimeFieldName . ' > ' . time() . ' OR ' . $endTimeFieldName . ' = 0)';
+			$conditions['endtime'] = '(' . $endTimeFieldName . ' > ' . time() . ' OR ' . $endTimeFieldName . ' = 0)';
 		}
 
 		if (t3lib_BEfunc::isTableLocalizable($this->type)) {
-			$conditions[] = '('
+			$conditions['languageField'] = '('
 				. $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0' // default language
 				. ' OR '
 				. $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1' // all languages
@@ -265,10 +266,14 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 
 		if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['versioningWS'])) {
 				// versioning is enabled for this table: exclude draft workspace records
-			$conditions[] = 'pid != -1';
+			$conditions['versioningWS'] = 'pid != -1';
 		}
 
-		return ' AND ' . implode(' AND ', $conditions);
+		if (count($conditions)) {
+			$tcaWhereClause = ' AND ' . implode(' AND ', $conditions);
+		}
+
+		return $tcaWhereClause;
 	}
 
 	/**
