@@ -16,6 +16,7 @@
 	* Fixed bug #30398: Suggest issue with character sets
 	* Fixed bug #31144: Deleting documents with missing arguments suggests the operation was successful although it wasn't
 	* Fixed bug #35068: Escaping the "plus" sign causes problems
+	* Fixed crashing FACET view helper when no search has been executed
 
 2012-02-23  Ingo Renner  <ingo.renner@dkd.de>
 

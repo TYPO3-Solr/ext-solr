@@ -61,26 +61,29 @@ class tx_solr_viewhelper_Facet extends tx_solr_viewhelper_AbstractSubpartViewHel
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 		$facetContent     = '';
 		$template         = clone $this->template;
+		$search           = t3lib_div::makeInstance('tx_solr_Search');
 
-		if (array_key_exists($facetName . '.', $configuredFacets)) {
-			$facetRendererFactory = t3lib_div::makeInstance(
-				'tx_solr_facet_FacetRendererFactory',
-				$configuredFacets
-			);
+		if ($search->hasSearched()) {
+			if (array_key_exists($facetName . '.', $configuredFacets)) {
+				$facetRendererFactory = t3lib_div::makeInstance(
+					'tx_solr_facet_FacetRendererFactory',
+					$configuredFacets
+				);
 
-			$facetRenderer = $facetRendererFactory->getFacetRendererByFacetName($facetName);
-			$facetRenderer->setTemplate($this->template);
-			$facetRenderer->setLinkTargetPageId($this->configuration['search.']['targetPage']);
+				$facetRenderer = $facetRendererFactory->getFacetRendererByFacetName($facetName);
+				$facetRenderer->setTemplate($this->template);
+				$facetRenderer->setLinkTargetPageId($this->configuration['search.']['targetPage']);
 
-			$facet = $facetRenderer->getFacet();
-			$template->addVariable('facet', $facet);
+				$facet = $facetRenderer->getFacet();
+				$template->addVariable('facet', $facet);
 
-			$facetContent = $facetRenderer->renderFacet();
-		} else {
-			throw new UnexpectedValueException(
-				'Tried rendering facet "' . $facetName . '", no configuration found.',
-				1329138206
-			);
+				$facetContent = $facetRenderer->renderFacet();
+			} else {
+				throw new UnexpectedValueException(
+					'Tried rendering facet "' . $facetName . '", no configuration found.',
+					1329138206
+				);
+			}
 		}
 
 		$template->addSubpart('single_facet', $facetContent);
