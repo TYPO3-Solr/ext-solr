@@ -232,17 +232,17 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 
 			// relevant for realURL environments, only
 		if (t3lib_extMgm::isLoaded('realurl')) {
-			$itemPageId = $item->getRecordPageId();
-			$hostFound  = !empty($hosts[$itemPageId]);
+			$rootpageId = $item->getRootPageUid();
+			$hostFound  = !empty($hosts[$rootpageId]);
 
 			if (!$hostFound) {
-				$rootline = t3lib_BEfunc::BEgetRootLine($itemPageId);
+				$rootline = t3lib_BEfunc::BEgetRootLine($rootpageId);
 				$host     = t3lib_BEfunc::firstDomainRecord($rootline);
 
-				$hosts[$itemPageId] = $host;
+				$hosts[$rootpageId] = $host;
 			}
 
-			$_SERVER['HTTP_HOST'] = $hosts[$itemPageId];
+			$_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
 		}
 	}
 }
