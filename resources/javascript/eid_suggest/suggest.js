@@ -25,7 +25,7 @@ jQuery(document).ready(function(){
 							output = [];
 
 						jQuery.each(data, function(term, termIndex) {
-							var unformatted_label = term + ' <span class="result_count">(' + data[term] + ')</span>';
+							var unformatted_label = term;
 							output.push({
 								label : unformatted_label.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' +
 											jQuery.ui.autocomplete.escapeRegex(request.term) +
