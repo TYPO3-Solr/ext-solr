@@ -64,8 +64,6 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 
 		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 		$itemIndexQueue->initialize($this->site);
-		$fileIndexQueue = t3lib_div::makeInstance('tx_solr_fileindexer_Queue');
-		$fileIndexQueue->initialize($this->site);
 
 			// TODO implement better error handling - can be done as soon as instantiated classes do return, see comment:
 			// "return success / failed depending on sql error, affected rows"
