@@ -282,7 +282,12 @@ class tx_solr_Typo3PageIndexer {
 				// chunk adds by 20
 			$documentChunks = array_chunk($documents, 20);
 			foreach ($documentChunks as $documentChunk) {
-				$this->solrConnection->addDocuments($documentChunk);
+				$response = $this->solrConnection->addDocuments($documentChunk);
+
+				if ($response->getHttpStatus() != 200) {
+					$transportException =  new Apache_Solr_HttpTransportException($response);
+					throw new RuntimeException('Solr Request failed.', 1331834983, $transportException);
+				}
 			}
 
 			$documentsAdded = TRUE;

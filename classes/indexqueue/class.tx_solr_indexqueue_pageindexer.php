@@ -65,10 +65,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 			}
 		}
 
-			// FIXME indexed = TRUE only if all responses are 200/OK
-		$indexed = TRUE;
-
-		return $indexed;
+		return TRUE;
 	}
 
 	/**
@@ -108,6 +105,14 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 				'request'           => (array) $request,
 				'response'          => (array) $response
 			));
+		}
+
+		$indexActionResult = $response->getActionResult('indexPage');
+		if (!$indexActionResult['pageIndexed']) {
+			throw new RuntimeException(
+				'Failed indexing page Index Queue item ' . $item->getIndexQueueUid(),
+				1331837081
+			);
 		}
 
 		return $response;
