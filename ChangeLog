@@ -14,6 +14,7 @@
 	* Added french translation, credits Pierrick Caillon
 	* Fixed bug #29109: Form action url results per page selector is not html encoded, credits Jigal van Hemert
 	* Fixed bug #30398: Suggest issue with character sets
+	* Fixed bug #31144: Deleting documents with missing arguments suggests the operation was successful although it wasn't
 
 2012-02-23  Ingo Renner  <ingo.renner@dkd.de>
 

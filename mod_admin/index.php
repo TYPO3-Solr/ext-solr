@@ -338,21 +338,27 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$message  = 'Document(s) with type '. $documentType . ' and id ' . $documentUid . ' deleted';
 		$severity = t3lib_FlashMessage::OK;
 
-		try {
-			$uids         = t3lib_div::trimExplode(',', $documentUid);
-			$uidCondition = implode(' OR ', $uids);
-
-			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
-			foreach($solrServers as $solrServer) {
-				$solrServer->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
-				$solrServer->commit();
-
-					// TODO check the response, throw an exception on anything != 200
-			}
-		} catch (Exception $e) {
-			$message = '<p>An error occured while trying to delete:</p>'
-				. '<p>' . $e->__toString() . '</p>';
+		if (empty($documentUid) || empty($documentType)) {
+			$message  = 'Missing uid or type to delete documents.';
 			$severity = t3lib_FlashMessage::ERROR;
+		} else {
+			try {
+				$uids         = t3lib_div::trimExplode(',', $documentUid);
+				$uidCondition = implode(' OR ', $uids);
+
+				$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
+				foreach($solrServers as $solrServer) {
+					$response = $solrServer->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
+					$solrServer->commit();
+
+					if ($response->getHttpStatus() != 200) {
+						throw new RuntimeException('Delete Query failed.', 1332250835);
+					}
+				}
+			} catch (Exception $e) {
+				$message  = $e->getMessage();
+				$severity = t3lib_FlashMessage::ERROR;
+			}
 		}
 
 		$flashMessage = t3lib_div::makeInstance(
