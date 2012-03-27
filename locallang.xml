@@ -17,6 +17,7 @@
 		<languageKey index="fr" type="array">
 			<label index="report_index_title">Index d'Apache Solr</label>
 			<label index="report_index_description">Visualisez le nombre de documents et de champs de votre index</label>
+			<label index="module_indexinspector">Inspecteur de l'index de recherche</label>
 		</languageKey>
 	</data>
 </T3locallang>

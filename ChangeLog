@@ -11,6 +11,7 @@
 	* Fixed bug #34637: cHash is not needed in the page browser, credits Dmitry Dulepov
 	* Fixed bug #34535: Warnings caused by missing array initialization, credits Jigal van Hemert
 	* Removed the result count from the suggest drop down - caused too much confusion
+	* Added french translation, credits Pierrick Caillon
 
 2012-02-23  Ingo Renner  <ingo.renner@dkd.de>
 
