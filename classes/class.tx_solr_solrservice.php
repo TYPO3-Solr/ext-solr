@@ -475,8 +475,9 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 			'solr',
 			1,
 			array(
-				'query' => $rawQuery,
-				'response' => (array) $response
+				'query'     => $rawQuery,
+				'query url' => $this->_updateUrl,
+				'response'  => (array) $response
 			)
 		);
 
