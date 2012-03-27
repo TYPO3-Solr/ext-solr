@@ -274,6 +274,7 @@ class tx_solr_Util {
 	 * @return	integer	The page's tree branch's root page ID
 	 */
 	public static function getRootPageId($pageId = 0) {
+		$rootLine   = array();
 		$rootPageId = intval($pageId) ? intval($pageId) : $GLOBALS['TSFE']->id;
 
 			// frontend
