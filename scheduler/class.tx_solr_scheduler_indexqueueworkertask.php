@@ -48,7 +48,6 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 	 * Works through the indexing queue and indexes the queued items into Solr.
 	 *
 	 * @return	boolean	Returns TRUE on success, FALSE if no items were indexed or none were found.
-	 * @throws	Exception	Throws an exception on indexing errors.
 	 * @see	typo3/sysext/scheduler/tx_scheduler_Task#execute()
 	 */
 	public function execute() {
