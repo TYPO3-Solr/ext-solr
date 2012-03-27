@@ -2,6 +2,7 @@
 
 	* Fixed bug #35242: Class 'tx_solr_fileindexer_Queue' not found in Reindexer Scheduler Task
 	* Fixed an issue where the Index Queue initializer would create an invalid SQL WHERE clause when no conditions were detected from TCA configuration of a table
+	* Fixed an issue with Index Queue initialization of mount pages
 
 2012-02-23  Ingo Renner  <ingo.renner@dkd.de>
 

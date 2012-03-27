@@ -82,7 +82,7 @@ plugin.tx_solr {
 				}
 
 					// only index standard pages
-				additionalWhereClause = doktype IN (1,7) AND no_search = 0
+				additionalWhereClause = doktype = 1 AND no_search = 0
 
 				fields {
 					sortAuthor_stringS = author
