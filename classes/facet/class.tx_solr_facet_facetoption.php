@@ -73,8 +73,9 @@ class tx_solr_facet_FacetOption {
 	 * @param tx_solr_Query $query Query instance used to build links.
 	 * @param string $facetName Facet Name
 	 * @param integer|string $facetOptionValue Facet option value
+	 * @param integer $facetOptionNumberOfResults number of results to be returned when applying this option's filter
 	 */
-	public function __construct(tx_solr_Query $query, $facetName, $facetOptionValue, $facetOptionNumberOfResults) {
+	public function __construct(tx_solr_Query $query, $facetName, $facetOptionValue, $facetOptionNumberOfResults = 0) {
 		$this->query = $query;
 
 		$this->facetName       = $facetName;
