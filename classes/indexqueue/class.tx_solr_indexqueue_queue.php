@@ -495,6 +495,36 @@ class tx_solr_indexqueue_Queue {
 	}
 
 	/**
+	 * Marks an item as failed and causes the indexer to skip the item in the
+	 * next run.
+	 *
+	 * @param int|tx_solr_indexqueue_Item $item Either the item's Index Queue uid or the complete item
+	 * @param string Error message
+	 */
+	public function markItemAsFailed($item, $errorMessage = '') {
+		$itemUid = 0;
+
+		if ($item instanceof tx_solr_indexqueue_Item) {
+			$itemUid = $item->getIndexQueueUid();
+		} else {
+			$itemUid = (int) $item;
+		}
+
+		if (empty($errorMessage)) {
+				// simply set to "TRUE"
+			$errorMessage = '1';
+		}
+
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tx_solr_indexqueue_item',
+			'uid = ' . $itemUid ,
+			array(
+				'errors' => $errorMessage
+			)
+		);
+	}
+
+	/**
 	 * Gets Index Queue items by type and uid.
 	 *
 	 * @param string $itemType item type, ususally  the table name
@@ -527,7 +557,8 @@ class tx_solr_indexqueue_Queue {
 			'*',
 			'tx_solr_indexqueue_item',
 			'root = ' . $site->getRootPageId()
-				. ' AND changed > indexed',
+				. ' AND changed > indexed'
+				. ' AND errors = \'\'',
 			'',
 			'changed DESC, uid DESC',
 			intval($limit)
@@ -577,6 +608,7 @@ class tx_solr_indexqueue_Queue {
 					$tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
 				);
 			} else {
+				t3lib_div::devLog('Record missing for Index Queue item. Item removed.', 'solr', 3, array($indexQueueItemRecord));
 				$this->deleteItem($indexQueueItemRecord['item_type'], $indexQueueItemRecord['item_uid']);
 			}
 		}

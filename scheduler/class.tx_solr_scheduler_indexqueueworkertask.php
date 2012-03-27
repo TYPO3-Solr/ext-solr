@@ -69,13 +69,22 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 					$itemToIndex->updateIndexedTime();
 				}
 			} catch (Exception $e) {
+				$indexQueue->markItemAsFailed(
+					$itemToIndex,
+					$e->getCode() . ': ' . $e->__toString()
+				);
 
-					// TODO mark item as failed (new column)
-					// TODO make the IQ filter out failed items
-					// TODO add an IQ report: currently indexing, indexed, upcoming, failed
-					// TODO make the task display number of failed items
-
-				throw $e;
+				t3lib_div::devLog(
+					'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid(),
+					'solr',
+					3,
+					array(
+						'code'    => $e->getCode(),
+						'message' => $e->getMessage(),
+						'trace'   => $e->getTrace(),
+						'item'    => (array) $itemToIndex
+					)
+				);
 			}
 		}
 		$executionSucceeded = TRUE;
@@ -93,13 +102,8 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 		$itemIndexed = FALSE;
 		$indexer     = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
-		try {
-			$this->initializeHttpHost($item);
-			$itemIndexed = $indexer->index($item);
-		} catch (Exception $e) {
-				// FIXME handle exception, log failed item
-			throw $e;
-		}
+		$this->initializeHttpHost($item);
+		$itemIndexed = $indexer->index($item);
 
 		return $itemIndexed;
 	}
@@ -171,6 +175,15 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 
 		$message = 'Site: ' . $this->site->getLabel() . ', '
 			. 'Indexed ' . $itemsIndexedPercentage . '%. ';
+
+		$failedItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+			'uid',
+			'tx_solr_indexqueue_item',
+			'root = ' . $this->site->getRootPageId() . ' AND errors != \'\''
+		);
+		if ($failedItemsCount) {
+			$message .= ' Failures: ' . $failedItemsCount;
+		}
 
 		return $message;
 	}

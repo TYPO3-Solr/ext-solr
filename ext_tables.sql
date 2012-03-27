@@ -13,6 +13,7 @@ CREATE TABLE tx_solr_indexqueue_item (
 	has_indexing_properties tinyint(1) DEFAULT '0' NOT NULL,
 	changed int(11) DEFAULT '0' NOT NULL,
 	indexed int(11) DEFAULT '0' NOT NULL,
+	errors text NOT NULL,
 
 	PRIMARY KEY (uid),
 	KEY changed (changed),
