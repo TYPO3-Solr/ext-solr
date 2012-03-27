@@ -136,6 +136,8 @@ plugin.tx_solr {
 			resultsPerPageSwitchOptions = 10, 25, 50
 
 			pagebrowser {
+				disableCacheHash = 1
+
 				_LOCAL_LANG.default {
 					text_first = First
 					text_prev = Previous

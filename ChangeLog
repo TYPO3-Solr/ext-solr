@@ -8,6 +8,7 @@
 	* Improved logging of failures during page indexing
 	* Fixed issue #30481: RealURL fails when indexing records outside the site root
 	* Fixed bug #34558: Wrong processing of plugin.tx_solr.search.query.filter stdWrap, credits Jochem de Groot
+	* Fixed bug #34637: cHash is not needed in the page browser, credits Dmitry Dulepov
 
 2012-02-23  Ingo Renner  <ingo.renner@dkd.de>
 
