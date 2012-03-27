@@ -214,8 +214,8 @@ class tx_solr_Query {
 	 */
 	protected function escapeSpecialCharacters($value) {
 			// list taken from http://lucene.apache.org/java/3_3_0/queryparsersyntax.html#Escaping%20Special%20Characters
-			// not escaping *, &&, ||, ?, -, ! though
-		$pattern = '/(\+|\(|\)|\{|}|\[|]|\^|"|~|:|\\\)/';
+			// not escaping *, &&, ||, ?, -, !, + though
+		$pattern = '/(\(|\)|\{|}|\[|]|\^|"|~|:|\\\)/';
 		$replace = '\\\$1';
 
 		return preg_replace($pattern, $replace, $value);
