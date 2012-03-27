@@ -733,6 +733,11 @@ class tx_solr_Template {
 				}
 			}
 
+			if (is_array($resolvedValue)) {
+					// handling multivalue fields, @see tx_solr_viewhelper_Multivalue
+				$resolvedValue = serialize($resolvedValue);
+			}
+
 			$resolvedMarkers[$marker] = $resolvedValue;
 		}
 
