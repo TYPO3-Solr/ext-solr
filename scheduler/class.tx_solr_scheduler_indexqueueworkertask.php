@@ -52,7 +52,8 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 	 * @see	typo3/sysext/scheduler/tx_scheduler_Task#execute()
 	 */
 	public function execute() {
-		$executionSucceeded  = FALSE;
+		$executionSucceeded = FALSE;
+
 		$limit               = $this->documentsToIndexLimit;
 		$indexQueue          = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 		$this->configuration = tx_solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
@@ -174,7 +175,7 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 		}
 
 		$message = 'Site: ' . $this->site->getLabel() . ', '
-			. 'Indexed ' . $itemsIndexedPercentage . '%. ';
+			. 'Indexed ' . $itemsIndexedPercentage . '%.';
 
 		$failedItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
 			'uid',
