@@ -125,7 +125,7 @@ class tx_solr_viewhelper_Lll implements tx_solr_ViewHelper {
 		$pathParts = explode(':', $path);
 
 		$labelKey = array_pop($pathParts);
-		$path = t3lib_div::getFileAbsFileName(implode(':', $pathParts));
+		$path     = t3lib_div::getFileAbsFileName(implode(':', $pathParts));
 
 		if (!isset($this->localLang[$path])) {
 				// do some nice caching
