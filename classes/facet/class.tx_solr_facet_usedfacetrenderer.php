@@ -26,7 +26,9 @@
 /**
  * Renderer for Used Facets.
  *
- * @author Markus Goldbach  <markus.goldbach@dkd.de>
+ * FIXME merge into default renderer as renderUsedFacetOption()
+ *
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
 class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRenderer {
@@ -45,7 +47,6 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 	 */
 	protected $filterValue;
 
-		// FIXME merge into default renderer as renderUsedFacetOption()
 	public function __construct($facetName, $filterValue, $filter , tx_solr_Template $template, tx_solr_Query $query) {
 		parent::__construct($facetName, array(), $template, $query);
 

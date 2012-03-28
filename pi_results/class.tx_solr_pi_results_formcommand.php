@@ -81,7 +81,7 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 			'action'                    => $url,
 			'action_id'                 => intval($this->parentPlugin->conf['search.']['targetPage']),
 			'action_language'           => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
-			'action_language_parameter' => 'L', // FIXME L is not necessarily the language parameter
+			'action_language_parameter' => 'L',
 			'accept-charset'            => $GLOBALS['TSFE']->metaCharset,
 			'q'                         => $this->parentPlugin->getCleanUserQuery()
 		);

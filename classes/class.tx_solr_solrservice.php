@@ -92,12 +92,6 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		parent::__construct($host, $port, $path);
 	}
 
-	public function __destruct() {
-			// TODO make this customizable as it might impact on performance when committing too often
-			// disabled for now as we're using auto commit in solrconfig.xml
-#		$this->commit();
-	}
-
 	/**
 	 * initializes various URLs, including the Luke URL
 	 *
