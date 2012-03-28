@@ -155,6 +155,7 @@ return array(
 		// reports
 
 	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'report/class.tx_solr_report_accessfilterplugininstalledstatus.php',
+	'tx_solr_report_allowurlfopenstatus' => $extensionPath . 'report/class.tx_solr_report_allowurlfopenstatus.php',
 	'tx_solr_report_indexreport' => $extensionPath . 'report/class.tx_solr_report_indexreport.php',
 	'tx_solr_report_schemastatus' => $extensionPath . 'report/class.tx_solr_report_schemastatus.php',
 	'tx_solr_report_solrconfigstatus' => $extensionPath . 'report/class.tx_solr_report_solrconfigstatus.php',
