@@ -129,9 +129,6 @@ class tx_solr_GarbageCollector {
 		}
 
 		$garbageCollectionRelevantFields = $this->getVisibilityAffectingFieldsByTable($table);
-		if ($table == 'pages') {
-			$garbageCollectionRelevantFields .= ', doktype';
-		}
 
 		$record = t3lib_BEfunc::getRecord($table, $uid, $garbageCollectionRelevantFields, '', FALSE);
 		$record = $this->normalizeFrontendGroupField($table, $record);
@@ -172,6 +169,7 @@ class tx_solr_GarbageCollector {
 
 			if ($table == 'pages') {
 				$fields[] = 'no_search';
+				$fields[] = 'doktype';
 			}
 
 			$visibilityAffectingFields[$table] = implode(', ', $fields);
