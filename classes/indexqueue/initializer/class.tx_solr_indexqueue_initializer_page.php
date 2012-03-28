@@ -163,7 +163,8 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 			. 'FROM pages '
 			. 'WHERE '
 				. 'uid IN(' . implode(',', $mountedPages) . ') '
-				. $this->buildTcaWhereClause();
+				. $this->buildTcaWhereClause()
+				. $this->buildUserWhereClause();
 
 		$GLOBALS['TYPO3_DB']->sql_query($initializationQuery);
 
