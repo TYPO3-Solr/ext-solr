@@ -13,19 +13,23 @@ plugin.tx_solr.index.queue {
 
 			title = title
 
-			content = COA
-			content {
-				10 = TEXT
-				10 {
-					field = bodytext
-					noTrimWrap = || |
-				}
 
-				20 = SOLR_RELATION
-				20 {
-					localField = content_elements
-					foreignLabelField = bodytext
-					singleValueGlue = | |
+			content = SOLR_CONTENT
+			content {
+				cObject = COA
+				cObject {
+					10 = TEXT
+					10 {
+						field = bodytext
+						noTrimWrap = || |
+					}
+
+					20 = SOLR_RELATION
+					20 {
+						localField = content_elements
+						foreignLabelField = bodytext
+						singleValueGlue = | |
+					}
 				}
 			}
 
