@@ -9,6 +9,7 @@
 	* Added example Index Queue configuration for EXT:news
 	* Added logging of detected fe access groups
 	* Fixed an issue with recursively reading the pages in a tree affecting initialization of Mount Pages in the Index Queue
+	* Fixed an issue with Mount Page Index Queue initialization causing the actual (mounted) pages to be marked as pages being mounted while they are not
 
 2012-03-27  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -158,14 +158,16 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 	 * @param array $mountedPages An array of mounted page IDs
 	 */
 	protected function addMountedPagesToIndexQueue(array $mountedPages) {
-		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, changed) '
-			. $this->buildSelectStatement() . ' '
+		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, changed, has_indexing_properties) '
+			. $this->buildSelectStatement() . ', 1 '
 			. 'FROM pages '
 			. 'WHERE '
 				. 'uid IN(' . implode(',', $mountedPages) . ') '
 				. $this->buildTcaWhereClause();
 
 		$GLOBALS['TYPO3_DB']->sql_query($initializationQuery);
+
+		$this->logInitialization($initializationQuery);
 	}
 
 	/**
@@ -181,9 +183,10 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 		$mountPageItems = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			'tx_solr_indexqueue_item',
-			'root = ' . intval($this->site->getRootPageId())
-				. ' AND item_type = \'pages\' '
-				. ' AND item_uid IN(' . implode(',', $mountedPages) . ')'
+			'root = ' . intval($this->site->getRootPageId()) . ' '
+				. 'AND item_type = \'pages\' '
+				. 'AND item_uid IN(' . implode(',', $mountedPages) . ') '
+				. 'AND has_indexing_properties = 1'
 		);
 
 		foreach ($mountPageItems as $mountPageItemRecord) {
