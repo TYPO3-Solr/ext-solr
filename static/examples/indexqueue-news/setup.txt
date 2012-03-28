@@ -1,0 +1,61 @@
+
+plugin.tx_solr.index.queue {
+
+	news = 1
+	news {
+		table = tx_news_domain_model_news
+
+		fields {
+			abstract = teaser
+
+			author = author
+			authorEmail_stringS = author_email
+
+			title = title
+
+			content = COA
+			content {
+				10 = TEXT
+				10 {
+					field = bodytext
+					noTrimWrap = || |
+				}
+
+				20 = SOLR_RELATION
+				20 {
+					localField = content_elements
+					foreignLabelField = bodytext
+					singleValueGlue = | |
+				}
+			}
+
+			category_stringM = SOLR_RELATION
+			category_stringM {
+				localField = categories
+				multiValue = 1
+			}
+
+			keywords = SOLR_RELATION
+			keywords {
+				localField = tags
+				multiValue = 1
+			}
+
+			url = TEXT
+			url {
+				typolink.parameter = 134
+				typolink.additionalParams = &tx_news_pi1[controller]=News&tx_news_pi1[action]=detail&tx_news_pi1[news]={field:uid}
+				typolink.additionalParams.insertData = 1
+				typolink.useCacheHash = 1
+				typolink.returnLast = url
+			}
+		}
+
+		attachments {
+			fields = related_files
+		}
+	}
+
+}
+
+plugin.tx_solr.logging.indexing.queue.news = 1

@@ -6,6 +6,7 @@
 	* Added a report to detect PHP versions with buggy filter_var() function
 	* Removed storing the cHash in the index, dynamic pages are not indexed anyway
 	* Fixed bug #25911: Exception in Darft Workspace when editing content, credits Michael Voehringer
+	* Added example Index Queue configuration for EXT:news
 
 2012-03-27  Ingo Renner  <ingo.renner@dkd.de>
 
