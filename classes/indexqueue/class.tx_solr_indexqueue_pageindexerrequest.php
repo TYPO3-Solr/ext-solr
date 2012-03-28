@@ -51,7 +51,7 @@ class tx_solr_indexqueue_PageIndexerRequest {
 	 *
 	 * @var	array
 	 */
-	protected $header = NULL;
+	protected $header = array();
 
 	/**
 	 * Unique request ID.
@@ -156,15 +156,25 @@ class tx_solr_indexqueue_PageIndexerRequest {
 	}
 
 	/**
+	 * Adds an HTTP header to be send with the request.
+	 *
+	 * @param string $header HTTP header
+	 */
+	public function addHeader($header) {
+		$this->header[] = $header;
+	}
+
+	/**
 	 * Generates the headers to be send with the request.
 	 *
 	 * @return	array	Array of HTTP headers.
 	 */
-	protected function getHeaders() {
-		$headers = array(TYPO3_user_agent);
-		$itemId  = $this->indexQueueItem->getIndexQueueUid();
+	public function getHeaders() {
+		$headers   = $this->header;
+		$headers[] = TYPO3_user_agent;
+		$itemId    = $this->indexQueueItem->getIndexQueueUid();
 
-		$headerData = array(
+		$indexerRequestData = array(
 			'requestId' => $this->requestId,
 			'item'      => $itemId,
 			'actions'   => implode(',', $this->actions),
@@ -174,9 +184,9 @@ class tx_solr_indexqueue_PageIndexerRequest {
 				$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
 			)
 		);
-		$headerData = array_merge($headerData, $this->parameters);
+		$indexerRequestData = array_merge($indexerRequestData, $this->parameters);
 
-		$headers[] = 'X-Tx-Solr-Iq: ' . json_encode($headerData);
+		$headers[] = 'X-Tx-Solr-Iq: ' . json_encode($indexerRequestData);
 
 		if (!empty($this->username) && !empty($this->password)) {
 			$headers[] = 'Authorization: Basic ' . base64_encode(

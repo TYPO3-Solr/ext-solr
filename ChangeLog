@@ -1,6 +1,7 @@
 2012-03-28  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed bug #35031: Duplicate index entries if records are moved to another PID
+	* Added an option to add arbitrary headers to Index Queue page indexer request
 
 2012-03-27  Ingo Renner  <ingo.renner@dkd.de>
 

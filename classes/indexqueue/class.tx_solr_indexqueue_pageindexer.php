@@ -80,10 +80,53 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 	protected function indexPage(tx_solr_indexqueue_Item $item, $language = 0, $userGroup = 0) {
 		$accessRootline = $this->getAccessRootline($item, $language, $userGroup);
 
-		$request = t3lib_div::makeInstance('tx_solr_indexqueue_PageIndexerRequest');
+		$request = $this->buildBasePageIndexerRequest();
 		$request->setIndexQueueItem($item);
 		$request->addAction('indexPage');
 		$request->setParameter('accessRootline', (string) $accessRootline);
+
+		$indexRequestUrl   = $this->getDataUrl($item, $language);
+		$response          = $request->send($indexRequestUrl);
+		$indexActionResult = $response->getActionResult('indexPage');
+
+		if ($this->loggingEnabled) {
+			$logSeverity = 0;
+			$logStatus   = 'Info';
+			if ($indexActionResult['pageIndexed']) {
+				$logSeverity = -1;
+				$logStatus   = 'Success';
+			}
+
+			t3lib_div::devLog('Page Indexer: ' . $logStatus, 'solr', $logSeverity, array(
+				'item'                => (array) $item,
+				'language'            => $language,
+				'user group'          => $userGroup,
+				'index request url'   => $indexRequestUrl,
+				'request'             => (array) $request,
+				'request headers'     => $request->getHeaders(),
+				'response'            => (array) $response,
+				'index action result' => $indexActionResult
+			));
+		}
+
+		if (!$indexActionResult['pageIndexed']) {
+			throw new RuntimeException(
+				'Failed indexing page Index Queue item ' . $item->getIndexQueueUid(),
+				1331837081
+			);
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Builds a base page indexer request with cofigured headers and other
+	 * parameters.
+	 *
+	 * @return tx_solr_indexqueue_PageIndexerRequest Base page indexer request
+	 */
+	protected function buildBasePageIndexerRequest() {
+		$request = t3lib_div::makeInstance('tx_solr_indexqueue_PageIndexerRequest');
 		$request->setParameter('loggingEnabled', $this->loggingEnabled);
 
 		if (!empty($this->options['authorization.'])) {
@@ -93,29 +136,13 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 			);
 		}
 
-		$indexRequestUrl = $this->getDataUrl($item, $language);
-		$response        = $request->send($indexRequestUrl);
-
-		if ($this->loggingEnabled) {
-			t3lib_div::devLog('Page Indexing', 'solr', 0, array(
-				'item'              => (array) $item,
-				'language'          => $language,
-				'user group'        => $userGroup,
-				'index request url' => $indexRequestUrl,
-				'request'           => (array) $request,
-				'response'          => (array) $response
-			));
+		if (!empty($this->options['frontendDataHelper.']['headers.'])) {
+			foreach ($this->options['frontendDataHelper.']['headers.'] as $headerName => $headerValue) {
+				$request->addHeader($headerValue);
+			}
 		}
 
-		$indexActionResult = $response->getActionResult('indexPage');
-		if (!$indexActionResult['pageIndexed']) {
-			throw new RuntimeException(
-				'Failed indexing page Index Queue item ' . $item->getIndexQueueUid(),
-				1331837081
-			);
-		}
-
-		return $response;
+		return $request;
 	}
 
 	/**
@@ -350,17 +377,9 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 
 		$accessGroupsCacheEntryId = $item->getRecordUid() . '|' . $language;
 		if (!isset($accessGroupsCache[$accessGroupsCacheEntryId])) {
-			$request = t3lib_div::makeInstance('tx_solr_indexqueue_PageIndexerRequest');
+			$request = $this->buildBasePageIndexerRequest();
 			$request->setIndexQueueItem($item);
 			$request->addAction('findUserGroups');
-			$request->setParameter('loggingEnabled', $this->loggingEnabled);
-
-			if (!empty($this->options['authorization.'])) {
-				$request->setAuthorizationCredentials(
-					$this->options['authorization.']['username'],
-					$this->options['authorization.']['password']
-				);
-			}
 
 			$indexRequestUrl = $this->getDataUrl($item, $language);
 			$response        = $request->send($indexRequestUrl);
