@@ -64,7 +64,8 @@ if (TYPO3_MODE == 'BE') {
 		'tx_solr_report_SolrStatus',
 		'tx_solr_report_SolrVersionStatus',
 		'tx_solr_report_AccessFilterPluginInstalledStatus',
-		'tx_solr_report_AllowUrlFOpenStatus'
+		'tx_solr_report_AllowUrlFOpenStatus',
+		'tx_solr_report_FilterVarStatus'
 	);
 
 		// registering the index report with the reports module
