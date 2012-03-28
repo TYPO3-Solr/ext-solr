@@ -248,10 +248,21 @@ class tx_solr_Util {
 			t3lib_div::_GETset($language, 'L');
 
 			$GLOBALS['TSFE'] = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
-			$GLOBALS['TSFE']->initFEuser();
-			$GLOBALS['TSFE']->determineId();
+			$GLOBALS['TSFE']->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
+			$GLOBALS['TSFE']->getPageAndRootline();
 			$GLOBALS['TSFE']->initTemplate();
-			$GLOBALS['TSFE']->getConfigArray();
+			$GLOBALS['TSFE']->forceTemplateParsing = TRUE;
+			$GLOBALS['TSFE']->initFEuser();
+			$GLOBALS['TSFE']->initUserGroups();
+			// $GLOBALS['TSFE']->getCompressedTCarray(); // seems to cause conflicts sometimes
+
+			$GLOBALS['TSFE']->no_cache = TRUE;
+			$GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
+			$GLOBALS['TSFE']->no_cache = FALSE;
+			$GLOBALS['TSFE']->config['config'] = $GLOBALS['TSFE']->tmpl->setup['config.'];
+
+			$GLOBALS['TSFE']->settingLanguage();
+			$GLOBALS['TSFE']->newCObj();
 
 			if ($useCache) {
 				$tsfeCache[$cacheId] = $GLOBALS['TSFE'];

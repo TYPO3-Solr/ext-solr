@@ -11,6 +11,7 @@
 	* Fixed an issue with recursively reading the pages in a tree affecting initialization of Mount Pages in the Index Queue
 	* Fixed an issue with Mount Page Index Queue initialization causing the actual (mounted) pages to be marked as pages being mounted while they are not
 	* Fixed an issue that caused to accept invalid page types into the Index Queue when initializing Mount Pages
+	* Added feature #35047: Support content_fallback mode, credits Stefan Galinski
 
 2012-03-27  Ingo Renner  <ingo.renner@dkd.de>
 

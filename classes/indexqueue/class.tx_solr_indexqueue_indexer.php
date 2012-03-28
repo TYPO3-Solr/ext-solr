@@ -492,19 +492,50 @@ class tx_solr_indexqueue_Indexer {
 	}
 
 	/**
-	 * Finds the alternative page language overlay records for a page.
+	 * Finds the alternative page language overlay records for a page based on
+	 * the sys_language_mode.
 	 *
-	 * @param	integer	Page ID.
-	 * @return	array	An array of translation overlays found for the given page.
+	 * Possible Language Modes:
+	 * 1) content_fallback --> all languages
+	 * 2) strict --> available languages with page overlay
+	 * 3) ignore --> available languages with page overlay
+	 * 4) unknown mode or blank --> all languages
+	 *
+	 * @param integer $pageId Page ID.
+	 * @return array An array of translation overlays (or fake overlays) found for the given page.
 	 */
 	protected function getTranslationOverlaysForPage($pageId) {
-		$translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid, pid, sys_language_uid',
-			'pages_language_overlay',
-			'pid = ' . $pageId
-				. t3lib_BEfunc::deleteClause('pages_language_overlay')
-				. t3lib_BEfunc::BEenableFields('pages_language_overlay')
-		);
+		$translationOverlays = array();
+		$pageId              = intval($pageId);
+
+		if ($GLOBALS['TSFE']->sys_language_mode == '') {
+			tx_solr_Util::initializeTsfe($pageId);
+		}
+
+		$languageModes         = array('content_fallback', 'strict', 'ignore');
+		$hasOverlayMode        = in_array($GLOBALS['TSFE']->sys_language_mode, $languageModes);
+		$isContentFallbackMode = $GLOBALS['TSFE']->sys_language_mode === 'content_fallback';
+
+		if ($hasOverlayMode && !$isContentFallbackMode) {
+			$translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'pid, sys_language_uid',
+				'pages_language_overlay',
+				'pid = ' . $pageId
+					. t3lib_BEfunc::deleteClause('pages_language_overlay')
+					. t3lib_BEfunc::BEenableFields('pages_language_overlay')
+			);
+		} else {
+			$languages = t3lib_BEfunc::getSystemLanguages();
+				// remove default language (L = 0)
+			array_shift($languages);
+
+			foreach ($languages as $language) {
+				$translationOverlays[] = array(
+					'pid'              => $pageId,
+					'sys_language_uid' => $language[1],
+				);
+			}
+		}
 
 		return $translationOverlays;
 	}

@@ -296,9 +296,32 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 		$solrConnections = parent::getSolrConnectionsByItem($item);
 
 		$page = $item->getRecord();
+			// may use t3lib_div::hideIfDefaultLanguage($page['l18n_cfg']) with TYPO3 4.6
 		if ($page['l18n_cfg'] & 1) {
-				// page is configured to hide the default translation
+				// page is configured to hide the default translation -> remove Solr connection for default language
 			unset($solrConnections[0]);
+		}
+
+		if (t3lib_div::hideIfNotTranslated($page['l18n_cfg'])) {
+			$accessibleSolrConnections = array();
+			if (isset($solrConnections[0])) {
+				$accessibleSolrConnections[0] = $solrConnections[0];
+			}
+
+			$translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'pid, sys_language_uid',
+				'pages_language_overlay',
+				'pid = ' . $page['uid']
+					. t3lib_BEfunc::deleteClause('pages_language_overlay')
+					. t3lib_BEfunc::BEenableFields('pages_language_overlay')
+			);
+
+			foreach ($translationOverlays as $overlay) {
+				$languageId = $overlay['sys_language_uid'];
+				$accessibleSolrConnections[$languageId] = $solrConnections[$languageId];
+			}
+
+			$solrConnections = $accessibleSolrConnections;
 		}
 
 		return $solrConnections;
