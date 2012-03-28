@@ -135,12 +135,15 @@ class tx_solr_GarbageCollector {
 
 		$record = t3lib_BEfunc::getRecord($table, $uid, $garbageCollectionRelevantFields, '', FALSE);
 		$record = $this->normalizeFrontendGroupField($table, $record);
-		if ($this->isHidden($table, $record)
-			|| $this->isStartTimeInFuture($table, $record)
-			|| $this->isEndTimeInPast($table, $record)
-			|| $this->hasFrontendGroupsRemoved($table, $record)
-			|| ($table == 'pages' && $this->isPageExcludedFromSearch($record))
-			|| ($table == 'pages' && !$this->isIndexablePageType($record))
+		if (!$this->isInDraftWorkspace($record)
+			&&
+			($this->isHidden($table, $record)
+				|| $this->isStartTimeInFuture($table, $record)
+				|| $this->isEndTimeInPast($table, $record)
+				|| $this->hasFrontendGroupsRemoved($table, $record)
+				|| ($table == 'pages' && $this->isPageExcludedFromSearch($record))
+				|| ($table == 'pages' && !$this->isIndexablePageType($record))
+			)
 		) {
 			$this->collectGarbage($table, $uid);
 		}
@@ -178,6 +181,22 @@ class tx_solr_GarbageCollector {
 	}
 
 	// methods checking whether to trigger garbage collection
+
+	/**
+	 * Checks whether the current record is in a draft workspace.
+	 *
+	 * @param array An array with record fields.
+	 * @return boolean TRUE if the record is in a draft workspace, FALSE otherwise.
+	 */
+	protected function isInDraftWorkspace(array $record) {
+		$isInWorkspace = FALSE;
+
+		if ($record['pid'] == -1) {
+			$isInWorkspace = TRUE;
+		}
+
+		return $isInWorkspace;
+	}
 
 	/**
 	 * Checks whether a hidden field exists for the current table and if so
