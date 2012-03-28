@@ -63,7 +63,13 @@ class tx_solr_viewhelper_Lll implements tx_solr_ViewHelper {
 	public function execute(array $arguments = array()) {
 		$label = '';
 
-		if (t3lib_div::isFirstPartOfStr($arguments[0], 'EXT')) {
+		$isFullPath = FALSE;
+		if (t3lib_div::isFirstPartOfStr($arguments[0], 'FILE')) {
+			$arguments[0] = substr($arguments[0], 5);
+			$isFullPath = TRUE;
+		}
+
+		if ($isFullPath || t3lib_div::isFirstPartOfStr($arguments[0], 'EXT')) {
 				// a full path reference...
 			$label = $this->resolveFullPathLabel($arguments[0]);
 		} else {

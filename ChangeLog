@@ -12,6 +12,7 @@
 	* Fixed an issue with Mount Page Index Queue initialization causing the actual (mounted) pages to be marked as pages being mounted while they are not
 	* Fixed an issue that caused to accept invalid page types into the Index Queue when initializing Mount Pages
 	* Added feature #35047: Support content_fallback mode, credits Stefan Galinski
+	* Added feature #35191: Include locallang from file path starting with FILE:
 
 2012-03-27  Ingo Renner  <ingo.renner@dkd.de>
 
