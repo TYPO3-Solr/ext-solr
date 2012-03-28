@@ -104,8 +104,7 @@ class tx_solr_indexqueue_PageIndexer extends tx_solr_indexqueue_Indexer {
 				'index request url'   => $indexRequestUrl,
 				'request'             => (array) $request,
 				'request headers'     => $request->getHeaders(),
-				'response'            => (array) $response,
-				'index action result' => $indexActionResult
+				'response'            => (array) $response
 			));
 		}
 
