@@ -226,9 +226,9 @@ class tx_solr_Site {
 
 			if ($maxDepth > 0) {
 				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-							'uid',
-							'pages',
-							'pid = ' . $recursionRootPageId . ' ' . t3lib_BEfunc::deleteClause('pages')
+					'uid',
+					'pages',
+					'pid = ' . $recursionRootPageId . ' ' . t3lib_BEfunc::deleteClause('pages')
 				);
 
 				while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
@@ -236,8 +236,8 @@ class tx_solr_Site {
 
 					if ($maxDepth > 1) {
 						$pageIds = array_merge(
-						$pageIds,
-						$this->getPages($page['uid'], $maxDepth - 1)
+							$pageIds,
+							$this->getPages($page['uid'], $maxDepth - 1)
 						);
 					}
 				}
