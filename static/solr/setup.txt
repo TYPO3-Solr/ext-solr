@@ -54,9 +54,6 @@ plugin.tx_solr {
 	}
 
 	index {
-		enableFileIndexing = 1
-
-
 		additionalFields {
 
 		}
