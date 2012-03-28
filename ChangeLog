@@ -4,6 +4,7 @@
 	* Added an option to add arbitrary headers to Index Queue page indexer request
 	* Added a report to check for allow_url_fopen to be enabled
 	* Added a report to detect PHP versions with buggy filter_var() function
+	* Removed storing the cHash in the index, dynamic pages are not indexed anyway
 
 2012-03-27  Ingo Renner  <ingo.renner@dkd.de>
 

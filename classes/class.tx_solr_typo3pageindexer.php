@@ -204,22 +204,19 @@ class tx_solr_Typo3PageIndexer {
 		$document   = t3lib_div::makeInstance('Apache_Solr_Document');
 		/* @var	$document	Apache_Solr_Document */
 		$site       = tx_solr_Site::getSiteByPageId($this->page->id);
-		$cHash      = $this->filterInvalidContentHash($this->page->cHash);
 		$pageRecord = $this->page->page;
 
 		self::$pageSolrDocumentId = $documentId = tx_solr_Util::getPageDocumentId(
 			$this->page->id,
 			$this->page->type,
 			$this->page->sys_language_uid,
-			$this->getDocumentIdGroups(),
-			$cHash
+			$this->getDocumentIdGroups()
 		);
 		$document->setField('id',          $documentId);
 		$document->setField('site',        $site->getDomain());
 		$document->setField('siteHash',    $site->getSiteHash());
 		$document->setField('appKey',      'EXT:solr');
 		$document->setField('type',        'pages');
-		$document->setField('contentHash', $cHash);
 
 			// system fields
 		$document->setField('uid',         $this->page->id);
@@ -420,24 +417,6 @@ class tx_solr_Typo3PageIndexer {
 
 	// Misc
 
-
-	/**
-	 * Checks whether a given string is a valid cHash.
-	 * If the hash is valid it will be returned as is, an empty string will be
-	 * returned otherwise.
-	 *
-	 * @param	string	The cHash to check for validity
-	 * @return	string	The passed cHash if valid, an empty string if invalid
-	 * @see tslib_fe->makeCacheHash
-	 */
-	protected function filterInvalidContentHash($cHash) {
-		$urlParameters   = t3lib_div::_GET();
-		$cHashParameters = t3lib_div::cHashParams(t3lib_div::implodeArrayForUrl('', $urlParameters));
-
-		$calculatedCHash = t3lib_div::calculateCHash($cHashParameters);
-
-		return ($calculatedCHash == $cHash) ? $cHash : '';
-	}
 
 	/**
 	 * Gets the current page's URL.
