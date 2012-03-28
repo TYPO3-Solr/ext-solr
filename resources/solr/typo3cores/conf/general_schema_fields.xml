@@ -25,7 +25,7 @@
 	<!--
 		The document id is derived from a site-specific key (hash) and some
 		record properties like:
-		$document->id = $siteHash . '/' . $type . '/' . $record['pid'] . '/' . $record['uid'];
+		$document->id = $siteHash . '/' . $type . '/' . $record['uid'];
 	-->
 	<field name="id" type="string" indexed="true" stored="true" required="true" />
 
