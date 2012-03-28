@@ -35,23 +35,19 @@ class tx_solr_Util {
 	/**
 	 * Generates a document id for documents representing page records.
 	 *
-	 * @param	integer	$uid The page's uid
-	 * @param	integer $typeNum The page's typeNum
-	 * @param	integer	$language the language id, defaults to 0
-	 * @param	string	$accessGroups comma separated list of uids of groups that have access to that page
-	 * @param	string 	$cHash cHash of the page
-	 * @return	string	the document id for that page
+	 * @param integer $uid The page's uid
+	 * @param integer $typeNum The page's typeNum
+	 * @param integer $language the language id, defaults to 0
+	 * @param string $accessGroups comma separated list of uids of groups that have access to that page
+	 * @return string The document id for that page
 	 */
-	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1', $cHash = '') {
-		$partialPageRecord = t3lib_BEfunc::getRecord('pages', $uid, 'pid');
-
-		$documentId = tx_solr_Site::getSiteByPageId($uid)->getSiteHash()
-			. '/pages/' . $partialPageRecord['pid'] . '/' . $uid . '/'
-			. $typeNum . '/' . $language . '/' . $accessGroups;
-
-		if (!empty($cHash)) {
-			$documentId .= '/' . $cHash;
-		}
+	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1') {
+		$documentId = self::getDocumentId(
+			'pages',
+			$uid,
+			$uid,
+			$typeNum . '/' . $language . '/' . $accessGroups
+		);
 
 		return $documentId;
 	}
@@ -59,21 +55,21 @@ class tx_solr_Util {
 	/**
 	 * Generates a document id in the form $siteHash/$type/$uid.
 	 *
-	 * @param	string	the records table name
-	 * @param	integer	the record's pid
-	 * @param	integer	the record's uid
-	 * @param	string	optional record type, can also be used to represent a single view page id
-	 * @return	string	a document id
+	 * @param string $table The records table name
+	 * @param integer $pid The record's pid
+	 * @param integer $uid The record's uid
+	 * @param string $additionalIdParameters Additional ID parameters
+	 * @return string A document id
 	 */
-	public static function getDocumentId($table, $pid, $uid, $type = '') {
+	public static function getDocumentId($table, $pid, $uid, $additionalIdParameters = '') {
 		$siteHash = tx_solr_Site::getSiteByPageId($pid)->getSiteHash();
-		$id = $siteHash . '/' . $table . '/' . $pid . '/' . $uid;
 
-		if (!empty($type)) {
-			$id .= '/' . $type;
+		$documentId = $siteHash . '/' . $table . '/' . $uid;
+		if (!empty($additionalIdParameters)) {
+			$documentId .= '/' . $additionalIdParameters;
 		}
 
-		return $id;
+		return $documentId;
 	}
 
 	/**

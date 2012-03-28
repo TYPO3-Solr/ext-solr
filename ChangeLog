@@ -1,3 +1,7 @@
+2012-03-28  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed bug #35031: Duplicate index entries if records are moved to another PID
+
 2012-03-27  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed bug #35242: Class 'tx_solr_fileindexer_Queue' not found in Reindexer Scheduler Task
