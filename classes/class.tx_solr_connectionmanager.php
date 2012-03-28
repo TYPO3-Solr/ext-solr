@@ -465,7 +465,6 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Finds the system's configured languages.
 	 *
-	 * @todo Change to t3lib_BEfunc::getSystemLanguages()
 	 * @return	array	An array of language IDs
 	 */
 	protected function getSystemLanguages() {
