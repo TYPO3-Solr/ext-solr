@@ -148,8 +148,10 @@ class tx_solr_indexqueue_PageIndexerRequest {
 
 		$response->setRequestId($decodedResponse['requestId']);
 
-		foreach ($decodedResponse['actionResults'] as $action => $actionResult) {
-			$response->addActionResult($action, $actionResult);
+		if (is_array($decodedResponse['actionResults'])) {
+			foreach ($decodedResponse['actionResults'] as $action => $actionResult) {
+				$response->addActionResult($action, $actionResult);
+			}
 		}
 
 		return $response;
