@@ -115,7 +115,7 @@ class tx_solr_indexqueue_frontendhelper_UserGroupDetector
 
 	/**
 	 * Modifies page records so that when checking for access through fe groups
-	 * no agroups or extendToSubpages flag is found and thus access is granted.
+	 * no groups or extendToSubpages flag is found and thus access is granted.
 	 *
 	 * @param	array	Page record
 	 * @param	integer	Overlay language ID
@@ -158,6 +158,14 @@ class tx_solr_indexqueue_frontendhelper_UserGroupDetector
 			if (empty($frontendGroups)) {
 					// default = public access
 				$frontendGroups = 0;
+			} else {
+				if ($this->request->getParameter('loggingEnabled')) {
+					t3lib_div::devLog('Access restriction found', 'solr', 0, array(
+						'groups'      => $frontendGroups,
+						'record'      => $record,
+						'record type' => $table,
+					));
+				}
 			}
 
 			$this->frontendGroups[] = $frontendGroups;
