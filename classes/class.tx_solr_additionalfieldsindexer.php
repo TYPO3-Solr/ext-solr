@@ -43,8 +43,8 @@ class tx_solr_AdditionalFieldsIndexer implements tx_solr_SubstitutePageIndexer {
 	 * Uses the original document and adds fields as defined in
 	 * plugin.tx_solr.index.additionalFields.
 	 *
-	 * @param	Apache_Solr_Document	The original page document.
-	 * @return	Apache_Solr_Document	A Apache_Solr_Document object that replace the default page document
+	 * @param Apache_Solr_Document The original page document.
+	 * @return Apache_Solr_Document A Apache_Solr_Document object that replace the default page document
 	 */
 	public function getPageDocument(Apache_Solr_Document $pageDocument) {
 		$substitutePageDocument = clone $pageDocument;
