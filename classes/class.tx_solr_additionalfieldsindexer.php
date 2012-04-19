@@ -63,7 +63,7 @@ class tx_solr_AdditionalFieldsIndexer implements tx_solr_SubstitutePageIndexer {
 	/**
 	 * Gets the additional fields as an array mapping field names to values.
 	 *
-	 * @return	array	An array mapping additional field names to their values.
+	 * @return array An array mapping additional field names to their values.
 	 */
 	protected function getAdditionalFields() {
 		$additionalFields     = array();
