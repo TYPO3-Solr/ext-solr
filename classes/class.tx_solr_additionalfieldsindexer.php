@@ -31,9 +31,9 @@
  * Adds page document fields as configured in
  * plugin.tx_solr.index.additionalFields.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class tx_solr_AdditionalFieldsIndexer implements tx_solr_SubstitutePageIndexer {
 
