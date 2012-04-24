@@ -259,7 +259,7 @@ class tx_solr_Util {
 			$GLOBALS['TSFE']->no_cache = TRUE;
 			$GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
 			$GLOBALS['TSFE']->no_cache = FALSE;
-			$GLOBALS['TSFE']->config['config'] = $GLOBALS['TSFE']->tmpl->setup['config.'];
+			$GLOBALS['TSFE']->getConfigArray();
 
 			$GLOBALS['TSFE']->settingLanguage();
 			$GLOBALS['TSFE']->newCObj();
