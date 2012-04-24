@@ -1,3 +1,7 @@
+2012-04-23  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed a bug that caused the the magic __solr_index_language record field to be empty for the default language when indexing records
+
 2012-03-28  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Release of v2.1.0
