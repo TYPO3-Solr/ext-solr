@@ -302,8 +302,7 @@ do
 
   # copy libs
   cd /opt/solr-tomcat/
-  mkdir solr/solr-$SOLR/dist
-  cp -r apache-solr-$SOLR/dist solr/solr-$SOLR/dist
+  cp -r apache-solr-$SOLR/dist solr/solr-$SOLR
   cp -r apache-solr-$SOLR/contrib solr/solr-$SOLR
 
   cecho "Cleaning up." $green
