@@ -170,6 +170,11 @@ class tx_solr_contentobject_Relation {
 
 		$mmTableName = $localFieldTca['config']['MM'];
 
+		$mmTableSortingField = '';
+		if (isset($this->configuration['relationTableSortingField'])) {
+			$mmTableSortingField = $mmTableName . '.' . $this->configuration['relationTableSortingField'];
+		}
+
 		$foreignTableName = $localFieldTca['config']['foreign_table'];
 		t3lib_div::loadTCA($foreignTableName);
 		$foreignTableTca  = $GLOBALS['TCA'][$foreignTableName];
@@ -181,7 +186,9 @@ class tx_solr_contentobject_Relation {
 			$localTableName,
 			$mmTableName,
 			$foreignTableName,
-			'AND ' . $localTableName . '.uid = ' . (int) $localRecordUid
+			'AND ' . $localTableName . '.uid = ' . (int) $localRecordUid,
+			'',
+			$mmTableSortingField
 		);
 
 		while ($relatedRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($relatedRecordsResource)) {

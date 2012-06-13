@@ -1,3 +1,7 @@
+2012-06-13  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added an option to define the sorting field in SOLR_RELATION mm tables
+
 2012-06-06  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* Fix dist path in multi Solr install script
