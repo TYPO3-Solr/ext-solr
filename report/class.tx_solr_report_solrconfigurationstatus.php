@@ -147,9 +147,13 @@ class tx_solr_report_SolrConfigurationStatus implements tx_reports_StatusProvide
 		$rootPagesWithIndexingOff = array();
 
 		foreach ($rootPages as $rootPage) {
-			tx_solr_Util::initializeTsfe($rootPage['uid']);
+			try {
+				tx_solr_Util::initializeTsfe($rootPage['uid']);
 
-			if (!$GLOBALS['TSFE']->config['config']['index_enable']) {
+				if (!$GLOBALS['TSFE']->config['config']['index_enable']) {
+					$rootPagesWithIndexingOff[] = $rootPage;
+				}
+			} catch (RuntimeException $e) {
 				$rootPagesWithIndexingOff[] = $rootPage;
 			}
 		}
@@ -182,7 +186,7 @@ class tx_solr_report_SolrConfigurationStatus implements tx_reports_StatusProvide
 		$rootPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid, title',
 			'pages',
-			'is_siteroot = 1 AND deleted = 0 AND hidden = 0 AND pid != -1',
+			'is_siteroot = 1 AND deleted = 0 AND hidden = 0 AND pid != -1 AND doktype IN(1,4) ',
 			'', '', '',
 			'uid'
 		);

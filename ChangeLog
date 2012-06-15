@@ -1,3 +1,7 @@
+2012-06-15  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed a bug in status report configuration check that crashed the status report when a site was not configred correctly
+
 2012-06-13  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added an option to define the sorting field in SOLR_RELATION mm tables
