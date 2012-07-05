@@ -11,6 +11,7 @@ CREATE TABLE tx_solr_indexqueue_item (
 	item_uid int(11) DEFAULT '0' NOT NULL,
 	indexing_configuration varchar(255) DEFAULT '' NOT NULL,
 	has_indexing_properties tinyint(1) DEFAULT '0' NOT NULL,
+	indexing_priority int(11) DEFAULT '0' NOT NULL,
 	changed int(11) DEFAULT '0' NOT NULL,
 	indexed int(11) DEFAULT '0' NOT NULL,
 	errors text NOT NULL,

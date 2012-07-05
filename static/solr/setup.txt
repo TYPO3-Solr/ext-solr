@@ -73,6 +73,8 @@ plugin.tx_solr {
 			pages {
 				initialization = tx_solr_indexqueue_initializer_Page
 
+				indexingPriority = 0
+
 				indexer = tx_solr_indexqueue_PageIndexer
 				indexer {
 					// add options for the indexer here

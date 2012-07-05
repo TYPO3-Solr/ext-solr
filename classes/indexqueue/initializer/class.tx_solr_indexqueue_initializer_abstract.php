@@ -122,7 +122,7 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 	public function initialize() {
 		$initialized = FALSE;
 
-		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, changed) '
+		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, priority, changed) '
 			. $this->buildSelectStatement() . ' '
 			. 'FROM ' . $this->type . ' '
 			. 'WHERE '
@@ -180,9 +180,10 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 		$select = 'SELECT '
 			. '\'' . $this->site->getRootPageId() . '\' as root, '
 			. '\'' . $this->type . '\' AS item_type, '
-			. 'uid, '
+			. 'uid AS item_uid, '
 			. '\'' . $this->indexingConfigurationName . '\' as indexing_configuration, '
-			. $GLOBALS['TCA'][$this->type]['ctrl']['tstamp'];
+			. $this->getIndexingPriority() . ' AS indexing_priority, '
+			. $GLOBALS['TCA'][$this->type]['ctrl']['tstamp'] . ' AS changed';
 
 		return $select;
 	}
@@ -225,6 +226,21 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 		sort($pages, SORT_NUMERIC);
 
 		return $pages;
+	}
+
+	/**
+	 * Reads the indexing priority for an indexing configuration.
+	 *
+	 * @return integer Indexing priority
+	 */
+	protected function getIndexingPriority() {
+		$priority = 0;
+
+		if (!empty($this->indexingConfiguration['indexingPriority'])) {
+			$priority = (int) $this->indexingConfiguration['indexingPriority'];
+		}
+
+		return $priority;
 	}
 
 	/**

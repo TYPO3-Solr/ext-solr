@@ -530,7 +530,7 @@ class tx_solr_indexqueue_Queue {
 				. ' AND changed > indexed'
 				. ' AND errors = \'\'',
 			'',
-			'changed DESC, uid DESC',
+			'indexing_priority DESC, changed DESC, uid DESC',
 			intval($limit)
 		);
 

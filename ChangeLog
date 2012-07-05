@@ -19,6 +19,10 @@
 	* Fixed a bug that caused the the magic __solr_index_language record field to be empty for the default language when indexing records
 	* Fixed an issue that caused URLs for records to be generated without realurl
 
+2012-04-03  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added feature #35548: Priorities for different indexing configurations
+
 2012-03-28  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Release of v2.1.0
