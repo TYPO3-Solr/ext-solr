@@ -76,7 +76,12 @@ class tx_solr_query_filterencoder_QueryGroup implements tx_solr_QueryFilterEncod
 		$facetParameters = array();
 
 		foreach ($facetConfiguration['queryGroup.'] as $queryName => $queryConfiguration) {
-			$facetParameters['facet.query'][] = $facetConfiguration['field'] . ':' . $queryConfiguration['query'];
+			$tag = '';
+			if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+				$tag = '{!ex=' . $facetConfiguration['field'] . '}';
+			}
+
+			$facetParameters['facet.query'][] = $tag . $facetConfiguration['field'] . ':' . $queryConfiguration['query'];
 		}
 
 		return $facetParameters;
