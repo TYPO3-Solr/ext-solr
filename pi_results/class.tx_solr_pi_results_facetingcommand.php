@@ -54,6 +54,13 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 	protected $configuration;
 
 	/**
+	 * Facets active: TRUE if any option of any facet has been selected.
+	 *
+	 * @var boolean
+	 */
+	protected $facetsActive = FALSE;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param tx_solr_pluginbase_CommandPluginBase Parent plugin object.
@@ -73,6 +80,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 		) {
 			$marker['subpart_available_facets'] = $this->renderAvailableFacets();
 			$marker['subpart_used_facets']      = $this->renderUsedFacets();
+			$marker['active']                   = $this->facetsActive ? '1' : '0';
 
 			$this->addFacetingJavascript();
 		}
@@ -111,6 +119,11 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 			$facetRenderer = $facetRendererFactory->getFacetRendererByFacetName($facetName);
 			$facetRenderer->setTemplate($template);
 			$facetRenderer->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
+
+			$facet = $facetRenderer->getFacet();
+			if ($facet['active']) {
+				$this->facetsActive = TRUE;
+			}
 
 			$facetContent .= $facetRenderer->renderFacet();
 		}
