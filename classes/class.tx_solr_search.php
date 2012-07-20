@@ -262,7 +262,7 @@ class tx_solr_Search implements t3lib_Singleton {
 		return $options;
 	}
 
-	public function getRangeFacetFieldOptions($rangeFacetField) {
+	public function getFacetRangeOptions($rangeFacetField) {
 		return get_object_vars($this->getFacetCounts()->facet_ranges->$rangeFacetField);
 	}
 

@@ -4,6 +4,7 @@
 
 	! Added method getFacetInternalType() in interface tx_solr_FacetRenderer
 	! Renamed tx_solr_facet_Facet::getOptions() to getOptionsRaw()
+	! Renamed tx_solr_Search::getFacetRangeOptions() to getFacetRangeOptions()
 	! API cleanup
 		* Changed tx_solr_pluginbase_PluginBase::performAction() to be abstract
 		* Added missing abstract tx_solr_pluginbase_PluginBase::render()
