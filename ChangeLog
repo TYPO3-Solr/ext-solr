@@ -68,6 +68,7 @@
 	* Added a wrapping div to the no results subpart
 	* Added marker FACETING.search_has_results
 	* Fixed some performance issue in the template engine
+	* Fixed handling of facet queries with no results
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

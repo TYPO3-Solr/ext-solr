@@ -259,6 +259,9 @@ class tx_solr_Search implements t3lib_Singleton {
 			}
 		}
 
+			// filter out queries with no results
+		$options = array_filter($options);
+
 		return $options;
 	}
 
