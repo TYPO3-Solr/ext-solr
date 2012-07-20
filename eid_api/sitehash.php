@@ -26,13 +26,8 @@ $domain     = t3lib_div::_GP('domain');
 $returnData = '';
 
 if (!empty($domain)) {
-	$sitehash = sha1(
-		$domain .
-		$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
-		'tx_solr'
-	);
-
-	$returnData = json_encode(array('sitehash' => $sitehash));
+	$siteHash   = tx_solr_Util::getSiteHashForDomain($domain);
+	$returnData = json_encode(array('sitehash' => $siteHash));
 } else {
 	header(t3lib_utility_Http::HTTP_STATUS_400);
 

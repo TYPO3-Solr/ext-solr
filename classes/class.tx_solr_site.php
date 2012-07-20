@@ -265,13 +265,7 @@ class tx_solr_Site {
 	 * @return	string	Site Hash.
 	 */
 	public function getSiteHash() {
-		$siteHash = sha1(
-			$this->getDomain() .
-			$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
-			'tx_solr'
-		);
-
-		return $siteHash;
+		return tx_solr_Util::getSiteHashForDomain($this->getDomain());
 	}
 
 	/**

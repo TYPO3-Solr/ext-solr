@@ -261,7 +261,12 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 				// access
 			$query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
-			$query->setSiteHash(tx_solr_Site::getSiteByPageId($GLOBALS['TSFE']->id)->getSiteHash());
+			$allowedSites = str_replace(
+				'__solr_current_site',
+				tx_solr_Site::getSiteByPageId($GLOBALS['TSFE']->id)->getDomain(),
+				$this->conf['search.']['query.']['allowedSites']
+			);
+			$query->setSiteHashFilter($allowedSites);
 #			$query->addFilter('endtime:[NOW TO *]'); // what to do if no endtime is set (empty / no limit)?
 #			$query->addFilter('starttime:[* TO NOW]'); // would need support to index pages with future start times
 

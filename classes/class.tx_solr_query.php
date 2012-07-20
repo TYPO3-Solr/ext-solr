@@ -468,14 +468,22 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * limits the query to a certain site's content
+	 * Limits the query to certain sites
 	 *
-	 * @param	string	the site hash
+	 * @param array $allowedSites Comma-separated list of domains
 	 */
-	public function setSiteHash($siteHash) {
-		$this->addFilter('siteHash:"' . $siteHash . '"');
-	}
+	public function setSiteHashFilter($allowedSites) {
+		$allowedSites = t3lib_div::trimExplode(',', $allowedSites);
+		$filters      = array();
 
+		foreach($allowedSites as $site) {
+			$siteHash = tx_solr_Util::getSiteHashForDomain($site);
+
+			$filters[] = 'siteHash:"' . $siteHash . '"';
+		}
+
+		$this->addFilter(implode(' OR ', $filters));
+	}
 
 	// sorting
 

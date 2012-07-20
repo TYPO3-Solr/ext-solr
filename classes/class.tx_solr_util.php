@@ -387,6 +387,22 @@ class tx_solr_Util {
 
 		return $pathBranch;
 	}
+
+	/**
+	 * Gets the site hash for a domain
+	 *
+	 * @param string $domain Domain to calculate the site hash for.
+	 * @return string site hash for $domain
+	 */
+	public static function getSiteHashForDomain($domain) {
+		$siteHash = sha1(
+			$domain .
+			$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
+			'tx_solr'
+		);
+
+		return $siteHash;
+	}
 }
 
 
