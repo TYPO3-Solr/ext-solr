@@ -249,6 +249,19 @@ class tx_solr_Search implements t3lib_Singleton {
 		return get_object_vars($this->getFacetCounts()->facet_fields->$facetField);
 	}
 
+	public function getFacetQueryOptions($facetField) {
+		$options = array();
+
+		$facetQueries = get_object_vars($this->getFacetCounts()->facet_queries);
+		foreach ($facetQueries as $facetQuery => $numberOfResults) {
+			if (t3lib_div::isFirstPartOfStr($facetQuery, $facetField)) {
+				$options[$facetQuery] = $numberOfResults;
+			}
+		}
+
+		return $options;
+	}
+
 	public function getRangeFacetFieldOptions($rangeFacetField) {
 		return get_object_vars($this->getFacetCounts()->facet_ranges->$rangeFacetField);
 	}
