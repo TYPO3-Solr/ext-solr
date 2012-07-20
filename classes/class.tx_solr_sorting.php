@@ -68,7 +68,7 @@ class tx_solr_Sorting {
 	 * Gets the sorting options with resolved field names in case stdWrap was
 	 * used to define them.
 	 *
-	 * @return	array	The sorting options with resolved field names.
+	 * @return array The sorting options with resolved field names.
 	 */
 	public function getSortOptions() {
 		$sortOptions = array();
@@ -87,8 +87,9 @@ class tx_solr_Sorting {
 
 			$optionName = substr($optionName, 0, -1);
 			$sortOptions[$optionName] = array(
-				'field' => $optionField,
-				'label' => $optionLabel
+				'field'        => $optionField,
+				'label'        => $optionLabel,
+				'defaultOrder' => $optionConfiguration['defaultOrder']
 			);
 		}
 
