@@ -717,7 +717,7 @@ class tx_solr_Template {
 					if (array_key_exists($valueSelector, $normalizedKeysArray)) {
 						$resolvedValue = $normalizedKeysArray[$valueSelector];
 					}
-				} else if (is_object($variableValue)) {
+				} elseif (is_object($variableValue)) {
 					$resolveMethod = 'get' . tx_solr_Util::camelize($valueSelector);
 					$resolvedValue = $variableValue->$resolveMethod();
 				}

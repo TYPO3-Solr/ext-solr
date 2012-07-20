@@ -103,7 +103,7 @@ class tx_solr_access_RootlineElement {
 			} else {
 				$elementGroups = $elementAccess[1];
 			}
-		} else if($elementAccess[0] == 'r') {
+		} elseif($elementAccess[0] == 'r') {
 				// record element type
 			if (count($elementAccess) !== 2) {
 				throw new tx_solr_access_RootlineElementFormatException(
@@ -140,7 +140,7 @@ class tx_solr_access_RootlineElement {
 
 		if ($this->type == self::ELEMENT_TYPE_CONTENT) {
 			$rootlineElement .= 'c';
-		} else if ($this->type == self::ELEMENT_TYPE_RECORD) {
+		} elseif ($this->type == self::ELEMENT_TYPE_RECORD) {
 			$rootlineElement .= 'r';
 		} else {
 			$rootlineElement .= $this->pageId;

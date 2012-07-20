@@ -80,7 +80,7 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 						$loopedMarkerName = substr($variableName, ($dividerPosition + 1));
 
 						$subpartTemplate->addLoop($loopName, $loopedMarkerName, $commandVariable);
-					} else if (t3lib_div::isFirstPartOfStr($variableName, 'subpart_')) {
+					} elseif (t3lib_div::isFirstPartOfStr($variableName, 'subpart_')) {
 						$subpartName = substr($variableName, 8);
 						$subpartTemplate->addSubpart($subpartName, $commandVariable);
 					} else {

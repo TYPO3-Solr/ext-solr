@@ -167,7 +167,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 
 		if ($method == self::METHOD_GET) {
 			$httpResponse = $httpTransport->performGetRequest($url, $timeout);
-		} else if ($method == self::METHOD_POST) {
+		} elseif ($method == self::METHOD_POST) {
 				// FIXME should respect all headers, not only Content-Type
 			$httpResponse = $httpTransport->performPostRequest($url, $rawPost, $requestHeaders['Content-Type'], $timeout);
 		}

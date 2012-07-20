@@ -457,7 +457,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 
 		if (count($language)) {
 			$languageName = $language[0]['title'];
-		} else if ($languageId == 0) {
+		} elseif ($languageId == 0) {
 			$languageName = 'default';
 		}
 

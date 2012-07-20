@@ -111,7 +111,7 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 			$facetParameters['facet.field'][] =
 				'{!ex=' . implode(',', $facets) . '}'
 				. $facetConfiguration['field'];
-		} else if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+		} elseif ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
 			$facetParameters['facet.field'][] =
 				'{!ex=' . $facetConfiguration['field'] . '}'
 				. $facetConfiguration['field'];
