@@ -293,10 +293,10 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 		$selectOptions               = $resultsPerPageSwitchCommand->getResultsPerPageOptions();
 		$template->addLoop('options', 'option', $selectOptions);
 
-		$form = array('action' => htmlentities($this->parentPlugin->pi_linkTP_keepPIvars_url(array(
-			'resultsPerPage' => '',
-			'page' => '',
-		))));
+		$linkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
+		$form = array(
+			'action' => htmlentities($linkBuilder->getQueryUrl())
+		);
 		$template->addVariable('form', $form);
 
 		return $template->render();
