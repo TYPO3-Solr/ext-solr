@@ -25,7 +25,7 @@
 
 /**
  * Viewhelper class to create links
- * Replaces viewhelpers ###LINK:linkText|linkTarget|additionalParameters|useCache###
+ * Replaces viewhelpers ###LINK:linkText|linkTarget|additionalParameters|useCache|ATagParams###
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
@@ -52,13 +52,14 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 	/**
 	 * Creates a link to a given page with a given link text
 	 *
-	 * @param	array	Array of arguments, [0] is the link text, [1] is the (optional) page Id to link to (otherwise TSFE->id), [2] are additional URL parameters, [3] use cache, defaults to FALSE
+	 * @param	array	Array of arguments, [0] is the link text, [1] is the (optional) page Id to link to (otherwise TSFE->id), [2] are additional URL parameters, [3] use cache, defaults to FALSE, [4] additional A tag parameters
 	 * @return	string	complete anchor tag with URL and link text
 	 */
 	public function execute(array $arguments = array()) {
 		$linkText             = $arguments[0];
 		$additionalParameters = $arguments[2] ? $arguments[2] : '';
 		$useCache             = $arguments[3] ? TRUE : FALSE;
+		$ATagParams           = $arguments[4] ? $arguments[4] : '';
 
 			// by default or if no link target is set, link to the current page
 		$linkTarget = $GLOBALS['TSFE']->id;
@@ -91,7 +92,8 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 			'useCacheHash'     => $useCache,
 			'no_cache'         => FALSE,
 			'parameter'        => $linkTarget,
-			'additionalParams' => $additionalParameters
+			'additionalParams' => $additionalParameters,
+			'ATagParams'       => $ATagParams
 		);
 
 		return $this->contentObject->typoLink($linkText, $linkConfiguration);
