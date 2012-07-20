@@ -65,12 +65,14 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 
 	public function execute() {
 		$numberOfResults = $this->search->getNumberOfResults();
-		$rawQuery        = $this->parentPlugin->getRawUserQuery();
-		$query           = $this->parentPlugin->getCleanUserQuery();
+
+		$query = $this->search->getQuery();
+		$rawQueryTerms = $query->getKeywordsRaw();
+		$queryTerms    = $query->getKeywordsCleaned();
 
 		$searchedFor = strtr(
 			$this->parentPlugin->pi_getLL('results_searched_for'),
-			array('@searchWord' => '<span class="tx-solr-search-word">' . $query . '</span>')
+			array('@searchWord' => '<span class="tx-solr-search-word">' . $queryTerms . '</span>')
 		);
 
 		$foundResultsInfo = strtr(
@@ -83,9 +85,9 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 
 		return array(
 			'searched_for'                    => $searchedFor,
-			'query'                           => $query,
-			'query_urlencoded'                => rawurlencode($rawQuery),
-			'query_raw'                       => $rawQuery,
+			'query'                           => $queryTerms,
+			'query_urlencoded'                => rawurlencode($rawQueryTerms),
+			'query_raw'                       => $rawQueryTerms,
 			'found'                           => $foundResultsInfo,
 			'range'                           => $this->getPageBrowserRange(),
 			'count'                           => $this->search->getNumberOfResults(),
