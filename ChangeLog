@@ -26,6 +26,7 @@
 	* Updated SolrPhpClient to r62
 	* Change tx_solr_ConnectionManager::getConfiguredSolrConnections(): extract getConfiguredSolrConnectionByRootPage()
 	* Added tx_solr_Site::getRootPage()
+	* Added feature #36668: Allow Solr connection initialization per site
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

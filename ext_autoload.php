@@ -29,6 +29,7 @@ return array(
 	'tx_solr_additionalfieldsindexer' => $extensionPath . 'classes/class.tx_solr_additionalfieldsindexer.php',
 	'tx_solr_commandresolver' => $extensionPath . 'classes/class.tx_solr_commandresolver.php',
 	'tx_solr_connectionmanager' => $extensionPath . 'classes/class.tx_solr_connectionmanager.php',
+	'tx_solr_contextmenuactioncontroller' => $extensionPath . 'classes/class.tx_solr_contextmenuactioncontroller.php',
 	'tx_solr_garbagecollector' => $extensionPath . 'classes/class.tx_solr_garbagecollector.php',
 	'tx_solr_htmlcontentextractor' => $extensionPath . 'classes/class.tx_solr_htmlcontentextractor.php',
 	'tx_solr_javascriptmanager' => $extensionPath . 'classes/class.tx_solr_javascriptmanager.php',

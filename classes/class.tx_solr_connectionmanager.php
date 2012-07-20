@@ -325,6 +325,33 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	}
 
 	/**
+	 * Updats the Solr connections for a specific root page ID / site.
+	 *
+	 * @param integer $rootPageId
+	 */
+	public function updateConnectionByRootPageId($rootPageId) {
+		$systemLanguages = $this->getSystemLanguages();
+		$rootPage        = t3lib_div::makeInstance('tx_solr_Site', $rootPageId)->getRootPage();
+
+		$updatedSolrConnections = array();
+		foreach ($systemLanguages as $languageId) {
+			$connection = $this->getConfiguredSolrConnectionByRootPage($rootPage, $languageId);
+
+			if (!empty($connection)) {
+				$updatedSolrConnections[$connection['connectionKey']] = $connection;
+			}
+		}
+
+		$registry = t3lib_div::makeInstance('t3lib_Registry');
+		$solrConnections = $registry->get('tx_solr', 'servers', array());
+
+		$solrConnections = array_merge($solrConnections, $updatedSolrConnections);
+		$solrConnections = $this->filterDuplicateConnections($solrConnections);
+
+		$registry->set('tx_solr', 'servers', $solrConnections);
+	}
+
+	/**
 	 * Finds the configured Solr connections. Also respects multi-site
 	 * environments.
 	 *

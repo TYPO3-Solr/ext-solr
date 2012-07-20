@@ -103,7 +103,37 @@ if (TYPO3_MODE == 'BE') {
 
 }
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+	// register click menu item to initialize the Solr connections for a single site
+	// visible for admin users only
+t3lib_extMgm::addUserTSConfig('
+[adminUser = 1]
+options.contextMenu.table.pages.items.850 = ITEM
+options.contextMenu.table.pages.items.850 {
+	name = tx_solr_initializeSolrConnections
+	label = Initialize Solr Connections
+	icon = ' . t3lib_div::locationHeaderUrl($PATHrel_solr . 'resources/images/cache-init-solr-connections.png') . '
+	displayCondition = getRecord|is_siteroot = 1
+	callbackAction = initializeSolrConnections
+}
+
+options.contextMenu.table.pages.items.851 = DIVIDER
+[global]
+');
+
+t3lib_extMgm::registerExtDirectComponent(
+	'TYPO3.Solr.ContextMenuActionController',
+	$PATHrel_solr . 'classes/class.tx_solr_contextmenuactioncontroller.php:tx_solr_ContextMenuActionController',
+	'web',
+	'admin'
+);
+
+	// include JS in backend
+$GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = $PATH_solr . 'classes/backenditem/contextmenuactionjavascriptregistration.php';
+
+
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// replace the built-in search content element
 t3lib_extMgm::addPiFlexFormValue(
