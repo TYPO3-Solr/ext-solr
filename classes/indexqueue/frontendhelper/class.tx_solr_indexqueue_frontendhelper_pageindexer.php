@@ -236,11 +236,6 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 		if ($url == '') {
 			$url = '/';
 		}
-		$urlComponents = parse_url($url);
-		if (empty($urlComponents['host'])) {
-				// add the host to get an absolute URL
-			$url = t3lib_div::locationHeaderUrl($url);
-		}
 
 		return $url;
 	}

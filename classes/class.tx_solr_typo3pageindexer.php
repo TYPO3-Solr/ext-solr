@@ -433,9 +433,7 @@ class tx_solr_Typo3PageIndexer {
 	 * @param	string	$url The page's URL.
 	 */
 	public function setPageUrl($url) {
-		if (filter_var($url, FILTER_VALIDATE_URL)) {
-			$this->pageUrl = $url;
-		}
+		$this->pageUrl = $url;
 	}
 
 	/**
