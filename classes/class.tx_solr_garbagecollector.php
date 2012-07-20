@@ -316,7 +316,7 @@ class tx_solr_GarbageCollector {
 	 * @param	integer	$uid The record's uid.
 	 */
 	public function collectGarbage($table, $uid) {
-		if ($table == 'tt_content' || $table == 'pages') {
+		if ($table == 'tt_content' || $table == 'pages' || $table == 'pages_language_overlay') {
 			$this->collectPageGarbage($table, $uid);
 		} else {
 			$this->collectRecordGarbage($table, $uid);
@@ -356,6 +356,16 @@ class tx_solr_GarbageCollector {
 
 				$this->deleteIndexDocuments($table, $uid);
 					// only a content element was removed, now update/re-index the page
+				$indexQueue->updateItem($table, $uid);
+				break;
+			case 'pages_language_overlay':
+				$pageOverlayRecord = t3lib_BEfunc::getRecord('pages_language_overlay', $uid, 'uid, pid', '', FALSE);
+
+				$table = 'pages';
+				$uid   = $pageOverlayRecord['pid'];
+
+				$this->deleteIndexDocuments($table, $uid);
+					// only a page overlay was removed, now update/re-index the page
 				$indexQueue->updateItem($table, $uid);
 				break;
 			case 'pages':
