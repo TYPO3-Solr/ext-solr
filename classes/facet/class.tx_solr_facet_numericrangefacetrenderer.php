@@ -152,6 +152,18 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 		$javascriptManager->addJavascriptToPage();
 	}
 
+	/**
+	 * Adds the stylesheets necessary for the slider
+	 *
+	 */
+	protected function loadStylesheets() {
+		if ($this->configuration['cssFiles.']['ui'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
+			$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->configuration['cssFiles.']['ui']);
+			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss'] =
+				'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
+		}
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_numericrangefacetrenderer.php'])	{

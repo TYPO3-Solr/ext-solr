@@ -29,7 +29,7 @@ plugin.tx_solr {
 	cssFiles {
 		results     = EXT:solr/resources/css/pi_results/results.css
 		pagebrowser = EXT:pagebrowse/res/styles_min.css
-		suggest     = EXT:solr/resources/css/eid_suggest/jquery-ui.custom.css
+		ui          = EXT:solr/resources/css/jquery-ui/jquery-ui.custom.css
 	}
 
 	javascriptFiles {
