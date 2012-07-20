@@ -90,6 +90,7 @@
 	* Fixed handling of Javascript loading through the Javascript Manager
 	* Added more information to the plugin backend summary in the page module view
 	* Improved distinction between action areas in the backend module
+	* Change url(en|de)code function calls to their raw equivalents, credits Stefan Galinksi
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

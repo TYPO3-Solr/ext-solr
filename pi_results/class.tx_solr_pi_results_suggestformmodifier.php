@@ -134,7 +134,7 @@ class tx_solr_pi_results_SuggestFormModifier implements tx_solr_FormModifier, tx
 		$additionalFilters = $this->parentPlugin->getAdditionalFilters();
 		if (!empty($additionalFilters)) {
 			$additionalFilters = json_encode($additionalFilters);
-			$additionalFilters = urlencode($additionalFilters);
+			$additionalFilters = rawurlencode($additionalFilters);
 
 			$suggestUrl .= '&filters=' . $additionalFilters;
 		}
