@@ -37,6 +37,7 @@
 	* Added support for scheduler progress in TYPO3 6.0
 	* Fixed issue #33464: Improve responsiveness of Garbage Collector when deleting or hiding pages or records
 	* Added an option to allow setting results per page in the pi_results flexform
+	* Added a configuration option to set the default sort order per sort option
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

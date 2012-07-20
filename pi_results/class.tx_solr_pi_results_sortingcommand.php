@@ -97,6 +97,10 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 
 		foreach ($configuredSortOptions as $sortOptionName => $sortOption) {
 			$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
+			if (!empty($this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['defaultOrder'])) {
+				$sortDirection = $this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['defaultOrder'];
+			}
+
 			$sortIndicator = $sortDirection;
 			$sortParameter = $sortOptionName . ' ' . $sortDirection;
 
