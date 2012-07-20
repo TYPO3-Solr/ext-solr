@@ -150,7 +150,8 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 
 				// negating the facet option links to remove a filter
 			if ($this->facetConfiguration['selectingSelectedFacetOptionRemovesFilter']
-			&& $optionSelected) {
+				&& $optionSelected
+			) {
 				$optionLink    = $facetLinkBuilder->getRemoveFacetOptionLink($optionText);
 				$optionLinkUrl = $facetLinkBuilder->getRemoveFacetOptionUrl();
 			}
