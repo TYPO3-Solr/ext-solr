@@ -244,9 +244,9 @@ class tx_solr_facet_Facet {
 	 * @return integer Number of facet options for the current facet.
 	 */
 	public function getOptionsCount() {
-		$facetCounts = $this->search->getFacetCounts();
+		$facetOptions = $this->getOptionsRaw();
 
-		return count((array) $facetCounts->facet_fields->{$this->field});
+		return count($facetOptions);
 	}
 
 	/**
