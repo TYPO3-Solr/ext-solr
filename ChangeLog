@@ -95,6 +95,7 @@
 	* Fixed bug #37960: Missing htmlspecialchars for generated urls, credits Stefan Galinksi
 	* Added feature #37723: Conditional Facets - More flexibility, credits Stefan Galinksi
 	* Added feature #37845: Allow manual sorting of the facet options, credits Stefan Galinksi
+	* Fixed a crash in the reports module for the case when a site has no TypoScript template
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
