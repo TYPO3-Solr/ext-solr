@@ -45,7 +45,7 @@ class tx_solr_cli_Dispatcher extends t3lib_cli {
 		$this->cli_help['name']        = 'solr -- Solr commands for TYPO3 installations';
 		$this->cli_help['synopsis']    = 'command ###OPTIONS###';
 		$this->cli_help['description'] = 'Dispatches to various Solr commands.';
-		$this->cli_help['examples']    = "./cli_dispatch.phpsh solr updateSolrConnections \nThis will update the Solr connections.";
+		$this->cli_help['examples']    = "./cli_dispatch.phpsh solr updateConnections \nThis will update the Solr connections.";
 		$this->cli_help['author']      = 'Ingo Renner';
 	}
 
