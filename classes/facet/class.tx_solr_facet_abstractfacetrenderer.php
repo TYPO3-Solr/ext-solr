@@ -42,6 +42,13 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	protected $facetName;
 
 	/**
+	 * The facet to render.
+	 *
+	 * @var tx_solr_facet_Facet
+	 */
+	protected $facet;
+
+	/**
 	 * @var	array
 	 */
 	protected $facetConfiguration;
@@ -74,6 +81,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	public function __construct($facetName) {
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
+		$this->facet              = t3lib_div::makeInstance('tx_solr_facet_Facet', $facetName);
 		$this->facetName          = $facetName;
 
 		$this->solrConfiguration  = tx_solr_Util::getSolrConfiguration();
@@ -103,7 +111,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 
 			// if the facet doesn't provide any options, don't render it unless
 			// it is configured to be rendered nevertheless
-		if (!$this->isEmpty() || $showEmptyFacets || $showEmptyFacet) {
+		if (!$this->facet->isEmpty() || $showEmptyFacets || $showEmptyFacet) {
 			$facetTemplate = clone $this->template;
 			$facetTemplate->workOnSubpart('single_facet');
 
@@ -133,7 +141,8 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 		$facet = $this->facetConfiguration;
 		$facet['name']      = $this->facetName;
 		$facet['count']     = $this->getFacetOptionsCount();
-		$facet['active']    = $this->isActive() ? '1' : '0';
+		$facet['active']    = $this->facet->isActive() ? '1' : '0';
+		$facet['empty']     = $this->facet->isEmpty() ? '1' : '0';
 		$facet['reset_url'] = $this->buildResetFacetUrl();
 
 		$contentObject = t3lib_div::makeInstance('tslib_cObj');
@@ -155,10 +164,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	 * @see tx_solr_FacetRenderer::getFacetOptions()
 	 */
 	public function getFacetOptions() {
-		$facetField   = $this->facetConfiguration['field'];
-		$facetOptions = $this->search->getFacetFieldOptions($facetField);
-
-		return $facetOptions;
+		return $this->facet->getOptions();
 	}
 
 	/**
@@ -166,60 +172,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	 * @see tx_solr_FacetRenderer::getFacetOptionsCount()
 	 */
 	public function getFacetOptionsCount() {
-		$facetCounts = $this->search->getFacetCounts();
-		$facetField  = $this->facetConfiguration['field'];
-
-		return count((array) $facetCounts->facet_fields->$facetField);
-	}
-
-	/**
-	 * Determines if a facet has any options.
-	 *
-	 * @return boolean	TRUE if no facet options are given, FALSE if facet options are given
-	 */
-	protected function isEmpty() {
-		$isEmpty = FALSE;
-
-		$facetCounts       = $this->search->getFacetCounts();
-		$facetField        = $this->facetConfiguration['field'];
-		$facetOptions      = $this->getFacetOptions();
-		$facetOptionsCount = count($facetOptions);
-
-			// facet options include '_empty_', if no options are given
-		if ($facetOptionsCount == 0
-			|| ($facetOptionsCount == 1 && array_key_exists('_empty_', $facetOptions))
-		) {
-			$isEmpty = TRUE;
-		}
-
-		return $isEmpty;
-	}
-
-	/**
-	 * Checks whether an option of the facet has been selected by the user by
-	 * checking the URL GET parameters.
-	 *
-	 * @return	boolean	TRUE if any option of the facet is applied, FALSE otherwise
-	 */
-	protected function isActive() {
-		$isActive = FALSE;
-
-		$resultParameters = t3lib_div::_GET('tx_solr');
-		$filterParameters = array();
-		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
-		}
-
-		foreach ($filterParameters as $filter) {
-			list($filterName, $filterValue) = explode(':', $filter);
-
-			if ($filterName == $this->facetName) {
-				$isActive = TRUE;
-				break;
-			}
-		}
-
-		return $isActive;
+		$this->facet->getOptionsCount();
 	}
 
 	/**

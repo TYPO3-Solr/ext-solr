@@ -46,6 +46,7 @@
 	* Changed the results per page switch to be a command on its own
 	* Fixed bug #34558: Wrong processing of plugin.tx_solr.search.query.filter stdWrap in pi_search, credits Jochem de Groot
 	* Added the implementation to make Javascript load at the end of a page
+	* Added class tx_solr_facet_Facet to handle facets
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

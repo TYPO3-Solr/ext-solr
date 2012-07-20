@@ -57,6 +57,7 @@ return array(
 	'tx_solr_contentobject_relation' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_relation.php',
 
 	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_abstractfacetrenderer.php',
+	'tx_solr_facet_facet' => $extensionPath . 'classes/facet/class.tx_solr_facet_facet.php',
 	'tx_solr_facet_facetoption' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetoption.php',
 	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererfactory.php',
 	'tx_solr_facet_numericrangefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_numericrangefacetrenderer.php',
