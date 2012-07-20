@@ -75,6 +75,7 @@
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
 	* Fix issue #35339: Index Queue error
+	* Switch install scripts from Subversion to Git
 
 2012-06-15  Ingo Renner  <ingo.renner@dkd.de>
 

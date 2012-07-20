@@ -11,7 +11,7 @@ SOLR_VER=3.5.0
 EXT_SOLR_VER=2.1
 EXT_SOLR_PLUGIN_VER=1.2.0
 
-SVNBRANCH_PATH="branches/solr_$EXT_SOLR_VER.x"
+GITBRANCH_PATH="solr_$EXT_SOLR_VER.x"
 
 # Set default language for cores to download to english, if no commandline parameters are given
 if [ $# -eq 0 ]
@@ -57,9 +57,9 @@ wgetresource ()
 
 	if [ $BRANCH_TEST_RETURN -eq "0" ]
 	then
-		RESOURCE="https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/"$1
+		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/resources/"$1
 	else
-		RESOURCE="https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/"$1
+		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/master/raw/resources/"$1
 	fi
 
 	if [ "$2" ]

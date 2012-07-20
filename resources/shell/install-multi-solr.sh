@@ -13,7 +13,8 @@ DEFAULT_SOLR_VER=3.5.0
 EXT_SOLR_VER=2.1
 EXT_SOLR_PLUGIN_VER=1.2.0
 
-SVNBRANCH_PATH="branches/solr_$EXT_SOLR_VER.x"
+GITBRANCH_PATH="solr_$EXT_SOLR_VER.x"
+
 AVAILABLE_LANGUAGES="arabic,armenian,basque,brazilian_portuguese,bulgarian,burmese,catalan,chinese,czech,danish,dutch,english,finnish,french,galician,german,greek,hindi,hungarian,indonesian,italian,japanese,khmer,korean,lao,norwegian,persian,polish,portuguese,romanian,russian,spanish,swedish,thai,turkish,ukrainian"
 
 usage()
@@ -103,9 +104,9 @@ wgetresource ()
 
 	if [ $BRANCH_TEST_RETURN -eq "0" ]
 	then
-		RESOURCE="https://svn.typo3.org/TYPO3v4/Extensions/solr/$SVNBRANCH_PATH/resources/"$1
+  		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/resources/"$1
 	else
-		RESOURCE="https://svn.typo3.org/TYPO3v4/Extensions/solr/trunk/resources/"$1
+		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/master/raw/resources/"$1
 	fi
 
 	if [ "$2" ]
