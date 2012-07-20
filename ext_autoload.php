@@ -105,7 +105,7 @@ return array(
 
 	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php',
 
-	'tx_solr_resultsetmodifier_resulttypeboundarymarker' => $extensionPath . 'ext/solr/classes/resultsetmodifier/class.tx_solr_resultsetmodifier_resulttypeboundarymarker.php',
+	'tx_solr_resultsetmodifier_resulttypeboundarymarker' => $extensionPath . 'classes/resultsetmodifier/class.tx_solr_resultsetmodifier_resulttypeboundarymarker.php',
 
 	'tx_solr_viewhelper_abstractsubpartviewhelper' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_abstractsubpartviewhelper.php',
 	'tx_solr_viewhelper_crop' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_crop.php',
