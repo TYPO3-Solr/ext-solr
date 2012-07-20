@@ -51,13 +51,6 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	protected $_lukeUrl;
 
 	/**
-	 * Constructed servlet URL for system information
-	 *
-	 * @var string
-	 */
-	protected $_systemUrl;
-
-	/**
 	 * Constructed servlet URL for plugin information
 	 *
 	 * @var string
@@ -106,11 +99,6 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 				'numTerms' => '0',
 				'wt' => self::SOLR_WRITER
 			)
-		);
-
-		$this->_systemUrl  = $this->_constructUrl(
-			self::SYSTEM_SERVLET,
-			array('wt' => self::SOLR_WRITER)
 		);
 
 		$this->_pluginsUrl  = $this->_constructUrl(
@@ -364,7 +352,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	public function getSystemInformation() {
 
 		if (empty($this->systemData)) {
-			$systemInformation = $this->_sendRawGet($this->_systemUrl);
+			$systemInformation = $this->system();
 
 				// access a random property to trigger response parsing
 			$systemInformation->responseHeader;
