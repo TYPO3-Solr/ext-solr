@@ -100,8 +100,18 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 	protected function buildFacetParameters(array $facetConfiguration) {
 		$facetParameters = array();
 
-			// very simple for now, may add overrides f.<field_name>.facet.* later
-		if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+			// simple for now, may add overrides f.<field_name>.facet.* later
+
+		if ($this->configuration['search.']['faceting.']['keepAllFacetsOnSelection'] == 1) {
+			$facets = array();
+			foreach ($this->configuration['search.']['faceting.']['facets.'] as $facet) {
+				$facets[] = $facet['field'];
+			}
+
+			$facetParameters['facet.field'][] =
+				'{!ex=' . implode(',', $facets) . '}'
+				. $facetConfiguration['field'];
+		} else if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
 			$facetParameters['facet.field'][] =
 				'{!ex=' . $facetConfiguration['field'] . '}'
 				. $facetConfiguration['field'];
@@ -150,7 +160,9 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 				$filterEncoder = $this->facetRendererFactory->getFacetFilterEncoderByFacetName($facetName);
 
 				$tag = '';
-				if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+				if ($facetConfiguration['keepAllOptionsOnSelection'] == 1
+					|| $this->configuration['search.']['faceting.']['keepAllFacetsOnSelection'] == 1
+				) {
 					$tag = '{!tag=' . addslashes( $facetConfiguration['field'] ) . '}';
 				}
 

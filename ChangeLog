@@ -18,6 +18,7 @@
 	* Fixed broken show results of empty query, credits Stefan Galinski
 	* Fixed bug #35996: Page Indexer always stores absolute url
 	* Fixed bug #35727: Configurable query parameter feature causes bug with the suggestion link
+	* Added feature #34652: Add option search.faceting.keepAllFacetsOnSelection, credits Cornel Boppart
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
