@@ -118,7 +118,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 			$facetOptions = $this->renderFacetOptions();
 			$facetTemplate->addSubpart('single_facet_option', $facetOptions);
 
-			$facet = $this->getFacet();
+			$facet = $this->getFacetProperties();
 
 			$facetTemplate->addVariable('facet', $facet);
 			$facetContent = $facetTemplate->render();
@@ -135,9 +135,9 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 
 	/**
 	 * (non-PHPdoc)
-	 * @see tx_solr_FacetRenderer::getFacet()
+	 * @see tx_solr_FacetRenderer::getFacetProperties()
 	 */
-	public function getFacet() {
+	public function getFacetProperties() {
 		$facet = $this->facetConfiguration;
 		$facet['name']      = $this->facetName;
 		$facet['count']     = $this->getFacetOptionsCount();

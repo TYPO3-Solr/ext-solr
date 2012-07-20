@@ -56,7 +56,7 @@ interface tx_solr_FacetRenderer {
 	 *
 	 * @return array An array with facet object markers.
 	 */
-	public function getFacet();
+	public function getFacetProperties();
 
 	/**
 	 * Gets the facet's options

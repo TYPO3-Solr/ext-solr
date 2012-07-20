@@ -120,7 +120,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 			$facetRenderer->setTemplate($template);
 			$facetRenderer->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
-			$facet = $facetRenderer->getFacet();
+			$facet = $facetRenderer->getFacetProperties();
 			if ($facet['active']) {
 				$this->facetsActive = TRUE;
 			}

@@ -1,5 +1,7 @@
 2012-07-20  Ingo Renner  <ingo.renner@dkd.de>
 
+	!! Renamed tx_solr_FacetRenderer::getFacet() to getFacetProperties()
+
 	* ! API cleanup
 	* Changed tx_solr_pluginbase_PluginBase::performAction() to be abstract
 	* Added missing abstract tx_solr_pluginbase_PluginBase::render()

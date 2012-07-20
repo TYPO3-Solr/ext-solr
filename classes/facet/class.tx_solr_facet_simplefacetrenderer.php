@@ -69,10 +69,10 @@ class tx_solr_facet_SimpleFacetRenderer extends tx_solr_facet_AbstractFacetRende
 	 * reached.
 	 *
 	 * (non-PHPdoc)
-	 * @see tx_solr_facet_AbstractFacetRenderer::getFacet()
+	 * @see tx_solr_facet_AbstractFacetRenderer::getFacetProperties()
 	 */
-	public function getFacet() {
-		$facet = parent::getFacet();
+	public function getFacetProperties() {
+		$facet = parent::getFacetProperties();
 
 		if ($facet['count'] > $this->solrConfiguration['search.']['faceting.']['limit']) {
 			$showAllLink = '<a href="#" class="tx-solr-facet-show-all">###LLL:faceting_showMore###</a>';
