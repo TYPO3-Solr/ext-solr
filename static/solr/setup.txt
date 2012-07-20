@@ -33,7 +33,7 @@ plugin.tx_solr {
 	}
 
 	javascriptFiles {
-		loadIn = header
+		loadIn = footer
 
 		library = EXT:solr/resources/javascript/jquery/jquery.min.js
 
