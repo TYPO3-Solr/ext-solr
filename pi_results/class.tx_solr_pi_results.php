@@ -72,7 +72,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 *
 	 */
 	protected function search() {
-		if (!is_null($this->query)  && $this->query->getQueryString()) {
+		if (!is_null($this->query) && ($this->query->getQueryString() || $this->conf['search.']['showResultsOfInitialEmptyQuery'])) {
 			$currentPage    = max(0, intval($this->piVars['page']));
 			$resultsPerPage = $this->getNumberOfResultsPerPage();
 
