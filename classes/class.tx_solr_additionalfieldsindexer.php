@@ -48,9 +48,9 @@ class tx_solr_AdditionalFieldsIndexer implements tx_solr_SubstitutePageIndexer {
 	 */
 	public function getPageDocument(Apache_Solr_Document $pageDocument) {
 		$substitutePageDocument = clone $pageDocument;
-		$additionaFields = $this->getAdditionalFields();
+		$additionalFields = $this->getAdditionalFields();
 
-		foreach ($additionaFields as $fieldName => $fieldValue) {
+		foreach ($additionalFields as $fieldName => $fieldValue) {
 			if (!isset($pageDocument->{$fieldName})) {
 					// making sure we only _add_ new fields
 				$substitutePageDocument->setField($fieldName, $fieldValue);
