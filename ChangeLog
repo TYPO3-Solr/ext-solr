@@ -2,6 +2,7 @@
 
 	!! Renamed tx_solr_FacetRenderer::getFacet() to getFacetProperties()
 
+	! Added method getFacetInternalType() in interface tx_solr_FacetRenderer
 	* ! API cleanup
 	* Changed tx_solr_pluginbase_PluginBase::performAction() to be abstract
 	* Added missing abstract tx_solr_pluginbase_PluginBase::render()

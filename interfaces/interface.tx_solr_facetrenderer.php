@@ -52,6 +52,14 @@ interface tx_solr_FacetRenderer {
 	public function renderFacet();
 
 	/**
+	 * Provides the internal type of facets the renderer handles.
+	 * The type is one of field, range, or query.
+	 *
+	 * @return string Facet internal type
+	 */
+	public static function getFacetInternalType();
+
+	/**
 	 * Gets the facet object markers for use in templates.
 	 *
 	 * @return array An array with facet object markers.

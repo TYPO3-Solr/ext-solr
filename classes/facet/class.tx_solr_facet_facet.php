@@ -29,6 +29,13 @@
  */
 class tx_solr_facet_Facet {
 
+	const TYPE_FIELD = 'field';
+
+	const TYPE_QUERY = 'query';
+
+	const TYPE_RANGE = 'range';
+
+
 	/**
 	 * @var tx_solr_Search
 	 */
@@ -40,6 +47,13 @@ class tx_solr_facet_Facet {
 	 * @var string
 	 */
 	protected $name;
+
+	/**
+	 * Facet type, defaults to field facet.
+	 *
+	 * @var sring
+	 */
+	protected $type = self::TYPE_FIELD;
 
 	/**
 	 * The index field the facet is built from.
@@ -60,9 +74,11 @@ class tx_solr_facet_Facet {
 	 * Constructor.
 	 *
 	 * @param string $facetName The facet's name
+	 * @param string $facetType The facet's internal type. field, range, or query
 	 */
-	public function __construct($facetName) {
+	public function __construct($facetName, $facetType = self::TYPE_FIELD) {
 		$this->name   = $facetName;
+		$this->type   = $facetType;
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
 		$this->initializeConfiguration();
@@ -244,6 +260,15 @@ class tx_solr_facet_Facet {
 	 */
 	public function getConfiguration() {
 		return $this->configuration;
+	}
+
+	/**
+	 * Gets the facet's internal type. One of field, range, or query.
+	 *
+	 * @return string Facet type.
+	 */
+	public function getType() {
+		return $this->type;
 	}
 
 }

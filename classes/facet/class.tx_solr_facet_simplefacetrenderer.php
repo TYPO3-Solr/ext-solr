@@ -32,6 +32,16 @@
 class tx_solr_facet_SimpleFacetRenderer extends tx_solr_facet_AbstractFacetRenderer {
 
 	/**
+	 * Provides the internal type of facets the renderer handles.
+	 * The type is one of field, range, or query.
+	 *
+	 * @return string Facet internal type
+	 */
+	public static function getFacetInternalType() {
+		return tx_solr_facet_Facet::TYPE_FIELD;
+	}
+
+	/**
 	 * Renders the facet's options.
 	 *
 	 * @return string The rendered facet options.
