@@ -111,14 +111,12 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	}
 
 	/**
-	 * This method should be overwritten to implement some action logic. The
-	 * result of this method is passed to the render method.
+	 * Implements the action logic. The result of this method is passed to the
+	 * render method.
 	 *
-	 * @return
+	 * @return string Action result
 	 */
-	protected function performAction() {
-		return '';
-	}
+	protected abstract function performAction();
 
 
 	// Initialization
@@ -273,6 +271,13 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 
 	// Rendering
 
+
+	/**
+	 * This method executes the requested commands and applies the changes to
+	 * the template.
+	 *
+	 */
+	protected abstract function render($actionResult);
 
 	/**
 	 * Renders a solr error.

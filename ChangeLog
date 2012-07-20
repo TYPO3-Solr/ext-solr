@@ -1,5 +1,9 @@
 2012-07-20  Ingo Renner  <ingo.renner@dkd.de>
 
+	* ! API cleanup
+	* Changed tx_solr_pluginbase_PluginBase::performAction() to be abstract
+	* Added missing abstract tx_solr_pluginbase_PluginBase::render()
+
 	* Fixed bug #35679:Index queue broken by new indexing priority feature, credits Michiel Roos
 	* Changed tx_solr_pluginbase_PluginBase to execute postRender() also after renderError()
 

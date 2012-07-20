@@ -135,6 +135,14 @@ class tx_solr_pi_search extends tx_solr_pluginbase_CommandPluginBase{
 	}
 
 	/**
+	 * Perform the action for the plugin. In this case it doesn't do anything
+	 * as the plugin simply renders the search form.
+	 *
+	 * @return void
+	 */
+	protected function performAction() {}
+
+	/**
 	 * Post initialization of the template engine.
 	 *
 	 * @see classes/pluginbase/tx_solr_pluginbase_PluginBase#postInitializeTemplateEngine($template)
