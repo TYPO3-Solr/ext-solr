@@ -12,7 +12,7 @@
 		* It is advised to have a separate core/index for each language due to different stemming per language
 		* Fixes the issue that records indexed for all languages (-1) could not be found
 
-	* Updated SolrPhpClient to r63
+	* Updated SolrPhpClient to r64
 	* Updated jQuery to 1.7.2
 	* Updated jQuery UI to 1.8.21
 

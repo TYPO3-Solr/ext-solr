@@ -90,6 +90,15 @@ class Apache_Solr_HttpTransport_Curl extends Apache_Solr_HttpTransport_Abstract
 		// close our curl session
 		curl_close($this->_curl);
 	}
+	
+	public function setAuthenticationCredentials($username, $password)
+	{
+		// add the options to our curl handle
+		curl_setopt_array($this->_curl, array(
+			CURLOPT_USERPWD => $username . ":" . $password,
+			CURLOPT_HTTPAUTH => CURLAUTH_BASIC		
+		));
+	}
 
 	public function performGetRequest($url, $timeout = false)
 	{

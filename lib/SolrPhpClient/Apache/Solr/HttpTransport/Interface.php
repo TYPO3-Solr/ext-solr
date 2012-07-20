@@ -59,7 +59,17 @@ interface Apache_Solr_HttpTransport_Interface
 	 * @param float $timeout
 	 */
 	public function setDefaultTimeout($timeout);
-		
+	
+	/**
+	 * Set authentication credentials to pass along with the requests.
+	 * 
+	 * These will be used to perform HTTP Basic authentication.
+	 * 
+	 * @param string $username
+	 * @param string $password
+	 */
+	public function setAuthenticationCredentials($username, $password);
+	
 	/**
 	 * Perform a GET HTTP operation with an optional timeout and return the response
 	 * contents, use getLastResponseHeaders to retrieve HTTP headers

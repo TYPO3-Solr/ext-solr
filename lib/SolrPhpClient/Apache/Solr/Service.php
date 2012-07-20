@@ -566,6 +566,17 @@ class Apache_Solr_Service
 	{
 		$this->getHttpTransport()->setDefaultTimeout($timeout);
 	}
+	
+	/**
+	 * Convenience method to set authentication credentials on the current HTTP transport implementation
+	 * 
+	 * @param string $username
+	 * @param string $password
+	 */
+	public function setAuthenticationCredentials($username, $password)
+	{
+		$this->getHttpTransport()->setAuthenticationCredentials($username, $password);
+	}
 
 	/**
 	 * Set how NamedLists should be formatted in the response data. This mainly effects
