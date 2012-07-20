@@ -69,6 +69,7 @@
 	* Added marker FACETING.search_has_results
 	* Fixed some performance issue in the template engine
 	* Fixed handling of facet queries with no results
+	* Fixed a memory leak in the Index Queue when indexing pages and config.sys_language_mode is not set
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

@@ -508,14 +508,11 @@ class tx_solr_indexqueue_Indexer {
 	protected function getTranslationOverlaysForPage($pageId) {
 		$translationOverlays = array();
 		$pageId              = intval($pageId);
-
-		if ($GLOBALS['TSFE']->sys_language_mode == '') {
-			tx_solr_Util::initializeTsfe($pageId);
-		}
+		$site                = tx_solr_Site::getSiteByPageId($pageId);
 
 		$languageModes         = array('content_fallback', 'strict', 'ignore');
-		$hasOverlayMode        = in_array($GLOBALS['TSFE']->sys_language_mode, $languageModes);
-		$isContentFallbackMode = $GLOBALS['TSFE']->sys_language_mode === 'content_fallback';
+		$hasOverlayMode        = in_array($site->getSysLanguageMode(), $languageModes);
+		$isContentFallbackMode = ($site->getSysLanguageMode() === 'content_fallback');
 
 		if ($hasOverlayMode && !$isContentFallbackMode) {
 			$translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(

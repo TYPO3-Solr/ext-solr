@@ -41,6 +41,20 @@ class tx_solr_Site {
 	protected $rootPage = array();
 
 	/**
+	 * The site's sys_language_mode
+	 *
+	 * @var string
+	 */
+	protected $sysLanguageMode = null;
+
+	/**
+	 * Cache for tx_solr_Site objects
+	 *
+	 * @var array
+	 */
+	protected static $sitesCache = array();
+
+	/**
 	 * Small cache for the list of pages in a site, so that the results of this
 	 * rather expensive operation can be used by all initializers without having
 	 * each initializer do it again.
@@ -81,7 +95,11 @@ class tx_solr_Site {
 	public static function getSiteByPageId($pageId) {
 		$rootPageId = tx_solr_Util::getRootPageId($pageId);
 
-		return t3lib_div::makeInstance(__CLASS__, $rootPageId);
+		if (!isset(self::$sitesCache[$rootPageId])) {
+			self::$sitesCache[$rootPageId] = t3lib_div::makeInstance(__CLASS__, $rootPageId);
+		}
+
+		return self::$sitesCache[$rootPageId];
 	}
 
 	/**
@@ -303,6 +321,20 @@ class tx_solr_Site {
 	 */
 	public function getLabel() {
 		return $this->rootPage['title'] . ', Root Page ID: ' . $this->rootPage['uid'];
+	}
+
+	/**
+	 * Gets the site's config.sys_language_mode setting
+	 *
+	 * @return string The site's config.sys_language_mode
+	 */
+	public function getSysLanguageMode() {
+		if (is_null($this->sysLanguageMode)) {
+			tx_solr_Util::initializeTsfe($this->getRootPageId());
+			$this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
+		}
+
+		return $this->sysLanguageMode;
 	}
 }
 
