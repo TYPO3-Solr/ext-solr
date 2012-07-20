@@ -58,7 +58,12 @@ class tx_solr_query_LinkBuilder {
 	 */
 	protected $prefix = 'tx_solr';
 
-	protected $queryGetParameter = 'tx_solr[q]';
+	/**
+	 * Query GET parameter name for incoming user queries.
+	 *
+	 * @var string
+	 */
+	protected static $queryGetParameter = '';
 
 	/**
 	 * Link target page ID.
@@ -89,6 +94,34 @@ class tx_solr_query_LinkBuilder {
 		$this->linkTargetPageId = $this->solrConfiguration['search.']['targetPage'];
 		if (empty($this->linkTargetPageId)) {
 			$this->linkTargetPageId = $GLOBALS['TSFE']->id;
+		}
+
+		if (empty(self::$queryGetParameter)) {
+			self::initializeQueryGetParameter();
+		}
+	}
+
+	/**
+	 * Initializes the query GET parameter.
+	 *
+	 * The GET query parameter name is configurable.
+	 */
+	protected static function initializeQueryGetParameter() {
+		$solrConfiguration = tx_solr_Util::getSolrConfiguration();
+		$getParameter      = 'tx_solr|q';
+
+		if (!empty($solrConfiguration['search.']['query.']['getParameter'])) {
+			$getParameter = $solrConfiguration['search.']['query.']['getParameter'];
+		}
+
+		$getParameterParts = t3lib_div::trimExplode('|', $getParameter, 2);
+
+		if (count($getParameterParts) == 2) {
+			$getParameters = t3lib_div::_GET($getParameterParts[0]);
+
+			self::$queryGetParameter = $getParameterParts[0] . '[' . $getParameterParts[1] . ']';
+		} else {
+			self::$queryGetParameter = $getParameter;
 		}
 	}
 
@@ -129,17 +162,12 @@ class tx_solr_query_LinkBuilder {
 	 *
 	 * @return string Query GET parameter in URLs and links.
 	 */
-	public function getQueryGetParameter() {
-		return $this->queryGetParameter;
-	}
+	public static function getQueryGetParameter() {
+		if (empty(self::$queryGetParameter)) {
+			self::initializeQueryGetParameter();
+		}
 
-	/**
-	 * Sets the name of the query GET parameter used in URLs and links.
-	 *
-	 * @param string $queryGetParameter Query GET parameter to be used in URLs and links.
-	 */
-	public function setQueryGetParameter($queryGetParameter) {
-		$this->queryGetParameter = $queryGetParameter;
+		return self::$queryGetParameter;
 	}
 
 	/**
@@ -157,7 +185,7 @@ class tx_solr_query_LinkBuilder {
 		);
 		$queryParameters   = $this->removeUnwantedUrlParameters($queryParameters);
 
-		$queryGetParameter = '&' . $this->queryGetParameter . '=' . $this->query->getKeywords();
+		$queryGetParameter = '&' . self::$queryGetParameter . '=' . $this->query->getKeywords();
 
 		$linkConfiguration = array(
 			'useCacheHash'     => FALSE,
@@ -186,7 +214,7 @@ class tx_solr_query_LinkBuilder {
 		);
 		$queryParameters   = $this->removeUnwantedUrlParameters($queryParameters);
 
-		$queryGetParameter = '&' . $this->queryGetParameter . '=' . $this->query->getKeywords();
+		$queryGetParameter = '&' . self::$queryGetParameter . '=' . $this->query->getKeywords();
 
 		$linkConfiguration = array(
 			'useCacheHash'     => FALSE,

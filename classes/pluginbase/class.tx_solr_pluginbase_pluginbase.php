@@ -74,13 +74,6 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	protected $javascriptManager;
 
 	/**
-	 * Query GET parameter name for incoming user queries.
-	 *
-	 * @var string
-	 */
-	protected $queryGetParameter;
-
-	/**
 	 * The user's raw query.
 	 *
 	 * Private to enforce API usage.
@@ -200,8 +193,6 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	/**
 	 * Initializes the query from the GET query parameter.
 	 *
-	 * The GET query parameter name is configurable.
-	 *
 	 */
 	protected function initializeQuery() {
 		$getParameter = $this->prefixId . '|q';
@@ -213,12 +204,9 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 		$getParameterParts = t3lib_div::trimExplode('|', $getParameter, 2);
 		if (count($getParameterParts) == 2) {
 			$getParameters = t3lib_div::_GET($getParameterParts[0]);
-
-			$this->queryGetParameter = $getParameterParts[0] . '[' . $getParameterParts[1] . ']';
-			$this->rawUserQuery      = $getParameters[$getParameterParts[1]];
+			$this->rawUserQuery = $getParameters[$getParameterParts[1]];
 		} else {
-			$this->queryGetParameter = $getParameter;
-			$this->rawUserQuery      = t3lib_div::_GET($getParameter);
+			$this->rawUserQuery = t3lib_div::_GET($getParameter);
 		}
 
 			// enforce API usage
@@ -463,15 +451,6 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 */
 	public function getLinkTargetPageId() {
 		return $this->conf['search.']['targetPage'];
-	}
-
-	/**
-	 * Gets the name for the query GET parameter.
-	 *
-	 * @return string Query GET parameter name.
-	 */
-	public function getQueryGetParameter() {
-		return $this->queryGetParameter;
 	}
 
 	/**

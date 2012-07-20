@@ -52,7 +52,6 @@ class tx_solr_Query {
 	protected $keywordsRaw;
 	protected $filters = array();
 	protected $sorting;
-	protected $queryGetParameter = 'tx_solr[q]';
 
 	private   $rawQueryString = FALSE;
 	protected $queryString;
@@ -169,24 +168,6 @@ class tx_solr_Query {
 	 */
 	public function setQueryString($queryString) {
 		$this->queryString = $queryString;
-	}
-
-	/**
-	 * Gets the name of the query GET parameter used in URLs and links.
-	 *
-	 * @return string Query GET parameter in URLs and links.
-	 */
-	public function getQueryGetParameter() {
-		return $this->queryGetParameter;
-	}
-
-	/**
-	 * Sets the name of the query GET parameter used in URLs and links.
-	 *
-	 * @param string $queryGetParameter Query GET parameter to be used in URLs and links.
-	 */
-	public function setQueryGetParameter($queryGetParameter) {
-		$this->queryGetParameter = $queryGetParameter;
 	}
 
 	/**

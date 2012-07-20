@@ -63,6 +63,7 @@
 	* Changed tx_solr_facet_Facet::getOptionsCount() to take into account the facet internal type
 	* Added support for facet queries
 	* Extracted all query link building methods to tx_solr_query_LinkBuilder
+	* Moved query GET parameter configuration handling from plugin base to query link builder
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

@@ -206,7 +206,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 			$query = t3lib_div::makeInstance('tx_solr_Query', $rawUserQuery);
-			$query->setQueryGetParameter($this->getQueryGetParameter());
 			/* @var	$query	tx_solr_Query */
 
 			if ($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['query.']['allowEmptyQuery']) {
@@ -438,7 +437,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 		return array(
 			'prefix'          => $this->prefixId,
-			'query_parameter' => $this->getQueryGetParameter(),
+			'query_parameter' => tx_solr_query_LinkBuilder::getQueryGetParameter(),
 			'current_url'     => $currentUrl,
 			'q'               => $this->getCleanUserQuery()
 		);
