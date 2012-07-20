@@ -76,6 +76,7 @@
 	* Changed the no-results command to use the spell checker
 	* Fixed the spell checker to use the current page id for URL/link generation
 	* Added tx_solr_Spellchecker->isIncorrectlySpelled()
+	* Refactored rendering of plugin commands
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

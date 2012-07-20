@@ -56,6 +56,7 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 	 * This method executes the requested commands and applies the changes to
 	 * the template.
 	 *
+	 * @return string Rndered plugin content
 	 */
 	protected function render($actionResult) {
 		$commandList     = $this->getCommandList();
@@ -67,30 +68,8 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 			$command          = $commandResolver->getCommand($commandName, $this);
 			$commandVariables = $command->execute();
 
-			$subpartTemplate = clone $this->template;
-			$subpartTemplate->setWorkingTemplateContent(
-				$this->template->getSubpart('solr_search_' . $commandName)
-			);
-
 			if (!is_null($commandVariables)) {
-				foreach ($commandVariables as $variableName => $commandVariable) {
-					if (t3lib_div::isFirstPartOfStr($variableName, 'loop_')) {
-						$dividerPosition  = strpos($variableName, '|');
-						$loopName         = substr($variableName, 5, ($dividerPosition - 5));
-						$loopedMarkerName = substr($variableName, ($dividerPosition + 1));
-
-						$subpartTemplate->addLoop($loopName, $loopedMarkerName, $commandVariable);
-					} elseif (t3lib_div::isFirstPartOfStr($variableName, 'subpart_')) {
-						$subpartName = substr($variableName, 8);
-						$subpartTemplate->addSubpart($subpartName, $commandVariable);
-					} elseif (is_array($commandVariable) || is_object($commandVariable)) {
-						$subpartTemplate->addVariable($variableName, $commandVariable);
-					} else {
-						$subpartTemplate->addVariable($commandName, $commandVariables);
-					}
-				}
-
-				$commandContent = $subpartTemplate->render();
+				$commandContent = $this->renderCommand($commandName, $commandVariables);
 				$this->template->addSubpart('solr_search_' . $commandName, $commandContent);
 			}
 
@@ -116,6 +95,51 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 		$this->javascriptManager->addJavascriptToPage();
 
 		return $this->template->render(tx_solr_Template::CLEAN_TEMPLATE_YES);
+	}
+
+	/**
+	 * Gets the template to be used for rendering a comman.
+	 *
+	 * @param string $commandName Name of the command to get the template for
+	 * @return string The template for the given command
+	 */
+	protected function getCommandTemplate($commandName) {
+		$subpartTemplate = clone $this->template;
+		$subpartTemplate->setWorkingTemplateContent(
+			$this->template->getSubpart('solr_search_' . $commandName)
+		);
+
+		return $subpartTemplate;
+	}
+
+	/**
+	 * Renders a command
+	 *
+	 * @param string $commandName Name of the command to render
+	 * @param array $commandVariables Template variables returned by a command
+	 * @return string The command's variables assigned to the template and rendered
+	 */
+	public function renderCommand($commandName, array $commandVariables) {
+		$subpartTemplate = $this->getCommandTemplate($commandName);
+
+		foreach ($commandVariables as $variableName => $commandVariable) {
+			if (t3lib_div::isFirstPartOfStr($variableName, 'loop_')) {
+				$dividerPosition  = strpos($variableName, '|');
+				$loopName         = substr($variableName, 5, ($dividerPosition - 5));
+				$loopedMarkerName = substr($variableName, ($dividerPosition + 1));
+
+				$subpartTemplate->addLoop($loopName, $loopedMarkerName, $commandVariable);
+			} elseif (t3lib_div::isFirstPartOfStr($variableName, 'subpart_')) {
+				$subpartName = substr($variableName, 8);
+				$subpartTemplate->addSubpart($subpartName, $commandVariable);
+			} elseif (is_array($commandVariable) || is_object($commandVariable)) {
+				$subpartTemplate->addVariable($variableName, $commandVariable);
+			} else {
+				$subpartTemplate->addVariable($commandName, $commandVariables);
+			}
+		}
+
+		return $subpartTemplate->render();
 	}
 }
 
