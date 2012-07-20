@@ -751,8 +751,8 @@ class Apache_Solr_Service
 
 		foreach ($document as $key => $value)
 		{
-			$key = htmlspecialchars($key, ENT_QUOTES, 'UTF-8');
 			$fieldBoost = $document->getFieldBoost($key);
+			$key = htmlspecialchars($key, ENT_QUOTES, 'UTF-8');
 
 			if (is_array($value))
 			{
