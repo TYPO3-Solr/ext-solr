@@ -312,6 +312,15 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	}
 
 	/**
+	 * Sets the search instance to use for rendering results.
+	 *
+	 * @param tx_solr_Search $search Search instance
+	 */
+	public function setSearch(tx_solr_Search $search) {
+		$this->search = $search;
+	}
+
+	/**
 	 * Determines whether filters have been applied to the query or not.
 	 *
 	 * @return	string	1 if filters are applied, 0 if not (for use in templates)
