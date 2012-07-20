@@ -131,7 +131,7 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 				$facetHidden = 'tx-solr-facet-hidden';
 			}
 
-			$facetSelected = $this->isSelectedFacetOption($facetOption);
+			$facetSelected = $facetOption->isSelectedInFacet($this->facetName);
 
 				// negating the facet option links to remove a filter
 			if ($this->facetConfiguration['selectingSelectedFacetOptionRemovesFilter']

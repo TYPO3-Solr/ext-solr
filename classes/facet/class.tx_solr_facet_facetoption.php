@@ -107,6 +107,34 @@ class tx_solr_facet_FacetOption {
 	}
 
 	/**
+	 * Checks whether the facet option has been selected in a facet by the user
+	 * by checking the GET values in the URL.
+	 *
+	 * @param string $facetName Facet name to check against.
+	 * @return boolean TRUE if the option is selected, FALSE otherwise
+	 */
+	public function isSelectedInFacet($facetName) {
+		$isSelected = FALSE;
+
+		$resultParameters = t3lib_div::_GET('tx_solr');
+		$filterParameters = array();
+		if (isset($resultParameters['filter'])) {
+			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
+		}
+
+		foreach ($filterParameters as $filter) {
+			list($filterName, $filterValue) = explode(':', $filter);
+
+			if ($filterName == $facetName && $filterValue == $this->value) {
+				$isSelected = TRUE;
+				break;
+			}
+		}
+
+		return $isSelected;
+	}
+
+	/**
 	 * Creates a link tag to apply a facet option to a search result.
 	 *
 	 * @param string $linkText The link text
