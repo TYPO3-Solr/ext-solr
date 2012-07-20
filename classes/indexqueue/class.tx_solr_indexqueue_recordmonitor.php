@@ -36,6 +36,29 @@
 class tx_solr_indexqueue_RecordMonitor {
 
 	/**
+	 * Solr TypoScript configuration
+	 *
+	 * @var array
+	 */
+	protected $solrConfiguration;
+
+	/**
+	 * Index Queue
+	 *
+	 * @var tx_solr_indexqueue_Queue
+	 */
+	protected $indexQueue;
+
+
+	/**
+	 * Constructor
+	 *
+	 */
+	public function __construct() {
+		$this->indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+	}
+
+	/**
 	 * Hooks into TCE main and tracks record deletion commands.
 	 *
 	 * @param	string	The command.
@@ -46,8 +69,7 @@ class tx_solr_indexqueue_RecordMonitor {
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 		if ($command == 'delete' && $table == 'tt_content') {
-			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
-			$indexQueue->updateItem('pages', $tceMain->getPID($table, $uid));
+			$this->indexQueue->updateItem('pages', $tceMain->getPID($table, $uid));
 		}
 	}
 
@@ -62,8 +84,7 @@ class tx_solr_indexqueue_RecordMonitor {
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 		if ($command == 'move' && $table == 'pages') {
-			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
-			$indexQueue->updateItem('pages', $uid);
+			$this->indexQueue->updateItem('pages', $uid);
 		}
 	}
 
@@ -94,35 +115,107 @@ class tx_solr_indexqueue_RecordMonitor {
 			$recordPageId = $fields['pid'];
 		}
 
-		$indexQueue      = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+		$this->solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($recordPageId);
 		$monitoredTables = $this->getMonitoredTables($recordPageId);
 
-		if (in_array($recordTable, $monitoredTables)) {
-				// FIXME must respect the indexer's additionalWhereClause option: must not add items to the index queue which are excluded through additionalWhereClause
+		if (in_array($recordTable, $monitoredTables, TRUE)) {
+			$record = $this->getRecord($recordTable, $recordUid);
 
-			$record = t3lib_BEfunc::getRecord($recordTable, $recordUid);
-			if ($this->isLocalizedRecord($recordTable, $record)) {
-					// if it's a localization overlay, update the original record instead
-				$recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
+			if (!empty($record)) {
+					// only update/insert the item if we actually found a record
 
-				if ($recordTable == 'pages_language_overlay') {
-					$recordTable = 'pages';
+				if ($this->isLocalizedRecord($recordTable, $record)) {
+						// if it's a localization overlay, update the original record instead
+					$recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
+
+					if ($recordTable == 'pages_language_overlay') {
+						$recordTable = 'pages';
+					}
 				}
-			}
 
-			$indexQueue->updateItem($recordTable, $recordUid);
+				$this->indexQueue->updateItem($recordTable, $recordUid);
 
-			if ($recordTable == 'pages') {
-				$this->updateMountPages($recordUid);
+				if ($recordTable == 'pages') {
+					$this->updateMountPages($recordUid);
+				}
+			} else {
+				// TODO move this part to the garbage collector
+
+					// check if the item should be removed from the index because it no longer matches the conditions
+				if ($this->indexQueue->containsItem($recordTable, $recordUid)) {
+					$this->removeFromIndexAndQueue($recordTable, $recordUid);
+				}
 			}
 		}
 
 			// when a content element changes we need to updated the page instead
 		if ($recordTable == 'tt_content' && in_array('pages', $monitoredTables)) {
-			$indexQueue->updateItem('pages', $recordPageId);
+			$this->indexQueue->updateItem('pages', $recordPageId);
 		}
 
 			// TODO need to check for creation of "pages_language_overlay" records to trigger "pages" updates
+	}
+
+	/**
+	 * Removes record from the index queue and from the solr index
+	 *
+	 * @param string $recordTable Name of table where the record lives
+	 * @param int $recordUid Id of record
+	 */
+	protected function removeFromIndexAndQueue($recordTable, $recordUid) {
+		$garbageCollector = t3lib_div::makeInstance('tx_solr_GarbageCollector');
+		$garbageCollector->collectGarbage($recordTable, $recordUid);
+	}
+
+	/**
+	 * Retrieves a record, taking into account the additionalWhereClauses of the
+	 * Indexing Queue configurations.
+	 *
+	 * @param string $recordTable Table to read from
+	 * @param int $recordUid Id of the record
+	 * @return array Record if found, otherwise empty array
+	 */
+	protected function getRecord($recordTable, $recordUid) {
+		$record = array();
+
+		$indexingConfigurations = $this->indexQueue->getTableIndexingConfigurations($this->solrConfiguration);
+
+		foreach ($indexingConfigurations as $indexingConfigurationName) {
+			$tableToIndex = $indexingConfigurationName;
+			if (!empty($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
+					// table has been set explicitly. Allows to index the same table with different configurations
+				$tableToIndex = $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
+			}
+
+			if ($tableToIndex === $recordTable) {
+				$recordWhereClause = $this->buildUserWhereClause($indexingConfigurationName);
+				$record = t3lib_BEfunc::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+
+				if (!empty($record)) {
+						// if we found a record which matches the conditions, we can continue
+					break;
+				}
+			}
+		}
+
+		return $record;
+	}
+
+	/**
+	 * Build additional where clause from index queue configuration
+	 *
+	 * @param string $indexingConfigurationName Indexing configuration name
+	 * @return string Optional extra where clause
+	 */
+	protected function buildUserWhereClause($indexingConfigurationName){
+		$condition = '';
+
+			// FIXME replace this with the mechanism described in tx_solr_indexqueue_initializer_Abstract::buildUserWhereClause()
+		if (isset($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'])) {
+			$condition = ' AND ' . $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'];
+		}
+
+		return $condition;
 	}
 
 	/**
@@ -144,9 +237,9 @@ class tx_solr_indexqueue_RecordMonitor {
 		foreach ($indexingConfigurations as $indexingConfigurationName) {
 			$monitoredTable = $indexingConfigurationName;
 
-			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
+			if (!empty($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
 					// table has been set explicitly. Allows to index the same table with different configurations
-				$monitoredTable = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
+				$monitoredTable = $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
 			}
 
 			$monitoredTables[] = $monitoredTable;
