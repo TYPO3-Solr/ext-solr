@@ -89,35 +89,57 @@ class tx_solr_indexqueue_Queue {
 
 	/**
 	 * Truncate and rebuild the tx_solr_indexqueue_item table. This is the most
-	 * complete way to force reindexing, or to build the indexing table for
+	 * complete way to force reindexing, or to build the Index Queue for
 	 * the first time. The Index Queue initialization is site-specific.
 	 *
 	 * @param tx_solr_Site $site The site to initialize
+	 * @param string $indexingConfigurationName name of a specific indexing configuration
 	 * @return array An array of booleans, each representing whether the initialization for an indexing configuration was successful
 	 */
-	public function initialize(tx_solr_Site $site) {
+	public function initialize(tx_solr_Site $site, $indexingConfigurationName = '') {
 		$initializationStatus = array();
 
-			// clear queue
-		$this->deleteItemsBySite($site);
-
-		$solrConfiguration      = $site->getSolrConfiguration();
-		$indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
+		$indexingConfigurations = array();
+		if (empty($indexingConfigurationName)) {
+			$solrConfiguration      = $site->getSolrConfiguration();
+			$indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
+		} else {
+			$indexingConfigurations[] = $indexingConfigurationName;
+		}
 
 		foreach ($indexingConfigurations as $indexingConfigurationName) {
-			$tableToIndex     = $this->resolveTableToIndex($solrConfiguration, $indexingConfigurationName);
-			$initializerClass = $this->resolveInitializerClass($solrConfiguration, $indexingConfigurationName);
-
-			$initializer = t3lib_div::makeInstance($initializerClass);
-			$initializer->setSite($site);
-			$initializer->setType($tableToIndex);
-			$initializer->setIndexingConfigurationName($indexingConfigurationName);
-			$initializer->setIndexingConfiguration($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']);
-
-			$initializationStatus[$indexingConfigurationName] = $initializer->initialize();
+			$initializationStatus[$indexingConfigurationName] = $this->initializeIndexingConfiguration(
+				$site,
+				$indexingConfigurationName
+			);
 		}
 
 		return $initializationStatus;
+	}
+
+	/**
+	 * Initializes the Index Queue for a specific indexing configuration.
+	 *
+	 * @param tx_solr_Site $site The site to initialize
+	 * @param string $indexingConfigurationName name of a specific indexing configuration
+	 * @return boolean TRUE if the initialization was successful, FALSE otherwise
+	 */
+	protected function initializeIndexingConfiguration(tx_solr_Site $site, $indexingConfigurationName) {
+			// clear queue
+		$this->deleteItemsBySite($site, $indexingConfigurationName);
+
+		$solrConfiguration = $site->getSolrConfiguration();
+
+		$tableToIndex     = $this->resolveTableToIndex($solrConfiguration, $indexingConfigurationName);
+		$initializerClass = $this->resolveInitializerClass($solrConfiguration, $indexingConfigurationName);
+
+		$initializer = t3lib_div::makeInstance($initializerClass);
+		$initializer->setSite($site);
+		$initializer->setType($tableToIndex);
+		$initializer->setIndexingConfigurationName($indexingConfigurationName);
+		$initializer->setIndexingConfiguration($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']);
+
+		return $initializer->initialize();
 	}
 
 	/**
@@ -443,20 +465,39 @@ class tx_solr_indexqueue_Queue {
 	}
 
 	/**
-	 * Removes all items of a certain site from the Index Queue.
+	 * Removes all items of a certain site from the Index Queue. Accepts an
+	 * optional parameter to limit the deleted items by indexing configuration.
 	 *
-	 * @param	tx_solr_Site	$site The site to remove items for.
+	 * @param tx_solr_Site $site The site to remove items for.
+	 * @param string $indexingConfigurationName name of a specific indexing configuration
 	 */
-	public function deleteItemsBySite(tx_solr_Site $site) {
-		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
-			'tx_solr_indexqueue_item',
-			'root = ' . $site->getRootPageId()
-		);
+	public function deleteItemsBySite(tx_solr_Site $site, $indexingConfigurationName = '') {
+		$indexingConfigurationConstraint = '';
+		if (!empty($indexingConfigurationName)) {
+			$indexingConfigurationConstraint = ' AND indexing_configuration = \'' . $indexingConfigurationName . '\'';
+		}
 
-		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
-			'tx_solr_indexqueue_indexing_property',
-			'root = ' . $site->getRootPageId()
+		$indexQueueItems = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid',
+			'tx_solr_indexqueue_item',
+			'root = ' . $site->getRootPageId() . $indexingConfigurationConstraint,
+			'', '', '',
+			'uid'
 		);
+		$indexQueueItems = array_keys($indexQueueItems);
+		$indexQueueItems = implode(',', $indexQueueItems);
+
+		if (!empty($indexQueueItems)) {
+				// TODO these two queries should be in a transaction
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+				'tx_solr_indexqueue_item',
+				'uid IN (' . $indexQueueItems . ')'
+			);
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+				'tx_solr_indexqueue_indexing_property',
+				'item_id IN (' . $indexQueueItems . ')'
+			);
+		}
 	}
 
 	/**
