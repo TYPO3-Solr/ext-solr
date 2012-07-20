@@ -16,15 +16,15 @@ page {
 			<link rel="search"
 				  type="application/opensearchdescription+xml"
 				  href="|"
-				  title="{$plugin.tx_solr.openSearch.shortName}"
+				  title="{$plugin.tx_solr.OpenSearch.shortName}"
 			/>
 		)
 	}
 }
 
 
-openSearch = PAGE
-openSearch {
+OpenSearch = PAGE
+OpenSearch {
 
 	typeNum = 7567
 
@@ -40,8 +40,8 @@ openSearch {
 	10.value (
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-	<ShortName>{$plugin.tx_solr.openSearch.shortName}</ShortName>
-	<Description>{$plugin.tx_solr.openSearch.description}</Description>
+	<ShortName>{$plugin.tx_solr.OpenSearch.shortName}</ShortName>
+	<Description>{$plugin.tx_solr.OpenSearch.description}</Description>
 	<Image height="16" width="16" type="image/x-icon">{getIndpEnv:TYPO3_SITE_URL}favicon.ico</Image>
 	<InputEncoding>UTF-8</InputEncoding>
 	<OutputEncoding>UTF-8</OutputEncoding>
