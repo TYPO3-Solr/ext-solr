@@ -112,6 +112,10 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 		}
 
 		foreach ($mountPages as $mountPage) {
+			if (!$this->validateMountPage($mountPage)) {
+				break;
+			}
+
 			$mountedPages = $this->resolveMountPageTree($mountPage['mountPageSource']);
 
 				// handling mount_pid_ol behavior
@@ -134,6 +138,7 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 				$this->addIndexQueueItemIndexingProperties($mountPage, $mountedPages);
 
 				$this->databaseTransactionCommit();
+				$mountPagesInitialized = TRUE;
 			} catch (Exception $e) {
 				$this->databaseTransactionRollback();
 
@@ -146,9 +151,32 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 				break;
 			}
 		}
-		$mountPagesInitialized = TRUE;
 
 		return $mountPagesInitialized;
+	}
+
+	/**
+	 * Checks whether a Mount Page is properly configured.
+	 *
+	 * @param array $mountPage A mount page
+	 * @return boolean TRUE if the Mount Page is OK, FALSE otherwise
+	 */
+	protected function validateMountPage(array $mountPage) {
+		$isValidMountPage = TRUE;
+
+		if (empty($mountPage['mountPageSource'])) {
+			$isValidMountPage = FALSE;
+
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPage['uid'] . '.',
+				'Failed to initialize Mount Page tree. ',
+				t3lib_FlashMessage::ERROR
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+		}
+
+		return $isValidMountPage;
 	}
 
 	/**

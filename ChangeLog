@@ -22,6 +22,7 @@
 	* Changed EXT:news Index Queue configuration to index tags into separate field, using keywords field for keywords
 	* Changed SOLR_RELATION to resolve labels for relations correctly even with intermediate tables, credits Steffen Ritter
 	* Added a generic language schema without stemming for languages we do not have a schema for
+	* Fixed bug #36623: Index Queue initialization crashes with erronous mount page
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
