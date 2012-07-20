@@ -77,11 +77,11 @@ class tx_solr_query_filterencoder_Range implements tx_solr_QueryFilterEncoder, t
 	public function buildFacetParameters($facetName, array $facetConfiguration) {
 		$facetParameters = array();
 
+		$tag = '';
 		if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
-			$facetParameters['facet.range'][] = '{!ex=' . $facetConfiguration['field'] . '}' . $facetConfiguration['field'];
-		} else {
-			$facetParameters['facet.range'][] = $facetConfiguration['field'];
+			$tag = '{!ex=' . $facetConfiguration['field'] . '}';
 		}
+		$facetParameters['facet.range'][] = $tag . $facetConfiguration['field'];
 
 		$facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.start'] = $facetConfiguration['numericRange.']['start'];
 		$facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.end']   = $facetConfiguration['numericRange.']['end'];
