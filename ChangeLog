@@ -67,6 +67,7 @@
 	* Extracted all facet option query link building methods from tx_solr_facet_FacetOption to tx_solr_facet_LinkBuilder
 	* Added a wrapping div to the no results subpart
 	* Added marker FACETING.search_has_results
+	* Fixed some performance issue in the template engine
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

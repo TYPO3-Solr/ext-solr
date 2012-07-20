@@ -240,13 +240,15 @@ class tx_solr_Template {
 			$variableKey     = strtoupper($variableKey);
 			$variableMarkers = $this->getVariableMarkers($variableKey, $this->workOnSubpart);
 
-			$resolvedMarkers = $this->resolveVariableMarkers($variableMarkers, $variable);
+			if (count($variableMarkers)) {
+				$resolvedMarkers = $this->resolveVariableMarkers($variableMarkers, $variable);
 
-			$this->workOnSubpart = t3lib_parsehtml::substituteMarkerArray(
-				$this->workOnSubpart,
-				$resolvedMarkers,
-				'###|###'
-			);
+				$this->workOnSubpart = t3lib_parsehtml::substituteMarkerArray(
+					$this->workOnSubpart,
+					$resolvedMarkers,
+					'###|###'
+				);
+			}
 		}
 
 			// process markers
@@ -443,35 +445,37 @@ class tx_solr_Template {
 		$foundMarkers  = $this->getMarkersFromTemplate($loopSingleItem, $loopMarker . '\.');
 		$loopCount     = count($loopVariables);
 
-		$iterationCount = 0;
-		foreach ($loopVariables as $value) {
-			$resolvedMarkers = $this->resolveVariableMarkers($foundMarkers, $value);
-			$resolvedMarkers['LOOP_CURRENT_ITERATION_COUNT'] = ++$iterationCount;
+		if (count($foundMarkers)) {
+			$iterationCount = 0;
+			foreach ($loopVariables as $value) {
+				$resolvedMarkers = $this->resolveVariableMarkers($foundMarkers, $value);
+				$resolvedMarkers['LOOP_CURRENT_ITERATION_COUNT'] = ++$iterationCount;
 
-			$currentIterationContent = t3lib_parsehtml::substituteMarkerArray(
-				$loopSingleItem,
-				$resolvedMarkers,
-				'###|###'
-			);
+				$currentIterationContent = t3lib_parsehtml::substituteMarkerArray(
+					$loopSingleItem,
+					$resolvedMarkers,
+					'###|###'
+				);
 
-			$inLoopMarkers = $this->getMarkersFromTemplate(
-				$currentIterationContent,
-				'LOOP:',
-				FALSE
-			);
+				$inLoopMarkers = $this->getMarkersFromTemplate(
+					$currentIterationContent,
+					'LOOP:',
+					FALSE
+				);
 
-			$inLoopMarkers = $this->filterProtectedLoops($inLoopMarkers);
+				$inLoopMarkers = $this->filterProtectedLoops($inLoopMarkers);
 
-			$currentIterationContent = $this->processInLoopMarkers(
-				$currentIterationContent,
-				$loopName,
-				$inLoopMarkers,
-				$value
-			);
+				$currentIterationContent = $this->processInLoopMarkers(
+					$currentIterationContent,
+					$loopName,
+					$inLoopMarkers,
+					$value
+				);
 
-			$currentIterationContent = $this->processConditions($currentIterationContent);
+				$currentIterationContent = $this->processConditions($currentIterationContent);
 
-			$loopContent .= $currentIterationContent;
+				$loopContent .= $currentIterationContent;
+			}
 		}
 
 		$loopContent = t3lib_parsehtml::substituteSubpart(
@@ -695,6 +699,12 @@ class tx_solr_Template {
 	protected function resolveVariableMarkers(array $markers, $variableValue) {
 		$resolvedMarkers = array();
 
+		$normalizedKeysArray = array();
+		foreach($variableValue as $key => $value) {
+			$key = $this->normalizeString($key);
+			$normalizedKeysArray[$key] = $value;
+		}
+
 		foreach ($markers as $marker) {
 			$dotPosition = strpos($marker, '.');
 
@@ -706,17 +716,8 @@ class tx_solr_Template {
 				$valueSelector = substr($marker, $dotPosition + 1);
 				$valueSelector = $this->normalizeString($valueSelector);
 
-				if (is_array($variableValue)) {
-
-					$normalizedKeysArray = array();
-					foreach($variableValue as $key => $value) {
-						$key = $this->normalizeString($key);
-						$normalizedKeysArray[$key] = $value;
-					}
-
-					if (array_key_exists($valueSelector, $normalizedKeysArray)) {
+				if (is_array($variableValue) && array_key_exists($valueSelector, $normalizedKeysArray)) {
 						$resolvedValue = $normalizedKeysArray[$valueSelector];
-					}
 				} elseif (is_object($variableValue)) {
 					$resolveMethod = 'get' . tx_solr_Util::camelize($valueSelector);
 					$resolvedValue = $variableValue->$resolveMethod();
@@ -757,16 +758,22 @@ class tx_solr_Template {
 	 * @return	string	A lowercased, underscorized version of the given string
 	 */
 	protected function normalizeString($selector) {
-		$selector = str_replace('-', '_', $selector);
+		static $normalizeCache = array();
 
-			// when switching from lowercase to Uppercase in camel cased
-			// strings, insert an underscore
-		$underscorized = preg_replace('/([a-z])([A-Z])/', '\\1_\\2', $selector);
+		if (!isset($normalizeCache[$selector])) {
+			$originalSelector = $selector;
+			$selector = str_replace('-', '_', $selector);
 
-			// for all other cases - all upper or all lower case
-			// we simply lowercase the complete string
+				// when switching from lowercase to Uppercase in camel cased
+				// strings, insert an underscore
+			$underscorized = preg_replace('/([a-z])([A-Z])/', '\\1_\\2', $selector);
 
-		return strtolower($underscorized);
+				// for all other cases - all upper or all lower case
+				// we simply lowercase the complete string
+			$normalizeCache[$originalSelector] = strtolower($underscorized);
+		}
+
+		return $normalizeCache[$selector];
 	}
 
 	/**
@@ -843,15 +850,7 @@ class tx_solr_Template {
 	public function addVariable($key, $value) {
 		$key = strtolower($key);
 
-		if (array_key_exists($key, $this->variables)) {
-// FIXME currently causes too much trouble
-// 			throw new RuntimeException(
-// 				'Key "' . $key . '" cannot be assigned to the template, already used.',
-// 				1311005476
-// 			);
-		} else {
-			$this->variables[$key] = $value;
-		}
+		$this->variables[$key] = $value;
 	}
 
 	/**

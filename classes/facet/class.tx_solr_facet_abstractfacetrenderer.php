@@ -131,6 +131,14 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 
 			$facet = $this->getFacetProperties();
 
+				// remove properties irrelevant for rendering in the template engine
+			unset(
+				$facet['renderingInstruction'],
+				$facet['renderingInstruction.'],
+				$facet[$facet['type'] . '.'],
+				$facet['type']
+			);
+
 			$facetTemplate->addVariable('facet', $facet);
 			$facetContent = $facetTemplate->render();
 		}
