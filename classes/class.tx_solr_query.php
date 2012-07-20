@@ -650,6 +650,19 @@ class tx_solr_Query {
 		return $this->keywords;
 	}
 
+	/**
+	 * Gets the cleaned keywords so that it can be used in templates f.e.
+	 *
+	 * @return string The cleaned keywords.
+	 */
+	public function getKeywordsCleaned() {
+		$keywords = trim($this->keywordsRaw);
+		$keywords = t3lib_div::removeXSS($keywords);
+		$keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+
+		return $keywords;
+	}
+
 	public function getKeywordsRaw() {
 		return $this->keywordsRaw;
 	}

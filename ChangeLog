@@ -79,6 +79,7 @@
 	* Refactored rendering of plugin commands
 	* Changed the results command to use the search's query
 	* Added tx_solr_pi_results_ResultsCommand->setSearch()
+	* Added tx_solr_Query->getKeywordsCleaned()
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
