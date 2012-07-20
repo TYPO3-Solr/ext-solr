@@ -61,13 +61,6 @@ class tx_solr_facet_SimpleFacetRenderer extends tx_solr_facet_AbstractFacetRende
 			);
 			$facetOptionsRenderer->setLinkTargetPageId($this->linkTargetPageId);
 
-			if (!($facetOptionsRenderer instanceof tx_solr_FacetOptionsRenderer)) {
-				throw new UnexpectedValueException(
-					get_class($facetOptionsRenderer) . ' must implement interface tx_solr_FacetOptionsRenderer',
-					1310387079
-				);
-			}
-
 			$facetContent = $facetOptionsRenderer->renderFacetOptions();
 		}
 
