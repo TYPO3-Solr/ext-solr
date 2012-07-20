@@ -28,6 +28,7 @@
 	* Added tx_solr_Site::getRootPage()
 	* Added feature #36668: Allow Solr connection initialization per site
 	* Change the page browser content object initialization to be switchable from USER_INT to USER, credits Dimitri Ebert
+	* Fixed an issue where a relative URL could be detected as TypoScript path in LINK viewhelper
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

@@ -70,6 +70,8 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 		} elseif(t3lib_div::isValidUrl($linkArgument)) {
 				// $linkTarget is an URL
 			$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
+		} elseif(t3lib_div::isFirstPartOfStr($linkArgument, 'index.php')) {
+			$linkTarget = $linkArgument;
 		} elseif (is_string($linkArgument) && !empty($linkArgument)) {
 			try {
 				$typoscript      = tx_solr_Util::getTypoScriptObject($linkArgument);
