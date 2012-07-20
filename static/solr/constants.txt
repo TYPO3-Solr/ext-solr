@@ -9,6 +9,8 @@ plugin.tx_solr {
 	}
 
 	search {
+		targetPage = 0
+
 		results {
 			resultsPerPage = 10
 		}

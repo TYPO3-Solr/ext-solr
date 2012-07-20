@@ -94,7 +94,7 @@ plugin.tx_solr {
 	}
 
 	search {
-		targetPage = 0
+		targetPage = {$plugin.tx_solr.search.targetPage}
 
 		initializeWithEmptyQuery = 0
 		showResultsOfInitialEmptyQuery = 0

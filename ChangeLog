@@ -10,6 +10,7 @@
 	* Fixed bug #35665: An empty search disables the rendering of any plugin output, credits Stefan Sprenger
 	* Added tx_solr_facet_FacetOption::isSelectedInFacet()
 	* Fixed an issue with the selected state of facet options introduced with #35588, credits Stefan Galinksi
+	* Added the tagetPage ID property to the TypoScript constants
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
