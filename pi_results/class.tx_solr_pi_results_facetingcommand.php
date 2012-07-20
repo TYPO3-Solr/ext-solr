@@ -129,7 +129,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 				$this->facetsActive = TRUE;
 			}
 
-			$facetContent = $facetRenderer->renderFacet();
+			$facetContent .= $facetRenderer->renderFacet();
 		}
 
 		$template->addSubpart('single_facet', $facetContent);
