@@ -40,6 +40,7 @@ return array(
 	'tx_solr_site' => $extensionPath . 'classes/class.tx_solr_site.php',
 	'tx_solr_solrservice' => $extensionPath . 'classes/class.tx_solr_solrservice.php',
 	'tx_solr_sorting' => $extensionPath . 'classes/class.tx_solr_sorting.php',
+	'tx_solr_spellchecker' => $extensionPath . 'classes/class.tx_solr_spellchecker.php',
 	'tx_solr_suggestquery' => $extensionPath . 'classes/class.tx_solr_suggestquery.php',
 	'tx_solr_template' => $extensionPath . 'classes/class.tx_solr_template.php',
 	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'classes/class.tx_solr_typo3pagecontentextractor.php',
