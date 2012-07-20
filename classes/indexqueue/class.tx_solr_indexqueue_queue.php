@@ -534,8 +534,10 @@ class tx_solr_indexqueue_Queue {
 			intval($limit)
 		);
 
-			// convert queued records to index queue item objects
-		$itemsToIndex = $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
+		if(!empty($indexQueueItemRecords)) {
+				// convert queued records to index queue item objects
+			$itemsToIndex = $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
+		}
 
 		return $itemsToIndex;
 	}
