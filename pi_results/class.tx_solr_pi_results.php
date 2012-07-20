@@ -63,7 +63,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 * @return	void
 	 */
 	protected function performAction() {
-			//perform the current search.
+			// perform the current search.
 		$this->search();
 	}
 

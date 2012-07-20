@@ -34,20 +34,20 @@ interface tx_solr_QueryFilterEncoder {
 	 * used in an URL GET parameter.
 	 *
 	 * @param string $filterValue the filter value
-	 * @param array $options options set in a facet's configuration
+	 * @param array $configuration Facet configuration
 	 * @return string Value to be used in a URL GET parameter
 	 */
-	public function encodeFilter($filterValue, array $options = array());
+	public function encodeFilter($filterValue, array $configuration = array());
 
 	/**
 	 * Parses the query filter from GET parameters in the URL and translates it
 	 * to a Lucene filter value.
 	 *
 	 * @param string $filterValue the filter query from plugin
-	 * @param array $options options set in a facet's configuration
+	 * @param array $configuration Facet configuration
 	 * @return string Value to be used in a Lucene filter
 	 */
-	public function decodeFilter($filterValue, array $options = array());
+	public function decodeFilter($filterValue, array $configuration = array());
 }
 
 ?>

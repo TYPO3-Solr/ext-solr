@@ -268,7 +268,7 @@ cd /opt/solr-tomcat/
 mkdir -p tomcat/conf/Catalina/localhost
 cd tomcat/conf/Catalina/localhost
 
-# set property solr.home
+# install context descriptor for the solr context/webapp, sets the solr.home property
 wgetresource tomcat/solr.xml
 
 # copy libs

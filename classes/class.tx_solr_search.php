@@ -164,6 +164,11 @@ class tx_solr_Search implements t3lib_Singleton {
 		return $this->hasSearched;
 	}
 
+	/**
+	 * Gets the query object.
+	 *
+	 * @return tx_solr_Query Query
+	 */
 	public function getQuery() {
 		return $this->query;
 	}

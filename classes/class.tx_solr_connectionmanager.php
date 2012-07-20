@@ -31,9 +31,9 @@ require_once(PATH_typo3 . 'interfaces/interface.backend_cacheActionsHook.php');
  * Internally keeps track of already existing connections and makes sure that no
  * duplicate connections are created.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActionsHook {
 
@@ -46,14 +46,14 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 * call, connections are kept and checkt whether the requested connection
 	 * already exists. If a connection already exists, it's reused.
 	 *
-	 * @param	string	Solr host (optional)
-	 * @param	integer	Solr port (optional)
-	 * @param	string	Solr path (optional)
-	 * @param	string	Solr scheme, defaults to http, can be https (optional)
+	 * @param	string	$host Solr host (optional)
+	 * @param	integer	$port Solr port (optional)
+	 * @param	string	$path Solr path (optional)
+	 * @param	string	$scheme Solr scheme, defaults to http, can be https (optional)
 	 * @param	boolean	$useCurl TRUE to use curl as HTTP transport, defaults to FALSE (optional)
 	 * @return	tx_solr_SolrService	A solr connection.
 	 */
-	public function getConnection($host = '', $port = '8080', $path = '/solr/', $scheme = 'http', $useCurl = FALSE) {
+	public function getConnection($host = '', $port = 8080, $path = '/solr/', $scheme = 'http', $useCurl = FALSE) {
 		$connection = NULL;
 
 		if (empty($host)) {

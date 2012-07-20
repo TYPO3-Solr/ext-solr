@@ -45,10 +45,10 @@ class tx_solr_query_filterencoder_Range implements tx_solr_QueryFilterEncoder, t
 	 * used in an URL GET parameter.
 	 *
 	 * @param string $filterValue the filter value
-	 * @param array $options options set in a facet's configuration
+	 * @param array $configuration Facet configuration
 	 * @return string Value to be used in a URL GET parameter
 	 */
-	public function encodeFilter($filterValue, array $options = array()) {
+	public function encodeFilter($filterValue, array $configuration = array()) {
 		return $filterValue;
 	}
 
@@ -57,10 +57,10 @@ class tx_solr_query_filterencoder_Range implements tx_solr_QueryFilterEncoder, t
 	 * filter.
 	 *
 	 * @param	string	$range The range filter from the URL.
-	 * @param	array	$options Filter options, not used here.
+	 * @param array $configuration Facet configuration
 	 * @return	string	Lucene query language filter to be used for querying Solr
 	 */
-	public function decodeFilter($range, array $options = array()) {
+	public function decodeFilter($range, array $configuration = array()) {
 		$range = explode(self::DELIMITER, $range);
 
 		return '[' . $range[0] . ' TO ' . $range[1] . ']';

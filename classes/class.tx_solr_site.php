@@ -70,7 +70,7 @@ class tx_solr_Site {
 	/**
 	 * Constructor.
 	 *
-	 * @param	integer	$rootPageId Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
+	 * @param integer $rootPageId Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
 	 */
 	public function __construct($rootPageId) {
 		$page = t3lib_BEfunc::getRecord('pages', $rootPageId);
@@ -87,11 +87,11 @@ class tx_solr_Site {
 	}
 
 	/**
-	* Gets the Site for a specific page Id.
-	*
-	* @param	integer	$pageId The page Id to get a Site object for.
-	* @return	tx_solr_Site	Site for the given page Id.
-	*/
+	 * Gets the Site for a specific page Id.
+	 *
+	 * @param integer $pageId The page Id to get a Site object for.
+	 * @return tx_solr_Site Site for the given page Id.
+	 */
 	public static function getSiteByPageId($pageId) {
 		$rootPageId = tx_solr_Util::getRootPageId($pageId);
 

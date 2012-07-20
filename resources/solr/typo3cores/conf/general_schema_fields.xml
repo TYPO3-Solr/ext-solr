@@ -78,7 +78,7 @@
 	<field name="endtime" type="date" indexed="true" stored="true" />
 
 	<!-- content fields -->
-	<field name="title"		type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
+	<field name="title"       type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
 	<field name="subTitle"    type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
 	<field name="navTitle"    type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />
 	<field name="content"     type="text"   indexed="true"  stored="true" termVectors="true" />
@@ -88,7 +88,7 @@
 	<field name="keywords"    type="text"   indexed="true"  stored="true" multiValued="true" omitNorms="true" />
 	<field name="author"      type="string" indexed="true"  stored="true" />
 
-	<field name="url"		  type="string" indexed="true" stored="true" />
+	<field name="url"         type="string" indexed="true" stored="true" />
 
 	<!--
 		A set of fields to contain text extracted from tag contents which

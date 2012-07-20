@@ -252,7 +252,7 @@ class tx_solr_Query {
 	 * Sets the number of results that should be shown per page
 	 *
 	 * @param	integer	Number of results to show per page
-	 * @return	coid
+	 * @return	void
 	 */
 	public function setResultsPerPage($resultsPerPage) {
 		$this->resultsPerPage = t3lib_div::intInRange($resultsPerPage, 5);

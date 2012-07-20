@@ -60,7 +60,7 @@ if ('OpenSearch' == t3lib_div::_GET('format')) {
 
 $suggestQuery = t3lib_div::makeInstance('tx_solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));
-$suggestQuery->setSiteHash($site->getSiteHash());
+$suggestQuery->setSiteHashFilter($site->getDomain());
 
 $language = 0;
 if ($TSFE->sys_language_uid) {

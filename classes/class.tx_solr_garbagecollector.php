@@ -66,11 +66,15 @@ class tx_solr_GarbageCollector {
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 		if ($command == 'move' && $table == 'pages') {
-			// must be removed from index since the pid changes and
-			// is part of the Solr document ID
+
+				// TODO the below comment is not valid anymore, pid has been removed from doc ID
+				// ...still needed?
+
+				// must be removed from index since the pid changes and
+				// is part of the Solr document ID
 			$this->collectGarbage($table, $uid);
 
-			// now re-index with new properties
+				// now re-index with new properties
 			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 			$indexQueue->updateItem($table, $uid);
 		}

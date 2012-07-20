@@ -11,19 +11,19 @@ plugin.tx_solr {
 
 	solr {
 		scheme = {$plugin.tx_solr.solr.scheme}
-		host = {$plugin.tx_solr.solr.host}
-		port = {$plugin.tx_solr.solr.port}
-		path = {$plugin.tx_solr.solr.path}
+		host   = {$plugin.tx_solr.solr.host}
+		port   = {$plugin.tx_solr.solr.port}
+		path   = {$plugin.tx_solr.solr.path}
 
 		useCurlHttpTransport = 0
 	}
 
 	templateFiles {
 		frequentSearches = EXT:solr/resources/templates/pi_frequentsearches/frequentsearches.htm
-		moreLikeThis = EXT:solr/resources/templates/pi_mlt/mlt.htm
-		pagebrowser = EXT:solr/resources/templates/pi_results/pagebrowser.htm
-		results = EXT:solr/resources/templates/pi_results/results.htm
-		search = EXT:solr/resources/templates/pi_search/search.htm
+		moreLikeThis     = EXT:solr/resources/templates/pi_mlt/mlt.htm
+		pagebrowser      = EXT:solr/resources/templates/pi_results/pagebrowser.htm
+		results          = EXT:solr/resources/templates/pi_results/results.htm
+		search           = EXT:solr/resources/templates/pi_search/search.htm
 	}
 
 	cssFiles {
@@ -50,8 +50,8 @@ plugin.tx_solr {
 
 		suggest = EXT:solr/resources/javascript/eid_suggest/suggest.js
 
-		faceting.limitExpansion = EXT:solr/resources/javascript/pi_results/results.js
-		faceting.dateRangeHelper = EXT:solr/resources/javascript/pi_results/date_range_facet.js
+		faceting.limitExpansion     = EXT:solr/resources/javascript/pi_results/results.js
+		faceting.dateRangeHelper    = EXT:solr/resources/javascript/pi_results/date_range_facet.js
 		faceting.numericRangeHelper = EXT:solr/resources/javascript/pi_results/numeric_range_facet.js
 	}
 

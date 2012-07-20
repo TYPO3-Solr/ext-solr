@@ -407,7 +407,7 @@ class tx_solr_Template {
 				$viewHelperContent = $viewHelper->execute($viewHelperArguments);
 			} catch (UnexpectedValueException $e) {
 				if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-					t3lib_div::devLog('exception while rendering a viewhelper', 'solr', 3, array(
+					t3lib_div::devLog('Exception while rendering a viewhelper', 'solr', 3, array(
 						$e->__toString()
 					));
 				}
@@ -423,7 +423,7 @@ class tx_solr_Template {
 			);
 
 				// there might be more occurences of the same subpart maker with
-				// the same arguments but different amrkup to be used...
+				// the same arguments but different markup to be used...
 				// that's the case with the facet subpart vierw helper f.e.
 			$furtherOccurences = strpos($content, $subpartMarker);
 			if ($furtherOccurences !== FALSE) {

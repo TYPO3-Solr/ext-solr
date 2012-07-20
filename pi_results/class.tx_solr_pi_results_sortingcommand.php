@@ -92,7 +92,7 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 
 		$sortOptions = array();
 
-		$urlParameters       = t3lib_div::_GP('tx_solr');
+		$urlParameters    = t3lib_div::_GP('tx_solr');
 		$urlSortParameter = $urlParameters['sort'];
 		list($currentSortOption, $currentSortDirection) = explode(' ', $urlSortParameter);
 

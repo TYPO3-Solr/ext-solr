@@ -32,7 +32,7 @@
 		1.4: default auto-phrase (QueryParser feature) to off
 	-->
 
-<!-- xinclude fields -->
+<!-- xinclude general types -->
 <xi:include href="../general_schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
 <types>
@@ -183,7 +183,7 @@
 
 </types>
 
-<!--  xinclude fields-->
+<!--  xinclude general fields-->
 <xi:include href="../general_schema_fields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 	<!--
 		Field to use to determine and enforce document uniqueness. Unless this

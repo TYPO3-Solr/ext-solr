@@ -155,6 +155,13 @@ tx_solr_facet_FacetRendererFactory::registerFacetType(
 	'tx_solr_query_filterencoder_Range'
 );
 
+tx_solr_facet_FacetRendererFactory::registerFacetType(
+	'queryGroup',
+	'tx_solr_facet_QueryGroupFacetRenderer',
+	'tx_solr_query_filterencoder_QueryGroup',
+	'tx_solr_query_filterencoder_QueryGroup'
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding scheduler tasks
@@ -238,13 +245,6 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClas
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME] = array(
 	tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME,
 	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_relation.php:tx_solr_contentobject_Relation'
-);
-
-tx_solr_facet_FacetRendererFactory::registerFacetType(
-	'queryGroup',
-	'tx_solr_facet_QueryGroupFacetRenderer',
-	'tx_solr_query_filterencoder_QueryGroup',
-	'tx_solr_query_filterencoder_QueryGroup'
 );
 
 

@@ -160,6 +160,8 @@ class tx_solr_facet_Facet {
 
 	/**
 	 * Checks whether requirements are fullfilled
+	 *
+	 * @return boolean TRUE if conditions required to render this facet are met, FALSE otherwise
 	 */
 	public function isRenderingAllowed() {
 		$renderingAllowed = TRUE;

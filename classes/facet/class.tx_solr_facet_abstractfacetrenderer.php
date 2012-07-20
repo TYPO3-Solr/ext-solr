@@ -37,7 +37,9 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	protected $search;
 
 	/**
-	 * @var	string
+	 * The name of the facet being rendered
+	 *
+	 * @var string
 	 */
 	protected $facetName;
 
@@ -158,6 +160,9 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	 */
 	public function getFacetProperties() {
 		$facet = $this->facetConfiguration;
+
+			// TODO move these properties into tx_solr_facet_Facet and provide them via ArrayAccess interface
+
 		$facet['name']      = $this->facetName;
 		$facet['count']     = $this->getFacetOptionsCount();
 		$facet['active']    = $this->facet->isActive() ? '1' : '0';

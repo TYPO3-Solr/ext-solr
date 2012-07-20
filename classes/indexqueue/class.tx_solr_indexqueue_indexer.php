@@ -523,6 +523,7 @@ class tx_solr_indexqueue_Indexer {
 					. t3lib_BEfunc::BEenableFields('pages_language_overlay')
 			);
 		} else {
+				// ! If no sys_language_mode is configured, all languages will be indexed !
 			$languages = t3lib_BEfunc::getSystemLanguages();
 				// remove default language (L = 0)
 			array_shift($languages);
