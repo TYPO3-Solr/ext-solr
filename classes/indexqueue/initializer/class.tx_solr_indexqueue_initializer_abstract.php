@@ -122,7 +122,7 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 	public function initialize() {
 		$initialized = FALSE;
 
-		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, priority, changed) '
+		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed) '
 			. $this->buildSelectStatement() . ' '
 			. 'FROM ' . $this->type . ' '
 			. 'WHERE '
