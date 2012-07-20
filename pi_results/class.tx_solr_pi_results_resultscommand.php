@@ -257,7 +257,8 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 		$cObj = t3lib_div::makeInstance('tslib_cObj');
 		$cObj->start(array(), '');
 
-		$pageBrowser = $cObj->cObjGetSingle('USER_INT', $pageBrowserConfiguration);
+		$cObjectType = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1'];
+		$pageBrowser = $cObj->cObjGetSingle($cObjectType, $pageBrowserConfiguration);
 
 		return $pageBrowser;
 	}
