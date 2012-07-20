@@ -106,6 +106,7 @@
 	* Added an option to configure the type field used when grouping by type (markResultTypeBoundaries)
 	* Fixed an issue with initializeWithEmptyQuery not issueing the empty query
 	* Added feature #39080: Add ping time in status report
+	* Changed garbage collection handling, some simplification with cleaning the index
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

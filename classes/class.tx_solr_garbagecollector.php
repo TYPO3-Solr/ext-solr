@@ -68,7 +68,7 @@ class tx_solr_GarbageCollector {
 		if ($command == 'move' && $table == 'pages') {
 			// must be removed from index since the pid changes and
 			// is part of the Solr document ID
-			$this->deleteIndexDocuments($table, $uid);
+			$this->collectGarbage($table, $uid);
 
 			// now re-index with new properties
 			$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
