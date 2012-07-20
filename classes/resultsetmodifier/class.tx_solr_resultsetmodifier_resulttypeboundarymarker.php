@@ -42,26 +42,28 @@ class tx_solr_resultsetmodifier_ResultTypeBoundaryMarker implements tx_solr_Resu
 	 */
 	public function modifyResultSet(tx_solr_pi_results_ResultsCommand $resultCommand, array $resultSet) {
 		$lastResultType = '';
+		$configuration  = $resultCommand->getParentPlugin()->getConfiguration();
+		$typeField      = $configuration['search.']['results.']['markResultTypeBoundaries.']['typeField'];
 
 		$numberOfResults = count($resultSet);
 		for ($i = 0; $i < $numberOfResults; $i++) {
-			if ($resultSet[$i]->type != $lastResultType) {
+			if ($resultSet[$i]->{$typeField} != $lastResultType) {
 					// type changed, set begin flag, also matches first result
 				$resultSet[$i]->setField(
 					'typeBegin',
-					$resultSet[$i]->type . '_begin'
+					$resultSet[$i]->{$typeField} . '_begin'
 				);
 
 					// set end flag on previous result
 				if ($i > 0) {
 					$resultSet[$i - 1]->setField(
 						'typeEnd',
-						$resultSet[$i - 1]->type . '_end'
+						$resultSet[$i - 1]->{$typeField} . '_end'
 					);
 				}
 
 					// remember current type
-				$lastResultType = trim($resultSet[$i]->type);
+				$lastResultType = trim($resultSet[$i]->{$typeField});
 			}
 		}
 
@@ -69,7 +71,7 @@ class tx_solr_resultsetmodifier_ResultTypeBoundaryMarker implements tx_solr_Resu
 		if (!empty($resultSet)) {
 			$resultSet[count($resultSet) - 1]->setField(
 				'typeEnd',
-				$resultSet[count($resultSet) - 1]->type . '_end'
+				$resultSet[count($resultSet) - 1]->{$typeField} . '_end'
 			);
 		}
 

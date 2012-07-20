@@ -100,6 +100,7 @@
 	* Fixed bug #38290: Empty typoscript for facet leads to fatal error when rendering through facet view helper
 	* Fixed issue #38704: tomcat autostart script not LSB (Linux Standards Base)-compliant, credits Dirk Wenzel
 	* Fixed an issues resulting in T_PAAMAYIM_NEKUDOTAYIM when running on PHP 5.2
+	* Added an option to configure the type field used when grouping by type (markResultTypeBoundaries)
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

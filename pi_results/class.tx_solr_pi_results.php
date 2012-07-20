@@ -496,6 +496,15 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	}
 
 	/**
+	 * Gets the plugin's configuration.
+	 *
+	 * @return array Configuration
+	 */
+	public function getConfiguration() {
+		return $this->conf;
+	}
+
+	/**
 	 * Returns the key which is used to determine the templatefile from the typoscript setup.
 	 *
 	 * @see classes/pibase/tx_solr_pibase#getTemplateFileKey()

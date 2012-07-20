@@ -204,6 +204,7 @@ plugin.tx_solr {
 			ignorePageBrowser = 0
 
 			markResultTypeBoundaries = 0
+			markResultTypeBoundaries.typeField = type
 		}
 
 		spellchecking = 0
