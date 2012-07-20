@@ -83,6 +83,8 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 					} elseif (t3lib_div::isFirstPartOfStr($variableName, 'subpart_')) {
 						$subpartName = substr($variableName, 8);
 						$subpartTemplate->addSubpart($subpartName, $commandVariable);
+					} elseif (is_array($commandVariable) || is_object($commandVariable)) {
+						$subpartTemplate->addVariable($variableName, $commandVariable);
 					} else {
 						$subpartTemplate->addVariable($commandName, $commandVariables);
 					}

@@ -42,6 +42,7 @@
 	* Added a TypoScript option to control loading of Javascript files
 	* Added a TypoScript option to set a fixed direction for sorting options
 	* Added marker ###FACETING.active### to detect if any facet option has been selected
+	* Added support for plugin commands returning array and objects for rendering in their template subparts
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
