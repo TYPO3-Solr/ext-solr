@@ -89,8 +89,10 @@ class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier 
 				$query = clone $this->search->getQuery();
 				$query->setKeywords($suggestions['collation']);
 
+				$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $query);
+
 				$suggestionsLink = tslib_cObj::noTrimWrap(
-					$query->getQueryLink(htmlspecialchars($query->getKeywordsRaw())),
+					$queryLinkBuilder->getQueryLink(htmlspecialchars($query->getKeywordsRaw())),
 					$this->configuration['search.']['spellchecking.']['wrap']
 				);
 			}

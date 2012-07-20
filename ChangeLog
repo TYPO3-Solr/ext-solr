@@ -62,6 +62,7 @@
 	* Changed tx_solr_facet_NumericRangeFacetRenderer to use tx_solr_facet_Facet through tx_solr_facet_AbstractFacetRenderer
 	* Changed tx_solr_facet_Facet::getOptionsCount() to take into account the facet internal type
 	* Added support for facet queries
+	* Extracted all query link building methods to tx_solr_query_LinkBuilder
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

@@ -67,6 +67,13 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 	protected $query;
 
 	/**
+	 * Query Link Builder
+	 *
+	 * @var tx_solr_query_LinkBuilder
+	 */
+	protected $queryLinkBuilder;
+
+	/**
 	 * Constructor
 	 *
 	 * @param string $facetName The facet's name
@@ -83,6 +90,9 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 
 		$this->query = $query;
 
+		$this->queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $query);
+
+
 		$this->template = clone $template;
 	}
 
@@ -93,7 +103,7 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 	 * @param	integer	$pageId The link target page Id.
 	 */
 	public function setLinkTargetPageId($pageId) {
-		$this->query->setLinkTargetPageId(intval($pageId));
+		$this->queryLinkBuilder->setLinkTargetPageId(intval($pageId));
 	}
 
 	/**

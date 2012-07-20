@@ -47,11 +47,12 @@ class tx_solr_viewhelper_SortUrl implements tx_solr_ViewHelper {
 	protected $search;
 
 	/**
-	 * An instance of the current query, holding all parameters.
+	 * Query Link Builder
 	 *
-	 * @var tx_solr_Query
+	 * @var tx_solr_query_LinkBuilder
 	 */
-	protected $query = NULL;
+	protected $queryLinkBuilder = NULL;
+
 
 	/**
 	 * constructor for class tx_solr_viewhelper_SortUrl
@@ -59,8 +60,8 @@ class tx_solr_viewhelper_SortUrl implements tx_solr_ViewHelper {
 	public function __construct(array $arguments = array()) {
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
-		$this->configuration = tx_solr_Util::getSolrConfiguration();
-		$this->query = $this->search->getQuery();
+		$this->configuration    = tx_solr_Util::getSolrConfiguration();
+		$this->queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
 	}
 
 	/**
@@ -100,7 +101,7 @@ class tx_solr_viewhelper_SortUrl implements tx_solr_ViewHelper {
 				$sortParameter = $sortOption . ' ' . $sortDirection;
 			}
 
-			$sortUrl = $this->query->getQueryUrl(array('sort' => $sortParameter));
+			$sortUrl = $this->queryLinkBuilder->getQueryUrl(array('sort' => $sortParameter));
 		}
 
 		return $sortUrl;

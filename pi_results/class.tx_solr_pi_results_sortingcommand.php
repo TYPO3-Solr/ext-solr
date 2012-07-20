@@ -86,7 +86,10 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 		$sortHelper = t3lib_div::makeInstance('tx_solr_Sorting', $this->configuration['search.']['sorting.']['options.']);
 
 		$query = $this->search->getQuery();
-		$query->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
+
+		$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $query);
+		$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
+
 		$sortOptions = array();
 
 		$urlParameters       = t3lib_div::_GP('tx_solr');
@@ -124,11 +127,11 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 			$sortParameter = $sortOptionName . ' ' . $sortDirection;
 
 			$temp = array(
-				'link'       => $query->getQueryLink(
+				'link'       => $queryLinkBuilder->getQueryLink(
 					$sortOption['label'],
 					array('sort' => $sortParameter)
 				),
-				'url'        =>  $query->getQueryUrl(
+				'url'        => $queryLinkBuilder->getQueryUrl(
 					array('sort' => $sortParameter)
 				),
 				'optionName' => $sortOptionName,
@@ -150,11 +153,11 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 
 				// special case relevance: just reset the search to normal behavior
 			if ($sortOptionName == 'relevance') {
-				$temp['link'] = $query->getQueryLink(
+				$temp['link'] = $queryLinkBuilder->getQueryLink(
 					$sortOption['label'],
 					array('sort' => NULL)
 				);
-				$temp['url'] = $query->getQueryUrl(
+				$temp['url'] = $queryLinkBuilder->getQueryUrl(
 					array('sort' => NULL)
 				);
 				unset($temp['direction'], $temp['indicator']);

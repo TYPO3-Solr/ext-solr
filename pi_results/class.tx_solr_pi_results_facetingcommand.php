@@ -143,8 +143,15 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 	protected function renderUsedFacets() {
 		$template = clone $this->parentPlugin->getTemplate();
 		$template->workOnSubpart('used_facets');
+
 		$query = $this->search->getQuery();
-		$query->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
+
+
+		$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
+		$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
+
+
+
 
 		$resultParameters = t3lib_div::_GET('tx_solr');
 		$filterParameters = array();
@@ -170,6 +177,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 				$filterValue,
 				$filter ,
 				$this->parentPlugin->getTemplate(),
+# FIXME usage of $query
 				$query
 			);
 
@@ -180,7 +188,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 		$template->addLoop('facets_in_use', 'remove_facet', $facetsInUse);
 
 		$template->addVariable('remove_all_facets', array(
-			'url'  => $query->getQueryUrl(array('filter' => array())),
+			'url'  => $queryLinkBuilder->getQueryUrl(array('filter' => array())),
 			'text' => '###LLL:faceting_removeAllFilters###'
 		));
 

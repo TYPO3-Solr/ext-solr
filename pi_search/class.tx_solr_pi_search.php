@@ -126,7 +126,8 @@ class tx_solr_pi_search extends tx_solr_pluginbase_CommandPluginBase{
 		$currentUrl = $this->pi_linkTP_keepPIvars_url();
 
 		if ($this->solrAvailable && $this->search->hasSearched()) {
-			$currentUrl = $this->search->getQuery()->getQueryUrl();
+			$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
+			$currentUrl = $queryLinkBuilder->getQueryUrl();
 		}
 
 		return array(

@@ -66,6 +66,13 @@ class tx_solr_facet_FacetOption {
 	 */
 	protected $numberOfResults;
 
+	/**
+	 * Query link builder
+	 *
+	 * @var tx_solr_query_LinkBuilder
+	 */
+	protected $queryLinkBuilder;
+
 
 	/**
 	 * Constructor.
@@ -81,6 +88,9 @@ class tx_solr_facet_FacetOption {
 		$this->facetName       = $facetName;
 		$this->value           = $facetOptionValue;
 		$this->numberOfResults = intval($facetOptionNumberOfResults);
+
+
+		$this->queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $query);
 	}
 
 	/**
@@ -144,7 +154,9 @@ class tx_solr_facet_FacetOption {
 		$typolinkOptions  = $this->getTypolinkOptions();
 		$filterParameters = $this->addFacetAndEncodeFilterParameters();
 
-		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
+
+
+		return $this->queryLinkBuilder->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
 	}
 
 	/**
@@ -155,7 +167,7 @@ class tx_solr_facet_FacetOption {
 	public function getAddFacetOptionUrl() {
 		$filterParameters = $this->addFacetAndEncodeFilterParameters();
 
-		return $this->query->getQueryUrl(array('filter' => $filterParameters));
+		return $this->queryLinkBuilder->getQueryUrl(array('filter' => $filterParameters));
 	}
 
 	/**
@@ -183,6 +195,8 @@ class tx_solr_facet_FacetOption {
 		return $filterParameters;
 	}
 
+	// FIXME extract URL/Link building
+
 	/**
 	 * Creates a link tag with a link to remove a facet option from the search result.
 	 *
@@ -193,7 +207,7 @@ class tx_solr_facet_FacetOption {
 		$typolinkOptions  = $this->getTypolinkOptions();
 		$filterParameters = $this->removeFacetAndEncodeFilterParameters();
 
-		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
+		return $this->queryLinkBuilder->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
 	}
 
 	/**
@@ -204,7 +218,7 @@ class tx_solr_facet_FacetOption {
 	public function getRemoveFacetOptionUrl() {
 		$filterParameters = $this->removeFacetAndEncodeFilterParameters();
 
-		return $this->query->getQueryUrl(array('filter' => $filterParameters));
+		return $this->queryLinkBuilder->getQueryUrl(array('filter' => $filterParameters));
 	}
 
 	/**
@@ -244,7 +258,7 @@ class tx_solr_facet_FacetOption {
 		$typolinkOptions  = $this->getTypolinkOptions();
 		$filterParameters = $this->replaceFacetAndEncodeFilterParameters();
 
-		return $this->query->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
+		return $this->queryLinkBuilder->getQueryLink($linkText, array('filter' => $filterParameters), $typolinkOptions);
 	}
 
 	/**
@@ -256,7 +270,7 @@ class tx_solr_facet_FacetOption {
 	public function getReplaceFacetOptionUrl() {
 		$filterParameters = $this->replaceFacetAndEncodeFilterParameters();
 
-		return $this->query->getQueryUrl(array('filter' => $filterParameters));
+		return $this->queryLinkBuilder->getQueryUrl(array('filter' => $filterParameters));
 	}
 
 	/**

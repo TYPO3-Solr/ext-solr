@@ -75,6 +75,8 @@ class tx_solr_viewhelper_SolrLink implements tx_solr_ViewHelper {
 		$useCache             = $arguments[3] ? TRUE : FALSE;
 
 
+# FIXME use link builder
+
 			// if the link target is a number, interprete it as a page ID
 		$linkArgument = trim($arguments[1]);
 		if (is_numeric($linkArgument)) {

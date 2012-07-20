@@ -72,6 +72,14 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	 */
 	protected $linkTargetPageId = 0;
 
+	/**
+	 * Query link builder
+	 *
+	 * @var tx_solr_query_LinkBuilder
+	 */
+	protected $queryLinkBuilder;
+
+
 
 	/**
 	 * Constructor.
@@ -87,6 +95,9 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 		$this->solrConfiguration  = tx_solr_Util::getSolrConfiguration();
 		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 		$this->linkTargetPageId   = $GLOBALS['TSFE']->id;
+
+
+		$this->queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
 	}
 
 	/**
@@ -215,9 +226,9 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 			}
 			$filterParameters = array_map('urlencode', $filterParameters);
 
-			$resetFacetUrl = $this->search->getQuery()->getQueryUrl(array('filter' => $filterParameters));
+			$resetFacetUrl = $this->queryLinkBuilder->getQueryUrl(array('filter' => $filterParameters));
 		} else {
-			$resetFacetUrl = $this->search->getQuery()->getQueryUrl();
+			$resetFacetUrl = $this->queryLinkBuilder->getQueryUrl();
 		}
 
 		return $resetFacetUrl;
