@@ -61,6 +61,7 @@ return array(
 	'tx_solr_facet_facetoption' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetoption.php',
 	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererfactory.php',
 	'tx_solr_facet_numericrangefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_numericrangefacetrenderer.php',
+	'tx_solr_facet_querygroupfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_querygroupfacetrenderer.php',
 	'tx_solr_facet_simplefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetrenderer.php',
 	'tx_solr_facet_simplefacetoptionsrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetoptionsrenderer.php',
 	'tx_solr_facet_usedfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_usedfacetrenderer.php',
@@ -93,6 +94,7 @@ return array(
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_commandpluginbase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'classes/pluginbase/class.tx_solr_pluginbase_pluginbase.php',
 
+	'tx_solr_query_filterencoder_querygroup' => $extensionPath . 'classes/query/filterencoder/class.tx_solr_query_filterencoder_querygroup.php',
 	'tx_solr_query_filterencoder_range' => $extensionPath . 'classes/query/filterencoder/class.tx_solr_query_filterencoder_range.php',
 
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_faceting.php',

@@ -240,6 +240,14 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClas
 	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_relation.php:tx_solr_contentobject_Relation'
 );
 
+tx_solr_facet_FacetRendererFactory::registerFacetType(
+	'queryGroup',
+	'tx_solr_facet_QueryGroupFacetRenderer',
+	'tx_solr_query_filterencoder_QueryGroup',
+	'tx_solr_query_filterencoder_QueryGroup'
+);
+
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
