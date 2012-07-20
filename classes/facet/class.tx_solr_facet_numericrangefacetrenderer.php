@@ -145,28 +145,6 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 		$javascriptManager->addJavascriptToPage();
 	}
 
-	/**
-	 * (non-PHPdoc)
-	 * @see tx_solr_facet_AbstractFacetRenderer::getFacetOptions()
-	 */
-	public function getFacetOptions() {
-		$facetField   = $this->facetConfiguration['field'];
-		$facetOptions = $this->search->getRangeFacetFieldOptions($facetField);
-
-		return $facetOptions;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see tx_solr_facet_AbstractFacetRenderer::getFacetOptionsCount()
-	 */
-	public function getFacetOptionsCount() {
-		$facetField  = $this->facetConfiguration['field'];
-		$facetCounts = $this->search->getFacetCounts();
-
-		return count((array) $facetCounts->facet_ranges->$facetField->counts);
-	}
-
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_numericrangefacetrenderer.php'])	{

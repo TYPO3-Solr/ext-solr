@@ -58,6 +58,7 @@
 	* Added dutch translation for backend labels, credits Rik Willems
 	* Added tx_solr_Search::getFacetQueryOptions()
 	* Changed constructor of facet renderers to use a facet object instead of a facet name
+	* Changed tx_solr_facet_NumericRangeFacetRenderer to use tx_solr_facet_Facet through tx_solr_facet_AbstractFacetRenderer
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
