@@ -10,6 +10,7 @@
 		* Added missing abstract tx_solr_pluginbase_PluginBase::render()
 
 	* Updated SolrPhpClient to r63
+	* Updated jQuery to 1.7.2
 
 	* Fixed bug #35679:Index queue broken by new indexing priority feature, credits Michiel Roos
 	* Changed tx_solr_pluginbase_PluginBase to execute postRender() also after renderError()
