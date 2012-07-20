@@ -65,8 +65,8 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 
 	public function execute() {
 		$numberOfResults = $this->search->getNumberOfResults();
-		$rawQuery        = trim($this->parentPlugin->piVars['q']);
-		$query           = htmlentities($rawQuery, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+		$rawQuery        = $this->parentPlugin->getRawUserQuery();
+		$query           = $this->parentPlugin->getCleanUserQuery();
 
 		$searchedFor = strtr(
 			$this->parentPlugin->pi_getLL('results_searched_for'),
@@ -248,7 +248,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 			array(
 				'pageParameterName' => 'tx_solr|page',
 				'numberOfPages'     => $numberOfPages,
-				'extraQueryString'  => '&tx_solr[q]=' . $this->search->getQuery()->getKeywords(),
+				'extraQueryString'  => '&' . $this->parentPlugin->getQueryGetParameter() . '=' . $this->search->getQuery()->getKeywords(),
 				'templateFile'      => $this->configuration['templateFiles.']['pagebrowser']
 			)
 		);

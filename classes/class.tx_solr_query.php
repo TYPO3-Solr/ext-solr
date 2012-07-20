@@ -52,6 +52,7 @@ class tx_solr_Query {
 	protected $keywordsRaw;
 	protected $filters = array();
 	protected $sorting;
+	protected $queryGetParameter = 'tx_solr[q]';
 
 	private   $rawQueryString = FALSE;
 	protected $queryString;
@@ -168,6 +169,24 @@ class tx_solr_Query {
 	 */
 	public function setQueryString($queryString) {
 		$this->queryString = $queryString;
+	}
+
+	/**
+	 * Gets the name of the query GET parameter used in URLs and links.
+	 *
+	 * @return string Query GET parameter in URLs and links.
+	 */
+	public function getQueryGetParameter() {
+		return $this->queryGetParameter;
+	}
+
+	/**
+	 * Sets the name of the query GET parameter used in URLs and links.
+	 *
+	 * @param string $queryGetParameter Query GET parameter to be used in URLs and links.
+	 */
+	public function setQueryGetParameter($queryGetParameter) {
+		$this->queryGetParameter = $queryGetParameter;
 	}
 
 	/**
@@ -924,16 +943,16 @@ class tx_solr_Query {
 
 		$queryParameters = array_merge(
 			$piVars,
-			array('q' => $this->getKeywords()),
 			$additionalQueryParameters
 		);
-		$queryParameters = $this->removeUnwantedUrlParameters($queryParameters);
+		$queryParameters   = $this->removeUnwantedUrlParameters($queryParameters);
+		$queryGetParameter = '&' . $this->queryGetParameter . '=' . $this->getKeywords();
 
 		$linkConfiguration = array(
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
+			'additionalParams' => $queryGetParameter . t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
 		);
 
 			// merge linkConfiguration with typolinkOptions
@@ -952,16 +971,16 @@ class tx_solr_Query {
 
 		$queryParameters = array_merge(
 			$piVars,
-			array('q' => $this->getKeywords()),
 			$additionalQueryParameters
 		);
-		$queryParameters = $this->removeUnwantedUrlParameters($queryParameters);
+		$queryParameters   = $this->removeUnwantedUrlParameters($queryParameters);
+		$queryGetParameter = '&' . $this->queryGetParameter . '=' . $this->getKeywords();
 
 		$linkConfiguration = array(
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
+			'additionalParams' => $queryGetParameter . t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters), '', TRUE)
 		);
 
 		return $cObj->typoLink_URL($linkConfiguration);

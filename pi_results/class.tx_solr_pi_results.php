@@ -41,13 +41,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	public $scriptRelPath = 'pi_results/class.tx_solr_pi_results.php';
 
 	/**
-	 * The plugin's query
-	 *
-	 * @var	tx_solr_Query
-	 */
-	protected $query = NULL;
-
-	/**
 	 * Additional filters, which will be added to the query, as well as to
 	 * suggest queries.
 	 *
@@ -100,11 +93,12 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$offSet = 0;
 			}
 
-			$query    = $this->modifyQuery($this->query);
-				// performing the actual search, sending the query to the Solr server
-			$response = $this->search->search($query, $offSet, $resultsPerPage);
+			$this->query = $this->modifyQuery($this->query);
 
-			$this->processResponse($query, $response);
+				// performing the actual search, sending the query to the Solr server
+			$response = $this->search->search($this->query, $offSet, $resultsPerPage);
+
+			$this->processResponse($this->query, $response);
 		}
 	}
 
@@ -115,9 +109,11 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 	 * @param	Apache_Solr_Response	The search's reponse.
 	 */
 	protected function processResponse(tx_solr_Query $query, Apache_Solr_Response &$response) {
+		$rawUserQuery = $this->getRawUserQuery();
+
 		if ($this->conf['search.']['initializeWithEmptyQuery']
-		&& !$this->conf['search.']['showResultsOfInitialEmptyQuery']
-		&& empty($this->piVars['q'])
+			&& !$this->conf['search.']['showResultsOfInitialEmptyQuery']
+			&& empty($rawUserQuery)
 		) {
 				// explicitly set number of results to 0 as we just wanted
 				// facets and the like according to configuration
@@ -200,15 +196,17 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 		parent::initializeSearch();
 		$this->initializeAdditionalFilters();
 
+		$rawUserQuery = $this->getRawUserQuery();
+
 			// TODO check whether a search has been conducted already?
-		if ($this->solrAvailable && (isset($this->piVars['q']) || $this->conf['search.']['initializeWithEmptyQuery'])) {
-			$this->piVars['q'] = trim($this->piVars['q']);
+		if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'])) {
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
-				t3lib_div::devLog('received search query', 'solr', 0, array($this->piVars['q']));
+				t3lib_div::devLog('received search query', 'solr', 0, array($rawUserQuery));
 			}
 
-			$query = t3lib_div::makeInstance('tx_solr_Query', $this->piVars['q']);
+			$query = t3lib_div::makeInstance('tx_solr_Query', $rawUserQuery);
+			$query->setQueryGetParameter($this->getQueryGetParameter());
 			/* @var	$query	tx_solr_Query */
 
 			if ($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['query.']['allowEmptyQuery']) {
@@ -218,7 +216,8 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 			if (isset($this->conf['search.']['query.']['minimumMatch'])
-				&& strlen($this->conf['search.']['query.']['minimumMatch'])) {
+				&& strlen($this->conf['search.']['query.']['minimumMatch'])
+			) {
 				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
 			}
 
@@ -426,9 +425,10 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 		}
 
 		return array(
-			'prefix'      => $this->prefixId,
-			'current_url' => $currentUrl,
-			'q'           => $this->getCleanUserQuery()
+			'prefix'          => $this->prefixId,
+			'query_parameter' => $this->getQueryGetParameter(),
+			'current_url'     => $currentUrl,
+			'q'               => $this->getCleanUserQuery()
 		);
 	}
 
@@ -469,9 +469,11 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			$currentNumberOfResultsShown = (int) $userSetNumberOfResultsShown;
 		}
 
+		$rawUserQuery = $this->getRawUserQuery();
+
 		if ($this->conf['search.']['initializeWithEmptyQuery']
-		&& !$this->conf['search.']['showResultsOfInitialEmptyQuery']
-		&& empty($this->piVars['q'])
+			&& !$this->conf['search.']['showResultsOfInitialEmptyQuery']
+			&& empty($rawUserQuery)
 		) {
 				// initialize search with an empty query, which would by default return all documents
 				// anyway, tell Solr to not return any result documents

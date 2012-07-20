@@ -6,6 +6,7 @@
 
 	* Fixed bug #35679:Index queue broken by new indexing priority feature, credits Michiel Roos
 	* Changed tx_solr_pluginbase_PluginBase to execute postRender() also after renderError()
+	* Added feature #35544: Configurable query parameter
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

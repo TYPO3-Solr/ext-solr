@@ -51,20 +51,19 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 	public function execute() {
 		$markers = array();
 
-		$searchWord = trim($this->parentPlugin->piVars['q']);
-		$searchWord = t3lib_div::removeXSS($searchWord);
+		$searchWord = $this->parentPlugin->getCleanUserQuery();
 
 		$nothingFound = strtr(
 			$this->parentPlugin->pi_getLL('no_results_nothing_found'),
 			array(
-				'@searchWord' => htmlentities($searchWord, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset)
+				'@searchWord' => $searchWord
 			)
 		);
 
 		$searchedFor = strtr(
 			$this->parentPlugin->pi_getLL('results_searched_for'),
 			array(
-				'@searchWord' => htmlentities($searchWord, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset)
+				'@searchWord' => $searchWord
 			)
 		);
 

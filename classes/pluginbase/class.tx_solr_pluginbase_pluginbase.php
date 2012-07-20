@@ -48,6 +48,13 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	protected $search;
 
 	/**
+	 * The plugin's query
+	 *
+	 * @var tx_solr_Query
+	 */
+	protected $query = NULL;
+
+	/**
 	 * Determines whether the solr server is available or not.
 	 */
 	protected $solrAvailable;
@@ -65,6 +72,22 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 * @var tx_solr_JavascriptManager
 	 */
 	protected $javascriptManager;
+
+	/**
+	 * Query GET parameter name for incoming user queries.
+	 *
+	 * @var string
+	 */
+	protected $queryGetParameter;
+
+	/**
+	 * The user's raw query.
+	 *
+	 * Private to enforce API usage.
+	 *
+	 * @var string
+	 */
+	private $rawUserQuery;
 
 
 	// Main
@@ -140,9 +163,11 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 		$this->pi_initPIflexForm();
 		$this->overrideTyposcriptWithFlexformSettings();
 
+		$this->initializeQuery();
 		$this->initializeSearch();
 		$this->initializeTemplateEngine();
 		$this->initializeJavascriptManager();
+
 		$this->postInitialize();
 	}
 
@@ -171,6 +196,34 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 *
 	 */
 	protected function overrideTyposcriptWithFlexformSettings() {}
+
+	/**
+	 * Initializes the query from the GET query parameter.
+	 *
+	 * The GET query parameter name is configurable.
+	 *
+	 */
+	protected function initializeQuery() {
+		$getParameter = $this->prefixId . '|q';
+
+		if (!empty($this->conf['search.']['query.']['getParameter'])) {
+			$getParameter = $this->conf['search.']['query.']['getParameter'];
+		}
+
+		$getParameterParts = t3lib_div::trimExplode('|', $getParameter, 2);
+		if (count($getParameterParts) == 2) {
+			$getParameters = t3lib_div::_GET($getParameterParts[0]);
+
+			$this->queryGetParameter = $getParameterParts[0] . '[' . $getParameterParts[1] . ']';
+			$this->rawUserQuery      = $getParameters[$getParameterParts[1]];
+		} else {
+			$this->queryGetParameter = $getParameter;
+			$this->rawUserQuery      = t3lib_div::_GET($getParameter);
+		}
+
+			// enforce API usage
+		unset($this->piVars['q']);
+	}
 
 	/**
 	 * Initializes the Solr connection and tests the connection through a ping.
@@ -413,6 +466,15 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	}
 
 	/**
+	 * Gets the name for the query GET parameter.
+	 *
+	 * @return string Query GET parameter name.
+	 */
+	public function getQueryGetParameter() {
+		return $this->queryGetParameter;
+	}
+
+	/**
 	 * Gets the tx_solr_Search instance used for the query. Mainly used as a
 	 * helper function for result document modifiers.
 	 *
@@ -429,11 +491,24 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 * @return	string	The cleaned user query.
 	 */
 	public function getCleanUserQuery() {
-		$userQuery = trim($this->piVars['q']);
-		$userQuery = t3lib_div::removeXSS($userQuery);
-		$userQuery = htmlentities($userQuery, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+		$userQuery = $this->getRawUserQuery();
+
+		if (!is_null($userQuery)) {
+			$userQuery = trim($userQuery);
+			$userQuery = t3lib_div::removeXSS($userQuery);
+			$userQuery = htmlentities($userQuery, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+		}
 
 		return $userQuery;
+	}
+
+	/**
+	 * Gets the raw user query
+	 *
+	 * @return string Raw user query.
+	 */
+	public function getRawUserQuery() {
+		return $this->rawUserQuery;
 	}
 }
 

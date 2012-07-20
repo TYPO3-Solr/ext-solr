@@ -129,8 +129,9 @@ class tx_solr_pi_search extends tx_solr_pluginbase_CommandPluginBase{
 		}
 
 		return array(
-			'prefix'      => $this->prefixId,
-			'current_url' => $currentUrl
+			'prefix'          => $this->prefixId,
+			'query_parameter' => $this->getQueryGetParameter(),
+			'current_url'     => $currentUrl
 		);
 	}
 
