@@ -39,6 +39,7 @@
 	* Added an option to allow setting results per page in the pi_results flexform
 	* Added a configuration option to set the default sort order per sort option
 	* Added a parameter for ATagParams to the link viewhelper, credits Andre Westbunk
+	* Added a TypoScript option to control loading of Javascript files
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

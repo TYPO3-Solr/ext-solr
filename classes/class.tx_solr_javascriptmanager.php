@@ -87,10 +87,38 @@ class tx_solr_JavascriptManager {
 	}
 
 	/**
+	 * Adds all the loaded javascript files and snippets to the page.
+	 *
+	 * Depending on configuration the Javascript is added in header, footer or
+	 * not at all if the integrator decides to take care of it himself.
+	 *
+	 */
+	public function addJavascriptToPage() {
+		$position = tx_solr_Util::getTypoScriptValue('plugin.tx_solr.javascriptFiles.loadIn');
+
+		switch ($position) {
+			case 'header':
+				$this->addJavascriptToPageHeader();
+				break;
+			case 'footer':
+					// TODO implement adding JS in page footer
+				break;
+			case 'none':
+					// do nothing, JS is handled by the integrator
+				break;
+			default:
+				throw new RuntimeException(
+					'Invalid value "' . $position . '" for Javascript position. Choose from "header", "footer", or "none".',
+					1336911986
+				);
+		}
+	}
+
+	/**
 	 * Adds all the loaded javascript files and snippets to the page header.
 	 *
 	 */
-	public function addJavascriptToPageHeader() {
+	protected function addJavascriptToPageHeader() {
 
 			// add files
 		foreach ($this->loadedFiles as $fileKey => $file) {

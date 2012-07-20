@@ -132,7 +132,7 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 
 		$javascriptManager->loadFile('faceting.numericRangeHelper');
 
-		$javascriptManager->addJavascriptToPageHeader();
+		$javascriptManager->addJavascriptToPage();
 	}
 
 	/**
