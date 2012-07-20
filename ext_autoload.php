@@ -137,6 +137,7 @@ return array(
 	'tx_solr_pi_results_lastsearchescommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_lastsearchescommand.php',
 	'tx_solr_pi_results_noresultscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_noresultscommand.php',
 	'tx_solr_pi_results_resultscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_resultscommand.php',
+	'tx_solr_pi_results_resultsperpageswitchcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_resultsperpageswitchcommand.php',
 	'tx_solr_pi_results_sortingcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_sortingcommand.php',
 
 	'tx_solr_pi_results_spellcheckformmodifier' => $extensionPath . 'pi_results/class.tx_solr_pi_results_spellcheckformmodifier.php',

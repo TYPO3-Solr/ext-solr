@@ -285,27 +285,10 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	protected function getResultsPerPageSwitch() {
 		$template = clone $this->parentPlugin->getTemplate();
 		$template->workOnSubpart('results_per_page_switch');
-		$configuration = tx_solr_Util::getSolrConfiguration();
 
-		$resultsPerPageSwitchOptions = t3lib_div::intExplode(',', $configuration['search.']['results.']['resultsPerPageSwitchOptions']);
-		$currentNumberOfResultsShown = $this->parentPlugin->getNumberOfResultsPerPage();
-
-		$selectOptions = array();
-		foreach ($resultsPerPageSwitchOptions as $option) {
-			$selected      = '';
-			$selectedClass = '';
-			if ($option == $currentNumberOfResultsShown) {
-				$selected      = ' selected="selected"';
-				$selectedClass = ' class="currentNumberOfResults"';
-			}
-
-			$selectOptions[] = array(
-				'value'         => $option,
-				'selected'      => $selected,
-				'selectedClass' => $selectedClass,
-				'url'           => $this->parentPlugin->pi_linkTP_keepPIvars_url(array('resultsPerPage' => $option)),
-			);
-		}
+		$commandResolver             = t3lib_div::makeInstance('tx_solr_CommandResolver');
+		$resultsPerPageSwitchCommand = $commandResolver->getCommand('resultsPerPageSwitch', $this->parentPlugin);
+		$selectOptions               = $resultsPerPageSwitchCommand->getResultsPerPageOptions();
 		$template->addLoop('options', 'option', $selectOptions);
 
 		$form = array('action' => htmlentities($this->parentPlugin->pi_linkTP_keepPIvars_url(array(
