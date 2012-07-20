@@ -269,6 +269,15 @@ class tx_solr_Site {
 	}
 
 	/**
+	 * Gets the site's root page.
+	 *
+	 * @return array The site's root page.
+	 */
+	public function getRootPage() {
+		return $this->rootPage;
+	}
+
+	/**
 	 * Gets the site's root page ID (uid).
 	 *
 	 * @return	integer	The site's root page ID.
