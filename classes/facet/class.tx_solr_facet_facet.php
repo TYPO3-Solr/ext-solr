@@ -145,7 +145,7 @@ class tx_solr_facet_Facet {
 	public function isEmpty() {
 		$isEmpty = FALSE;
 
-		$options      = $this->getOptions();
+		$options      = $this->getOptionsRaw();
 		$optionsCount = count($options);
 
 			// facet options include '_empty_', if no options are given
@@ -220,8 +220,22 @@ class tx_solr_facet_Facet {
 	 *
 	 * @return array An array with facet options.
 	 */
-	public function getOptions() {
-		return $this->search->getFacetFieldOptions($this->field);
+	public function getOptionsRaw() {
+		$facetOptions = array();
+
+		switch ($this->type) {
+			case self::TYPE_FIELD:
+				$facetOptions = $this->search->getFacetFieldOptions($this->field);
+				break;
+			case self::TYPE_QUERY:
+				$facetOptions = $this->search->getFacetQueryOptions($this->field);
+				break;
+			case self::TYPE_RANGE:
+				$facetOptions = $this->search->getFacetRangeOptions($this->field);
+				break;
+		}
+
+		return $facetOptions;
 	}
 
 	/**
