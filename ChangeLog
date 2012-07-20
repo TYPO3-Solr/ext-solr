@@ -99,6 +99,7 @@
 	* Fixed issue #37107: PHP Warning: Outdated Ext.Direct API inclusion, credits Stefan Galinksi
 	* Fixed bug #38290: Empty typoscript for facet leads to fatal error when rendering through facet view helper
 	* Fixed issue #38704: tomcat autostart script not LSB (Linux Standards Base)-compliant, credits Dirk Wenzel
+	* Fixed an issues resulting in T_PAAMAYIM_NEKUDOTAYIM when running on PHP 5.2
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

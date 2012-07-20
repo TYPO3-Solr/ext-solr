@@ -116,7 +116,7 @@ class tx_solr_facet_FacetRendererFactory {
 			$facetRendererClassName = $this->getFacetRendererClassNameByFacetType($facetConfiguration['type']);
 		}
 
-		return $facetRendererClassName::getFacetInternaltype();
+		return call_user_func(array($facetRendererClassName, 'getFacetInternalType'));
 	}
 
 	/**
