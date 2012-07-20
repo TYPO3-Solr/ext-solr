@@ -402,7 +402,18 @@ class tx_solr_Template {
 			$subpartTemplate = clone $this;
 			$subpartTemplate->setWorkingTemplateContent($subpart);
 			$viewHelper->setTemplate($subpartTemplate);
-			$viewHelperContent = $viewHelper->execute($viewHelperArguments);
+
+			try {
+				$viewHelperContent = $viewHelper->execute($viewHelperArguments);
+			} catch (UnexpectedValueException $e) {
+				if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
+					t3lib_div::devLog('exception while rendering a viewhelper', 'solr', 3, array(
+						$e->__toString()
+					));
+				}
+
+				$viewHelperContent = '';
+			}
 
 			$content = t3lib_parsehtml::substituteSubpart(
 				$content,
