@@ -164,7 +164,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	 * @see tx_solr_FacetRenderer::getFacetOptions()
 	 */
 	public function getFacetOptions() {
-		return $this->facet->getOptions();
+		return $this->facet->getOptionsRaw();
 	}
 
 	/**
@@ -172,7 +172,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	 * @see tx_solr_FacetRenderer::getFacetOptionsCount()
 	 */
 	public function getFacetOptionsCount() {
-		$this->facet->getOptionsCount();
+		return $this->facet->getOptionsCount();
 	}
 
 	/**
