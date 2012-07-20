@@ -125,6 +125,7 @@ class tx_solr_contentobject_Relation {
 		$relatedItems = array();
 
 		$foreignTableName = $localFieldTca['config']['foreign_table'];
+		t3lib_div::loadTCA($foreignTableName);
 		$foreignTableTca  = $GLOBALS['TCA'][$foreignTableName];
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
@@ -151,10 +152,53 @@ class tx_solr_contentobject_Relation {
 		);
 
 		while ($relatedRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($relatedRecordsResource)) {
-			$relatedItems[] = $relatedRecord[$foreignTableLabelField];
+			$relatedItems[] = $this->resolveRelatedValue(
+				$relatedRecord,
+				$foreignTableTca,
+				$foreignTableLabelField,
+				$parentContentObject
+			);
 		}
 
+		$GLOBALS['TYPO3_DB']->sql_free_result($relatedRecordsResource);
+
 		return $relatedItems;
+	}
+
+	/**
+	 * Resolves the value of the related field. If the related field's value is
+	 * a relation itself, this method takes care of resolving it recursively.
+	 *
+	 * @param array $relatedRecord Related record as array
+	 * @param unknown_type $foreignTableTca TCA of the related table
+	 * @param unknown_type $foreignTableLabelField Field name of the foreign label field
+	 * @param unknown_type $parentContentObject cObject
+	 */
+	protected function resolveRelatedValue(array $relatedRecord, $foreignTableTca, $foreignTableLabelField, $parentContentObject) {
+
+		$value = $relatedRecord[$foreignTableLabelField];
+
+		if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])) {
+				// backup
+			$backupRecord                             = $parentContentObject->data;
+			$backupField                              = $this->configuration['foreignLabelField'];
+			$parentContentObject->data                = $relatedRecord;
+			$this->configuration['foreignLabelField'] = '';
+
+				// recursion
+			$value = array_pop($this->getRelatedItemsFromForeignTable(
+				$foreignTableLabelField,
+				intval($value),
+				$foreignTableTca['columns'][$foreignTableLabelField],
+				$parentContentObject
+			));
+
+				// restore
+			$this->configuration['foreignLabelField'] = $backupField;
+			$parentContentObject->data                = $backupRecord;
+		}
+
+		return $value;
 	}
 
 	/**
