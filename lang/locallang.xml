@@ -37,5 +37,21 @@
 			<label index="scheduler_field_server">Serveur Solr</label>
 			<label index="scheduler_field_site">Site</label>
 		</languageKey>
+		<languageKey index="nl" type="array">
+			<label index="scheduler_optimizer_title">Optimaliseer Solr index</label>
+			<label index="scheduler_optimizer_description">Voert een OPTIMIZE commando uit op de Solr index. Hoort een keer per dag uitgevoerd te worden voor websites met lage activiteit. Website met hoge activiteit kunnen dit vaker uitvoeren. Pas op, deze taak kan een aantal seconden in beslag nemen bij grote indexes.</label>
+			<label index="scheduler_commit_title">Commit Solr index</label>
+			<label index="scheduler_commit_description">Voert een COMMIT commando uit op de Solr index. Kan tussen de een keer per minuut en ieder uur uitgevoerd worden. Deze taak hoort korter te duren dan het OPTIMIZE commando welke ook een COMMIT uitvoert voor het OPTIMIZE commando.</label>
+			<label index="scheduler_reindex_title">Forceer herindexering van een website</label>
+			<label index="scheduler_reindex_description">Leegt de Solr index en initialiseert de Index Wachtrij van een website.</label>
+			<label index="scheduler_indexqueueworker_title">Index Wachtrij Taak</label>
+			<label index="scheduler_indexqueueworker_description">Verwerkt de documenten in de Index Wachtrij en verstuurt deze naar Solr.</label>
+			<label index="scheduler_indexqueueworker_field_documentsToIndexLimit">Aantal te indexeren documenten</label>
+			<label index="scheduler_field_host">Solr host</label>
+			<label index="scheduler_field_port">Solr poort</label>
+			<label index="scheduler_field_path">Solr pad</label>
+			<label index="scheduler_field_server">Solr server</label>
+			<label index="scheduler_field_site">Website</label>
+		</languageKey>
 	</data>
 </T3locallang>

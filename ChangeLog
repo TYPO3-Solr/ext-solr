@@ -53,6 +53,7 @@
 	* Added implementation for facet requirements evaluation
 	* Added feature #34187: Conditional Facets
 	* Added sorting default order to the sorting template properties, credits Michel Tremblay
+	* Added dutch translation for backend labels, credits Rik Willems
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

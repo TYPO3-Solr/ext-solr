@@ -64,7 +64,7 @@
 			<label index="lastSearches">Laatste zoekopdrachten</label>
 			<label index="faceting_removeAllFilters">Verwijder alle filters</label>
 			<label index="results_found">Gevonden: @resultsTotal resultaten in @resultsTime milliseconden.</label>
-			<label index="relevance">Relevantiee</label>
+			<label index="relevance">Relevantie</label>
 			<label index="results_per_page">Resultaten per pagina:</label>
 			<label index="file_mimetype">Bestandstype</label>
 			<label index="file_referenced">Geplaatst op</label>
