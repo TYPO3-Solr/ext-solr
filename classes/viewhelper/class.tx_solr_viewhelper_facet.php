@@ -70,7 +70,13 @@ class tx_solr_viewhelper_Facet extends tx_solr_viewhelper_AbstractSubpartViewHel
 					$configuredFacets
 				);
 
-				$facetRenderer = $facetRendererFactory->getFacetRendererByFacetName($facetName);
+				$facet = t3lib_div::makeInstance(
+					'tx_solr_facet_Facet',
+					$facetName,
+					$facetRendererFactory->getFacetInternalType($facetName)
+				);
+
+				$facetRenderer = $facetRendererFactory->getFacetRendererByFacet($facet);
 				$facetRenderer->setTemplate($this->template);
 				$facetRenderer->setLinkTargetPageId($this->configuration['search.']['targetPage']);
 

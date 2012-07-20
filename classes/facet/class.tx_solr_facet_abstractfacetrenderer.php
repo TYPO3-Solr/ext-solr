@@ -76,16 +76,16 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	/**
 	 * Constructor.
 	 *
-	 * @param string $facetName The name of the facet to render.
+	 * @param tx_solr_facet_Facet $facet The facet to render.
 	 */
-	public function __construct($facetName) {
+	public function __construct(tx_solr_facet_Facet $facet) {
 		$this->search = t3lib_div::makeInstance('tx_solr_Search');
 
-		$this->facet              = t3lib_div::makeInstance('tx_solr_facet_Facet', $facetName);
-		$this->facetName          = $facetName;
+		$this->facet              = $facet;
+		$this->facetName          = $facet->getName();
 
 		$this->solrConfiguration  = tx_solr_Util::getSolrConfiguration();
-		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$facetName . '.'];
+		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 		$this->linkTargetPageId   = $GLOBALS['TSFE']->id;
 	}
 

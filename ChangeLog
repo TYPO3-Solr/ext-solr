@@ -56,6 +56,7 @@
 	* Added sorting default order to the sorting template properties, credits Michel Tremblay
 	* Added dutch translation for backend labels, credits Rik Willems
 	* Added tx_solr_Search::getFacetQueryOptions()
+	* Changed constructor of facet renderers to use a facet object instead of a facet name
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

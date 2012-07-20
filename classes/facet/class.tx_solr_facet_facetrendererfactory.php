@@ -83,11 +83,32 @@ class tx_solr_facet_FacetRendererFactory {
 	/**
 	 * Looks up a facet's configuration and creates a facet renderer accordingly.
 	 *
-	 * @param string $facetName Facet name
+	 * @param tx_solr_facet_Facet $facet Facet
 	 * @return tx_solr_FacetRenderer Facet renderer as definied by the facet's configuration
 	 */
-	public function getFacetRendererByFacetName($facetName) {
+	public function getFacetRendererByFacet($facet) {
 		$facetRenderer      = NULL;
+		$facetConfiguration = $this->facetsConfiguration[$facet->getName() . '.'];
+
+		$facetRendererClassName = $this->defaultFacetRendererClassName;
+		if (isset($facetConfiguration['type'])) {
+			$facetRendererClassName = $this->getFacetRendererClassNameByFacetType($facetConfiguration['type']);
+		}
+
+		$facetRenderer = t3lib_div::makeInstance($facetRendererClassName, $facet);
+		$this->validateObjectIsFacetRenderer($facetRenderer);
+
+		return $facetRenderer;
+	}
+
+	/**
+	 * Gets the facet's internal type. Uses the renderer class registered for a
+	 * facet to get this information.
+	 *
+	 * @param string $facetName Name of a configured facet.
+	 * @return string Internal type of the facet
+	 */
+	public function getFacetInternalType($facetName) {
 		$facetConfiguration = $this->facetsConfiguration[$facetName . '.'];
 
 		$facetRendererClassName = $this->defaultFacetRendererClassName;
@@ -95,10 +116,7 @@ class tx_solr_facet_FacetRendererFactory {
 			$facetRendererClassName = $this->getFacetRendererClassNameByFacetType($facetConfiguration['type']);
 		}
 
-		$facetRenderer = t3lib_div::makeInstance($facetRendererClassName, $facetName);
-		$this->validateObjectIsFacetRenderer($facetRenderer);
-
-		return $facetRenderer;
+		return $facetRendererClassName::getFacetInternaltype();
 	}
 
 	/**
