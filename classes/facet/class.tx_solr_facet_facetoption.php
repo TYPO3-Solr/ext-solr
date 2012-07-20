@@ -125,7 +125,7 @@ class tx_solr_facet_FacetOption {
 		foreach ($filterParameters as $filter) {
 			list($filterName, $filterValue) = explode(':', $filter);
 
-			if ($filterName == $facetName && $filterValue == $this->value) {
+			if ($filterName == $facetName && $filterValue == $this->getUrlValue()) {
 				$isSelected = TRUE;
 				break;
 			}
