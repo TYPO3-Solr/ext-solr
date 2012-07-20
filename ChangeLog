@@ -87,6 +87,7 @@
 	* Added support for keepAllOptionsOnSelection with facet queries
 	* Added API methods to the Index Queue to initialize specific indexing configurations only
 	* Added a field in the backend module to select which Index Queue indexing configurations to initialize
+	* Fixed handling of Javascript loading through the Javascript Manager
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

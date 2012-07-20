@@ -51,6 +51,7 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 		$facetContent = '';
 
 		$this->loadJavaScriptFiles();
+		$this->loadStylesheets();
 		$handlePositions = $this->getHandlePositions();
 
 			// the option's value will be appended by javascript after the slide event
@@ -65,7 +66,6 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 			$incompleteFacetOption
 		);
 
-		$facetContent .= $this->getRangeSliderJavaScript($handlePositions['start'], $handlePositions['end']);
 		$facetContent .= '
 			<input type="hidden" id="facet-' . $this->facetName . '-url" value="' . $facetLinkBuilder->getReplaceFacetOptionUrl() . '">
 			<div id="facet-' . $this->facetName . '-value" >' . $handlePositions['start'] . ' - ' . $handlePositions['end'] . '</div>
@@ -112,23 +112,21 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 		$facetOptions = $this->getFacetOptions();
 
 		$rangeSliderJavaScript = '
-			<script type="text/javascript">
-				jQuery(document).ready(function(){
-					jQuery("#facet-' . $this->facetName . '-range").slider({
-						range: true,
-						values: [' . $handle1Position . ',' . $handle2Position . '],
-						min: '  . $facetOptions['start'] . ',
-						max: '  . $facetOptions['end'] . ',
-						step: ' . $facetOptions['gap'] . ',
-						slide: function( event, ui ) {
-							jQuery( "#facet-' . $this->facetName . '-value" ).html( "" + ui.values[0] + " - " + ui.values[1] );
-							solrRangeRequest("' . $this->facetName . '", "-");
-						}
-					});
-					jQuery( "#facet-' . $this->facetName . '-value" ).val( "" + jQuery( "#facet-' . $this->facetName . '-range" ).slider( "values", 0 ) +
-						" - " + jQuery( "#facet-' . $this->facetName . '-range" ).slider( "values", 1 ) );
+			jQuery(document).ready(function(){
+				jQuery("#facet-' . $this->facetName . '-range").slider({
+					range: true,
+					values: [' . $handle1Position . ',' . $handle2Position . '],
+					min: '  . $facetOptions['start'] . ',
+					max: '  . $facetOptions['end'] . ',
+					step: ' . $facetOptions['gap'] . ',
+					slide: function( event, ui ) {
+						jQuery( "#facet-' . $this->facetName . '-value" ).html( "" + ui.values[0] + " - " + ui.values[1] );
+						solrRangeRequest("' . $this->facetName . '", "-");
+					}
 				});
-			</script>
+				jQuery( "#facet-' . $this->facetName . '-value" ).val( "" + jQuery( "#facet-' . $this->facetName . '-range" ).slider( "values", 0 ) +
+					" - " + jQuery( "#facet-' . $this->facetName . '-range" ).slider( "values", 1 ) );
+			});
 		';
 
 		return $rangeSliderJavaScript;
@@ -146,6 +144,10 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 		$javascriptManager->loadFile('ui.slider');
 
 		$javascriptManager->loadFile('faceting.numericRangeHelper');
+
+		$handlePositions = $this->getHandlePositions();
+		$rangeSliderInitialization = $this->getRangeSliderJavaScript($handlePositions['start'], $handlePositions['end']);
+		$javascriptManager->addJavascript($this->facetName . '-rangeSliderInitialization', $rangeSliderInitialization);
 
 		$javascriptManager->addJavascriptToPage();
 	}

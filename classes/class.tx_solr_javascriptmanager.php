@@ -44,22 +44,21 @@ class tx_solr_JavascriptManager {
 	 *
 	 * @var array
 	 */
-	protected $loadedFiles = array();
+	protected static $files = array();
 
 	/**
 	 * Raw script snippets to load.
 	 *
 	 * @var array
 	 */
-	protected $scriptSnippets = array();
+	protected static $snippets = array();
 
 	/**
-	 * Like additionalHeaderData in TSFE, but can be configured to loaded in
-	 * head or at the end of the page
+	 * JavaScript tags to add to the page for the current inxtance
 	 *
 	 * @var array
 	 */
-	protected static $additionalPageData = array();
+	protected $javaScriptTags = array();
 
 
 	/**
@@ -74,10 +73,15 @@ class tx_solr_JavascriptManager {
 	 * Adds a Javascript snippet.
 	 *
 	 * @param string $identifier Identifier for the snippet.
-	 * @param string $script The snippet to add.
+	 * @param string $snippet The snippet to add.
 	 */
-	public function addJavascript($identifier, $script) {
-		$this->scriptSnippets[$identifier] = $script;
+	public function addJavascript($identifier, $snippet) {
+		if (!array_key_exists($identifier, self::$snippets)) {
+			self::$snippets[$identifier] = array(
+				'addedToPage' => FALSE,
+				'snippet'     => $snippet
+			);
+		}
 	}
 
 	/**
@@ -86,11 +90,16 @@ class tx_solr_JavascriptManager {
 	 * @param string $fileKey Key of the file to load.
 	 */
 	public function loadFile($fileKey) {
-		$typoScriptPath = 'plugin.tx_solr.javascriptFiles.' . $fileKey;
+		if (!array_key_exists($fileKey, self::$files)) {
+			$typoScriptPath = 'plugin.tx_solr.javascriptFiles.' . $fileKey;
+			$fileReference  = tx_solr_Util::getTypoScriptValue($typoScriptPath);
 
-		$fileReference = tx_solr_Util::getTypoScriptValue($typoScriptPath);
-		if (!empty($fileReference)) {
-			$this->loadedFiles[$fileKey] = $GLOBALS['TSFE']->tmpl->getFileName($fileReference);
+			if (!empty($fileReference)) {
+				self::$files[$fileKey] = array(
+					'addedToPage' => FALSE,
+					'file'        => $GLOBALS['TSFE']->tmpl->getFileName($fileReference)
+				);
+			}
 		}
 	}
 
@@ -104,13 +113,17 @@ class tx_solr_JavascriptManager {
 	public function addJavascriptToPage() {
 		$position = tx_solr_Util::getTypoScriptValue('plugin.tx_solr.javascriptFiles.loadIn');
 
+		if (empty($position)) {
+			$position = 'none';
+		}
+
 		switch ($position) {
 			case 'header':
-				$this->buildjavascriptTags();
+				$this->buildJavascriptTags();
 				$this->addJavascriptToPageHeader();
 				break;
 			case 'footer':
-				$this->buildjavascriptTags();
+
 				$this->registerForEndOfFrontendHook();
 				break;
 			case 'none':
@@ -129,8 +142,8 @@ class tx_solr_JavascriptManager {
 	 *
 	 */
 	protected function addJavascriptToPageHeader() {
-		$scripts = implode("\n", self::$additionalPageData);
-		$GLOBALS['TSFE']->additionalHeaderData['tx_solr-javascript'] = $scripts;
+		$scripts = implode("\n", $this->javaScriptTags);
+		$GLOBALS['TSFE']->additionalHeaderData[uniqid('tx_solr-javascript-')] = $scripts;
 	}
 
 	/**
@@ -140,6 +153,7 @@ class tx_solr_JavascriptManager {
 	 */
 	protected function registerForEndOfFrontendHook() {
 		$GLOBALS['TSFE']->TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-cached']['tx_solr-javascript'] = 'EXT:solr/classes/class.tx_solr_javascriptmanager.php:tx_solr_JavascriptManager->addJavascriptToPageFooter';
+		$GLOBALS['TSFE']->TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe']['tx_solr-javascript'] = 'EXT:solr/classes/class.tx_solr_javascriptmanager.php:tx_solr_JavascriptManager->addJavascriptToPageFooter';
 	}
 
 	/**
@@ -149,11 +163,11 @@ class tx_solr_JavascriptManager {
 	 * @param tslib_fe TYPO3 Frontend
 	 */
 	public function addJavascriptToPageFooter($parameters, tslib_fe $parentObject) {
-		$scripts = implode("\n", self::$additionalPageData);
+		$this->buildJavascriptTags();
 
 		$parentObject->content = str_replace(
 			'</body>',
-			$scripts . "\n\n</body>",
+			implode("\n", $this->javaScriptTags) . "\n\n</body>",
 			$parentObject->content
 		);
 	}
@@ -162,29 +176,37 @@ class tx_solr_JavascriptManager {
 	 * Builds the tags to load the javascript needed for different features.
 	 *
 	 */
-	protected function buildjavascriptTags() {
+	protected function buildJavascriptTags() {
 			// add files
-		foreach ($this->loadedFiles as $fileKey => $file) {
-			if (empty(self::$additionalPageData['tx_solr-javascript-' . $fileKey])) {
-				$scriptTag = '<script src="' . $file . '" type="text/javascript"></script>';
-				self::$additionalPageData['tx_solr-javascript-' . $fileKey] = $scriptTag;
+		foreach (self::$files as $identifier => $file) {
+			if (!$file['addedToPage']) {
+				self::$files[$identifier]['addedToPage'] = TRUE;
+				$this->javaScriptTags[$identifier] = '<script src="' . $file['file'] . '" type="text/javascript"></script>';
 			}
 		}
 
 			// concatenate snippets
-		$scriptSnippets = '<script type="text/javascript">
-			/*<![CDATA[*/
-		';
-		foreach ($this->scriptSnippets as $snippetIdentifier => $snippet) {
-			$scriptSnippets .= "\t/* -- $snippetIdentifier -- */\n";
-			$scriptSnippets .= $snippet;
-			$scriptSnippets .= "\n\n";
-		}
-		$scriptSnippets .= '
-			/*]]>*/
-		</script>';
+		$snippets = '';
+		foreach (self::$snippets as $identifier => $snippet) {
+			if (!$snippet['addedToPage']) {
+				self::$snippets[$identifier]['addedToPage'] = TRUE;
 
-		self::$additionalPageData['tx_solr-javascript-snippets'] = $scriptSnippets;
+				$snippets .= "\t/* -- $identifier -- */\n";
+				$snippets .= $snippet['snippet'];
+				$snippets .= "\n\n";
+			}
+		}
+
+			// add snippets
+		if (!empty($snippets)) {
+			$snippets = '<script type="text/javascript">
+				/*<![CDATA[*/
+			' . $snippets . '
+				/*]]>*/
+			</script>';
+
+			$this->javaScriptTags['snippets'] = $snippets;
+		}
 	}
 
 }
