@@ -90,6 +90,7 @@ class tx_solr_Spellchecker {
 		$query->setKeywords($suggestions['collation']);
 
 		$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $query);
+		$queryLinkBuilder->setLinkTargetPageId($GLOBALS['TSFE']->id);
 
 		return $queryLinkBuilder->getQueryUrl();
 	}
@@ -106,6 +107,7 @@ class tx_solr_Spellchecker {
 		$query->setKeywords($suggestions['collation']);
 
 		$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $query);
+		$queryLinkBuilder->setLinkTargetPageId($GLOBALS['TSFE']->id);
 
 		return $queryLinkBuilder->getQueryLink(htmlspecialchars($query->getKeywordsRaw()));
 	}
