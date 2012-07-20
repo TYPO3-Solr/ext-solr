@@ -80,6 +80,7 @@
 	* Changed the results command to use the search's query
 	* Added tx_solr_pi_results_ResultsCommand->setSearch()
 	* Added tx_solr_Query->getKeywordsCleaned()
+	* Added feature to search using the spell checker suggestions when no results were found for the original query
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

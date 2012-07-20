@@ -21,6 +21,8 @@
 			<label index="results_found">Found @resultsTotal results in @resultsTime milliseconds.</label>
 			<label index="results_searched_for">Searched for "@searchWord".</label>
 			<label index="no_results_nothing_found">Nothing found for "@searchWord".</label>
+			<label index="no_results_showing_results_suggestion">Showing results for "@suggestedWord"</label>
+			<label index="no_results_search_for_original">Search instead for "@searchWord".</label>
 			<label index="relevance">Relevance</label>
 			<label index="results_per_page">Results per page:</label>
 			<label index="error_errors">We're sorry, there were some errors:</label>
@@ -42,6 +44,8 @@
 			<label index="results_found">Es wurden @resultsTotal Ergebnisse in @resultsTime Millisekunden gefunden.</label>
 			<label index="results_searched_for">Gesucht nach "@searchWord".</label>
 			<label index="no_results_nothing_found">Nichts gefunden für "@searchWord".</label>
+			<label index="no_results_showing_results_suggestion">Ergebnisse für "@suggestedWord"</label>
+			<label index="no_results_search_for_original">Stattdessen suchen nach "@searchWord".</label>
 			<label index="relevance">Relevanz</label>
 			<label index="results_per_page">Ergebnisse pro Seite:</label>
 			<label index="error_errors">Es tut uns leid, es gab einige Fehler:</label>

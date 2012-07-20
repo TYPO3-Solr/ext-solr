@@ -26,18 +26,19 @@
 /**
  * No Results found view command
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 
 	/**
 	 * Parent plugin
 	 *
-	 * @var	tx_solr_pi_results
+	 * @var tx_solr_pi_results
 	 */
 	protected $parentPlugin;
+
 
 	/**
 	 * Constructor.
@@ -49,14 +50,46 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 	}
 
 	public function execute() {
-		$markers = array();
-
-		$searchWord      = $this->parentPlugin->getCleanUserQuery();
 		$spellchecker    = t3lib_div::makeInstance('tx_solr_Spellchecker');
 		$suggestionsLink = $spellchecker->getSpellcheckingSuggestions();
 
+		$markers = $this->getLabelMarkers();
+		$markers['suggestion_results'] = $this->getSuggestionResults();
+
+			// TODO change to if $spellchecker->hasSuggestions()
+		if (!empty($suggestionsLink)) {
+			$markers['suggestion'] = $suggestionsLink;
+		}
+
+		return $markers;
+	}
+
+	/**
+	 * Constructs label markers.
+	 *
+	 * @return array Array of label markers.
+	 */
+	protected function getLabelMarkers() {
+		$spellchecker = t3lib_div::makeInstance('tx_solr_Spellchecker');
+		$searchWord   = $this->parentPlugin->getCleanUserQuery();
+
 		$nothingFound = strtr(
 			$this->parentPlugin->pi_getLL('no_results_nothing_found'),
+			array(
+				'@searchWord' => $searchWord
+			)
+		);
+
+		$showingResultsSuggestion = strtr(
+			$this->parentPlugin->pi_getLL('no_results_showing_results_suggestion'),
+			array(
+				'@suggestedWord' => $spellchecker->getCollatedSuggestion()
+			)
+		);
+
+		# TODO add link to execute query
+		$searchForOriginal = strtr(
+			$this->parentPlugin->pi_getLL('no_results_search_for_original'),
 			array(
 				'@searchWord' => $searchWord
 			)
@@ -70,15 +103,42 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 		);
 
 		$markers = array(
-			'nothing_found' => $nothingFound,
-			'searched_for'  => $searchedFor,
+			'nothing_found'              => $nothingFound,
+			'showing_results_suggestion' => $showingResultsSuggestion,
+			'search_for_original'        => $searchForOriginal,
+			'searched_for'               => $searchedFor,
 		);
 
-		if (!empty($suggestionsLink)) {
-			$markers['suggestion'] = $suggestionsLink;
-		}
-
 		return $markers;
+	}
+
+	/**
+	 * Gets the results for the suggested keywords.
+	 *
+	 * Conducts a new search using the suggested keywords and uses that search
+	 * to render the regular results command.
+	 *
+	 * @return string The rendered results command for the results of the suggested keywords.
+	 */
+	protected function getSuggestionResults() {
+		$spellchecker      = t3lib_div::makeInstance('tx_solr_Spellchecker');
+		$suggestedKeywords = $spellchecker->getCollatedSuggestion();
+
+		$plugin = clone $this->parentPlugin;
+		$search = clone $this->parentPlugin->getSearch();
+		$query  = clone $search->getQuery();
+
+		$query->setKeywords($suggestedKeywords);
+		$search->search($query);
+
+		$resultsCommand = t3lib_div::makeInstance(
+			'tx_solr_pi_results_ResultsCommand',
+			$plugin
+		);
+		$resultsCommand->setSearch($search);
+		$commandVariables = $resultsCommand->execute();
+
+		return $plugin->renderCommand('results', $commandVariables);
 	}
 }
 
