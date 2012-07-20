@@ -9,6 +9,8 @@
 		* Changed tx_solr_pluginbase_PluginBase::performAction() to be abstract
 		* Added missing abstract tx_solr_pluginbase_PluginBase::render()
 
+	* Updated SolrPhpClient to r63
+
 	* Fixed bug #35679:Index queue broken by new indexing priority feature, credits Michiel Roos
 	* Changed tx_solr_pluginbase_PluginBase to execute postRender() also after renderError()
 	* Added feature #35544: Configurable query parameter
@@ -28,7 +30,6 @@
 	* Changed SOLR_RELATION to resolve labels for relations correctly even with intermediate tables, credits Steffen Ritter
 	* Added a generic language schema without stemming for languages we do not have a schema for
 	* Fixed bug #36623: Index Queue initialization crashes with erronous mount page
-	* Updated SolrPhpClient to r62
 	* Change tx_solr_ConnectionManager::getConfiguredSolrConnections(): extract getConfiguredSolrConnectionByRootPage()
 	* Added tx_solr_Site::getRootPage()
 	* Added feature #36668: Allow Solr connection initialization per site

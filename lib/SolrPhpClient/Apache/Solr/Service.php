@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2007-2011, Servigistics, Inc.
+ * Copyright (c) 2007-2012, Servigistics, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @copyright Copyright 2007-2011 Servigistics, Inc. (http://servigistics.com)
+ * @copyright Copyright 2007-2012 Servigistics, Inc. (http://servigistics.com)
  * @license http://solr-php-client.googlecode.com/svn/trunk/COPYING New BSD
  * @version $Id$
  *
@@ -458,7 +458,14 @@ class Apache_Solr_Service
 	{
 		$path = trim($path, '/');
 
-		$this->_path = '/' . $path . '/';
+		if (strlen($path) > 0)
+		{
+			$this->_path = '/' . $path . '/';
+		}
+		else
+		{
+			$this->_path = '/';
+		}
 
 		if ($this->_urlsInited)
 		{
