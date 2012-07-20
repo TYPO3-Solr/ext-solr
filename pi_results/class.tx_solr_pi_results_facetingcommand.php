@@ -120,8 +120,8 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 			$facetRenderer->setTemplate($template);
 			$facetRenderer->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
-			$facet = $facetRenderer->getFacetProperties();
-			if ($facet['active']) {
+			$facet = t3lib_div::makeInstance('tx_solr_facet_Facet', $facetName);
+			if ($facet->isActive()) {
 				$this->facetsActive = TRUE;
 			}
 
