@@ -91,15 +91,16 @@ class tx_solr_pi_search extends tx_solr_pluginbase_CommandPluginBase{
 
 		if(!empty($this->conf['search.']['query.']['filter.'])) {
 			foreach($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
+				if (!is_array($this->conf['search.']['query.']['filter.'][$filterKey])) {
+					if (is_array($this->conf['search.']['query.']['filter.'][$filterKey . '.'])) {
+						$filter = $this->cObj->stdWrap(
+							$this->conf['search.']['query.']['filter.'][$filterKey],
+							$this->conf['search.']['query.']['filter.'][$filterKey . '.']
+						);
+					}
 
-				if (is_array($this->conf['search.']['query.']['filter.'][$filterKey . '.'])) {
-					$filter = $this->cObj->stdWrap(
-						$this->conf['search.']['query.']['filter.'][$filterKey],
-						$this->conf['search.']['query.']['filter.'][$filterKey . '.']
-					);
+					$additionalFilters[$filterKey] = $filter;
 				}
-
-				$additionalFilters[$filterKey] = $filter;
 			}
 		}
 
