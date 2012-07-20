@@ -79,6 +79,17 @@ class tx_solr_Spellchecker {
 	}
 
 	/**
+	 * Checks whether the user's query was correctly spelled.
+	 *
+	 * @return boolean TRUE if the query terms were correctly spelled, FALSE otherwise
+	 */
+	public function isIncorrectlySpelled() {
+		$suggestions = $this->getSuggestions();
+
+		return $suggestions['correctlySpelled'];
+	}
+
+	/**
 	 * Query URL with a suggested/corrected query
 	 *
 	 * @return string Suggestion/spellchecked query URL
