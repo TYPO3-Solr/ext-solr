@@ -402,6 +402,12 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 		if ($flexformSorting) {
 			$this->conf['search.']['query.']['sortBy'] = $flexformSorting;
 		}
+
+			// results per page
+		$resultsPerPage = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'resultsPerPage', 'sQuery');
+		if ($resultsPerPage) {
+			$this->conf['search.']['results.']['resultsPerPage'] = $resultsPerPage;
+		}
 	}
 
 	/**
@@ -466,7 +472,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			$this->resultsPerPageChanged = TRUE;
 		}
 
-		$defaultNumberOfResultsShown = $configuration['search.']['results.']['resultsPerPage'];
+		$defaultNumberOfResultsShown = $this->conf['search.']['results.']['resultsPerPage'];
 		$userSetNumberOfResultsShown = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_solr_resultsPerPage');
 
 		$currentNumberOfResultsShown = $defaultNumberOfResultsShown;

@@ -36,6 +36,7 @@
 	* Added feature #36486: Initialize Solr connections via CLI
 	* Added support for scheduler progress in TYPO3 6.0
 	* Fixed issue #33464: Improve responsiveness of Garbage Collector when deleting or hiding pages or records
+	* Added an option to allow setting results per page in the pi_results flexform
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
