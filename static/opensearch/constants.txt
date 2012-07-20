@@ -1,0 +1,7 @@
+
+plugin.tx_solr.openSearch {
+
+	shortName = Website Search
+	description = Search this website
+
+}

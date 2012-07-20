@@ -52,6 +52,12 @@ $solrConfiguration = tx_solr_Util::getSolrConfiguration();
 $site = tx_solr_Site::getSiteByPageId($pageId);
 $q    = trim(t3lib_div::_GP('termLowercase'));
 
+$isOpenSearchRequest = FALSE;
+if ('OpenSearch' == t3lib_div::_GET('format')) {
+	$isOpenSearchRequest = TRUE;
+	$q = t3lib_div::_GET('q');
+}
+
 $suggestQuery = t3lib_div::makeInstance('tx_solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));
 $suggestQuery->setSiteHash($site->getSiteHash());
@@ -99,6 +105,13 @@ if ($search->ping()) {
 	foreach($facetSuggestions as $partialKeyword => $value){
 		$suggestionKey = trim($suggestQuery->getKeywords() . ' ' . $partialKeyword);
 		$suggestions[$suggestionKey] = $facetSuggestions[$partialKeyword];
+	}
+
+	if ($isOpenSearchRequest) {
+		$suggestions = array(
+			$q,
+			array_keys($suggestions)
+		);
 	}
 
 	$ajaxReturnData = json_encode($suggestions);

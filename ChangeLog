@@ -14,6 +14,7 @@
 	* Added the query GET parameter to constants
 	* Added feature #36202: Add option to set domains to be searched, credits Stefan Sprenger
 	* Removed title field from result highlighting fields
+	* Added OpenSearch support
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

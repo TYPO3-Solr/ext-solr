@@ -49,6 +49,7 @@ t3lib_extMgm::addStaticFile($_EXTKEY, 'static/examples/everything-on/', 'Apache 
 t3lib_extMgm::addStaticFile($_EXTKEY, 'static/examples/filter-pages/', 'Apache Solr Example - Filter to only show page results');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'static/examples/indexqueue-news/', 'Apache Solr Example - Index Queue Configuration for news');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'static/examples/indexqueue-ttnews/', 'Apache Solr Example - Index Queue Configuration for tt_news');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'static/opensearch/', 'Apache Solr - OpenSearch');
 
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
