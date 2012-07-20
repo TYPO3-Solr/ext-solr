@@ -8,6 +8,9 @@
 	! API cleanup
 		* Changed tx_solr_pluginbase_PluginBase::performAction() to be abstract
 		* Added missing abstract tx_solr_pluginbase_PluginBase::render()
+	! Removed the default language filter 
+		* It is advised to have a separate core/index for each language due to different stemming per language
+		* Fixes the issue that records indexed for all languages (-1) could not be found
 
 	* Updated SolrPhpClient to r63
 	* Updated jQuery to 1.7.2

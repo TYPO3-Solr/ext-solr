@@ -269,12 +269,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 #			$query->addFilter('endtime:[NOW TO *]'); // what to do if no endtime is set (empty / no limit)?
 #			$query->addFilter('starttime:[* TO NOW]'); // would need support to index pages with future start times
 
-			$language = 0;
-			if ($GLOBALS['TSFE']->sys_language_uid) {
-				$language = $GLOBALS['TSFE']->sys_language_uid;
-			}
-			$query->addFilter('language:' . $language);
-
 			foreach($this->additionalFilters as $additionalFilter) {
 				$query->addFilter($additionalFilter);
 			}
