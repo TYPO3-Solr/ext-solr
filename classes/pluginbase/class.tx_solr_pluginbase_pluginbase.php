@@ -88,10 +88,11 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 
 			if ($this->solrAvailable) {
 				$content = $this->render($actionResult);
-				$content = $this->postRender($content);
 			} else {
 				$content = $this->renderError();
 			}
+
+			$content = $this->postRender($content);
 		} catch(Exception $e) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				t3lib_div::devLog(
