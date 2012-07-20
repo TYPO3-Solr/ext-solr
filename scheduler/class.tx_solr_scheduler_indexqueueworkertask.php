@@ -31,7 +31,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
+class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implements tx_scheduler_ProgressProvider {
 
 	/**
 	 * The site this task is indexing.
@@ -153,28 +153,12 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 	 * @return	string	Information to display
 	 */
 	public function getAdditionalInformation() {
-		$totalItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-			'uid',
-			'tx_solr_indexqueue_item',
-			'root = ' . $this->site->getRootPageId()
-		);
+		$itemsIndexedPercentage = $this->getProgress();
 
-		$remainingItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-			'uid',
-			'tx_solr_indexqueue_item',
-			'changed > indexed AND root = ' . $this->site->getRootPageId()
-		);
-		$itemsIndexedCount = $totalItemsCount - $remainingItemsCount;
-
-		if ($totalItemsCount > 0) {
-			$itemsIndexedPercentage = $itemsIndexedCount * 100 / $totalItemsCount;
-			$itemsIndexedPercentage = round($itemsIndexedPercentage, 2);
-		} else {
-			$itemsIndexedPercentage = 0;
+		$message = 'Site: ' . $this->site->getLabel();
+		if (SOLR_COMPAT) {
+			$message .= ', Indexed ' . $itemsIndexedPercentage . '%.';
 		}
-
-		$message = 'Site: ' . $this->site->getLabel() . ', '
-			. 'Indexed ' . $itemsIndexedPercentage . '%.';
 
 		$failedItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
 			'uid',
@@ -186,6 +170,34 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task {
 		}
 
 		return $message;
+	}
+
+	/**
+	 * Gets the indexing progress.
+	 *
+	 * @return float Indexing progress as a two decimal precision float. f.e. 44.87
+	 */
+	public function getProgress() {
+		$itemsIndexedPercentage = 0.0;
+
+		$totalItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+			'uid',
+			'tx_solr_indexqueue_item',
+			'root = ' . $this->site->getRootPageId()
+		);
+		$remainingItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+			'uid',
+			'tx_solr_indexqueue_item',
+			'changed > indexed AND root = ' . $this->site->getRootPageId()
+		);
+		$itemsIndexedCount = $totalItemsCount - $remainingItemsCount;
+
+		if ($totalItemsCount > 0) {
+			$itemsIndexedPercentage = $itemsIndexedCount * 100 / $totalItemsCount;
+			$itemsIndexedPercentage = round($itemsIndexedPercentage, 2);
+		}
+
+		return $itemsIndexedPercentage;
 	}
 
 	/**

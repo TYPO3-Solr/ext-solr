@@ -34,6 +34,7 @@
 	* Fixed a bug where hiding a page translation did not trigger garbage collection of the page
 	* Fixed bug #36329: Opensearch does not provide L parameter
 	* Added feature #36486: Initialize Solr connections via CLI
+	* Added support for scheduler progress in TYPO3 6.0
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

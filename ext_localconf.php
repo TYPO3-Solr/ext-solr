@@ -5,6 +5,16 @@ if (!defined ('TYPO3_MODE')) {
 
 $PATH_solr = t3lib_extMgm::extPath('solr');
 
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+$compatMode = FALSE;
+if (!t3lib_div::compat_version('6.0')) {
+	$compatMode = TRUE;
+	require_once($PATH_solr . 'compat/interface.tx_scheduler_progressprovider.php');
+}
+
+define('SOLR_COMPAT', $compatMode);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// Windows compatibility
