@@ -178,7 +178,6 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
 		}
 
-		$facetsInUse = array();
 		foreach ($filterParameters as $filter) {
 			list($filterName, $filterValue) = explode(':', $filter);
 
