@@ -162,34 +162,6 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 		return $this->template->render();
 	}
 
-	/**
-	 * Checks whether a given facet option has been selected by the user by
-	 * checking the GET values in the URL.
-	 *
-	 * @param tx_solr_facet_FacetOption $facetOption Facet option to check whether it's selected.
-	 * @return bbolean TRUE if the option is selected, FALSE otherwise
-	 */
-	protected function isSelectedFacetOption(tx_solr_facet_FacetOption $facetOption) {
-		$isSelectedOption = FALSE;
-
-		$resultParameters = t3lib_div::_GET('tx_solr');
-		$filterParameters = array();
-		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
-		}
-
-		foreach ($filterParameters as $filter) {
-			list($filterName, $filterValue) = explode(':', $filter);
-
-			if ($filterName == $this->facetName && $filterValue == $facetOption->getValue()) {
-				$isSelectedOption = TRUE;
-				break;
-			}
-		}
-
-		return $isSelectedOption;
-	}
-
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_simplefacetoptionsrenderer.php'])	{
