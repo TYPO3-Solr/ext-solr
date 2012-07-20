@@ -113,7 +113,6 @@ class tx_solr_mod_index_IndexInspector extends t3lib_extobjbase {
 		}
 
 		$pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'resources/javascript/extjs/override/gridpanel.js');
-		$pageRenderer->addJsFile($this->document->backPath . 'ajax.php?ajaxID=ExtDirect::getAPI&namespace=' . $this->extjsNamespace, 'text/javascript', FALSE);
 		$pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'resources/javascript/mod_index/index_inspector.js');
 
 		$pageRenderer->addCssInlineBlock('grid-selection-enabler', '
