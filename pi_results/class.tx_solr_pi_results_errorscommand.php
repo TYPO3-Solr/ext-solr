@@ -84,9 +84,12 @@ class tx_solr_pi_results_ErrorsCommand implements tx_solr_PluginCommand {
 		$errors = array();
 
 			// detect empty user queries
-		$userQuery = $this->parentPlugin->getCleanUserQuery();
-		if ($this->parentPlugin->getSearch()->hasSearched()
-		&& !$this->configuration['search.']['query.']['allowEmptyQuery'] && empty($userQuery)) {
+		$userQuery = $this->parentPlugin->getRawUserQuery();
+
+		if (!is_null($userQuery)
+			&& !$this->configuration['search.']['query.']['allowEmptyQuery']
+			&& empty($userQuery)
+		) {
 			$errors[] = array(
 				'message' => '###LLL:error_emptyQuery###',
 				'code'    => 1300893669
