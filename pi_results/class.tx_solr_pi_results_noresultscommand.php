@@ -51,7 +51,9 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 	public function execute() {
 		$markers = array();
 
-		$searchWord = $this->parentPlugin->getCleanUserQuery();
+		$searchWord      = $this->parentPlugin->getCleanUserQuery();
+		$spellchecker    = t3lib_div::makeInstance('tx_solr_Spellchecker');
+		$suggestionsLink = $spellchecker->getSpellcheckingSuggestions();
 
 		$nothingFound = strtr(
 			$this->parentPlugin->pi_getLL('no_results_nothing_found'),
@@ -71,9 +73,6 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 			'nothing_found' => $nothingFound,
 			'searched_for'  => $searchedFor,
 		);
-
-		$spellchecker    = t3lib_div::makeInstance('tx_solr_pi_results_SpellcheckFormModifier');
-		$suggestionsLink = $spellchecker->getSpellcheckingSuggestions();
 
 		if (!empty($suggestionsLink)) {
 			$markers['suggestion'] = $suggestionsLink;

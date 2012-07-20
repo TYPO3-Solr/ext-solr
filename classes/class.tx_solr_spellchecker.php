@@ -68,6 +68,17 @@ class tx_solr_Spellchecker {
 	}
 
 	/**
+	 * Gets the collated suggestion
+	 *
+	 * @return string collated suggestion
+	 */
+	public function getCollatedSuggestion() {
+		$suggestions = $this->search->getSpellcheckingSuggestions();
+
+		return $suggestions['collation'];
+	}
+
+	/**
 	 * Query URL with a suggested/corrected query
 	 *
 	 * @return string Suggestion/spellchecked query URL
