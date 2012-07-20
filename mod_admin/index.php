@@ -109,7 +109,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id)) {
 
 				// Draw the form
-			$this->doc->form = '<form action="" method="post" enctype="multipart/form-data">';
+			$this->doc->form = '<form action="" method="post" name="editform" enctype="multipart/form-data">';
 
 				// JavaScript
 			$this->doc->JScode = '
@@ -165,38 +165,50 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	/**
 	 * Generates the module content
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	protected function getModuleContent() {
-		$pageRoot = (string) $this->MOD_SETTINGS['function'];
-
 			//// TEMPORARY
 			// TODO add a "discover/update Solr connections button to the global section"
+
 		$content = '
 			<input type="hidden" id="solraction" name="solraction" value="" />
+			';
 
-			Site Actions:<br /><br />
-			<input type="submit" value="Initialize Index Queue" name="s_initializeIndexQueue" onclick="document.forms[0].solraction.value=\'initializeIndexQueue\';" /><br /><br />
-			<input type="submit" value="Delete Site Documents" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" /><br /><br />
+		$content .= '<fieldset><legend>Site Actions</legend>';
+		$content .= $this->renderIndexQueueInitializationSelector();
+		$content .= '
+				<input type="submit" value="Initialize Index Queue" name="s_initializeIndexQueue" onclick="document.forms[0].solraction.value=\'initializeIndexQueue\';" /> ';
+		$content .= t3lib_BEfunc::wrapInHelp('', '', '', array(
+			'title'       => 'Index Queue Initialization',
+			'description' => 'Initializing the Index Queue is the most complete way to force reindexing, or to build the Index Queue for
+							 the first time. The Index Queue Worker scheduler task will then index the items listed in the Index Queue.
+							 Initializing the Index Queue without selecting specific indexing configurations will behave like selecting all.'
+		));
+		$content .= '
+				<br /><br />
+				<input type="submit" value="Delete all Site Documents" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" /><br /><br />
+			</fieldset>';
 
-			<br />
+		$content .= '
+			<fieldset>
+				<legend>Index Actions (affecting all sites and indexes)</legend>
+				<input type="submit" value="Empty Index" name="s_emptyIndex" onclick="Check = confirm(\'This will commit documents which may be pending, clear the index and commit again afterwards. Are you sure you want to empty the index?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
+				<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
+				<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
+			</fieldset>';
 
-			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
-			Index Actions (affecting all sites and indexes):<br /><br />
-			<input type="submit" value="Empty Index" name="s_emptyIndex" onclick="Check = confirm(\'This will commit documents which may be pending, clear the index and commit again afterwards. Are you sure you want to empty the index?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
-			<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
-			<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
+		$content .= '
+			<fieldset>
+				<legend>Delete document(s) from index</legend>
+				<label for="delete_uid" style="display:block;width:60px;float:left">Item uid</label>
+				<input id="delete_uid" type="text" name="delete_uid" value="" /> (also accepts comma separated lists of uids)<br /><br />
+				<label for="delete_type" style="display:block;width:60px;float:left;">Item type</label>
+				<input id="delete_type" type="text" name="delete_type" value="" /><br /><br />
+				<input type="submit" value="Delete Document(s)"name="s_deleteDocument" onclick="document.forms[0].solraction.value=\'deleteDocument\';" /><br /><br />
+			</fieldset>';
 
-			<br />
-			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
-			Delete document(s) from index:<br /><br />
-			<label for="delete_uid" style="display:block;width:60px;float:left">Item uid</label>
-			<input id="delete_uid" type="text" name="delete_uid" value="" /> (also accepts comma separated lists of uids)<br /><br />
-			<label for="delete_type" style="display:block;width:60px;float:left;">Item type</label>
-			<input id="delete_type" type="text" name="delete_type" value="" /><br /><br />
-			<input type="submit" value="Delete Document(s)"name="s_deleteDocument" onclick="document.forms[0].solraction.value=\'deleteDocument\';" /><br /><br />
-
-			<br />
+		$content .= '
 			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
 			API Key: ' . tx_solr_Api::getApiKey();
 			// TODO add a checkbox to the delete documents fields to also remove from Index Queue
@@ -226,6 +238,105 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$this->content .= $this->doc->section('Apache Solr for TYPO3', $content, FALSE, TRUE);
 	}
 
+	/**
+	 * Renders a field to select which indexing configurations to initialize.
+	 *
+	 * Uses TCEforms.
+	 *
+	 *  @return string Markup for the select field
+	 */
+	protected function renderIndexQueueInitializationSelector() {
+		$tceForm = t3lib_div::makeInstance('t3lib_TCEforms');
+
+		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
+
+		$PA = array(
+			'fieldChangeFunc' => array(),
+			'itemFormElName' => 'tx_solr-index-queue-initialization'
+		);
+
+		$icon = 'tcarecords-' . $tableName . '-default';
+
+		$formField = $tceForm->getSingleField_typeSelect_checkbox(
+			'', // table
+			'', // field
+			'', // row
+			$PA, // array with additional configuration options
+			array(), // config,
+			$this->buildSelectorItems($tablesToIndex), // items
+			'' // Label for no-matching-value
+		);
+
+			// need to wrap the field in a TCEforms table to make the CSS apply
+		$form = '
+		<table class="typo3-TCEforms tx_solr-TCEforms">
+			<tr>
+				<td>' . "\n" . $formField . "\n" . '</td>
+			</tr>
+		</table>
+		';
+
+		return $form;
+	}
+
+	/**
+	 * Builds a map of indexing configuration names to tables to to index.
+	 *
+	 * @return array Indexing configuration to database table map
+	 */
+	protected function getIndexQueueConfigurationTableMap() {
+		$indexingTableMap = array();
+
+		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
+
+		foreach ($solrConfiguration['index.']['queue.'] as $name => $configuration) {
+			if (is_array($configuration)) {
+				$name = substr($name, 0, -1);
+
+				if ($solrConfiguration['index.']['queue.'][$name]) {
+					$table = $name;
+					if ($solrConfiguration['index.']['queue.'][$name . '.']['table']) {
+						$table = $solrConfiguration['index.']['queue.'][$name . '.']['table'];
+					}
+
+					$indexingTableMap[$name] = $table;
+				}
+			}
+		}
+
+		return $indexingTableMap;
+	}
+
+	/**
+	 * Builds the items to render in the TCEforms select field.
+	 *
+	 * @param array $tablesToIndex A map of indexing configuration to database tables
+	 * @return array Selectable items for the TCEforms select field
+	 */
+	protected function buildSelectorItems(array $tablesToIndex) {
+		$selectorItems = array();
+
+		foreach ($tablesToIndex as $configurationName => $tableName) {
+			$icon = 'tcarecords-' . $tableName . '-default';
+			if ($tableName == 'pages') {
+				$icon = 'apps-pagetree-page-default';
+			}
+
+			$labelTableName = '';
+			if ($configurationName != $tableName) {
+				$labelTableName = ' (' . $tableName . ')';
+			}
+
+			$selectorItems[] = array(
+				$configurationName . $labelTableName,
+				$configurationName,
+				$icon
+			);
+		}
+
+		return $selectorItems;
+	}
+
 	protected function getModuleContentNoSiteConfigured() {
 		# TODO add button to init Solr connections
 		$this->content = 'No sites configured for Solr yet.';
@@ -249,14 +360,35 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	//// TEMPORARY
 
 	protected function initializeIndexQueue() {
-		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
-		$itemIndexQueue->initialize($this->site);
+		$initializedIndexingConfigurations = array();
 
-			// TODO make dependent on return vale of IQ init
+		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+
+		$indexingConfigurationsToInitialize = t3lib_div::_POST('tx_solr-index-queue-initialization');
+		if (!empty($indexingConfigurationsToInitialize)) {
+				// initialize selected indexing configuration only
+			foreach ($indexingConfigurationsToInitialize as $indexingConfigurationName) {
+				$initializedIndexingConfiguration = $itemIndexQueue->initialize(
+					$this->site,
+					$indexingConfigurationName
+				);
+
+					// track initialized indexing configurations for the flash message
+				$initializedIndexingConfigurations = array_merge(
+					$initializedIndexingConfigurations,
+					$initializedIndexingConfiguration
+				);
+			}
+		} else {
+				// nothing selected specifically, initialize the complete queue
+			$initializedIndexingConfigurations = $itemIndexQueue->initialize($this->site);
+		}
+
+			// TODO make status dependent on return vale of IQ init
 		$flashMessage = t3lib_div::makeInstance(
 			't3lib_FlashMessage',
-			'Index Queue initialized for site ' . $this->site->getLabel() . '.',
-			'',
+			'Initialized indexing configurations: ' . implode(', ', array_keys($initializedIndexingConfigurations)),
+			'Index Queue initialized',
 			t3lib_FlashMessage::OK
 		);
 		t3lib_FlashMessageQueue::addMessage($flashMessage);
