@@ -88,6 +88,22 @@ class tx_solr_facet_Facet {
 	public function isActive() {
 		$isActive = FALSE;
 
+		$selectedOptions = $this->getSelectedOptions();
+		if (!empty($selectedOptions)) {
+			$isActive = TRUE;
+		}
+
+		return $isActive;
+	}
+
+	/**
+	 * Gets the facet's currently user-selected options
+	 *
+	 * @return array An array with user-selected facet options.
+	 */
+	public function getSelectedOptions() {
+		$selectedOptions = array();
+
 		$resultParameters = t3lib_div::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
@@ -95,15 +111,14 @@ class tx_solr_facet_Facet {
 		}
 
 		foreach ($filterParameters as $filter) {
-			list($filterName, $filterValue) = explode(':', $filter);
+			list($facetName, $filterValue) = explode(':', $filter);
 
-			if ($filterName == $this->name) {
-				$isActive = TRUE;
-				break;
+			if ($facetName == $this->name) {
+				$selectedOptions[] = $filterValue;
 			}
 		}
 
-		return $isActive;
+		return $selectedOptions;
 	}
 
 	/**
@@ -152,15 +167,6 @@ class tx_solr_facet_Facet {
 		$facetCounts = $this->search->getFacetCounts();
 
 		return count((array) $facetCounts->facet_fields->{$this->field});
-	}
-
-	/**
-	 * Gets the facet's currently user-selected options
-	 *
-	 * @return array An array with user-selected facet options.
-	 */
-	public function getSelectedOptions() {
-
 	}
 
 	/**
