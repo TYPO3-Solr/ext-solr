@@ -122,37 +122,37 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 				$facetOptionResultCount
 			);	/* @var $facetOption tx_solr_facet_FacetOption */
 
-			$facetText    = $facetOption->render($this->facetConfiguration);
-			$facetLink    = $facetOption->getAddFacetOptionLink($facetText);
-			$facetLinkUrl = $facetOption->getAddFacetOptionUrl();
+			$optionText    = $facetOption->render($this->facetConfiguration);
+			$optionLink    = $facetOption->getAddFacetOptionLink($optionText);
+			$optionLinkUrl = $facetOption->getAddFacetOptionUrl();
 
-			$facetHidden = '';
+			$optionHidden = '';
 			if (++$i > $solrConfiguration['search.']['faceting.']['limit']) {
-				$facetHidden = 'tx-solr-facet-hidden';
+				$optionHidden = 'tx-solr-facet-hidden';
 			}
 
-			$facetSelected = $facetOption->isSelectedInFacet($this->facetName);
+			$optionSelected = $facetOption->isSelectedInFacet($this->facetName);
 
 				// negating the facet option links to remove a filter
 			if ($this->facetConfiguration['selectingSelectedFacetOptionRemovesFilter']
-			&& $facetSelected) {
-				$facetLink    = $facetOption->getRemoveFacetOptionLink($facetText);
-				$facetLinkUrl = $facetOption->getRemoveFacetOptionUrl();
+			&& $optionSelected) {
+				$optionLink    = $facetOption->getRemoveFacetOptionLink($optionText);
+				$optionLinkUrl = $facetOption->getRemoveFacetOptionUrl();
 			}
 
 			if ($this->facetConfiguration['singleOptionMode']) {
-				$facetLink    = $facetOption->getReplaceFacetOptionLink($facetText);
-				$facetLinkUrl = $facetOption->getReplaceFacetOptionUrl();
+				$optionLink    = $facetOption->getReplaceFacetOptionLink($optionText);
+				$optionLinkUrl = $facetOption->getReplaceFacetOptionUrl();
 			}
 
 			$facetOptionLinks[] = array(
-				'hidden'     => $facetHidden,
-				'link'       => $facetLink,
-				'url'        => $facetLinkUrl,
-				'text'       => $facetText,
+				'hidden'     => $optionHidden,
+				'link'       => $optionLink,
+				'url'        => $optionLinkUrl,
+				'text'       => $optionText,
 				'value'      => $facetOption->getValue(),
 				'count'      => $facetOption->getNumberOfResults(),
-				'selected'   => $facetSelected ? '1' : '0',
+				'selected'   => $optionSelected ? '1' : '0',
 				'facet_name' => $this->facetName
 			);
 		}
