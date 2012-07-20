@@ -312,33 +312,45 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 
 /* example TypoScript
 
+		@see http://docs.jboss.org/drools/release/5.4.0.Final/drools-expert-docs/html_single/index.html
+		@see The Java Rule Engine API (JSR94)
+
 		tt_news {
+
+				// RULES cObject provided by EXT:rules, simply evaluates to boolean TRUE or FALSE
+			conditions = RULES
 			conditions {
-				10 {
-					field = pid
-					value = 2,3,5
-					condition = in / equals / notEquals / greaterThan / lessThan / greaterThanOrEqual / lessThanOrEqual
-				}
 
-				20 {
-					field = ...
-					value = ...
-					condition = ...
+				and {
 
-					or {
-						10 {
-							field = ...
-							value = ...
-							condition =  ...
-						}
+					10 {
+						field = pid
+						value = 2,3,5
+						condition = in / equals / notEquals / greaterThan / lessThan / greaterThanOrEqual / lessThanOrEqual
+					}
 
-						20 {
-							field = ...
-							value = ...
-							condition = ...
+					20 {
+						field = ...
+						value = ...
+						condition = ...
+
+						or {
+							10 {
+								field = ...
+								value = ...
+								condition =  ...
+							}
+
+							20 {
+								field = ...
+								value = ...
+								condition = ...
+							}
 						}
 					}
+
 				}
+
 			}
 
 			fields {
