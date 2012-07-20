@@ -1,5 +1,7 @@
 2012-07-20  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Release of v2.2.0
+
 	!! Renamed tx_solr_FacetRenderer::getFacet() to getFacetProperties()
 
 	! Added method getFacetInternalType() in interface tx_solr_FacetRenderer
