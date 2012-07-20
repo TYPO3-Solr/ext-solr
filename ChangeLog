@@ -30,6 +30,7 @@
 	* Change the page browser content object initialization to be switchable from USER_INT to USER, credits Dimitri Ebert
 	* Fixed an issue where a relative URL could be detected as TypoScript path in LINK viewhelper
 	* Added a button in the admin module to remove all documents of a selected site
+	* Fixed a bug where creating a page translation did not trigger re-indexing of the page
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

@@ -104,6 +104,10 @@ class tx_solr_indexqueue_RecordMonitor {
 			if ($this->isLocalizedRecord($recordTable, $record)) {
 					// if it's a localization overlay, update the original record instead
 				$recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
+
+				if ($recordTable == 'pages_language_overlay') {
+					$recordTable = 'pages';
+				}
 			}
 
 			$indexQueue->updateItem($recordTable, $recordUid);
@@ -146,6 +150,10 @@ class tx_solr_indexqueue_RecordMonitor {
 			}
 
 			$monitoredTables[] = $monitoredTable;
+			if ($monitoredTable == 'pages') {
+					// when monitoring pages, also monitor creation of translations
+				$monitoredTables[] = 'pages_language_overlay';
+			}
 		}
 
 		return array_unique($monitoredTables);
