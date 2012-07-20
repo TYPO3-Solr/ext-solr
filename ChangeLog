@@ -92,6 +92,7 @@
 	* Improved distinction between action areas in the backend module
 	* Change url(en|de)code function calls to their raw equivalents, credits Stefan Galinksi
 	* Fixed bug #37362: incomplete url for results per page switch
+	* Fixed bug #37960: Missing htmlspecialchars for generated urls, credits Stefan Galinksi
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

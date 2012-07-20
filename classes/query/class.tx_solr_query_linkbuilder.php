@@ -226,7 +226,7 @@ class tx_solr_query_LinkBuilder {
 			// merge linkConfiguration with typolinkOptions
 		$linkConfiguration = array_merge($linkConfiguration, $typolinkOptions);
 
-		return $this->contentObject->typoLink_URL($linkConfiguration);
+		return htmlspecialchars($this->contentObject->typoLink_URL($linkConfiguration));
 	}
 
 	/**
