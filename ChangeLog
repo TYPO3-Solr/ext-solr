@@ -98,6 +98,7 @@
 	* Fixed a crash in the reports module for the case when a site has no TypoScript template
 	* Fixed issue #37107: PHP Warning: Outdated Ext.Direct API inclusion, credits Stefan Galinksi
 	* Fixed bug #38290: Empty typoscript for facet leads to fatal error when rendering through facet view helper
+	* Fixed issue #38704: tomcat autostart script not LSB (Linux Standards Base)-compliant, credits Dirk Wenzel
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
