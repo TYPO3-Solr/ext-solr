@@ -104,6 +104,7 @@
 	* Fixed issue #38704: tomcat autostart script not LSB (Linux Standards Base)-compliant, credits Dirk Wenzel
 	* Fixed an issues resulting in T_PAAMAYIM_NEKUDOTAYIM when running on PHP 5.2
 	* Added an option to configure the type field used when grouping by type (markResultTypeBoundaries)
+	* Fixed an issue with initializeWithEmptyQuery not issueing the empty query
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
