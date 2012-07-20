@@ -102,7 +102,6 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 			}
 
 			$sortIndicator = $sortDirection;
-			$sortParameter = $sortOptionName . ' ' . $sortDirection;
 
 				// toggle sorting direction for the current sorting field
 			if ($currentSortOption == $sortOptionName) {
@@ -116,9 +115,13 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 						$sortIndicator = 'desc';
 						break;
 				}
-
-				$sortParameter = $sortOptionName . ' ' . $sortDirection;
 			}
+
+			if (!empty($this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['fixedOrder'])) {
+				$sortDirection = $this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['fixedOrder'];
+			}
+
+			$sortParameter = $sortOptionName . ' ' . $sortDirection;
 
 			$temp = array(
 				'link'       => $query->getQueryLink(
