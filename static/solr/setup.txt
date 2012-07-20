@@ -248,6 +248,7 @@ plugin.tx_solr {
 			limit = 10
 			singleFacetMode = 0
 			showEmptyFacets = 0
+			keepAllFacetsOnSelection = 0
 
 			facetLinkATagParams = rel="nofollow"
 
