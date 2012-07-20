@@ -225,5 +225,13 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClas
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+if (TYPO3_MODE == 'BE') {
+	$TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array(
+		'EXT:' . $_EXTKEY . '/cli_api/dispatch.php',
+		'_CLI_solr'
+	);
+}
 
 ?>

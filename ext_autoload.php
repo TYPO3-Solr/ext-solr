@@ -50,6 +50,8 @@ return array(
 	'tx_solr_access_rootlineelement' => $extensionPath . 'classes/access/class.tx_solr_access_rootlineelement.php',
 	'tx_solr_access_rootlineelementformatexception' => $extensionPath . 'classes/access/class.tx_solr_access_rootlineelementformatexception.php',
 
+	'tx_solr_cli_dispatcher' => $extensionPath . 'classes/cli/class.tx_solr_cli_dispatcher.php',
+
 	'tx_solr_contentobject_content' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_content.php',
 	'tx_solr_contentobject_multivalue' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_multivalue.php',
 	'tx_solr_contentobject_relation' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_relation.php',
