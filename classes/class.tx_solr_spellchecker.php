@@ -99,6 +99,29 @@ class tx_solr_Spellchecker {
 		return $queryLinkBuilder->getQueryLink(htmlspecialchars($query->getKeywordsRaw()));
 	}
 
+	/**
+	 * Generates a link with spell checking suggestions if it is activated and
+	 * spell checking suggestions are returned by Solr.
+	 *
+	 * @return	string	A link to start over with a new search using the suggested keywords.
+	 */
+	public function getSpellcheckingSuggestions() {
+		$suggestionsLink = '';
+
+		if ($this->configuration['search.']['spellchecking'] && $this->search->hasSearched()) {
+
+			$suggestions = $this->getSuggestions();
+			if($suggestions && !$suggestions['correctlySpelled']) {
+				$suggestionsLink = tslib_cObj::noTrimWrap(
+					$this->getSuggestionQueryLink(),
+					$this->configuration['search.']['spellchecking.']['wrap']
+				);
+			}
+		}
+
+		return $suggestionsLink;
+	}
+
 }
 
 

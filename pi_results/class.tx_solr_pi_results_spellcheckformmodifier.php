@@ -33,29 +33,6 @@
 class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier {
 
 	/**
-	 * Search instance
-	 *
-	 * @var tx_solr_Search
-	 */
-	protected $search;
-
-	/**
-	 * Configuration
-	 *
-	 * @var	array
-	 */
-	protected $configuration;
-
-	/**
-	 * Constructor for class tx_solr_pi_results_SpellcheckFormModifier
-	 *
-	 */
-	public function __construct() {
-		$this->search        = t3lib_div::makeInstance('tx_solr_Search');
-		$this->configuration = tx_solr_Util::getSolrConfiguration();
-	}
-
-	/**
 	 * Modifies the search form by providing an additional marker linking to a
 	 * new query with the suggestions provided by Solr as the search terms.
 	 *
@@ -64,37 +41,14 @@ class tx_solr_pi_results_SpellcheckFormModifier implements tx_solr_FormModifier 
 	 * @return	array	Array with additional markers for suggestions
 	 */
 	public function modifyForm(array $markers, tx_solr_Template $template) {
-		$suggestionsLink = $this->getSpellcheckingSuggestions();
+		$spellchecker = t3lib_div::makeInstance('tx_solr_Spellchecker');
+		$suggestionsLink = $spellchecker->getSpellcheckingSuggestions();
 
 		if (!empty($suggestionsLink)) {
 			$markers['suggestion'] = $suggestionsLink;
 		}
 
 		return $markers;
-	}
-
-	/**
-	 * Generates a link with spell checking suggestions if it is activated and
-	 * spell checking suggestions are returned by Solr.
-	 *
-	 * @return	string	A link to start over with a new search using the suggested keywords.
-	 */
-	public function getSpellcheckingSuggestions() {
-		$suggestionsLink = '';
-
-		if ($this->configuration['search.']['spellchecking'] && $this->search->hasSearched()) {
-			$spellchecker = t3lib_div::makeInstance('tx_solr_Spellchecker');
-
-			$suggestions = $spellchecker->getSuggestions();
-			if($suggestions && !$suggestions['correctlySpelled']) {
-				$suggestionsLink = tslib_cObj::noTrimWrap(
-					$spellchecker->getSuggestionQueryLink(),
-					$this->configuration['search.']['spellchecking.']['wrap']
-				);
-			}
-		}
-
-		return $suggestionsLink;
 	}
 }
 

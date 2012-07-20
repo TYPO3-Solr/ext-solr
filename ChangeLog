@@ -72,6 +72,7 @@
 	* Fixed handling of facet queries with no results
 	* Fixed a memory leak in the Index Queue when indexing pages and config.sys_language_mode is not set
 	* Extracted spellchecker into a separate class
+	* Moved spell checking suggestions from the spell checking form modifier to the spell checker
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
