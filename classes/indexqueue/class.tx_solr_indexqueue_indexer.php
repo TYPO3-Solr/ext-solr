@@ -511,7 +511,7 @@ class tx_solr_indexqueue_Indexer {
 		$site                = tx_solr_Site::getSiteByPageId($pageId);
 
 		$languageModes         = array('content_fallback', 'strict', 'ignore');
-		$hasOverlayMode        = in_array($site->getSysLanguageMode(), $languageModes);
+		$hasOverlayMode        = in_array($site->getSysLanguageMode(), $languageModes, TRUE);
 		$isContentFallbackMode = ($site->getSysLanguageMode() === 'content_fallback');
 
 		if ($hasOverlayMode && !$isContentFallbackMode) {
