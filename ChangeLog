@@ -94,6 +94,7 @@
 	* Fixed bug #37362: incomplete url for results per page switch
 	* Fixed bug #37960: Missing htmlspecialchars for generated urls, credits Stefan Galinksi
 	* Added feature #37723: Conditional Facets - More flexibility, credits Stefan Galinksi
+	* Added feature #37845: Allow manual sorting of the facet options, credits Stefan Galinksi
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

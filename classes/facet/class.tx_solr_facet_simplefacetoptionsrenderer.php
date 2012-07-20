@@ -117,6 +117,10 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 		$solrConfiguration = tx_solr_Util::getSolrConfiguration();
 		$this->template->workOnSubpart('single_facet_option');
 
+		if (!empty($this->facetConfiguration['manualSortOrder'])) {
+			$this->sortFacetOptionsByUserDefinedOrder();
+		}
+
 		$i = 0;
 		foreach ($this->facetOptions as $facetOption => $facetOptionResultCount) {
 			$facetOption = (string) $facetOption;
@@ -176,6 +180,31 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 		$this->template->addLoop('facet_links', 'facet_link', $facetOptionLinks);
 
 		return $this->template->render();
+	}
+
+	/**
+	 * Sorts the facet options as defined in the facet's manualSortOrder
+	 * configuration option.
+	 *
+	 * @return void
+	 */
+	protected function sortFacetOptionsByUserDefinedOrder() {
+		$sortedOptions = array();
+
+		$manualFacetOptionSortOrder = t3lib_div::trimExplode(',', $this->facetConfiguration['manualSortOrder']);
+		$availableFacetOptions      = array_keys($this->facetOptions);
+
+			// move the configured options to the top, in their defined order
+		foreach ($manualFacetOptionSortOrder as $manuallySortedFacetOption) {
+			if (in_array($manuallySortedFacetOption, $availableFacetOptions)) {
+				$sortedOptions[$manuallySortedFacetOption] = $this->facetOptions[$manuallySortedFacetOption];
+				unset($this->facetOptions[$manuallySortedFacetOption]);
+			}
+		}
+
+			// set the facet options to the new order,
+			// appending the remaining unsorted/regularly sorted options
+		$this->facetOptions = $sortedOptions + $this->facetOptions;
 	}
 
 }
