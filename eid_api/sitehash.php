@@ -22,6 +22,16 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+/*
+
+	Provides the sitehash for a given domain, valid for the current TYPO3
+	installation.
+
+	Example: http://www.my-typo3-solr-installation.com/index.php?eID=tx_solr_api&api=siteHash&apiKey=<API key>&domain=www.domain-to-index.com
+
+*/
+
+
 $domain     = t3lib_div::_GP('domain');
 $returnData = '';
 
