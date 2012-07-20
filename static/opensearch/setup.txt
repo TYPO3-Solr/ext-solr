@@ -42,11 +42,17 @@ OpenSearch {
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
 	<ShortName>{$plugin.tx_solr.OpenSearch.shortName}</ShortName>
 	<Description>{$plugin.tx_solr.OpenSearch.description}</Description>
-	<Image height="16" width="16" type="image/x-icon">{getIndpEnv:TYPO3_SITE_URL}favicon.ico</Image>
 	<InputEncoding>UTF-8</InputEncoding>
 	<OutputEncoding>UTF-8</OutputEncoding>
 
-)
+	)
+
+	11 = TEXT
+	11.insertData = 1
+	11.value (
+	<Image height="16" width="16" type="image/x-icon">{getIndpEnv:TYPO3_SITE_URL}favicon.ico</Image>
+	)
+
 
 
 	# link to this description file for automatic updates
@@ -55,8 +61,9 @@ OpenSearch {
 	20.value (
 	<Url type="application/opensearchdescription+xml"
 		 rel="self"
-		 template="{getIndpEnv:TYPO3_REQUEST_URL}" />
+		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?type={TSFE:type}&amp;L={TSFE:sys_language_uid}" />
 	)
+
 
 
 	# link the search page
@@ -65,7 +72,7 @@ OpenSearch {
 	30.value (
 	<Url type="text/html"
 		 method="GET"
-		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?id={$plugin.tx_solr.search.targetPage}
+		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?id={$plugin.tx_solr.search.targetPage}&amp;L={TSFE:sys_language_uid}
 	)
 
 	31 = TEXT
@@ -74,19 +81,22 @@ OpenSearch {
 	31.wrap = &amp;|={searchTerms}" />
 
 
+
 	# link to auto suggestion provider
 	40 = TEXT
 	40.insertData = 1
 	40.value (
 	<Url type="application/x-suggestions+json"
 		 rel="suggestions"
-		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?id={$plugin.tx_solr.search.targetPage}&amp;eID=tx_solr_suggest&amp;format=OpenSearch
+		 template="{getIndpEnv:TYPO3_SITE_URL}index.php?id={$plugin.tx_solr.search.targetPage}&amp;L={TSFE:sys_language_uid}&amp;eID=tx_solr_suggest&amp;format=OpenSearch
 	)
 
 	41 = TEXT
 	41.value = tx_solr[q]
 	41.override = {$plugin.tx_solr.search.query.getParameter}
 	41.wrap = &amp;|={searchTerms}" />
+
+
 
 	500 = TEXT
 	500.value (

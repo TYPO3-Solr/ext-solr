@@ -32,6 +32,7 @@
 	* Added a button in the admin module to remove all documents of a selected site
 	* Fixed a bug where creating a page translation did not trigger re-indexing of the page
 	* Fixed a bug where hiding a page translation did not trigger garbage collection of the page
+	* Fixed bug #36329: Opensearch does not provide L parameter
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
