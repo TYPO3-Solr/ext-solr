@@ -19,6 +19,7 @@
 	* Fixed bug #35996: Page Indexer always stores absolute url
 	* Fixed bug #35727: Configurable query parameter feature causes bug with the suggestion link
 	* Added feature #34652: Add option search.faceting.keepAllFacetsOnSelection, credits Cornel Boppart
+	* Changed EXT:news Index Queue configuration to index tags into separate field, using keywords field for keywords
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

@@ -39,8 +39,13 @@ plugin.tx_solr.index.queue {
 				multiValue = 1
 			}
 
-			keywords = SOLR_RELATION
+			keywords = SOLR_MULTIVALUE
 			keywords {
+				field = keywords
+			}
+
+			tags_stringM = SOLR_RELATION
+			tags_stringM {
 				localField = tags
 				multiValue = 1
 			}
