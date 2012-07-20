@@ -186,9 +186,9 @@ class tx_solr_facet_Facet {
 		if (!empty($this->configuration['requirements.'])) {
 			foreach($this->configuration['requirements.'] as $name => $requirement) {
 				$requirements[] = array(
-					'name'  => substr($name, 0, -1),
-					'facet' => $requirement['facet'],
-					'value' => $requirement['value']
+					'name'   => substr($name, 0, -1),
+					'facet'  => $requirement['facet'],
+					'values' => t3lib_div::trimExplode(',', $requirement['values']),
 				);
 			}
 		}
@@ -205,11 +205,21 @@ class tx_solr_facet_Facet {
 	protected function isRequirementMet(array $requirement) {
 		$requirementMet = FALSE;
 
+		/** @var $requiredFacet tx_solr_facet_Facet */
 		$requiredFacet   = t3lib_div::makeInstance('tx_solr_facet_Facet', $requirement['facet']);
 		$selectedOptions = $requiredFacet->getSelectedOptions();
 
-		if (in_array($requirement['value'], $selectedOptions)) {
-			$requirementMet = TRUE;
+		foreach ($requirement['values'] as $value) {
+			$noFacetOptionSelectedRequirementMet  = ($value === '__none' && empty($selectedOptions));
+			$anyFacetOptionSelectedRequirementMet = ($value === '__any' && !empty($selectedOptions));
+
+			if ($noFacetOptionSelectedRequirementMet
+				|| $anyFacetOptionSelectedRequirementMet
+				|| in_array($value, $selectedOptions)
+			) {
+				$requirementMet = TRUE;
+				break;
+			}
 		}
 
 		return $requirementMet;
