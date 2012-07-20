@@ -84,13 +84,16 @@ class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 			. '<li>Port: ' . $solr->getPort() . '</li>'
 			. '<li style="padding-bottom: 10px;">Path: ' . $solr->getPath() . '</li>';
 
-		if ($solr->ping()) {
+		$pingQueryTime = $solr->ping();
+
+		if ($pingQueryTime !== FALSE) {
 			$severity = tx_reports_reports_status_Status::OK;
 			$value = 'Your site has contacted the Apache Solr server.';
 
 			$solrVersion = $this->formatSolrVersion($solr->getSolrServerVersion());
 
 			$message .= '<li>Apache Solr: ' . $solrVersion . '</li>';
+			$message .= '<li>Ping Query Time: ' . (int)($pingQueryTime * 1000) . 'ms</li>';
 			$message .= '<li>schema.xml: ' . $solr->getSchemaName() . '</li>';
 			$message .= '<li>solrconfig.xml: ' . $solr->getSolrconfigName() . '</li>';
 
