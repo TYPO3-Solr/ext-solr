@@ -126,15 +126,20 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 			}
 
 			$facetOption = t3lib_div::makeInstance('tx_solr_facet_FacetOption',
-				$this->query,
 				$this->facetName,
 				$facetOption,
 				$facetOptionResultCount
 			);	/* @var $facetOption tx_solr_facet_FacetOption */
 
-			$optionText    = $facetOption->render($this->facetConfiguration);
-			$optionLink    = $facetOption->getAddFacetOptionLink($optionText);
-			$optionLinkUrl = $facetOption->getAddFacetOptionUrl();
+			$facetLinkBuilder = t3lib_div::makeInstance('tx_solr_facet_LinkBuilder',
+				$this->query,
+				$this->facetName,
+				$facetOption
+			);
+
+			$optionText    = $facetOption->render();
+			$optionLink    = $facetLinkBuilder->getAddFacetOptionLink($optionText);
+			$optionLinkUrl = $facetLinkBuilder->getAddFacetOptionUrl();
 
 			$optionHidden = '';
 			if (++$i > $solrConfiguration['search.']['faceting.']['limit']) {
@@ -146,13 +151,13 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 				// negating the facet option links to remove a filter
 			if ($this->facetConfiguration['selectingSelectedFacetOptionRemovesFilter']
 			&& $optionSelected) {
-				$optionLink    = $facetOption->getRemoveFacetOptionLink($optionText);
-				$optionLinkUrl = $facetOption->getRemoveFacetOptionUrl();
+				$optionLink    = $facetLinkBuilder->getRemoveFacetOptionLink($optionText);
+				$optionLinkUrl = $facetLinkBuilder->getRemoveFacetOptionUrl();
 			}
 
 			if ($this->facetConfiguration['singleOptionMode']) {
-				$optionLink    = $facetOption->getReplaceFacetOptionLink($optionText);
-				$optionLinkUrl = $facetOption->getReplaceFacetOptionUrl();
+				$optionLink    = $facetLinkBuilder->getReplaceFacetOptionLink($optionText);
+				$optionLinkUrl = $facetLinkBuilder->getReplaceFacetOptionUrl();
 			}
 
 			$facetOptionLinks[] = array(

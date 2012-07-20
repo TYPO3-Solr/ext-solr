@@ -64,12 +64,17 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 		$solrConfiguration = tx_solr_Util::getSolrConfiguration();
 
 		$facetOption = t3lib_div::makeInstance('tx_solr_facet_FacetOption',
-			$this->query,
 			$this->facetName,
 			$this->filterValue
 		);
 
-		$facetText = $facetOption->render($this->facetConfiguration);
+		$facetLinkBuilder = t3lib_div::makeInstance('tx_solr_facet_LinkBuilder',
+			$this->query,
+			$this->facetName,
+			$facetOption
+		);
+
+		$facetText = $facetOption->render();
 
 		$facetLabel = $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label'];
 
@@ -83,8 +88,8 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 			)
 		);
 
-		$removeFacetLink = $facetOption->getRemoveFacetOptionLink($removeFacetText);
-		$removeFacetUrl  = $facetOption->getRemoveFacetOptionUrl();
+		$removeFacetLink = $facetLinkBuilder->getRemoveFacetOptionLink($removeFacetText);
+		$removeFacetUrl  = $facetLinkBuilder->getRemoveFacetOptionUrl();
 
 		$facetToRemove = array(
 			'link' => $removeFacetLink,

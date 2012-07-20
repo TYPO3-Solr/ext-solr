@@ -55,14 +55,19 @@ class tx_solr_facet_NumericRangeFacetRenderer extends tx_solr_facet_AbstractFace
 
 			// the option's value will be appended by javascript after the slide event
 		$incompleteFacetOption = t3lib_div::makeInstance('tx_solr_facet_FacetOption',
-			$this->search->getQuery(),
 			$this->facetName,
 			''
 		);
 
+		$facetLinkBuilder = t3lib_div::makeInstance('tx_solr_facet_LinkBuilder',
+			$this->search->getQuery(),
+			$this->facetName,
+			$incompleteFacetOption
+		);
+
 		$facetContent .= $this->getRangeSliderJavaScript($handlePositions['start'], $handlePositions['end']);
 		$facetContent .= '
-			<input type="hidden" id="facet-' . $this->facetName . '-url" value="' . $incompleteFacetOption->getReplaceFacetOptionUrl() . '">
+			<input type="hidden" id="facet-' . $this->facetName . '-url" value="' . $facetLinkBuilder->getReplaceFacetOptionUrl() . '">
 			<div id="facet-' . $this->facetName . '-value" >' . $handlePositions['start'] . ' - ' . $handlePositions['end'] . '</div>
 			<div id="facet-' . $this->facetName . '-range"></div>
 		';
