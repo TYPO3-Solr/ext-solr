@@ -24,6 +24,7 @@
 	* Added a generic language schema without stemming for languages we do not have a schema for
 	* Fixed bug #36623: Index Queue initialization crashes with erronous mount page
 	* Updated SolrPhpClient to r62
+	* Change tx_solr_ConnectionManager::getConfiguredSolrConnections(): extract getConfiguredSolrConnectionByRootPage()
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

@@ -339,56 +339,78 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 
 			// find solr configurations and add them as function menu entries
 		foreach ($rootPages as $rootPage) {
-			$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
-			$rootLine   = $pageSelect->getRootLine($rootPage['uid']);
 
 			foreach ($languages as $languageId) {
-				t3lib_div::_GETset($languageId, 'L');
-				$connectionKey = $rootPage['uid'] . '|' . $languageId;
+				$connection = $this->getConfiguredSolrConnectionByRootPage($rootPage, $languageId);
 
-				$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
-				$tmpl->tt_track = FALSE; // Do not log time-performance information
-				$tmpl->init();
-				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
-
-					// fake micro TSFE to get correct conditon parsing
-				$GLOBALS['TSFE'] = new stdClass();
-				$GLOBALS['TSFE']->tmpl = new stdClass();
-				$GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
-				$GLOBALS['TSFE']->sys_page       = $pageSelect;
-				$GLOBALS['TSFE']->id             = $rootPage['uid'];
-				$GLOBALS['TSFE']->page           = $rootPage;
-
-				$tmpl->generateConfig();
-
-				list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.solr');
-				list(, $solrEnabled) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.enabled');
-				$solrEnabled = !empty($solrEnabled) ? TRUE : FALSE;
-
-				if (!empty($solrSetup) && $solrEnabled) {
-					$solrPath = trim($solrSetup['path'], '/');
-					$solrPath = '/' . $solrPath . '/';
-
-					$connection = array(
-						'rootPageTitle' => $rootPage['title'],
-						'rootPageUid'   => $rootPage['uid'],
-
-						'solrScheme'    => $solrSetup['scheme'],
-						'solrHost'      => $solrSetup['host'],
-						'solrPort'      => $solrSetup['port'],
-						'solrPath'      => $solrPath,
-						'solrUseCurl'   => $solrSetup['useCurlHttpTransport'],
-
-						'language'      => $languageId
-					);
-					$connection['label'] = $this->buildConnectionLabel($connection);
-
-					$configuredSolrConnections[$connectionKey] = $connection;
+				if (!empty($connection)) {
+					$configuredSolrConnections[$connection['connectionKey']] = $connection;
 				}
 			}
+
 		}
 
 		return $configuredSolrConnections;
+	}
+
+	/**
+	 * Gets the configured Solr connection for a specific root page and language ID.
+	 *
+	 * @param array $rootPage A root page record with at least title and uid
+	 * @param integer $languageId ID of a system language
+	 * @return array A solr connection.
+	 */
+	protected function getConfiguredSolrConnectionByRootPage(array $rootPage, $languageId) {
+		$connection = array();
+
+		$languageId = intval($languageId);
+		t3lib_div::_GETset($languageId, 'L');
+		$connectionKey = $rootPage['uid'] . '|' . $languageId;
+
+		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+		$rootLine   = $pageSelect->getRootLine($rootPage['uid']);
+
+		$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
+		$tmpl->tt_track = FALSE; // Do not log time-performance information
+		$tmpl->init();
+		$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
+
+			// fake micro TSFE to get correct conditon parsing
+		$GLOBALS['TSFE'] = new stdClass();
+		$GLOBALS['TSFE']->tmpl = new stdClass();
+		$GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
+		$GLOBALS['TSFE']->sys_page       = $pageSelect;
+		$GLOBALS['TSFE']->id             = $rootPage['uid'];
+		$GLOBALS['TSFE']->page           = $rootPage;
+
+		$tmpl->generateConfig();
+
+		list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.solr');
+		list(, $solrEnabled) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.enabled');
+		$solrEnabled = !empty($solrEnabled) ? TRUE : FALSE;
+
+		if (!empty($solrSetup) && $solrEnabled) {
+			$solrPath = trim($solrSetup['path'], '/');
+			$solrPath = '/' . $solrPath . '/';
+
+			$connection = array(
+				'connectionKey' => $connectionKey,
+
+				'rootPageTitle' => $rootPage['title'],
+				'rootPageUid'   => $rootPage['uid'],
+
+				'solrScheme'    => $solrSetup['scheme'],
+				'solrHost'      => $solrSetup['host'],
+				'solrPort'      => $solrSetup['port'],
+				'solrPath'      => $solrPath,
+				'solrUseCurl'   => $solrSetup['useCurlHttpTransport'],
+
+				'language'      => $languageId
+			);
+			$connection['label'] = $this->buildConnectionLabel($connection);
+		}
+
+		return $connection;
 	}
 
 	/**
