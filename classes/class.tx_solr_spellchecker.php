@@ -24,13 +24,13 @@
 
 
 /**
- * Spellchecker / Did you mean
+ * Spell checker / Did you mean
  *
  * @author Ingo Renner <ingo.renner@dkd.de>
  * @package TYPO3
  * @subpackage solr
  */
-class tx_solr_Spellchecker {
+class tx_solr_SpellChecker {
 
 	/**
 	 * Search instance

@@ -50,8 +50,8 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 	}
 
 	public function execute() {
-		$spellchecker    = t3lib_div::makeInstance('tx_solr_Spellchecker');
-		$suggestionsLink = $spellchecker->getSpellcheckingSuggestions();
+		$spellChecker    = t3lib_div::makeInstance('tx_solr_SpellChecker');
+		$suggestionsLink = $spellChecker->getSpellcheckingSuggestions();
 
 		$markers = $this->getLabelMarkers();
 
@@ -59,7 +59,7 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 			$markers['suggestion_results'] = $this->getSuggestionResults();
 		}
 
-			// TODO change to if $spellchecker->hasSuggestions()
+			// TODO change to if $spellChecker->hasSuggestions()
 		if (!empty($suggestionsLink)) {
 			$markers['suggestion'] = $suggestionsLink;
 		}
@@ -73,7 +73,7 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 	 * @return array Array of label markers.
 	 */
 	protected function getLabelMarkers() {
-		$spellchecker = t3lib_div::makeInstance('tx_solr_Spellchecker');
+		$spellChecker = t3lib_div::makeInstance('tx_solr_SpellChecker');
 		$searchWord   = $this->parentPlugin->getCleanUserQuery();
 
 		$nothingFound = strtr(
@@ -86,7 +86,7 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 		$showingResultsSuggestion = strtr(
 			$this->parentPlugin->pi_getLL('no_results_showing_results_suggestion'),
 			array(
-				'@suggestedWord' => $spellchecker->getCollatedSuggestion()
+				'@suggestedWord' => $spellChecker->getCollatedSuggestion()
 			)
 		);
 
@@ -124,8 +124,8 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 	 * @return string The rendered results command for the results of the suggested keywords.
 	 */
 	protected function getSuggestionResults() {
-		$spellchecker      = t3lib_div::makeInstance('tx_solr_Spellchecker');
-		$suggestedKeywords = $spellchecker->getCollatedSuggestion();
+		$spellChecker      = t3lib_div::makeInstance('tx_solr_SpellChecker');
+		$suggestedKeywords = $spellChecker->getCollatedSuggestion();
 
 		$plugin = clone $this->parentPlugin;
 		$search = clone $this->parentPlugin->getSearch();
