@@ -175,11 +175,14 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		$content = '
 			<input type="hidden" id="solraction" name="solraction" value="" />
 
+			Site Actions:<br /><br />
 			<input type="submit" value="Initialize Index Queue" name="s_initializeIndexQueue" onclick="document.forms[0].solraction.value=\'initializeIndexQueue\';" /><br /><br />
+			<input type="submit" value="Delete Site Documents" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" /><br /><br />
 
 			<br />
 
 			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
+			Index Actions (affecting all sites and indexes):<br /><br />
 			<input type="submit" value="Empty Index" name="s_emptyIndex" onclick="Check = confirm(\'This will commit documents which may be pending, clear the index and commit again afterwards. Are you sure you want to empty the index?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
 			<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
 			<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
@@ -201,6 +204,9 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		switch($_POST['solraction']) {
 			case 'initializeIndexQueue':
 				$this->initializeIndexQueue();
+				break;
+			case 'deleteSiteDocuments':
+				$this->deleteSiteDocuments();
 				break;
 			case 'emptyIndex':
 				$this->emptyIndex();
@@ -271,6 +277,34 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to empty the index:</p>'
 					 . '<p>' . $e->__toString() . '</p>';
+			$severity = t3lib_FlashMessage::ERROR;
+		}
+
+		$flashMessage = t3lib_div::makeInstance(
+			't3lib_FlashMessage',
+			$message,
+			'',
+			$severity
+		);
+		t3lib_FlashMessageQueue::addMessage($flashMessage);
+	}
+
+	protected function deleteSiteDocuments() {
+		$siteHash = $this->site->getSiteHash();
+		$message  = 'Documents deleted.';
+		$severity = t3lib_FlashMessage::OK;
+
+		try {
+			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
+			foreach($solrServers as $solrServer) {
+				// make sure maybe not-yet committed documents are committed
+				$solrServer->commit();
+				$solrServer->deleteByQuery('siteHash:' . $siteHash);
+				$solrServer->commit();
+			}
+		} catch (Exception $e) {
+			$message = '<p>An error occured while trying to delete documents from the index:</p>'
+			. '<p>' . $e->__toString() . '</p>';
 			$severity = t3lib_FlashMessage::ERROR;
 		}
 
