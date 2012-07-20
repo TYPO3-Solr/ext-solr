@@ -24,7 +24,7 @@ table.tx_solr-TCEforms table.typo3-TCEforms-select-checkbox tbody {
 	margin-top: 10px;
 
 	border: none;
-	border-top: 1px solid #aaa;
+	border-top: 2px solid #aaa;
 }
 
 .tx_solr_mod-admin legend {
@@ -34,4 +34,13 @@ table.tx_solr-TCEforms table.typo3-TCEforms-select-checkbox tbody {
 
 	font-size: 12px;
 	color: #555;
+}
+
+.tx_solr_mod-admin hr {
+	border: none;
+	border-bottom: 1px solid #cdcdcd;
+}
+
+.tx_solr_mod-admin hr.double {
+	border-width: 2px;
 }

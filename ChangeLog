@@ -89,6 +89,7 @@
 	* Added a field in the backend module to select which Index Queue indexing configurations to initialize
 	* Fixed handling of Javascript loading through the Javascript Manager
 	* Added more information to the plugin backend summary in the page module view
+	* Improved distinction between action areas in the backend module
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

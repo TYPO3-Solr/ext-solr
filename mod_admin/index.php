@@ -186,7 +186,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 							 Initializing the Index Queue without selecting specific indexing configurations will behave like selecting all.'
 		));
 		$content .= '
-				<br /><br />
+				<br /><br /><hr /><br />
 				<input type="submit" value="Delete all Site Documents" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" /><br /><br />
 			</fieldset>';
 
@@ -209,7 +209,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 			</fieldset>';
 
 		$content .= '
-			<hr style="background: none; border: none; border-bottom: 1px solid #cdcdcd;" />
+			<hr class="double" />
 			API Key: ' . tx_solr_Api::getApiKey();
 			// TODO add a checkbox to the delete documents fields to also remove from Index Queue
 
