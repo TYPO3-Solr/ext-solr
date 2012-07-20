@@ -35,6 +35,7 @@
 	* Fixed bug #36329: Opensearch does not provide L parameter
 	* Added feature #36486: Initialize Solr connections via CLI
 	* Added support for scheduler progress in TYPO3 6.0
+	* Fixed issue #33464: Improve responsiveness of Garbage Collector when deleting or hiding pages or records
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

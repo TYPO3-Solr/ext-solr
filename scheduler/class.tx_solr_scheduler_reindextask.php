@@ -56,7 +56,7 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 			$solrServer->commit();
 
 			$solrServer->deleteByQuery('*:*');
-			$response = $solrServer->commit();
+			$response = $solrServer->commit(FALSE, FALSE, FALSE);
 			if ($response->getHttpStatus() == 200) {
 				$result = TRUE;
 			}

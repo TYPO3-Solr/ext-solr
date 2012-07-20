@@ -395,7 +395,7 @@ class tx_solr_GarbageCollector {
 			$solrConnections = $connectionManager->getConnectionsBySite($site);
 			foreach ($solrConnections as $solr) {
 				$solr->deleteByQuery('type:' . $table . ' AND uid:' . intval($uid));
-				$solr->commit();
+				$solr->commit(FALSE, FALSE, FALSE);
 			}
 		}
 	}

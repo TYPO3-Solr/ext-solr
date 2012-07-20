@@ -51,7 +51,7 @@ class tx_solr_scheduler_CommitTask extends tx_scheduler_Task {
 		$solrServers = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionsBySite($this->site);
 
 		foreach($solrServers as $solrServer) {
-			$response = $solrServer->commit();
+			$response = $solrServer->commit(FALSE, FALSE, FALSE);
 			if ($response->responseHeader->status === 0) {
 				$result = TRUE;
 			}

@@ -272,7 +272,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 					// make sure maybe not-yet committed documents are committed
 				$solrServer->commit();
 				$solrServer->deleteByQuery('*:*');
-				$solrServer->commit();
+				$solrServer->commit(FALSE, FALSE, FALSE);
 			}
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to empty the index:</p>'
@@ -300,7 +300,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 				// make sure maybe not-yet committed documents are committed
 				$solrServer->commit();
 				$solrServer->deleteByQuery('siteHash:' . $siteHash);
-				$solrServer->commit();
+				$solrServer->commit(FALSE, FALSE, FALSE);
 			}
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to delete documents from the index:</p>'
@@ -348,7 +348,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		try {
 			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 			foreach($solrServers as $solrServer) {
-				$solrServer->commit();
+				$solrServer->commit(FALSE, FALSE, FALSE);
 			}
 		} catch (Exception $e) {
 			$message = '<p>An error occured while trying to commit:</p>'
@@ -383,7 +383,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 				$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 				foreach($solrServers as $solrServer) {
 					$response = $solrServer->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
-					$solrServer->commit();
+					$solrServer->commit(FALSE, FALSE, FALSE);
 
 					if ($response->getHttpStatus() != 200) {
 						throw new RuntimeException('Delete Query failed.', 1332250835);

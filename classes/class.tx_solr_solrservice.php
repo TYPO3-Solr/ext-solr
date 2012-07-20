@@ -447,7 +447,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		$this->deleteByQuery('type:' . trim($type));
 
 		if ($commit) {
-			$this->commit();
+			$this->commit(FALSE, FALSE, FALSE);
 		}
 	}
 
