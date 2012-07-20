@@ -273,13 +273,7 @@ wgetresource tomcat/solr.xml
 
 # copy libs
 cd /opt/solr-tomcat/
-mkdir solr/dist
-cp apache-solr-$SOLR_VER/dist/apache-solr-analysis-extras-$SOLR_VER.jar solr/dist
-cp apache-solr-$SOLR_VER/dist/apache-solr-cell-$SOLR_VER.jar solr/dist
-cp apache-solr-$SOLR_VER/dist/apache-solr-clustering-$SOLR_VER.jar solr/dist
-cp apache-solr-$SOLR_VER/dist/apache-solr-dataimporthandler-$SOLR_VER.jar solr/dist
-cp apache-solr-$SOLR_VER/dist/apache-solr-dataimporthandler-extras-$SOLR_VER.jar solr/dist
-cp apache-solr-$SOLR_VER/dist/apache-solr-uima-$SOLR_VER.jar solr/dist
+cp -r apache-solr-$SOLR_VER/dist solr/
 cp -r apache-solr-$SOLR_VER/contrib solr/
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
