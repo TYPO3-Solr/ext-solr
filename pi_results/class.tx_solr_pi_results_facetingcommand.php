@@ -109,23 +109,27 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 		);
 
 		foreach ($configuredFacets as $facetName => $facetConfiguration) {
-			if (isset($facetConfiguration['includeInAvailableFacets']) && $facetConfiguration['includeInAvailableFacets'] == '0') {
+			$facetName = substr($facetName, 0, -1);
+			$facet = t3lib_div::makeInstance('tx_solr_facet_Facet', $facetName);
+
+			if (
+				(isset($facetConfiguration['includeInAvailableFacets']) && $facetConfiguration['includeInAvailableFacets'] == '0')
+				|| !$facet->isRenderingAllowed()
+			) {
 					// don't render facets that should not be included in available facets
+					// or that do not meet their requirements to be rendered
 				continue;
 			}
-
-			$facetName = substr($facetName, 0, -1);
 
 			$facetRenderer = $facetRendererFactory->getFacetRendererByFacetName($facetName);
 			$facetRenderer->setTemplate($template);
 			$facetRenderer->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
-			$facet = t3lib_div::makeInstance('tx_solr_facet_Facet', $facetName);
 			if ($facet->isActive()) {
 				$this->facetsActive = TRUE;
 			}
 
-			$facetContent .= $facetRenderer->renderFacet();
+			$facetContent = $facetRenderer->renderFacet();
 		}
 
 		$template->addSubpart('single_facet', $facetContent);

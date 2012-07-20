@@ -51,6 +51,7 @@
 	* Added class tx_solr_facet_Facet to handle facets
 	* Added implementation for tx_solr_facet_Facet->getSelectedOptions()
 	* Added implementation for facet requirements evaluation
+	* Added feature #34187: Conditional Facets
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
