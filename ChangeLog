@@ -88,6 +88,7 @@
 	* Added API methods to the Index Queue to initialize specific indexing configurations only
 	* Added a field in the backend module to select which Index Queue indexing configurations to initialize
 	* Fixed handling of Javascript loading through the Javascript Manager
+	* Added more information to the plugin backend summary in the page module view
 
 2012-07-20  Stefan Sprenger  <stefan.sprenger@dkd.de>
 

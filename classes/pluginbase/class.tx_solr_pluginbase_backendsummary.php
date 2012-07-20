@@ -56,6 +56,9 @@ class tx_solr_pluginbase_BackendSummary {
 		$this->getTargetPage();
 		$this->getFilter();
 		$this->getSorting();
+		$this->getResultsPerPage();
+		$this->getBoostFuntion();
+		$this->getBoostQuery();
 		$this->getTemplateFile();
 
 		return $this->renderSettings();
@@ -120,12 +123,35 @@ class tx_solr_pluginbase_BackendSummary {
 		}
 	}
 
+	protected function getResultsPerPage() {
+		$resultsPerPage = $this->getFieldFromFlexform('resultsPerPage', 'sQuery');
+
+		if (!empty($resultsPerPage)) {
+			$this->settings['Results per Page'] = $resultsPerPage;
+		}
+	}
+
+	protected function getBoostFuntion() {
+		$boostFunction = $this->getFieldFromFlexform('boostFunction', 'sQuery');
+
+		if (!empty($boostFunction)) {
+			$this->settings['Boost Function'] = $boostFunction;
+		}
+	}
+
+	protected function getBoostQuery() {
+		$boostQuery = $this->getFieldFromFlexform('boostQuery', 'sQuery');
+
+		if (!empty($boostQuery)) {
+			$this->settings['Boost Query'] = $boostQuery;
+		}
+	}
+
 	protected function getTemplateFile() {
 		$templateFile = $this->getFieldFromFlexform('templateFile', 'sOptions');
 
 		if (!empty($templateFile)) {
-			$templateFilePathParts = explode('/', $templateFile);
-			$this->settings['Template'] = array_pop($templateFilePathParts);
+			$this->settings['Template'] = $templateFile;
 		}
 	}
 
