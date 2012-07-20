@@ -146,7 +146,57 @@ class tx_solr_facet_Facet {
 	 * Checks whether requirements are fullfilled
 	 */
 	public function isRenderingAllowed() {
+		$renderingAllowed = TRUE;
 
+		$requirements = $this->getRequirements();
+		foreach ($requirements as $requirement) {
+			if (!$this->isRequirementMet($requirement)) {
+				$renderingAllowed = FALSE;
+				break;
+			}
+		}
+
+		return $renderingAllowed;
+	}
+
+	/**
+	 * Gets the configured requirements to allow rendering of the facet.
+	 *
+	 * @return array Requirements with keys "name", "facet", and "value".
+	 */
+	protected function getRequirements() {
+		$requirements = array();
+
+		if (!empty($this->configuration['requirements.'])) {
+			foreach($this->configuration['requirements.'] as $name => $requirement) {
+				$requirements[] = array(
+					'name'  => substr($name, 0, -1),
+					'facet' => $requirement['facet'],
+					'value' => $requirement['value']
+				);
+			}
+		}
+
+		return $requirements;
+	}
+
+	/**
+	 * Evaluates a single facet rendering requirement.
+	 *
+	 * @param array $requirement A requirement with keys "name", "facet", and "value".
+	 * @return boolean TRUE if the requirement is met, FALSE otherwise.
+	 */
+	protected function isRequirementMet(array $requirement) {
+		$requirementMet = FALSE;
+
+		$requiredFacet   = t3lib_div::makeInstance('tx_solr_facet_Facet', $requirement['facet']);
+		$selectedOptions = $requiredFacet->getSelectedOptions();
+
+		if (in_array($requirement['value'], $selectedOptions)) {
+			$requirementMet = TRUE;
+		}
+
+		return $requirementMet;
 	}
 
 	/**
@@ -198,8 +248,7 @@ class tx_solr_facet_Facet {
 
 }
 
-if (defined('TYPO3_MODE')
-		&& $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_facet.php']) {
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_facet.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/facet/class.tx_solr_facet_facet.php']);
 }
 
