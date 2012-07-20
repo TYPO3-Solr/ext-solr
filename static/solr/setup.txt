@@ -128,7 +128,7 @@ plugin.tx_solr {
 		results {
 			resultsHighlighting = 0
 			resultsHighlighting {
-				highlightFields = title,content
+				highlightFields = content
 				fragmentSize = 200
 
 				wrap = <span class="results-highlight">|</span>
