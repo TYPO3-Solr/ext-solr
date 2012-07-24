@@ -1,5 +1,7 @@
 2012-07-24  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Release of v2.2.1
+
 	* Fixed the download URL for Apache Solr 3.5 since it has been removed from Apache mirrors
 
 2012-07-20  Ingo Renner  <ingo.renner@dkd.de>
