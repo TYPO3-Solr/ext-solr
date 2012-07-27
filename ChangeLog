@@ -1,5 +1,6 @@
 2012-07-27  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Fixed a bug with Index Queue initialization for mount pages
 	* Fixed bug #39301: Language check in install shell script fails
 
 2012-07-24  Ingo Renner  <ingo.renner@dkd.de>

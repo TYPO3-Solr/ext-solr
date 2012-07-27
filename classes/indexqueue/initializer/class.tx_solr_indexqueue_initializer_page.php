@@ -186,7 +186,7 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 	 * @param array $mountedPages An array of mounted page IDs
 	 */
 	protected function addMountedPagesToIndexQueue(array $mountedPages) {
-		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, changed, has_indexing_properties) '
+		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties) '
 			. $this->buildSelectStatement() . ', 1 '
 			. 'FROM pages '
 			. 'WHERE '
