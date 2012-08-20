@@ -154,8 +154,6 @@ return array(
 
 	'tx_solr_scheduler_committask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_committask.php',
 	'tx_solr_scheduler_committasksolrserverfield' => $extensionPath . 'scheduler/class.tx_solr_scheduler_committasksolrserverfield.php',
-	'tx_solr_scheduler_fileindexqueueworkertask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_fileindexqueueworkertask.php',
-	'tx_solr_scheduler_fileindexqueueworkertaskadditionalfieldprovider' => $extensionPath . 'scheduler/class.tx_solr_scheduler_fileindexqueueworkertaskadditionalfieldprovider.php',
 	'tx_solr_scheduler_indexqueueworkertask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_indexqueueworkertask.php',
 	'tx_solr_scheduler_indexqueueworkertaskadditionalfieldprovider' => $extensionPath . 'scheduler/class.tx_solr_scheduler_indexqueueworkertaskadditionalfieldprovider.php',
 	'tx_solr_scheduler_optimizetask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetask.php',
