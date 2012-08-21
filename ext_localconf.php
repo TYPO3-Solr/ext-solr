@@ -186,6 +186,11 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'tx_solr_search_HighlightingComponent'
 );
 
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'spellchecking',
+	'tx_solr_search_SpellcheckingComponent'
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding scheduler tasks

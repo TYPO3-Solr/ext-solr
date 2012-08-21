@@ -234,10 +234,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['resultTypeBoundaryMarker'] = 'tx_solr_resultsetmodifier_ResultTypeBoundaryMarker';
 			}
 
-			if ($this->conf['search.']['spellchecking']) {
-				$query->setSpellchecking();
-			}
-
 			if ($this->conf['search.']['faceting']) {
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'tx_solr_query_modifier_Faceting';
 			}
