@@ -197,6 +197,40 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	}
 
 	/**
+	 * Performs a content and meta data extraction request.
+	 *
+	 * @param	tx_solr_ExtractingQuery	An extraction query
+	 * @return	array	An array containing the extracted content [0] and meta data [1]
+	 */
+	public function extract(tx_solr_ExtractingQuery $query) {
+		$headers = array(
+			'Content-Type' => 'multipart/form-data; boundary=' . $query->getMultiPartPostDataBoundary()
+		);
+
+		try {
+			$response = $this->requestServlet(
+				self::EXTRACT_SERVLET,
+				$query->getQueryParameters(),
+				'POST',
+				$headers,
+				$query->getRawPostFileData()
+			);
+		} catch (Exception $e) {
+			t3lib_div::devLog('Extracting text and meta data through Solr Cell over HTTP POST', 'solr', 3, array(
+				'query'      => (array) $query,
+				'parameters' => $query->getQueryParameters(),
+				'file'       => $query->getFile(),
+				'headers'    => $headers,
+				'query url'  => self::EXTRACT_SERVLET,
+				'response'   => $response,
+				'exception'  => $e->getMessage()
+			));
+		}
+
+		return array($response->extracted, (array) $response->extracted_metadata);
+	}
+
+	/**
 	 * Central method for making a get operation against this Solr Server
 	 *
 	 * @param	string	$url

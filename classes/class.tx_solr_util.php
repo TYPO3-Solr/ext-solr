@@ -53,6 +53,37 @@ class tx_solr_Util {
 	}
 
 	/**
+	 * Returns the document id for a given file.
+	 *
+	 * @param tx_solr_fileindexer_File $file	The file
+	 * @return string The document id for that file
+	 */
+	public static function getFileDocumentId(tx_solr_fileindexer_File $file) {
+
+		try {
+			$documentId = self::getDocumentId(
+				'tx_solr_file',
+				$file->getReferencePageId(),
+				$file->getFileIndexQueueId(),
+				str_replace('/', ':', $file->getMimeType())
+			);
+		} catch (InvalidArgumentException $e) {
+			if ($e->getCode() == 1309272922) {
+				$documentId = self::getDocumentId(
+					'tx_solr_file',
+					$file->getReferenceRootPageId(),
+					$file->getFileIndexQueueId(),
+					str_replace('/', ':', $file->getMimeType())
+				);
+			} else {
+				throw $e;
+			}
+		}
+
+		return $documentId;
+	}
+
+	/**
 	 * Generates a document id in the form $siteHash/$type/$uid.
 	 *
 	 * @param string $table The records table name
