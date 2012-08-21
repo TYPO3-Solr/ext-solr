@@ -83,6 +83,11 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php'][
 	// register search components
 
 tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'access',
+	'tx_solr_search_AccessComponent'
+);
+
+tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'relevance',
 	'tx_solr_search_RelevanceComponent'
 );
