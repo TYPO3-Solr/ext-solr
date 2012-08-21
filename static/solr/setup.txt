@@ -141,6 +141,7 @@ plugin.tx_solr {
 			resultsPerPageSwitchOptions = 10, 25, 50
 
 			pagebrowser {
+				enabled = 1
 				disableCacheHash = 1
 
 				_LOCAL_LANG.default {

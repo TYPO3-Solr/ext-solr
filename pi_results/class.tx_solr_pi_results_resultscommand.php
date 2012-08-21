@@ -235,32 +235,36 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	}
 
 	protected function getPageBrowser($numberOfResults) {
-		$resultsPerPage = $this->parentPlugin->getNumberOfResultsPerPage();
-		$numberOfPages  = intval($numberOfResults / $resultsPerPage)
-			+ (($numberOfResults % $resultsPerPage) == 0 ? 0 : 1);
+		$pageBrowser = '';
 
 		$solrPageBrowserConfiguration = array();
 		if (isset($this->configuration['search.']['results.']['pagebrowser.'])) {
 			$solrPageBrowserConfiguration = $this->configuration['search.']['results.']['pagebrowser.'];
 		}
 
-		$pageBrowserConfiguration = array_merge(
-			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1.'],
-			$solrPageBrowserConfiguration,
-			array(
-				'pageParameterName' => 'tx_solr|page',
-				'numberOfPages'     => $numberOfPages,
-				'extraQueryString'  => '&' . tx_solr_query_LinkBuilder::getQueryGetParameter() . '=' . $this->search->getQuery()->getKeywords(),
-				'templateFile'      => $this->configuration['templateFiles.']['pagebrowser']
-			)
-		);
+		if ($solrPageBrowserConfiguration['enabled']) {
+			$resultsPerPage = $this->parentPlugin->getNumberOfResultsPerPage();
+			$numberOfPages  = intval($numberOfResults / $resultsPerPage)
+				+ (($numberOfResults % $resultsPerPage) == 0 ? 0 : 1);
 
-			// Get page browser
-		$cObj = t3lib_div::makeInstance('tslib_cObj');
-		$cObj->start(array(), '');
+			$pageBrowserConfiguration = array_merge(
+				$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1.'],
+				$solrPageBrowserConfiguration,
+				array(
+					'pageParameterName' => 'tx_solr|page',
+					'numberOfPages'     => $numberOfPages,
+					'extraQueryString'  => '&' . tx_solr_query_LinkBuilder::getQueryGetParameter() . '=' . $this->search->getQuery()->getKeywords(),
+					'templateFile'      => $this->configuration['templateFiles.']['pagebrowser']
+				)
+			);
 
-		$cObjectType = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1'];
-		$pageBrowser = $cObj->cObjGetSingle($cObjectType, $pageBrowserConfiguration);
+				// Get page browser
+			$cObj = t3lib_div::makeInstance('tslib_cObj');
+			$cObj->start(array(), '');
+
+			$cObjectType = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1'];
+			$pageBrowser = $cObj->cObjGetSingle($cObjectType, $pageBrowserConfiguration);
+		}
 
 		return $pageBrowser;
 	}
