@@ -12,6 +12,7 @@
 	* Moved facetting initialization from pi_results to faceting query modifier
 	* Added interface tx_solr_SearchComponent
 	* Added interface tx_solr_QueryAware
+	* Added interface tx_solr_SearchAware
 	* Added a search component manager
 	* Changed phpDoc of tx_solr_ResponseProcessor->processResponse() to indicate that it should return void
 	* Added tx_solr_Search->getSolrConnection()

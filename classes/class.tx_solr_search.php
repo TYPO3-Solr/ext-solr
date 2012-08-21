@@ -157,6 +157,10 @@ class tx_solr_Search implements t3lib_Singleton {
 				$queryModifier = t3lib_div::getUserObj($classReference);
 
 				if ($queryModifier instanceof tx_solr_QueryModifier) {
+					if ($queryModifier instanceof tx_solr_SearchAware) {
+						$queryModifier->setSearch($this);
+					}
+
 					$query = $queryModifier->modifyQuery($query);
 				} else {
 					throw new UnexpectedValueException(
@@ -184,6 +188,10 @@ class tx_solr_Search implements t3lib_Singleton {
 				$responseModifier = t3lib_div::getUserObj($classReference);
 
 				if ($responseModifier instanceof tx_solr_ResponseModifier) {
+					if ($responseModifier instanceof tx_solr_SearchAware) {
+						$responseModifier->setSearch($this);
+					}
+
 					$response = $responseModifier->modifyResponse($response);
 				} else {
 					throw new UnexpectedValueException(

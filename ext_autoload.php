@@ -207,6 +207,7 @@ return array(
 	'tx_solr_responseprocessor' => $extensionPath . 'interfaces/interface.tx_solr_responseprocessor.php',
 	'tx_solr_resultdocumentmodifier' => $extensionPath . 'interfaces/interface.tx_solr_resultdocumentmodifier.php',
 	'tx_solr_resultsetmodifier' => $extensionPath . 'interfaces/interface.tx_solr_resultsetmodifier.php',
+	'tx_solr_searchaware' => $extensionPath . 'interfaces/interface.tx_solr_searchaware.php',
 	'tx_solr_searchcomponent' => $extensionPath . 'interfaces/interface.tx_solr_searchcomponent.php',
 	'tx_solr_subpartviewhelper' => $extensionPath . 'interfaces/interface.tx_solr_subpartviewhelper.php',
 	'tx_solr_substitutepageindexer' => $extensionPath . 'interfaces/interface.tx_solr_substitutepageindexer.php',
