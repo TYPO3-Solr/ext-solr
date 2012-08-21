@@ -35,16 +35,17 @@ class tx_solr_pi_results_ResultsPerPageSwitchCommand implements tx_solr_PluginCo
 	/**
 	 * Parent plugin
 	 *
-	 * @var	tx_solr_pi_results
+	 * @var tx_solr_pi_results
 	 */
 	protected $parentPlugin;
 
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
+
 
 	/**
 	 * Constructor.
@@ -57,17 +58,22 @@ class tx_solr_pi_results_ResultsPerPageSwitchCommand implements tx_solr_PluginCo
 	}
 
 	public function execute() {
+		$markers = array();
+
 		$selectOptions = $this->getResultsPerPageOptions();
+		if ($selectOptions) {
+			$form = array('action' => htmlentities($this->parentPlugin->pi_linkTP_keepPIvars_url(array(
+				'resultsPerPage' => '',
+				'page' => '',
+			))));
 
-		$form = array('action' => htmlentities($this->parentPlugin->pi_linkTP_keepPIvars_url(array(
-			'resultsPerPage' => '',
-			'page' => '',
-		))));
+			$markers['loop_options|option'] = $selectOptions;
+			$markers['form'] = $form;
+		} else {
+			$markers = NULL;
+		}
 
-		return array(
-			'loop_options|option' => $selectOptions,
-			'form' => $form
-		);
+		return $markers;
 	}
 
 	/**
@@ -78,8 +84,7 @@ class tx_solr_pi_results_ResultsPerPageSwitchCommand implements tx_solr_PluginCo
 	public function getResultsPerPageOptions() {
 		$resultsPerPageOptions = array();
 
-		$configuration               = tx_solr_Util::getSolrConfiguration();
-		$resultsPerPageSwitchOptions = t3lib_div::intExplode(',', $configuration['search.']['results.']['resultsPerPageSwitchOptions']);
+		$resultsPerPageSwitchOptions = t3lib_div::intExplode(',', $this->configuration['search.']['results.']['resultsPerPageSwitchOptions'], TRUE);
 		$currentNumberOfResultsShown = $this->parentPlugin->getNumberOfResultsPerPage();
 
 		foreach ($resultsPerPageSwitchOptions as $option) {

@@ -3,6 +3,7 @@
 	! [TEMPLATE] Changed the relevance view helpers to take the whole result document as argument (instead of just the score)
 	! [API] Moved hook modifySearchQuery to tx_solr_Search
 	! [API] cleanup: Changed tx_solr_Search->getResponse() to return instance of Apache_Solr_Response as mentioned in phpDoc
+	! [TEMPLATE] Changed the results per page subpart to be rendered as a regular plugin command
 
 	* Refactoring: Extracted several search components to separate classes
 

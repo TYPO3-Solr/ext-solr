@@ -94,7 +94,6 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 			'offset'                          => ($this->search->getResultOffset() + 1),
 			'query_time'                      => $this->search->getQueryTime(),
 			'pagebrowser'                     => $this->getPageBrowser($numberOfResults),
-			'subpart_results_per_page_switch' => $this->getResultsPerPageSwitch(),
 			'filtered'                        => $this->isFiltered(),
 			'filtered_by_user'                => $this->isFilteredByUser(),
 				/* construction of the array key:
@@ -286,24 +285,6 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 		);
 
 		return $label;
-	}
-
-	protected function getResultsPerPageSwitch() {
-		$template = clone $this->parentPlugin->getTemplate();
-		$template->workOnSubpart('results_per_page_switch');
-
-		$commandResolver             = t3lib_div::makeInstance('tx_solr_CommandResolver');
-		$resultsPerPageSwitchCommand = $commandResolver->getCommand('resultsPerPageSwitch', $this->parentPlugin);
-		$selectOptions               = $resultsPerPageSwitchCommand->getResultsPerPageOptions();
-		$template->addLoop('options', 'option', $selectOptions);
-
-		$linkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
-		$form = array(
-			'action' => htmlentities($linkBuilder->getQueryUrl())
-		);
-		$template->addVariable('form', $form);
-
-		return $template->render();
 	}
 
 	/**
