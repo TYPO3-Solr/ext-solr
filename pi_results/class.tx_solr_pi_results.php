@@ -212,25 +212,24 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			$query = t3lib_div::makeInstance('tx_solr_Query', $rawUserQuery);
 			/* @var	$query	tx_solr_Query */
 
+
+			$searchComponents = t3lib_div::makeInstance('tx_solr_search_SearchComponentManager')->getSearchComponents();
+			foreach ($searchComponents as $searchComponent) {
+				$searchComponent->setSearchConfiguration($this->conf['search.']);
+
+				if ($searchComponent instanceof tx_solr_QueryAware) {
+					$searchComponent->setQuery($query);
+				}
+
+				$searchComponent->initializeSearchComponent();
+			}
+
 			if ($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['query.']['allowEmptyQuery']) {
 					// empty main query, but using a "return everything"
 					// alternative query in q.alt
 				$query->setAlternativeQuery('*:*');
 			}
 
-			if (isset($this->conf['search.']['query.']['minimumMatch'])
-				&& strlen($this->conf['search.']['query.']['minimumMatch'])
-			) {
-				$query->setMinimumMatch($this->conf['search.']['query.']['minimumMatch']);
-			}
-
-			if (!empty($this->conf['search.']['query.']['boostFunction'])) {
-				$query->setBoostFunction($this->conf['search.']['query.']['boostFunction']);
-			}
-
-			if (!empty($this->conf['search.']['query.']['boostQuery'])) {
-				$query->setBoostQuery($this->conf['search.']['query.']['boostQuery']);
-			}
 
 			if (!empty($this->conf['search.']['query.']['sortBy'])) {
 				$query->addQueryParameter('sort', $this->conf['search.']['query.']['sortBy']);
