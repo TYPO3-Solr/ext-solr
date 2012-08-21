@@ -663,10 +663,11 @@ class tx_solr_Template {
 	 *
 	 * Supported operators are ==, !=, <, <=, >, >=, %
 	 *
-	 * @param	string	First comaprand
-	 * @param	string	Second comaprand
-	 * @param	string	Operator
-	 * @return	boolean	Boolean evaluation of the condition.
+	 * @param string First comaprand
+	 * @param string Second comaprand
+	 * @param string Operator
+	 * @return boolean Boolean evaluation of the condition.
+	 * @throws InvalidArgumentException for unknown $operator
 	 */
 	protected function evaluateCondition($comparand1, $comparand2, $operator) {
 		$conditionResult = FALSE;
@@ -693,6 +694,11 @@ class tx_solr_Template {
 			case '%';
 				$conditionResult = ($comparand1 % $comparand2);
 				break;
+			default:
+				throw new InvalidArgumentException(
+					'Unknown condition operator "' . htmlspecialchars($operator) . '"',
+					1344340207
+				);
 		}
 
 			// explicit casting, just in case
