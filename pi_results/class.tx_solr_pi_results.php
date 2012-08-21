@@ -258,7 +258,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 			if ($this->conf['search.']['faceting']) {
-				$query->setFaceting();
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'tx_solr_query_modifier_Faceting';
 			}
 

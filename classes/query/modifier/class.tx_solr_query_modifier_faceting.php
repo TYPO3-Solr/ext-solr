@@ -55,6 +55,7 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 	 * @return	tx_solr_Query	The modified query with faceting parameters
 	 */
 	public function modifyQuery(tx_solr_Query $query) {
+		$query->setFaceting();
 		$this->buildFacetingParameters();
 		$this->addFacetQueryFilters();
 
