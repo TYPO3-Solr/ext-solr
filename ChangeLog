@@ -9,6 +9,7 @@
 	* Added interface tx_solr_SearchComponent
 	* Added interface tx_solr_QueryAware
 	* Added a search component manager
+	* Changed phpDoc of tx_solr_ResponseProcessor->processResponse() to indicate that it should return void
 
 2012-07-27  Ingo Renner  <ingo.renner@dkd.de>
 

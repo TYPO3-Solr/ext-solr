@@ -29,17 +29,18 @@
 /**
  * ResponseProcessor interface, allows to process search responses.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface tx_solr_ResponseProcessor {
 
 	/**
 	 * Processes a query and its response after searching for that query.
 	 *
-	 * @param	tx_solr_Query	The query that has been searched for.
-	 * @param	Apache_Solr_Response	The response for the last query.
+	 * @param tx_solr_Query The query that has been searched for.
+	 * @param Apache_Solr_Response The response for the last query.
+	 * @return void
 	 */
 	public function processResponse(tx_solr_Query $query, Apache_Solr_Response $response);
 

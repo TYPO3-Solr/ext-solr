@@ -130,7 +130,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$responseProcessor = t3lib_div::getUserObj($classReference);
 
 				if ($responseProcessor instanceof tx_solr_ResponseProcessor) {
-					$query = $responseProcessor->processResponse($query, $response);
+					$responseProcessor->processResponse($query, $response);
 				}
 			}
 		}
