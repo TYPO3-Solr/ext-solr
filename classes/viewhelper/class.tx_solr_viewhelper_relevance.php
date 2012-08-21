@@ -68,10 +68,15 @@ class tx_solr_viewhelper_Relevance implements tx_solr_ViewHelper {
 	 * @return string The score as percent value.
 	 */
 	public function execute(array $arguments = array()) {
-		$score        = $this->getScore($arguments[0]);
-		$maximumScore = $this->getMaximumScore($arguments[0]);
+		$content = '';
 
-		return $this->render($score, $maximumScore);
+		if ($this->search->hasSearched() && $this->search->getNumberOfResults()) {
+			$score        = $this->getScore($arguments[0]);
+			$maximumScore = $this->getMaximumScore($arguments[0]);
+			$content      = $this->render($score, $maximumScore);
+		}
+
+		return $content;
 	}
 
 	/**
