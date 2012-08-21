@@ -102,7 +102,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return	Apache_Solr_Response	Solr response
 	 */
 	public function search(tx_solr_Query $query, $offset = 0, $limit = 10) {
-		$this->modifyQuery($query);
+		$query = $this->modifyQuery($query);
 		$this->query = $query;
 
 		if (empty($limit)) {
@@ -137,7 +137,7 @@ class tx_solr_Search implements t3lib_Singleton {
 			}
 		}
 
-		$this->modifyResponse($response);
+		$response = $this->modifyResponse($response);
 		$this->response    = $response;
 		$this->hasSearched = TRUE;
 
