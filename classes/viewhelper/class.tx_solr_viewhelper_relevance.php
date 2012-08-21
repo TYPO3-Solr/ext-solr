@@ -24,12 +24,14 @@
 
 
 /**
- * viewhelper class to turn a result's relevance score into a percent value
- * Replaces viewhelpers ###RELEVANCE:resultDocumentScore###
+ * View helper class to turn a result document's relevance score into a
+ * percent value.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * Replaces view helpers ###RELEVANCE:###RESULT_DOCUMENT######
+ *
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class tx_solr_viewhelper_Relevance implements tx_solr_ViewHelper {
 
@@ -40,10 +42,17 @@ class tx_solr_viewhelper_Relevance implements tx_solr_ViewHelper {
 	 */
 	protected $search = NULL;
 
-	protected $maxScore = 0;
+	/**
+	 * Result set maximum score.
+	 *
+	 * @var float
+	 */
+	protected $maxScore = 0.0;
+
 
 	/**
-	 * constructor for class tx_solr_viewhelper_Relevance
+	 * Constructor.
+	 *
 	 */
 	public function __construct(array $arguments = array()) {
 		if(is_null($this->search)) {
@@ -53,17 +62,84 @@ class tx_solr_viewhelper_Relevance implements tx_solr_ViewHelper {
 	}
 
 	/**
-	 * Creates the HTML for the relevance bar
+	 * Creates the HTML for the relevance output
 	 *
-	 * @param	array	Array of arguments, [0] is expected to contain the result's score.
-	 * @return	string	The score as percent value.
+	 * @param array $arguments Array of arguments, [0] is expected to contain the result document.
+	 * @return string The score as percent value.
 	 */
 	public function execute(array $arguments = array()) {
+		$score        = $this->getScore($arguments[0]);
+		$maximumScore = $this->getMaximumScore($arguments[0]);
+
+		return $this->render($score, $maximumScore);
+	}
+
+	/**
+	 * Gets the document's score.
+	 *
+	 * @param string $document The result document as serialized array
+	 * @return float The document's score
+	 * @throws RuntimeException if the serialized result document array cannot be unserialized
+	 */
+	protected function getScore($document) {
+		$score = 0;
+
+		if (is_numeric($document)) {
+				// backwards compatibility
+			t3lib_div::deprecationLog('You are using an old notation of the '
+				. 'releavnace view helpers. The notation used to be '
+				. '###RELEVANCE:###RESULT_DOCUMENT.SCORE######, please change '
+				. 'this to simply provide the whole result document: '
+				. '###RELEVANCE:###RESULT_DOCUMENT######'
+			);
+
+			return $document;
+		}
+
+		$document = unserialize($document);
+		if (is_array($document)) {
+			$score = $document['score'];
+		} else {
+			throw new RuntimeException(
+				'Could not resolve document score for relevance calculation',
+				1343670545
+			);
+		}
+
+		return $score;
+	}
+
+	/**
+	 * Gets the maximum score based on the result set or a group if grouping
+	 * is activated.
+	 *
+	 * @param string $document The result document as serialized array
+	 * @return float Maximum score
+	 */
+	protected function getMaximumScore($document) {
+		$maximumScore = $this->maxScore;
+
+		$document = unserialize($document);
+		if (is_array($document) && array_key_exists('__solr_grouping_groupMaximumScore', $document)) {
+			$maximumScore = $document['__solr_grouping_groupMaximumScore'];
+		}
+
+		return $maximumScore;
+	}
+
+	/**
+	 * Renders the relevance as percentage value.
+	 *
+	 * @param float $documentScore The current document's score
+	 * @param float $maximumScore The maximum score to relate to.
+	 * @return string Relevance as percentage value
+	 */
+	protected function render($documentScore, $maximumScore) {
 		$content = '';
 
-		if ($this->maxScore > 0) {
-			$score           = floatval($arguments[0]);
-			$scorePercentage = round($score * 100 / $this->maxScore);
+		if ($maximumScore > 0) {
+			$score           = floatval($documentScore);
+			$scorePercentage = round($score * 100 / $maximumScore);
 			$content         = $scorePercentage;
 		}
 

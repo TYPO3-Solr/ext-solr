@@ -24,46 +24,31 @@
 
 
 /**
- * viewhelper class to turn a result's relevance score into a nicer visual bar
- * Replaces viewhelpers ###RELEVANCE_BAR:resultDocumentScore###
+ * View helper class to turn a result document's relevance score into a nicer
+ * visual bar
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * Replaces viewhelpers ###RELEVANCE_BAR:###RESULT_DOCUMENT######
+ *
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
-class tx_solr_viewhelper_RelevanceBar implements tx_solr_ViewHelper {
+class tx_solr_viewhelper_RelevanceBar extends tx_solr_viewhelper_Relevance {
+
 
 	/**
-	 * instance of tx_solr_Search
+	 * Renders the HTML for the relevance bar.
 	 *
-	 * @var tx_solr_Search
+	 * @param float $documentScore The current document's score
+	 * @param float $maximumScore The maximum score to relate to.
+	 * @return string Relevance as percentage value
 	 */
-	protected $search = NULL;
-
-	protected $maxScore = 0;
-
-	/**
-	 * constructor for class tx_solr_viewhelper_RelevanceBar
-	 */
-	public function __construct(array $arguments = array()) {
-		if(is_null($this->search)) {
-			$this->search   = t3lib_div::makeInstance('tx_solr_Search');
-			$this->maxScore = $this->search->getMaximumResultScore();
-		}
-	}
-
-	/**
-	 * Creates the HTML for the relevance bar
-	 *
-	 * @param	array	Array of arguments, [0] is expected to contain the result's score
-	 * @return	string	complete relevance bar HTML
-	 */
-	public function execute(array $arguments = array()) {
+	protected function render($documentScore, $maximumScore) {
 		$content = '';
 
-		if ($this->maxScore > 0) {
-			$score           = floatval($arguments[0]);
-			$scorePercentage = round($score * 100 / $this->maxScore);
+		if ($maximumScore > 0) {
+			$score           = floatval($documentScore);
+			$scorePercentage = round($score * 100 / $maximumScore);
 
 			$content = '<div class="tx-solr-relevance-bar"><div class="tx-solr-relevance themeColorBackground" style="width: '
 				. $scorePercentage . '%">&nbsp;</div><div class="tx-solr-relevance-fill" style="width: '
