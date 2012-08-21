@@ -122,6 +122,52 @@ class tx_solr_QueryTestCase extends tx_phpunit_testcase {
 	}
 
 	// TODO if user is in group -2 (logged in), disallow access to group -1
+
+
+	// grouping
+
+
+	/**
+	 * @test
+	 */
+	public function groupingIsNotActiveAfterInitialization() {
+		$query = t3lib_div::makeInstance('tx_solr_Query', 'test');
+
+		$queryParameters = $query->getQueryParameters();
+		foreach ($queryParameters as $queryParameter => $value) {
+			$this->assertTrue(
+				!t3lib_div::isFirstPartOfStr($queryParameter, 'group'),
+				'Query already contains grouping parameter "' . $queryParameter . '"'
+			);
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function settingGroupingTrueActivatesGrouping() {
+		$query = t3lib_div::makeInstance('tx_solr_Query', 'test');
+
+		$query->setGrouping(TRUE);
+
+		$queryParameters = $query->getQueryParameters();
+		$this->assertArrayHasKey('group', $queryParameters);
+		$this->assertEquals('true', $queryParameters['group']);
+
+		return $query;
+	}
+
+	/**
+	 * @test
+	 * @depends settingGroupingTrueActivatesGrouping
+	 */
+	public function settingGroupingFalseDeactivatesGrouping(tx_solr_Query $query) {
+		$query->setGrouping(FALSE);
+
+		$queryParameters = $query->getQueryParameters();
+		$this->assertArrayNotHasKey('group', $queryParameters);
+	}
+
 }
 
 ?>

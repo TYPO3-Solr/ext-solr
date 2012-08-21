@@ -319,6 +319,29 @@ class tx_solr_Query {
 	}
 
 
+	// grouping
+
+
+	/**
+	 * Activates and deactivates grouping for the current query.
+	 *
+	 * @param boolean $grouping TRUE to enable grouping, FALSE to disable grouping
+	 * @return void
+	 */
+	public function setGrouping($grouping = TRUE) {
+		if ($grouping) {
+			$this->queryParameters['group'] = 'true';
+		} else {
+			foreach ($this->queryParameters as $key => $value) {
+					// remove all group.* settings
+				if (t3lib_div::isFirstPartOfStr($key, 'group')) {
+					unset($this->queryParameters[$key]);
+				}
+			}
+		}
+	}
+
+
 	// faceting
 
 
