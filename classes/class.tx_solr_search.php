@@ -219,7 +219,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return Apache_Solr_Response
 	 */
 	public function getResponse() {
-		return $this->response->response;
+		return $this->response;
 	}
 
 	public function getRawResponse() {
@@ -227,11 +227,15 @@ class tx_solr_Search implements t3lib_Singleton {
 	}
 
 	public function getResponseHeader() {
-		return $this->response->responseHeader;
+		return $this->getResponse()->responseHeader;
+	}
+
+	public function getResponseBody() {
+		return $this->getResponse()->response;
 	}
 
 	public function getResultDocuments() {
-		return $this->getResponse()->docs;
+		return $this->getResponseBody()->docs;
 	}
 
 	/**
@@ -240,7 +244,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return	integer	Query time in milliseconds
 	 */
 	public function getQueryTime() {
-		return $this->response->responseHeader->QTime;
+		return $this->getResponseHeader()->QTime;
 	}
 
 	/**
@@ -249,7 +253,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return	integer	Number of results per page
 	 */
 	public function getResultsPerPage() {
-		return $this->response->responseHeader->params->rows;
+		return $this->getResponseHeader()->params->rows;
 	}
 
 	/**

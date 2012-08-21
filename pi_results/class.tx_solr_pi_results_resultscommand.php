@@ -272,8 +272,8 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	protected function getPageBrowserRange() {
 		$label = '';
 
-		$resultsFrom  = $this->search->getResponse()->start + 1;
-		$resultsTo    = $resultsFrom + count($this->search->getResponse()->docs) - 1;
+		$resultsFrom  = $this->search->getResponseBody()->start + 1;
+		$resultsTo    = $resultsFrom + count($this->search->getResultDocuments()) - 1;
 		$resultsTotal = $this->search->getNumberOfResults();
 
 		$label = strtr(

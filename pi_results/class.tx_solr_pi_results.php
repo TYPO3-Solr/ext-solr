@@ -97,7 +97,8 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 				// performing the actual search, sending the query to the Solr server
-			$response = $this->search->search($this->query, $offSet, NULL);
+			$this->search->search($this->query, $offSet, NULL);
+			$response = $this->search->getResponse();
 
 			$this->processResponse($this->query, $response);
 		}

@@ -119,9 +119,8 @@ class tx_solr_mod_index_IndexInspectorRemoteController {
 		$query->setSorting('type asc, title asc');
 
 		$this->search->search($query);
-		$response = $this->search->getResponse();
 
-		return $response->docs;
+		return $this->search->getResultDocuments();
 	}
 
 	/**
