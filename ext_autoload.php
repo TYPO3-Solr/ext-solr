@@ -184,7 +184,6 @@ return array(
 	'tx_solr_facetrenderer' => $extensionPath . 'interfaces/interface.tx_solr_facetrenderer.php',
 	'tx_solr_facetsmodifier' =>  $extensionPath . 'interfaces/interface.tx_solr_facetsmodifier.php',
 	'tx_solr_fieldprocessor' => $extensionPath . 'interfaces/interface.tx_solr_fieldprocessor.php',
-	'tx_solr_filedetector' => $extensionPath . 'interfaces/interface.tx_solr_filedetector.php',
 	'tx_solr_formmodifier' => $extensionPath . 'interfaces/interface.tx_solr_formmodifier.php',
 	'tx_solr_indexqueueinitializer' => $extensionPath . 'interfaces/interface.tx_solr_indexqueueinitializer.php',
 	'tx_solr_indexqueuepageindexerdataurlmodifier' => $extensionPath . 'interfaces/interface.tx_solr_indexqueuepageindexerdataurlmodifier.php',
