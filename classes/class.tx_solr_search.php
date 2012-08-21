@@ -37,14 +37,14 @@ class tx_solr_Search implements t3lib_Singleton {
 	 *
 	 * @var	tx_solr_SolrService
 	 */
-	protected $solr;
+	protected $solr = NULL;
 
 	/**
 	 * The search query
 	 *
 	 * @var	tx_solr_Query
 	 */
-	protected $query;
+	protected $query = NULL;
 
 	/**
 	 * The search response
