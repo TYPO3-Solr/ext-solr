@@ -1,5 +1,7 @@
 2012-08-21  Ingo Renner  <ingo.renner@dkd.de>
 
+	* Refactoring: Extracted several search components to separate classes
+
 	* Added class tx_solr_Typo3Environment
 	* Added helper methods for file indexing
 	* Removed unnecessary file path prefixes for hooks where classes can leverage the autoloader
