@@ -181,6 +181,11 @@ tx_solr_facet_FacetRendererFactory::registerFacetType(
 	'tx_solr_query_filterencoder_QueryGroup'
 );
 
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'highlighting',
+	'tx_solr_search_HighlightingComponent'
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding scheduler tasks

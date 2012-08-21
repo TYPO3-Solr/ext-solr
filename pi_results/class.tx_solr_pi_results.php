@@ -230,17 +230,8 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$query->setAlternativeQuery('*:*');
 			}
 
-			if ($this->conf['search.']['results.']['siteHighlighting']) {
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'tx_solr_resultdocumentmodifier_SiteHighlighter';
-			}
-
 			if ($this->conf['search.']['results.']['markResultTypeBoundaries']) {
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['resultTypeBoundaryMarker'] = 'tx_solr_resultsetmodifier_ResultTypeBoundaryMarker';
-			}
-
-			if ($this->conf['search.']['results.']['resultsHighlighting']) {
-				$query->setHighlighting(TRUE, $this->conf['search.']['results.']['resultsHighlighting.']['fragmentSize']);
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'tx_solr_pi_results_HighlightingResultDocumentModifier';
 			}
 
 			if ($this->conf['search.']['spellchecking']) {
