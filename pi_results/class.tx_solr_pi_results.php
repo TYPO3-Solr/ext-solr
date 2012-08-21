@@ -219,6 +219,10 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 					$searchComponent->setQuery($query);
 				}
 
+				if ($searchComponent instanceof  tx_solr_PluginAware) {
+					$searchComponent->setParentPlugin($this);
+				}
+
 				$searchComponent->initializeSearchComponent();
 			}
 
