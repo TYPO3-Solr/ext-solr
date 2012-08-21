@@ -230,11 +230,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$query->setAlternativeQuery('*:*');
 			}
 
-
-			if (!empty($this->conf['search.']['query.']['sortBy'])) {
-				$query->addQueryParameter('sort', $this->conf['search.']['query.']['sortBy']);
-			}
-
 			if ($this->conf['enableDebugMode']) {
 				$query->setDebugMode();
 			}

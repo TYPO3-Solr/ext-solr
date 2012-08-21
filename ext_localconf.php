@@ -87,6 +87,11 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'tx_solr_search_RelevanceComponent'
 );
 
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'sorting',
+	'tx_solr_search_SortingComponent'
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// register plugin commands
