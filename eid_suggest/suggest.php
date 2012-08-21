@@ -87,16 +87,6 @@ $solr   = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionByP
 $search = t3lib_div::makeInstance('tx_solr_Search', $solr);
 
 if ($search->ping()) {
-	if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
-		foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
-			$queryModifier = t3lib_div::getUserObj($classReference);
-
-			if ($queryModifier instanceof tx_solr_QueryModifier) {
-				$suggestQuery = $queryModifier->modifyQuery($suggestQuery);
-			}
-		}
-	}
-
 	$results = json_decode($search->search($suggestQuery, 0, 0)->getRawResponse());
 	$facetSuggestions = $results->facet_counts->facet_fields->{$solrConfiguration['suggest.']['suggestField']};
 	$facetSuggestions = get_object_vars($facetSuggestions);

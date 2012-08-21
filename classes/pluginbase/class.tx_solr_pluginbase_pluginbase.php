@@ -418,32 +418,6 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	protected abstract function getPluginKey();
 
 	/**
-	 * Allows to modify a query before handing it over to Solr.
-	 *
-	 * @param	tx_solr_Query	The current query before it's being handed over to Solr.
-	 * @return	tx_solr_Query	The modified query that is actually going to be given to Solr.
-	 */
-	protected function modifyQuery(tx_solr_Query $query) {
-			// hook to modify the search query
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
-				$queryModifier = t3lib_div::getUserObj($classReference);
-
-				if ($queryModifier instanceof tx_solr_QueryModifier) {
-					$query = $queryModifier->modifyQuery($query);
-				} else {
-					throw new UnexpectedValueException(
-						get_class($queryModifier) . ' must implement interface tx_solr_QueryModifier',
-						1310387414
-					);
-				}
-			}
-		}
-
-		return $query;
-	}
-
-	/**
 	 * Gets the target page Id for links. Might have been set through either
 	 * flexform or TypoScript. If none is set, TSFE->id is used.
 	 *

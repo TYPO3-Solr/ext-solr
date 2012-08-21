@@ -102,6 +102,7 @@ class tx_solr_Search implements t3lib_Singleton {
 	 * @return	Apache_Solr_Response	Solr response
 	 */
 	public function search(tx_solr_Query $query, $offset = 0, $limit = 10) {
+		$this->modifyQuery($query);
 		$this->query = $query;
 
 		if (empty($limit)) {
@@ -140,6 +141,32 @@ class tx_solr_Search implements t3lib_Singleton {
 		$this->hasSearched = TRUE;
 
 		return $this->response;
+	}
+
+	/**
+	 * Allows to modify a query before eventually handing it over to Solr.
+	 *
+	 * @param tx_solr_Query The current query before it's being handed over to Solr.
+	 * @return tx_solr_Query The modified query that is actually going to be given to Solr.
+	 */
+	protected function modifyQuery(tx_solr_Query $query) {
+			// hook to modify the search query
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
+				$queryModifier = t3lib_div::getUserObj($classReference);
+
+				if ($queryModifier instanceof tx_solr_QueryModifier) {
+					$query = $queryModifier->modifyQuery($query);
+				} else {
+					throw new UnexpectedValueException(
+						get_class($queryModifier) . ' must implement interface tx_solr_QueryModifier',
+						1310387414
+					);
+				}
+			}
+		}
+
+		return $query;
 	}
 
 	/**
