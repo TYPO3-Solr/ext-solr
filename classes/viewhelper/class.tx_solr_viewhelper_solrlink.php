@@ -69,19 +69,52 @@ class tx_solr_viewhelper_SolrLink implements tx_solr_ViewHelper {
 	 * @return	string	complete anchor tag with URL and link text
 	 */
 	public function execute(array $arguments = array()) {
-		$linkText             = $arguments[0];
-		$pageId               = $GLOBALS['TSFE']->id;
-		$additionalParameters = $arguments[2] ? $arguments[2] : '';
-		$useCache             = $arguments[3] ? TRUE : FALSE;
+		$linkText                = $arguments[0];
+		$pageId                  = $this->determinePageId(trim($arguments[1]));
+		$additionalUrlParameters = $arguments[2] ? $arguments[2] : '';
+		$useCache                = $arguments[3] ? TRUE : FALSE;
 
+			// FIXME pass anything not prefixed with tx_solr in $additionalParameters as 4th parameter
+		$additionalUrlParameters = t3lib_div::explodeUrl2Array($additionalUrlParameters, TRUE);
+		$solrUrlParameters = array();
+		if (!empty($additionalUrlParameters['tx_solr'])) {
+			$solrUrlParameters = $additionalUrlParameters['tx_solr'];
+		}
 
-# FIXME use link builder
+		$linkConfiguration = array('useCacheHash' => $useCache);
 
-			// if the link target is a number, interprete it as a page ID
-		$linkArgument = trim($arguments[1]);
+		if ($this->search->hasSearched()) {
+			$query = $this->search->getQuery();
+		} else {
+			$query = t3lib_div::makeInstance('tx_solr_Query', '');
+		}
+
+		$linkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $query);
+		$linkBuilder->setLinkTargetPageId($pageId);
+		$queryLink = $linkBuilder->getQueryLink(
+			$linkText,
+			$solrUrlParameters,
+			$linkConfiguration
+		);
+
+		return $queryLink;
+	}
+
+	/**
+	 * Take the link target ID viewhelper argument and try to find a page ID from it.
+	 *
+	 * @param string $linkArgument The viewhelper's link target argument
+	 * @return integer Page ID
+	 * @throws InvalidArgumentException if an invalid TypoScript path was given
+	 */
+	protected function determinePageId($linkArgument) {
+		$pageId = $GLOBALS['TSFE']->id;
+
 		if (is_numeric($linkArgument)) {
+				// if the link target is a number, interprete it as a page ID
 			$pageId = intval($linkArgument);
-		} elseif (is_string($linkArgument)) {
+		} elseif (is_string($linkArgument) && !empty($linkArgument)) {
+				// interprete a TypoScript path
 			try {
 				$typoscript      = tx_solr_Util::getTypoScriptObject($linkArgument);
 				$pathExploded    = explode('.', $linkArgument);
@@ -96,30 +129,7 @@ class tx_solr_viewhelper_SolrLink implements tx_solr_ViewHelper {
 			}
 		}
 
-		if ($this->search->hasSearched()) {
-			$query = $this->search->getQuery();
-
-			$prefix        = 'tx_solr';
-			$getParameters = t3lib_div::_GET($prefix);
-			$piVars        = is_array($getParameters) ? $getParameters : array();
-
-			$queryParameters = array_merge(
-				$piVars,
-				array('q' => $query->getKeywords())
-			);
-			$queryParameters = $query->removeUnwantedUrlParameters($queryParameters);
-		} else {
-			$queryParameters = array();
-		}
-
-		$linkConfiguration = array(
-			'useCacheHash'     => $useCache,
-			'no_cache'         => FALSE,
-			'parameter'        => $pageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($prefix => $queryParameters)) . $additionalParameters
-		);
-
-		return $this->contentObject->typoLink($linkText, $linkConfiguration);
+		return $pageId;
 	}
 }
 

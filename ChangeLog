@@ -20,6 +20,7 @@
 	* Removed option markResultTypeBoundaries, replaced by native grouping in EXT:solrgrouping
 	* Added passing of whole objects/arrays in template loops
 	* Added a hook to modify a query's response
+	* Changed the SOLR_LINK viewhelper to use the query link builder
 
 2012-07-27  Ingo Renner  <ingo.renner@dkd.de>
 
