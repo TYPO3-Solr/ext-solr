@@ -255,7 +255,7 @@ class tx_solr_Query {
 	 * @return	void
 	 */
 	public function setResultsPerPage($resultsPerPage) {
-		$this->resultsPerPage = t3lib_div::intInRange($resultsPerPage, 5);
+		$this->resultsPerPage = t3lib_div::intInRange($resultsPerPage, 1);
 	}
 
 	/**
