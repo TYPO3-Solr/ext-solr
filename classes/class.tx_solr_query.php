@@ -330,7 +330,9 @@ class tx_solr_Query {
 	 */
 	public function setGrouping($grouping = TRUE) {
 		if ($grouping) {
-			$this->queryParameters['group'] = 'true';
+			$this->queryParameters['group']         = 'true';
+			$this->queryParameters['group.format']  = 'grouped';
+			$this->queryParameters['group.ngroups'] = 'true';
 		} else {
 			foreach ($this->queryParameters as $key => $value) {
 					// remove all group.* settings

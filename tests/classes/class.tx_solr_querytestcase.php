@@ -154,6 +154,12 @@ class tx_solr_QueryTestCase extends tx_phpunit_testcase {
 		$this->assertArrayHasKey('group', $queryParameters);
 		$this->assertEquals('true', $queryParameters['group']);
 
+		$this->assertArrayHasKey('group.format', $queryParameters);
+		$this->assertEquals('grouped', $queryParameters['group.format']);
+
+		$this->assertArrayHasKey('group.ngroups', $queryParameters);
+		$this->assertEquals('true', $queryParameters['group.ngroups']);
+
 		return $query;
 	}
 
@@ -165,7 +171,13 @@ class tx_solr_QueryTestCase extends tx_phpunit_testcase {
 		$query->setGrouping(FALSE);
 
 		$queryParameters = $query->getQueryParameters();
-		$this->assertArrayNotHasKey('group', $queryParameters);
+
+		foreach ($queryParameters as $queryParameter => $value) {
+			$this->assertTrue(
+				!t3lib_div::isFirstPartOfStr($queryParameter, 'group'),
+				'Query contains grouping parameter "' . $queryParameter . '"'
+			);
+		}
 	}
 
 }
