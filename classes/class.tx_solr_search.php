@@ -81,6 +81,15 @@ class tx_solr_Search implements t3lib_Singleton {
 	}
 
 	/**
+	 * Gets the Solr connection used by this search.
+	 *
+	 * @return tx_solr_SolrService Solr connection
+	 */
+	public function getSolrConnection() {
+		return $this->solr;
+	}
+
+	/**
 	 * Executes a search against a Solr server.
 	 *
 	 * 1) Gets the query string
