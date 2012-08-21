@@ -365,6 +365,34 @@ class tx_solr_Query {
 		return $this->getResultsPerPage();
 	}
 
+	/**
+	 * Adds a field that should be used for grouping.
+	 *
+	 * @param string $fieldName Name of a field for grouping
+	 */
+	public function addGroupField($fieldName) {
+		if (!isset($this->queryParameters['group.field'])) {
+			$this->queryParameters['group.field'] = array();
+		}
+
+		$this->queryParameters['group.field'][] = $fieldName;
+	}
+
+	/**
+	 * Gets the fields set for grouping.
+	 *
+	 * @return array An array of fields set for grouping.
+	 */
+	public function getGroupFields() {
+		$groupFields = array();
+
+		if (isset($this->queryParameters['group.field'])) {
+			$groupFields = $this->queryParameters['group.field'];
+		}
+
+		return $groupFields;
+	}
+
 
 	// faceting
 
