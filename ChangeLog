@@ -5,6 +5,7 @@
 	* Removed unnecessary file path prefixes for hooks where classes can leverage the autoloader
 	* Moved facetting initialization from pi_results to faceting query modifier
 	* Added interface tx_solr_SearchComponent
+	* Added interface tx_solr_QueryAware
 
 2012-07-27  Ingo Renner  <ingo.renner@dkd.de>
 
