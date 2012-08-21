@@ -98,11 +98,15 @@ class tx_solr_Search implements t3lib_Singleton {
 	 *
 	 * @param	tx_solr_Query	$query The query with keywords, filters, and so on.
 	 * @param	integer	$offset Result offset for pagination.
-	 * @param	integer	$limit Maximum number of results to return.
+	 * @param	integer	$limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
 	 * @return	Apache_Solr_Response	Solr response
 	 */
 	public function search(tx_solr_Query $query, $offset = 0, $limit = 10) {
 		$this->query = $query;
+
+		if (empty($limit)) {
+			$limit = $query->getResultsPerPage();
+		}
 
 		try {
 			$response = $this->solr->search(

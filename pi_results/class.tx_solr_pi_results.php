@@ -77,15 +77,14 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				|| $this->conf['search.']['initializeWithEmptyQuery']
 				|| $this->conf['search.']['showResultsOfInitialEmptyQuery']
 		)) {
-			$currentPage    = max(0, intval($this->piVars['page']));
-			$resultsPerPage = $this->getNumberOfResultsPerPage();
+			$currentPage = max(0, intval($this->piVars['page']));
 
 				// if the number of results per page has been changed by the current request, reset the pagebrowser
 			if($this->resultsPerPageChanged) {
 				$currentPage = 0;
 			}
 
-			$offSet = $currentPage * $resultsPerPage;
+			$offSet = $currentPage * $this->query->getResultsPerPage();
 
 				// ignore page browser?
 			$ignorePageBrowser = (boolean) $this->conf['search.']['results.']['ignorePageBrowser'];
@@ -100,7 +99,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			$this->query = $this->modifyQuery($this->query);
 
 				// performing the actual search, sending the query to the Solr server
-			$response = $this->search->search($this->query, $offSet, $resultsPerPage);
+			$response = $this->search->search($this->query, $offSet, NULL);
 
 			$this->processResponse($this->query, $response);
 		}
