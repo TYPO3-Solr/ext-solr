@@ -196,6 +196,11 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'tx_solr_search_SpellcheckingComponent'
 );
 
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'faceting',
+	'tx_solr_search_FacetingComponent'
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding scheduler tasks
