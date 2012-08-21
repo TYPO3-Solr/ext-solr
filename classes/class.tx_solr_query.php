@@ -393,6 +393,33 @@ class tx_solr_Query {
 		return $groupFields;
 	}
 
+	/**
+	 * Sets the maximum number of results to be returned per group.
+	 *
+	 * @param integer $numberOfResults Maximum number of results per group to return
+	 */
+	public function setNumberOfResultsPerGroup($numberOfResults) {
+		$numberOfResults = t3lib_div::intval_positive($numberOfResults);
+
+		$this->queryParameters['group.limit'] = $numberOfResults;
+	}
+
+	/**
+	 * Gets the maximum number of results to be returned per group.
+	 *
+	 * @return integer Maximum number of results per group to return
+	 */
+	public function getNumberOfResultsPerGroup() {
+			// default if nothing else set is 1, @see http://wiki.apache.org/solr/FieldCollapsing
+		$numberOfResultsPerGroup = 1;
+
+		if (!empty($this->queryParameters['group.limit'])) {
+			$numberOfResultsPerGroup = $this->queryParameters['group.limit'];
+		}
+
+		return $numberOfResultsPerGroup;
+	}
+
 
 	// faceting
 
