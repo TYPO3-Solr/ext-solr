@@ -71,14 +71,14 @@ class tx_solr_indexqueue_frontendhelper_UserGroupDetector
 	 */
 	public function activate() {
 			// regsiter hooks
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__]        = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector->disableFrontendOutput';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__]   = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector->disableCaching';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector->deactivateTcaFrontendGroupEnableFields';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__]        = '&tx_solr_indexqueue_frontendhelper_UserGroupDetector->disableFrontendOutput';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__]   = '&tx_solr_indexqueue_frontendhelper_UserGroupDetector->disableCaching';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = '&tx_solr_indexqueue_frontendhelper_UserGroupDetector->deactivateTcaFrontendGroupEnableFields';
 
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__]           = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__]    = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__]           = '&tx_solr_indexqueue_frontendhelper_UserGroupDetector';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__]    = '&tx_solr_indexqueue_frontendhelper_UserGroupDetector';
 
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__]       = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_usergroupdetector.php:&tx_solr_indexqueue_frontendhelper_UserGroupDetector';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__]       = '&tx_solr_indexqueue_frontendhelper_UserGroupDetector';
 	}
 
 	/**

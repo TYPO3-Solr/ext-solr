@@ -2,6 +2,7 @@
 
 	* Added class tx_solr_Typo3Environment
 	* Added helper methods for file indexing
+	* Removed unnecessary file path prefixes for hooks where classes can leverage the autoloader
 
 2012-07-27  Ingo Renner  <ingo.renner@dkd.de>
 

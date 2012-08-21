@@ -60,14 +60,14 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	 * resources required by the frontend helper to work.
 	 */
 	public function activate() {
-		$pageIndexingHookRegistration = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_pageindexer.php:&tx_solr_indexqueue_frontendhelper_PageIndexer';
+		$pageIndexingHookRegistration = '&tx_solr_indexqueue_frontendhelper_PageIndexer';
 
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__]        = $pageIndexingHookRegistration . '->authorizeFrontendUser';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = $pageIndexingHookRegistration . '->disableCaching';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__]      = $pageIndexingHookRegistration;
 
 			// indexes fields defined in plugin.tx_solr.index.queue.pages.fields
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_indexqueue_frontendhelper_PageFieldMappingIndexer'] = 'EXT:solr/classes/indexqueue/frontendhelper/class.tx_solr_indexqueue_frontendhelper_pagefieldmappingindexer.php:tx_solr_indexqueue_frontendhelper_PageFieldMappingIndexer';
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_indexqueue_frontendhelper_PageFieldMappingIndexer'] = 'tx_solr_indexqueue_frontendhelper_PageFieldMappingIndexer';
 
 			// making sure this instance is reused when called by the hooks registered before
 			// t3lib_div::callUserFunction() and t3lib_div::getUserObj() use

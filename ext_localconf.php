@@ -48,8 +48,8 @@ t3lib_extMgm::addPItoST43(
 	// registering Index Queue page indexer helpers
 
 if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_indexqueue_PageIndexerRequestHandler'] = 'EXT:solr/classes/indexqueue/class.tx_solr_indexqueue_pageindexerrequesthandler.php:&tx_solr_indexqueue_PageIndexerRequestHandler->run';
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_AdditionalFieldsIndexer'] = 'EXT:solr/classes/class.tx_solr_additionalfieldsindexer.php:tx_solr_AdditionalFieldsIndexer';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_indexqueue_PageIndexerRequestHandler'] = '&tx_solr_indexqueue_PageIndexerRequestHandler->run';
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_AdditionalFieldsIndexer'] = 'tx_solr_AdditionalFieldsIndexer';
 
 	tx_solr_indexqueue_frontendhelper_Manager::registerFrontendHelper(
 		'findUserGroups',
@@ -75,8 +75,7 @@ t3lib_extMgm::registerExtDirectComponent(
 
 	// page module plugin settings summary
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] =
-	'EXT:solr/classes/pluginbase/class.tx_solr_pluginbase_backendsummary.php:tx_solr_pluginbase_BackendSummary->getSummary';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] = 'tx_solr_pluginbase_BackendSummary->getSummary';
 
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -197,8 +196,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_schedul
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// TODO move into pi_results, initializeSearch, add only when features are activated
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck'] = 'EXT:solr/pi_results/class.tx_solr_pi_results_spellcheckformmodifier.php:tx_solr_pi_results_SpellcheckFormModifier';
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest'] = 'EXT:solr/pi_results/class.tx_solr_pi_results_suggestformmodifier.php:tx_solr_pi_results_SuggestFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck'] = 'tx_solr_pi_results_SpellcheckFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest']    = 'tx_solr_pi_results_SuggestFormModifier';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -234,17 +233,17 @@ t3lib_extMgm::addTypoScript(
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME] = array(
 	tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME,
-	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_multivalue.php:tx_solr_contentobject_Multivalue'
+	'tx_solr_contentobject_Multivalue'
 );
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Content::CONTENT_OBJECT_NAME] = array(
 	tx_solr_contentobject_Content::CONTENT_OBJECT_NAME,
-	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_content.php:tx_solr_contentobject_Content'
+	'tx_solr_contentobject_Content'
 );
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME] = array(
 	tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME,
-	'EXT:solr/classes/contentobject/class.tx_solr_contentobject_relation.php:tx_solr_contentobject_Relation'
+	'tx_solr_contentobject_Relation'
 );
 
 

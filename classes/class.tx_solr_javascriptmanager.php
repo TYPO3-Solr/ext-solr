@@ -152,8 +152,8 @@ class tx_solr_JavascriptManager {
 	 *
 	 */
 	protected function registerForEndOfFrontendHook() {
-		$GLOBALS['TSFE']->TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-cached']['tx_solr-javascript'] = 'EXT:solr/classes/class.tx_solr_javascriptmanager.php:tx_solr_JavascriptManager->addJavascriptToPageFooter';
-		$GLOBALS['TSFE']->TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe']['tx_solr-javascript'] = 'EXT:solr/classes/class.tx_solr_javascriptmanager.php:tx_solr_JavascriptManager->addJavascriptToPageFooter';
+		$GLOBALS['TSFE']->TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-cached']['tx_solr-javascript'] = 'tx_solr_JavascriptManager->addJavascriptToPageFooter';
+		$GLOBALS['TSFE']->TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe']['tx_solr-javascript'] = 'tx_solr_JavascriptManager->addJavascriptToPageFooter';
 	}
 
 	/**

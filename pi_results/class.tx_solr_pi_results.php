@@ -241,16 +241,16 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			}
 
 			if ($this->conf['search.']['results.']['siteHighlighting']) {
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'EXT:solr/classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php:tx_solr_resultdocumentmodifier_SiteHighlighter';
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'tx_solr_resultdocumentmodifier_SiteHighlighter';
 			}
 
 			if ($this->conf['search.']['results.']['markResultTypeBoundaries']) {
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['resultTypeBoundaryMarker'] = 'EXT:solr/classes/resultsetmodifier/class.tx_solr_resultsetmodifier_resulttypeboundarymarker.php:tx_solr_resultsetmodifier_ResultTypeBoundaryMarker';
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['resultTypeBoundaryMarker'] = 'tx_solr_resultsetmodifier_ResultTypeBoundaryMarker';
 			}
 
 			if ($this->conf['search.']['results.']['resultsHighlighting']) {
 				$query->setHighlighting(TRUE, $this->conf['search.']['results.']['resultsHighlighting.']['fragmentSize']);
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'EXT:solr/pi_results/class.tx_solr_pi_results_highlightingresultdocumentmodifier.php:tx_solr_pi_results_HighlightingResultDocumentModifier';
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'tx_solr_pi_results_HighlightingResultDocumentModifier';
 			}
 
 			if ($this->conf['search.']['spellchecking']) {
@@ -259,7 +259,7 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 			if ($this->conf['search.']['faceting']) {
 				$query->setFaceting();
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'EXT:solr/classes/query/modifier/class.tx_solr_query_modifier_faceting.php:tx_solr_query_modifier_Faceting';
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'tx_solr_query_modifier_Faceting';
 			}
 
 				// access

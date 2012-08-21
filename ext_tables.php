@@ -87,19 +87,19 @@ if (TYPO3_MODE == 'BE') {
 	);
 
 		// register Clear Cache Menu hook
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:&tx_solr_ConnectionManager';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&tx_solr_ConnectionManager';
 
 		// register Clear Cache Menu ajax call
-	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = 'EXT:solr/classes/class.tx_solr_connectionmanager.php:tx_solr_ConnectionManager->updateConnections';
+	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = 'tx_solr_ConnectionManager->updateConnections';
 
 
 		// hooking into TCE Main to monitor record updates that may require reindexing by the index queue
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][]  = 'EXT:solr/classes/indexqueue/class.tx_solr_indexqueue_recordmonitor.php:tx_solr_indexqueue_RecordMonitor';
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:solr/classes/indexqueue/class.tx_solr_indexqueue_recordmonitor.php:tx_solr_indexqueue_RecordMonitor';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][]  = 'tx_solr_indexqueue_RecordMonitor';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_solr_indexqueue_RecordMonitor';
 
 		// hooking into TCE Main to monitor record updates that may require deleting documents from the index
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][]  = 'EXT:solr/classes/class.tx_solr_garbagecollector.php:&tx_solr_GarbageCollector';
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:solr/classes/class.tx_solr_garbagecollector.php:&tx_solr_GarbageCollector';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][]  = '&tx_solr_GarbageCollector';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = '&tx_solr_GarbageCollector';
 
 }
 
