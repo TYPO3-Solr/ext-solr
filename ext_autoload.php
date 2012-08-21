@@ -43,6 +43,7 @@ return array(
 	'tx_solr_spellchecker' => $extensionPath . 'classes/class.tx_solr_spellchecker.php',
 	'tx_solr_suggestquery' => $extensionPath . 'classes/class.tx_solr_suggestquery.php',
 	'tx_solr_template' => $extensionPath . 'classes/class.tx_solr_template.php',
+	'tx_solr_typo3environment' => $extensionPath . 'classes/class.tx_solr_typo3environment.php',
 	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'classes/class.tx_solr_typo3pagecontentextractor.php',
 	'tx_solr_typo3pageindexer' => $extensionPath . 'classes/class.tx_solr_typo3pageindexer.php',
 	'tx_solr_util' => $extensionPath . 'classes/class.tx_solr_util.php',
