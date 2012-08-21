@@ -92,6 +92,12 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'tx_solr_search_SortingComponent'
 );
 
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'debug',
+	'tx_solr_search_DebugComponent'
+);
+
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// register plugin commands

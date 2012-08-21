@@ -230,10 +230,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$query->setAlternativeQuery('*:*');
 			}
 
-			if ($this->conf['enableDebugMode']) {
-				$query->setDebugMode();
-			}
-
 			if ($this->conf['search.']['results.']['siteHighlighting']) {
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'tx_solr_resultdocumentmodifier_SiteHighlighter';
 			}
