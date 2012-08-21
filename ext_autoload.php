@@ -112,9 +112,9 @@ return array(
 	'tx_solr_search_debugcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_debugcomponent.php',
 	'tx_solr_search_highlightingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_highlightingcomponent.php',
 	'tx_solr_search_relevancecomponent' => $extensionPath . 'classes/search/class.tx_solr_search_relevancecomponent.php',
+	'tx_solr_search_searchcomponentmanager' => $extensionPath . 'classes/search/class.tx_solr_search_searchcomponentmanager.php',
 	'tx_solr_search_sortingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_sortingcomponent.php',
 	'tx_solr_search_spellcheckingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_spellcheckingcomponent.php',
-	'tx_solr_search_searchcomponentmanager' => $extensionPath . 'classes/search/class.tx_solr_search_searchcomponentmanager.php',
 
 	'tx_solr_viewhelper_abstractsubpartviewhelper' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_abstractsubpartviewhelper.php',
 	'tx_solr_viewhelper_crop' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_crop.php',
