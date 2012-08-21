@@ -46,7 +46,7 @@ class tx_solr_search_SearchComponentManager {
 	 * @param string $componentName Search component name
 	 * @param string $componentClassName Component class
 	 */
-	public function registerSearchComponent($componentName, $componentClassName) {
+	public static function registerSearchComponent($componentName, $componentClassName) {
 		self::$searchComponents[$componentName] = $componentClassName;
 	}
 
