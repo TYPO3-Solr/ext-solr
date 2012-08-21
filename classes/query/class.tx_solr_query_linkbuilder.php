@@ -173,6 +173,9 @@ class tx_solr_query_LinkBuilder {
 	/**
 	 * Generates a html link - an anchor tag.
 	 *
+	 * TODO currently everything in $additionalQueryParameters is prefixed with tx_solr,
+	 * allow arbitrary parameters, too (either filter them out or introduce a new 4th parameter)
+	 *
 	 * @param string $linkText Link Text
 	 * @param array $additionalQueryParameters Additional query parameters
 	 * @param array $typolinkOptions Typolink Options
@@ -202,6 +205,9 @@ class tx_solr_query_LinkBuilder {
 
 	/**
 	 * Generates a URL.
+	 *
+	 * TODO currently everything in $additionalQueryParameters is prefixed with tx_solr,
+	 * allow arbitrary parameters, too (either filter them out or introduce a new 3rd parameter)
 	 *
 	 * @param array $additionalQueryParameters Additional query parameters
 	 * @param array $typolinkOptions Typolink Options
