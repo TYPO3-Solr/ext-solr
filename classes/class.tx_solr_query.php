@@ -343,6 +343,28 @@ class tx_solr_Query {
 		}
 	}
 
+	/**
+	 * Sets the number of groups to return per group field or group query
+	 *
+	 * Internally uses the rows parameter.
+	 *
+	 * @param integer $numberOfGroups Number of groups per group.field or group.query
+	 */
+	public function setNumberOfGroups($numberOfGroups) {
+		$this->setResultsPerPage($numberOfGroups);
+	}
+
+	/**
+	 * Gets the number of groups to return per group field or group query
+	 *
+	 * Internally uses the rows parameter.
+	 *
+	 * @return integer Number of groups per group.field or group.query
+	 */
+	public function getNumberOfGroups() {
+		return $this->getResultsPerPage();
+	}
+
 
 	// faceting
 
