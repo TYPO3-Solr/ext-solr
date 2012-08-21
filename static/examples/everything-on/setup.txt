@@ -11,8 +11,6 @@ plugin.tx_solr {
 			siteHighlighting = 1
 
 			showDocumentScoreAnalysis = 1
-
-			markResultTypeBoundaries = 1
 		}
 
 		spellchecking = 1

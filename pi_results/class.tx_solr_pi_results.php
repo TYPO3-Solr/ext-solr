@@ -229,10 +229,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 				$query->setAlternativeQuery('*:*');
 			}
 
-			if ($this->conf['search.']['results.']['markResultTypeBoundaries']) {
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['resultTypeBoundaryMarker'] = 'tx_solr_resultsetmodifier_ResultTypeBoundaryMarker';
-			}
-
 			foreach($this->additionalFilters as $additionalFilter) {
 				$query->addFilter($additionalFilter);
 			}
