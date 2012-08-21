@@ -12,6 +12,7 @@
 	* Changed phpDoc of tx_solr_ResponseProcessor->processResponse() to indicate that it should return void
 	* Added tx_solr_Search->getSolrConnection()
 	* Removed option markResultTypeBoundaries, replaced by native grouping in EXT:solrgrouping
+	* Added passing of whole objects/arrays in template loops
 
 2012-07-27  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -451,7 +451,7 @@ class tx_solr_Template {
 			$loopSingleItem    = $this->getSubpart($loopContentMarker, $loopTemplate);
 		}
 
-		$loopMarker    = $this->loops[$loopName]['marker'];
+		$loopMarker    = strtoupper($this->loops[$loopName]['marker']);
 		$loopVariables = $this->loops[$loopName]['data'];
 		$foundMarkers  = $this->getMarkersFromTemplate($loopSingleItem, $loopMarker . '\.');
 		$loopCount     = count($loopVariables);
@@ -461,6 +461,9 @@ class tx_solr_Template {
 			foreach ($loopVariables as $value) {
 				$resolvedMarkers = $this->resolveVariableMarkers($foundMarkers, $value);
 				$resolvedMarkers['LOOP_CURRENT_ITERATION_COUNT'] = ++$iterationCount;
+
+					// pass the whole object / array / variable as is (serialized though)
+				$resolvedMarkers[$loopMarker] = serialize($value);
 
 				$currentIterationContent = t3lib_parsehtml::substituteMarkerArray(
 					$loopSingleItem,
