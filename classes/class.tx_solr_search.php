@@ -137,6 +137,7 @@ class tx_solr_Search implements t3lib_Singleton {
 			}
 		}
 
+		$this->modifyResponse($response);
 		$this->response    = $response;
 		$this->hasSearched = TRUE;
 
@@ -167,6 +168,36 @@ class tx_solr_Search implements t3lib_Singleton {
 		}
 
 		return $query;
+	}
+
+	/**
+	 * Allows to modify a response returned from Solr before returning it to
+	 * the rest of the extension.
+	 *
+	 * @param Apache_Solr_Response The response as returned by Solr
+	 * @return Apache_Solr_Response The modified response that is actually going to be returned to the extension.
+	 */
+	protected function modifyResponse(Apache_Solr_Response $response) {
+			// hook to modify the search response
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'] as $classReference) {
+				$responseModifier = t3lib_div::getUserObj($classReference);
+
+				if ($responseModifier instanceof tx_solr_ResponseModifier) {
+					$response = $responseModifier->modifyResponse($response);
+				} else {
+					throw new UnexpectedValueException(
+						get_class($responseModifier) . ' must implement interface tx_solr_ResponseModifier',
+						1343147211
+					);
+				}
+			}
+
+				// add modification indicator
+			$response->response->isModified = TRUE;
+		}
+
+		return $response;
 	}
 
 	/**

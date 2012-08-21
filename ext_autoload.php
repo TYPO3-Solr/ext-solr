@@ -203,6 +203,7 @@ return array(
 	'tx_solr_queryfacetbuilder' => $extensionPath . 'interfaces/interface.tx_solr_queryfacetbuilder.php',
 	'tx_solr_queryfilterencoder' => $extensionPath . 'interfaces/interface.tx_solr_queryfilterencoder.php',
 	'tx_solr_querymodifier' => $extensionPath . 'interfaces/interface.tx_solr_querymodifier.php',
+	'tx_solr_responsemodifier' => $extensionPath . 'interfaces/interface.tx_solr_responsemodifier.php',
 	'tx_solr_responseprocessor' => $extensionPath . 'interfaces/interface.tx_solr_responseprocessor.php',
 	'tx_solr_resultdocumentmodifier' => $extensionPath . 'interfaces/interface.tx_solr_resultdocumentmodifier.php',
 	'tx_solr_resultsetmodifier' => $extensionPath . 'interfaces/interface.tx_solr_resultsetmodifier.php',
