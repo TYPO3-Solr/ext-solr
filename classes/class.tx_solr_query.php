@@ -42,6 +42,8 @@ class tx_solr_Query {
 
 	/**
 	 * Used to identify the queries.
+	 *
+	 * @var integer
 	 */
 	protected static $idCount = 0;
 	protected $id;
@@ -77,7 +79,7 @@ class tx_solr_Query {
 	protected $subQueries = array();
 
 	/**
-	 * constructor for class tx_solr_Query
+	 * Constructor.
 	 */
 	public function __construct($keywords) {
 		$this->solrConfiguration = tx_solr_Util::getSolrConfiguration();
