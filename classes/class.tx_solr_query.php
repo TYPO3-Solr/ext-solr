@@ -396,6 +396,34 @@ class tx_solr_Query {
 	}
 
 	/**
+	 * Adds a query that should be used for grouping.
+	 *
+	 * @param string $query Lucene query for grouping
+	 */
+	public function addGroupQuery($query) {
+		if (!isset($this->queryParameters['group.query'])) {
+			$this->queryParameters['group.query'] = array();
+		}
+
+		$this->queryParameters['group.query'][] = $query;
+	}
+
+	/**
+	 * Gets the queries set for grouping.
+	 *
+	 * @return array An array of queries set for grouping.
+	 */
+	public function getGroupQueries() {
+		$groupQueries = array();
+
+		if (isset($this->queryParameters['group.query'])) {
+			$groupQueries = $this->queryParameters['group.query'];
+		}
+
+		return $groupQueries;
+	}
+
+	/**
 	 * Sets the maximum number of results to be returned per group.
 	 *
 	 * @param integer $numberOfResults Maximum number of results per group to return
