@@ -20,7 +20,6 @@ plugin.tx_solr {
 
 	templateFiles {
 		frequentSearches = EXT:solr/resources/templates/pi_frequentsearches/frequentsearches.htm
-		moreLikeThis     = EXT:solr/resources/templates/pi_mlt/mlt.htm
 		pagebrowser      = EXT:solr/resources/templates/pi_results/pagebrowser.htm
 		results          = EXT:solr/resources/templates/pi_results/results.htm
 		search           = EXT:solr/resources/templates/pi_search/search.htm
