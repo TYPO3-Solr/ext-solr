@@ -210,6 +210,9 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 			$query = t3lib_div::makeInstance('tx_solr_Query', $rawUserQuery);
 			/* @var	$query	tx_solr_Query */
 
+			$resultsPerPage = $this->getNumberOfResultsPerPage();
+			$query->setResultsPerPage($resultsPerPage);
+
 			$searchComponents = t3lib_div::makeInstance('tx_solr_search_SearchComponentManager')->getSearchComponents();
 			foreach ($searchComponents as $searchComponent) {
 				$searchComponent->setSearchConfiguration($this->conf['search.']);
