@@ -23,7 +23,11 @@
 			<label index="no_results_nothing_found">Nothing found for "@searchWord".</label>
 			<label index="no_results_showing_results_suggestion">Showing results for "@suggestedWord"</label>
 			<label index="no_results_search_for_original">Search instead for "@searchWord".</label>
+			<label index="lastSearches">Last searches</label>
+			<label index="frequentSearches">Frequent searches</label>
 			<label index="relevance">Relevance</label>
+			<label index="file_mimetype">File type</label>
+			<label index="file_referenced">Referenced at</label>
 			<label index="results_per_page">Results per page:</label>
 			<label index="error_errors">We're sorry, there were some errors:</label>
 			<label index="error_emptyQuery">Please enter your search term in the box above.</label>
@@ -46,7 +50,11 @@
 			<label index="no_results_nothing_found">Nichts gefunden für "@searchWord".</label>
 			<label index="no_results_showing_results_suggestion">Ergebnisse für "@suggestedWord"</label>
 			<label index="no_results_search_for_original">Stattdessen suchen nach "@searchWord".</label>
+			<label index="lastSearches">Letzte Suchanfragen</label>
+			<label index="frequentSearches">Häufige Suchanfragen</label>
 			<label index="relevance">Relevanz</label>
+			<label index="file_mimetype">Dateityp</label>
+			<label index="file_referenced">Verlinkt bei</label>
 			<label index="results_per_page">Ergebnisse pro Seite:</label>
 			<label index="error_errors">Es tut uns leid, es gab einige Fehler:</label>
 			<label index="error_emptyQuery">Bitte geben Sie ihr Suchwort in das Suchfeld ein.</label>
@@ -66,6 +74,7 @@
 			<label index="results_searched_for">Gezocht naar "@searchWord".</label>
 			<label index="no_results_nothing_found">Niets gevonden voor "@searchWord".</label>
 			<label index="lastSearches">Laatste zoekopdrachten</label>
+			<label index="frequentSearches">Vaak gezocht</label>
 			<label index="faceting_removeAllFilters">Verwijder alle filters</label>
 			<label index="results_found">Gevonden: @resultsTotal resultaten in @resultsTime milliseconden.</label>
 			<label index="relevance">Relevantie</label>
@@ -90,7 +99,10 @@
 			<label index="results_searched_for">Recherche de "@searchWord".</label>
 			<label index="no_results_nothing_found">Rien trouvé pour "@searchWord".</label>
 			<label index="lastSearches">Dernières recherches</label>
+			<label index="frequentSearches">Recherches fréquentes</label>
 			<label index="relevance">Pertinence</label>
+			<label index="file_mimetype">Type de fichier</label>
+			<label index="file_referenced">Référencé par</label>
 			<label index="results_per_page">Résultats par page:</label>
 		</languageKey>
 		<languageKey index="it" type="array">
@@ -110,7 +122,10 @@
 			<label index="results_searched_for">Eseguita ricerca di "@searchWord".</label>
 			<label index="no_results_nothing_found">La ricerca di "@searchWord" non ha prodotto risultati in nessun documento.</label>
 			<label index="lastSearches">Ultime ricerche</label>
+			<label index="frequentSearches">Ricerche più frequenti</label>
 			<label index="relevance">Rilevanza</label>
+			<label index="file_mimetype">Tipo di file</label>
+			<label index="file_referenced">Link a</label>
 			<label index="results_per_page">Risultati per pagina:</label>
 		</languageKey>
 		<languageKey index="jp" type="array">
@@ -130,6 +145,7 @@
 			<label index="results_searched_for">"@searchWord" を検索しました。</label>
 			<label index="no_results_nothing_found">"@searchWord" が見つかりません。</label>
 			<label index="lastSearches">前の検索</label>
+			<label index="frequentSearches">共通検索</label>
 			<label index="relevance">関連</label>
 			<label index="file_mimetype">ファイルの種類</label>
 			<label index="file_referenced">参照元</label>
@@ -152,6 +168,7 @@
 			<label index="results_searched_for">"@searchWord"에 대한 검색내용.</label>
 			<label index="no_results_nothing_found">"@searchWord"에 대한 검색내용 없음.</label>
 			<label index="lastSearches">이전 검색</label>
+			<label index="frequentSearches">일반 검색</label>
 			<label index="relevance">적합성</label>
 			<label index="file_mimetype">파일 유형</label>
 			<label index="file_referenced">에서 참조</label>
@@ -174,6 +191,7 @@
 			<label index="results_searched_for">搜索"@searchWord"</label>
 			<label index="no_results_nothing_found">没有找到任何关于"@searchWord"</label>
 			<label index="lastSearches">上次搜索</label>
+			<label index="frequentSearches">常见搜索</label>
 			<label index="relevance">关联内容</label>
 			<label index="file_mimetype">文件类型</label>
 			<label index="file_referenced">参考地址</label>
