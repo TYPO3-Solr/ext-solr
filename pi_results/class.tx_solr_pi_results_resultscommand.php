@@ -84,18 +84,18 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 		);
 
 		return array(
-			'searched_for'                    => $searchedFor,
-			'query'                           => $queryTerms,
-			'query_urlencoded'                => rawurlencode($rawQueryTerms),
-			'query_raw'                       => $rawQueryTerms,
-			'found'                           => $foundResultsInfo,
-			'range'                           => $this->getPageBrowserRange(),
-			'count'                           => $this->search->getNumberOfResults(),
-			'offset'                          => ($this->search->getResultOffset() + 1),
-			'query_time'                      => $this->search->getQueryTime(),
-			'pagebrowser'                     => $this->getPageBrowser($numberOfResults),
-			'filtered'                        => $this->isFiltered(),
-			'filtered_by_user'                => $this->isFilteredByUser(),
+			'searched_for'     => $searchedFor,
+			'query'            => $queryTerms,
+			'query_urlencoded' => rawurlencode($rawQueryTerms),
+			'query_raw'        => $rawQueryTerms,
+			'found'            => $foundResultsInfo,
+			'range'            => $this->getPageBrowserRange(),
+			'count'            => $this->search->getNumberOfResults(),
+			'offset'           => ($this->search->getResultOffset() + 1),
+			'query_time'       => $this->search->getQueryTime(),
+			'pagebrowser'      => $this->getPageBrowser($numberOfResults),
+			'filtered'         => $this->isFiltered(),
+			'filtered_by_user' => $this->isFilteredByUser(),
 				/* construction of the array key:
 				 * loop_ : tells the plugin that the content of that field should be processed in a loop
 				 * result_documents : is the loop name as in the template
