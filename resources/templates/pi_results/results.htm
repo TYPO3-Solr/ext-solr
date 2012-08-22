@@ -91,6 +91,15 @@
 				</div>
 
 				<p class="result-content">###RESULT_DOCUMENT.CONTENT###</p>
+
+				<!-- ###IF:###RESULT_DOCUMENT.TYPE###|==|tx_solr_file### begin -->
+				<p>
+					###LLL:file_mimetype###: ###RESULT_DOCUMENT.fileMimeType###<br />
+					###LLL:file_referenced###: ###LINK:###RESULT_DOCUMENT.fileReferenceTitle###|###RESULT_DOCUMENT.fileReferenceUrl######
+				</p>
+				<!-- ###IF:###RESULT_DOCUMENT.TYPE###|==|tx_solr_file### end -->
+
+				###RESULT_DOCUMENT.SCORE_ANALYSIS###
 			</div>
 		</li>
 		<!-- ###LOOP_CONTENT### -->
