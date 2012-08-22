@@ -145,7 +145,6 @@ return array(
 		// plugins
 
 	'tx_solr_pi_frequentsearches' => $extensionPath . 'pi_frequentsearches/class.tx_solr_pi_frequentsearches.php',
-	'tx_solr_pi_mlt' => $extensionPath . 'pi_mlt/class.tx_solr_pi_mlt.php',
 	'tx_solr_pi_results' => $extensionPath . 'pi_results/class.tx_solr_pi_results.php',
 	'tx_solr_pi_search' => $extensionPath . 'pi_search/class.tx_solr_pi_search.php',
 
