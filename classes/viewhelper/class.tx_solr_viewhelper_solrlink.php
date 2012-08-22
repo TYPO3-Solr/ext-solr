@@ -24,32 +24,32 @@
 
 
 /**
- * viewhelper class to create links containing solr parameters
+ * Viewhelper class to create links containing solr parameters
  * Replaces viewhelpers ###SOLR_LINK:linkText|linkTarget|additionalParameters|useCache###
  *
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class tx_solr_viewhelper_SolrLink implements tx_solr_ViewHelper {
 
 	/**
-	 * instance of tx_solr_Search
+	 * Instance of tx_solr_Search
 	 *
 	 * @var tx_solr_Search
 	 */
 	protected $search = NULL;
 
 	/**
-	 * instance of tslib_cObj
+	 * Instance of tslib_cObj
 	 *
 	 * @var tslib_cObj
 	 */
 	protected $contentObject = NULL;
 
 	/**
-	 * constructor for class tx_solr_viewhelper_Date
+	 * Constructor.
 	 */
 	public function __construct(array $arguments = array()) {
 		if(is_null($this->contentObject)) {
