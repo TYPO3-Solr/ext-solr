@@ -43,6 +43,15 @@ t3lib_extMgm::addPItoST43(
 	TRUE
 );
 
+	// adding the Frequent Searches plugin
+t3lib_extMgm::addPItoST43(
+	$_EXTKEY,
+	'pi_frequentsearches/class.tx_solr_pi_frequentsearches.php',
+	'_pi_frequentsearches',
+	'list_type',
+	TRUE
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// registering Index Queue page indexer helpers
@@ -113,6 +122,13 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 #	'tx_solr_pi_results_AdvancedFormCommand',
 #	tx_solr_PluginCommand::REQUIREMENT_NONE
 #);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results, frequentsearches',
+	'frequentSearches',
+	'tx_solr_pi_results_FrequentSearchesCommand',
+	tx_solr_PluginCommand::REQUIREMENT_NONE
+);
 
 tx_solr_CommandResolver::registerPluginCommand(
 	'search, results',

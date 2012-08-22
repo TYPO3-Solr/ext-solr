@@ -144,6 +144,7 @@ return array(
 
 		// plugins
 
+	'tx_solr_pi_frequentsearches' => $extensionPath . 'pi_frequentsearches/class.tx_solr_pi_frequentsearches.php',
 	'tx_solr_pi_mlt' => $extensionPath . 'pi_mlt/class.tx_solr_pi_mlt.php',
 	'tx_solr_pi_results' => $extensionPath . 'pi_results/class.tx_solr_pi_results.php',
 	'tx_solr_pi_search' => $extensionPath . 'pi_search/class.tx_solr_pi_search.php',
@@ -152,6 +153,7 @@ return array(
 	'tx_solr_pi_results_errorscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_errorscommand.php',
 	'tx_solr_pi_results_facetingcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_facetingcommand.php',
 	'tx_solr_pi_results_formcommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_formcommand.php',
+	'tx_solr_pi_results_frequentsearchescommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_frequentsearchescommand.php',
 	'tx_solr_pi_results_highlightingresultdocumentmodifier' => $extensionPath . 'pi_results/class.tx_solr_pi_results_highlightingresultdocumentmodifier.php',
 	'tx_solr_pi_results_lastsearchescommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_lastsearchescommand.php',
 	'tx_solr_pi_results_noresultscommand' => $extensionPath . 'pi_results/class.tx_solr_pi_results_noresultscommand.php',

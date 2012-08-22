@@ -193,6 +193,39 @@
 	</div>
 	<!-- ###SOLR_SEARCH_FACETING### end -->
 
+
+	<!-- ###SOLR_SEARCH_LASTSEARCHES### end -->
+	<div id="tx-solr-lastsearches" class="secondaryContentSection">
+		<div class="csc-header">
+			<h3 class="csc-firstHeader">###LLL:lastSearches###</h3>
+		</div>
+		<ul>
+			<!-- ###LOOP:LASTSEARCHES### begin -->
+			<!-- ###LOOP_CONTENT### -->
+			<li>
+				###LINK:###LASTSEARCH.Q###|###LASTSEARCH.PID###|###LASTSEARCH.PARAMETERS###|0|rel="nofollow"###
+			</li>
+			<!-- ###LOOP_CONTENT### -->
+			<!-- ###LOOP:LASTSEARCHES### end -->
+		</ul>
+	</div>
+	<!-- ###SOLR_SEARCH_LASTSEARCHES### end -->
+
+	<!-- ###SOLR_SEARCH_FREQUENTSEARCHES### begin -->
+	<div id="tx-solr-frequent-searches" class="secondaryContentSection">
+		<div class="csc-header">
+			<h3 class="csc-firstHeader">###LLL:frequentSearches###</h3>
+		</div>
+		<ul>
+			<!-- ###LOOP:FREQUENTSEARCHES### begin -->
+			<!-- ###LOOP_CONTENT### -->
+			<li class="###TERM.CLASS###">###LINK:###TERM.TERM###|###TERM.PID###|###TERM.PARAMETERS###|0|rel="nofollow"###</li>
+			<!-- ###LOOP_CONTENT### -->
+			<!-- ###LOOP:FREQUENTSEARCHES### end -->
+		</ul>
+	</div>
+	<!-- ###SOLR_SEARCH_FREQUENTSEARCHES### end -->
+
 </div>
 
 <!-- ###SOLR_SEARCH### end -->

@@ -211,6 +211,25 @@ plugin.tx_solr {
 			searchUsingSpellChekerSuggestion = 0
 		}
 
+		frequentSearches = 0
+		frequentSearches {
+			minSize = 14
+			maxSize = 32
+			limit = 20
+			select {
+				SELECT = keywords as search_term, count(*) as hits
+				FROM = tx_solr_statistics
+				ADD_WHERE = AND num_found != 0
+				GROUP_BY = keywords
+				ORDER_BY = hits DESC, search_term ASC
+				checkRootPageId = 1
+				checkLanguage = 1
+			}
+
+			# cache lifetime in seconds (default is 86400s = 24h)
+			cacheLifetime = 86400
+		}
+
 		sorting = 0
 		sorting {
 			defaultOrder = asc

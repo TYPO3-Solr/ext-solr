@@ -6,6 +6,7 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="tt_content.list_type_pi_frequentsearches">Search: Frequent Searches</label>
 			<label index="tt_content.list_type_pi_results">Search: Form, Result, Additional Components</label>
 			<label index="tt_content.list_type_pi_search">Search: Form only</label>
 		</languageKey>
@@ -13,6 +14,7 @@
 			<label index="tt_content.list_type_pi_results">Søg: Søgeformular, Resultater, Yderligere komponenter</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
+			<label index="tt_content.list_type_pi_frequentsearches">Rechercher: Recherches fréquentes</label>
 			<label index="tt_content.list_type_pi_results">Rechercher: Formulaire, Résultats, Composants additionnels</label>
 			<label index="tt_content.list_type_pi_search">Rechercher: Formulaire seul</label>
 		</languageKey>

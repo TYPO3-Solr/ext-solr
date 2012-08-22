@@ -41,6 +41,18 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_sear
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
+	// adding the Frequent Searches plugin
+t3lib_extMgm::addPlugin(
+	array(
+		'LLL:EXT:solr/locallang_db.xml:tt_content.list_type_pi_frequentsearches',
+		$_EXTKEY . '_pi_frequentsearches'
+	),
+	'list_type'
+);
+$TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_frequentsearches'] = 'layout,select_key,pages,recursive';
+
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
 	// TypoScript
 t3lib_extMgm::addStaticFile($_EXTKEY, 'static/solr/', 'Apache Solr');
 

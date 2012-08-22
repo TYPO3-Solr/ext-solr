@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Template for the frequent searches view for EXT:solr</title>
+</head>
+<body>
+
+<!-- ###SOLR_SEARCH### begin -->
+
+	<!-- ###SOLR_SEARCH_FREQUENTSEARCHES### begin -->
+	<div id="tx-solr-frequent-searches">
+		<h3>###LLL:frequentSearches###</h3>
+		<ul>
+			<!-- ###LOOP:FREQUENTSEARCHES### begin -->
+			<!-- ###LOOP_CONTENT### -->
+			<li class="###TERM.CLASS###">###LINK:###TERM.TERM###|###TERM.PID###|###TERM.PARAMETERS###|0|rel="nofollow"###</li>
+			<!-- ###LOOP_CONTENT### -->
+			<!-- ###LOOP:FREQUENTSEARCHES### end -->
+		</ul>
+	</div>
+	<!-- ###SOLR_SEARCH_FREQUENTSEARCHES### end -->
+
+<!-- ###SOLR_SEARCH### end -->
+
+</body>
+</html>
