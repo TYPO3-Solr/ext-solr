@@ -79,7 +79,8 @@ class tx_solr_Query {
 	protected $subQueries = array();
 
 	/**
-	 * Constructor.
+	 * Constructor
+	 *
 	 */
 	public function __construct($keywords) {
 		$this->solrConfiguration = tx_solr_Util::getSolrConfiguration();

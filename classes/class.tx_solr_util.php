@@ -176,9 +176,10 @@ class tx_solr_Util {
 	}
 
 	/**
-	 * Shortcut to retrieve the configuration for EXT:solr from TSFE
+	 * Shortcut to retrieve the TypoScript configuration for EXT:solr
+	 * (plugin.tx_solr) from TSFE.
 	 *
-	 * @return array	Solr configuration
+	 * @return array EXT:solr TypoScript configuration from plugin.tx_solr
 	 */
 	public static function getSolrConfiguration() {
 			// TODO if in BE, create a fake TSFE and retrieve the configuration
