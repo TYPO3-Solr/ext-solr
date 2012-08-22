@@ -180,6 +180,12 @@ tx_solr_facet_FacetRendererFactory::registerFacetType(
 );
 
 tx_solr_facet_FacetRendererFactory::registerFacetType(
+	'hierarchy',
+	'tx_solr_facet_HierarchicalFacetRenderer',
+	'tx_solr_query_filterencoder_Hierarchy'
+);
+
+tx_solr_facet_FacetRendererFactory::registerFacetType(
 	'queryGroup',
 	'tx_solr_facet_QueryGroupFacetRenderer',
 	'tx_solr_query_filterencoder_QueryGroup',
