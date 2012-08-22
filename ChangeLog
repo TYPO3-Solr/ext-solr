@@ -1,3 +1,7 @@
+2012-08-22  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added hierarchical facets
+
 2012-08-21  Ingo Renner  <ingo.renner@dkd.de>
 
 	! [TEMPLATE] Changed the relevance view helpers to take the whole result document as argument (instead of just the score)

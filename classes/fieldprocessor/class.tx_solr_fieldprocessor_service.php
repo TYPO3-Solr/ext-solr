@@ -70,6 +70,14 @@ class tx_solr_fieldprocessor_Service {
 						$processor  = t3lib_div::makeInstance('tx_solr_fieldprocessor_TimestampToIsoDate');
 						$fieldValue = $processor->process($fieldValue);
 						break;
+					case 'pathToHierarchy':
+						$processor  = t3lib_div::makeInstance('tx_solr_fieldprocessor_PathToHierarchy');
+						$fieldValue = $processor->process($fieldValue);
+						break;
+					case 'pageUidToHierarchy':
+						$processor  = t3lib_div::makeInstance('tx_solr_fieldprocessor_PageUidToHierarchy');
+						$fieldValue = $processor->process($fieldValue);
+						break;
 					case 'uppercase':
 						$fieldValue = array_map('strtoupper', $fieldValue);
 						break;

@@ -74,7 +74,16 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 			$facetOption
 		);
 
-		$facetText = $facetOption->render();
+		if ($this->facetConfiguration['type'] == 'hierarchy') {
+				// FIXME decouple this
+			$filterEncoder = t3lib_div::makeInstance('tx_solr_query_filterencoder_Hierarchy');
+			$facet         = t3lib_div::makeInstance('tx_solr_facet_Facet', $this->facetName);
+			$facetRenderer = t3lib_div::makeInstance('tx_solr_facet_HierarchicalFacetRenderer', $facet);
+
+			$facetText = $facetRenderer->getLastPathSegmentFromHierarchicalFacetOption($filterEncoder->decodeFilter($this->filterValue));
+		} else {
+			$facetText = $facetOption->render();
+		}
 
 		$facetLabel = $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label'];
 

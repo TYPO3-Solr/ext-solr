@@ -65,6 +65,7 @@ plugin.tx_solr {
 			changed = timestampToIsoDate
 			created = timestampToIsoDate
 			endtime = timestampToIsoDate
+			rootline = pageUidToHierarchy
 		}
 
 		queue {

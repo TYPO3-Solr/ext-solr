@@ -225,6 +225,7 @@ class tx_solr_Typo3PageIndexer {
 		$document->setField('created',     $pageRecord['crdate']);
 		$document->setField('changed',     $pageRecord['tstamp']);
 		$document->setField('language',    $this->page->sys_language_uid);
+		$document->setField('rootline',    $this->page->id);
 
 			// access
 		$document->setField('access',      (string) $this->pageAccessRootline);
