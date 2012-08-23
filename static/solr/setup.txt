@@ -299,6 +299,8 @@ plugin.tx_solr {
 		forceHttps = 0
 	}
 
+	statistics = 0
+
 	viewhelpers {
 		crop {
 			maxLength = 300

@@ -108,6 +108,9 @@ return array(
 	'tx_solr_query_filterencoder_range' => $extensionPath . 'classes/query/filterencoder/class.tx_solr_query_filterencoder_range.php',
 
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_faceting.php',
+	'tx_solr_query_modifier_statistics' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_statistics.php',
+
+	'tx_solr_response_processor_statisticswriter' => $extensionPath . 'classes/response/processor/class.tx_solr_response_processor_statisticswriter.php',
 
 	'tx_solr_resultdocumentmodifier_scoreanalyzer' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_scoreanalyzer.php',
 	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php',
@@ -122,6 +125,7 @@ return array(
 	'tx_solr_search_searchcomponentmanager' => $extensionPath . 'classes/search/class.tx_solr_search_searchcomponentmanager.php',
 	'tx_solr_search_sortingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_sortingcomponent.php',
 	'tx_solr_search_spellcheckingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_spellcheckingcomponent.php',
+	'tx_solr_search_statisticscomponent' => $extensionPath . 'classes/search/class.tx_solr_search_statisticscomponent.php',
 
 	'tx_solr_viewhelper_abstractsubpartviewhelper' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_abstractsubpartviewhelper.php',
 	'tx_solr_viewhelper_crop' => $extensionPath . 'classes/viewhelper/class.tx_solr_viewhelper_crop.php',

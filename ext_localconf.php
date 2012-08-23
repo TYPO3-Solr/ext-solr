@@ -130,6 +130,10 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'tx_solr_search_FacetingComponent'
 );
 
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'statistics',
+	'tx_solr_search_StatisticsComponent'
+);
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
