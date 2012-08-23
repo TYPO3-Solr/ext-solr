@@ -26,17 +26,20 @@
 /**
  * Modifies a query to add faceting parameters
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
- * @author	Sebastian Kurfuerst <sebastian@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @author Daniel Poetzinger <poetzinger@aoemedia.de>
+ * @author Sebastian Kurfuerst <sebastian@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 
 	protected $configuration;
+
 	protected $facetParameters = array();
-	protected $facetFilters    = array();
+
+	protected $facetFilters = array();
+
 	protected $facetRendererFactory = NULL;
 
 	/**
@@ -51,8 +54,8 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 	 * Modifies the given query and adds the parameters necessary for faceted
 	 * search.
 	 *
-	 * @param	tx_solr_Query	The query to modify
-	 * @return	tx_solr_Query	The modified query with faceting parameters
+	 * @param tx_solr_Query The query to modify
+	 * @return tx_solr_Query The modified query with faceting parameters
 	 */
 	public function modifyQuery(tx_solr_Query $query) {
 		$query->setFaceting();
@@ -191,7 +194,7 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 	/**
 	 * Gets the facets as configured through TypoScript
 	 *
-	 * @return	array	An array of facet names as specified in TypoScript
+	 * @return array An array of facet names as specified in TypoScript
 	 */
 	protected function getConfigurredFacets() {
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
