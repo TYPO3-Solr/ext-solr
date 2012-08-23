@@ -72,6 +72,8 @@ return array(
 	'tx_solr_facet_simplefacetoptionsrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_simplefacetoptionsrenderer.php',
 	'tx_solr_facet_usedfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_usedfacetrenderer.php',
 
+	'tx_solr_fieldprocessor_pageuidtohierarchy' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_pageuidtohierarchy.php',
+	'tx_solr_fieldprocessor_pathtohierarchy' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_pathtohierarchy.php',
 	'tx_solr_fieldprocessor_service' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php',
 	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_timestamptoisodate.php',
 
