@@ -11,6 +11,38 @@ CREATE TABLE tx_solr_last_searches (
 
 
 #
+# Table structure for table 'tx_solr_statistics'
+#
+CREATE TABLE tx_solr_statistics (
+	uid int(11) NOT NULL auto_increment,
+	pid int(11) DEFAULT '0' NOT NULL,
+	root_pid int(11) DEFAULT '0' NOT NULL,
+	tstamp int(11) DEFAULT '0' NOT NULL,
+	language int(11) DEFAULT '0' NOT NULL,
+
+	num_found int(11) DEFAULT '0' NOT NULL,
+	suggestions_shown int(1) DEFAULT '0' NOT NULL,
+	time_total int(11) DEFAULT '0' NOT NULL,
+	time_preparation int(11) DEFAULT '0' NOT NULL,
+	time_processing int(11) DEFAULT '0' NOT NULL,
+
+	feuser_id int(11) unsigned DEFAULT '0' NOT NULL,
+	cookie varchar(10) DEFAULT '' NOT NULL,
+	ip varchar(255) DEFAULT '' NOT NULL,
+
+	keywords varchar(128) DEFAULT '' NOT NULL,
+	page int(5) unsigned DEFAULT '0' NOT NULL,
+	filters blob,
+	sorting varchar(128) DEFAULT '' NOT NULL,
+	parameters blob,
+
+	PRIMARY KEY (uid),
+	KEY keywords (keywords),
+	KEY rootpid_keywords (root_pid,keywords)
+) ENGINE=InnoDB;
+
+
+#
 # Table structure for table 'tx_solr_indexqueue_item'
 #
 CREATE TABLE tx_solr_indexqueue_item (
