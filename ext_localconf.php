@@ -110,6 +110,21 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'tx_solr_search_DebugComponent'
 );
 
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'highlighting',
+	'tx_solr_search_HighlightingComponent'
+);
+
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'spellchecking',
+	'tx_solr_search_SpellcheckingComponent'
+);
+
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'faceting',
+	'tx_solr_search_FacetingComponent'
+);
+
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -205,21 +220,6 @@ tx_solr_facet_FacetRendererFactory::registerFacetType(
 	'tx_solr_facet_QueryGroupFacetRenderer',
 	'tx_solr_query_filterencoder_QueryGroup',
 	'tx_solr_query_filterencoder_QueryGroup'
-);
-
-tx_solr_search_SearchComponentManager::registerSearchComponent(
-	'highlighting',
-	'tx_solr_search_HighlightingComponent'
-);
-
-tx_solr_search_SearchComponentManager::registerSearchComponent(
-	'spellchecking',
-	'tx_solr_search_SpellcheckingComponent'
-);
-
-tx_solr_search_SearchComponentManager::registerSearchComponent(
-	'faceting',
-	'tx_solr_search_FacetingComponent'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
