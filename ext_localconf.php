@@ -181,6 +181,13 @@ tx_solr_CommandResolver::registerPluginCommand(
 
 tx_solr_CommandResolver::registerPluginCommand(
 	'results',
+	'lastSearches',
+	'tx_solr_pi_results_LastSearchesCommand',
+	tx_solr_PluginCommand::REQUIREMENT_NONE
+);
+
+tx_solr_CommandResolver::registerPluginCommand(
+	'results',
 	'no_results',
 	'tx_solr_pi_results_NoResultsCommand',
 	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
