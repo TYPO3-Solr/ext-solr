@@ -55,6 +55,7 @@ plugin.tx_solr {
 	}
 
 	index {
+
 		additionalFields {
 
 		}
