@@ -8,15 +8,21 @@
 		<languageKey index="default" type="array">
 			<label index="report_index_title">Apache Solr Index</label>
 			<label index="report_index_description">View the number of documents and fields in your index</label>
+			<label index="report_statistics_title">Apache Solr Statistics</label>
+			<label index="report_statistics_description">Provides several Solr usage statistics</label>
 			<label index="module_indexinspector">Search Index Inspector</label>
 		</languageKey>
 		<languageKey index="dk" type="array">
 			<label index="report_index_title">Apache Solr Index</label>
 			<label index="report_index_description">Se antallet af dokumenter og felter i dit index</label>
+			<label index="report_statistics_title">Apache Solr Statistik</label>
+			<label index="report_statistics_description">Viser adskillige Solr-anvendelsesstatistikker</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="report_index_title">Index d'Apache Solr</label>
 			<label index="report_index_description">Visualisez le nombre de documents et de champs de votre index</label>
+			<label index="report_statistics_title">Statistiques d'Apache Solr</label>
+			<label index="report_statistics_description">Fourni plusieurs statistiques d'usage de Solr</label>
 			<label index="module_indexinspector">Inspecteur de l'index de recherche</label>
 		</languageKey>
 	</data>
