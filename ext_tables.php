@@ -51,7 +51,7 @@ t3lib_extMgm::addPlugin(
 );
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_frequentsearches'] = 'layout,select_key,pages,recursive';
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// TypoScript
 t3lib_extMgm::addStaticFile($_EXTKEY, 'static/solr/', 'Apache Solr');
