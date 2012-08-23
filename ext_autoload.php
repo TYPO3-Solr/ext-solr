@@ -109,10 +109,12 @@ return array(
 
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'classes/query/modifier/class.tx_solr_query_modifier_faceting.php',
 
+	'tx_solr_resultdocumentmodifier_scoreanalyzer' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_scoreanalyzer.php',
 	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php',
 
 	'tx_solr_search_abstractcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_abstractcomponent.php',
 	'tx_solr_search_accesscomponent' => $extensionPath . 'classes/search/class.tx_solr_search_accesscomponent.php',
+	'tx_solr_search_analysiscomponent' => $extensionPath . 'classes/search/class.tx_solr_search_analysiscomponent.php',
 	'tx_solr_search_debugcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_debugcomponent.php',
 	'tx_solr_search_facetingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_facetingcomponent.php',
 	'tx_solr_search_highlightingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_highlightingcomponent.php',

@@ -111,6 +111,11 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 );
 
 tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'analysis',
+	'tx_solr_search_AnalysisComponent'
+);
+
+tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'highlighting',
 	'tx_solr_search_HighlightingComponent'
 );

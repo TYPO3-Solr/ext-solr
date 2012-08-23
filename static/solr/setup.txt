@@ -204,6 +204,8 @@ plugin.tx_solr {
 			}
 
 			ignorePageBrowser = 0
+
+			showDocumentScoreAnalysis = 0
 		}
 
 		spellchecking = 0
