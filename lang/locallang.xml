@@ -26,7 +26,7 @@
 			<label index="scheduler_optimizer_description">Exécute une commande OPTIMIZE sur l'index Solr. Doit être exécuté une fois par jour sur les site à faible activité. Les sites à forte activité peuvent l'exécuter plus souvent. Attention, l'action peut durer quelques secondes sur les gros index.</label>
 			<label index="scheduler_commit_title">Valider l'index de Solr</label>
 			<label index="scheduler_commit_description">Exécute une commande COMMIT sur l'index Solr. Peut être exécutere entre à chaque minute et toutes les heures. Doit prendre moins longtemps à s'exécutere que la commande OPTIMIZE, qui effectue un COMMIT avant sont propre traitement.</label>
-			<label index="scheduler_reindex_title">Force la r?©indexation d'un site</label>
+			<label index="scheduler_reindex_title">Force la réindexation d'un site</label>
 			<label index="scheduler_reindex_description">Purge l'index de Solr et initialise la file d'attente d'indexation d'un site.</label>
 			<label index="scheduler_indexqueueworker_title">Tâche de traitement de la file d'indexation.</label>
 			<label index="scheduler_indexqueueworker_description">Traite les élément de la file d'attente et les envoie à Solr.</label>
