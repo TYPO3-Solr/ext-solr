@@ -115,12 +115,15 @@ return array(
 	'tx_solr_resultdocumentmodifier_scoreanalyzer' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_scoreanalyzer.php',
 	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'classes/resultdocumentmodifier/class.tx_solr_resultdocumentmodifier_sitehighlighter.php',
 
+	'tx_solr_resultsetmodifier_lastsearches' => $extensionPath . 'classes/resultsetmodifier/class.tx_solr_resultsetmodifier_lastsearches.php',
+
 	'tx_solr_search_abstractcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_abstractcomponent.php',
 	'tx_solr_search_accesscomponent' => $extensionPath . 'classes/search/class.tx_solr_search_accesscomponent.php',
 	'tx_solr_search_analysiscomponent' => $extensionPath . 'classes/search/class.tx_solr_search_analysiscomponent.php',
 	'tx_solr_search_debugcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_debugcomponent.php',
 	'tx_solr_search_facetingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_facetingcomponent.php',
 	'tx_solr_search_highlightingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_highlightingcomponent.php',
+	'tx_solr_search_lastsearchescomponent' => $extensionPath . 'classes/search/class.tx_solr_search_lastsearchescomponent.php',
 	'tx_solr_search_relevancecomponent' => $extensionPath . 'classes/search/class.tx_solr_search_relevancecomponent.php',
 	'tx_solr_search_searchcomponentmanager' => $extensionPath . 'classes/search/class.tx_solr_search_searchcomponentmanager.php',
 	'tx_solr_search_sortingcomponent' => $extensionPath . 'classes/search/class.tx_solr_search_sortingcomponent.php',

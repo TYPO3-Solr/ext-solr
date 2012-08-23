@@ -1,3 +1,14 @@
+#
+# Table structure for table 'tx_solr_last_searches'
+#
+CREATE TABLE tx_solr_last_searches (
+	sequence_id tinyint(3) unsigned DEFAULT '0' NOT NULL,
+	tstamp int(11) DEFAULT '0' NOT NULL,
+	keywords varchar(128) DEFAULT '' NOT NULL,
+
+	PRIMARY KEY (sequence_id)
+) ENGINE=InnoDB;
+
 
 #
 # Table structure for table 'tx_solr_indexqueue_item'

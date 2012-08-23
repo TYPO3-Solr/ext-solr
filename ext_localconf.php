@@ -135,6 +135,11 @@ tx_solr_search_SearchComponentManager::registerSearchComponent(
 	'tx_solr_search_StatisticsComponent'
 );
 
+tx_solr_search_SearchComponentManager::registerSearchComponent(
+	'lastSearches',
+	'tx_solr_search_LastSearchesComponent'
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// register plugin commands

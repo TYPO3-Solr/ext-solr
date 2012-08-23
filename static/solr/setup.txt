@@ -214,6 +214,13 @@ plugin.tx_solr {
 			searchUsingSpellChekerSuggestion = 0
 		}
 
+		lastSearches = 0
+		lastSearches {
+			limit = 10
+			# tracking mode "user" or "global"
+			mode = user
+		}
+
 		frequentSearches = 0
 		frequentSearches {
 			minSize = 14
