@@ -59,6 +59,7 @@ return array(
 	'tx_solr_contentobject_relation' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_relation.php',
 
 	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_abstractfacetrenderer.php',
+	'tx_solr_facet_daterangefacetrenderer' => $extensionPath . 'classes/facet/class.tx_solr_facet_daterangefacetrenderer.php',
 	'tx_solr_facet_facet' => $extensionPath . 'classes/facet/class.tx_solr_facet_facet.php',
 	'tx_solr_facet_facetoption' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetoption.php',
 	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'classes/facet/class.tx_solr_facet_facetrendererfactory.php',
@@ -101,6 +102,7 @@ return array(
 
 	'tx_solr_query_linkbuilder' => $extensionPath . 'classes/query/class.tx_solr_query_linkbuilder.php',
 
+	'tx_solr_query_filterencoder_daterange' => $extensionPath . 'classes/query/filterencoder/class.tx_solr_query_filterencoder_daterange.php',
 	'tx_solr_query_filterencoder_hierarchy' => $extensionPath . 'classes/query/filterencoder/class.tx_solr_query_filterencoder_hierarchy.php',
 	'tx_solr_query_filterencoder_querygroup' => $extensionPath . 'classes/query/filterencoder/class.tx_solr_query_filterencoder_querygroup.php',
 	'tx_solr_query_filterencoder_range' => $extensionPath . 'classes/query/filterencoder/class.tx_solr_query_filterencoder_range.php',
