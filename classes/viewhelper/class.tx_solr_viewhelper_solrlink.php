@@ -48,8 +48,10 @@ class tx_solr_viewhelper_SolrLink implements tx_solr_ViewHelper {
 	 */
 	protected $contentObject = NULL;
 
+
 	/**
 	 * Constructor.
+	 *
 	 */
 	public function __construct(array $arguments = array()) {
 		if(is_null($this->contentObject)) {
