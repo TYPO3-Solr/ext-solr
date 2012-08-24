@@ -97,9 +97,9 @@ class tx_solr_indexqueue_Queue {
 	 * @return array An array of booleans, each representing whether the initialization for an indexing configuration was successful
 	 */
 	public function initialize(tx_solr_Site $site, $indexingConfigurationName = '') {
-		$initializationStatus = array();
-
 		$indexingConfigurations = array();
+		$initializationStatus   = array();
+
 		if (empty($indexingConfigurationName)) {
 			$solrConfiguration      = $site->getSolrConfiguration();
 			$indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
@@ -112,6 +112,21 @@ class tx_solr_indexqueue_Queue {
 				$site,
 				$indexingConfigurationName
 			);
+		}
+
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
+				$indexQueueInitializationPostProcessor = t3lib_div::getUserObj($classReference);
+
+				if ($indexQueueInitializationPostProcessor instanceof tx_solr_IndexQueueInitializationPostProcessor) {
+					$indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization($site, $indexingConfigurations, $initializationStatus);
+				} else {
+					throw new UnexpectedValueException(
+						get_class($indexQueueInitializationPostProcessor) . ' must implement interface tx_solr_IndexQueueInitializationPostProcessor',
+						1345815561
+					);
+				}
+			}
 		}
 
 		return $initializationStatus;
