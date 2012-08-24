@@ -325,6 +325,21 @@ class tx_solr_GarbageCollector {
 		} else {
 			$this->collectRecordGarbage($table, $uid);
 		}
+
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
+				$garbageCollectorPostProcessor = t3lib_div::getUserObj($classReference);
+
+				if ($garbageCollectorPostProcessor instanceof tx_solr_GarbageCollectorPostProcessor) {
+					$garbageCollectorPostProcessor->postProcessGarbageCollector($table, $uid);
+				} else {
+					throw new UnexpectedValueException(
+						get_class($garbageCollectorPostProcessor) . ' must implement interface tx_solr_GarbageCollectorPostProcessor',
+						1345807460
+					);
+				}
+			}
+		}
 	}
 
 	/**
