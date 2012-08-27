@@ -162,20 +162,6 @@ class tx_solr_Util {
 	}
 
 	/**
-	 * Converts a utf-8 string to the current TYPO3 render charset.
-	 *
-	 * @param	string	$string utf-8 string
-	 * @return	string	Strng converted to current TYPO3 render charset
-	 */
-	public static function utf8Decode($string) {
-		if ($GLOBALS['TSFE']->metaCharset !== 'utf-8') {
-			$string = $GLOBALS['TSFE']->csConvObj->utf8_decode($string, $GLOBALS['TSFE']->renderCharset);
-		}
-
-		return $string;
-	}
-
-	/**
 	 * Shortcut to retrieve the TypoScript configuration for EXT:solr
 	 * (plugin.tx_solr) from TSFE.
 	 *

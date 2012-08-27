@@ -40,13 +40,6 @@ class tx_solr_HtmlContentExtractor {
 	protected $content;
 
 	/**
-	 * Source charset
-	 *
-	 * @var	string
-	 */
-	protected $sourceCharset;
-
-	/**
 	 * Mapping of HTML tags to Solr document fields.
 	 *
 	 * @var	array
@@ -71,14 +64,9 @@ class tx_solr_HtmlContentExtractor {
 	 * Constructor.
 	 *
 	 * @param	string	Content HTML markup
-	 * @param	string	Optional charset of the given string, defaults to utf-8
 	 */
-	public function __construct($content, $sourceCharset = 'utf-8') {
-		$this->sourceCharset = $sourceCharset;
-		$this->content       = t3lib_div::makeInstance('t3lib_cs')->utf8_encode(
-			$content,
-			$this->sourceCharset
-		);
+	public function __construct($content) {
+		$this->content = $content;
 	}
 
 	/**

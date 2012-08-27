@@ -153,10 +153,8 @@ plugin.tx_solr {
 				}
 			}
 
-			# fieldname => processing instruction, available instructions: timestamp, utf8Decode, skip (removes the field from the result)
+			# fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)
 			fieldProcessingInstructions {
-				title = utf8Decode
-				content = utf8Decode
 				changed = timestamp
 				created = timestamp
 				indexed = timestamp

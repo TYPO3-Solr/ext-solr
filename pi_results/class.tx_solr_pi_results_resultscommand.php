@@ -155,7 +155,6 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	 * takes a search result document and processes its fields according to the
 	 * instructions configured in TS. Currently available instructions are
 	 * 	* timestamp - converts a date field into a unix timestamp
-	 * 	* utf8Decode - decodes utf8
 	 * 	* serialize - uses serialize() to encode multivalue fields which then can be put out using the MULTIVALUE view helper
 	 * 	* skip - skips the whole field so that it is not available in the result, usefull for the spell field f.e.
 	 * The default is to do nothing and just add the document's field to the
@@ -191,9 +190,6 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 							// strptime returns the "Years since 1900"
 						$parsedTime['tm_year'] + 1900
 					);
-					break;
-				case 'utf8Decode':
-					$processedFieldValue = tx_solr_Util::utf8Decode($document->{$fieldName});
 					break;
 				case 'serialize':
 					if(!empty($document->{$fieldName})){
