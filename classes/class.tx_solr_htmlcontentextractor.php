@@ -68,7 +68,7 @@ class tx_solr_HtmlContentExtractor {
 
 
 	/**
-	 * Constructor for class tx_solr_ContentExtractor
+	 * Constructor.
 	 *
 	 * @param	string	Content HTML markup
 	 * @param	string	Optional charset of the given string, defaults to utf-8
