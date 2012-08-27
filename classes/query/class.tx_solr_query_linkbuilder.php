@@ -88,8 +88,8 @@ class tx_solr_query_LinkBuilder {
 	 */
 	public function __construct(tx_solr_Query $query) {
 		$this->solrConfiguration = tx_solr_Util::getSolrConfiguration();
-		$this->contentObject = t3lib_div::makeInstance('tslib_cObj');
-		$this->query = $query;
+		$this->contentObject     = t3lib_div::makeInstance('tslib_cObj');
+		$this->query             = $query;
 
 		$this->linkTargetPageId = $this->solrConfiguration['search.']['targetPage'];
 		if (empty($this->linkTargetPageId)) {
