@@ -65,6 +65,10 @@ class tx_solr_facet_LinkBuilder extends tx_solr_query_LinkBuilder {
 		$this->facetName          = $facetName;
 		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 		$this->facetOption        = $facetOption;
+
+		if ($this->solrConfiguration['search.']['faceting.']['facetLinkUrlParameters']) {
+			$this->addUrlParameters($this->solrConfiguration['search.']['faceting.']['facetLinkUrlParameters']);
+		}
 	}
 
 

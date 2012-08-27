@@ -2,6 +2,7 @@
 
 	* Removed tx_solr_Util::utf8Decode(), resolves #40256
 	* Removed option to use curl as HTTP transport between TYPO3 and the Solr server, resolves #39493
+	* Added option plugin.tx_solr.search.faceting.facetLinkUrlParameters, resolves #40060
 
 2012-08-24  Ingo Renner  <ingo.renner@dkd.de>
 

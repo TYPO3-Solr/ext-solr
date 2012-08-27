@@ -73,6 +73,13 @@ class tx_solr_query_LinkBuilder {
 	protected $linkTargetPageId;
 
 	/**
+	 * Additional URL parameters applicaple to all URLs
+	 *
+	 * @var string
+	 */
+	protected $urlParameters = '';
+
+	/**
 	 * Parameters we do not want to appear in the URL, usually for esthetic
 	 * reasons.
 	 *
@@ -158,6 +165,43 @@ class tx_solr_query_LinkBuilder {
 	}
 
 	/**
+	 * Sets general URL GET parameters.
+	 *
+	 * @param string $urlParameters URL GET parameters.
+	 */
+	public function setUrlParameters($urlParameters) {
+		$this->urlParameters = $urlParameters;
+	}
+
+	/**
+	 * Adds general URL GET parameters.
+	 *
+	 * @param string $urlParameters URL GET parameters.
+	 */
+	public function addUrlParameters($urlParameters) {
+		if ($urlParameters[0] != '&') {
+			$urlParameters = '&' . $urlParameters;
+		}
+
+		$this->urlParameters .= $urlParameters;
+	}
+
+	/**
+	 * Gets general URL GET parameters.
+	 *
+	 * @return string Additional URL GET parameters.
+	 */
+	public function getUrlParameters() {
+		$urlParameters = $this->urlParameters;
+
+		if (!empty($urlParameters) && $urlParameters[0] != '&') {
+			$urlParameters = '&' . $urlParameters;
+		}
+
+		return $urlParameters;
+	}
+
+	/**
 	 * Gets the name of the query GET parameter used in URLs and links.
 	 *
 	 * @return string Query GET parameter in URLs and links.
@@ -194,7 +238,9 @@ class tx_solr_query_LinkBuilder {
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($this->prefix => $queryParameters), '', TRUE) . $queryGetParameter
+			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($this->prefix => $queryParameters), '', TRUE)
+				. $this->getUrlParameters()
+				. $queryGetParameter
 		);
 
 			// merge linkConfiguration with typolinkOptions
@@ -226,7 +272,9 @@ class tx_solr_query_LinkBuilder {
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => $queryGetParameter . t3lib_div::implodeArrayForUrl('', array($this->prefix => $queryParameters), '', TRUE)
+			'additionalParams' => $queryGetParameter
+				. t3lib_div::implodeArrayForUrl('', array($this->prefix => $queryParameters), '', TRUE)
+				. $this->getUrlParameters()
 		);
 
 			// merge linkConfiguration with typolinkOptions

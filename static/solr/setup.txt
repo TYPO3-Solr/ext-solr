@@ -279,6 +279,8 @@ plugin.tx_solr {
 
 			facetLinkATagParams = rel="nofollow"
 
+			facetLinkUrlParameters =
+
 			facetOrder = type, author
 			facets {
 				type {
