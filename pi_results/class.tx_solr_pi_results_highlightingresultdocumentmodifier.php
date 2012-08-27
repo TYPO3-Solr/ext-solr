@@ -27,23 +27,23 @@
  * Highlighting result document modifier, highlights query terms in result
  * documents.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class tx_solr_pi_results_HighlightingResultDocumentModifier implements tx_solr_ResultDocumentModifier {
 
 	/**
-	 * @var	tx_solr_Search
+	 * @var tx_solr_Search
 	 */
 	protected $search;
 
 	/**
 	 * Modifies the given document and returns the modified document as result.
 	 *
-	 * @param	tx_solr_pi_results_ResultsCommand	The search result command
-	 * @param	array	Result document as array
-	 * @return	array	The document with fields as array
+	 * @param tx_solr_pi_results_ResultsCommand The search result command
+	 * @param array Result document as array
+	 * @return array The document with fields as array
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
 		$this->search  = $resultCommand->getParentPlugin()->getSearch();
