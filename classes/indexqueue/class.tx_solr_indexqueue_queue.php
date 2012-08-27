@@ -115,7 +115,7 @@ class tx_solr_indexqueue_Queue {
 		}
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
 				$indexQueueInitializationPostProcessor = t3lib_div::getUserObj($classReference);
 
 				if ($indexQueueInitializationPostProcessor instanceof tx_solr_IndexQueueInitializationPostProcessor) {

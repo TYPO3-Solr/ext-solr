@@ -327,7 +327,7 @@ class tx_solr_GarbageCollector {
 		}
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
 				$garbageCollectorPostProcessor = t3lib_div::getUserObj($classReference);
 
 				if ($garbageCollectorPostProcessor instanceof tx_solr_GarbageCollectorPostProcessor) {
