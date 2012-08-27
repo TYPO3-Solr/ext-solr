@@ -49,7 +49,6 @@ class tx_solr_pi_results_HighlightingResultDocumentModifier implements tx_solr_R
 		$this->search  = $resultCommand->getParentPlugin()->getSearch();
 		$configuration = tx_solr_Util::getSolrConfiguration();
 
-			// TODO check whether highlighting is enabled in TS at all
 		$highlightedContent = $this->search->getHighlightedContent();
 
 		if ($highlightedContent->{$resultDocument['id']}->content[0]) {
