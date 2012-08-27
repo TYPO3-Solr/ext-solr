@@ -50,10 +50,9 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 * @param	integer	$port Solr port (optional)
 	 * @param	string	$path Solr path (optional)
 	 * @param	string	$scheme Solr scheme, defaults to http, can be https (optional)
-	 * @param	boolean	$useCurl TRUE to use curl as HTTP transport, defaults to FALSE (optional)
 	 * @return	tx_solr_SolrService	A solr connection.
 	 */
-	public function getConnection($host = '', $port = 8080, $path = '/solr/', $scheme = 'http', $useCurl = FALSE) {
+	public function getConnection($host = '', $port = 8080, $path = '/solr/', $scheme = 'http') {
 		$connection = NULL;
 
 		if (empty($host)) {
@@ -72,7 +71,6 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 			$port    = $solrConfiguration['port'];
 			$path    = $solrConfiguration['path'];
 			$scheme  = $solrConfiguration['scheme'];
-			$useCurl = $solrConfiguration['useCurlHttpTransport'];
 		}
 
 		$connectionHash = md5($scheme . '://' . $host . $port . $path);
@@ -85,11 +83,6 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 				$path,
 				$scheme
 			);
-
-			if ($useCurl) {
-				$curlHttpTransport = t3lib_div::makeInstance('Apache_Solr_HttpTransport_Curl');
-				$connection->setHttpTransport($curlHttpTransport);
-			}
 
 			self::$connections[$connectionHash] = $connection;
 		}
@@ -147,8 +140,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 			$solrServer['solrHost'],
 			$solrServer['solrPort'],
 			$solrServer['solrPath'],
-			$solrServer['solrScheme'],
-			$solrServer['solrUseCurl']
+			$solrServer['solrScheme']
 		);
 
 		return $solrConnection;
@@ -203,8 +195,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 			$solrServer['solrHost'],
 			$solrServer['solrPort'],
 			$solrServer['solrPath'],
-			$solrServer['solrScheme'],
-			$solrServer['solrUseCurl']
+			$solrServer['solrScheme']
 		);
 
 		return $solrConnection;
@@ -236,8 +227,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 				$solrServer['solrHost'],
 				$solrServer['solrPort'],
 				$solrServer['solrPath'],
-				$solrServer['solrScheme'],
-				$solrServer['solrUseCurl']
+				$solrServer['solrScheme']
 			);
 		}
 
@@ -278,8 +268,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 				$solrServer['solrHost'],
 				$solrServer['solrPort'],
 				$solrServer['solrPath'],
-				$solrServer['solrScheme'],
-				$solrServer['solrUseCurl']
+				$solrServer['solrScheme']
 			);
 		}
 
@@ -430,7 +419,6 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 				'solrHost'      => $solrSetup['host'],
 				'solrPort'      => $solrSetup['port'],
 				'solrPath'      => $solrPath,
-				'solrUseCurl'   => $solrSetup['useCurlHttpTransport'],
 
 				'language'      => $languageId
 			);

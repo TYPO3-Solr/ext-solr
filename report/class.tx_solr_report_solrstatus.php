@@ -72,8 +72,7 @@ class tx_solr_report_SolrStatus implements tx_reports_StatusProvider {
 			$solrConection['solrHost'],
 			$solrConection['solrPort'],
 			$solrConection['solrPath'],
-			$solrConection['solrScheme'],
-			$solrConection['solrUseCurl']
+			$solrConection['solrScheme']
 		);
 
 		$message  = '<ul>'

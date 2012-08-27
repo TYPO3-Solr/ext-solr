@@ -207,8 +207,7 @@ class tx_solr_report_IndexReport implements tx_reports_Report {
 			$solrServer['solrHost'],
 			$solrServer['solrPort'],
 			$solrServer['solrPath'],
-			$solrServer['solrScheme'],
-			$solrServer['solrUseCurl']
+			$solrServer['solrScheme']
 		);
 
 		return $solr;
