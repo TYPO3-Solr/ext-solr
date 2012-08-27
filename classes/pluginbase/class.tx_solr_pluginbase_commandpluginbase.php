@@ -59,14 +59,12 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 	 * @return string Rndered plugin content
 	 */
 	protected function render($actionResult) {
-		$commandList     = $this->getCommandList();
-		$commandResolver = $this->getCommandResolver();
+		$commandList = $this->getCommandList();
 
 		foreach ($commandList as $commandName) {
 			$GLOBALS['TT']->push('solr-' . $commandName);
 
-			$command          = $commandResolver->getCommand($commandName, $this);
-			$commandVariables = $command->execute();
+			$commandVariables = $this->executeCommand($commandName);
 
 			if (!is_null($commandVariables)) {
 				$commandContent = $this->renderCommand($commandName, $commandVariables);
@@ -110,6 +108,37 @@ abstract class tx_solr_pluginbase_CommandPluginBase extends tx_solr_pluginbase_P
 		);
 
 		return $subpartTemplate;
+	}
+
+	/**
+	 * Excutes a command.
+	 *
+	 * Provides a hook to manipulate a command's template variables.
+	 *
+	 * @param string $commandName Name of the command to be executed.
+	 * @return array Array of template variables returned by the command.
+	 */
+	protected function executeCommand($commandName) {
+		$commandResolver  = $this->getCommandResolver();
+		$command          = $commandResolver->getCommand($commandName, $this);
+		$commandVariables = $command->execute();
+
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()][$commandName]['postProcessCommandVariables'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()][$commandName]['postProcessCommandVariables'] as $classReference) {
+				$commandPostProcessor = t3lib_div::getUserObj($classReference);
+
+				if ($commandPostProcessor instanceof tx_solr_CommandPostProcessor) {
+					$commandVariables = $commandPostProcessor->postProcessCommandVariables($commandName, $commandVariables);
+				} else {
+					throw new UnexpectedValueException(
+						get_class($commandPostProcessor) . ' must implement interface tx_solr_CommandPostProcessor',
+						1346079897
+					);
+				}
+			}
+		}
+
+		return $commandVariables;
 	}
 
 	/**
