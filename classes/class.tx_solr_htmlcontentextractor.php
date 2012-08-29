@@ -112,6 +112,9 @@ class tx_solr_HtmlContentExtractor {
 			// remove Javascript
 		$content = preg_replace('@<script[^>]*>.*?<\/script>@msi', '', $content);
 
+			// remove internal CSS styles
+		$content = preg_replace('@<style[^>]*>.*?<\/style>@msi', '', $content);
+
 			// prevents concatenated words when stripping tags afterwards
 		$content = str_replace(array('<', '>'), array(' <', '> '), $content);
 		$content = strip_tags($content);
