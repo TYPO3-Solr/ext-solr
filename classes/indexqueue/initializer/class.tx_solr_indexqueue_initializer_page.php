@@ -176,7 +176,42 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 			t3lib_FlashMessageQueue::addMessage($flashMessage);
 		}
 
+		if (!$this->mountedPageExists($mountPage['mountPageSource'])) {
+			$isValidMountPage = FALSE;
+
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				'The mounted page must be accessible in the frontend. '
+					. 'Invalid Mount Page configuration for page ID '
+					. $mountPage['uid'] . ', the mounted page with ID '
+					. $mountPage['mountPageSource']
+					. ' is not accessible in the frontend.',
+				'Failed to initialize Mount Page tree. ',
+				t3lib_FlashMessage::ERROR
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+		}
+
 		return $isValidMountPage;
+	}
+
+	/**
+	 * Checks whether the mounted page (mount page source) exists. That is,
+	 * whether it accessible in the frontend. So the record must exist
+	 * (deleted = 0) and must not be hidden (hidden = 0).
+	 *
+	 * @param integer $mountedPageId Mounted page ID
+	 * @return boolean TRUE if the page is accessible in the frontend, FALSE otherwise.
+	 */
+	protected function mountedPageExists($mountedPageId) {
+		$mountedPageExists = FALSE;
+
+		$mountedPage = t3lib_BEfunc::getRecord('pages', $mountedPageId, '*', 'AND hidden = 0');
+		if (!empty($mountedPage)) {
+			$mountedPageExists = TRUE;
+		}
+
+		return $mountedPageExists;
 	}
 
 	/**

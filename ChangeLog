@@ -4,6 +4,7 @@
 	* Fixed bug #40034: Typo in TypoScript: searchUsingSpellChekerSuggestion, credits Peter Kraume
 	* Fixed bug #39866: HTMLContentExtractor does not remove internal style sheet information, credits Dominik Steinborn
 	* Fixed bug #39652: Facet "showEvenWhenEmpty" option not working, credits Michel Tremblay
+	* Fixed bug #38039: When initializing the page Index Queue check for existence of mount page target pages
 
 2012-08-27  Ingo Renner  <ingo.renner@dkd.de>
 
