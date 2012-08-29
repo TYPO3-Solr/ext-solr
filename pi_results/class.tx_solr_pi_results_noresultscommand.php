@@ -55,7 +55,7 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 
 		$markers = $this->getLabelMarkers();
 
-		if ($this->parentPlugin->conf['search.']['spellchecking.']['searchUsingSpellChekerSuggestion']) {
+		if ($this->parentPlugin->conf['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion']) {
 			$markers['suggestion_results'] = $this->getSuggestionResults();
 		}
 

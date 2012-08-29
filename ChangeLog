@@ -1,6 +1,7 @@
 2012-08-29  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added logging for cases when the relevance view helper can not retrieve a document's score
+	* Fixed bug #40034: Typo in TypoScript: searchUsingSpellChekerSuggestion, credits Peter Kraume
 
 2012-08-27  Ingo Renner  <ingo.renner@dkd.de>
 
@@ -150,7 +151,7 @@
 	* Added tx_solr_pi_results_ResultsCommand->setSearch()
 	* Added tx_solr_Query->getKeywordsCleaned()
 	* Added feature to search using the spell checker suggestions when no results were found for the original query
-	* Added option tx_solr.search.spellchecking.searchUsingSpellChekerSuggestion
+	* Added option tx_solr.search.spellchecking.searchUsingSpellCheckerSuggestion
 	* Added support for keepAllOptionsOnSelection with facet queries
 	* Added API methods to the Index Queue to initialize specific indexing configurations only
 	* Added a field in the backend module to select which Index Queue indexing configurations to initialize

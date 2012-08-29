@@ -207,7 +207,7 @@ plugin.tx_solr {
 		spellchecking = 0
 		spellchecking {
 			wrap = |<div class="spelling-suggestions">###LLL:didYouMean### |</div>|
-			searchUsingSpellChekerSuggestion = 0
+			searchUsingSpellCheckerSuggestion = 0
 		}
 
 		lastSearches = 0
