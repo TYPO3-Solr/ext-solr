@@ -124,7 +124,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 
 			// if the facet doesn't provide any options, don't render it unless
 			// it is configured to be rendered nevertheless
-		if (!$this->facet->isEmpty() || $showEmptyFacets || $showEmptyFacet) {
+		if (!$this->facet->isEmpty() || $showEmptyFacets || $showEvenWhenEmpty) {
 			$facetTemplate = clone $this->template;
 			$facetTemplate->workOnSubpart('single_facet');
 
