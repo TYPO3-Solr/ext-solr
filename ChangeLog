@@ -1,3 +1,7 @@
+2012-08-29  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added logging for cases when the relevance view helper can not retrieve a document's score
+
 2012-08-27  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Removed tx_solr_Util::utf8Decode(), resolves #40256

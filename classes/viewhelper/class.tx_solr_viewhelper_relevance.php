@@ -87,7 +87,8 @@ class tx_solr_viewhelper_Relevance implements tx_solr_ViewHelper {
 	 * @throws RuntimeException if the serialized result document array cannot be unserialized
 	 */
 	protected function getScore($document) {
-		$score = 0;
+		$rawDocument = $document;
+		$score       = 0;
 
 		if (is_numeric($document)) {
 				// backwards compatibility
@@ -105,6 +106,14 @@ class tx_solr_viewhelper_Relevance implements tx_solr_ViewHelper {
 		if (is_array($document)) {
 			$score = $document['score'];
 		} else {
+			$solrConfiguration = tx_solr_Util::getSolrConfiguration();
+			if ($solrConfiguration['logging.']['exceptions']) {
+				t3lib_div::devLog('Could not resolve document score for relevance calculation', 'solr', 3, array(
+					'rawDocument'          => $rawDocument,
+					'unserializedDocument' => $document
+				));
+			}
+
 			throw new RuntimeException(
 				'Could not resolve document score for relevance calculation',
 				1343670545
