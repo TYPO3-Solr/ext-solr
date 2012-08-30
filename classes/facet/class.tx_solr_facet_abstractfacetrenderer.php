@@ -98,7 +98,6 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 		$this->linkTargetPageId   = $GLOBALS['TSFE']->id;
 
-
 		$this->queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
 	}
 
@@ -213,6 +212,7 @@ abstract class tx_solr_facet_AbstractFacetRenderer implements tx_solr_FacetRende
 	 */
 	public function setLinkTargetPageId($linkTargetPageId){
 		$this->linkTargetPageId = intval($linkTargetPageId);
+		$this->queryLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 	}
 
 	/**
