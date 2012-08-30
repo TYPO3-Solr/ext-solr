@@ -2,7 +2,8 @@
 
 	* Fixed bug #40386: PHP 5.4 Compatibility
 	* Fixed bug #40382: Typo in Method getPageTitle prevents pagetitle from being indexed in some cases, credits Dominik Steinborn
-	* Fixed a bug where the facet option links did not have the correct target page 
+	* Fixed a bug where the facet option links did not have the correct target page
+	* Fixed a bug where the used facet option links did not have the correct target page
 
 2012-08-29  Ingo Renner  <ingo.renner@dkd.de>
 

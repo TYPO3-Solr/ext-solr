@@ -147,12 +147,8 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 
 		$query = $this->search->getQuery();
 
-
 		$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
 		$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
-
-
-
 
 		$resultParameters = t3lib_div::_GET('tx_solr');
 		$filterParameters = array();
@@ -181,6 +177,7 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 # FIXME usage of $query
 				$query
 			);
+			$usedFacetRenderer->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
 			$facetToRemove = $usedFacetRenderer->render();
 

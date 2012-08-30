@@ -72,7 +72,8 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 			$this->query,
 			$this->facetName,
 			$facetOption
-		);
+		); /* @var $facetLinkBuilder tx_solr_facet_LinkBuilder */
+		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 		if ($this->facetConfiguration['type'] == 'hierarchy') {
 				// FIXME decouple this
