@@ -110,7 +110,7 @@ class tx_solr_Typo3PageContentExtractor extends tx_solr_HtmlContentExtractor {
 		} elseif ($page->altPageTitle) {
 			$pageTitle = $page->altPageTitle;
 		} else {
-			$pageTite = $page->page['title'];
+			$pageTitle = $page->page['title'];
 		}
 
 		return $pageTitle;
