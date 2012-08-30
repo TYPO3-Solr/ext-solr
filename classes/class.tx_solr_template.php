@@ -312,6 +312,16 @@ class tx_solr_Template {
 				);
 			}
 		}
+
+		$unresolvedConditions = $this->findConditions($this->workOnSubpart);
+		foreach ($unresolvedConditions as $unresolvedCondition) {
+				// if condition evaluates to FALSE, remove the content from the template
+			$this->workOnSubpart = t3lib_parsehtml::substituteSubpart(
+				$this->workOnSubpart,
+				$unresolvedCondition['marker'],
+				''
+			);
+		}
 	}
 
 	/**
@@ -588,6 +598,12 @@ class tx_solr_Template {
 
 			// evaluate conditions
 		foreach ($conditions as $condition) {
+			if ($this->isVariableMarker($condition['comparand1'])
+			|| $this->isVariableMarker($condition['comparand2'])) {
+					// unresolved marker => skip, will be resolved later
+				continue;
+			}
+
 			$conditionResult = $this->evaluateCondition(
 				$condition['comparand1'],
 				$condition['comparand2'],
@@ -994,6 +1010,19 @@ class tx_solr_Template {
 		$markers = array_unique($match[1]);
 
 		return $markers;
+	}
+
+	/**
+	 * Checks whether a given string is a variable marker
+	 *
+	 * @param string $potentialVariableMarker String to check whether it is a variable marker
+	 * @return boolean TRUE if the string is identified being a variable marker, FALSE otherwise
+	 */
+	public function isVariableMarker($potentialVariableMarker) {
+		$regex = '!###[A-Z0-9_-]*\.[A-Z0-9_-|:.]*\###!is';
+		$isVariableMarker = preg_match($regex, $potentialVariableMarker);
+
+		return (boolean) $isVariableMarker;
 	}
 
 	public function setTemplateContent($templateContent) {
