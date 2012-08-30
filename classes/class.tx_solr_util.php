@@ -224,6 +224,10 @@ class tx_solr_Util {
 				$rootLine   = $pageSelect->getRootLine($pageId);
 
 				if (empty($GLOBALS['TSFE']->sys_page)) {
+					if (empty($GLOBALS['TSFE'])) {
+						$GLOBALS['TSFE'] = new stdClass();
+					}
+
 					$GLOBALS['TSFE']->sys_page = $pageSelect;
 				}
 
