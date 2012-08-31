@@ -187,6 +187,16 @@ class tx_solr_query_LinkBuilder {
 	}
 
 	/**
+	 * Adds an unwanted URL parameter that should get removed if found when
+	 * building URLs.
+	 *
+	 * @param string $unwantedUrlParameter URL GET parameter
+	 */
+	public function addUnwantedUrlParameter($unwantedUrlParameter) {
+		$this->unwantedUrlParameters[] = $unwantedUrlParameter;
+	}
+
+	/**
 	 * Gets general URL GET parameters.
 	 *
 	 * @return string Additional URL GET parameters.

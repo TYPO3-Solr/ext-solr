@@ -148,7 +148,27 @@ class tx_solr_pi_results_FacetingCommand implements tx_solr_PluginCommand {
 		$query = $this->search->getQuery();
 
 		$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->search->getQuery());
+		/* @var $queryLinkBuilder tx_solr_query_LinkBuilder */
 		$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
+
+			// URL parameters added to facet URLs may not need to be added to the facets reset URL
+		if (!empty($this->configuration['search.']['faceting.']['facetLinkUrlParameters'])
+		&& isset($this->configuration['search.']['faceting.']['facetLinkUrlParameters.']['useForFacetResetLinkUrl'])
+		&& $this->configuration['search.']['faceting.']['facetLinkUrlParameters.']['useForFacetResetLinkUrl'] === '0') {
+			$addedUrlParameters = t3lib_div::explodeUrl2Array($this->configuration['search.']['faceting.']['facetLinkUrlParameters']);
+			$addedUrlParameterKeys = array_keys($addedUrlParameters);
+
+			foreach ($addedUrlParameterKeys as $addedUrlParameterKey) {
+				if (t3lib_div::isFirstPartOfStr($addedUrlParameterKey, 'tx_solr')) {
+
+					$addedUrlParameterKey = substr($addedUrlParameterKey, 8, -1);
+					$queryLinkBuilder->addUnwantedUrlParameter($addedUrlParameterKey);
+
+				}
+
+
+			}
+		}
 
 		$resultParameters = t3lib_div::_GET('tx_solr');
 		$filterParameters = array();
