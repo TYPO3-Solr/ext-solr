@@ -268,7 +268,7 @@ class tx_solr_Query {
 	 * @return	boid
 	 */
 	public function setPage($page) {
-		$this->page = t3lib_div::intval_positive($page);
+		$this->page = max(intval($page), 0);
 	}
 
 	/**
@@ -421,7 +421,7 @@ class tx_solr_Query {
 	 * @param integer $numberOfResults Maximum number of results per group to return
 	 */
 	public function setNumberOfResultsPerGroup($numberOfResults) {
-		$numberOfResults = t3lib_div::intval_positive($numberOfResults);
+		$numberOfResults = max(intval($numberOfResults), 0);
 
 		$this->queryParameters['group.limit'] = $numberOfResults;
 	}
