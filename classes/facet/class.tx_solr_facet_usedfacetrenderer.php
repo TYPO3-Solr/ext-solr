@@ -86,7 +86,11 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 			$facetText = $facetOption->render();
 		}
 
-		$facetLabel = $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label'];
+		$contentObject = t3lib_div::makeInstance('tslib_cObj');
+		$facetLabel = $contentObject->stdWrap(
+			$solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label'],
+			$solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label.']
+		);
 
 		$removeFacetText = strtr(
 			$solrConfiguration['search.']['faceting.']['removeFacetLinkText'],
