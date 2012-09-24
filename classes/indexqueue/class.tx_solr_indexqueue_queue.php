@@ -364,13 +364,13 @@ class tx_solr_indexqueue_Queue {
 		$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
 
 			# temporary until we have a query builder to take care of this
-		if ($itemType == 'pages' && !$this->isAllowedPageType($record)) {
+		if (empty($record) || ($itemType == 'pages' && !$this->isAllowedPageType($record))) {
 			return;
 		}
 
 		$rootPageId = tx_solr_Util::getRootPageId($record['pid']);
 
-		if ($record && $record['pid'] != 0 && tx_solr_Util::isRootPage($rootPageId)) {
+		if ($record['pid'] != 0 && tx_solr_Util::isRootPage($rootPageId)) {
 			$item = array(
 				'root'      => $rootPageId,
 				'item_type' => $itemType,

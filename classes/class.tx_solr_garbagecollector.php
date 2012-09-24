@@ -27,6 +27,8 @@
  * Garbage Collector, removes related documents from the index when a record is
  * set to hidden, is deleted or is otherwise made invisible to website visitors.
  *
+ * Garbage collection will happen for online/LIVE workspaces only.
+ *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
  * @subpackage	solr
@@ -45,7 +47,8 @@ class tx_solr_GarbageCollector {
 	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
-		if ($command == 'delete') {
+			// workspaces: collect garbage only for LIVE workspace
+		if ($command == 'delete' && $GLOBALS['BE_USER']->workspace == 0) {
 			$this->collectGarbage($table, $uid);
 
 			if ($table == 'pages') {
@@ -65,8 +68,8 @@ class tx_solr_GarbageCollector {
 	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
-		if ($command == 'move' && $table == 'pages') {
-
+			// workspaces: collect garbage only for LIVE workspace
+		if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
 				// TODO the below comment is not valid anymore, pid has been removed from doc ID
 				// ...still needed?
 
@@ -93,6 +96,11 @@ class tx_solr_GarbageCollector {
 	public function processDatamap_preProcessFieldArray($incomingFields, $table, $uid, t3lib_TCEmain $tceMain) {
 		if (!is_int($uid)) {
 				// a newly created record, skip
+			return;
+		}
+
+		if (tx_solr_Util::isDraftRecord($table, $uid)) {
+				// skip workspaces: collect garbage only for LIVE workspace
 			return;
 		}
 
@@ -132,19 +140,22 @@ class tx_solr_GarbageCollector {
 			return;
 		}
 
+		if (tx_solr_Util::isDraftRecord($table, $uid)) {
+				// skip workspaces: collect garbage only for LIVE workspace
+			return;
+		}
+
 		$garbageCollectionRelevantFields = $this->getVisibilityAffectingFieldsByTable($table);
 
 		$record = t3lib_BEfunc::getRecord($table, $uid, $garbageCollectionRelevantFields, '', FALSE);
 		$record = $this->normalizeFrontendGroupField($table, $record);
-		if (!$this->isInDraftWorkspace($record)
-			&&
-			($this->isHidden($table, $record)
-				|| $this->isStartTimeInFuture($table, $record)
-				|| $this->isEndTimeInPast($table, $record)
-				|| $this->hasFrontendGroupsRemoved($table, $record)
-				|| ($table == 'pages' && $this->isPageExcludedFromSearch($record))
-				|| ($table == 'pages' && !$this->isIndexablePageType($record))
-			)
+
+		if ($this->isHidden($table, $record)
+			|| $this->isStartTimeInFuture($table, $record)
+			|| $this->isEndTimeInPast($table, $record)
+			|| $this->hasFrontendGroupsRemoved($table, $record)
+			|| ($table == 'pages' && $this->isPageExcludedFromSearch($record))
+			|| ($table == 'pages' && !$this->isIndexablePageType($record))
 		) {
 			$this->collectGarbage($table, $uid);
 		}
@@ -182,23 +193,9 @@ class tx_solr_GarbageCollector {
 		return $visibilityAffectingFields[$table];
 	}
 
+
 	// methods checking whether to trigger garbage collection
 
-	/**
-	 * Checks whether the current record is in a draft workspace.
-	 *
-	 * @param array An array with record fields.
-	 * @return boolean TRUE if the record is in a draft workspace, FALSE otherwise.
-	 */
-	protected function isInDraftWorkspace(array $record) {
-		$isInWorkspace = FALSE;
-
-		if ($record['pid'] == -1) {
-			$isInWorkspace = TRUE;
-		}
-
-		return $isInWorkspace;
-	}
 
 	/**
 	 * Checks whether a hidden field exists for the current table and if so

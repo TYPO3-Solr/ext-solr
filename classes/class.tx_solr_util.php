@@ -425,6 +425,28 @@ class tx_solr_Util {
 
 		return $siteHash;
 	}
+
+	/**
+	 * Check if record ($table, $uid) is a workspace record
+	 *
+	 * @param string $table The table the record belongs to
+	 * @param integer $uid The record's uid
+	 * @return boolean TRUE if the record is in a draft workspace, FALSE if it's a LIVE record
+	 */
+	public static function isDraftRecord($table, $uid) {
+		$isWorkspaceRecord = FALSE;
+
+		if (t3lib_BEfunc::isTableWorkspaceEnabled($table)) {
+			$record = t3lib_BEfunc::getRecord($table, $uid);
+
+			if ($record['pid'] == '-1' || $record['t3ver_state'] > 0) {
+				$isWorkspaceRecord = TRUE;
+			}
+		}
+
+		return $isWorkspaceRecord;
+	}
+
 }
 
 

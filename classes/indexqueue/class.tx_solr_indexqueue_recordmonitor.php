@@ -23,8 +23,6 @@
 ***************************************************************/
 
 
-// TODO track publish / swap events for records (workspace support)
-
 /**
  * A class that monitors changes to records so that the changed record gets
  * passed to the index queue to update the according index document.
@@ -68,13 +66,15 @@ class tx_solr_indexqueue_RecordMonitor {
 	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
-		if ($command == 'delete' && $table == 'tt_content') {
+		if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
+				// skip workspaces: index only LIVE workspace
 			$this->indexQueue->updateItem('pages', $tceMain->getPID($table, $uid));
 		}
 	}
 
 	/**
-	 * Hooks into TCE main and tracks page move commands.
+	 * Hooks into TCE main and tracks workspace publish/swap events and
+	 * page move commands in LIVE workspace.
 	 *
 	 * @param	string	The command.
 	 * @param	string	The table the record belongs to
@@ -83,7 +83,59 @@ class tx_solr_indexqueue_RecordMonitor {
 	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
-		if ($command == 'move' && $table == 'pages') {
+		if (tx_solr_Util::isDraftRecord($table, $uid)) {
+				// skip workspaces: index only LIVE workspace
+			return;
+		}
+
+			// track publish / swap events for records (workspace support)
+			// command "version"
+		if ($command == 'version' && $value['action'] == 'swap') {
+			switch ($table) {
+				case 'tt_content':
+					$uid   = $tceMain->getPID($table, $uid);
+					$table = 'pages';
+				case 'pages':
+					$record = t3lib_BEfunc::getRecord($table, $uid, '*', '', FALSE);
+
+					$this->updateMountPages($uid);
+
+					if ($this->isEnabledRecord($table, $record)) {
+						$this->indexQueue->updateItem($table, $uid);
+					} else {
+							// TODO should be moved to garbage collector
+						if ($this->indexQueue->containsItem($table, $uid)) {
+							$this->removeFromIndexAndQueue($table, $uid);
+						}
+					}
+					break;
+				default:
+					$recordPageId    = $tceMain->getPID($table, $uid);
+					$monitoredTables = $this->getMonitoredTables($recordPageId);
+
+					if (in_array($table, $monitoredTables)) {
+						$record = t3lib_BEfunc::getRecord($table, $uid, '*', '', FALSE);
+
+						if ($this->isLocalizedRecord($table, $record)) {
+								// if it's a localization overlay, update the original record instead
+							$uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
+						}
+
+						if ($this->isEnabledRecord($table, $record)) {
+							$this->indexQueue->updateItem($table, $uid);
+						} else {
+								// TODO should be moved to garbage collector
+							if ($this->indexQueue->containsItem($table, $uid)) {
+								$this->removeFromIndexAndQueue($table, $uid);
+							}
+						}
+					}
+			}
+
+		}
+
+		if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
+				// moving pages in LIVE workspace
 			$this->indexQueue->updateItem('pages', $uid);
 		}
 	}
@@ -107,6 +159,11 @@ class tx_solr_indexqueue_RecordMonitor {
 
 		if ($status == 'new') {
 			$recordUid = $tceMain->substNEWwithIDs[$recordUid];
+		}
+
+		if (tx_solr_Util::isDraftRecord($table, $recordUid)) {
+				// skip workspaces: index only LIVE workspace
+			return;
 		}
 
 		if ($status == 'update' && !isset($fields['pid'])) {
@@ -237,9 +294,9 @@ class tx_solr_indexqueue_RecordMonitor {
 		foreach ($indexingConfigurations as $indexingConfigurationName) {
 			$monitoredTable = $indexingConfigurationName;
 
-			if (!empty($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
+			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
 					// table has been set explicitly. Allows to index the same table with different configurations
-				$monitoredTable = $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
+				$monitoredTable = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
 			}
 
 			$monitoredTables[] = $monitoredTable;
@@ -341,6 +398,35 @@ class tx_solr_indexqueue_RecordMonitor {
 
 		return $isLocalizedRecord;
 	}
+
+	/**
+	 * Checks if a record is "enabled"
+	 *
+	 * A record is considered "enabeled" if
+	 *  - it is not hidden
+	 *  - it is not deleted
+	 *  - as a page it is not set to be excluded from search
+	 *
+	 * @param string $table The record's table name
+	 * @param array $record The record to check
+	 * @return boolean TRUE if the record is enabled, FALSE otherwise
+	 */
+	protected function isEnabledRecord($table, $record) {
+		$recordEnabled = TRUE;
+
+		if (
+			(isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled']) && !empty($record[$GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled']]))
+			||
+			(isset($GLOBALS['TCA'][$table]['ctrl']['delete']) && !empty($record[$GLOBALS['TCA'][$table]['ctrl']['delete']]))
+			||
+			($table == 'pages' && !empty($record['no_search']))
+		) {
+			$recordEnabled = FALSE;
+		}
+
+		return $recordEnabled;
+	}
+
 }
 
 
