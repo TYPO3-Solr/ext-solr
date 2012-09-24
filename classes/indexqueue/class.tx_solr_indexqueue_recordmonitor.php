@@ -36,6 +36,8 @@ class tx_solr_indexqueue_RecordMonitor {
 	/**
 	 * Solr TypoScript configuration
 	 *
+	 * TODO check whether we need this or whether it's better to retrieve each time as in getMonitoredTables()
+	 *
 	 * @var array
 	 */
 	protected $solrConfiguration;
