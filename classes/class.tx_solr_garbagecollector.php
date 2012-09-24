@@ -178,8 +178,8 @@ class tx_solr_GarbageCollector {
 				$fields = array_merge($fields, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);
 			}
 
-			if (isset($GLOBALS['TCA'][$table]['delete'])) {
-				$fields[] = $GLOBALS['TCA'][$table]['delete'];
+			if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
+				$fields[] = $GLOBALS['TCA'][$table]['ctrl']['delete'];
 			}
 
 			if ($table == 'pages') {
