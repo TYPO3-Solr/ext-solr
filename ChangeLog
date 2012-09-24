@@ -1,3 +1,7 @@
+2012-09-24  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added Worsapces publishing / swap support, credits Rolf Hofmann
+
 2012-09-20  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed a bug with Mount Page Index Queue initialization resulting in incorrect SQL, credits Florian Megyesi
