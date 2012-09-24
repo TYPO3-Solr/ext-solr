@@ -206,7 +206,7 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 	protected function mountedPageExists($mountedPageId) {
 		$mountedPageExists = FALSE;
 
-		$mountedPage = t3lib_BEfunc::getRecord('pages', $mountedPageId, '*', 'AND hidden = 0');
+		$mountedPage = t3lib_BEfunc::getRecord('pages', $mountedPageId, '*', ' AND hidden = 0');
 		if (!empty($mountedPage)) {
 			$mountedPageExists = TRUE;
 		}
