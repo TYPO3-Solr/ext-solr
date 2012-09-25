@@ -1,3 +1,20 @@
+2012-09-25  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added Support for Apache Solr 3.6
+
+	* Added Solr /browse request handler
+	* Changed solrconfig.xml for Apache Solr 3.6
+	* Changed schema.xml for Apache Solr 3.6
+	* Changed default operator to OR
+	* Added textpath field type in schema.xml
+	* Added geohash dynamic field in schema
+	* Added currency field type and dynamic field
+	* Changed german, english, and arabic schema to use Solr 3.6 filters
+	* Removed language field from schema.xml
+	* Changed schema version to 2.8
+	* Added json update request handler
+	* Added analysis request handlers
+
 2012-09-24  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added Worsapces publishing / swap support, credits Rolf Hofmann
