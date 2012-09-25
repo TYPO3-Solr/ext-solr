@@ -33,8 +33,8 @@
 		1.5: omitNorms defaults to true for primitive field types (int, float, boolean, string...)
 	-->
 
-<!-- xinclude fields -->
-<xi:include href="../general_schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+	<!-- xinclude fields -->
+	<xi:include href="../general_schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
 	<types>
 		<!-- A text field that uses WordDelimiterFilter to enable splitting and matching of
@@ -133,30 +133,13 @@
 
 	</types>
 
+	<!--  xinclude types-->
+	<xi:include href="../general_schema_fields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
 
-<!--  xinclude types-->
-<xi:include href="../general_schema_fields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+	<!--
+		Field to use to determine and enforce document uniqueness. Unless this
+		field is marked with required="false", it will be a required field
+	-->
+	<uniqueKey>id</uniqueKey>
 
-<!--
-	Field to use to determine and enforce document uniqueness. Unless this
-	field is marked with required="false", it will be a required field
--->
-<uniqueKey>id</uniqueKey>
-
-<!--
-	Similarity is the scoring routine for each document vs. a query. A
-	custom similarity may be specified here, but the default is fine for
-	most applications.
--->
-<!--
-	<similarity class="org.apache.lucene.search.DefaultSimilarity"/>
--->
-<!--
-	... OR ... Specify a SimilarityFactory class name implementation
-	allowing parameters to be used.
--->
-<!--
-	<similarity class="com.example.solr.CustomSimilarityFactory"> <str
-	name="paramkey">param value</str> </similarity>
--->
 </schema>
