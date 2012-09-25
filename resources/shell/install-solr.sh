@@ -7,8 +7,8 @@
 clear
 
 TOMCAT_VER=6.0.35
-SOLR_VER=3.5.0
-EXT_SOLR_VER=2.3
+SOLR_VER=3.6.1
+EXT_SOLR_VER=2.5
 EXT_SOLR_PLUGIN_VER=1.2.0
 
 GITBRANCH_PATH="solr_$EXT_SOLR_VER.x"
@@ -194,8 +194,7 @@ TOMCAT_MAINVERSION=`echo "$TOMCAT_VER" | cut -d'.' -f1`
 wget --progress=bar:force http://apache.osuosl.org/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VER/bin/apache-tomcat-$TOMCAT_VER.zip 2>&1 | progressfilt
 
 cecho "Downloading Apache Solr $SOLR_VER" $green
-wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/apache-solr-3.5.0.zip 2>&1 | progressfilt
-#wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR_VER/apache-solr-$SOLR_VER.zip 2>&1 | progressfilt
+wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR_VER/apache-solr-$SOLR_VER.zip 2>&1 | progressfilt
 
 cecho "Unpacking Apache Tomcat." $green
 unzip -q apache-tomcat-$TOMCAT_VER.zip
