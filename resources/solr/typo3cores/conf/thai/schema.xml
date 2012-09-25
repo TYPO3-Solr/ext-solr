@@ -145,7 +145,7 @@
 	<defaultSearchField>content</defaultSearchField>
 
 	<!-- SolrQueryParser configuration: defaultOperator="AND|OR" -->
-	<solrQueryParser defaultOperator="AND" />
+	<solrQueryParser defaultOperator="OR" />
 
 	<!--
 		Similarity is the scoring routine for each document vs. a query. A
