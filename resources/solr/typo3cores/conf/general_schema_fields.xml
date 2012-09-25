@@ -69,7 +69,6 @@
 	<field name="typeNum"  type="integer" indexed="true" stored="true" />
 	<field name="created"  type="date"    indexed="true" stored="true" />
 	<field name="changed"  type="date"    indexed="true" stored="true" />
-	<field name="language" type="string"  indexed="true" stored="true" default="0" />
 	<field name="rootline" type="string"  indexed="true" stored="true" multiValued="true" />
 
 	<!-- access fields -->

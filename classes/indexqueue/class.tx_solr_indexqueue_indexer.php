@@ -198,16 +198,6 @@ class tx_solr_indexqueue_Indexer {
 
 		$document = $this->getBaseDocument($item);
 
-			// setting the document's language
-		if (isset($GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'])) {
-			$document->setField(
-				'language',
-				$itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['languageField']]
-			);
-		} else {
-			$document->setField('language', $language);
-		}
-
 			// mapping of record fields => solr document fields, resolving cObj
 		foreach ($itemIndexingConfiguration as $solrFieldName => $recordFieldName) {
 			if (is_array($recordFieldName)) {
