@@ -20,7 +20,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-2-5-0--20120214" version="1.4" >
+<schema name="tx_solr-2-5-0--20120925" version="1.5" >
 	<!-- attribute "name" is the name of this schema and is only used for display purposes.
 		Applications should change this to reflect the nature of the search collection.
 		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
@@ -30,6 +30,7 @@
 		1.2: omitTermFreqAndPositions attribute introduced, true by default except for text fields.
 		1.3: removed optional field compress feature
 		1.4: default auto-phrase (QueryParser feature) to off
+		1.5: omitNorms defaults to true for primitive field types (int, float, boolean, string...)
 	-->
 
 <xi:include href="../general_schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
