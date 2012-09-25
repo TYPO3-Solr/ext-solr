@@ -220,6 +220,8 @@
 	<fieldtype name="geohash" class="solr.GeoHashField"/>
 
 
+	<fieldType name="currency" class="solr.CurrencyField" precisionStep="8" defaultCurrency="USD" currencyConfig="currency.xml" />
+
 
 	<!-- since fields of this type are by default not stored or indexed, any data added to
 		them will be ignored outright

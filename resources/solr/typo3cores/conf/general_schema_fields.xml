@@ -199,6 +199,7 @@
 	<dynamicField name="*_location"  type="location"  indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_geohash"   type="geohash"   indexed="true" stored="true" multiValued="false" />
 
+	<dynamicField name="*_currency"  type="currency"  indexed="true" stored="true" multiValued="false" />
 
 	<!-- Type used to index the latitude and longitude components for the "location" field type -->
 	<dynamicField name="*_coordinate" type="tdouble"  indexed="true" stored="false" multiValued="false" />
