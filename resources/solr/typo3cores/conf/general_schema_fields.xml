@@ -186,6 +186,7 @@
 	<dynamicField name="*_textSortM" type="textSort"  indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_textWstS"  type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textWstM"  type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="true" />
+	<dynamicField name="*_textPath"  type="textPath"  indexed="true" stored="true" multiValued="false" />
 
 
 	<dynamicField name="*_phoneticS" type="phonetic"  indexed="true" stored="true" multiValued="false" />

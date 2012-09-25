@@ -164,6 +164,12 @@
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
+	
+	<fieldType name="textPath" class="solr.TextField" positionIncrementGap="100">
+		<analyzer type="index">
+			<tokenizer class="solr.PathHierarchyTokenizerFactory"/>
+		</analyzer>
+	</fieldType>
 
 
 	<fieldtype name="phonetic" stored="false" indexed="true" class="solr.TextField" >
