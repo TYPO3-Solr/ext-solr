@@ -242,7 +242,6 @@ wgetresource solr/typo3cores/conf/currency.xml
 wgetresource solr/typo3cores/conf/elevate.xml
 wgetresource solr/typo3cores/conf/general_schema_fields.xml
 wgetresource solr/typo3cores/conf/general_schema_types.xml
-wgetresource solr/typo3cores/conf/mapping-ISOLatin1Accent.txt
 wgetresource solr/typo3cores/conf/solrconfig.xml
 
 # download core configuration file solr.xml in /opt/solr-tomcat/solr/
