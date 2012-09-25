@@ -84,6 +84,7 @@
 					analyzers to leave a 'gap' for more accurate phrase queries.
 				-->
 				<filter class="solr.StopFilterFactory" words="german/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
+				<filter class="solr.GermanNormalizationFilterFactory"/>
 				<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
@@ -101,6 +102,7 @@
 				/>
 				<filter class="solr.LowerCaseFilterFactory"/>
 				<filter class="solr.StopFilterFactory" words="german/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
+				<filter class="solr.GermanNormalizationFilterFactory"/>
 				<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
@@ -140,6 +142,7 @@
 					catenateAll="0"
 					preserveOriginal="1"
 				/>
+				<filter class="solr.GermanNormalizationFilterFactory"/>
 				<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
 				<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			</analyzer>
