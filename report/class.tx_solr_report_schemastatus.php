@@ -44,7 +44,7 @@ class tx_solr_report_SchemaStatus implements tx_reports_StatusProvider {
 	 *
 	 * @var	string
 	 */
-	const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-2-5-0--20120925';
+	const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-2-8-0--20120925';
 
 	/**
 	 * Compiles a collection of schema version checks against each configured
