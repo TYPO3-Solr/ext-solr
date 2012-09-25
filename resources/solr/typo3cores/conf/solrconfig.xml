@@ -245,6 +245,9 @@
 	<requestHandler name="/update/csv" class="solr.CSVRequestHandler" startup="lazy" />
 
 
+	<requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler" startup="lazy" />
+
+
 	<requestHandler name="/update/extract" class="org.apache.solr.handler.extraction.ExtractingRequestHandler" startup="lazy" />
 
 
