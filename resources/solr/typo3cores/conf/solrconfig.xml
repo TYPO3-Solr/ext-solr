@@ -149,6 +149,7 @@
 			<str name="echoParams">explicit</str>
 			<str name="qf">content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline^1.0</str>
 			<str name="pf">content^2.0</str>
+			<str name="df">content</str>
 			<int name="ps">15</int>
 	
 			<str name="mm">2&lt;-35%</str>
