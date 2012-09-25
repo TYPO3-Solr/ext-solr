@@ -251,6 +251,10 @@
 	<requestHandler name="/update/extract" class="org.apache.solr.handler.extraction.ExtractingRequestHandler" startup="lazy" />
 
 
+	<requestHandler name="/analysis/field" class="solr.FieldAnalysisRequestHandler" startup="lazy" />
+	
+	<requestHandler name="/analysis/document" class="solr.DocumentAnalysisRequestHandler" startup="lazy" />
+
 <!--
 	<requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">
 		<lst name="defaults">
