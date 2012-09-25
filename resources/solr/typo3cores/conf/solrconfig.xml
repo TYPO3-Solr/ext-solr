@@ -281,10 +281,12 @@
 
 
 	<requestHandler name="/admin/ping" class="PingRequestHandler">
-		<lst name="defaults">
-			<str name="qt">standard</str>
+		<lst name="invariants">
 			<str name="q">solrpingquery</str>
+		</lst>
+		<lst name="defaults">
 			<str name="echoParams">all</str>
+			<str name="df">id</str>
 		</lst>
 	</requestHandler>
 
