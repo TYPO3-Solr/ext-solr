@@ -261,13 +261,8 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 			$conditions['disabled'] = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['disabled'] . ' = 0';
 		}
 
-			// TODO the indexer should take care of starttime instead of the initializer
-			// index as soon as starttime is reached
-		if (isset($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'])) {
-			$conditions['starttime'] = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'] . ' < ' . time();
-		}
-
 		if (isset($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['endtime'])) {
+				// only include records with a future endtime or default value (0)
 			$endTimeFieldName = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['endtime'];
 			$conditions['endtime'] = '(' . $endTimeFieldName . ' > ' . time() . ' OR ' . $endTimeFieldName . ' = 0)';
 		}
