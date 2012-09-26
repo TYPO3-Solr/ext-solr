@@ -187,7 +187,12 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		));
 		$content .= '
 				<br /><br /><hr /><br />
-				<input type="submit" value="Empty Site Index" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" /><br /><br />
+				<input type="submit" value="Empty Site Index" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" />
+			';
+
+		$content .= '
+				<br /><br />
+				<input type="submit" value="Reload Index Configuration" name="s_reloadCore" onclick="document.forms[0].solraction.value=\'reloadSiteCores\';" /><br /><br />
 			</fieldset>';
 
 		$content .= '
@@ -219,6 +224,9 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 				break;
 			case 'deleteSiteDocuments':
 				$this->deleteSiteDocuments();
+				break;
+			case 'reloadSiteCores':
+				$this->reloadSiteCores();
 				break;
 			case 'emptyIndex':
 				$this->emptyIndex();
@@ -447,6 +455,54 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 			$severity
 		);
 		t3lib_FlashMessageQueue::addMessage($flashMessage);
+	}
+
+	protected function reloadSiteCores() {
+		$coresReloaded = TRUE;
+		$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
+
+		foreach($solrServers as $solrServer) {
+			/* @var $solrServer tx_solr_SolrService */
+
+			$path = $solrServer->getPath();
+			$pathElements = explode('/', trim($path, '/'));
+
+			$coreName = array_pop($pathElements);
+
+			$coreAdminReloadUrl =
+				$solrServer->getScheme() . '://' .
+				$solrServer->getHost() . ':' .
+				$solrServer->getPort() . '/' .
+				$pathElements[0] . '/' .
+				'admin/cores?action=reload&core=' .
+				$coreName;
+
+			$httpTransport = $solrServer->getHttpTransport();
+			$httpResponse  = $httpTransport->performGetRequest($coreAdminReloadUrl);
+			$solrResponse  = new Apache_Solr_Response($httpResponse, $solrServer->getCreateDocuments(), $solrServer->getCollapseSingleValueArrays());
+
+			if ($solrResponse->getHttpStatus() != 200) {
+				$coresReloaded = FALSE;
+
+				$flashMessage = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					'Failed to reload index configuration for core "' . $coreName . '"',
+					'',
+					t3lib_FlashMessage::ERROR
+				);
+				t3lib_FlashMessageQueue::addMessage($flashMessage);
+			}
+		}
+
+		if ($coresReloaded) {
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				'Index configuration reloaded.',
+				'',
+				t3lib_FlashMessage::OK
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+		}
 	}
 
 	protected function optimizeIndex() {

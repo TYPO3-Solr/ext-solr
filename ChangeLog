@@ -1,6 +1,7 @@
 2012-09-26  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed German decompounding to emit more tokens
+	* Added a button to reload a site's cores
 
 2012-09-25  Ingo Renner  <ingo.renner@dkd.de>
 
