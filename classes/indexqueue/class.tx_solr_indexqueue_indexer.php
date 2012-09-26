@@ -22,7 +22,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-// TODO do not index items with starttime > indexing time or add starttime support for schema and search
 
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
@@ -240,16 +239,6 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 			$document->setField('endtime', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime']]);
 		}
 
-			// TODO implement start time support
-			// start time
-/*
-		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['starttime'])
-		&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['starttime']] != 0) {
-			$document->setField('starttime', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['starttime']]);
-		} else {
-			$document->setField('starttime', 'NOW');
-		}
-*/
 		return $document;
 	}
 

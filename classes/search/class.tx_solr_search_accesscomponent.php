@@ -56,7 +56,6 @@ class tx_solr_search_AccessComponent extends tx_solr_search_AbstractComponent im
 		$this->query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 
 #		$this->query->addFilter('endtime:[NOW TO *]'); // what to do if no endtime is set (empty / no limit)?
-#		$this->query->addFilter('starttime:[* TO NOW]'); // would need support to index pages with future start times
 
 	}
 
