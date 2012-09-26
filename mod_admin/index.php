@@ -187,7 +187,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		));
 		$content .= '
 				<br /><br /><hr /><br />
-				<input type="submit" value="Delete all Site Documents" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" /><br /><br />
+				<input type="submit" value="Empty Site Index" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" /><br /><br />
 			</fieldset>';
 
 		$content .= '
