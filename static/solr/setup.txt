@@ -323,7 +323,6 @@ plugin.tx_solr {
 
 			queue {
 				pages = 0
-				tt_news = 0
 			}
 		}
 

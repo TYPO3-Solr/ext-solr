@@ -45,3 +45,4 @@ plugin.tx_solr.index.queue {
 
 }
 
+plugin.tx_solr.logging.indexing.queue.tt_news = 0
