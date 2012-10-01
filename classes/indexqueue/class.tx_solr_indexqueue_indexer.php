@@ -145,7 +145,7 @@ class tx_solr_indexqueue_Indexer {
 	 * Gets the full item record.
 	 *
 	 * This general record indexer simply gets the record from the item. Other
-	 * more specialized indexers may provide more data for there specific item
+	 * more specialized indexers may provide more data for their specific item
 	 * types.
 	 *
 	 * @param	tx_solr_indexqueue_Item	The item to be indexed
