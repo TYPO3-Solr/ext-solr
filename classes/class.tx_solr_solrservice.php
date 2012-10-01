@@ -57,6 +57,8 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 */
 	protected $_pluginsUrl;
 
+	protected $_extractUrl;
+
 	protected $debug;
 
 	/**
