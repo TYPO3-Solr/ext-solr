@@ -197,7 +197,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 
 		$content .= '
 			<fieldset>
-				<legend>Index Actions (affecting all sites and indexes)</legend>
+				<legend>Global Actions (affecting all sites and indexes)</legend>
 				<input type="submit" value="Empty Index" name="s_emptyIndex" onclick="Check = confirm(\'This will commit documents which may be pending, clear the index and commit again afterwards. Are you sure you want to empty the index?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
 				<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
 				<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
@@ -205,7 +205,7 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 
 		$content .= '
 			<fieldset>
-				<legend>Delete document(s) from index</legend>
+				<legend>Delete Document(s) from Index</legend>
 				<label for="delete_uid" style="display:block;width:60px;float:left">Item uid</label>
 				<input id="delete_uid" type="text" name="delete_uid" value="" /> (also accepts comma separated lists of uids)<br /><br />
 				<label for="delete_type" style="display:block;width:60px;float:left;">Item type</label>
