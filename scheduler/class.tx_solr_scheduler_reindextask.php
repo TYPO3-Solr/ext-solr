@@ -51,12 +51,12 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 
 		$solrServers = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionsBySite($this->site);
 
-		foreach($solrConnections as $solrConnection) {
+		foreach($solrServers as $solrServer) {
 				// make sure not-yet committed documents are removed, too
-			$solrConnection->commit();
+			$solrServer->commit();
 
-			$solrConnection->deleteByQuery('*:*');
-			$response = $solrConnection->commit(FALSE, FALSE, FALSE);
+			$solrServer->deleteByQuery('*:*');
+			$response = $solrServer->commit(FALSE, FALSE, FALSE);
 			if ($response->getHttpStatus() == 200) {
 				$result = TRUE;
 			}
