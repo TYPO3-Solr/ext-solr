@@ -622,6 +622,7 @@ class tx_solr_indexqueue_Queue {
 			'tx_solr_indexqueue_item',
 			'root = ' . $site->getRootPageId()
 				. ' AND changed > indexed'
+				. ' AND changed <= ' . time()
 				. ' AND errors = \'\'',
 			'',
 			'indexing_priority DESC, changed DESC, uid DESC',
