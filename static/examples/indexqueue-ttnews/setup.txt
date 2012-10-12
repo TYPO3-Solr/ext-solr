@@ -21,6 +21,21 @@ plugin.tx_solr.index.queue {
 				multiValue = 1
 			}
 
+			categoryMain_stringS = TEXT
+			categoryMain_stringS {
+				cObject = SOLR_RELATION
+				cObject {
+					localField = category
+					relationTableSortingField = sorting
+					singleValueGlue = ,
+				}
+
+				split {
+					token = ,
+					returnKey = 0
+				}
+			}
+
 			keywords = SOLR_MULTIVALUE
 			keywords {
 				field = keywords
