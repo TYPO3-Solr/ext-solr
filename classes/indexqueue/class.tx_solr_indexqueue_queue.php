@@ -323,7 +323,7 @@ class tx_solr_indexqueue_Queue {
 
 		if ($itemInQueue) {
 				// update if that item is in the queue already
-			$changes = array('changed' => time());
+			$changes = array('changed' => $this->getItemChangedTime($itemType, $itemUid));
 
 			if (!empty($indexingConfiguration)) {
 				$changes['indexing_configuration'] = $indexingConfiguration;
@@ -375,7 +375,7 @@ class tx_solr_indexqueue_Queue {
 				'root'      => $rootPageId,
 				'item_type' => $itemType,
 				'item_uid'  => $itemUid,
-				'changed'   => time()
+				'changed'   => $this->getItemChangedTime($itemType, $itemUid)
 			);
 
 			if (!empty($indexingConfiguration)) {
@@ -392,6 +392,44 @@ class tx_solr_indexqueue_Queue {
 				$item
 			);
 		}
+	}
+
+	/**
+	 * Determines the time for when an item should be indexed. This timestamp
+	 * is stored in the changed column in the Index Queue.
+	 *
+	 * The changed timestamp usually is now - time(). For records which are set
+	 * to published at a later time, this timestamp is the starttime. So if a
+	 * future startime has been set, that will be used to delay indexing of an item.
+	 *
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
+	 * @return integer Timestamp of the item's changed time or future starttime
+	 */
+	protected function getItemChangedTime($itemType, $itemUid) {
+		$itemTypeHasStartTimeColumn = FALSE;
+		$changedTimeColumns         = $GLOBALS['TCA'][$itemType]['ctrl']['tstamp'];
+		$changedTime                = time();
+
+		if (!empty($GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'])) {
+			$itemTypeHasStartTimeColumn = TRUE;
+			$changedTimeColumns .= ', ' . $GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'];
+		}
+
+		$record      = t3lib_BEfunc::getRecord($itemType, $itemUid, $changedTimeColumns);
+		$changedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
+
+		if ($itemTypeHasStartTimeColumn) {
+				// if starttime exists and starttime is higher than last changed timestamp
+				// then set changed to the future starttime to make the item indexed at a later time
+			$changedTime = max(
+				$changedTime,
+				$record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']],
+				$record[$GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime']]
+			);
+		}
+
+		return $changedTime;
 	}
 
 	/**
