@@ -17,6 +17,7 @@ plugin.tx_solr.index.queue {
 			category_stringM = SOLR_RELATION
 			category_stringM {
 				localField = category
+				relationTableSortingField = sorting
 				multiValue = 1
 			}
 
