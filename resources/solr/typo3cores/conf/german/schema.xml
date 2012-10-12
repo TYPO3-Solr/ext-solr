@@ -130,7 +130,7 @@
 					minWordSize="5"
 					minSubwordSize="4"
 					maxSubwordSize="15"
-					onlyLongestMatch="true"
+					onlyLongestMatch="false"
 				/>
 
 				<filter class="solr.StopFilterFactory" words="german/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
@@ -168,7 +168,7 @@
 					minWordSize="5"
 					minSubwordSize="4"
 					maxSubwordSize="15"
-					onlyLongestMatch="true"
+					onlyLongestMatch="false"
 				/>
 
 				<filter class="solr.StopFilterFactory" words="german/stopwords.txt" ignoreCase="true"/>
