@@ -1,3 +1,7 @@
+2012-10-12  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed an issue where a wrong site root page was calculated
+
 2012-09-26  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed German decompounding to emit more tokens

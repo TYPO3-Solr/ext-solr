@@ -312,7 +312,7 @@ class tx_solr_Util {
 		}
 
 			// fallback, backend
-		if (empty($rootLine) && $pageId != 0) {
+		if ($pageId != 0 && (empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
 			$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
 			$rootLine   = $pageSelect->getRootLine($pageId);
 		}
@@ -325,6 +325,25 @@ class tx_solr_Util {
 		}
 
 		return $rootPageId;
+	}
+
+	/**
+	 * Checks whether a given root line contains a page marked as root page.
+	 *
+	 * @param array $rootLine A root line array of page records
+	 * @return boolean TRUE if the root line contains a root page record, FALSE otherwise
+	 */
+	protected static function rootlineContainsRootPage(array $rootLine) {
+		$containsRootPage = FALSE;
+
+		foreach ($rootLine as $page) {
+			if ($page['is_siteroot']) {
+				$containsRootPage = TRUE;
+				break;
+			}
+		}
+
+		return $containsRootPage;
 	}
 
 	/**
