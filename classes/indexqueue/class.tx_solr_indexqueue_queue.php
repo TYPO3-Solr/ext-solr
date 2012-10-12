@@ -346,9 +346,9 @@ class tx_solr_indexqueue_Queue {
 	 *
 	 * Not meant for public use.
 	 *
-	 * @param	string	The item's type, usually a table name.
-	 * @param	string	The item's uid, usually an integer uid, could be a different value for non-database-record types.
-	 * @param	string	The item's indexing configuration to use. Optional, overwrites existing / determined configuration.
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
+	 * @param string $indexingConfiguration The item's indexing configuration to use. Optional, overwrites existing / determined configuration.
 	 */
 	private function addItem($itemType, $itemUid, $indexingConfiguration) {
 		// FIXME must respect the indexer's additionalWhereClause option:
