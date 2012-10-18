@@ -1,3 +1,7 @@
+2012-10-18  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed bug #42122: Cannot read configuration due to access restrictions
+
 2012-10-12  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed an issue where a wrong site root page was calculated

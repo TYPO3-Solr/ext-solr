@@ -270,8 +270,20 @@ class tx_solr_Util {
 			t3lib_div::_GETset($language, 'L');
 
 			$GLOBALS['TSFE'] = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
+
+				// for certain situations we need to trick TSFE into granting us
+				// access to the page in any case to make getPageAndRootline() work
+				// see http://forge.typo3.org/issues/42122
+			$pageRecord = t3lib_BEfunc::getRecord('pages', $pageId);
+			$groupListBackup = $GLOBALS['TSFE']->gr_list;
+			$GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
+
 			$GLOBALS['TSFE']->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
 			$GLOBALS['TSFE']->getPageAndRootline();
+
+				// restore gr_list
+			$GLOBALS['TSFE']->gr_list = $groupListBackup;
+
 			$GLOBALS['TSFE']->initTemplate();
 			$GLOBALS['TSFE']->forceTemplateParsing = TRUE;
 			$GLOBALS['TSFE']->initFEuser();
