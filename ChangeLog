@@ -1,3 +1,7 @@
+2012-10-22  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed a wrong URL in install-solr.sh leading to wrong configuration files being installed
+
 2012-10-18  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed bug #42122: Cannot read configuration due to access restrictions
