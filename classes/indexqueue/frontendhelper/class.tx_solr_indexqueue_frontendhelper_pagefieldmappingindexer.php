@@ -23,6 +23,8 @@
 ***************************************************************/
 
 
+// TODO use/extend tx_solr_indexqueue_AbstractIndexer
+
 /**
  * Indexer to add / overwrite page document fields as defined in
  * plugin.tx_solr.index.queue.pages.fields.
@@ -124,7 +126,7 @@ class tx_solr_indexqueue_frontendhelper_PageFieldMappingIndexer implements tx_so
 				$indexingConfiguration[$solrFieldName . '.']
 			);
 
-			if (tx_solr_indexqueue_Indexer::isSerializedValue($indexingConfiguration, $solrFieldName)) {
+			if (tx_solr_indexqueue_AbstractIndexer::isSerializedValue($indexingConfiguration, $solrFieldName)) {
 				$fieldValue = unserialize($fieldValue);
 			}
 		} else {

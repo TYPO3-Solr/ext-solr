@@ -77,6 +77,7 @@ return array(
 	'tx_solr_fieldprocessor_service' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_service.php',
 	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'classes/fieldprocessor/class.tx_solr_fieldprocessor_timestamptoisodate.php',
 
+	'tx_solr_indexqueue_abstractindexer' => $extensionPath . 'classes/indexqueue/class.tx_solr_indexqueue_abstractindexer.php',
 	'tx_solr_indexqueue_indexer' => $extensionPath . 'classes/indexqueue/class.tx_solr_indexqueue_indexer.php',
 	'tx_solr_indexqueue_item' => $extensionPath . 'classes/indexqueue/class.tx_solr_indexqueue_item.php',
 	'tx_solr_indexqueue_pageindexer' => $extensionPath . 'classes/indexqueue/class.tx_solr_indexqueue_pageindexer.php',

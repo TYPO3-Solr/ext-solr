@@ -34,7 +34,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class tx_solr_indexqueue_Indexer {
+class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 
 
 	# TODO change to singular $document instead of plural $documents
@@ -53,13 +53,6 @@ class tx_solr_indexqueue_Indexer {
 	protected $connectionManager;
 
 	/**
-	 * Content Object
-	 *
-	 * @var	tslib_cObj
-	 */
-	protected $contentObject = NULL;
-
-	/**
 	 * Holds options for a specific indexer
 	 *
 	 * @var	array
@@ -73,15 +66,14 @@ class tx_solr_indexqueue_Indexer {
 	 */
 	protected $loggingEnabled = FALSE;
 
+
 	/**
 	 * Constructor
 	 *
-	 * @param	array	Array of indexer options
+	 * @param array Array of indexer options
 	 */
 	public function __construct(array $options = array()) {
-		$this->contentObject = t3lib_div::makeInstance('tslib_cObj');
-		$this->options       = $options;
-
+		$this->options           = $options;
 		$this->connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
 	}
 
@@ -94,8 +86,10 @@ class tx_solr_indexqueue_Indexer {
 	public function index(tx_solr_indexqueue_Item $item) {
 		$indexed = FALSE;
 
-		$solrConnections = $this->getSolrConnectionsByItem($item);
+		$this->type = $item->getType();
 		$this->setLogging($item);
+
+		$solrConnections = $this->getSolrConnectionsByItem($item);
 
 		foreach ($solrConnections as $systemLanguageUid => $solrConnection) {
 			$this->solr = $solrConnection;
@@ -188,34 +182,16 @@ class tx_solr_indexqueue_Indexer {
 	 * Converts an item array (record) to a Solr document by mapping the
 	 * record's fields onto Solr document fields as configured in TypoScript.
 	 *
-	 * @param	tx_solr_indexqueue_Item	An index queue item
-	 * @param	integer	Language Id
-	 * @return	Apache_Solr_Document	The Solr document converted from the record
+	 * @param tx_solr_indexqueue_Item $item An index queue item
+	 * @param integer $language Language Id
+	 * @return Apache_Solr_Document The Solr document converted from the record
 	 */
 	protected function itemToDocument(tx_solr_indexqueue_Item $item, $language = 0) {
 		$itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
 		$itemRecord                = $this->getFullItemRecord($item, $language);
 
 		$document = $this->getBaseDocument($item);
-
-			// mapping of record fields => solr document fields, resolving cObj
-		foreach ($itemIndexingConfiguration as $solrFieldName => $recordFieldName) {
-			if (is_array($recordFieldName)) {
-					// configuration for a content object, skipping
-				continue;
-			}
-
-			$fieldValue = $this->resolveFieldValue($item, $itemRecord, $solrFieldName, $language);
-
-			if (is_array($fieldValue)) {
-					// multi value
-				foreach ($fieldValue as $multiValue) {
-					$document->addField($solrFieldName, $multiValue);
-				}
-			} else {
-				$document->setField($solrFieldName, $fieldValue);
-			}
-		}
+		$document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord);
 
 		return $document;
 	}
@@ -299,49 +275,6 @@ class tx_solr_indexqueue_Indexer {
 		}
 
 		return 'r:' . $accessRestriction;
-	}
-
-	/**
-	 * Resolves a field to its value depending on its configuration.
-	 *
-	 * This enables you to configure the indexer to put the item/record through
-	 * cObj processing if wanted / needed. Otherwise the plain item/record value
-	 * is taken.
-	 *
-	 * @param	tx_solr_indexqueue_Item	An index queue item
-	 * @param	array	The complete item record as an array
-	 * @param	string	The Solr field name to resolve the value from the item's record
-	 * @param	integer	The language uid of the documents
-	 * @return	string	The resolved string value to be indexed
-	 */
-	protected function resolveFieldValue(tx_solr_indexqueue_Item $item, array $itemRecord, $solrFieldName, $language) {
-		$itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
-		$fieldValue                = '';
-
-		if (isset($itemIndexingConfiguration[$solrFieldName . '.'])) {
-				// configuration found => need to resolve a cObj
-
-				// need to change directory to make IMAGE content objects work in BE context
-				// see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
-			$currentWorkingDirectory = getcwd();
-			chdir(PATH_site);
-
-			$this->contentObject->start($itemRecord, $item->getType());
-			$fieldValue = $this->contentObject->cObjGetSingle(
-				$itemIndexingConfiguration[$solrFieldName],
-				$itemIndexingConfiguration[$solrFieldName . '.']
-			);
-
-			chdir($currentWorkingDirectory);
-
-			if ($this->isSerializedValue($itemIndexingConfiguration, $solrFieldName)) {
-				$fieldValue = unserialize($fieldValue);
-			}
-		} else {
-			$fieldValue = $itemRecord[$itemIndexingConfiguration[$solrFieldName]];
-		}
-
-		return $fieldValue;
 	}
 
 	/**
@@ -558,6 +491,9 @@ class tx_solr_indexqueue_Indexer {
 
 	// Utility methods
 
+
+	// FIXME extract log() and setLogging() to tx_solr_indexqueue_AbstractIndexer
+	// FIXME extract an interface tx_solr_indexqueue_ItemInterface
 
 	/**
 	 * Enables logging dependent on the configuration of the item's site
