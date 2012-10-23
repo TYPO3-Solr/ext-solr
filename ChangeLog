@@ -1,3 +1,7 @@
+2012-10-23  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed bug #41847: Suggestion broken because of language parameter, credits Jonas Götze
+
 2012-10-22  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed a wrong URL in install-solr.sh leading to wrong configuration files being installed

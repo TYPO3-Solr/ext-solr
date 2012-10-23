@@ -62,11 +62,6 @@ $suggestQuery = t3lib_div::makeInstance('tx_solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));
 $suggestQuery->setSiteHashFilter($site->getDomain());
 
-$language = 0;
-if ($TSFE->sys_language_uid) {
-	$language = $TSFE->sys_language_uid;
-}
-$suggestQuery->addFilter('language:' . $language);
 $suggestQuery->setOmitHeader();
 
 $additionalFilters = t3lib_div::_GET('filters');
