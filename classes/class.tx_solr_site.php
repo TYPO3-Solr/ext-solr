@@ -150,9 +150,10 @@ class tx_solr_Site {
 		return $selector;
 	}
 
-	/**	 * Gets the site's Solr TypoScript configuration.
+	/**
+	 * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
 	 *
-	 * @return	array	The Solr TypoScript configuration
+	 * @return array The Solr TypoScript configuration
 	 */
 	public function getSolrConfiguration() {
 		return tx_solr_Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
