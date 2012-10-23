@@ -5,12 +5,12 @@
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Tomcat Server     
+# Short-Description: Tomcat Server
 # Description: Tomcat Server basic start/shutdown script
 # processname: tomcat
 ### END INIT INFO
 
-JAVA_HOME=/usr/lib/jvm/java-6-sun
+JAVA_HOME=/usr/lib/jvm/java-6-openjdk
 #JAVA_OPTS="$JAVA_OPTS -Dsolr.solr.home=/opt/solr-tomcat/solr"
 export JAVA_HOME
 #export JAVA_OPTS

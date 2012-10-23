@@ -1,3 +1,7 @@
+2012-10-23  Stefan Sprenger  <stefan.sprenger@dkd.de>
+
+	* Changed JAVA_HOME in tomcat6 init script to point to openjdk
+
 2012-10-23  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed bug #41847: Suggestion broken because of language parameter, credits Jonas Götze
