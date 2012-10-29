@@ -1,6 +1,7 @@
 2012-10-29  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Removed execution column from Index Queue table
+	* Added a filter to exclude documents who's endtime has passed
 
 2012-10-23  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
