@@ -237,6 +237,8 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime'])
 		&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime']] != 0) {
 			$document->setField('endtime', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime']]);
+		} else {
+			$document->setField('endtime', 0);
 		}
 
 		return $document;
