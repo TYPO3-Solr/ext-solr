@@ -317,6 +317,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 * This method executes the requested commands and applies the changes to
 	 * the template.
 	 *
+	 * @return string $actionResult Rendered plugin content
 	 */
 	protected abstract function render($actionResult);
 
