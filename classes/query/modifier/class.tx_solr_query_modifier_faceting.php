@@ -146,7 +146,7 @@ class tx_solr_query_modifier_Faceting implements tx_solr_QueryModifier {
 			$configuredFacets = $this->getConfigurredFacets();
 
 				// first group the filters by facetName - so that we can
-				// dicide later whether we need to do AND or OR for multiple
+				// decide later whether we need to do AND or OR for multiple
 				// filters for a certain facet/field
 				// $filtersByFacetName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('lorem'))
 			$filtersByFacetName = array();
