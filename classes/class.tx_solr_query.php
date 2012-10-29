@@ -158,7 +158,7 @@ class tx_solr_Query {
 	 *
 	 * Be cautious with this function!
 	 *
-	 * @param	$queryString	The raw query string.
+	 * @param string $queryString The raw query string.
 	 */
 	public function setQueryString($queryString) {
 		$this->queryString = $queryString;
