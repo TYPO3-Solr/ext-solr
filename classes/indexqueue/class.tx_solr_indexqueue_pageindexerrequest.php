@@ -155,6 +155,13 @@ class tx_solr_indexqueue_PageIndexerRequest {
 			);
 		}
 
+		if ($decodedResponse['requestId'] != $this->requestId) {
+			throw new RuntimeException(
+				'Request ID mismatch. Request ID was ' . $this->requestId . ', received ' . $decodedResponse['requestId'] . '. Are requests cached?',
+				1351260655
+			);
+		}
+
 		$response->setRequestId($decodedResponse['requestId']);
 
 		if (is_array($decodedResponse['actionResults'])) {
