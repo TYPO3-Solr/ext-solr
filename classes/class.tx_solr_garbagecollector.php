@@ -151,7 +151,7 @@ class tx_solr_GarbageCollector {
 		$record = $this->normalizeFrontendGroupField($table, $record);
 
 		if ($this->isHidden($table, $record)
-			|| $this->isStartTimeInFuture($table, $record)
+			|| ($this->isStartTimeInFuture($table, $record) && isMarkedAsIndexed($table, $record))
 			|| $this->isEndTimeInPast($table, $record)
 			|| $this->hasFrontendGroupsRemoved($table, $record)
 			|| ($table == 'pages' && $this->isPageExcludedFromSearch($record))
@@ -234,6 +234,19 @@ class tx_solr_GarbageCollector {
 		}
 
 		return $startTimeInFuture;
+	}
+
+	/**
+	 * Checks whether the record is in the Index Queue and whether it has been
+	 * indexed already.
+	 *
+	 * @param string $table The table name.
+	 * @param array $record An array with record fields that may affect visibility.
+	 * @return boolean True if the record is marked as being indexed
+	 */
+	protected function isMarkedAsIndexed($table, $record) {
+		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+		return $indexQueue->containsItem($table, $record['uid']);
 	}
 
 	/**
