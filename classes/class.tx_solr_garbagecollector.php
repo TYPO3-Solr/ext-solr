@@ -358,9 +358,10 @@ class tx_solr_GarbageCollector {
 	 * for example. Other tasks may be added later.
 	 *
 	 * @param tx_solr_Site $site The site to clean indexes on
+	 * @param boolean $commitAfterCleanUp Whether to commit right after the clean up, defaults to TRUE
 	 * @return void
 	 */
-	public function cleanIndex(tx_solr_Site $site) {
+	public function cleanIndex(tx_solr_Site $site, $commitAfterCleanUp = TRUE) {
 		$connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
 		/* @var $connectionManager tx_solr_ConnectionManager */
 
@@ -368,6 +369,10 @@ class tx_solr_GarbageCollector {
 		foreach ($solrConnections as $solrConnection) {
 			/* @var $solrConnection tx_solr_SolrService */
 			$solrConnection->deleteByQuery('(endtime:[* TO NOW] AND -endtime:"1970-01-01T01:00:00Z")');
+
+			if ($commitAfterCleanUp) {
+				$solrConnection->commit(TRUE, FALSE, FALSE);
+			}
 		}
 	}
 
