@@ -185,15 +185,21 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 							 the first time. The Index Queue Worker scheduler task will then index the items listed in the Index Queue.
 							 Initializing the Index Queue without selecting specific indexing configurations will behave like selecting all.'
 		));
+
 		$content .= '
 				<br /><br /><hr /><br />
+				<input type="submit" value="Clean up Site Index" name="s_cleanupSiteCores" onclick="document.forms[0].solraction.value=\'cleanupSiteCores\';" />';
+
+		$content .= '
+				<br /><br />
 				<input type="submit" value="Empty Site Index" name="s_deleteSiteDocuments" onclick="Check = confirm(\'This will commit documents which may be pending, delete documents belonging to the currently selected site and commit again afterwards. Are you sure you want to delete the site\\\'s documents?\'); if (Check == true) document.forms[0].solraction.value=\'deleteSiteDocuments\';" />
 			';
 
 		$content .= '
 				<br /><br />
-				<input type="submit" value="Reload Index Configuration" name="s_reloadCore" onclick="document.forms[0].solraction.value=\'reloadSiteCores\';" /><br /><br />
-			</fieldset>';
+				<input type="submit" value="Reload Index Configuration" name="s_reloadCore" onclick="document.forms[0].solraction.value=\'reloadSiteCores\';" /><br /><br />';
+
+		$content .= '</fieldset>';
 
 		$content .= '
 			<fieldset>
@@ -221,6 +227,9 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 		switch($_POST['solraction']) {
 			case 'initializeIndexQueue':
 				$this->initializeIndexQueue();
+				break;
+			case 'cleanupSiteCores':
+				$this->cleanupSiteIndex();
 				break;
 			case 'deleteSiteDocuments':
 				$this->deleteSiteDocuments();
@@ -427,6 +436,11 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 			$severity
 		);
 		t3lib_FlashMessageQueue::addMessage($flashMessage);
+	}
+
+	protected function cleanupSiteIndex() {
+		$garbageCollector = t3lib_div::makeInstance('tx_solr_garbageCollector');
+		$garbageCollector->cleanIndex($this->site);
 	}
 
 	protected function deleteSiteDocuments() {
