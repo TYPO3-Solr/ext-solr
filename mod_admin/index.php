@@ -441,6 +441,14 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	protected function cleanupSiteIndex() {
 		$garbageCollector = t3lib_div::makeInstance('tx_solr_garbageCollector');
 		$garbageCollector->cleanIndex($this->site);
+
+		$flashMessage = t3lib_div::makeInstance(
+			't3lib_FlashMessage',
+			'Index cleaned up.',
+			'',
+			t3lib_FlashMessage::OK
+		);
+		t3lib_FlashMessageQueue::addMessage($flashMessage);
 	}
 
 	protected function deleteSiteDocuments() {
