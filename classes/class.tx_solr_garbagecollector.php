@@ -357,6 +357,7 @@ class tx_solr_GarbageCollector {
 	 * documents that are not visible due to a set endtime date having passed
 	 * for example. Other tasks may be added later.
 	 *
+	 * @param tx_solr_Site $site The site to clean indexes on
 	 * @return void
 	 */
 	public function cleanIndex(tx_solr_Site $site) {
