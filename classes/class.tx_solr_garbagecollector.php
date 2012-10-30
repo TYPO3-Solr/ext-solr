@@ -353,6 +353,24 @@ class tx_solr_GarbageCollector {
 	}
 
 	/**
+	 * Cleans an index from garbage entries. Currently that means removing
+	 * documents that are not visible due to a set endtime date having passed
+	 * for example. Other tasks may be added later.
+	 *
+	 * @return void
+	 */
+	public function cleanIndex(tx_solr_Site $site) {
+		$connectionManager = t3lib_div::makeInstance('tx_solr_ConnectionManager');
+		/* @var $connectionManager tx_solr_ConnectionManager */
+
+		$solrConnections = $connectionManager->getConnectionsBySite($site);
+		foreach ($solrConnections as $solrConnection) {
+			/* @var $solrConnection tx_solr_SolrService */
+			$solrConnection->deleteByQuery('(endtime:[* TO NOW] AND -endtime:"1970-01-01T01:00:00Z")');
+		}
+	}
+
+	/**
 	 * Tracks down index documents belonging to a particular record and
 	 * removes them from the index and the Index Queue.
 	 *

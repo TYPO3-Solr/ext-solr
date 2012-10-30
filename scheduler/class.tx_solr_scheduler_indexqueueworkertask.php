@@ -54,9 +54,8 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 		$executionSucceeded = FALSE;
 
 		$this->configuration = tx_solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
-
 		$this->indexItems();
-
+		$this->cleanIndex();
 		$executionSucceeded = TRUE;
 
 		return $executionSucceeded;
@@ -117,6 +116,16 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 		}
 
 		return $itemIndexed;
+	}
+
+	/**
+	 * Executes some index maintenance tasks on the site's indexes.
+	 *
+	 * @return void
+	 */
+	protected function cleanIndex() {
+		$garbageCollector = t3lib_div::makeInstance('tx_solr_garbageCollector');
+		$garbageCollector->cleanIndex($this->site);
 	}
 
 	/**
