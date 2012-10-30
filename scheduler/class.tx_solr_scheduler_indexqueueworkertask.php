@@ -124,8 +124,11 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	 * @return void
 	 */
 	protected function cleanIndex() {
-		$garbageCollector = t3lib_div::makeInstance('tx_solr_garbageCollector');
-		$garbageCollector->cleanIndex($this->site);
+		if (rand(1, 100) == 50) {
+				// clean the index about once in every 100 executions
+			$garbageCollector = t3lib_div::makeInstance('tx_solr_garbageCollector');
+			$garbageCollector->cleanIndex($this->site);
+		}
 	}
 
 	/**
