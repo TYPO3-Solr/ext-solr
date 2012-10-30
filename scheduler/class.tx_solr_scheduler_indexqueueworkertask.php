@@ -53,9 +53,23 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	public function execute() {
 		$executionSucceeded = FALSE;
 
-		$limit               = $this->documentsToIndexLimit;
-		$indexQueue          = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 		$this->configuration = tx_solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
+
+		$this->indexItems();
+
+		$executionSucceeded = TRUE;
+
+		return $executionSucceeded;
+	}
+
+	/**
+	 * Indexes items from the Index Queue.
+	 *
+	 * @return void
+	 */
+	protected function indexItems() {
+		$limit      = $this->documentsToIndexLimit;
+		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
 
 			// get items to index
 		$itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);
@@ -63,11 +77,6 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 			try {
 					// try indexing
 				$itemIndexed = $this->indexItem($itemToIndex);
-
-					// update IQ item so that the IQ can determine what's been indexed already
-				if ($itemIndexed) {
-					$itemToIndex->updateIndexedTime();
-				}
 			} catch (Exception $e) {
 				$indexQueue->markItemAsFailed(
 					$itemToIndex,
@@ -87,9 +96,6 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 				);
 			}
 		}
-		$executionSucceeded = TRUE;
-
-		return $executionSucceeded;
 	}
 
 	/**
@@ -104,6 +110,11 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 
 		$this->initializeHttpHost($item);
 		$itemIndexed = $indexer->index($item);
+
+			// update IQ item so that the IQ can determine what's been indexed already
+		if ($itemIndexed) {
+			$item->updateIndexedTime();
+		}
 
 		return $itemIndexed;
 	}
