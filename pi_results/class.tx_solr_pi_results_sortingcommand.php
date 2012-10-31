@@ -92,9 +92,8 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 
 		$sortOptions = array();
 
-		$urlParameters    = t3lib_div::_GP('tx_solr');
-		$urlSortParameter = $urlParameters['sort'];
-		list($currentSortOption, $currentSortDirection) = explode(' ', $urlSortParameter);
+		$urlParameters     = t3lib_div::_GP('tx_solr');
+		$urlSortParameters = t3lib_div::trimExplode(',', $urlParameters['sort']);
 
 		$configuredSortOptions = $sortHelper->getSortOptions();
 
@@ -104,7 +103,16 @@ class tx_solr_pi_results_SortingCommand implements tx_solr_PluginCommand {
 				$sortDirection = $this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['defaultOrder'];
 			}
 
-			$sortIndicator = $sortDirection;
+			$sortIndicator        = $sortDirection;
+			$currentSortOption    = '';
+			$currentSortDirection = '';
+			foreach($urlSortParameters as $urlSortParameter){
+				$explodedUrlSortParameter = explode(' ', $urlSortParameter);
+				if($explodedUrlSortParameter[0] == $sortOptionName){
+					list($currentSortOption, $currentSortDirection) = $explodedUrlSortParameter;
+					break;
+				}
+			}
 
 				// toggle sorting direction for the current sorting field
 			if ($currentSortOption == $sortOptionName) {

@@ -71,7 +71,7 @@ class tx_solr_Sorting {
 	 * @return array The sorting options with resolved field names.
 	 */
 	public function getSortOptions() {
-		$sortOptions = array();
+		$sortOptions   = array();
 		$contentObject = t3lib_div::makeInstance('tslib_cObj');
 
 		foreach ($this->configuration as $optionName => $optionConfiguration) {
@@ -97,28 +97,34 @@ class tx_solr_Sorting {
 	}
 
 	/**
-	 * Takes the tx_solr[sort] URL parameter containing the option name and
-	 * direction to sort by and resolves it to the actual sort field and
-	 * direction.
+	 * Takes the tx_solr[sort] URL parameter containing the option names and
+	 * directions to sort by and resolves it to the actual sort fields and
+	 * directions as configured through TypoScript. Makes sure that only
+	 * configured sorting options get applied to the query.
 	 *
-	 * @param	string	$urlParameter tx_solr[sort] URL parameter.
-	 * @return	string	The actual index field configuraed to sort by for the given sort option name
+	 * @param string $urlParameters tx_solr[sort] URL parameter.
+	 * @return string The actual index field configured to sort by for the given sort option name
 	 */
-	public function getSortFieldFromUrlParameter($urlParameter) {
-		list($sortOption, $sortDirection) = explode(' ', $urlParameter);
-
+	public function getSortFieldFromUrlParameter($urlParameters) {
+		$sortFields           = array();
+		$sortParameters       = t3lib_div::trimExplode(',', $urlParameters);
 		$availableSortOptions = $this->getSortOptions();
 
-		if (!array_key_exists($sortOption, $availableSortOptions)) {
-			throw t3lib_div::makeInstance('InvalidArgumentException',
-				'No sorting configuration found for option name ' . $sortOption,
-				1316187644
-			);
+		foreach ($sortParameters as $sortParameter){
+			list($sortOption, $sortDirection) = explode(' ', $sortParameter);
+
+			if (!array_key_exists($sortOption, $availableSortOptions)) {
+				throw t3lib_div::makeInstance('InvalidArgumentException',
+					'No sorting configuration found for option name ' . $sortOption,
+					1316187644
+				);
+			}
+
+			$sortField = $availableSortOptions[$sortOption]['field'];
+			$sortFields[] = $sortField . ' ' . $sortDirection;
 		}
 
-		$sortField = $availableSortOptions[$sortOption]['field'];
-
-		return $sortField . ' ' . $sortDirection;
+		return implode(', ',$sortFields);
 	}
 }
 

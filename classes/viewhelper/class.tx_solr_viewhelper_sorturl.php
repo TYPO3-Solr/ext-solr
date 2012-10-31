@@ -33,7 +33,7 @@
 class tx_solr_viewhelper_SortUrl implements tx_solr_ViewHelper {
 
 	/**
-	 * Holds th solr configuration
+	 * Holds the solr configuration
 	 *
 	 * @var array
 	 */
@@ -71,38 +71,54 @@ class tx_solr_viewhelper_SortUrl implements tx_solr_ViewHelper {
 	 * @return	string
 	 */
 	public function execute(array $arguments = array()) {
-		$sortOption = $arguments[0];
-		$sortUrl    = '';
-		$sortHelper = t3lib_div::makeInstance(
+		$sortUrl           = '';
+		$urlParameters     = t3lib_div::_GP('tx_solr');
+		$urlSortParameters = t3lib_div::trimExplode(',', $urlParameters['sort']);
+		$sortOptions       = t3lib_div::trimExplode(',', $arguments[0]);
+		$currentSortOption = '';
+
+		$sortHelper  = t3lib_div::makeInstance(
 			'tx_solr_Sorting',
 			$this->configuration['search.']['sorting.']['options.']
 		);
-
-		$urlParameters    = t3lib_div::_GP('tx_solr');
-		$urlSortParameter = $urlParameters['sort'];
-		list($currentSortOption, $currentSortDirection) = explode(' ', $urlSortParameter);
-
 		$configuredSortOptions = $sortHelper->getSortOptions();
 
-		if (array_key_exists($sortOption, $configuredSortOptions)) {
-			$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
-			$sortParameter = $sortOption . ' ' . $sortDirection;
+		$sortParameters = array();
+		foreach($sortOptions as $sortOption){
+			if (array_key_exists($sortOption, $configuredSortOptions)) {
+				$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
+				$sortParameter = $sortOption . ' ' . $sortDirection;
 
-			if ($currentSortOption == $sortOption) {
-				switch ($currentSortDirection) {
-					case 'asc':
-						$sortDirection = 'desc';
+				foreach($urlSortParameters as $urlSortParameter){
+					$explodedUrlSortParameter = explode(' ', $urlSortParameter);
+
+					if($explodedUrlSortParameter[0] == $sortOption){
+						list($currentSortOption, $currentSortDirection) = $explodedUrlSortParameter;
 						break;
-					case 'desc':
-						$sortDirection = 'asc';
-						break;
+					}
 				}
 
-				$sortParameter = $sortOption . ' ' . $sortDirection;
-			}
+				if ($currentSortOption == $sortOption) {
+					switch ($currentSortDirection) {
+						case 'asc':
+							$sortDirection = 'desc';
+							break;
+						case 'desc':
+							$sortDirection = 'asc';
+							break;
+					}
 
-			$sortUrl = $this->queryLinkBuilder->getQueryUrl(array('sort' => $sortParameter));
+					if (!empty($this->configuration['search.']['sorting.']['options.'][$sortOption . '.']['fixedOrder'])) {
+						$sortDirection = $this->configuration['search.']['sorting.']['options.'][$sortOption . '.']['fixedOrder'];
+					}
+
+					$sortParameter = $sortOption . ' ' . $sortDirection;
+				}
+
+				$sortParameters[] = $sortParameter;
+			}
 		}
+		$sortUrl = $this->queryLinkBuilder->getQueryUrl(array('sort' => implode(', ',$sortParameters)));
 
 		return $sortUrl;
 	}
