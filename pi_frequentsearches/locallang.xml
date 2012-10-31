@@ -6,6 +6,7 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="frequentSearches">Frequent searches</label>
 		</languageKey>
 	</data>
 </T3locallang>
