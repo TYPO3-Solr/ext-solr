@@ -25,7 +25,7 @@
 
 /**
  * Viewhelper class to create links containing solr parameters
- * Replaces viewhelpers ###SOLR_LINK:linkText|linkTarget|additionalParameters|useCache###
+ * Replaces viewhelpers ###SOLR_LINK:linkText|linkTarget|additionalParameters|useCache|urlOnly###
  *
  *
  * @author Ingo Renner <ingo@typo3.org>
@@ -75,6 +75,7 @@ class tx_solr_viewhelper_SolrLink implements tx_solr_ViewHelper {
 		$pageId                  = $this->determinePageId(trim($arguments[1]));
 		$additionalUrlParameters = $arguments[2] ? $arguments[2] : '';
 		$useCache                = $arguments[3] ? TRUE : FALSE;
+		$returnOnlyUrl            = $arguments[4] ? TRUE : FALSE;
 
 			// FIXME pass anything not prefixed with tx_solr in $additionalParameters as 4th parameter
 		$additionalUrlParameters = t3lib_div::explodeUrl2Array($additionalUrlParameters, TRUE);
@@ -84,6 +85,10 @@ class tx_solr_viewhelper_SolrLink implements tx_solr_ViewHelper {
 		}
 
 		$linkConfiguration = array('useCacheHash' => $useCache);
+
+		if ($returnOnlyUrl) {
+			$linkConfiguration['returnLast'] = 'url';
+		}
 
 		if ($this->search->hasSearched()) {
 			$query = $this->search->getQuery();
