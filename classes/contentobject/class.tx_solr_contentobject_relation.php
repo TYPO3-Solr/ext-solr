@@ -49,6 +49,7 @@ class tx_solr_contentobject_Relation {
 	 */
 	protected $configuration = array();
 
+
 	/**
 	 * Executes the SOLR_RELATION content object.
 	 *
@@ -132,8 +133,8 @@ class tx_solr_contentobject_Relation {
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
 		$whereClause = '';
-		if (!empty($localFieldTca['config']['foreign_table_field'])) {
-			$foreignTableField = $localFieldTca['config']['foreign_table_field'];
+		if (!empty($localFieldTca['config']['foreign_field'])) {
+			$foreignTableField = $localFieldTca['config']['foreign_field'];
 
 			$whereClause = $foreignTableName . '.' . $foreignTableField . ' = ' . (int) $localRecordUid;
 		} else {
