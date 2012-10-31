@@ -25,14 +25,6 @@
 							</config>
 						</TCEforms>
 					</targetPage>
-					<ignorePageBrowser>
-						<TCEforms>
-							<label>Ignore Page Browser</label>
-							<config>
-								<type>check</type>
-							</config>
-						</TCEforms>
-					</ignorePageBrowser>
 				</el>
 			</ROOT>
 		</sDEF>

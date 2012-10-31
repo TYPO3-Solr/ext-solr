@@ -1,3 +1,7 @@
+2012-10-31  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Removed option ignorePageBrowser
+
 2012-10-30  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Added a method in garbage collector to perform maintenance tasks on the index

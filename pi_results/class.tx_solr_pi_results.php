@@ -86,16 +86,6 @@ class tx_solr_pi_results extends tx_solr_pluginbase_CommandPluginBase {
 
 			$offSet = $currentPage * $this->query->getResultsPerPage();
 
-				// ignore page browser?
-			$ignorePageBrowser = (boolean) $this->conf['search.']['results.']['ignorePageBrowser'];
-			$flexformIgnorePageBrowser = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'ignorePageBrowser');
-			if ($flexformIgnorePageBrowser) {
-				$ignorePageBrowser = (boolean) $flexformIgnorePageBrowser;
-			}
-			if ($ignorePageBrowser) {
-				$offSet = 0;
-			}
-
 				// performing the actual search, sending the query to the Solr server
 			$this->search->search($this->query, $offSet, NULL);
 			$response = $this->search->getResponse();
