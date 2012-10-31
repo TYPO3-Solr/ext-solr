@@ -5,6 +5,7 @@
 	* Fixed bug #39013: Missing label in pi_frequentsearches/locallang.xml, credits Peter Kraume
 	* Added feature #41915: Option to have the SOLR_LINK view helper return only the URL, credits Jonas Götze
 	* Fixed bug #42151: Incorrect use of field config for relation types inline in SOLR_RELATION, credits Laurent Cherpit
+	* Fixed bug #39501: SOLR_RELATION uses hidden and deleted records, credits Andreas Beutel
 
 2012-10-30  Ingo Renner  <ingo.renner@dkd.de>
 

@@ -146,6 +146,8 @@ class tx_solr_contentobject_Relation {
 				$whereClause = $foreignTableName . '.uid = ' . (int) array_shift($foreignTableUids);
 			}
 		}
+		$pageSelector = t3lib_div::makeInstance('t3lib_pageSelect');
+		$whereClause .= $pageSelector->enableFields( $foreignTableName );
 
 		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			$foreignTableName . '.' . $foreignTableLabelField,
