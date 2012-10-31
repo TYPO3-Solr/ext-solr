@@ -1,6 +1,7 @@
 2012-10-31  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Removed option ignorePageBrowser
+	* Fixed bug #39660, #37842: option plugin.tx_solr.search.keepExistingParametersForNewSearches, credits Michel Tremblay
 
 2012-10-30  Ingo Renner  <ingo.renner@dkd.de>
 

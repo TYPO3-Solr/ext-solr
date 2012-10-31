@@ -67,19 +67,11 @@ class tx_solr_pi_results_FormCommand implements tx_solr_PluginCommand {
 	/**
 	 * Provides the values for the markers in the simple form template
 	 *
-	 * @return	array	an array containing values for markers in the simple form template
+	 * @return array An array containing values for markers in the simple form template
+	 * @throws InvalidArgumentException if an registered form modifier fails to implement the required interface tx_solr_FormModifier
 	 */
 	public function execute() {
 		$url = $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']);
-
-		if($this->configuration['search.']['keepExistingParametersForNewSearches']) {
-			$url = $this->parentPlugin->pi_linkTP_keepPIvars_url(
-				array(),
-				FALSE,
-				FALSE,
-				$this->parentPlugin->conf['search.']['targetPage']
-			);
-		}
 
 		$marker = array(
 			'action'                    => $url,
