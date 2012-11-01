@@ -219,7 +219,18 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 	 */
 	protected function itemToDocument(tx_solr_indexqueue_Item $item, $language = 0) {
 		$itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
-		$itemRecord                = $this->getFullItemRecord($item, $language);
+
+		/*
+		 * If there is no record for default language (0), the record has no
+		 * l18n_parent record but is a single, not-translated language record
+		 * with a certain language configuration / available in that specific
+		 * language only.
+		 * Treat the language record as base/full record.
+		 */
+		$itemRecord = $this->getFullItemRecord($item, $language);
+		if ($itemRecord == NULL) {
+			$itemRecord = $item->getRecord();
+		}
 
 		$document = $this->getBaseDocument($item, $itemRecord);
 		$document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord);
