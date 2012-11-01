@@ -228,7 +228,7 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 		 * Treat the language record as base/full record.
 		 */
 		$itemRecord = $this->getFullItemRecord($item, $language);
-		if ($itemRecord == NULL) {
+		if (is_null($itemRecord)) {
 			$itemRecord = $item->getRecord();
 		}
 
