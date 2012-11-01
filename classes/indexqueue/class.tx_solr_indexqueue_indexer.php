@@ -160,7 +160,9 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 			);
 		}
 
-		$itemRecord['__solr_index_language'] =  $language;
+		if (!$itemRecord) {
+			$itemRecord = NULL;
+		}
 
 		/*
 		 * Skip disabled records. This happens if the default language record
@@ -193,6 +195,10 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 			&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['languageField']] != '-1'
 		) {
 			$itemRecord = NULL;
+		}
+
+		if (!is_null($itemRecord)) {
+			$itemRecord['__solr_index_language'] =  $language;
 		}
 
 		return $itemRecord;
