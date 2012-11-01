@@ -189,7 +189,7 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 		$itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
 		$itemRecord                = $this->getFullItemRecord($item, $language);
 
-		$document = $this->getBaseDocument($item);
+		$document = $this->getBaseDocument($item, $itemRecord);
 		$document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord);
 
 		return $document;
@@ -198,13 +198,13 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 	/**
 	 * Creates a Solr document with the basic / core fields set already.
 	 *
-	 * @param	tx_solr_indexqueue_Item	$item The item to index
-	 * @return	Apache_Solr_Document	A basic Solr document
+	 * @param tx_solr_indexqueue_Item $item The item to index
+	 * @param array $itemRecord The record to use to build the base document
+	 * @return Apache_Solr_Document A basic Solr document
 	 */
-	protected function getBaseDocument(tx_solr_indexqueue_Item $item) {
-		$itemRecord = $this->getFullItemRecord($item, $language);
-		$site       = t3lib_div::makeInstance('tx_solr_Site', $item->getRootPageUid());
-		$document   = t3lib_div::makeInstance('Apache_Solr_Document');
+	protected function getBaseDocument(tx_solr_indexqueue_Item $item, array $itemRecord) {
+		$site     = t3lib_div::makeInstance('tx_solr_Site', $item->getRootPageUid());
+		$document = t3lib_div::makeInstance('Apache_Solr_Document');
 		/* @var $document Apache_Solr_Document */
 
 			// required fields
