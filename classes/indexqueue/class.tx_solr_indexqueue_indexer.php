@@ -189,6 +189,7 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 		if ($itemRecord[$translationOriginalPointerField] == 0
 			&& !empty($GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'])
 			&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['languageField']] != $language
+			&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['languageField']] != '-1'
 		) {
 			$itemRecord = NULL;
 		}
