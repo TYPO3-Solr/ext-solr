@@ -172,6 +172,27 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 			$itemRecord = NULL;
 		}
 
+		/*
+		 * Skip translation mismatching records. Sometimes the requested language
+		 * doesn't fit the returned language. This might happen with content fallback
+		 * and is perfectly fine in general.
+		 * But if the requested language doesn't match the returned language and
+		 * the given record has no translation parent, the indexqueue_item most
+		 * probably pointed to a non-translated language record that is dedicated
+		 * to a very specific language. Now we have to avoid indexing this record
+		 * into all language cores.
+		 */
+		$translationOriginalPointerField = 'l10n_parent';
+		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['transOrigPointerField'])) {
+			$translationOriginalPointerField = $GLOBALS['TCA'][$item->getType()]['ctrl']['transOrigPointerField'];
+		}
+		if ($itemRecord[$translationOriginalPointerField] == 0
+			&& !empty($GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'])
+			&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['languageField']] != $language
+		) {
+			$itemRecord = NULL;
+		}
+
 		return $itemRecord;
 	}
 
