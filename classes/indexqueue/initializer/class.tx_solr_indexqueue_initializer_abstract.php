@@ -268,11 +268,14 @@ abstract class tx_solr_indexqueue_initializer_Abstract implements tx_solr_IndexQ
 		}
 
 		if (t3lib_BEfunc::isTableLocalizable($this->type)) {
-			$conditions['languageField'] = '('
-				. $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0' // default language
-				. ' OR '
-				. $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1' // all languages
-			. ')';
+			$conditions['languageField'] = array(
+				$GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0', // default language
+				$GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1' // all languages
+			);
+			if (isset($GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'])) {
+				$conditions['languageField'][] = $GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'] . ' = 0'; // translations without original language source
+			}
+			$conditions['languageField'] = '(' . implode(' OR ', $conditions['languageField']) . ')';
 		}
 
 		if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['versioningWS'])) {
