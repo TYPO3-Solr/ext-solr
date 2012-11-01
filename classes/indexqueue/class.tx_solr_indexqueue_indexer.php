@@ -161,6 +161,17 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 
 		$itemRecord['__solr_index_language'] =  $language;
 
+		/*
+		 * Skip disabled records. This happens if the default language record
+		 * is hidden but a certain translation isn't. Then the default language
+		 * document appears here but must not be indexed.
+		 */
+		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['disabled'])
+			&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['disabled']]
+		) {
+			$itemRecord = NULL;
+		}
+
 		return $itemRecord;
 	}
 
