@@ -226,22 +226,15 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 	 * @return Apache_Solr_Document The Solr document converted from the record
 	 */
 	protected function itemToDocument(tx_solr_indexqueue_Item $item, $language = 0) {
-		$itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
+		$document = NULL;
 
-		/*
-		 * If there is no record for default language (0), the record has no
-		 * l18n_parent record but is a single, not-translated language record
-		 * with a certain language configuration / available in that specific
-		 * language only.
-		 * Treat the language record as base/full record.
-		 */
 		$itemRecord = $this->getFullItemRecord($item, $language);
-		if (is_null($itemRecord)) {
-			$itemRecord = $item->getRecord();
-		}
+		if (!is_null($itemRecord)) {
+			$itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
 
-		$document = $this->getBaseDocument($item, $itemRecord);
-		$document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord);
+			$document = $this->getBaseDocument($item, $itemRecord);
+			$document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord);
+		}
 
 		return $document;
 	}
