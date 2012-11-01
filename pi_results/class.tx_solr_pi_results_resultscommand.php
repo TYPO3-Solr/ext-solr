@@ -51,6 +51,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	 */
 	protected $configuration;
 
+
 	/**
 	 * Constructor.
 	 *
