@@ -155,7 +155,8 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 			$itemRecord = $page->getRecordOverlay(
 				$item->getType(),
 				$itemRecord,
-				$language
+				$language,
+				'hideNonTranslated'
 			);
 		}
 
