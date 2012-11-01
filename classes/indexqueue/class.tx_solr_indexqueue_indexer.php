@@ -83,7 +83,7 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 	 * @return	Apache_Solr_Response	The Apache Solr response
 	 */
 	public function index(tx_solr_indexqueue_Item $item) {
-		$indexed = FALSE;
+		$indexed = TRUE;
 
 		$this->type = $item->getType();
 		$this->setLogging($item);
@@ -92,7 +92,18 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 
 		foreach ($solrConnections as $systemLanguageUid => $solrConnection) {
 			$this->solr = $solrConnection;
-			$indexed    = $this->indexItem($item, $systemLanguageUid);
+
+			if (!$this->indexItem($item, $systemLanguageUid)) {
+				/*
+				 * A single language voting for "not indexed" should make the whole
+				 * item count as being not indexed, even if all other languages are
+				 * indexed.
+				 * If there is no translation for a single language, this item counts
+				 * as TRUE since it's not an error which that should make the item
+				 * being reindexed during another index run.
+				 */
+				$indexed = FALSE;
+			}
 		}
 
 		return $indexed;
@@ -110,6 +121,16 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 		$documents   = array();
 
 		$itemDocument = $this->itemToDocument($item, $language);
+		if (is_null($itemDocument)) {
+			/*
+			 * If there is no itemDocument, this means there was no translation
+			 * for this record. This should not stop the current item to count as
+			 * being valid because not-indexing not-translated items is perfectly
+			 * fine.
+			 */
+			return TRUE;
+		}
+
 		$documents[]  = $itemDocument;
 		$documents    = array_merge($documents, $this->getAdditionalDocuments(
 			$item,
