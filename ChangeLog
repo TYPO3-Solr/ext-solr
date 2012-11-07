@@ -2,6 +2,7 @@
 
 	* Fixed bug #42551: Result URL does not preserve anchors when using site highlighting, credits Jonas Götze
 	* Fixed bug #37362: Incomplete url for results per page switch, credits Heiko Kromm
+	* Fixed bug #41584: Pagebrowser skips facet parameters
 
 2012-11-01  Ingo Renner  <ingo.renner@dkd.de>
 

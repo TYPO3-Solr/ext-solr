@@ -249,7 +249,6 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 				array(
 					'pageParameterName' => 'tx_solr|page',
 					'numberOfPages'     => $numberOfPages,
-					'extraQueryString'  => '&' . tx_solr_query_LinkBuilder::getQueryGetParameter() . '=' . $this->search->getQuery()->getKeywords(),
 					'templateFile'      => $this->configuration['templateFiles.']['pagebrowser']
 				)
 			);
