@@ -62,10 +62,11 @@ class tx_solr_pi_results_ResultsPerPageSwitchCommand implements tx_solr_PluginCo
 
 		$selectOptions = $this->getResultsPerPageOptions();
 		if ($selectOptions) {
-			$form = array('action' => htmlentities($this->parentPlugin->pi_linkTP_keepPIvars_url(array(
-				'resultsPerPage' => '',
-				'page' => '',
-			))));
+			$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->parentPlugin->getSearch()->getQuery());
+			$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
+			$form = array(
+				'action' => $queryLinkBuilder->getQueryUrl()
+			);
 
 			$markers['loop_options|option'] = $selectOptions;
 			$markers['form'] = $form;
@@ -87,6 +88,10 @@ class tx_solr_pi_results_ResultsPerPageSwitchCommand implements tx_solr_PluginCo
 		$resultsPerPageSwitchOptions = t3lib_div::intExplode(',', $this->configuration['search.']['results.']['resultsPerPageSwitchOptions'], TRUE);
 		$currentNumberOfResultsShown = $this->parentPlugin->getNumberOfResultsPerPage();
 
+		$queryLinkBuilder = t3lib_div::makeInstance('tx_solr_query_LinkBuilder', $this->parentPlugin->getSearch()->getQuery());
+		$queryLinkBuilder->removeUnwantedUrlParameter('resultsPerPage');
+		$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
+
 		foreach ($resultsPerPageSwitchOptions as $option) {
 			$selected      = '';
 			$selectedClass = '';
@@ -100,7 +105,7 @@ class tx_solr_pi_results_ResultsPerPageSwitchCommand implements tx_solr_PluginCo
 				'value'         => $option,
 				'selected'      => $selected,
 				'selectedClass' => $selectedClass,
-				'url'           => $this->parentPlugin->pi_linkTP_keepPIvars_url(array('resultsPerPage' => $option)),
+				'url'           => $queryLinkBuilder->getQueryUrl(array('resultsPerPage' => $option)),
 			);
 		}
 
