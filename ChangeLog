@@ -1,3 +1,7 @@
+2012-11-07  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed bug #42551: Result URL does not preserve anchors when using site highlighting, credits Jonas Götze
+
 2012-11-01  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Add support for indexing records without default language parent record, credits Stephan Schuler

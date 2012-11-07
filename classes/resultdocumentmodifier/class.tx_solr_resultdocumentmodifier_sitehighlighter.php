@@ -50,7 +50,14 @@ class tx_solr_resultdocumentmodifier_SiteHighlighter implements tx_solr_ResultDo
 		$searchWords = str_replace('&quot;', '', $searchWords);
 		$searchWords = t3lib_div::trimExplode(' ', $searchWords, TRUE);
 
-		$url  = $resultDocument['url'];
+		$url = $resultDocument['url'];
+		$fragment = '';
+		if (strpos($url, '#') !== FALSE) {
+			$explodedUrl = explode('#', $url);
+
+			$fragment = $explodedUrl[1];
+			$url      = $explodedUrl[0];
+		}
 		$url .= (strpos($url, '?') !== FALSE) ? '&' : '?';
 		$url .= 'sword_list[]=' . array_shift($searchWords);
 
@@ -58,7 +65,7 @@ class tx_solr_resultdocumentmodifier_SiteHighlighter implements tx_solr_ResultDo
 			$url .= '&sword_list[]=' . $word;
 		}
 
-		$url .= '&no_cache=1';
+		$url .= '&no_cache=1' . ($fragment ? '#' . $fragment : '');
 
 			// eventually, replace the document's URL with the one that enables highlighting
 		$resultDocument['url'] = $url;
