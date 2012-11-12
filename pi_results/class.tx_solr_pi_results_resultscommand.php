@@ -243,12 +243,18 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 			$numberOfPages  = intval($numberOfResults / $resultsPerPage)
 				+ (($numberOfResults % $resultsPerPage) == 0 ? 0 : 1);
 
+			$solrGetParameters = t3lib_div::_GET('tx_solr');
+			if (!is_array($solrGetParameters)) {
+				$solrGetParameters = array();
+			}
+			unset($solrGetParameters['page']);
 			$pageBrowserConfiguration = array_merge(
 				$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1.'],
 				$solrPageBrowserConfiguration,
 				array(
 					'pageParameterName' => 'tx_solr|page',
 					'numberOfPages'     => $numberOfPages,
+					'extraQueryString'  => t3lib_div::implodeArrayForUrl('tx_solr', $solrGetParameters),
 					'templateFile'      => $this->configuration['templateFiles.']['pagebrowser']
 				)
 			);
