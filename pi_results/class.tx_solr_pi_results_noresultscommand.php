@@ -106,6 +106,7 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 		);
 
 		$markers = array(
+			'query'                      => $searchWord,
 			'nothing_found'              => $nothingFound,
 			'showing_results_suggestion' => $showingResultsSuggestion,
 			'search_for_original'        => $searchForOriginal,
