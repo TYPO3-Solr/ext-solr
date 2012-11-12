@@ -780,11 +780,7 @@ class tx_solr_Query {
 	 * @return string The cleaned keywords.
 	 */
 	public function getKeywordsCleaned() {
-		$keywords = trim($this->keywordsRaw);
-		$keywords = t3lib_div::removeXSS($keywords);
-		$keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
-
-		return $keywords;
+		return self::cleanKeywords($this->keywordsRaw);
 	}
 
 	public function getKeywordsRaw() {
@@ -794,6 +790,14 @@ class tx_solr_Query {
 	public function setKeywords($keywords) {
 		$this->keywords    = $this->escape($keywords);
 		$this->keywordsRaw = $keywords;
+	}
+
+	public static function cleanKeywords($keywords) {
+		$keywords = trim($keywords);
+		$keywords = t3lib_div::removeXSS($keywords);
+		$keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+
+		return $keywords;
 	}
 
 	/**

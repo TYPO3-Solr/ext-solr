@@ -448,9 +448,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 		$userQuery = $this->getRawUserQuery();
 
 		if (!is_null($userQuery)) {
-			$userQuery = trim($userQuery);
-			$userQuery = t3lib_div::removeXSS($userQuery);
-			$userQuery = htmlentities($userQuery, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+			$userQuery = tx_solr_Query::cleanKeywords($userQuery);
 		}
 
 		return $userQuery;
