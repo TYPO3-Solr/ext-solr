@@ -1,3 +1,7 @@
+2012-11-12  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed bug #39553: Disable Solr-Indexing on pages not working properly if CE's are edited
+
 2012-11-07  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed bug #42551: Result URL does not preserve anchors when using site highlighting, credits Jonas Götze

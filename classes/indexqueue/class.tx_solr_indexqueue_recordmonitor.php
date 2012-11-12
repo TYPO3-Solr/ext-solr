@@ -174,6 +174,14 @@ class tx_solr_indexqueue_RecordMonitor {
 			$recordPageId = $fields['pid'];
 		}
 
+			// when a content element changes we need to updated the page instead
+		if ($recordTable == 'tt_content') {
+			$recordTable = 'pages';
+			$recordUid   = $recordPageId;
+		}
+
+			// TODO need to check for creation of "pages_language_overlay" records to trigger "pages" updates
+
 		$this->solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($recordPageId);
 		$monitoredTables = $this->getMonitoredTables($recordPageId);
 
@@ -206,13 +214,6 @@ class tx_solr_indexqueue_RecordMonitor {
 				}
 			}
 		}
-
-			// when a content element changes we need to updated the page instead
-		if ($recordTable == 'tt_content' && in_array('pages', $monitoredTables)) {
-			$this->indexQueue->updateItem('pages', $recordPageId);
-		}
-
-			// TODO need to check for creation of "pages_language_overlay" records to trigger "pages" updates
 	}
 
 	/**
