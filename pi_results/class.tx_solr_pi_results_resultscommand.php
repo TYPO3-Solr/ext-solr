@@ -58,10 +58,9 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	 * @param tx_solr_pluginbase_CommandPluginBase Parent plugin object.
 	 */
 	public function __construct(tx_solr_pluginbase_CommandPluginBase $parentPlugin) {
-		$this->search = t3lib_div::makeInstance('tx_solr_Search');
-
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
+		$this->search        = $parentPlugin->getSearch();
 	}
 
 	public function execute() {
@@ -296,15 +295,6 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 	 */
 	public function getParentPlugin() {
 		return $this->parentPlugin;
-	}
-
-	/**
-	 * Sets the search instance to use for rendering results.
-	 *
-	 * @param tx_solr_Search $search Search instance
-	 */
-	public function setSearch(tx_solr_Search $search) {
-		$this->search = $search;
 	}
 
 	/**

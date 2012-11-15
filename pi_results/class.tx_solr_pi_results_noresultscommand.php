@@ -128,8 +128,8 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 		$spellChecker      = t3lib_div::makeInstance('tx_solr_SpellChecker');
 		$suggestedKeywords = $spellChecker->getCollatedSuggestion();
 
-		$plugin = clone $this->parentPlugin;
-		$search = clone $this->parentPlugin->getSearch();
+		$plugin = $this->parentPlugin;
+		$search = $this->parentPlugin->getSearch();
 		$query  = clone $search->getQuery();
 
 		$query->setKeywords($suggestedKeywords);
@@ -139,7 +139,6 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 			'tx_solr_pi_results_ResultsCommand',
 			$plugin
 		);
-		$resultsCommand->setSearch($search);
 		$commandVariables = $resultsCommand->execute();
 
 		return $plugin->renderCommand('results', $commandVariables);

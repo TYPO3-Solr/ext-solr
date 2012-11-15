@@ -111,6 +111,10 @@ class tx_solr_viewhelper_Relevance implements tx_solr_ViewHelper {
 		$document = unserialize($document);
 		if (is_array($document)) {
 			$score = $document['score'];
+		} else if ($rawDocument == '###RESULT_DOCUMENT###') {
+			// unresolved marker
+			// may happen when using search.spellchecking.searchUsingSpellCheckerSuggestion
+			// -> ignore
 		} else {
 			$solrConfiguration = tx_solr_Util::getSolrConfiguration();
 			if ($solrConfiguration['logging.']['exceptions']) {
