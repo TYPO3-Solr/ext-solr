@@ -279,7 +279,6 @@ plugin.tx_solr {
 
 			facetLinkUrlParameters =
 
-			facetOrder = type, author
 			facets {
 				type {
 					label = Content Type
