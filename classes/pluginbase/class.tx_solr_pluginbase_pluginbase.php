@@ -439,6 +439,16 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	}
 
 	/**
+	 * Sets the tx_solr_Search instance used for the query. Mainly used as a
+	 * helper function for result document modifiers.
+	 *
+	 * @param tx_solr_Search $search Search instance
+	 */
+	public function setSearch(tx_solr_Search $search) {
+		$this->search = $search;
+	}
+
+	/**
 	 * Gets the user's query term and cleans it so that it can be used in
 	 * templates f.e.
 	 *

@@ -1,6 +1,7 @@
 2012-11-15  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed a bug where results from spellchecking suggestions would highlight the original and thus wrong search keywords
+	* Fixed a bug where results from spellchecking suggestions are not reusing the original query settings
 
 2012-11-12  Ingo Renner  <ingo.renner@dkd.de>
 
