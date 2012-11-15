@@ -1,3 +1,7 @@
+2012-11-15  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Fixed a bug where results from spellchecking suggestions would highlight the original and thus wrong search keywords
+
 2012-11-12  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Release of version 2.8.0

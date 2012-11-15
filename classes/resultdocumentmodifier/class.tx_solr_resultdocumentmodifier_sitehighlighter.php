@@ -44,7 +44,7 @@ class tx_solr_resultdocumentmodifier_SiteHighlighter implements tx_solr_ResultDo
 	 * @return	array	The document with fields as array
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
-		$searchWords = $resultCommand->getParentPlugin()->getCleanUserQuery();
+		$searchWords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
 
 			// remove quotes from phrase searches - they've been escaped by getCleanUserQuery()
 		$searchWords = str_replace('&quot;', '', $searchWords);
