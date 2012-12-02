@@ -175,21 +175,7 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 				// TODO allow to have multiple (commaseparated) instructions for each field
 			switch ($processingInstruction) {
 				case 'timestamp':
-						// FIXME use DateTime::createFromFormat (PHP 5.3+)
-					$parsedTime = strptime($document->{$fieldName}, '%Y-%m-%dT%H:%M:%SZ');
-
-					$processedFieldValue = mktime(
-						$parsedTime['tm_hour'],
-						$parsedTime['tm_min'],
-						$parsedTime['tm_sec'],
-							// strptime returns the "Months since January (0-11)"
-							// while mktime expects the month to be a value
-							// between 1 and 12. Adding 1 to solve the problem
-						$parsedTime['tm_mon'] + 1,
-						$parsedTime['tm_mday'],
-							// strptime returns the "Years since 1900"
-						$parsedTime['tm_year'] + 1900
-					);
+					$processedFieldValue = tx_solr_Util::isoToTimestamp($document->{$fieldName});
 					break;
 				case 'serialize':
 					if(!empty($document->{$fieldName})){

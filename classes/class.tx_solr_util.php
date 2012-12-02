@@ -114,6 +114,32 @@ class tx_solr_Util {
 	}
 
 	/**
+	 * Converts a date from ISO 8601 format to unix timestamp.
+	 *
+	 * @param string $isoTime date in ISO 8601 format
+	 * @return integer unix timestamp
+	 */
+	public static function isoToTimestamp($isoTime) {
+			// FIXME use DateTime::createFromFormat (PHP 5.3+)
+		$parsedTime = strptime($isoTime, '%Y-%m-%dT%H:%M:%SZ');
+
+		$timestamp = mktime(
+			$parsedTime['tm_hour'],
+			$parsedTime['tm_min'],
+			$parsedTime['tm_sec'],
+				// strptime returns the "Months since January (0-11)"
+				// while mktime expects the month to be a value
+				// between 1 and 12. Adding 1 to solve the problem
+			$parsedTime['tm_mon'] + 1,
+			$parsedTime['tm_mday'],
+				// strptime returns the "Years since 1900"
+			$parsedTime['tm_year'] + 1900
+		);
+
+		return $timestamp;
+	}
+
+	/**
 	 * Returns given word as CamelCased.
 	 *
 	 * Converts a word like "send_email" to "SendEmail". It
