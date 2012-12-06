@@ -33,6 +33,7 @@
  * multiValue: whether to return related records suitable for a multi value field
  * singleValueGlue: when not using multiValue, the related records need to be concatened using a glue string, by default this is ", ". Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters.
  * relationTableSortingField: field in an mm relation table to sort by, usually "sorting"
+ * enableRecursiveValueResolution: if the specified remote table's label field is a relation to another table, the value will be resolve by following the relation recursively.
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
  * @package	TYPO3
@@ -51,6 +52,14 @@ class tx_solr_contentobject_Relation {
 
 
 	/**
+	 * Constructor.
+	 *
+	 */
+	public function __construct() {
+		$this->configuration['enableRecursiveValueResolution'] = 1;
+	}
+
+	/**
 	 * Executes the SOLR_RELATION content object.
 	 *
 	 * Resolves relations between records. Currently supported relations are
@@ -66,7 +75,7 @@ class tx_solr_contentobject_Relation {
 	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $parentContentObject) {
 		$result = '';
 
-		$this->configuration = $configuration;
+		$this->configuration = array_merge($this->configuration, $configuration);
 
 		$relatedItems = $this->getRelatedItems($parentContentObject);
 
@@ -182,7 +191,8 @@ class tx_solr_contentobject_Relation {
 
 		$value = $relatedRecord[$foreignTableLabelField];
 
-		if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])) {
+		if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
+		&& $this->configuration['enableRecursiveValueResolution']) {
 				// backup
 			$backupRecord                             = $parentContentObject->data;
 			$backupField                              = $this->configuration['foreignLabelField'];

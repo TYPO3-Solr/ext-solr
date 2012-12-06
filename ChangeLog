@@ -1,3 +1,7 @@
+2012-12-05  Ingo Renner  <ingo.renner@dkd.de>
+
+	* Added an option to control recursive value resolution in SOLR_RELATION
+
 2012-11-15  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed a bug where results from spellchecking suggestions would highlight the original and thus wrong search keywords
