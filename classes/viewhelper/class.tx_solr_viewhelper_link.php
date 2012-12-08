@@ -68,23 +68,25 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 		$linkArgument = trim($arguments[1]);
 		if (is_numeric($linkArgument)) {
 			$linkTarget = intval($linkArgument);
-		} elseif(t3lib_div::isValidUrl($linkArgument) || t3lib_div::isValidUrl(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $linkArgument)) {
-				// $linkTarget is an URL
-			$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
-		} elseif(t3lib_div::isFirstPartOfStr($linkArgument, 'index.php')) {
-				// $linkTarget is a relative TYPO3 URL
-			$linkTarget = $linkArgument;
-		} elseif (is_string($linkArgument) && !empty($linkArgument)) {
-			try {
-				$typoscript      = tx_solr_Util::getTypoScriptObject($linkArgument);
-				$pathExploded    = explode('.', $linkArgument);
-				$lastPathSegment = array_pop($pathExploded);
+		} elseif (!empty($linkArgument) && is_string($linkArgument)) {
+			if(t3lib_div::isValidUrl($linkArgument) || t3lib_div::isValidUrl(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $linkArgument)) {
+					// $linkTarget is an URL
+				$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
+			} elseif(t3lib_div::isFirstPartOfStr($linkArgument, 'index.php')) {
+					// $linkTarget is a relative TYPO3 URL
+				$linkTarget = $linkArgument;
+			} else {
+				try {
+					$typoscript      = tx_solr_Util::getTypoScriptObject($linkArgument);
+					$pathExploded    = explode('.', $linkArgument);
+					$lastPathSegment = array_pop($pathExploded);
 
-				$linkTarget = intval($typoscript[$lastPathSegment]);
-			} catch (InvalidArgumentException $e) {
-					// ignore exceptions caused by markers, but accept the exception for wrong TS paths
-				if (substr($linkArgument, 0, 3) != '###') {
-					throw $e;
+					$linkTarget = intval($typoscript[$lastPathSegment]);
+				} catch (InvalidArgumentException $e) {
+						// ignore exceptions caused by markers, but accept the exception for wrong TS paths
+					if (substr($linkArgument, 0, 3) != '###') {
+						throw $e;
+					}
 				}
 			}
 		}
