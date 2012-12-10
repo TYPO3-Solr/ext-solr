@@ -49,7 +49,7 @@ class tx_solr_query_LinkBuilder {
 	 *
 	 * @var tx_solr_Query
 	 */
-	protected $query;
+	protected $query = null;
 
 	/**
 	 * URL GET parameter prefix
@@ -289,7 +289,11 @@ class tx_solr_query_LinkBuilder {
 		);
 		$queryParameters   = $this->removeUnwantedUrlParameters($queryParameters);
 
-		$queryGetParameter = '&' . self::$queryGetParameter . '=' . $this->query->getKeywords();
+		$queryKeywords = '';
+		if ($this->query) {
+			$queryKeywords = $this->query->getKeywords();
+		}
+		$queryGetParameter = '&' . self::$queryGetParameter . '=' . $queryKeywords;
 
 		$linkConfiguration = array(
 			'useCacheHash'     => FALSE,
