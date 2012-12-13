@@ -297,6 +297,7 @@ class tx_solr_Util {
 
 			$GLOBALS['TSFE']->settingLanguage();
 			$GLOBALS['TSFE']->newCObj();
+			$GLOBALS['TSFE']->absRefPrefix = ($GLOBALS['TSFE']->config['config']['absRefPrefix'] ? trim($GLOBALS['TSFE']->config['config']['absRefPrefix']) : '');
 
 			if ($useCache) {
 				$tsfeCache[$cacheId] = $GLOBALS['TSFE'];
