@@ -2,7 +2,7 @@
 
 	* Fixed bug #43394: Fatal error in results per page switch
 	* Fixed bug #43721: LINK-Viewhelper fails to resolve typoscript-path as link target
-	* Fixed bug #43701: config.index_enable has no effect for pages, crdits Dmitry Dulepov
+	* Fixed bug #43701: config.index_enable has no effect for pages, credits Dmitry Dulepov
 	* Fixed bug #43556: Insufficient absRefPrefix support for non-page-records, credits Stefan Galinski
 
 2012-12-08  Ingo Renner  <ingo.renner@dkd.de>
