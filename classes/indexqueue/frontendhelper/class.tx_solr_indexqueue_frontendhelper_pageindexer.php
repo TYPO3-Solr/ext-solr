@@ -249,9 +249,10 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 	public function hook_indexContent(tslib_fe $page) {
 		$this->page = $page;
 
-		if (!$this->page->config['config']['index_enable']
-		&& $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['pageIndexed']) {
-			t3lib_div::devLog('Indexing is disabled. Set config.index_enable = 1 .', 'solr', 3);
+		if (!$this->page->config['config']['index_enable']) {
+			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['pageIndexed']) {
+				t3lib_div::devLog('Indexing is disabled. Set config.index_enable = 1 .', 'solr', 3);
+			}
 			return;
 		}
 
