@@ -27,6 +27,12 @@
  * Viewhelper class to create links
  * Replaces viewhelpers ###LINK:linkText|linkTarget|additionalParameters|useCache|ATagParams###
  *
+ * linkTarget can be one of the following
+ * - a TypoScript path resolving into a page ID
+ * - an integer page ID
+ * - a full URL
+ * - a relative URL pointing to a page within the same domain
+ *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
  * @subpackage	solr
@@ -69,13 +75,7 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 		if (is_numeric($linkArgument)) {
 			$linkTarget = intval($linkArgument);
 		} elseif (!empty($linkArgument) && is_string($linkArgument)) {
-			if(t3lib_div::isValidUrl($linkArgument) || t3lib_div::isValidUrl(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $linkArgument)) {
-					// $linkTarget is an URL
-				$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
-			} elseif(t3lib_div::isFirstPartOfStr($linkArgument, 'index.php')) {
-					// $linkTarget is a relative TYPO3 URL
-				$linkTarget = $linkArgument;
-			} else {
+			if (tx_solr_Util::isValidTypoScriptPath($linkArgument)) {
 				try {
 					$typoscript      = tx_solr_Util::getTypoScriptObject($linkArgument);
 					$pathExploded    = explode('.', $linkArgument);
@@ -88,6 +88,9 @@ class tx_solr_viewhelper_Link implements tx_solr_ViewHelper {
 						throw $e;
 					}
 				}
+			} elseif (t3lib_div::isValidUrl($linkArgument) || t3lib_div::isValidUrl(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $linkArgument)) {
+					// $linkTarget is an URL
+				$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
 			}
 		}
 
