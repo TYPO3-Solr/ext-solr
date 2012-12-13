@@ -169,7 +169,8 @@ tx_solr_CommandResolver::registerPluginCommand(
 	'results',
 	'resultsPerPageSwitch',
 	'tx_solr_pi_results_ResultsPerPageSwitchCommand',
-tx_solr_PluginCommand::REQUIREMENT_NONE
+	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
 tx_solr_CommandResolver::registerPluginCommand(
