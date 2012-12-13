@@ -327,7 +327,7 @@ class tx_solr_Util {
 			// fallback, backend
 		if ($pageId != 0 && (empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
 			$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
-			$rootLine   = $pageSelect->getRootLine($pageId);
+			$rootLine   = $pageSelect->getRootLine($pageId, '', TRUE);
 		}
 
 		$rootLine = array_reverse($rootLine);
