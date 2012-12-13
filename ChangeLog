@@ -1,6 +1,7 @@
 2012-12-13  Ingo Renner  <ingo.renner@dkd.de>
 
 	* Fixed bug #43394: Fatal error in results per page switch
+	* Fixed bug #43721: LINK-Viewhelper fails to resolve typoscript-path as link target
 
 2012-12-08  Ingo Renner  <ingo.renner@dkd.de>
 

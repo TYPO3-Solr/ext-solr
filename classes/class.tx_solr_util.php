@@ -442,6 +442,23 @@ class tx_solr_Util {
 	}
 
 	/**
+	 * Checks whether a given TypoScript path is valid.
+	 *
+	 * @param string $path TypoScript path
+	 * @return boolean TRUE if the path resolves, FALSE otherwise
+	 */
+	public static function isValidTypoScriptPath($path) {
+		$isValidPath = FALSE;
+
+		$pathValue = self::getTypoScriptValue($path);
+		if (!is_null($pathValue)) {
+			$isValidPath = TRUE;
+		}
+
+		return $isValidPath;
+	}
+
+	/**
 	 * Gets the site hash for a domain
 	 *
 	 * @param string $domain Domain to calculate the site hash for.
