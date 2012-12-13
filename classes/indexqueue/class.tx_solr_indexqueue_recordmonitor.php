@@ -360,6 +360,7 @@ class tx_solr_indexqueue_RecordMonitor {
 			'uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed',
 			'pages',
 			'doktype = 7 AND mount_pid IN(' . implode(',', $pageIds) . ')'
+				. t3lib_BEfunc::deleteClause('pages')
 		);
 
 		return $mountPages;
