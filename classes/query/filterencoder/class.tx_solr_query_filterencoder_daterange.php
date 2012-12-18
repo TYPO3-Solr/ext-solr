@@ -49,7 +49,9 @@ class tx_solr_query_filterencoder_DateRange implements tx_solr_QueryFilterEncode
 	 */
 	public function decodeFilter($dateRange, array $configuration = array()) {
 		list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $dateRange);
-		$dateRangeEnd .= '59'; // adding 59 seconds
+
+		$dateRangeEnd  .= '59'; // adding 59 seconds
+		$dateRangeStart = substr($dateRangeStart, 1); // remove the leading colon
 
 			// TODO for PHP 5.3 use date_parse_from_format() / date_create_from_format() / DateTime::createFromFormat()
 		$dateRangeFilter  = '[' . tx_solr_Util::timestampToIso(strtotime($dateRangeStart));
