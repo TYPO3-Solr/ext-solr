@@ -1,5 +1,7 @@
 2012-12-17  Ingo Renner  <ingo@typo3.org>
 
+	* Release of version 2.8.1
+
 	* Fixed bug #44050: Wrong Apache Solr version loaded in multi install script, credits Hauke Meyer
 	* Fixed bug #44005: Fatal error when saving records with start-/stoptime, credits Jonas Götze
 	* Fixed broken date range facet renderer, credits Stefan Sprenger
