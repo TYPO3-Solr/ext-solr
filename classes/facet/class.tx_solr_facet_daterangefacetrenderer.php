@@ -31,6 +31,16 @@
 class tx_solr_facet_DateRangeFacetRenderer extends tx_solr_facet_AbstractFacetRenderer {
 
 	/**
+	 * Provides the internal type of facets the renderer handles.
+	 * The type is one of field, range, or query.
+	 *
+	 * @return string Facet internal type
+	 */
+	public static function getFacetInternalType() {
+		return tx_solr_facet_Facet::TYPE_DATE;
+	}
+
+	/**
 	 * Renders a date renage facet by providing two input fields, enhanced with
 	 * date pickers.
 	 *
@@ -39,20 +49,18 @@ class tx_solr_facet_DateRangeFacetRenderer extends tx_solr_facet_AbstractFacetRe
 	public function renderFacetOptions() {
 		$this->loadJavaScriptFiles();
 
-#FIXME calls non-existent buildAddFacetUrl()
-
 		$content = '
 			<li>
 				<script type="text/javascript">
 				/*<![CDATA[*/
-				jQuery(function() {
+					jQuery(document).ready(function() {
 					jQuery(".dateselector").datepicker();
 					jQuery(".dateselector").change(function(){ solrRequest("'
 						. $this->facetName
 						. '", "'
 						. tx_solr_query_filterencoder_DateRange::DELIMITER
-					. '") });
-				});
+						. '") });
+					});
 				/*]]>*/
 				</script>
 
@@ -64,6 +72,16 @@ class tx_solr_facet_DateRangeFacetRenderer extends tx_solr_facet_AbstractFacetRe
 		';
 
 		return $content;
+	}
+
+	/**
+	 * tbd
+	 */
+	protected function buildAddFacetUrl($facetName) {
+		$facetOption      = t3lib_div::makeInstance('tx_solr_facet_FacetOption', $this->facetName, '');
+		$facetLinkBuilder = t3lib_div::makeInstance('tx_solr_facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
+
+		return $facetLinkBuilder->getAddFacetOptionUrl();
 	}
 
 	/**

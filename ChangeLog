@@ -2,6 +2,7 @@
 
 	* Fixed bug #44050: Wrong Apache Solr version loaded in multi install script, credits Hauke Meyer
 	* Fixed bug #44005: Fatal error when saving records with start-/stoptime, credits Jonas Götze
+	* Fixed broken date range facet renderer, credits Stefan Sprenger
 
 2012-12-13  Ingo Renner  <ingo.renner@dkd.de>
 
