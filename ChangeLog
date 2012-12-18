@@ -1,6 +1,7 @@
 2012-12-17  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed bug #44050: Wrong Apache Solr version loaded in multi install script, credits Hauke Meyer
+	* Fixed bug #44005: Fatal error when saving records with start-/stoptime, credits Jonas Götze
 
 2012-12-13  Ingo Renner  <ingo.renner@dkd.de>
 
