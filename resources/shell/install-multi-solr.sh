@@ -9,7 +9,7 @@
 clear
 
 TOMCAT_VER=6.0.35
-DEFAULT_SOLR_VER=3.5.0
+DEFAULT_SOLR_VER=3.6.1
 EXT_SOLR_VER=2.9
 EXT_SOLR_PLUGIN_VER=1.2.0
 
@@ -249,8 +249,7 @@ for SOLR in ${SOLR_VER[*]}
 do
   cd /opt/solr-tomcat
   cecho "Downloading Apache Solr $SOLR" $green
-  wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/apache-solr-3.5.0.zip 2>&1 | progressfilt
-#  wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR/apache-solr-$SOLR.zip 2>&1 | progressfilt
+  wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR/apache-solr-$SOLR.zip 2>&1 | progressfilt
   cecho "Unpacking Apache Solr." $green
   unzip -q apache-solr-$SOLR.zip
   cp apache-solr-$SOLR/dist/apache-solr-$SOLR.war tomcat/webapps/solr-$SOLR.war
