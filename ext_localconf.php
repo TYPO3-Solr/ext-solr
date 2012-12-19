@@ -234,6 +234,7 @@ tx_solr_facet_FacetRendererFactory::registerFacetType(
 tx_solr_facet_FacetRendererFactory::registerFacetType(
 	'dateRange',
 	'tx_solr_facet_DateRangeFacetRenderer',
+	'tx_solr_query_filterencoder_DateRange',
 	'tx_solr_query_filterencoder_DateRange'
 );
 

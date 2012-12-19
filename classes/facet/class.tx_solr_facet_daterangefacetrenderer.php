@@ -37,7 +37,7 @@ class tx_solr_facet_DateRangeFacetRenderer extends tx_solr_facet_AbstractFacetRe
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return tx_solr_facet_Facet::TYPE_DATE;
+		return tx_solr_facet_Facet::TYPE_RANGE;
 	}
 
 	/**
@@ -80,6 +80,7 @@ class tx_solr_facet_DateRangeFacetRenderer extends tx_solr_facet_AbstractFacetRe
 	protected function buildAddFacetUrl($facetName) {
 		$facetOption      = t3lib_div::makeInstance('tx_solr_facet_FacetOption', $this->facetName, '');
 		$facetLinkBuilder = t3lib_div::makeInstance('tx_solr_facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
+		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 		return $facetLinkBuilder->getAddFacetOptionUrl();
 	}
