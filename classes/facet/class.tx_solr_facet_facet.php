@@ -91,7 +91,7 @@ class tx_solr_facet_Facet {
 	 *
 	 */
 	protected function initializeConfiguration() {
-		$solrConfiguration = tx_solr_Util::getSolrConfiguration();
+		$solrConfiguration   = tx_solr_Util::getSolrConfiguration();
 		$this->configuration = $solrConfiguration['search.']['faceting.']['facets.'][$this->name . '.'];
 
 		$this->field = $this->configuration['field'];

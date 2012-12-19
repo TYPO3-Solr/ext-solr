@@ -5,7 +5,7 @@ function solrRequest(facetName, delimiter) {
 
 		start_date = convertToDate(jQuery('#start_date_'+facetName).datepicker('getDate'));
 		end_date = convertToDate(jQuery('#end_date_'+facetName).datepicker('getDate'));
-		url = url +  encodeURI(':' + start_date +'0000' + delimiter + end_date + '2359');
+		url = url + encodeURI(':' + start_date +'0000' + delimiter + end_date + '2359');
 
 		window.location.href = url;
 	};
