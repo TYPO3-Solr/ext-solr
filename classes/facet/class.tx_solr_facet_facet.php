@@ -35,8 +35,6 @@ class tx_solr_facet_Facet {
 
 	const TYPE_RANGE = 'range';
 
-	const TYPE_DATE  = 'date';
-
 
 	/**
 	 * @var tx_solr_Search

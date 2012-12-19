@@ -29,7 +29,7 @@
  *
  * @author	Markus Goldbach <markus.goldbach@dkd.de>
  */
-class tx_solr_query_filterencoder_DateRange implements tx_solr_QueryFilterEncoder {
+class tx_solr_query_filterencoder_DateRange implements tx_solr_QueryFilterEncoder, tx_solr_QueryFacetBuilder {
 
 	/**
 	 * Delimiter for date parts in the URL.
@@ -51,7 +51,6 @@ class tx_solr_query_filterencoder_DateRange implements tx_solr_QueryFilterEncode
 		list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $dateRange);
 
 		$dateRangeEnd  .= '59'; // adding 59 seconds
-		$dateRangeStart = substr($dateRangeStart, 1); // remove the leading colon
 
 			// TODO for PHP 5.3 use date_parse_from_format() / date_create_from_format() / DateTime::createFromFormat()
 		$dateRangeFilter  = '[' . tx_solr_Util::timestampToIso(strtotime($dateRangeStart));
@@ -71,6 +70,42 @@ class tx_solr_query_filterencoder_DateRange implements tx_solr_QueryFilterEncode
 	 */
 	public function encodeFilter($filterValue, array $configuration = array()) {
 		return $filterValue;
+	}
+
+	/**
+	 * Builds the facet parameters depending on a date range facet's configuration.
+	 *
+	 * @param string $facetName Facet name
+	 * @param array $facetConfiguration The facet's configuration
+	 */
+	public function buildFacetParameters($facetName, array $facetConfiguration) {
+		$facetParameters = array();
+
+		$tag = '';
+		if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+			$tag = '{!ex=' . $facetConfiguration['field'] . '}';
+		}
+		$facetParameters['facet.range'][] = $tag . $facetConfiguration['field'];
+
+		$start = 'NOW/DAY-1YEAR';
+		if ($facetConfiguration['dateRange.']['start']) {
+			$start = $facetConfiguration['dateRange.']['start'];
+		}
+		$facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.start'] = $start;
+
+		$end = 'NOW/DAY+1YEAR';
+		if ($facetConfiguration['dateRange.']['end']) {
+			$end = $facetConfiguration['dateRange.']['end'];
+		}
+		$facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.end'] = $end;
+
+		$gap = '+1DAY';
+		if ($facetConfiguration['dateRange.']['gap']) {
+			$gap = $facetConfiguration['dateRange.']['gap'];
+		}
+		$facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.gap'] = $gap;
+
+		return $facetParameters;
 	}
 }
 

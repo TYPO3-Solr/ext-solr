@@ -1,3 +1,7 @@
+2012-12-19  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed remaining bugs in the date range facet renderer 
+
 2012-12-17  Ingo Renner  <ingo@typo3.org>
 
 	* Release of version 2.8.1
