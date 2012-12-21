@@ -304,6 +304,13 @@ class tx_solr_indexqueue_frontendhelper_PageIndexer extends tx_solr_indexqueue_f
 			$GLOBALS['TSFE']->sys_language_uid
 		);
 
+			// log the Solr connection used and why
+		$this->responseData['solrConnection'] = array(
+			'rootPage'         => $indexQueueItem->getRootPageUid(),
+			'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid,
+			'solr'             => (string) $solrConnection
+		);
+
 		return $solrConnection;
 	}
 }

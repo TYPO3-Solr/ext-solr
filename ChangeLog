@@ -1,3 +1,7 @@
+2012-12-21  Ingo Renner  <ingo@typo3.org>
+
+	* Added logging of the Solr connection used when indexing pages including the parameters used to determine it
+
 2012-12-19  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed remaining bugs in the date range facet renderer 

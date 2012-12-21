@@ -88,6 +88,16 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	}
 
 	/**
+	 * Creates a string representation of the Solr connection. Specifically
+	 * will return the Solr URL.
+	 *
+	 * @return string The Solr URL.
+	 */
+	public function __toString() {
+		return $this->_scheme . '//' . $this->_host . ':' . $this->_port . $this->_path;
+	}
+
+	/**
 	 * initializes various URLs, including the Luke URL
 	 *
 	 * @return void
