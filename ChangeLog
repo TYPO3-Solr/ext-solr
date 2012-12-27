@@ -1,3 +1,7 @@
+2012-12-26  Ingo Renner  <ingo@typo3.org>
+
+	* Changed install script to install Apache Solr 3.6.2
+
 2012-12-21  Ingo Renner  <ingo@typo3.org>
 
 	* Added logging of the Solr connection used when indexing pages including the parameters used to determine it
