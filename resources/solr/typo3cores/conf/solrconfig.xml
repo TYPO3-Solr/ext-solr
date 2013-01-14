@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SolrconfigStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<config name="tx_solr-2-8-0--20120925">
+<config name="tx_solr-2-9-0--20130114">
 
 	<luceneMatchVersion>LUCENE_36</luceneMatchVersion>
 
@@ -231,12 +231,6 @@
 			<str name="mlt.match.include">false</str>
 		</lst>
 	</requestHandler>
-
-
-	<requestHandler name="/analysis/document" class="solr.DocumentAnalysisRequestHandler" />
-
-
-	<requestHandler name="/analysis/field" class="solr.FieldAnalysisRequestHandler" />
 
 
 	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler" />

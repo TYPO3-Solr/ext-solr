@@ -1,3 +1,7 @@
+2013-01-14  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed issue #44259: Multiple requestHandler registered to the same name
+
 2012-12-26  Ingo Renner  <ingo@typo3.org>
 
 	* Changed install script to install Apache Solr 3.6.2

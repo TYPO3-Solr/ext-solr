@@ -44,7 +44,7 @@ class tx_solr_report_SolrconfigStatus implements tx_reports_StatusProvider {
 	 *
 	 * @var	string
 	 */
-	const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-2-8-0--20120925';
+	const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-2-9-0--20130114';
 
 	/**
 	 * Compiles a collection of solrconfig version checks against each configured
