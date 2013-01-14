@@ -52,6 +52,8 @@ return array(
 	'tx_solr_access_rootlineelement' => $extensionPath . 'classes/access/class.tx_solr_access_rootlineelement.php',
 	'tx_solr_access_rootlineelementformatexception' => $extensionPath . 'classes/access/class.tx_solr_access_rootlineelementformatexception.php',
 
+	'tx_solr_backend_indexingconfigurationselectorfield' => $extensionPath . 'classes/backend/class.tx_solr_backend_indexingconfigurationselectorfield.php',
+
 	'tx_solr_cli_dispatcher' => $extensionPath . 'classes/cli/class.tx_solr_cli_dispatcher.php',
 
 	'tx_solr_contentobject_content' => $extensionPath . 'classes/contentobject/class.tx_solr_contentobject_content.php',

@@ -263,95 +263,10 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 	 *  @return string Markup for the select field
 	 */
 	protected function renderIndexQueueInitializationSelector() {
-		$tceForm = t3lib_div::makeInstance('t3lib_TCEforms');
+		$selector = t3lib_div::makeInstance('tx_solr_backend_IndexingConfigurationSelectorField', $this->site);
+		$selector->setFormElementName('tx_solr-index-queue-initialization');
 
-		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
-
-		$PA = array(
-			'fieldChangeFunc' => array(),
-			'itemFormElName' => 'tx_solr-index-queue-initialization'
-		);
-
-		$icon = 'tcarecords-' . $tableName . '-default';
-
-		$formField = $tceForm->getSingleField_typeSelect_checkbox(
-			'', // table
-			'', // field
-			'', // row
-			$PA, // array with additional configuration options
-			array(), // config,
-			$this->buildSelectorItems($tablesToIndex), // items
-			'' // Label for no-matching-value
-		);
-
-			// need to wrap the field in a TCEforms table to make the CSS apply
-		$form = '
-		<table class="typo3-TCEforms tx_solr-TCEforms">
-			<tr>
-				<td>' . "\n" . $formField . "\n" . '</td>
-			</tr>
-		</table>
-		';
-
-		return $form;
-	}
-
-	/**
-	 * Builds a map of indexing configuration names to tables to to index.
-	 *
-	 * @return array Indexing configuration to database table map
-	 */
-	protected function getIndexQueueConfigurationTableMap() {
-		$indexingTableMap = array();
-
-		$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
-
-		foreach ($solrConfiguration['index.']['queue.'] as $name => $configuration) {
-			if (is_array($configuration)) {
-				$name = substr($name, 0, -1);
-
-				if ($solrConfiguration['index.']['queue.'][$name]) {
-					$table = $name;
-					if ($solrConfiguration['index.']['queue.'][$name . '.']['table']) {
-						$table = $solrConfiguration['index.']['queue.'][$name . '.']['table'];
-					}
-
-					$indexingTableMap[$name] = $table;
-				}
-			}
-		}
-
-		return $indexingTableMap;
-	}
-
-	/**
-	 * Builds the items to render in the TCEforms select field.
-	 *
-	 * @param array $tablesToIndex A map of indexing configuration to database tables
-	 * @return array Selectable items for the TCEforms select field
-	 */
-	protected function buildSelectorItems(array $tablesToIndex) {
-		$selectorItems = array();
-
-		foreach ($tablesToIndex as $configurationName => $tableName) {
-			$icon = 'tcarecords-' . $tableName . '-default';
-			if ($tableName == 'pages') {
-				$icon = 'apps-pagetree-page-default';
-			}
-
-			$labelTableName = '';
-			if ($configurationName != $tableName) {
-				$labelTableName = ' (' . $tableName . ')';
-			}
-
-			$selectorItems[] = array(
-				$configurationName . $labelTableName,
-				$configurationName,
-				$icon
-			);
-		}
-
-		return $selectorItems;
+		return $selector->render();
 	}
 
 	protected function getModuleContentNoSiteConfigured() {
