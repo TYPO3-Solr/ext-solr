@@ -30,7 +30,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class tx_solr_scheduler_ReIndexTaskSolrServerField implements tx_scheduler_AdditionalFieldProvider {
+class tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
 
 	/**
 	 * Used to define fields to provide the Solr server address when adding

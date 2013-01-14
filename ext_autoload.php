@@ -189,7 +189,7 @@ return array(
 	'tx_solr_scheduler_optimizetask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetask.php',
 	'tx_solr_scheduler_optimizetasksolrserverfield' => $extensionPath . 'scheduler/class.tx_solr_scheduler_optimizetasksolrserverfield.php',
 	'tx_solr_scheduler_reindextask' => $extensionPath . 'scheduler/class.tx_solr_scheduler_reindextask.php',
-	'tx_solr_scheduler_reindextasksolrserverfield' => $extensionPath . 'scheduler/class.tx_solr_scheduler_reindextasksolrserverfield.php',
+	'tx_solr_scheduler_reindextaskadditionalfieldprovider' => $extensionPath . 'scheduler/class.tx_solr_scheduler_reindextaskadditionalfieldprovider.php',
 
 		// reports
 
