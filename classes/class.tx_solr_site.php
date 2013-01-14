@@ -129,6 +129,7 @@ class tx_solr_Site {
 	 * @param	string	$selectorName Name to be used in the select's name attribute
 	 * @param	tx_solr_Site	$selectedSite Optional, currently selected site
 	 * @return	string	Site selector HTML code
+	 * @todo Extract into own class like indexing configuration selector
 	 */
 	public static function getAvailableSitesSelector($selectorName, tx_solr_Site $selectedSite = NULL) {
 		$sites    = self::getAvailableSites();
