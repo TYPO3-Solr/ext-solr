@@ -3,18 +3,6 @@
 	max-width: 500px;
 }
 
-table.tx_solr-TCEforms {
-	background: none;
-}
-
-table.tx_solr-TCEforms a {
-	display: none;
-}
-
-table.tx_solr-TCEforms table.typo3-TCEforms-select-checkbox tbody {
-	display: table-row-group;
-}
-
 .tx_solr_mod-admin h3 {
 	margin-bottom: 30px;
 }
