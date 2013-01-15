@@ -69,7 +69,7 @@ class tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 	 * class is not relevant, the method is expected to return TRUE
 	 *
 	 * @param	array					$submittedData: reference to the array containing the data submitted by the user
-	 * @param	tx_scheduler_module1	$parentObject: reference to the calling object (Scheduler's BE module)
+	 * @param	tx_scheduler_Module		$parentObject: reference to the calling object (Scheduler's BE module)
 	 * @return	boolean					True if validation was ok (or selected class is not relevant), FALSE otherwise
 	 */
 	public function validateAdditionalFields(array &$submittedData, tx_scheduler_Module $schedulerModule) {
