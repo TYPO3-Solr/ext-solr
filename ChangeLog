@@ -1,3 +1,7 @@
+2013-01-15  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed bug #44276: Endtime filter not matching generated date for unix time 0, leading to empty results
+
 2013-01-14  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed issue #44259: Multiple requestHandler registered to the same name
