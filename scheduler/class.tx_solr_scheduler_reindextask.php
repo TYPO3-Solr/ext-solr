@@ -164,6 +164,10 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 			$information = 'Site: ' . $this->site->getLabel();
 		}
 
+		if (!empty($this->indexingConfigurationsToReIndex)) {
+			$information .= ', Indexing Configurations: ' . implode(', ', $this->indexingConfigurationsToReIndex);
+		}
+
 		return $information;
 	}
 }
