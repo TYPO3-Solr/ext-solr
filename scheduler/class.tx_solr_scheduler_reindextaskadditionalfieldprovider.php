@@ -2,7 +2,9 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011-2012 Christoph Moeller <support@network-publishing.de>
+*  (c) 2011-2013 Christoph Moeller <support@network-publishing.de>
+*  (c) 2012-2013 Ingo Renner <ingo@typo3.org>
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -33,6 +35,45 @@
 class tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider implements tx_scheduler_AdditionalFieldProvider {
 
 	/**
+	 * Task information
+	 *
+	 * @var array
+	 */
+	protected $taskInformation;
+
+	/**
+	 * Scheduler task
+	 *
+	 * @var tx_scheduler_Task
+	 */
+	protected $task = NULL;
+
+	/**
+	 * Scheduler Module
+	 *
+	 * @var tx_scheduler_Module
+	 */
+	protected $schedulerModule;
+
+	/**
+	 * Selected site
+	 *
+	 * @var tx_solr_Site
+	 */
+	protected $site = NULL;
+
+
+	protected function initialize(array $taskInfo, tx_scheduler_Task $task = NULL, tx_scheduler_Module $schedulerModule) {
+		$this->taskInformation = $taskInfo;
+		$this->task            = $task;
+		$this->schedulerModule = $schedulerModule;
+
+		if ($schedulerModule->CMD == 'edit') {
+			$this->site = $task->getSite();
+		}
+	}
+
+	/**
 	 * Used to define fields to provide the Solr server address when adding
 	 * or editing a task.
 	 *
@@ -44,24 +85,44 @@ class tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 	 *									For each field it provides an associative sub-array with the following:
 	 */
 	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $schedulerModule) {
-		if ($schedulerModule->CMD == 'add') {
-			$taskInfo['site'] = NULL;
-		}
+		$this->initialize($taskInfo, $task, $schedulerModule);
 
-		if ($schedulerModule->CMD == 'edit') {
-			$taskInfo['site'] = $task->getSite();
-		}
+		$additionalFields = array();
 
-		$additionalFields = array(
-			'site' => array(
-				'code'     => tx_solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $taskInfo['site']),
-				'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_field_site',
-				'cshKey'   => '',
-				'cshLabel' => ''
-			)
+		$additionalFields['site'] = array(
+			'code'     => tx_solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $this->site),
+			'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_field_site',
+			'cshKey'   => '',
+			'cshLabel' => ''
+		);
+
+		$additionalFields['indexingConfigurations'] = array(
+			'code'     => $this->getIndexingConfigurationSelector(),
+			'label'    => 'Indexing Queue configurations to re-index',
+			'cshKey'   => '',
+			'cshLabel' => ''
 		);
 
 		return $additionalFields;
+	}
+
+	protected function getIndexingConfigurationSelector() {
+		$selectorMarkup = 'Please select a site first.';
+
+		$this->schedulerModule->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/resources/css/backend/indexingconfigurationselectorfield.css');
+
+		if (!is_null($this->site)) {
+			$selectorField = t3lib_div::makeInstance(
+				'tx_solr_backend_IndexingConfigurationSelectorField',
+				$this->site
+			);
+			$selectorField->setFormElementName('tx_scheduler[indexingConfigurations]');
+			$selectorField->setSelectedValues($this->task->getIndexingConfigurationsToReIndex());
+
+			$selectorMarkup = $selectorField->render();
+		}
+
+		return $selectorMarkup;
 	}
 
 	/**
@@ -93,6 +154,12 @@ class tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 	 */
 	public function saveAdditionalFields(array $submittedData, tx_scheduler_Task $task) {
 		$task->setSite(t3lib_div::makeInstance('tx_solr_Site', $submittedData['site']));
+
+		$indexingConfigurations = array();
+		if (!empty($submittedData['indexingConfigurations'])) {
+			$indexingConfigurations = $submittedData['indexingConfigurations'];
+		}
+		$task->setIndexingConfigurationsToReIndex($indexingConfigurations);
 	}
 }
 

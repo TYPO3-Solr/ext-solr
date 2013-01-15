@@ -1,6 +1,7 @@
 2013-01-14  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed issue #44259: Multiple requestHandler registered to the same name
+	* Added feature to allow selecting indexing configuration in the re-index task
 
 2012-12-26  Ingo Renner  <ingo@typo3.org>
 
@@ -17,7 +18,7 @@
 2012-12-17  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed bug #44050: Wrong Apache Solr version loaded in multi install script, credits Hauke Meyer
-	* Fixed bug #44005: Fatal error when saving records with start-/stoptime, credits Jonas Götze
+	* Fixed bug #44005: Fatal error when saving records with start-/stoptime, credits Jonas Gï¿½tze
 	* Fixed broken date range facet renderer, credits Stefan Sprenger
 
 2012-12-13  Ingo Renner  <ingo.renner@dkd.de>
@@ -53,7 +54,7 @@
 
 2012-11-07  Ingo Renner  <ingo.renner@dkd.de>
 
-	* Fixed bug #42551: Result URL does not preserve anchors when using site highlighting, credits Jonas Götze
+	* Fixed bug #42551: Result URL does not preserve anchors when using site highlighting, credits Jonas Gï¿½tze
 	* Fixed bug #37362: Incomplete url for results per page switch, credits Heiko Kromm
 	* Fixed bug #41584: Pagebrowser skips facet parameters
 
@@ -66,10 +67,10 @@
 	* Removed option ignorePageBrowser
 	* Fixed bug #39660, #37842: option plugin.tx_solr.search.keepExistingParametersForNewSearches, credits Michel Tremblay
 	* Fixed bug #39013: Missing label in pi_frequentsearches/locallang.xml, credits Peter Kraume
-	* Added feature #41915: Option to have the SOLR_LINK view helper return only the URL, credits Jonas Götze
+	* Added feature #41915: Option to have the SOLR_LINK view helper return only the URL, credits Jonas Gï¿½tze
 	* Fixed bug #42151: Incorrect use of field config for relation types inline in SOLR_RELATION, credits Laurent Cherpit
 	* Fixed bug #39501: SOLR_RELATION uses hidden and deleted records, credits Andreas Beutel
-	* Added feature #42318: Sorting by multiple fields using SORT_URL view helper, credits Jonas Götze
+	* Added feature #42318: Sorting by multiple fields using SORT_URL view helper, credits Jonas Gï¿½tze
 
 2012-10-30  Ingo Renner  <ingo.renner@dkd.de>
 
@@ -87,7 +88,7 @@
 
 2012-10-23  Ingo Renner  <ingo.renner@dkd.de>
 
-	* Fixed bug #41847: Suggestion broken because of language parameter, credits Jonas Götze
+	* Fixed bug #41847: Suggestion broken because of language parameter, credits Jonas Gï¿½tze
 	* Changed the Index Queue record indexer to share common mapping resolution methods with other indexers
 
 2012-10-22  Ingo Renner  <ingo.renner@dkd.de>

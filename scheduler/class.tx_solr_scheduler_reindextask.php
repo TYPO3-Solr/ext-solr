@@ -2,7 +2,9 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011-2012 Christoph Moeller <support@network-publishing.de>
+*  (c) 2011-2013 Christoph Moeller <support@network-publishing.de>
+*  (c) 2012-2013 Ingo Renner <ingo@typo3.org>
+*
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -41,6 +43,14 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	protected $site;
 
 	/**
+	 * Indexing configurations to re-initialize.
+	 *
+	 * @var array
+	 */
+	protected $indexingConfigurationsToReIndex = array();
+
+
+	/**
 	 * Purges/commits all Solr indexes, initializes the Index Queue
 	 * and returns TRUE if the execution was successful
 	 *
@@ -63,7 +73,9 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 		}
 
 		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
-		$itemIndexQueue->initialize($this->site);
+		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
+			$itemIndexQueue->initialize($this->site, $indexingConfigurationName);
+		}
 
 			// TODO implement better error handling - can be done as soon as instantiated classes do return, see comment:
 			// "return success / failed depending on sql error, affected rows"
@@ -88,6 +100,24 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	 */
 	public function setSite(tx_solr_Site $site) {
 		$this->site = $site;
+	}
+
+	/**
+	 * Gets the indexing configurations to re-index.
+	 *
+	 * @return array
+	 */
+	public function getIndexingConfigurationsToReIndex() {
+		return $this->indexingConfigurationsToReIndex;
+	}
+
+	/**
+	 * Sets the indexing configurations to re-index.
+	 *
+	 * @param array $indexingConfigurationsToReIndex
+	 */
+	public function setIndexingConfigurationsToReIndex(array $indexingConfigurationsToReIndex) {
+		$this->indexingConfigurationsToReIndex = $indexingConfigurationsToReIndex;
 	}
 
 	/**
