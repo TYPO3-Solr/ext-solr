@@ -46,13 +46,20 @@ class tx_solr_backend_IndexingConfigurationSelectorField {
 	 */
 	protected $formElementName = 'tx_solr-index-queue-indexing-configuration-selector';
 
+	/**
+	 * Selected values
+	 *
+	 * @var array
+	 */
+	protected $selectedValues = array();
+
 
 	/**
 	 * Constructor
 	 *
 	 * @param tx_solr_Site $site The site to use to determine indexing configurations
 	 */
-	public function __construct(tx_solr_Site $site) {
+	public function __construct(tx_solr_Site $site = NULL) {
 		$this->site = $site;
 	}
 
@@ -75,6 +82,24 @@ class tx_solr_backend_IndexingConfigurationSelectorField {
 	}
 
 	/**
+	 * Sets the selected values.
+	 *
+	 * @param array $selectedValues
+	 */
+	public function setSelectedValues(array $selectedValues) {
+		$this->selectedValues = $selectedValues;
+	}
+
+	/**
+	 * Gets the selected values.
+	 *
+	 * @return array
+	 */
+	public function getSelectedValues() {
+		return $this->selectedValues;
+	}
+
+	/**
 	 * Renders a field to select which indexing configurations to initialize.
 	 *
 	 * Uses TCEforms.
@@ -84,12 +109,20 @@ class tx_solr_backend_IndexingConfigurationSelectorField {
 	public function render() {
 		$tceForm = t3lib_div::makeInstance('t3lib_TCEforms');
 
-		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
+			// transform selected values into the format used by TCEforms
+		$selectedValues = array();
+		foreach ($this->selectedValues as $selectedValue) {
+			$selectedValues[] = $selectedValue . '|1';
+		}
+		$selectedValues = implode(',', $selectedValues);
 
 		$PA = array(
 			'fieldChangeFunc' => array(),
-			'itemFormElName' => $this->formElementName
+			'itemFormElName'  => $this->formElementName,
+			'itemFormElValue' => $selectedValues
 		);
+
+		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
 
 		$formField = $tceForm->getSingleField_typeSelect_checkbox(
 			'', // table
