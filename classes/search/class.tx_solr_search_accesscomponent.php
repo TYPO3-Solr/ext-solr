@@ -55,8 +55,8 @@ class tx_solr_search_AccessComponent extends tx_solr_search_AbstractComponent im
 
 		$this->query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 
-#		$this->query->addFilter('endtime:[NOW TO *]'); // what to do if no endtime is set (empty / no limit)?
-
+			// must generate default endtime, @see http://forge.typo3.org/issues/44276
+		$this->query->addFilter('(endtime:[NOW/MINUTE TO *] OR endtime:"' . tx_solr_Util::timestampToIso(0) . '")');
 	}
 
 	/**
