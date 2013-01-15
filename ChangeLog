@@ -17,7 +17,7 @@
 	* Release of version 2.8.1
 
 	* Fixed bug #44050: Wrong Apache Solr version loaded in multi install script, credits Hauke Meyer
-	* Fixed bug #44005: Fatal error when saving records with start-/stoptime, credits Jonas Götze
+	* Fixed bug #44005: Fatal error when saving records with start-/stoptime, credits Jonas GÃ¶tze
 	* Fixed broken date range facet renderer, credits Stefan Sprenger
 
 2012-12-13  Ingo Renner  <ingo.renner@dkd.de>
@@ -45,7 +45,7 @@
 
 2012-11-07  Ingo Renner  <ingo.renner@dkd.de>
 
-	* Fixed bug #42551: Result URL does not preserve anchors when using site highlighting, credits Jonas Götze
+	* Fixed bug #42551: Result URL does not preserve anchors when using site highlighting, credits Jonas GÃ¶tze
 	* Fixed bug #37362: Incomplete url for results per page switch, credits Heiko Kromm
 	* Fixed bug #41584: Pagebrowser skips facet parameters
 
@@ -58,10 +58,10 @@
 	* Removed option ignorePageBrowser
 	* Fixed bug #39660, #37842: option plugin.tx_solr.search.keepExistingParametersForNewSearches, credits Michel Tremblay
 	* Fixed bug #39013: Missing label in pi_frequentsearches/locallang.xml, credits Peter Kraume
-	* Added feature #41915: Option to have the SOLR_LINK view helper return only the URL, credits Jonas Götze
+	* Added feature #41915: Option to have the SOLR_LINK view helper return only the URL, credits Jonas GÃ¶tze
 	* Fixed bug #42151: Incorrect use of field config for relation types inline in SOLR_RELATION, credits Laurent Cherpit
 	* Fixed bug #39501: SOLR_RELATION uses hidden and deleted records, credits Andreas Beutel
-	* Added feature #42318: Sorting by multiple fields using SORT_URL view helper, credits Jonas Götze
+	* Added feature #42318: Sorting by multiple fields using SORT_URL view helper, credits Jonas GÃ¶tze
 
 2012-10-30  Ingo Renner  <ingo.renner@dkd.de>
 
@@ -79,7 +79,7 @@
 
 2012-10-23  Ingo Renner  <ingo.renner@dkd.de>
 
-	* Fixed bug #41847: Suggestion broken because of language parameter, credits Jonas Götze
+	* Fixed bug #41847: Suggestion broken because of language parameter, credits Jonas GÃ¶tze
 	* Changed the Index Queue record indexer to share common mapping resolution methods with other indexers
 
 2012-10-22  Ingo Renner  <ingo.renner@dkd.de>
@@ -905,7 +905,7 @@
 	* !!! Changed interface tx_solr_FacetsModifier and moved the corresponding hook from tx_solr_pi_results_FacetingCommand to tx_solr_Search
 	* Added a check for Solr responses and throwing an exception if no response could be received, credits Marcus Krause
 	* Changed inclusion of Javascript and Stylesheets in tx_solr_pi_results_FormCommand
-	* Added feature #10898: Option to create normal links with getResultsPerPageSwitch, credits David Rï¿½hr
+	* Added feature #10898: Option to create normal links with getResultsPerPageSwitch, credits David RÃ¯Â¿Å“hr
 	* Updated jQuery UI icons
 	* Removed option to switch between simple and advanced form
 	* Added a new "virtual" link marker added through renderingInstructions (###RESULT_DOCUMENT.LINK###)
