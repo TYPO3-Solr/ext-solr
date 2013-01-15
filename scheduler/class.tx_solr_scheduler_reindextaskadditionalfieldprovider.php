@@ -44,7 +44,7 @@ class tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 	/**
 	 * Scheduler task
 	 *
-	 * @var tx_scheduler_Task
+	 * @var tx_scheduler_Task|tx_solr_scheduler_ReIndexTask|NULL
 	 */
 	protected $task = NULL;
 
@@ -92,6 +92,20 @@ class tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 		$additionalFields['site'] = array(
 			'code'     => tx_solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $this->site),
 			'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_field_site',
+			'cshKey'   => '',
+			'cshLabel' => ''
+		);
+
+		$emptyChecked = '';
+		if (!is_null($this->task) && $this->task->getEmptyIndex()) {
+			$emptyChecked = ' checked="checked"';
+		}
+		$additionalFields['emptyIndex'] = array(
+			'code'     => '
+				<input name="tx_scheduler[emptyIndex]" type="hidden"   value="0" />
+				<input name="tx_scheduler[emptyIndex]" type="checkbox" value="1" ' . $emptyChecked . ' />
+			',
+			'label'    => 'Empty Index',
 			'cshKey'   => '',
 			'cshLabel' => ''
 		);
@@ -154,6 +168,8 @@ class tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 	 */
 	public function saveAdditionalFields(array $submittedData, tx_scheduler_Task $task) {
 		$task->setSite(t3lib_div::makeInstance('tx_solr_Site', $submittedData['site']));
+
+		$task->setEmptyIndex($submittedData['emptyIndex']);
 
 		$indexingConfigurations = array();
 		if (!empty($submittedData['indexingConfigurations'])) {

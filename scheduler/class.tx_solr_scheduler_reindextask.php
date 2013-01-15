@@ -49,6 +49,13 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	 */
 	protected $indexingConfigurationsToReIndex = array();
 
+	/**
+	 * Whether to also empty the index when re-indexing.
+	 *
+	 * @var bool
+	 */
+	protected $emptyIndex = FALSE;
+
 
 	/**
 	 * Purges/commits all Solr indexes, initializes the Index Queue
@@ -59,17 +66,21 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	public function execute() {
 		$result = FALSE;
 
-		$solrServers = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionsBySite($this->site);
+		if ($this->emptyIndex) {
+			$solrServers = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionsBySite($this->site);
 
-		foreach($solrServers as $solrServer) {
-				// make sure not-yet committed documents are removed, too
-			$solrServer->commit();
+			foreach($solrServers as $solrServer) {
+					// make sure not-yet committed documents are removed, too
+				$solrServer->commit();
 
-			$solrServer->deleteByQuery('*:*');
-			$response = $solrServer->commit(FALSE, FALSE, FALSE);
-			if ($response->getHttpStatus() == 200) {
-				$result = TRUE;
+				$solrServer->deleteByQuery('*:*');
+				$response = $solrServer->commit(FALSE, FALSE, FALSE);
+				if ($response->getHttpStatus() == 200) {
+					$result = TRUE;
+				}
 			}
+		} else {
+			$result = TRUE;
 		}
 
 		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
@@ -118,6 +129,24 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	 */
 	public function setIndexingConfigurationsToReIndex(array $indexingConfigurationsToReIndex) {
 		$this->indexingConfigurationsToReIndex = $indexingConfigurationsToReIndex;
+	}
+
+	/**
+	 * Sets whether to empty the index when re-indexing
+	 *
+	 * @param boolean $emptyIndex
+	 */
+	public function setEmptyIndex($emptyIndex) {
+		$this->emptyIndex = (boolean) $emptyIndex;
+	}
+
+	/**
+	 * Get whether the index is emptied when re-indexing
+	 *
+	 * @return boolean
+	 */
+	public function getEmptyIndex() {
+		return $this->emptyIndex;
 	}
 
 	/**
