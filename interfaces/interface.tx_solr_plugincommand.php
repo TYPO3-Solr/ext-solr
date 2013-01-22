@@ -45,6 +45,8 @@ interface tx_solr_PluginCommand {
 	/**
 	 * Constructor.
 	 *
+	 * FIXME interface must not define a constructor, change this to a setter
+	 *
 	 * @param tx_solr_pluginbase_CommandPluginBase Parent plugin object.
 	 */
 	public function __construct(tx_solr_pluginbase_CommandPluginBase $parent);
