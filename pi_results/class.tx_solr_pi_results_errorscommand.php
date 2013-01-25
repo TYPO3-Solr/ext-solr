@@ -96,7 +96,31 @@ class tx_solr_pi_results_ErrorsCommand implements tx_solr_PluginCommand {
 			);
 		}
 
-			// TODO add a way to let other components provide errors, too
+			// hook to provide additional error messages
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['addSearchErrors'])) {
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['addSearchErrors'] as $classReference) {
+				$errorDetector = t3lib_div::getUserObj($classReference);
+
+				if ($errorDetector instanceof tx_solr_ErrorDetector) {
+					if ($errorDetector instanceof tx_solr_CommandPluginAware) {
+						$errorDetector->setParentPlugin($this->parentPlugin);
+					}
+
+					$additionalErrors = $errorDetector->getErrors();
+
+					if (is_array($additionalErrors)) {
+						$errors = array_merge($errors, $additionalErrors);
+					} else {
+						throw new UnexpectedValueException($classReference . ' must return an array', 1359156111);
+					}
+				} else {
+					throw new InvalidArgumentException(
+						'Error detector "' . $classReference . '" must implement interface tx_solr_ErrorDetector.',
+						1359156192
+					);
+				}
+			}
+		}
 
 		return $errors;
 	}
