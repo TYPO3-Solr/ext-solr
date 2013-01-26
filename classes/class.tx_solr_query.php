@@ -264,8 +264,8 @@ class tx_solr_Query {
 	/**
 	 * Sets the page that should be shown
 	 *
-	 * @param	integer	page number to show
-	 * @return	boid
+	 * @param	integer	$page page number to show
+	 * @return	void
 	 */
 	public function setPage($page) {
 		$this->page = max(intval($page), 0);
