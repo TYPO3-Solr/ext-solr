@@ -613,33 +613,6 @@ class tx_solr_indexqueue_Indexer extends tx_solr_indexqueue_AbstractIndexer {
 
 		t3lib_div::devLog($message, 'solr', $severity, $logData);
 	}
-
-	/**
-	 * Uses a field's configuration to detect whether its value returned by a
-	 * content object is expected to be serialized and thus needs to be
-	 * unserialized.
-	 *
-	 * @param	array	$indexingConfiguration Current item's indexing configuration
-	 * @param	string	$solrFieldName	Current field being indexed
-	 * @return	boolean	TRUE if the value is expected to be serialized, FALSE otherwise
-	 */
-	public static function isSerializedValue(array $indexingConfiguration, $solrFieldName) {
-		$isSerialized = FALSE;
-
-			// SOLR_MULTIVALUE - always returns serialized array
-		if ($indexingConfiguration[$solrFieldName] == tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME) {
-			$isSerialized = TRUE;
-		}
-
-			// SOLR_RELATION - returns serialized array if multiValue option is set
-		if ($indexingConfiguration[$solrFieldName] == tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME
-			&& !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])
-		) {
-			$isSerialized = TRUE;
-		}
-
-		return $isSerialized;
-	}
 }
 
 
