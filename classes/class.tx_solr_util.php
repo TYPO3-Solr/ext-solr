@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2012 Ingo Renner <ingo.renner@dkd.de>
+*  (c) 2009-2013 Ingo Renner <ingo.renner@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -268,6 +268,9 @@ class tx_solr_Util {
 				$configurationCache[$cacheId] = $configuration[0];
 			}
 		}
+
+			// clean up
+		unset($GLOBALS['TSFE']);
 
 		return $configurationCache[$cacheId];
 	}
