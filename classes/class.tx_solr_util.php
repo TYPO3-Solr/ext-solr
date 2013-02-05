@@ -227,6 +227,13 @@ class tx_solr_Util {
 		static $configurationCache = array();
 		$configuration             = array();
 
+			// If we're on UID 0, we cannot retrieve a configuration currently.
+			// getRootline() below throws an exception (since #typo3-60 )
+			// as UID 0 cannot have any parent rootline by design.
+		if ($pageId == 0) {
+			return array();
+		}
+
 			// TODO needs some caching -> caching framework?
 		$cacheId = $pageId . '|' . $path . '|' . $language;
 
