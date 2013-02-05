@@ -592,7 +592,11 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 
 				$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 				foreach($solrServers as $solrServer) {
-					$response = $solrServer->deleteByQuery('uid:('. $uidCondition . ') AND type:' . $documentType);
+					$response = $solrServer->deleteByQuery(
+						'uid:(' . $uidCondition . ')'
+						.' AND type:' . $documentType
+						.' AND siteHash:' . $this->site->getSiteHash()
+					);
 					$solrServer->commit(FALSE, FALSE, FALSE);
 
 					if ($response->getHttpStatus() != 200) {
