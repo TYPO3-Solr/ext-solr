@@ -269,9 +269,6 @@ class tx_solr_Util {
 			}
 		}
 
-			// clean up
-		unset($GLOBALS['TSFE']);
-
 		return $configurationCache[$cacheId];
 	}
 
