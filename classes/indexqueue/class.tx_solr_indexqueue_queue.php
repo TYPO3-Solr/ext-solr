@@ -409,7 +409,7 @@ class tx_solr_indexqueue_Queue {
 	protected function getItemChangedTime($itemType, $itemUid) {
 		$itemTypeHasStartTimeColumn = FALSE;
 		$changedTimeColumns         = $GLOBALS['TCA'][$itemType]['ctrl']['tstamp'];
-		$changedTime                = time();
+		$changedTime                = 0;
 
 		if (!empty($GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'])) {
 			$itemTypeHasStartTimeColumn = TRUE;
@@ -418,6 +418,11 @@ class tx_solr_indexqueue_Queue {
 
 		$record      = t3lib_BEfunc::getRecord($itemType, $itemUid, $changedTimeColumns);
 		$changedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
+
+		if ($itemType == 'pages') {
+				// overrule the page's last changed time with the most recent content element change
+			$changedTime = $this->getPageItemChangedTime($itemUid);
+		}
 
 		if ($itemTypeHasStartTimeColumn) {
 				// if starttime exists and starttime is higher than last changed timestamp
@@ -430,6 +435,22 @@ class tx_solr_indexqueue_Queue {
 		}
 
 		return $changedTime;
+	}
+
+	/**
+	 * Gets the most recent changed time of a page's content elements
+	 *
+	 * @param integer $pageId Page ID
+	 * @return integer Timestamp of the most recent content element change
+	 */
+	protected function getPageItemChangedTime($pageId) {
+		$pageContentLastChangedTime = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+			'MAX(tstamp) AS changed_time',
+			'tt_content',
+			'pid = ' . (int) $pageId
+		);
+
+		return $pageContentLastChangedTime['changed_time'];
 	}
 
 	/**
