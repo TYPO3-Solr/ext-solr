@@ -159,11 +159,6 @@ class tx_solr_indexqueue_RecordMonitor {
 		$recordUid    = $uid;
 		$recordPageId = 0;
 
-			// #typo3-60 can't load configuration for records stored on page 0
-		if ($table == 'sys_file') {
-			return;
-		}
-
 		if ($status == 'new') {
 			$recordUid = $tceMain->substNEWwithIDs[$recordUid];
 		}
