@@ -180,8 +180,6 @@ class tx_solr_indexqueue_RecordMonitor {
 			$recordUid   = $recordPageId;
 		}
 
-			// TODO need to check for creation of "pages_language_overlay" records to trigger "pages" updates
-
 		$this->solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($recordPageId);
 		$monitoredTables = $this->getMonitoredTables($recordPageId);
 
