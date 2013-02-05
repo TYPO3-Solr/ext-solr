@@ -198,7 +198,20 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 
 		$content .= '
 				<br /><br />
-				<input type="submit" value="Reload Index Configuration" name="s_reloadCore" onclick="document.forms[0].solraction.value=\'reloadSiteCores\';" /><br /><br />';
+				<input type="submit" value="Reload Index Configuration" name="s_reloadCore" onclick="document.forms[0].solraction.value=\'reloadSiteCores\';" />';
+
+
+		$content .= '
+			<br /><br /><hr /><br />
+			<p>
+				Delete document(s) from site index<br /><br />
+			</p>
+			<label for="delete_uid" style="display:block;width:60px;float:left">Item uid</label>
+			<input id="delete_uid" type="text" name="delete_uid" value="" /> (also accepts comma separated lists of uids)<br /><br />
+			<label for="delete_type" style="display:block;width:60px;float:left;">Item type</label>
+			<input id="delete_type" type="text" name="delete_type" value="" /> (table name)<br /><br />
+			<input type="submit" value="Delete Document(s)"name="s_deleteDocument" onclick="document.forms[0].solraction.value=\'deleteDocument\';" /><br /><br />
+			';
 
 		$content .= '</fieldset>';
 
@@ -208,16 +221,6 @@ class  tx_solr_ModuleAdmin extends t3lib_SCbase {
 				<input type="submit" value="Empty Index" name="s_emptyIndex" onclick="Check = confirm(\'This will commit documents which may be pending, clear the index and commit again afterwards. Are you sure you want to empty the index?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
 				<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
 				<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
-			</fieldset>';
-
-		$content .= '
-			<fieldset>
-				<legend>Delete Document(s) from Index</legend>
-				<label for="delete_uid" style="display:block;width:60px;float:left">Item uid</label>
-				<input id="delete_uid" type="text" name="delete_uid" value="" /> (also accepts comma separated lists of uids)<br /><br />
-				<label for="delete_type" style="display:block;width:60px;float:left;">Item type</label>
-				<input id="delete_type" type="text" name="delete_type" value="" /><br /><br />
-				<input type="submit" value="Delete Document(s)"name="s_deleteDocument" onclick="document.forms[0].solraction.value=\'deleteDocument\';" /><br /><br />
 			</fieldset>';
 
 		$content .= '
