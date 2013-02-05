@@ -1,3 +1,7 @@
+2013-02-04  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed bug #44166: Updating tt_content record does not re-index page
+
 2013-01-15  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed bug #44276: Endtime filter not matching generated date for unix time 0, leading to empty results
