@@ -145,7 +145,7 @@ class tx_solr_indexqueue_Queue {
 
 		$solrConfiguration = $site->getSolrConfiguration();
 
-		$tableToIndex     = $this->resolveTableToIndex($solrConfiguration, $indexingConfigurationName);
+		$tableToIndex     = $this->getTableToIndexByIndexingConfigurationName($solrConfiguration, $indexingConfigurationName);
 		$initializerClass = $this->resolveInitializerClass($solrConfiguration, $indexingConfigurationName);
 
 		$initializer = t3lib_div::makeInstance($initializerClass);
@@ -170,7 +170,7 @@ class tx_solr_indexqueue_Queue {
 	 * @param string $indexingConfigurationName Indexing configuration name
 	 * @return string Name of the table to index
 	 */
-	protected function resolveTableToIndex($solrConfiguration, $indexingConfigurationName) {
+	public static function getTableToIndexByIndexingConfigurationName(array $solrConfiguration, $indexingConfigurationName) {
 		$tableToIndex = $indexingConfigurationName;
 
 		if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {

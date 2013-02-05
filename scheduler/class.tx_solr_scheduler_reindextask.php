@@ -49,13 +49,6 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	 */
 	protected $indexingConfigurationsToReIndex = array();
 
-	/**
-	 * Whether to also empty the index when re-indexing.
-	 *
-	 * @var bool
-	 */
-	protected $emptyIndex = FALSE;
-
 
 	/**
 	 * Purges/commits all Solr indexes, initializes the Index Queue
@@ -64,35 +57,54 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	 * @return boolean Returns TRUE on success, FALSE on failure.
 	 */
 	public function execute() {
-		$result = FALSE;
+			// clean up
+		$cleanUpResult = $this->cleanUpIndex();
 
-		if ($this->emptyIndex) {
-			$solrServers = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionsBySite($this->site);
+			// initialize for re-indexing
+		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
+			$indexQueueInitializationResults = $indexQueue->initialize($this->site, $indexingConfigurationName);
+		}
 
-			foreach($solrServers as $solrServer) {
+		return ($cleanUpResult && !in_array(FALSE, $indexQueueInitializationResults));
+	}
+
+	/**
+	 * Removes documents of the selected types from the index.
+	 *
+	 * @return bool TRUE if clean up was successful, FALSE on error
+	 */
+	protected function cleanUpIndex() {
+		$cleanUpResult     = TRUE;
+		$solrConfiguration = $this->site->getSolrConfiguration();
+		$solrServers       = t3lib_div::makeInstance('tx_solr_ConnectionManager')->getConnectionsBySite($this->site);
+		$typesToCleanUp    = array();
+
+		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
+			$type = tx_solr_indexqueue_Queue::getTableToIndexByIndexingConfigurationName(
+				$solrConfiguration,
+				$indexingConfigurationName
+			);
+
+			$typesToCleanUp[] = $type;
+		}
+
+		foreach ($solrServers as $solrServer) {
 					// make sure not-yet committed documents are removed, too
 				$solrServer->commit();
 
-				$solrServer->deleteByQuery('*:*');
+				$deleteQuery = 'type:(' . implode(' OR ', $typesToCleanUp) . ')'
+					. ' AND siteHash:' . $this->site->getSiteHash();
+				$solrServer->deleteByQuery($deleteQuery);
+
 				$response = $solrServer->commit(FALSE, FALSE, FALSE);
-				if ($response->getHttpStatus() == 200) {
-					$result = TRUE;
+				if ($response->getHttpStatus() != 200) {
+					$cleanUpResult = FALSE;
+					break;
 				}
-			}
-		} else {
-			$result = TRUE;
 		}
 
-		$itemIndexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
-		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
-			$itemIndexQueue->initialize($this->site, $indexingConfigurationName);
-		}
-
-			// TODO implement better error handling - can be done as soon as instantiated classes do return, see comment:
-			// "return success / failed depending on sql error, affected rows"
-			// in classes/indexqueue/class.tx_solr_indexqueue_queue.php::initialize()
-
-		return $result;
+		return $cleanUpResult;
 	}
 
 	/**
@@ -132,24 +144,6 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	}
 
 	/**
-	 * Sets whether to empty the index when re-indexing
-	 *
-	 * @param boolean $emptyIndex
-	 */
-	public function setEmptyIndex($emptyIndex) {
-		$this->emptyIndex = (boolean) $emptyIndex;
-	}
-
-	/**
-	 * Get whether the index is emptied when re-indexing
-	 *
-	 * @return boolean
-	 */
-	public function getEmptyIndex() {
-		return $this->emptyIndex;
-	}
-
-	/**
 	 * This method is designed to return some additional information about the task,
 	 * that may help to set it apart from other tasks from the same class
 	 * This additional information is used - for example - in the Scheduler's BE module
@@ -160,7 +154,7 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 	public function getAdditionalInformation() {
 		$information = '';
 
-		if($this->site) {
+		if ($this->site) {
 			$information = 'Site: ' . $this->site->getLabel();
 		}
 
