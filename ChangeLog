@@ -1,6 +1,7 @@
 2013-02-04  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed bug #44166: Updating tt_content record does not re-index page
+	* Fixed bug #40559: Exception on saving records in list module on root page
 
 2013-01-15  Ingo Renner  <ingo@typo3.org>
 
