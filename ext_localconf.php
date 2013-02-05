@@ -3,14 +3,14 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-$PATH_solr = t3lib_extMgm::extPath('solr');
+$GLOBALS['PATH_solr'] = t3lib_extMgm::extPath('solr');
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 $compatMode = FALSE;
 if (!t3lib_div::compat_version('6.0')) {
 	$compatMode = TRUE;
-	require_once($PATH_solr . 'compat/interface.tx_scheduler_progressprovider.php');
+	require_once($GLOBALS['PATH_solr'] . 'compat/interface.tx_scheduler_progressprovider.php');
 }
 
 define('SOLR_COMPAT', $compatMode);
@@ -20,7 +20,7 @@ define('SOLR_COMPAT', $compatMode);
 	// Windows compatibility
 
 if(!function_exists('strptime')) {
-	require_once($PATH_solr . 'lib/strptime/strptime.php');
+	require_once($GLOBALS['PATH_solr'] . 'lib/strptime/strptime.php');
 }
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -75,7 +75,7 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
 t3lib_extMgm::registerExtDirectComponent(
 	'TYPO3.tx_solr.IndexInspector.Remote',
-	$PATH_solr . 'mod_index/class.tx_solr_mod_index_indexinspectorremotecontroller.php:tx_solr_mod_index_IndexInspectorRemoteController',
+	$GLOBALS['PATH_solr'] . 'mod_index/class.tx_solr_mod_index_indexinspectorremotecontroller.php:tx_solr_mod_index_IndexInspectorRemoteController',
 	'web_info',
 	'user,group'
 );

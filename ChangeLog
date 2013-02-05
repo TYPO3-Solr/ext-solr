@@ -1,3 +1,7 @@
+2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
+
+	* Fixed bug #44984: For global vars the $GLOBALS array needs to be used since 6.0
+
 2013-02-04  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed bug #44166: Updating tt_content record does not re-index page
