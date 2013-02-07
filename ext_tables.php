@@ -83,13 +83,15 @@ if (TYPO3_MODE == 'BE') {
 		'tx_solr_report_FilterVarStatus'
 	);
 
-		// registering the index report with the reports module
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_solr']['index'] = array(
-		'title'       => 'LLL:EXT:solr/locallang.xml:report_index_title',
-		'description' => 'LLL:EXT:solr/locallang.xml:report_index_description',
-		'report'      => 'tx_solr_report_IndexReport',
-		'icon'        => 'EXT:solr/report/tx_solr_report.gif'
-	);
+	if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6000000) {
+			// registering the index report with the reports module
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_solr']['index'] = array(
+			'title'       => 'LLL:EXT:solr/locallang.xml:report_index_title',
+			'description' => 'LLL:EXT:solr/locallang.xml:report_index_description',
+			'report'      => 'tx_solr_report_IndexReport',
+			'icon'        => 'EXT:solr/report/tx_solr_report.gif'
+		);
+	}
 
 		// Index Inspector
 	t3lib_extMgm::insertModuleFunction(
