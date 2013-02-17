@@ -2,6 +2,7 @@
 
 	* Fixed issue #45202: Workspace version swap does not take additionalWhereClause into account
 	* Fixed issue #45203: Remove empty tx_solr[q] parameter from URLs
+	* Fixed issue #45208: Ensure additionalWhereClause is respected when indexing
 
 2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
 
