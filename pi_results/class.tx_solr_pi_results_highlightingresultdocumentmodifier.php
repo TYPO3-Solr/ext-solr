@@ -51,8 +51,11 @@ class tx_solr_pi_results_HighlightingResultDocumentModifier implements tx_solr_R
 
 		$highlightedContent = $this->search->getHighlightedContent();
 
-		if ($highlightedContent->{$resultDocument['id']}->content[0]) {
-			$resultDocument['content'] = $highlightedContent->{$resultDocument['id']}->content[0];
+		$highlightFields = t3lib_div::trimExplode(',', $configuration['search.']['results.']['resultsHighlighting.']['highlightFields'], TRUE);
+		foreach ($highlightFields as $highlightField) {
+			if ($highlightedContent->{$resultDocument['id']}->{$highlightField}[0]) {
+				$resultDocument[$highlightField] = $highlightedContent->{$resultDocument['id']}->{$highlightField}[0];
+			}
 		}
 
 		return $resultDocument;
