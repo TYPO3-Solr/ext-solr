@@ -12,6 +12,7 @@
 	* Added feature #45204: Allow selectingSelectedFacetOptionRemovesFilter and singleOptionMode to work together
 	* Added feature #45206: Did you mean should only display suggestions that actually yield results
 	* Added feature #45207: Add timestamps to included javascript files
+	* Fixed issue #45208: Ensure additionalWhereClause is respected when indexing
 
 2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
 

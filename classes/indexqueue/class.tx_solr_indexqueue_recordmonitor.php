@@ -140,7 +140,16 @@ class tx_solr_indexqueue_RecordMonitor {
 
 		if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
 				// moving pages in LIVE workspace
-			$this->indexQueue->updateItem('pages', $uid);
+			$this->solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($uid);
+			$record = $this->getRecord('pages', $uid);
+			if (!empty($record)) {
+				$this->indexQueue->updateItem('pages', $uid);
+			} else {
+				// check if the item should be removed from the index because it no longer matches the conditions
+				if ($this->indexQueue->containsItem('pages', $uid)) {
+					$this->removeFromIndexAndQueue('pages', $uid);
+				}
+			}
 		}
 	}
 

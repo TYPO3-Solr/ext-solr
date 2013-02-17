@@ -387,6 +387,15 @@ class tx_solr_indexqueue_Queue {
 				);
 			}
 
+			// Ensure additionalWhereClause is applied.
+			$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($record['pid']);
+			if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
+				$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields, ' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']);
+				if (empty($record)) {
+					return;
+				}
+			}
+
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 				'tx_solr_indexqueue_item',
 				$item
