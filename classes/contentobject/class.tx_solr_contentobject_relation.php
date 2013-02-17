@@ -207,7 +207,11 @@ class tx_solr_contentobject_Relation {
 			$backupRecord                             = $parentContentObject->data;
 			$backupField                              = $this->configuration['foreignLabelField'];
 			$parentContentObject->data                = $relatedRecord;
-			$this->configuration['foreignLabelField'] = '';
+			if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
+				list($unusedDummy, $this->configuration['foreignLabelField']) = explode('.', $this->configuration['foreignLabelField'], 2);
+			} else {
+				$this->configuration['foreignLabelField'] = '';
+			}
 
 				// recursion
 			$value = array_pop($this->getRelatedItemsFromForeignTable(
@@ -277,7 +281,11 @@ class tx_solr_contentobject_Relation {
 		$foreignTableLabelField = $foreignTableTca['ctrl']['label'];
 
 		if (!empty($this->configuration['foreignLabelField'])) {
-			$foreignTableLabelField = $this->configuration['foreignLabelField'];
+			if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
+				list($foreignTableLabelField) = explode('.', $this->configuration['foreignLabelField'], 2);
+			} else {
+				$foreignTableLabelField = $this->configuration['foreignLabelField'];
+			}
 		}
 
 		return $foreignTableLabelField;
