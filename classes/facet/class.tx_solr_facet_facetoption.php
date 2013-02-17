@@ -94,7 +94,11 @@ class tx_solr_facet_FacetOption {
 
 		if (isset($this->facetConfiguration['renderingInstruction'])) {
 			$contentObject = t3lib_div::makeInstance('tslib_cObj');
-			$contentObject->start(array('optionValue' => $this->value));
+			$contentObject->start(array(
+				'optionValue' => $this->value,
+				'optionCount' => $this->numberOfResults,
+				'facetName'   => $this->facetName,
+			));
 
 			$renderedFacetOption = $contentObject->cObjGetSingle(
 				$this->facetConfiguration['renderingInstruction'],

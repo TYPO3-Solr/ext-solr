@@ -5,6 +5,7 @@
 	* Added feature #45197: Option to remove duplicate values from SOLR_MULTIVALUE
 	* Added feature #45198: Specify foreignLabelField in SOLR_RELATION for deeper relations
 	* Added feature #45199: Allow to post process the plugin output with stdWrap
+	* Added feature #45200: Make facet count and name available in rendering instructions
 
 2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
 
