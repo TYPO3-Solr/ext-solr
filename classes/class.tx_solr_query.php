@@ -984,9 +984,11 @@ class tx_solr_Query {
 		if ($spellchecking) {
 			$this->queryParameters['spellcheck'] = 'true';
 			$this->queryParameters['spellcheck.collate'] = 'true';
+			$this->addQueryParameter('spellcheck.maxCollationTries', $this->solrConfiguration['search.']['spellchecking.']['numberOfSuggestionsToTry']);
 		} else {
 			unset($this->queryParameters['spellcheck']);
 			unset($this->queryParameters['spellcheck.collate']);
+			unset($this->queryParameters['spellcheck.maxCollationTries']);
 		}
 	}
 

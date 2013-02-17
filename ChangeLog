@@ -10,6 +10,7 @@
 	* Fixed issue #45202: Workspace version swap does not take additionalWhereClause into account
 	* Fixed issue #45203: Remove empty tx_solr[q] parameter from URLs
 	* Added feature #45204: Allow selectingSelectedFacetOptionRemovesFilter and singleOptionMode to work together
+	* Added feature #45206: Did you mean should only display suggestions that actually yield results
 
 2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
 
