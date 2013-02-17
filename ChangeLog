@@ -1,6 +1,7 @@
 2013-02-16  Lienhart Woitok <lienhart.woitok@netlogix.de>
 
 	* Added feature #45195: Option to remove empty values from SOLR_RELATION
+	* Added feature #45196: Option to remove duplicate values from SOLR_RELATION
 
 2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
 

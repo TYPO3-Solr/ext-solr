@@ -35,6 +35,7 @@
  * relationTableSortingField: field in an mm relation table to sort by, usually "sorting"
  * enableRecursiveValueResolution: if the specified remote table's label field is a relation to another table, the value will be resolve by following the relation recursively.
  * removeEmptyValues: Removes empty values when resolving relations, defaults to TRUE
+ * removeDuplicateValues: Removes duplicate values
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
  * @package	TYPO3
@@ -179,6 +180,10 @@ class tx_solr_contentobject_Relation {
 		}
 
 		$GLOBALS['TYPO3_DB']->sql_free_result($relatedRecordsResource);
+
+		if (!empty($this->configuration['removeDuplicateValues'])) {
+			$relatedItems = array_unique($relatedItems);
+		}
 
 		return $relatedItems;
 	}
