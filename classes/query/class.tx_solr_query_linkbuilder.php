@@ -255,7 +255,12 @@ class tx_solr_query_LinkBuilder {
 		);
 		$queryParameters   = $this->removeUnwantedUrlParameters($queryParameters);
 
-		$queryGetParameter = '&' . self::$queryGetParameter . '=' . $this->query->getKeywords();
+		$queryGetParameter = '';
+
+		$keywords = $this->query->getKeywords();
+		if (!empty($keywords)) {
+			$queryGetParameter = '&' . self::$queryGetParameter . '=' . $keywords;
+		}
 
 		$linkConfiguration = array(
 			'useCacheHash'     => FALSE,
@@ -293,7 +298,10 @@ class tx_solr_query_LinkBuilder {
 		if ($this->query) {
 			$queryKeywords = $this->query->getKeywords();
 		}
-		$queryGetParameter = '&' . self::$queryGetParameter . '=' . $queryKeywords;
+		$queryGetParameter = '';
+		if (!empty($queryKeywords)) {
+			$queryGetParameter = '&' . self::$queryGetParameter . '=' . $queryKeywords;
+		}
 
 		$linkConfiguration = array(
 			'useCacheHash'     => FALSE,

@@ -1,6 +1,7 @@
 2013-02-16  Lienhart Woitok <lienhart.woitok@netlogix.de>
 
 	* Fixed issue #45202: Workspace version swap does not take additionalWhereClause into account
+	* Fixed issue #45203: Remove empty tx_solr[q] parameter from URLs
 
 2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
 
