@@ -156,9 +156,7 @@ class tx_solr_facet_SimpleFacetOptionsRenderer implements tx_solr_FacetOptionsRe
 			) {
 				$optionLink    = $facetLinkBuilder->getRemoveFacetOptionLink($optionText);
 				$optionLinkUrl = $facetLinkBuilder->getRemoveFacetOptionUrl();
-			}
-
-			if ($this->facetConfiguration['singleOptionMode']) {
+			} elseif ($this->facetConfiguration['singleOptionMode']) {
 				$optionLink    = $facetLinkBuilder->getReplaceFacetOptionLink($optionText);
 				$optionLinkUrl = $facetLinkBuilder->getReplaceFacetOptionUrl();
 			}

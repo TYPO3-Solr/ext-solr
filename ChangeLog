@@ -9,6 +9,7 @@
 	* Fixed issue #45201: Result highlighting only works for content
 	* Fixed issue #45202: Workspace version swap does not take additionalWhereClause into account
 	* Fixed issue #45203: Remove empty tx_solr[q] parameter from URLs
+	* Added feature #45204: Allow selectingSelectedFacetOptionRemovesFilter and singleOptionMode to work together
 
 2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
 
