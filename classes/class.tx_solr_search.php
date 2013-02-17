@@ -344,7 +344,7 @@ class tx_solr_Search implements t3lib_Singleton {
 		foreach ($facetQueries as $facetQuery => $numberOfResults) {
 				// remove tags from the facet.query response, for facet.field
 				// and facet.range Solr does that on its own automatically
-			$facetQuery = preg_replace('/^\{!ex=.*\}(.*)/', '\\1', $facetQuery);
+			$facetQuery = preg_replace('/^\{!ex=[^\}]*\}(.*)/', '\\1', $facetQuery);
 
 			if (t3lib_div::isFirstPartOfStr($facetQuery, $facetField)) {
 				$options[$facetQuery] = $numberOfResults;
