@@ -356,6 +356,10 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 * @return	string	The content that should be presented on the website, might be different from the output rendered before
 	 */
 	protected function postRender($content) {
+		if (isset($this->conf['stdWrap.'])) {
+			$content = $this->cObj->stdWrap($content, $this->conf['stdWrap.']);
+		}
+
 		return $content;
 	}
 
