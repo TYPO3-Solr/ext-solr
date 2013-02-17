@@ -234,7 +234,7 @@ class tx_solr_contentobject_Relation {
 			$localTableName,
 			$mmTableName,
 			$foreignTableName,
-			'AND ' . $localTableName . '.uid = ' . (int) $localRecordUid,
+			'AND ' . $localTableName . '.uid = ' . (int) $localRecordUid . $GLOBALS['TSFE']->sys_page->enableFields($foreignTableName),
 			'',
 			$mmTableSortingField
 		);
