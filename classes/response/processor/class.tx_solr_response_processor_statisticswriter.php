@@ -52,6 +52,11 @@ class tx_solr_response_processor_StatisticsWriter implements tx_solr_ResponsePro
 		$keywords = t3lib_div::removeXSS($keywords);
 		$keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
 
+		$configuration = tx_solr_Util::getSolrConfiguration();
+		if ($configuration['search.']['frequentSearches.']['useLowercaseKeywords']) {
+			$keywords = strtolower($keywords);
+		}
+
 		$insertFields = array(
 			'pid'               => $GLOBALS['TSFE']->id,
 			'root_pid'          => $GLOBALS['TSFE']->tmpl->rootLine[0]['uid'],

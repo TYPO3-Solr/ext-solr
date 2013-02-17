@@ -217,9 +217,12 @@ plugin.tx_solr {
 
 		frequentSearches = 0
 		frequentSearches {
+			useLowercaseKeywords = 0
+
 			minSize = 14
 			maxSize = 32
 			limit = 20
+
 			select {
 				SELECT = keywords as search_term, count(*) as hits
 				FROM = tx_solr_statistics
