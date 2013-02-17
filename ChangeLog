@@ -1,3 +1,7 @@
+2013-02-16  Lienhart Woitok <lienhart.woitok@netlogix.de>
+
+	* Fixed issue #45202: Workspace version swap does not take additionalWhereClause into account
+
 2013-02-04  Marc Bastian Heinrichs <typo3@mbh-software.de>
 
 	* Fixed bug #44984: For global vars the $GLOBALS array needs to be used since 6.0
