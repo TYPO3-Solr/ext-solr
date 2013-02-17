@@ -34,6 +34,7 @@
  * singleValueGlue: when not using multiValue, the related records need to be concatened using a glue string, by default this is ", ". Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters.
  * relationTableSortingField: field in an mm relation table to sort by, usually "sorting"
  * enableRecursiveValueResolution: if the specified remote table's label field is a relation to another table, the value will be resolve by following the relation recursively.
+ * removeEmptyValues: Removes empty values when resolving relations, defaults to TRUE
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
  * @package	TYPO3
@@ -57,6 +58,7 @@ class tx_solr_contentobject_Relation {
 	 */
 	public function __construct() {
 		$this->configuration['enableRecursiveValueResolution'] = 1;
+		$this->configuration['removeEmptyValues'] = 1;
 	}
 
 	/**
@@ -165,12 +167,15 @@ class tx_solr_contentobject_Relation {
 		);
 
 		while ($relatedRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($relatedRecordsResource)) {
-			$relatedItems[] = $this->resolveRelatedValue(
+			$resolveRelatedValue = $this->resolveRelatedValue(
 				$relatedRecord,
 				$foreignTableTca,
 				$foreignTableLabelField,
 				$parentContentObject
 			);
+			if (!empty($resolveRelatedValue) || !$this->configuration['removeEmptyValues']) {
+				$relatedItems[] = $resolveRelatedValue;
+			}
 		}
 
 		$GLOBALS['TYPO3_DB']->sql_free_result($relatedRecordsResource);
