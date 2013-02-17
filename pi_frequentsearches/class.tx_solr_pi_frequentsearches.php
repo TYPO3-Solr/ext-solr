@@ -139,7 +139,7 @@ class tx_solr_pi_frequentsearches extends tx_solr_pluginbase_CommandPluginBase{
 	 */
 	protected function preRender() {
 		if($this->conf['cssFiles.']['results']) {
-			$cssFile = $GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['results']);
+			$cssFile = t3lib_div::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['results']));
 			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-resultsCss'] =
 					'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
 		}
