@@ -98,11 +98,12 @@ class tx_solr_indexqueue_RecordMonitor {
 					$uid   = $tceMain->getPID($table, $uid);
 					$table = 'pages';
 				case 'pages':
-					$record = t3lib_BEfunc::getRecord($table, $uid, '*', '', FALSE);
+					$this->solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($uid);
+					$record                  = $this->getRecord($table, $uid);
 
-					$this->updateMountPages($uid);
+					if (!empty($record) && $this->isEnabledRecord($table, $record)) {
+						$this->updateMountPages($uid);
 
-					if ($this->isEnabledRecord($table, $record)) {
 						$this->indexQueue->updateItem($table, $uid);
 					} else {
 							// TODO should be moved to garbage collector
@@ -112,18 +113,19 @@ class tx_solr_indexqueue_RecordMonitor {
 					}
 					break;
 				default:
-					$recordPageId    = $tceMain->getPID($table, $uid);
-					$monitoredTables = $this->getMonitoredTables($recordPageId);
+					$recordPageId            = $tceMain->getPID($table, $uid);
+					$this->solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($recordPageId);
+					$monitoredTables         = $this->getMonitoredTables($recordPageId);
 
 					if (in_array($table, $monitoredTables)) {
-						$record = t3lib_BEfunc::getRecord($table, $uid, '*', '', FALSE);
+						$record = $this->getRecord($table, $uid);
 
-						if ($this->isLocalizedRecord($table, $record)) {
-								// if it's a localization overlay, update the original record instead
-							$uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
-						}
+						if (!empty($record) && $this->isEnabledRecord($table, $record)) {
+							if ($this->isLocalizedRecord($table, $record)) {
+									// if it's a localization overlay, update the original record instead
+								$uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
+							}
 
-						if ($this->isEnabledRecord($table, $record)) {
 							$this->indexQueue->updateItem($table, $uid);
 						} else {
 								// TODO should be moved to garbage collector
