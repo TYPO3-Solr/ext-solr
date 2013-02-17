@@ -34,6 +34,7 @@
  *   field = tags # a comma separated field. instead of field you can also use "value"
  *   separator = , # comma is the default value
  *   removeEmptyValues = 1 # a flag to remove empty strings from the list, on by default.
+ *   removeDuplicateValues = 1 # a flag to remove duplicate strings from the list, off by default.
  * }
  *
  * @author	Ingo Renner <ingo.renner@dkd.de>
@@ -82,6 +83,10 @@ class tx_solr_contentobject_Multivalue {
 			$data,
 			$removeEmptyValues
 		);
+
+		if (!empty($configuration['removeDuplicateValues'])) {
+			$listAsArray = array_unique($listAsArray);
+		}
 
 		return serialize($listAsArray);
 	}
