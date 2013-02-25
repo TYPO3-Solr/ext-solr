@@ -106,10 +106,11 @@ class tx_solr_facet_UsedFacetRenderer extends tx_solr_facet_SimpleFacetOptionsRe
 		$removeFacetUrl  = $facetLinkBuilder->getRemoveFacetOptionUrl();
 
 		$facetToRemove = array(
-			'link' => $removeFacetLink,
-			'url'  => $removeFacetUrl,
-			'text' => $removeFacetText,
-			'name' => $this->filterValue
+			'link'       => $removeFacetLink,
+			'url'        => $removeFacetUrl,
+			'text'       => $removeFacetText,
+			'value'      => $this->filterValue,
+			'facet_name' => $this->facetName
 		);
 
 		return $facetToRemove;
