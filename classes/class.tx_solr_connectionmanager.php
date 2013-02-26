@@ -41,6 +41,9 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 
 		// TODO add parametrized singleton capabilities to t3lib_div::makeInstance()
 
+	/**
+	 * @var array
+	 */
 	protected static $connections = array();
 
 	/**
@@ -322,7 +325,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Updates the Solr connections for a specific root page ID / site.
 	 *
-	 * @param integer $rootPageId
+	 * @param integer $rootPageId A site root page id
 	 */
 	public function updateConnectionByRootPageId($rootPageId) {
 		$systemLanguages = $this->getSystemLanguages();
