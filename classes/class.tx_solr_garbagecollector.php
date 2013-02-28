@@ -367,7 +367,9 @@ class tx_solr_GarbageCollector {
 		$solrConnections = $connectionManager->getConnectionsBySite($site);
 		foreach ($solrConnections as $solrConnection) {
 			/* @var $solrConnection tx_solr_SolrService */
-			$solrConnection->deleteByQuery('(endtime:[* TO NOW] AND -endtime:"' . tx_solr_Util::timestampToIso(0) . '")');
+			$solrConnection->deleteByQuery('(endtime:[* TO NOW]
+				AND -endtime:"' . tx_solr_Util::timestampToIso(0) . '"
+				AND siteHash:"' . $site->getSiteHash() . '")');
 
 			if ($commitAfterCleanUp) {
 				$solrConnection->commit(TRUE, FALSE, FALSE);
