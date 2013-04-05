@@ -1,6 +1,7 @@
 2013-04-05  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed bug #46180: Overrule language labels from TS
+	* Fixed bug #41521: pages-TCA not fully loaded in SOLR_RELATION
 
 2013-02-16  Kai Vogel <kai.vogel@speedprogs.de>
 
