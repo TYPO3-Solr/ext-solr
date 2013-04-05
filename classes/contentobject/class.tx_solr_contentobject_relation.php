@@ -111,7 +111,7 @@ class tx_solr_contentobject_Relation {
 
 		list($localTableName, $localRecordUid) = explode(':', $parentContentObject->currentRecord);
 
-		t3lib_div::loadTCA($localTableName);
+		$GLOBALS['TSFE']->includeTCA();
 		$localTableTca  = $GLOBALS['TCA'][$localTableName];
 
 		$localFieldName = $this->configuration['localField'];
