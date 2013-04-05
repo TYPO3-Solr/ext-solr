@@ -1,3 +1,7 @@
+2013-04-05  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed bug #46180: Overrule language labels from TS
+
 2013-04-02  Olivier Dobberkau <olivier.dobberkau@dkd.de>
 
 	* Fix a wrong URL in the multi solr install script
