@@ -40,7 +40,14 @@ $TSFE->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
 $TSFE->rootLine = $TSFE->sys_page->getRootLine($pageId, '');
 $TSFE->initTemplate();
 $TSFE->getConfigArray();
-$TSFE->includeTCA();
+
+// load TCA
+if (version_compare(TYPO3_version, '6.1-dev', '>=')) {
+	\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
+} else {
+	$TSFE->includeTCA();
+}
+
 $TSFE->sys_language_uid = $languageId;
 
 $solrConfiguration = tx_solr_Util::getSolrConfiguration();

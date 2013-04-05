@@ -2,6 +2,7 @@
 
 	* Fixed bug #46180: Overrule language labels from TS
 	* Fixed bug #41521: pages-TCA not fully loaded in SOLR_RELATION
+	* Fixed bug #46966: Autocomplete not working under TYPO3 6.1
 
 2013-04-02  Olivier Dobberkau <olivier.dobberkau@dkd.de>
 
