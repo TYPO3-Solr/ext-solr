@@ -1,3 +1,7 @@
+2013-04-05  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed bug #46180: Overrule language labels from TS
+
 2013-02-16  Kai Vogel <kai.vogel@speedprogs.de>
 
 	* Fixed issue #45440: Broken facet options when with queryGroup and "}" in query

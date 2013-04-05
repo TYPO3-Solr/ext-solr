@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2012 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2013 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -106,7 +106,9 @@ class tx_solr_viewhelper_Lll implements tx_solr_ViewHelper {
 				if (is_array($overideLabels)) {
 					foreach ($overideLabels as $labelKey => $overideLabel) {
 						if (!is_array($overideLabel)) {
-							$this->localLang[$this->languageFile][$language][$labelKey] = $GLOBALS['TSFE']->csConv($overideLabel, $languageCharset);
+							$this->localLang[$this->languageFile][$language][$labelKey] = array(array(
+								'source' => $GLOBALS['TSFE']->csConv($overideLabel, $languageCharset)
+							));
 						}
 					}
 				}
