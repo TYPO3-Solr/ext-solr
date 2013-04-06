@@ -177,11 +177,16 @@ class tx_solr_JavascriptManager {
 	 *
 	 */
 	protected function buildJavascriptTags() {
+		$filePathPrefix = '';
+		if (!empty($GLOBALS['TSFE']->config['config']['absRefPrefix'])) {
+			$filePathPrefix = $GLOBALS['TSFE']->config['config']['absRefPrefix'];
+		}
+
 			// add files
 		foreach (self::$files as $identifier => $file) {
 			if (!$file['addedToPage']) {
 				self::$files[$identifier]['addedToPage'] = TRUE;
-				$this->javaScriptTags[$identifier] = '<script src="' . $file['file'] . '" type="text/javascript"></script>';
+				$this->javaScriptTags[$identifier] = '<script src="' . $filePathPrefix . $file['file'] . '" type="text/javascript"></script>';
 			}
 		}
 
