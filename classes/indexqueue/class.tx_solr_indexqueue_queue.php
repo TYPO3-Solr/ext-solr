@@ -465,8 +465,9 @@ class tx_solr_indexqueue_Queue {
 	/**
 	 * Checks whether the Index Queue contains a specific item.
 	 *
-	 * @param	string	The item's type, usually a table name.
-	 * @param	string	The item's uid, usually an integer uid, could be a different value for non-database-record types.
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
+	 * @return boolean TRUE if the item is found in the queue, FALSE otherwise
 	 */
 	public function containsItem($itemType, $itemUid) {
 		$itemIsInQueue = (boolean) $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
