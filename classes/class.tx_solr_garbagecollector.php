@@ -29,9 +29,7 @@
  *
  * Garbage collection will happen for online/LIVE workspaces only.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
  */
 class tx_solr_GarbageCollector {
 
@@ -40,11 +38,11 @@ class tx_solr_GarbageCollector {
 	/**
 	 * Hooks into TCE main and tracks record deletion commands.
 	 *
-	 * @param	string	The command.
-	 * @param	string	The table the record belongs to
-	 * @param	integer	The record's uid
-	 * @param	string
-	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
+	 * @param string $command The command.
+	 * @param string $table The table the record belongs to
+	 * @param integer $uid The record's uid
+	 * @param string $value Not used
+	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 			// workspaces: collect garbage only for LIVE workspace
@@ -61,11 +59,11 @@ class tx_solr_GarbageCollector {
 	/**
 	 * Hooks into TCE main and tracks page move commands.
 	 *
-	 * @param	string	The command.
-	 * @param	string	The table the record belongs to
-	 * @param	integer	The record's uid
-	 * @param	string
-	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
+	 * @param string $command The command.
+	 * @param string $table The table the record belongs to
+	 * @param integer $uid The record's uid
+	 * @param string $value Not used
+	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 			// workspaces: collect garbage only for LIVE workspace
@@ -88,10 +86,10 @@ class tx_solr_GarbageCollector {
 	 * record's values are stored to do a change comparison later on for fields
 	 * like fe_group.
 	 *
-	 * @param	array	An array of incoming fields, new or changed
-	 * @param	string	The table the record belongs to
-	 * @param	mixed	The record's uid, [integer] or [string] (like 'NEW...')
-	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
+	 * @param array $incomingFields An array of incoming fields, new or changed, not used
+	 * @param string $table The table the record belongs to
+	 * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
+	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
 	 */
 	public function processDatamap_preProcessFieldArray($incomingFields, $table, $uid, t3lib_TCEmain $tceMain) {
 		if (!is_int($uid)) {
@@ -128,11 +126,11 @@ class tx_solr_GarbageCollector {
 	 * detected that would remove the record from the website, we try to find
 	 * related documents and remove them from the index.
 	 *
-	 * @param	string	Status of the current operation, 'new' or 'update'
-	 * @param	string	The table the record belongs to
-	 * @param	mixed	The record's uid, [integer] or [string] (like 'NEW...')
-	 * @param	array	The record's data
-	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
+	 * @param string $status Status of the current operation, 'new' or 'update'
+	 * @param string $table The table the record belongs to
+	 * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
+	 * @param array $fields The record's data, not used
+	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, t3lib_TCEmain $tceMain) {
 		if ($status == 'new') {
@@ -165,8 +163,8 @@ class tx_solr_GarbageCollector {
 	 * Compiles a list of visibility affecting fields of a table so that it can
 	 * be used in SQL queries.
 	 *
-	 * @param	string	Table name to retrieve visibility affecting fields for
-	 * @return	string	Comma separated list of field names that affect the visibility of a record on the website
+	 * @param string $table Table name to retrieve visibility affecting fields for
+	 * @return string Comma separated list of field names that affect the visibility of a record on the website
 	 */
 	protected function getVisibilityAffectingFieldsByTable($table) {
 		static $visibilityAffectingFields;
@@ -201,9 +199,9 @@ class tx_solr_GarbageCollector {
 	 * Checks whether a hidden field exists for the current table and if so
 	 * determines whether it is set on the current record.
 	 *
-	 * @param	string	The table name.
-	 * @param	array	An array with record fields that may affect visibility.
-	 * @return	boolean	True if the record is hidden, FALSE otherwise.
+	 * @param string $table The table name.
+	 * @param array $record An array with record fields that may affect visibility.
+	 * @return boolean True if the record is hidden, FALSE otherwise.
 	 */
 	protected function isHidden($table, $record) {
 		$hidden = FALSE;
@@ -221,9 +219,9 @@ class tx_solr_GarbageCollector {
 	 * determines if a time is set and whether that time is in the future,
 	 * making the record invisible on the website.
 	 *
-	 * @param	string	The table name.
-	 * @param	array	An array with record fields that may affect visibility.
-	 * @return	boolean	True if the record's start time is in the future, FALSE otherwise.
+	 * @param string $table The table name.
+	 * @param array $record An array with record fields that may affect visibility.
+	 * @return boolean True if the record's start time is in the future, FALSE otherwise.
 	 */
 	protected function isStartTimeInFuture($table, $record) {
 		$startTimeInFuture = FALSE;
@@ -257,9 +255,9 @@ class tx_solr_GarbageCollector {
 	 * determines if a time is set and whether that time is in the past, making
 	 * the record invisible on the website.
 	 *
-	 * @param	string	The table name.
-	 * @param	array	An array with record fields that may affect visibility.
-	 * @return	boolean	True if the record's end time is in the past, FALSE otherwise.
+	 * @param string $table The table name.
+	 * @param array $record An array with record fields that may affect visibility.
+	 * @return boolean TRUE if the record's end time is in the past, FALSE otherwise.
 	 */
 	protected function isEndTimeInPast($table, $record) {
 		$endTimeInPast = FALSE;
@@ -277,9 +275,9 @@ class tx_solr_GarbageCollector {
 	 * whether groups have been removed from accessing the record thus making
 	 * the record invisible to at least some people.
 	 *
-	 * @param	string	The table name.
-	 * @param	array	An array with record fields that may affect visibility.
-	 * @return	boolean	True if frontend groups have been removed from access to the record, FALSE otherwise.
+	 * @param string $table The table name.
+	 * @param array $record An array with record fields that may affect visibility.
+	 * @return boolean TRUE if frontend groups have been removed from access to the record, FALSE otherwise.
 	 */
 	protected function hasFrontendGroupsRemoved($table, $record) {
 		$frontendGroupsRemoved = FALSE;
@@ -311,26 +309,27 @@ class tx_solr_GarbageCollector {
 
 	/**
 	 * Checks whether a page has a page type that can be indexed.
-	 * Currently standard apges and mount pages can be indexed.
+	 * Currently standard pages and mount pages can be indexed.
 	 *
 	 * @param array $record A page record
 	 * @return boolean TRUE if the page can be indexed according to its page type, FALSE otherwise
 	 */
 	protected function isIndexablePageType(array $record) {
-		$allowedPagetype = array(
+		$allowedPageType = array(
 			1, // standard page
 			7  // mount page
 		);
 
-		return in_array($record['doktype'], $allowedPagetype);
+		return in_array($record['doktype'], $allowedPageType);
 	}
 
 	/**
 	 * Tracks down index documents belonging to a particular record or page and
 	 * removes them from the index and the Index Queue.
 	 *
-	 * @param	string	$table The record's table name.
-	 * @param	integer	$uid The record's uid.
+	 * @param string $table The record's table name.
+	 * @param integer $uid The record's uid.
+	 * @throws UnexpectedValueException if a hook object does not implement interface tx_solr_GarbageCollectorPostProcessor
 	 */
 	public function collectGarbage($table, $uid) {
 		if ($table == 'tt_content' || $table == 'pages' || $table == 'pages_language_overlay') {
@@ -383,8 +382,8 @@ class tx_solr_GarbageCollector {
 	 * Tracks down index documents belonging to a particular record and
 	 * removes them from the index and the Index Queue.
 	 *
-	 * @param	string	$table The record's table name.
-	 * @param	integer	$uid The record's uid.
+	 * @param string $table The record's table name.
+	 * @param integer $uid The record's uid.
 	 */
 	protected function collectRecordGarbage($table, $uid) {
 		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
@@ -397,8 +396,8 @@ class tx_solr_GarbageCollector {
 	 * Tracks down index documents belonging to a particular page and
 	 * removes them from the index and the Index Queue.
 	 *
-	 * @param	string	$table The record's table name.
-	 * @param	integer	$uid The record's uid.
+	 * @param string $table The record's table name.
+	 * @param integer $uid The record's uid.
 	 */
 	protected function collectPageGarbage($table, $uid) {
 		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
@@ -434,8 +433,8 @@ class tx_solr_GarbageCollector {
 	/**
 	 * Deletes index documents for a given record identification.
 	 *
-	 * @param	string	$table The record's table name.
-	 * @param	integer	$uid The record's uid.
+	 * @param string $table The record's table name.
+	 * @param integer $uid The record's uid.
 	 */
 	protected function deleteIndexDocuments($table, $uid) {
 		$indexQueue        = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
@@ -459,9 +458,9 @@ class tx_solr_GarbageCollector {
 	/**
 	 * Makes sure that "empty" frontend group fields are always the same value.
 	 *
-	 * @param	string	The record's table name.
-	 * @param	integer	The record's uid.
-	 * @return	array	The cleaned record
+	 * @param string $table The record's table name.
+	 * @param integer $record The record's uid.
+	 * @return array The cleaned record
 	 */
 	protected function normalizeFrontendGroupField($table, $record) {
 
