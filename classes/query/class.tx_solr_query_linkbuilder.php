@@ -98,7 +98,12 @@ class tx_solr_query_LinkBuilder {
 		$this->contentObject     = t3lib_div::makeInstance('tslib_cObj');
 		$this->query             = $query;
 
-		$this->linkTargetPageId = $this->solrConfiguration['search.']['targetPage'];
+		$targetPageUid = $this->contentObject->stdWrap(
+			$this->solrConfiguration['search.']['targetPage'],
+			$this->solrConfiguration['search.']['targetPage.']
+		);
+		$this->linkTargetPageId = $targetPageUid;
+
 		if (empty($this->linkTargetPageId)) {
 			$this->linkTargetPageId = $GLOBALS['TSFE']->id;
 		}
