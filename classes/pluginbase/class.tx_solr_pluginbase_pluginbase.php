@@ -123,7 +123,22 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 			$content = $this->renderException();
 		}
 
-		return $this->pi_wrapInBaseClass($content);
+		return $this->baseWrap($content);
+	}
+
+	/**
+	 * Adds the possibility to use stdWrap on the plugins content instead of wrapInBaseClass.
+	 * Defaults to wrapInBaseClass to ensure downward compatibility.
+	 *
+	 * @param $content The plugin content
+	 * @return string
+	 */
+	protected function baseWrap($content) {
+		if (isset($this->conf['baseWrap.'])) {
+			return $this->cObj->stdWrap($content, $this->conf['baseWrap.']);
+		} else {
+			return $this->pi_wrapInBaseClass($content);
+		}
 	}
 
 	/**
