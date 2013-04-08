@@ -234,12 +234,12 @@ class tx_solr_facet_LinkBuilder extends tx_solr_query_LinkBuilder {
 		}
 
 		if ($indexToReplace !== FALSE) {
-				// facet found, replace facet
-				// move facet to the end of the uri so it may be manipulated using JavaScript
+			// facet found, replace facet
+			// move facet to the end of the uri so it may be manipulated using JavaScript
 			unset($filterParameters[$indexToReplace]);
-			$filterParameters[] = $this->facetName . ':' . $this->facetOption->getUrlValue();
+			$filterParameters[$indexToReplace] = $this->facetName . ':' . $this->facetOption->getUrlValue();
 		} else {
-				// facet not found, add facet
+			// facet not found, add facet
 			$filterParameters[] = $this->facetName . ':' . $this->facetOption->getUrlValue();
 		}
 
