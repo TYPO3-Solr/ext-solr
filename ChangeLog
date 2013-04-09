@@ -1,3 +1,7 @@
+2013-04-09  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed an issue of markup not being escaped in the Index Inspector
+
 2013-04-08  Jochen Rieger  <j.rieger@connecta.ag>
 
 	* Fixed bug #45706: GarbageCollector wrongly removes record with future starttime from indexqueue
