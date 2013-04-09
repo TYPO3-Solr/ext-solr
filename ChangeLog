@@ -1,3 +1,7 @@
+2013-04-09  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed an issue of markup not being escaped in the Index Inspector
+
 2013-04-09  Tomita Militaru  <militarutomita@gmail.com>
 
 	* Added feature #45881: Match against a pattern in face requirements

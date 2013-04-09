@@ -181,7 +181,7 @@ class tx_solr_mod_index_IndexInspectorRemoteController {
 		foreach ($sortedData as $fieldName => $fieldValue) {
 			$formatedData[] = array(
 				'fieldName'  => $fieldName,
-				'fieldValue' => $fieldValue
+				'fieldValue' => htmlspecialchars($fieldValue)
 			);
 		}
 
