@@ -238,16 +238,13 @@ class tx_solr_GarbageCollector {
 	 * Checks whether the record is in the Index Queue and whether it has been
 	 * indexed already.
 	 *
-	 * FIXME the method is not yet checking for the indexed status,
-	 * just whether an item is in the queue
-	 *
 	 * @param string $table The table name.
 	 * @param array $record An array with record fields that may affect visibility.
 	 * @return boolean True if the record is marked as being indexed
 	 */
 	protected function isMarkedAsIndexed($table, $record) {
 		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
-		return $indexQueue->containsItem($table, $record['uid']);
+		return $indexQueue->containsIndexedItem($table, $record['uid']);
 	}
 
 	/**
