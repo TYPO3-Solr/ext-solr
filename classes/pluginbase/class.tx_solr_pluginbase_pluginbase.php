@@ -134,8 +134,8 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 * @return string
 	 */
 	protected function baseWrap($content) {
-		if (isset($this->conf['baseWrap.'])) {
-			return $this->cObj->stdWrap($content, $this->conf['baseWrap.']);
+		if (isset($this->conf['general.']['baseWrap.'])) {
+			return $this->cObj->stdWrap($content, $this->conf['general.']['baseWrap.']);
 		} else {
 			return $this->pi_wrapInBaseClass($content);
 		}
