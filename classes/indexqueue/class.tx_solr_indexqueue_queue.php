@@ -481,6 +481,28 @@ class tx_solr_indexqueue_Queue {
 	}
 
 	/**
+	 * Checks whether the Index Queue contains a specific item that has been
+	 * marked as indexed.
+	 *
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
+	 * @return boolean TRUE if the item is found in the queue and marked as indexed, FALSE otherwise
+	 */
+	public function containsIndexedItem($itemType, $itemUid) {
+		$itemIsInQueue = (boolean) $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+			'uid',
+			'tx_solr_indexqueue_item',
+			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
+				. ' AND '
+				. 'item_uid = ' . (int) $itemUid
+				. ' AND '
+				. 'indexed > 0'
+		);
+
+		return $itemIsInQueue;
+	}
+
+	/**
 	 * Removes an item from the Index Queue.
 	 *
 	 * @param	string	The type of the item to remove, usually a table name.
