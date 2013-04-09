@@ -1,3 +1,7 @@
+2013-04-09  Tomita Militaru  <militarutomita@gmail.com>
+
+	* Added feature #45881: Match against a pattern in face requirements
+
 2013-04-08  Jochen Rieger  <j.rieger@connecta.ag>
 
 	* Fixed bug #45706: GarbageCollector wrongly removes record with future starttime from indexqueue
