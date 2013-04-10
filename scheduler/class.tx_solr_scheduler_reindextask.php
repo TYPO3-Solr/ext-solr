@@ -62,6 +62,7 @@ class tx_solr_scheduler_ReIndexTask extends tx_scheduler_Task {
 
 			// initialize for re-indexing
 		$indexQueue = t3lib_div::makeInstance('tx_solr_indexqueue_Queue');
+		$indexQueueInitializationResults = array();
 		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
 			$indexQueueInitializationResults = $indexQueue->initialize($this->site, $indexingConfigurationName);
 		}
