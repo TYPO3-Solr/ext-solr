@@ -94,7 +94,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * @return string The Solr URL.
 	 */
 	public function __toString() {
-		return $this->_scheme . '//' . $this->_host . ':' . $this->_port . $this->_path;
+		return $this->_scheme . '://' . $this->_host . ':' . $this->_port . $this->_path;
 	}
 
 	/**
