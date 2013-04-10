@@ -127,21 +127,26 @@ class tx_solr_pi_results_NoResultsCommand implements tx_solr_PluginCommand {
 	protected function getSuggestionResults() {
 		$spellChecker      = t3lib_div::makeInstance('tx_solr_SpellChecker');
 		$suggestedKeywords = $spellChecker->getCollatedSuggestion();
+		$suggestionResults = '';
 
-		$plugin = $this->parentPlugin;
-		$search = $this->parentPlugin->getSearch();
-		$query  = clone $search->getQuery();
+		if (!empty($suggestedKeywords)) {
+			$plugin = $this->parentPlugin;
+			$search = $this->parentPlugin->getSearch();
+			$query  = clone $search->getQuery();
 
-		$query->setKeywords($suggestedKeywords);
-		$search->search($query);
+			$query->setKeywords($suggestedKeywords);
+			$search->search($query);
 
-		$resultsCommand = t3lib_div::makeInstance(
-			'tx_solr_pi_results_ResultsCommand',
-			$plugin
-		);
-		$commandVariables = $resultsCommand->execute();
+			$resultsCommand = t3lib_div::makeInstance(
+				'tx_solr_pi_results_ResultsCommand',
+				$plugin
+			);
+			$commandVariables = $resultsCommand->execute();
 
-		return $plugin->renderCommand('results', $commandVariables);
+			$suggestionResults = $plugin->renderCommand('results', $commandVariables);
+		}
+
+		return $suggestionResults;
 	}
 }
 

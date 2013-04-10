@@ -1,6 +1,7 @@
 2013-04-09  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed an issue of markup not being escaped in the Index Inspector
+	* Fixed bug #46183: Wrong result count shown if there is no search result
 
 2013-04-08  Jochen Rieger  <j.rieger@connecta.ag>
 
