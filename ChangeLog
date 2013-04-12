@@ -1,3 +1,7 @@
+2013-04-12  Olivier Dobberkau <olivier.dobberkau@dkd.de>
+
+	* Added additional install scripts for existing tomcat in ubuntu/debian distribution. Credits Andreas Otto
+
 2013-04-10  Ingo Renner  <ingo@typo3.org>
 
 	* Set version number to 3.0-dev
