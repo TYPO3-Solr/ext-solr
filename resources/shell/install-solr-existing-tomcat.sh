@@ -221,7 +221,8 @@ wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR_VER/apache-
 cecho "Unpacking Apache Solr." $green
 unzip -q apache-solr-$SOLR_VER.zip
 
-mv apache-tomcat-$TOMCAT_VER tomcat
+# We are using an existing tomcat installation
+# mv apache-tomcat-$TOMCAT_VER tomcat
 
 cp apache-solr-$SOLR_VER/dist/apache-solr-$SOLR_VER.war ${TOMCAT_BASE}/webapps/solr.war
 cp -r apache-solr-$SOLR_VER/example/solr .
