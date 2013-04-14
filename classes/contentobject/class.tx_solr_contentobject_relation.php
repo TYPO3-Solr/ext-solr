@@ -100,6 +100,11 @@ class tx_solr_contentobject_Relation {
 		list($localTableName, $localRecordUid) = explode(':', $parentContentObject->currentRecord);
 
 		$GLOBALS['TSFE']->includeTCA();
+		if (version_compare(TYPO3_version, '6.0.0', '>=')) {
+			\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA($localTableName);
+		} else {
+			t3lib_div::loadTCA($localTableName);
+		}
 		$localTableTca  = $GLOBALS['TCA'][$localTableName];
 
 		$localFieldName = $this->configuration['localField'];
