@@ -162,7 +162,7 @@ cecho "Checking requirements." $green
 PASSALLCHECKS=1
 
 # test if release branch exists, if so we'll download from there
-wget --no-check-certificate -q -O /dev/null https://svn.typo3.org/TYPO3v4/Extensions/solr/$GITBRANCH_PATH
+wget --no-check-certificate -q -O /dev/null http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/
 BRANCH_TEST_RETURN=$?
 
 # Make sure only root can run this script
