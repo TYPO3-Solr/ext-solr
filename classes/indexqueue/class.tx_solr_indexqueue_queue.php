@@ -368,9 +368,13 @@ class tx_solr_indexqueue_Queue {
 			return;
 		}
 
-		$rootPageId = tx_solr_Util::getRootPageId($record['pid']);
+		if ($itemType == 'pages') {
+			$rootPageId = tx_solr_Util::getRootPageId($itemUid);
+		} else {
+			$rootPageId = tx_solr_Util::getRootPageId($record['pid']);
+		}
 
-		if ($record['pid'] != 0 && tx_solr_Util::isRootPage($rootPageId)) {
+		if (tx_solr_Util::isRootPage($rootPageId)) {
 			$item = array(
 				'root'      => $rootPageId,
 				'item_type' => $itemType,

@@ -1,6 +1,7 @@
 2013-04-15  Ingo Renner  <ingo@typo3.org>
 
 	* Fixed bug #44167: solr ping fails
+	* Fixed bug #44793: Content items on a site root not indexed
 
 2013-04-09  Ingo Renner  <ingo@typo3.org>
 
