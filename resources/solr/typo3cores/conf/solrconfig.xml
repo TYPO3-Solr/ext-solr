@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SolrconfigStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<config name="tx_solr-2-9-0--20130114">
+<config name="tx_solr-3-0-0--20130610">
 
 	<luceneMatchVersion>LUCENE_36</luceneMatchVersion>
 
