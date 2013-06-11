@@ -23,8 +23,6 @@
 ***************************************************************/
 
 
-require_once(PATH_typo3 . 'interfaces/interface.backend_cacheActionsHook.php');
-
 /**
  * A class to easily create a connection to a Solr server.
  *
