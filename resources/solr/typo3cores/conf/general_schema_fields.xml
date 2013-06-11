@@ -60,7 +60,7 @@
 		Here, default is used to create a "timestamp" field indicating when
 		the document was indexed.
 	-->
-	<field name="indexed" type="date" indexed="true" stored="true" default="NOW" />
+	<field name="indexed" type="date" indexed="true" stored="true" default="NOW/SECOND" />
 
 
 	<!-- system fields -->
