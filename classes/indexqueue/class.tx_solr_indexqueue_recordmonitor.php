@@ -371,7 +371,7 @@ class tx_solr_indexqueue_RecordMonitor {
 			$mountPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed',
 				'pages',
-				'doktype = 7 AND mount_pid IN(' . implode(',', $pageIds) . ')'
+					'doktype = 7 AND no_search = 0 AND mount_pid IN(' . implode(',', $pageIds) . ')'
 					. t3lib_BEfunc::deleteClause('pages')
 			);
 		}

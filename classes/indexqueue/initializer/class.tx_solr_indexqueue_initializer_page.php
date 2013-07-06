@@ -283,7 +283,7 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 			'pages',
 			$this->buildPagesClause()
 				. $this->buildTcaWhereClause()
-				. ' AND doktype = 7'
+				. ' AND doktype = 7 AND no_search = 0'
 		);
 	}
 
