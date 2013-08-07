@@ -107,12 +107,23 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 		$itemIndexed = FALSE;
 		$indexer     = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
+			// Remember original http host value
+		$originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : NULL;
+			// Overwrite http host
 		$this->initializeHttpHost($item);
+
 		$itemIndexed = $indexer->index($item);
 
 			// update IQ item so that the IQ can determine what's been indexed already
 		if ($itemIndexed) {
 			$item->updateIndexedTime();
+		}
+
+			// restore http host
+		if ($originalHttpHost !== NULL) {
+			$_SERVER['HTTP_HOST'] = $originalHttpHost;
+		} else {
+			unset($_SERVER['HTTP_HOST']);
 		}
 
 		return $itemIndexed;
