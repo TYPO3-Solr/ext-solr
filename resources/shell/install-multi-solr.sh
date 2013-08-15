@@ -249,7 +249,7 @@ for SOLR in ${SOLR_VER[*]}
 do
   cd /opt/solr-tomcat
   cecho "Downloading Apache Solr $SOLR" $green
-  wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR/apache-solr-$SOLR.zip 2>&1 | progressfilt
+  wget --progress=bar:force http://archive.apache.org/dist/lucene/solr/$SOLR_VER/apache-solr-$SOLR_VER.zip 2>&1 | progressfilt
   cecho "Unpacking Apache Solr." $green
   unzip -q apache-solr-$SOLR.zip
   cp apache-solr-$SOLR/dist/apache-solr-$SOLR.war tomcat/webapps/solr-$SOLR.war

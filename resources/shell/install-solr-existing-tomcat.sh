@@ -211,7 +211,7 @@ cd /opt/solr-tomcat/
 # wget --progress=bar:force http://apache.osuosl.org/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VER/bin/apache-tomcat-$TOMCAT_VER.zip 2>&1 | progressfilt
 
 cecho "Downloading Apache Solr $SOLR_VER" $green
-wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR_VER/apache-solr-$SOLR_VER.zip 2>&1 | progressfilt
+wget --progress=bar:force http://archive.apache.org/dist/lucene/solr/$SOLR_VER/apache-solr-$SOLR_VER.zip 2>&1 | progressfilt
 
 # We are using an existing tomcat installation
 #
