@@ -39,20 +39,22 @@ if (version_compare(TYPO3_version, '6.1', '<=')) {
  */
 class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActionsHook {
 
-		// TODO add parameterized singleton capabilities to t3lib_div::makeInstance()
+		// TODO add parametrized singleton capabilities to t3lib_div::makeInstance()
 
 	protected static $connections = array();
 
 	/**
-	 * Gets a Solr connection. Instead of generating a new connection with each
-	 * call, connections are kept and checkt whether the requested connection
-	 * already exists. If a connection already exists, it's reused.
+	 * Gets a Solr connection.
 	 *
-	 * @param	string	$host Solr host (optional)
-	 * @param	integer	$port Solr port (optional)
-	 * @param	string	$path Solr path (optional)
-	 * @param	string	$scheme Solr scheme, defaults to http, can be https (optional)
-	 * @return	tx_solr_SolrService	A solr connection.
+	 * Instead of generating a new connection with each call, connections are
+	 * kept and checked whether the requested connection already exists. If a
+	 * connection already exists, it's reused.
+	 *
+	 * @param string $host Solr host (optional)
+	 * @param integer $port Solr port (optional)
+	 * @param string $path Solr path (optional)
+	 * @param string $scheme Solr scheme, defaults to http, can be https (optional)
+	 * @return tx_solr_SolrService A solr connection.
 	 */
 	public function getConnection($host = '', $port = 8080, $path = '/solr/', $scheme = 'http') {
 		$connection = NULL;
@@ -95,14 +97,14 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Gets a Solr configuration for a page ID.
 	 *
-	 * @param integer A page ID.
-	 * @param integer The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+	 * @param integer $pageId A page ID.
+	 * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
 	 * @param string $mount Comma list of MountPoint parameters
 	 * @return array A solr configuration.
 	 * @throws tx_solr_NoSolrConnectionFoundException
 	 */
 	public function getConfigurationByPageId($pageId, $language = 0, $mount = '') {
-		$solrConfiguration = FALSE;
+		$solrConfiguration = array();
 
 			// find the root page
 		$pageSelect     = t3lib_div::makeInstance('t3lib_pageSelect');
@@ -112,6 +114,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 		try {
 			$solrConfiguration = $this->getConfigurationByRootPageId($siteRootPageId, $language);
 		} catch (tx_solr_NoSolrConnectionFoundException $nscfe) {
+			/* @var $noSolrConnectionException tx_solr_NoSolrConnectionFoundException */
 			$noSolrConnectionException = t3lib_div::makeInstance(
 				'tx_solr_NoSolrConnectionFoundException',
 				$nscfe->getMessage() . ' Initial page used was [' . $pageId . ']',
@@ -128,11 +131,11 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Gets a Solr connection for a page ID.
 	 *
-	 * @param	integer	A page ID.
-	 * @param	integer	The language ID to get the connection for as the path may differ. Optional, defaults to 0.
-	 * @param	string	$mount Comma list of MountPoint parameters
-	 * @return	tx_solr_SolrService	A solr connection.
-	 * @throws	tx_solr_NoSolrConnectionFoundException
+	 * @param integer $pageId A page ID.
+	 * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+	 * @param string $mount Comma list of MountPoint parameters
+	 * @return tx_solr_SolrService A solr connection.
+	 * @throws tx_solr_NoSolrConnectionFoundException
 	 */
 	public function getConnectionByPageId($pageId, $language = 0, $mount = '') {
 		$solrConnection = NULL;
@@ -151,14 +154,14 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Gets a Solr configuration for a root page ID.
 	 *
-	 * @param integer A root page ID.
-	 * @param integer The language ID to get the configuration for as the path may differ. Optional, defaults to 0.
+	 * @param integer $pageId A root page ID.
+	 * @param integer $language The language ID to get the configuration for as the path may differ. Optional, defaults to 0.
 	 * @return array A solr configuration.
 	 * @throws tx_solr_NoSolrConnectionFoundException
 	 */
 	public function getConfigurationByRootPageId($pageId, $language = 0) {
 		$solrConfiguration = FALSE;
-		$connectionKey         = $pageId . '|' . $language;
+		$connectionKey     = $pageId . '|' . $language;
 
 		$registry = t3lib_div::makeInstance('t3lib_Registry');
 		$solrServers = $registry->get('tx_solr', 'servers');
@@ -166,6 +169,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 		if (isset($solrServers[$connectionKey])) {
 			$solrConfiguration = $solrServers[$connectionKey];
 		} else {
+			/* @var $noSolrConnectionException tx_solr_NoSolrConnectionFoundException */
 			$noSolrConnectionException = t3lib_div::makeInstance(
 				'tx_solr_NoSolrConnectionFoundException',
 				'Could not find a Solr connection for root page ['
@@ -184,8 +188,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Gets a Solr connection for a root page ID.
 	 *
-	 * @param integer A root page ID.
-	 * @param integer The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+	 * @param integer $pageId A root page ID.
+	 * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
 	 * @return tx_solr_SolrService A solr connection.
 	 * @throws tx_solr_NoSolrConnectionFoundException
 	 */
@@ -316,7 +320,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	}
 
 	/**
-	 * Updats the Solr connections for a specific root page ID / site.
+	 * Updates the Solr connections for a specific root page ID / site.
 	 *
 	 * @param integer $rootPageId
 	 */
@@ -346,7 +350,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 * Finds the configured Solr connections. Also respects multi-site
 	 * environments.
 	 *
-	 * @return	array	An array with connections, each connection with keys rootPageTitle, rootPageUid, solrHost, solrPort, solrPath
+	 * @return array An array with connections, each connection with keys rootPageTitle, rootPageUid, solrHost, solrPort, solrPath
 	 */
 	protected function getConfiguredSolrConnections() {
 		$configuredSolrConnections = array();
@@ -433,8 +437,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Gets the language name for a given lanuguage ID.
 	 *
-	 * @param	integer	$languageId language ID
-	 * @return	string	Language name
+	 * @param integer $languageId language ID
+	 * @return string Language name
 	 */
 	protected function getLanguageName($languageId) {
 		$languageName = '';
@@ -455,10 +459,10 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	}
 
 	/**
-	 * Creates a human readablelabel from the connections' configuration.
+	 * Creates a human readable label from the connections' configuration.
 	 *
-	 * @param	array	$connection Connection configuration
-	 * @return	string	Connection label
+	 * @param array $connection Connection configuration
+	 * @return string Connection label
 	 */
 	protected function buildConnectionLabel(array $connection) {
 		$connectionLabel = $connection['rootPageTitle']
@@ -478,8 +482,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 * this is done with a little brute force by simply combining all root pages
 	 * with all languages, this method filters out the duplicates.
 	 *
-	 * @param	array	An array of unfiltered connections, containing duplicates
-	 * @return	array	An array with connections, no duplicates.
+	 * @param array $connections An array of unfiltered connections, containing duplicates
+	 * @return array An array with connections, no duplicates.
 	 */
 	protected function filterDuplicateConnections(array $connections) {
 		$hashedConnections   = array();
@@ -504,7 +508,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Finds the system's configured languages.
 	 *
-	 * @return	array	An array of language IDs
+	 * @return array An array of language IDs
 	 */
 	protected function getSystemLanguages() {
 		$languages = array(0);
@@ -528,7 +532,7 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 * Gets the site's root pages. The "Is root of website" flag must be set,
 	 * which usually is the case for pages with pid = 0.
 	 *
-	 * @return	array	An array of (partial) root page records, containing the uid and title fields
+	 * @return array An array of (partial) root page records, containing the uid and title fields
 	 */
 	protected function getRootPages() {
 		$rootPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -544,8 +548,8 @@ class tx_solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 * Finds the page Id of the page marked as "Is site root" even if it's not
 	 * on the root level (pid = 0).
 	 *
-	 * @param	array	A root line as generated by t3lib_pageSelect::getRootLine()
-	 * @return	integer	The site root's page Id
+	 * @param array $rootLine A root line as generated by t3lib_pageSelect::getRootLine()
+	 * @return integer The site root's page Id
 	 */
 	protected function getSiteRootPageIdFromRootLine(array $rootLine) {
 		$siteRootPageId = 0;
