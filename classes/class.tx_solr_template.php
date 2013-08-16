@@ -326,22 +326,24 @@ class tx_solr_Template {
 
 	/**
 	 * Renders view helpers, detects whether it is a regular marker view helper
-	 * or a subpart viewhelper and passes rendering on to more specialized
+	 * or a subpart view helper and passes rendering on to more specialized
 	 * render methods for each type.
 	 *
-	 * @param	string	the content to process by view helpers
-	 * @return	string	the view helper processed content
+	 * @param string $content The content to process by view helpers
+	 * @return string the view helper processed content
 	 */
 	protected function renderViewHelpers($content) {
 		$viewHelpersFound = $this->findViewHelpers($content);
 
 		foreach ($viewHelpersFound as $helperKey) {
-			$helper = $this->helpers[strtolower($helperKey)];
+			if (array_key_exists(strtolower($helperKey), $this->helpers)) {
+				$helper = $this->helpers[strtolower($helperKey)];
 
-			if ($helper instanceof tx_solr_SubpartViewHelper) {
-				$content = $this->renderSubpartViewHelper($helper, $helperKey, $content);
-			} else {
-				$content = $this->renderMarkerViewHelper($helper, $helperKey, $content);
+				if ($helper instanceof tx_solr_SubpartViewHelper) {
+					$content = $this->renderSubpartViewHelper($helper, $helperKey, $content);
+				} else {
+					$content = $this->renderMarkerViewHelper($helper, $helperKey, $content);
+				}
 			}
 		}
 
