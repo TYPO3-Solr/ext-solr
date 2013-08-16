@@ -154,11 +154,11 @@ class tx_solr_report_SolrConfigurationStatus implements tx_reports_StatusProvide
 					$rootPagesWithIndexingOff[] = $rootPage;
 				}
 			} catch (RuntimeException $rte) {
-
 				$rootPagesWithIndexingOff[] = $rootPage;
 			} catch (t3lib_error_http_ServiceUnavailableException $sue) {
 				if ($sue->getCode() == 1294587218) {
 						//  No TypoScript template found, continue with next site
+					$rootPagesWithIndexingOff[] = $rootPage;
 					continue;
 				}
 			}
