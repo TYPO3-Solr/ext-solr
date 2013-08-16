@@ -106,7 +106,7 @@ class tx_solr_facet_FacetOption {
 			);
 		}
 
-		return $renderedFacetOption;
+		return htmlspecialchars($renderedFacetOption);
 	}
 
 	/**
