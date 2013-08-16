@@ -23,6 +23,10 @@
 	* Fixed bug #46966: Autocomplete not working under TYPO3 6.1
 	* Fixed bug #44080: Use config.absRefPrefix for loading JavaScripts
 
+2013-04-04  Michel Tremblay <mictre@gmail.com>
+
+	* Fixed an XSS when plugin.tx_solr.search.keepExistingParametersForNewSearches is enabled
+
 2013-04-04  Gerrit Venema <venema.gerrit@wag.nl>
 
 	* Fixed an XSS in facet options
