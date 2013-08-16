@@ -172,7 +172,7 @@ class tx_solr_Template {
 		}
 
 		foreach ($this->viewHelperIncludePath as $extensionKey => $viewHelperPath) {
-			$viewHelperRealPath = $viewHelperRealPath;
+			$viewHelperRealPath = $viewHelperPath;
 			if (t3lib_div::isFirstPartOfStr($viewHelperPath, 'classes/')) {
 				$viewHelperRealPath = substr($viewHelperPath, 8);
 			}
