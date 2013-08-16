@@ -452,7 +452,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 	 * Gets the user's query term and cleans it so that it can be used in
 	 * templates f.e.
 	 *
-	 * @return	string	The cleaned user query.
+	 * @return string The cleaned user query.
 	 */
 	public function getCleanUserQuery() {
 		$userQuery = $this->getRawUserQuery();
@@ -460,6 +460,10 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 		if (!is_null($userQuery)) {
 			$userQuery = tx_solr_Query::cleanKeywords($userQuery);
 		}
+
+		// escape triple hashes as they are used in the template engine
+		// TODO remove after switching to fluid templates
+		$userQuery = str_replace('#', '&#35;', $userQuery);
 
 		return $userQuery;
 	}

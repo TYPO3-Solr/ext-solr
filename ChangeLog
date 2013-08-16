@@ -1,3 +1,7 @@
+2013-08-16  Ingo Renner  <ingo@typo3.org>
+
+	* Fixed an issue executing view helpers in user query strings
+
 2013-05-28  Stefan Sprenger  <stefan.sprenger@dkd.de>
 
   * Changed install script to install Apache Tomcat 6.0.37
