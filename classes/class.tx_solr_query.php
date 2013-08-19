@@ -797,6 +797,10 @@ class tx_solr_Query {
 		$keywords = t3lib_div::removeXSS($keywords);
 		$keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
 
+		// escape triple hashes as they are used in the template engine
+		// TODO remove after switching to fluid templates
+		$keywords = tx_solr_Template::escapeMarkers($keywords);
+
 		return $keywords;
 	}
 

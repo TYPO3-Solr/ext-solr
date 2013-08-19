@@ -101,7 +101,7 @@ class tx_solr_pi_results_LastSearchesCommand implements tx_solr_PluginCommand {
 
 			$keywords       = stripslashes($keywords);
 			$lastSearches[] = array(
-				'q'          => $keywords,
+				'q'          => tx_solr_Template::escapeMarkers($keywords),
 				'parameters' => '&' . tx_solr_query_LinkBuilder::getQueryGetParameter() . '=' . html_entity_decode($keywords, ENT_NOQUOTES, 'UTF-8'),
 				'pid'        => $this->parentPlugin->getLinkTargetPageId()
 			);

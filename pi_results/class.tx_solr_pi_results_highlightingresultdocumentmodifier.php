@@ -54,7 +54,9 @@ class tx_solr_pi_results_HighlightingResultDocumentModifier implements tx_solr_R
 		$highlightFields = t3lib_div::trimExplode(',', $configuration['search.']['results.']['resultsHighlighting.']['highlightFields'], TRUE);
 		foreach ($highlightFields as $highlightField) {
 			if ($highlightedContent->{$resultDocument['id']}->{$highlightField}[0]) {
-				$resultDocument[$highlightField] = $highlightedContent->{$resultDocument['id']}->{$highlightField}[0];
+				$resultDocument[$highlightField] = tx_solr_Template::escapeMarkers(
+					$highlightedContent->{$resultDocument['id']}->{$highlightField}[0];
+				);
 			}
 		}
 

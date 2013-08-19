@@ -282,6 +282,22 @@ class tx_solr_Template {
 	}
 
 	/**
+	 * Escapes marker hashes and the pipe symbol so that they will not be
+	 * executed in templates.
+	 *
+	 * @param string $content Content potentially containing markers
+	 * @return string Content with markers escaped
+	 */
+	public static function escapeMarkers($content) {
+		// escape marker hashes
+		$content = str_replace('###', '&#35;&#35;&#35;', $content);
+		// escape pipe character used for parameter separation
+		$content = str_replace('|', '&#166;', $content);
+
+		return $content;
+	}
+
+	/**
 	 * cleans the template from non-replaced markers and subparts
 	 *
 	 * @return void
