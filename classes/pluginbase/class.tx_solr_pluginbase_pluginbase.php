@@ -463,7 +463,7 @@ abstract class tx_solr_pluginbase_PluginBase extends tslib_pibase {
 
 		// escape triple hashes as they are used in the template engine
 		// TODO remove after switching to fluid templates
-		$userQuery = str_replace('#', '&#35;', $userQuery);
+		$userQuery = tx_solr_Template::escapeMarkers($userQuery);
 
 		return $userQuery;
 	}

@@ -52,7 +52,9 @@ class tx_solr_pi_results_HighlightingResultDocumentModifier implements tx_solr_R
 		$highlightedContent = $this->search->getHighlightedContent();
 
 		if ($highlightedContent->{$resultDocument['id']}->content[0]) {
-			$resultDocument['content'] = $highlightedContent->{$resultDocument['id']}->content[0];
+			$resultDocument['content'] = tx_solr_Template::escapeMarkers(
+				$highlightedContent->{$resultDocument['id']}->content[0]
+			);
 		}
 
 		return $resultDocument;

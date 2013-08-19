@@ -125,7 +125,7 @@ class tx_solr_pi_results_FrequentSearchesCommand implements tx_solr_PluginComman
 			foreach ($frequentSearchTerms as $term => $hits) {
 				$size = round($minimumSize + (($hits - $minimumHits) * $step));
 				$frequentSearches[] = array(
-					'term'       => $term,
+					'term'       => tx_solr_Template::escapeMarkers($term),
 					'hits'       => $hits,
 					'style'      => 'font-size: ' . $size . 'px',
 					'class'      => 'tx-solr-frequent-term-' . $size,

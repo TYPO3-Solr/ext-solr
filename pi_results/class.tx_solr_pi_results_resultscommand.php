@@ -204,6 +204,10 @@ class tx_solr_pi_results_ResultsCommand implements tx_solr_PluginCommand {
 					$processedFieldValue = $document->{$fieldName};
 			}
 
+			// escape markers in document fields
+			// TODO remove after switching to fluid templates
+			$processedFieldValue = tx_solr_Template::escapeMarkers($processedFieldValue);
+
 			$result[$fieldName] = $processedFieldValue;
 		}
 
