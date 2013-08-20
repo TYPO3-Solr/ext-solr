@@ -97,8 +97,8 @@ class tx_solr_scheduler_CommitTaskSolrServerField implements tx_scheduler_Additi
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_committasksolrserverfield.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_committasksolrserverfield.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_committasksolrserverfield.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_committasksolrserverfield.php']);
 }
 
 ?>

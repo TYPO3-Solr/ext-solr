@@ -148,8 +148,8 @@ class tx_solr_pi_frequentsearches extends tx_solr_pluginbase_CommandPluginBase{
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/pi_frequentsearches/class.tx_solr_pi_frequentsearches.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/pi_frequentsearches/class.tx_solr_pi_frequentsearches.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/pi_frequentsearches/class.tx_solr_pi_frequentsearches.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/pi_frequentsearches/class.tx_solr_pi_frequentsearches.php']);
 }
 
 ?>

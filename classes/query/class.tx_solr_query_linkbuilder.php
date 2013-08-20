@@ -336,8 +336,8 @@ class tx_solr_query_LinkBuilder {
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/query/class.tx_solr_query_linkbuilder.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/query/class.tx_solr_query_linkbuilder.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/query/class.tx_solr_query_linkbuilder.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/query/class.tx_solr_query_linkbuilder.php']);
 }
 
 ?>

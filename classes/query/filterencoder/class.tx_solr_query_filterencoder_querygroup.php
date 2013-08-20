@@ -89,8 +89,8 @@ class tx_solr_query_filterencoder_QueryGroup implements tx_solr_QueryFilterEncod
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/query/filterencoder/class.tx_solr_query_filterencoder_querygroup.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/query/filterencoder/class.tx_solr_query_filterencoder_querygroup.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/query/filterencoder/class.tx_solr_query_filterencoder_querygroup.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/query/filterencoder/class.tx_solr_query_filterencoder_querygroup.php']);
 }
 
 ?>

@@ -80,8 +80,8 @@ class tx_solr_response_processor_StatisticsWriter implements tx_solr_ResponsePro
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/response/processor/class.tx_solr_response_processor_statisticswriter.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/response/processor/class.tx_solr_response_processor_statisticswriter.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/response/processor/class.tx_solr_response_processor_statisticswriter.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/response/processor/class.tx_solr_response_processor_statisticswriter.php']);
 }
 
 ?>

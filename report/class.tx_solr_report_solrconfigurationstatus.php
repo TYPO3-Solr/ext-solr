@@ -202,8 +202,8 @@ class tx_solr_report_SolrConfigurationStatus implements tx_reports_StatusProvide
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/report/class.tx_solr_report_solrconfigurationstatus.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/report/class.tx_solr_report_solrconfigurationstatus.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/report/class.tx_solr_report_solrconfigurationstatus.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/report/class.tx_solr_report_solrconfigurationstatus.php']);
 }
 
 ?>

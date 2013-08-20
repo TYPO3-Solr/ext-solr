@@ -97,8 +97,8 @@ class tx_solr_scheduler_OptimizeTaskSolrServerField implements tx_scheduler_Addi
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_optimizetasksolrserverfield.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_optimizetasksolrserverfield.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_optimizetasksolrserverfield.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/scheduler/class.tx_solr_scheduler_optimizetasksolrserverfield.php']);
 }
 
 ?>

@@ -45,8 +45,8 @@ class tx_solr_search_LastSearchesComponent extends tx_solr_search_AbstractCompon
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/search/class.tx_solr_search_lastsearchescomponent.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/search/class.tx_solr_search_lastsearchescomponent.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/search/class.tx_solr_search_lastsearchescomponent.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/search/class.tx_solr_search_lastsearchescomponent.php']);
 }
 
 ?>
