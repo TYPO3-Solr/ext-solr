@@ -317,8 +317,8 @@ class tx_solr_indexqueue_initializer_Page extends tx_solr_indexqueue_initializer
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_page.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_page.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_page.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/indexqueue/initializer/class.tx_solr_indexqueue_initializer_page.php']);
 }
 
 ?>

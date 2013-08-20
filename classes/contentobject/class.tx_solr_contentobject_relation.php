@@ -299,8 +299,8 @@ class tx_solr_contentobject_Relation {
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/contentobject/class.tx_solr_contentobject_relation.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/contentobject/class.tx_solr_contentobject_relation.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/contentobject/class.tx_solr_contentobject_relation.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/contentobject/class.tx_solr_contentobject_relation.php']);
 }
 
 ?>

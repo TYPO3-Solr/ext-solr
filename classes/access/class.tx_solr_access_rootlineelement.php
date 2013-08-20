@@ -181,8 +181,8 @@ class tx_solr_access_RootlineElement {
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/access/class.tx_solr_access_rootlineelement.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/solr/classes/access/class.tx_solr_access_rootlineelement.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/access/class.tx_solr_access_rootlineelement.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/classes/access/class.tx_solr_access_rootlineelement.php']);
 }
 
 ?>
