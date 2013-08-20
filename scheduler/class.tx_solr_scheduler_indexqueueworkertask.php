@@ -98,29 +98,29 @@ class tx_solr_scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	}
 
 	/**
-	 * Indexes an item from the index queue.
+	 * Indexes an item from the Index Queue.
 	 *
-	 * @param	tx_solr_indexqueue_Item	An index queue item to index
-	 * @return	boolean	TRUE if the item was successfully indexed, FALSE otherwise
+	 * @param tx_solr_indexqueue_Item $item An index queue item to index
+	 * @return boolean TRUE if the item was successfully indexed, FALSE otherwise
 	 */
 	protected function indexItem(tx_solr_indexqueue_Item $item) {
 		$itemIndexed = FALSE;
 		$indexer     = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
-			// Remember original http host value
+		// Remember original http host value
 		$originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : NULL;
-			// Overwrite http host
+		// Overwrite http host
 		$this->initializeHttpHost($item);
 
 		$itemIndexed = $indexer->index($item);
 
-			// update IQ item so that the IQ can determine what's been indexed already
+		// update IQ item so that the IQ can determine what's been indexed already
 		if ($itemIndexed) {
 			$item->updateIndexedTime();
 		}
 
-			// restore http host
-		if ($originalHttpHost !== NULL) {
+		// restore http host
+		if (!is_null($originalHttpHost)) {
 			$_SERVER['HTTP_HOST'] = $originalHttpHost;
 		} else {
 			unset($_SERVER['HTTP_HOST']);
