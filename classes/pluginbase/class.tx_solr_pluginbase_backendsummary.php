@@ -157,15 +157,21 @@ class tx_solr_pluginbase_BackendSummary {
 
 
 	/**
-	 * Gets a field's value from flexform configuration,
-	 * will check if flexform configuration is available.
+	 * Gets a field's value from flexform configuration, will check if
+	 * flexform configuration is available.
 	 *
-	 * @param string $key name of the key
-	 * @param string $sheet name of the sheet
-	 * @return NULL if nothing found, value if found
+	 * @param string $fieldName name of the field
+	 * @param string $sheetName name of the sheet, defaults to "sDEF"
+	 * @return string if nothing found, value if found
 	 */
 	protected function getFieldFromFlexform($fieldName, $sheetName = 'sDEF') {
-		return $this->flexformData[$sheetName]['lDEF'][$fieldName]['vDEF'];
+		$fieldValue = '';
+
+		if (array_key_exists($sheetName, $this->flexformData) && array_key_exists($fieldName, $this->flexformData[$sheetName]['lDEF'])) {
+			$fieldValue = $this->flexformData[$sheetName]['lDEF'][$fieldName]['vDEF'];
+		}
+
+		return $fieldValue;
 	}
 
 }
