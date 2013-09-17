@@ -58,6 +58,9 @@ plugin.tx_solr.index.queue {
 				typolink.useCacheHash = 1
 				typolink.returnLast = url
 			}
+
+			sortAuthor_stringS = author
+			sortTitle_stringS  = title
 		}
 
 		attachments {
