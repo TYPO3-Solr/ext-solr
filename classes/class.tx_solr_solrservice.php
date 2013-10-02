@@ -378,7 +378,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * @return	array	An array of index meta data
 	 */
 	public function getLukeMetaData($numberOfTerms = 0) {
-		if (!isset($this->luke[$numberOfTerms])) {
+		if (!isset($this->lukeData[$numberOfTerms])) {
 			$lukeUrl = $this->_constructUrl(
 				self::LUKE_SERVLET,
 				array(
