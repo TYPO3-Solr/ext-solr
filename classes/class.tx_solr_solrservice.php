@@ -126,8 +126,9 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * Return a valid http URL given this server's scheme, host, port, and path
 	 * and a provided servlet name.
 	 *
-	 * @param string $servlet
-	 * @return string
+	 * @param string $servlet Servlet name
+	 * @param array $params Additional URL parameters to attach to the end of the URL
+	 * @return string Servlet URL
 	 */
 	protected function _constructUrl($servlet, $params = array()) {
 		$url = parent::_constructUrl($servlet, $params);
@@ -146,13 +147,13 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Make a request to a servlet (a path) that's not a standard path.
 	 *
-	 * @param	string	Path to be added to the base Solr path.
-	 * @param	array	Optional, additional request parameters when constructing the URL.
-	 * @param	string	HTTP method to use, defaults to GET.
-	 * @param	string	Key value pairs of header names and values. Should include 'Content-Type' for POST and PUT.
-	 * @param	string	Must be an empty string unless method is POST or PUT.
-	 * @param	float	Read timeout in seconds, defaults to FALSE.
-	 * @return	Apache_Solr_Response	Response object
+	 * @param string $servlet Path to be added to the base Solr path.
+	 * @param array $parameters Optional, additional request parameters when constructing the URL.
+	 * @param string $method HTTP method to use, defaults to GET.
+	 * @param string $requestHeaders Key value pairs of header names and values. Should include 'Content-Type' for POST and PUT.
+	 * @param string $rawPost Must be an empty string unless method is POST or PUT.
+	 * @param float $timeout Read timeout in seconds, defaults to FALSE.
+	 * @return Apache_Solr_Response Response object
 	 */
 	public function requestServlet($servlet, $parameters = array(), $method = 'GET', $requestHeaders = array(), $rawPost = '', $timeout = FALSE) {
 		$httpTransport = $this->getHttpTransport();
@@ -187,11 +188,12 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Performs a search.
 	 *
-	 * @param	string	query string / search term
-	 * @param	integer	result offset for pagination
-	 * @param	integer	number of results to retrieve
-	 * @param	array	additional HTTP GET parameters
-	 * @return	Apache_Solr_Response	Solr response
+	 * @param string $query query string / search term
+	 * @param integer $offset result offset for pagination
+	 * @param integer $limit number of results to retrieve
+	 * @param array $params additional HTTP GET parameters
+	 * @return Apache_Solr_Response Solr response
+	 * @throws RuntimeException if Solr returns a HTTP status code other than 200
 	 */
 	public function search($query, $offset = 0, $limit = 10, $params = array()) {
 		$response = parent::search($query, $offset, $limit, $params);
@@ -239,8 +241,8 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Performs a content and meta data extraction request.
 	 *
-	 * @param	tx_solr_ExtractingQuery	An extraction query
-	 * @return	array	An array containing the extracted content [0] and meta data [1]
+	 * @param tx_solr_ExtractingQuery An extraction query
+	 * @return array An array containing the extracted content [0] and meta data [1]
 	 */
 	public function extract(tx_solr_ExtractingQuery $query) {
 		$headers = array(
@@ -273,9 +275,9 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Central method for making a get operation against this Solr Server
 	 *
-	 * @param	string	$url
-	 * @param	float	$timeout Read timeout in seconds
-	 * @return	Apache_Solr_Response
+	 * @param string $url
+	 * @param float $timeout Read timeout in seconds
+	 * @return Apache_Solr_Response
 	 */
 	protected function _sendRawGet($url, $timeout = FALSE) {
 		$logSeverity = 0; // info
@@ -310,11 +312,11 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Central method for making a post operation against this Solr Server
 	 *
-	 * @param	string	$url
-	 * @param	string	$rawPost
-	 * @param	float	$timeout Read timeout in seconds
-	 * @param	string	$contentType
-	 * @return	Apache_Solr_Response
+	 * @param string $url
+	 * @param string $rawPost
+	 * @param float $timeout Read timeout in seconds
+	 * @param string $contentType
+	 * @return Apache_Solr_Response
 	 */
 	protected function _sendRawPost($url, $rawPost, $timeout = FALSE, $contentType = 'text/xml; charset=UTF-8') {
 		$logSeverity = 0; // info
@@ -355,7 +357,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Set the scheme used. If empty will fallback to constants
 	 *
-	 * @param	string	$scheme
+	 * @param string $scheme Either http or https
 	 */
 	public function setScheme($scheme) {
 			// Use the provided scheme or use the default
@@ -377,8 +379,8 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Retrieves meta data about the index from the luke request handler
 	 *
-	 * @param	integer	Number of top terms to fetch for each field
-	 * @return	array	An array of index meta data
+	 * @param integer Number of top terms to fetch for each field
+	 * @return array An array of index meta data
 	 */
 	public function getLukeMetaData($numberOfTerms = 0) {
 		if (!isset($this->lukeData[$numberOfTerms])) {
@@ -399,17 +401,27 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * get field meta data for the index
 	 *
-	 * @param	integer	Number of top terms to fetch for each field
-	 * @return	array
+	 * @param integer Number of top terms to fetch for each field
+	 * @return array
 	 */
 	public function getFieldsMetaData($numberOfTerms = 0) {
 		return $this->getLukeMetaData($numberOfTerms)->fields;
 	}
 
+	/**
+	 * Returns whether a search has been executed or not.
+	 *
+	 * @return bool TRUE if a search has been executed, FALSE otherwise
+	 */
 	public function hasSearched() {
 		return $this->hasSearched;
 	}
 
+	/**
+	 * Gets the most recent response (if any)
+	 *
+	 * @return Apache_Solr_Response Most recent response, or NULL if a search has not been executed yet.
+	 */
 	public function getResponse() {
 		return $this->responseCache;
 	}
@@ -458,7 +470,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * Gets the name of the schema.xml file installed and in use on the Solr
 	 * server.
 	 *
-	 * @return	string	Name of the active schema.xml
+	 * @return string Name of the active schema.xml
 	 */
 	public function getSchemaName() {
 		$systemInformation = $this->getSystemInformation();
@@ -470,7 +482,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * Gets the name of the solrconfig.xml file installed and in use on the Solr
 	 * server.
 	 *
-	 * @return	string	Name of the active solrconfig.xml
+	 * @return string Name of the active solrconfig.xml
 	 */
 	public function getSolrconfigName() {
 		if (is_null($this->solrconfigName)) {
@@ -488,7 +500,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Gets the Solr server's version number.
 	 *
-	 * @return	string	Solr version number
+	 * @return string Solr version number
 	 */
 	public function getSolrServerVersion() {
 		$systemInformation = $this->getSystemInformation();
@@ -502,8 +514,8 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * Deletes all index documents of a certain type and does a commit
 	 * afterwards.
 	 *
-	 * @param	string	The type of documents to delete, usually a table name.
-	 * @param	boolean	Will commit imidiately after deleting the documents if set, defautls to TRUE
+	 * @param string $type The type of documents to delete, usually a table name.
+	 * @param boolean $commit Will commit immediately after deleting the documents if set, defaults to TRUE
 	 */
 	public function deleteByType($type, $commit = TRUE) {
 		$this->deleteByQuery('type:' . trim($type));
