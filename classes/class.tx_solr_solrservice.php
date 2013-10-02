@@ -36,12 +36,15 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	const SYSTEM_SERVLET = 'admin/system';
 	const PLUGINS_SERVLET = 'admin/plugins';
 
+	const SCHEME_HTTP  = 'http';
+	const SCHEME_HTTPS = 'https';
+
 	/**
 	 * Server connection scheme. http or https.
 	 *
 	 * @var string
 	 */
-	protected $_scheme = 'http';
+	protected $_scheme = self::SCHEME_HTTP;
 
 	/**
 	 * Constructed servlet URL for Luke
@@ -359,7 +362,7 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 		if (empty($scheme)) {
 			throw new Exception('Scheme parameter is empty');
 		} else {
-			if (in_array($scheme, array('http', 'https'))) {
+			if (in_array($scheme, array(self::SCHEME_HTTP, self::SCHEME_HTTPS))) {
 				$this->_scheme = $scheme;
 			} else {
 				throw new Exception('Unsupported scheme parameter');
