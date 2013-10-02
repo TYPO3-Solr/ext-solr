@@ -358,16 +358,17 @@ class tx_solr_SolrService extends Apache_Solr_Service {
 	 * Set the scheme used. If empty will fallback to constants
 	 *
 	 * @param string $scheme Either http or https
+	 * @throws UnexpectedValueException
 	 */
 	public function setScheme($scheme) {
 			// Use the provided scheme or use the default
 		if (empty($scheme)) {
-			throw new Exception('Scheme parameter is empty');
+			throw new UnexpectedValueException('Scheme parameter is empty', 1380756390);
 		} else {
 			if (in_array($scheme, array(self::SCHEME_HTTP, self::SCHEME_HTTPS))) {
 				$this->_scheme = $scheme;
 			} else {
-				throw new Exception('Unsupported scheme parameter');
+				throw new UnexpectedValueException('Unsupported scheme parameter, scheme must be http or https', 1380756442);
 			}
 		}
 
