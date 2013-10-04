@@ -504,10 +504,6 @@ class tx_solr_Query {
 		$this->queryParameters['facet.field'][] = $facetField;
 	}
 
-	public function addFacetFilter($field, $value) {
-		// might do the same as addFilter()
-	}
-
 
 	// filter
 
