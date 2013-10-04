@@ -303,7 +303,10 @@ class tx_solr_Query {
 	public function setQueryElevation($elevation = TRUE, $forceElevation = TRUE) {
 		if ($elevation) {
 			$this->queryParameters['enableElevation'] = 'true';
-			$this->queryParameters['forceElevation']  = 'true';
+
+			if ($forceElevation) {
+				$this->queryParameters['forceElevation'] = 'true';
+			}
 		} else {
 			if (isset($this->queryParameters['enableElevation'])) {
 				unset($this->queryParameters['enableElevation']);
