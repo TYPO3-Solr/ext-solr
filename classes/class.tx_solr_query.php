@@ -26,9 +26,9 @@
 /**
  * A Solr search query
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class tx_solr_Query {
 
@@ -167,7 +167,7 @@ class tx_solr_Query {
 	/**
 	 * Returns the query's ID.
 	 *
-	 * @return	integer	The query's ID.
+	 * @return integer The query's ID.
 	 */
 	public function getId() {
 		return $this->id;
@@ -176,8 +176,8 @@ class tx_solr_Query {
 	/**
 	 * Quote and escape search strings
 	 *
-	 * @param	string	the search string
-	 * @return	string	the escaped/quoted string
+	 * @param string $string String to escape
+	 * @return string The escaped/quoted string
 	 */
 	public function escape($string) {
 		if (!is_numeric($string)) {
@@ -203,11 +203,11 @@ class tx_solr_Query {
 	/**
 	 * Escapes characters with special meanings in Lucene query syntax.
 	 *
-	 * @param	string	$value Unescaped - "dirty" - string
-	 * @return	string	Escaped - "clean" - string
+	 * @param string $value Unescaped - "dirty" - string
+	 * @return string Escaped - "clean" - string
 	 */
 	protected function escapeSpecialCharacters($value) {
-			// list taken from http://lucene.apache.org/java/3_3_0/queryparsersyntax.html#Escaping%20Special%20Characters
+			// list taken from http://lucene.apache.org/core/4_4_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
 			// not escaping *, &&, ||, ?, -, !, + though
 		$pattern = '/(\(|\)|\{|}|\[|]|\^|"|~|:|\\\)/';
 		$replace = '\\\$1';
@@ -219,8 +219,8 @@ class tx_solr_Query {
 	 * Escapes a value meant to be contained in a phrase with characters with
 	 * special meanings in Lucene query syntax.
 	 *
-	 * @param	string	$value Unescaped - "dirty" - string
-	 * @return	string	Escaped - "clean" - string
+	 * @param string $value Unescaped - "dirty" - string
+	 * @return string Escaped - "clean" - string
 	 */
 	protected function escapePhrase($value) {
 		$pattern = '/("|\\\)/';
@@ -236,7 +236,7 @@ class tx_solr_Query {
 	/**
 	 * Returns the number of results that should be shown per page
 	 *
-	 * @return	integer	number of resutls to show per page
+	 * @return integer number of results to show per page
 	 */
 	public function getResultsPerPage() {
 		return $this->resultsPerPage;
@@ -245,8 +245,8 @@ class tx_solr_Query {
 	/**
 	 * Sets the number of results that should be shown per page
 	 *
-	 * @param	integer	Number of results to show per page
-	 * @return	void
+	 * @param integer $resultsPerPage Number of results to show per page
+	 * @return void
 	 */
 	public function setResultsPerPage($resultsPerPage) {
 		$this->resultsPerPage = max(intval($resultsPerPage), 1);
@@ -255,7 +255,7 @@ class tx_solr_Query {
 	/**
 	 * Gets the currently showing page's number
 	 *
-	 * @return	integer	page number currently showing
+	 * @return integer page number currently showing
 	 */
 	public function getPage() {
 		return $this->page;
@@ -264,8 +264,8 @@ class tx_solr_Query {
 	/**
 	 * Sets the page that should be shown
 	 *
-	 * @param	integer	$page page number to show
-	 * @return	void
+	 * @param integer $page page number to show
+	 * @return void
 	 */
 	public function setPage($page) {
 		$this->page = max(intval($page), 0);
@@ -274,7 +274,7 @@ class tx_solr_Query {
 	/**
 	 * Gets the index of the first result document we're showing
 	 *
-	 * @return	integer	index of the currently first document showing
+	 * @return integer index of the currently first document showing
 	 */
 	public function getStartIndex() {
 		return ($this->page - 1) * $this->resultsPerPage;
@@ -283,7 +283,7 @@ class tx_solr_Query {
 	/**
 	 * Gets the index of the last result document we're showing
 	 *
-	 * @return	integer	index of the currently last document showing
+	 * @return integer index of the currently last document showing
 	 */
 	public function getEndIndex() {
 		return $this->page * $this->resultsPerPage;
@@ -296,9 +296,9 @@ class tx_solr_Query {
 	/**
 	 * Activates and deactivates query elevation for the current query.
 	 *
-	 * @param	boolean	True to enable query elevation (default), FALSE to disable query elevation.
-	 * @param	boolean	Optionaly force elevation so that the elevated documents are always on top regardless of sorting, default to TRUE.
-	 * @return	void
+	 * @param boolean $elevation True to enable query elevation (default), FALSE to disable query elevation.
+	 * @param boolean $forceElevation Optionaly force elevation so that the elevated documents are always on top regardless of sorting, default to TRUE.
+	 * @return void
 	 */
 	public function setQueryElevation($elevation = TRUE, $forceElevation = TRUE) {
 		if ($elevation) {
@@ -449,8 +449,8 @@ class tx_solr_Query {
 	/**
 	 * Activates and deactivates faceting for the current query.
 	 *
-	 * @param	boolean	TRUE to enable faceting, FALSE to disable faceting
-	 * @return	void
+	 * @param boolean $faceting TRUE to enable faceting, FALSE to disable faceting
+	 * @return void
 	 */
 	public function setFaceting($faceting = TRUE) {
 		if ($faceting) {
