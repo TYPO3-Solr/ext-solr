@@ -241,9 +241,30 @@ class Tx_Solr_IndexQueue_Queue {
 	 * @param	string	The item's uid, usually an integer uid, could be a different value for non-database-record types.
 	 * @param	integer	The configuration's page tree's root page id. Optional, not needed for all types.
 	 * @return	string	The indexing configuration's name to use when indexing this item
+	 * @deprecated	Use getIndexingConfigurationsByItem() now, which behaves almost the same way but returns an array of configurations
 	 */
 	protected function getIndexingConfigurationByItem($itemType, $itemUid, $rootPageId = NULL) {
 		$possibleIndexingConfigurationName = '';
+
+		$configurations = $this->getIndexingConfigurationsByItem($itemType, $itemUid, $rootPageId);
+		if (is_array($configurations) && (count($configurations) > 0)) {
+			$possibleIndexingConfigurationName = $configurations[0];
+		}
+
+		return $possibleIndexingConfigurationName;
+	}
+
+	/**
+	 * Gets the indexing configurations to use for an item.
+	 * Multiple configurations for a certain item type (table) might be available.
+	 *
+	 * @param	string	The item's type, usually a table name.
+	 * @param	string	The item's uid, usually an integer uid, could be a different value for non-database-record types.
+	 * @param	integer	The configuration's page tree's root page id. Optional, not needed for all types.
+	 * @return	array<string>	The indexing configurations names to use when indexing this item
+	 */
+	protected function getIndexingConfigurationsByItem($itemType, $itemUid, $rootPageId = NULL) {
+		$possibleIndexingConfigurationNames = array();
 
 		if (!is_null($rootPageId)) {
 				// get configuration for the root's branch
@@ -260,14 +281,13 @@ class Tx_Solr_IndexQueue_Queue {
 						$solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'] == $itemType
 					)
 				) {
-					$possibleIndexingConfigurationName = $indexingConfigurationName;
-					break;
+					$possibleIndexingConfigurationNames[] = $indexingConfigurationName;
 				}
 			}
 
 		}
 
-		return $possibleIndexingConfigurationName;
+		return $possibleIndexingConfigurationNames;
 	}
 
 	/**
@@ -383,27 +403,36 @@ class Tx_Solr_IndexQueue_Queue {
 			);
 
 			if (!empty($indexingConfiguration)) {
-				$item['indexing_configuration'] = $indexingConfiguration;
+				$indexingConfigurationList = array($indexingConfiguration);
 			} else {
-					// best guess
-				$item['indexing_configuration'] = $this->getIndexingConfigurationByItem(
+				$indexingConfigurationList = $this->getIndexingConfigurationsByItem(
 					$itemType, $itemUid, $rootPageId
 				);
 			}
 
-			// Ensure additionalWhereClause is applied.
-			$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($record['pid']);
-			if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
-				$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields, ' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']);
-				if (empty($record)) {
-					return;
+			// make a backup of the current item
+			$baseItem = $item;
+			foreach ($indexingConfigurationList as $indexingConfigurationCurrent) {
+				$item = $baseItem;
+				$item['indexing_configuration'] = $indexingConfigurationCurrent;
+
+				$writeToIndex = TRUE;
+				// Ensure additionalWhereClause is applied.
+				$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($record['pid']);
+				if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
+					$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields, ' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']);
+					if (empty($record)) {
+						$writeToIndex = FALSE;
+					}
+				}
+
+				if ($writeToIndex) {
+					$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+						'tx_solr_indexqueue_item',
+						$item
+					);
 				}
 			}
-
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-				'tx_solr_indexqueue_item',
-				$item
-			);
 		}
 	}
 
