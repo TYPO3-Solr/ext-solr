@@ -664,6 +664,29 @@ class Tx_Solr_IndexQueue_Queue {
 	}
 
 	/**
+	 * Gets number of Index Queue items for a specific site / indexing configuration
+	 * optional parameter to limit the deleted items by indexing configuration.
+	 *
+	 * @param tx_solr_Site $site The site to search for.
+	 * @param string $indexingConfigurationName name of a specific indexing configuration
+	 * @return mixed Number of items (integer) or FALSE if something went wrong (boolean)
+	 */
+	public function getItemsCountBySite(tx_solr_Site $site, $indexingConfigurationName = '') {
+		$indexingConfigurationConstraint = '';
+		if (!empty($indexingConfigurationName)) {
+			$indexingConfigurationConstraint = ' AND indexing_configuration = \'' . $indexingConfigurationName . '\'';
+		}
+
+		$itemCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+			'uid',
+			'tx_solr_indexqueue_item',
+			'root = ' . $site->getRootPageId() . $indexingConfigurationConstraint
+		);
+
+		return $itemCount;
+	}
+
+	/**
 	 * Gets $limit number of items to index for a particular $site.
 	 *
 	 * @param	Tx_Solr_Site	$site TYPO3 site

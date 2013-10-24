@@ -320,10 +320,19 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			$initializedIndexingConfigurations = $itemIndexQueue->initialize($this->site);
 		}
 
-			// TODO make status dependent on return vale of IQ init
+			// TODO make status dependent on return value of IQ init
+		$messagesForConfigurations = array();
+		foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
+			$itemCount = $itemIndexQueue->getItemsCountBySite($this->site, $indexingConfigurationName);
+			if (!is_int($itemCount)) {
+				$itemCount = 0;
+			}
+			$messagesForConfigurations[] = $indexingConfigurationName . ' (' . $itemCount . ' records)';
+		}
+
 		$flashMessage = t3lib_div::makeInstance(
 			't3lib_FlashMessage',
-			'Initialized indexing configurations: ' . implode(', ', array_keys($initializedIndexingConfigurations)),
+			'Initialized indexing configurations: ' . implode(', ', $messagesForConfigurations),
 			'Index Queue initialized',
 			t3lib_FlashMessage::OK
 		);
