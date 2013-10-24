@@ -603,6 +603,26 @@ class Tx_Solr_Query {
 		$this->addFilter(implode(' OR ', $filters));
 	}
 
+	/**
+	 * Limits the query to a certain page-branch
+	 *
+	 * @param array $pageIds Comma-separated list of page-IDs
+	 */
+	public function setSearchBelowFilter($pageIds) {
+		$pageIds = t3lib_div::trimExplode(',', $pageIds);
+		$filters = array();
+
+		$processor = t3lib_div::makeInstance('tx_solr_fieldprocessor_PageUidToHierarchy');
+		$hierarchies = $processor->process($pageIds);
+
+		foreach($hierarchies as $hierarchy) {
+			$lastLevel = array_pop($hierarchy);
+			$filters[] = 'rootline:"' . $lastLevel . '"';
+		}
+
+		$this->addFilter(implode(' OR ', $filters));
+	}
+
 	// sorting
 
 
