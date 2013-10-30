@@ -76,8 +76,6 @@ class tx_solr_Query {
 	protected $filterFields;
 	protected $sortingFields;
 
-	protected $subQueries = array();
-
 	/**
 	 * Constructor
 	 *
@@ -621,18 +619,6 @@ class tx_solr_Query {
 	 */
 	public function getSortingFields() {
 		return $this->sortingFields;
-	}
-
-
-	// sub queries
-
-
-	public function addSubQuery(tx_solr_Query $query) {
-		$this->subQueries[$query->getId()] = $query;
-	}
-
-	public function removeSubQuery(tx_solr_Query $query) {
-		unset($this->subQueries[$query->getId()]);
 	}
 
 
