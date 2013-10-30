@@ -670,16 +670,6 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * Sets the fields returned in the documents.
-	 *
-	 * @param	array|string	Accepts an array of return field names or a commy separated list of field names
-	 * @deprecated	Use setFieldList() instead
-	 */
-	public function setReturnFields($returnFields) {
-		$this->setFieldList($returnFields);
-	}
-
-	/**
 	 * Gets the query type, Solr's qt parameter.
 	 *
 	 * @return	string	Query type, qt parameter.
