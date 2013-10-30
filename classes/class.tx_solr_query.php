@@ -595,20 +595,20 @@ class tx_solr_Query {
 	/**
 	 * Adds a sort field and the sorting direction for that field
 	 *
-	 * @param	string	the field name to sort by
-	 * @param	string	either tx_solr_Query::SORT_ASC to sort the field ascending or tx_solr_Query::SORT_DESC to sort descending
-	 * @return	void
-	 * @throws	InvalidArgumentException	throws an exception if the parameter given is neither tx_solr_Query::SORT_ASC nor tx_solr_Query::SORT_DESC
+	 * @param string $fieldName The field name to sort by
+	 * @param string $direction Either tx_solr_Query::SORT_ASC to sort the field ascending or tx_solr_Query::SORT_DESC to sort descending
+	 * @return void
+	 * @throws InvalidArgumentException if the $direction parameter given is neither tx_solr_Query::SORT_ASC nor tx_solr_Query::SORT_DESC
 	 */
-	public function addSortField($fieldName, $sort) {
-		switch ($sort) {
+	public function addSortField($fieldName, $direction) {
+		switch ($direction) {
 			case self::SORT_ASC:
 			case self::SORT_DESC:
-				$this->sortingFields[$fieldName] = $sort;
+				$this->sortingFields[$fieldName] = $direction;
 				break;
 			default:
 				throw new InvalidArgumentException(
-					'Invalid sort direction "' . $sort . '"',
+					'Invalid sort direction "' . $direction . '"',
 					1235051723
 				);
 		}
@@ -617,7 +617,7 @@ class tx_solr_Query {
 	/**
 	 * Gets the currently set sorting fields and their sorting directions
 	 *
-	 * @return	array	An associative array with the field names as key and their sorting direction as value
+	 * @return array An associative array with the field names as key and their sorting direction as value
 	 */
 	public function getSortingFields() {
 		return $this->sortingFields;
