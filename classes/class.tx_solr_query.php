@@ -817,15 +817,18 @@ class tx_solr_Query {
 		return $keywords;
 	}
 
+
+	// relevance, matching
+
+
 	/**
-	 * Sets the minimum match mm parameter
+	 * Sets the minimum match (mm) parameter
 	 *
-	 * @param	mixed	Minimum match parameter as string or boolean FALSE to disable / reset the mm parameter
-	 * @see	http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
+	 * @param mixed $minimumMatch Minimum match parameter as string or boolean FALSE to disable / reset the mm parameter
+	 * @see http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
 	 */
 	public function setMinimumMatch($minimumMatch) {
-		if ($minimumMatch !== FALSE) {
-				// hard to validate
+		if (is_string($minimumMatch) && !empty($minimumMatch)) {
 			$this->queryParameters['mm'] = $minimumMatch;
 		} else {
 			unset($this->queryParameters['mm']);
@@ -833,13 +836,13 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * Sets the boost function bf parameter
+	 * Sets the boost function (bf) parameter
 	 *
-	 * @param	mixed	boost function parameter as string or boolean FALSE to disable / reset the bf parameter
-	 * @see	http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
+	 * @param mixed $boostFunction boost function parameter as string or boolean FALSE to disable / reset the bf parameter
+	 * @see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
 	 */
 	public function setBoostFunction($boostFunction) {
-		if ($boostFunction) {
+		if (is_string($boostFunction) && !empty($boostFunction)) {
 			$this->queryParameters['bf'] = $boostFunction;
 		} else {
 			unset($this->queryParameters['bf']);
@@ -847,13 +850,13 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * Sets the boost query bq parameter
+	 * Sets the boost query (bq) parameter
 	 *
-	 * @param	mixed	boost query parameter as string or boolean FALSE to disable / reset the bq parameter
-	 * @see	http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
+	 * @param mixed $boostQuery boost query parameter as string or boolean FALSE to disable / reset the bq parameter
+	 * @see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
 	 */
 	public function setBoostQuery($boostQuery) {
-		if ($boostQuery) {
+		if (is_string($boostQuery) && !empty($boostQuery)) {
 			$this->queryParameters['bq'] = $boostQuery;
 		} else {
 			unset($this->queryParameters['bq']);
