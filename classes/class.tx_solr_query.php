@@ -987,16 +987,19 @@ class tx_solr_Query {
 		return $requestedParameter;
 	}
 
+
+	// misc
+
+
 	/**
 	 * Enables or disables highlighting of search terms in result teasers.
 	 *
-	 * @param	boolean	$highlighting Enables highlighting when set to TRUE, deactivates highlighting when set to FALSE.
-	 * @param	boolean	$fragmentSize Size, in characters, of fragments to consider for highlighting.
-	 * @see	http://wiki.apache.org/solr/HighlightingParameters
-	 * @return	void
+	 * @param boolean $highlighting Enables highlighting when set to TRUE, deactivates highlighting when set to FALSE, defaults to TRUE.
+	 * @param integer $fragmentSize Size, in characters, of fragments to consider for highlighting.
+	 * @see http://wiki.apache.org/solr/HighlightingParameters
+	 * @return void
 	 */
 	public function setHighlighting($highlighting = TRUE, $fragmentSize = 200) {
-
 		if ($highlighting) {
 			$this->queryParameters['hl'] = 'true';
 			$this->queryParameters['hl.fragsize'] = (int) $fragmentSize;
@@ -1021,7 +1024,7 @@ class tx_solr_Query {
 	/**
 	 * Enables or disables spellchecking for the query.
 	 *
-	 * @param	boolean	Enables spellchecking when set to TRUE, deactivates spellchecking when set to FALSE.
+	 * @param boolean $spellchecking Enables spellchecking when set to TRUE, deactivates spellchecking when set to FALSE, defaults to TRUE.
 	 */
 	public function setSpellchecking($spellchecking = TRUE) {
 		if ($spellchecking) {
@@ -1038,15 +1041,15 @@ class tx_solr_Query {
 	/**
 	 * Sets the sort parameter.
 	 *
-	 * A sort ordering must include a field name (or the pseudo-field score),
+	 * $sorting must include a field name (or the pseudo-field score),
 	 * followed by a space,
 	 * followed by a sort direction (asc or desc).
 	 *
-	 * Multiple sort orderings can be separated by a comma,
+	 * Multiple fallback sortings can be separated by comma,
 	 * ie: <field name> <direction>[,<field name> <direction>]...
 	 *
-	 * @param	string|boolean	$sorting Either a comma-separated list of sort fields and directions or FALSE to reset sorting to the default behavior (sort by score / relevance)
-	 * @see	http://wiki.apache.org/solr/CommonQueryParameters#sort
+	 * @param string|boolean $sorting Either a comma-separated list of sort fields and directions or FALSE to reset sorting to the default behavior (sort by score / relevance)
+	 * @see http://wiki.apache.org/solr/CommonQueryParameters#sort
 	 */
 	public function setSorting($sorting) {
 		if ($sorting) {
@@ -1066,7 +1069,7 @@ class tx_solr_Query {
 	/**
 	 * Enables or disables the debug parameter for the query.
 	 *
-	 * @param	boolean	Enables debugging when set to TRUE, deactivates debugging when set to FALSE.
+	 * @param boolean $debugMode Enables debugging when set to TRUE, deactivates debugging when set to FALSE, defaults to TRUE.
 	 */
 	public function setDebugMode($debugMode = TRUE) {
 		if ($debugMode) {
