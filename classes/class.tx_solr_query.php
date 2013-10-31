@@ -756,6 +756,15 @@ class tx_solr_Query {
 		$this->queryParameters[$parameterName] = $parameterValue;
 	}
 
+
+	// keywords
+
+
+	/**
+	 * Get the query keywords, keywords are escaped.
+	 *
+	 * @return string query keywords
+	 */
 	public function getKeywords() {
 		return $this->keywords;
 	}
@@ -769,15 +778,33 @@ class tx_solr_Query {
 		return self::cleanKeywords($this->keywordsRaw);
 	}
 
+	/**
+	 * Gets the raw, unescaped, unencoded keywords.
+	 *
+	 * USE WITH CAUTION!
+	 *
+	 * @return string raw keywords
+	 */
 	public function getKeywordsRaw() {
 		return $this->keywordsRaw;
 	}
 
+	/**
+	 * Sets the query keywords, escapes them as needed for Solr/Lucene.
+	 *
+	 * @param string $keywords user search terms/keywords
+	 */
 	public function setKeywords($keywords) {
 		$this->keywords    = $this->escape($keywords);
 		$this->keywordsRaw = $keywords;
 	}
 
+	/**
+	 * Helper method to escape/encode keywords for use in HTML
+	 *
+	 * @param string $keywords Keywords to prepare for use in HTML
+	 * @return string Encoded keywords
+	 */
 	public static function cleanKeywords($keywords) {
 		$keywords = trim($keywords);
 		$keywords = t3lib_div::removeXSS($keywords);
