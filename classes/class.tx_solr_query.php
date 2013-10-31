@@ -66,13 +66,27 @@ class tx_solr_Query {
 	protected $linkTargetPageId;
 
 	/**
-	 * holds the query fields with their associated boosts. The key represents
-	 * the field name, value represents the field's boost.
+	 * Holds the query fields with their associated boosts. The key represents
+	 * the field name, value represents the field's boost. These are the fields
+	 * that will actually be searched.
+	 *
+	 * Used in Solr's qf parameter
 	 *
 	 * @var array
+	 * @see http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
 	 */
 	protected $queryFields = array();
+
+	/**
+	 * List of fields that will be returned in the result documents.
+	 *
+	 * used in Solr's fl parameter
+	 *
+	 * @var array
+	 * @see http://wiki.apache.org/solr/CommonQueryParameters#fl
+	 */
 	protected $fieldList = array();
+
 	protected $filterFields;
 	protected $sortingFields;
 
@@ -863,14 +877,19 @@ class tx_solr_Query {
 		}
 	}
 
+
+	// query fields
+	// TODO move up to field list methods
+
+
 	/**
-	 * Sets a query field and its boost. If the field doesn't exist yet, it
+	 * Sets a query field and its boost. If the field does not exist yet, it
 	 * gets added. Boost is optional, if left out a default boost of 1.0 is
 	 * applied.
 	 *
-	 * @param	string	The field's name
-	 * @param	float	Optional field boost
-	 * @return	void
+	 * @param string $fieldName The field's name
+	 * @param float $boost Optional field boost, defaults to 1.0
+	 * @return void
 	 */
 	public function setQueryField($fieldName, $boost = 1.0) {
 		$this->queryFields[$fieldName] = (float) $boost;
@@ -886,8 +905,8 @@ class tx_solr_Query {
 	 * a boost of 2.0, content with a default boost of 1.0 and the author field
 	 * with a boost of 0.5
 	 *
-	 * @param	string	A string defining which fields to query and their associated boosts
-	 * @return	void
+	 * @param string $queryFields A string defining which fields to query and their associated boosts
+	 * @return void
 	 */
 	public function setQueryFieldsFromString($queryFields) {
 		$fields = t3lib_div::trimExplode(',', $queryFields, TRUE);
@@ -905,9 +924,9 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * formats the set query fields as string to be used in the qf parameter
+	 * Compiles the query fields into a string to be used in Solr's qf parameter.
 	 *
-	 * @return	string	A string of query fields with their associated boosts
+	 * @return string A string of query fields with their associated boosts
 	 */
 	public function getQueryFieldsAsString() {
 		$queryFieldString = '';
