@@ -55,6 +55,7 @@ class tx_solr_Query {
 	protected $filters = array();
 	protected $sorting;
 
+	// TODO check usage of these two variants, especially the check for $rawQueryString in getQueryString()
 	private   $rawQueryString = FALSE;
 	protected $queryString;
 
