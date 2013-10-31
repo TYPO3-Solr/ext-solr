@@ -628,7 +628,7 @@ class tx_solr_Query {
 	/**
 	 * Gets the list of fields a query will return.
 	 *
-	 * @return	array	Array of fieldnames the query will return
+	 * @return array Array of field names the query will return
 	 */
 	public function getFieldList() {
 		return $this->fieldList;
@@ -637,8 +637,8 @@ class tx_solr_Query {
 	/**
 	 * Sets the fields to return by a query.
 	 *
-	 * @param	array|string	$fieldList an array or comma-separated list of fieldnames
-	 * @throws	UnexpectedValueException on parameters other than comma-separated lists and arrays
+	 * @param array|string $fieldList an array or comma-separated list of field names
+	 * @throws UnexpectedValueException on parameters other than comma-separated lists and arrays
 	 */
 	public function setFieldList($fieldList = array('*', 'score')) {
 		if (is_string($fieldList)) {
@@ -659,7 +659,7 @@ class tx_solr_Query {
 	 * Adds a field to the list of fields to return. Also checks whether * is
 	 * set for the fields, if so it's removed from the field list.
 	 *
-	 * @param	string	the field name
+	 * @param string $fieldName Name of a field to return in the result documents
 	 */
 	public function addReturnField($fieldName) {
 		if (in_array('*', $this->fieldList)) {
@@ -672,7 +672,7 @@ class tx_solr_Query {
 	/**
 	 * Gets the query type, Solr's qt parameter.
 	 *
-	 * @return	string	Query type, qt parameter.
+	 * @return string Query type, qt parameter.
 	 */
 	public function getQueryType() {
 		return $this->queryParameters['qt'];
@@ -681,8 +681,8 @@ class tx_solr_Query {
 	/**
 	 * Sets the query type, Solr's qt parameter.
 	 *
-	 * @param	string|boolean	$queryType String query type or boolean FALSE to disable / reset the qt parameter.
-	 * @see	http://wiki.apache.org/solr/CoreQueryParameters#qt
+	 * @param string|boolean $queryType String query type or boolean FALSE to disable / reset the qt parameter.
+	 * @see http://wiki.apache.org/solr/CoreQueryParameters#qt
 	 */
 	public function setQueryType($queryType) {
 		if ($queryType) {
@@ -693,10 +693,10 @@ class tx_solr_Query {
 	}
 
 	/**
-	 * Sets the query operator to AND or OR. Unsets the query opertor (actually
+	 * Sets the query operator to AND or OR. Unsets the query operator (actually
 	 * sets it back to default) for FALSE.
 	 *
-	 * @param	string|boolean	$operator AND or OR, FALSE to unset
+	 * @param string|boolean	$operator AND or OR, FALSE to unset
 	 */
 	public function setOperator($operator) {
 		if (in_array($operator, array(self::OPERATOR_AND, self::OPERATOR_OR))) {
@@ -711,7 +711,7 @@ class tx_solr_Query {
 	/**
 	 * Gets the alternative query, Solr's q.alt parameter.
 	 *
-	 * @return	string	Alternative query, q.alt parameter.
+	 * @return string Alternative query, q.alt parameter.
 	 */
 	public function getAlternativeQuery() {
 		return $this->queryParameters['q.alt'];
@@ -722,8 +722,8 @@ class tx_solr_Query {
 	 *
 	 * This query supports the complete Lucene Query Language.
 	 *
-	 * @param	mixed	$alternativeQuery String alternative query or boolean FALSE to disable / reset the q.alt parameter.
-	 * @see	http://wiki.apache.org/solr/DisMaxQParserPlugin#q.alt
+	 * @param mixed $alternativeQuery String alternative query or boolean FALSE to disable / reset the q.alt parameter.
+	 * @see http://wiki.apache.org/solr/DisMaxQParserPlugin#q.alt
 	 */
 	public function setAlternativeQuery($alternativeQuery) {
 		if ($alternativeQuery) {
@@ -733,6 +733,11 @@ class tx_solr_Query {
 		}
 	}
 
+	/**
+	 * Set the query to omit the response header
+	 *
+	 * @param bool $omitHeader TRUE (default) to omit response headers, FALSE to re-enable
+	 */
 	public function setOmitHeader($omitHeader = TRUE) {
 		if ($omitHeader) {
 			$this->queryParameters['omitHeader'] = 'true';
@@ -741,6 +746,12 @@ class tx_solr_Query {
 		}
 	}
 
+	/**
+	 * Adds any generic query parameter.
+	 *
+	 * @param string $parameterName Query parameter name
+	 * @param string $parameterValue Parameter value
+	 */
 	public function addQueryParameter($parameterName, $parameterValue) {
 		$this->queryParameters[$parameterName] = $parameterValue;
 	}
