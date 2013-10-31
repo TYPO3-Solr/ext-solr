@@ -944,10 +944,14 @@ class tx_solr_Query {
 		return trim($queryFieldString);
 	}
 
+
+	// general query parameters
+
+
 	/**
 	 * Builds an array of query parameters to use for the search query.
 	 *
-	 * @return	array	an array ready to use with query parameters
+	 * @return array An array ready to use with query parameters
 	 */
 	public function getQueryParameters() {
 		$queryParameters = array_merge(
@@ -969,8 +973,8 @@ class tx_solr_Query {
 	/**
 	 * Gets a specific query parameter by its name.
 	 *
-	 * @param	string	The parameter to return
-	 * @return	string	The parameter's value or NULL if not set
+	 * @param string $parameterName The parameter to return
+	 * @return string The parameter's value or NULL if not set
 	 */
 	public function getQueryParameter($parameterName) {
 		$requestedParameter = NULL;
