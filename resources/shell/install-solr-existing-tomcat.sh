@@ -145,6 +145,17 @@ then
 	PASSALLCHECKS=0
 fi
 
+JAVA_VERSION=$(java -version 2>&1 | grep -Eom1 "[._0-9]{5,}")
+# format java version, e.g.: replace 1.7.0_11 with 1.7
+JAVA_VERSION=${JAVA_VERSION:0:3}
+# check if java version is 1.6 or newer
+CHECK=$(echo "$JAVA_VERSION >= 1.6" | bc)
+if [ $CHECK -ne "1" ]
+then
+  cecho "You have installed Java version $JAVA_VERSION. Please install Java 1.6 or newer." $red
+  PASSALLCHECKS=0
+fi
+
 wget --version > /dev/null 2>&1
 CHECK=$?
 if [ $CHECK -ne "0" ]
