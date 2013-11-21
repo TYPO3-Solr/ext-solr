@@ -34,6 +34,37 @@
 class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponseProcessor {
 
 	/**
+	 * Internal function to mask portions of the visitor IP address
+	 *
+	 * @param string $ip IP address in network address format
+	 * @param integer $maskLength Number of octets to reset
+	 * @return string
+	 */
+	protected function applyIpMask($ip, $maskLength) {
+		// IPv4 or mapped IPv4 in IPv6
+		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+			$i = strlen($ip);
+			if ($maskLength > $i) {
+				$maskLength = $i;
+			}
+
+			while ($maskLength-- > 0) {
+				$ip[--$i] = chr(0);
+			}
+		} else {
+			$masks = array(
+				'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff',
+				'ffff:ffff:ffff:ffff::',
+				'ffff:ffff:ffff:0000::',
+				'ffff:ff00:0000:0000::'
+			);
+			return $ip & pack('a16', inet_pton($masks[$maskLength]));
+		}
+
+		return $ip;
+	}
+
+	/**
 	 * Processes a query and its response after searching for that query.
 	 *
 	 * @param	Tx_Solr_Query	The query that has been searched for.
@@ -57,6 +88,8 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 			$keywords = strtolower($keywords);
 		}
 
+		$ipMaskLength = (int) $configuration['statistics.']['anonymizeIP'];
+
 		$insertFields = array(
 			'pid'               => $GLOBALS['TSFE']->id,
 			'root_pid'          => $GLOBALS['TSFE']->tmpl->rootLine[0]['uid'],
@@ -71,7 +104,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 
 			'feuser_id'         => (int) $GLOBALS['TSFE']->fe_user->user['uid'],
 			'cookie'            => $GLOBALS['TSFE']->fe_user->id,
-			'ip'                => t3lib_div::getIndpEnv('REMOTE_ADDR'),
+			'ip'                => $this->applyIpMask(t3lib_div::getIndpEnv('REMOTE_ADDR'),$ipMaskLength),
 
 			'page'              => (int) $urlParameters['page'],
 			'keywords'          => $keywords,
