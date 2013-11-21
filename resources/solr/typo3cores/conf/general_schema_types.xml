@@ -194,31 +194,23 @@
 	-->
 	<fieldType name="random" class="solr.RandomSortField" indexed="true" />
 
-	<!--
+  <!--
 		This point type indexes the coordinates as separate fields (subFields)
-		If subFieldType is defined, it references a type, and a dynamic field
-		definition is created matching *___<typename>.  Alternately, if
-		subFieldSuffix is defined, that is used to create the subFields.
-		Example: if subFieldType="double", then the coordinates would be
-		  indexed in fields myloc_0___double,myloc_1___double.
-		Example: if subFieldSuffix="_d" then the coordinates would be indexed
-		  in fields myloc_0_d,myloc_1_d
-		The subFields are an implementation detail of the fieldType, and end
-		users normally should not need to know about them.
+
+		Example: with subFieldSuffix="_doubleS" the coordinates will be indexed
+			in fields myLocation_0_doubleS,myLocation_1_doubleS
 	 -->
 	<fieldType name="point" class="solr.PointType" dimension="2" subFieldSuffix="_doubleS" />
 
-	<!--
-		A specialized field for geospatial search. If indexed, this fieldType must not be multivalued.
-	-->
+	<!-- A specialized field for geospatial search. If indexed, this fieldType must not be multivalued. -->
 	<fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate" />
 
 	<!--
-		A Geohash is a compact representation of a latitude longitude pair in a single field.
-		See http://wiki.apache.org/solr/SpatialSearch
+		An alternative geospatial field type. It supports multiValued and polygon shapes.
+		For more information about this see http://wiki.apache.org/solr/SolrAdaptersForLuceneSpatial4
 	-->
-	<fieldtype name="geohash" class="solr.GeoHashField"/>
-
+	<fieldType name="locationRpt" class="solr.SpatialRecursivePrefixTreeFieldType"
+	           geo="true" distErrPct="0.025" maxDistErr="0.000009" units="degrees" />
 
 	<fieldType name="currency" class="solr.CurrencyField" precisionStep="8" defaultCurrency="USD" currencyConfig="currency.xml" />
 

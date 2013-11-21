@@ -194,14 +194,11 @@
 
 	<dynamicField name="*_random"    type="random"    indexed="true" stored="true" multiValued="false" />
 
-	<dynamicField name="*_point"     type="point"     indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_location"  type="location"  indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_geohash"   type="geohash"   indexed="true" stored="true" multiValued="false" />
+  <dynamicField name="*_point"       type="point"       indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_location"    type="location"    indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_locationRpt" type="locationRpt" indexed="true" stored="true" multiValued="false" />
 
 	<dynamicField name="*_currency"  type="currency"  indexed="true" stored="true" multiValued="false" />
-
-	<!-- Type used to index the latitude and longitude components for the "location" field type -->
-	<dynamicField name="*_coordinate" type="tdouble"  indexed="true" stored="false" multiValued="false" />
 
 	<!--
 		The following causes solr to ignore any fields that don't already
