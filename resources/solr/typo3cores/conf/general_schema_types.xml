@@ -59,18 +59,6 @@
 	<fieldType name="tdouble4" class="solr.TrieDoubleField" precisionStep="4" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" />
 
 	<!--
-		Numeric field types that manipulate the value into
-		a string value that isn't human-readable in its internal form,
-		but with a lexicographic ordering the same as the numeric ordering,
-		so that range queries work correctly.
-	-->
-	<fieldType name="sint"    class="solr.SortableIntField"    sortMissingLast="true" omitNorms="true" />
-	<fieldType name="sfloat"  class="solr.SortableFloatField"  sortMissingLast="true" omitNorms="true" />
-	<fieldType name="slong"   class="solr.SortableLongField"   sortMissingLast="true" omitNorms="true" />
-	<fieldType name="sdouble" class="solr.SortableDoubleField" sortMissingLast="true" omitNorms="true" />
-
-
-	<!--
 		The format for this date field is of the form 1995-12-31T23:59:59Z, and
 		is a more restricted form of the canonical representation of dateTime
 		http://www.w3.org/TR/xmlschema-2/#dateTime

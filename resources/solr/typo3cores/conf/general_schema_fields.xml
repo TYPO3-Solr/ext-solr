@@ -142,29 +142,21 @@
 
 	<dynamicField name="*_intS"      type="integer"   indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_intM"      type="integer"   indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_sIntS"     type="sint"      indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_sIntM"     type="sint"      indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_tIntS"     type="tint"      indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_tIntM"     type="tint"      indexed="true" stored="true" multiValued="true" />
 
 	<dynamicField name="*_floatS"    type="float"     indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_floatM"    type="float"     indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_sFloatS"   type="sfloat"    indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_sFloatM"   type="sfloat"    indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_tFloatS"   type="tfloat"    indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_tFloatM"   type="tfloat"    indexed="true" stored="true" multiValued="true" />
 
 	<dynamicField name="*_longS"     type="long"      indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_longM"     type="long"      indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_sLongS"    type="slong"     indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_sLongM"    type="slong"     indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_tLongS"    type="tlong"     indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_tLongM"    type="tlong"     indexed="true" stored="true" multiValued="true" />
 
 	<dynamicField name="*_doubleS"   type="double"    indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_doubleM"   type="double"    indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_sDoubleS"  type="sdouble"   indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_sDoubleM"  type="sdouble"   indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_tDoubleS"  type="tdouble"   indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_tDoubleM"  type="tdouble"   indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_tDouble4S" type="tdouble4"  indexed="true" stored="true" multiValued="false" />
