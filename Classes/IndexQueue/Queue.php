@@ -822,17 +822,18 @@ class Tx_Solr_IndexQueue_Queue {
 		);
 	}
 
-	// temporary
+	/**
+	 * Check if the current page type (doktype) is valid.
+	 *
+	 * The valid page types are configured in plugin.tx_solr.index.allowedPageTypes as a comma separated list
+	 *
+	 * @param array $pageRecord The pages database row
+	 * @return boolean
+	 */
+	public function isAllowedPageType(array $pageRecord) {
+		$isAllowedPageType = tx_solr_Util::isAllowedPageType($pageRecord);
 
-	private function isAllowedPageType(array $pageRecord) {
-		$isAllowedPageType = FALSE;
-		$allowedPageTypes  = array(1, 7);
-
-		if (in_array($pageRecord['doktype'], $allowedPageTypes)) {
-			$isAllowedPageType = TRUE;
-		}
-
-		return $isAllowedPageType;
+		return (boolean) $isAllowedPageType;
 	}
 }
 

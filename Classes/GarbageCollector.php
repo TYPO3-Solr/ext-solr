@@ -312,12 +312,7 @@ class Tx_Solr_GarbageCollector {
 	 * @return boolean TRUE if the page can be indexed according to its page type, FALSE otherwise
 	 */
 	protected function isIndexablePageType(array $record) {
-		$allowedPageType = array(
-			1, // standard page
-			7  // mount page
-		);
-
-		return in_array($record['doktype'], $allowedPageType);
+		return tx_solr_Util::isAllowedPageType($record);
 	}
 
 	/**

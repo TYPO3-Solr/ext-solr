@@ -529,6 +529,37 @@ class Tx_Solr_Util {
 		return $isWorkspaceRecord;
 	}
 
+	/**
+	 * Get allowed page types
+	 *
+	 * @param integer $pageId Page ID
+	 *
+	 * @return array Allowed page types to compare to a doktype of a page record
+	 */
+	public static function getAllowedPageTypes($pageId) {
+		$configuration = self::getConfigurationFromPageId($pageId, 'plugin.tx_solr');
+		$allowedPageTypes = t3lib_div::trimExplode(',', $configuration['index.']['allowedPageTypes']);
+
+		return $allowedPageTypes;
+	}
+
+	/**
+	 * Check if the page type of a page record is allowed
+	 *
+	 * @param array $pageRecord The pages database row
+	 *
+	 * @return boolean TRUE if the page type is allowed, otherwise FALSE
+	 */
+	public static function isAllowedPageType(array $pageRecord) {
+		$allowedPageTypes = self::getAllowedPageTypes($pageRecord['uid']);
+		$isAllowedPageType = FALSE;
+
+		if (in_array($pageRecord['doktype'], $allowedPageTypes)) {
+			$isAllowedPageType = TRUE;
+		}
+
+		return $isAllowedPageType;
+	}
 }
 
 

@@ -53,6 +53,9 @@ plugin.tx_solr {
 	}
 
 	index {
+			// allowed page types (doktype) when indexing records from table "pages"
+		allowedPageTypes = 1,7
+
 
 		additionalFields {
 
