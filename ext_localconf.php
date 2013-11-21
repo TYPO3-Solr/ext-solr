@@ -10,7 +10,7 @@ $GLOBALS['PATH_solr'] = t3lib_extMgm::extPath('solr');
 $compatMode = FALSE;
 if (!t3lib_div::compat_version('6.0')) {
 	$compatMode = TRUE;
-	require_once($GLOBALS['PATH_solr'] . 'compat/interface.tx_scheduler_progressprovider.php');
+	require_once($GLOBALS['PATH_solr'] . 'Compat/interface.tx_scheduler_progressprovider.php');
 }
 
 define('SOLR_COMPAT', $compatMode);
@@ -20,7 +20,7 @@ define('SOLR_COMPAT', $compatMode);
 	// Windows compatibility
 
 if(!function_exists('strptime')) {
-	require_once($GLOBALS['PATH_solr'] . 'lib/strptime/strptime.php');
+	require_once($GLOBALS['PATH_solr'] . 'Lib/strptime/strptime.php');
 }
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -28,7 +28,7 @@ if(!function_exists('strptime')) {
 	// adding the Search plugin
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
-	'pi_results/class.tx_solr_pi_results.php',
+	'PiResults/Results.php',
 	'_pi_results',
 	'list_type',
 	FALSE
@@ -37,7 +37,7 @@ t3lib_extMgm::addPItoST43(
 	// adding the Search Form plugin
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
-	'pi_search/class.tx_solr_pi_search.php',
+	'PiSearch/Search.php',
 	'_pi_search',
 	'list_type',
 	TRUE
@@ -46,7 +46,7 @@ t3lib_extMgm::addPItoST43(
 	// adding the Frequent Searches plugin
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
-	'pi_frequentsearches/class.tx_solr_pi_frequentsearches.php',
+	'PiFrequentSearches/FrequentSearches.php',
 	'_pi_frequentsearches',
 	'list_type',
 	TRUE
@@ -57,17 +57,17 @@ t3lib_extMgm::addPItoST43(
 	// registering Index Queue page indexer helpers
 
 if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['tx_solr_indexqueue_PageIndexerRequestHandler'] = '&tx_solr_indexqueue_PageIndexerRequestHandler->run';
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['tx_solr_AdditionalFieldsIndexer'] = 'tx_solr_AdditionalFieldsIndexer';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['Tx_Solr_IndexQueue_PageIndexerRequestHandler'] = '&Tx_Solr_IndexQueue_PageIndexerRequestHandler->run';
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['Tx_Solr_AdditionalFieldsIndexer'] = 'Tx_Solr_AdditionalFieldsIndexer';
 
-	tx_solr_indexqueue_frontendhelper_Manager::registerFrontendHelper(
+	Tx_Solr_IndexQueue_FrontendHelper_Manager::registerFrontendHelper(
 		'findUserGroups',
-		'tx_solr_indexqueue_frontendhelper_UserGroupDetector'
+		'Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector'
 	);
 
-	tx_solr_indexqueue_frontendhelper_Manager::registerFrontendHelper(
+	Tx_Solr_IndexQueue_FrontendHelper_Manager::registerFrontendHelper(
 		'indexPage',
-		'tx_solr_indexqueue_frontendhelper_PageIndexer'
+		'Tx_Solr_IndexQueue_FrontendHelper_PageIndexer'
 	);
 }
 
@@ -75,7 +75,7 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
 t3lib_extMgm::registerExtDirectComponent(
 	'TYPO3.tx_solr.IndexInspector.Remote',
-	$GLOBALS['PATH_solr'] . 'mod_index/class.tx_solr_mod_index_indexinspectorremotecontroller.php:tx_solr_mod_index_IndexInspectorRemoteController',
+	$GLOBALS['PATH_solr'] . 'ModIndex/IndexInspectorRemoteController.php:Tx_Solr_ModIndex_IndexInspectorRemoteController',
 	'web_info',
 	'user,group'
 );
@@ -84,218 +84,218 @@ t3lib_extMgm::registerExtDirectComponent(
 
 	// page module plugin settings summary
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] = 'tx_solr_pluginbase_BackendSummary->getSummary';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] = 'Tx_Solr_PluginBase_BackendSummary->getSummary';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// register search components
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'access',
-	'tx_solr_search_AccessComponent'
+	'Tx_Solr_Search_AccessComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'relevance',
-	'tx_solr_search_RelevanceComponent'
+	'Tx_Solr_Search_RelevanceComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'sorting',
-	'tx_solr_search_SortingComponent'
+	'Tx_Solr_Search_SortingComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'debug',
-	'tx_solr_search_DebugComponent'
+	'Tx_Solr_Search_DebugComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'analysis',
-	'tx_solr_search_AnalysisComponent'
+	'Tx_Solr_Search_AnalysisComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'highlighting',
-	'tx_solr_search_HighlightingComponent'
+	'Tx_Solr_Search_HighlightingComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'spellchecking',
-	'tx_solr_search_SpellcheckingComponent'
+	'Tx_Solr_Search_SpellcheckingComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'faceting',
-	'tx_solr_search_FacetingComponent'
+	'Tx_Solr_Search_FacetingComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'statistics',
-	'tx_solr_search_StatisticsComponent'
+	'Tx_Solr_Search_StatisticsComponent'
 );
 
-tx_solr_search_SearchComponentManager::registerSearchComponent(
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'lastSearches',
-	'tx_solr_search_LastSearchesComponent'
+	'Tx_Solr_Search_LastSearchesComponent'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// register plugin commands
 
-#tx_solr_CommandResolver::registerPluginCommand(
+#Tx_Solr_CommandResolver::registerPluginCommand(
 #	'results',
 #	'advanced_form',
-#	'tx_solr_pi_results_AdvancedFormCommand',
-#	tx_solr_PluginCommand::REQUIREMENT_NONE
+#	'Tx_Solr_PiResults_AdvancedFormCommand',
+#	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 #);
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'results, frequentsearches',
 	'frequentSearches',
-	'tx_solr_pi_results_FrequentSearchesCommand',
-	tx_solr_PluginCommand::REQUIREMENT_NONE
+	'Tx_Solr_PiResults_FrequentSearchesCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'search, results',
 	'form',
-	'tx_solr_pi_results_FormCommand',
-	tx_solr_PluginCommand::REQUIREMENT_NONE
+	'Tx_Solr_PiResults_FormCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'results',
 	'resultsPerPageSwitch',
-	'tx_solr_pi_results_ResultsPerPageSwitchCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	'Tx_Solr_PiResults_ResultsPerPageSwitchCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'search, results',
 	'errors',
-	'tx_solr_pi_results_ErrorsCommand',
-	tx_solr_PluginCommand::REQUIREMENT_NONE
+	'Tx_Solr_PiResults_ErrorsCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'results',
 	'lastSearches',
-	'tx_solr_pi_results_LastSearchesCommand',
-	tx_solr_PluginCommand::REQUIREMENT_NONE
+	'Tx_Solr_PiResults_LastSearchesCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'results',
 	'no_results',
-	'tx_solr_pi_results_NoResultsCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
+	'Tx_Solr_PiResults_NoResultsCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'results',
 	'faceting',
-	'tx_solr_pi_results_FacetingCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
-	+ tx_solr_PluginCommand::REQUIREMENT_NO_RESULTS
+	'Tx_Solr_PiResults_FacetingCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	+ Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'results',
 	'results',
-	'tx_solr_pi_results_ResultsCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	'Tx_Solr_PiResults_ResultsCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
-tx_solr_CommandResolver::registerPluginCommand(
+Tx_Solr_CommandResolver::registerPluginCommand(
 	'results',
 	'sorting',
-	'tx_solr_pi_results_SortingCommand',
-	tx_solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ tx_solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	'Tx_Solr_PiResults_SortingCommand',
+	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// registering facet types
 
-tx_solr_facet_FacetRendererFactory::registerFacetType(
+Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'numericRange',
-	'tx_solr_facet_NumericRangeFacetRenderer',
-	'tx_solr_query_filterencoder_Range',
-	'tx_solr_query_filterencoder_Range'
+	'Tx_Solr_Facet_NumericRangeFacetRenderer',
+	'Tx_Solr_Query_FilterEncoder_Range',
+	'Tx_Solr_Query_FilterEncoder_Range'
 );
 
-tx_solr_facet_FacetRendererFactory::registerFacetType(
+Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'dateRange',
-	'tx_solr_facet_DateRangeFacetRenderer',
-	'tx_solr_query_filterencoder_DateRange',
-	'tx_solr_query_filterencoder_DateRange'
+	'Tx_Solr_Facet_DateRangeFacetRenderer',
+	'Tx_Solr_Query_FilterEncoder_DateRange',
+	'Tx_Solr_Query_FilterEncoder_DateRange'
 );
 
-tx_solr_facet_FacetRendererFactory::registerFacetType(
+Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'hierarchy',
-	'tx_solr_facet_HierarchicalFacetRenderer',
-	'tx_solr_query_filterencoder_Hierarchy'
+	'Tx_Solr_Facet_HierarchicalFacetRenderer',
+	'Tx_Solr_Query_FilterEncoder_Hierarchy'
 );
 
-tx_solr_facet_FacetRendererFactory::registerFacetType(
+Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'queryGroup',
-	'tx_solr_facet_QueryGroupFacetRenderer',
-	'tx_solr_query_filterencoder_QueryGroup',
-	'tx_solr_query_filterencoder_QueryGroup'
+	'Tx_Solr_Facet_QueryGroupFacetRenderer',
+	'Tx_Solr_Query_FilterEncoder_QueryGroup',
+	'Tx_Solr_Query_FilterEncoder_QueryGroup'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding scheduler tasks
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_OptimizeTask'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_OptimizeTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_optimizer_title',
 	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_optimizer_description',
-	'additionalFields' => 'tx_solr_scheduler_OptimizeTaskSolrServerField'
+	'additionalFields' => 'Tx_Solr_Scheduler_OptimizeTaskSolrServerField'
 );
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_CommitTask'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_CommitTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_commit_title',
 	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_commit_description',
-	'additionalFields' => 'tx_solr_scheduler_CommitTaskSolrServerField'
+	'additionalFields' => 'Tx_Solr_Scheduler_CommitTaskSolrServerField'
 );
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_ReIndexTask'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_ReIndexTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_reindex_title',
 	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_reindex_description',
-	'additionalFields' => 'tx_solr_scheduler_ReIndexTaskAdditionalFieldProvider'
+	'additionalFields' => 'Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider'
 );
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_solr_scheduler_IndexQueueWorkerTask'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_IndexQueueWorkerTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_title',
 	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_description',
-	'additionalFields' => 'tx_solr_scheduler_IndexQueueWorkerTaskAdditionalFieldProvider'
+	'additionalFields' => 'Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// TODO move into pi_results, initializeSearch, add only when features are activated
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['keepParameters'] = 'tx_solr_pi_results_ParameterKeepingFormModifier';
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck']     = 'tx_solr_pi_results_SpellcheckFormModifier';
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest']        = 'tx_solr_pi_results_SuggestFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['keepParameters'] = 'Tx_Solr_PiResults_ParameterKeepingFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck']     = 'Tx_Solr_PiResults_SpellCheckFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest']        = 'Tx_Solr_PiResults_SuggestFormModifier';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// registering the eID scripts
 	// TODO move to suggest form modifier
-$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/eid_suggest/suggest.php';
-$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api']     = 'EXT:solr/eid_api/dispatch.php';
+$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/EidSuggest/Suggest.php';
+$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api']     = 'EXT:solr/EidApi/Dispatch.php';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -322,19 +322,19 @@ t3lib_extMgm::addTypoScript(
 
 	// add custom Solr content objects
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME] = array(
-	tx_solr_contentobject_Multivalue::CONTENT_OBJECT_NAME,
-	'tx_solr_contentobject_Multivalue'
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Tx_Solr_ContentObject_Multivalue::CONTENT_OBJECT_NAME] = array(
+	Tx_Solr_ContentObject_Multivalue::CONTENT_OBJECT_NAME,
+	'Tx_Solr_contentobject_Multivalue'
 );
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Content::CONTENT_OBJECT_NAME] = array(
-	tx_solr_contentobject_Content::CONTENT_OBJECT_NAME,
-	'tx_solr_contentobject_Content'
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Tx_Solr_ContentObject_Content::CONTENT_OBJECT_NAME] = array(
+	Tx_Solr_ContentObject_Content::CONTENT_OBJECT_NAME,
+	'Tx_Solr_contentobject_Content'
 );
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME] = array(
-	tx_solr_contentobject_Relation::CONTENT_OBJECT_NAME,
-	'tx_solr_contentobject_Relation'
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Tx_Solr_ContentObject_Relation::CONTENT_OBJECT_NAME] = array(
+	Tx_Solr_ContentObject_Relation::CONTENT_OBJECT_NAME,
+	'Tx_Solr_contentobject_Relation'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -345,7 +345,7 @@ if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations
 	$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr'] = array();
 }
 
-if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 4006000) {
+if (version_compare(TYPO3_version, '4.6', '<')) {
 
 		// use variable frontend as caching frontend
 	if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['frontend'])) {
@@ -362,18 +362,18 @@ if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options'] = array();
 	}
 	if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['cacheTable'])) {
-		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['cacheTable'] = 'tx_solr_cache';
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['cacheTable'] = 'Tx_Solr_cache';
 	}
 	if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['tagsTable'])) {
-		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['tagsTable'] = 'tx_solr_cache_tags';
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['tagsTable'] = 'Tx_Solr_cache_tags';
 	}
 }
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 if (TYPO3_MODE == 'BE') {
-	$TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array(
-		'EXT:' . $_EXTKEY . '/cli_api/dispatch.php',
+	$TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['^cliKeys'][$_EXTKEY] = array(
+		'EXT:' . $_EXTKEY . '/CliApi/Dispatch.php',
 		'_CLI_solr'
 	);
 }
