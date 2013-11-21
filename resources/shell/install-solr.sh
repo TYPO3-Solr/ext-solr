@@ -237,7 +237,6 @@ done
 # download general configuration in /opt/solr-tomcat/solr/typo3cores/conf/
 cecho "Downloading general configruation" $green
 cd ..
-wgetresource solr/typo3cores/conf/admin-extra.html
 wgetresource solr/typo3cores/conf/currency.xml
 wgetresource solr/typo3cores/conf/elevate.xml
 wgetresource solr/typo3cores/conf/general_schema_fields.xml
