@@ -70,8 +70,7 @@
                maxHttpHeaderSize="65536" 
                connectionTimeout="20000" 
                redirectPort="8443"
-               address="127.0.0.1"
-               URIEncoding="UTF-8" />
+               address="127.0.0.1" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
