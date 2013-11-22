@@ -35,7 +35,7 @@ class Tx_Solr_FieldProcessor_PathToHierarchyTestCase extends tx_phpunit_testcase
 	private $processor;
 
 	public function setUp() {
-		$this->processor = new Tx_Solr_fieldprocessor_PathToHierarchy();
+		$this->processor = new Tx_Solr_FieldProcessor_PathToHierarchy();
 	}
 
 	/**

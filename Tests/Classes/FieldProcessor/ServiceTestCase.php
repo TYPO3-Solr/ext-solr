@@ -40,13 +40,13 @@ class Tx_Solr_FieldProcessor_ServiceTestCase extends tx_phpunit_testcase {
 	/**
 	 * the service
 	 *
-	 * @var	Tx_Solr_fieldprocessor_Service
+	 * @var	Tx_Solr_FieldProcessor_Service
 	 */
 	private $service;
 
 	public function setUp() {
 		$this->documentMock = new Apache_Solr_Document();
-		$this->service = new Tx_Solr_fieldprocessor_Service();
+		$this->service = new Tx_Solr_FieldProcessor_Service();
 	}
 
 	/**

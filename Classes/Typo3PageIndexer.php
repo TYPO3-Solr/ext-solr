@@ -379,7 +379,7 @@ class Tx_Solr_Typo3PageIndexer {
 	 */
 	protected function processDocuments(array $documents) {
 		if (is_array($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.'])) {
-			$service = t3lib_div::makeInstance('Tx_Solr_fieldprocessor_Service');
+			$service = t3lib_div::makeInstance('Tx_Solr_FieldProcessor_Service');
 			$service->processDocuments(
 				$documents,
 				$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.']
