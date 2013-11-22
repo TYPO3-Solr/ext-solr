@@ -121,7 +121,7 @@ class IndexFieldsModuleController extends AbstractModule {
 	/**
 	 * Finds the Solr connection to use for the currently selected core.
 	 *
-	 * @return \tx_solr_SolrService Solr connection
+	 * @return \Tx_Solr_SolrService Solr connection
 	 */
 	protected function getSelectedCoreSolrConnection() {
 		$currentCoreConnection = NULL;

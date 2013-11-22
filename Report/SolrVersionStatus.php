@@ -35,7 +35,7 @@ class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
 
 	/**
 	 * Required Solr version. The version that gets installed when using the
-	 * provided install script EXT:solr/resources/shell/install-solr.sh
+	 * provided install script EXT:solr/Resources/Shell/install-solr.sh
 	 *
 	 * @var	string
 	 */

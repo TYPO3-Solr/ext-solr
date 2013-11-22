@@ -79,7 +79,7 @@ class Tx_Solr_Report_SchemaStatus implements tx_reports_StatusProvider {
 					recommended schema is called <strong>'
 					. self::RECOMMENDED_SCHEMA_VERSION . '</strong>. You can
 					find the recommended schema.xml file in the extension\'s
-					resources folder: EXT:solr/resources/solr/schema.xml. While
+					resources folder: EXT:solr/Resources/Solr/. While
 					you\'re at it, please check whether you\'re using the
 					current solrconfig.xml file, too.</p>';
 

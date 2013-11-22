@@ -31,7 +31,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Model;
 class ModuleData {
 
 	/**
-	 * @var \tx_solr_Site
+	 * @var \Tx_Solr_Site
 	 */
 	protected $site = NULL;
 
@@ -44,17 +44,17 @@ class ModuleData {
 	/**
 	 * Sets the site to work with.
 	 *
-	 * @param \tx_solr_Site $site
+	 * @param \Tx_Solr_Site $site
 	 * @return void
 	 */
-	public function setSite(\tx_solr_Site $site) {
+	public function setSite(\Tx_Solr_Site $site) {
 		$this->site = $site;
 	}
 
 	/**
 	 * Gets the site to work with.
 	 *
-	 * @return \tx_solr_Site
+	 * @return \Tx_Solr_Site
 	 */
 	public function getSite() {
 		return $this->site;

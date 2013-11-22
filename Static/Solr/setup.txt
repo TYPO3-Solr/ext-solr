@@ -17,39 +17,39 @@ plugin.tx_solr {
 	}
 
 	templateFiles {
-		frequentSearches = EXT:solr/resources/templates/pi_frequentsearches/frequentsearches.htm
-		pagebrowser      = EXT:solr/resources/templates/pi_results/pagebrowser.htm
-		results          = EXT:solr/resources/templates/pi_results/results.htm
-		search           = EXT:solr/resources/templates/pi_search/search.htm
+		frequentSearches = EXT:solr/Resources/Templates/PiFrequentSearches/frequentsearches.htm
+		pagebrowser      = EXT:solr/Resources/Templates/PiResults/pagebrowser.htm
+		results          = EXT:solr/Resources/Templates/PiResults/results.htm
+		search           = EXT:solr/Resources/Templates/PiSearch/search.htm
 	}
 
 	cssFiles {
-		results     = EXT:solr/resources/css/pi_results/results.css
+		results     = EXT:solr/Resources/Css/PiResults/results.css
 		pagebrowser = EXT:pagebrowse/res/styles_min.css
-		ui          = EXT:solr/resources/css/jquery-ui/jquery-ui.custom.css
+		ui          = EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css
 	}
 
 	javascriptFiles {
 		loadIn = footer
 
-		library = EXT:solr/resources/javascript/jquery/jquery.min.js
+		library = EXT:solr/Resources/JavaScript/JQuery/jquery.min.js
 
-		ui = EXT:solr/resources/javascript/jquery/jquery-ui.core.min.js
+		ui = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.core.min.js
 
-		ui.autocomplete = EXT:solr/resources/javascript/jquery/jquery-ui.autocomplete.min.js
+		ui.autocomplete = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.autocomplete.min.js
 
-		ui.datepicker    = EXT:solr/resources/javascript/jquery/jquery-ui.datepicker.min.js
-		ui.datepicker.de = EXT:solr/resources/javascript/jquery/ui-i18n/jquery.ui.datepicker-de.js
-		ui.datepicker.fr = EXT:solr/resources/javascript/jquery/ui-i18n/jquery.ui.datepicker-fr.js
-		ui.datepicker.nl = EXT:solr/resources/javascript/jquery/ui-i18n/jquery.ui.datepicker-nl.js
+		ui.datepicker    = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.datepicker.min.js
+		ui.datepicker.de = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-de.js
+		ui.datepicker.fr = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-fr.js
+		ui.datepicker.nl = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-nl.js
 
-		ui.slider = EXT:solr/resources/javascript/jquery/jquery-ui.slider.min.js
+		ui.slider = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.slider.min.js
 
-		suggest = EXT:solr/resources/javascript/eid_suggest/suggest.js
+		suggest = EXT:solr/Resources/JavaScript/EidSuggest/suggest.js
 
-		faceting.limitExpansion     = EXT:solr/resources/javascript/pi_results/results.js
-		faceting.dateRangeHelper    = EXT:solr/resources/javascript/pi_results/date_range_facet.js
-		faceting.numericRangeHelper = EXT:solr/resources/javascript/pi_results/numeric_range_facet.js
+		faceting.limitExpansion     = EXT:solr/Resources/JavaScript/PiResults/results.js
+		faceting.dateRangeHelper    = EXT:solr/Resources/JavaScript/PiResults/date_range_facet.js
+		faceting.numericRangeHelper = EXT:solr/Resources/JavaScript/PiResults/numeric_range_facet.js
 	}
 
 	index {

@@ -52,7 +52,7 @@ class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 
 		$contentObject = t3lib_div::makeInstance('tslib_cObj');
 		$imageConfiguration = array(
-			'file' => 'EXT:solr/resources/images/indicator-'
+			'file' => 'EXT:solr/Resources/Images/indicator-'
 		);
 
 		switch ($sortDirection) {

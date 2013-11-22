@@ -91,7 +91,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 
 		$additionalFields['site'] = array(
 			'code'     => Tx_Solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $this->site),
-			'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_field_site',
+			'label'    => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_field_site',
 			'cshKey'   => '',
 			'cshLabel' => ''
 		);
@@ -109,7 +109,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 	protected function getIndexingConfigurationSelector() {
 		$selectorMarkup = 'Please select a site first.';
 
-		$this->schedulerModule->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/resources/css/backend/indexingconfigurationselectorfield.css');
+		$this->schedulerModule->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/Backend/indexingconfigurationselectorfield.css');
 
 		if (!is_null($this->site)) {
 			$selectorField = t3lib_div::makeInstance(

@@ -94,7 +94,7 @@ class IndexMaintenanceModuleController extends AbstractModule {
 	 * @return void
 	 */
 	public function cleanUpIndexAction() {
-		$garbageCollector = GeneralUtility::makeInstance('tx_solr_garbageCollector');
+		$garbageCollector = GeneralUtility::makeInstance('Tx_Solr_GarbageCollector');
 		$garbageCollector->cleanIndex($this->site);
 
 		$this->flashMessageContainer->add(
@@ -119,7 +119,7 @@ class IndexMaintenanceModuleController extends AbstractModule {
 		try {
 			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 			foreach($solrServers as $solrServer) {
-				/* @var $solrServer \tx_solr_SolrService */
+				/* @var $solrServer \Tx_Solr_SolrService */
 				// make sure maybe not-yet committed documents are committed
 				$solrServer->commit();
 				$solrServer->deleteByQuery('siteHash:' . $siteHash);
@@ -150,7 +150,7 @@ class IndexMaintenanceModuleController extends AbstractModule {
 		$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 
 		foreach($solrServers as $solrServer) {
-			/* @var $solrServer \tx_solr_SolrService */
+			/* @var $solrServer \Tx_Solr_SolrService */
 
 			$coreName = array_pop(explode('/', trim($solrServer->getPath(), '/')));
 			$coreReloaded = $this->reloadCore($solrServer, $coreName);
@@ -181,11 +181,11 @@ class IndexMaintenanceModuleController extends AbstractModule {
 	/**
 	 * Reloads a single Solr core.
 	 *
-	 * @param \tx_solr_SolrService $solrServer A Solr server connection
+	 * @param \Tx_Solr_SolrService $solrServer A Solr server connection
 	 * @param string $coreName Name of the core to reload
 	 * @return bool TRUE if reloading the core was successful, FALSE otherwise
 	 */
-	protected function reloadCore(\tx_solr_SolrService $solrServer, $coreName) {
+	protected function reloadCore(\Tx_Solr_SolrService $solrServer, $coreName) {
 		$coreReloaded = FALSE;
 
 		$path = $solrServer->getPath();

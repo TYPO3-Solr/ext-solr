@@ -69,9 +69,9 @@ wgetresource ()
 
 	if [ $BRANCH_TEST_RETURN -eq "0" ]
 	then
-		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/resources/"$1
+		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/Resources/"$1
 	else
-		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/master/raw/resources/"$1
+		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/master/raw/Resources/"$1
 	fi
 
 	if [ "$2" ]

@@ -29,7 +29,7 @@ if(!function_exists('strptime')) {
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
 	'PiResults/Results.php',
-	'_pi_results',
+	'_PiResults_Results',
 	'list_type',
 	FALSE
 );
@@ -38,7 +38,7 @@ t3lib_extMgm::addPItoST43(
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
 	'PiSearch/Search.php',
-	'_pi_search',
+	'_PiSearch_Search',
 	'list_type',
 	TRUE
 );
@@ -47,7 +47,7 @@ t3lib_extMgm::addPItoST43(
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
 	'PiFrequentSearches/FrequentSearches.php',
-	'_pi_frequentsearches',
+	'_PiFrequentSearches_FrequentSearches',
 	'list_type',
 	TRUE
 );
@@ -257,29 +257,29 @@ Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_OptimizeTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_optimizer_title',
-	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_optimizer_description',
+	'title'            => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_optimizer_title',
+	'description'      => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_optimizer_description',
 	'additionalFields' => 'Tx_Solr_Scheduler_OptimizeTaskSolrServerField'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_CommitTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_commit_title',
-	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_commit_description',
+	'title'            => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_commit_title',
+	'description'      => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_commit_description',
 	'additionalFields' => 'Tx_Solr_Scheduler_CommitTaskSolrServerField'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_ReIndexTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_reindex_title',
-	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_reindex_description',
+	'title'            => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_reindex_title',
+	'description'      => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_reindex_description',
 	'additionalFields' => 'Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_IndexQueueWorkerTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_title',
-	'description'      => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_description',
+	'title'            => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_indexqueueworker_title',
+	'description'      => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_indexqueueworker_description',
 	'additionalFields' => 'Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 
@@ -362,10 +362,10 @@ if (version_compare(TYPO3_version, '4.6', '<')) {
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options'] = array();
 	}
 	if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['cacheTable'])) {
-		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['cacheTable'] = 'Tx_Solr_cache';
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['cacheTable'] = 'tx_solr_cache';
 	}
 	if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['tagsTable'])) {
-		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['tagsTable'] = 'Tx_Solr_cache_tags';
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']['tagsTable'] = 'tx_solr_cache_tags';
 	}
 }
 

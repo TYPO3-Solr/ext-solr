@@ -85,7 +85,7 @@ class AdministrationController extends ActionController {
 	/**
 	 * The site to work with
 	 *
-	 * @var \tx_solr_Site
+	 * @var \Tx_Solr_Site
 	 */
 	protected $site;
 
@@ -184,7 +184,7 @@ class AdministrationController extends ActionController {
 	 * @return void
 	 */
 	public function setSiteAction($site) {
-		$site = \tx_solr_Site::getSiteByPageId((int) $site);
+		$site = \Tx_Solr_Site::getSiteByPageId((int) $site);
 		$this->moduleData->setSite($site);
 		// when switching the site, reset the core
 		$this->moduleData->setCore('');

@@ -64,7 +64,7 @@ abstract class AbstractModule extends ActionController implements Administration
 	protected $extensionKey = '';
 
 	/**
-	 * @var \tx_solr_ConnectionManager
+	 * @var \Tx_Solr_ConnectionManager
 	 * @inject
 	 */
 	protected $connectionManager = NULL;
@@ -72,7 +72,7 @@ abstract class AbstractModule extends ActionController implements Administration
 	/**
 	 * The currently selected Site.
 	 *
-	 * @var \tx_solr_Site
+	 * @var \Tx_Solr_Site
 	 */
 	protected $site;
 

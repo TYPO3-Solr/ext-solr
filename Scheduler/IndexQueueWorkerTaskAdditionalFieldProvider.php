@@ -58,14 +58,14 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements t
 
 		$additionalFields['site'] = array(
 			'code'     => Tx_Solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $taskInfo['site']),
-			'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_field_site',
+			'label'    => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_field_site',
 			'cshKey'   => '',
 			'cshLabel' => ''
 		);
 
 		$additionalFields['documentsToIndexLimit'] = array(
 			'code'     => '<input type="text" name="tx_scheduler[documentsToIndexLimit]" value="' . htmlspecialchars($taskInfo['documentsToIndexLimit']) . '" />',
-			'label'    => 'LLL:EXT:solr/lang/locallang.xml:scheduler_indexqueueworker_field_documentsToIndexLimit',
+			'label'    => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_indexqueueworker_field_documentsToIndexLimit',
 			'cshKey'   => '',
 			'cshLabel' => ''
 		);

@@ -38,7 +38,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 *
 	 * @var	string
 	 */
-	public $scriptRelPath = 'pi_results/Results.php';
+	public $scriptRelPath = 'PiResults/Results.php';
 
 	/**
 	 * Additional filters, which will be added to the query, as well as to

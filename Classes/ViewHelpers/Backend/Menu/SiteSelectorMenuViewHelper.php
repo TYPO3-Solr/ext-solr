@@ -58,7 +58,7 @@ class SiteSelectorMenuViewHelper extends AbstractTagBasedViewHelper {
 	public function render() {
 		$this->tag->addAttribute('onchange', 'jumpToUrl(document.URL + \'&tx_solr_tools_solradministration[action]=setSite&tx_solr_tools_solradministration[site]=\'+this.options[this.selectedIndex].value,this);');
 
-		$sites = \tx_solr_Site::getAvailableSites();
+		$sites = \Tx_Solr_Site::getAvailableSites();
 		$currentSite = $this->moduleDataStorageService->loadModuleData()->getSite();
 
 		$options = '';

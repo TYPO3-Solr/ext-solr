@@ -67,7 +67,7 @@ class IndexQueueModuleController extends AbstractModule {
 	public function initializeIndexQueueAction() {
 		$initializedIndexingConfigurations = array();
 
-		$itemIndexQueue                     = GeneralUtility::makeInstance('tx_solr_indexqueue_Queue');
+		$itemIndexQueue                     = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 		$indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
 		if (!empty($indexingConfigurationsToInitialize)) {
 				// initialize selected indexing configuration
@@ -110,7 +110,7 @@ class IndexQueueModuleController extends AbstractModule {
 	 *  @return string Markup for the select field
 	 */
 	protected function getIndexQueueInitializationSelector() {
-		$selector = GeneralUtility::makeInstance('tx_solr_backend_IndexingConfigurationSelectorField', $this->site);
+		$selector = GeneralUtility::makeInstance('Tx_Solr_Backend_IndexingConfigurationSelectorField', $this->site);
 		$selector->setFormElementName('tx_solr-index-queue-initialization');
 
 		return $selector->render();

@@ -49,7 +49,7 @@ class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 
 		$this->reportsModule->doc->addStyleSheet(
 			'tx_solr',
-			'../' . t3lib_extMgm::siteRelPath('solr') . 'resources/css/report/index.css'
+			'../' . t3lib_extMgm::siteRelPath('solr') . 'Resources/Css/Report/index.css'
 		);
 	}
 

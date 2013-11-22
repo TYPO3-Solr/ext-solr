@@ -61,7 +61,7 @@ class OverviewModuleController extends AbstractModule {
 	protected function initializeAction() {
 		parent::initializeAction();
 
-		$connectionManager = GeneralUtility::makeInstance('tx_solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
 		$this->connections = $connectionManager->getConnectionsBySite($this->site);
 	}
 
@@ -75,7 +75,7 @@ class OverviewModuleController extends AbstractModule {
 
 		$this->view->assign('content', 'Overview Module');
 		$this->view->assign('site', $this->request->getArgument('site'));
-		$this->view->assign('apiKey', \tx_solr_Api::getApiKey());
+		$this->view->assign('apiKey', \Tx_Solr_Api::getApiKey());
 	}
 
 	/**

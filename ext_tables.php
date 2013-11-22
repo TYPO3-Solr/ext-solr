@@ -25,7 +25,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_resu
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_pi_results'] = 'pi_flexform';
 
 	// add flexform to pi_results
-t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi_results', 'FILE:EXT:solr/flexforms/pi_results.xml');
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi_results', 'FILE:EXT:solr/Flexforms/pi_results.xml');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -126,14 +126,14 @@ if (TYPO3_MODE == 'BE') {
 
 	// registering reports
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
-		'tx_solr_report_SchemaStatus',
-		'tx_solr_report_SolrconfigStatus',
-		'tx_solr_report_SolrConfigurationStatus',
-		'tx_solr_report_SolrStatus',
-		'tx_solr_report_SolrVersionStatus',
-		'tx_solr_report_AccessFilterPluginInstalledStatus',
-		'tx_solr_report_AllowUrlFOpenStatus',
-		'tx_solr_report_FilterVarStatus'
+		'Tx_Solr_Report_SchemaStatus',
+		'Tx_Solr_Report_SolrconfigStatus',
+		'Tx_Solr_Report_SolrConfigurationStatus',
+		'Tx_Solr_Report_SolrStatus',
+		'Tx_Solr_Report_SolrVersionStatus',
+		'Tx_Solr_Report_AccessFilterPluginInstalledStatus',
+		'Tx_Solr_Report_AllowUrlFOpenStatus',
+		'Tx_Solr_Report_FilterVarStatus'
 	);
 
 	if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6000000) {
@@ -141,33 +141,33 @@ if (TYPO3_MODE == 'BE') {
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_solr']['index'] = array(
 			'title' => 'LLL:EXT:solr/locallang.xml:report_index_title',
 			'description' => 'LLL:EXT:solr/locallang.xml:report_index_description',
-			'report' => 'tx_solr_report_IndexReport',
-			'icon' => 'EXT:solr/report/tx_solr_report.gif'
+			'report' => 'Tx_Solr_Report_IndexReport',
+			'icon' => 'EXT:solr/Report/tx_solr_report.gif'
 		);
 	}
 
 	// Index Inspector
 	t3lib_extMgm::insertModuleFunction(
 		'web_info',
-		'tx_solr_mod_index_IndexInspector',
+		'Tx_Solr_ModIndex_IndexInspector',
 		$GLOBALS['PATH_solr'] . 'ModIndex/IndexInspector.php',
 		'LLL:EXT:solr/locallang.xml:module_indexinspector'
 	);
 
 	// register Clear Cache Menu hook
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&tx_solr_ConnectionManager';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&Tx_Solr_ConnectionManager';
 
 	// register Clear Cache Menu ajax call
-	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = 'tx_solr_ConnectionManager->updateConnections';
+	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = 'Tx_Solr_ConnectionManager->updateConnections';
 
 
 	// hooking into TCE Main to monitor record updates that may require reindexing by the index queue
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'tx_solr_indexqueue_RecordMonitor';
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'tx_solr_indexqueue_RecordMonitor';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'Tx_Solr_IndexQueue_RecordMonitor';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'Tx_Solr_IndexQueue_RecordMonitor';
 
 	// hooking into TCE Main to monitor record updates that may require deleting documents from the index
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = '&tx_solr_GarbageCollector';
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = '&tx_solr_GarbageCollector';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = '&Tx_Solr_GarbageCollector';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = '&Tx_Solr_GarbageCollector';
 
 }
 
@@ -181,7 +181,7 @@ options.contextMenu.table.pages.items.850 = ITEM
 options.contextMenu.table.pages.items.850 {
 	name = Tx_Solr_initializeSolrConnections
 	label = Initialize Solr Connections
-	icon = ' . t3lib_div::locationHeaderUrl($GLOBALS['PATHrel_solr'] . 'resources/images/cache-init-solr-connections.png') . '
+	icon = ' . t3lib_div::locationHeaderUrl($GLOBALS['PATHrel_solr'] . 'Resources/Images/cache-init-solr-connections.png') . '
 	displayCondition = getRecord|is_siteroot = 1
 	callbackAction = initializeSolrConnections
 }
@@ -206,7 +206,7 @@ $GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr
 	// replace the built-in search content element
 t3lib_extMgm::addPiFlexFormValue(
 	'*',
-	'FILE:EXT:' . $_EXTKEY . '/flexforms/pi_results.xml',
+	'FILE:EXT:' . $_EXTKEY . '/Flexforms/pi_results.xml',
 	'search'
 );
 

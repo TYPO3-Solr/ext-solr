@@ -37,7 +37,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_pluginbase_CommandPluginBase{
 	/**
 	 * Path to this script relative to the extension dir.
 	 */
-	public $scriptRelPath = 'pi_search/Search.php';
+	public $scriptRelPath = 'PiSearch/Search.php';
 
 	/**
 	 * Additional filters, which will be added to suggest queries.
