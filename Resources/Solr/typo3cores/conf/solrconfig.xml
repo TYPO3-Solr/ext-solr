@@ -10,72 +10,110 @@
 	status report - tx_solr_report_SolrconfigStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<config name="tx_solr-3-0-0--20130610">
+<config name="tx_solr-3-0-0--20131122">
 
-	<luceneMatchVersion>LUCENE_36</luceneMatchVersion>
+	<luceneMatchVersion>LUCENE_46</luceneMatchVersion>
 
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 
 
 	<!-- Tika / Solr Cell -->
-	<lib dir="../dist/" regex="apache-solr-cell-\d.*\.jar" />
+	<lib dir="../dist/" regex="solr-cell-\d.*\.jar" />
 	<lib dir="../contrib/extraction/lib" />
 
 	<!-- Clustering -->
-	<lib dir="../dist/" regex="apache-solr-clustering-\d.*\.jar" />
+	<lib dir="../dist/" regex="solr-clustering-\d.*\.jar" />
 	<lib dir="../contrib/clustering/lib/" />
 
 	<!-- Data Import Handler -->
-	<lib dir="../dist/" regex="apache-solr-dataimporthandler-.*\.jar" />
+	<lib dir="../dist/" regex="solr-dataimporthandler-.*\.jar" />
 	<lib dir="../contrib/dataimporthandler/lib/" />
 
 	<!-- Language Analysis Extras -->
-	<lib dir="../dist/" regex="apache-solr-analysis-extras-.*\.jar" />
+	<lib dir="../dist/" regex="solr-analysis-extras-.*\.jar" />
 	<lib dir="../contrib/analysis-extras/lib/" />
 	<lib dir="../contrib/analysis-extras/lucene-libs/" />
 
 	<!-- Language Identification -->
-	<lib dir="../dist/" regex="apache-solr-langid-\d.*\.jar" />
+	<lib dir="../dist/" regex="solr-langid-\d.*\.jar" />
 	<lib dir="../contrib/langid/lib/" regex=".*\.jar" />
 
 	<!-- Velocity Template Engine -->
-	<lib dir="../dist/" regex="apache-solr-velocity-\d.*\.jar" />
+	<lib dir="../dist/" regex="solr-velocity-\d.*\.jar" />
 	<lib dir="../contrib/velocity/lib" regex=".*\.jar" />
 
 	<!-- TYPO3 Plugins -->
 	<lib dir="../typo3lib/" />
 
+	<directoryFactory name="DirectoryFactory"
+		class="solr.NRTCachingDirectoryFactory"/>
+
+	<codecFactory class="solr.SchemaCodecFactory"/>
+
+	<!--
+		TODO switch to managed schema
+		========================================================================
+		(contd.) must not move schema file out of the language specific
+		schema config directory (which it does currently)
+		Possible solution: Move/Change core instanceDir configuration option in
+			solr.xml so that /opt/solr-tomcat/solr (SOLR_HOME) is the root for
+			a collection - like example collection1
+
+			Properties like language can be specified in solr.xml
+			http://wiki.apache.org/solr/Solr.xml%20%28supported%20through%204.x%29
+
+		Also aligns with http://wiki.apache.org/solr/Solr.xml%204.4%20and%20beyond
+		========================================================================
+
+		To enable dynamic schema REST APIs:
+
+		<schemaFactory class="ManagedIndexSchemaFactory">
+			<bool name="mutable">true</bool>
+			<str name="managedSchemaResourceName">managed-schema</str>
+		</schemaFactory>
+
+		When ManagedIndexSchemaFactory is specified, Solr will load the schema from
+		the resource named in 'managedSchemaResourceName', rather than from schema.xml.
+		Note that the managed schema resource CANNOT be named schema.xml.  If the managed
+		schema does not exist, Solr will create it after reading schema.xml, then rename
+		'schema.xml' to 'schema.xml.bak'.
+
+		Do NOT hand edit the managed schema - external modifications will be ignored and
+		overwritten as a result of schema modification REST API calls.
+
+		When ManagedIndexSchemaFactory is specified with mutable = true, schema
+		modification REST API calls will be allowed; otherwise, error responses will be
+		sent back for these requests.
+	-->
+	<schemaFactory class="ClassicIndexSchemaFactory"/>
+	<!--<schemaFactory class="ManagedIndexSchemaFactory">-->
+	<!--<bool name="mutable">true</bool>-->
+	<!--<str name="managedSchemaResourceName">${solr.core.language}/managed-schema</str>-->
+	<!--</schemaFactory>-->
 
 	<indexConfig>
-		<useCompoundFile>false</useCompoundFile>
-
-		<mergeFactor>10</mergeFactor>
-		<maxBufferedDocs>1000</maxBufferedDocs>
-
-		<ramBufferSizeMB>32</ramBufferSizeMB>
-		<maxFieldLength>10000</maxFieldLength>
-
-		<writeLockTimeout>1000</writeLockTimeout>
 		<lockType>native</lockType>
-		<unlockOnStartup>false</unlockOnStartup>
-
-		<reopenReaders>true</reopenReaders>
-
-		<deletionPolicy class="solr.SolrDeletionPolicy">
-			<str name="maxCommitsToKeep">1</str>
-			<str name="maxOptimizedCommitsToKeep">0</str>
-		</deletionPolicy>
-
-		<infoStream file="INFOSTREAM.txt">false</infoStream>
+		<infoStream>true</infoStream>
 	</indexConfig>
 
 
 	<updateHandler class="solr.DirectUpdateHandler2">
+
+		<updateLog>
+			<str name="dir">${solr.data.dir:}</str>
+		</updateLog>
+
 		<autoCommit>
 			<maxDocs>100</maxDocs>
 			<maxTime>3600000</maxTime>
+			<openSearcher>true</openSearcher>
 		</autoCommit>
+
+
+		<autoSoftCommit>
+			<maxTime>1000</maxTime>
+		</autoSoftCommit>
 	</updateHandler>
 
 
@@ -102,7 +140,7 @@
 
 		<enableLazyFieldLoading>true</enableLazyFieldLoading>
 
-		<queryResultWindowSize>20</queryResultWindowSize>
+		<queryResultWindowSize>50</queryResultWindowSize>
 
 		<queryResultMaxDocsCached>200</queryResultMaxDocsCached>
 
@@ -121,26 +159,17 @@
 
 		<useColdSearcher>false</useColdSearcher>
 
-		<maxWarmingSearchers>2</maxWarmingSearchers>
+		<maxWarmingSearchers>5</maxWarmingSearchers>
 	</query>
 
 
-	<requestDispatcher handleSelect="true" >
-		<!--Make sure your system has some authentication!  -->
+	<requestDispatcher handleSelect="false" >
+		<!-- Make sure your system has some authentication! before using enableRemoteStreaming="true" -->
 		<requestParsers enableRemoteStreaming="true" multipartUploadLimitInKB="2048000" />
 
 		<httpCaching lastModifiedFrom="openTime" etagSeed="Solr" />
+		<httpCaching never304="true"/>
 	</requestDispatcher>
-
-
-	<requestHandler name="standard" class="solr.SearchHandler">
-		<lst name="defaults">
-			<str name="echoParams">explicit</str>
-		</lst>
-		<arr name="last-components">
-			<str>spellcheck</str>
-		</arr>
-	</requestHandler>
 
 
 	<requestHandler name="/select" class="solr.SearchHandler">
@@ -167,6 +196,11 @@
 			<str name="spellcheck.onlyMorePopular">false</str>
 			<str name="spellcheck.extendedResults">false</str>
 			<str name="spellcheck.count">1</str>
+			<str name="spellcheck.dictionary">default</str>
+			<str name="spellcheck.dictionary">wordbreak</str>
+
+			<str name="wt">json</str>
+			<str name="indent">true</str>
 		</lst>
 
 		<arr name="last-components">
@@ -174,7 +208,16 @@
 			<str>elevator</str>
 		</arr>
 	</requestHandler>
-	
+
+
+	<requestHandler name="/get" class="solr.RealTimeGetHandler">
+		<lst name="defaults">
+			<str name="omitHeader">true</str>
+			<str name="wt">json</str>
+			<str name="indent">true</str>
+		</lst>
+	</requestHandler>
+
 	
 	<requestHandler name="/browse" class="solr.SearchHandler">
 		<lst name="defaults">
@@ -213,7 +256,9 @@
 			<!-- Highlighting defaults -->
 			<str name="hl">on</str>
 			<str name="hl.fl">title content</str>
-			<str name="f.name.hl.fragsize">0</str>
+			<str name="hl.encoder">html</str>
+			<str name="hl.simple.pre">&lt;b&gt;</str>
+			<str name="hl.simple.post">&lt;/b&gt;</str>
 		</lst>
 		<arr name="last-components">
 			<str>spellcheck</str>
@@ -233,7 +278,7 @@
 	</requestHandler>
 
 
-	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler" />
+	<requestHandler name="/update" class="solr.UpdateRequestHandler" />
 
 
 	<requestHandler name="/update/csv" class="solr.CSVRequestHandler" startup="lazy" />
@@ -242,11 +287,12 @@
 	<requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler" startup="lazy" />
 
 
-	<requestHandler name="/update/extract" class="org.apache.solr.handler.extraction.ExtractingRequestHandler" startup="lazy" />
+	<requestHandler name="/update/extract" class="solr.extraction.ExtractingRequestHandler" startup="lazy" />
 
 
 	<requestHandler name="/analysis/field" class="solr.FieldAnalysisRequestHandler" startup="lazy" />
-	
+
+
 	<requestHandler name="/analysis/document" class="solr.DocumentAnalysisRequestHandler" startup="lazy" />
 
 <!--
@@ -300,6 +346,29 @@
 	</requestHandler>
 
 
+	<requestHandler name="/replication" class="solr.ReplicationHandler" startup="lazy">
+		<!--
+		   To enable simple master/slave replication, uncomment one of the
+		   sections below, depending on whether this solr instance should be
+		   the "master" or a "slave".  If this instance is a "slave" you will
+		   also need to fill in the masterUrl to point to a real machine.
+		-->
+		<!--
+		   <lst name="master">
+				 <str name="replicateAfter">commit</str>
+				 <str name="replicateAfter">startup</str>
+				 <str name="confFiles">schema.xml,stopwords.txt</str>
+		   </lst>
+		-->
+		<!--
+		   <lst name="slave">
+				 <str name="masterUrl">http://your-master-hostname:8983/solr</str>
+				 <str name="pollInterval">00:00:60</str>
+		   </lst>
+		-->
+	</requestHandler>
+
+
 	<requestHandler name="/clustering"
 					enable="${solr.clustering.enabled:false}"
 					class="solr.SearchHandler">
@@ -350,8 +419,21 @@
 		<lst name="spellchecker">
 			<str name="name">default</str>
 			<str name="field">spell</str>
-			<str name="buildOnCommit">true</str>
-			<str name="spellcheckIndexDir">./spellchecker1</str>
+			<str name="classname">solr.DirectSolrSpellChecker</str>
+			<str name="distanceMeasure">internal</str>
+			<float name="accuracy">0.5</float>
+			<int name="maxEdits">2</int>
+			<int name="minPrefix">1</int>
+			<int name="maxInspections">5</int>
+			<int name="minQueryLength">3</int>
+			<float name="maxQueryFrequency">0.01</float>
+		</lst>
+
+		<!-- a spellchecker that can break or combine words.  See "/spell" handler below for usage -->
+		<lst name="spellchecker">
+			<str name="name">wordbreak</str>
+			<str name="classname">solr.WordBreakSolrSpellChecker</str>
+			<str name="field">spell</str>
 		</lst>
 	</searchComponent>
 
@@ -436,6 +518,7 @@
 	</searchComponent>
 
 
+	<queryResponseWriter name="json" class="solr.JSONResponseWriter" default="true"/>
 	<queryResponseWriter name="php" class="org.apache.solr.response.PHPResponseWriter"/>
 	<queryResponseWriter name="phps" class="org.apache.solr.response.PHPSerializedResponseWriter"/>
 	<queryResponseWriter name="velocity" class="solr.VelocityResponseWriter" startup="lazy"/>
@@ -444,6 +527,14 @@
 	</queryResponseWriter>
 	<queryResponseWriter name="javabin" class="org.apache.solr.response.BinaryResponseWriter"/>
 
+	<!-- http://wiki.apache.org/solr/DocTransformers -->
+	<!-- Document Transformer to mark elevated documents -->
+	<transformer name="elevated" class="org.apache.solr.response.transform.ElevatedMarkerFactory"/>
+
+	<!-- Document Transformer to add scoring explaination in HTML to show score analysis -->
+	<transformer name="explain" class="org.apache.solr.response.transform.ExplainAugmenterFactory">
+		<str name="args">html</str>
+	</transformer>
 
 	<!-- TYPO3 specific plugins, request handlers -->
 	<queryParser name="typo3access" class="org.typo3.solr.search.AccessFilterQParserPlugin"/>
