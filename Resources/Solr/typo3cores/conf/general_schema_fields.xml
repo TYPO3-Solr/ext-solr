@@ -114,6 +114,10 @@
 	<field name="fileRelativePath"        type="string"  indexed="true"  stored="true" />
 	<field name="fileRelativePathOnly"    type="string"  indexed="true"  stored="true" />
 	<field name="fileSha1"                type="string"  indexed="false" stored="true" />
+	<field name="fileStorage"             type="integer" indexed="false" stored="true" />
+	<field name="fileSize"                type="integer" indexed="false" stored="true" />
+	<field name="fileUid"                 type="integer" indexed="false" stored="true" />
+	<field name="filePublicUrl"           type="string"  indexed="true"  stored="true" />
 
 	<!--
 		Used to build the spellchecker index
