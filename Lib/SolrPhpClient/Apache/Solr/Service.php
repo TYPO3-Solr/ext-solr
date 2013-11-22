@@ -722,7 +722,7 @@ class Apache_Solr_Service
 		$commitWithin = (int) $commitWithin;
 		$commitWithinString = $commitWithin > 0 ? " commitWithin=\"{$commitWithin}\"" : '';
 
-		$rawPost = "<add allowDups=\"{$dupValue}\" overwritePending=\"{$pendingValue}\" overwriteCommitted=\"{$committedValue}\"{$commitWithinString}>";
+		$rawPost = "<add{$commitWithinString}>";
 		$rawPost .= $this->_documentToXmlFragment($document);
 		$rawPost .= '</add>';
 
@@ -750,7 +750,7 @@ class Apache_Solr_Service
 		$commitWithin = (int) $commitWithin;
 		$commitWithinString = $commitWithin > 0 ? " commitWithin=\"{$commitWithin}\"" : '';
 
-		$rawPost = "<add allowDups=\"{$dupValue}\" overwritePending=\"{$pendingValue}\" overwriteCommitted=\"{$committedValue}\"{$commitWithinString}>";
+		$rawPost = "<add{$commitWithinString}>";
 
 		foreach ($documents as $document)
 		{
@@ -856,7 +856,7 @@ class Apache_Solr_Service
 		$flushValue = $waitFlush ? 'true' : 'false';
 		$searcherValue = $waitSearcher ? 'true' : 'false';
 
-		$rawPost = '<commit expungeDeletes="' . $expungeValue . '" waitFlush="' . $flushValue . '" waitSearcher="' . $searcherValue . '" />';
+		$rawPost = '<commit expungeDeletes="' . $expungeValue . '" waitSearcher="' . $searcherValue . '" />';
 
 		return $this->_sendRawPost($this->_updateUrl, $rawPost, $timeout);
 	}
@@ -1151,7 +1151,7 @@ class Apache_Solr_Service
 		$flushValue = $waitFlush ? 'true' : 'false';
 		$searcherValue = $waitSearcher ? 'true' : 'false';
 
-		$rawPost = '<optimize waitFlush="' . $flushValue . '" waitSearcher="' . $searcherValue . '" />';
+		$rawPost = '<optimize waitSearcher="' . $searcherValue . '" />';
 
 		return $this->_sendRawPost($this->_updateUrl, $rawPost, $timeout);
 	}
