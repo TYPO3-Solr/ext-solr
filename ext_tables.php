@@ -198,7 +198,7 @@ t3lib_extMgm::registerExtDirectComponent(
 );
 
 	// include JS in backend
-$GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = $GLOBALS['PATH_solr'] . 'classes/backenditem/ContextMenuActionJavascriptRegistration.php';
+$GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = $GLOBALS['PATH_solr'] . 'Classes/BackendItem/ContextMenuActionJavascriptRegistration.php';
 
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
