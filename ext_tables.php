@@ -120,8 +120,8 @@ if (TYPO3_MODE == 'BE') {
 			array('index')
 		);
 	} else {
-		t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
-		t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'mod_admin/');
+		t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'ModAdmin/');
+		t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'ModAdmin/');
 	}
 
 	// registering reports
@@ -150,7 +150,7 @@ if (TYPO3_MODE == 'BE') {
 	t3lib_extMgm::insertModuleFunction(
 		'web_info',
 		'tx_solr_mod_index_IndexInspector',
-		$GLOBALS['PATH_solr'] . 'mod_index/class.tx_solr_mod_index_indexinspector.php',
+		$GLOBALS['PATH_solr'] . 'ModIndex/IndexInspector.php',
 		'LLL:EXT:solr/locallang.xml:module_indexinspector'
 	);
 

@@ -109,11 +109,11 @@ class Tx_Solr_ModIndex_IndexInspector extends t3lib_extobjbase {
 				// TYPO3 4.5 and higher
 			$pageRenderer->addJsFile($extJsExtensionCorePath . 'Ext.grid.RowExpander.js');
 		} else {
-			$pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'resources/javascript/extjs/ux/Ext.grid.RowExpander.js');
+			$pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'Resources/JavaScript/ExtJs/ux/Ext.grid.RowExpander.js');
 		}
 
-		$pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'resources/javascript/extjs/override/gridpanel.js');
-		$pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'resources/javascript/mod_index/index_inspector.js');
+		$pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'Resources/JavaScript/ExtJs/override/gridpanel.js');
+		$pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'Resources/JavaScript/ModIndex/index_inspector.js');
 
 		$pageRenderer->addCssInlineBlock('grid-selection-enabler', '
 			.x-selectable, .x-selectable * {
