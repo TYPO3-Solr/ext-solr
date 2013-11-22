@@ -88,7 +88,7 @@ class Tx_Solr_IndexQueue_Queue {
 	}
 
 	/**
-	 * Truncate and rebuild the Tx_Solr_IndexQueue_item table. This is the most
+	 * Truncate and rebuild the tx_solr_indexqueue_item table. This is the most
 	 * complete way to force reindexing, or to build the Index Queue for
 	 * the first time. The Index Queue initialization is site-specific.
 	 *
@@ -401,7 +401,7 @@ class Tx_Solr_IndexQueue_Queue {
 			}
 
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery(
-				'Tx_Solr_IndexQueue_item',
+				'tx_solr_indexqueue_item',
 				$item
 			);
 		}
@@ -589,7 +589,7 @@ class Tx_Solr_IndexQueue_Queue {
 
 		$indexQueueItems = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid',
-			'Tx_Solr_IndexQueue_item',
+			'tx_solr_indexqueue_item',
 			'root = ' . $site->getRootPageId() . $indexingConfigurationConstraint,
 			'', '', '',
 			'uid'
@@ -637,7 +637,7 @@ class Tx_Solr_IndexQueue_Queue {
 			$indexQueueItemRecord = $indexQueueItemRecord[0];
 
 			$item = t3lib_div::makeInstance(
-				'tx_solr_indexqueue_Item',
+				'Tx_Solr_IndexQueue_Item',
 				$indexQueueItemRecord
 			);
 		}
