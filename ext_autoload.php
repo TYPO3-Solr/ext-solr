@@ -95,7 +95,7 @@ return array(
 	'tx_solr_indexqueue_frontendhelper_manager' => $extensionPath . 'Classes/IndexQueue/FrontendHelper/Manager.php',
 	'tx_solr_indexqueue_frontendhelper_usergroupdetector' => $extensionPath . 'Classes/IndexQueue/FrontendHelper/UserGroupDetector.php',
 	'tx_solr_indexqueue_frontendhelper_pagefieldmappingindexer' => $extensionPath . 'Classes/IndexQueue/FrontendHelper/PageFieldMappingIndexer.php',
-	'tx_solr_indexqueue_frontendhelper_pageindexer' => $extensionPath . 'Classes/IndexQueue/FrontendHelper/class.tx_solr_indexqueue_frontendhelper_pageindexer.php',
+	'tx_solr_indexqueue_frontendhelper_pageindexer' => $extensionPath . 'Classes/IndexQueue/FrontendHelper/PageIndexer.php',
 
 	'tx_solr_indexqueue_initializer_abstract' => $extensionPath . 'Classes/IndexQueue/Initializer/Abstract.php',
 	'tx_solr_indexqueue_initializer_page' => $extensionPath . 'Classes/IndexQueue/Initializer/Page.php',
