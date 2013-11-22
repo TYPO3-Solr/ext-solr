@@ -105,7 +105,7 @@ return array(
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
 
-	'tx_solr_query_linkbuilder' => $extensionPath . 'Classes/query/LinkBuilder.php',
+	'tx_solr_query_linkbuilder' => $extensionPath . 'Classes/Query/LinkBuilder.php',
 
 	'tx_solr_query_filterencoder_daterange' => $extensionPath . 'Classes/Query/FilterEncoder/DateRange.php',
 	'tx_solr_query_filterencoder_hierarchy' => $extensionPath . 'Classes/Query/FilterEncoder/Hierarchy.php',

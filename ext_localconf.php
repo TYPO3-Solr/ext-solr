@@ -29,7 +29,7 @@ if(!function_exists('strptime')) {
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
 	'PiResults/Results.php',
-	'_PiResults_Results',
+	'_pi_results',
 	'list_type',
 	FALSE
 );
@@ -38,7 +38,7 @@ t3lib_extMgm::addPItoST43(
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
 	'PiSearch/Search.php',
-	'_PiSearch_Search',
+	'_pi_search',
 	'list_type',
 	TRUE
 );
@@ -47,7 +47,7 @@ t3lib_extMgm::addPItoST43(
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
 	'PiFrequentSearches/FrequentSearches.php',
-	'_PiFrequentSearches_FrequentSearches',
+	'pi_frequent_searches',
 	'list_type',
 	TRUE
 );
@@ -84,7 +84,7 @@ t3lib_extMgm::registerExtDirectComponent(
 
 	// page module plugin settings summary
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] = 'Tx_Solr_PluginBase_BackendSummary->getSummary';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_PiResults_Results'][$_EXTKEY] = 'Tx_Solr_PluginBase_BackendSummary->getSummary';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 

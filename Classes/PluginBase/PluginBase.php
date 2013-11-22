@@ -252,7 +252,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 			$templateFile,
 			$subPart
 		);
-		$template->addViewHelperIncludePath($this->extKey, 'classes/viewhelper/');
+		$template->addViewHelperIncludePath($this->extKey, 'Classes/ViewHelper/');
 		$template->addViewHelper('LLL', array(
 			'languageFile' => $GLOBALS['PATH_solr'] . $this->getPluginKey() .'/locallang.xml',
 			'llKey'        => $this->LLkey
