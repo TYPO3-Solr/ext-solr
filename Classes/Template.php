@@ -173,7 +173,7 @@ class Tx_Solr_Template {
 
 		foreach ($this->viewHelperIncludePath as $extensionKey => $viewHelperPath) {
 			$viewHelperRealPath = $viewHelperPath;
-			if (t3lib_div::isFirstPartOfStr($viewHelperPath, 'classes/')) {
+			if (t3lib_div::isFirstPartOfStr($viewHelperPath, 'Classes/')) {
 				$viewHelperRealPath = substr($viewHelperPath, 8);
 			}
 			if (substr($viewHelperRealPath, -1) == '/') {
@@ -182,7 +182,7 @@ class Tx_Solr_Template {
 
 			$classNamePrefix = t3lib_extMgm::getCN($extensionKey);
 
-			$possibleFilename  = 'class.' . $classNamePrefix . '_' . str_replace('/', '_', $viewHelperRealPath) . '_' . strtolower(str_replace('_', '', $helperKey)) . '.php';
+			$possibleFilename  = Tx_Solr_Util::underscoredToUpperCamelCase($helperKey) . '.php';
 			$possibleClassName = $classNamePrefix . '_' . str_replace('/', '_', $viewHelperRealPath) . '_' . Tx_Solr_Util::underscoredToUpperCamelCase($helperKey);
 
 			$viewHelperIncludePath = t3lib_extMgm::extPath($extensionKey)
