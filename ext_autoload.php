@@ -179,6 +179,7 @@ return array(
 	'tx_solr_piresults_parameterkeepingformmodifier' => $extensionPath . 'PiResults/ParameterKeepingFormModifier.php',
 	'tx_solr_piresults_spellcheckformmodifier' => $extensionPath . 'PiResults/SpellCheckFormModifier.php',
 	'tx_solr_piresults_suggestformmodifier' => $extensionPath . 'PiResults/SuggestFormModifier.php',
+	'tx_solr_piresults_queryanalyzerformmodifier' => $extensionPath . 'PiResults/QueryAnalyzerFormModifier.php',
 
 		// scheduler tasks
 
