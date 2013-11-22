@@ -61,7 +61,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 		$this->doc->setModuleTemplate(t3lib_extMgm::extPath('solr') . 'ModAdmin/mod_admin.html');
 		$this->doc->backPath = $BACK_PATH;
 		$this->doc->bodyTagId = 'typo3-mod-php';
-		$this->doc->bodyTagAdditions = 'class="Tx_Solr_mod-admin"';
+		$this->doc->bodyTagAdditions = 'class="tx_solr_mod-admin"';
 	}
 
 	/**
