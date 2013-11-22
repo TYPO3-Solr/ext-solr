@@ -7,6 +7,6 @@ $MCONF['script'] = '_DISPATCH';
 $MCONF['access'] = 'admin';
 
 $MLANG['default']['tabs_images']['tab'] = 'moduleicon.png';
-$MLANG['default']['ll_ref'] = 'LLL:EXT:solr/mod_admin/locallang.xml';
+$MLANG['default']['ll_ref'] = 'LLL:EXT:solr/ModAdmin/locallang.xml';
 
 ?>

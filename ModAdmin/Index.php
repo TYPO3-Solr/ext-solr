@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-$GLOBALS['LANG']->includeLLFile('EXT:solr/mod_admin/locallang.xml');
+$GLOBALS['LANG']->includeLLFile('EXT:solr/ModAdmin/locallang.xml');
 $BE_USER->modAccess($MCONF, 1);
 
 
@@ -58,7 +58,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 
 			// initialize doc
 		$this->doc = t3lib_div::makeInstance('template');
-		$this->doc->setModuleTemplate(t3lib_extMgm::extPath('solr') . 'mod_admin/mod_admin.html');
+		$this->doc->setModuleTemplate(t3lib_extMgm::extPath('solr') . 'ModAdmin/mod_admin.html');
 		$this->doc->backPath = $BACK_PATH;
 		$this->doc->bodyTagId = 'typo3-mod-php';
 		$this->doc->bodyTagAdditions = 'class="Tx_Solr_mod-admin"';
@@ -127,8 +127,8 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 				</script>
 			';
 
-			$this->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/resources/css/mod_admin/index.css');
-			$this->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/resources/css/backend/indexingconfigurationselectorfield.css');
+			$this->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/ModAdmin/index.css');
+			$this->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/Backend/indexingconfigurationselectorfield.css');
 
 				// Render content:
 			if ($this->site) {
@@ -577,8 +577,8 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 
 
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/mod_admin/index.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/mod_admin/index.php']);
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/ModAdmin/index.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/ModAdmin/index.php']);
 }
 
 
