@@ -22,6 +22,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+// workaround
+if (!class_exists('Apache_Solr_Document')) {
+  require_once __DIR__ . '../../../../Lib/SolrPhpClient/Apache/Solr/Document.php';
+}
 
 /**
  * tests the processing Service class
@@ -30,7 +34,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_FieldProcessor_ServiceTestCase extends tx_phpunit_testcase {
+class Tx_Solr_FieldProcessor_ServiceTest extends Tx_Phpunit_TestCase {
 
 	/**
 	 * @var	Apache_Solr_Document

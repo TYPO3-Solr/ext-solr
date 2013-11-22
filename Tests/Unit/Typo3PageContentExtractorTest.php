@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010-2012 Ingo Renner <ingo@typo3.org>
+*  (c) 2011-2012 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -23,42 +23,32 @@
 ***************************************************************/
 
 
+
 /**
- * Index Queue Page Indexer response test.
+ * Tests the TYPO3 page content extractor
  *
  * @author	Ingo Renner <ingo@typo3.org>
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_IndexQueue_PageIndexerResponseTestCase extends tx_phpunit_testcase {
+class Tx_Solr_Typo3PageContentExtractorTest extends Tx_Phpunit_TestCase {
 
 	/**
 	 * @test
 	 */
-	public function getResultReturnsSingleResult() {
-		$action = 'testAction';
-		$result = 'testResult';
+	public function changesNbspToSpace() {
+		$content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
+		$expectedResult = 'In Olten ist';
 
-		$request = t3lib_div::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
-		$request->addActionResult($action, $result);
+		$contentExtractor = t3lib_div::makeInstance(
+			'Tx_Solr_Typo3PageContentExtractor',
+			$content
+		);
+		$actualResult = $contentExtractor->getIndexableContent();
 
-		$this->assertEquals($result, $request->getActionResult($action));
+		$this->assertEquals($expectedResult, $actualResult);
 	}
 
-	/**
-	 * @test
-	 */
-	public function getResultReturnsAllResults() {
-		$request = t3lib_div::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
-		$request->addActionResult('action1', 'result1');
-		$request->addActionResult('action2', 'result2');
-
-		$this->assertEquals(array(
-			'action1' => 'result1',
-			'action2' => 'result2'
-		), $request->getActionResult());
-	}
 }
-
 
 ?>

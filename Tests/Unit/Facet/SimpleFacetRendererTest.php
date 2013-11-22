@@ -27,7 +27,7 @@
 /**
  *
  */
-class Tx_Solr_Facet_SimpleFacetRendererTestCase extends tx_phpunit_testcase {
+class Tx_Solr_Facet_SimpleFacetRendererTest extends Tx_Phpunit_TestCase {
 
 	protected $facetRenderer;
 

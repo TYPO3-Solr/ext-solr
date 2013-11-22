@@ -23,29 +23,54 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+// workaround
+if (!class_exists('Tx_Solr_QueryFilterEncoder')) {
+	require_once __DIR__ . '../../../../../Interfaces/interface.tx_solr_queryfilterencoder.php';
+}
 /**
  *
  * Testcase for query parser range
  * @author Markus Goldbach
  */
 
-class Tx_Solr_Query_FilterEncoder_DateRangeTestCase extends tx_phpunit_testcase {
+class Tx_Solr_Query_FilterEncoder_HierarchyTest extends Tx_Phpunit_TestCase {
 
-	private $rangeParser;
+	private $parser;
 
 	public function setUp() {
-		$this->rangeParser = t3lib_div::makeInstance('Tx_Solr_Query_FilterEncoder_DateRange');
+		$this->parser = t3lib_div::makeInstance('Tx_Solr_Query_FilterEncoder_Hierarchy');
 	}
 
 	/**
 	 * @test
 	 */
-	public function canParseDateRangeQuery() {
-		$expected = '[2010-01-01T00:00:00Z TO 2010-01-31T23:59:59Z]';
-		$actual   = $this->rangeParser->parseFilter('201001010000-201001312359');
+	public function canParseHierarchy3LevelQuery() {
+		$expected = '2-sport/skateboarding/street';
+		$actual   = $this->parser->decodeFilter('/sport/skateboarding/street');
 
 		$this->assertEquals($expected, $actual);
 	}
+
+	/**
+	 * @test
+	 */
+	public function canParseHierarchy2LevelQuery() {
+		$expected = '1-sport/skateboarding';
+		$actual   = $this->parser->decodeFilter('/sport/skateboarding');
+
+		$this->assertEquals($expected, $actual);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canParseHierarchy1LevelQuery() {
+		$expected = '0-sport';
+		$actual   = $this->parser->decodeFilter('/sport');
+
+		$this->assertEquals($expected, $actual);
+	}
+
 
 }
 ?>

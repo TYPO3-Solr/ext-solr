@@ -30,7 +30,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_QueryTestCase extends tx_phpunit_testcase {
+class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 
 	/**
 	 * @test

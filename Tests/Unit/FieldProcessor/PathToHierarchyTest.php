@@ -22,6 +22,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+// workaround
+if (!class_exists('Tx_Solr_FieldProcessor')) {
+  require_once __DIR__ . '../../../../Interfaces/interface.tx_solr_fieldprocessor.php';
+}
 
 /**
  * tests the path to hierarchy processing
@@ -30,7 +34,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_FieldProcessor_PathToHierarchyTestCase extends tx_phpunit_testcase {
+class Tx_Solr_FieldProcessor_PathToHierarchyTest extends Tx_Phpunit_TestCase {
 
 	private $processor;
 

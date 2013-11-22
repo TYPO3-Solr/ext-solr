@@ -30,7 +30,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_IndexQueue_PageIndexerRequestTestCase extends tx_phpunit_testcase {
+class Tx_Solr_IndexQueue_PageIndexerRequestTest extends Tx_Phpunit_TestCase {
 
 	/**
 	 * @test

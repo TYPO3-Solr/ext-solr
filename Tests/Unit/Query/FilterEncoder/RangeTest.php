@@ -28,7 +28,7 @@
  * @author Markus Goldbach
  */
 
-class Tx_Solr_Query_FilterEncoder_RangeTestCase extends tx_phpunit_testcase {
+class Tx_Solr_Query_FilterEncoder_RangeTest extends Tx_Phpunit_TestCase {
 
 	private $rangeParser;
 
@@ -41,7 +41,7 @@ class Tx_Solr_Query_FilterEncoder_RangeTestCase extends tx_phpunit_testcase {
 	 */
 	public function canParseRangeQuery() {
 		$expected = '[firstValue TO secondValue]';
-		$actual   = $this->rangeParser->parseFilter('firstValue-secondValue');
+		$actual   = $this->rangeParser->decodeFilter('firstValue-secondValue');
 
 		$this->assertEquals($expected, $actual);
 	}
