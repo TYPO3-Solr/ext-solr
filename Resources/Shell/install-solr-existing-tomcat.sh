@@ -189,7 +189,7 @@ fi
 for LANGUAGE in ${LANGUAGES[*]}
 do
 	echo -n "Checking availability of language \"$LANGUAGE\": "
-	wgetresource solr/typo3cores/conf/"$LANGUAGE"/schema.xml justcheck
+	wgetresource Solr/typo3cores/conf/"$LANGUAGE"/schema.xml justcheck
 	if [ $? -ne 0 ]
 	then
 		cecho "ERROR: Could not find Solr configuration files for language \"$LANGUAGE\"" $red
@@ -253,14 +253,14 @@ do
 	mkdir -p typo3cores/conf/$LANGUAGE
 	cd typo3cores/conf/$LANGUAGE
 
-	wgetresource solr/typo3cores/conf/$LANGUAGE/protwords.txt
-	wgetresource solr/typo3cores/conf/$LANGUAGE/schema.xml
-	wgetresource solr/typo3cores/conf/$LANGUAGE/stopwords.txt
-	wgetresource solr/typo3cores/conf/$LANGUAGE/synonyms.txt
+	wgetresource Solr/typo3cores/conf/$LANGUAGE/protwords.txt
+	wgetresource Solr/typo3cores/conf/$LANGUAGE/schema.xml
+	wgetresource Solr/typo3cores/conf/$LANGUAGE/stopwords.txt
+	wgetresource Solr/typo3cores/conf/$LANGUAGE/synonyms.txt
 
 	if [ $LANGUAGE = "german" ]
 	then
-		wgetresource solr/typo3cores/conf/$LANGUAGE/german-common-nouns.txt
+		wgetresource Solr/typo3cores/conf/$LANGUAGE/german-common-nouns.txt
 	fi
 
 done
@@ -268,16 +268,16 @@ done
 # download general configuration in /opt/solr-tomcat/solr/typo3cores/conf/
 cecho "Downloading general configruation" $green
 cd ..
-wgetresource solr/typo3cores/conf/currency.xml
-wgetresource solr/typo3cores/conf/elevate.xml
-wgetresource solr/typo3cores/conf/general_schema_fields.xml
-wgetresource solr/typo3cores/conf/general_schema_types.xml
-wgetresource solr/typo3cores/conf/solrconfig.xml
+wgetresource Solr/typo3cores/conf/currency.xml
+wgetresource Solr/typo3cores/conf/elevate.xml
+wgetresource Solr/typo3cores/conf/general_schema_fields.xml
+wgetresource Solr/typo3cores/conf/general_schema_types.xml
+wgetresource Solr/typo3cores/conf/solrconfig.xml
 
 # download core configuration file solr.xml in /opt/solr-tomcat/solr/
 cd ../..
 rm solr.xml
-wgetresource solr/solr.xml
+wgetresource Solr/solr.xml
 
 # Set permissions for typo3cores
 cecho "Setting permissions for ${SOLRDIR}/typo3cores/." $green
