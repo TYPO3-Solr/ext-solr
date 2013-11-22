@@ -459,7 +459,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * @return string
 	 */
 	protected function getPluginKey() {
-		return 'pi_results';
+		return 'PiResults';
 	}
 
 	/**

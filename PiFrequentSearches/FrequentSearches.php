@@ -119,7 +119,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_Com
 	 * @return	string	Plugin key used during initialization of the template engine
 	 */
 	protected function getPluginKey() {
-		return 'pi_frequentsearches';
+		return 'PiFrequentsearches';
 	}
 
 	/**

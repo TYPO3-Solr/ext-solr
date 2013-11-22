@@ -174,7 +174,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 * @return	string	Plugin key used during initialization of the template engine
 	 */
 	protected function getPluginKey() {
-		return 'pi_search';
+		return 'PiSearch';
 	}
 
 	/**
