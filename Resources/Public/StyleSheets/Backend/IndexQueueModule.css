@@ -1,0 +1,22 @@
+.stats_container {
+    text-align: center;
+}
+
+.legend {
+    display: inline-block;
+}
+
+.legend .color {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: black;
+    border-radius: 10px;
+}
+
+hr.gap {
+    border: 0;
+    background: transparent;
+    color: transparent;
+    margin: 0 0  20px 0;
+}

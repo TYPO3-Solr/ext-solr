@@ -1,5 +1,12 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
 
+<solr:backend.script file="{f:uri.resource(path:'JavaScripts/jquery-1.9.1.min.js')}"/>
+<solr:backend.script file="{f:uri.resource(path:'JavaScripts/chart.js')}"/>
+<solr:backend.script file="{f:uri.resource(path:'JavaScripts/IndexQueueModule.js')}"/>
+
+<solr:backend.style file="{f:uri.resource(path:'StyleSheets/Backend/IndexQueueModule.css')}" />
+
+
 <div class="well">
 	The Index Queue manages content to be indexed. Content enters the Index
 	Queue by initializing below or when new content is created based on
@@ -7,17 +14,9 @@
 	changes until all items in the queue have been indexed.
 </div>
 
-<ul class="nav nav-tabs">
-	<li class="active">
-		<a href="#">Initialization</a>
-	</li>
-	<li>
-		<a href="#">Queue</a>
-	</li>
-	<li>
-		<a href="#">Log</a>
-	</li>
-</ul>
+
+
+<h2>Index Queue Initialization</h2>
 
 <f:form name="editform" actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'initializeIndexQueue'} )}">
 
@@ -31,3 +30,61 @@
 	</solr:backend.button.HelpButton>
 
 </f:form>
+
+<hr class="gap" />
+
+<script type="text/json" id="indexqueue_stats">
+	<f:format.raw>{indexqueue_stats}</f:format.raw>
+</script>
+
+
+
+<div class="row-fluid">
+	<div class="span8 well">
+		<h2>Indexing Errors</h2>
+
+		<table class="table">
+			<tr>
+				<th>ID</th>
+				<th>Item Type</th>
+				<th>Item UID</th>
+				<th></th>
+			</tr>
+
+			<f:for each="{indexqueue_errors}" as="item">
+				<tr>
+					<td>{item.uid}</td>
+					<td>{item.item_type}</td>
+					<td>{item.item_uid}</td>
+					<td>
+						<script type="text/plain">
+							{item.errors}
+						</script>
+						<a href="javascript:void(0);" class="show_error">Show error</a>
+					</td>
+				</tr>
+			</f:for>
+		</table>
+	</div>
+
+	<div class="span4 well stats_container">
+		<h2>Index Queue Status</h2>
+
+		<canvas id="indexqueue_stats_chart" width="100" height="100"></canvas>
+
+		<div style="clear: both;"></div>
+
+		<div class="legend">
+			<span class="color" style="background: #EB813F;"></span> Pending:
+			<span id="pending_numbers"></span>
+		</div>
+		<div class="legend">
+			<span class="color" style="background: #FF3D3D;"></span> Errors:
+			<span id="error_numbers"></span>
+		</div>
+		<div class="legend">
+			<span class="color" style="background: #9FC299;"></span> Indexed:
+			<span id="indexed_numbers"></span>
+		</div>
+	</div>
+</div>

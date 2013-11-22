@@ -57,6 +57,8 @@ class IndexQueueModuleController extends AbstractModule {
 	 */
 	public function indexAction() {
 		$this->view->assign('indexQueueInitializationSelector', $this->getIndexQueueInitializationSelector());
+		$this->view->assign('indexqueue_stats', json_encode($this->getIndexQueueStats()));
+		$this->view->assign('indexqueue_errors', $this->getIndexQueueErrors());
 	}
 
 	/**
@@ -114,6 +116,46 @@ class IndexQueueModuleController extends AbstractModule {
 		$selector->setFormElementName('tx_solr-index-queue-initialization');
 
 		return $selector->render();
+	}
+
+	/**
+	 * Extracts the number of pending, indexed and erroneous items from the
+	 * index queue.
+	 * @return array
+	 */
+	protected function getIndexQueueStats() {
+		$indexQueueStats = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'indexed <= 0 as pending,'
+				. '(errors not like "") as erroneous,'
+				. 'COUNT(*) as count',
+			'tx_solr_indexqueue_item',
+			'',
+			'pending, erroneous'
+		);
+
+		$stats = array();
+		foreach($indexQueueStats as $row) {
+			if($row['erroneous'] == 1) {
+				$stats['erroneous'] = $row['count'];
+			} elseif($row['pending'] == 1) {
+				$stats['pending'] = $row['count'];
+			} else {
+				$stats['indexed'] = $row['count'];
+			}
+		}
+
+		return $stats;
+	}
+
+	/**
+	 * @return array Index queue with an associated error
+	 */
+	protected function getIndexQueueErrors() {
+		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid, item_type, item_uid, errors',
+			'tx_solr_indexqueue_item',
+			'errors NOT LIKE ""'
+		);
 	}
 }
 
