@@ -125,7 +125,7 @@ class IndexQueueModuleController extends AbstractModule {
 	 */
 	protected function getIndexQueueStats() {
 		$indexQueueStats = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'indexed <= 0 as pending,'
+			'indexed < changed as pending,'
 				. '(errors not like "") as erroneous,'
 				. 'COUNT(*) as count',
 			'tx_solr_indexqueue_item',
