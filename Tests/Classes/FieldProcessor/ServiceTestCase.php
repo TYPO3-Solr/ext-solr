@@ -30,7 +30,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_fieldprocessor_ServiceTestCase extends tx_phpunit_testcase {
+class Tx_Solr_FieldProcessor_ServiceTestCase extends tx_phpunit_testcase {
 
 	/**
 	 * @var	Apache_Solr_Document

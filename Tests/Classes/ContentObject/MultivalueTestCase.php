@@ -30,7 +30,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_contentobject_MultivalueTestCase extends tx_phpunit_testcase {
+class Tx_Solr_ContentObject_MultivalueTestCase extends tx_phpunit_testcase {
 
 	protected function setUp() {
 		$GLOBALS['TSFE'] = new stdClass();

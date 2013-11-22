@@ -31,7 +31,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_response_processor_StatisticsWriter implements Tx_Solr_ResponseProcessor {
+class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponseProcessor {
 
 	/**
 	 * Processes a query and its response after searching for that query.

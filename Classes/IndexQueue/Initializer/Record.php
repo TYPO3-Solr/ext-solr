@@ -34,7 +34,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_IndexQueue_Initializer_Record extends Tx_Solr_IndexQueue_initializer_Abstract {
+class Tx_Solr_IndexQueue_Initializer_Record extends Tx_Solr_IndexQueue_Initializer_Abstract {
 
 
 	// just the default behavior as in the abstract class

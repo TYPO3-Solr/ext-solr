@@ -34,7 +34,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_initializer_Abstract {
+class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer_Abstract {
 
 	/**
 	 * Constructor, sets type and indexingConfigurationName to "pages".

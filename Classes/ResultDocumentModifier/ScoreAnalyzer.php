@@ -34,7 +34,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_resultdocumentmodifier_ScoreAnalyzer implements Tx_Solr_ResultDocumentModifier {
+class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocumentModifier {
 
 	/**
 	 * @var	Tx_Solr_Search

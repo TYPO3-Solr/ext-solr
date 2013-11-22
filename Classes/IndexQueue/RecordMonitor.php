@@ -388,7 +388,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties) {
 		$mountingSite = Tx_Solr_Site::getSiteByPageId($mountProperties['mountPageDestination']);
 
-		$pageInitializer = t3lib_div::makeInstance('Tx_Solr_IndexQueue_initializer_Page');
+		$pageInitializer = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Initializer_Page');
 		$pageInitializer->setSite($mountingSite);
 
 		$pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);

@@ -196,7 +196,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 * @return string Name of the initializer class
 	 */
 	protected function resolveInitializerClass($solrConfiguration, $indexingConfigurationName) {
-		$initializerClass = 'Tx_Solr_IndexQueue_initializer_Record';
+		$initializerClass = 'Tx_Solr_IndexQueue_Initializer_Record';
 
 		if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['initialization'])) {
 			$initializerClass = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['initialization'];

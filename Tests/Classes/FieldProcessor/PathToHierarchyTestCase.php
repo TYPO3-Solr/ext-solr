@@ -30,7 +30,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_fieldprocessor_PathToHierarchyTestCase extends tx_phpunit_testcase {
+class Tx_Solr_FieldProcessor_PathToHierarchyTestCase extends tx_phpunit_testcase {
 
 	private $processor;
 

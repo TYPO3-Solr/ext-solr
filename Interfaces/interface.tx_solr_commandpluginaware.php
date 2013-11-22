@@ -42,7 +42,7 @@ interface Tx_Solr_CommandPluginAware {
 	 *
 	 * @param Tx_Solr_pluginbase_CommandPluginBase Currently active plugin
 	 */
-	public function setParentPlugin(Tx_Solr_pluginbase_CommandPluginBase $parentPlugin);
+	public function setParentPlugin(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin);
 }
 
 ?>

@@ -40,8 +40,8 @@ class Tx_Solr_Search_StatisticsComponent extends Tx_Solr_Search_AbstractComponen
 		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
 
 		if(!empty($solrConfiguration['statistics'])) {
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics']     = 'Tx_Solr_Query_modifier_Statistics';
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['statistics'] = 'Tx_Solr_response_processor_StatisticsWriter';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics']     = 'Tx_Solr_Query_Modifier_Statistics';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['statistics'] = 'Tx_Solr_Response_Processor_StatisticsWriter';
 		}
 	}
 

@@ -35,7 +35,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_pluginbase_PluginBase{
+abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_PluginBase{
 
 	/**
 	 * Should be implemted by an inheriting class to provide a correctly

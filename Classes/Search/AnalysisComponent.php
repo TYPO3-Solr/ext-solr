@@ -48,7 +48,7 @@ class Tx_Solr_Search_AnalysisComponent extends Tx_Solr_Search_AbstractComponent 
 	public function initializeSearchComponent() {
 		if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis']) {
 			$this->query->setDebugMode();
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['scoreAnalysis'] = 'Tx_Solr_resultdocumentmodifier_ScoreAnalyzer';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['scoreAnalysis'] = 'Tx_Solr_ResultDocumentModifier_ScoreAnalyzer';
 		}
 	}
 

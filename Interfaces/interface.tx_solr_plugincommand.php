@@ -49,7 +49,7 @@ interface Tx_Solr_PluginCommand {
 	 *
 	 * @param Tx_Solr_pluginbase_CommandPluginBase Parent plugin object.
 	 */
-	public function __construct(Tx_Solr_pluginbase_CommandPluginBase $parent);
+	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parent);
 
 	/**
 	 * execute method

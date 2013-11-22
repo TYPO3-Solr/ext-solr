@@ -30,7 +30,7 @@
  * @package	TYPO3
  * @subpackage	solr
  */
-class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_pluginbase_CommandPluginBase{
+class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_CommandPluginBase{
 
 	/**
 	 * Path to this script relative to the extension dir.
