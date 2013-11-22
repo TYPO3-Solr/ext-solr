@@ -1,0 +1,33 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<div class="well">
+	The Index Queue manages content to be indexed. Content enters the Index
+	Queue by initializing below or when new content is created based on
+	configuration. Items in the Index Queue are indexed newest changes to oldest
+	changes until all items in the queue have been indexed.
+</div>
+
+<ul class="nav nav-tabs">
+	<li class="active">
+		<a href="#">Initialization</a>
+	</li>
+	<li>
+		<a href="#">Queue</a>
+	</li>
+	<li>
+		<a href="#">Log</a>
+	</li>
+</ul>
+
+<f:form name="editform" actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'initializeIndexQueue'} )}">
+
+	<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
+	<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" />
+	<solr:backend.button.HelpButton title="Index Queue Initialization">
+		Initializing the Index Queue is the most complete way to force
+		re-indexing, or to build the Index Queue for the first time. The Index
+		Queue Worker scheduler task will then index the items listed in the
+		Index Queue.
+	</solr:backend.button.HelpButton>
+
+</f:form>

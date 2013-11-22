@@ -1,0 +1,36 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<f:be.container
+	addCssFile="{f:uri.resource(path:'StyleSheets/ModuleAdministration.css')}"
+>
+	<div class="typo3-fullDoc" id="ext-solr-mod-administration-php">
+		<div id="typo3-docheader">
+			<div class="typo3-docheader-functions">
+				<div class="left">
+					Site: <solr:backend.menu.SiteSelectorMenu name="site" />
+				</div>
+				<div class="right">
+				</div>
+			</div>
+			<div class="typo3-docheader-buttons">
+				<div class="left">
+				</div>
+				<div class="right">
+					<f:be.buttons.shortcut />
+				</div>
+			</div>
+		</div>
+		<div id="typo3-docbody">
+			<div id="typo3-inner-docbody" class="container-fluid">
+				<div class="row-fluid">
+					<div id="moduleMenu" class="span3">
+						<f:render partial="ModuleMenu" arguments="{modules: modules, activeModule: activeModule}" />
+					</div>
+					<div id="moduleContent" class="span9">
+						<f:render section="content" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</f:be.container>

@@ -1,0 +1,64 @@
+
+<div class="row-fluid section-divider">
+	<div class="span3">
+		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'commitPendingDocuments'} )}">
+			<f:form.submit value="Commit Pending Documents" />
+		</f:form>
+	</div>
+	<div class="span9 action-description">
+		<h3>Commit Pending Documents</h3>
+		<p>
+		When content is indexed the documents are not immediately visible in search results. To make changes visible in search results documents need to
+		get committed to the index. The configuration that comes with EXT:solr will automatically commit after 100 documents or after one hour, depending
+		on what happens first. Here you can manually commit changes to the index.
+		</p>
+	</div>
+</div>
+
+<div class="row-fluid section-divider">
+	<div class="span3">
+		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'cleanUpIndex'} )}">
+			<f:form.submit value="Clean up Index" />
+		</f:form>
+	</div>
+	<div class="span9 action-description">
+		<h3>Clean Up Index</h3>
+		<p>
+		The Index Queue takes care of indexing your content to Solr. Whenever you delete or hide content, the Garbage Collector will make sure to remove
+		the related index documents from the index. However, especially with content that has an endtime set it may happen that documents stay in the index
+		and do net get removed immediately. While indexing new content the Index Queue worker will from time to time clean up those left over documents
+		from the index. Here you can trigger this clean up manually.
+		</p>
+	</div>
+</div>
+
+<div class="row-fluid section-divider">
+	<div class="span3">
+		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'emptyIndex'} )}">
+			<f:form.submit value="Empty Index" />
+		</f:form>
+	</div>
+	<div class="span9 action-description">
+		<h3>Empty Index</h3>
+		<p>
+		This will simply empty the site's index. When doing so it will take care of only deleting the currently selected site's documents even if
+		you index multiple sites into one index.
+		</p>
+	</div>
+</div>
+
+<div class="row-fluid section-divider">
+	<div class="span3">
+		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'reloadIndexConfiguration'} )}">
+			<f:form.submit value="Reload Core Configuration" />
+		</f:form>
+	</div>
+	<div class="span9 action-description">
+		<h3>Reload Core Configurations</h3>
+		<p>
+		A core in Solr is what holds your index. When changing core/index configuration such as synonyms, stop words, or protected words you
+		need to reload the core to make the changes become affective. To reload configuration you can either restart the whole Solr server or
+		simply reload a specific core. Here you can reload the site's cores/indexes.
+		</p>
+	</div>
+</div>

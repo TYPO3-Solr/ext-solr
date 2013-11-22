@@ -1,0 +1,53 @@
+
+/* bring back TYPO3 styles Bootstrap changed */
+
+body {
+	font-size: 11px;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	line-height: 14px;
+}
+
+input, button, select, textarea {
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+}
+
+a {
+	color: #606060;
+}
+
+a:hover,
+a:focus {
+	color: #000000;
+}
+
+.nav-list > .active > a,
+.nav-list > .active > a:hover,
+.nav-list > .active > a:focus {
+	background-color: #585858;
+}
+
+h2 {
+	font-size: 16px;
+	line-height: 18px;
+	color: #555555;
+	margin: 2px 0 20px 0;
+}
+
+h3 {
+	font-size: 12px;
+	color: #555555;
+	margin: 8px 0 10px;
+	line-height: 14px;
+}
+
+input {
+	font-size: 11px;
+	line-height: 16px;
+}
+
+input[type="checkbox"],
+.checkbox,
+.checkbox:hover {
+	margin: 4px 0 4px 2px;
+	width: 13px;
+}

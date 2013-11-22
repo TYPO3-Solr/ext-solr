@@ -1,0 +1,12 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<ul class="nav nav-list" style="position: fixed;">
+	<f:for each="{modules}" as="module">
+		<li {f:if(condition: '{activeModule.name} == {module.name}', then: 'class="active"')}>
+			<f:link.action
+				arguments="{module: module.name}"
+			><solr:backend.icon iconName="Module{module.name}" extension="{module.extensionKey}" /> {module.title}</f:link.action>
+		</li>
+	</f:for>
+</ul>
+
