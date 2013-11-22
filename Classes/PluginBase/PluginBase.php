@@ -210,22 +210,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 *
 	 */
 	protected function initializeQuery() {
-		$getParameter = $this->prefixId . '|q';
-
-		if (!empty($this->conf['search.']['query.']['getParameter'])) {
-			$getParameter = $this->conf['search.']['query.']['getParameter'];
-		}
-
-		$getParameterParts = t3lib_div::trimExplode('|', $getParameter, 2);
-		if (count($getParameterParts) == 2) {
-			$getParameters = t3lib_div::_GET($getParameterParts[0]);
-			$this->rawUserQuery = $getParameters[$getParameterParts[1]];
-		} else {
-			$this->rawUserQuery = t3lib_div::_GET($getParameter);
-		}
-
-			// enforce API usage
-		unset($this->piVars['q']);
+		$this->rawUserQuery = t3lib_div::_GET('q');
 	}
 
 	/**

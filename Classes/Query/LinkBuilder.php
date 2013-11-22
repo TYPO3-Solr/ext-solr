@@ -59,13 +59,6 @@ class Tx_Solr_Query_LinkBuilder {
 	protected $prefix = 'tx_solr';
 
 	/**
-	 * Query GET parameter name for incoming user queries.
-	 *
-	 * @var string
-	 */
-	protected static $queryGetParameter = '';
-
-	/**
 	 * Link target page ID.
 	 *
 	 * @var integer
@@ -106,34 +99,6 @@ class Tx_Solr_Query_LinkBuilder {
 
 		if (empty($this->linkTargetPageId)) {
 			$this->linkTargetPageId = $GLOBALS['TSFE']->id;
-		}
-
-		if (empty(self::$queryGetParameter)) {
-			self::initializeQueryGetParameter();
-		}
-	}
-
-	/**
-	 * Initializes the query GET parameter.
-	 *
-	 * The GET query parameter name is configurable.
-	 */
-	protected static function initializeQueryGetParameter() {
-		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
-		$getParameter      = 'tx_solr|q';
-
-		if (!empty($solrConfiguration['search.']['query.']['getParameter'])) {
-			$getParameter = $solrConfiguration['search.']['query.']['getParameter'];
-		}
-
-		$getParameterParts = t3lib_div::trimExplode('|', $getParameter, 2);
-
-		if (count($getParameterParts) == 2) {
-			$getParameters = t3lib_div::_GET($getParameterParts[0]);
-
-			self::$queryGetParameter = $getParameterParts[0] . '[' . $getParameterParts[1] . ']';
-		} else {
-			self::$queryGetParameter = $getParameter;
 		}
 	}
 
@@ -230,19 +195,6 @@ class Tx_Solr_Query_LinkBuilder {
 	}
 
 	/**
-	 * Gets the name of the query GET parameter used in URLs and links.
-	 *
-	 * @return string Query GET parameter in URLs and links.
-	 */
-	public static function getQueryGetParameter() {
-		if (empty(self::$queryGetParameter)) {
-			self::initializeQueryGetParameter();
-		}
-
-		return self::$queryGetParameter;
-	}
-
-	/**
 	 * Generates a html link - an anchor tag.
 	 *
 	 * TODO currently everything in $additionalQueryParameters is prefixed with tx_solr,
@@ -264,7 +216,7 @@ class Tx_Solr_Query_LinkBuilder {
 
 		$keywords = $this->query->getKeywords();
 		if (!empty($keywords)) {
-			$queryGetParameter = '&' . self::$queryGetParameter . '=' . $keywords;
+			$queryGetParameter = '&q=' . $keywords;
 		}
 
 		$linkConfiguration = array(
@@ -305,7 +257,7 @@ class Tx_Solr_Query_LinkBuilder {
 		}
 		$queryGetParameter = '';
 		if (!empty($queryKeywords)) {
-			$queryGetParameter = '&' . self::$queryGetParameter . '=' . $queryKeywords;
+			$queryGetParameter = '&q=' . $queryKeywords;
 		}
 
 		$linkConfiguration = array(

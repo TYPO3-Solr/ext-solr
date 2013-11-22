@@ -375,7 +375,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 
 		return array(
 			'prefix'          => $this->prefixId,
-			'query_parameter' => Tx_Solr_Query_LinkBuilder::getQueryGetParameter(),
+			'query_parameter' => 'q',
 			'current_url'     => $currentUrl,
 			'q'               => $this->getCleanUserQuery()
 		);

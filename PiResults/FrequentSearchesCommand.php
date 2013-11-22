@@ -129,7 +129,7 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 					'hits'       => $hits,
 					'style'      => 'font-size: ' . $size . 'px',
 					'class'      => 'tx-solr-frequent-term-' . $size,
-					'parameters' => '&' . Tx_Solr_Query_LinkBuilder::getQueryGetParameter() . '=' . html_entity_decode($term, ENT_NOQUOTES, 'UTF-8'),
+					'parameters' => '&q=' . html_entity_decode($term, ENT_NOQUOTES, 'UTF-8'),
 					'pid'        => $this->parentPlugin->getLinkTargetPageId()
 				);
 			}
