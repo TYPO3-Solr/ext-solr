@@ -156,7 +156,7 @@ class Tx_Solr_Query {
 	/**
 	 * Builds the query string which is then used for Solr's q parameters
 	 *
-	 * @return	string	Solr query string
+	 * @return string Solr query string
 	 */
 	public function getQueryString() {
 		if (!$this->rawQueryString) {
@@ -170,6 +170,7 @@ class Tx_Solr_Query {
 	 * Sets the query string without any escaping.
 	 *
 	 * Be cautious with this function!
+	 * TODO remove this method as it basically just sets the q parameter / keywords
 	 *
 	 * @param string $queryString The raw query string.
 	 */
@@ -527,8 +528,8 @@ class Tx_Solr_Query {
 	/**
 	 * Adds a filter parameter.
 	 *
-	 * @param	string	The filter to add, in the form of field:value
-	 * @return	void
+	 * @param string $filterString The filter to add, in the form of field:value
+	 * @return void
 	 */
 	public function addFilter($filterString) {
 			// TODO refactor to split filter field and filter value, @see Drupal
@@ -542,8 +543,8 @@ class Tx_Solr_Query {
 	/**
 	 * Removes a filter on a field
 	 *
-	 * @param	string	The field name the filter should be removed for
-	 * @return	void
+	 * @param string $filterFieldName The field name the filter should be removed for
+	 * @return void
 	 */
 	public function removeFilter($filterFieldName) {
 		foreach ($this->filters as $key => $filterString) {
@@ -556,7 +557,7 @@ class Tx_Solr_Query {
 	/**
 	 * Gets all currently applied filters.
 	 *
-	 * @return	array	Array of filters
+	 * @return array Array of filters
 	 */
 	public function getFilters() {
 		return $this->filters;
@@ -565,7 +566,7 @@ class Tx_Solr_Query {
 	/**
 	 * Sets access restrictions for a frontend user.
 	 *
-	 * @param	array	an array of groups a user has been assigned to
+	 * @param array $groups Array of groups a user has been assigned to
 	 */
 	public function setUserAccessGroups(array $groups) {
 		$groups = array_map('intval', $groups);

@@ -35,14 +35,14 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	/**
 	 * An instance of the Solr service
 	 *
-	 * @var	Tx_Solr_SolrService
+	 * @var Tx_Solr_SolrService
 	 */
 	protected $solr = NULL;
 
 	/**
 	 * The search query
 	 *
-	 * @var	Tx_Solr_Query
+	 * @var Tx_Solr_Query
 	 */
 	protected $query = NULL;
 
@@ -56,7 +56,7 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	/**
 	 * Flag for marking a search
 	 *
-	 * @var	boolean
+	 * @var boolean
 	 */
 	protected $hasSearched = FALSE;
 
@@ -90,16 +90,16 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	}
 
 	/**
-	 * Executes a search against a Solr server.
+	 * Executes a query against a Solr server.
 	 *
 	 * 1) Gets the query string
 	 * 2) Conducts the actual search
 	 * 3) Checks debug settings
 	 *
-	 * @param	Tx_Solr_Query	$query The query with keywords, filters, and so on.
-	 * @param	integer	$offset Result offset for pagination.
-	 * @param	integer	$limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
-	 * @return	Apache_Solr_Response	Solr response
+	 * @param Tx_Solr_Query $query The query with keywords, filters, and so on.
+	 * @param integer $offset Result offset for pagination.
+	 * @param integer $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
+	 * @return Apache_Solr_Response Solr response
 	 */
 	public function search(Tx_Solr_Query $query, $offset = 0, $limit = 10) {
 		$query = $this->modifyQuery($query);
@@ -178,8 +178,9 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	 * Allows to modify a response returned from Solr before returning it to
 	 * the rest of the extension.
 	 *
-	 * @param Apache_Solr_Response The response as returned by Solr
+	 * @param Apache_Solr_Response $response The response as returned by Solr
 	 * @return Apache_Solr_Response The modified response that is actually going to be returned to the extension.
+	 * @throws UnexpectedValueException if a response modifier does not implement interface Tx_Solr_ResponseModifier
 	 */
 	protected function modifyResponse(Apache_Solr_Response $response) {
 			// hook to modify the search response
