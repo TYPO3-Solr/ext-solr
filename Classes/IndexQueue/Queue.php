@@ -378,7 +378,7 @@ class Tx_Solr_IndexQueue_Queue {
 			# temporary until we have a query builder to take care of this
 		$additionalRecordFields = '';
 		if ($itemType == 'pages') {
-			$additionalRecordFields = ', doktype';
+			$additionalRecordFields = ', doktype, uid';
 		}
 
 		$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
