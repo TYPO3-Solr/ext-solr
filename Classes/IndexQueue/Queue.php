@@ -244,14 +244,14 @@ class Tx_Solr_IndexQueue_Queue {
 	 * @deprecated	Use getIndexingConfigurationsByItem() now, which behaves almost the same way but returns an array of configurations
 	 */
 	protected function getIndexingConfigurationByItem($itemType, $itemUid, $rootPageId = NULL) {
-		$possibleIndexingConfigurationName = '';
+		$indexingConfigurationName = '';
 
 		$configurations = $this->getIndexingConfigurationsByItem($itemType, $itemUid, $rootPageId);
-		if (is_array($configurations) && (count($configurations) > 0)) {
-			$possibleIndexingConfigurationName = $configurations[0];
+		if (count($configurations) > 0) {
+			$indexingConfigurationName = $configurations[0];
 		}
 
-		return $possibleIndexingConfigurationName;
+		return $indexingConfigurationName;
 	}
 
 	/**
@@ -700,7 +700,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 * @param string $indexingConfigurationName name of a specific indexing configuration
 	 * @return mixed Number of items (integer) or FALSE if something went wrong (boolean)
 	 */
-	public function getItemsCountBySite(tx_solr_Site $site, $indexingConfigurationName = '') {
+	public function getItemsCountBySite(Tx_Solr_Site $site, $indexingConfigurationName = '') {
 		$indexingConfigurationConstraint = '';
 		if (!empty($indexingConfigurationName)) {
 			$indexingConfigurationConstraint = ' AND indexing_configuration = \'' . $indexingConfigurationName . '\'';
