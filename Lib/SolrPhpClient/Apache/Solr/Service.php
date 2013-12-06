@@ -843,7 +843,7 @@ class Apache_Solr_Service
 	 * Send a commit command.  Will be synchronous unless both wait parameters are set to false.
 	 *
 	 * @param boolean $expungeDeletes Defaults to false, merge segments with deletes away
-	 * @param boolean $waitFlush Defaults to true,  block until index changes are flushed to disk
+	 * @param boolean $waitFlush Not used, will be removed with EXT:solr version 4.0
 	 * @param boolean $waitSearcher Defaults to true, block until a new searcher is opened and registered as the main query searcher, making the changes visible
 	 * @param float $timeout Maximum expected duration (in seconds) of the commit operation on the server (otherwise, will throw a communication exception). Defaults to 1 hour
 	 * @return Apache_Solr_Response
@@ -853,7 +853,6 @@ class Apache_Solr_Service
 	public function commit($expungeDeletes = false, $waitFlush = true, $waitSearcher = true, $timeout = 3600)
 	{
 		$expungeValue = $expungeDeletes ? 'true' : 'false';
-		$flushValue = $waitFlush ? 'true' : 'false';
 		$searcherValue = $waitSearcher ? 'true' : 'false';
 
 		$rawPost = '<commit expungeDeletes="' . $expungeValue . '" waitSearcher="' . $searcherValue . '" />';
@@ -1139,7 +1138,7 @@ class Apache_Solr_Service
 	 * Send an optimize command.  Will be synchronous unless both wait parameters are set
 	 * to false.
 	 *
-	 * @param boolean $waitFlush
+	 * @param boolean $waitFlush Not used, will be removed with EXT:solr version 4.0
 	 * @param boolean $waitSearcher
 	 * @param float $timeout Maximum expected duration of the commit operation on the server (otherwise, will throw a communication exception)
 	 * @return Apache_Solr_Response
@@ -1148,7 +1147,6 @@ class Apache_Solr_Service
 	 */
 	public function optimize($waitFlush = true, $waitSearcher = true, $timeout = 3600)
 	{
-		$flushValue = $waitFlush ? 'true' : 'false';
 		$searcherValue = $waitSearcher ? 'true' : 'false';
 
 		$rawPost = '<optimize waitSearcher="' . $searcherValue . '" />';

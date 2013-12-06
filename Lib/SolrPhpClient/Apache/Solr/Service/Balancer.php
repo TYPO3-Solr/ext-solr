@@ -586,8 +586,10 @@ class Apache_Solr_Service_Balancer
 	 * Send a commit command.  Will be synchronous unless both wait parameters are set
 	 * to false.
 	 *
-	 * @param boolean $waitFlush
+	 * @param boolean $optimize
+	 * @param boolean $waitFlush Not used, will be removed with EXT:solr version 4.0
 	 * @param boolean $waitSearcher
+	 * @param integer $timeout
 	 * @return Apache_Solr_Response
 	 *
 	 * @throws Apache_Solr_HttpTransportException If an error occurs during the service call
@@ -845,9 +847,9 @@ class Apache_Solr_Service_Balancer
 	 * Send an optimize command.  Will be synchronous unless both wait parameters are set
 	 * to false.
 	 *
-	 * @param boolean $waitFlush
+	 * @param boolean $waitFlush Not used, will be removed with EXT:solr version 4.0
 	 * @param boolean $waitSearcher
-	 * @param float $timeout Maximum expected duration of the optimize operation on the server (otherwise, will throw a communication exception)
+	 * @param integer $timeout Maximum expected duration of the optimize operation on the server (otherwise, will throw a communication exception)
 	 * @return Apache_Solr_Response
 	 *
 	 * @throws Apache_Solr_HttpTransportException If an error occurs during the service call
