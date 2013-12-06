@@ -384,7 +384,7 @@ class Tx_Solr_IndexQueue_Queue {
 		$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
 
 			# temporary until we have a query builder to take care of this
-		if (empty($record) || ($itemType == 'pages' && !$this->isAllowedPageType($record))) {
+		if (empty($record) || ($itemType == 'pages' && !Tx_Solr_Util::isAllowedPageType($record))) {
 			return;
 		}
 
@@ -820,20 +820,6 @@ class Tx_Solr_IndexQueue_Queue {
 				'errors' => $errorMessage
 			)
 		);
-	}
-
-	/**
-	 * Check if the current page type (doktype) is valid.
-	 *
-	 * The valid page types are configured in plugin.tx_solr.index.allowedPageTypes as a comma separated list
-	 *
-	 * @param array $pageRecord The pages database row
-	 * @return boolean
-	 */
-	public function isAllowedPageType(array $pageRecord) {
-		$isAllowedPageType = tx_solr_Util::isAllowedPageType($pageRecord);
-
-		return (boolean) $isAllowedPageType;
 	}
 }
 

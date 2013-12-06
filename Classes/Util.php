@@ -551,8 +551,8 @@ class Tx_Solr_Util {
 	 * @return boolean TRUE if the page type is allowed, otherwise FALSE
 	 */
 	public static function isAllowedPageType(array $pageRecord) {
-		$allowedPageTypes = self::getAllowedPageTypes($pageRecord['uid']);
 		$isAllowedPageType = FALSE;
+		$allowedPageTypes  = self::getAllowedPageTypes($pageRecord['uid']);
 
 		if (in_array($pageRecord['doktype'], $allowedPageTypes)) {
 			$isAllowedPageType = TRUE;
