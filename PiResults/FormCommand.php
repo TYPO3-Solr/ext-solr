@@ -74,7 +74,7 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 		$url = $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']);
 
 		$marker = array(
-			'action'                    => $url,
+			'action'                    => htmlspecialchars($url),
 			'action_id'                 => intval($this->parentPlugin->conf['search.']['targetPage']),
 			'action_language'           => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
 			'action_language_parameter' => 'L',
