@@ -538,7 +538,7 @@ class Tx_Solr_Util {
 	 */
 	public static function getAllowedPageTypes($pageId) {
 		$configuration = self::getConfigurationFromPageId($pageId, 'plugin.tx_solr');
-		$allowedPageTypes = t3lib_div::trimExplode(',', $configuration['index.']['allowedPageTypes']);
+		$allowedPageTypes = t3lib_div::trimExplode(',', $configuration['index.']['queue.']['pages.']['allowedPageTypes']);
 
 		return $allowedPageTypes;
 	}
