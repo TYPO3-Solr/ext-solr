@@ -31,6 +31,13 @@
 class Tx_Solr_Query_FilterEncoder_QueryGroup implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
 
 	/**
+	 * constructor for class Tx_Solr_Query_FilterEncoder_QueryQroup
+	 */
+	public function __construct() {
+		$this->configuration = Tx_Solr_Util::getSolrConfiguration();
+	}
+
+	/**
 	 * Takes a filter value and encodes it to a human readable format to be
 	 * used in an URL GET parameter.
 	 *
@@ -71,13 +78,23 @@ class Tx_Solr_Query_FilterEncoder_QueryGroup implements Tx_Solr_QueryFilterEncod
 	 *
 	 * @param string $facetName Facet name
 	 * @param array $facetConfiguration The facet's configuration
+	 * @return array facet queries
 	 */
 	public function buildFacetParameters($facetName, array $facetConfiguration) {
 		$facetParameters = array();
 
 		foreach ($facetConfiguration['queryGroup.'] as $queryName => $queryConfiguration) {
 			$tag = '';
-			if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
+			if ($this->configuration['search.']['faceting.']['keepAllFacetsOnSelection'] == 1) {
+				// TODO This code is duplicated from "Query/Modifier/Faceting.php"
+				// Eventually the "exclude fields" should get passed to this method beforehand instead
+				// of generating them in each different "buildFacetParameters" implementation
+				$facets = array();
+				foreach ($this->configuration['search.']['faceting.']['facets.'] as $facet) {
+					$facets[] = $facet['field'];
+				}
+				$tag = '{!ex=' . implode(',', $facets) . '}';
+			} elseif ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
 				$tag = '{!ex=' . $facetConfiguration['field'] . '}';
 			}
 
