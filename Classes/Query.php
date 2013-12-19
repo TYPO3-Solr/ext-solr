@@ -102,8 +102,14 @@ class Tx_Solr_Query {
 		$this->setKeywords($keywords);
 		$this->sorting  = '';
 
+		// What fields to search
 		if (!empty($this->solrConfiguration['search.']['query.']['fields'])) {
 			$this->setQueryFieldsFromString($this->solrConfiguration['search.']['query.']['fields']);
+		}
+
+		// What fields to return from Solr
+		if (!empty($this->solrConfiguration['search.']['query.']['fieldList'])) {
+			$this->fieldList = t3lib_div::trimExplode(',', $this->solrConfiguration['search.']['query.']['fieldList']);
 		}
 
 		$this->linkTargetPageId = $this->solrConfiguration['search.']['targetPage'];
