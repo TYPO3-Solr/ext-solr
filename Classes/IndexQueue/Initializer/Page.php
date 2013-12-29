@@ -113,7 +113,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 
 		foreach ($mountPages as $mountPage) {
 			if (!$this->validateMountPage($mountPage)) {
-				break;
+				continue;
 			}
 
 			$mountedPages = $this->resolveMountPageTree($mountPage['mountPageSource']);
