@@ -263,7 +263,7 @@ class Tx_Solr_Query {
 	 * @return void
 	 */
 	public function setResultsPerPage($resultsPerPage) {
-		$this->resultsPerPage = max(intval($resultsPerPage), 1);
+		$this->resultsPerPage = max(intval($resultsPerPage), 0);
 	}
 
 	/**
