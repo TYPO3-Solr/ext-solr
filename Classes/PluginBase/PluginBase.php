@@ -161,7 +161,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	protected function initialize($configuration) {
 		$this->conf = $configuration;
 
-		$this->conf = array_merge(
+		$this->conf = t3lib_div::array_merge_recursive_overrule(
 			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'],
 			$this->conf
 		);
