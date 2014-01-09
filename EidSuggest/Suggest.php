@@ -69,7 +69,7 @@ $suggestQuery = t3lib_div::makeInstance('Tx_Solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));
 	// must generate default endtime, @see http://forge.typo3.org/issues/44276
 $suggestQuery->addFilter('(endtime:[NOW/MINUTE TO *] OR endtime:"' . Tx_Solr_Util::timestampToIso(0) . '")');
-$suggestQuery->setSiteHashFilter($site->getDomain());
+$suggestQuery->setSiteHashFilter($solrConfiguration['search.']['query.']['allowedSites']);
 
 $suggestQuery->setOmitHeader();
 
