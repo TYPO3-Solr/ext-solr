@@ -25,6 +25,12 @@
 	<field name="_version_" type="long" indexed="true" stored="true"/>
 
 	<!--
+		points to the root document of a block of nested documents.
+		Required for nested document support
+	-->
+	<field name="_root_" type="string" indexed="true" stored="false"/>
+
+	<!--
 		The document id is derived from a site-specific key (hash) and some
 		record properties like:
 		$document->id = $siteHash . '/' . $type . '/' . $record['uid'];
