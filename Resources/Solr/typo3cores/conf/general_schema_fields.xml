@@ -22,6 +22,8 @@
 		  when adding a document.
 	-->
 
+	<field name="_version_" type="long" indexed="true" stored="true"/>
+
 	<!--
 		The document id is derived from a site-specific key (hash) and some
 		record properties like:
