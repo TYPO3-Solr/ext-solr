@@ -198,9 +198,11 @@
 
 	<dynamicField name="*_random"    type="random"    indexed="true" stored="true" multiValued="false" />
 
-  <dynamicField name="*_point"       type="point"       indexed="true" stored="true" multiValued="false" />
+
+	<dynamicField name="*_point"       type="point"       indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_location"    type="location"    indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_locationRpt" type="locationRpt" indexed="true" stored="true" multiValued="false" />
+
 
 	<dynamicField name="*_currency"  type="currency"  indexed="true" stored="true" multiValued="false" />
 
