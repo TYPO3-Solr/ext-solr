@@ -201,6 +201,8 @@
 
 	<dynamicField name="*_point"       type="point"       indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_location"    type="location"    indexed="true" stored="true" multiValued="false" />
+	<!-- Type used to index the lat and lon components for the "location" field type -->
+	<dynamicField name="*_coordinate"  type="double"      indexed="true" stored="false" />
 	<dynamicField name="*_locationRpt" type="locationRpt" indexed="true" stored="true" multiValued="false" />
 
 
