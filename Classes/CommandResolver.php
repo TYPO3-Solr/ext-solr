@@ -61,6 +61,25 @@ class Tx_Solr_CommandResolver {
 	}
 
 	/**
+	 * Unregisters a command
+	 *
+	 * This can for example be helpful to override core-modules shipped and automatically loaded with EXT:solr
+	 *
+	 * @param string $commandName command name
+	 * @return boolean Result if command was found (and successfully unregistered)
+	 */
+	public static function unregisterPluginCommand($commandName) {
+		$pluginUnregistered = FALSE;
+
+		if (array_key_exists($commandName, self::$commands)) {
+			unset(self::$commands[$commandName]);
+			$pluginUnregistered = TRUE;
+		}
+
+		return $pluginUnregistered;
+	}
+
+	/**
 	 * Gets the commands registered for a specific plugin.
 	 *
 	 * @param	string	Plugin name to get the registered commands for.
