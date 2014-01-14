@@ -162,9 +162,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * more specialized indexers may provide more data for their specific item
 	 * types.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	The item to be indexed
-	 * @param	integer	Language Id (sys_language.uid)
-	 * @return	array	The full record with fields of data to be used for indexing
+	 * @param Tx_Solr_IndexQueue_Item $item The item to be indexed
+	 * @param integer $language Language Id (sys_language.uid)
+	 * @return array|NULL The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
 	 */
 	protected function getFullItemRecord(Tx_Solr_IndexQueue_Item $item, $language = 0) {
 		$itemRecord = $item->getRecord();
