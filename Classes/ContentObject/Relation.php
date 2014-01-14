@@ -258,18 +258,15 @@ class Tx_Solr_ContentObject_Relation {
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECT_mm_query(
-			$foreignTableName . '.' . $foreignTableLabelField,
-			$localTableName,
-			$mmTableName,
-			$foreignTableName,
-			'AND ' . $localTableName . '.uid = ' . (int) $localRecordUid . $GLOBALS['TSFE']->sys_page->enableFields($foreignTableName),
-			'',
-			$mmTableSortingField
-		);
+		$relationHandler = t3lib_div::makeInstance('t3lib_loadDBGroup');
+		$relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
 
-		while ($relatedRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($relatedRecordsResource)) {
-			$relatedItems[] = $relatedRecord[$foreignTableLabelField];
+		$selectUids = $relationHandler->tableArray[$foreignTableName];
+		if (is_array($selectUids) && count($selectUids) > 0) {
+			$relatedRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows($foreignTableLabelField, $foreignTableName, 'uid IN (' . implode(',', $selectUids) . ')' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($foreignTableName));
+			foreach ($relatedRecords as $record) {
+				$relatedItems[] = $record[$foreignTableLabelField];
+			}
 		}
 
 		return $relatedItems;
