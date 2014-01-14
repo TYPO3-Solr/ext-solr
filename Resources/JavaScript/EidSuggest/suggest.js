@@ -7,7 +7,7 @@ jQuery(document).ready(function(){
 				.data( "item.autocomplete", item )
 				.append( "<a>" + item.label + "</a>" )
 				.appendTo( ul );
-		};
+	};
 
 	jQuery('.tx-solr-q').autocomplete(
 		{
