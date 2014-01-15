@@ -11,47 +11,45 @@ jQuery(document).ready(function(){
 
 	var req = false;
 
-	jQuery('.tx-solr-q').autocomplete(
-		{
-			source: function(request, response) {
-				if (req) {
-					req.abort();
-				}
+	jQuery('.tx-solr-q').autocomplete({
+		source: function(request, response) {
+			if (req) {
+				req.abort();
+			}
 
-				req = jQuery.ajax({
-					url: tx_solr_suggestUrl,
-					dataType: 'json',
-					data: {
-						termLowercase: request.term.toLowerCase(),
-						termOriginal: request.term,
-						L: jQuery('div.tx-solr input[name="L"]').val()
-					},
-					success: function(data) {
-						req = false;
+			req = jQuery.ajax({
+				url: tx_solr_suggestUrl,
+				dataType: 'json',
+				data: {
+					termLowercase: request.term.toLowerCase(),
+					termOriginal: request.term,
+					L: jQuery('div.tx-solr input[name="L"]').val()
+				},
+				success: function(data) {
+					req = false;
 
-						var rs     = [],
-							output = [];
+					var rs     = [],
+						output = [];
 
-						jQuery.each(data, function(term, termIndex) {
-							var unformatted_label = term;
-							output.push({
-								label : unformatted_label.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' +
-											jQuery.ui.autocomplete.escapeRegex(request.term) +
-											')(?![^<>]*>)(?![^&;]+;)', 'gi'), '<strong>$1</strong>'),
-								value : term
-							});
+					jQuery.each(data, function(term, termIndex) {
+						var unformatted_label = term;
+						output.push({
+							label : unformatted_label.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' +
+										jQuery.ui.autocomplete.escapeRegex(request.term) +
+										')(?![^<>]*>)(?![^&;]+;)', 'gi'), '<strong>$1</strong>'),
+							value : term
 						});
+					});
 
-						response(output);
-					}
-				});
-			},
-			select: function(event, ui) {
-				this.value = ui.item.value;
-				jQuery(event.target).closest('form').submit();
-			},
-			delay: 0,
-			minLength: 3
-		}
-	);
+					response(output);
+				}
+			});
+		},
+		select: function(event, ui) {
+			this.value = ui.item.value;
+			jQuery(event.target).closest('form').submit();
+		},
+		delay: 0,
+		minLength: 3
+	});
 });
