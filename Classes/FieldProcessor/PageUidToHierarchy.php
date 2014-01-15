@@ -50,7 +50,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_PageUidToHierarchy implements Tx_Solr_FieldProcessor {
+class Tx_Solr_FieldProcessor_PageUidToHierarchy extends AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
 
 	/**
 	 * Expects a page ID of a page. Returns a Solr hierarchy notation for the
@@ -77,7 +77,7 @@ class Tx_Solr_FieldProcessor_PageUidToHierarchy implements Tx_Solr_FieldProcesso
 	 */
 	protected function getSolrRootlineForPageId($pageId) {
 		$pageIdRootline = $this->buildPageIdRootline($pageId);
-		$solrRootline   = $this->buildSolrHierarchyFromPageIdRootline($pageIdRootline);
+		$solrRootline   = $this->buildSolrHierarchyFromIdRootline($pageIdRootline);
 
 		return $solrRootline;
 	}
@@ -105,30 +105,6 @@ class Tx_Solr_FieldProcessor_PageUidToHierarchy implements Tx_Solr_FieldProcesso
 		$rootlinePageIds[] = $pageId;
 
 		return $rootlinePageIds;
-	}
-
-	/**
-	 * Builds a Solr hierarchy from an array of page Ids that make up a page's
-	 * rootline.
-	 *
-	 * @param array $pageIdRootline array of page Ids representing a page's rootline
-	 * @return array Solr hierarchy
-	 * @see http://wiki.apache.org/solr/HierarchicalFaceting
-	 */
-	protected function buildSolrHierarchyFromPageIdRootline(array $pageIdRootline) {
-		$hierarchy = array();
-
-		$depth       = 0;
-		$currentPath = array_shift($pageIdRootline);
-		foreach($pageIdRootline as $pageId) {
-			$hierarchy[] = $depth . '-' . $currentPath;
-
-			$depth++;
-			$currentPath .= '/' . $pageId;
-		}
-		$hierarchy[] = $depth . '-' . $currentPath;
-
-		return $hierarchy;
 	}
 
 }
