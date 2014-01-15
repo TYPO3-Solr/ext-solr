@@ -9,10 +9,16 @@ jQuery(document).ready(function(){
 				.appendTo( ul );
 	};
 
+	var req = false;
+
 	jQuery('.tx-solr-q').autocomplete(
 		{
 			source: function(request, response) {
-				jQuery.ajax({
+				if (req) {
+					req.abort();
+				}
+
+				req = jQuery.ajax({
 					url: tx_solr_suggestUrl,
 					dataType: 'json',
 					data: {
@@ -21,6 +27,8 @@ jQuery(document).ready(function(){
 						L: jQuery('div.tx-solr input[name="L"]').val()
 					},
 					success: function(data) {
+						req = false;
+
 						var rs     = [],
 							output = [];
 
@@ -36,7 +44,7 @@ jQuery(document).ready(function(){
 
 						response(output);
 					}
-				})
+				});
 			},
 			select: function(event, ui) {
 				this.value = ui.item.value;
