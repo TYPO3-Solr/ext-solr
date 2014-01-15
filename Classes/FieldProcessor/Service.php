@@ -78,6 +78,9 @@ class Tx_Solr_FieldProcessor_Service {
 						$processor  = t3lib_div::makeInstance('Tx_Solr_FieldProcessor_PageUidToHierarchy');
 						$fieldValue = $processor->process($fieldValue);
 						break;
+					case 'categoryUidToHierarchy':
+						$processor = t3lib_div::makeInstance('Tx_Solr_FieldProcessor_CategoryUidToHierarchy');
+						$fieldValue = $processor->process($fieldValue);
 					case 'uppercase':
 						$fieldValue = array_map('strtoupper', $fieldValue);
 						break;
