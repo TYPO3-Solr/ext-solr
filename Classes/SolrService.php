@@ -81,10 +81,10 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Constructor for class Tx_Solr_SolrService.
 	 *
-	 * @param	string	Solr host
-	 * @param	string	Solr port
-	 * @param	string	Solr path
-	 * @param	string	Scheme, defaults to http, can be https
+	 * @param string $host Solr host
+	 * @param string $port Solr port
+	 * @param string $path Solr path
+	 * @param string $scheme Scheme, defaults to http, can be https
 	 */
 	public function __construct($host = '', $port = '8080', $path = '/solr/', $scheme = 'http') {
 		$this->setScheme($scheme);
@@ -139,7 +139,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			$parsedUrl = parse_url($url);
 
 				// unfortunately can't use str_replace as it replace all
-				// occurances of $needle and can't be limited to replace only once
+				// occurrences of $needle and can't be limited to replace only once
 			$url = $this->_scheme . substr($url, strlen($parsedUrl['scheme']));
 		}
 
@@ -152,10 +152,11 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * @param string $servlet Path to be added to the base Solr path.
 	 * @param array $parameters Optional, additional request parameters when constructing the URL.
 	 * @param string $method HTTP method to use, defaults to GET.
-	 * @param string $requestHeaders Key value pairs of header names and values. Should include 'Content-Type' for POST and PUT.
+	 * @param array $requestHeaders Key value pairs of header names and values. Should include 'Content-Type' for POST and PUT.
 	 * @param string $rawPost Must be an empty string unless method is POST or PUT.
-	 * @param float $timeout Read timeout in seconds, defaults to FALSE.
+	 * @param float|boolean $timeout Read timeout in seconds, defaults to FALSE.
 	 * @return Apache_Solr_Response Response object
+	 * @throws Apache_Solr_HttpTransportException if returned HTTP status is other than 200
 	 */
 	public function requestServlet($servlet, $parameters = array(), $method = 'GET', $requestHeaders = array(), $rawPost = '', $timeout = FALSE) {
 		$httpTransport = $this->getHttpTransport();
@@ -222,7 +223,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * Simply overrides the SolrPhpClient implementation, changing ping from a
 	 * HEAD to a GET request, see http://forge.typo3.org/issues/44167
 	 *
-	 * @param float $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+	 * @param float|integer $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
 	 * @return float Actual time taken to ping the server, FALSE if timeout or HTTP error status occurs
 	 */
 	public function ping($timeout = 2) {
@@ -243,7 +244,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Performs a content and meta data extraction request.
 	 *
-	 * @param Tx_Solr_ExtractingQuery An extraction query
+	 * @param Tx_Solr_ExtractingQuery $query An extraction query
 	 * @return array An array containing the extracted content [0] and meta data [1]
 	 */
 	public function extract(Tx_Solr_ExtractingQuery $query) {
@@ -278,7 +279,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * Central method for making a get operation against this Solr Server
 	 *
 	 * @param string $url
-	 * @param float $timeout Read timeout in seconds
+	 * @param float|boolean $timeout Read timeout in seconds
 	 * @return Apache_Solr_Response
 	 */
 	protected function _sendRawGet($url, $timeout = FALSE) {
@@ -316,7 +317,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 *
 	 * @param string $url
 	 * @param string $rawPost
-	 * @param float $timeout Read timeout in seconds
+	 * @param float|boolean $timeout Read timeout in seconds
 	 * @param string $contentType
 	 * @return Apache_Solr_Response
 	 */
@@ -382,7 +383,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Retrieves meta data about the index from the luke request handler
 	 *
-	 * @param integer Number of top terms to fetch for each field
+	 * @param integer $numberOfTerms Number of top terms to fetch for each field
 	 * @return array An array of index meta data
 	 */
 	public function getLukeMetaData($numberOfTerms = 0) {
@@ -404,7 +405,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * get field meta data for the index
 	 *
-	 * @param integer Number of top terms to fetch for each field
+	 * @param integer $numberOfTerms Number of top terms to fetch for each field
 	 * @return array
 	 */
 	public function getFieldsMetaData($numberOfTerms = 0) {
@@ -429,6 +430,11 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		return $this->responseCache;
 	}
 
+	/**
+	 * Enable/Disable debug mode
+	 *
+	 * @param boolean $debug TRUE to enable debug mode, FALSE to turn off, off by default
+	 */
 	public function setDebug($debug) {
 		$this->debug = (boolean) $debug;
 	}
@@ -436,7 +442,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Gets information about the Solr server
 	 *
-	 * @return	array	A nested array of system data.
+	 * @return array A nested array of system data.
 	 */
 	public function getSystemInformation() {
 
@@ -454,7 +460,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Gets information about the plugins installed in Solr
 	 *
-	 * @return	array	A nested array of plugin data.
+	 * @return array A nested array of plugin data.
 	 */
 	public function getPluginsInformation() {
 
@@ -536,10 +542,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * a complete and well formed "delete" xml document
 	 *
 	 * @param string $rawPost Expected to be utf-8 encoded xml document
-	 * @param float $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
+	 * @param float|integer $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
 	 * @return Apache_Solr_Response
-	 *
-	 * @throws Apache_Solr_HttpTransportException If an error occurs during the service call
 	 */
 	public function delete($rawPost, $timeout = 3600) {
 		$response = $this->_sendRawPost($this->_updateUrl, $rawPost, $timeout);
