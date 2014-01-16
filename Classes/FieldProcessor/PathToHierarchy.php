@@ -35,17 +35,18 @@ class Tx_Solr_FieldProcessor_PathToHierarchy implements Tx_Solr_FieldProcessor {
 	/**
 	 * Expects a value like "some/hierarchy/value"
 	 *
-	 * @param	array	Array of values, an array because of multivalued fields
-	 * @return	array	Modified array of values
+	 * @param array $values Array of values, an array because of multivalued fields
+	 * @return array Modified array of values
 	 */
 	public function process(array $values) {
 		$results = array();
 
 		foreach ($values as $value) {
-			$results[] = $this->buildSolrHierarchyFromPath($value);
+			$valueResults = $this->buildSolrHierarchyFromPath($value);
+			$results = array_merge($results, $valueResults);
 		}
 
-		return $results;
+		return array_unique($results);
 	}
 
 	/**
