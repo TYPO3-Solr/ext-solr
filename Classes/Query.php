@@ -594,7 +594,7 @@ class Tx_Solr_Query {
 	/**
 	 * Limits the query to certain sites
 	 *
-	 * @param array $allowedSites Comma-separated list of domains
+	 * @param string $allowedSites Comma-separated list of domains
 	 */
 	public function setSiteHashFilter($allowedSites) {
 		$allowedSites = t3lib_div::trimExplode(',', $allowedSites);
