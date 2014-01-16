@@ -99,7 +99,8 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 	/**
 	 * Builds facet parameters for field facets
 	 *
-	 * @param array A facet configuration
+	 * @param array $facetConfiguration The facet's configuration
+	 * @return array
 	 */
 	protected function buildFacetParameters(array $facetConfiguration) {
 		$facetParameters = array();
