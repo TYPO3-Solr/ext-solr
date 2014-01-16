@@ -59,6 +59,26 @@ class Tx_Solr_HtmlContentExtractor {
 		'a'      => 'tagsA',
 	);
 
+	/**
+	 * Unicode ranges which should get stripped before sending a document to solr.
+	 * This is necessary if a document (PDF, etc.) contains unicode characters which
+	 * are valid in the font being used in the document but are not available in the
+	 * font being used for displaying results.
+	 *
+	 * This is often the case if PDFs are being indexed where special fonts are used
+	 * for displaying bullets, etc. Usually those bullets reside in one of the unicode
+	 * "Private Use Zones" or the "Private Use Area" (plane 15 + 16)
+	 *
+	 * @see http://en.wikipedia.org/wiki/Unicode_block
+	 * @var array
+	 */
+	protected static $stripUnicodeRanges = array(
+		array('FFFD',   'FFFD'), // Replacement Character (�) @see http://en.wikipedia.org/wiki/Specials_%28Unicode_block%29
+		array('E000',   'F8FF'), // Private Use Area (part of Plane 0)
+		array('F0000',  'FFFFF'), // Supplementary Private Use Area (Plane 15)
+		array('100000', '10FFFF'), // Supplementary Private Use Area (Plane 16)
+	);
+
 
 	/**
 	 * Constructor.
@@ -100,6 +120,32 @@ class Tx_Solr_HtmlContentExtractor {
 	}
 
 	/**
+	 * Strips a UTF-8 character range
+	 *
+	 * @param string $content Content to sanitize
+	 * @param string $start Unicode range start character as uppercase hexadecimal string
+	 * @param string $end Unicode range end character as uppercase hexadecimal string
+	 * @return string Sanitized content
+	 */
+	public static function stripUnicodeRange($content, $start, $end) {
+		return preg_replace('/[\x{' . $start . '}-\x{' . $end . '}]/u', '', $content);
+	}
+
+	/**
+	 * Strips unusable unicode ranges
+	 *
+	 * @param string $content Content to sanitize
+	 * @return string Sanitized content
+	 */
+	public static function stripUnicodeRanges($content) {
+		foreach (self::$stripUnicodeRanges as $range) {
+			$content = self::stripUnicodeRange($content, $range[0], $range[1]);
+		}
+
+		return $content;
+	}
+
+	/**
 	 * Strips html tags, and tab, new-line, carriage-return, &nbsp; whitespace
 	 * characters.
 	 *
@@ -119,6 +165,7 @@ class Tx_Solr_HtmlContentExtractor {
 		$content = str_replace(array('<', '>'), array(' <', '> '), $content);
 		$content = strip_tags($content);
 		$content = str_replace(array("\t", "\n", "\r", '&nbsp;'), ' ', $content);
+		$content = self::stripUnicodeRanges($content);
 		$content = trim($content);
 
 		return $content;
