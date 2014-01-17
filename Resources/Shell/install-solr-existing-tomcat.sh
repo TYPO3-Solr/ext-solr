@@ -6,10 +6,12 @@
 
 clear
 
-TOMCAT_VER=6.0.37
-SOLR_VER=3.6.2
-EXT_SOLR_VER=2.8
-EXT_SOLR_PLUGIN_VER=1.2.0
+TOMCAT_VERSION=6.0.37
+SOLR_VERSION=4.6.0
+EXT_SOLR_VERSION=3.0
+EXT_SOLR_PLUGIN_ACCESS_VERSION=2.0
+EXT_SOLR_PLUGIN_UTILS_VERSION=1.1
+EXT_SOLR_PLUGIN_LANG_VERSION=3.1
 
 # Tomcat specific settings
 TOMCAT_USER="tomcat6"
@@ -23,7 +25,7 @@ TOMCAT_WORK_DIR="/var/cache/tomcat6"
 TOMCAT_CONTEXT_DIR="${TOMCAT_CONFIG_DIR}/Catalina/localhost"
 TOMCAT_WEBAPP_DIR="/var/lib/tomcat6/webapps"
 
-GITBRANCH_PATH="solr_$EXT_SOLR_VER.x"
+GITBRANCH_PATH="solr_$EXT_SOLR_VERSION.x"
 
 # Set default language for cores to download to english, if no commandline parameters are given
 if [ $# -eq 0 ]
@@ -217,26 +219,28 @@ cd /opt/solr-tomcat/
 # We are using an existing tomcat installation
 #
 # cecho "Using the mirror at Oregon State University Open Source Lab - OSUOSL." $green
-# cecho "Downloading Apache Tomcat $TOMCAT_VER" $green
-# TOMCAT_MAINVERSION=`echo "$TOMCAT_VER" | cut -d'.' -f1`
-# wget --progress=bar:force http://apache.osuosl.org/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VER/bin/apache-tomcat-$TOMCAT_VER.zip 2>&1 | progressfilt
+# cecho "Downloading Apache Tomcat $TOMCAT_VERSION" $green
+# TOMCAT_MAINVERSION=`echo "$TOMCAT_VERSION" | cut -d'.' -f1`
+# wget --progress=bar:force http://apache.osuosl.org/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip 2>&1 | progressfilt
 
-cecho "Downloading Apache Solr $SOLR_VER" $green
-wget --progress=bar:force http://archive.apache.org/dist/lucene/solr/$SOLR_VER/apache-solr-$SOLR_VER.zip 2>&1 | progressfilt
+cecho "Downloading Apache Solr $SOLR_VERSION" $green
+wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.zip 2>&1 | progressfilt
 
 # We are using an existing tomcat installation
 #
 # cecho "Unpacking Apache Tomcat." $green
-# unzip -q apache-tomcat-$TOMCAT_VER.zip
+# unzip -q apache-tomcat-$TOMCAT_VERSION.zip
 
 cecho "Unpacking Apache Solr." $green
-unzip -q apache-solr-$SOLR_VER.zip
+unzip -q solr-$SOLR_VERSION.zip
 
 # We are using an existing tomcat installation
-# mv apache-tomcat-$TOMCAT_VER tomcat
+# mv apache-tomcat-$TOMCAT_VERSION tomcat
 
-cp apache-solr-$SOLR_VER/dist/apache-solr-$SOLR_VER.war ${TOMCAT_BASE}/webapps/solr.war
-cp -r apache-solr-$SOLR_VER/example/solr .
+cp solr-$SOLR_VERSION/dist/solr-$SOLR_VERSION.war ${TOMCAT_BASE}/webapps/solr.war
+cp solr-$SOLR_VERSION/example/lib/ext/*.jar ${TOMCAT_HOME}/lib
+cp solr-$SOLR_VERSION/example/resources/log4j.properties ${TOMCAT_HOME}/lib/log4j.properties
+cp -r solr-$SOLR_VERSION/example/solr .
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -307,15 +311,17 @@ wgetresource tomcat/solr.xml
 
 # copy libs
 cd /opt/solr-tomcat/
-cp -r apache-solr-$SOLR_VER/dist solr/
-cp -r apache-solr-$SOLR_VER/contrib solr/
+cp -r solr-$SOLR_VERSION/dist solr/
+cp -r solr-$SOLR_VERSION/contrib solr/
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-cecho "Downloading the Solr TYPO3 plugin for access control. Version: $EXT_SOLR_PLUGIN_VER" $green
+cecho "Downloading the Solr TYPO3 plugin for access control. Version: $EXT_SOLR_PLUGIN_ACCESS_VERSION" $green
 mkdir solr/typo3lib
 cd solr/typo3lib
-wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/solr-typo3-plugin-$EXT_SOLR_PLUGIN_VER.jar 2>&1 | progressfilt
+wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-access-$EXT_SOLR_PLUGIN_ACCESS_VERSION.jar 2>&1 | progressfilt
+wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-utils-$EXT_SOLR_PLUGIN_UTILS_VERSION.jar 2>&1 | progressfilt
+wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/commons-lang3-$EXT_SOLR_PLUGIN_LANG_VERSION.jar 2>&1 | progressfilt
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -328,11 +334,11 @@ wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/solr-ty
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 cecho "Cleaning up." $green
-rm -rf apache-solr-$SOLR_VER.zip
-rm -rf apache-solr-$SOLR_VER
+rm -rf solr-$SOLR_VERSION.zip
+rm -rf solr-$SOLR_VERSION
 # We are using an existing tomcat installation
 #
-# rm -rf apache-tomcat-$TOMCAT_VER.zip
+# rm -rf apache-tomcat-$TOMCAT_VERSION.zip
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
