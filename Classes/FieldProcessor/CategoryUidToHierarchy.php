@@ -50,7 +50,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
+class Tx_Solr_FieldProcessor_CategoryUidToHierarchy extends Tx_Solr_FieldProcessor_AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
 
 	/**
 	 * Expects a uid ID of a category. Returns a Solr hierarchy notation for the

@@ -30,7 +30,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-abstract class AbstractHierarchyProcessor {
+abstract class Tx_Solr_FieldProcessor_AbstractHierarchyProcessor {
 
 	/**
 	 * Builds a Solr hierarchy from an array of uids that make up a rootline.
