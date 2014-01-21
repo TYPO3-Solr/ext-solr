@@ -65,6 +65,13 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 */
 	protected $loggingEnabled = FALSE;
 
+	/**
+	 * Cache of the sys_language_overlay information
+	 *
+	 * @var array
+	 */
+	protected $sysLanguageOverlay = array();
+
 
 	/**
 	 * Constructor
@@ -167,6 +174,13 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * @return array|NULL The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
 	 */
 	protected function getFullItemRecord(Tx_Solr_IndexQueue_Item $item, $language = 0) {
+		$rootPageUid = $item->getRootPageUid();
+		$overlayIdentifier = $rootPageUid . '|' . $language;
+		if (!isset($this->sysLanguageOverlay[$overlayIdentifier])) {
+			Tx_Solr_Util::initializeTsfe($rootPageUid, $language);
+			$this->sysLanguageOverlay[$overlayIdentifier] = $GLOBALS['TSFE']->sys_language_contentOL;
+		}
+
 		$itemRecord = $item->getRecord();
 
 		if ($language > 0) {
@@ -177,7 +191,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 				$item->getType(),
 				$itemRecord,
 				$language,
-				'hideNonTranslated'
+				$this->sysLanguageOverlay[$rootPageUid . '|' . $language]
 			);
 		}
 
@@ -210,10 +224,13 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['transOrigPointerField'])) {
 			$translationOriginalPointerField = $GLOBALS['TCA'][$item->getType()]['ctrl']['transOrigPointerField'];
 		}
+
+		$languageField = $GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'];
 		if ($itemRecord[$translationOriginalPointerField] == 0
-			&& !empty($GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'])
-			&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['languageField']] != $language
-			&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['languageField']] != '-1'
+			&& $this->sysLanguageOverlay[$overlayIdentifier] != 1
+			&& !empty($languageField)
+			&& $itemRecord[$languageField] != $language
+			&& $itemRecord[$languageField] != '-1'
 		) {
 			$itemRecord = NULL;
 		}
