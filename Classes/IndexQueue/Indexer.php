@@ -59,9 +59,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	protected $options = array();
 
 	/**
-	 * To log or not to log... #Shakespear
+	 * To log or not to log... #Shakespeare
 	 *
-	 * @var	boolean
+	 * @var boolean
 	 */
 	protected $loggingEnabled = FALSE;
 
