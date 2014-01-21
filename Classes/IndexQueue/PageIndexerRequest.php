@@ -82,12 +82,21 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	protected $indexQueueItem = NULL;
 
 	/**
+	 * Request timeout in seconds
+	 *
+	 * @var float
+	 */
+	protected $timeout;
+
+	/**
 	 * Constructor for Tx_Solr_IndexQueue_PageIndexerRequest
 	 *
 	 * @param	string	$header	JSON encoded Index Queue page indexer parameters
 	 */
 	public function __construct($header = NULL) {
 		$this->requestId = uniqid();
+
+		$this->timeout = (float) ini_get('default_socket_timeout');
 
 		if (!is_null($header)) {
 			$this->parameters = json_decode($header, TRUE);
@@ -127,9 +136,11 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 
 		$context = stream_context_create(array(
 			'http' => array(
-				'header' => implode(CRLF, $headers)
+				'header'  => implode(CRLF, $headers),
+				'timeout' => $this->timeout
 			)
 		));
+
 		$rawResponse = file_get_contents($url, FALSE, $context);
 
 			// convert JSON response to response object properties
@@ -323,6 +334,24 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	 */
 	public function setIndexQueueItem(Tx_Solr_IndexQueue_Item $item) {
 		$this->indexQueueItem = $item;
+	}
+
+	/**
+	 * Returns the request timeout in seconds
+	 *
+	 * @return float
+	 */
+	public function getTimeout() {
+		return $this->timeout;
+	}
+
+	/**
+	 * Sets the request timeout in seconds
+	 *
+	 * @param float $timeout Timeout seconds
+	 */
+	public function setTimeout($timeout) {
+		$this->timeout = (float) $timeout;
 	}
 }
 

@@ -141,6 +141,10 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 			}
 		}
 
+		if (!empty($this->options['frontendDataHelper.']['requestTimeout'])) {
+			$request->setTimeout((float) $this->options['frontendDataHelper.']['requestTimeout']);
+		}
+
 		return $request;
 	}
 
