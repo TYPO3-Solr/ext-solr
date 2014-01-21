@@ -119,7 +119,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	}
 
 	/**
-	 * Builds a base page indexer request with cofigured headers and other
+	 * Builds a base page indexer request with configured headers and other
 	 * parameters.
 	 *
 	 * @return Tx_Solr_IndexQueue_PageIndexerRequest Base page indexer request
