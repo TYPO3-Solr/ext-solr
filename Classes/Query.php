@@ -894,11 +894,11 @@ class Tx_Solr_Query {
 	/**
 	 * Sets the boost query (bq) parameter
 	 *
-	 * @param mixed $boostQuery boost query parameter as string or boolean FALSE to disable / reset the bq parameter
+	 * @param mixed $boostQuery boost query parameter as string or array to set a boost query or boolean FALSE to disable / reset the bq parameter
 	 * @see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
 	 */
 	public function setBoostQuery($boostQuery) {
-		if (is_string($boostQuery) && !empty($boostQuery)) {
+		if ((is_string($boostQuery) || is_array($boostQuery)) && !empty($boostQuery)) {
 			$this->queryParameters['bq'] = $boostQuery;
 		} else {
 			unset($this->queryParameters['bq']);

@@ -58,6 +58,17 @@ class Tx_Solr_Search_RelevanceComponent extends Tx_Solr_Search_AbstractComponent
 		if (!empty($this->searchConfiguration['query.']['boostQuery'])) {
 			$this->query->setBoostQuery($this->searchConfiguration['query.']['boostQuery']);
 		}
+
+		if (!empty($this->searchConfiguration['query.']['boostQuery.'])) {
+			$boostQueries       = array();
+			$boostConfiguration = $this->searchConfiguration['query.']['boostQuery.'];
+
+			foreach ($boostConfiguration as $query) {
+				$boostQueries[] = $query;
+			}
+
+			$this->query->setBoostQuery($boostQueries);
+		}
 	}
 
 	/**

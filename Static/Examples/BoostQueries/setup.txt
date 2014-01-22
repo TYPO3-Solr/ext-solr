@@ -1,0 +1,5 @@
+plugin.tx_solr.search.query.boostQuery {
+	lastYear = created:[NOW/DAY-1YEAR TO *]^5.0
+	oneYear = created:[NOW/DAY-2YEARS TO NOW/DAY-1YEAR]^3.0
+	twoYearsPlus = created:[NOW/DAY-5YEARS TO NOW/DAY-2YEARS]^2.0
+}
