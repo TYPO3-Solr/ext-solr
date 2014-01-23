@@ -36,17 +36,18 @@ $languageId = filter_var(
 $TSFE = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, TRUE);
 $TSFE->initFEuser();
 $TSFE->initUserGroups();
-$TSFE->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
-$TSFE->rootLine = $TSFE->sys_page->getRootLine($pageId, '');
-$TSFE->initTemplate();
-$TSFE->getConfigArray();
-
 // load TCA
 if (version_compare(TYPO3_version, '6.1-dev', '>=')) {
 	\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
 } else {
 	$TSFE->includeTCA();
 }
+$TSFE->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
+$TSFE->rootLine = $TSFE->sys_page->getRootLine($pageId, '');
+$TSFE->initTemplate();
+$TSFE->getConfigArray();
+
+
 
 $TSFE->sys_language_uid = $languageId;
 
