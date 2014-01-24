@@ -25,7 +25,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_resu
 $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_pi_results'] = 'pi_flexform';
 
 	// add flexform to pi_results
-t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi_results', 'FILE:EXT:solr/Flexforms/pi_results.xml');
+t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi_results', 'FILE:EXT:solr/Configuration/FlexForms/Results.xml');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -207,7 +207,7 @@ $GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr
 	// replace the built-in search content element
 t3lib_extMgm::addPiFlexFormValue(
 	'*',
-	'FILE:EXT:' . $_EXTKEY . '/Flexforms/pi_results.xml',
+	'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/Results.xml',
 	'search'
 );
 
