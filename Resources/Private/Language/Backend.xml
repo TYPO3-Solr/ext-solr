@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for extension 'solr'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="module_indexinspector">Search Index Inspector</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="module_indexinspector">Inspecteur de l'index de recherche</label>
+		</languageKey>
+	</data>
+</T3locallang>

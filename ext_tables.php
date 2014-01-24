@@ -140,8 +140,8 @@ if (TYPO3_MODE == 'BE') {
 	if (t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) < 6000000) {
 		// registering the index report with the reports module
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_solr']['index'] = array(
-			'title' => 'LLL:EXT:solr/locallang.xml:report_index_title',
-			'description' => 'LLL:EXT:solr/locallang.xml:report_index_description',
+			'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleReports.xml:index_title',
+			'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleReports.xml:index_description',
 			'report' => 'Tx_Solr_Report_IndexReport',
 			'icon' => 'EXT:solr/Report/tx_solr_report.gif'
 		);
@@ -152,7 +152,7 @@ if (TYPO3_MODE == 'BE') {
 		'web_info',
 		'Tx_Solr_ModIndex_IndexInspector',
 		$GLOBALS['PATH_solr'] . 'ModIndex/IndexInspector.php',
-		'LLL:EXT:solr/locallang.xml:module_indexinspector'
+		'LLL:EXT:solr/Resources/Private/Language/Backend.xml:module_indexinspector'
 	);
 
 	// register Clear Cache Menu hook

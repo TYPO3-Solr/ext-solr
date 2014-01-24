@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for extension 'solr'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="index_title">Apache Solr Index</label>
+			<label index="index_description">View the number of documents and fields in your index</label>
+			<label index="statistics_title">Apache Solr Statistics</label>
+			<label index="statistics_description">Provides several Solr usage statistics</label>
+		</languageKey>
+		<languageKey index="dk" type="array">
+			<label index="index_title">Apache Solr Index</label>
+			<label index="index_description">Se antallet af dokumenter og felter i dit index</label>
+			<label index="statistics_title">Apache Solr Statistik</label>
+			<label index="statistics_description">Viser adskillige Solr-anvendelsesstatistikker</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="index_title">Index d'Apache Solr</label>
+			<label index="index_description">Visualisez le nombre de documents et de champs de votre index</label>
+			<label index="statistics_title">Statistiques d'Apache Solr</label>
+			<label index="statistics_description">Fourni plusieurs statistiques d'usage de Solr</label>
+		</languageKey>
+	</data>
+</T3locallang>
