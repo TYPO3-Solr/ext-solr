@@ -76,6 +76,8 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			&& ($this->query->getQueryString()
 				|| $this->conf['search.']['initializeWithEmptyQuery']
 				|| $this->conf['search.']['showResultsOfInitialEmptyQuery']
+				|| $this->conf['search.']['initializeWithQuery']
+				|| $this->conf['search.']['showResultsOfInitialQuery']
 		)) {
 			$currentPage = max(0, intval($this->piVars['page']));
 
@@ -103,8 +105,9 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	protected function processResponse(Tx_Solr_Query $query, Apache_Solr_Response &$response) {
 		$rawUserQuery = $this->getRawUserQuery();
 
-		if ($this->conf['search.']['initializeWithEmptyQuery']
+		if (($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])
 			&& !$this->conf['search.']['showResultsOfInitialEmptyQuery']
+			&& !$this->conf['search.']['showResultsOfInitialQuery']
 			&& empty($rawUserQuery)
 		) {
 				// explicitly set number of results to 0 as we just wanted
@@ -191,7 +194,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 		$rawUserQuery = $this->getRawUserQuery();
 
 			// TODO check whether a search has been conducted already?
-		if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'])) {
+		if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])) {
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
 				t3lib_div::devLog('received search query', 'solr', 0, array($rawUserQuery));
@@ -222,6 +225,10 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 					// empty main query, but using a "return everything"
 					// alternative query in q.alt
 				$query->setAlternativeQuery('*:*');
+			}
+
+			if ($this->conf['search.']['initializeWithQuery']) {;
+				$query->setAlternativeQuery($this->conf['search.']['initializeWithQuery']);
 			}
 
 			foreach($this->additionalFilters as $additionalFilter) {
@@ -308,6 +315,25 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 		);
 		if ($showResultsOfInitialEmptyQuery) {
 			$this->conf['search.']['showResultsOfInitialEmptyQuery'] = 1;
+		}
+
+			// initialize with non-empty query
+		$initialQuery = $this->pi_getFFvalue(
+			$this->cObj->data['pi_flexform'],
+			'initializeWithQuery',
+			'sQuery'
+		);
+		if ($initialQuery) {
+			$this->conf['search.']['initializeWithQuery'] = $initialQuery;
+		}
+
+		$showResultsOfInitialQuery = $this->pi_getFFvalue(
+			$this->cObj->data['pi_flexform'],
+			'showResultsOfInitialQuery',
+			'sQuery'
+		);
+		if ($showResultsOfInitialQuery) {
+			$this->conf['search.']['showResultsOfInitialQuery'] = 1;
 		}
 
 			// target page
@@ -420,8 +446,9 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 
 		$rawUserQuery = $this->getRawUserQuery();
 
-		if ($this->conf['search.']['initializeWithEmptyQuery']
+		if (($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])
 			&& !$this->conf['search.']['showResultsOfInitialEmptyQuery']
+			&& !$this->conf['search.']['showResultsOfInitialQuery']
 			&& empty($rawUserQuery)
 		) {
 				// initialize search with an empty query, which would by default return all documents

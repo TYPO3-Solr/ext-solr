@@ -101,6 +101,10 @@ plugin.tx_solr {
 
 		initializeWithEmptyQuery = 0
 		showResultsOfInitialEmptyQuery = 0
+
+		initializeWithQuery =
+		showResultsOfInitialQuery = 0
+
 		keepExistingParametersForNewSearches = 0
 
 		query {

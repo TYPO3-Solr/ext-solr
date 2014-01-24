@@ -76,7 +76,7 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		$marker = array();
 
 		if ($this->configuration['search.']['faceting']
-			&& ($this->search->getNumberOfResults() || $this->configuration['search.']['initializeWithEmptyQuery'])
+			&& ($this->search->getNumberOfResults() || $this->configuration['search.']['initializeWithEmptyQuery'] || $this->configuration['search.']['initializeWithQuery'])
 		) {
 			$marker['subpart_available_facets'] = $this->renderAvailableFacets();
 			$marker['subpart_used_facets']      = $this->renderUsedFacets();
