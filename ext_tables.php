@@ -54,17 +54,17 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_freq
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// TypoScript
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Static/Solr/', 'Apache Solr');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Solr/', 'Apache Solr');
 
 	// OpenSearch
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Static/OpenSearch/', 'Apache Solr - OpenSearch');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/OpenSearch/', 'Apache Solr - OpenSearch');
 
 	// Examples
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Static/Examples/BoostQueries/', 'Apache Solr Example - Boost more recent results');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Static/Examples/EverythingOn/', 'Apache Solr Example - Everything On');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Static/Examples/FilterPages/', 'Apache Solr Example - Filter to only show page results');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Static/Examples/IndexQueueNews/', 'Apache Solr Example - Index Queue Configuration for news');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Static/Examples/IndexQueueTtNews/', 'Apache Solr Example - Index Queue Configuration for tt_news');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/BoostQueries/', 'Apache Solr Example - Boost more recent results');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/EverythingOn/', 'Apache Solr Example - Everything On');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/FilterPages/', 'Apache Solr Example - Filter to only show page results');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IndexQueueNews/', 'Apache Solr Example - Index Queue Configuration for news');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IndexQueueTtNews/', 'Apache Solr Example - Index Queue Configuration for tt_news');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
