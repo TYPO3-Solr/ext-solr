@@ -55,7 +55,7 @@ class Tx_Solr_Scheduler_CommitTaskSolrServerField implements tx_scheduler_Additi
 		$additionalFields = array(
 			'site' => array(
 				'code'     => Tx_Solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $taskInfo['site']),
-				'label'    => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_field_site',
+				'label'    => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:field_site',
 				'cshKey'   => '',
 				'cshLabel' => ''
 			)

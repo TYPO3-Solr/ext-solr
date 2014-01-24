@@ -257,29 +257,29 @@ Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_OptimizeTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_optimizer_title',
-	'description'      => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_optimizer_description',
+	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:optimizer_title',
+	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:optimizer_description',
 	'additionalFields' => 'Tx_Solr_Scheduler_OptimizeTaskSolrServerField'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_CommitTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_commit_title',
-	'description'      => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_commit_description',
+	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:commit_title',
+	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:commit_description',
 	'additionalFields' => 'Tx_Solr_Scheduler_CommitTaskSolrServerField'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_ReIndexTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_reindex_title',
-	'description'      => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_reindex_description',
+	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_title',
+	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_description',
 	'additionalFields' => 'Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_IndexQueueWorkerTask'] = array(
 	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_indexqueueworker_title',
-	'description'      => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_indexqueueworker_description',
+	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_title',
+	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_description',
 	'additionalFields' => 'Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 

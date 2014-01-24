@@ -91,7 +91,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 
 		$additionalFields['site'] = array(
 			'code'     => Tx_Solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $this->site),
-			'label'    => 'LLL:EXT:solr/Lang/locallang.xml:scheduler_field_site',
+			'label'    => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:field_site',
 			'cshKey'   => '',
 			'cshLabel' => ''
 		);
