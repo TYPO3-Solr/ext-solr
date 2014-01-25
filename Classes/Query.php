@@ -704,7 +704,9 @@ class Tx_Solr_Query {
 	 * @param string $fieldName Name of a field to return in the result documents
 	 */
 	public function addReturnField($fieldName) {
-		if (in_array('*', $this->fieldList)) {
+		if (strpos($fieldName, '[') === false
+			&& strpos($fieldName, ']') === false
+			&& in_array('*', $this->fieldList)) {
 			$this->fieldList = array_diff($this->fieldList, array('*'));
 		}
 
