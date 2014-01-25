@@ -712,6 +712,19 @@ class Tx_Solr_Query {
 	}
 
 	/**
+	 * Removes a field from the list of fields to return (fl parameter).
+	 *
+	 * @param string $fieldName Field to remove from the list of fields to return
+	 */
+	public function removeReturnField($fieldName) {
+		$key = array_search($fieldName, $this->fieldList);
+
+		if ($key !== FALSE) {
+			unset($this->fieldList[$key]);
+		}
+	}
+
+	/**
 	 * Gets the query type, Solr's qt parameter.
 	 *
 	 * @return string Query type, qt parameter.
