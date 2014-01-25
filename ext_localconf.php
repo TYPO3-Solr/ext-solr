@@ -47,7 +47,7 @@ t3lib_extMgm::addPItoST43(
 t3lib_extMgm::addPItoST43(
 	$_EXTKEY,
 	'PiFrequentSearches/FrequentSearches.php',
-	'pi_frequent_searches',
+	'_pi_frequentsearches',
 	'list_type',
 	TRUE
 );
