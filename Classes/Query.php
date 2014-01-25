@@ -317,21 +317,28 @@ class Tx_Solr_Query {
 	 * Activates and deactivates query elevation for the current query.
 	 *
 	 * @param boolean $elevation True to enable query elevation (default), FALSE to disable query elevation.
-	 * @param boolean $forceElevation Optionaly force elevation so that the elevated documents are always on top regardless of sorting, default to TRUE.
+	 * @param boolean $forceElevation Optionally force elevation so that the elevated documents are always on top regardless of sorting, default to TRUE.
+	 * @param boolean $markElevatedResults Mark elevated results
 	 * @return void
 	 */
-	public function setQueryElevation($elevation = TRUE, $forceElevation = TRUE) {
+	public function setQueryElevation($elevation = TRUE, $forceElevation = TRUE, $markElevatedResults = TRUE) {
 		if ($elevation) {
 			$this->queryParameters['enableElevation'] = 'true';
 
 			if ($forceElevation) {
 				$this->queryParameters['forceElevation'] = 'true';
+			} else {
+				$this->queryParameters['forceElevation'] = 'false';
+			}
+
+			if ($markElevatedResults) {
+				$this->addReturnField('isElevated:[elevated]');
 			}
 		} else {
-			if (isset($this->queryParameters['enableElevation'])) {
-				unset($this->queryParameters['enableElevation']);
-				unset($this->queryParameters['forceElevation']);
-			}
+			$this->queryParameters['enableElevation'] = 'false';
+			unset($this->queryParameters['forceElevation']);
+			$this->removeReturnField('isElevated:[elevated]');
+			$this->removeReturnField('[elevated]'); // fallback
 		}
 	}
 

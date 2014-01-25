@@ -79,12 +79,14 @@
 	<ol start="###RESULTS.OFFSET###" class="results-list">
 		<!-- ###LOOP:RESULT_DOCUMENTS### begin -->
 		<!-- ###LOOP_CONTENT### -->
-		<li class="results-entry">
+		<li class="results-entry###IF:###RESULT_DOCUMENT.isElevated###|==|1|class### results-elevated###IF:###RESULT_DOCUMENT.isElevated###|==|1|class###">
 			<!--
 			Score: ###RESULT_DOCUMENT.SCORE###
 			Document ID:  ###RESULT_DOCUMENT.ID###
 			-->
-
+			<!-- ###IF:###RESULT_DOCUMENT.isElevated###|==|1|label### begin -->
+			<div class="results-elevated-label">###LLL:sponsored###</div>
+			<!-- ###IF:###RESULT_DOCUMENT.isElevated###|==|1|label### end -->
 			<h5 class="results-topic"><a href="###RESULT_DOCUMENT.URL###">###RESULT_DOCUMENT.TITLE###</a></h5>
 			<div class="results-teaser">
 				<div class="relevance">

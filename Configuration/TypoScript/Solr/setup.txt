@@ -300,6 +300,12 @@ plugin.tx_solr {
 			showAllLink.wrap = <li>|</li>
 		}
 
+		elevation = 0
+		elevation {
+			markElevatedResults = 1
+			forceElevation = 1
+		}
+
 	}
 
 	suggest = 0

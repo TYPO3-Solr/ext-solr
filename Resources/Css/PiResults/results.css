@@ -155,6 +155,18 @@
 	margin-bottom: 20px;
 }
 
+.results-elevated {
+	border: 1px solid #cfcecf;
+	padding: 5px;
+	background: #ffffef;
+}
+
+.results-elevated-label {
+	font-size: 50%;
+	color: #cfcecf;
+	padding-bottom: 5px;
+}
+
 .results-topic {
 	font-weight: bold;
 	margin-bottom: 5px;

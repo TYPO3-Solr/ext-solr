@@ -26,6 +26,7 @@
 			<label index="lastSearches">Last searches</label>
 			<label index="frequentSearches">Frequent searches</label>
 			<label index="relevance">Relevance</label>
+			<label index="sponsored">Sponsored</label>
 			<label index="file_mimetype">File type</label>
 			<label index="file_referenced">Referenced at</label>
 			<label index="results_per_page">Results per page:</label>

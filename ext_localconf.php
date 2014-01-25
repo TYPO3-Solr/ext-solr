@@ -140,6 +140,11 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'Tx_Solr_Search_LastSearchesComponent'
 );
 
+Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+	'elevation',
+	'Tx_Solr_Search_ElevationComponent'
+);
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// register plugin commands
