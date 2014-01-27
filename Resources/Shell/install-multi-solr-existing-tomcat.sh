@@ -2,14 +2,14 @@
 
 # Usage:
 #	sudo ./install-multi-solr.sh
-#	sudo ./install-multi-solr.sh -s 4.6.0
+#	sudo ./install-multi-solr.sh -s 4.6.1
 #	sudo ./install-multi-solr.sh -l english,german,french
-#	sudo ./install-multi-solr.sh -s 4.6.0 -l english,german,french
+#	sudo ./install-multi-solr.sh -s 4.6.1 -l english,german,french
 
 clear
 
 TOMCAT_VERSION=6.0.37
-DEFAULT_SOLR_VERSION=4.6.0
+DEFAULT_SOLR_VERSION=4.6.1
 EXT_SOLR_VERSION=3.0
 EXT_SOLR_PLUGIN_VERSION=1.2.0 # for solr version older than 4x
 EXT_SOLR_PLUGIN_ACCESS_VERSION=2.0
@@ -38,7 +38,7 @@ cat << EOF
 usage: sudo $0 options
 
 OPTIONS:
-   -s      Solr versions to install, e.g. "4.6.0" or "4.5.0,4.6.0"
+   -s      Solr versions to install, e.g. "4.6.1" or "4.5.0,4.6.0"
    -l      Languages to install, e.g. "english" or "english,german"
    -h      Show this help
 EOF
