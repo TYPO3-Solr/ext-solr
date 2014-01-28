@@ -76,7 +76,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Resolves a field to its value depending on its configuration.
 	 *
 	 * This enables you to configure the indexer to put the item/record through
-	 * cObj processing if wanted / needed. Otherwise the plain item/record value
+	 * cObj processing if wanted/needed. Otherwise the plain item/record value
 	 * is taken.
 	 *
 	 * @param array $indexingConfiguration Indexing configuration as defined in plugin.tx_solr_index.queue.[indexingConfigurationName].fields
@@ -101,6 +101,26 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 				$indexingConfiguration[$solrFieldName],
 				$indexingConfiguration[$solrFieldName . '.']
 			);
+
+			chdir($backupWorkingDirectory);
+
+			if ($this->isSerializedValue($indexingConfiguration, $solrFieldName)) {
+				$fieldValue = unserialize($fieldValue);
+			}
+
+		} elseif (substr($indexingConfiguration[$solrFieldName], 0, 1) === '<') {
+			$referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName], 1));
+			$typoScriptParser = t3lib_div::makeInstance('t3lib_TSparser');
+			// $name and $conf is loaded with the referenced values.
+			list($name, $conf) = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
+
+			// need to change directory to make IMAGE content objects work in BE context
+			// see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
+			$backupWorkingDirectory = getcwd();
+			chdir(PATH_site);
+
+			$contentObject->start($data, $this->type);
+			$fieldValue = $contentObject->cObjGetSingle($name, $conf);
 
 			chdir($backupWorkingDirectory);
 
