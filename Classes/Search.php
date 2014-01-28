@@ -335,7 +335,13 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	}
 
 	public function getFacetFieldOptions($facetField) {
-		return get_object_vars($this->getFacetCounts()->facet_fields->$facetField);
+		$facetOptions = null;
+
+		if (property_exists($this->getFacetCounts()->facet_fields, $facetField)) {
+			$facetOptions = get_object_vars($this->getFacetCounts()->facet_fields->$facetField);
+		}
+
+		return $facetOptions;
 	}
 
 	public function getFacetQueryOptions($facetField) {
