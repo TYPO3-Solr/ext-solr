@@ -325,6 +325,17 @@ plugin.tx_solr {
 			maxLength = 300
 			cropIndicator = ...
 		}
+
+		sortIndicator {
+			up {
+				altText = sort ascending
+				file = EXT:solr/Resources/Public/Images/IndicatorUp.png
+			}
+			down {
+				altText = sort descending
+				file = EXT:solr/Resources/Public/Images/IndicatorDown.png
+			}
+		}
 	}
 
 	logging {

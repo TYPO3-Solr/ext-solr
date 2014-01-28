@@ -47,21 +47,25 @@ class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 	 * @return	string
 	 */
 	public function execute(array $arguments = array()) {
-		$content = '';
-		$sortDirection = trim($arguments[0]);
-
-		$contentObject = t3lib_div::makeInstance('tslib_cObj');
-		$imageConfiguration = array(
-			'file' => 'EXT:solr/Resources/Images/indicator-'
-		);
+		$content            = '';
+		$sortDirection      = trim($arguments[0]);
+		$configuration      = Tx_Solr_Util::getSolrConfiguration();
+		$contentObject      = t3lib_div::makeInstance('tslib_cObj');
+		$defaultImagePrefix = 'EXT:solr/Resources/Images/Indicator';
 
 		switch ($sortDirection) {
 			case 'asc':
-				$imageConfiguration['file'] .= 'up.png';
+				$imageConfiguration = $configuration['viewHelpers.']['sortIndicator.']['up.'];
+				if (!isset($imageConfiguration['file'])) {
+					$imageConfiguration['file'] = $defaultImagePrefix . 'Up.png';
+				}
 				$content = $contentObject->IMAGE($imageConfiguration);
 				break;
 			case 'desc':
-				$imageConfiguration['file'] .= 'down.png';
+				$imageConfiguration = $configuration['viewHelpers.']['sortIndicator.']['down.'];
+				if (!isset($imageConfiguration['file'])) {
+					$imageConfiguration['file'] = $defaultImagePrefix . 'Down.png';
+				}
 				$content = $contentObject->IMAGE($imageConfiguration);
 				break;
 		}
