@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2012 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2014 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,11 +25,12 @@
 
 /**
  * Creates a graphical representation of the current sorting direction by
- * expanding a ###SORT_INDICATOR:sortDirection### marker.
+ * expanding a ###SORT_INDICATOR:sortDirection### marker, where sortDirection is
+ * expected to be either 'asc' or 'desc'
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 
@@ -41,10 +42,12 @@ class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 	}
 
 	/**
-	 * Returns an URL that switches sorting to the given sorting field
+	 * Returns an URL that switches the sorting indicator according to the
+	 * given sorting direction
 	 *
-	 * @param array $arguments
-	 * @return	string
+	 * @param array $arguments Expects 'asc' or 'desc' as sorting direction in key 0
+	 * @return string
+	 * @throws InvalidArgumentException when providing an invalid sorting direction
 	 */
 	public function execute(array $arguments = array()) {
 		$content            = '';
@@ -68,6 +71,11 @@ class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 				}
 				$content = $contentObject->IMAGE($imageConfiguration);
 				break;
+			default:
+				throw new InvalidArgumentException(
+					'Invalid sorting direction "' . $arguments[0] . '", must be "asc" or "desc".',
+					1390868460
+				);
 		}
 
 		return $content;
