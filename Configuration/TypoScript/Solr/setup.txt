@@ -320,7 +320,7 @@ plugin.tx_solr {
 		anonymizeIP = 0
 	}
 
-	viewhelpers {
+	viewHelpers {
 		crop {
 			maxLength = 300
 			cropIndicator = ...

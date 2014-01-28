@@ -44,16 +44,16 @@ class Tx_Solr_ViewHelper_Crop implements Tx_Solr_ViewHelper {
 	public function __construct(array $arguments = array()) {
 		$configuration = Tx_Solr_Util::getSolrConfiguration();
 
-		if (!empty($configuration['viewhelpers.']['crop.']['maxLength'])) {
-			$this->maxLength = $configuration['viewhelpers.']['crop.']['maxLength'];
+		if (!empty($configuration['viewHelpers.']['crop.']['maxLength'])) {
+			$this->maxLength = $configuration['viewHelpers.']['crop.']['maxLength'];
 		}
 
-		if (!empty($configuration['viewhelpers.']['crop.']['cropIndicator'])) {
-			$this->cropIndicator = $configuration['viewhelpers.']['crop.']['cropIndicator'];
+		if (!empty($configuration['viewHelpers.']['crop.']['cropIndicator'])) {
+			$this->cropIndicator = $configuration['viewHelpers.']['crop.']['cropIndicator'];
 		}
 
-		if (isset($configuration['viewhelpers.']['crop.']['cropFullWords'])) {
-			$this->cropFullWords = (boolean) $configuration['viewhelpers.']['crop.']['cropFullWords'];
+		if (isset($configuration['viewHelpers.']['crop.']['cropFullWords'])) {
+			$this->cropFullWords = (boolean) $configuration['viewHelpers.']['crop.']['cropFullWords'];
 		}
 	}
 
