@@ -54,7 +54,7 @@ class Tx_Solr_Search_AccessComponent extends Tx_Solr_Search_AbstractComponent im
 		$this->query->setSiteHashFilter($allowedSites);
 
 		if ($this->searchConfiguration['query.']['searchBelowPageIds']) {
-			$this->query->setSearchBelowFilter($this->searchConfiguration['query.']['searchBelowPageIds']);
+			$this->query->setRootlineFilter($this->searchConfiguration['query.']['searchBelowPageIds']);
 		}
 
 		$this->query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));

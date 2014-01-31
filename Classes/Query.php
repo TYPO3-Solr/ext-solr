@@ -621,7 +621,7 @@ class Tx_Solr_Query {
 	 *
 	 * @param array $pageIds Comma-separated list of page-IDs
 	 */
-	public function setSearchBelowFilter($pageIds) {
+	public function setRootlineFilter($pageIds) {
 		$pageIds = t3lib_div::trimExplode(',', $pageIds);
 		$filters = array();
 
