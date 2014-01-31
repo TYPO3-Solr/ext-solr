@@ -103,13 +103,13 @@ class Tx_Solr_Query {
 		$this->sorting  = '';
 
 		// What fields to search
-		if (!empty($this->solrConfiguration['search.']['query.']['fields'])) {
-			$this->setQueryFieldsFromString($this->solrConfiguration['search.']['query.']['fields']);
+		if (!empty($this->solrConfiguration['search.']['query.']['queryFields'])) {
+			$this->setQueryFieldsFromString($this->solrConfiguration['search.']['query.']['queryFields']);
 		}
 
 		// What fields to return from Solr
-		if (!empty($this->solrConfiguration['search.']['query.']['fieldList'])) {
-			$this->fieldList = t3lib_div::trimExplode(',', $this->solrConfiguration['search.']['query.']['fieldList']);
+		if (!empty($this->solrConfiguration['search.']['query.']['returnFields'])) {
+			$this->fieldList = t3lib_div::trimExplode(',', $this->solrConfiguration['search.']['query.']['returnFields']);
 		}
 
 		$this->linkTargetPageId = $this->solrConfiguration['search.']['targetPage'];

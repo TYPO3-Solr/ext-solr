@@ -113,7 +113,7 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 		foreach ($highScores as $field => $highScore) {
 			$pattern = '/' . $highScore['field'] . '\^([\d.]*)/';
 			$matches = array();
-			preg_match_all($pattern, $configuration['search.']['query.']['fields'], $matches);
+			preg_match_all($pattern, $configuration['search.']['query.']['queryFields'], $matches);
 
 			$scores[] = '
 				<td>+ ' . $highScore['score'] . '</td>
