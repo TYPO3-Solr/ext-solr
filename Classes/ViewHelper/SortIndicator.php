@@ -71,6 +71,10 @@ class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 				}
 				$content = $contentObject->IMAGE($imageConfiguration);
 				break;
+			case '###SORT.CURRENT_DIRECTION###':
+			case '':
+				// ignore
+				break;
 			default:
 				throw new InvalidArgumentException(
 					'Invalid sorting direction "' . $arguments[0] . '", must be "asc" or "desc".',
