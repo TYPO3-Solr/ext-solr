@@ -138,7 +138,54 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 			$fieldValue = $data[$indexingConfiguration[$solrFieldName]];
 		}
 
+		// detect and correct type for dynamic fields
+		$type = substr($solrFieldName, strrpos($solrFieldName, '_') + 1, -1);
+		if (is_array($fieldValue)) {
+			array_map(array($this, 'cleanValueByType'), $fieldValue);
+		} else {
+			$fieldValue = $this->cleanValueByType($type, $fieldValue);
+		}
 		return $fieldValue;
+	}
+
+	/**
+	 * Enforces the variable type of an dynamic field.
+	 * Solr 4.6 rejects empty strings for ints.
+	 *
+	 * @param string $type
+	 * @param mixed $value
+	 *
+	 * @return mixed
+	 */
+	protected function cleanValueByType($type, $value) {
+		$type = strtolower($type);
+		switch ($type) {
+			case 'int':
+			case 'sint':
+			case 'tint':
+				$value = (int)$value;
+				break;
+			case 'long':
+			case 'slong':
+			case 'tlong':
+				$value = preg_replace("/[^0-9\\-]/", "", $value);
+				if (trim($value) === '') {
+					$value = 0;
+				}
+				break;
+			case 'float':
+			case 'sfloat':
+			case 'tfloat':
+			case 'double':
+			case 'sdouble':
+			case 'tdouble':
+				$value = floatval($value);
+				break;
+			case 'bool':
+				$value = (bool)$value;
+			default:
+		}
+		return $value;
 	}
 
 
