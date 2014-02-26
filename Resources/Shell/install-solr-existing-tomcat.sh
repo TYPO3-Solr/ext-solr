@@ -280,13 +280,6 @@ rm README.txt
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 cecho "Configuring Apache Tomcat." $green
-# We are using an existing tomcat installation
-#
-# cd ${TOMCAT_CONFIG_DIR}
-#
-# rm server.xml
-#
-# wgetresource tomcat/server.xml
 
 cd ${TOMCAT_CONTEXT_DIR}
 
@@ -306,14 +299,6 @@ cd solr/typo3lib
 wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-access-$EXT_SOLR_PLUGIN_ACCESS_VERSION.jar 2>&1 | progressfilt
 wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-utils-$EXT_SOLR_PLUGIN_UTILS_VERSION.jar 2>&1 | progressfilt
 wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/commons-lang3-$EXT_SOLR_PLUGIN_LANG_VERSION.jar 2>&1 | progressfilt
-
-# ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-# We are using an existing tomcat installation
-#
-# cecho "Setting permissions." $green
-# cd /opt/solr-tomcat/
-# chmod a+x tomcat/bin/*
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 

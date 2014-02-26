@@ -372,13 +372,6 @@ done
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 cecho "Configuring Apache Tomcat." $green
-# We are using an existing tomcat installation
-#
-# cd ${TOMCAT_CONFIG_DIR}
-#
-# rm server.xml
-#
-# wgetresource tomcat/server.xml
 
 cd ${TOMCAT_CONTEXT_DIR}
 
