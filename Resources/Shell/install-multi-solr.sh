@@ -34,7 +34,7 @@ EOF
 
 SOLR_VERSION=
 LANGUAGES=
-while getopts “h:s:l:” OPTION
+while getopts "h:s:l:" OPTION
 do
      case $OPTION in
          h)
@@ -54,12 +54,12 @@ do
      esac
 done
 
-if [ $LANGUAGES -eq ""]
+if [ $LANGUAGES -eq "" ]
 then
   LANGUAGES=$AVAILABLE_LANGUAGES
 fi
 
-if [ $SOLR_VERSION -eq ""]
+if [ $SOLR_VERSION -eq "" ]
 then
   SOLR_VERSION=$DEFAULT_SOLR_VERSION
 fi
@@ -264,7 +264,7 @@ do
   SOLR_VERSION_PLAIN = $SOLR_VERSION
   SOLR_VERSION_PLAIN = $(echo $SOLR_VERSION_PLAIN|sed 's/.//g')
 
-  if [ $SOLR_VERSION_PLAIN -le "400"]
+  if [ $SOLR_VERSION_PLAIN -le "400" ]
   then
 	SOLR_PACKAGE_NAME = "apache-solr"
   else
@@ -279,7 +279,7 @@ do
   cp $SOLR_PACKAGE_NAME-$SOLR/dist/$SOLR_PACKAGE_NAME-$SOLR.war tomcat/webapps/solr-$SOLR.war
   cp -r $SOLR_PACKAGE_NAME-$SOLR/example/solr solr/solr-$SOLR
 
-  if [ $SOLR_VERSION_PLAIN -ge "430"]
+  if [ $SOLR_VERSION_PLAIN -ge "430" ]
   then
   	cp $SOLR_PACKAGE_NAME-$SOLR/example/lib/ext/*.jar tomcat/lib
   	cp $SOLR_PACKAGE_NAME-$SOLR/example/resources/log4j.properties tomcat/lib/log4j.properties
@@ -344,7 +344,7 @@ do
   # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
   mkdir solr/solr-$SOLR/typo3lib
   cd solr/solr-$SOLR/typo3lib
-  if [ $SOLR_VERSION_PLAIN -ge "400"]
+  if [ $SOLR_VERSION_PLAIN -ge "400" ]
   then
 	cecho "Downloading the Solr TYPO3 plugin for access control. Version: $EXT_SOLR_PLUGIN_ACCESS_VERSION" $green
 	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-access-$EXT_SOLR_PLUGIN_ACCESS_VERSION.jar 2>&1 | progressfilt
