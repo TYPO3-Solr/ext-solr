@@ -202,15 +202,15 @@ then
 	PASSALLCHECKS=0
 fi
 
-ping -c 1 apache.osuosl.org > /dev/null 2>&1
+ping -c 1 www.us.apache.org > /dev/null 2>&1
 CHECK=$?
 if [ $CHECK -ne "0" ]
 then
 	cecho "ERROR couldn't ping Apache download mirror, try again using wget" $yellow
-	wget -q -O /dev/null http://apache.osuosl.org
+	wget -q -O /dev/null http://www.us.apache.org
 	if [ $? -ne "0" ]
 	then
-		cecho "ERROR also couldn't wget Apache download mirror at Oregon State University Open Source Lab - OSUOSL" $red
+		cecho "ERROR Also couldn't reach the Apache download mirror using wget. Please check your internet connection." $red
 		PASSALLCHECKS=0
 	fi
 fi
@@ -250,10 +250,9 @@ mkdir -p /opt/solr-tomcat
 mkdir -p /opt/solr-tomcat/solr
 cd /opt/solr-tomcat/
 
-cecho "Using the mirror at Oregon State University Open Source Lab - OSUOSL." $green
 cecho "Downloading Apache Tomcat $TOMCAT_VERSION" $green
 TOMCAT_MAINVERSION=`echo "$TOMCAT_VERSION" | cut -d'.' -f1`
-wget --progress=bar:force http://apache.osuosl.org/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip 2>&1 | progressfilt
+wget --progress=bar:force http://www.us.apache.org/dist/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip 2>&1 | progressfilt
 
 cecho "Unpacking Apache Tomcat." $green
 unzip -q apache-tomcat-$TOMCAT_VERSION.zip
@@ -273,7 +272,7 @@ do
 
   cd /opt/solr-tomcat
   cecho "Downloading Apache Solr $SOLR" $green
-  wget --progress=bar:force http://archive.apache.org/dist/lucene/solr/$SOLR_VERSION/$SOLR_PACKAGE_NAME-$SOLR_VERSION.zip 2>&1 | progressfilt
+  wget --progress=bar:force http://www.us.apache.org/dist/lucene/solr/$SOLR_VERSION/$SOLR_PACKAGE_NAME-$SOLR_VERSION.zip 2>&1 | progressfilt
   cecho "Unpacking Apache Solr." $green
   unzip -q $SOLR_PACKAGE_NAME-$SOLR.zip
   cp $SOLR_PACKAGE_NAME-$SOLR/dist/$SOLR_PACKAGE_NAME-$SOLR.war tomcat/webapps/solr-$SOLR.war
