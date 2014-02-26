@@ -6,7 +6,6 @@
 
 clear
 
-TOMCAT_VERSION=6.0.39
 SOLR_VERSION=4.6.1
 EXT_SOLR_VERSION=3.0
 EXT_SOLR_PLUGIN_ACCESS_VERSION=2.0
@@ -216,26 +215,11 @@ service tomcat6 stop
 mkdir -p /opt/solr-tomcat
 cd /opt/solr-tomcat/
 
-# We are using an existing tomcat installation
-#
-# cecho "Using the mirror at Oregon State University Open Source Lab - OSUOSL." $green
-# cecho "Downloading Apache Tomcat $TOMCAT_VERSION" $green
-# TOMCAT_MAINVERSION=`echo "$TOMCAT_VERSION" | cut -d'.' -f1`
-# wget --progress=bar:force http://apache.osuosl.org/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip 2>&1 | progressfilt
-
 cecho "Downloading Apache Solr $SOLR_VERSION" $green
 wget --progress=bar:force http://apache.osuosl.org/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.zip 2>&1 | progressfilt
 
-# We are using an existing tomcat installation
-#
-# cecho "Unpacking Apache Tomcat." $green
-# unzip -q apache-tomcat-$TOMCAT_VERSION.zip
-
 cecho "Unpacking Apache Solr." $green
 unzip -q solr-$SOLR_VERSION.zip
-
-# We are using an existing tomcat installation
-# mv apache-tomcat-$TOMCAT_VERSION tomcat
 
 cp solr-$SOLR_VERSION/dist/solr-$SOLR_VERSION.war ${TOMCAT_BASE}/webapps/solr.war
 cp solr-$SOLR_VERSION/example/lib/ext/*.jar ${TOMCAT_HOME}/lib
@@ -336,9 +320,6 @@ wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/
 cecho "Cleaning up." $green
 rm -rf solr-$SOLR_VERSION.zip
 rm -rf solr-$SOLR_VERSION
-# We are using an existing tomcat installation
-#
-# rm -rf apache-tomcat-$TOMCAT_VERSION.zip
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 

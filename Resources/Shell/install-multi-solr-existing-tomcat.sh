@@ -8,7 +8,6 @@
 
 clear
 
-TOMCAT_VERSION=6.0.39
 DEFAULT_SOLR_VERSION=4.6.1
 EXT_SOLR_VERSION=3.0
 EXT_SOLR_PLUGIN_VERSION=1.2.0 # for solr version older than 4x
@@ -265,17 +264,6 @@ mkdir -p /opt/solr-tomcat
 mkdir -p /opt/solr-tomcat/solr
 cd /opt/solr-tomcat/
 
-# We are using an existing tomcat installation
-#
-# cecho "Using the mirror at Oregon State University Open Source Lab - OSUOSL." $green
-# cecho "Downloading Apache Tomcat $TOMCAT_VERSION" $green
-# TOMCAT_MAINVERSION=`echo "$TOMCAT_VERSION" | cut -d'.' -f1`
-# wget --progress=bar:force http://apache.osuosl.org/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip 2>&1 | progressfilt
-#
-# cecho "Unpacking Apache Tomcat." $green
-# unzip -q apache-tomcat-$TOMCAT_VERSION.zip
-# mv apache-tomcat-$TOMCAT_VERSION tomcat
-
 for SOLR in ${SOLR_VERSION[*]}
 do
   SOLR_VERSION_PLAIN = $SOLR_VERSION
@@ -403,21 +391,6 @@ do
   echo "  <Environment name=\"solr/home\" type=\"java.lang.String\" value=\"/opt/solr-tomcat/solr/solr-$SOLR\" override=\"true\" />" >> solr-$SOLR.xml
   echo "</Context>" >> solr-$SOLR.xml
 done
-
-# ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-# We are using an existing tomcat installation
-#
-# cecho "Setting permissions." $green
-# cd /opt/solr-tomcat/
-# chmod a+x tomcat/bin/*
-
-# ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-# We are using an existing tomcat installation
-#
-# cecho "Cleaning up." $green
-# rm -rf apache-tomcat-$TOMCAT_VERSION.zip
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
