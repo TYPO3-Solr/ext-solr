@@ -166,25 +166,24 @@ class Tx_Solr_ContentObject_Relation {
 		$pageSelector = t3lib_div::makeInstance('t3lib_pageSelect');
 		$whereClause .= $pageSelector->enableFields( $foreignTableName );
 
-		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			$foreignTableName . '.' . $foreignTableLabelField,
+		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			$foreignTableName . '.*',
 			$foreignTableName,
 			$whereClause
 		);
 
-		while ($relatedRecord = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($relatedRecordsResource)) {
+		foreach ($relatedRecordsResource as $relatedRecord) {
 			$resolveRelatedValue = $this->resolveRelatedValue(
 				$relatedRecord,
 				$foreignTableTca,
 				$foreignTableLabelField,
-				$parentContentObject
+				$parentContentObject,
+				$foreignTableName
 			);
 			if (!empty($resolveRelatedValue) || !$this->configuration['removeEmptyValues']) {
 				$relatedItems[] = $resolveRelatedValue;
 			}
 		}
-
-		$GLOBALS['TYPO3_DB']->sql_free_result($relatedRecordsResource);
 
 		if (!empty($this->configuration['removeDuplicateValues'])) {
 			$relatedItems = array_unique($relatedItems);
@@ -198,11 +197,18 @@ class Tx_Solr_ContentObject_Relation {
 	 * a relation itself, this method takes care of resolving it recursively.
 	 *
 	 * @param array $relatedRecord Related record as array
-	 * @param unknown_type $foreignTableTca TCA of the related table
-	 * @param unknown_type $foreignTableLabelField Field name of the foreign label field
-	 * @param unknown_type $parentContentObject cObject
+	 * @param array $foreignTableTca TCA of the related table
+	 * @param string $foreignTableLabelField Field name of the foreign label field
+	 * @param tslib_cObj $parentContentObject cObject
+	 * @param string $foreignTableName Related record table name
+	 *
+	 * @return string
 	 */
-	protected function resolveRelatedValue(array $relatedRecord, $foreignTableTca, $foreignTableLabelField, $parentContentObject) {
+	protected function resolveRelatedValue(array $relatedRecord, $foreignTableTca, $foreignTableLabelField, tslib_cObj $parentContentObject, $foreignTableName = '') {
+
+		if ($GLOBALS['TSFE']->sys_language_uid > 0 && !empty($foreignTableName)) {
+			$relatedRecord = $this->getTranslationOverlay($foreignTableName, $relatedRecord);
+		}
 
 		$value = $relatedRecord[$foreignTableLabelField];
 
@@ -270,6 +276,9 @@ class Tx_Solr_ContentObject_Relation {
 					. t3lib_BEfunc::deleteClause($foreignTableName)
 			);
 			foreach ($relatedRecords as $record) {
+				if ($GLOBALS['TSFE']->sys_language_uid > 0) {
+					$record = $this->getTranslationOverlay($foreignTableName, $record);
+				}
 				$relatedItems[] = $record[$foreignTableLabelField];
 			}
 		}
@@ -296,6 +305,21 @@ class Tx_Solr_ContentObject_Relation {
 		}
 
 		return $foreignTableLabelField;
+	}
+
+	/**
+	 * Return the translated record
+	 *
+	 * @param string $tableName
+	 * @param array $record
+	 * @return mixed
+	 */
+	protected function getTranslationOverlay($tableName, $record) {
+		if ($tableName == 'pages') {
+			return $GLOBALS['TSFE']->sys_page->getPageOverlay($record, $GLOBALS['TSFE']->sys_language_uid);
+		} else {
+			return $GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName, $record, $GLOBALS['TSFE']->sys_language_uid);
+		}
 	}
 
 }
