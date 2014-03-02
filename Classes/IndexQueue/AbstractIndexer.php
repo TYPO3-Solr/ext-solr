@@ -65,7 +65,9 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 					$document->addField($solrFieldName, $multiValue);
 				}
 			} else {
-				$document->setField($solrFieldName, $fieldValue);
+				if (!empty($fieldValue) || preg_match('/_(?:string|bin|text(?:|T|Sort|Wst)|phonetic)[SM]$/', $solrFieldName) === 1 ) {
+					$document->setField($solrFieldName, $fieldValue);
+				}
 			}
 		}
 
