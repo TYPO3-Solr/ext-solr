@@ -158,12 +158,12 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * detects that the new/updated record belongs to a table configured for
 	 * indexing through Solr, we add the record to the index queue.
 	 *
-	 * @param	string	Status of the current operation, 'new' or 'update'
-	 * @param	string	The table the record belongs to
-	 * @param	mixed	The record's uid, [integer] or [string] (like 'NEW...')
-	 * @param	array	The record's data
-	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
-	 * @return	void
+	 * @param string $status Status of the current operation, 'new' or 'update'
+	 * @param string $table The table the record belongs to
+	 * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
+	 * @param array $fields The record's data
+	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object
+	 * @return void
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, t3lib_TCEmain $tceMain) {
 		$recordTable  = $table;
