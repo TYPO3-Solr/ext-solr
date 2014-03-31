@@ -518,13 +518,13 @@ class Tx_Solr_Util {
 	 * @return string List of allowed sites/domains, magic keywords resolved
 	 */
 	public static function resolveSiteHashAllowedSites($pageId, $allowedSitesConfiguration) {
-		$allowedSitesConfiguration = str_replace(
+		$allowedSites = str_replace(
 			'__solr_current_site',
 			Tx_Solr_Site::getSiteByPageId($pageId)->getDomain(),
 			$allowedSitesConfiguration
 		);
 
-		return $allowedSitesConfiguration;
+		return $allowedSites;
 	}
 
 	/**
