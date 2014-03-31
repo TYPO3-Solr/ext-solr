@@ -73,7 +73,6 @@ class OverviewModuleController extends AbstractModule {
 	public function indexAction() {
 		$this->checkConnections();
 
-		$this->view->assign('content', 'Overview Module');
 		$this->view->assign('site', $this->request->getArgument('site'));
 		$this->view->assign('apiKey', \Tx_Solr_Api::getApiKey());
 	}
