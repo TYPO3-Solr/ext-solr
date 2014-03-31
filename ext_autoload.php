@@ -127,6 +127,7 @@ return array(
 	'tx_solr_search_accesscomponent' => $extensionPath . 'Classes/Search/AccessComponent.php',
 	'tx_solr_search_analysiscomponent' => $extensionPath . 'Classes/Search/AnalysisComponent.php',
 	'tx_solr_search_debugcomponent' => $extensionPath . 'Classes/Search/DebugComponent.php',
+	'tx_solr_search_elevationcomponent' => $extensionPath . 'Classes/Search/ElevationComponent.php',
 	'tx_solr_search_facetingcomponent' => $extensionPath . 'Classes/Search/FacetingComponent.php',
 	'tx_solr_search_highlightingcomponent' => $extensionPath . 'Classes/Search/HighlightingComponent.php',
 	'tx_solr_search_lastsearchescomponent' => $extensionPath . 'Classes/Search/LastSearchesComponent.php',
