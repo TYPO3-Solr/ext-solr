@@ -165,6 +165,10 @@ return array(
 	'tx_solr_piresults_results' => $extensionPath . 'PiResults/Results.php',
 	'tx_solr_pisearch_search' => $extensionPath . 'PiSearch/Search.php',
 
+		// TYPO3 4.5
+	'tx_solr_pi_results' => $extensionPath . 'Compat/class.tx_solr_pi_results.php',
+	'tx_solr_pi_search' => $extensionPath . 'Compat/class.tx_solr_pi_search.php',
+
 	'tx_solr_piresults_advancedformcommand' => $extensionPath . 'PiResults/AdvancedFormCommand.php',
 	'tx_solr_piresults_errorscommand' => $extensionPath . 'PiResults/ErrorsCommand.php',
 	'tx_solr_piresults_facetingcommand' => $extensionPath . 'PiResults/FacetingCommand.php',
