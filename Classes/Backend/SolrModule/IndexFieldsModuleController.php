@@ -111,7 +111,6 @@ class IndexFieldsModuleController extends AbstractModule {
 
 		$coreMetrics = array(
 			'numberOfDocuments' => $lukeData->index->numDocs,
-			'numberOfTerms'     => $lukeData->index->numTerms,
 			'numberOfFields'    => count($fields)
 		);
 
