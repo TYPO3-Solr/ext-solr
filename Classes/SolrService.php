@@ -384,7 +384,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * Retrieves meta data about the index from the luke request handler
 	 *
 	 * @param integer $numberOfTerms Number of top terms to fetch for each field
-	 * @return array An array of index meta data
+	 * @return Apache_Solr_Response Index meta data
 	 */
 	public function getLukeMetaData($numberOfTerms = 0) {
 		if (!isset($this->lukeData[$numberOfTerms])) {
