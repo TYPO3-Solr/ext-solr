@@ -55,9 +55,7 @@ $solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 # Building Suggest Query
-
-$site = Tx_Solr_Site::getSiteByPageId($pageId);
-$q    = trim(t3lib_div::_GP('termLowercase'));
+$q = trim(t3lib_div::_GP('termLowercase'));
 
 $isOpenSearchRequest = FALSE;
 if ('OpenSearch' == t3lib_div::_GET('format')) {
