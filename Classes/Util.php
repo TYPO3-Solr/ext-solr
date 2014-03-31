@@ -511,18 +511,30 @@ class Tx_Solr_Util {
 	/**
 	 * Resolves magic keywords in allowed sites configuration.
 	 * Supported keywords:
-	 *   __solr_current_site The domain of the site the query has been started from
+	 *   __solr_current_site - The domain of the site the query has been started from
+	 *   __all - Adds all domains as allowed sites
+	 *   * - Same as __all
 	 *
 	 * @param integer $pageId A page ID that is then resolved to the site it belongs to
 	 * @param string $allowedSitesConfiguration TypoScript setting for allowed sites
 	 * @return string List of allowed sites/domains, magic keywords resolved
 	 */
 	public static function resolveSiteHashAllowedSites($pageId, $allowedSitesConfiguration) {
-		$allowedSites = str_replace(
-			'__solr_current_site',
-			Tx_Solr_Site::getSiteByPageId($pageId)->getDomain(),
-			$allowedSitesConfiguration
-		);
+		if ($allowedSitesConfiguration == '*' || $allowedSitesConfiguration == '__all') {
+			$sites   = Tx_Solr_Site::getAvailableSites();
+			$domains = array();
+			foreach ($sites as $site) {
+				$domains[] = $site->getDomain();
+			}
+
+			$allowedSites = implode(',', $domains);
+		} else {
+			$allowedSites = str_replace(
+				'__solr_current_site',
+				Tx_Solr_Site::getSiteByPageId($pageId)->getDomain(),
+				$allowedSitesConfiguration
+			);
+		}
 
 		return $allowedSites;
 	}
