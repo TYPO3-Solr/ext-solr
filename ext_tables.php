@@ -65,6 +65,7 @@ t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/Everyth
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/FilterPages/', 'Apache Solr Example - Filter to only show page results');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IndexQueueNews/', 'Apache Solr Example - Index Queue Configuration for news');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IndexQueueTtNews/', 'Apache Solr Example - Index Queue Configuration for tt_news');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IntroPackageSearchBox/', 'Apache Solr Example - Replace Introduction Package search box');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 

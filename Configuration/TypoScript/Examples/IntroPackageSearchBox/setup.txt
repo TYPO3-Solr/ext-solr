@@ -1,0 +1,5 @@
+# replaces the Introduction Package Indexed Search search box
+# with the Solr search box
+
+lib.searchbox >
+lib.searchbox < plugin.tx_solr_pi_search
