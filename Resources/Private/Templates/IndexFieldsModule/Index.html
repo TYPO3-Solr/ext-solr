@@ -10,23 +10,26 @@ Select Core: <solr:backend.menu.CoreSelectorMenu />
 				<h3>Documents</h3>
 			</div>
 			<div class="span4 well text-center">
-				<p>{coreMetrics.numberOfFields}</p>
-				<h3>Fields</h3>
+				<p>{coreMetrics.numberOfDeletedDocuments}</p>
+
+				<h3>Deleted Documents</h3>
 			</div>
 			<div class="span4 well text-center">
+				<p>{coreMetrics.numberOfFields}</p>
+				<h3>Fields</h3>
 			</div>
 		</div>
 
 		<table class="table table-striped">
 			<thead>
 				<tr class="t3-row-header">
-					<th>Field Name</th><th>Index Field Type</th><th>Distinct Terms</th>
+					<th>Field Name</th><th>Index Field Type</th><th># Documents</th><th>Distinct Terms</th>
 				</tr>
 			</thead>
 			<tbody>
 				<f:for each="{fields}" as="field">
 				<tr>
-					<td>{field.name}</td><td>{field.type}</td><td>{field.terms}</td>
+					<td>{field.name}</td><td>{field.type}</td><td>{field.docs}</td><td>{field.terms}</td>
 				</tr>
 				</f:for>
 			</tbody>
