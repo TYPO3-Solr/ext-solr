@@ -457,13 +457,18 @@ class Tx_Solr_IndexQueue_Queue {
 			$itemTypeHasStartTimeColumn = TRUE;
 			$changedTimeColumns .= ', ' . $GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'];
 		}
+		if ($itemType == 'pages') {
+				// does not carry time information directly, but needed to support canonical pages
+			$changedTimeColumns .= ', content_from_pid';
+		}
 
 		$record      = t3lib_BEfunc::getRecord($itemType, $itemUid, $changedTimeColumns);
 		$changedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
 
 		if ($itemType == 'pages') {
+			$record['uid'] = $itemUid;
 				// overrule the page's last changed time with the most recent content element change
-			$changedTime = $this->getPageItemChangedTime($itemUid);
+			$changedTime = $this->getPageItemChangedTime($record);
 		}
 
 		if ($itemTypeHasStartTimeColumn) {
@@ -482,17 +487,23 @@ class Tx_Solr_IndexQueue_Queue {
 	/**
 	 * Gets the most recent changed time of a page's content elements
 	 *
-	 * @param integer $pageId Page ID
+	 * @param array $page Partial page record
 	 * @return integer Timestamp of the most recent content element change
 	 */
-	protected function getPageItemChangedTime($pageId) {
-		$pageContentLastChangedTime = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-			'MAX(tstamp) AS changed_time',
-			'tt_content',
-			'pid = ' . (int) $pageId
-		);
+	protected function getPageItemChangedTime(array $page) {
+		if (!empty($page['content_from_pid'])) {
+			// canonical page, get the original page's last changed time
+			$pageContentLastChangedTime = $this->getPageItemChangedTime(array('uid' => $page['content_from_pid']));
+		} else {
+			$pageContentLastChangedTime = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+				'MAX(tstamp) AS changed_time',
+				'tt_content',
+				'pid = ' . (int) $page['uid']
+			);
+			$pageContentLastChangedTime = $pageContentLastChangedTime['changed_time'];
+		}
 
-		return $pageContentLastChangedTime['changed_time'];
+		return $pageContentLastChangedTime;
 	}
 
 	/**

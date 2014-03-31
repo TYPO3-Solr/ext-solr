@@ -212,6 +212,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 				$this->indexQueue->updateItem($recordTable, $recordUid);
 
 				if ($recordTable == 'pages') {
+					$this->updateCanonicalPages($recordUid);
 					$this->updateMountPages($recordUid);
 				}
 			} else {
@@ -319,6 +320,29 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 		}
 
 		return array_unique($monitoredTables);
+	}
+
+
+	// Handle pages showing content from another page
+
+
+	/**
+	 * Triggers Index Queue updates for other pages showing content from the
+	 * page currently being updated.
+	 *
+	 * @param integer $pageId UID of the page currently being updated
+	 */
+	protected function updateCanonicalPages($pageId) {
+		$canonicalPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid',
+			'pages',
+			'content_from_pid = ' . $pageId
+				. t3lib_BEfunc::deleteClause('pages')
+		);
+
+		foreach ($canonicalPages as $page) {
+			$this->indexQueue->updateItem('pages', $page['uid']);
+		}
 	}
 
 
