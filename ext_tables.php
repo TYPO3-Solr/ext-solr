@@ -54,7 +54,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi_freq
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// TypoScript
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Solr/', 'Apache Solr');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Solr/', 'Apache Solr - Default Configuration');
 
 	// OpenSearch
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/OpenSearch/', 'Apache Solr - OpenSearch');
