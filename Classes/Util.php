@@ -509,6 +509,25 @@ class Tx_Solr_Util {
 	}
 
 	/**
+	 * Resolves magic keywords in allowed sites configuration.
+	 * Supported keywords:
+	 *   __solr_current_site The domain of the site the query has been started from
+	 *
+	 * @param integer $pageId A page ID that is then resolved to the site it belongs to
+	 * @param string $allowedSitesConfiguration TypoScript setting for allowed sites
+	 * @return string List of allowed sites/domains, magic keywords resolved
+	 */
+	public static function resolveSiteHashAllowedSites($pageId, $allowedSitesConfiguration) {
+		$allowedSitesConfiguration = str_replace(
+			'__solr_current_site',
+			Tx_Solr_Site::getSiteByPageId($pageId)->getDomain(),
+			$allowedSitesConfiguration
+		);
+
+		return $allowedSitesConfiguration;
+	}
+
+	/**
 	 * Check if record ($table, $uid) is a workspace record
 	 *
 	 * @param string $table The table the record belongs to

@@ -65,12 +65,16 @@ if ('OpenSearch' == t3lib_div::_GET('format')) {
 	$q = t3lib_div::_GET('q');
 }
 
+$allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
+	$pageId,
+	$solrConfiguration['search.']['query.']['allowedSites']
+);
+
 $suggestQuery = t3lib_div::makeInstance('Tx_Solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));
 	// must generate default endtime, @see http://forge.typo3.org/issues/44276
 $suggestQuery->addFilter('(endtime:[NOW/MINUTE TO *] OR endtime:"' . Tx_Solr_Util::timestampToIso(0) . '")');
-$suggestQuery->setSiteHashFilter($solrConfiguration['search.']['query.']['allowedSites']);
-
+$suggestQuery->setSiteHashFilter($allowedSites);
 $suggestQuery->setOmitHeader();
 
 $additionalFilters = t3lib_div::_GET('filters');

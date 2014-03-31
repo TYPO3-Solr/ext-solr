@@ -46,9 +46,8 @@ class Tx_Solr_Search_AccessComponent extends Tx_Solr_Search_AbstractComponent im
 	 *
 	 */
 	public function initializeSearchComponent() {
-		$allowedSites = str_replace(
-			'__solr_current_site',
-			Tx_Solr_Site::getSiteByPageId($GLOBALS['TSFE']->id)->getDomain(),
+		$allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
+			$GLOBALS['TSFE']->id,
 			$this->searchConfiguration['query.']['allowedSites']
 		);
 		$this->query->setSiteHashFilter($allowedSites);
