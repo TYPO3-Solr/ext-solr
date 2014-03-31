@@ -392,7 +392,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 				self::LUKE_SERVLET,
 				array(
 					'numTerms' => $numberOfTerms,
-					'wt'       => self::SOLR_WRITER
+					'wt'       => self::SOLR_WRITER,
+					'fl'       => '*'
 				)
 			);
 
