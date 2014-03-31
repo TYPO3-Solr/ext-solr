@@ -512,6 +512,7 @@ class Tx_Solr_Util {
 	 * Resolves magic keywords in allowed sites configuration.
 	 * Supported keywords:
 	 *   __solr_current_site - The domain of the site the query has been started from
+	 *   __current_site - Same as __solr_current_site
 	 *   __all - Adds all domains as allowed sites
 	 *   * - Same as __all
 	 *
@@ -530,7 +531,7 @@ class Tx_Solr_Util {
 			$allowedSites = implode(',', $domains);
 		} else {
 			$allowedSites = str_replace(
-				'__solr_current_site',
+				array('__solr_current_site', '__current_site'),
 				Tx_Solr_Site::getSiteByPageId($pageId)->getDomain(),
 				$allowedSitesConfiguration
 			);
