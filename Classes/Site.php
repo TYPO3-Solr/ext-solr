@@ -105,7 +105,7 @@ class Tx_Solr_Site {
 	/**
 	 * Gets all available TYPO3 sites with Solr configured.
 	 *
-	 *  @return	array	An array of available sites
+	 *  @return Tx_Solr_Site[] An array of available sites
 	 */
 	public static function getAvailableSites() {
 		$sites = array();
