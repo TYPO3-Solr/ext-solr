@@ -263,7 +263,12 @@ class Tx_Solr_ContentObject_Relation {
 
 		$selectUids = $relationHandler->tableArray[$foreignTableName];
 		if (is_array($selectUids) && count($selectUids) > 0) {
-			$relatedRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows($foreignTableLabelField, $foreignTableName, 'uid IN (' . implode(',', $selectUids) . ')' . \TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($foreignTableName));
+			$relatedRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				$foreignTableLabelField,
+				$foreignTableName,
+				'uid IN (' . implode(',', $selectUids) . ')'
+					. t3lib_BEfunc::deleteClause($foreignTableName)
+			);
 			foreach ($relatedRecords as $record) {
 				$relatedItems[] = $record[$foreignTableLabelField];
 			}
