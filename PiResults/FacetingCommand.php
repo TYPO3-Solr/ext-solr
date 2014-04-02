@@ -118,14 +118,14 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		$facetRendererFactory = t3lib_div::makeInstance(
 			'Tx_Solr_Facet_FacetRendererFactory',
 			$configuredFacets
-		);
+		); /** @var $facetRendererFactory Tx_Solr_Facet_FacetRendererFactory */
 
 		foreach ($configuredFacets as $facetName => $facetConfiguration) {
 			$facetName = substr($facetName, 0, -1);
 			$facet = t3lib_div::makeInstance('Tx_Solr_Facet_Facet',
 				$facetName,
 				$facetRendererFactory->getFacetInternalType($facetName)
-			);
+			); /** @var $facet Tx_Solr_Facet_Facet */
 
 			if (
 				(isset($facetConfiguration['includeInAvailableFacets']) && $facetConfiguration['includeInAvailableFacets'] == '0')
