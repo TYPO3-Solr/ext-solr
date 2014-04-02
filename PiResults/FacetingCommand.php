@@ -72,6 +72,12 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		$this->configuration = $parentPlugin->conf;
 	}
 
+	/**
+	 * Executes the command, renders the template subpart markers if facetting
+	 * is activated.
+	 *
+	 * @return array|null Array of facetting markers or null if facetting is deactivated
+	 */
 	public function execute() {
 		$marker = array();
 
@@ -96,6 +102,11 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		return $marker;
 	}
 
+	/**
+	 * Renders user-selectable facets.
+	 *
+	 * @return string rendered facets subpart
+	 */
 	protected function renderAvailableFacets() {
 		$facetContent = '';
 
@@ -141,6 +152,11 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		return $template->render();
 	}
 
+	/**
+	 * Renders facets selected by the user.
+	 *
+	 * @return string rendered selected facets subpart
+	 */
 	protected function renderUsedFacets() {
 		$template = clone $this->parentPlugin->getTemplate();
 		$template->workOnSubpart('used_facets');
@@ -218,6 +234,13 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		return $content;
 	}
 
+	/**
+	 * Adds the JavaScript necessary for some of the facetting features;
+	 * folding/unfolding a list of facet options that exceed the configured
+	 * limit of visible options
+	 *
+	 * @return void
+	 */
 	protected function addFacetingJavascript() {
 		$javascriptManager = $this->parentPlugin->getJavascriptManager();
 
