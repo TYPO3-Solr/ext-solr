@@ -617,15 +617,15 @@ class Tx_Solr_Query {
 	}
 
 	/**
-	 * Limits the query to a certain page-branch
+	 * Limits the query to certain page tree branches
 	 *
-	 * @param array $pageIds Comma-separated list of page-IDs
+	 * @param array $pageIds Comma-separated list of page IDs
 	 */
 	public function setRootlineFilter($pageIds) {
 		$pageIds = t3lib_div::trimExplode(',', $pageIds);
 		$filters = array();
 
-		$processor = t3lib_div::makeInstance('tx_solr_fieldprocessor_PageUidToHierarchy');
+		$processor   = t3lib_div::makeInstance('tx_solr_fieldprocessor_PageUidToHierarchy');
 		$hierarchies = $processor->process($pageIds);
 
 		foreach($hierarchies as $hierarchy) {
@@ -635,6 +635,7 @@ class Tx_Solr_Query {
 
 		$this->addFilter(implode(' OR ', $filters));
 	}
+
 
 	// sorting
 

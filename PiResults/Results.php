@@ -243,11 +243,19 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Initializes additional filters configured through TypoScript and
 	 * Flexforms for use in regular queries and suggest queries.
 	 *
+	 * @return void
 	 */
 	protected function initializeAdditionalFilters() {
 		$additionalFilters = array();
 
 		if(!empty($this->conf['search.']['query.']['filter.'])) {
+			// special filter to limit search to specific page tree branches
+			if (array_key_exists('__pageSections', $this->conf['search.']['query.']['filter.'])) {
+				$this->query->setRootlineFilter($this->conf['search.']['query.']['filter.']['__pageSections']);
+				unset($this->conf['search.']['query.']['filter.']['__pageSections']);
+			}
+
+			// all other regular filters
 			foreach($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
 				if (!is_array($this->conf['search.']['query.']['filter.'][$filterKey])) {
 					if (is_array($this->conf['search.']['query.']['filter.'][$filterKey . '.'])) {
