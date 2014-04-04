@@ -53,9 +53,14 @@ class Tx_Solr_PiResults_HighlightingResultDocumentModifier implements Tx_Solr_Re
 
 		$highlightFields = t3lib_div::trimExplode(',', $configuration['search.']['results.']['resultsHighlighting.']['highlightFields'], TRUE);
 		foreach ($highlightFields as $highlightField) {
-			if ($highlightedContent->{$resultDocument['id']}->{$highlightField}[0]) {
-				$resultDocument[$highlightField] = Tx_Solr_Template::escapeMarkers(
-					$highlightedContent->{$resultDocument['id']}->{$highlightField}[0]
+			if (!empty($highlightedContent->{$resultDocument['id']}->{$highlightField}[0])) {
+				$fragments = array();
+				foreach ($highlightedContent->{$resultDocument['id']}->{$highlightField} as $fragment) {
+					$fragments[] = tx_solr_Template::escapeMarkers($fragment);
+				}
+				$resultDocument[$highlightField] = implode(
+					' ' . $configuration['search.']['results.']['resultsHighlighting.']['fragmentSeparator'] . ' ',
+					$fragments
 				);
 			}
 		}
