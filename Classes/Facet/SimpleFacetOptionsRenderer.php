@@ -118,6 +118,10 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 			$this->sortFacetOptionsByUserDefinedOrder();
 		}
 
+		if (!empty($this->facetConfiguration['reverseOrder'])) {
+			$this->facetOptions = array_reverse($this->facetOptions, true);
+		}
+
 		$i = 0;
 		foreach ($this->facetOptions as $facetOption => $facetOptionResultCount) {
 			$facetOption = (string) $facetOption;
