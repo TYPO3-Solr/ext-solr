@@ -91,6 +91,9 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 		if (isset($indexingConfiguration[$solrFieldName . '.'])) {
 				// configuration found => need to resolve a cObj
 
+				// setup locales
+			$GLOBALS['TSFE']->settingLocale();
+
 				// need to change directory to make IMAGE content objects work in BE context
 				// see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
 			$backupWorkingDirectory = getcwd();
