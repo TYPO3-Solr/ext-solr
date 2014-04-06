@@ -333,6 +333,7 @@ do
 
   # copy libs
   cd /opt/solr-tomcat/
+  mkdir solr/solr-$SOLR
   cp -r $SOLR_PACKAGE_NAME-$SOLR/dist solr/solr-$SOLR
   cp -r $SOLR_PACKAGE_NAME-$SOLR/contrib solr/solr-$SOLR
 
@@ -341,7 +342,7 @@ do
   rm -rf /opt/solr-tomcat/$SOLR_PACKAGE_NAME-$SOLR
 
   # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-  mkdir solr/solr-$SOLR/typo3lib
+  mkdir -p solr/solr-$SOLR/typo3lib
   cd solr/solr-$SOLR/typo3lib
   if [ $SOLR_VERSION_PLAIN -ge "400" ]
   then
