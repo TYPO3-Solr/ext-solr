@@ -177,13 +177,17 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 	 *
 	 */
 	protected function buildSelectStatement() {
+		$changedField = $GLOBALS['TCA'][$this->type]['ctrl']['tstamp'];
+		if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'])) {
+			$changedField = 'GREATEST(' . $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['starttime'] . ',' . $GLOBALS['TCA'][$this->type]['ctrl']['tstamp'] . ')';
+		}
 		$select = 'SELECT '
 			. '\'' . $this->site->getRootPageId() . '\' as root, '
 			. '\'' . $this->type . '\' AS item_type, '
 			. 'uid AS item_uid, '
 			. '\'' . $this->indexingConfigurationName . '\' as indexing_configuration, '
 			. $this->getIndexingPriority() . ' AS indexing_priority, '
-			. $GLOBALS['TCA'][$this->type]['ctrl']['tstamp'] . ' AS changed';
+			. $changedField . ' AS changed';
 
 		return $select;
 	}
