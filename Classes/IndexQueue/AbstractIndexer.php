@@ -94,7 +94,9 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 				// configuration found => need to resolve a cObj
 
 				// setup locales
-			$GLOBALS['TSFE']->settingLocale();
+			if ($GLOBALS['TSFE'] instanceof \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController) {
+				$GLOBALS['TSFE']->settingLocale();
+			}
 
 				// need to change directory to make IMAGE content objects work in BE context
 				// see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
