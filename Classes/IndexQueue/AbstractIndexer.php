@@ -46,6 +46,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 	 *
 	 * @param Apache_Solr_Document $document base document to add fields to
 	 * @param array $indexingConfiguration Indexing configuration / mapping
+	 * @param array $data Record data
 	 * @return Apache_Solr_Document Modified document with added fields
 	 */
 	protected function addDocumentFieldsFromTyposcript(Apache_Solr_Document $document, array $indexingConfiguration, array $data) {
