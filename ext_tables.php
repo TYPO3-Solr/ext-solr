@@ -27,6 +27,12 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . '_pi_results'
 	// add flexform to pi_results
 t3lib_extMgm::addPiFlexFormValue($_EXTKEY . '_pi_results', 'FILE:EXT:solr/Configuration/FlexForms/Results.xml');
 
+	// add search plugin to content element wizard
+if (TYPO3_MODE == 'BE') {
+	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['Tx_Solr_Backend_ContentElementWizardIconProvider'] =
+		t3lib_extMgm::extPath($_EXTKEY) . 'Classes/Backend/ContentElementWizardIconProvider.php';
+}
+
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding the Search Form plugin

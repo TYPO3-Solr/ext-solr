@@ -7,6 +7,8 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="module_indexinspector">Search Index Inspector</label>
+			<label index="plugin_results">Search</label>
+			<label index="plugin_results_description">A search form and results list.</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="module_indexinspector">Inspecteur de l'index de recherche</label>
