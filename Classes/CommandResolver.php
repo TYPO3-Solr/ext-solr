@@ -115,6 +115,15 @@ class Tx_Solr_CommandResolver {
 	}
 
 	/**
+	 * Gets all the registered plugin commands' names without checking requirements.
+	 *
+	 * @return array Array of names of registered plugin command
+	 */
+	public static function getAllPluginCommandsList() {
+		return array_keys(self::$commands);
+	}
+
+	/**
 	 * Determines which bits are set as a requirement for the plugin commands
 	 * to be registered for.
 	 *

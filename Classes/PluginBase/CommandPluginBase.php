@@ -56,23 +56,34 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	 * This method executes the requested commands and applies the changes to
 	 * the template.
 	 *
-	 * @return string Rndered plugin content
+	 * @param $actionResult
+	 * @throws RuntimeException
+	 * @throws UnexpectedValueException
+	 * @return string Rendered plugin content
 	 */
 	protected function render($actionResult) {
+		$allCommands = Tx_Solr_CommandResolver::getAllPluginCommandsList();
 		$commandList = $this->getCommandList();
 
+		// render commands matching the plugin's requirements
 		foreach ($commandList as $commandName) {
 			$GLOBALS['TT']->push('solr-' . $commandName);
 
+			$commandContent   = '';
 			$commandVariables = $this->executeCommand($commandName);
-
 			if (!is_null($commandVariables)) {
 				$commandContent = $this->renderCommand($commandName, $commandVariables);
-				$this->template->addSubpart('solr_search_' . $commandName, $commandContent);
 			}
 
+			$this->template->addSubpart('solr_search_' . $commandName, $commandContent);
 			unset($subpartTemplate);
 			$GLOBALS['TT']->pull($commandContent);
+		}
+
+		// remove subparts for commands that are registered but not matching the requirements
+		$nonMatchingCommands = array_diff($allCommands, $commandList);
+		foreach ($nonMatchingCommands as $nonMatchingCommand) {
+			$this->template->addSubpart('solr_search_' . $nonMatchingCommand, '');
 		}
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['renderTemplate'])) {
