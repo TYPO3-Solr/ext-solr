@@ -94,7 +94,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 				// configuration found => need to resolve a cObj
 
 				// setup locales
-			if ($GLOBALS['TSFE'] instanceof \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController) {
+			if ($GLOBALS['TSFE'] instanceof tslib_fe) {
 				$GLOBALS['TSFE']->settingLocale();
 			}
 
