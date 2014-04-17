@@ -57,7 +57,7 @@ CREATE TABLE tx_solr_indexqueue_item (
 	indexing_priority int(11) DEFAULT '0' NOT NULL,
 	changed int(11) DEFAULT '0' NOT NULL,
 	indexed int(11) DEFAULT '0' NOT NULL,
-	errors blob NOT NULL,
+	errors text NOT NULL,
 
 	PRIMARY KEY (uid),
 	KEY changed (changed),
@@ -75,7 +75,7 @@ CREATE TABLE tx_solr_indexqueue_indexing_property (
 	item_id int(11) DEFAULT '0' NOT NULL,
 
 	property_key varchar(255) DEFAULT '' NOT NULL,
-	property_value mediumblob NOT NULL,
+	property_value mediumtext NOT NULL,
 
 	PRIMARY KEY (uid),
 	KEY item_id (item_id)
