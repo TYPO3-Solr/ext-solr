@@ -3,7 +3,7 @@
 *  Copyright notice
 *
 *  (c) 2010-2011 Timo Schmidt <timo.schmidt@aoemedia.de>
-*  (c) 2012 Ingo Renner <ingo@typo3.org>
+*  (c) 2012-2014 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,10 +30,10 @@
  * Implements a main method and several abstract methods which
  * need to be implemented by an inheriting plugin.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @author	Timo Schmidt <timo.schmidt@aoemedia.de
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Schmidt <timo.schmidt@aoemedia.de
+ * @package TYPO3
+ * @subpackage solr
  */
 abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 
@@ -89,9 +89,9 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	/**
 	 * The main method of the plugin
 	 *
-	 * @param	string	The plugin content
-	 * @param	array	The plugin configuration
-	 * @return	string	The content that is displayed on the website
+	 * @param string $content The plugin content
+	 * @param array $configuration The plugin configuration
+	 * @return string The content that is displayed on the website
 	 */
 	public function main($content, $configuration) {
 		$content = '';
@@ -130,7 +130,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 * Adds the possibility to use stdWrap on the plugins content instead of wrapInBaseClass.
 	 * Defaults to wrapInBaseClass to ensure downward compatibility.
 	 *
-	 * @param $content The plugin content
+	 * @param string $content The plugin content
 	 * @return string
 	 */
 	protected function baseWrap($content) {
@@ -156,7 +156,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	/**
 	 * Initializes the plugin - configuration, language, caching, search...
 	 *
-	 * @param	array	configuration array as provided by the TYPO3 core
+	 * @param array $configuration configuration array as provided by the TYPO3 core
 	 */
 	protected function initialize($configuration) {
 		$this->conf = $configuration;
@@ -231,7 +231,8 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	/**
 	 * Initializes the template engine and returns the initialized instance.
 	 *
-	 * @return	Tx_Solr_Template
+	 * @return Tx_Solr_Template
+	 * @throws UnexpectedValueException if a view helper provider fails to implement interface Tx_Solr_ViewHelperProvider
 	 */
 	protected function initializeTemplateEngine() {
 		$templateFile = $this->getTemplateFile();
@@ -302,10 +303,10 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	/**
 	 * Overwrite this method to do own initialisations  of the template.
 	 *
-	 * @param $template
-	 * @return $templae
+	 * @param Tx_Solr_Template $template Template
+	 * @return Tx_Solr_Template
 	 */
-	protected function postInitializeTemplateEngine($template) {
+	protected function postInitializeTemplateEngine(Tx_Solr_Template $template) {
 		return $template;
 	}
 
@@ -317,14 +318,15 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 * This method executes the requested commands and applies the changes to
 	 * the template.
 	 *
-	 * @return string $actionResult Rendered plugin content
+	 * @param $actionResult
+	 * @return string Rendered plugin content
 	 */
 	protected abstract function render($actionResult);
 
 	/**
 	 * Renders a solr error.
 	 *
-	 * @return	string	A representation of the error that should be understandable for the user.
+	 * @return string A representation of the error that should be understandable for the user.
 	 */
 	protected function renderError() {
 		$this->template->workOnSubpart('solr_search_unavailable');
@@ -335,7 +337,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	/**
 	 * Renders a solr exception.
 	 *
-	 * @return	string	A representation of the exception that should be understandable for the user.
+	 * @return string A representation of the exception that should be understandable for the user.
 	 */
 	protected function renderException() {
 		$this->template->workOnSubpart('solr_search_error');
@@ -352,8 +354,8 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	/**
 	 * Overwrite this method to perform changes to the content after rendering.
 	 *
-	 * @param	string	The content rendered by the plugin so far
-	 * @return	string	The content that should be presented on the website, might be different from the output rendered before
+	 * @param string $content The content rendered by the plugin so far
+	 * @return string The content that should be presented on the website, might be different from the output rendered before
 	 */
 	protected function postRender($content) {
 		if (isset($this->conf['stdWrap.'])) {
@@ -372,7 +374,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 *
 	 * Overwrite this method to use a diffrent template.
 	 *
-	 * @return	string	The template file name to be used for the plugin
+	 * @return string The template file name to be used for the plugin
 	 */
 	protected function getTemplateFile() {
 		return $this->conf['templateFiles.'][$this->getTemplateFileKey()];
@@ -382,15 +384,15 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 * This method should be implemented to return the TSconfig key which
 	 * contains the template name for this template.
 	 *
-	 * @see	Tx_Solr_PluginBase_PluginBase#initializeTemplateEngine()
-	 * @return	string	The TSconfig key containing the template name
+	 * @see Tx_Solr_PluginBase_PluginBase#initializeTemplateEngine()
+	 * @return string The TSconfig key containing the template name
 	 */
 	protected abstract function getTemplateFileKey();
 
 	/**
 	 * Gets the plugin's template instance.
 	 *
-	 * @return	Tx_Solr_Template	The plugin's template.
+	 * @return Tx_Solr_Template The plugin's template.
 	 */
 	public function getTemplate() {
 		return $this->template;
@@ -408,8 +410,8 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	/**
 	 * Should return the relevant subpart of the template.
 	 *
-	 * @see	Tx_Solr_PluginBase_PluginBase#initializeTemplateEngine()
-	 * @return	string	the subpart of the template to be used
+	 * @see Tx_Solr_PluginBase_PluginBase#initializeTemplateEngine()
+	 * @return string The subpart of the template to be used
 	 */
 	protected abstract function getSubpart();
 
@@ -417,8 +419,8 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 * This method should return the plugin key. Reads some configuration
 	 * options in initializeTemplateEngine()
 	 *
- 	 * @see	Tx_Solr_pluginBase_PluginBase#initializeTemplateEngine()
-	 * @return	string	The plugin key
+ 	 * @see Tx_Solr_pluginBase_PluginBase#initializeTemplateEngine()
+	 * @return string The plugin key
 	 */
 	protected abstract function getPluginKey();
 
@@ -426,7 +428,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 * Gets the target page Id for links. Might have been set through either
 	 * flexform or TypoScript. If none is set, TSFE->id is used.
 	 *
-	 * @return	integer	The page Id to be used for links
+	 * @return integer The page Id to be used for links
 	 */
 	public function getLinkTargetPageId() {
 		return $this->conf['search.']['targetPage'];
@@ -436,7 +438,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 * Gets the Tx_Solr_Search instance used for the query. Mainly used as a
 	 * helper function for result document modifiers.
 	 *
-	 * @return	Tx_Solr_Search
+	 * @return Tx_Solr_Search
 	 */
 	public function getSearch() {
 		return $this->search;
