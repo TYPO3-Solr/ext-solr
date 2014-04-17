@@ -94,6 +94,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 * @return string The content that is displayed on the website
 	 */
 	public function main($content, $configuration) {
+		/** @noinspection PhpUnusedLocalVariableInspection */
 		$content = '';
 
 		try {
@@ -247,6 +248,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 			$templateFile = $flexformTemplateFile;
 		}
 
+		/** @var Tx_Solr_Template $template */
 		$template = t3lib_div::makeInstance(
 			'Tx_Solr_Template',
 			$this->cObj,
@@ -267,8 +269,8 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 				if ($viewHelperProvider instanceof Tx_Solr_ViewHelperProvider) {
 					$viewHelpers = $viewHelperProvider->getViewHelpers();
 					foreach ($viewHelpers as $helperName => $helperObject) {
+						// TODO check whether $helperAdded is TRUE, throw an exception if not
 						$helperAdded = $template->addViewHelperObject($helperName, $helperObject);
-							// TODO check whether $helperAdded is TRUE, throw an exception if not
 					}
 				} else {
 					throw new UnexpectedValueException(
