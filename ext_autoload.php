@@ -218,6 +218,7 @@ return array(
 
 	'tx_solr_additionalindexqueueitemindexer' => $extensionPath . 'Interfaces/interface.tx_solr_additionalindexqueueitemindexer.php',
 	'tx_solr_additionalpageindexer' => $extensionPath . 'Interfaces/interface.tx_solr_additionalpageindexer.php',
+	'tx_solr_postcreatepagedocument' => $extensionPath . 'Interfaces/interface.tx_solr_postcreatepagedocument.php',
 	'tx_solr_commandpluginaware' => $extensionPath . 'Interfaces/interface.tx_solr_commandpluginaware.php',
 	'tx_solr_commandpostprocessor' => $extensionPath . 'Interfaces/interface.tx_solr_commandpostprocessor.php',
 	'tx_solr_errordetector' => $extensionPath . 'Interfaces/interface.tx_solr_errordetector.php',

@@ -184,6 +184,21 @@ class Tx_Solr_Typo3PageIndexer {
 
 		$pageDocument = $this->getPageDocument();
 		$pageDocument = $this->substitutePageDocument($pageDocument);
+
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostPageDocumentCreation'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostPageDocumentCreation'] as $classReference) {
+				$postProcessor = t3lib_div::getUserObj($classReference);
+				if ($postProcessor instanceof Tx_Solr_PostCreatePageDocument) {
+					$postProcessor->pageDocumentCreated($pageDocument, $this->page, $this->pageUrl, $this->pageAccessRootline);
+				} else {
+					throw new UnexpectedValueException(
+						get_class($pageDocument) . ' must implement interface Tx_Solr_PostCreatePageDocument',
+						1397739154
+					);
+				}
+			}
+		}
+
 		self::$pageSolrDocument = $pageDocument;
 		$documents[]  = $pageDocument;
 		$documents    = $this->getAdditionalDocuments($pageDocument, $documents);
