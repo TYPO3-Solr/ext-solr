@@ -30,25 +30,25 @@
  * and getCommandList() the implemented render method applys
  * the registered commands and renders the result into the template.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @author	Timo Schmidt <timo.schmidt@aoemedia.de
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Schmidt <timo.schmidt@aoemedia.de
+ * @package TYPO3
+ * @subpackage solr
  */
-abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_PluginBase{
+abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_PluginBase {
 
 	/**
-	 * Should be implemted by an inheriting class to provide a correctly
-	 * initialized intance of a command resolver.
+	 * Should be implemented by an inheriting class to provide a correctly
+	 * initialized instance of a command resolver.
 	 *
-	 * @return	Tx_Solr_CommandResolver
+	 * @return Tx_Solr_CommandResolver
 	 */
 	abstract protected function getCommandResolver();
 
 	/**
 	 * Should return an array with commands that should be executed.
 	 *
-	 * @return	array
+	 * @return array
 	 */
 	abstract protected function getCommandList();
 
