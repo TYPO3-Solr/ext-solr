@@ -96,10 +96,10 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	}
 
 	/**
-	 * Gets the template to be used for rendering a comman.
+	 * Gets the template to be used for rendering a command.
 	 *
 	 * @param string $commandName Name of the command to get the template for
-	 * @return string The template for the given command
+	 * @return Tx_Solr_Template The template for the given command
 	 */
 	protected function getCommandTemplate($commandName) {
 		$subpartTemplate = clone $this->template;
@@ -111,12 +111,13 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	}
 
 	/**
-	 * Excutes a command.
+	 * Executes a command.
 	 *
 	 * Provides a hook to manipulate a command's template variables.
 	 *
 	 * @param string $commandName Name of the command to be executed.
 	 * @return array Array of template variables returned by the command.
+	 * @throws UnexpectedValueException if a command post processor fails to implement interface Tx_Solr_CommandPostProcessor
 	 */
 	protected function executeCommand($commandName) {
 		$commandResolver  = $this->getCommandResolver();
