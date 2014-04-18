@@ -157,15 +157,15 @@
 	<dynamicField name="*_tIntS"     type="tint"      indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_tIntM"     type="tint"      indexed="true" stored="true" multiValued="true" />
 
-	<dynamicField name="*_floatS"    type="float"     indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_floatM"    type="float"     indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_tFloatS"   type="tfloat"    indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_tFloatM"   type="tfloat"    indexed="true" stored="true" multiValued="true" />
-
 	<dynamicField name="*_longS"     type="long"      indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_longM"     type="long"      indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_tLongS"    type="tlong"     indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_tLongM"    type="tlong"     indexed="true" stored="true" multiValued="true" />
+
+	<dynamicField name="*_floatS"    type="float"     indexed="true" stored="true" multiValued="false"/>
+	<dynamicField name="*_floatM"    type="float"     indexed="true" stored="true" multiValued="true"/>
+	<dynamicField name="*_tFloatS"   type="tfloat"    indexed="true" stored="true" multiValued="false"/>
+	<dynamicField name="*_tFloatM"   type="tfloat"    indexed="true" stored="true" multiValued="true"/>
 
 	<dynamicField name="*_doubleS"   type="double"    indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_doubleM"   type="double"    indexed="true" stored="true" multiValued="true" />
