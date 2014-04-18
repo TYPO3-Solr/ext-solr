@@ -94,6 +94,7 @@
 	<field name="description" type="text"   indexed="true"  stored="true" termVectors="true" />
 	<field name="keywords"    type="text"   indexed="true"  stored="true" multiValued="true" omitNorms="true" />
 	<field name="author"      type="string" indexed="true"  stored="true" />
+	<field name="category"    type="string" indexed="true"  stored="true" multiValued="true" omitNorms="true" />
 
 	<field name="url"         type="string" indexed="true" stored="true" />
 
