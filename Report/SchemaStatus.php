@@ -27,22 +27,22 @@
  * Provides an status report about which schema version is used and checks
  * whether it fits the recommended version shipping with the extension.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Report_SchemaStatus implements tx_reports_StatusProvider {
 
 	/**
 	 * The schema name property is constructed as follows:
 	 *
-	 * tx_solr	- The extension key
-	 * x-y-z	- The extension version this schema is meant to work with
-	 * YYYYMMDD	- The date the schema file was changed the last time
+	 * tx_solr  - The extension key
+	 * x-y-z    - The extension version this schema is meant to work with
+	 * YYYYMMDD - The date the schema file was changed the last time
 	 *
 	 * Must be updated when changing the schema.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-3-0-0--20140418';
 
