@@ -168,7 +168,8 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Indexes a page.
 	 *
-	 * @return	boolean	TRUE after successfully indexing the page, FALSE on error
+	 * @return boolean TRUE after successfully indexing the page, FALSE on error
+	 * @throws UnexpectedValueException if a page document post processor fails to implement interface Tx_Solr_PageDocumentPostProcessor
 	 */
 	public function indexPage() {
 		$pageIndexed = FALSE;
@@ -185,14 +186,14 @@ class Tx_Solr_Typo3PageIndexer {
 		$pageDocument = $this->getPageDocument();
 		$pageDocument = $this->substitutePageDocument($pageDocument);
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostPageDocumentCreation'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostPageDocumentCreation'] as $classReference) {
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] as $classReference) {
 				$postProcessor = t3lib_div::getUserObj($classReference);
-				if ($postProcessor instanceof Tx_Solr_PostCreatePageDocument) {
-					$postProcessor->pageDocumentCreated($pageDocument, $this->page, $this->pageUrl, $this->pageAccessRootline);
+				if ($postProcessor instanceof Tx_Solr_PageDocumentPostProcessor) {
+					$postProcessor->postProcessPageDocument($pageDocument, $this->page);
 				} else {
 					throw new UnexpectedValueException(
-						get_class($pageDocument) . ' must implement interface Tx_Solr_PostCreatePageDocument',
+						get_class($pageDocument) . ' must implement interface Tx_Solr_PageDocumentPostProcessor',
 						1397739154
 					);
 				}

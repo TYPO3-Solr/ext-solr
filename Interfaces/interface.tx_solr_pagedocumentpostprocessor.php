@@ -27,26 +27,23 @@
 
 
 /**
- * Subsitute page indexer interface, describes the method an indexer must
- * implement to provide a substitute page document
+ * Page document post processor interface to handle page documents after they
+ * have been put together, but not yet submitted to Solr.
  *
- * @author	Steffen Ritter <steffen.ritter@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Steffen Ritter <steffen.ritter@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
-interface Tx_Solr_PostCreatePageDocument {
+interface Tx_Solr_PageDocumentPostProcessor {
 
 	/**
 	 * Allows Modification of the PageDocument
 	 * Can be used to trigger actions when all contextual variables of the pageDocument to be indexed are known
 	 *
-	 * @param \Apache_Solr_Document $pageDocument the generated page document
-	 * @param \tslib_fe $page the page object with information about page id or language
-	 * @param string $pageUrl the URL of the page
-	 * @param \Tx_Solr_Access_Rootline $pageAccessRootline the access-rootline of the current indexed page
-	 *
+	 * @param Apache_Solr_Document $pageDocument the generated page document
+	 * @param tslib_fe $page the page object with information about page id or language
 	 * @return void
 	 */
-	public function pageDocumentCreated(\Apache_Solr_Document $pageDocument, \tslib_fe $page, $pageUrl, \Tx_Solr_Access_Rootline $pageAccessRootline);
+	public function postProcessPageDocument(Apache_Solr_Document $pageDocument, tslib_fe $page);
 
 }

@@ -218,7 +218,6 @@ return array(
 
 	'tx_solr_additionalindexqueueitemindexer' => $extensionPath . 'Interfaces/interface.tx_solr_additionalindexqueueitemindexer.php',
 	'tx_solr_additionalpageindexer' => $extensionPath . 'Interfaces/interface.tx_solr_additionalpageindexer.php',
-	'tx_solr_postcreatepagedocument' => $extensionPath . 'Interfaces/interface.tx_solr_postcreatepagedocument.php',
 	'tx_solr_commandpluginaware' => $extensionPath . 'Interfaces/interface.tx_solr_commandpluginaware.php',
 	'tx_solr_commandpostprocessor' => $extensionPath . 'Interfaces/interface.tx_solr_commandpostprocessor.php',
 	'tx_solr_errordetector' => $extensionPath . 'Interfaces/interface.tx_solr_errordetector.php',
@@ -233,6 +232,7 @@ return array(
 	'tx_solr_indexqueuepageindexerdataurlmodifier' => $extensionPath . 'Interfaces/interface.tx_solr_indexqueuepageindexerdataurlmodifier.php',
 	'tx_solr_indexqueuepageindexerdocumentsmodifier' => $extensionPath . 'Interfaces/interface.tx_solr_indexqueuepageindexerdocumentsmodifier.php',
 	'tx_solr_indexqueuepageindexerfrontendhelper' => $extensionPath . 'Interfaces/interface.tx_solr_indexqueuepageindexerfrontendhelper.php',
+	'tx_solr_pagedocumentpostprocessor' => $extensionPath . 'Interfaces/interface.tx_solr_pagedocumentpostprocessor.php',
 	'tx_solr_plugincommand' => $extensionPath . 'Interfaces/interface.tx_solr_plugincommand.php',
 	'tx_solr_pluginaware' => $extensionPath . 'Interfaces/interface.tx_solr_pluginaware.php',
 	'tx_solr_queryaware' => $extensionPath . 'Interfaces/interface.tx_solr_queryaware.php',
