@@ -66,9 +66,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 					$document->addField($solrFieldName, $multiValue);
 				}
 			} else {
-				if (!empty($fieldValue) || preg_match('/_(?:string|bin|text(?:|T|Sort|Wst)|phonetic)[SM]$/', $solrFieldName) === 1 ) {
-					$document->setField($solrFieldName, $fieldValue);
-				}
+				$document->setField($solrFieldName, $fieldValue);
 			}
 		}
 
@@ -139,12 +137,71 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 			$fieldValue = $data[$indexingConfiguration[$solrFieldName]];
 		}
 
+		// detect and correct type for dynamic fields
+
+		// find last underscore, substr from there, cut off last character (S/M)
+		$fieldType = substr($solrFieldName, strrpos($solrFieldName, '_') + 1, -1);
+		if (is_array($fieldValue)) {
+			foreach ($fieldValue as $key => $value) {
+				$fieldValue[$key] = $this->ensureFieldValueType($value, $fieldType);
+			}
+		} else {
+			$fieldValue = $this->ensureFieldValueType($fieldValue, $fieldType);
+		}
+
 		return $fieldValue;
 	}
 
 
 	// Utility methods
 
+
+	/**
+	 * Makes sure a field's value matches a (dynamic) field's type.
+	 *
+	 * @param mixed $value Value to be added to a document
+	 * @param string $fieldType The dynamic field's type
+	 * @return mixed Returns the value in the correct format for the field type
+	 */
+	protected function ensureFieldValueType($value, $fieldType) {
+
+		switch ($fieldType) {
+			case 'int':
+			case 'tInt':
+				$value = intval($value);
+				break;
+
+			case 'float':
+			case 'tFloat':
+				$value = floatval($value);
+				break;
+
+			// long and double do not exist in PHP
+			// simply make sure it somehow looks like a number
+			// <insert PHP rant here>
+			case 'long':
+			case 'tLong':
+				// remove anything that's not a number or negative/minus sign
+				$value = preg_replace('/[^0-9\\-]/', '', $value);
+				if (trim($value) === '') {
+					$value = 0;
+				}
+				break;
+			case 'double':
+			case 'tDouble':
+			case 'tDouble4':
+				// as long as it's numeric we'll take it, int or float doesn't matter
+				if (!is_numeric($value)) {
+					$value = 0;
+				}
+				break;
+
+			default:
+				// assume things are correct for non-dynamic fields
+		}
+
+		return $value;
+	}
 
 	/**
 	 * Uses a field's configuration to detect whether its value returned by a
