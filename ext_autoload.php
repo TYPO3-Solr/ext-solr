@@ -212,7 +212,6 @@ return array(
 	'tx_solr_report_solrconfigurationstatus' => $extensionPath . 'Report/SolrConfigurationStatus.php',
 	'tx_solr_report_solrstatus' => $extensionPath . 'Report/SolrStatus.php',
 	'tx_solr_report_solrversionstatus' => $extensionPath . 'Report/SolrVersionStatus.php',
-	'tx_solr_report_statisticsreport' => $extensionPath . 'Report/class.tx_solr_report_statisticsreport.php',
 
 		// interfaces
 
