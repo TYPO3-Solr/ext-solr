@@ -104,6 +104,7 @@ class Tx_Solr_Sorting {
 	 *
 	 * @param string $urlParameters tx_solr[sort] URL parameter.
 	 * @return string The actual index field configured to sort by for the given sort option name
+	 * @throws InvalidArgumentException if the given sort option is not configured
 	 */
 	public function getSortFieldFromUrlParameter($urlParameters) {
 		$sortFields           = array();
@@ -114,7 +115,7 @@ class Tx_Solr_Sorting {
 			list($sortOption, $sortDirection) = explode(' ', $sortParameter);
 
 			if (!array_key_exists($sortOption, $availableSortOptions)) {
-				throw t3lib_div::makeInstance('InvalidArgumentException',
+				throw new InvalidArgumentException(
 					'No sorting configuration found for option name ' . $sortOption,
 					1316187644
 				);
