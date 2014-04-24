@@ -150,8 +150,8 @@
 	<dynamicField name="*_boolS"     type="boolean"   indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_boolM"     type="boolean"   indexed="true" stored="true" multiValued="true" />
 
-	<dynamicField name="*_binS"     type="binary"     indexed="false" stored="true" multiValued="false" />
-	<dynamicField name="*_binM"     type="binary"     indexed="false" stored="true" multiValued="true" />
+	<dynamicField name="*_binS"      type="binary"    indexed="false" stored="true" multiValued="false" />
+	<dynamicField name="*_binM"      type="binary"    indexed="false" stored="true" multiValued="true" />
 
 	<dynamicField name="*_intS"      type="integer"   indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_intM"      type="integer"   indexed="true" stored="true" multiValued="true" />
