@@ -136,6 +136,12 @@
 	<copyField source="subTitle" dest="spell" />
 	<copyField source="content"  dest="spell" />
 
+	<field name="sortTitle" type="string" indexed="true" stored="false" />
+	<copyField source="title" dest="sortTitle" />
+
+	<field name="sortAuthor" type="string" indexed="true" stored="false" />
+	<copyField source="author" dest="sortAuthor" />
+
 	<!-- The teaser can be used when a better snippet is not available -->
 	<copyField source="content" dest="teaser" maxChars="300" />
 
