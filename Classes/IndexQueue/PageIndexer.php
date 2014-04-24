@@ -355,10 +355,10 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	 * The content access element does not have a page ID, instead it replaces
 	 * the ID by a lower case C.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	Index queue item representing the current page
-	 * @param	integer	The sys_language_uid language ID
-	 * @param	integer	The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
-	 * @return	string	An Access Rootline.
+	 * @param Tx_Solr_IndexQueue_Item $item Index queue item representing the current page
+	 * @param integer $language The sys_language_uid language ID
+	 * @param integer $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
+	 * @return string An Access Rootline.
 	 */
 	protected function getAccessRootline(Tx_Solr_IndexQueue_Item $item, $language = 0, $contentAccessGroup = FALSE) {
 		static $accessRootlineCache;
