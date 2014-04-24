@@ -61,7 +61,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 			}
 
 			foreach ($contentAccessGroups as $userGroup) {
-				$response = $this->indexPage($item, $systemLanguageUid, $userGroup);
+				$this->indexPage($item, $systemLanguageUid, $userGroup);
 			}
 		}
 
@@ -136,7 +136,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 		}
 
 		if (!empty($this->options['frontendDataHelper.']['headers.'])) {
-			foreach ($this->options['frontendDataHelper.']['headers.'] as $headerName => $headerValue) {
+			foreach ($this->options['frontendDataHelper.']['headers.'] as $headerValue) {
 				$request->addHeader($headerValue);
 			}
 		}
@@ -185,8 +185,6 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	 * @return string URL to send the index request to
 	 */
 	protected function getDataUrl(Tx_Solr_IndexQueue_Item $item, $language = 0) {
-		$dataUrl = '';
-
 		$scheme = 'http';
 		$host   = $item->getSite()->getDomain();
 		$path   = '/';
