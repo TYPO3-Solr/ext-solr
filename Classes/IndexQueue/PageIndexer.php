@@ -360,11 +360,11 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	 * @param integer $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
 	 * @return string An Access Rootline.
 	 */
-	protected function getAccessRootline(Tx_Solr_IndexQueue_Item $item, $language = 0, $contentAccessGroup = FALSE) {
+	protected function getAccessRootline(Tx_Solr_IndexQueue_Item $item, $language = 0, $contentAccessGroup = null) {
 		static $accessRootlineCache;
 
 		$accessRootlineCacheEntryId = $item->getRecordUid() . '|' . $language;
-		if ($contentAccessGroup !== FALSE) {
+		if (!is_null($contentAccessGroup)) {
 			$accessRootlineCacheEntryId .= '|' . $contentAccessGroup;
 		}
 
