@@ -373,7 +373,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 
 				// current page's content access groups
 			$contentAccessGroups = array($contentAccessGroup);
-			if ($contentAccessGroup === FALSE) {
+			if (is_null($contentAccessGroup)) {
 				$contentAccessGroups = $this->getAccessGroupsFromContent($item, $language);
 			}
 			$accessRootline->push(t3lib_div::makeInstance(
