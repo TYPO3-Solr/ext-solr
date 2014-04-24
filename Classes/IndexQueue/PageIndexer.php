@@ -39,8 +39,8 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	/**
 	 * Indexes an item from the indexing queue.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	An index queue item
-	 * @return	Apache_Solr_Response	The Apache Solr response
+	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @return Apache_Solr_Response The Apache Solr response
 	 */
 	public function index(Tx_Solr_IndexQueue_Item $item) {
 		$this->setLogging($item);
@@ -72,10 +72,10 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	 * Creates a single Solr Document for a page in a specific language and for
 	 * a specific frontend user group.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	The index queue item representing the page.
-	 * @param	integer	The language to use.
-	 * @param	integer	The frontend user group to use.
-	 * @return	Tx_Solr_IndexQueue_PageIndexerResponse	page indexer response
+	 * @param Tx_Solr_IndexQueue_Item $item The index queue item representing the page.
+	 * @param integer $language The language to use.
+	 * @param integer $userGroup The frontend user group to use.
+	 * @return Tx_Solr_IndexQueue_PageIndexerResponse Page indexer response
 	 */
 	protected function indexPage(Tx_Solr_IndexQueue_Item $item, $language = 0, $userGroup = 0) {
 		$accessRootline = $this->getAccessRootline($item, $language, $userGroup);
@@ -151,8 +151,8 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	/**
 	 * Checks whether we can index this page.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	The page we want to index encapsulated in an index queue item
-	 * @return	boolean	True if we can index this page, FALSE otherwise
+	 * @param Tx_Solr_IndexQueue_Item $item The page we want to index encapsulated in an index queue item
+	 * @return boolean True if we can index this page, FALSE otherwise
 	 */
 	protected function isPageIndexable(Tx_Solr_IndexQueue_Item $item) {
 
@@ -394,9 +394,9 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	 * elements and groups of records of extensions that have correctly been
 	 * pushed through tslib_cObj during rendering.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	Index queue item representing the current page to get the user groups from
-	 * @param	integer	The sys_language_uid language ID
-	 * @return	array	Array of user group IDs
+	 * @param Tx_Solr_IndexQueue_Item $item Index queue item representing the current page to get the user groups from
+	 * @param integer $language The sys_language_uid language ID
+	 * @return array Array of user group IDs
 	 */
 	protected function getAccessGroupsFromContent(Tx_Solr_IndexQueue_Item $item, $language = 0) {
 		static $accessGroupsCache;
