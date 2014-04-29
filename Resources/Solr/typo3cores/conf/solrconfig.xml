@@ -10,9 +10,9 @@
 	status report - tx_solr_report_SolrconfigStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<config name="tx_solr-3-0-0--20140226">
+<config name="tx_solr-3-0-0--20140429">
 
-	<luceneMatchVersion>LUCENE_47</luceneMatchVersion>
+	<luceneMatchVersion>LUCENE_48</luceneMatchVersion>
 
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
