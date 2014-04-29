@@ -12,6 +12,7 @@ EXT_SOLR_VERSION=3.0
 EXT_SOLR_PLUGIN_ACCESS_VERSION=2.0
 EXT_SOLR_PLUGIN_UTILS_VERSION=1.1
 EXT_SOLR_PLUGIN_LANG_VERSION=3.1
+JAVA_VERSION=7
 
 GITBRANCH_PATH="solr_$EXT_SOLR_VERSION.x"
 
@@ -135,14 +136,13 @@ then
 	PASSALLCHECKS=0
 fi
 
-JAVA_VERSION=$(java -version 2>&1 | grep -Eom1 "[._0-9]{5,}")
-# format java version, e.g.: replace 1.7.0_11 with 1.7
-JAVA_VERSION=${JAVA_VERSION:0:3}
-# check if java version is 1.6 or newer
-CHECK=$(echo "$JAVA_VERSION >= 1.7" | bc)
-if [ $CHECK -ne "1" ]
+JAVA_VERSION_INSTALLED=$(java -version 2>&1 | grep -Eom1 "[._0-9]{5,}")
+# extract the main Java version from 1.7.0_11 => 7
+JAVA_VERSION_INSTALLED=${JAVA_VERSION_INSTALLED:2:1}
+# check if java version is 7 or newer
+if [ $JAVA_VERSION_INSTALLED -lt $JAVA_VERSION ]
 then
-  cecho "You have installed Java version $JAVA_VERSION. Please install Java 7 or newer." $red
+  cecho "You have installed Java version $JAVA_VERSION_INSTALLED. Please install Java $JAVA_VERSION or newer." $red
   PASSALLCHECKS=0
 fi
 
