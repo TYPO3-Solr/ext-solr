@@ -66,7 +66,7 @@
 		but may be good for SKUs.	Can insert dashes in the wrong place and still match. -->
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
 		<analyzer>
-			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
 			<filter class="solr.ThaiWordFilterFactory"/>
 			<filter class="solr.ManagedSynonymFilterFactory" managed="thai"/>
