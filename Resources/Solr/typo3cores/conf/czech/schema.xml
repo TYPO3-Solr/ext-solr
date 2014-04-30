@@ -52,9 +52,6 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<!-- best practice (currently) for synonyms is to add them by
-				expansions during index time
-			-->
 			<filter class="solr.ManagedSynonymFilterFactory" managed="czech"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="czech"/>
 			<filter class="solr.LowerCaseFilterFactory"/>

@@ -76,6 +76,7 @@
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
 		<analyzer>
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
 			<filter class="solr.ManagedSynonymFilterFactory" managed="dutch"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="dutch"/>
 			<filter class="solr.WordDelimiterFilterFactory"

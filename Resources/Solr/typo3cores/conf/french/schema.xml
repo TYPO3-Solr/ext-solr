@@ -42,6 +42,7 @@
 	<fieldType name="text" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
 			<filter class="solr.ElisionFilterFactory"/>
 			<filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1" preserveOriginal="1"/>
 			<filter class="solr.ManagedSynonymFilterFactory" managed="french"/>
@@ -52,6 +53,7 @@
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
 			<filter class="solr.ElisionFilterFactory"/>
 			<filter class="solr.WordDelimiterFilterFactory"
 				generateWordParts="1"
@@ -74,6 +76,7 @@
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
 		<analyzer>
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
 			<filter class="solr.ManagedSynonymFilterFactory" managed="french"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="french"/>
 			<filter class="solr.ElisionFilterFactory"/>

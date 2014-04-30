@@ -55,13 +55,6 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymFilterFactory" managed="german"/>
-
-			<!--
-				minWordSize : only words longer than this get processed
-				minSubwordSize : only subwords longer than this get to the output stream
-				maxSubwordSize : only subwords shorter than this get to the output stream
-				onlyLongestMatch : add only the longest matching subword to the stream
-			-->
 			<filter class="solr.DictionaryCompoundWordTokenFilterFactory"
 				dictionary="german/german-common-nouns.txt"
 				minWordSize="5"
@@ -104,13 +97,6 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymFilterFactory" managed="german"/>
-
-			<!--
-				minWordSize : only words longer than this get processed
-				minSubwordSize : only subwords longer than this get to the output stream
-				maxSubwordSize : only subwords shorter than this get to the output stream
-				onlyLongestMatch : add only the longest matching subword to the stream
-			-->
 			<filter class="solr.DictionaryCompoundWordTokenFilterFactory"
 				dictionary="german/german-common-nouns.txt"
 				minWordSize="5"
@@ -141,13 +127,6 @@
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedSynonymFilterFactory" managed="german"/>
-
-			<!--
-				minWordSize : only words longer than this get processed
-				minSubwordSize : only subwords longer than this get to the output stream
-				maxSubwordSize : only subwords shorter than this get to the output stream
-				onlyLongestMatch : add only the longest matching subword to the stream
-			-->
 			<filter class="solr.DictionaryCompoundWordTokenFilterFactory"
 				dictionary="german/german-common-nouns.txt"
 				minWordSize="5"
