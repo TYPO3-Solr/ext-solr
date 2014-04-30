@@ -301,18 +301,19 @@ do
 
     wgetresource Solr/typo3cores/conf/$LANGUAGE/protwords.txt
     wgetresource Solr/typo3cores/conf/$LANGUAGE/schema.xml
-    wgetresource Solr/typo3cores/conf/$LANGUAGE/stopwords.txt
     wgetresource Solr/typo3cores/conf/$LANGUAGE/synonyms.txt
 
     if [ $LANGUAGE = "german" ]
     then
       wgetresource Solr/typo3cores/conf/$LANGUAGE/german-common-nouns.txt
     fi
+    cd $SOLRDIR/typo3cores/conf
+    wgetresource Solr/typo3cores/conf/$LANGUAGE/_schema_analysis_stopwords_$LANGUAGE.json
   done
 
   # download general configuration in /opt/solr-tomcat/solr/typo3cores/conf/
   cecho "Downloading general configruation" $green
-  cd ..
+  cd $SOLRDIR/typo3cores/conf
   wgetresource Solr/typo3cores/conf/currency.xml
   wgetresource Solr/typo3cores/conf/elevate.xml
   wgetresource Solr/typo3cores/conf/general_schema_fields.xml
