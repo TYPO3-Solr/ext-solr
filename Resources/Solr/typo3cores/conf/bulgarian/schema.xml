@@ -55,12 +55,8 @@
 			<!-- best practice (currently) for synonyms is to add them by
 				expansions during index time
 			-->
-			<filter class="solr.SynonymFilterFactory" synonyms="bulgarian/synonyms.txt" ignoreCase="true" expand="true"/>
-			<!-- Case insensitive stop word removal.
-				add enablePositionIncrements=true in both the index and query
-				analyzers to leave a 'gap' for more accurate phrase queries.
-			-->
-			<filter class="solr.StopFilterFactory" words="bulgarian/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.BulgarianStemFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -78,7 +74,7 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<filter class="solr.StopFilterFactory" words="bulgarian/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.BulgarianStemFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -93,8 +89,8 @@
 		<analyzer>
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-			<filter class="solr.SynonymFilterFactory" synonyms="bulgarian/synonyms.txt" ignoreCase="true" expand="false"/>
-			<filter class="solr.StopFilterFactory" words="bulgarian/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
 			<filter class="solr.WordDelimiterFilterFactory"
 				generateWordParts="0"
 				generateNumberParts="0"
@@ -116,8 +112,8 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.SynonymFilterFactory" synonyms="bulgarian/synonyms.txt" ignoreCase="true" expand="true"/>
-			<filter class="solr.StopFilterFactory" words="bulgarian/stopwords.txt" ignoreCase="true"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="bulgarian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>
@@ -126,7 +122,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.StopFilterFactory" words="bulgarian/stopwords.txt" ignoreCase="true"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>

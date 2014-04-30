@@ -52,15 +52,8 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<!-- best practice (currently) for synonyms is to add them by
-				expansions during index time
-			-->
-			<filter class="solr.SynonymFilterFactory" synonyms="arabic/synonyms.txt" ignoreCase="true" expand="true"/>
-			<!-- Case insensitive stop word removal.
-				add enablePositionIncrements=true in both the index and query
-				analyzers to leave a 'gap' for more accurate phrase queries.
-			-->
-			<filter class="solr.StopFilterFactory" words="arabic/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.ArabicStemFilterFactory" protected="arabic/protwords.txt"/>
@@ -78,7 +71,7 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<filter class="solr.StopFilterFactory" words="arabic/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.ArabicStemFilterFactory" protected="arabic/protwords.txt"/>
@@ -93,8 +86,8 @@
 		<analyzer>
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
 
-			<filter class="solr.SynonymFilterFactory" synonyms="arabic/synonyms.txt" ignoreCase="true" expand="false"/>
-			<filter class="solr.StopFilterFactory" words="arabic/stopwords.txt" ignoreCase="true" enablePositionIncrements="true"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.WordDelimiterFilterFactory"
 				generateWordParts="0"
 				generateNumberParts="0"
@@ -117,8 +110,8 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.SynonymFilterFactory" synonyms="arabic/synonyms.txt" ignoreCase="true" expand="true"/>
-			<filter class="solr.StopFilterFactory" words="arabic/stopwords.txt" ignoreCase="true"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="arabic"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
@@ -128,7 +121,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.StopFilterFactory" words="arabic/stopwords.txt" ignoreCase="true"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
