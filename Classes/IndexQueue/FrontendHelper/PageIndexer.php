@@ -27,30 +27,30 @@
  * Index Queue Page Indexer frontend helper to ask the frontend page indexer to
  * index the page.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_FrontendHelper_Abstract {
 
 	/**
 	 * This frontend helper's executed action.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $action = 'indexPage';
 
 	/**
 	 * the page currently being indexed.
 	 *
-	 * @var	tslib_fe
+	 * @var tslib_fe
 	 */
 	protected $page;
 
 	/**
 	 * Response data
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $responseData = array();
 
@@ -87,7 +87,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	/**
 	 * Returns the status of whether a page was indexed.
 	 *
-	 * @return	array	page indexed status.
+	 * @return array Page indexed status.
 	 */
 	public function getData() {
 		return $this->responseData;
@@ -95,14 +95,14 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 
 
 	#
-	# Indexer auhtorization for access restricted pages / content
+	# Indexer authorisation for access restricted pages / content
 	#
 
 
 	/**
 	 * Fakes a logged in user to retrieve access restricted content.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function authorizeFrontendUser() {
 		$accessRootline = $this->getAccessRootline();
@@ -131,7 +131,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	/**
 	 * Gets the access rootline as defined by the request.
 	 *
-	 * @return	Tx_Solr_Access_Rootline The access rootline to use for indexing.
+	 * @return Tx_Solr_Access_Rootline The access rootline to use for indexing.
 	 */
 	protected function getAccessRootline() {
 		$stringAccessRootline = '';
@@ -152,7 +152,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 * Registers an authentication service to authorize / grant the indexer to
 	 * access protected pages.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	protected function registerAuthorizationService() {
 		$overrulingPriority = $this->getHighestAuthenticationServicePriority() + 1;
@@ -184,7 +184,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 * Determines the highest priority of all registered authentication
 	 * services.
 	 *
-	 * @return	integer	Highest priority of all registered authentication service
+	 * @return integer Highest priority of all registered authentication service
 	 */
 	protected function getHighestAuthenticationServicePriority() {
 		$highestPriority = 0;
@@ -211,7 +211,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 *
 	 * Uses the provided GET parameters, page id and language id.
 	 *
-	 * @return	string	URL of the current page.
+	 * @return string URL of the current page.
 	 */
 	protected function generatePageUrl() {
 		if ($this->request->getParameter('overridePageUrl')) {
@@ -244,7 +244,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 * Handles the indexing of the page content during post processing of a
 	 * generated page.
 	 *
-	 * @param	tslib_fe	Typoscript frontend
+	 * @param tslib_fe $page TypoScript frontend
 	 */
 	public function hook_indexContent(tslib_fe $page) {
 		$this->page = $page;

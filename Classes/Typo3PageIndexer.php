@@ -282,7 +282,8 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Adds the collected documents to the Solr index.
 	 *
-	 * @param	array	$documents An array of Apache_Solr_Document objects.
+	 * @param array $documents An array of Apache_Solr_Document objects.
+	 * @return boolean TRUE if documents were added successfully, FALSE otherwise
 	 */
 	protected function addDocumentsToSolrIndex(array $documents) {
 		$documentsAdded = FALSE;
