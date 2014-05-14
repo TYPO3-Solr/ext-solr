@@ -62,9 +62,10 @@ class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
 
 				if ($isOutdatedVersion) {
 					$message = '<p style="margin-bottom: 10px;">Found an
-						outdated Apache Solr server version. The minimum
+						outdated Apache Solr server version. <br />The <strong>minimum
 						required version is '
-						. self::REQUIRED_SOLR_VERSION . '</p>
+						. self::REQUIRED_SOLR_VERSION . '</strong>, you have
+						' . $this->formatSolrVersion($solrVersion) . '.</p>
 						<p>Affected Solr server:</p>
 						<ul>'
 						. '<li>Host: ' . $solrConnection->getHost() . '</li>'
