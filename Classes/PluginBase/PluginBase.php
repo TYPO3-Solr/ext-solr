@@ -201,6 +201,58 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	}
 
 	/**
+	 * Overwrites pi_loadLL() to handle custom location of language files.
+	 *
+	 * Loads local-language values by looking for a "locallang" file in the
+	 * plugin class directory ($this->scriptRelPath) and if found includes it.
+	 * Also locallang values set in the TypoScript property "_LOCAL_LANG" are
+	 * merged onto the values found in the "locallang" file.
+	 * Supported file extensions xlf, xml, php
+	 *
+	 * @return void
+	 */
+	public function pi_loadLL() {
+		if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
+			list($languageFileName) = explode('/', $this->scriptRelPath);
+			$languageFileName = str_replace('Pi', 'Plugin', $languageFileName);
+
+			$basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/' . $languageFileName . '.xml';
+
+			// Read the strings in the required charset (since TYPO3 4.2)
+			$this->LOCAL_LANG = t3lib_div::readLLfile($basePath, $this->LLkey, $GLOBALS['TSFE']->renderCharset);
+			$alternativeLanguageKeys = t3lib_div::trimExplode(',', $this->altLLkey, TRUE);
+			foreach ($alternativeLanguageKeys as $languageKey) {
+				$tempLL = t3lib_div::readLLfile($basePath, $languageKey);
+				if ($this->LLkey !== 'default' && isset($tempLL[$languageKey])) {
+					$this->LOCAL_LANG[$languageKey] = $tempLL[$languageKey];
+				}
+			}
+			// Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
+			if (isset($this->conf['_LOCAL_LANG.'])) {
+				// Clear the "unset memory"
+				$this->LOCAL_LANG_UNSET = array();
+				foreach ($this->conf['_LOCAL_LANG.'] as $languageKey => $languageArray) {
+					// Remove the dot after the language key
+					$languageKey = substr($languageKey, 0, -1);
+					// Don't process label if the language is not loaded
+					if (is_array($languageArray) && isset($this->LOCAL_LANG[$languageKey])) {
+						foreach ($languageArray as $labelKey => $labelValue) {
+							if (!is_array($labelValue)) {
+								$this->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
+								if ($labelValue === '') {
+									$this->LOCAL_LANG_UNSET[$languageKey][$labelKey] = '';
+								}
+								$this->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
+							}
+						}
+					}
+				}
+			}
+		}
+		$this->LOCAL_LANG_loaded = 1;
+	}
+
+	/**
 	 * Allows to override TypoScript settings with Flexform values.
 	 *
 	 */
