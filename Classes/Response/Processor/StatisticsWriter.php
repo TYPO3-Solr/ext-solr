@@ -109,7 +109,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 			'page'              => (int) $urlParameters['page'],
 			'keywords'          => $keywords,
 			'filters'           => serialize($filters),
-			'sorting'           => $urlParameters['sort'], // FIXME sanitize me!
+			'sorting'           => $urlParameters['sort'] ? $urlParameters['sort'] : '', // FIXME sanitize me!
 			'parameters'        => serialize($response->responseHeader->params)
 		);
 
