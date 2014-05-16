@@ -181,7 +181,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	}
 
 	/**
-	 * Overload pi_setPiVarDefaults to add stdWrap-functionality to _DEFAULT_PI_VARS
+	 * Overwrites pi_setPiVarDefaults to add stdWrap-functionality to _DEFAULT_PI_VARS
 	 *
 	 * @author Grigori Prokhorov <grigori.prokhorov@dkd.de>
 	 * @author Ivan Kartolo <ivan.kartolo@dkd.de>
