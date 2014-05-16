@@ -11,6 +11,10 @@ table.tx_solr-TCEforms table.typo3-TCEforms-select-checkbox tbody {
 	display: table-row-group;
 }
 
+table.tx_solr-TCEforms table.typo3-TCEforms-select-checkbox td.c-labelCell {
+	font-size: 12px;
+}
+
 
 /* scheduler layout fixes */
 .tx_scheduler_mod1 .extra_fields_tx_solr_scheduler_ReIndexTask table.typo3-TCEforms {
