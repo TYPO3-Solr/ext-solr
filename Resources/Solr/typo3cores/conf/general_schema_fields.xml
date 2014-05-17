@@ -86,7 +86,7 @@
 	<!-- access fields -->
 	<field name="access"  type="string"  indexed="true" stored="true" default="c:0" />
 	<!-- we only need endtime as records with a starttime > indexing time will not get indexed -->
-	<field name="endtime" type="date" indexed="true" stored="true" />
+	<field name="endtime" type="date"    indexed="true" stored="true" />
 
 	<!-- content fields -->
 	<field name="title"       type="text"   indexed="true"  stored="true" termVectors="true" omitNorms="true" />

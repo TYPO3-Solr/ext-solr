@@ -246,8 +246,6 @@ class Tx_Solr_Typo3PageIndexer {
 		$document->setField('access',      (string) $this->pageAccessRootline);
 		if ($this->page->page['endtime']) {
 			$document->setField('endtime', $pageRecord['endtime']);
-		} else {
-			$document->setField('endtime', 0);
 		}
 
 			// content

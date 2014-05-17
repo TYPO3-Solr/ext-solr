@@ -150,7 +150,6 @@ class Tx_Solr_GarbageCollector {
 
 		if ($this->isHidden($table, $record)
 			|| ($this->isStartTimeInFuture($table, $record) && $this->isMarkedAsIndexed($table, $record))
-			|| $this->isEndTimeInPast($table, $record)
 			|| $this->hasFrontendGroupsRemoved($table, $record)
 			|| ($table == 'pages' && $this->isPageExcludedFromSearch($record))
 			|| ($table == 'pages' && !$this->isIndexablePageType($record))
@@ -248,26 +247,6 @@ class Tx_Solr_GarbageCollector {
 	}
 
 	/**
-	 * Checks whether an endtime field exists for the record's table and if so
-	 * determines if a time is set and whether that time is in the past, making
-	 * the record invisible on the website.
-	 *
-	 * @param string $table The table name.
-	 * @param array $record An array with record fields that may affect visibility.
-	 * @return boolean TRUE if the record's end time is in the past, FALSE otherwise.
-	 */
-	protected function isEndTimeInPast($table, $record) {
-		$endTimeInPast = FALSE;
-
-		if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['endtime'])) {
-			$endTimeField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['endtime'];
-			$endTimeInPast = ($record[$endTimeField] > 0 && $record[$endTimeField] <= time());
-		}
-
-		return $endTimeInPast;
-	}
-
-	/**
 	 * Checks whether the a frontend group field exists for the record and if so
 	 * whether groups have been removed from accessing the record thus making
 	 * the record invisible to at least some people.
@@ -347,29 +326,20 @@ class Tx_Solr_GarbageCollector {
 	}
 
 	/**
-	 * Cleans an index from garbage entries. Currently that means removing
-	 * documents that are not visible due to a set endtime date having passed
-	 * for example. Other tasks may be added later.
+	 * Cleans an index from garbage entries.
+	 *
+	 * Was used to clean the index from expired documents/past endtime. Solr 4.8
+	 * introduced DocExpirationUpdateProcessor to do that job by itself.
+	 *
+	 * The method remains as a dummy for possible later cleanups and to prevent
+	 * things from breaking if others were using it.
 	 *
 	 * @param Tx_Solr_Site $site The site to clean indexes on
 	 * @param boolean $commitAfterCleanUp Whether to commit right after the clean up, defaults to TRUE
 	 * @return void
 	 */
 	public function cleanIndex(Tx_Solr_Site $site, $commitAfterCleanUp = TRUE) {
-		$connectionManager = t3lib_div::makeInstance('Tx_Solr_ConnectionManager');
-		/* @var $connectionManager Tx_Solr_ConnectionManager */
 
-		$solrConnections = $connectionManager->getConnectionsBySite($site);
-		foreach ($solrConnections as $solrConnection) {
-			/* @var $solrConnection Tx_Solr_SolrService */
-			$solrConnection->deleteByQuery('(endtime:[* TO NOW]
-				AND -endtime:"' . Tx_Solr_Util::timestampToIso(0) . '"
-				AND siteHash:"' . $site->getSiteHash() . '")');
-
-			if ($commitAfterCleanUp) {
-				$solrConnection->commit(TRUE, FALSE, FALSE);
-			}
-		}
 	}
 
 	/**

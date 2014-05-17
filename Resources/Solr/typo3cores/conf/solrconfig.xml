@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SolrconfigStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<config name="tx_solr-3-0-0--20140429">
+<config name="tx_solr-3-0-0--20140516">
 
 	<luceneMatchVersion>LUCENE_48</luceneMatchVersion>
 
@@ -510,6 +510,15 @@
 			</fragmentsBuilder>
 		</highlighting>
 	</searchComponent>
+
+	<updateRequestProcessorChain default="true">
+		<processor class="solr.processor.DocExpirationUpdateProcessorFactory">
+			<int name="autoDeletePeriodSeconds">60</int>
+			<str name="expirationFieldName">endtime</str>
+		</processor>
+		<processor class="solr.LogUpdateProcessorFactory"/>
+		<processor class="solr.RunUpdateProcessorFactory"/>
+	</updateRequestProcessorChain>
 
 
 	<queryResponseWriter name="json" class="solr.JSONResponseWriter" default="true"/>
