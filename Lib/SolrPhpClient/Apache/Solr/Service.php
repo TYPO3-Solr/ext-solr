@@ -121,6 +121,8 @@ class Apache_Solr_Service
 	const SYSTEM_SERVLET = 'admin/system';
 	const THREADS_SERVLET = 'admin/threads';
 	const EXTRACT_SERVLET = 'update/extract';
+	const SCHEMA_SERVLET = 'schema';
+	const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
 
 	/**
 	 * Server identification strings
@@ -166,7 +168,7 @@ class Apache_Solr_Service
 	 *
 	 * @var string
 	 */
-	protected $_pingUrl, $_updateUrl, $_searchUrl, $_systemUrl, $_threadsUrl;
+	protected $_pingUrl, $_updateUrl, $_searchUrl, $_systemUrl, $_threadsUrl, $_schemaUrl, $_synonymsUrl;
 
 	/**
 	 * Keep track of whether our URLs have been constructed
@@ -290,6 +292,10 @@ class Apache_Solr_Service
 		$this->_systemUrl = $this->_constructUrl(self::SYSTEM_SERVLET, array('wt' => self::SOLR_WRITER));
 		$this->_threadsUrl = $this->_constructUrl(self::THREADS_SERVLET, array('wt' => self::SOLR_WRITER ));
 		$this->_updateUrl = $this->_constructUrl(self::UPDATE_SERVLET, array('wt' => self::SOLR_WRITER ));
+		$this->_schemaUrl = $this->_constructUrl(self::SCHEMA_SERVLET);
+
+		$managedLanguage = $this->_getManagedLanguage();
+		$this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $managedLanguage;
 
 		$this->_urlsInited = true;
 	}
@@ -367,6 +373,38 @@ class Apache_Solr_Service
 		}
 
 		return $solrResponse;
+	}
+
+	/**
+	 * Get the configured schema for the current core
+	 *
+	 * @return stdClass
+	 */
+	protected function _getSchema()
+	{
+		$response = $this->_sendRawGet($this->_schemaUrl);
+		return json_decode($response->getRawResponse())->schema;
+	}
+
+	/**
+	 * Get the language map name for the text field.
+	 * This is necessary to select the correct synonym map.
+	 *
+	 * @return string
+	 */
+	protected function _getManagedLanguage()
+	{
+		$schema = $this->_getSchema();
+		foreach($schema->fieldTypes as $fieldType){
+			if($fieldType->name === 'text'){
+				foreach($fieldType->indexAnalyzer->filters as $filter){
+					if($filter->class === 'solr.ManagedSynonymFilterFactory'){
+						return $filter->managed;
+					}
+				}
+			}
+		}
+		return 'english';
 	}
 
 	/**
@@ -1206,6 +1244,36 @@ class Apache_Solr_Service
 		else
 		{
 			throw new Apache_Solr_InvalidArgumentException("Unsupported method '$method', please use the Apache_Solr_Service::METHOD_* constants");
+		}
+	}
+
+	/**
+	 * Get currently configured synonyms
+	 *
+	 * @return array
+	 */
+	public function getSynonyms()
+	{
+		$response = $this->_sendRawGet($this->_synonymsUrl);
+		return get_object_vars(json_decode($response->getRawResponse())->synonymMappings->managedMap);
+	}
+
+	/**
+	 * Add list of synonyms for baseword to managed synonyms map
+	 *
+	 * @param $baseWord
+	 * @param array $synonyms
+	 *
+	 * @return bool
+	 */
+	public function addSynonym($baseWord, $synonyms = array())
+	{
+		if(!empty($baseWord) && !empty($synonyms)){
+			$rawPut = json_encode(array($baseWord => $synonyms));
+			$this->_sendRawPost($this->_synonymsUrl, $rawPut, $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
+			return TRUE;
+		}else{
+			return FALSE;
 		}
 	}
 }
