@@ -26,18 +26,28 @@ a:focus {
 	background-color: #585858;
 }
 
+h1 {
+	font-size: 2.3em;
+	margin: 0 0 30px 0;
+	line-height: 1.1em;
+}
+
 h2 {
-	font-size: 16px;
+	font-size: 1.4em;
 	line-height: 18px;
 	color: #555555;
-	margin: 2px 0 20px 0;
+	margin: 24px 0 12px 0;
 }
 
 h3 {
-	font-size: 12px;
+	font-size: 1.3em;
 	color: #555555;
-	margin: 8px 0 10px;
-	line-height: 14px;
+	margin: 24px 0 12px 0;
+}
+
+h4 {
+	font-size: 1.2em;
+	margin: 12px 0 12px 0;
 }
 
 input {
@@ -50,4 +60,58 @@ input[type="checkbox"],
 .checkbox:hover {
 	margin: 4px 0 4px 2px;
 	width: 13px;
+}
+
+label,
+input,
+button,
+select,
+textarea {
+	font-size: 12px;
+	font-weight: normal;
+	float: left;
+	margin-right: 10px;
+	width: 90px;
+}
+
+label {
+	line-height: 21px;
+}
+
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+	display: inline-block;
+	height: auto;
+	padding: 3px 6px;
+	margin: 0 0.5em 0.5em 0;
+	font-size: 12px;
+	line-height: normal;
+	background-color: #fefefe;
+	color: #555555;
+	vertical-align: middle;
+	border: 1px solid #7c7c7c;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+
+input,
+textarea,
+.uneditable-input {
+	width: 206px;
 }

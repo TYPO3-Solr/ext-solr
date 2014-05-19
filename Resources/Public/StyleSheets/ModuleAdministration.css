@@ -51,6 +51,38 @@ hr.double {
 	margin-bottom: 20px;
 }
 
+.section {
+	background-color: #ededed;
+	border-top: 1px solid #cdcdcd;
+	border-bottom: 1px solid #cdcdcd;
+	padding: 12px;
+	margin-bottom: 24px;
+}
+
+
+/* ----- Forms ----- */
+
+form div {
+	clear: both;
+	margin-bottom: 5px;
+}
+
+form div.submit {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 100px;
+}
+
+form span.example {
+	font-size: 10px;
+	display: inline-block;
+	line-height: 21px;
+}
+
+.coreSelector label {
+	width: auto;
+	line-height: normal;
+}
 
 /* ----- Index Maintenance ----- */
 
@@ -120,3 +152,8 @@ table.tx_solr_index_list {
 }
 
 
+/* ----- Synonyms ----- */
+
+form input[type="text"] {
+	width: 275px;
+}
