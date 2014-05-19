@@ -1,0 +1,47 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<solr:backend.menu.CoreSelectorMenu />
+
+<f:if condition="{synonyms}">
+	<f:then>
+		<table class="table table-striped">
+			<thead>
+			<tr class="t3-row-header">
+				<th>Base Word</th><th>Synonyms</th>
+			</tr>
+			</thead>
+			<tbody>
+				<f:for each="{synonyms}" key="baseWord" as="synonymList">
+				<tr>
+					<td>{baseWord}</td>
+					<td>{synonymList}</td>
+				</tr>
+				</f:for>
+			</tbody>
+		</table>
+	</f:then>
+	<f:else>
+		<div class="well">
+			<p>No synonyms configured yet.</p>
+		</div>
+	</f:else>
+</f:if>
+
+<h3>Add Synonyms</h3>
+<div class="section">
+	<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'addSynonyms'} )}" id="add-synonyms">
+		<div class="form-group">
+			<label for="baseWord">Base Word</label>
+			<f:form.textfield id="baseWord" name="baseWord" class="form-control" />
+			<span class="example">f.e. iPhone</span>
+		</div>
+		<div class="form-group">
+			<label for="synonyms">Synonyms</label>
+			<f:form.textfield id="synonyms" name="synonyms" class="form-control" />
+			<span class="example">comma-separated; f.e. smartphone, cellphone</span>
+		</div>
+		<div class="submit">
+			<f:form.submit value="Add Synonyms" />
+		</div>
+	</f:form>
+</div>

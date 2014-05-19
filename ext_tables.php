@@ -101,7 +101,8 @@ if (TYPO3_MODE == 'BE') {
 				'ModuleOverview' => $iconPath . 'Search.png',
 				'ModuleIndexQueue' => $iconPath . 'IndexQueue.png',
 				'ModuleIndexMaintenance' => $iconPath . 'IndexMaintenance.png',
-				'ModuleIndexFields' => $iconPath . 'IndexFields.png'
+				'ModuleIndexFields' => $iconPath . 'IndexFields.png',
+				'ModuleSynonyms' => $iconPath . 'Synonyms.png'
 			),
 			$_EXTKEY
 		);
@@ -127,6 +128,12 @@ if (TYPO3_MODE == 'BE') {
 		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
 			'ApacheSolrForTypo3.' . $_EXTKEY,
 			'IndexFields',
+			array('index')
+		);
+
+		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
+			'ApacheSolrForTypo3.' . $_EXTKEY,
+			'Synonyms',
 			array('index')
 		);
 	} else {
