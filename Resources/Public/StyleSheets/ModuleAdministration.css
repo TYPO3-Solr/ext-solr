@@ -19,6 +19,7 @@
 .coreSelector,
 .siteSelector {
 	display: inline-block;
+	padding-top: 4px;
 }
 
 .coreSelector select,
@@ -35,9 +36,12 @@
 	background-color: #ffffff;
 	-webkit-appearance: menulist;
 	-moz-appearance: menulist;
+}
 
-	position: relative;
-	top: -2px;
+.coreSelector label,
+.siteSelector label {
+	width: auto;
+	line-height: normal;
 }
 
 
@@ -79,10 +83,6 @@ form span.example {
 	line-height: 21px;
 }
 
-.coreSelector label {
-	width: auto;
-	line-height: normal;
-}
 
 /* ----- Index Maintenance ----- */
 

@@ -75,7 +75,7 @@ class SiteSelectorMenuViewHelper extends AbstractTagBasedViewHelper {
 
 		$this->tag->setContent($options);
 
-		return '<div class="docheader-funcmenu siteSelector">' . $this->tag->render() . '</div>';
+		return '<div class="docheader-funcmenu siteSelector"><label>Site: </label>' . $this->tag->render() . '</div>';
 	}
 
 }
