@@ -87,7 +87,7 @@ class CoreSelectorMenuViewHelper extends AbstractTagBasedViewHelper {
 
 		$this->tag->setContent($options);
 
-		return '<div class="coreSelector">' . $this->tag->render() . '</div>';
+		return '<div class="coreSelector"><label>Select Core: </label>' . $this->tag->render() . '</div>';
 	}
 
 }
