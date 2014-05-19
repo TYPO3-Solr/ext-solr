@@ -1259,21 +1259,22 @@ class Apache_Solr_Service
 	}
 
 	/**
-	 * Add list of synonyms for baseword to managed synonyms map
+	 * Add list of synonyms for base word to managed synonyms map
 	 *
 	 * @param $baseWord
 	 * @param array $synonyms
 	 *
-	 * @return bool
+	 * @return Apache_Solr_Response
+	 *
+	 * @throws Apache_Solr_InvalidArgumentException If $baseWord or $synonyms are empty
 	 */
-	public function addSynonym($baseWord, $synonyms = array())
+	public function addSynonym($baseWord, array $synonyms)
 	{
-		if(!empty($baseWord) && !empty($synonyms)){
-			$rawPut = json_encode(array($baseWord => $synonyms));
-			$this->_sendRawPost($this->_synonymsUrl, $rawPut, $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
-			return TRUE;
-		}else{
-			return FALSE;
+		if (empty($baseWord) || empty($synonyms)) {
+			throw new Apache_Solr_InvalidArgumentException('Must provide base word and synonyms.');
 		}
+
+		$rawPut = json_encode(array($baseWord => $synonyms));
+		return $this->_sendRawPost($this->_synonymsUrl, $rawPut, $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
 	}
 }
