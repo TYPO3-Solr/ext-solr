@@ -93,7 +93,7 @@ class SynonymsModuleController extends AbstractModule {
 			);
 
 			$this->flashMessageContainer->add(
-				'"' . $synonyms . '" added as synonyms for base word ' . $baseWord,
+				'"' . $synonyms . '" added as synonyms for base word "' . $baseWord . '"',
 				'',
 				FlashMessage::OK
 			);
