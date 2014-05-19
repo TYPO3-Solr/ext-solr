@@ -102,8 +102,8 @@ class AdministrationModuleManager {
 	 *
 	 * @param string $moduleName Administration module name
 	 * @return \ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleInterface Instance of the requested administration module
-	 * @throws InvalidArgumentException if $moduleName is not a registered administration module
-	 * @throws RuntimeException if the class registered for $moduleName is not an implementation of \ApacheSolrForTypo3\Solr\Backend\SolrModule\ModuleInterface
+	 * @throws \InvalidArgumentException if $moduleName is not a registered administration module
+	 * @throws \RuntimeException if the class registered for $moduleName is not an implementation of \ApacheSolrForTypo3\Solr\Backend\SolrModule\ModuleInterface
 	 */
 	public function getModule($moduleName) {
 		$this->validateModuleIsRegistered($moduleName);
