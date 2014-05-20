@@ -283,7 +283,6 @@ rm README.txt
 cecho "Configuring Apache Tomcat." $green
 
 cd ${TOMCAT_CONTEXT_DIR}
-echo ${TOMCAT_CONTEXT_DIR}
 
 # install context descriptor for the solr context/webapp, sets the solr.home property
 wgetresource Tomcat/solr.xml

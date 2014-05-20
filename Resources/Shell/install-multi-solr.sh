@@ -260,14 +260,14 @@ mv apache-tomcat-$TOMCAT_VERSION tomcat
 
 for SOLR in ${SOLR_VERSION[*]}
 do
-  SOLR_VERSION_PLAIN = $SOLR_VERSION
-  SOLR_VERSION_PLAIN = $(echo $SOLR_VERSION_PLAIN|sed 's/.//g')
+  SOLR_VERSION_PLAIN=$SOLR_VERSION
+  SOLR_VERSION_PLAIN=$(echo $SOLR_VERSION_PLAIN|sed 's/.//g')
 
   if [ $SOLR_VERSION_PLAIN -le "400" ]
   then
-	SOLR_PACKAGE_NAME = "apache-solr"
+	SOLR_PACKAGE_NAME="apache-solr"
   else
- 	SOLR_PACKAGE_NAME = "solr"
+ 	SOLR_PACKAGE_NAME="solr"
   fi
 
   cd /opt/solr-tomcat
