@@ -213,12 +213,12 @@ then
 	PASSALLCHECKS=0
 fi
 
-ping -c 1 www.us.apache.org > /dev/null 2>&1
+ping -c 1 mirror.dkd.de > /dev/null 2>&1
 CHECK=$?
 if [ $CHECK -ne "0" ]
 then
 	cecho "ERROR couldn't ping Apache download mirror, try again using wget" $yellow
-	wget -q -O /dev/null http://www.us.apache.org
+	wget -q -O /dev/null http://mirror.dkd.de/apache/
 	if [ $? -ne "0" ]
 	then
 		cecho "ERROR Also couldn't reach the Apache download mirror using wget. Please check your internet connection." $red
@@ -278,7 +278,7 @@ do
 
   cd /opt/solr-tomcat
   cecho "Downloading Apache Solr $SOLR" $green
-  wget --progress=bar:force http://www.us.apache.org/dist/lucene/solr/$SOLR_VERSION/$SOLR_PACKAGE_NAME-$SOLR_VERSION.zip 2>&1 | progressfilt
+  wget --progress=bar:force http://mirror.dkd.de/apache/lucene/solr/$SOLR_VERSION/$SOLR_PACKAGE_NAME-$SOLR_VERSION.zip 2>&1 | progressfilt
   cecho "Unpacking Apache Solr." $green
   unzip -q $SOLR_PACKAGE_NAME-$SOLR.zip
 
