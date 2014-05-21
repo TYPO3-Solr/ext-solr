@@ -44,8 +44,8 @@ OPTIONS:
 EOF
 }
 
-SOLR_VERSION=
-LANGUAGES=
+SOLR_VERSION=""
+LANGUAGES=""
 while getopts "h:s:l:" OPTION
 do
      case $OPTION in
@@ -310,7 +310,7 @@ do
     wgetresource Solr/typo3cores/conf/$LANGUAGE/schema.xml
     wgetresource Solr/typo3cores/conf/$LANGUAGE/synonyms.txt
 
-    if [ $LANGUAGE="german" ]
+    if [ $LANGUAGE = "german" ]
     then
       wgetresource Solr/typo3cores/conf/$LANGUAGE/german-common-nouns.txt
     fi
