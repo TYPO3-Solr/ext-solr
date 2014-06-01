@@ -39,10 +39,18 @@ h2 {
 	margin: 24px 0 12px 0;
 }
 
+.well h2 {
+	margin-top: 0px;
+}
+
 h3 {
 	font-size: 1.3em;
 	color: #555555;
 	margin: 24px 0 12px 0;
+}
+
+.well h3 {
+	margin-top: 0px;
 }
 
 h4 {
