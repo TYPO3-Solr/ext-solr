@@ -4,6 +4,8 @@
 #	sudo ./install-solr.sh
 #	sudo ./install-solr.sh english german french
 
+
+
 clear
 
 SOLR_VERSION=4.8.1

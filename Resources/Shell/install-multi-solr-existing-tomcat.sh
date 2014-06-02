@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # Usage:
-#	sudo ./install-multi-solr.sh
-#	sudo ./install-multi-solr.sh -s 4.7.0
-#	sudo ./install-multi-solr.sh -l english,german,french
-#	sudo ./install-multi-solr.sh -s 4.7.0 -l english,german,french
+#	sudo ./install-multi-solr-existing-tomcat.sh
+#	sudo ./install-multi-solr-existing-tomcat.sh -s 4.8.1
+#	sudo ./install-multi-solr-existing-tomcat.sh -l english,german,french
+#	sudo ./install-multi-solr-existing-tomcat.sh -s 4.8.1 -l english,german,french
 
 clear
 
@@ -46,6 +46,7 @@ EOF
 
 SOLR_VERSION=""
 LANGUAGES=""
+
 while getopts "h:s:l:" OPTION
 do
      case $OPTION in
@@ -130,7 +131,7 @@ wgetresource ()
 		wget -q -O /dev/null --no-check-certificate $RESOURCE
 	else
 		echo "wget $RESOURCE"
-		wget --progress=bar:force --no-check-certificate $RESOURCE 2>&1 | progressfilt
+		wget --progress=bar:force --no-check-certificate $RESOURCE 2>&1 
 	fi
 
 	# return wget error code
@@ -267,7 +268,7 @@ cd /opt/solr-tomcat/
 for SOLR in ${SOLR_VERSION[*]}
 do
   SOLR_VERSION_PLAIN=$SOLR_VERSION
-  SOLR_VERSION_PLAIN=$(echo $SOLR_VERSION_PLAIN|sed 's/.//g')
+  SOLR_VERSION_PLAIN=$(echo $SOLR_VERSION_PLAIN|sed 's/\.//g')
 
   if [ $SOLR_VERSION_PLAIN -le "400" ]
   then
@@ -278,7 +279,7 @@ do
 
   cd /opt/solr-tomcat
   cecho "Downloading Apache Solr $SOLR" $green
-  wget --progress=bar:force http://mirror.dkd.de/apache/lucene/solr/$SOLR_VERSION/$SOLR_PACKAGE_NAME-$SOLR_VERSION.zip 2>&1 | progressfilt
+  wget --progress=bar:force http://mirror.dkd.de/apache/lucene/solr/$SOLR_VERSION/$SOLR_PACKAGE_NAME-$SOLR_VERSION.zip 2>&1 
   cecho "Unpacking Apache Solr." $green
   unzip -q $SOLR_PACKAGE_NAME-$SOLR.zip
 
@@ -361,12 +362,12 @@ do
   if [ $SOLR_VERSION_PLAIN -ge "400" ]
   then
 	cecho "Downloading the Solr TYPO3 plugin for access control. Version: $EXT_SOLR_PLUGIN_ACCESS_VERSION" $green
-	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-access-$EXT_SOLR_PLUGIN_ACCESS_VERSION.jar 2>&1 | progressfilt
-	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-utils-$EXT_SOLR_PLUGIN_UTILS_VERSION.jar 2>&1 | progressfilt
-	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/commons-lang3-$EXT_SOLR_PLUGIN_LANG_VERSION.jar 2>&1 | progressfilt
+	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-access-$EXT_SOLR_PLUGIN_ACCESS_VERSION.jar 2>&1 
+	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-utils-$EXT_SOLR_PLUGIN_UTILS_VERSION.jar 2>&1 
+	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/commons-lang3-$EXT_SOLR_PLUGIN_LANG_VERSION.jar 2>&1 
   else
 	cecho "Downloading the Solr TYPO3 plugin for access control. Version: $EXT_SOLR_PLUGIN_VERSION" $green
-	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/solr-typo3-plugin-$EXT_SOLR_PLUGIN_VERSION.jar 2>&1 | progressfilt
+	wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/solr-typo3-plugin-$EXT_SOLR_PLUGIN_VERSION.jar 2>&1 
   fi
 
 done
