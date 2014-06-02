@@ -219,8 +219,6 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			<fieldset>
 				<legend>Global Actions (affecting all sites and indexes)</legend>
 				<input type="submit" value="Empty Index" name="s_emptyIndex" onclick="Check = confirm(\'This will commit documents which may be pending, clear the index and commit again afterwards. Are you sure you want to empty the index?\'); if (Check == true) document.forms[0].solraction.value=\'emptyIndex\';" /><br /><br />
-				<input type="submit" value="Commit Pending Documents" name="s_commitPendingDocuments" onclick="document.forms[0].solraction.value=\'commitPendingDocuments\';" /><br /><br />
-				<input type="submit" value="Optimize Index" name="s_optimizeIndex" onclick="document.forms[0].solraction.value=\'optimizeIndex\';" /><br /><br />
 			</fieldset>';
 
 		$content .= '
@@ -243,12 +241,6 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 				break;
 			case 'emptyIndex':
 				$this->emptyIndex();
-				break;
-			case 'optimizeIndex':
-				$this->optimizeIndex();
-				break;
-			case 'commitPendingDocuments':
-				$this->commitPendingDocuments();
 				break;
 			case 'deleteDocument':
 				$this->deleteDocument();
@@ -453,54 +445,6 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			);
 			t3lib_FlashMessageQueue::addMessage($flashMessage);
 		}
-	}
-
-	protected function optimizeIndex() {
-		$message = 'Index optimized.';
-		$severity = t3lib_FlashMessage::OK;
-
-		try {
-			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
-			foreach($solrServers as $solrServer) {
-				$solrServer->optimize();
-			}
-		} catch (Exception $e) {
-			$message = '<p>An error occured while trying to optimize the index:</p>'
-					 . '<p>' . $e->__toString() . '</p>';
-			$severity = t3lib_FlashMessage::ERROR;
-		}
-
-		$flashMessage = t3lib_div::makeInstance(
-			't3lib_FlashMessage',
-			$message,
-			'',
-			$severity
-		);
-		t3lib_FlashMessageQueue::addMessage($flashMessage);
-	}
-
-	protected function commitPendingDocuments() {
-		$message = 'Pending documents committed.';
-		$severity = t3lib_FlashMessage::OK;
-
-		try {
-			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
-			foreach($solrServers as $solrServer) {
-				$solrServer->commit(FALSE, FALSE, FALSE);
-			}
-		} catch (Exception $e) {
-			$message = '<p>An error occured while trying to commit:</p>'
-					 . '<p>' . $e->__toString() . '</p>';
-			$severity = t3lib_FlashMessage::ERROR;
-		}
-
-		$flashMessage = t3lib_div::makeInstance(
-			't3lib_FlashMessage',
-			$message,
-			'',
-			$severity
-		);
-		t3lib_FlashMessageQueue::addMessage($flashMessage);
 	}
 
 	protected function deleteDocument() {

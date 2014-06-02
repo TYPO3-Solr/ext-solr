@@ -60,35 +60,6 @@ class IndexMaintenanceModuleController extends AbstractModule {
 	}
 
 	/**
-	 * Commits pending documents to the index.
-	 *
-	 * @return void
-	 */
-	public function commitPendingDocumentsAction() {
-		$message = 'Pending documents committed.';
-		$severity = FlashMessage::OK;
-
-		try {
-			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
-			foreach($solrServers as $solrServer) {
-				$solrServer->commit(FALSE, FALSE, FALSE);
-			}
-		} catch (\Exception $e) {
-			$message = '<p>An error occured while trying to commit:</p>'
-					 . '<p>' . $e->__toString() . '</p>';
-			$severity = FlashMessage::ERROR;
-		}
-
-		$this->flashMessageContainer->add(
-			$message,
-			'',
-			$severity
-		);
-
-		$this->forward('index');
-	}
-
-	/**
 	 * Cleans the index from expired documents.
 	 *
 	 * @return void

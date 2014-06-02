@@ -122,7 +122,7 @@ if (TYPO3_MODE == 'BE') {
 		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
 			'ApacheSolrForTypo3.' . $_EXTKEY,
 			'IndexMaintenance',
-			array('index,commitPendingDocuments,cleanUpIndex,emptyIndex,reloadIndexConfiguration')
+			array('index,cleanUpIndex,emptyIndex,reloadIndexConfiguration')
 		);
 
 		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
