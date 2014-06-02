@@ -260,20 +260,6 @@ Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 
 	// adding scheduler tasks
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_OptimizeTask'] = array(
-	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:optimizer_title',
-	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:optimizer_description',
-	'additionalFields' => 'Tx_Solr_Scheduler_OptimizeTaskSolrServerField'
-);
-
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_CommitTask'] = array(
-	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:commit_title',
-	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:commit_description',
-	'additionalFields' => 'Tx_Solr_Scheduler_CommitTaskSolrServerField'
-);
-
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_ReIndexTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_title',

@@ -1,22 +1,6 @@
 
 <div class="row-fluid section-divider">
 	<div class="span3">
-		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'commitPendingDocuments'} )}">
-			<f:form.submit value="Commit Documents" />
-		</f:form>
-	</div>
-	<div class="span9 action-description">
-		<h3>Commit Pending Documents</h3>
-		<p>
-		When content is indexed the documents are not immediately visible in search results. To make changes visible in search results documents need to
-		get committed to the index. The configuration that comes with EXT:solr will automatically commit after 100 documents or after one hour, depending
-		on what happens first. Here you can manually commit changes to the index.
-		</p>
-	</div>
-</div>
-
-<div class="row-fluid section-divider">
-	<div class="span3">
 		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'cleanUpIndex'} )}">
 			<f:form.submit value="Clean up Index" />
 		</f:form>
