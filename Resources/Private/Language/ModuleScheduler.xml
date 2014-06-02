@@ -6,10 +6,6 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="optimizer_title">Optimize Solr Index</label>
-			<label index="optimizer_description">Executes an OPTIMIZE command on the Solr index. Should be run once a day for sites with low activity. Sites with high activity can run it more often. Beware though, that the task can take some seconds on large indexes.</label>
-			<label index="commit_title">Commit Solr Index</label>
-			<label index="commit_description">Executes a COMMIT command on the Solr index. Could be run anywhere between 1 min and every hour. Should take shorter than the OPTIMIZE Command, which also does a COMMIT before doing the OPTIMIZE.</label>
 			<label index="reindex_title">Force Re-Indexing of a site</label>
 			<label index="reindex_description">Purges the Solr Index and initializes the Index Queue of a site.</label>
 			<label index="indexqueueworker_title">Index Queue Worker</label>
@@ -22,10 +18,6 @@
 			<label index="field_site">Site</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
-			<label index="optimizer_title">Optimiser l'index de Solr</label>
-			<label index="optimizer_description">Exécute une commande OPTIMIZE sur l'index Solr. Doit être exécuté une fois par jour sur les site à faible activité. Les sites à forte activité peuvent l'exécuter plus souvent. Attention, l'action peut durer quelques secondes sur les gros index.</label>
-			<label index="commit_title">Valider l'index de Solr</label>
-			<label index="commit_description">Exécute une commande COMMIT sur l'index Solr. Peut être exécutere entre à chaque minute et toutes les heures. Doit prendre moins longtemps à s'exécutere que la commande OPTIMIZE, qui effectue un COMMIT avant sont propre traitement.</label>
 			<label index="reindex_title">Force la réindexation d'un site</label>
 			<label index="reindex_description">Purge l'index de Solr et initialise la file d'attente d'indexation d'un site.</label>
 			<label index="indexqueueworker_title">Tâche de traitement de la file d'indexation.</label>
