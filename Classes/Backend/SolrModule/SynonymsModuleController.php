@@ -78,7 +78,7 @@ class SynonymsModuleController extends AbstractModuleController {
 		$synonymMap     = GeneralUtility::_POST('tx_solr_tools_solradministration');
 
 		if (empty($synonymMap['baseWord']) || empty($synonymMap['synonyms'])) {
-			$this->flashMessageContainer->add(
+			$this->addFlashMessage(
 				'Please provide a base word and synonyms.',
 				'Missing parameter',
 				FlashMessage::ERROR
@@ -92,10 +92,8 @@ class SynonymsModuleController extends AbstractModuleController {
 				GeneralUtility::trimExplode(',', $synonyms, TRUE)
 			);
 
-			$this->flashMessageContainer->add(
-				'"' . $synonyms . '" added as synonyms for base word "' . $baseWord . '"',
-				'',
-				FlashMessage::OK
+			$this->addFlashMessage(
+				'"' . $synonyms . '" added as synonyms for base word "' . $baseWord . '"'
 			);
 		}
 

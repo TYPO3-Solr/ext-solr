@@ -68,7 +68,7 @@ class IndexMaintenanceModuleController extends AbstractModuleController {
 		$garbageCollector = GeneralUtility::makeInstance('Tx_Solr_GarbageCollector');
 		$garbageCollector->cleanIndex($this->site);
 
-		$this->flashMessageContainer->add(
+		$this->addFlashMessage(
 			'Index cleaned up.',
 			'',
 			FlashMessage::OK
@@ -102,7 +102,7 @@ class IndexMaintenanceModuleController extends AbstractModuleController {
 			$severity = FlashMessage::ERROR;
 		}
 
-		$this->flashMessageContainer->add(
+		$this->addFlashMessage(
 			$message,
 			'',
 			$severity
@@ -129,7 +129,7 @@ class IndexMaintenanceModuleController extends AbstractModuleController {
 			if (!$coreReloaded) {
 				$coresReloaded = FALSE;
 
-				$this->flashMessageContainer->add(
+				$this->addFlashMessage(
 					'Failed to reload index configuration for core "' . $coreName . '"',
 					'',
 					FlashMessage::ERROR
@@ -139,7 +139,7 @@ class IndexMaintenanceModuleController extends AbstractModuleController {
 		}
 
 		if ($coresReloaded) {
-			$this->flashMessageContainer->add(
+			$this->addFlashMessage(
 				'Core configuration reloaded.',
 				'',
 				FlashMessage::OK

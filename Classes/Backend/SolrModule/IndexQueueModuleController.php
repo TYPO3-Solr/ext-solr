@@ -86,7 +86,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 				);
 			}
 		} else {
-			$this->flashMessageContainer->add(
+			$this->addFlashMessage(
 				'No indexing configurations selected.',
 				'Index Queue not initialized',
 				FlashMessage::WARNING
@@ -94,7 +94,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 		}
 
 		if (!empty($initializedIndexingConfigurations)) {
-			$this->flashMessageContainer->add(
+			$this->addFlashMessage(
 				'Initialized indexing configurations: ' . implode(', ', array_keys($initializedIndexingConfigurations)),
 				'Index Queue initialized',
 				FlashMessage::OK

@@ -98,7 +98,7 @@ class OverviewModuleController extends AbstractModuleController {
 		}
 
 		if (!empty($connectedHosts)) {
-			$this->flashMessageContainer->add(
+			$this->addFlashMessage(
 				'Hosts contacted:<br />' . implode('<br />', $connectedHosts),
 				'Your Apache Solr server has been contacted.',
 				FlashMessage::OK
@@ -106,7 +106,7 @@ class OverviewModuleController extends AbstractModuleController {
 		}
 
 		if (!empty($missingHosts)) {
-			$this->flashMessageContainer->add(
+			$this->addFlashMessage(
 				'Hosts missing:<br />' . implode('<br />', $missingHosts),
 				'Unable to contact your Apache Solr server.',
 				FlashMessage::ERROR
