@@ -266,7 +266,7 @@ class Tx_Solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 * Gets all connections configured for a given site.
 	 *
 	 * @param Tx_Solr_Site $site A TYPO3 site
-	 * @return array An array of Solr connection objects (Tx_Solr_SolrService)
+	 * @return Tx_Solr_SolrService[] An array of Solr connection objects (Tx_Solr_SolrService)
 	 */
 	public function getConnectionsBySite(Tx_Solr_Site $site) {
 		$connections = array();
