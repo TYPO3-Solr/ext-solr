@@ -35,6 +35,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	const LUKE_SERVLET = 'admin/luke';
 	const SYSTEM_SERVLET = 'admin/system';
 	const PLUGINS_SERVLET = 'admin/plugins';
+	const SCHEMA_SERVLET = 'schema';
+	const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
 
 	const SCHEME_HTTP  = 'http';
 	const SCHEME_HTTPS = 'https';
@@ -61,6 +63,10 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	protected $_pluginsUrl;
 
 	protected $_extractUrl;
+
+	protected $_synonymsUrl;
+
+	protected $_schemaUrl;
 
 	protected $debug;
 
@@ -122,6 +128,11 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			self::PLUGINS_SERVLET,
 			array('wt' => self::SOLR_WRITER)
 		);
+
+		$managedLanguage    = $this->getManagedLanguage();
+		$this->_synonymsUrl = $this->_constructUrl(
+			self::SYNONYMS_SERVLET
+		) . $managedLanguage;
 	}
 
 	/**
@@ -477,6 +488,39 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	}
 
 	/**
+	 * Get the configured schema for the current core
+	 *
+	 * @return stdClass
+	 */
+	protected function getSchema() {
+		$response = $this->_sendRawGet($this->_schemaUrl);
+		return json_decode($response->getRawResponse())->schema;
+	}
+
+	/**
+	 * Get the language map name for the text field.
+	 * This is necessary to select the correct synonym map.
+	 *
+	 * @return string
+	 */
+	protected function getManagedLanguage() {
+		$language = 'english';
+
+		$schema = $this->getSchema();
+		foreach ($schema->fieldTypes as $fieldType) {
+			if ($fieldType->name === 'text') {
+				foreach ($fieldType->indexAnalyzer->filters as $filter) {
+					if ($filter->class === 'solr.ManagedSynonymFilterFactory') {
+						$language = $filter->managed;
+					}
+				}
+			}
+		}
+
+		return $language;
+	}
+
+	/**
 	 * Gets the name of the schema.xml file installed and in use on the Solr
 	 * server.
 	 *
@@ -561,6 +605,35 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		);
 
 		return $response;
+	}
+
+	/**
+	 * Get currently configured synonyms
+	 *
+	 * @return array
+	 */
+	public function getSynonyms() {
+		$response = $this->_sendRawGet($this->_synonymsUrl);
+		return get_object_vars(json_decode($response->getRawResponse())->synonymMappings->managedMap);
+	}
+
+	/**
+	 * Add list of synonyms for base word to managed synonyms map
+	 *
+	 * @param $baseWord
+	 * @param array $synonyms
+	 *
+	 * @return Apache_Solr_Response
+	 *
+	 * @throws Apache_Solr_InvalidArgumentException If $baseWord or $synonyms are empty
+	 */
+	public function addSynonym($baseWord, array $synonyms) {
+		if (empty($baseWord) || empty($synonyms)) {
+			throw new Apache_Solr_InvalidArgumentException('Must provide base word and synonyms.');
+		}
+
+		$rawPut = json_encode(array($baseWord => $synonyms));
+		return $this->_sendRawPost($this->_synonymsUrl, $rawPut, $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
 	}
 }
 
