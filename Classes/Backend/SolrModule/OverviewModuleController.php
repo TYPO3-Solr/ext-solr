@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class OverviewModuleController extends AbstractModule {
+class OverviewModuleController extends AbstractModuleController {
 
 
 	/**

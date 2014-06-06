@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class IndexMaintenanceModuleController extends AbstractModule {
+class IndexMaintenanceModuleController extends AbstractModuleController {
 
 	/**
 	 * Module name, used to identify a module f.e. in URL parameters.

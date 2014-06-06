@@ -32,7 +32,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class IndexFieldsModuleController extends AbstractModule {
+class IndexFieldsModuleController extends AbstractModuleController {
 
 	/**
 	 * Module name, used to identify a module f.e. in URL parameters.

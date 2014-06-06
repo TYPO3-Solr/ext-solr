@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class IndexQueueModuleController extends AbstractModule {
+class IndexQueueModuleController extends AbstractModuleController {
 
 	/**
 	 * Module name, used to identify a module f.e. in URL parameters.

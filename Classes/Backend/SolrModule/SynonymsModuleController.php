@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Hans Höchtl <hans.hoechtl@typovision.de>
  */
-class SynonymsModuleController extends AbstractModule {
+class SynonymsModuleController extends AbstractModuleController {
 
 	/**
 	 * Module name, used to identify a module f.e. in URL parameters.

@@ -34,7 +34,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-abstract class AbstractModule extends ActionController implements AdministrationModuleInterface {
+abstract class AbstractModuleController extends ActionController implements AdministrationModuleInterface {
 
 	/**
 	 * Module name, used to identify a module f.e. in URL parameters.
