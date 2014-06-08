@@ -134,7 +134,7 @@ if (TYPO3_MODE == 'BE') {
 		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
 			'ApacheSolrForTypo3.' . $_EXTKEY,
 			'Synonyms',
-			array('index')
+			array('index,addSynonyms,deleteSynonyms')
 		);
 	} else {
 		t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'ModAdmin/');
