@@ -610,11 +610,26 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Get currently configured synonyms
 	 *
+	 * @param string $baseWord If given a base word, retrieves the synonyms for that word only
 	 * @return array
 	 */
-	public function getSynonyms() {
-		$response = $this->_sendRawGet($this->_synonymsUrl);
-		return get_object_vars(json_decode($response->getRawResponse())->synonymMappings->managedMap);
+	public function getSynonyms($baseWord = '') {
+		$synonymsUrl = $this->_synonymsUrl;
+		if (!empty($baseWord)) {
+			$synonymsUrl .= '/' . $baseWord;
+		}
+
+		$response = $this->_sendRawGet($synonymsUrl);
+		$decodedResponse = json_decode($response->getRawResponse());
+
+		$synonyms = array();
+		if (!empty($baseWord)) {
+			$synonyms = $decodedResponse->{$baseWord};
+		} else {
+			$synonyms = $decodedResponse->synonymMappings->managedMap;
+		}
+
+		return $synonyms;
 	}
 
 	/**
