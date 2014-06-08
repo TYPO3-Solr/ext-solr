@@ -326,6 +326,50 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	}
 
 	/**
+	 * Central method for making a HTTP DELETE operation against the Solr server
+	 *
+	 * @param $url
+	 * @param bool|float $timeout Read timeout in seconds
+	 * @return Apache_Solr_Response
+	 */
+	protected function _sendRawDelete($url, $timeout = FALSE) {
+		$logSeverity = 0; // info
+
+		try {
+			$httpTransport = $this->getHttpTransport();
+
+			$httpResponse = $httpTransport->performDeleteRequest($url, $timeout);
+			$solrResponse = new Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
+
+			if ($solrResponse->getHttpStatus() != 200) {
+				throw new Apache_Solr_HttpTransportException($solrResponse);
+			}
+		} catch (Apache_Solr_HttpTransportException $e) {
+			$logSeverity  = 3; // fatal error
+			$solrResponse = $e->getResponse();
+		}
+
+		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawDelete'] || $solrResponse->getHttpStatus() != 200) {
+			$logData = array(
+				'query url' => $url,
+				'response'  => (array) $solrResponse
+			);
+
+			if (!empty($e)) {
+				$logData['exception'] = $e->__toString();
+			} else {
+				// trigger data parsing
+				$solrResponse->response;
+				$logData['response data'] = print_r($solrResponse, TRUE);
+			}
+
+			t3lib_div::devLog('Querying Solr using GET', 'solr', $logSeverity, $logData);
+		}
+
+		return $solrResponse;
+	}
+
+	/**
 	 * Central method for making a post operation against this Solr Server
 	 *
 	 * @param string $url

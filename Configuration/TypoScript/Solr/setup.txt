@@ -360,6 +360,7 @@ plugin.tx_solr {
 			queryString = 0
 			rawPost = 0
 			rawGet = 0
+			rawDelete = 0
 		}
 	}
 }

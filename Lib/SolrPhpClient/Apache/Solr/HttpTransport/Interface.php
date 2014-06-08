@@ -101,4 +101,14 @@ interface Apache_Solr_HttpTransport_Interface
 	 * @return Apache_Solr_HttpTransport_Response HTTP response
 	 */
 	public function performPostRequest($url, $rawPost, $contentType, $timeout = false);
+
+	/**
+	 * Perform a DELETE HTTP operation with an optional timeout and return the response
+	 * contents, use getLastResponseHeaders to retrieve HTTP headers
+	 *
+	 * @param string $url
+	 * @param boolean|float $timeout
+	 * @return Apache_Solr_HttpTransport_Response HTTP response
+	 */
+	public function performDeleteRequest($url, $timeout = false);
 }

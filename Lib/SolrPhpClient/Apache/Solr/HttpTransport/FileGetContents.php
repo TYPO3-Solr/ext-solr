@@ -55,11 +55,11 @@ class Apache_Solr_HttpTransport_FileGetContents extends Apache_Solr_HttpTranspor
 	const SVN_ID = '$Id:  $';
 		
 	/**
-	 * Reusable stream context resources for GET and POST operations
+	 * Reusable stream context resources for HTTP operations
 	 *
 	 * @var resource
 	 */
-	private $_getContext, $_headContext, $_postContext;
+	private $_getContext, $_headContext, $_postContext, $_deleteContext;
 	
 	/**
 	 * For POST operations, we're already using the Header context value for
@@ -78,6 +78,7 @@ class Apache_Solr_HttpTransport_FileGetContents extends Apache_Solr_HttpTranspor
 		$this->_getContext = stream_context_create();
 		$this->_headContext = stream_context_create();
 		$this->_postContext = stream_context_create();
+		$this->_deleteContext = stream_context_create();
 	}
 	
 	public function setAuthenticationCredentials($username, $password)
@@ -190,6 +191,38 @@ class Apache_Solr_HttpTransport_FileGetContents extends Apache_Solr_HttpTranspor
 		// reset content of post context to reclaim memory
 		stream_context_set_option($this->_postContext, 'http', 'content', '');
 		
+		return $this->_getResponseFromParts($responseBody, $http_response_header);
+	}
+
+	public function performDeleteRequest($url, $timeout = false) {
+		stream_context_set_option($this->_deleteContext, array(
+			'http' => array(
+				// set HTTP method
+				'method' => 'DELETE',
+
+				// Add auth header - see setAuthentication
+				'header' => "{$this->_authHeader}",
+
+				// default timeout
+				'timeout' => $this->getDefaultTimeout()
+			)
+		));
+
+		// set the timeout if specified
+		if ($timeout !== FALSE && $timeout > 0.0) {
+			// timeouts with file_get_contents seem to need
+			// to be halved to work as expected
+			$timeout = (float)$timeout / 2;
+
+			stream_context_set_option($this->_deleteContext, 'http', 'timeout', $timeout);
+		}
+
+		// $http_response_headers will be updated by the call to file_get_contents later
+		// see http://us.php.net/manual/en/wrappers.http.php for documentation
+		// Unfortunately, it will still create a notice in analyzers if we don't set it here
+		$http_response_header = null;
+		$responseBody = file_get_contents($url, false, $this->_deleteContext);
+
 		return $this->_getResponseFromParts($responseBody, $http_response_header);
 	}
 	
