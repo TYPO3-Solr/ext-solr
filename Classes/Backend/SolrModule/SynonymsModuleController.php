@@ -100,6 +100,30 @@ class SynonymsModuleController extends AbstractModuleController {
 		$this->forward('index');
 	}
 
+	/**
+	 * Deletes a synonym mapping by its base word.
+	 *
+	 * @param string $baseWord Synonym mapping base word
+	 */
+	public function deleteSynonymsAction($baseWord) {
+		$solrConnection = $this->getSelectedCoreSolrConnection();
+		$response = $solrConnection->deleteSynonym($baseWord);
+
+		if ($response->getHttpStatus() == 200) {
+			$this->addFlashMessage(
+				'Synonym removed.'
+			);
+		} else {
+			$this->addFlashMessage(
+				'Failed to remove synonym.',
+				'An error occurred',
+				FlashMessage::ERROR
+			);
+		}
+
+		$this->forwardToIndex();
+	}
+
 
 	/**
 	 * Finds the Solr connection to use for the currently selected core.

@@ -696,6 +696,21 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		$rawPut = json_encode(array($baseWord => $synonyms));
 		return $this->_sendRawPost($this->_synonymsUrl, $rawPut, $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
 	}
+
+	/**
+	 * Remove a synonym from the synonyms map
+	 *
+	 * @param $baseWord
+	 * @return Apache_Solr_Response
+	 * @throws Apache_Solr_InvalidArgumentException
+	 */
+	public function deleteSynonym($baseWord) {
+		if (empty($baseWord)) {
+			throw new Apache_Solr_InvalidArgumentException('Must provide base word.');
+		}
+
+		return $this->_sendRawDelete($this->_synonymsUrl . '/' . $baseWord);
+	}
 }
 
 if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/SolrService.php'])	{

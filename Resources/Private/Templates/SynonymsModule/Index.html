@@ -7,7 +7,7 @@
 		<table class="table table-striped">
 			<thead>
 			<tr class="t3-row-header">
-				<th>Base Word</th><th>Synonyms</th>
+				<th>Base Word</th><th>Synonyms</th><th>&nbsp;</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -15,6 +15,13 @@
 				<tr>
 					<td>{baseWord}</td>
 					<td>{synonymList}</td>
+					<td>
+						<f:be.buttons.icon
+							uri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'deleteSynonyms', baseWord: '{baseWord}'})}"
+							icon="actions-edit-delete"
+							title="Remove Synonym Mapping"
+						/>
+					</td>
 				</tr>
 				</f:for>
 			</tbody>
