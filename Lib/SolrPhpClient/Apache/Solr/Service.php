@@ -290,7 +290,6 @@ class Apache_Solr_Service
 		$this->_systemUrl = $this->_constructUrl(self::SYSTEM_SERVLET, array('wt' => self::SOLR_WRITER));
 		$this->_threadsUrl = $this->_constructUrl(self::THREADS_SERVLET, array('wt' => self::SOLR_WRITER ));
 		$this->_updateUrl = $this->_constructUrl(self::UPDATE_SERVLET, array('wt' => self::SOLR_WRITER ));
-		$this->_schemaUrl = $this->_constructUrl(self::SCHEMA_SERVLET);
 
 		$this->_urlsInited = true;
 	}
