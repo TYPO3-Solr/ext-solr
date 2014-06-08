@@ -147,6 +147,29 @@ abstract class AbstractModuleController extends ActionController implements Admi
 		$view->assign('module', $this);
 	}
 
+
+	/**
+	 * Forwards to the index action after resetting module and moduleAction
+	 * arguments to prevent execution of module actions.
+	 *
+	 * @return void
+	 */
+	protected function forwardToIndex() {
+		$requestArguments = $this->request->getArguments();
+
+		foreach ($requestArguments as $argumentName => $argumentValue) {
+			if (!in_array($argumentName, array('module', 'controller', 'site'))) {
+				unset($requestArguments[$argumentName]);
+				unset($_GET['tx_solr_tools_solradministration'][$argumentName]);
+				unset($this->arguments[$argumentName]);
+			}
+		}
+
+		$this->request->setArguments($requestArguments);
+
+		$this->forward('index');
+	}
+
 }
 
 ?>
