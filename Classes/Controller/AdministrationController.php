@@ -164,6 +164,15 @@ class AdministrationController extends ActionController {
 			$request->setControllerActionName($this->request->getArgument('moduleAction'));
 		}
 
+		// transfer additional parameters
+		foreach ($this->request->getArguments() as $argumentName => $argumentValue) {
+			if (in_array($argumentName, array('module', 'moduleAction', 'controller'))) {
+				// these have been transferred already
+				continue;
+			}
+			$request->setArgument($argumentName, $argumentValue);
+		}
+
 		$response = $this->objectManager->create('TYPO3\CMS\Extbase\Mvc\Web\Response');
 		/* @var \TYPO3\CMS\Extbase\Mvc\Web\Response $response */
 
