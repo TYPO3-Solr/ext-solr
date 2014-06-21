@@ -553,16 +553,18 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		$language = 'english';
 
 		$schema = $this->getSchema();
-		foreach ($schema->fieldTypes as $fieldType) {
-			if ($fieldType->name === 'text') {
-				foreach ($fieldType->indexAnalyzer->filters as $filter) {
-					if ($filter->class === 'solr.ManagedSynonymFilterFactory') {
-						$language = $filter->managed;
+		
+		if(is_array($schema)){
+			foreach ($schema->fieldTypes as $fieldType) {
+				if ($fieldType->name === 'text') {
+					foreach ($fieldType->indexAnalyzer->filters as $filter) {
+						if ($filter->class === 'solr.ManagedSynonymFilterFactory') {
+							$language = $filter->managed;
+						}
 					}
 				}
 			}
 		}
-
 		return $language;
 	}
 
