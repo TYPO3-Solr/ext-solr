@@ -1,3 +1,4 @@
+jQuery.noConflict();
 jQuery(function() {
     var stats = JSON.parse(jQuery('#indexqueue_stats').text());
 
