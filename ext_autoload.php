@@ -240,6 +240,7 @@ return array(
 	'tx_solr_resultsetmodifier' => $extensionPath . 'Interfaces/ResultSetModifier.php',
 	'tx_solr_searchaware' => $extensionPath . 'Interfaces/SearchAware.php',
 	'tx_solr_searchcomponent' => $extensionPath . 'Interfaces/SearchComponent.php',
+	'tx_solr_serializedvaluedetector' => $extensionPath . 'Interfaces/SerializedValueDetector.php',
 	'tx_solr_subpartviewhelper' => $extensionPath . 'Interfaces/SubpartViewHelper.php',
 	'tx_solr_substitutepageindexer' => $extensionPath . 'Interfaces/SubstitutePageIndexer.php',
 	'tx_solr_templatemodifier' => $extensionPath . 'Interfaces/TemplateModifier.php',

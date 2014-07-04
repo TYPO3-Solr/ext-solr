@@ -215,6 +215,21 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 	public static function isSerializedValue(array $indexingConfiguration, $solrFieldName) {
 		$isSerialized = FALSE;
 
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] as $classReference) {
+				$serializedValueDetector = t3lib_div::getUserObj($classReference);
+
+				if ($serializedValueDetector instanceof Tx_Solr_SerializedValueDetector) {
+					$isSerialized = (boolean) $serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
+				} else {
+					throw new UnexpectedValueException(
+						get_class($serializedValueDetector) . ' must implement interface Tx_Solr_SerializedValueDetector',
+						1404471741
+					);
+				}
+			}
+		}
+
 			// SOLR_MULTIVALUE - always returns serialized array
 		if ($indexingConfiguration[$solrFieldName] == Tx_Solr_ContentObject_Multivalue::CONTENT_OBJECT_NAME) {
 			$isSerialized = TRUE;
