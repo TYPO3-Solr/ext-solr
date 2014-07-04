@@ -10,7 +10,6 @@ jQuery(function() {
     data.push({value: stats.indexed, color: "#9FC299"});
     data.push({value: stats.erroneous, color: "#FF3D3D"});
     data.push({value: stats.pending, color: "#EB813F"});
-    console.log(stats);
     var total = stats.indexed + stats.erroneous + stats.pending;
 
     function setLegendNumbers(id, partial, total) {
