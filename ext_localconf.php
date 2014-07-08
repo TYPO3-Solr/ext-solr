@@ -363,7 +363,7 @@ if (version_compare(TYPO3_version, '4.6', '<')) {
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 if (TYPO3_MODE == 'BE') {
-	$TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['^cliKeys'][$_EXTKEY] = array(
+	$TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array(
 		'EXT:' . $_EXTKEY . '/CliApi/Dispatch.php',
 		'_CLI_solr'
 	);
