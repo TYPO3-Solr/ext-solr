@@ -170,6 +170,33 @@ abstract class AbstractModuleController extends ActionController implements Admi
 		$this->forward('index');
 	}
 
+	/**
+	 * Creates a Message object and adds it to the FlashMessageQueue.
+	 *
+	 * NOTE: This is a Backport of the 6.2 implementation!
+	 *
+	 * @param string $messageBody The message
+	 * @param string $messageTitle Optional message title
+	 * @param integer $severity Optional severity, must be one of \TYPO3\CMS\Core\Messaging\FlashMessage constants
+	 * @param boolean $storeInSession Optional, defines whether the message should be stored in the session (default) or not
+	 * @return void
+	 * @throws \InvalidArgumentException if the message body is no string
+	 * @see \TYPO3\CMS\Core\Messaging\FlashMessage
+	 */
+	public function addFlashMessage($messageBody, $messageTitle = '', $severity = \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, $storeInSession = TRUE) {
+		if (version_compare(TYPO3_version, '6.2.0', '>=')) {
+			parent::addFlashMessage($messageBody, $messageTitle, $severity, $storeInSession);
+		} else {
+			if (!is_string($messageBody)) {
+				throw new \InvalidArgumentException('The message body must be of type string, "' . gettype($messageBody) . '" given.', 1243258395);
+			}
+			/* @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+			$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $messageBody, $messageTitle, $severity, $storeInSession
+			);
+			$this->controllerContext->getFlashMessageQueue()->enqueue($flashMessage);
+		}
+	}
 }
 
 ?>
