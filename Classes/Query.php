@@ -418,6 +418,31 @@ class Tx_Solr_Query {
 	}
 
 	/**
+	 * Adds sorting configuration for grouping.
+	 *
+	 * @param string $sorting value of sorting configuration
+	 */
+	public function addGroupSorting($sorting) {
+		if (!isset($this->queryParameters['group.sort'])) {
+			$this->queryParameters['group.sort'] = array();
+		}
+		$this->queryParameters['group.sort'][] = $sorting;
+	}
+
+	/**
+	 * Gets the sorting set for grouping.
+	 *
+	 * @return array An array of sorting configurations for grouping.
+	 */
+	public function getGroupSortings() {
+		$groupSortings = array();
+		if (isset($this->queryParameters['group.sort'])) {
+			$groupSortings = $this->queryParameters['group.sort'];
+		}
+		return $groupSortings;
+	}
+
+	/**
 	 * Adds a query that should be used for grouping.
 	 *
 	 * @param string $query Lucene query for grouping
