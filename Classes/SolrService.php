@@ -672,9 +672,13 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 
 		$synonyms = array();
 		if (!empty($baseWord)) {
-			$synonyms = $decodedResponse->{$baseWord};
+			if (is_array($decodedResponse->{$baseWord})) {
+				$synonyms = $decodedResponse->{$baseWord};
+			}
 		} else {
-			$synonyms = $decodedResponse->synonymMappings->managedMap;
+			if (is_array($decodedResponse->synonymMappings->managedMap)) {
+				$synonyms = $decodedResponse->synonymMappings->managedMap;
+			}
 		}
 
 		return $synonyms;
