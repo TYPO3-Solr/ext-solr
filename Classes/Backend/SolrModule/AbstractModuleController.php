@@ -120,20 +120,26 @@ abstract class AbstractModuleController extends ActionController implements Admi
 	 */
 	protected function initializeAction() {
 		try {
-			$siteRootPageId = $this->request->getArgument('site');
-			$this->site = \Tx_Solr_Site::getSiteByPageId($siteRootPageId);
+			$site = $this->request->getArgument('site');
+
+			if (is_numeric($site)) {
+				$siteRootPageId = $this->request->getArgument('site');
+				$this->site = \Tx_Solr_Site::getSiteByPageId($siteRootPageId);
+			} else if ($site instanceof \Tx_Solr_Site) {
+				$this->site = $site;
+			}
 		} catch (NoSuchArgumentException $nsae) {
 			$sites = \Tx_Solr_Site::getAvailableSites();
 
 			$site = array_shift($sites);
 			$this->site = $site;
-			$this->request->setArgument('site', $site);
-
-
-			$moduleData = $this->moduleDataStorageService->loadModuleData();
-			$moduleData->setSite($site);
-			$this->moduleDataStorageService->persistModuleData($moduleData);
 		}
+
+		$this->request->setArgument('site', $this->site);
+
+		$moduleData = $this->moduleDataStorageService->loadModuleData();
+		$moduleData->setSite($this->site);
+		$this->moduleDataStorageService->persistModuleData($moduleData);
 	}
 
 	/**
