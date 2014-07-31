@@ -122,7 +122,7 @@ abstract class AbstractModuleController extends ActionController implements Admi
 		try {
 			$this->site = $this->request->getArgument('site');
 		} catch (NoSuchArgumentException $nsae) {
-			$sites = \tx_solr_Site::getAvailableSites();
+			$sites = \Tx_Solr_Site::getAvailableSites();
 
 			$site = array_shift($sites);
 			$this->site = $site;
