@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2012 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2014 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,25 +29,25 @@
 /**
  * Plugin command interface
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_PluginCommand {
 
 	const REQUIREMENTS_NUM_BITS    = 4;
 
-	const REQUIREMENT_NONE         = 1;
-	const REQUIREMENT_HAS_SEARCHED = 2;
-	const REQUIREMENT_NO_RESULTS   = 4;
-	const REQUIREMENT_HAS_RESULTS  = 8;
+	const REQUIREMENT_NONE         = 1; // 0001
+	const REQUIREMENT_HAS_SEARCHED = 2; // 0010
+	const REQUIREMENT_NO_RESULTS   = 4; // 0100
+	const REQUIREMENT_HAS_RESULTS  = 8; // 1000
 
 	/**
 	 * Constructor.
 	 *
 	 * FIXME interface must not define a constructor, change this to a setter
 	 *
-	 * @param Tx_Solr_pluginbase_CommandPluginBase Parent plugin object.
+	 * @param Tx_Solr_pluginbase_CommandPluginBase $parent Parent plugin object.
 	 */
 	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parent);
 
