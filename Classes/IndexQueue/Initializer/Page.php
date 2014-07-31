@@ -132,15 +132,15 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 				);
 			}
 
-			$this->databaseTransactionStart();
+			\Tx_Solr_DatabaseUtility::transactionStart();
 			try {
 				$this->addMountedPagesToIndexQueue($mountedPages);
 				$this->addIndexQueueItemIndexingProperties($mountPage, $mountedPages);
 
-				$this->databaseTransactionCommit();
+				\Tx_Solr_DatabaseUtility::transactionCommit();
 				$mountPagesInitialized = TRUE;
 			} catch (Exception $e) {
-				$this->databaseTransactionRollback();
+				\Tx_Solr_DatabaseUtility::transactionRollback();
 
 				t3lib_div::devLog(
 					'Index Queue initialization failed for mount pages',
@@ -297,22 +297,6 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 		$mountedSite = Tx_Solr_Site::getSiteByPageId($mountPageSourceId);
 
 		return $mountedSite->getPages($mountPageSourceId);
-	}
-
-
-		// Database helpers (as long as not supported by t3lib_DB)
-
-
-	protected function databaseTransactionStart() {
-		$GLOBALS['TYPO3_DB']->sql_query('START TRANSACTION');
-	}
-
-	protected function databaseTransactionCommit() {
-		$GLOBALS['TYPO3_DB']->sql_query('COMMIT');
-	}
-
-	protected function databaseTransactionRollback() {
-		$GLOBALS['TYPO3_DB']->sql_query('ROLLBACK');
 	}
 }
 
