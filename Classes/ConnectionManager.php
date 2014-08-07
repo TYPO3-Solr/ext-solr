@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010-2012 Ingo Renner <ingo@typo3.org>
+*  (c) 2010-2014 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -225,7 +225,7 @@ class Tx_Solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	/**
 	 * Gets all connections found.
 	 *
-	 * @return array An array of initialized Tx_Solr_SolrService connections
+	 * @return Tx_Solr_SolrService[] An array of initialized Tx_Solr_SolrService connections
 	 */
 	public function getAllConnections() {
 		$connections = array();
@@ -383,7 +383,7 @@ class Tx_Solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	 *
 	 * @param array $rootPage A root page record with at least title and uid
 	 * @param integer $languageId ID of a system language
-	 * @return array A solr connection.
+	 * @return array A solr connection configuration.
 	 */
 	protected function getConfiguredSolrConnectionByRootPage(array $rootPage, $languageId) {
 		$connection = array();
