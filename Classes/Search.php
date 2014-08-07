@@ -274,6 +274,11 @@ class Tx_Solr_Search implements t3lib_Singleton {
 		return $this->getResponse()->response;
 	}
 
+	/**
+	 * Gets the result's documents
+	 *
+	 * @return \Apache_Solr_Document[]
+	 */
 	public function getResultDocuments() {
 		return $this->getResponseBody()->docs;
 	}
