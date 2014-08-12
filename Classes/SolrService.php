@@ -553,8 +553,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		$language = 'english';
 
 		$schema = $this->getSchema();
-		
-		if(is_array($schema)){
+
+		if (!is_null($schema) && isset($schema->fieldTypes)) {
 			foreach ($schema->fieldTypes as $fieldType) {
 				if ($fieldType->name === 'text') {
 					foreach ($fieldType->indexAnalyzer->filters as $filter) {
@@ -565,6 +565,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 				}
 			}
 		}
+
 		return $language;
 	}
 
@@ -676,8 +677,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 				$synonyms = $decodedResponse->{$baseWord};
 			}
 		} else {
-			if (is_array($decodedResponse->synonymMappings->managedMap)) {
-				$synonyms = $decodedResponse->synonymMappings->managedMap;
+			if (isset($decodedResponse->synonymMappings->managedMap)) {
+				$synonyms = (array)$decodedResponse->synonymMappings->managedMap;
 			}
 		}
 
