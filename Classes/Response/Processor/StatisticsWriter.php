@@ -97,7 +97,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 			'language'          => $GLOBALS['TSFE']->sys_language_uid,
 
 			'num_found'         => $response->response->numFound,
-			'suggestions_shown' => (int) get_object_vars($response->spellcheck->suggestions),
+			'suggestions_shown' => (is_object($response->spellcheck->suggestions)) ? (int) get_object_vars($response->spellcheck->suggestions) : 0,
 			'time_total'        => $response->debug->timing->time,
 			'time_preparation'  => $response->debug->timing->prepare->time,
 			'time_processing'   => $response->debug->timing->process->time,
