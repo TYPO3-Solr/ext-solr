@@ -1,0 +1,52 @@
+{
+	"name": "apache-solr-for-typo3/solr",
+	"description": "Apache Solr integration for TYPO3",
+	"minimum-stability": "dev",
+	"license": "GPL-2.0+",
+	"version": "3.0.0",
+	"type": "typo3-cms-extension",
+	"keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
+	"homepage": "http://www.typo3-solr.com",
+	"source": {
+		"type": "git",
+		"url": "git://git.typo3.org/TYPO3CMS/Extensions/solr.git",
+		"reference": "master"
+	},
+	"authors": [
+		{
+			"name": "Ingo Renner",
+			"email": "ingo@typo3.org",
+			"role": "Lead Developer"
+		}
+	],
+	"support": {
+		"email": "typo3-project-solr@lists.typo3.org",
+		"issues": "https://forge.typo3.org/projects/extension-solr/issues",
+		"forum": "http://forum.typo3.org/index.php/f/53/",
+		"wiki": "https://forge.typo3.org/projects/extension-solr/wiki",
+		"source": "https://forge.typo3.org/projects/extension-solr/repository"
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "http://composer.typo3.org/"
+		}
+	],
+	"require": {
+		"php": ">5.3.0,~5.5.0",
+		"typo3/cms": "~4.5.0,~6.2.0",
+		"typo3-ter/scheduler": "*",
+		"typo3-ter/pagebrowse": "*"
+	},
+	"require-dev": {
+		"typo3-ci/typo3cms": "~6.2.0"
+	},
+	"suggest": {
+		"typo3-ter/devlog": "*"
+	},
+	"autoload": {
+		"psr-0": {
+			"ApacheSolrForTypo3": "Classes/"
+		}
+	}
+}
