@@ -4,21 +4,21 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4475e51f27583f7f28ff77ddac8f39bb",
+    "hash": "b1af872b13492a948f11319ac10b6d5a",
     "packages": [],
     "packages-dev": [
         {
             "name": "simplyadmire/composer-plugins",
-            "version": "dev-master",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SimplyAdmire/ComposerPlugins.git",
-                "reference": "64e60c5112be05214f6b4f97165ee0590e54f0b0"
+                "reference": "f26dc6a96ba24f2b050161be28cb406eb8844430"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SimplyAdmire/ComposerPlugins/zipball/64e60c5112be05214f6b4f97165ee0590e54f0b0",
-                "reference": "64e60c5112be05214f6b4f97165ee0590e54f0b0",
+                "url": "https://api.github.com/repos/SimplyAdmire/ComposerPlugins/zipball/f26dc6a96ba24f2b050161be28cb406eb8844430",
+                "reference": "f26dc6a96ba24f2b050161be28cb406eb8844430",
                 "shasum": ""
             },
             "require": {
@@ -57,7 +57,7 @@
                 "standards",
                 "typo3"
             ],
-            "time": "2014-08-06 00:34:55"
+            "time": "2014-07-25 11:48:26"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -136,7 +136,7 @@
         },
         {
             "name": "typo3-ci/typo3cms",
-            "version": "6.2.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/typo3-ci/TYPO3CMS.git",
@@ -190,16 +190,16 @@
         },
         {
             "name": "typo3-ci/typo3sniffpool",
-            "version": "dev-master",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/typo3-ci/TYPO3SniffPool.git",
-                "reference": "78ff6470872892b43ff8e5d7253c5a241c2ca192"
+                "reference": "75e785b425fd955044193d7813c397353f2296e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/typo3-ci/TYPO3SniffPool/zipball/78ff6470872892b43ff8e5d7253c5a241c2ca192",
-                "reference": "78ff6470872892b43ff8e5d7253c5a241c2ca192",
+                "url": "https://api.github.com/repos/typo3-ci/TYPO3SniffPool/zipball/75e785b425fd955044193d7813c397353f2296e7",
+                "reference": "75e785b425fd955044193d7813c397353f2296e7",
                 "shasum": ""
             },
             "require": {
@@ -249,12 +249,14 @@
                 "standards",
                 "typo3"
             ],
-            "time": "2014-09-03 20:09:28"
+            "time": "2014-09-03 19:58:10"
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": [],
+    "minimum-stability": "alpha",
+    "stability-flags": {
+        "typo3-ci/typo3cms": 20
+    },
     "prefer-stable": false,
     "platform": {
         "php": ">5.3.0,~5.5.0"
