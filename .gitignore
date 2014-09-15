@@ -1,7 +1,7 @@
 .buildpath
-.project
+.project/
 .settings/
-/.idea/
-/atlassian-ide-plugin.xml
+.idea/
+atlassian-ide-plugin.xml
 .DS_Store
 vendor/
