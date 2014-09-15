@@ -43,6 +43,7 @@ class Tx_Solr_GarbageCollector {
 	 * @param integer $uid The record's uid
 	 * @param string $value Not used
 	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
+	 * @return void
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 			// workspaces: collect garbage only for LIVE workspace

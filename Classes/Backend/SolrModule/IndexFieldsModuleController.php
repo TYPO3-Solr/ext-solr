@@ -24,14 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Index Fields Module
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 class IndexFieldsModuleController extends AbstractModuleController {
 
 	/**
