@@ -74,11 +74,24 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__]        = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->disableFrontendOutput';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__]   = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->disableCaching';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->deactivateTcaFrontendGroupEnableFields';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->checkEnableFields';
 
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__]           = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__]    = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector';
 
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__]       = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector';
+	}
+
+	/**
+	 * Disables the group access check by resetting the fe_group field in the given page table row.
+	 * Will be called by the hook in the TypoScriptFrontendController in the checkEnableFields() method.
+	 *
+	 * @param array $parameters
+	 * @param \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $tsfe
+	 * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
+	 */
+	public function checkEnableFields($parameters, $tsfe) {
+		$parameters['row']['fe_group'] = '';
 	}
 
 	/**
