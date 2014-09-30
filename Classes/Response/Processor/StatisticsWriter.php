@@ -80,8 +80,12 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 			return;
 		}
 
-		$keywords = t3lib_div::removeXSS($keywords);
-		$keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+		$keywords = $this->sanitizeString($keywords);
+
+		$sorting = '';
+		if (!empty($urlParameters['sort'])) {
+			$sorting = $this->sanitizeString($urlParameters['sort']);
+		}
 
 		$configuration = Tx_Solr_Util::getSolrConfiguration();
 		if ($configuration['search.']['frequentSearches.']['useLowercaseKeywords']) {
@@ -109,11 +113,24 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 			'page'              => (int) $urlParameters['page'],
 			'keywords'          => $keywords,
 			'filters'           => serialize($filters),
-			'sorting'           => $urlParameters['sort'] ? $urlParameters['sort'] : '', // FIXME sanitize me!
+			'sorting'           => $sorting,
 			'parameters'        => serialize($response->responseHeader->params)
 		);
 
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_statistics', $insertFields);
+	}
+
+	/**
+	 * Sanitizes a string
+	 *
+	 * @param $string String to sanitize
+	 * @return string Sanitized string
+	 */
+	protected function sanitizeString($string) {
+		$string = t3lib_div::removeXSS($string);
+		$string = htmlentities($string, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+
+		return $string;
 	}
 }
 
