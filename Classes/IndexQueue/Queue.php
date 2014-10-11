@@ -623,50 +623,50 @@ class Tx_Solr_IndexQueue_Queue {
 	 *                                          configuration
 	 */
 	public function deleteItemsBySite(Tx_Solr_Site $site, $indexingConfigurationName = '') {
+		$rootPageConstraint = 'tx_solr_indexqueue_item.root = ' . $site->getRootPageId();
+
 		$indexingConfigurationConstraint = '';
 		if (!empty($indexingConfigurationName)) {
-			$indexingConfigurationConstraint = ' AND indexing_configuration = \'' . $indexingConfigurationName . '\'';
+			$indexingConfigurationConstraint =
+				' AND tx_solr_indexqueue_item.indexing_configuration = \'' .
+					$indexingConfigurationName . '\'';
 		}
 
-		$indexQueueItems = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid',
-			'tx_solr_indexqueue_item',
-			'root = ' . $site->getRootPageId() . $indexingConfigurationConstraint,
-			'', '', '',
-			'uid'
-		);
-		$indexQueueItems = array_keys($indexQueueItems);
-		$indexQueueItems = implode(',', $indexQueueItems);
-
-		if (!empty($indexQueueItems)) {
-			Tx_Solr_DatabaseUtility::transactionStart();
-			try {
-				$result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
-					'tx_solr_indexqueue_item',
-					'uid IN (' . $indexQueueItems . ')'
+		Tx_Solr_DatabaseUtility::transactionStart();
+		try {
+			// reset Index Queue
+			$result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
+				'tx_solr_indexqueue_item',
+				$rootPageConstraint . $indexingConfigurationConstraint
+			);
+			if (!$result) {
+				throw new RuntimeException(
+					'Failed to reset Index Queue for site ' . $site->getLabel(),
+					1412986560
 				);
-				if (!$result) {
-					throw new RuntimeException(
-						'Failed to reset Index Queue for site ' . $site->getLabel(),
-						1412986560
-					);
-				}
-
-				$result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
-					'tx_solr_indexqueue_indexing_property',
-					'item_id IN (' . $indexQueueItems . ')'
-				);
-				if (!$result) {
-					throw new RuntimeException(
-						'Failed to reset Index Queue properties for site ' . $site->getLabel(),
-						1412986604
-					);
-				}
-
-				Tx_Solr_DatabaseUtility::transactionCommit();
-			} catch (RuntimeException $e) {
-				Tx_Solr_DatabaseUtility::transactionRollback();
 			}
+
+			// reset Index Queue Properties
+			$indexQueuePropertyResetQuery = '
+				DELETE tx_solr_indexqueue_indexing_property.*
+				FROM tx_solr_indexqueue_indexing_property
+				INNER JOIN tx_solr_indexqueue_item
+					ON tx_solr_indexqueue_item.uid = tx_solr_indexqueue_indexing_property.item_id
+					AND ' .
+					$rootPageConstraint .
+					$indexingConfigurationConstraint;
+
+			$result = $GLOBALS['TYPO3_DB']->sql_query($indexQueuePropertyResetQuery);
+			if (!$result) {
+				throw new RuntimeException(
+					'Failed to reset Index Queue properties for site ' . $site->getLabel(),
+					1412986604
+				);
+			}
+
+			Tx_Solr_DatabaseUtility::transactionCommit();
+		} catch (RuntimeException $e) {
+			Tx_Solr_DatabaseUtility::transactionRollback();
 		}
 	}
 
