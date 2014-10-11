@@ -619,7 +619,8 @@ class Tx_Solr_IndexQueue_Queue {
 	 * optional parameter to limit the deleted items by indexing configuration.
 	 *
 	 * @param Tx_Solr_Site $site The site to remove items for.
-	 * @param string $indexingConfigurationName name of a specific indexing configuration
+	 * @param string $indexingConfigurationName Name of a specific indexing
+	 *                                          configuration
 	 */
 	public function deleteItemsBySite(Tx_Solr_Site $site, $indexingConfigurationName = '') {
 		$indexingConfigurationConstraint = '';
@@ -638,15 +639,34 @@ class Tx_Solr_IndexQueue_Queue {
 		$indexQueueItems = implode(',', $indexQueueItems);
 
 		if (!empty($indexQueueItems)) {
-				// TODO these two queries should be in a transaction
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery(
-				'tx_solr_indexqueue_item',
-				'uid IN (' . $indexQueueItems . ')'
-			);
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery(
-				'tx_solr_indexqueue_indexing_property',
-				'item_id IN (' . $indexQueueItems . ')'
-			);
+			Tx_Solr_DatabaseUtility::transactionStart();
+			try {
+				$result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
+					'tx_solr_indexqueue_item',
+					'uid IN (' . $indexQueueItems . ')'
+				);
+				if (!$result) {
+					throw new RuntimeException(
+						'Failed to reset Index Queue for site ' . $site->getLabel(),
+						1412986560
+					);
+				}
+
+				$result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
+					'tx_solr_indexqueue_indexing_property',
+					'item_id IN (' . $indexQueueItems . ')'
+				);
+				if (!$result) {
+					throw new RuntimeException(
+						'Failed to reset Index Queue properties for site ' . $site->getLabel(),
+						1412986604
+					);
+				}
+
+				Tx_Solr_DatabaseUtility::transactionCommit();
+			} catch (RuntimeException $e) {
+				Tx_Solr_DatabaseUtility::transactionRollback();
+			}
 		}
 	}
 
