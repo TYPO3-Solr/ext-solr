@@ -27,22 +27,23 @@
  * The Indexing Queue. It allows us to decouple from frontend indexing and
  * reacting to changes faster.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_Queue {
 
 
-		// FIXME some of the methods should be renamed to plural forms
-		// FIXME singular form methods should deal with exactly one item only
+	// FIXME some of the methods should be renamed to plural forms
+	// FIXME singular form methods should deal with exactly one item only
 
 
 	/**
 	 * Returns the timestamp of the last indexing run.
 	 *
-	 * @param	integer	The root page uid for which to get the last indexed item id
-	 * @return	integer	Timestamp of last index run.
+	 * @param integer $rootPageId The root page uid for which to get
+	 *      the last indexed item id
+	 * @return integer Timestamp of last index run.
 	 */
 	public function getLastIndexTime($rootPageId) {
 		$lastIndexTime = 0;
@@ -66,8 +67,9 @@ class Tx_Solr_IndexQueue_Queue {
 	/**
 	 * Returns the uid of the last indexed item in the queue
 	 *
-	 * @param	integer	The root page uid for which to get the last indexed item id
-	 * @return	integer	The last indexed item's ID.
+	 * @param integer $rootPageId The root page uid for which to get
+	 *      the last indexed item id
+	 * @return integer The last indexed item's ID.
 	 */
 	public function getLastIndexedItemId($rootPageId) {
 		$lastIndexedItemId = 0;
@@ -89,12 +91,14 @@ class Tx_Solr_IndexQueue_Queue {
 
 	/**
 	 * Truncate and rebuild the tx_solr_indexqueue_item table. This is the most
-	 * complete way to force reindexing, or to build the Index Queue for
-	 * the first time. The Index Queue initialization is site-specific.
+	 * complete way to force reindexing, or to build the Index Queue for the
+	 * first time. The Index Queue initialization is site-specific.
 	 *
 	 * @param Tx_Solr_Site $site The site to initialize
-	 * @param string $indexingConfigurationName name of a specific indexing configuration
-	 * @return array An array of booleans, each representing whether the initialization for an indexing configuration was successful
+	 * @param string $indexingConfigurationName Name of a specific
+	 *      indexing configuration
+	 * @return array An array of booleans, each representing whether the
+	 *      initialization for an indexing configuration was successful
 	 */
 	public function initialize(Tx_Solr_Site $site, $indexingConfigurationName = '') {
 		$indexingConfigurations = array();
@@ -119,10 +123,15 @@ class Tx_Solr_IndexQueue_Queue {
 				$indexQueueInitializationPostProcessor = t3lib_div::getUserObj($classReference);
 
 				if ($indexQueueInitializationPostProcessor instanceof Tx_Solr_IndexQueueInitializationPostProcessor) {
-					$indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization($site, $indexingConfigurations, $initializationStatus);
+					$indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization(
+						$site,
+						$indexingConfigurations,
+						$initializationStatus
+					);
 				} else {
 					throw new UnexpectedValueException(
-						get_class($indexQueueInitializationPostProcessor) . ' must implement interface Tx_Solr_IndexQueueInitializationPostProcessor',
+						get_class($indexQueueInitializationPostProcessor) .
+							' must implement interface Tx_Solr_IndexQueueInitializationPostProcessor',
 						1345815561
 					);
 				}
@@ -136,11 +145,12 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Initializes the Index Queue for a specific indexing configuration.
 	 *
 	 * @param Tx_Solr_Site $site The site to initialize
-	 * @param string $indexingConfigurationName name of a specific indexing configuration
+	 * @param string $indexingConfigurationName name of a specific
+	 *      indexing configuration
 	 * @return boolean TRUE if the initialization was successful, FALSE otherwise
 	 */
 	protected function initializeIndexingConfiguration(Tx_Solr_Site $site, $indexingConfigurationName) {
-			// clear queue
+		// clear queue
 		$this->deleteItemsBySite($site, $indexingConfigurationName);
 
 		$solrConfiguration = $site->getSolrConfiguration();
@@ -149,6 +159,7 @@ class Tx_Solr_IndexQueue_Queue {
 		$initializerClass = $this->resolveInitializerClass($solrConfiguration, $indexingConfigurationName);
 
 		$initializer = t3lib_div::makeInstance($initializerClass);
+		/** @var $initializer Tx_Solr_IndexQueue_Initializer_Abstract */
 		$initializer->setSite($site);
 		$initializer->setType($tableToIndex);
 		$initializer->setIndexingConfigurationName($indexingConfigurationName);
@@ -161,7 +172,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Gets the the name of the table to index.
 	 *
 	 * Usually the indexing configuration's name implicitly reflects the name of
-	 * the tbale to index. However, this way it would not be possible to index
+	 * the table to index. However, this way it would not be possible to index
 	 * the same table with different indexing configurations. Therefore it is
 	 * possible to explicitly define the actual table name using the indexing
 	 * configuration's "table" property.
@@ -174,7 +185,8 @@ class Tx_Solr_IndexQueue_Queue {
 		$tableToIndex = $indexingConfigurationName;
 
 		if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-				// table has been set explicitly. Allows to index the same table with different configurations
+			// table has been set explicitly.
+			// Allows to index the same table with different configurations
 			$tableToIndex = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
 		}
 
@@ -208,8 +220,8 @@ class Tx_Solr_IndexQueue_Queue {
 	/**
 	 * Determines which tables to index according to the given configuration.
 	 *
-	 * @param	array	Solr configuration array.
-	 * @return	array	An array of table names to index.
+	 * @param array $solrConfiguration Solr configuration array.
+	 * @return array An array of table names to index.
 	 */
 	public function getTableIndexingConfigurations(array $solrConfiguration) {
 		$tablesToIndex = array();
@@ -237,11 +249,14 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Try to set the indexingConfiguration directly when using the updateItem()
 	 * method in such situations.
 	 *
-	 * @param	string	The item's type, usually a table name.
-	 * @param	string	The item's uid, usually an integer uid, could be a different value for non-database-record types.
-	 * @param	integer	The configuration's page tree's root page id. Optional, not needed for all types.
-	 * @return	string	The indexing configuration's name to use when indexing this item
-	 * @deprecated	Use getIndexingConfigurationsByItem() now, which behaves almost the same way but returns an array of configurations
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
+	 * @param integer $rootPageId The configuration's page tree's root page id.
+	 *      Optional, not needed for all types.
+	 * @return string The indexing configuration's name to use when indexing
+	 * @deprecated Use getIndexingConfigurationsByItem() now, which behaves
+	 *      almost the same way but returns an array of configurations
 	 */
 	protected function getIndexingConfigurationByItem($itemType, $itemUid, $rootPageId = NULL) {
 		$indexingConfigurationName = '';
@@ -258,18 +273,20 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Gets the indexing configurations to use for an item.
 	 * Multiple configurations for a certain item type (table) might be available.
 	 *
-	 * @param	string	The item's type, usually a table name.
-	 * @param	string	The item's uid, usually an integer uid, could be a different value for non-database-record types.
-	 * @param	integer	The configuration's page tree's root page id. Optional, not needed for all types.
-	 * @return	array<string>	The indexing configurations names to use when indexing this item
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
+	 * @param integer $rootPageId The configuration's page tree's root page id.
+	 *      Optional, not needed for all types.
+	 * @return array<string> The indexing configurations names to use when indexing
 	 */
 	protected function getIndexingConfigurationsByItem($itemType, $itemUid, $rootPageId = NULL) {
 		$possibleIndexingConfigurationNames = array();
 
 		if (!is_null($rootPageId)) {
-				// get configuration for the root's branch
+			// get configuration for the root's branch
 			$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($rootPageId);
-				// which configurations are there?
+			// which configurations are there?
 			$indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
 
 			foreach ($indexingConfigurations as $indexingConfigurationName) {
@@ -297,9 +314,9 @@ class Tx_Solr_IndexQueue_Queue {
 	 *
 	 * Should be used for Index Queue initialization only, thus private
 	 *
-	 * @param	integer		Start page id
-	 * @param	integer		Maximum depth to decend into the tree
-	 * @return	string		Returns the list with a comma in the end (if any pages selected!)
+	 * @param integer $startPageId Start page id
+	 * @param integer $maxDepth Maximum depth to decent into the tree
+	 * @return string Returns the list ending with comma (if any pages selected!)
 	 */
 	private function getListOfPagesFromRoot($startPageId, $maxDepth = 999) {
 		$pageList    = array();
@@ -334,15 +351,17 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Like with Solr itself, there's no add method, just a simple update method
 	 * that handles the adds, too.
 	 *
-	 * @param	string	The item's type, usually a table name.
-	 * @param	string	The item's uid, usually an integer uid, could be a different value for non-database-record types.
-	 * @param	string	The item's indexing configuration to use. Optional, overwrites existing / determined configuration.
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
+	 * @param string $indexingConfiguration The item's indexing configuration to use.
+	 *      Optional, overwrites existing / determined configuration.
 	 */
 	public function updateItem($itemType, $itemUid, $indexingConfiguration = NULL) {
 		$itemInQueue = $this->containsItem($itemType, $itemUid);
 
 		if ($itemInQueue) {
-				// update if that item is in the queue already
+			// update if that item is in the queue already
 			$changes = array('changed' => $this->getItemChangedTime($itemType, $itemUid));
 
 			if (!empty($indexingConfiguration)) {
@@ -351,12 +370,12 @@ class Tx_Solr_IndexQueue_Queue {
 
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				'tx_solr_indexqueue_item',
-				'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
-					. ' AND item_uid = ' . (int) $itemUid ,
+				'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
+					' AND item_uid = ' . (int) $itemUid,
 				$changes
 			);
 		} else {
-				// add the item since it's not in the queue yet
+			// add the item since it's not in the queue yet
 			$this->addItem($itemType, $itemUid, $indexingConfiguration);
 		}
 	}
@@ -367,15 +386,19 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Not meant for public use.
 	 *
 	 * @param string $itemType The item's type, usually a table name.
-	 * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
-	 * @param string $indexingConfiguration The item's indexing configuration to use. Optional, overwrites existing / determined configuration.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
+	 * @param string $indexingConfiguration The item's indexing configuration to use.
+	 *      Optional, overwrites existing / determined configuration.
+	 * @return void
 	 */
 	private function addItem($itemType, $itemUid, $indexingConfiguration) {
 		// FIXME must respect the indexer's additionalWhereClause option:
-		// must not add items to the index queue which are excluded through additionalWhereClause
-		// requires construction of additionalWhereClause through multiple options instead of just one
+		// must not add items to the index queue which are excluded through
+		// additionalWhereClause. Requires construction of additionalWhereClause
+		// through multiple options instead of just one
 
-			# temporary until we have a query builder to take care of this
+		// FIXME temporary until we have a query builder to take care of this
 		$additionalRecordFields = '';
 		if ($itemType == 'pages') {
 			$additionalRecordFields = ', doktype, uid';
@@ -383,7 +406,7 @@ class Tx_Solr_IndexQueue_Queue {
 
 		$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
 
-			# temporary until we have a query builder to take care of this
+		// FIXME temporary until we have a query builder to take care of this
 		if (empty($record) || ($itemType == 'pages' && !Tx_Solr_Util::isAllowedPageType($record))) {
 			return;
 		}
@@ -420,7 +443,12 @@ class Tx_Solr_IndexQueue_Queue {
 				// Ensure additionalWhereClause is applied.
 				$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($record['pid']);
 				if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
-					$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields, ' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']);
+					$record = t3lib_BEfunc::getRecord(
+						$itemType,
+						$itemUid,
+						'pid' . $additionalRecordFields,
+						' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']
+					);
 					if (empty($record)) {
 						$writeToIndex = FALSE;
 					}
@@ -441,12 +469,14 @@ class Tx_Solr_IndexQueue_Queue {
 	 * is stored in the changed column in the Index Queue.
 	 *
 	 * The changed timestamp usually is now - time(). For records which are set
-	 * to published at a later time, this timestamp is the starttime. So if a
-	 * future startime has been set, that will be used to delay indexing of an item.
+	 * to published at a later time, this timestamp is the start time. So if a
+	 * future start time has been set, that will be used to delay indexing
+	 * of an item.
 	 *
 	 * @param string $itemType The item's type, usually a table name.
-	 * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
-	 * @return integer Timestamp of the item's changed time or future starttime
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
+	 * @return integer Timestamp of the item's changed time or future start time
 	 */
 	protected function getItemChangedTime($itemType, $itemUid) {
 		$itemTypeHasStartTimeColumn = FALSE;
@@ -458,7 +488,8 @@ class Tx_Solr_IndexQueue_Queue {
 			$changedTimeColumns .= ', ' . $GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'];
 		}
 		if ($itemType == 'pages') {
-				// does not carry time information directly, but needed to support canonical pages
+			// does not carry time information directly, but needed to support
+			// canonical pages
 			$changedTimeColumns .= ', content_from_pid';
 		}
 
@@ -467,13 +498,15 @@ class Tx_Solr_IndexQueue_Queue {
 
 		if ($itemType == 'pages') {
 			$record['uid'] = $itemUid;
-				// overrule the page's last changed time with the most recent content element change
+			// overrule the page's last changed time with the most recent
+			//content element change
 			$changedTime = $this->getPageItemChangedTime($record);
 		}
 
 		if ($itemTypeHasStartTimeColumn) {
-				// if starttime exists and starttime is higher than last changed timestamp
-				// then set changed to the future starttime to make the item indexed at a later time
+			// if start time exists and start time is higher than last changed timestamp
+			// then set changed to the future start time to make the item
+			// indexed at a later time
 			$changedTime = max(
 				$changedTime,
 				$record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']],
@@ -510,16 +543,16 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Checks whether the Index Queue contains a specific item.
 	 *
 	 * @param string $itemType The item's type, usually a table name.
-	 * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
 	 * @return boolean TRUE if the item is found in the queue, FALSE otherwise
 	 */
 	public function containsItem($itemType, $itemUid) {
 		$itemIsInQueue = (boolean) $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
 			'uid',
 			'tx_solr_indexqueue_item',
-			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
-				. ' AND '
-				. 'item_uid = ' . (int) $itemUid
+			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
+				' AND item_uid = ' . (int) $itemUid
 		);
 
 		return $itemIsInQueue;
@@ -530,18 +563,18 @@ class Tx_Solr_IndexQueue_Queue {
 	 * marked as indexed.
 	 *
 	 * @param string $itemType The item's type, usually a table name.
-	 * @param string $itemUid The item's uid, usually an integer uid, could be a different value for non-database-record types.
-	 * @return boolean TRUE if the item is found in the queue and marked as indexed, FALSE otherwise
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
+	 * @return boolean TRUE if the item is found in the queue and marked as
+	 *      indexed, FALSE otherwise
 	 */
 	public function containsIndexedItem($itemType, $itemUid) {
 		$itemIsInQueue = (boolean) $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
 			'uid',
 			'tx_solr_indexqueue_item',
-			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
-				. ' AND '
-				. 'item_uid = ' . (int) $itemUid
-				. ' AND '
-				. 'indexed > 0'
+			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
+				' AND item_uid = ' . (int) $itemUid .
+				' AND indexed > 0'
 		);
 
 		return $itemIsInQueue;
@@ -550,18 +583,18 @@ class Tx_Solr_IndexQueue_Queue {
 	/**
 	 * Removes an item from the Index Queue.
 	 *
-	 * @param	string	The type of the item to remove, usually a table name.
-	 * @param	integer	The uid of the item to remove
+	 * @param string $itemType The type of the item to remove, usually a table name.
+	 * @param integer $itemUid The uid of the item to remove
 	 */
 	public function deleteItem($itemType, $itemUid) {
 		$uidList = array();
 
-			// get the item uids to use them in the deletes afterwards
+		// get the item uids to use them in the deletes afterwards
 		$items = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid',
 			'tx_solr_indexqueue_item',
-			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
-				. ' AND item_uid = ' . intval($itemUid)
+			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
+				' AND item_uid = ' . intval($itemUid)
 		);
 
 		if (count($items)) {
@@ -583,12 +616,12 @@ class Tx_Solr_IndexQueue_Queue {
 	/**
 	 * Removes all items of a certain type from the Index Queue.
 	 *
-	 * @param	string	The type of items to remove, usually a table name.
+	 * @param string $itemType The type of items to remove, usually a table name.
 	 */
 	public function deleteItemsByType($itemType) {
 		$uidList = array();
 
-			// get the item uids to use them in the deletes afterwards
+		// get the item uids to use them in the deletes afterwards
 		$items = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid',
 			'tx_solr_indexqueue_item',
@@ -620,7 +653,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 *
 	 * @param Tx_Solr_Site $site The site to remove items for.
 	 * @param string $indexingConfigurationName Name of a specific indexing
-	 *                                          configuration
+	 *      configuration
 	 */
 	public function deleteItemsBySite(Tx_Solr_Site $site, $indexingConfigurationName = '') {
 		$rootPageConstraint = 'tx_solr_indexqueue_item.root = ' . $site->getRootPageId();
@@ -682,7 +715,8 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Gets a single Index Queue item by its uid.
 	 *
 	 * @param integer $itemId Index Queue item uid
-	 * @return Tx_Solr_IndexQueue_Item The request Index Queue item or NULL if no item with $itemId was found
+	 * @return Tx_Solr_IndexQueue_Item The request Index Queue item or NULL
+	 *      if no item with $itemId was found
 	 */
 	public function getItem($itemId) {
 		$item = NULL;
@@ -716,8 +750,8 @@ class Tx_Solr_IndexQueue_Queue {
 		$indexQueueItemRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			'tx_solr_indexqueue_item',
-			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item')
-				. ' AND item_uid = ' . intval($itemUid)
+			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
+				' AND item_uid = ' . intval($itemUid)
 		);
 
 		return $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
@@ -728,8 +762,10 @@ class Tx_Solr_IndexQueue_Queue {
 	 * optional parameter to limit the deleted items by indexing configuration.
 	 *
 	 * @param tx_solr_Site $site The site to search for.
-	 * @param string $indexingConfigurationName name of a specific indexing configuration
-	 * @return mixed Number of items (integer) or FALSE if something went wrong (boolean)
+	 * @param string $indexingConfigurationName name of a specific indexing
+	 *      configuration
+	 * @return mixed Number of items (integer) or FALSE if something went
+	 *      wrong (boolean)
 	 */
 	public function getItemsCountBySite(Tx_Solr_Site $site, $indexingConfigurationName = '') {
 		$indexingConfigurationConstraint = '';
@@ -749,28 +785,28 @@ class Tx_Solr_IndexQueue_Queue {
 	/**
 	 * Gets $limit number of items to index for a particular $site.
 	 *
-	 * @param	Tx_Solr_Site	$site TYPO3 site
-	 * @param	integer	Number of items to get from the queue
-	 * @return	array	Array of Tx_Solr_IndexQueue_Item objects to index to the given solr server
+	 * @param Tx_Solr_Site $site TYPO3 site
+	 * @param integer $limit Number of items to get from the queue
+	 * @return Tx_Solr_IndexQueue_Item[] Items to index to the given solr server
 	 */
 	public function getItemsToIndex(Tx_Solr_Site $site, $limit = 50) {
 		$itemsToIndex = array();
 
-			// determine which items to index with this run
+		// determine which items to index with this run
 		$indexQueueItemRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			'tx_solr_indexqueue_item',
-			'root = ' . $site->getRootPageId()
-				. ' AND changed > indexed'
-				. ' AND changed <= ' . time()
-				. ' AND errors = \'\'',
+			'root = ' . $site->getRootPageId() .
+				' AND changed > indexed' .
+				' AND changed <= ' . time() .
+				' AND errors = \'\'',
 			'',
 			'indexing_priority DESC, changed DESC, uid DESC',
 			intval($limit)
 		);
 
-		if(!empty($indexQueueItemRecords)) {
-				// convert queued records to index queue item objects
+		if (!empty($indexQueueItemRecords)) {
+			// convert queued records to index queue item objects
 			$itemsToIndex = $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);
 		}
 
@@ -778,22 +814,23 @@ class Tx_Solr_IndexQueue_Queue {
 	}
 
 	/**
-	 * Creates an array of Tx_Solr_IndexQueue_Item objects from an array of index queue records.
+	 * Creates an array of Tx_Solr_IndexQueue_Item objects from an array of
+	 * index queue records.
 	 *
-	 * @param	array	Array of plain index queue records
-	 * @return	array	Array of Tx_Solr_IndexQueue_Item objects
+	 * @param array $indexQueueItemRecords Array of plain index queue records
+	 * @return array Array of Tx_Solr_IndexQueue_Item objects
 	 */
 	protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords) {
 		$indexQueueItems = array();
 		$tableUids       = array();
 		$tableRecords    = array();
 
-			// grouping records by table
+		// grouping records by table
 		foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
 			$tableUids[$indexQueueItemRecord['item_type']][] = $indexQueueItemRecord['item_uid'];
 		}
 
-			// fetching records by table, saves us a lot of single queries
+		// fetching records by table, saves us a lot of single queries
 		foreach ($tableUids as $table => $uids) {
 			$uidList = implode(',', $uids);
 			$records = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -806,7 +843,8 @@ class Tx_Solr_IndexQueue_Queue {
 			$tableRecords[$table] = $records;
 		}
 
-			// creating index queue item objects and assigning / mapping records to index queue items
+		// creating index queue item objects and assigning / mapping
+		// records to index queue items
 		foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
 			if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
 				$indexQueueItems[] = t3lib_div::makeInstance(
@@ -827,8 +865,9 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Marks an item as failed and causes the indexer to skip the item in the
 	 * next run.
 	 *
-	 * @param int|Tx_Solr_IndexQueue_Item $item Either the item's Index Queue uid or the complete item
-	 * @param string Error message
+	 * @param int|Tx_Solr_IndexQueue_Item $item Either the item's Index Queue
+	 *      uid or the complete item
+	 * @param string $errorMessage Error message
 	 */
 	public function markItemAsFailed($item, $errorMessage = '') {
 		$itemUid = 0;
@@ -840,13 +879,13 @@ class Tx_Solr_IndexQueue_Queue {
 		}
 
 		if (empty($errorMessage)) {
-				// simply set to "TRUE"
+			// simply set to "TRUE"
 			$errorMessage = '1';
 		}
 
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tx_solr_indexqueue_item',
-			'uid = ' . $itemUid ,
+			'uid = ' . $itemUid,
 			array(
 				'errors' => $errorMessage
 			)
