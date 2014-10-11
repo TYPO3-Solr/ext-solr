@@ -132,15 +132,15 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 				);
 			}
 
-			\Tx_Solr_DatabaseUtility::transactionStart();
+			Tx_Solr_DatabaseUtility::transactionStart();
 			try {
 				$this->addMountedPagesToIndexQueue($mountedPages);
 				$this->addIndexQueueItemIndexingProperties($mountPage, $mountedPages);
 
-				\Tx_Solr_DatabaseUtility::transactionCommit();
+				Tx_Solr_DatabaseUtility::transactionCommit();
 				$mountPagesInitialized = TRUE;
 			} catch (Exception $e) {
-				\Tx_Solr_DatabaseUtility::transactionRollback();
+				Tx_Solr_DatabaseUtility::transactionRollback();
 
 				t3lib_div::devLog(
 					'Index Queue initialization failed for mount pages',
