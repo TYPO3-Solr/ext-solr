@@ -8,9 +8,10 @@
 	<div class="span9 action-description">
 		<h3>Clean Up Index</h3>
 		<p>
-		The Index Queue takes care of indexing your content to Solr. Whenever you delete or hide content, the Garbage Collector will make sure to remove
-		the related index documents from the index. While indexing new content the Index Queue worker will from time to time clean up those left over
-		documents from the index. Here you can trigger this clean up manually.
+		The Index Queue takes care of indexing your content to Solr. Whenever you delete or hide content,
+		the Garbage Collector will make sure to remove the related index documents from the index.
+		The Index Queue worker will automatically clean up those left over documents from the index
+		from time to time. Here you can trigger this clean up manually.
 		</p>
 	</div>
 </div>
@@ -24,7 +25,8 @@
 	<div class="span9 action-description">
 		<h3>Empty Index</h3>
 		<p>
-		This will simply empty the site's index. When doing so it will take care of only deleting the currently selected site's documents even if
+		This will simply empty the site's index. When doing so it will take care of
+		only deleting the currently selected site's documents even if
 		you index multiple sites into one index.
 		</p>
 	</div>
@@ -39,9 +41,11 @@
 	<div class="span9 action-description">
 		<h3>Reload Core Configurations</h3>
 		<p>
-		A core in Solr is what holds your index. When changing core/index configuration such as synonyms, stop words, or protected words you
-		need to reload the core to make the changes become affective. To reload configuration you can either restart the whole Solr server or
-		simply reload a specific core. Here you can reload the site's cores/indexes.
+		A core in Solr is what holds your index. When changing core/index configuration
+		such as synonyms, stop words, or protected words you need to reload the core
+		to make the changes become active. To reload configuration you can either restart
+		the whole Solr server or simply reload a specific core.
+		Here you can reload the site's cores/indexes.
 		</p>
 	</div>
 </div>
