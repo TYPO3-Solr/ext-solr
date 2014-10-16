@@ -93,9 +93,18 @@ class IndexQueueModuleController extends AbstractModuleController {
 			);
 		}
 
+		$messagesForConfigurations = array();
+		foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
+			$itemCount = $itemIndexQueue->getItemsCountBySite($this->site, $indexingConfigurationName);
+			if (!is_int($itemCount)) {
+				$itemCount = 0;
+			}
+			$messagesForConfigurations[] = $indexingConfigurationName . ' (' . $itemCount . ' records)';
+		}
+
 		if (!empty($initializedIndexingConfigurations)) {
 			$this->addFlashMessage(
-				'Initialized indexing configurations: ' . implode(', ', array_keys($initializedIndexingConfigurations)),
+				'Initialized indexing configurations: ' . implode(', ', $messagesForConfigurations),
 				'Index Queue initialized',
 				FlashMessage::OK
 			);
