@@ -40,7 +40,7 @@
 require_once(dirname(__FILE__) . '/Abstract.php');
 
 /**
- * HTTP Transport implemenation that uses the builtin http URL wrappers and file_get_contents
+ * HTTP Transport implementation that uses the builtin http URL wrappers and file_get_contents
  */
 class Apache_Solr_HttpTransport_FileGetContents extends Apache_Solr_HttpTransport_Abstract
 {
