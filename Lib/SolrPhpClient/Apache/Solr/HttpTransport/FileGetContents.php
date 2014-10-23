@@ -194,7 +194,8 @@ class Apache_Solr_HttpTransport_FileGetContents extends Apache_Solr_HttpTranspor
 		return $this->_getResponseFromParts($responseBody, $http_response_header);
 	}
 
-	public function performDeleteRequest($url, $timeout = false) {
+	public function performDeleteRequest($url, $timeout = false)
+	{
 		stream_context_set_option($this->_deleteContext, array(
 			'http' => array(
 				// set HTTP method
