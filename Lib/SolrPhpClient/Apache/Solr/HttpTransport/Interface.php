@@ -75,7 +75,7 @@ interface Apache_Solr_HttpTransport_Interface
 	 * contents, use getLastResponseHeaders to retrieve HTTP headers
 	 *
 	 * @param string $url
-	 * @param float $timeout
+	 * @param float|boolean $timeout
 	 * @return Apache_Solr_HttpTransport_Response HTTP response
 	 */
 	public function performGetRequest($url, $timeout = false);
@@ -85,7 +85,7 @@ interface Apache_Solr_HttpTransport_Interface
 	 * headers - NOTE: head requests have no response body
 	 *
 	 * @param string $url
-	 * @param float $timeout
+	 * @param float|boolean $timeout
 	 * @return Apache_Solr_HttpTransport_Response HTTP response
 	 */
 	public function performHeadRequest($url, $timeout = false);
@@ -97,7 +97,7 @@ interface Apache_Solr_HttpTransport_Interface
 	 * @param string $url
 	 * @param string $rawPost
 	 * @param string $contentType
-	 * @param float $timeout
+	 * @param float|boolean $timeout
 	 * @return Apache_Solr_HttpTransport_Response HTTP response
 	 */
 	public function performPostRequest($url, $rawPost, $contentType, $timeout = false);
@@ -107,7 +107,7 @@ interface Apache_Solr_HttpTransport_Interface
 	 * contents, use getLastResponseHeaders to retrieve HTTP headers
 	 *
 	 * @param string $url
-	 * @param boolean|float $timeout
+	 * @param float|boolean $timeout
 	 * @return Apache_Solr_HttpTransport_Response HTTP response
 	 */
 	public function performDeleteRequest($url, $timeout = false);
