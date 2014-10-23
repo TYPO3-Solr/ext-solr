@@ -103,6 +103,18 @@ interface Apache_Solr_HttpTransport_Interface
 	public function performPostRequest($url, $rawPost, $contentType, $timeout = false);
 
 	/**
+	 * Perform a PUT HTTP operation with an optional timeout and return the response
+	 * contents, use getLastResponseHeaders to retrieve HTTP headers
+	 *
+	 * @param string $url
+	 * @param string $rawPut
+	 * @param string $contentType
+	 * @param float|boolean $timeout
+	 * @return Apache_Solr_HttpTransport_Response HTTP response
+	 */
+	public function performPutRequest($url, $rawPut, $contentType, $timeout = false);
+
+	/**
 	 * Perform a DELETE HTTP operation with an optional timeout and return the response
 	 * contents, use getLastResponseHeaders to retrieve HTTP headers
 	 *
