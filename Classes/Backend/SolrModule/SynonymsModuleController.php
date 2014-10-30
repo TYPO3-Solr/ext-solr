@@ -91,6 +91,7 @@ class SynonymsModuleController extends AbstractModuleController {
 				$baseWord,
 				GeneralUtility::trimExplode(',', $synonyms, TRUE)
 			);
+			$solrConnection->reloadCore();
 
 			$this->addFlashMessage(
 				'"' . $synonyms . '" added as synonyms for base word "' . $baseWord . '"'
@@ -107,9 +108,12 @@ class SynonymsModuleController extends AbstractModuleController {
 	 */
 	public function deleteSynonymsAction($baseWord) {
 		$solrConnection = $this->getSelectedCoreSolrConnection();
-		$response = $solrConnection->deleteSynonym($baseWord);
+		$deleteResponse = $solrConnection->deleteSynonym($baseWord);
+		$reloadResponse = $solrConnection->reloadCore();
 
-		if ($response->getHttpStatus() == 200) {
+		if ($deleteResponse->getHttpStatus() == 200
+			&& $reloadResponse->getHttpStatus() == 200
+		) {
 			$this->addFlashMessage(
 				'Synonym removed.'
 			);
