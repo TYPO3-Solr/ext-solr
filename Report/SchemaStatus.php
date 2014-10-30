@@ -66,21 +66,21 @@ class Tx_Solr_Report_SchemaStatus implements tx_reports_StatusProvider {
 					from the one provided with the extension was detected.</p>
 					<p style="margin-bottom: 10px;">It is recommended to use the
 					schema.xml file shipping with the Apache Solr for TYPO3
-					extension as it provides an optimized field setup for the
-					use of Solr with TYPO3. A difference can occur when you
+					extension as it provides an optimized field setup for
+					using Solr with TYPO3. A difference can occur when you
 					update the TYPO3 extension, but forget to update the
 					schema.xml file on the Solr server. The schema sometimes
 					changes to accommodate changes or new features in Apache
 					Solr. Also make sure to restart the Tomcat server after
 					updating the schema.xml file.</p>
 					<p style="margin-bottom: 10px;">Your Solr server is
-					currently using a schema named <strong>'
+					currently using schema version <strong>'
 					. $solrConnection->getSchemaName() . '</strong>, the
-					recommended schema is called <strong>'
+					recommended schema version is <strong>'
 					. self::RECOMMENDED_SCHEMA_VERSION . '</strong>. You can
 					find the recommended schema.xml file in the extension\'s
 					resources folder: EXT:solr/Resources/Solr/. While
-					you\'re at it, please check whether you\'re using the
+					you\'re at it, please make sure you\'re using the
 					current solrconfig.xml file, too.</p>';
 
 				$message .= '<p>Affected Solr server:</p>
