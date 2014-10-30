@@ -52,7 +52,6 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="turkish"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="turkish"/>
 			<filter class="solr.TurkishLowerCaseFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="Turkish" protected="turkish/protwords.txt"/>
@@ -70,6 +69,7 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="turkish"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="turkish"/>
 			<filter class="solr.TurkishLowerCaseFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="Turkish" protected="turkish/protwords.txt"/>
@@ -106,7 +106,6 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.TurkishLowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="turkish"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="turkish"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -115,6 +114,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.TurkishLowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="turkish"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="turkish"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

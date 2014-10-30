@@ -52,7 +52,6 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="arabic"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
@@ -71,6 +70,7 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="arabic"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
@@ -110,7 +110,6 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="arabic"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -121,6 +120,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="arabic"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="arabic"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

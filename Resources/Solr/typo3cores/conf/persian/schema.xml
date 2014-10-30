@@ -52,7 +52,6 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.PersianNormalizationFilterFactory" protected="persian/protwords.txt"/>
@@ -72,6 +71,7 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.PersianNormalizationFilterFactory" protected="persian/protwords.txt"/>
@@ -112,7 +112,6 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -123,6 +122,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
