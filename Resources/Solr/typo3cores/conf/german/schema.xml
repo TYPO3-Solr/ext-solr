@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-3-0-0--20140519" version="1.5" >
+<schema name="tx_solr-3-1-0--20141030" version="1.5" >
 	<!-- attribute "name" is the name of this schema and is only used for display purposes.
 		Applications should change this to reflect the nature of the search collection.
 		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
@@ -54,7 +54,6 @@
 			/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="german"/>
 			<filter class="solr.DictionaryCompoundWordTokenFilterFactory"
 				dictionary="german/german-common-nouns.txt"
 				minWordSize="5"
@@ -62,7 +61,6 @@
 				maxSubwordSize="15"
 				onlyLongestMatch="false"
 			/>
-
 			<filter class="solr.ManagedStopFilterFactory" managed="german"/>
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
@@ -81,6 +79,7 @@
 				preserveOriginal="1"
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="german"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="german"/>
 			<filter class="solr.GermanNormalizationFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="German2" protected="german/protwords.txt"/>
@@ -126,7 +125,6 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="german"/>
 			<filter class="solr.DictionaryCompoundWordTokenFilterFactory"
 				dictionary="german/german-common-nouns.txt"
 				minWordSize="5"
@@ -143,6 +141,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="german"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="german"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-3-0-0--20140519" version="1.5" >
+<schema name="tx_solr-3-1-0--20141030" version="1.5" >
 	<!-- attribute "name" is the name of this schema and is only used for display purposes.
 		Applications should change this to reflect the nature of the search collection.
 		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
@@ -52,7 +52,6 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="greek"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="greek"/>
 			<filter class="solr.GreekLowerCaseFilterFactory"/>
 			<filter class="solr.GreekStemFilterFactory" protected="greek/protwords.txt"/>
@@ -70,6 +69,7 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="greek"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="greek"/>
 			<filter class="solr.GreekLowerCaseFilterFactory"/>
 			<filter class="solr.GreekStemFilterFactory" protected="greek/protwords.txt"/>
@@ -106,7 +106,6 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.GreekLowerCaseFilterFactory"/>
-			<filter class="solr.ManagedSynonymFilterFactory" managed="greek"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="greek"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
@@ -115,6 +114,7 @@
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.GreekLowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="greek"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="greek"/>
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>

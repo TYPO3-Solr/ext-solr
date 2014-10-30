@@ -35,6 +35,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	const LUKE_SERVLET = 'admin/luke';
 	const SYSTEM_SERVLET = 'admin/system';
 	const PLUGINS_SERVLET = 'admin/plugins';
+	const CORES_SERVLET = 'admin/cores';
 	const SCHEMA_SERVLET = 'schema';
 	const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
 
@@ -61,6 +62,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * @var string
 	 */
 	protected $_pluginsUrl;
+
+	protected $_coresUrl;
 
 	protected $_extractUrl;
 
@@ -128,6 +131,14 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			self::PLUGINS_SERVLET,
 			array('wt' => self::SOLR_WRITER)
 		);
+
+		$pathElements = explode('/', trim($this->_path, '/'));
+		$this->_coresUrl =
+			$this->_scheme . '://' .
+			$this->_host . ':' .
+			$this->_port . '/' .
+			$pathElements[0] . '/' .
+			self::CORES_SERVLET;
 
 		$this->_schemaUrl = $this->_constructUrl(self::SCHEMA_SERVLET);
 
@@ -717,6 +728,18 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		}
 
 		return $this->_sendRawDelete($this->_synonymsUrl . '/' . $baseWord);
+	}
+
+	/**
+	 * Reloads the current core
+	 *
+	 * @return Apache_Solr_Response
+	 */
+	public function reloadCore() {
+		$coreName = array_pop(explode('/', trim($this->_path, '/')));
+		$coreAdminReloadUrl = $this->_coresUrl . '?action=reload&core=' . $coreName;
+
+		return $this->_sendRawGet($coreAdminReloadUrl);
 	}
 }
 
