@@ -54,7 +54,8 @@
 			/>
 			<filter class="solr.ManagedStopFilterFactory" managed="greek"/>
 			<filter class="solr.GreekLowerCaseFilterFactory"/>
-			<filter class="solr.GreekStemFilterFactory" protected="greek/protwords.txt"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="greek/protwords.txt"/>
+			<filter class="solr.GreekStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -72,7 +73,8 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="greek"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="greek"/>
 			<filter class="solr.GreekLowerCaseFilterFactory"/>
-			<filter class="solr.GreekStemFilterFactory" protected="greek/protwords.txt"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="greek/protwords.txt"/>
+			<filter class="solr.GreekStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -95,7 +97,8 @@
 				preserveOriginal="1"
 			/>
 			<filter class="solr.GreekLowerCaseFilterFactory"/>
-			<filter class="solr.GreekStemFilterFactory" protected="greek/protwords.txt"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="greek/protwords.txt"/>
+			<filter class="solr.GreekStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
