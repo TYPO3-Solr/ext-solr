@@ -55,9 +55,9 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="bulgarian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.BulgarianStemFilterFactory" protected="bulgarian/protwords.txt"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -73,9 +73,9 @@
 			/>
 			<filter class="solr.ManagedStopFilterFactory" managed="bulgarian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.BulgarianStemFilterFactory" protected="bulgarian/protwords.txt"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 
@@ -97,9 +97,9 @@
 				preserveOriginal="1"
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.BulgarianStemFilterFactory" protected="bulgarian/protwords.txt"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="bulgarian/protwords.txt"/>
 			<filter class="solr.BulgarianStemFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 

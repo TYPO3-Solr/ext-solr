@@ -55,9 +55,9 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="indonesian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="indonesian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true" protected="indonesian/protwords.txt"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="indonesian/protwords.txt"/>
+			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
-			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true" />
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -73,9 +73,9 @@
 			/>
 			<filter class="solr.ManagedStopFilterFactory" managed="indonesian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true" protected="indonesian/protwords.txt"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="indonesian/protwords.txt"/>
+			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
-			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true" />
 		</analyzer>
 	</fieldType>
 
@@ -97,9 +97,9 @@
 				preserveOriginal="1"
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true" protected="indonesian/protwords.txt"/>
+			<filter class="solr.KeywordMarkerFilterFactory" protected="indonesian/protwords.txt"/>
+			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
-			<filter class="solr.IndonesianStemFilterFactory" stemDerivational="true" />
 		</analyzer>
 	</fieldType>
 

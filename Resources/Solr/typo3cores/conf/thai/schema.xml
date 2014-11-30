@@ -47,7 +47,8 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="thai"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.PorterStemFilterFactory" protected="thai/protwords.txt" />
+			<filter class="solr.KeywordMarkerFilterFactory" protected="thai/protwords.txt"/>
+			<filter class="solr.PorterStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
@@ -56,7 +57,8 @@
 			<filter class="solr.ThaiWordFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.PorterStemFilterFactory" protected="thai/protwords.txt" />
+			<filter class="solr.KeywordMarkerFilterFactory" protected="thai/protwords.txt"/>
+			<filter class="solr.PorterStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
@@ -72,7 +74,8 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="thai"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.PorterStemFilterFactory" protected="thai/protwords.txt" />
+			<filter class="solr.KeywordMarkerFilterFactory" protected="thai/protwords.txt"/>
+			<filter class="solr.PorterStemFilterFactory"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
