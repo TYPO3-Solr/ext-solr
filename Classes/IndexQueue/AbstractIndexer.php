@@ -66,7 +66,9 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 					$document->addField($solrFieldName, $multiValue);
 				}
 			} else {
-				$document->setField($solrFieldName, $fieldValue);
+				if ($fieldValue !== '' && $fieldValue !== NULL) {
+					$document->setField($solrFieldName, $fieldValue);
+				}
 			}
 		}
 

@@ -56,7 +56,9 @@ class Tx_Solr_IndexQueue_frontendhelper_PageFieldMappingIndexer implements Tx_So
 			}
 
 				// add new field / overwrite field if it was set before
-			$substitutePageDocument->setField($fieldName, $fieldValue);
+			if ($fieldValue !== '' && $fieldValue !== NULL) {
+				$substitutePageDocument->setField($fieldName, $fieldValue);
+			}
 		}
 
 		return $substitutePageDocument;
