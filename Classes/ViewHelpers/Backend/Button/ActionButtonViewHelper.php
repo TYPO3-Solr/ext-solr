@@ -87,9 +87,11 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 			'TYPO3\\CMS\\Fluid\\Core\\Parser\\SyntaxTree\\TextNode',
 			$actionUri
 		);
+
 		$form = $this->objectManager->get('TYPO3\\CMS\\Fluid\\ViewHelpers\\FormViewHelper');
 		$form->initialize();
 		$form->setRenderingContext($this->renderingContext);
+
 		$formNode = $this->objectManager->get(
 			'TYPO3\\CMS\\Fluid\\Core\\Parser\\SyntaxTree\\ViewHelperNode',
 			$form,
