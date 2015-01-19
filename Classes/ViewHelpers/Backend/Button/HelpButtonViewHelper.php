@@ -4,7 +4,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2013 Ingo Renner <ingo@typo3.org>
+*  (c) 2013-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,14 +25,14 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
 ***************************************************************/
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 
 /**
  * View helper to return a help button
  *
  */
-class HelpButtonViewHelper extends AbstractBackendViewHelper {
+class HelpButtonViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Render a help button wit the given title and content
