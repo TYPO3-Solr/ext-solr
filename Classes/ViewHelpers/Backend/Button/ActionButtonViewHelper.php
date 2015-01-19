@@ -38,12 +38,6 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 	protected $extensionKey = 'solr';
 	protected $backendModuleControllerName = 'Administration';
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-	 * @inject
-	 */
-	protected $objectManager;
-
 
 	/**
 	 * Renders the ViewHelper
