@@ -164,7 +164,7 @@ abstract class AbstractModuleController extends ActionController implements Admi
 	protected function forwardToIndex() {
 		$requestArguments = $this->request->getArguments();
 
-		foreach ($requestArguments as $argumentName => $argumentValue) {
+		foreach ($requestArguments as $argumentName => $_) {
 			if (!in_array($argumentName, array('module', 'controller', 'site'))) {
 				unset($requestArguments[$argumentName]);
 				unset($_GET['tx_solr_tools_solradministration'][$argumentName]);
