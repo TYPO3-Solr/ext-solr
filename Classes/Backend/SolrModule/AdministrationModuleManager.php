@@ -113,7 +113,7 @@ class AdministrationModuleManager {
 
 		if (!($module instanceof AdministrationModuleInterface)) {
 			throw new \RuntimeException(
-				'Class ' . self::$modules[$moduleName] . ' must implement interface \ApacheSolrForTypo3\Solr\Backend\Module\ModuleInterface',
+				'Class ' . self::$modules[$moduleName] . ' must implement interface \ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleInterface',
 				1360373784
 			);
 		}
