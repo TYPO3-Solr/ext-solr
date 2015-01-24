@@ -228,8 +228,10 @@ class Tx_Solr_Query {
 	 */
 	protected function escapeSpecialCharacters($value) {
 			// list taken from http://lucene.apache.org/core/4_4_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
-			// not escaping *, &&, ||, ?, -, !, + though
-		$pattern = '/(\(|\)|\{|}|\[|]|\^|"|~|:|\\\)/';
+			// which mentions: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /
+			// of which we escape: ( ) { } [ ] ^ " ~ : \ /
+			// and explicitly don't escape: + - && || ! * ?
+		$pattern = '/(\\(|\\)|\\{|\\}|\\[|\\]|\\^|"|~|\:|\\\\|\\/)/';
 		$replace = '\\\$1';
 
 		return preg_replace($pattern, $replace, $value);
