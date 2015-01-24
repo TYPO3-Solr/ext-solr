@@ -90,6 +90,17 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	}
 
 	/**
+	 * Sets the Solr connection used by this search.
+	 *
+	 * Since Tx_Solr_Search is a t3lib_Singleton, this is needed to
+	 * be able to switch between multiple cores/connections during
+	 * one request
+	 */
+	public function setSolrConnection(Tx_Solr_SolrService $solrConnection) {
+		$this->solr = $solrConnection;
+	}
+
+	/**
 	 * Executes a query against a Solr server.
 	 *
 	 * 1) Gets the query string
