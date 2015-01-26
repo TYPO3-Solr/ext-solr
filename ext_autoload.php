@@ -30,6 +30,7 @@ return array(
 	'tx_solr_commandresolver' => $extensionPath . 'Classes/CommandResolver.php',
 	'tx_solr_connectionmanager' => $extensionPath . 'Classes/ConnectionManager.php',
 	'tx_solr_contextmenuactioncontroller' => $extensionPath . 'Classes/ContextMenuActionController.php',
+	'tx_solr_databaseutility' => $extensionPath . 'Classes/DatabaseUtility.php',
 	'tx_solr_garbagecollector' => $extensionPath . 'Classes/GarbageCollector.php',
 	'tx_solr_htmlcontentextractor' => $extensionPath . 'Classes/HtmlContentExtractor.php',
 	'tx_solr_javascriptmanager' => $extensionPath . 'Classes/JavascriptManager.php',
