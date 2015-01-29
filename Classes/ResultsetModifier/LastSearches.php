@@ -47,6 +47,11 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 		$this->configuration = $resultCommand->getParentPlugin()->getConfiguration();
 		$keywords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
 
+		$keywords = trim($keywords);
+		if(empty($keywords)) {
+			return $resultSet;
+		}
+
 		switch ($this->configuration['search.']['lastSearches.']['mode']) {
 			case 'user':
 				$this->storeKeywordsToSession($keywords);
