@@ -565,7 +565,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 
 		$schema = $this->getSchema();
 
-		if (!is_null($schema) && isset($schema->fieldTypes)) {
+		if (is_object($schema) && isset($schema->fieldTypes)) {
 			foreach ($schema->fieldTypes as $fieldType) {
 				if ($fieldType->name === 'text') {
 					foreach ($fieldType->indexAnalyzer->filters as $filter) {
