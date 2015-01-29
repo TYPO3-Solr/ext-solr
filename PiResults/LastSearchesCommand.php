@@ -69,8 +69,13 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 			return NULL;
 		}
 
+		$lastSearches = $this->getLastSearches();
+		if(empty($lastSearches)) {
+			return NULL;
+		}
+		
 		$marker = array(
-			'loop_lastsearches|lastsearch' => $this->getLastSearches()
+			'loop_lastsearches|lastsearch' => $lastSearches
 		);
 
 		return $marker;
