@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# tomcat
+#
+# chkconfig: 2345 95 05
+# description: 	Start up the Tomcat servlet engine.
+
 ### BEGIN INIT INFO
 # Provides:     tomcat6
 # Required-Start:    $remote_fs $syslog
@@ -10,6 +16,8 @@
 # processname: tomcat
 ### END INIT INFO
 
+RETVAL=$?
+CATALINA_HOME="/opt/solr-tomcat/tomcat"
 
 setJdk() {
     JDK_DIRS="/usr/lib/jvm/java-7-openjdk /usr/lib/jvm/java-7-openjdk-i386 /usr/lib/jvm/java-7-openjdk-amd64"
@@ -35,42 +43,41 @@ elif [ -z "$JAVA_HOME" ]; then
     setJdk
 fi
 
-
-#JAVA_OPTS="$JAVA_OPTS -Dsolr.solr.home=/opt/solr-tomcat/solr"
 export JAVA_HOME
-#export JAVA_OPTS
-
-TOMCAT_HOME=/opt/solr-tomcat/tomcat/bin
-START_TOMCAT=/opt/solr-tomcat/tomcat/bin/startup.sh
-STOP_TOMCAT=/opt/solr-tomcat/tomcat/bin/shutdown.sh
 
 start() {
-echo -n "Starting tomcat: "
-cd $TOMCAT_HOME
-${START_TOMCAT}
-echo "done."
+  if [ -f $CATALINA_HOME/bin/startup.sh ];
+    then
+      echo $"Starting Tomcat"
+      /bin/su tomcat $CATALINA_HOME/bin/startup.sh
+      echo "done."
+  fi
 }
 
 stop() {
-echo -n "Shutting down tomcat: "
-cd $TOMCAT_HOME
-${STOP_TOMCAT}
-echo "done."
+  if [ -f $CATALINA_HOME/bin/shutdown.sh ];
+    then
+      echo $"Stopping Tomcat"
+      /bin/su tomcat $CATALINA_HOME/bin/shutdown.sh
+      echo "done."
+  fi
 }
 
 case "$1" in
-start)
-start
-;;
-stop)
-stop
-;;
-restart)
-stop
-sleep 10
-start
-;;
-*)
-echo "Usage: $0 {start|stop|restart}"
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    sleep 10
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
 esac
-exit 0
+
+exit $RETVAL
