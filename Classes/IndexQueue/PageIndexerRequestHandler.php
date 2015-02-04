@@ -88,6 +88,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements t3lib_Singleton {
 					'index queue header'   => $_SERVER['HTTP_X_TX_SOLR_IQ']
 				)
 			);
+			http_response_code(403);
 			die('Invalid Index Queue Request!');
 		}
 
