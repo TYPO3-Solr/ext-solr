@@ -120,12 +120,14 @@ class Tx_Solr_ContentObject_Relation {
 		$localTableTca  = $GLOBALS['TCA'][$localTableName];
 
 		$localFieldName = $this->configuration['localField'];
-		$localFieldTca  = $localTableTca['columns'][$localFieldName];
 
-		if (isset($localFieldTca['config']['MM']) && trim($localFieldTca['config']['MM']) !== '') {
-			$relatedItems = $this->getRelatedItemsFromMMTable($localTableName, $localRecordUid, $localFieldTca);
-		} else {
-			$relatedItems = $this->getRelatedItemsFromForeignTable($localFieldName, $localRecordUid, $localFieldTca, $parentContentObject);
+		if (isset($localTableTca['columns'][$localFieldName])) {
+			$localFieldTca  = $localTableTca['columns'][$localFieldName];
+			if (isset($localFieldTca['config']['MM']) && trim($localFieldTca['config']['MM']) !== '') {
+				$relatedItems = $this->getRelatedItemsFromMMTable($localTableName, $localRecordUid, $localFieldTca);
+			} else {
+				$relatedItems = $this->getRelatedItemsFromForeignTable($localFieldName, $localRecordUid, $localFieldTca, $parentContentObject);
+			}
 		}
 
 		return $relatedItems;
@@ -145,6 +147,7 @@ class Tx_Solr_ContentObject_Relation {
 
 		$foreignTableName = $localFieldTca['config']['foreign_table'];
 		t3lib_div::loadTCA($foreignTableName);
+
 		$foreignTableTca  = $GLOBALS['TCA'][$foreignTableName];
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
