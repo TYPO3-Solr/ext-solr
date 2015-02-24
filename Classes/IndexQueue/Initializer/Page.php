@@ -132,6 +132,12 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 				);
 			}
 
+			// This can happen when the mount point does not show the content of the
+			// mounted page and the mounted page does not have any subpages.
+			if (empty($mountedPages)) {
+				continue;
+			}
+
 			Tx_Solr_DatabaseUtility::transactionStart();
 			try {
 				$this->addMountedPagesToIndexQueue($mountedPages);
