@@ -33,7 +33,7 @@
 		}
 	],
 	"require": {
-		"php": ">5.3.0,~5.5.0"
+		"php": ">5.3.0,~5.6.0"
 	},
 	"require-dev": {
 		"typo3-ci/typo3cms": "dev-master"
