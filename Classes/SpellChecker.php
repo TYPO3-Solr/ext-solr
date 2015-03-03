@@ -136,7 +136,7 @@ class Tx_Solr_SpellChecker {
 
 			$suggestions = $this->getSuggestions();
 			if($suggestions && !$suggestions['correctlySpelled'] && !empty($suggestions['collation'])) {
-				$suggestionsLink = tslib_cObj::noTrimWrap(
+				$suggestionsLink = $GLOBALS['TSFE']->cObj->noTrimWrap(
 					$this->getSuggestionQueryLink(),
 					$this->configuration['search.']['spellchecking.']['wrap']
 				);

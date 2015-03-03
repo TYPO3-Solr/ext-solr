@@ -79,7 +79,7 @@ class Tx_Solr_Facet_SimpleFacetRenderer extends Tx_Solr_Facet_AbstractFacetRende
 
 		if ($facet['count'] > $this->solrConfiguration['search.']['faceting.']['limit']) {
 			$showAllLink = '<a href="#" class="tx-solr-facet-show-all">###LLL:faceting_showMore###</a>';
-			$showAllLink = tslib_cObj::wrap($showAllLink, $this->solrConfiguration['search.']['faceting.']['showAllLink.']['wrap']);
+			$showAllLink = $GLOBALS['TSFE']->cObj->wrap($showAllLink, $this->solrConfiguration['search.']['faceting.']['showAllLink.']['wrap']);
 			$facet['show_all_link'] = $showAllLink;
 		}
 
