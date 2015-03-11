@@ -568,7 +568,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		if (is_object($schema) && isset($schema->fieldTypes)) {
 			foreach ($schema->fieldTypes as $fieldType) {
 				if ($fieldType->name === 'text') {
-					foreach ($fieldType->indexAnalyzer->filters as $filter) {
+					foreach ($fieldType->queryAnalyzer->filters as $filter) {
 						if ($filter->class === 'solr.ManagedSynonymFilterFactory') {
 							$language = $filter->managed;
 						}
