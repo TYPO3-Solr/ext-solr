@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 
 /**
  * Index Queue Module
@@ -67,7 +67,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 	 * @return void
 	 */
 	public function initializeIndexQueueAction() {
-		$initializedIndexingConfigurations = array();
+		$initializedIndexingConfigurations = [];
 
 		$itemIndexQueue                     = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 		$indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
@@ -93,7 +93,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 			);
 		}
 
-		$messagesForConfigurations = array();
+		$messagesForConfigurations = [];
 		foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
 			$itemCount = $itemIndexQueue->getItemsCountBySite($this->site, $indexingConfigurationName);
 			if (!is_int($itemCount)) {
@@ -109,6 +109,32 @@ class IndexQueueModuleController extends AbstractModuleController {
 				FlashMessage::OK
 			);
 		}
+
+		$this->forward('index');
+	}
+
+	/**
+	 * Removes all errors in the index queue list. So that the items can be indexed again.
+	 *
+	 * @return void
+	 */
+	public function flushLogErrorsAction() {
+		/** @var DatabaseConnection $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		$flushResult = $database->exec_UPDATEquery('tx_solr_indexqueue_item', 'errors NOT LIKE ""', ['errors' => '']);
+
+		$message = 'All errors has been flushed';
+		$severity = FlashMessage::OK;
+		if (!$flushResult) {
+			$message = 'An error occured while removing the error log in the index queue.';
+			$severity = FlashMessage::ERROR;
+		}
+
+		$this->addFlashMessage(
+			$message,
+			'Index Queue errors',
+			$severity
+		);
 
 		$this->forward('index');
 	}
@@ -142,7 +168,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 			'pending, erroneous'
 		);
 
-		$stats = array();
+		$stats = [];
 		foreach($indexQueueStats as $row) {
 			if($row['erroneous'] == 1) {
 				$stats['erroneous'] = $row['count'];

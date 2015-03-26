@@ -65,6 +65,11 @@
 				</tr>
 			</f:for>
 		</table>
+
+		<f:if condition="{indexqueue_errors}">
+			<a href="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'flushLogErrors'} )}"
+				class="btn btn-default" >Flush errors</a>
+		</f:if>
 	</div>
 
 	<div class="span4 well stats_container">

@@ -118,7 +118,7 @@ if (TYPO3_MODE == 'BE') {
 		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
 			'ApacheSolrForTypo3.' . $_EXTKEY,
 			'IndexQueue',
-			array('index,initializeIndexQueue')
+			array('index,initializeIndexQueue,flushLogErrors')
 		);
 
 		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
