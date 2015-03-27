@@ -79,6 +79,18 @@ t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IntroPa
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
+$iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
+\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
+	array(
+		'ModuleOverview' => $iconPath . 'Search.png',
+		'ModuleIndexQueue' => $iconPath . 'IndexQueue.png',
+		'ModuleIndexMaintenance' => $iconPath . 'IndexMaintenance.png',
+		'ModuleIndexFields' => $iconPath . 'IndexFields.png',
+		'ModuleSynonyms' => $iconPath . 'Synonyms.png'
+	),
+	$_EXTKEY
+);
+
 if (TYPO3_MODE == 'BE') {
 	if (version_compare(TYPO3_version, '6.0.0', '>=')) {
 		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
@@ -95,18 +107,6 @@ if (TYPO3_MODE == 'BE') {
 				'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/Icons/ModuleAdministration.png',
 				'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/ModuleAdministration.xlf',
 			)
-		);
-
-		$iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
-		\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
-			array(
-				'ModuleOverview' => $iconPath . 'Search.png',
-				'ModuleIndexQueue' => $iconPath . 'IndexQueue.png',
-				'ModuleIndexMaintenance' => $iconPath . 'IndexMaintenance.png',
-				'ModuleIndexFields' => $iconPath . 'IndexFields.png',
-				'ModuleSynonyms' => $iconPath . 'Synonyms.png'
-			),
-			$_EXTKEY
 		);
 
 		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
