@@ -8,25 +8,21 @@
 
 
 <div class="well">
-	The Index Queue manages content indexing. Content enters the Index
-	Queue by initialization below or when new content is created based on
-	configuration. Items in the Index Queue are indexed newest changes first
-	until all items in the queue have been indexed.
+	<f:translate key="solr.backend.index_queue_module.description" />
 </div>
 
 
 
-<h2>Index Queue Initialization</h2>
+<h2>
+	<f:translate key="solr.backend.index_queue_module.title" />
+</h2>
 
 <f:form name="editform" actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'initializeIndexQueue'} )}">
 
 	<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
 	<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" />
 	<solr:backend.button.HelpButton title="Index Queue Initialization">
-		Initializing the Index Queue is the most complete way to force
-		re-indexing, or to build the Index Queue for the first time. The Index
-		Queue Worker scheduler task will then index the items listed in the
-		Index Queue.
+		<f:translate key="solr.backend.index_queue_module.help" />
 	</solr:backend.button.HelpButton>
 
 </f:form>
@@ -41,13 +37,21 @@
 
 <div class="row-fluid">
 	<div class="span8 well">
-		<h2>Indexing Errors</h2>
+		<h2>
+			<f:translate key="solr.backend.index_queue_module.errors.headline" />
+		</h2>
 
 		<table class="table">
 			<tr>
-				<th>ID</th>
-				<th>Item Type</th>
-				<th>Item UID</th>
+				<th>
+					<f:translate key="solr.backend.index_queue_module.errors.id" />
+				</th>
+				<th>
+					<f:translate key="solr.backend.index_queue_module.errors.item_type" />
+				</th>
+				<th>
+					<f:translate key="solr.backend.index_queue_module.errors.item_uid" />
+				</th>
 				<th></th>
 			</tr>
 
@@ -60,7 +64,9 @@
 						<script type="text/plain">
 							{item.errors}
 						</script>
-						<a href="javascript:void(0);" class="show_error">Show error</a>
+						<a href="javascript:void(0);" class="show_error">
+							<f:translate key="solr.backend.index_queue_module.errors.show_button" />
+						</a>
 					</td>
 				</tr>
 			</f:for>
@@ -68,27 +74,34 @@
 
 		<f:if condition="{indexqueue_errors}">
 			<a href="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'flushLogErrors'} )}"
-				class="btn btn-default" >Flush errors</a>
+				class="btn btn-default" >
+				<f:translate key="solr.backend.index_queue_module.errors.flush_button" />
+			</a>
 		</f:if>
 	</div>
 
 	<div class="span4 well stats_container">
-		<h2>Index Queue Status</h2>
+		<h2>
+			<f:translate key="solr.backend.index_queue_module.status.headline" />
+		</h2>
 
 		<canvas id="indexqueue_stats_chart" width="100" height="100"></canvas>
 
 		<div style="clear: both;"></div>
 
 		<div class="legend">
-			<span class="color" style="background: #EB813F;"></span> Pending:
+			<span class="color" style="background: #EB813F;"></span>
+			<f:translate key="solr.backend.index_queue_module.status.pending" />
 			<span id="pending_numbers"></span>
 		</div>
 		<div class="legend">
-			<span class="color" style="background: #FF3D3D;"></span> Errors:
+			<span class="color" style="background: #FF3D3D;"></span>
+			<f:translate key="solr.backend.index_queue_module.status.errors" />
 			<span id="error_numbers"></span>
 		</div>
 		<div class="legend">
-			<span class="color" style="background: #9FC299;"></span> Indexed:
+			<span class="color" style="background: #9FC299;"></span>
+			<f:translate key="solr.backend.index_queue_module.status.indexed" />
 			<span id="indexed_numbers"></span>
 		</div>
 	</div>

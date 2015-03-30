@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-03-30T11:42:09Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+		<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">
+			<source>The Index Queue manages content indexing. Content enters the Index Queue by initialization below or when new content is created based on configuration. Items in the Index Queue are indexed newest changes first until all items in the queue have been indexed.</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.errors.flush_button" xml:space="preserve">
+			<source>Flush errors</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.errors.headline" xml:space="preserve">
+			<source>Indexing Errors</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.errors.id" xml:space="preserve">
+			<source>ID</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.errors.item_type" xml:space="preserve">
+			<source>Item Type</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.errors.item_uid" xml:space="preserve">
+			<source>Item UID</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.errors.show_button" xml:space="preserve">
+			<source>Show error</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.error.flush_errors" xml:space="preserve">
+			<source>An error occured while removing the error log in the index queue.</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.no_selection" xml:space="preserve">
+			<source>No indexing configurations selected.</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.success" xml:space="preserve">
+			<source>Initialized indexing configurations: %s</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.title" xml:space="preserve">
+			<source>Index Queue initialized</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.not_initialized.title" xml:space="preserve">
+			<source>Index Queue not initialized</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.success.flush_errors" xml:space="preserve">
+			<source>All errors have been reset.</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
+			<source>Index Queue</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.help" xml:space="preserve">
+			<source>Initializing the Index Queue is the most complete way to force re-indexing, or to build the Index Queue for the first time. The Index Queue Worker scheduler task will then index the items listed in the Index Queue.</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.status.errors" xml:space="preserve">
+			<source> Errors:</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.status.headline" xml:space="preserve">
+			<source>Index Queue Status</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.status.indexed" xml:space="preserve">
+			<source> Indexed:</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.status.pending" xml:space="preserve">
+			<source> Pending:</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.title" xml:space="preserve">
+			<source>Index Queue Initialization</source>
+		</trans-unit>
+		</body>
+	</file>
+</xliff>
