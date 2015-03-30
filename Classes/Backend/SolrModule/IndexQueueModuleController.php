@@ -67,7 +67,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 	 * @return void
 	 */
 	public function initializeIndexQueueAction() {
-		$initializedIndexingConfigurations = [];
+		$initializedIndexingConfigurations = array();
 
 		$itemIndexQueue                     = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 		$indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
@@ -93,7 +93,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 			);
 		}
 
-		$messagesForConfigurations = [];
+		$messagesForConfigurations = array();
 		foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
 			$itemCount = $itemIndexQueue->getItemsCountBySite($this->site, $indexingConfigurationName);
 			if (!is_int($itemCount)) {
@@ -121,7 +121,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 	public function flushLogErrorsAction() {
 		/** @var DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
-		$flushResult = $database->exec_UPDATEquery('tx_solr_indexqueue_item', 'errors NOT LIKE ""', ['errors' => '']);
+		$flushResult = $database->exec_UPDATEquery('tx_solr_indexqueue_item', 'errors NOT LIKE ""', array('errors' => ''));
 
 		$message = 'All errors has been flushed';
 		$severity = FlashMessage::OK;
@@ -168,7 +168,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 			'pending, erroneous'
 		);
 
-		$stats = [];
+		$stats = array();
 		foreach($indexQueueStats as $row) {
 			if($row['erroneous'] == 1) {
 				$stats['erroneous'] = $row['count'];
