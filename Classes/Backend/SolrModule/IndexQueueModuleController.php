@@ -26,7 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Index Queue Module
@@ -86,9 +87,11 @@ class IndexQueueModuleController extends AbstractModuleController {
 				);
 			}
 		} else {
+			$messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.no_selection';
+			$titleLabel = 'solr.backend.index_queue_module.flashmessage.not_initialized.title';
 			$this->addFlashMessage(
-				'No indexing configurations selected.',
-				'Index Queue not initialized',
+				LocalizationUtility::translate($messageLabel, 'Solr'),
+				LocalizationUtility::translate($titleLabel, 'Solr'),
 				FlashMessage::WARNING
 			);
 		}
@@ -103,12 +106,40 @@ class IndexQueueModuleController extends AbstractModuleController {
 		}
 
 		if (!empty($initializedIndexingConfigurations)) {
+			$messageLabel = 'solr.backend.index_queue_module.flashmessage.initialize.success';
+			$titleLabel = 'solr.backend.index_queue_module.flashmessage.initialize.title';
 			$this->addFlashMessage(
-				'Initialized indexing configurations: ' . implode(', ', $messagesForConfigurations),
-				'Index Queue initialized',
+				LocalizationUtility::translate($messageLabel, 'Solr', array(implode(', ', $messagesForConfigurations))),
+				LocalizationUtility::translate($titleLabel, 'Solr'),
 				FlashMessage::OK
 			);
 		}
+
+		$this->forward('index');
+	}
+
+	/**
+	 * Removes all errors in the index queue list. So that the items can be indexed again.
+	 *
+	 * @return void
+	 */
+	public function flushLogErrorsAction() {
+		/** @var DatabaseConnection $database */
+		$database = $GLOBALS['TYPO3_DB'];
+		$flushResult = $database->exec_UPDATEquery('tx_solr_indexqueue_item', 'errors NOT LIKE ""', array('errors' => ''));
+
+		$label = 'solr.backend.index_queue_module.flashmessage.success.flush_errors';
+		$severity = FlashMessage::OK;
+		if (!$flushResult) {
+			$label = 'solr.backend.index_queue_module.flashmessage.error.flush_errors';
+			$severity = FlashMessage::ERROR;
+		}
+
+		$this->addFlashMessage(
+			LocalizationUtility::translate($label, 'Solr'),
+			LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'),
+			$severity
+		);
 
 		$this->forward('index');
 	}
