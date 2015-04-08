@@ -237,6 +237,8 @@ class Tx_Solr_ContentObject_Relation {
 			$parentContentObject->data                = $backupRecord;
 		}
 
+		$value = $parentContentObject->stdWrap($value, $this->configuration);
+
 		return $value;
 	}
 
