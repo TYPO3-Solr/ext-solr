@@ -69,27 +69,11 @@ class Tx_Solr_Typo3PageContentExtractor extends Tx_Solr_HtmlContentExtractor {
 	 * @return	string	HTML markup found between TYPO3SEARCH markers
 	 */
 	protected function extractContentMarkedForIndexing($html) {
-		$explodedContent  = preg_split('/\<\!\-\-[\s]?TYPO3SEARCH_/', $html);
-		$indexableContent = '';
+		preg_match_all('/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis', $html, $indexableContents);
+		$indexableContent = implode($indexableContents[0], '');
 
-		if(count($explodedContent) > 1) {
-
-			foreach($explodedContent as $explodedContentPart) {
-				$contentPart = explode('-->', $explodedContentPart, 2);
-
-				if (trim($contentPart[0]) == 'begin') {
-					$indexableContent .= $contentPart[1];
-					$previousExplodedContentPart = '';
-				} elseif (trim($contentPart[0]) == 'end') {
-					$indexableContent .= $previousExplodedContentPart;
-				} else {
-					$previousExplodedContentPart = $explodedContentPart;
-				}
-			}
-		} else {
-			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['missingTypo3SearchMarkers']) {
-				t3lib_div::devLog('No TYPO3SEARCH markers found.', 'solr', 2);
-			}
+		if(empty($indexableContent) && $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['missingTypo3SearchMarkers']) {
+			t3lib_div::devLog('No TYPO3SEARCH markers found.', 'solr', 2);
 		}
 
 		return $indexableContent;
