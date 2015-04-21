@@ -148,7 +148,16 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 		$terms = array();
 
 			// Use configuration as cache identifier
-		$identifier = 'frequentSearchesTags_' . md5(serialize($this->configuration['search.']['frequentSearches.']));
+		$identifier = 'frequentSearchesTags';
+
+		if ($this->configuration['search.']['frequentSearches.']['select.']['checkRootPageId']) {
+			$identifier.= '_RP' . (int)$GLOBALS['TSFE']->tmpl->rootLine[0]['uid'];
+		}
+		if ($this->configuration['search.']['frequentSearches.']['select.']['checkLanguage']) {
+			$identifier.= '_L' . (int)$GLOBALS['TSFE']->sys_language_uid;
+		}
+
+		$identifier.= '_' . md5(serialize($this->configuration['search.']['frequentSearches.']));
 
 		if ($this->cacheInstance->has($identifier)) {
 			$terms = $this->cacheInstance->get($identifier);
