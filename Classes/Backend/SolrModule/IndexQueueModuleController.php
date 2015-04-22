@@ -123,15 +123,19 @@ class IndexQueueModuleController extends AbstractModuleController {
 	 *
 	 * @return void
 	 */
-	public function flushLogErrorsAction() {
+	public function resetLogErrorsAction() {
 		/** @var DatabaseConnection $database */
 		$database = $GLOBALS['TYPO3_DB'];
-		$flushResult = $database->exec_UPDATEquery('tx_solr_indexqueue_item', 'errors NOT LIKE ""', array('errors' => ''));
+		$resetResult = $database->exec_UPDATEquery(
+			'tx_solr_indexqueue_item',
+			'errors NOT LIKE ""',
+			array('errors' => '')
+		);
 
-		$label = 'solr.backend.index_queue_module.flashmessage.success.flush_errors';
+		$label = 'solr.backend.index_queue_module.flashmessage.success.reset_errors';
 		$severity = FlashMessage::OK;
-		if (!$flushResult) {
-			$label = 'solr.backend.index_queue_module.flashmessage.error.flush_errors';
+		if (!$resetResult) {
+			$label = 'solr.backend.index_queue_module.flashmessage.error.reset_errors';
 			$severity = FlashMessage::ERROR;
 		}
 

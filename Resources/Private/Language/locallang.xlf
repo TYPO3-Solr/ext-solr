@@ -8,8 +8,8 @@
 		<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">
 			<source>The Index Queue manages content indexing. Content enters the Index Queue by initialization below or when new content is created based on configuration. Items in the Index Queue are indexed newest changes first until all items in the queue have been indexed.</source>
 		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.errors.flush_button" xml:space="preserve">
-			<source>Flush errors</source>
+		<trans-unit id="solr.backend.index_queue_module.errors.reset_button" xml:space="preserve">
+			<source>Reset errors</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.errors.headline" xml:space="preserve">
 			<source>Indexing Errors</source>
@@ -26,8 +26,8 @@
 		<trans-unit id="solr.backend.index_queue_module.errors.show_button" xml:space="preserve">
 			<source>Show error</source>
 		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.error.flush_errors" xml:space="preserve">
-			<source>An error occured while removing the error log in the index queue.</source>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.error.reset_errors" xml:space="preserve">
+			<source>An error occurred while resetting the error log in the index queue.</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.no_selection" xml:space="preserve">
 			<source>No indexing configurations selected.</source>
@@ -41,7 +41,7 @@
 		<trans-unit id="solr.backend.index_queue_module.flashmessage.not_initialized.title" xml:space="preserve">
 			<source>Index Queue not initialized</source>
 		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.success.flush_errors" xml:space="preserve">
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.success.reset_errors" xml:space="preserve">
 			<source>All errors have been reset.</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">

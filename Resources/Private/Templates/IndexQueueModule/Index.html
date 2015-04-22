@@ -73,9 +73,9 @@
 		</table>
 
 		<f:if condition="{indexqueue_errors}">
-			<a href="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'flushLogErrors'} )}"
+			<a href="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'resetLogErrors'} )}"
 				class="btn btn-default" >
-				<f:translate key="solr.backend.index_queue_module.errors.flush_button" />
+				<f:translate key="solr.backend.index_queue_module.errors.reset_button" />
 			</a>
 		</f:if>
 	</div>
