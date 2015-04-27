@@ -98,16 +98,11 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 			foreach ($configuration['_LOCAL_LANG.'] as $language => $overideLabels) {
 				$language = substr($language, 0, -1);
 
-				$languageCharset = $GLOBALS['TSFE']->csConvObj->charSetArray[$language];
-				if (!empty($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'])) {
-					$languageCharset = $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'];
-				}
-
 				if (is_array($overideLabels)) {
 					foreach ($overideLabels as $labelKey => $overideLabel) {
 						if (!is_array($overideLabel)) {
 							$this->localLang[$this->languageFile][$language][$labelKey] = array(array(
-								'source' => $GLOBALS['TSFE']->csConv($overideLabel, $languageCharset)
+								'source' => $overideLabel
 							));
 						}
 					}
