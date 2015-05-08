@@ -57,7 +57,7 @@ plugin.tx_solr {
 
 		}
 
-			// assigns processing instructions to Solr fields during indexing, Solr field = processing instruction
+		// assigns processing instructions to Solr fields during indexing, Solr field = processing instruction
 		fieldProcessingInstructions {
 			changed = timestampToIsoDate
 			created = timestampToIsoDate
@@ -73,7 +73,7 @@ plugin.tx_solr {
 			pages {
 				initialization = tx_solr_indexqueue_Initializer_Page
 
-					// allowed page types (doktype) when indexing records from table "pages"
+				// allowed page types (doktype) when indexing records from table "pages"
 				allowedPageTypes = 1,7
 
 				indexingPriority = 0
@@ -83,7 +83,7 @@ plugin.tx_solr {
 					// add options for the indexer here
 				}
 
-					// only index standard pages
+				// only index standard pages
 				additionalWhereClause = doktype = 1 AND no_search = 0
 
 				fields {
@@ -110,19 +110,19 @@ plugin.tx_solr {
 
 			allowedSites = __solr_current_site
 
-				// qf parameter http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
+			// qf parameter http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
 			queryFields = content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0
 
-				// fl parameter http://wiki.apache.org/solr/CommonQueryParameters#fl
+			// fl parameter http://wiki.apache.org/solr/CommonQueryParameters#fl
 			returnFields = *, score
 
-				// see http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
+			// see http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
 			minimumMatch =
 
-				// see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
+			// see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
 			boostFunction =
 
-				// see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
+			// see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
 			boostQuery =
 
 			filter {
@@ -158,7 +158,7 @@ plugin.tx_solr {
 				}
 			}
 
-			# fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)
+			// fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)
 			fieldProcessingInstructions {
 				changed = timestamp
 				created = timestamp
@@ -219,7 +219,7 @@ plugin.tx_solr {
 		lastSearches = 0
 		lastSearches {
 			limit = 10
-			# tracking mode "user" or "global"
+			// tracking mode "user" or "global"
 			mode = user
 		}
 
@@ -241,7 +241,7 @@ plugin.tx_solr {
 				checkLanguage = 1
 			}
 
-			# cache lifetime in seconds (default is 86400s = 24h)
+			// cache lifetime in seconds (default is 86400s = 24h)
 			cacheLifetime = 86400
 		}
 
@@ -297,7 +297,7 @@ plugin.tx_solr {
 				}
 			}
 
-				// available place holders: @facetValue, @facetName, @facetLabel, @facetText
+			// available place holders: @facetValue, @facetName, @facetLabel, @facetText
 			removeFacetLinkText = @facetLabel: @facetText
 
 			showAllLink.wrap = <li>|</li>
