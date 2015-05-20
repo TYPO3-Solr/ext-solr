@@ -9,12 +9,6 @@ $GLOBALS['PATHrel_solr'] = t3lib_extMgm::extRelPath('solr');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-if (version_compare(TYPO3_version, '6.1.0', '<')) {
-	t3lib_div::loadTCA('tt_content');
-}
-
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
 	// adding the search plugin
 t3lib_extMgm::addPlugin(
 	array(

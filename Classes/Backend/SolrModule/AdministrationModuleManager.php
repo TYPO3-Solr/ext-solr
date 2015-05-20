@@ -108,7 +108,7 @@ class AdministrationModuleManager {
 	public function getModule($moduleName) {
 		$this->validateModuleIsRegistered($moduleName);
 
-		$module = $this->objectManager->create($this->getModuleControllerClassName($moduleName));
+		$module = $this->objectManager->get($this->getModuleControllerClassName($moduleName));
 		$module->setExtensionKey(self::$modules[$moduleName]['extensionKey']);
 
 		if (!($module instanceof AdministrationModuleInterface)) {

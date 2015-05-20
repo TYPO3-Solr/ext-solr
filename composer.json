@@ -3,15 +3,10 @@
 	"description": "Apache Solr integration for TYPO3",
 	"minimum-stability": "alpha",
 	"license": "GPL-2.0+",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"type": "typo3-cms-extension",
 	"keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
 	"homepage": "http://www.typo3-solr.com",
-	"source": {
-		"type": "git",
-		"url": "git://git.typo3.org/TYPO3CMS/Extensions/solr.git",
-		"reference": "master"
-	},
 	"authors": [
 		{
 			"name": "Ingo Renner",
@@ -33,14 +28,35 @@
 		}
 	],
 	"require": {
-		"php": ">5.3.0,~5.6.0"
+		"php": ">=5.3.7,<5.7.0"
 	},
 	"require-dev": {
 		"typo3-ci/typo3cms": "dev-master"
 	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "3.1.x-dev"
+		}
+	},
 	"autoload": {
-		"psr-0": {
-			"ApacheSolrForTypo3": "Classes/"
+		"classmap": [
+			"Lib/",
+			"Classes/",
+			"CliApi/",
+			"Compat/",
+			"EidApi/",
+			"EidSuggest/",
+			"Interfaces/",
+			"ModAdmin/",
+			"ModIndex/",
+			"PiFrequentSearches/",
+			"PiResults/",
+			"PiSearch/",
+			"Report/",
+			"Scheduler/"
+		],
+		"psr-4": {
+			"ApacheSolrForTypo3\\Solr\\": "Classes/"
 		}
 	}
 }

@@ -160,11 +160,10 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 * @param array $configuration configuration array as provided by the TYPO3 core
 	 */
 	protected function initialize($configuration) {
-		$this->conf = $configuration;
-
-		$this->conf = t3lib_div::array_merge_recursive_overrule(
-			$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'],
-			$this->conf
+		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
+		\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+			$this->conf,
+			$configuration
 		);
 
 		$this->pi_setPiVarDefaults();
@@ -193,9 +192,11 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 				$this->conf['_DEFAULT_PI_VARS.'][$key] = $this->cObj->cObjGetSingle($this->conf['_DEFAULT_PI_VARS.'][$key], $this->conf['_DEFAULT_PI_VARS.'][$key . '.']);
 			}
 
-			$this->piVars = t3lib_div::array_merge_recursive_overrule(
-				$this->conf['_DEFAULT_PI_VARS.'],
-				is_array($this->piVars) ? $this->piVars : array()
+			$piVars = is_array($this->piVars) ? $this->piVars : array();
+			$this->piVars = $this->conf['_DEFAULT_PI_VARS.'];
+			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+				$this->piVars,
+				$piVars
 			);
 		}
 	}

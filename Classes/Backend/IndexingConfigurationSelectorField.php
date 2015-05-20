@@ -102,12 +102,15 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 	/**
 	 * Renders a field to select which indexing configurations to initialize.
 	 *
-	 * Uses TCEforms.
+	 * Uses \TYPO3\CMS\Backend\Form\FormEngine.
 	 *
 	 *  @return string Markup for the select field
 	 */
 	public function render() {
-		$tceForm = t3lib_div::makeInstance('t3lib_TCEforms');
+		$selectFieldRenderer = $formEngine = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
+		if (class_exists('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement')) {
+			$selectFieldRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement', $formEngine);
+		}
 
 			// transform selected values into the format used by TCEforms
 		$selectedValues = array();
@@ -124,7 +127,7 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 
 		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
 
-		$formField = $tceForm->getSingleField_typeSelect_checkbox(
+		$formField = $selectFieldRenderer->getSingleField_typeSelect_checkbox(
 			'', // table
 			'', // field
 			'', // row
