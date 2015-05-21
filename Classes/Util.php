@@ -32,6 +32,8 @@
  */
 class Tx_Solr_Util {
 
+	const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
+
 	/**
 	 * Generates a document id for documents representing page records.
 	 *
@@ -104,13 +106,23 @@ class Tx_Solr_Util {
 	}
 
 	/**
+	 * Converts a date from unix timestamp to ISO 8601 format in UTC timezone.
+	 *
+	 * @param	integer	$timestamp unix timestamp
+	 * @return	string	the date in ISO 8601 format
+	 */
+	public static function timestampToUtcIso($timestamp) {
+		return gmdate(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
+	}
+
+	/**
 	 * Converts a date from unix timestamp to ISO 8601 format.
 	 *
-	 * @param	integer	unix timestamp
+	 * @param	integer	$timestamp unix timestamp
 	 * @return	string	the date in ISO 8601 format
 	 */
 	public static function timestampToIso($timestamp) {
-		return date('Y-m-d\TH:i:s\Z', $timestamp);
+		return date(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
 	}
 
 	/**
@@ -120,23 +132,20 @@ class Tx_Solr_Util {
 	 * @return integer unix timestamp
 	 */
 	public static function isoToTimestamp($isoTime) {
-			// FIXME use DateTime::createFromFormat (PHP 5.3+)
-		$parsedTime = strptime($isoTime, '%Y-%m-%dT%H:%M:%SZ');
+		$dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT, $isoTime);
+		return $dateTime ? (int)$dateTime->format('U') : 0;
+	}
 
-		$timestamp = mktime(
-			$parsedTime['tm_hour'],
-			$parsedTime['tm_min'],
-			$parsedTime['tm_sec'],
-				// strptime returns the "Months since January (0-11)"
-				// while mktime expects the month to be a value
-				// between 1 and 12. Adding 1 to solve the problem
-			$parsedTime['tm_mon'] + 1,
-			$parsedTime['tm_mday'],
-				// strptime returns the "Years since 1900"
-			$parsedTime['tm_year'] + 1900
-		);
-
-		return $timestamp;
+	/**
+	 * Converts a date from ISO 8601 format in UTC timzone to unix timestamp.
+	 *
+	 * @param string $isoTime date in ISO 8601 format
+	 * @return integer unix timestamp
+	 */
+	public static function utcIsoToTimestamp($isoTime) {
+		$utcTimeZone = new \DateTimeZone('UTC');
+		$dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT, $isoTime, $utcTimeZone);
+		return $dateTime ? (int)$dateTime->format('U') : 0;
 	}
 
 	/**
