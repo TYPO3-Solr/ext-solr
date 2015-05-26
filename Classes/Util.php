@@ -33,6 +33,7 @@
 class Tx_Solr_Util {
 
 	const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
+	const SOLR_STRPTIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ';
 
 	/**
 	 * Generates a document id for documents representing page records.
@@ -132,8 +133,21 @@ class Tx_Solr_Util {
 	 * @return integer unix timestamp
 	 */
 	public static function isoToTimestamp($isoTime) {
-		$dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT, $isoTime);
-		return $dateTime ? (int)$dateTime->format('U') : 0;
+		// FIXME use DateTime::createFromFormat (PHP 5.3+)
+		$parsedTime = strptime($isoTime, self::SOLR_STRPTIME_FORMAT);
+		$timestamp = mktime(
+			$parsedTime['tm_hour'],
+			$parsedTime['tm_min'],
+			$parsedTime['tm_sec'],
+			// strptime returns the "Months since January (0-11)"
+			// while mktime expects the month to be a value
+			// between 1 and 12. Adding 1 to solve the problem
+			$parsedTime['tm_mon'] + 1,
+			$parsedTime['tm_mday'],
+			// strptime returns the "Years since 1900"
+			$parsedTime['tm_year'] + 1900
+		);
+		return $timestamp;
 	}
 
 	/**
@@ -143,9 +157,21 @@ class Tx_Solr_Util {
 	 * @return integer unix timestamp
 	 */
 	public static function utcIsoToTimestamp($isoTime) {
-		$utcTimeZone = new \DateTimeZone('UTC');
-		$dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT, $isoTime, $utcTimeZone);
-		return $dateTime ? (int)$dateTime->format('U') : 0;
+		// FIXME use DateTime::createFromFormat (PHP 5.3+)
+		$parsedTime = strptime($isoTime, self::SOLR_STRPTIME_FORMAT);
+		$timestamp = gmmktime(
+			$parsedTime['tm_hour'],
+			$parsedTime['tm_min'],
+			$parsedTime['tm_sec'],
+			// strptime returns the "Months since January (0-11)"
+			// while mktime expects the month to be a value
+			// between 1 and 12. Adding 1 to solve the problem
+			$parsedTime['tm_mon'] + 1,
+			$parsedTime['tm_mday'],
+			// strptime returns the "Years since 1900"
+			$parsedTime['tm_year'] + 1900
+		);
+		return $timestamp;
 	}
 
 	/**

@@ -51,3 +51,10 @@ class Tx_Solr_FieldProcessor_TimestampToUtcIsoDate implements Tx_Solr_FieldProce
 		return $results;
 	}
 }
+
+
+if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/FieldProcessor/TimestampToUtcIsoDate.php'])	{
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/FieldProcessor/TimestampToUtcIsoDate.php']);
+}
+
+?>
