@@ -108,9 +108,9 @@ wgetresource ()
 
 	if [ $BRANCH_TEST_RETURN -eq "0" ]
 	then
-  		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/Resources/"$1
+  		RESOURCE="https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/$GITBRANCH_PATH/Resources/"$1
 	else
-		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/master/raw/Resources/"$1
+		RESOURCE="https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/master/Resources/"$1
 	fi
 
 	if [ "$2" ]
@@ -166,7 +166,7 @@ cecho "Checking requirements." $green
 PASSALLCHECKS=1
 
 # test if release branch exists, if so we'll download from there
-wget --no-check-certificate -q -O /dev/null http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/
+wget --no-check-certificate -q -O /dev/null https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/$GITBRANCH_PATH/Resources/Solr/solr.xml
 BRANCH_TEST_RETURN=$?
 
 # Make sure only root can run this script
@@ -232,7 +232,7 @@ do
 	then
 		cecho "ERROR: Could not find Solr configuration files for language \"$LANGUAGE\"" $red
 		exit 1
-	else cecho "passed" $green
+	else cecho "available" $green
 	fi
 done
 
