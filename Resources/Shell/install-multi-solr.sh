@@ -17,7 +17,7 @@ EXT_SOLR_PLUGIN_UTILS_VERSION=1.1
 EXT_SOLR_PLUGIN_LANG_VERSION=3.1
 JAVA_VERSION=7
 
-GITBRANCH_PATH="solr_$EXT_SOLR_VERSION.x"
+GITBRANCH_PATH="release-$EXT_SOLR_VERSION.x"
 
 AVAILABLE_LANGUAGES="arabic,armenian,basque,brazilian_portuguese,bulgarian,burmese,catalan,chinese,czech,danish,dutch,english,finnish,french,galician,german,greek,hindi,hungarian,indonesian,italian,japanese,khmer,korean,lao,norwegian,persian,polish,portuguese,romanian,russian,spanish,swedish,thai,turkish,ukrainian"
 
@@ -108,9 +108,9 @@ wgetresource ()
 
 	if [ $BRANCH_TEST_RETURN -eq "0" ]
 	then
-  		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/Resources/"$1
+  		RESOURCE="https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/$GITBRANCH_PATH/Resources/"$1
 	else
-		RESOURCE="http://forge.typo3.org/projects/extension-solr/repository/revisions/master/raw/Resources/"$1
+		RESOURCE="https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/master/Resources/"$1
 	fi
 
 	if [ "$2" ]
@@ -166,7 +166,7 @@ cecho "Checking requirements." $green
 PASSALLCHECKS=1
 
 # test if release branch exists, if so we'll download from there
-wget --no-check-certificate -q -O /dev/null http://forge.typo3.org/projects/extension-solr/repository/revisions/$GITBRANCH_PATH/raw/
+wget --no-check-certificate -q -O /dev/null https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/$GITBRANCH_PATH/Resources/Solr/solr.xml
 BRANCH_TEST_RETURN=$?
 
 # Make sure only root can run this script
