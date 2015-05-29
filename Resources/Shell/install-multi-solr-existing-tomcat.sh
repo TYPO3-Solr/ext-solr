@@ -28,7 +28,7 @@ TOMCAT_WORK_DIR="/var/cache/tomcat6"
 TOMCAT_CONTEXT_DIR="${TOMCAT_CONFIG_DIR}/Catalina/localhost"
 TOMCAT_WEBAPP_DIR="/var/lib/tomcat6/webapps"
 
-GITBRANCH_PATH="solr_$EXT_SOLR_VERSION.x"
+GITBRANCH_PATH="release-$EXT_SOLR_VERSION.x"
 
 AVAILABLE_LANGUAGES="arabic,armenian,basque,brazilian_portuguese,bulgarian,burmese,catalan,chinese,czech,danish,dutch,english,finnish,french,galician,german,greek,hindi,hungarian,indonesian,italian,japanese,khmer,korean,lao,norwegian,persian,polish,portuguese,romanian,russian,spanish,swedish,thai,turkish,ukrainian"
 

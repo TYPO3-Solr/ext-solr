@@ -17,7 +17,7 @@ EXT_SOLR_PLUGIN_UTILS_VERSION=1.1
 EXT_SOLR_PLUGIN_LANG_VERSION=3.1
 JAVA_VERSION=7
 
-GITBRANCH_PATH="solr_$EXT_SOLR_VERSION.x"
+GITBRANCH_PATH="release-$EXT_SOLR_VERSION.x"
 
 AVAILABLE_LANGUAGES="arabic,armenian,basque,brazilian_portuguese,bulgarian,burmese,catalan,chinese,czech,danish,dutch,english,finnish,french,galician,german,greek,hindi,hungarian,indonesian,italian,japanese,khmer,korean,lao,norwegian,persian,polish,portuguese,romanian,russian,spanish,swedish,thai,turkish,ukrainian"
 

@@ -27,7 +27,7 @@ TOMCAT_WORK_DIR="/var/cache/tomcat6"
 TOMCAT_CONTEXT_DIR="${TOMCAT_CONFIG_DIR}/Catalina/localhost"
 TOMCAT_WEBAPP_DIR="/var/lib/tomcat6/webapps"
 
-GITBRANCH_PATH="solr_$EXT_SOLR_VERSION.x"
+GITBRANCH_PATH="release-$EXT_SOLR_VERSION.x"
 
 # Set default language for cores to download to english, if no commandline parameters are given
 if [ $# -eq 0 ]
