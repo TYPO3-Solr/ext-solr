@@ -55,8 +55,8 @@
 			/>
 			<filter class="solr.ManagedStopFilterFactory" managed="dutch"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="Dutch" protected="dutch/protwords.txt"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -65,8 +65,8 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="dutch"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="dutch"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="Dutch" protected="dutch/protwords.txt"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 

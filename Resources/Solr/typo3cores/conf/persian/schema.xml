@@ -56,8 +56,8 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="persian/protwords.txt"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -76,8 +76,8 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="persian/protwords.txt"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 
@@ -101,8 +101,8 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="persian/protwords.txt"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 
@@ -114,9 +114,9 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
 			<filter class="solr.StandardFilterFactory" />
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.StandardTokenizerFactory" />
@@ -125,9 +125,9 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
 			<filter class="solr.StandardFilterFactory" />
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 

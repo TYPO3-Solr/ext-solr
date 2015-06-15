@@ -53,8 +53,8 @@
 			/>
 			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -70,8 +70,8 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="hungarian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="hungarian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.SnowballPorterFilterFactory" language="Hungarian" protected="hungarian/protwords.txt"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 

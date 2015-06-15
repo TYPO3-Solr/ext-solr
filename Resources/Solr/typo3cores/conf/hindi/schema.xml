@@ -56,9 +56,9 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="hindi/protwords.txt"/>
 			<filter class="solr.HindiStemFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.IndicNormalizationFilterFactory"/>
 			<filter class="solr.HindiNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -77,9 +77,9 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="hindi/protwords.txt"/>
 			<filter class="solr.HindiStemFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.IndicNormalizationFilterFactory"/>
 			<filter class="solr.HindiNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 
@@ -103,9 +103,9 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="hindi/protwords.txt"/>
 			<filter class="solr.HindiStemFilterFactory"/>
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.IndicNormalizationFilterFactory"/>
 			<filter class="solr.HindiNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 
@@ -117,9 +117,9 @@
 			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
 			<filter class="solr.StandardFilterFactory" />
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.IndicNormalizationFilterFactory"/>
 			<filter class="solr.HindiNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
 			<tokenizer class="solr.StandardTokenizerFactory" />
@@ -128,9 +128,9 @@
 			<filter class="solr.ManagedSynonymFilterFactory" managed="hindi"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="hindi"/>
 			<filter class="solr.StandardFilterFactory" />
-			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 			<filter class="solr.IndicNormalizationFilterFactory"/>
 			<filter class="solr.HindiNormalizationFilterFactory"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>
 
