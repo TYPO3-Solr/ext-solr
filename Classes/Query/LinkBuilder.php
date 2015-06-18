@@ -110,7 +110,23 @@ class Tx_Solr_Query_LinkBuilder {
 	 * @return array Array of GET and POST parameters for the extension.
 	 */
 	protected function getPluginParameters() {
-		$getPostParameters = t3lib_div::_GP($this->prefix);
+		$getParameters = t3lib_div::_GET($this->prefix);
+		if (!$getParameters) {
+			$getParameters = array();
+		}
+
+		$postParameters = t3lib_div::_POST($this->prefix);
+		if (!$postParameters) {
+			$postParameters = array();
+		}
+
+		if (version_compare(TYPO3_version, '6.2', '>=')) {
+			$getPostParameters = $getParameters;
+			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($getPostParameters, $postParameters);
+		} else {
+			$getPostParameters = t3lib_div::array_merge_recursive_overrule($getParameters, $postParameters);
+		}
+
 		$pluginParameters  = is_array($getPostParameters) ? $getPostParameters : array();
 
 		return $pluginParameters;
