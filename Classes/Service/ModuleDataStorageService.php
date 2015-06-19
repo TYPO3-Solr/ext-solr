@@ -54,7 +54,7 @@ class ModuleDataStorageService implements SingletonInterface {
 		$moduleData = $GLOBALS['BE_USER']->getModuleData(self::KEY);
 
 		if (empty($moduleData) || !$moduleData) {
-			$moduleData = $this->objectManager->create('ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData');
+			$moduleData = $this->objectManager->get('ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData');
 		} else {
 			$moduleData = unserialize($moduleData);
 		}
