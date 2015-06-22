@@ -508,12 +508,15 @@ class Tx_Solr_IndexQueue_Queue {
 			$pageChangedTime = $this->getPageItemChangedTime($record);
 		}
 
+		$localizationsChangedTime = $this->getLocalizableItemChangedTime($itemType, $itemUid);
+
 		// if start time exists and start time is higher than last changed timestamp
 		// then set changed to the future start time to make the item
 		// indexed at a later time
 		$changedTime = max(
 			$itemChangedTime,
 			$pageChangedTime,
+			$localizationsChangedTime,
 			$startTime
 		);
 
@@ -540,6 +543,34 @@ class Tx_Solr_IndexQueue_Queue {
 		}
 
 		return $pageContentLastChangedTime;
+	}
+
+	/**
+	 * Gets the most recent changed time for an item taking into account
+	 * localized records.
+	 *
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
+	 * @return integer Timestamp of the most recent content element change
+	 */
+	protected function getLocalizableItemChangedTime($itemType, $itemUid) {
+		$localizedChangedTime = 0;
+
+		if (isset($GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'])) {
+			// table is localizable
+			$translationOriginalPointerField = $GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'];
+
+			$itemUid = intval($itemUid);
+			$localizedChangedTime = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+				'MAX(tstamp) AS changed_time',
+				$itemType,
+				"uid = $itemUid OR $translationOriginalPointerField = $itemUid"
+			);
+			$localizedChangedTime = $localizedChangedTime['changed_time'];
+		}
+
+		return $localizedChangedTime;
 	}
 
 	/**
