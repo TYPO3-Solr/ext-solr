@@ -201,7 +201,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 					// only update/insert the item if we actually found a record
 
 				if (Tx_Solr_Util::isLocalizedRecord($recordTable, $record)) {
-						// if it's a localization overlay, update the original record instead
+					// if it's a localization overlay, update the original record instead
 					$recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
 
 					if ($recordTable == 'pages_language_overlay') {
