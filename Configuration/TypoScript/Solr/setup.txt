@@ -78,7 +78,7 @@ plugin.tx_solr {
 
 				indexingPriority = 0
 
-				indexer = tx_solr_indexqueue_PageIndexer
+				indexer = Tx_Solr_IndexQueue_PageIndexer
 				indexer {
 					// add options for the indexer here
 				}
