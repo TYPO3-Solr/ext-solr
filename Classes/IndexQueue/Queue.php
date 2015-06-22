@@ -473,30 +473,30 @@ class Tx_Solr_IndexQueue_Queue {
 	 * future start time has been set, that will be used to delay indexing
 	 * of an item.
 	 *
-	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $tableName The item's table name.
 	 * @param string $itemUid The item's uid, usually an integer uid, could be a
 	 *      different value for non-database-record types.
 	 * @return integer Timestamp of the item's changed time or future start time
 	 */
-	protected function getItemChangedTime($itemType, $itemUid) {
+	protected function getItemChangedTime($tableName, $itemUid) {
 		$itemTypeHasStartTimeColumn = FALSE;
-		$changedTimeColumns         = $GLOBALS['TCA'][$itemType]['ctrl']['tstamp'];
+		$changedTimeColumns         = $GLOBALS['TCA'][$tableName]['ctrl']['tstamp'];
 		$changedTime                = 0;
 
-		if (!empty($GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'])) {
+		if (!empty($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime'])) {
 			$itemTypeHasStartTimeColumn = TRUE;
-			$changedTimeColumns .= ', ' . $GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'];
+			$changedTimeColumns .= ', ' . $GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime'];
 		}
-		if ($itemType == 'pages') {
+		if ($tableName == 'pages') {
 			// does not carry time information directly, but needed to support
 			// canonical pages
 			$changedTimeColumns .= ', content_from_pid';
 		}
 
-		$record      = t3lib_BEfunc::getRecord($itemType, $itemUid, $changedTimeColumns);
-		$changedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
+		$record      = t3lib_BEfunc::getRecord($tableName, $itemUid, $changedTimeColumns);
+		$changedTime = $record[$GLOBALS['TCA'][$tableName]['ctrl']['tstamp']];
 
-		if ($itemType == 'pages') {
+		if ($tableName == 'pages') {
 			$record['uid'] = $itemUid;
 			// overrule the page's last changed time with the most recent
 			//content element change
@@ -509,8 +509,8 @@ class Tx_Solr_IndexQueue_Queue {
 			// indexed at a later time
 			$changedTime = max(
 				$changedTime,
-				$record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']],
-				$record[$GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime']]
+				$record[$GLOBALS['TCA'][$tableName]['ctrl']['tstamp']],
+				$record[$GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime']]
 			);
 		}
 
