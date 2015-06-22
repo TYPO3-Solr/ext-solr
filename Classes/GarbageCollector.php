@@ -51,7 +51,7 @@ class Tx_Solr_GarbageCollector {
 			$this->collectGarbage($table, $uid);
 
 			if ($table == 'pages') {
-				$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+				$indexQueue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 				$indexQueue->deleteItem($table, $uid);
 			}
 		}
@@ -77,7 +77,7 @@ class Tx_Solr_GarbageCollector {
 			$this->collectGarbage($table, $uid);
 
 				// now re-index with new properties
-			$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+			$indexQueue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 			$indexQueue->updateItem($table, $uid);
 		}
 	}
@@ -156,6 +156,20 @@ class Tx_Solr_GarbageCollector {
 			|| ($table == 'pages' && !$this->isIndexablePageType($record))
 		) {
 			$this->collectGarbage($table, $uid);
+
+			// if the start time is in the future and not otherwise invisible,
+			// it is necessary to add the item to the queue again to be indexed once the start time is reached
+			if ($this->isStartTimeInFuture($table, $record)
+				&& !$this->isHidden($table, $record)
+				&& !$this->hasFrontendGroupsRemoved($table, $record)
+				&& ($table != 'tt_content' && $table != 'pages_language_overlay')
+				&& !($table == 'pages' && $this->isPageExcludedFromSearch($record))
+				&& !($table == 'pages' && !$this->isIndexablePageType($record))
+			) {
+				/** @var Tx_Solr_IndexQueue_Queue $indexQueue */
+				$indexQueue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+				$indexQueue->updateItem($table, $uid);
+			}
 		}
 	}
 
@@ -243,7 +257,7 @@ class Tx_Solr_GarbageCollector {
 	 * @return boolean True if the record is marked as being indexed
 	 */
 	protected function isMarkedAsIndexed($table, $record) {
-		$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 		return $indexQueue->containsIndexedItem($table, $record['uid']);
 	}
 
@@ -312,7 +326,7 @@ class Tx_Solr_GarbageCollector {
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
-				$garbageCollectorPostProcessor = t3lib_div::getUserObj($classReference);
+				$garbageCollectorPostProcessor = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classReference);
 
 				if ($garbageCollectorPostProcessor instanceof Tx_Solr_GarbageCollectorPostProcessor) {
 					$garbageCollectorPostProcessor->postProcessGarbageCollector($table, $uid);
@@ -351,7 +365,7 @@ class Tx_Solr_GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function collectRecordGarbage($table, $uid) {
-		$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 
 		$this->deleteIndexDocuments($table, $uid);
 		$indexQueue->deleteItem($table, $uid);
@@ -365,7 +379,7 @@ class Tx_Solr_GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function collectPageGarbage($table, $uid) {
-		$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 
 		switch ($table) {
 			case 'tt_content':
@@ -402,8 +416,8 @@ class Tx_Solr_GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function deleteIndexDocuments($table, $uid) {
-		$indexQueue        = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
-		$connectionManager = t3lib_div::makeInstance('Tx_Solr_ConnectionManager');
+		$indexQueue        = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$connectionManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
 
 			// record can be indexed for multiple sites
 		$indexQueueItems = $indexQueue->getItems($table, $uid);
