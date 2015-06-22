@@ -566,6 +566,28 @@ class Tx_Solr_Util {
 	}
 
 	/**
+	 * Checks whether a record is a localization overlay.
+	 *
+	 * @param string $tableName The record's table name
+	 * @param array $record The record to check
+	 * @return boolean TRUE if the record is a language overlay, FALSE otherwise
+	 */
+	public static function isLocalizedRecord($tableName, array $record) {
+		$isLocalizedRecord = FALSE;
+		$translationOriginalPointerField = '';
+
+		if (isset($GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'])) {
+			$translationOriginalPointerField = $GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'];
+
+			if ($record[$translationOriginalPointerField] > 0) {
+				$isLocalizedRecord = TRUE;
+			}
+		}
+
+		return $isLocalizedRecord;
+	}
+
+	/**
 	 * Get allowed page types
 	 *
 	 * @param integer $pageId Page ID
