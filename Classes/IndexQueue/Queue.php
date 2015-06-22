@@ -473,46 +473,52 @@ class Tx_Solr_IndexQueue_Queue {
 	 * future start time has been set, that will be used to delay indexing
 	 * of an item.
 	 *
-	 * @param string $tableName The item's table name.
+	 * @param string $itemType The item's table name.
 	 * @param string $itemUid The item's uid, usually an integer uid, could be a
 	 *      different value for non-database-record types.
 	 * @return integer Timestamp of the item's changed time or future start time
 	 */
-	protected function getItemChangedTime($tableName, $itemUid) {
+	protected function getItemChangedTime($itemType, $itemUid) {
 		$itemTypeHasStartTimeColumn = FALSE;
-		$changedTimeColumns         = $GLOBALS['TCA'][$tableName]['ctrl']['tstamp'];
-		$changedTime                = 0;
+		$changedTimeColumns         = $GLOBALS['TCA'][$itemType]['ctrl']['tstamp'];
+		$startTime                  = 0;
+		$pageChangedTime            = 0;
 
-		if (!empty($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime'])) {
+		if (!empty($GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'])) {
 			$itemTypeHasStartTimeColumn = TRUE;
-			$changedTimeColumns .= ', ' . $GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime'];
+			$changedTimeColumns .= ', ' . $GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'];
 		}
-		if ($tableName == 'pages') {
+		if ($itemType == 'pages') {
 			// does not carry time information directly, but needed to support
 			// canonical pages
 			$changedTimeColumns .= ', content_from_pid';
 		}
 
-		$record      = t3lib_BEfunc::getRecord($tableName, $itemUid, $changedTimeColumns);
-		$changedTime = $record[$GLOBALS['TCA'][$tableName]['ctrl']['tstamp']];
+		$record          = t3lib_BEfunc::getRecord($itemType, $itemUid, $changedTimeColumns);
+		$itemChangedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
 
-		if ($tableName == 'pages') {
+		if ($itemTypeHasStartTimeColumn) {
+			$startTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime']];
+		}
+
+		if ($itemType == 'pages') {
 			$record['uid'] = $itemUid;
 			// overrule the page's last changed time with the most recent
 			//content element change
-			$changedTime = $this->getPageItemChangedTime($record);
+			$pageChangedTime = $this->getPageItemChangedTime($record);
 		}
 
-		if ($itemTypeHasStartTimeColumn) {
-			// if start time exists and start time is higher than last changed timestamp
-			// then set changed to the future start time to make the item
-			// indexed at a later time
-			$changedTime = max(
-				$changedTime,
-				$record[$GLOBALS['TCA'][$tableName]['ctrl']['tstamp']],
-				$record[$GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime']]
-			);
-		}
+		$localizationsChangedTime = $this->getLocalizableItemChangedTime($itemType, $itemUid);
+
+		// if start time exists and start time is higher than last changed timestamp
+		// then set changed to the future start time to make the item
+		// indexed at a later time
+		$changedTime = max(
+			$itemChangedTime,
+			$pageChangedTime,
+			$localizationsChangedTime,
+			$startTime
+		);
 
 		return $changedTime;
 	}
@@ -537,6 +543,34 @@ class Tx_Solr_IndexQueue_Queue {
 		}
 
 		return $pageContentLastChangedTime;
+	}
+
+	/**
+	 * Gets the most recent changed time for an item taking into account
+	 * localized records.
+	 *
+	 * @param string $itemType The item's type, usually a table name.
+	 * @param string $itemUid The item's uid, usually an integer uid, could be a
+	 *      different value for non-database-record types.
+	 * @return integer Timestamp of the most recent content element change
+	 */
+	protected function getLocalizableItemChangedTime($itemType, $itemUid) {
+		$localizedChangedTime = 0;
+
+		if (isset($GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'])) {
+			// table is localizable
+			$translationOriginalPointerField = $GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'];
+
+			$itemUid = intval($itemUid);
+			$localizedChangedTime = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+				'MAX(tstamp) AS changed_time',
+				$itemType,
+				"uid = $itemUid OR $translationOriginalPointerField = $itemUid"
+			);
+			$localizedChangedTime = $localizedChangedTime['changed_time'];
+		}
+
+		return $localizedChangedTime;
 	}
 
 	/**

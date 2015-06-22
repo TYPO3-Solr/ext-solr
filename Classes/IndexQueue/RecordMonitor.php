@@ -121,7 +121,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 						$record = $this->getRecord($table, $uid);
 
 						if (!empty($record) && $this->isEnabledRecord($table, $record)) {
-							if ($this->isLocalizedRecord($table, $record)) {
+							if (Tx_Solr_Util::isLocalizedRecord($table, $record)) {
 									// if it's a localization overlay, update the original record instead
 								$uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
 							}
@@ -200,8 +200,8 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			if (!empty($record)) {
 					// only update/insert the item if we actually found a record
 
-				if ($this->isLocalizedRecord($recordTable, $record)) {
-						// if it's a localization overlay, update the original record instead
+				if (Tx_Solr_Util::isLocalizedRecord($recordTable, $record)) {
+					// if it's a localization overlay, update the original record instead
 					$recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
 
 					if ($recordTable == 'pages_language_overlay') {
@@ -416,28 +416,6 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 		$pageInitializer->setSite($mountingSite);
 
 		$pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);
-	}
-
-	/**
-	 * Checks whether a record is a localization overlay.
-	 *
-	 * @param string $table The record's table name
-	 * @param array $record The record to check
-	 * @return boolean TRUE if the record is a language overlay, FALSE otherwise
-	 */
-	protected function isLocalizedRecord($table, array $record) {
-		$isLocalizedRecord = FALSE;
-		$translationOriginalPointerField = '';
-
-		if (isset($GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'])) {
-			$translationOriginalPointerField = $GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField'];
-
-			if ($record[$translationOriginalPointerField] > 0) {
-				$isLocalizedRecord = TRUE;
-			}
-		}
-
-		return $isLocalizedRecord;
 	}
 
 	/**
