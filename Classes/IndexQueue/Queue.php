@@ -466,7 +466,7 @@ class Tx_Solr_IndexQueue_Queue {
 
 	/**
 	 * Determines the time for when an item should be indexed. This timestamp
-	 * is stored in the changed column in the Index Queue.
+	 * is then stored in the changed column in the Index Queue.
 	 *
 	 * The changed timestamp usually is now - time(). For records which are set
 	 * to published at a later time, this timestamp is the start time. So if a
