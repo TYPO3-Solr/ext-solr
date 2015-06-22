@@ -482,6 +482,7 @@ class Tx_Solr_IndexQueue_Queue {
 		$itemTypeHasStartTimeColumn = FALSE;
 		$changedTimeColumns         = $GLOBALS['TCA'][$tableName]['ctrl']['tstamp'];
 		$changedTime                = 0;
+		$startTime                  = 0;
 
 		if (!empty($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime'])) {
 			$itemTypeHasStartTimeColumn = TRUE;
@@ -496,6 +497,10 @@ class Tx_Solr_IndexQueue_Queue {
 		$record      = t3lib_BEfunc::getRecord($tableName, $itemUid, $changedTimeColumns);
 		$changedTime = $record[$GLOBALS['TCA'][$tableName]['ctrl']['tstamp']];
 
+		if ($itemTypeHasStartTimeColumn) {
+			$startTime = $record[$GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime']];
+		}
+
 		if ($tableName == 'pages') {
 			$record['uid'] = $itemUid;
 			// overrule the page's last changed time with the most recent
@@ -503,16 +508,14 @@ class Tx_Solr_IndexQueue_Queue {
 			$changedTime = $this->getPageItemChangedTime($record);
 		}
 
-		if ($itemTypeHasStartTimeColumn) {
-			// if start time exists and start time is higher than last changed timestamp
-			// then set changed to the future start time to make the item
-			// indexed at a later time
-			$changedTime = max(
-				$changedTime,
-				$record[$GLOBALS['TCA'][$tableName]['ctrl']['tstamp']],
-				$record[$GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['starttime']]
-			);
-		}
+		// if start time exists and start time is higher than last changed timestamp
+		// then set changed to the future start time to make the item
+		// indexed at a later time
+		$changedTime = max(
+			$changedTime,
+			$startTime,
+			$record[$GLOBALS['TCA'][$tableName]['ctrl']['tstamp']]
+		);
 
 		return $changedTime;
 	}
