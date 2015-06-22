@@ -481,7 +481,6 @@ class Tx_Solr_IndexQueue_Queue {
 	protected function getItemChangedTime($itemType, $itemUid) {
 		$itemTypeHasStartTimeColumn = FALSE;
 		$changedTimeColumns         = $GLOBALS['TCA'][$itemType]['ctrl']['tstamp'];
-		$changedTime                = 0;
 		$startTime                  = 0;
 		$pageChangedTime            = 0;
 
@@ -495,8 +494,8 @@ class Tx_Solr_IndexQueue_Queue {
 			$changedTimeColumns .= ', content_from_pid';
 		}
 
-		$record      = t3lib_BEfunc::getRecord($itemType, $itemUid, $changedTimeColumns);
-		$changedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
+		$record          = t3lib_BEfunc::getRecord($itemType, $itemUid, $changedTimeColumns);
+		$itemChangedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
 
 		if ($itemTypeHasStartTimeColumn) {
 			$startTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime']];
@@ -513,9 +512,9 @@ class Tx_Solr_IndexQueue_Queue {
 		// then set changed to the future start time to make the item
 		// indexed at a later time
 		$changedTime = max(
-			$changedTime,
-			$startTime,
-			$record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']]
+			$itemChangedTime,
+			$pageChangedTime,
+			$startTime
 		);
 
 		return $changedTime;
