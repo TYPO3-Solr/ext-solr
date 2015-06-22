@@ -107,11 +107,6 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 	 *  @return string Markup for the select field
 	 */
 	public function render() {
-		$selectFieldRenderer = $formEngine = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
-		if (class_exists('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement')) {
-			$selectFieldRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement', $formEngine);
-		}
-
 			// transform selected values into the format used by TCEforms
 		$selectedValues = array();
 		foreach ($this->selectedValues as $selectedValue) {
@@ -119,23 +114,9 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 		}
 		$selectedValues = implode(',', $selectedValues);
 
-		$PA = array(
-			'fieldChangeFunc' => array(),
-			'itemFormElName'  => $this->formElementName,
-			'itemFormElValue' => $selectedValues
-		);
-
 		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
 
-		$formField = $selectFieldRenderer->getSingleField_typeSelect_checkbox(
-			'', // table
-			'', // field
-			'', // row
-			$PA, // array with additional configuration options
-			array(), // config,
-			$this->buildSelectorItems($tablesToIndex), // items
-			'' // Label for no-matching-value
-		);
+		$formField = $this->renderSelectCheckbox($this->buildSelectorItems($tablesToIndex), $selectedValues);
 
 			// need to wrap the field in a TCEforms table to make the CSS apply
 		$form = '
@@ -207,10 +188,61 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 		return $selectorItems;
 	}
 
-}
+	/**
+	 * @param array $items
+	 * @param string $selectedValues
+	 * @return string
+	 * @throws \TYPO3\CMS\Backend\Form\Exception
+	 */
+	protected function renderSelectCheckbox($items, $selectedValues) {
+		$parameterArray = array(
+			'fieldChangeFunc' => array(),
+			'itemFormElName'  => $this->formElementName,
+			'itemFormElValue' => $selectedValues,
+			'fieldConf' => array(
+				'config' => array(
+					'items' => $items
+				)
+			),
+			'fieldTSConfig' => array(
+				'noMatchingValue_label' => ''
+			)
+		);
 
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/backend/IndexingConfigurationSelectorField.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/backend/IndexingConfigurationSelectorField.php']);
-}
+		$selectFieldRenderer = $formEngine = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
+		if (!method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
+			if (class_exists('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement')) { // TYPO3 CMS 7.2
+				$selectFieldRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement', $formEngine);
+			} elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\Element\\SelectCheckBoxElement')) { // TYPO3 CMS >= 7.3
+				/** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
+				$nodeFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
+				$options = array(
+					'renderType' => 'selectCheckBox',
+					'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
+					'fieldName' => 'additionalFields',
+					'databaseRow' => array(),
+					'parameterArray' => $parameterArray
+				);
+				$options['parameterArray']['fieldConf']['config']['items'] = $items;
+				$options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
+				$selectCheckboxResult = $nodeFactory->create($options)->render();
+				return $selectCheckboxResult['html'];
+			}
+		}
 
-?>
+		if (method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
+			return $selectFieldRenderer->getSingleField_typeSelect_checkbox(
+				'', // table
+				'', // field
+				'', // row
+				$parameterArray, // array with additional configuration options
+				array(), // config,
+				$items, // items
+				'' // Label for no-matching-value
+			);
+		}
+
+		return '';
+	}
+
+}
