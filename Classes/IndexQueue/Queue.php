@@ -433,6 +433,8 @@ class Tx_Solr_IndexQueue_Queue {
 				);
 			}
 
+			$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($record['pid']);
+
 			// make a backup of the current item
 			$baseItem = $item;
 			foreach ($indexingConfigurationList as $indexingConfigurationCurrent) {
@@ -441,7 +443,6 @@ class Tx_Solr_IndexQueue_Queue {
 
 				$addItemToQueue = TRUE;
 				// Ensure additionalWhereClause is applied.
-				$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($record['pid']);
 				if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
 					$indexingConfigurationCheckRecord = t3lib_BEfunc::getRecord(
 						$itemType,
