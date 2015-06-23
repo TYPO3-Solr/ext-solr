@@ -443,13 +443,14 @@ class Tx_Solr_IndexQueue_Queue {
 				// Ensure additionalWhereClause is applied.
 				$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($record['pid']);
 				if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
-					$record = t3lib_BEfunc::getRecord(
+					$indexingConfigurationCheckRecord = t3lib_BEfunc::getRecord(
 						$itemType,
 						$itemUid,
 						'pid' . $additionalRecordFields,
 						' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']
 					);
-					if (empty($record)) {
+					if (empty($indexingConfigurationCheckRecord)) {
+						// item does not match the indexing configuration
 						$addItemToQueue = FALSE;
 					}
 				}
