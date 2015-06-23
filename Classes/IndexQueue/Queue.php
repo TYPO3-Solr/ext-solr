@@ -433,7 +433,7 @@ class Tx_Solr_IndexQueue_Queue {
 				);
 			}
 
-			$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($record['pid']);
+			$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($rootPageId);
 
 			// make a backup of the current item
 			$baseItem = $item;
