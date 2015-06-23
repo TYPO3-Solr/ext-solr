@@ -207,6 +207,13 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 					if ($recordTable == 'pages_language_overlay') {
 						$recordTable = 'pages';
 					}
+
+					$tableEnableFields = implode(', ', $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
+					$l10nParentRecord = t3lib_BEfunc::getRecord($recordTable, $recordUid, $tableEnableFields, '', FALSE);
+					if (!$this->isEnabledRecord($recordTable, $l10nParentRecord)) {
+						// the l10n parent record must be visible to have it's translation indexed
+						return;
+					}
 				}
 
 				$this->indexQueue->updateItem($recordTable, $recordUid);
