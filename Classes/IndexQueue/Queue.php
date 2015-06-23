@@ -450,8 +450,9 @@ class Tx_Solr_IndexQueue_Queue {
 						'pid' . $additionalRecordFields,
 						' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']
 					);
+
 					if (empty($indexingConfigurationCheckRecord)) {
-						// item does not match the indexing configuration
+						// item does not match the indexing configuration's additionalWhereClause
 						$addItemToQueue = FALSE;
 					}
 				}
