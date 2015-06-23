@@ -393,12 +393,6 @@ class Tx_Solr_IndexQueue_Queue {
 	 * @return void
 	 */
 	private function addItem($itemType, $itemUid, $indexingConfiguration) {
-		// FIXME must respect the indexer's additionalWhereClause option:
-		// must not add items to the index queue which are excluded through
-		// additionalWhereClause. Requires construction of additionalWhereClause
-		// through multiple options instead of just one
-
-		// FIXME temporary until we have a query builder to take care of this
 		$additionalRecordFields = '';
 		if ($itemType == 'pages') {
 			$additionalRecordFields = ', doktype, uid';
@@ -406,7 +400,6 @@ class Tx_Solr_IndexQueue_Queue {
 
 		$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
 
-		// FIXME temporary until we have a query builder to take care of this
 		if (empty($record) || ($itemType == 'pages' && !Tx_Solr_Util::isAllowedPageType($record))) {
 			return;
 		}
