@@ -439,7 +439,7 @@ class Tx_Solr_IndexQueue_Queue {
 				$item = $baseItem;
 				$item['indexing_configuration'] = $indexingConfigurationCurrent;
 
-				$writeToIndex = TRUE;
+				$addItemToQueue = TRUE;
 				// Ensure additionalWhereClause is applied.
 				$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($record['pid']);
 				if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
@@ -450,11 +450,11 @@ class Tx_Solr_IndexQueue_Queue {
 						' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']
 					);
 					if (empty($record)) {
-						$writeToIndex = FALSE;
+						$addItemToQueue = FALSE;
 					}
 				}
 
-				if ($writeToIndex) {
+				if ($addItemToQueue) {
 					$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 						'tx_solr_indexqueue_item',
 						$item
