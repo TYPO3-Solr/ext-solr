@@ -66,6 +66,10 @@ class Tx_Solr_FieldProcessor_Service {
 				}
 
 				switch ($instruction) {
+					case 'timestampToUtcIsoDate':
+						$processor  = t3lib_div::makeInstance('Tx_Solr_FieldProcessor_TimestampToUtcIsoDate');
+						$fieldValue = $processor->process($fieldValue);
+						break;
 					case 'timestampToIsoDate':
 						$processor  = t3lib_div::makeInstance('Tx_Solr_FieldProcessor_TimestampToIsoDate');
 						$fieldValue = $processor->process($fieldValue);

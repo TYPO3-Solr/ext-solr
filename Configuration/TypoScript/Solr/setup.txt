@@ -61,7 +61,7 @@ plugin.tx_solr {
 		fieldProcessingInstructions {
 			changed = timestampToIsoDate
 			created = timestampToIsoDate
-			endtime = timestampToIsoDate
+			endtime = timestampToUtcIsoDate
 			rootline = pageUidToHierarchy
 		}
 
