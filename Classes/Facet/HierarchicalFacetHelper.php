@@ -61,6 +61,7 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 					'numberOfResults' => $facetOption['numberOfResults'],
 					'_OVERRIDE_HREF'  => $facetOption['url'],
 					'ITEM_STATE'      => $facetOption['selected'] ? 'ACT' : 'NO',
+					'_PAGES_OVERLAY'  => ($GLOBALS['TSFE']->sys_language_uid > 0)
 				);
 
 				list(, $mainMenuName) = explode('-', $facetOptionKey, 2);
@@ -100,6 +101,7 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 					'numberOfResults' => $facetOption['numberOfResults'],
 					'_OVERRIDE_HREF'  => $facetOption['url'],
 					'ITEM_STATE'      => $facetOption['selected'] ? 'ACT' : 'NO',
+					'_PAGES_OVERLAY'  => ($GLOBALS['TSFE']->sys_language_uid > 0)
 				);
 
 				$lastPathSegment = Tx_Solr_Facet_HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey);
