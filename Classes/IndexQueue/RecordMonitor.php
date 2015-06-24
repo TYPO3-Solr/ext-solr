@@ -142,7 +142,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 				// moving pages in LIVE workspace
 			$this->solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($uid);
 			$record = $this->getRecord('pages', $uid);
-			if (!empty($record)) {
+			if (!empty($record) && $this->isEnabledRecord($table, $record)) {
 				$this->indexQueue->updateItem('pages', $uid);
 			} else {
 				// check if the item should be removed from the index because it no longer matches the conditions
@@ -216,7 +216,9 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 					}
 				}
 
-				$this->indexQueue->updateItem($recordTable, $recordUid);
+				if ($this->isEnabledRecord($recordTable, $record)) {
+					$this->indexQueue->updateItem($recordTable, $recordUid);
+				}
 
 				if ($recordTable == 'pages') {
 					$this->updateCanonicalPages($recordUid);
