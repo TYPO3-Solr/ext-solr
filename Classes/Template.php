@@ -292,7 +292,7 @@ class Tx_Solr_Template {
 		// escape marker hashes
 		$content = str_replace('###', '&#35;&#35;&#35;', $content);
 		// escape pipe character used for parameter separation
-		$content = str_replace('|', '&#166;', $content);
+		$content = str_replace('|', '&#124;', $content);
 
 		return $content;
 	}
