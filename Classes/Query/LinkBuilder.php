@@ -244,34 +244,14 @@ class Tx_Solr_Query_LinkBuilder {
 	 * @return string A query URL
 	 */
 	public function getQueryUrl(array $additionalQueryParameters = array(), array $typolinkOptions = array()) {
-		$queryParameters = array_merge(
-			$this->getPluginParameters(),
-			$additionalQueryParameters
-		);
-		$queryParameters   = $this->removeUnwantedUrlParameters($queryParameters);
-
-		$queryKeywords = '';
-		if ($this->query) {
-			$queryKeywords = $this->query->getKeywords();
-		}
-		$queryGetParameter = '';
-		if (!empty($queryKeywords)) {
-			$queryGetParameter = '&q=' . $queryKeywords;
-		}
-
-		$linkConfiguration = array(
-			'useCacheHash'     => FALSE,
-			'no_cache'         => FALSE,
-			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => $queryGetParameter
-				. t3lib_div::implodeArrayForUrl('', array($this->prefix => $queryParameters), '', TRUE)
-				. $this->getUrlParameters()
+		$linkConfigurationOverwrite = array('returnLast' => 'url');
+		$link = $this->getQueryLink(
+			'',
+			$additionalQueryParameters,
+			array_merge($typolinkOptions, $linkConfigurationOverwrite)
 		);
 
-			// merge linkConfiguration with typolinkOptions
-		$linkConfiguration = array_merge($linkConfiguration, $typolinkOptions);
-
-		return htmlspecialchars($this->contentObject->typoLink_URL($linkConfiguration));
+		return htmlspecialchars($link);
 	}
 
 	/**
