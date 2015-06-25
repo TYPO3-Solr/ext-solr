@@ -44,6 +44,10 @@ abstract class Tx_Solr_FieldProcessor_AbstractHierarchyProcessor {
 
 		$depth = 0;
 		$currentPath = array_shift($idRootline);
+		if (is_null($currentPath)) {
+			return $hierarchy;
+		}
+
 		foreach ($idRootline as $uid) {
 			$hierarchy[] = $depth . '-' . $currentPath;
 
