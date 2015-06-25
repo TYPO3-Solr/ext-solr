@@ -69,7 +69,7 @@ t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/OpenSearch/', 'A
 
 	// Extension Pre-Configuration
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IndexQueueNews/', 'Apache Solr - Index Queue Configuration for news');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IndexQueueNewsAdditional/', 'Apache Solr - Index Queue Configuration for additional news content elements');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IndexQueueNewsContentElements/', 'Apache Solr - Index Queue Configuration for news with content elements');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Examples/IndexQueueTtNews/', 'Apache Solr - Index Queue Configuration for tt_news');
 
 	// Examples
