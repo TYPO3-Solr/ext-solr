@@ -238,11 +238,20 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 					if (is_array($languageArray) && isset($this->LOCAL_LANG[$languageKey])) {
 						foreach ($languageArray as $labelKey => $labelValue) {
 							if (!is_array($labelValue)) {
-								$this->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
+								if (t3lib_div::compat_version('4.7')) {
+									$this->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
+									$this->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
+								} else {
+									$this->LOCAL_LANG[$languageKey][$labelKey] = $labelValue;
+									// For labels coming from the TypoScript (database) the charset is assumed to be "forceCharset" and if that is not set, assumed to be that of the individual system languages
+									$this->LOCAL_LANG_charset[$languageKey][$labelKey] =
+										$GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] ?
+											$GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] :
+											$GLOBALS['TSFE']->csConvObj->charSetArray[$languageKey];
+								}
 								if ($labelValue === '') {
 									$this->LOCAL_LANG_UNSET[$languageKey][$labelKey] = '';
 								}
-								$this->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
 							}
 						}
 					}
