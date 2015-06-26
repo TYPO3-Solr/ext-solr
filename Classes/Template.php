@@ -487,6 +487,18 @@ class Tx_Solr_Template {
 		if (count($foundMarkers)) {
 			$iterationCount = 0;
 			foreach ($loopVariables as $value) {
+				// escape content and title
+				$value = str_replace('#', '&#35;', $value);
+				if (isset($value['content'])) {
+					$value['content'] = htmlspecialchars($value['content'], NULL, NULL, FALSE);
+					$pattern = '/&lt;span class="results-highlight"&gt;(.+?)&lt;\/span&gt;/is';
+					$replacement = '<span class="results-highlight">$1</span>';
+					$value['content'] = preg_replace($pattern, $replacement, $value['content']);
+				}
+				if (isset($value['title'])) {
+					$value['title'] = htmlspecialchars($value['title'], NULL, NULL, FALSE);
+				}
+
 				$resolvedMarkers = $this->resolveVariableMarkers($foundMarkers, $value);
 				$resolvedMarkers['LOOP_CURRENT_ITERATION_COUNT'] = ++$iterationCount;
 
