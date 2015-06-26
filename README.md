@@ -60,7 +60,7 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 2. Clone repository
 3. Make your changes
 4. Commit your changes to your fork. In your commit message refer to the issue number if there is already one, e.g. `[BUGFIX] short description of fix (resolves #4711)`
-5. Submit a Pull Request using GitHub
+5. Submit a Pull Request using GitHub (here are some hints on [How to write the perfect pull request](https://github.com/blog/1943-how-to-write-the-perfect-pull-request))
 
 ### Keep your fork in sync with original repository
 
