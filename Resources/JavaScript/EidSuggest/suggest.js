@@ -15,6 +15,7 @@ jQuery(document).ready(function(){
 		source: function(request, response) {
 			if (req) {
 				req.abort();
+				response();
 			}
 
 			req = jQuery.ajax({
