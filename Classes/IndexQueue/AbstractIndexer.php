@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Ingo Renner <ingo@typo3.org>
+*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -56,6 +56,13 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 			if (is_array($recordFieldName)) {
 					// configuration for a content object, skipping
 				continue;
+			}
+
+			if ($solrFieldName == 'type') {
+				throw new Tx_Solr_IndexQueue_InvalidFieldNameException(
+					'Must not overwrite field "type".',
+					1435441863
+				);
 			}
 
 			$fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data);

@@ -85,6 +85,7 @@ return array(
 
 	'tx_solr_indexqueue_abstractindexer' => $extensionPath . 'Classes/IndexQueue/AbstractIndexer.php',
 	'tx_solr_indexqueue_indexer' => $extensionPath . 'Classes/IndexQueue/Indexer.php',
+	'tx_solr_indexqueue_invalidfieldnameexception' => $extensionPath . 'Classes/IndexQueue/InvalidFieldNameException.php',
 	'tx_solr_indexqueue_item' => $extensionPath . 'Classes/IndexQueue/Item.php',
 	'tx_solr_indexqueue_pageindexer' => $extensionPath . 'Classes/IndexQueue/PageIndexer.php',
 	'tx_solr_indexqueue_pageindexerrequest' => $extensionPath . 'Classes/IndexQueue/PageIndexerRequest.php',
