@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # Usage:
-#	sudo ./install-multi-solr.sh
-#	sudo ./install-multi-solr.sh -s 4.7.0
-#	sudo ./install-multi-solr.sh -l english,german,french
-#	sudo ./install-multi-solr.sh -s 4.7.0 -l english,german,french
+#	sudo ./install-multi-solr-tomcat-download.sh
+#	sudo ./install-multi-solr-tomcat-download.sh -s 4.7.0
+#	sudo ./install-multi-solr-tomcat-download.sh -l english,german,french
+#	sudo ./install-multi-solr-tomcat-download.sh -s 4.7.0 -l english,german,french
 
 clear
 
