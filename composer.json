@@ -54,9 +54,6 @@
 			"PiSearch/",
 			"Report/",
 			"Scheduler/"
-		],
-		"psr-4": {
-			"ApacheSolrForTypo3\\Solr\\": "Classes/"
-		}
+		]
 	}
 }
