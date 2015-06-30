@@ -119,6 +119,18 @@ class IndexQueueModuleController extends AbstractModuleController {
 	}
 
 	/**
+	 * Empties the Index Queue
+	 *
+	 * @return void
+	 */
+	public function clearIndexQueueAction() {
+		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue->deleteItemsBySite($this->site);
+
+		$this->forward('index');
+	}
+
+	/**
 	 * Removes all errors in the index queue list. So that the items can be indexed again.
 	 *
 	 * @return void

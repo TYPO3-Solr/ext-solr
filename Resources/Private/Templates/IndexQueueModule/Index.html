@@ -31,7 +31,7 @@
 </div>
 
 
-<div class="row-fluid section-divider section-with-header">
+<div class="row-fluid section-with-header">
 	<script type="text/json" id="indexqueue_stats">
 		<f:format.raw>{indexqueue_stats}</f:format.raw>
 	</script>
@@ -111,5 +111,33 @@
 				<span id="indexed_numbers"></span>
 			</div>
 		</div>
+	</div>
+</div>
+
+
+<div class="row-fluid section-with-header danger-zone">
+	<h2>
+		<f:translate key="solr.backend.danger_zone"/>
+	</h2>
+</div>
+
+<div class="row-fluid">
+	<div class="span3">
+		<solr:backend.button.ActionButton
+			action="clearIndexQueue"
+			label="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"
+			class="btn-sm btn-danger"
+		/>
+	</div>
+	<div class="span9 action-description">
+		<h3>
+			<f:translate key="solr.backend.index_queue_module.button.clear_index_queue"/>
+		</h3>
+
+		<p>
+			This will empty the Index Queue. It will take care of only deleting
+			the currently selected site's Index Queue entries.
+			You will have to re-initialize the Index Queue afterwards.
+		</p>
 	</div>
 </div>
