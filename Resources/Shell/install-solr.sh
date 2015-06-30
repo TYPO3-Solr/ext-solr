@@ -16,6 +16,9 @@ JAVA_VERSION=7
 
 GITBRANCH_PATH="release-$EXT_SOLR_VERSION.x"
 
+APACHE_MIRROR="http://mirror.dkd.de/apache/"
+APACHE_ARCHIVE="http://archive.apache.org/dist/"
+
 # Set default language for cores to download to english, if no commandline parameters are given
 if [ $# -eq 0 ]
 then
@@ -111,6 +114,24 @@ cecho ()
 	return
 }
 
+# check whether a given resource is available on a mirror
+# if the resource is found it will download from the mirror
+# it the resource is not found it will download from Apache archive
+apachedownload ()
+{
+	# test mirror
+	wget -q --spider "$APACHE_MIRROR$1"
+
+	if [ $? -eq "0" ]
+	then
+		# download from mirror
+		wget --progress=bar:force "$APACHE_MIRROR$1" 2>&1 | progressfilt
+	else
+		# download from archive
+		wget --progress=bar:force "$APACHE_ARCHIVE$1" 2>&1 | progressfilt
+	fi
+}
+
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 cecho "Checking requirements." $green
@@ -203,10 +224,10 @@ cd /opt/solr-tomcat/
 
 cecho "Downloading Apache Tomcat $TOMCAT_VERSION" $green
 TOMCAT_MAINVERSION=`echo "$TOMCAT_VERSION" | cut -d'.' -f1`
-wget --progress=bar:force http://mirror.dkd.de/apache/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip 2>&1 | progressfilt
+apachedownload tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip
 
 cecho "Downloading Apache Solr $SOLR_VERSION" $green
-wget --progress=bar:force http://mirror.dkd.de/apache/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.zip 2>&1 | progressfilt
+apachedownload lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.zip
 
 cecho "Unpacking Apache Tomcat." $green
 unzip -q apache-tomcat-$TOMCAT_VERSION.zip
