@@ -126,7 +126,8 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 								$uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
 							}
 
-							$this->indexQueue->updateItem($table, $uid);
+							$configurationName = $this->getIndexingConfigurationName($table, $uid);
+							$this->indexQueue->updateItem($table, $uid, $configurationName);
 						} else {
 								// TODO should be moved to garbage collector
 							if ($this->indexQueue->containsItem($table, $uid)) {
@@ -217,7 +218,12 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 				}
 
 				if ($this->isEnabledRecord($recordTable, $record)) {
-					$this->indexQueue->updateItem($recordTable, $recordUid);
+					$configurationName = NULL;
+					if ($recordTable !== 'pages') {
+						$configurationName = $this->getIndexingConfigurationName($table, $uid);
+					}
+
+					$this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
 				}
 
 				if ($recordTable == 'pages') {
@@ -453,6 +459,47 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 		}
 
 		return $recordEnabled;
+	}
+
+	/**
+	 * Retrieves the name of the  Indexing Queue Configuration for a record
+	 *
+	 * @param string $recordTable Table to read from
+	 * @param int $recordUid Id of the record
+	 * @return string Name of indexing configuration
+	 */
+	protected function getIndexingConfigurationName($recordTable, $recordUid) {
+		$name = $recordTable;
+
+		$indexingConfigurations = $this->indexQueue->getTableIndexingConfigurations($this->solrConfiguration);
+
+		foreach ($indexingConfigurations as $indexingConfigurationName) {
+			$tableToIndex = $indexingConfigurationName;
+
+			if (!$this->solrConfiguration['index.']['queue.'][$indexingConfigurationName]) {
+				// ignore disabled indexing configurations
+				continue;
+			}
+
+			if (!empty($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
+				// table has been set explicitly. Allows to index the same table with different configurations
+				$tableToIndex = $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
+			}
+
+			if ($tableToIndex === $recordTable) {
+				$recordWhereClause = $this->buildUserWhereClause($indexingConfigurationName);
+				$record = t3lib_BEfunc::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+
+				if (!empty($record)) {
+					// we found a record which matches the conditions
+					$name = $indexingConfigurationName;
+					// FIXME currently returns after the first configuration match
+					break;
+				}
+			}
+		}
+
+		return $name;
 	}
 
 }
