@@ -68,6 +68,9 @@
 		<trans-unit id="solr.backend.index_queue_module.header_errors" xml:space="preserve">
 			<source>Errors</source>
 		</trans-unit>
+		<trans-unit id="solr.backend.danger_zone" xml:space="preserve">
+			<source>Danger Zone</source>
+		</trans-unit>
 		</body>
 	</file>
 </xliff>

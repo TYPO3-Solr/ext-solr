@@ -16,23 +16,7 @@
 	</div>
 </div>
 
-<div class="row-fluid section-divider">
-	<div class="span3">
-		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'emptyIndex'} )}">
-			<f:form.submit value="Empty Index" />
-		</f:form>
-	</div>
-	<div class="span9 action-description">
-		<h3>Empty Index</h3>
-		<p>
-		This will simply empty the site's index. When doing so it will take care of
-		only deleting the currently selected site's documents even if
-		you index multiple sites into one index.
-		</p>
-	</div>
-</div>
-
-<div class="row-fluid section-divider">
+<div class="row-fluid">
 	<div class="span3">
 		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'reloadIndexConfiguration'} )}">
 			<f:form.submit value="Reload Configuration" />
@@ -46,6 +30,30 @@
 		to make the changes become active. To reload configuration you can either restart
 		the whole Solr server or simply reload a specific core.
 		Here you can reload the site's cores/indexes.
+		</p>
+	</div>
+</div>
+
+<div class="row-fluid section-with-header danger-zone">
+	<h2>
+		<f:translate key="solr.backend.danger_zone"/>
+	</h2>
+</div>
+
+<div class="row-fluid">
+	<div class="span3">
+		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'emptyIndex'} )}">
+			<f:form.submit value="Empty Index" class="btn-sm btn-danger"/>
+		</f:form>
+	</div>
+	<div class="span9 action-description">
+		<h3>Empty Index</h3>
+
+		<p>
+			This will simply empty the site's index. When doing so it will take
+			care of
+			only deleting the currently selected site's documents even if
+			you index multiple sites into one index.
 		</p>
 	</div>
 </div>
