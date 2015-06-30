@@ -7,102 +7,108 @@
 <solr:backend.style file="{f:uri.resource(path:'StyleSheets/Backend/IndexQueueModule.css')}" />
 
 
-<div class="well">
-	<f:translate key="solr.backend.index_queue_module.description" />
+<div class="row-fluid section-divider">
+	<div class="well">
+		<f:translate key="solr.backend.index_queue_module.description" />
+	</div>
 </div>
 
 
+<div class="row-fluid section-divider section-with-header">
+	<h2>
+		<f:translate key="solr.backend.index_queue_module.header_init" />
+	</h2>
 
-<h2>
-	<f:translate key="solr.backend.index_queue_module.title" />
-</h2>
+	<f:form name="editform" actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'initializeIndexQueue'} )}">
 
-<f:form name="editform" actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'initializeIndexQueue'} )}">
+		<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
+		<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" />
+		<solr:backend.button.HelpButton title="Index Queue Initialization">
+			<f:translate key="solr.backend.index_queue_module.help" />
+		</solr:backend.button.HelpButton>
 
-	<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
-	<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" />
-	<solr:backend.button.HelpButton title="Index Queue Initialization">
-		<f:translate key="solr.backend.index_queue_module.help" />
-	</solr:backend.button.HelpButton>
-
-</f:form>
-
-<hr class="gap" />
-
-<script type="text/json" id="indexqueue_stats">
-	<f:format.raw>{indexqueue_stats}</f:format.raw>
-</script>
+	</f:form>
+</div>
 
 
+<div class="row-fluid section-divider section-with-header">
+	<script type="text/json" id="indexqueue_stats">
+		<f:format.raw>{indexqueue_stats}</f:format.raw>
+	</script>
 
-<div class="row-fluid">
-	<div class="span8 well">
-		<h2>
-			<f:translate key="solr.backend.index_queue_module.errors.headline" />
-		</h2>
+	<h2>
+		<f:translate key="solr.backend.index_queue_module.header_errors"/>
+	</h2>
 
-		<table class="table">
-			<tr>
-				<th>
-					<f:translate key="solr.backend.index_queue_module.errors.id" />
-				</th>
-				<th>
-					<f:translate key="solr.backend.index_queue_module.errors.item_type" />
-				</th>
-				<th>
-					<f:translate key="solr.backend.index_queue_module.errors.item_uid" />
-				</th>
-				<th></th>
-			</tr>
+	<div class="row-fluid">
+		<div class="span8 well">
+			<h2>
+				<f:translate key="solr.backend.index_queue_module.errors.headline" />
+			</h2>
 
-			<f:for each="{indexqueue_errors}" as="item">
+			<table class="table">
 				<tr>
-					<td>{item.uid}</td>
-					<td>{item.item_type}</td>
-					<td>{item.item_uid}</td>
-					<td>
-						<script type="text/plain">
-							{item.errors}
-						</script>
-						<a href="javascript:void(0);" class="show_error">
-							<f:translate key="solr.backend.index_queue_module.errors.show_button" />
-						</a>
-					</td>
+					<th>
+						<f:translate key="solr.backend.index_queue_module.errors.id" />
+					</th>
+					<th>
+						<f:translate key="solr.backend.index_queue_module.errors.item_type" />
+					</th>
+					<th>
+						<f:translate key="solr.backend.index_queue_module.errors.item_uid" />
+					</th>
+					<th></th>
 				</tr>
-			</f:for>
-		</table>
 
-		<f:if condition="{indexqueue_errors}">
-			<a href="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'resetLogErrors'} )}"
-				class="btn btn-default" >
-				<f:translate key="solr.backend.index_queue_module.errors.reset_button" />
-			</a>
-		</f:if>
-	</div>
+				<f:for each="{indexqueue_errors}" as="item">
+					<tr>
+						<td>{item.uid}</td>
+						<td>{item.item_type}</td>
+						<td>{item.item_uid}</td>
+						<td>
+							<script type="text/plain">
+								{item.errors}
+							</script>
+							<a href="javascript:void(0);" class="show_error">
+								<f:translate key="solr.backend.index_queue_module.errors.show_button" />
+							</a>
+						</td>
+					</tr>
+				</f:for>
+			</table>
 
-	<div class="span4 well stats_container">
-		<h2>
-			<f:translate key="solr.backend.index_queue_module.status.headline" />
-		</h2>
-
-		<canvas id="indexqueue_stats_chart" width="100" height="100"></canvas>
-
-		<div style="clear: both;"></div>
-
-		<div class="legend">
-			<span class="color" style="background: #EB813F;"></span>
-			<f:translate key="solr.backend.index_queue_module.status.pending" />
-			<span id="pending_numbers"></span>
+			<f:if condition="{indexqueue_errors}">
+				<a href="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'resetLogErrors'} )}"
+					class="btn btn-default" >
+					<f:translate key="solr.backend.index_queue_module.errors.reset_button" />
+				</a>
+			</f:if>
 		</div>
-		<div class="legend">
-			<span class="color" style="background: #FF3D3D;"></span>
-			<f:translate key="solr.backend.index_queue_module.status.errors" />
-			<span id="error_numbers"></span>
-		</div>
-		<div class="legend">
-			<span class="color" style="background: #9FC299;"></span>
-			<f:translate key="solr.backend.index_queue_module.status.indexed" />
-			<span id="indexed_numbers"></span>
+
+		<div class="span4 well stats_container">
+			<h2>
+				<f:translate key="solr.backend.index_queue_module.status.headline" />
+			</h2>
+
+			<canvas id="indexqueue_stats_chart" width="100" height="100"></canvas>
+
+			<div style="clear: both;"></div>
+
+			<div class="legend">
+				<span class="color" style="background: #EB813F;"></span>
+				<f:translate key="solr.backend.index_queue_module.status.pending" />
+				<span id="pending_numbers"></span>
+			</div>
+			<div class="legend">
+				<span class="color" style="background: #FF3D3D;"></span>
+				<f:translate key="solr.backend.index_queue_module.status.errors" />
+				<span id="error_numbers"></span>
+			</div>
+			<div class="legend">
+				<span class="color" style="background: #9FC299;"></span>
+				<f:translate key="solr.backend.index_queue_module.status.indexed" />
+				<span id="indexed_numbers"></span>
+			</div>
 		</div>
 	</div>
 </div>

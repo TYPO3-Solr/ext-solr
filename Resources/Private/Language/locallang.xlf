@@ -62,8 +62,11 @@
 		<trans-unit id="solr.backend.index_queue_module.status.pending" xml:space="preserve">
 			<source> Pending:</source>
 		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.title" xml:space="preserve">
+		<trans-unit id="solr.backend.index_queue_module.header_init" xml:space="preserve">
 			<source>Index Queue Initialization</source>
+		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.header_errors" xml:space="preserve">
+			<source>Errors</source>
 		</trans-unit>
 		</body>
 	</file>

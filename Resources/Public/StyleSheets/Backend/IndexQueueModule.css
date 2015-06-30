@@ -14,9 +14,6 @@
     border-radius: 10px;
 }
 
-hr.gap {
-    border: 0;
-    background: transparent;
-    color: transparent;
-    margin: 0 0  20px 0;
+.section-with-header h2 {
+    margin-top: 0;
 }
