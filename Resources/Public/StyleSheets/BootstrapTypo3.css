@@ -123,3 +123,29 @@ textarea,
 .uneditable-input {
 	width: 206px;
 }
+
+
+/* force Bootstrap styles */
+
+input[type="submit"].btn-danger {
+	color: #ffffff;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #da4f49;
+	border-color: #bd362f #bd362f #802420;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+input[type="submit"].btn-danger:hover,
+input[type="submit"].btn-danger:focus,
+input[type="submit"].btn-danger:active,
+input[type="submit"].btn-danger.active,
+input[type="submit"].btn-danger.disabled,
+input[type="submit"].btn-danger[disabled] {
+	color: #ffffff;
+	background-color: #bd362f;
+}
+
+input[type="submit"].btn-danger:active,
+input[type="submit"].btn-danger.active {
+	background-color: #942a25;
+}
