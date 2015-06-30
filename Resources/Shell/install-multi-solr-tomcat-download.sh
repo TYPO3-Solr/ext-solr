@@ -116,7 +116,7 @@ wgetresource ()
 	if [ "$2" ]
 	then
 		# If second parameter is set, just check if resource exists, no output
-		wget -q -O /dev/null --no-check-certificate $RESOURCE
+		wget -q --spider --no-check-certificate $RESOURCE
 	else
 		echo "wget $RESOURCE"
 		wget --progress=bar:force --no-check-certificate $RESOURCE 2>&1 
@@ -166,7 +166,7 @@ cecho "Checking requirements." $green
 PASSALLCHECKS=1
 
 # test if release branch exists, if so we'll download from there
-wget --no-check-certificate -q -O /dev/null https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/$GITBRANCH_PATH/Resources/Solr/solr.xml
+wget --no-check-certificate -q --spider https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/$GITBRANCH_PATH/Resources/Solr/solr.xml
 BRANCH_TEST_RETURN=$?
 
 # Make sure only root can run this script
@@ -207,7 +207,7 @@ CHECK=$?
 if [ $CHECK -ne "0" ]
 then
 	cecho "ERROR couldn't ping Apache download mirror, try again using wget" $yellow
-	wget -q -O /dev/null http://mirror.dkd.de/apache/
+	wget -q --spider http://mirror.dkd.de/apache/
 	if [ $? -ne "0" ]
 	then
 		cecho "ERROR Also couldn't reach the Apache download mirror using wget. Please check your internet connection." $red
