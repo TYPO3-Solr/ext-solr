@@ -63,6 +63,10 @@ hr.double {
 	margin-bottom: 24px;
 }
 
+.section-with-header h2 {
+	margin-top: 0;
+}
+
 
 /* ----- Forms ----- */
 
