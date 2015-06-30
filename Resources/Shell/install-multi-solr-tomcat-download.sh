@@ -19,6 +19,9 @@ JAVA_VERSION=7
 
 GITBRANCH_PATH="release-$EXT_SOLR_VERSION.x"
 
+APACHE_MIRROR="http://mirror.dkd.de/apache/"
+APACHE_ARCHIVE="http://archive.apache.org/dist/"
+
 AVAILABLE_LANGUAGES="arabic,armenian,basque,brazilian_portuguese,bulgarian,burmese,catalan,chinese,czech,danish,dutch,english,finnish,french,galician,german,greek,hindi,hungarian,indonesian,italian,japanese,khmer,korean,lao,norwegian,persian,polish,portuguese,romanian,russian,spanish,swedish,thai,turkish,ukrainian"
 
 usage()
@@ -124,6 +127,24 @@ wgetresource ()
 
 	# return wget error code
 	return $?
+}
+
+# check whether a given resource is available on a mirror
+# if the resource is found it will download from the mirror
+# it the resource is not found it will download from Apache archive
+apachedownload ()
+{
+	# test mirror
+	wget -q --spider "$APACHE_MIRROR$1"
+
+	if [ $? -eq "0" ]
+	then
+		# download from mirror
+		wget --progress=bar:force "$APACHE_MIRROR$1" 2>&1 | progressfilt
+	else
+		# download from archive
+		wget --progress=bar:force "$APACHE_ARCHIVE$1" 2>&1 | progressfilt
+	fi
 }
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -252,7 +273,7 @@ cd /opt/solr-tomcat/
 
 cecho "Downloading Apache Tomcat $TOMCAT_VERSION" $green
 TOMCAT_MAINVERSION=`echo "$TOMCAT_VERSION" | cut -d'.' -f1`
-wget --progress=bar:force http://mirror.dkd.de/apache/tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip 2>&1 | progressfilt
+apachedownload tomcat/tomcat-$TOMCAT_MAINVERSION/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.zip
 
 cecho "Unpacking Apache Tomcat." $green
 unzip -q apache-tomcat-$TOMCAT_VERSION.zip
@@ -272,7 +293,8 @@ do
 
   cd /opt/solr-tomcat
   cecho "Downloading Apache Solr $SOLR" $green
-  wget --progress=bar:force http://mirror.dkd.de/apache/lucene/solr/$SOLR_VERSION/$SOLR_PACKAGE_NAME-$SOLR_VERSION.zip 2>&1 | progressfilt
+  apachedownload lucene/solr/$SOLR_VERSION/$SOLR_PACKAGE_NAME-$SOLR_VERSION.zip
+
   cecho "Unpacking Apache Solr." $green
   unzip -q $SOLR_PACKAGE_NAME-$SOLR.zip
   cp $SOLR_PACKAGE_NAME-$SOLR/dist/$SOLR_PACKAGE_NAME-$SOLR.war tomcat/webapps/solr-$SOLR.war
