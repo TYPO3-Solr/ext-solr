@@ -7,11 +7,6 @@
 	"type": "typo3-cms-extension",
 	"keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
 	"homepage": "http://www.typo3-solr.com",
-	"source": {
-		"type": "git",
-		"url": "git://git.typo3.org/TYPO3CMS/Extensions/solr.git",
-		"reference": "master"
-	},
 	"authors": [
 		{
 			"name": "Ingo Renner",
