@@ -44,9 +44,10 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 	 *
 	 * @param string $action
 	 * @param string $label
+	 * @param string $class
 	 * @return string Markup for form with button
 	 */
-	public function render($action, $label) {
+	public function render($action, $label, $class) {
 		$module = $this->renderingContext->getTemplateVariableContainer()->get('module');
 		/** @var \ApacheSolrForTypo3\Solr\Backend\SolrModule\AbstractModuleController $module */
 
@@ -62,7 +63,7 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 		);
 
 		$formNode         = $this->getForm($actionUri);
-		$submitButtonNode = $this->getButton($label);
+		$submitButtonNode = $this->getButton($label, $class);
 
 		$formNode->addChildNode($submitButtonNode);
 
@@ -99,12 +100,17 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 	 * Creates a Fluid submit button node
 	 *
 	 * @param string $label Label
+	 * @param string $cssClass Optional CSS class(es), defaults to empty string
 	 * @return \TYPO3\CMS\Fluid\Core\Parser\SyntaxTree\ViewHelperNode
 	 */
-	protected function getButton($label) {
+	protected function getButton($label, $cssClass = '') {
 		$valueArgumentNode = $this->objectManager->get(
 			'TYPO3\\CMS\\Fluid\\Core\\Parser\\SyntaxTree\\TextNode',
 			$label
+		);
+		$classArgumentNode = $this->objectManager->get(
+			'TYPO3\\CMS\\Fluid\\Core\\Parser\\SyntaxTree\\TextNode',
+			$cssClass
 		);
 
 		$submitButton = $this->objectManager->get('TYPO3\\CMS\\Fluid\\ViewHelpers\\Form\\SubmitViewHelper');
@@ -114,7 +120,10 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 		$submitButtonNode = $this->objectManager->get(
 			'TYPO3\\CMS\\Fluid\\Core\\Parser\\SyntaxTree\\ViewHelperNode',
 			$submitButton,
-			array('value' => $valueArgumentNode)
+			array(
+				'value' => $valueArgumentNode,
+				'class' => $classArgumentNode
+			)
 		);
 
 		return $submitButtonNode;
