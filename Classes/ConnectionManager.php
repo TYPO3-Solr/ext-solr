@@ -438,7 +438,7 @@ class Tx_Solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	}
 
 	/**
-	 * Gets the language name for a given lanuguage ID.
+	 * Gets the language name for a given language ID.
 	 *
 	 * @param integer $languageId language ID
 	 * @return string Language name

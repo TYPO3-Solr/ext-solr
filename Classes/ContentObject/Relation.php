@@ -31,7 +31,7 @@
  * localField: the record's field to use to resolve relations
  * foreignLabelField: Usually the label field to retrieve from the related records is determined automatically using TCA, using this option the desired field can be specified explicitly
  * multiValue: whether to return related records suitable for a multi value field
- * singleValueGlue: when not using multiValue, the related records need to be concatened using a glue string, by default this is ", ". Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters.
+ * singleValueGlue: when not using multiValue, the related records need to be concatenated using a glue string, by default this is ", ". Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters.
  * relationTableSortingField: field in an mm relation table to sort by, usually "sorting"
  * enableRecursiveValueResolution: if the specified remote table's label field is a relation to another table, the value will be resolve by following the relation recursively.
  * removeEmptyValues: Removes empty values when resolving relations, defaults to TRUE

@@ -28,7 +28,7 @@
 
 
 /**
- * FacetstModifier interface, allows to modify facet fields and their counts.
+ * FacetsModifier interface, allows to modify facet fields and their counts.
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @package TYPO3

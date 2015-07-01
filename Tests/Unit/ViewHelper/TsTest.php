@@ -24,7 +24,7 @@
 
 
 /**
- * PHP Unittest for viehelper Tx_Solr_viewhelper_Ts
+ * PHP Unit test for view helper Tx_Solr_viewhelper_Ts
  *
  * @author Timo Webler <timo.webler@dkd.de>
  * @package TYPO3
@@ -40,7 +40,7 @@ class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 	/**
 	 * @var array
 	 */
-	protected $fixures = array();
+	protected $fixtures = array();
 
 	public function setUp() {
 		Tx_Solr_Util::initializeTsfe('1');
@@ -64,7 +64,7 @@ class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 			)
 		);
 
-		$this->fixures = array('argument content', '<span>argument content with html</span>', 'third argument conten');
+		$this->fixtures = array('argument content', '<span>argument content with html</span>', 'third argument content');
 
 		$this->viewHelper = new Tx_Solr_viewhelper_Ts();
 	}
@@ -74,7 +74,7 @@ class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 	 */
 	public function getTypoScriptPathWithoutCObject() {
 		$path = 'plugin.tx_solr.search.detailPage';
-		$arguments = $this->fixures;
+		$arguments = $this->fixtures;
 		array_unshift($arguments, $path);
 		$expected = 5050;
 
@@ -88,7 +88,7 @@ class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 	 */
 	public function getTypoScriptPathAsCObject() {
 		$path = 'plugin.tx_solr.renderObjects.testContent';
-		$arguments = $this->fixures;
+		$arguments = $this->fixtures;
 		array_unshift($arguments, $path);
 		$expected = 'argument content';
 
@@ -102,7 +102,7 @@ class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 	 */
 	public function getTypoScriptPathAsCObjectWithMoreThanOneArgument() {
 		$path = 'plugin.tx_solr.renderObjects.testContent2';
-		$arguments = $this->fixures;
+		$arguments = $this->fixtures;
 		array_unshift($arguments, $path);
 		$expected = 'argument content with html';
 

@@ -191,7 +191,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			$rawPost = '';
 		}
 
-			// Add default paramseters
+			// Add default parameters
 		$parameters['wt'] = self::SOLR_WRITER;
 		$parameters['json.nl'] = $this->_namedListTreatment;
 		$url = $this->_constructUrl($servlet, $parameters);

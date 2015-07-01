@@ -173,7 +173,7 @@ class Tx_Solr_Typo3PageIndexer {
 	 */
 	public function indexPage() {
 		$pageIndexed = FALSE;
-		$documents   = array(); // this will become usefull as soon as when starting to index individual records instead of whole pages
+		$documents   = array(); // this will become useful as soon as when starting to index individual records instead of whole pages
 
 		if (is_null($this->solrConnection)) {
 				// intended early return as it doesn't make sense to continue
@@ -214,7 +214,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Builds the Solr document for the current page.
 	 *
-	 * @return Apache_Solr_Document A documment representing the page
+	 * @return Apache_Solr_Document A document representing the page
 	 */
 	protected function getPageDocument() {
 		$document   = t3lib_div::makeInstance('Apache_Solr_Document');

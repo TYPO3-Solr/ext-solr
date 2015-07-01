@@ -29,7 +29,7 @@
 	line-height: 16px;
 	font-size: 11px;
 	margin: auto;
-	padding: 0px;
+	padding: 0;
 	border: 1px solid;
 	border-radius: 5px;
 	cursor: default;
@@ -118,7 +118,7 @@ form span.example {
 /* ----- Index Fields ----- */
 
 #typo3-inner-docbody p {
-	margin: 7px 0px;
+	margin: 7px 0;
 }
 
 table.tx_solr_index_list {
@@ -162,7 +162,7 @@ table.tx_solr_index_list {
 }
 
 .core-metrics h3 {
-	margin-bottom: 0px;
+	margin-bottom: 0;
 }
 
 

@@ -79,8 +79,8 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements tx_schedul
 	 *
 	 * @param array				 $taskInfo: reference to the array containing the info used in the add/edit form
 	 * @param tx_scheduler_Task	 $task: when editing, reference to the current task object. Null when adding.
-	 * @param tx_scheduler_module1 $schedulerModule: reference to the calling object (Scheduler's BE module)
-	 * @return array				 Array containg all the information pertaining to the additional fields
+	 * @param tx_scheduler_module $schedulerModule: reference to the calling object (Scheduler's BE module)
+	 * @return array				 Array containing all the information pertaining to the additional fields
 	 *									The array is multidimensional, keyed to the task class name and each field's id
 	 *									For each field it provides an associative sub-array with the following:
 	 */

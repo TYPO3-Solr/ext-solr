@@ -22,5 +22,5 @@ table.tx_solr-TCEforms table.typo3-TCEforms-select-checkbox td.c-labelCell {
 }
 
 .tx_scheduler_mod1 .extra_fields_tx_solr_scheduler_ReIndexTask .tx_solr-TCEforms td {
-	padding-left: 0px;
+	padding-left: 0;
 }

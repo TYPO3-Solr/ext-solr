@@ -70,7 +70,7 @@ class Tx_Solr_ViewHelper_Link implements Tx_Solr_ViewHelper {
 			// by default or if no link target is set, link to the current page
 		$linkTarget = $GLOBALS['TSFE']->id;
 
-			// if the link target is a number, interprete it as a page ID
+			// if the link target is a number, interpret it as a page ID
 		$linkArgument = trim($arguments[1]);
 		if (is_numeric($linkArgument)) {
 			$linkTarget = intval($linkArgument);

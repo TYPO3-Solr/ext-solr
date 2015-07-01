@@ -100,7 +100,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Provides a hook for other classes to process the search's response.
 	 *
 	 * @param Tx_Solr_Query The query that has been searched for.
-	 * @param Apache_Solr_Response The search's reponse.
+	 * @param Apache_Solr_Response The search's response.
 	 */
 	protected function processResponse(Tx_Solr_Query $query, Apache_Solr_Response &$response) {
 		$rawUserQuery = $this->getRawUserQuery();
@@ -395,7 +395,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	}
 
 	/**
-	 * Gets a list of EXT:solr variables like theprefix ID.
+	 * Gets a list of EXT:solr variables like the prefix ID.
 	 *
 	 * @return array array of EXT:solr variables
 	 */
@@ -478,7 +478,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	}
 
 	/**
-	 * Returns the key which is used to determine the templatefile from the typoscript setup.
+	 * Returns the key which is used to determine the template file from the typoscript setup.
 	 *
 	 * @see Tx_Solr_PluginBase_PluginBase#getTemplateFileKey()
 	 * @return string

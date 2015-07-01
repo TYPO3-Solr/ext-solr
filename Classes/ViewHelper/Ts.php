@@ -101,8 +101,8 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 	}
 
 	/**
-	 * Returns the viewhelper's internal cObj. If it hasn't been used yet, a
-	 * new cObj ist instanciated on demand.
+	 * Returns the viewhelper's internal cObj. If it has not been used yet, a
+	 * new cObj ist instantiated on demand.
 	 *
 	 * @return tslib_cObj A content object.
 	 */

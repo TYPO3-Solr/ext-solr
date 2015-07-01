@@ -27,7 +27,7 @@
 /**
  * This abstract class should be used to implement commandBased templates.
  * Inheriting plugins should implement the methods getCommandResolver()
- * and getCommandList() the implemented render method applys
+ * and getCommandList() the implemented render method applies
  * the registered commands and renders the result into the template.
  *
  * @author Ingo Renner <ingo@typo3.org>

@@ -99,7 +99,7 @@ class Tx_Solr_ViewHelper_Relevance implements Tx_Solr_ViewHelper {
 		if (is_numeric($document)) {
 				// backwards compatibility
 			t3lib_div::deprecationLog('You are using an old notation of the '
-				. 'releavnace view helpers. The notation used to be '
+				. 'relevance view helpers. The notation used to be '
 				. '###RELEVANCE:###RESULT_DOCUMENT.SCORE######, please change '
 				. 'this to simply provide the whole result document: '
 				. '###RELEVANCE:###RESULT_DOCUMENT######'

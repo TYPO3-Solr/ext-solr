@@ -53,7 +53,7 @@ class Tx_Solr_ViewHelper_Date implements Tx_Solr_ViewHelper {
 	}
 
 	/**
-	 * Converts a given unix timestamp to a human readble date
+	 * Converts a given unix timestamp to a human readable date
 	 *
 	 * @param array $arguments
 	 * @return	string

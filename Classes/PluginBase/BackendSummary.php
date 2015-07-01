@@ -45,7 +45,7 @@ class Tx_Solr_PluginBase_BackendSummary {
 	}
 
 	/**
-	 * Returns information about a plugin's flexform configruation
+	 * Returns information about a plugin's flexform configuration
 	 *
 	 * @param array $parameters Parameters to the hook
 	 * @return string Plugin configuration information
@@ -57,7 +57,7 @@ class Tx_Solr_PluginBase_BackendSummary {
 		$this->getFilter();
 		$this->getSorting();
 		$this->getResultsPerPage();
-		$this->getBoostFuntion();
+		$this->getBoostFunction();
 		$this->getBoostQuery();
 		$this->getTemplateFile();
 
@@ -131,7 +131,7 @@ class Tx_Solr_PluginBase_BackendSummary {
 		}
 	}
 
-	protected function getBoostFuntion() {
+	protected function getBoostFunction() {
 		$boostFunction = $this->getFieldFromFlexform('boostFunction', 'sQuery');
 
 		if (!empty($boostFunction)) {

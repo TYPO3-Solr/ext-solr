@@ -14,7 +14,7 @@ Things we are working on or got working already include the following:
 - More Like This
 - Several Reports
 - Advanced faceting features including hierarchical facets
-- Backend Modul for Solr administration
+- Backend Module for Solr administration
 - Results Grouping
 - Language Detection
 - Crawling of External non-TYPO3 Websites

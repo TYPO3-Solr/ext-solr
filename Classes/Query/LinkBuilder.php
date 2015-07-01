@@ -66,7 +66,7 @@ class Tx_Solr_Query_LinkBuilder {
 	protected $linkTargetPageId;
 
 	/**
-	 * Additional URL parameters applicaple to all URLs
+	 * Additional URL parameters applicable to all URLs
 	 *
 	 * @var string
 	 */

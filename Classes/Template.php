@@ -477,11 +477,11 @@ class Tx_Solr_Template {
 				FALSE
 			);
 
-				// there might be more occurences of the same subpart maker with
+				// there might be more occurrences of the same subpart maker with
 				// the same arguments but different markup to be used...
-				// that's the case with the facet subpart vierw helper f.e.
-			$furtherOccurences = strpos($content, $subpartMarker);
-			if ($furtherOccurences !== FALSE) {
+				// that's the case with the facet subpart view helper f.e.
+			$furtherOccurrences = strpos($content, $subpartMarker);
+			if ($furtherOccurrences !== FALSE) {
 				$content = $this->renderSubpartViewHelper($viewHelper, $helperKey, $content);
 			}
 		}

@@ -33,7 +33,7 @@
  */
 class Tx_Solr_ViewHelper_Multivalue implements Tx_Solr_ViewHelper {
 
-		// defaults if neather is given trough the view helper marker, nor through TS
+		// defaults if neither is given trough the view helper marker, nor through TS
 	protected $glue = ', ';
 
 	/**

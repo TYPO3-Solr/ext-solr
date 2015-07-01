@@ -41,7 +41,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_Com
 	 * Returns an initialized commandResolver. In this case we use the command
 	 * of the results view.
 	 *
-	 * @todo	currently the commands of the resultview are used, we should discuss if we use own command here
+	 * @todo currently the commands of the result view are used, we should discuss if we use own command here
 	 * @see Tx_Solr_PluginBase_CommandPluginBase#getCommandResolver()
 	 * @return Tx_Solr_CommandResolver A command resolver
 	 */
@@ -50,7 +50,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_Com
 	}
 
 	/**
-	 * Retrievs the list of commands we have to process for the results view
+	 * Retrieves the list of commands we have to process for the results view
 	 *
 	 * @return array Array of command names to process for the result view
 	 */
@@ -65,7 +65,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_Com
 	/**
 	 * Gets a list of EXT:solr variables like the prefix ID.
 	 *
-	 * @todo	refactor into baseclass
+	 * @todo	refactor into base class
 	 * @return array array of EXT:solr variables
 	 */
 	protected function getSolrVariables() {
@@ -83,7 +83,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_Com
 	}
 
 	/**
-	 * Perform the action for the plugin. In this case it doesn't do anything
+	 * Perform the action for the plugin. In this case it does not do anything
 	 * as the plugin simply renders the frequent searches command.
 	 *
 	 * @return void

@@ -156,7 +156,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	 * instructions configured in TS. Currently available instructions are
 	 * 	* timestamp - converts a date field into a unix timestamp
 	 * 	* serialize - uses serialize() to encode multivalue fields which then can be put out using the MULTIVALUE view helper
-	 * 	* skip - skips the whole field so that it is not available in the result, usefull for the spell field f.e.
+	 * 	* skip - skips the whole field so that it is not available in the result, useful for the spell field f.e.
 	 * The default is to do nothing and just add the document's field to the
 	 * resulting array.
 	 *
@@ -172,7 +172,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 			$processingInstruction = $processingInstructions[$fieldName];
 
 				// TODO switch to field processors
-				// TODO allow to have multiple (commaseparated) instructions for each field
+				// TODO allow to have multiple (comma-separated) instructions for each field
 			switch ($processingInstruction) {
 				case 'timestamp':
 					$processedFieldValue = Tx_Solr_Util::isoToTimestamp($document->{$fieldName});

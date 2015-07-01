@@ -70,7 +70,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * resources required by the frontend helper to work.
 	 */
 	public function activate() {
-			// regsiter hooks
+			// register hooks
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__]        = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->disableFrontendOutput';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__]   = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->disableCaching';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->deactivateTcaFrontendGroupEnableFields';

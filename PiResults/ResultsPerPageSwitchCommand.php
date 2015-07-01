@@ -24,7 +24,7 @@
 
 
 /**
- * Results per page switchview command
+ * Results per page switch view command
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3

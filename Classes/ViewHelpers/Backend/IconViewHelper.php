@@ -45,9 +45,8 @@ class IconViewHelper extends AbstractBackendViewHelper {
 	/**
 	 * Renders an icon using the sprite manager
 	 *
-	 * @param string $uri the target URI for the link. If you want to execute JavaScript here, prefix the URI with "javascript:
-	 * @param string $icon Icon to be used. See self::allowedIcons for a list of allowed icon names
-	 * @param string $title Title attribte of the resulting link
+	 * @param string $iconName Icon name
+	 * @param string $extension Extension key, defaults to solr
 	 * @return string the rendered icon
 	 */
 	public function render($iconName, $extension = 'solr') {

@@ -73,6 +73,7 @@ class Tx_Solr_Query_FilterEncoder_Range implements Tx_Solr_QueryFilterEncoder, T
 	 *
 	 * @param string $facetName Facet name
 	 * @param array $facetConfiguration The facet's configuration
+	 * @return array
 	 */
 	public function buildFacetParameters($facetName, array $facetConfiguration) {
 		$facetParameters = array();

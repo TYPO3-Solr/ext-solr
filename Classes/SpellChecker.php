@@ -92,7 +92,7 @@ class Tx_Solr_SpellChecker {
 	/**
 	 * Query URL with a suggested/corrected query
 	 *
-	 * @return string Suggestion/spellchecked query URL
+	 * @return string Suggestion/spell checked query URL
 	 */
 	public function getSuggestionQueryUrl() {
 		$suggestions = $this->getSuggestions();
@@ -109,7 +109,7 @@ class Tx_Solr_SpellChecker {
 	/**
 	 * Query link with a suggested/corrected query
 	 *
-	 * @return string Suggestion/spellchecked query link
+	 * @return string Suggestion/spell checked query link
 	 */
 	public function getSuggestionQueryLink() {
 		$suggestions = $this->getSuggestions();

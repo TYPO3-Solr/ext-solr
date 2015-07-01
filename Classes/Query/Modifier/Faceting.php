@@ -143,13 +143,13 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 			// tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
 		if (is_array($resultParameters['filter'])) {
 			$filters = array_map('urldecode', $resultParameters['filter']);
-				// $filters look like array('name:value1','name:value2','fieldname2:lorem')
-			$configuredFacets = $this->getConfigurredFacets();
+				// $filters look like array('name:value1','name:value2','fieldname2:foo')
+			$configuredFacets = $this->getConfiguredFacets();
 
 				// first group the filters by facetName - so that we can
 				// decide later whether we need to do AND or OR for multiple
 				// filters for a certain facet/field
-				// $filtersByFacetName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('lorem'))
+				// $filtersByFacetName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('foo'))
 			$filtersByFacetName = array();
 			foreach ($filters as $filter) {
 					// only split by the first colon to allow using colons in the filter value itself
@@ -197,7 +197,7 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 	 *
 	 * @return array An array of facet names as specified in TypoScript
 	 */
-	protected function getConfigurredFacets() {
+	protected function getConfiguredFacets() {
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 		$facets = array();
 

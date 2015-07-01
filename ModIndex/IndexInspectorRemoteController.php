@@ -78,6 +78,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * Index Action, provides an array of documents indexed for a given page.
 	 *
 	 * @param integer $pageId The current page's uid.
+	 * @return \stdClass
 	 */
 	public function indexAction($pageId) {
 		$this->initialize($pageId);
@@ -124,7 +125,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	}
 
 	/**
-	 * Builds the repsonse's meta data / description.
+	 * Builds the response's meta data / description.
 	 *
 	 * @return object Response meta data
 	 */
@@ -177,15 +178,15 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 
 		$sortedData = $fields;
 
-		$formatedData = array();
+		$formattedData = array();
 		foreach ($sortedData as $fieldName => $fieldValue) {
-			$formatedData[] = array(
+			$formattedData[] = array(
 				'fieldName'  => $fieldName,
 				'fieldValue' => htmlspecialchars($fieldValue)
 			);
 		}
 
-		return $formatedData;
+		return $formattedData;
 	}
 }
 

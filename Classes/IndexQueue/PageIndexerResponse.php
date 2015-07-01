@@ -67,6 +67,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	 * Gets the complete set of results or a specific action's results.
 	 *
 	 * @param string $action Optional action name.
+	 * @return array
 	 */
 	public function getActionResult($action = NULL) {
 		$result = $this->results;

@@ -54,7 +54,7 @@ class Tx_Solr_JavascriptManager {
 	protected static $snippets = array();
 
 	/**
-	 * JavaScript tags to add to the page for the current inxtance
+	 * JavaScript tags to add to the page for the current instance
 	 *
 	 * @var array
 	 */
@@ -204,11 +204,13 @@ class Tx_Solr_JavascriptManager {
 
 			// add snippets
 		if (!empty($snippets)) {
-			$snippets = '<script type="text/javascript">
-				/*<![CDATA[*/
-			' . $snippets . '
-				/*]]>*/
-			</script>';
+			$snippets = <<<SNIPPETS
+<script type="text/javascript">
+	/*<![CDATA[*/
+	$snippets
+	/*]]>*/
+</script>
+SNIPPETS;
 
 			$this->javaScriptTags['snippets'] = $snippets;
 		}

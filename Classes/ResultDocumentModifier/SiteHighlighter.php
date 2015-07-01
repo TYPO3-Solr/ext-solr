@@ -26,7 +26,7 @@
 
 /**
  * Provides highlighting of the search words on the document's actual page by
- * adding parameters to a doument's URL property.
+ * adding parameters to a document's URL property.
  *
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>

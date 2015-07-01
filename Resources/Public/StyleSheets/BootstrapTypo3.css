@@ -40,7 +40,7 @@ h2 {
 }
 
 .well h2 {
-	margin-top: 0px;
+	margin-top: 0;
 }
 
 h3 {
@@ -50,7 +50,7 @@ h3 {
 }
 
 .well h3 {
-	margin-top: 0px;
+	margin-top: 0;
 }
 
 h4 {

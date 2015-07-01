@@ -27,7 +27,7 @@
 
 
 /**
- * Subsitute page indexer interface, describes the method an indexer must
+ * Substitute page indexer interface, describes the method an indexer must
  * implement to provide a substitute page document
  *
  * @author Ingo Renner <ingo@typo3.org>

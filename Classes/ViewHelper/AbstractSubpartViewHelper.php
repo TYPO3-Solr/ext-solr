@@ -25,7 +25,7 @@
 
 
 /**
- * Abstract subparty viewhelper
+ * Abstract subpart viewhelper
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
  * @package TYPO3

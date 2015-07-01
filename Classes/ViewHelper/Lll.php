@@ -95,14 +95,14 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 
 			// Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
 		if (is_array($configuration['_LOCAL_LANG.'])) {
-			foreach ($configuration['_LOCAL_LANG.'] as $language => $overideLabels) {
+			foreach ($configuration['_LOCAL_LANG.'] as $language => $overrideLabels) {
 				$language = substr($language, 0, -1);
 
-				if (is_array($overideLabels)) {
-					foreach ($overideLabels as $labelKey => $overideLabel) {
-						if (!is_array($overideLabel)) {
+				if (is_array($overrideLabels)) {
+					foreach ($overrideLabels as $labelKey => $overrideLabel) {
+						if (!is_array($overrideLabel)) {
 							$this->localLang[$this->languageFile][$language][$labelKey] = array(array(
-								'source' => $overideLabel
+								'source' => $overrideLabel
 							));
 						}
 					}

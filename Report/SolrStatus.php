@@ -64,19 +64,19 @@ class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
 	 * @param array Solr connection parameters
 	 * @return	tx_reports_reports_status_Status Status of the Solr connection
 	 */
-	protected function getConnectionStatus(array $solrConection) {
+	protected function getConnectionStatus(array $solrConnection) {
 		$value    = 'Your site was unable to contact the Apache Solr server.';
 		$severity = tx_reports_reports_status_Status::ERROR;
 
 		$solr = $this->connectionManager->getConnection(
-			$solrConection['solrHost'],
-			$solrConection['solrPort'],
-			$solrConection['solrPath'],
-			$solrConection['solrScheme']
+			$solrConnection['solrHost'],
+			$solrConnection['solrPort'],
+			$solrConnection['solrPath'],
+			$solrConnection['solrScheme']
 		);
 
 		$message  = '<ul>'
-			. '<li style="padding-bottom: 10px;">Site: ' . $solrConection['label'] . '</li>'
+			. '<li style="padding-bottom: 10px;">Site: ' . $solrConnection['label'] . '</li>'
 
 			. '<li>Scheme: ' . $solr->getScheme() . '</li>'
 			. '<li>Host: ' . $solr->getHost() . '</li>'

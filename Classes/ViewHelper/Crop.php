@@ -33,7 +33,7 @@
  */
 class Tx_Solr_ViewHelper_Crop implements Tx_Solr_ViewHelper {
 
-		// defaults if neather is given trough the view helper marker, nor through TS
+		// defaults if neither is given trough the view helper marker, nor through TS
 	protected $maxLength = 30;
 	protected $cropIndicator = '...';
 	protected $cropFullWords = TRUE;
@@ -58,7 +58,7 @@ class Tx_Solr_ViewHelper_Crop implements Tx_Solr_ViewHelper {
 	}
 
 	/**
-	 * returns the given string shortened to a max length of optionaly set chars.
+	 * returns the given string shortened to a max length of optionally set chars.
 	 * If no maxLength and/or cropIndicator parameters are set, default values apply
 	 *
 	 * @param array $arguments

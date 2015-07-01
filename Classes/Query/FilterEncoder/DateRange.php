@@ -77,6 +77,7 @@ class Tx_Solr_Query_FilterEncoder_DateRange implements Tx_Solr_QueryFilterEncode
 	 *
 	 * @param string $facetName Facet name
 	 * @param array $facetConfiguration The facet's configuration
+	 * @return array
 	 */
 	public function buildFacetParameters($facetName, array $facetConfiguration) {
 		$facetParameters = array();

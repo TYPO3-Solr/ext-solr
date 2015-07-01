@@ -435,7 +435,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	/**
 	 * Determines the template file from the configuration.
 	 *
-	 * Overwrite this method to use a diffrent template.
+	 * Overwrite this method to use a different template.
 	 *
 	 * @return string The template file name to be used for the plugin
 	 */

@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
@@ -197,8 +199,8 @@ abstract class AbstractModuleController extends ActionController implements Admi
 			if (!is_string($messageBody)) {
 				throw new \InvalidArgumentException('The message body must be of type string, "' . gettype($messageBody) . '" given.', 1243258395);
 			}
-			/* @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
-			$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			/* @var FlashMessage $flashMessage */
+			$flashMessage = GeneralUtility::makeInstance(
 				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $messageBody, $messageTitle, $severity, $storeInSession
 			);
 			$this->controllerContext->getFlashMessageQueue()->enqueue($flashMessage);

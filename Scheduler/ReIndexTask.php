@@ -111,7 +111,7 @@ class Tx_Solr_Scheduler_ReIndexTask extends tx_scheduler_Task {
 	/**
 	 * Gets the site / the site's root page uid this task is running on.
 	 *
-	 * @return Tx_Solr_Site The site's root page uid this task is optimizinh
+	 * @return Tx_Solr_Site The site's root page uid this task is optimizing
 	 */
 	public function getSite() {
 		return $this->site;

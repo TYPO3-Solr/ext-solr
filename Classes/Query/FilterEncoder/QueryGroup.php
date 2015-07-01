@@ -31,7 +31,7 @@
 class Tx_Solr_Query_FilterEncoder_QueryGroup implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
 
 	/**
-	 * constructor for class Tx_Solr_Query_FilterEncoder_QueryQroup
+	 * constructor for class Tx_Solr_Query_FilterEncoder_QueryGroup
 	 */
 	public function __construct() {
 		$this->configuration = Tx_Solr_Util::getSolrConfiguration();

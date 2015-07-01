@@ -118,10 +118,10 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 		$pageId = $GLOBALS['TSFE']->id;
 
 		if (is_numeric($linkArgument)) {
-				// if the link target is a number, interprete it as a page ID
+				// if the link target is a number, interpret it as a page ID
 			$pageId = intval($linkArgument);
 		} elseif (is_string($linkArgument) && !empty($linkArgument)) {
-				// interprete a TypoScript path
+				// interpret a TypoScript path
 			try {
 				$typoscript      = Tx_Solr_Util::getTypoScriptObject($linkArgument);
 				$pathExploded    = explode('.', $linkArgument);

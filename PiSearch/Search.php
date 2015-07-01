@@ -25,7 +25,7 @@
 
 
 /**
- * Plugin 'Solr Searchbox' for the 'solr' extension. A cached plugin version of
+ * Plugin 'Solr Search box' for the 'solr' extension. A cached plugin version of
  * just the search input field.
  *
  * @author Timo Schmidt <timo.schmidt@aoemedia.de>
@@ -59,7 +59,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	}
 
 	/**
-	 * Retrievs the list of commands we have to process for the results view
+	 * Retrieves the list of commands we have to process for the results view
 	 *
 	 * @return array Array of command names to process for the result view
 	 */
@@ -119,7 +119,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	/**
 	 * Gets a list of EXT:solr variables like the prefix ID.
 	 *
-	 * @todo	refactor into baseclass
+	 * @todo	refactor into base class
 	 * @return array array of EXT:solr variables
 	 */
 	protected function getSolrVariables() {

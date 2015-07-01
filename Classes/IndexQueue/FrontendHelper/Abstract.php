@@ -24,7 +24,7 @@
 
 
 /**
- * Index Queue page indexer frontend helper base class implementing comon
+ * Index Queue page indexer frontend helper base class implementing common
  * functionality.
  *
  * @author Ingo Renner <ingo@typo3.org>

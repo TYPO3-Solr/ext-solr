@@ -73,10 +73,10 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 	}
 
 	/**
-	 * Executes the command, renders the template subpart markers if facetting
+	 * Executes the command, renders the template subpart markers if faceting
 	 * is activated.
 	 *
-	 * @return array|null Array of facetting markers or null if facetting is deactivated
+	 * @return array|null Array of faceting markers or null if faceting is deactivated
 	 */
 	public function execute() {
 		$marker = array();
@@ -235,7 +235,7 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 	}
 
 	/**
-	 * Adds the JavaScript necessary for some of the facetting features;
+	 * Adds the JavaScript necessary for some of the faceting features;
 	 * folding/unfolding a list of facet options that exceed the configured
 	 * limit of visible options
 	 *
@@ -250,7 +250,7 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 				\'showFewer\' : \'' . $this->parentPlugin->pi_getLL('faceting_showFewer') . '\'
 			};
 		';
-		$javascriptManager->addJavascript('tx_solr-factingExpansionLabels', $expansionLabels);
+		$javascriptManager->addJavascript('tx_solr-facetingExpansionLabels', $expansionLabels);
 		$javascriptManager->loadFile('faceting.limitExpansion');
 	}
 

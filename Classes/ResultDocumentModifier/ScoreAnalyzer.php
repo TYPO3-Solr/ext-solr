@@ -127,7 +127,7 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 			<tr style="border-bottom: 2px solid #aaa; font-weight: bold;"><td>Score</td><td>Field</td><td>Boost</td></tr><tr>'
 			. implode('</tr><tr>', $scores)
 			. '</tr>
-			<tr><td colspan="3"><hr style="border-top: 1px solid #aaa; height: 0px; padding: 0px; margin: 0px;" /></td></tr>
+			<tr><td colspan="3"><hr style="border-top: 1px solid #aaa; height: 0; padding: 0; margin: 0;" /></td></tr>
 			<tr><td colspan="3">= ' . $totalScore . ' (Inaccurate analysis! Not all parts of the score have been taken into account.)</td></tr>
 			</table>';
 

@@ -34,7 +34,7 @@
 class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand {
 
 	/**
-	 * Instance of the caching frontend used to cachethis command's output.
+	 * Instance of the caching frontend used to cache this command's output.
 	 *
 	 * @var t3lib_cache_frontend_AbstractFrontend
 	 */
