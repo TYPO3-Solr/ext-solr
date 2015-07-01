@@ -298,6 +298,36 @@ class Tx_Solr_Template {
 	}
 
 	/**
+	 * Escapes a document's content field taking into account the wrap setting
+	 * for highlighting keywords
+	 *
+	 * @param string $content content field value
+	 * @return string escaped content
+	 */
+	protected function escapeResultContent($content) {
+
+		$content = htmlspecialchars($content, NULL, NULL, FALSE);
+
+		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$highlightingWrap = $configuration['search.']['results.']['resultsHighlighting.']['wrap'];
+		$highlightingWrap = explode('|', $highlightingWrap);
+
+		$pattern = '/'
+			. htmlspecialchars($highlightingWrap[0], NULL, NULL, FALSE)
+			. '(.+?)'
+			. str_replace('/', '\/', htmlspecialchars($highlightingWrap[1]))
+			. '/is';
+		$replacement = $highlightingWrap[0] . '$1' . $highlightingWrap[1];
+
+		#$pattern = '/&lt;span class="results-highlight"&gt;(.+?)&lt;\/span&gt;/is';
+		#$replacement = '<span class="results-highlight">$1</span>';
+		$content = preg_replace($pattern, $replacement, $content);
+
+
+		return $content;
+	}
+
+	/**
 	 * cleans the template from non-replaced markers and subparts
 	 *
 	 * @return void
@@ -490,10 +520,7 @@ class Tx_Solr_Template {
 				// escape content and title
 				$value = str_replace('#', '&#35;', $value);
 				if (isset($value['content'])) {
-					$value['content'] = htmlspecialchars($value['content'], NULL, NULL, FALSE);
-					$pattern = '/&lt;span class="results-highlight"&gt;(.+?)&lt;\/span&gt;/is';
-					$replacement = '<span class="results-highlight">$1</span>';
-					$value['content'] = preg_replace($pattern, $replacement, $value['content']);
+					$value['content'] = $this->escapeResultContent($value['content']);
 				}
 				if (isset($value['title'])) {
 					$value['title'] = htmlspecialchars($value['title'], NULL, NULL, FALSE);
