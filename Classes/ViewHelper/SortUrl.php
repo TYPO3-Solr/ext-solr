@@ -26,9 +26,9 @@
 /**
  * Creates a solr sorting URL by expanding a ###SOLR_URL:sortOption### marker.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 

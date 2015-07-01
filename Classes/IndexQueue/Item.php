@@ -27,30 +27,30 @@
  * Representation of an index queue item, carying meta data and the record to be
  * indexed.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_Item {
 
 	/**
 	 * The item's uid in the index queue (tx_solr_indexqueue_item.uid)
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	protected $indexQueueUid;
 
 	/**
 	 * The root page uid of the tree the item is located in (tx_solr_indexqueue_item.root)
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	protected $rootPageUid;
 
 	/**
 	 * The record's type, usually a table name, but could also be a file type (tx_solr_indexqueue_item.item_type)
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $type;
 
@@ -58,14 +58,14 @@ class Tx_Solr_IndexQueue_Item {
 	 * The name of the indexing configuration that should be used when indexing (tx_solr_indexqueue_item.indexing_configuration)
 	 * the item.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $indexingConfigurationName;
 
 	/**
 	 * The unix timestamp when the record was last changed (tx_solr_indexqueue_item.changed)
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	protected $changed;
 
@@ -101,7 +101,7 @@ class Tx_Solr_IndexQueue_Item {
 	/**
 	 * The record itself
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $record;
 
@@ -110,8 +110,8 @@ class Tx_Solr_IndexQueue_Item {
 	 * Constructor for class Tx_Solr_IndexQueue_Item, takes item meta data
 	 * information and resolves that to the full record.
 	 *
-	 * @param	array	Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
-	 * @param	array	Optional full record for the item. If provided, can save some SQL queries.
+	 * @param array Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
+	 * @param array Optional full record for the item. If provided, can save some SQL queries.
 	 */
 	public function __construct(array $itemMetaData, array $fullRecord = array()) {
 		$this->indexQueueUid = $itemMetaData['uid'];
@@ -135,7 +135,7 @@ class Tx_Solr_IndexQueue_Item {
 	/**
 	 * Gets the item's root page ID (uid)
 	 *
-	 * @return	integer	root page ID
+	 * @return integer root page ID
 	 */
 	public function getRootPageUid() {
 		return $this->rootPageUid;
@@ -196,7 +196,7 @@ class Tx_Solr_IndexQueue_Item {
 	 *
 	 * Uses lazy loading.
 	 *
-	 * @return	array	The item's DB record.
+	 * @return array The item's DB record.
 	 */
 	public function getRecord() {
 		if (empty($this->record)) {

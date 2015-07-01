@@ -57,23 +57,23 @@
  * like tt_news or the like. For records the groups are checked using OR
  * instead of using AND as it would be the case with content elements.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Access_Rootline {
 
 	/**
 	 * Delimiter for page and content access right elements in the rootline.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const ELEMENT_DELIMITER = '/';
 
 	/**
 	 * Storage for access rootline elements
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $rootlineElements = array();
 
@@ -81,7 +81,7 @@ class Tx_Solr_Access_Rootline {
 	 * Constructor, turns a string representation of an access rootline into an
 	 * object representation.
 	 *
-	 * @param	string	$accessRootline Access Rootline String representation.
+	 * @param string $accessRootline Access Rootline String representation.
 	 */
 	public function __construct($accessRootline = NULL) {
 		if (!is_null($accessRootline)) {
@@ -103,7 +103,7 @@ class Tx_Solr_Access_Rootline {
 	/**
 	 * Returns the string representation of the access rootline.
 	 *
-	 * @return	string	String representation of the access rootline.
+	 * @return string String representation of the access rootline.
 	 */
 	public function __toString() {
 		$stringElements = array();
@@ -118,7 +118,7 @@ class Tx_Solr_Access_Rootline {
 	/**
 	 * Adds an Access Rootline Element to the end of the rootline.
 	 *
-	 * @param	Tx_Solr_Access_RootlineElement	$rootlineElement Element to add.
+	 * @param Tx_Solr_Access_RootlineElement $rootlineElement Element to add.
 	 */
 	public function push(Tx_Solr_Access_RootlineElement $rootlineElement) {
 		$lastElementIndex = max(0, (count($this->rootlineElements) - 1));
@@ -145,7 +145,7 @@ class Tx_Solr_Access_Rootline {
 	/**
 	 * Gets a the groups in the Access Rootline.
 	 *
-	 * @return	array	An array of sorted, unique user group IDs required to access a page.
+	 * @return array An array of sorted, unique user group IDs required to access a page.
 	 */
 	public function getGroups() {
 		$groups = array();
@@ -163,8 +163,8 @@ class Tx_Solr_Access_Rootline {
 	/**
 	 * Gets the Access Rootline for a specific page Id.
 	 *
-	 * @param	integer	$pageId The page Id to generate the Access Rootline for.
-	 * @return	Tx_Solr_Access_Rootline	Access Rootline for the given page Id.
+	 * @param integer $pageId The page Id to generate the Access Rootline for.
+	 * @return Tx_Solr_Access_Rootline Access Rootline for the given page Id.
 	 */
 	public static function getAccessRootlineByPageId($pageId) {
 		$accessRootline = t3lib_div::makeInstance('Tx_Solr_Access_Rootline');
@@ -203,8 +203,8 @@ class Tx_Solr_Access_Rootline {
 	 * Cleans an array of frontend user group IDs. Removes duplicates and sorts
 	 * the array.
 	 *
-	 * @param	array	An array of frontend user group IDs
-	 * @return	array	An array of cleaned frontend user group IDs, unique, sorted.
+	 * @param array An array of frontend user group IDs
+	 * @return array An array of cleaned frontend user group IDs, unique, sorted.
 	 */
 	public static function cleanGroupArray(array $groups) {
 		$groups = array_unique($groups); // removes duplicates

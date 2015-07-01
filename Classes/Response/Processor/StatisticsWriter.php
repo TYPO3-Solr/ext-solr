@@ -26,10 +26,10 @@
 /**
  * Writes statistics after searches have been conducted.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @author	Dimitri Ebert <dimitri.ebert@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @author Dimitri Ebert <dimitri.ebert@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponseProcessor {
 
@@ -67,8 +67,8 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 	/**
 	 * Processes a query and its response after searching for that query.
 	 *
-	 * @param	Tx_Solr_Query	The query that has been searched for.
-	 * @param	Apache_Solr_Response	The response for the last query.
+	 * @param Tx_Solr_Query The query that has been searched for.
+	 * @param Apache_Solr_Response The response for the last query.
 	 */
 	public function processResponse(Tx_Solr_Query $query, Apache_Solr_Response $response) {
 		$urlParameters = t3lib_div::_GP('tx_solr');

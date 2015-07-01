@@ -27,9 +27,9 @@
  * Provides a status report about which solrconfig version is used and checks
  * whether it fits the recommended version shipping with the extension.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Report_SolrConfigStatus implements tx_reports_StatusProvider {
 
@@ -42,7 +42,7 @@ class Tx_Solr_Report_SolrConfigStatus implements tx_reports_StatusProvider {
 	 *
 	 * Must be updated when changing the solrconfig.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-3-0-0--20140516';
 

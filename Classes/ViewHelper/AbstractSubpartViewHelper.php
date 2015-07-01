@@ -26,14 +26,14 @@
 /**
  * Abstract subparty viewhelper
  *
- * @author	Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Stefan Sprenger <stefan.sprenger@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 abstract class Tx_Solr_ViewHelper_AbstractSubpartViewHelper implements Tx_Solr_SubpartViewHelper {
 
 	/**
-	 * @var	Tx_Solr_Template
+	 * @var Tx_Solr_Template
 	 */
 	protected $template = NULL;
 
@@ -49,7 +49,7 @@ abstract class Tx_Solr_ViewHelper_AbstractSubpartViewHelper implements Tx_Solr_S
 	/**
 	 * Sets the view helper's subpart template
 	 *
-	 * @param	Tx_Solr_Template	$template view helper's subpart template
+	 * @param Tx_Solr_Template $template view helper's subpart template
 	 */
 	public function setTemplate(Tx_Solr_Template $template) {
 		$this->template = $template;

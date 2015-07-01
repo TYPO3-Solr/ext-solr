@@ -30,19 +30,19 @@
  * IndexQueuePageIndexerDocumentsModifier interface, allows to modify documents
  * before adding them to the Solr index in the index queue page indexer.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_IndexQueuePageIndexerDocumentsModifier {
 
 	/**
 	 * Modifies the given documents
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	The currently being indexed item.
-	 * @param	integer	The language uid of the documents
-	 * @param	array	An array of documents to be indexed
-	 * @return	array	An array of modified documents
+	 * @param Tx_Solr_IndexQueue_Item The currently being indexed item.
+	 * @param integer The language uid of the documents
+	 * @param array An array of documents to be indexed
+	 * @return array An array of modified documents
 	 */
 	public function modifyDocuments(Tx_Solr_IndexQueue_Item $item, $language, array $documents);
 

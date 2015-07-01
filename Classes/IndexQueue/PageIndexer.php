@@ -30,9 +30,9 @@
  * retrieve the content that belongs to a page from tt_content, too. Also
  * plugins may be included on a page and thus may need to be executed.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 

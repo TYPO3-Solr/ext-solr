@@ -27,9 +27,9 @@
  * Provides a status report about whether the Access Filter Query Parser Plugin
  * is installed on the Solr server.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements tx_reports_StatusProvider {
 
@@ -38,14 +38,14 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 	 *
 	 * Must be updated when changing the plugin.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const RECOMMENDED_PLUGIN_VERSION = '1.2.0';
 
 	/**
 	 * The plugin's Java class name.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const PLUGIN_CLASS_NAME = 'org.typo3.solr.search.AccessFilterQParserPlugin';
 
@@ -149,8 +149,8 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 	 * Checks whether the Access Filter Query Parser Plugin is installed for
 	 * the given Solr server instance.
 	 *
-	 * @param	Tx_Solr_SolrService	Solr connection to check for the plugin.
-	 * @return	boolean	True if the plugin is installed, FALSE otherwise.
+	 * @param Tx_Solr_SolrService Solr connection to check for the plugin.
+	 * @return boolean True if the plugin is installed, FALSE otherwise.
 	 */
 	protected function isPluginInstalled(Tx_Solr_SolrService $solrConnection) {
 		$accessFilterQueryParserPluginInstalled = FALSE;
@@ -167,8 +167,8 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 	/**
 	 * Checks whether the installed plugin is current.
 	 *
-	 *  @param	Tx_Solr_SolrService	Solr connection to check for the plugin.
-	 * @return	boolean	True if the plugin is outdated, FALSE if it meets the current version recommendation.
+	 *  @param Tx_Solr_SolrService Solr connection to check for the plugin.
+	 * @return boolean True if the plugin is outdated, FALSE if it meets the current version recommendation.
 	 */
 	protected function isPluginOutdated(Tx_Solr_SolrService $solrConnection) {
 		$pluginVersion = $this->getInstalledPluginVersion($solrConnection);
@@ -185,8 +185,8 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 	/**
 	 * Gets the version of the installed plugin.
 	 *
-	 * @param	Tx_Solr_SolrService	Solr connection to check for the plugin.
-	 * @return	string	The installed plugin's version number.
+	 * @param Tx_Solr_SolrService Solr connection to check for the plugin.
+	 * @return string The installed plugin's version number.
 	 */
 	public function getInstalledPluginVersion(Tx_Solr_SolrService $solrConnection) {
 		$version = '0.0.0';

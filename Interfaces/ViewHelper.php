@@ -29,24 +29,24 @@
 /**
  * View Helper interface.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_ViewHelper {
 
 	/**
 	 * constructor, takes an optional array of arguments for initialisation
 	 *
-	 * @param	array	optional initialisation arguments
+	 * @param array optional initialisation arguments
 	 */
 	public function __construct(array $arguments = array());
 
 	/**
 	 * execute method
 	 *
-	 * @param	array	array of arguments
-	 * @return	string	The rendered output.
+	 * @param array array of arguments
+	 * @return string The rendered output.
 	 */
 	public function execute(array $arguments = array());
 }

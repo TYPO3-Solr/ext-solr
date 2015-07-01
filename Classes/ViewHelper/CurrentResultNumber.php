@@ -29,9 +29,9 @@
  *
  * Example: ###CURRENT_RESULT_NUMBER:###LOOP_CURRENT_ITERATION_COUNT######
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_CurrentResultNumber implements Tx_Solr_ViewHelper {
 

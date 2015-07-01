@@ -26,9 +26,9 @@
 /**
  * Utility class for sorting.
  *
- * @author	Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Stefan Sprenger <stefan.sprenger@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Sorting {
 
@@ -37,7 +37,7 @@ class Tx_Solr_Sorting {
 	/**
 	 * Constructor
 	 *
-	 * @param	array	$sortingConfiguration Raw configuration from plugin.tx_solr.search.sorting.options
+	 * @param array $sortingConfiguration Raw configuration from plugin.tx_solr.search.sorting.options
 	 */
 	public function __construct(array $sortingConfiguration) {
 		$this->configuration = $sortingConfiguration;
@@ -46,7 +46,7 @@ class Tx_Solr_Sorting {
 	/**
 	 * Gets a list of configured sorting fields.
 	 *
-	 *  @return	array	Array of (resolved) sorting field names.
+	 *  @return array Array of (resolved) sorting field names.
 	 */
 	public function getSortFields() {
 		$sortFields    = array();

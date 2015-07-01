@@ -29,9 +29,9 @@
 /**
  * Plugin awareness interface for extension components.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_PluginAware {
 
@@ -39,7 +39,7 @@ interface Tx_Solr_PluginAware {
 	 * Provides the extension component with an instance of the currently active
 	 * plugin.
 	 *
-	 * @param	tslib_pibase	Currently active plugin
+	 * @param tslib_pibase Currently active plugin
 	 */
 	public function setParentPlugin(tslib_pibase $parentPlugin);
 }

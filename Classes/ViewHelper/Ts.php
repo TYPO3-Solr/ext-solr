@@ -27,9 +27,9 @@
  * A viewhelper to retrieve TS values and/or objects
  * Replaces viewhelpers ###TS:path.to.some.ts.property.or.content.object###
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 
@@ -61,9 +61,9 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 	/**
 	 * Resolves a TS path and returns its value
 	 *
-	 * @param	string	a TS path, separated with dots
+	 * @param string a TS path, separated with dots
 	 * @return	string
-	 * @author	Ingo Renner <ingo@typo3.org>
+	 * @author Ingo Renner <ingo@typo3.org>
 	 * @throws	InvalidArgumentException
 	 */
 	protected function resolveTypoScriptPath($path, $arguments = NULL) {
@@ -104,7 +104,7 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 	 * Returns the viewhelper's internal cObj. If it hasn't been used yet, a
 	 * new cObj ist instanciated on demand.
 	 *
-	 * @return	tslib_cObj	A content object.
+	 * @return tslib_cObj A content object.
 	 */
 	protected function getContentObject() {
 		if (is_null($this->contentObject)) {

@@ -27,23 +27,23 @@
  * Index Queue page indexer frontend helper base class implementing comon
  * functionality.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_IndexQueuePageIndexerFrontendHelper {
 
 	/**
 	 * Index Queue page indexer request.
 	 *
-	 * @var	Tx_Solr_IndexQueue_PageIndexerRequest
+	 * @var Tx_Solr_IndexQueue_PageIndexerRequest
 	 */
 	protected $request;
 
 	/**
 	 * Index Queue page indexer response.
 	 *
-	 * @var	Tx_Solr_IndexQueue_PageIndexerResponse
+	 * @var Tx_Solr_IndexQueue_PageIndexerResponse
 	 */
 	protected $response;
 
@@ -55,8 +55,8 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	/**
 	 * Disables the frontend output for index queue requests.
 	 *
-	 * @param	array	Parameters from frontend
-	 * @param	tslib_fe	TSFE object
+	 * @param array Parameters from frontend
+	 * @param tslib_fe TSFE object
 	 */
 	public function disableFrontendOutput(&$parameters, $parentObject) {
 		$parameters['enableOutput'] = FALSE;
@@ -65,8 +65,8 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	/**
 	 * Disables caching for page generation to get reliable results.
 	 *
-	 * @param	array	Parameters from frontend
-	 * @param	tslib_fe	TSFE object
+	 * @param array Parameters from frontend
+	 * @param tslib_fe TSFE object
 	 */
 	public function disableCaching(&$parameters, $parentObject) {
 		$parentObject->no_cache = TRUE;
@@ -75,8 +75,8 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	/**
 	 * Starts the execution of a frontend helper.
 	 *
-	 * @param	Tx_Solr_IndexQueue_PageIndexerRequest	$request Page indexer request
-	 * @param	Tx_Solr_IndexQueue_PageIndexerResponse	$response Page indexer response
+	 * @param Tx_Solr_IndexQueue_PageIndexerRequest $request Page indexer request
+	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response Page indexer response
 	 */
 	public function processRequest(Tx_Solr_IndexQueue_PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
 		$this->request  = $request;

@@ -26,7 +26,7 @@
 /**
  * Date range facet renderer.
  *
- * @author	Markus Goldbach <markus.goldbach@dkd.de>
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
 class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
 

@@ -26,9 +26,9 @@
 /**
  * sorting view command
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 
@@ -49,7 +49,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
 

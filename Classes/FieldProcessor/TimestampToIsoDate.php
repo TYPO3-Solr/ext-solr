@@ -26,9 +26,9 @@
 /**
  * A field processor that converts timestamps to ISO dates as needed by Solr
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_FieldProcessor_TimestampToIsoDate implements Tx_Solr_FieldProcessor {
 
@@ -38,8 +38,8 @@ class Tx_Solr_FieldProcessor_TimestampToIsoDate implements Tx_Solr_FieldProcesso
 	 * Example date output format: 1995-12-31T23:59:59Z
 	 * The trailing "Z" designates UTC time and is mandatory
 	 *
-	 * @param	array	Array of values, an array because of multivalued fields
-	 * @return	array	Modified array of values
+	 * @param array Array of values, an array because of multivalued fields
+	 * @return array Modified array of values
 	 */
 	public function process(array $values) {
 		$results = array();

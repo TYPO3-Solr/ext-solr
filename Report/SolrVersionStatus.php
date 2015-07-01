@@ -27,9 +27,9 @@
  * Provides a status report about whether the installed Solr version matches
  * the required version.
  *
- * @author	Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Stefan Sprenger <stefan.sprenger@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
 
@@ -37,7 +37,7 @@ class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
 	 * Required Solr version. The version that gets installed when using the
 	 * provided install script EXT:solr/Resources/Shell/install-solr.sh
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const REQUIRED_SOLR_VERSION = '4.8.0';
 
@@ -95,8 +95,8 @@ class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
 	 * more information though, in case of custom builds, their complete
 	 * version will be added, too.
 	 *
-	 * @param	string	$solrVersion Unformatted Apache Solr version number as provided by Solr.
-	 * @return	string	formatted short version number, in case of custom builds followed by the complete version number
+	 * @param string $solrVersion Unformatted Apache Solr version number as provided by Solr.
+	 * @return string formatted short version number, in case of custom builds followed by the complete version number
 	 */
 	protected function formatSolrVersion($solrVersion) {
 		$shortSolrVersion     = $this->getCleanSolrVersion($solrVersion);
@@ -113,8 +113,8 @@ class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
 	 * Gets the clean Solr version in case of a custom build which may have
 	 * additional information in the version string.
 	 *
-	 * @param	string	$solrVersion Unformatted Apache Solr version number as provided by Solr.
-	 * @return	string	Clean Solr version number: mayor.minor.patchlevel
+	 * @param string $solrVersion Unformatted Apache Solr version number as provided by Solr.
+	 * @return string Clean Solr version number: mayor.minor.patchlevel
 	 */
 	protected function getCleanSolrVersion($solrVersion) {
 		$explodedSolrVersion = explode('.', $solrVersion);

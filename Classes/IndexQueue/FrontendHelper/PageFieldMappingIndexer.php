@@ -29,9 +29,9 @@
  * Indexer to add / overwrite page document fields as defined in
  * plugin.tx_solr.index.queue.pages.fields.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_frontendhelper_PageFieldMappingIndexer implements Tx_Solr_SubstitutePageIndexer {
 
@@ -41,8 +41,8 @@ class Tx_Solr_IndexQueue_frontendhelper_PageFieldMappingIndexer implements Tx_So
 	 * Uses the original document and adds fields as defined in
 	 * plugin.tx_solr.index.queue.pages.fields.
 	 *
-	 * @param	Apache_Solr_Document	The original page document.
-	 * @return	Apache_Solr_Document	A Apache_Solr_Document object that replace the default page document
+	 * @param Apache_Solr_Document The original page document.
+	 * @return Apache_Solr_Document A Apache_Solr_Document object that replace the default page document
 	 */
 	public function getPageDocument(Apache_Solr_Document $pageDocument) {
 		$substitutePageDocument = clone $pageDocument;
@@ -67,7 +67,7 @@ class Tx_Solr_IndexQueue_frontendhelper_PageFieldMappingIndexer implements Tx_So
 	/**
 	 * Gets the mapped fields as an array mapping field names to values.
 	 *
-	 * @return	array	An array mapping field names to their values.
+	 * @return array An array mapping field names to their values.
 	 */
 	protected function getMappedFields() {
 		$fields           = array();
@@ -84,7 +84,7 @@ class Tx_Solr_IndexQueue_frontendhelper_PageFieldMappingIndexer implements Tx_So
 	 * Gets a list of fields to index in addition to the default fields or
 	 * overwriting exisitng fields.
 	 *
-	 * @return	array	An array of configured field names.
+	 * @return array An array of configured field names.
 	 */
 	protected function getMappedFieldNames() {
 		$mappedFieldNames = array();

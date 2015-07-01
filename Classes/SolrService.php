@@ -26,9 +26,9 @@
 /**
  * Solr Service Access
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_SolrService extends Apache_Solr_Service {
 

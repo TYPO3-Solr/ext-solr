@@ -29,9 +29,9 @@
 /**
  * Subpart View Helper marker interface
  *
- * @author	Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Stefan Sprenger <stefan.sprenger@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_SubpartViewHelper extends Tx_Solr_ViewHelper {
 
@@ -45,7 +45,7 @@ interface Tx_Solr_SubpartViewHelper extends Tx_Solr_ViewHelper {
 	/**
 	 * Sets the view helper's subpart template
 	 *
-	 * @param	Tx_Solr_Template	$template view helper's subpart template
+	 * @param Tx_Solr_Template $template view helper's subpart template
 	 */
 	public function setTemplate(Tx_Solr_Template $template);
 

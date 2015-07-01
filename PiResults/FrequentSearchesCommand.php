@@ -27,9 +27,9 @@
 /**
  * Command to list frequent searched terms.
  *
- * @author	Dimitri Ebert <dimitri.ebert@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Dimitri Ebert <dimitri.ebert@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand {
 
@@ -50,7 +50,7 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
 
@@ -107,8 +107,8 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	/**
 	 * Builds the properties for the frequent search term markers.
 	 *
-	 * @param	array	Frequent search terms as array with terms as keys and hits as the value
-	 * @return	array	An array with content for the frequent terms markers
+	 * @param array Frequent search terms as array with terms as keys and hits as the value
+	 * @return array An array with content for the frequent terms markers
 	 */
 	protected function getSearchTermMarkerProperties(array $frequentSearchTerms) {
 		$frequentSearches = array();
@@ -184,7 +184,7 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	/**
 	 * Gets frequent search terms from the statistics tracking table.
 	 *
-	 * @return	array	Array of frequent search terms, keys are the terms, values are hits
+	 * @return array Array of frequent search terms, keys are the terms, values are hits
 	 */
 	protected function getFrequentSearchTermsFromStatistics() {
 		$terms = array();

@@ -31,20 +31,20 @@ if (!class_exists('Apache_Solr_Document')) {
  * tests the processing Service class
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_FieldProcessor_ServiceTest extends Tx_Phpunit_TestCase {
 
 	/**
-	 * @var	Apache_Solr_Document
+	 * @var Apache_Solr_Document
 	 */
 	private $documentMock;
 
 	/**
 	 * the service
 	 *
-	 * @var	Tx_Solr_FieldProcessor_Service
+	 * @var Tx_Solr_FieldProcessor_Service
 	 */
 	private $service;
 

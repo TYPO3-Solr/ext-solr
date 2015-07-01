@@ -37,9 +37,9 @@
  *   removeDuplicateValues = 1 # a flag to remove duplicate strings from the list, off by default.
  * }
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ContentObject_Multivalue {
 
@@ -52,11 +52,11 @@ class Tx_Solr_ContentObject_Multivalue {
 	 * multivalued fields in a Solr document. The array is returned in
 	 * serialized form as content objects are expected to return strings.
 	 *
-	 * @param	string	$name content object name 'SOLR_MULTIVALUE'
-	 * @param	array	$configuration for the content object, expects keys 'separator' and 'field'
-	 * @param	string	$TyposcriptKey not used
-	 * @param	tslib_cObj	$contentObject parent cObj
-	 * @return	string	serialized array representation of the given list
+	 * @param string $name content object name 'SOLR_MULTIVALUE'
+	 * @param array $configuration for the content object, expects keys 'separator' and 'field'
+	 * @param string $TyposcriptKey not used
+	 * @param tslib_cObj $contentObject parent cObj
+	 * @return string serialized array representation of the given list
 	 */
 	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $contentObject) {
 		$data = '';

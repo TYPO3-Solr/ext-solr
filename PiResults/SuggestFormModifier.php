@@ -26,16 +26,16 @@
 /**
  * Suggest form modifier, suggests queries through auto completion / AJAX.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
 
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
 
@@ -67,9 +67,9 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 	 * Modifies the search form by providing an additional marker providing the
 	 * suggest eID script URL and adding javascript to the page's header.
 	 *
-	 * @param	array	An array of existing form markers
-	 * @param	Tx_Solr_Template	An instance of the template engine
-	 * @return	array	Array with additional markers for suggestions
+	 * @param array An array of existing form markers
+	 * @param Tx_Solr_Template An instance of the template engine
+	 * @return array Array with additional markers for suggestions
 	 */
 	public function modifyForm(array $markers, Tx_Solr_Template $template) {
 		$suggestionsEnabled = $this->configuration['suggest'];

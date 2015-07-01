@@ -26,23 +26,23 @@
 /**
  * QueryAnalyzer form modifier, outputs parsed lucene query
  *
- * @author	Hans Höchtl <hans.hoechtl@typovision.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Hans Höchtl <hans.hoechtl@typovision.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
 
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
 
 	/**
 	 * The currently active plugin
 	 *
-	 * @var	Tx_Solr_PluginBase_CommandPluginBase
+	 * @var Tx_Solr_PluginBase_CommandPluginBase
 	 */
 	protected $parentPlugin;
 
@@ -67,9 +67,9 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	 * Modifies the search form by providing an additional marker showing
 	 * the parsed lucene query used by Solr.
 	 *
-	 * @param	array	An array of existing form markers
-	 * @param	tx_solr_Template	An instance of the template engine
-	 * @return	array	Array with additional markers for queryAnalysis
+	 * @param array An array of existing form markers
+	 * @param tx_solr_Template An instance of the template engine
+	 * @return array Array with additional markers for queryAnalysis
 	 */
 	public function modifyForm(array $markers, tx_solr_Template $template) {
 		$markers['debug_query'] = '<br><strong>Parsed Query:</strong><br>' .

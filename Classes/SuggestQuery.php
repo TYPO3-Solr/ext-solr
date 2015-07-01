@@ -26,9 +26,9 @@
 /**
  * A query specialized to get search suggestions
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_SuggestQuery extends Tx_Solr_Query {
 

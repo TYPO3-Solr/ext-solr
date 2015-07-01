@@ -29,16 +29,16 @@
 /**
  * View Helper Provider interface which must be implemented to add viewhelpers to the templating engine
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_ViewHelperProvider {
 
 	/**
 	 * provides additional viewhelper objects to be added to the templating engine
 	 *
-	 * @param	array	array with a structure of view helper name => Tx_Solr_ViewHelper objects
+	 * @param array array with a structure of view helper name => Tx_Solr_ViewHelper objects
 	 */
 	public function getViewHelpers();
 }

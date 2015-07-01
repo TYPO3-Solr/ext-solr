@@ -27,30 +27,30 @@
  * Checks for Index Queue page indexer requests and handles the actions
  * requested by them.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements t3lib_Singleton {
 
 	/**
 	 * Index Queue page indexer request.
 	 *
-	 * @var	Tx_Solr_IndexQueue_PageIndexerRequest
+	 * @var Tx_Solr_IndexQueue_PageIndexerRequest
 	 */
 	protected $request;
 
 	/**
 	 * Index Queue page indexer response.
 	 *
-	 * @var	Tx_Solr_IndexQueue_PageIndexerResponse
+	 * @var Tx_Solr_IndexQueue_PageIndexerResponse
 	 */
 	protected $response;
 
 	/**
 	 * Index Queue page indexer frontend helper dispatcher.
 	 *
-	 * @var	Tx_Solr_IndexQueue_FrontendHelper_Dispatcher
+	 * @var Tx_Solr_IndexQueue_FrontendHelper_Dispatcher
 	 */
 	protected $dispatcher;
 

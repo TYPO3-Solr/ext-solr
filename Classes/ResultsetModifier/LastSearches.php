@@ -72,7 +72,7 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 	/**
 	 * Stores the keywords from the current query to the user's session.
 	 *
-	 * @param	string	The current query's keywords
+	 * @param string The current query's keywords
 	 * @return	void
 	 */
 	protected function storeKeywordsToSession($keywords) {
@@ -103,7 +103,7 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 	/**
 	 * Stores the keywords from the current query to the database.
 	 *
-	 * @param	string	The current query's keywords
+	 * @param string The current query's keywords
 	 * @return	void
 	 */
 	protected function storeKeywordsToDatabase($keywords) {
@@ -124,7 +124,7 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 	/**
 	 * Gets the sequence id for the next search entry.
 	 *
-	 * @return	integer	The id to be used as the next sequence id for storing the last search keywords.
+	 * @return integer The id to be used as the next sequence id for storing the last search keywords.
 	 */
 	protected function getNextSequenceId() {
 		$nextSequenceId = 0;

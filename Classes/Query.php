@@ -143,7 +143,7 @@ class Tx_Solr_Query {
 	/**
 	 * returns a string representation of the query
 	 *
-	 * @return	string	the string representation of the query
+	 * @return string the string representation of the query
 	 */
 	public function __toString() {
 		return $this->getQueryString();
@@ -153,7 +153,7 @@ class Tx_Solr_Query {
 	 * Sets whether a raw query sting should be used, that is, whether the query
 	 * string should be escaped or not.
 	 *
-	 * @param	boolean	$useRawQueryString TRUE to use raw queries (like Lucene Query Language) or FALSE for regular, escaped queries
+	 * @param boolean $useRawQueryString TRUE to use raw queries (like Lucene Query Language) or FALSE for regular, escaped queries
 	 */
 	public function useRawQueryString($useRawQueryString) {
 		$this->rawQueryString = (boolean) $useRawQueryString;

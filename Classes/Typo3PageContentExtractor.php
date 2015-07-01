@@ -26,16 +26,16 @@
 /**
  * Content extraction class for TYPO3 pages.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Typo3PageContentExtractor extends Tx_Solr_HtmlContentExtractor {
 
 	/**
 	 * Shortcut method to retrieve the raw content marked for indexing.
 	 *
-	 * @return	string	Content marked for indexing.
+	 * @return string Content marked for indexing.
 	 */
 	public function getContentMarkedForIndexing() {
 		return $this->extractContentMarkedForIndexing($this->content);
@@ -47,7 +47,7 @@ class Tx_Solr_Typo3PageContentExtractor extends Tx_Solr_HtmlContentExtractor {
 	 * The content is cleaned from HTML tags and control chars Solr could
 	 * stumble on.
 	 *
-	 * @return	string	Indexable, cleaned content ready for indexing.
+	 * @return string Indexable, cleaned content ready for indexing.
 	 */
 	public function getIndexableContent() {
 		$content = $this->extractContentMarkedForIndexing($this->content);
@@ -65,8 +65,8 @@ class Tx_Solr_Typo3PageContentExtractor extends Tx_Solr_HtmlContentExtractor {
 	 * Extracts the markup wrapped with TYPO3SEARCH_begin and TYPO3SEARCH_end
 	 * markers.
 	 *
-	 * @param	string	HTML markup with TYPO3SEARCH markers for content that should be indexed
-	 * @return	string	HTML markup found between TYPO3SEARCH markers
+	 * @param string HTML markup with TYPO3SEARCH markers for content that should be indexed
+	 * @return string HTML markup found between TYPO3SEARCH markers
 	 */
 	protected function extractContentMarkedForIndexing($html) {
 		preg_match_all('/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis', $html, $indexableContents);
@@ -83,7 +83,7 @@ class Tx_Solr_Typo3PageContentExtractor extends Tx_Solr_HtmlContentExtractor {
 	 * Retrieves the page's title by checking the indexedDocTitle, altPageTitle,
 	 * and regular page title - in that order.
 	 *
-	 * @return	string	the page's title
+	 * @return string the page's title
 	 */
 	public function getPageTitle() {
 		$page      = $GLOBALS['TSFE'];
@@ -103,7 +103,7 @@ class Tx_Solr_Typo3PageContentExtractor extends Tx_Solr_HtmlContentExtractor {
 	/**
 	 * Retrieves the page's body
 	 *
-	 * @return	string	the page's body
+	 * @return string the page's body
 	 */
 	public function getPageBody() {
 		$pageContent = $this->content;

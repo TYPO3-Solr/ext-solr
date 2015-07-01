@@ -30,9 +30,9 @@
  * To create alternating rows use this in your results loop:
  * class="row-###ODD_EVEN:###LOOP_CURRENT_ITERATION_COUNT######"
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_OddEven implements Tx_Solr_ViewHelper {
 

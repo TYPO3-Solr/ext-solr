@@ -29,9 +29,9 @@
  * Specialized indexers can extend this class to handle advanced stuff like
  * category resolution in tt_news or file indexing.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 
@@ -42,19 +42,19 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * A Solr service instance to interact with the Solr server
 	 *
-	 * @var	Tx_Solr_SolrService
+	 * @var Tx_Solr_SolrService
 	 */
 	protected $solr;
 
 	/**
-	 * @var	Tx_Solr_ConnectionManager
+	 * @var Tx_Solr_ConnectionManager
 	 */
 	protected $connectionManager;
 
 	/**
 	 * Holds options for a specific indexer
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $options = array();
 
@@ -86,8 +86,8 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Indexes an item from the indexing queue.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	An index queue item
-	 * @return	Apache_Solr_Response	The Apache Solr response
+	 * @param Tx_Solr_IndexQueue_Item An index queue item
+	 * @return Apache_Solr_Response The Apache Solr response
 	 */
 	public function index(Tx_Solr_IndexQueue_Item $item) {
 		$indexed = TRUE;
@@ -119,9 +119,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Creates a single Solr Document for an item in a specific language.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	An index queue item to index.
-	 * @param	integer	The language to use.
-	 * @return	boolean	TRUE if item was indexed successfully, FALSE on failure
+	 * @param Tx_Solr_IndexQueue_Item An index queue item to index.
+	 * @param integer The language to use.
+	 * @return boolean TRUE if item was indexed successfully, FALSE on failure
 	 */
 	protected function indexItem(Tx_Solr_IndexQueue_Item $item, $language = 0) {
 		$itemIndexed = FALSE;
@@ -245,9 +245,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Gets the configuration how to process an item's fields for indexing.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	An index queue item
-	 * @param	integer	Language ID
-	 * @return	array	Configuration array from TypoScript
+	 * @param Tx_Solr_IndexQueue_Item An index queue item
+	 * @param integer Language ID
+	 * @return array Configuration array from TypoScript
 	 */
 	protected function getItemTypeConfiguration(Tx_Solr_IndexQueue_Item $item, $language = 0) {
 		$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid(), TRUE, $language);
@@ -327,8 +327,8 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Generates an Access Rootline for an item.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	$item Index Queue item to index.
-	 * @return	string	The Access Rootline for the item
+	 * @param Tx_Solr_IndexQueue_Item $item Index Queue item to index.
+	 * @return string The Access Rootline for the item
 	 */
 	protected function getAccessRootline(Tx_Solr_IndexQueue_Item $item) {
 		$accessRestriction = '0';
@@ -411,10 +411,10 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Provides a hook to manipulate documents right before they get added to
 	 * the Solr index.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	The item currently being indexed.
-	 * @param	integer	The language uid of the documents
-	 * @param	array	An array of documents to be indexed
-	 * @return	array	An array of modified documents
+	 * @param Tx_Solr_IndexQueue_Item The item currently being indexed.
+	 * @param integer The language uid of the documents
+	 * @param array An array of documents to be indexed
+	 * @return array An array of modified documents
 	 */
 	protected function preAddModifyDocuments(Tx_Solr_IndexQueue_Item $item, $language, array $documents) {
 
@@ -537,8 +537,8 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Checks for which languages connections have been configured and returns
 	 * these connections.
 	 *
-	 * @param	array	An array of translation overlays to check for configured connections.
-	 * @return	array	An array of Tx_Solr_SolrService connections.
+	 * @param array An array of translation overlays to check for configured connections.
+	 * @return array An array of Tx_Solr_SolrService connections.
 	 */
 	protected function getConnectionsForIndexableLanguages(array $translationOverlays) {
 		$connections = array();
@@ -569,7 +569,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Enables logging dependent on the configuration of the item's site
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	$item An item being indexed
+	 * @param Tx_Solr_IndexQueue_Item $item An item being indexed
 	 * @return	void
 	 */
 	protected function setLogging(Tx_Solr_IndexQueue_Item $item) {
@@ -590,9 +590,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Logs the item and what document was created from it
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	The item that is being indexed.
-	 * @param	array	An array of Solr documents created from the item's data
-	 * @param	Apache_Solr_Response	The Solr response for the particular index document
+	 * @param Tx_Solr_IndexQueue_Item The item that is being indexed.
+	 * @param array An array of Solr documents created from the item's data
+	 * @param Apache_Solr_Response The Solr response for the particular index document
 	 */
 	protected function log(Tx_Solr_IndexQueue_Item $item, array $itemDocuments, Apache_Solr_Response $response) {
 		if (!$this->loggingEnabled) {

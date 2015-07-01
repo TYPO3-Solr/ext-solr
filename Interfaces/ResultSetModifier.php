@@ -30,17 +30,17 @@
 /**
  * ResultSetModifier interface, allows to modify search result set
  *
- * @author	Markus Goldbach <markus.goldbach@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_ResultSetModifier {
 
 	/**
 	 * Modifies the given resultset and returns the modified resultset as array
 	 *
-	 * @param	Tx_Solr_PiResults_ResultsCommand	The search result command
-	 * @return	array	The resultset with fields as array
+	 * @param Tx_Solr_PiResults_ResultsCommand The search result command
+	 * @return array The resultset with fields as array
 	 */
 	public function modifyResultSet(Tx_Solr_PiResults_ResultsCommand $resultCommand, array $resultSet);
 

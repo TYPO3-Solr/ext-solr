@@ -29,9 +29,9 @@
 /**
  * Template modifier interface
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_TemplateModifier {
 

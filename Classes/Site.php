@@ -27,16 +27,16 @@
  * A site is a branch in a TYPO3 installation. Each site's root page is marked
  * by the "Use as Root Page" flag.
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Site {
 
 	/**
 	 * Root page record.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $rootPage = array();
 
@@ -126,9 +126,9 @@ class Tx_Solr_Site {
 	 * Creates a dropdown selector of available TYPO3 sites with Solr
 	 * configured.
 	 *
-	 * @param	string	$selectorName Name to be used in the select's name attribute
-	 * @param	Tx_Solr_Site	$selectedSite Optional, currently selected site
-	 * @return	string	Site selector HTML code
+	 * @param string $selectorName Name to be used in the select's name attribute
+	 * @param Tx_Solr_Site $selectedSite Optional, currently selected site
+	 * @return string Site selector HTML code
 	 * @todo Extract into own class like indexing configuration selector
 	 */
 	public static function getAvailableSitesSelector($selectorName, Tx_Solr_Site $selectedSite = NULL) {
@@ -164,7 +164,7 @@ class Tx_Solr_Site {
 	 * Gets the site's main domain. More specifically the first domain record in
 	 * the site tree.
 	 *
-	 * @return	string	The site's main domain.
+	 * @return string The site's main domain.
 	 */
 	public function getDomain() {
 		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
@@ -229,9 +229,9 @@ class Tx_Solr_Site {
 	 * Generates a list of page IDs in this site. Attention, this includes
 	 * all page types! Deleted pages are not included.
 	 *
-	 * @param	integer		Page ID from where to start collection sub pages
-	 * @param	integer		Maximum depth to decend into the site tree
-	 * @return	array		Array of pages (IDs) in this site
+	 * @param integer	 Page ID from where to start collection sub pages
+	 * @param integer	 Maximum depth to decend into the site tree
+	 * @return array	 Array of pages (IDs) in this site
 	 */
 	public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999) {
 		$pageIds  = array();
@@ -282,7 +282,7 @@ class Tx_Solr_Site {
 	 * key, and the extension "tx_solr". These components are concatenated and
 	 * sha1-hashed.
 	 *
-	 * @return	string	Site Hash.
+	 * @return string Site Hash.
 	 */
 	public function getSiteHash() {
 		return Tx_Solr_Util::getSiteHashForDomain($this->getDomain());
@@ -300,7 +300,7 @@ class Tx_Solr_Site {
 	/**
 	 * Gets the site's root page ID (uid).
 	 *
-	 * @return	integer	The site's root page ID.
+	 * @return integer The site's root page ID.
 	 */
 	public function getRootPageId() {
 		return $this->rootPage['uid'];
@@ -309,7 +309,7 @@ class Tx_Solr_Site {
 	/**
 	 * Gets the site's root page's title.
 	 *
-	 * @return	string	The site's root page's title
+	 * @return string The site's root page's title
 	 */
 	public function getTitle() {
 		return $this->rootPage['title'];
@@ -319,7 +319,7 @@ class Tx_Solr_Site {
 	 * Gets the site's label. The label is build from the the site title and root
 	 * page ID (uid).
 	 *
-	 * @return	string	The site's label.
+	 * @return string The site's label.
 	 */
 	public function getLabel() {
 		return $this->rootPage['title'] . ', Root Page ID: ' . $this->rootPage['uid'];

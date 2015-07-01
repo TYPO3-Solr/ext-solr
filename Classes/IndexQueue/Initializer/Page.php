@@ -30,9 +30,9 @@
  * Index Queue initializer for pages which also covers resolution of mount
  * pages.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer_Abstract {
 

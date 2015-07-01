@@ -26,9 +26,9 @@
 /**
  * Tests the Query class
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 

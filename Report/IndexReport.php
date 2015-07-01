@@ -26,9 +26,9 @@
 /**
  * A report to get an overview of the Apache Solr Index
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 
@@ -37,7 +37,7 @@ class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 	/**
 	 * Solr server connection
 	 *
-	 * @var	Tx_Solr_SolrService
+	 * @var Tx_Solr_SolrService
 	 */
 	protected $solr;
 

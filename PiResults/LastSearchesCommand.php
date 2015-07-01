@@ -27,10 +27,10 @@
  * Last searches view command to display a user's last searches or the last
  * searches of all users.
  *
- * @author	Dimitri Ebert <dimitri.ebert@dkd.de>
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Dimitri Ebert <dimitri.ebert@dkd.de>
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 
@@ -44,7 +44,7 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
 
@@ -84,7 +84,7 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Prepares the content for the last search markers
 	 *
-	 * @return	array	An array with content for the last search markers
+	 * @return array An array with content for the last search markers
 	 */
 	protected function getLastSearches() {
 		$lastSearchesKeywords = array();
@@ -118,7 +118,7 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Gets the last searched keywords from the user's session
 	 *
-	 * @return	array	An array containing the last searches of the current user
+	 * @return array An array containing the last searches of the current user
 	 */
 	protected function getLastSearchesFromSession() {
 		$lastSearches = $GLOBALS['TSFE']->fe_user->getKey(
@@ -138,7 +138,7 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Gets the last searched keywords from the database
 	 *
-	 * @return	array	An array containing the last searches of the current user
+	 * @return array An array containing the last searches of the current user
 	 */
 	protected function getLastSearchesFromDatabase($limit = FALSE) {
 		$limit = $limit ? intval($limit) : FALSE;

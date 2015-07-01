@@ -29,9 +29,9 @@ $BE_USER->modAccess($MCONF, 1);
 /**
  * Module 'Solr Search' for the 'solr' extension.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 	var $pageinfo;
@@ -87,7 +87,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 	 * Main function of the module. Write the content to $this->content
 	 * If you chose "web" as main module, you will need to consider the $this->id parameter which will contain the uid-number of the page clicked in the page tree
 	 *
-	 * @return	[type]		...
+	 * @return [type]	 ...
 	 */
 	public function main() {
 		global $BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
@@ -496,7 +496,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 	/**
 	 * Create the panel of buttons for submitting the form or otherwise perform operations.
 	 *
-	 * @return	array	all available buttons as an assoc. array
+	 * @return array all available buttons as an assoc. array
 	 */
 	protected function getButtons() {
 		$buttons = array();

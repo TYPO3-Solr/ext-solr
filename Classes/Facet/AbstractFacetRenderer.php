@@ -51,12 +51,12 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	protected $facet;
 
 	/**
-	 * @var	array
+	 * @var array
 	 */
 	protected $facetConfiguration;
 
 	/**
-	 * @var	array
+	 * @var array
 	 */
 	protected $solrConfiguration;
 
@@ -70,7 +70,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	/**
 	 * Link target page id.
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	protected $linkTargetPageId = 0;
 
@@ -104,7 +104,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	/**
 	 * Renders the complete facet.
 	 *
-	 * @return	string	Facet markup.
+	 * @return string Facet markup.
 	 */
 	public function renderFacet() {
 			// TODO must check whether $this->template is set

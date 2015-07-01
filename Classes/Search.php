@@ -26,9 +26,9 @@
 /**
  * Class to handle solr search requests
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Search implements t3lib_Singleton {
 
@@ -66,7 +66,7 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	/**
 	 * Constructor
 	 *
-	 * @param	Tx_Solr_SolrService	$solrConnection The Solr connection to use for searching
+	 * @param Tx_Solr_SolrService $solrConnection The Solr connection to use for searching
 	 */
 	public function __construct(Tx_Solr_SolrService $solrConnection = NULL) {
 		$this->solr = $solrConnection;
@@ -223,7 +223,7 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	/**
 	 * Sends a ping to the solr server to see whether it is available.
 	 *
-	 * @return	boolean	Returns TRUE on successful ping.
+	 * @return boolean Returns TRUE on successful ping.
 	 * @throws	Exception	Throws an exception in case ping was not successful.
 	 */
 	public function ping() {
@@ -297,7 +297,7 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	/**
 	 * Gets the time Solr took to execute the query and return the result.
 	 *
-	 * @return	integer	Query time in milliseconds
+	 * @return integer Query time in milliseconds
 	 */
 	public function getQueryTime() {
 		return $this->getResponseHeader()->QTime;
@@ -306,7 +306,7 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	/**
 	 * Gets the number of results per page.
 	 *
-	 * @return	integer	Number of results per page
+	 * @return integer Number of results per page
 	 */
 	public function getResultsPerPage() {
 		return $this->getResponseHeader()->params->rows;
@@ -391,7 +391,7 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	/**
 	 * Gets the result offset.
 	 *
-	 * @return	integer	Result offset
+	 * @return integer Result offset
 	 */
 	public function getResultOffset() {
 		return $this->response->response->start;

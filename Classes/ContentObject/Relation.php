@@ -37,9 +37,9 @@
  * removeEmptyValues: Removes empty values when resolving relations, defaults to TRUE
  * removeDuplicateValues: Removes duplicate values
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ContentObject_Relation {
 
@@ -69,11 +69,11 @@ class Tx_Solr_ContentObject_Relation {
 	 * TYPO3-style m:n relations.
 	 * May resolve single value and multi value relations.
 	 *
-	 * @param	string	$name content object name 'SOLR_RELATION'
-	 * @param	array	$configuration for the content object
-	 * @param	string	$TyposcriptKey not used
-	 * @param	tslib_cObj	$contentObject parent content object
-	 * @return	string	serialized array representation of the given list
+	 * @param string $name content object name 'SOLR_RELATION'
+	 * @param array $configuration for the content object
+	 * @param string $TyposcriptKey not used
+	 * @param tslib_cObj $contentObject parent content object
+	 * @return string serialized array representation of the given list
 	 */
 	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $parentContentObject) {
 		$result = '';
@@ -102,9 +102,9 @@ class Tx_Solr_ContentObject_Relation {
 	/**
 	 * Gets the related items of the current record's configured field.
 	 *
-	 * @param	array	$configuration for the content object
-	 * @param	tslib_cObj	$parentContentObject parent content object
-	 * @return	array	Array of related items, values already resolved from related records
+	 * @param array $configuration for the content object
+	 * @param tslib_cObj $parentContentObject parent content object
+	 * @return array Array of related items, values already resolved from related records
 	 */
 	protected function getRelatedItems(tslib_cObj $parentContentObject) {
 		$relatedItems = array();

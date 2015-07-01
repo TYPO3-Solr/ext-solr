@@ -28,9 +28,9 @@
  * adding parameters to a doument's URL property.
  *
  *
- * @author	Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Stefan Sprenger <stefan.sprenger@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ResultDocumentModifier_SiteHighlighter implements Tx_Solr_ResultDocumentModifier {
 
@@ -39,9 +39,9 @@ class Tx_Solr_ResultDocumentModifier_SiteHighlighter implements Tx_Solr_ResultDo
 	 * which will result in having the current search terms highlighted on the
 	 * target page.
 	 *
-	 * @param	Tx_Solr_PiResults_ResultsCommand	The search result command
-	 * @param	array	$resultDocument The result document's fields as an array
-	 * @return	array	The document with fields as array
+	 * @param Tx_Solr_PiResults_ResultsCommand The search result command
+	 * @param array $resultDocument The result document's fields as an array
+	 * @return array The document with fields as array
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
 		$searchWords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();

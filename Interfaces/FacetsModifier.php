@@ -30,17 +30,17 @@
 /**
  * FacetstModifier interface, allows to modify facet fields and their counts.
  *
- * @author	Markus Goldbach <markus.goldbach@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_FacetsModifier {
 
 	/**
 	 * Modifies the given facets and returns the modified facets as array
 	 *
-	 * @param	array	$facets
-	 * @return	array	The facets with fields as array
+	 * @param array $facets
+	 * @return array The facets with fields as array
 	 */
 	public function modifyFacets($facets);
 

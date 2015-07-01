@@ -56,9 +56,9 @@ class Tx_Solr_Query_FilterEncoder_Range implements Tx_Solr_QueryFilterEncoder, T
 	 * Parses the given range from a GET parameter and returns a Solr range
 	 * filter.
 	 *
-	 * @param	string	$range The range filter from the URL.
+	 * @param string $range The range filter from the URL.
 	 * @param array $configuration Facet configuration
-	 * @return	string	Lucene query language filter to be used for querying Solr
+	 * @return string Lucene query language filter to be used for querying Solr
 	 */
 	public function decodeFilter($range, array $configuration = array()) {
 		$range = explode(self::DELIMITER, $range);

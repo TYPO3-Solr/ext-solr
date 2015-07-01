@@ -26,9 +26,9 @@
 /**
  * Signals a wrong format for the access definition of a page or the content.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Access_RootlineElementFormatException extends InvalidArgumentException {
 

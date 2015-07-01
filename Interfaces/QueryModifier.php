@@ -29,17 +29,17 @@
 /**
  * QueryModifier interface, allows to modify search queries
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_QueryModifier {
 
 	/**
 	 * Modifies the given query and returns the modified query as result
 	 *
-	 * @param	Tx_Solr_Query	The query to modify
-	 * @return	Tx_Solr_Query	The modified query
+	 * @param Tx_Solr_Query The query to modify
+	 * @return Tx_Solr_Query The modified query
 	 */
 	public function modifyQuery(Tx_Solr_Query $query);
 

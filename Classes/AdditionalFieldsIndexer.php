@@ -79,7 +79,7 @@ class Tx_Solr_AdditionalFieldsIndexer implements Tx_Solr_SubstitutePageIndexer {
 	/**
 	 * Gets a list of fields to index in addition to the default fields.
 	 *
-	 * @return	array	An array of additionally configured field names.
+	 * @return array An array of additionally configured field names.
 	 */
 	protected function getAdditionalFieldNames() {
 		$additionalFieldNames = array();
@@ -102,8 +102,8 @@ class Tx_Solr_AdditionalFieldsIndexer implements Tx_Solr_SubstitutePageIndexer {
 	/**
 	 * Uses the page's cObj instance to resolve the additional field's value.
 	 *
-	 * @param	string	$fieldName The name of the field to get.
-	 * @return	string	The field's value.
+	 * @param string $fieldName The name of the field to get.
+	 * @return string The field's value.
 	 */
 	protected function getFieldValue($fieldName) {
 		$fieldValue       = '';

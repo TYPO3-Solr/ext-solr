@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2013 Ingo Renner <ingo.renner@dkd.de>
+*  (c) 2009-2015 Ingo Renner <ingo.renner@dkd.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,9 +26,9 @@
 /**
  * Utility class for tx_solr
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Util {
 
@@ -108,8 +108,8 @@ class Tx_Solr_Util {
 	/**
 	 * Converts a date from unix timestamp to ISO 8601 format.
 	 *
-	 * @param	integer	$timestamp unix timestamp
-	 * @return	string	the date in ISO 8601 format
+	 * @param integer $timestamp unix timestamp
+	 * @return string the date in ISO 8601 format
 	 */
 	public static function timestampToIso($timestamp) {
 		return date(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
@@ -129,15 +129,15 @@ class Tx_Solr_Util {
 	/**
 	 * Converts a date from unix timestamp to ISO 8601 format in UTC timezone.
 	 *
-	 * @param	integer	$timestamp unix timestamp
-	 * @return	string	the date in ISO 8601 format
+	 * @param integer $timestamp unix timestamp
+	 * @return string the date in ISO 8601 format
 	 */
 	public static function timestampToUtcIso($timestamp) {
 		return gmdate(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
 	}
 
 	/**
-	 * Converts a date from ISO 8601 format in UTC timzone to unix timestamp.
+	 * Converts a date from ISO 8601 format in UTC timezone to unix timestamp.
 	 *
 	 * @param string $isoTime date in ISO 8601 format
 	 * @return integer unix timestamp
@@ -155,8 +155,8 @@ class Tx_Solr_Util {
 	 * will remove non alphanumeric characters from the word, so
 	 * "who's online" will be converted to "WhoSOnline"
 	 *
-	 * @param	string	Word to convert to camel case
-	 * @return	string	UpperCamelCasedWord
+	 * @param string $word Word to convert to camel case
+	 * @return string UpperCamelCasedWord
 	 */
 	public static function camelize($word) {
 		return str_replace(' ', '', ucwords(preg_replace('![^A-Z^a-z^0-9]+!', ' ', $word)));
@@ -166,8 +166,8 @@ class Tx_Solr_Util {
 	 * Returns a given CamelCasedString as an lowercase string with underscores.
 	 * Example: Converts BlogExample to blog_example, and minimalValue to minimal_value
 	 *
-	 * @param	string		$string: String to be converted to lowercase underscore
-	 * @return	string		lowercase_and_underscored_string
+	 * @param string	 $string: String to be converted to lowercase underscore
+	 * @return string	 lowercase_and_underscored_string
 	 */
 	public static function camelCaseToLowerCaseUnderscored($string) {
 		return strtolower(preg_replace('/(?<=\w)([A-Z])/', '_\\1', $string));
@@ -177,8 +177,8 @@ class Tx_Solr_Util {
 	 * Returns a given string with underscores as UpperCamelCase.
 	 * Example: Converts blog_example to BlogExample
 	 *
-	 * @param	string		$string: String to be converted to camel case
-	 * @return	string		UpperCamelCasedWord
+	 * @param string	 $string: String to be converted to camel case
+	 * @return string	 UpperCamelCasedWord
 	 */
 	public static function underscoredToUpperCamelCase($string) {
 		return str_replace(' ', '', ucwords(str_replace('_', ' ', strtolower($string))));
@@ -187,8 +187,8 @@ class Tx_Solr_Util {
 	/**
 	 * Lowercases the first letter of a string.
 	 *
-	 * @param	string	String to lowercase the first letter
-	 * @return	string	Input string with lowercased first letter
+	 * @param string String to lowercase the first letter
+	 * @return string Input string with lowercased first letter
 	 */
 	public static function lcfirst($string) {
 		$string{0} = strtolower($string{0});
@@ -212,10 +212,10 @@ class Tx_Solr_Util {
 	 * Gets the Solr configuration for a specific root page id.
 	 * To be used from the backend.
 	 *
-	 * @param	integer	Id of the (root) page to get the Solr configuration from.
-	 * @param	boolean	Optionally initializes a full TSFE to get the configuration, defaults to FALSE
-	 * @param	integer	System language uid, optional, defaults to 0
-	 * @return	array	The Solr configuration for the requested tree.
+	 * @param integer Id of the (root) page to get the Solr configuration from.
+	 * @param boolean Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+	 * @param integer System language uid, optional, defaults to 0
+	 * @return array The Solr configuration for the requested tree.
 	 */
 	public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = FALSE, $language = 0) {
 		return self::getConfigurationFromPageId($pageId, 'plugin.tx_solr', $initializeTsfe, $language);
@@ -226,11 +226,11 @@ class Tx_Solr_Util {
 	 * Language usage may be disabled to get the default TypoScript
 	 * configuration.
 	 *
-	 * @param	integer	Id of the (root) page to get the Solr configuration from.
-	 * @param	string	The TypoScript configuration path to retrieve.
-	 * @param	boolean	Optionally initializes a full TSFE to get the configuration, defaults to FALSE
-	 * @param	integer|boolean	System language uid or FALSE to disable language usage, optional, defaults to 0
-	 * @return	array	The Solr configuration for the requested tree.
+	 * @param integer Id of the (root) page to get the Solr configuration from.
+	 * @param string The TypoScript configuration path to retrieve.
+	 * @param boolean Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+	 * @param integer|boolean System language uid or FALSE to disable language usage, optional, defaults to 0
+	 * @return array The Solr configuration for the requested tree.
 	 */
 	public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = FALSE, $language = 0) {
 		static $configurationCache = array();
@@ -295,9 +295,9 @@ class Tx_Solr_Util {
 	/**
 	 * Initializes the TSFE for a given page ID and language.
 	 *
-	 * @param	integer	The page id to initialize the TSFE for
-	 * @param	integer	System language uid, optional, defaults to 0
-	 * @param	boolean	Use cache to reuse TSFE
+	 * @param integer The page id to initialize the TSFE for
+	 * @param integer System language uid, optional, defaults to 0
+	 * @param boolean Use cache to reuse TSFE
 	 * @return	void
 	 */
 	public static function initializeTsfe($pageId, $language = 0, $useCache = TRUE) {
@@ -358,8 +358,8 @@ class Tx_Solr_Util {
 	/**
 	 * Determines the rootpage ID for a given page.
 	 *
-	 * @param	integer	A page ID somewhere in a tree.
-	 * @return	integer	The page's tree branch's root page ID
+	 * @param integer A page ID somewhere in a tree.
+	 * @return integer The page's tree branch's root page ID
 	 */
 	public static function getRootPageId($pageId = 0) {
 		$rootLine   = array();
@@ -429,9 +429,9 @@ class Tx_Solr_Util {
 	 * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content.']
 	 * which is a SOLR_CONTENT cObj.
 	 *
-	 * @param	string	$path TypoScript path
-	 * @return	array	The TypoScript object defined by the given path
-	 * @throws	InvalidArgumentException
+	 * @param string $path TypoScript path
+	 * @return array The TypoScript object defined by the given path
+	 * @throws InvalidArgumentException
 	 */
 	public static function getTypoScriptObject($path) {
 		if (!is_string($path)) {

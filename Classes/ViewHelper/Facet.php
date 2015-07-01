@@ -26,17 +26,17 @@
 /**
  * Subpart viewhelper class to render facets
  *
- * @author	Stefan Sprenger <stefan.sprenger@dkd.de>
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Stefan Sprenger <stefan.sprenger@dkd.de>
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_Facet extends Tx_Solr_ViewHelper_AbstractSubpartViewHelper {
 
 	/**
 	 * TypoScript configuration of tx_solr
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration = NULL;
 
@@ -53,7 +53,7 @@ class Tx_Solr_ViewHelper_Facet extends Tx_Solr_ViewHelper_AbstractSubpartViewHel
 	/**
 	 * Renders a facet.
 	 *
-	 * @param	array	$arguments
+	 * @param array $arguments
 	 * @return	string
 	 */
 	public function execute(array $arguments = array()) {

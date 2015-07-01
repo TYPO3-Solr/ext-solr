@@ -26,31 +26,31 @@
 /**
  * Index Queue Page Indexer response to provide data for requested actions.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_PageIndexerResponse {
 
 	/**
 	 * Unique request ID.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $requestId = NULL;
 
 	/**
 	 * The actions' results as action => result pairs.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $results = array();
 
 	/**
 	 * Adds an action's result.
 	 *
-	 * @param	string	$action The action name.
-	 * @param	mixed	$result The action's result.
+	 * @param string $action The action name.
+	 * @param mixed $result The action's result.
 	 */
 	public function addActionResult($action, $result) {
 		if (is_null($action)) {
@@ -66,7 +66,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	/**
 	 * Gets the complete set of results or a specific action's results.
 	 *
-	 * @param	string	$action Optional action name.
+	 * @param string $action Optional action name.
 	 */
 	public function getActionResult($action = NULL) {
 		$result = $this->results;
@@ -96,7 +96,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	 * Compiles the response's content so that it can be sent back to the
 	 * Index Queue page indexer.
 	 *
-	 * @return	string	The respnse content
+	 * @return string The respnse content
 	 */
 	public function getContent() {
 		return $this->toJson();
@@ -105,7 +105,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	/**
 	 * Converts the response's data to JSON.
 	 *
-	 * @return	string	JSON representation of the results.
+	 * @return string JSON representation of the results.
 	 */
 	protected function toJson() {
 		$serializedActionResults = array();
@@ -125,8 +125,8 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	/**
 	 * Turns a JSON encoded result string back into its PHP representation.
 	 *
-	 * @param	string	$jsonEncodedResults JSON encoded result string
-	 * @return	array|boolean	An array of action => result pairs or FALSE if the response could not be decoded
+	 * @param string $jsonEncodedResults JSON encoded result string
+	 * @return array|boolean An array of action => result pairs or FALSE if the response could not be decoded
 	 */
 	public static function getResultsFromJson($jsonEncodedResponse) {
 		$responseData = json_decode($jsonEncodedResponse, TRUE);
@@ -145,7 +145,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	/**
 	 * Gets the Id of the request this response belongs to.
 	 *
-	 * @return	string	Request Id.
+	 * @return string Request Id.
 	 */
 	public function getRequestId() {
 		return $this->requestId;
@@ -154,7 +154,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	/**
 	 * Sets the Id of the request this response belongs to.
 	 *
-	 * @param	string	$requestId Request Id.
+	 * @param string $requestId Request Id.
 	 * @return	void
 	 */
 	public function setRequestId($requestId) {

@@ -27,14 +27,14 @@
 /**
  * Parser to build solr range queries from tx_solr[filter]
  *
- * @author	Markus Goldbach <markus.goldbach@dkd.de>
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
 class Tx_Solr_Query_FilterEncoder_DateRange implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
 
 	/**
 	 * Delimiter for date parts in the URL.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const DELIMITER = '-';
 
@@ -43,9 +43,9 @@ class Tx_Solr_Query_FilterEncoder_DateRange implements Tx_Solr_QueryFilterEncode
 	 * Parses the given date range from a GET parameter and returns a Solr
 	 * date range filter.
 	 *
-	 * @param	string	$rangeFilter The range filter query string from the query URL
+	 * @param string $rangeFilter The range filter query string from the query URL
 	 * @param array $configuration Facet configuration
-	 * @return	string	Lucene query language filter to be used for querying Solr
+	 * @return string Lucene query language filter to be used for querying Solr
 	 */
 	public function decodeFilter($dateRange, array $configuration = array()) {
 		list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $dateRange);

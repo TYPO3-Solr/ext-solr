@@ -26,51 +26,51 @@
 /**
  * Index Inspector to see what documents have been indexed for a selected page.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ModIndex_IndexInspector extends t3lib_extobjbase {
 
 	/**
 	 * The parent Web -> Info module's template
 	 *
-	 * @var	template
+	 * @var template
 	 */
 	private $document;
 
 	/**
 	 * The current page ID.
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	private $pageId;
 
 	/**
 	 * Search
 	 *
-	 * @var	Tx_Solr_Search
+	 * @var Tx_Solr_Search
 	 */
 	protected $search = NULL;
 
 	/**
 	 * The action to execute.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $action = 'index';
 
 	/**
 	 * ExtJs Namespace
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $extjsNamespace = 'TYPO3.tx_solr.IndexInspector';
 
 	/**
 	 * "Controller" method
 	 *
-	 * @return	string	The module's content.
+	 * @return string The module's content.
 	 */
 	public function main() {
 		$content = '';
@@ -128,7 +128,7 @@ class Tx_Solr_ModIndex_IndexInspector extends t3lib_extobjbase {
 	/**
 	 * Queries Solr for this page's documents and lists them in a table.
 	 *
-	 * @return	string	HTML table of documents indexed for the current page.
+	 * @return string HTML table of documents indexed for the current page.
 	 */
 	protected function listIndexDocuments() {
 		$content = '';

@@ -30,9 +30,9 @@
  * Simple Index Queue initializer for records as found in tables configured
  * through TCA.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_Initializer_Record extends Tx_Solr_IndexQueue_Initializer_Abstract {
 

@@ -31,8 +31,8 @@ if (!class_exists('Tx_Solr_FieldProcessor')) {
  * tests the path to hierarchy processing
  *
  * @author 	Daniel P�tzinger <poetzinger@aoemedia.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_FieldProcessor_PathToHierarchyTest extends Tx_Phpunit_TestCase {
 

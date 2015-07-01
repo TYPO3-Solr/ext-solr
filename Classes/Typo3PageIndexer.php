@@ -26,67 +26,67 @@
 /**
  * Page Indexer to index TYPO3 pages used by the Index Queue.
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
- * @author	Timo Schmidt <schmidt@aoemedia.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @author Daniel Poetzinger <poetzinger@aoemedia.de>
+ * @author Timo Schmidt <schmidt@aoemedia.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Typo3PageIndexer {
 
 	/**
 	 * Solr server connection.
 	 *
-	 * @var	Tx_Solr_SolrService
+	 * @var Tx_Solr_SolrService
 	 */
 	protected $solrConnection = NULL;
 
 	/**
 	 * Frontend page object (TSFE).
 	 *
-	 * @var	tslib_fe
+	 * @var tslib_fe
 	 */
 	protected $page = NULL;
 
 	/**
 	 * Content extractor to extract content from TYPO3 pages
 	 *
-	 * @var	Tx_Solr_Typo3PageContentExtractor
+	 * @var Tx_Solr_Typo3PageContentExtractor
 	 */
 	protected $contentExtractor = NULL;
 
 	/**
 	 * URL to be indexed as the page's URL
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $pageUrl = '';
 
 	/**
 	 * The page's access rootline
 	 *
-	 * @var	Tx_Solr_Access_Rootline
+	 * @var Tx_Solr_Access_Rootline
 	 */
 	protected $pageAccessRootline = NULL;
 
 	/**
 	 * ID of the current page's Solr document.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected static $pageSolrDocumentId = '';
 
 	/**
 	 * The Solr document generated for the current page.
 	 *
-	 * @var	Apache_Solr_Document
+	 * @var Apache_Solr_Document
 	 */
 	protected static $pageSolrDocument = NULL;
 
 	/**
 	 * Documents that have been sent to Solr
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $documentsSentToSolr = array();
 
@@ -94,7 +94,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Constructor for class Tx_Solr_Indexer
 	 *
-	 * @param	tslib_fe	$page The page to index
+	 * @param tslib_fe $page The page to index
 	 */
 	public function __construct(tslib_fe $page) {
 		$this->page        = $page;
@@ -214,11 +214,11 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Builds the Solr document for the current page.
 	 *
-	 * @return	Apache_Solr_Document	A documment representing the page
+	 * @return Apache_Solr_Document A documment representing the page
 	 */
 	protected function getPageDocument() {
 		$document   = t3lib_div::makeInstance('Apache_Solr_Document');
-		/* @var	$document	Apache_Solr_Document */
+		/* @var $document	Apache_Solr_Document */
 		$site       = Tx_Solr_Site::getSiteByPageId($this->page->id);
 		$pageRecord = $this->page->page;
 
@@ -322,8 +322,8 @@ class Tx_Solr_Typo3PageIndexer {
 	 * Allows third party extensions to replace or modify the page document
 	 * created by this indexer.
 	 *
-	 * @param	Apache_Solr_Document	$pageDocument The page document created by this indexer.
-	 * @return	Apache_Solr_Document	An Apache Solr document representing the currently indexed page
+	 * @param Apache_Solr_Document $pageDocument The page document created by this indexer.
+	 * @return Apache_Solr_Document An Apache Solr document representing the currently indexed page
 	 */
 	protected function substitutePageDocument(Apache_Solr_Document $pageDocument) {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'])) {
@@ -357,9 +357,9 @@ class Tx_Solr_Typo3PageIndexer {
 	 * Allows third party extensions to provide additional documents which
 	 * should be indexed for the current page.
 	 *
-	 * @param	Apache_Solr_Document	$pageDocument The main document representing this page.
-	 * @param	array	$existingDocuments An array of documents already created for this page.
-	 * @return	array	An array of additional Apache_Solr_Document objects to index
+	 * @param Apache_Solr_Document $pageDocument The main document representing this page.
+	 * @param array $existingDocuments An array of documents already created for this page.
+	 * @return array An array of additional Apache_Solr_Document objects to index
 	 */
 	protected function getAdditionalDocuments(Apache_Solr_Document $pageDocument, array $existingDocuments) {
 		$documents = $existingDocuments;
@@ -390,7 +390,7 @@ class Tx_Solr_Typo3PageIndexer {
 	 * Sends the given documents to the field processing service which takes
 	 * care of manipulating fields as defined in the field's configuration.
 	 *
-	 * @param	array	An array of documents to manipulate
+	 * @param array An array of documents to manipulate
 	 */
 	protected function processDocuments(array $documents) {
 		if (is_array($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.'])) {
@@ -410,8 +410,8 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Logs messages to devlog and TS log (admin panel)
 	 *
-	 * @param	string		Message to set
-	 * @param	integer		Error number
+	 * @param string	 Message to set
+	 * @param integer	 Error number
 	 * @return	void
 	 */
 	protected function log($message, $errorNum = 0, array $data = array()) {
@@ -438,7 +438,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Gets the current page's URL.
 	 *
-	 * @return	string	URL of the current page.
+	 * @return string URL of the current page.
 	 */
 	public function getPageUrl() {
 		return $this->pageUrl;
@@ -447,7 +447,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Sets the URL to use for the page document.
 	 *
-	 * @param	string	$url The page's URL.
+	 * @param string $url The page's URL.
 	 */
 	public function setPageUrl($url) {
 		$this->pageUrl = $url;
@@ -465,7 +465,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Sets the page's access rootline.
 	 *
-	 * @param	Tx_Solr_Access_Rootline	$accessRootline The page's access rootline
+	 * @param Tx_Solr_Access_Rootline $accessRootline The page's access rootline
 	 */
 	public function setPageAccessRootline(Tx_Solr_Access_Rootline $accessRootline) {
 		$this->pageAccessRootline = $accessRootline;
@@ -474,7 +474,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Gets the current page's Solr document ID.
 	 *
-	 * @return	string|NULL	The page's Solr document ID or NULL in case no document was generated yet.
+	 * @return string|NULL The page's Solr document ID or NULL in case no document was generated yet.
 	 */
 	public static function getPageSolrDocumentId() {
 		return self::$pageSolrDocumentId;
@@ -492,7 +492,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Gets the documents that have been sent to Solr
 	 *
-	 * @return	array	An array of Apache_Solr_Document objects
+	 * @return array An array of Apache_Solr_Document objects
 	 */
 	public function getDocumentsSentToSolr() {
 		return $this->documentsSentToSolr;
@@ -502,7 +502,7 @@ class Tx_Solr_Typo3PageIndexer {
 	 * Gets a comma separated list of frontend user groups to use for the
 	 * document ID.
 	 *
-	 * @return	string	A comma separated list of frontend user groups.
+	 * @return string A comma separated list of frontend user groups.
 	 */
 	protected function getDocumentIdGroups() {
 		$groups = $this->pageAccessRootline->getGroups();

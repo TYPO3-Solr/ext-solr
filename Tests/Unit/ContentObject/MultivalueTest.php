@@ -26,9 +26,9 @@
 /**
  * Tests for the SOLR_MULTIVALUE cObj.
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ContentObject_MultivalueTest extends Tx_Phpunit_TestCase {
 

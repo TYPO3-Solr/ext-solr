@@ -36,7 +36,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	/**
 	 * The name of the facet the filter is applied to.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $filter;
 

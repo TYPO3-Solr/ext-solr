@@ -27,9 +27,9 @@
  * A content object (cObj) to clean a database field in a way so that it can be
  * used to fill a Solr document's content field.
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ContentObject_Content {
 
@@ -40,11 +40,11 @@ class Tx_Solr_ContentObject_Content {
 	 *
 	 * Cleans content coming from a database field, removing HTML tags ...
 	 *
-	 * @param	string	$name content object name 'SOLR_CONTENT'
-	 * @param	array	$configuration for the content object
-	 * @param	string	$TyposcriptKey not used
-	 * @param	tslib_cObj	$contentObject parent cObj
-	 * @return	string	serialized array representation of the given list
+	 * @param string $name content object name 'SOLR_CONTENT'
+	 * @param array $configuration for the content object
+	 * @param string $TyposcriptKey not used
+	 * @param tslib_cObj $contentObject parent cObj
+	 * @return string serialized array representation of the given list
 	 */
 	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $contentObject) {
 		$contentExtractor = t3lib_div::makeInstance(
@@ -58,9 +58,9 @@ class Tx_Solr_ContentObject_Content {
 	/**
 	 * Gets the raw content as configured - a certain value or database field.
 	 *
-	 * @param	tslib_cObj	$contentObject The original content object
-	 * @param	array	$configuration content object configuration
-	 * @return	string	The raw content
+	 * @param tslib_cObj $contentObject The original content object
+	 * @param array $configuration content object configuration
+	 * @return string The raw content
 	 */
 	protected function getRawContent($contentObject, $configuration) {
 		$content = '';

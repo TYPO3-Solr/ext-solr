@@ -127,7 +127,7 @@ class Tx_Solr_SpellChecker {
 	 * Generates a link with spell checking suggestions if it is activated and
 	 * spell checking suggestions are returned by Solr.
 	 *
-	 * @return	string	A link to start over with a new search using the suggested keywords.
+	 * @return string A link to start over with a new search using the suggested keywords.
 	 */
 	public function getSpellCheckingSuggestions() {
 		$suggestionsLink = '';

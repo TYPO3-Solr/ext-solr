@@ -27,17 +27,17 @@
  * Service class that modifies fields in a Apache_Solr_Document, used for
  * common field processing during indexing or resolving
  *
- * @author	Daniel Poetzinger <poetzinger@aoemedia.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Daniel Poetzinger <poetzinger@aoemedia.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_FieldProcessor_Service {
 
 	/**
 	 * Modifies a list of documents
 	 *
-	 * @param	Apache_Solr_Document[]	$documents
-	 * @param	array	$processingConfiguration
+	 * @param Apache_Solr_Document[] $documents
+	 * @param array $processingConfiguration
 	 */
 	public function processDocuments(array $documents, array $processingConfiguration) {
 		foreach ($documents as $document) {
@@ -48,8 +48,8 @@ class Tx_Solr_FieldProcessor_Service {
 	/**
 	 * modifies a document according to the given configuration
 	 *
-	 * @param	Apache_Solr_Document	$document
-	 * @param	array	$processingConfiguration
+	 * @param Apache_Solr_Document $document
+	 * @param array $processingConfiguration
 	 */
 	public function processDocument(Apache_Solr_Document $document, array $processingConfiguration) {
 		foreach ($processingConfiguration as $fieldName => $instruction) {

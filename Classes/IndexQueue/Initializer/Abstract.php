@@ -30,9 +30,9 @@
  * Abstract Index Queue initializer with implementation  of methods for common
  * needs during Index Queue initialization.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQueueInitializer {
 

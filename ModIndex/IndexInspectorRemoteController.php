@@ -26,23 +26,23 @@
 /**
  * Remote Controller to provide document data for the Index Inspector.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 
 	/**
 	 * The current page ID.
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	protected $pageId = 0;
 
 	/**
 	 * Search
 	 *
-	 * @var	Tx_Solr_Search
+	 * @var Tx_Solr_Search
 	 */
 	protected $search = NULL;
 
@@ -50,7 +50,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * Initialization method to be executed when receiving an ExtDirect call is
 	 * received.
 	 *
-	 * @param	integer	$pageId ID of the current page, the pages' table uid column
+	 * @param integer $pageId ID of the current page, the pages' table uid column
 	 * @throws	InvalidArgumentException if page ID is 0 or not an integer
 	 */
 	protected function initialize($pageId) {
@@ -77,7 +77,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	/**
 	 * Index Action, provides an array of documents indexed for a given page.
 	 *
-	 * @param	integer	$pageId The current page's uid.
+	 * @param integer $pageId The current page's uid.
 	 */
 	public function indexAction($pageId) {
 		$this->initialize($pageId);
@@ -106,7 +106,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	/**
 	 * Queries Solr for the current page's documents.
 	 *
-	 * @return	array	An array of Apache_Solr_Document objects
+	 * @return array An array of Apache_Solr_Document objects
 	 */
 	protected function getIndexDocuments() {
 		$query = t3lib_div::makeInstance('Tx_Solr_Query', '');
@@ -126,7 +126,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	/**
 	 * Builds the repsonse's meta data / description.
 	 *
-	 * @return	object	Response meta data
+	 * @return object Response meta data
 	 */
 	protected function buildResponseMetaData() {
 		$metaData = new stdClass();
@@ -145,7 +145,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	/**
 	 * Builds a description of the fields returned to ExtDirect calls.
 	 *
-	 * @return	array	An array of response field descriptions.
+	 * @return array An array of response field descriptions.
 	 */
 	protected function buildResponseFieldDescription() {
 		$fields     = array();
@@ -165,8 +165,8 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * Formats a document's fields so that they can be iterated by an
 	 * ExtJs XTemplate.
 	 *
-	 * @param	Apache_Solr_Document	$document The Solr document to format
-	 * @return	array	Formatted document field data, ready to be used in an ExtJs XTemplate iterator
+	 * @param Apache_Solr_Document $document The Solr document to format
+	 * @return array Formatted document field data, ready to be used in an ExtJs XTemplate iterator
 	 */
 	protected function formatDocumentData(Apache_Solr_Document $document) {
 		$fields = array();

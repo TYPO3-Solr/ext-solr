@@ -29,18 +29,18 @@
 /**
  * Form modifier interface
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_FormModifier {
 
 	/**
 	 * Modifies the search form by providing  additional markers.
 	 *
-	 * @param	array	An array of existing form markers.
-	 * @param	Tx_Solr_Template	An instance of the template engine.
-	 * @return	array	Array with additional markers.
+	 * @param array An array of existing form markers.
+	 * @param Tx_Solr_Template An instance of the template engine.
+	 * @return array Array with additional markers.
 	 */
 	public function modifyForm(array $marker, Tx_Solr_Template $template);
 }

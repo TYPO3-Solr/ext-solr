@@ -26,9 +26,9 @@
 /**
  * Advanced form command class to render the "advanced" search form
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_AdvancedFormCommand extends Tx_Solr_PiResults_FormCommand {
 

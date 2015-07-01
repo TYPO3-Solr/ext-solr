@@ -29,17 +29,17 @@
 /**
  * Field Processor interface
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_FieldProcessor {
 
 	/**
 	 * process method
 	 *
-	 * @param	array	Array of values, an array because of multivalued fields
-	 * @return	array	Modified array of values
+	 * @param array Array of values, an array because of multivalued fields
+	 * @return array Modified array of values
 	 */
 	public function process(array $values);
 }

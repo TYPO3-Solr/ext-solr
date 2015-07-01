@@ -26,9 +26,9 @@
 /**
  * form command class to render the "simple" search form
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 
@@ -48,7 +48,7 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
 

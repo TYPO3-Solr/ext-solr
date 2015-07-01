@@ -29,18 +29,18 @@
 /**
  * ResultDocumentModifier interface, allows to modify search result documents
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_ResultDocumentModifier {
 
 	/**
 	 * Modifies the given document and returns the modified document as result.
 	 *
-	 * @param	Tx_Solr_PiResults_ResultsCommand	The search result command
-	 * @param	array	Result document as array
-	 * @return	array	The document with fields as array
+	 * @param Tx_Solr_PiResults_ResultsCommand The search result command
+	 * @param array Result document as array
+	 * @return array The document with fields as array
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument);
 

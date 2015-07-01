@@ -30,22 +30,22 @@
  * Caution: Currently only a few values are taken into account during rendering
  *          of the analysis yet. Feel free to contribute better analysis.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocumentModifier {
 
 	/**
-	 * @var	Tx_Solr_Search
+	 * @var Tx_Solr_Search
 	 */
 	protected $search;
 
 	/**
 	 * Modifies the given query and returns the modified query as result
 	 *
-	 * @param	Tx_Solr_PiResults_ResultsCommand	The search result command
-	 * @return	array	The document with fields as array
+	 * @param Tx_Solr_PiResults_ResultsCommand The search result command
+	 * @return array The document with fields as array
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
 		$this->search  = $resultCommand->getParentPlugin()->getSearch();
@@ -101,8 +101,8 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 	 * Renders an overview of how the score for a certain document has been
 	 * calculated.
 	 *
-	 * @param	array	The result document which to analyse
-	 * @return	string	The HTML showing the score analysis
+	 * @param array The result document which to analyse
+	 * @return string The HTML showing the score analysis
 	 */
 	protected function renderScoreAnalysis(array $highScores) {
 		$configuration = Tx_Solr_Util::getSolrConfiguration();

@@ -27,9 +27,9 @@
  * viewhelper class to format unix timestamps as date
  * Replaces viewhelpers ###DATE:timestamp###
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_Date implements Tx_Solr_ViewHelper {
 

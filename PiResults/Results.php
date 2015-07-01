@@ -26,17 +26,17 @@
 /**
  * Plugin 'Solr Search' for the 'solr' extension.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @author	Timo Schmidt <timo.schmidt@aoemedia.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Schmidt <timo.schmidt@aoemedia.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 
 	/**
 	 * Path to this script relative to the extension dir.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	public $scriptRelPath = 'PiResults/Results.php';
 
@@ -44,14 +44,14 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Additional filters, which will be added to the query, as well as to
 	 * suggest queries.
 	 *
-	 * @var	 array
+	 * @var  array
 	 */
 	protected $additionalFilters = array();
 
 	/**
 	 * Track, if the number of results per page has been changed by the current request
 	 *
-	 * @var	boolean
+	 * @var boolean
 	 */
 	protected $resultsPerPageChanged = FALSE;
 
@@ -99,8 +99,8 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	/**
 	 * Provides a hook for other classes to process the search's response.
 	 *
-	 * @param	Tx_Solr_Query	The query that has been searched for.
-	 * @param	Apache_Solr_Response	The search's reponse.
+	 * @param Tx_Solr_Query The query that has been searched for.
+	 * @param Apache_Solr_Response The search's reponse.
 	 */
 	protected function processResponse(Tx_Solr_Query $query, Apache_Solr_Response &$response) {
 		$rawUserQuery = $this->getRawUserQuery();
@@ -112,7 +112,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 		) {
 				// explicitly set number of results to 0 as we just wanted
 				// facets and the like according to configuration
-				// @see	getNumberOfResultsPerPage()
+				// @see getNumberOfResultsPerPage()
 			$response->response->numFound = 0;
 		}
 
@@ -158,7 +158,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	/**
 	 * Retrieves the list of commands to process for the results view.
 	 *
-	 * @return	array	An array of command names to process for the result view
+	 * @return array An array of command names to process for the result view
 	 */
 	protected function getCommandList() {
 		$requirements = Tx_Solr_PluginCommand::REQUIREMENT_NONE;
@@ -201,7 +201,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			}
 
 			$query = t3lib_div::makeInstance('Tx_Solr_Query', $rawUserQuery);
-			/* @var	$query	Tx_Solr_Query */
+			/* @var $query	Tx_Solr_Query */
 
 			$resultsPerPage = $this->getNumberOfResultsPerPage();
 			$query->setResultsPerPage($resultsPerPage);
@@ -283,7 +283,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Gets additional filters configured through TypoScript and
 	 * Flexforms.
 	 *
-	 * @return	array	An array of additional filters to use for queries.
+	 * @return array An array of additional filters to use for queries.
 	 */
 	public function getAdditionalFilters() {
 		return $this->additionalFilters;
@@ -385,8 +385,8 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Post initialization of the template engine, adding some Solr variables.
 	 *
 	 * @see Tx_Solr_pluginbase_PluginBase#postInitializeTemplate($template)
-	 * @param	Tx_Solr_Template	The template object as initialized thus far.
-	 * @return	Tx_Solr_Template	The modified template instance with additional variables available for rendering.
+	 * @param Tx_Solr_Template The template object as initialized thus far.
+	 * @return Tx_Solr_Template The modified template instance with additional variables available for rendering.
 	 */
 	protected function postInitializeTemplateEngine($template) {
 		$template->addVariable('tx_solr', $this->getSolrVariables());
@@ -397,7 +397,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	/**
 	 * Gets a list of EXT:solr variables like theprefix ID.
 	 *
-	 * @return	array	array of EXT:solr variables
+	 * @return array array of EXT:solr variables
 	 */
 	protected function getSolrVariables() {
 		$currentUrl = $this->pi_linkTP_keepPIvars_url();
@@ -421,7 +421,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Also influences how many result documents are returned by the Solr
 	 * server as the return value is used in the Solr "rows" GET parameter.
 	 *
-	 * @return	int	number of results to show per page
+	 * @return int number of results to show per page
 	 */
 	public function getNumberOfResultsPerPage() {
 		$configuration = Tx_Solr_Util::getSolrConfiguration();

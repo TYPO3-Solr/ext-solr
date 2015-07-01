@@ -27,16 +27,16 @@
  * A worker indexing the items in the index queue. Needs to be set up as one
  * task per root page.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implements tx_scheduler_ProgressProvider {
 
 	/**
 	 * The site this task is indexing.
 	 *
-	 * @var	Tx_Solr_Site
+	 * @var Tx_Solr_Site
 	 */
 	protected $site;
 
@@ -47,8 +47,8 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	/**
 	 * Works through the indexing queue and indexes the queued items into Solr.
 	 *
-	 * @return	boolean	Returns TRUE on success, FALSE if no items were indexed or none were found.
-	 * @see	typo3/sysext/scheduler/tx_scheduler_Task#execute()
+	 * @return boolean Returns TRUE on success, FALSE if no items were indexed or none were found.
+	 * @see typo3/sysext/scheduler/tx_scheduler_Task#execute()
 	 */
 	public function execute() {
 		$executionSucceeded = FALSE;
@@ -151,8 +151,8 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	 * (Tx_Solr_IndexQueue_PageIndexer). In all other cases a dedicated indexer
 	 * can be specified through TypoScript if needed.
 	 *
-	 * @param	string	Indexing configuration name.
-	 * @return	Tx_Solr_IndexQueue_Indexer	An instance of Tx_Solr_IndexQueue_Indexer or a sub class of it.
+	 * @param string Indexing configuration name.
+	 * @return Tx_Solr_IndexQueue_Indexer An instance of Tx_Solr_IndexQueue_Indexer or a sub class of it.
 	 */
 	protected function getIndexerByItem($indexingConfigurationName) {
 		$indexerClass   = 'Tx_Solr_IndexQueue_Indexer';
@@ -184,7 +184,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	 * Returns some additional information about indexing progress, shown in
 	 * the scheduler's task overview list.
 	 *
-	 * @return	string	Information to display
+	 * @return string Information to display
 	 */
 	public function getAdditionalInformation() {
 		$itemsIndexedPercentage = $this->getProgress();
@@ -237,7 +237,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	/**
 	 * Gets the site / the site's root page uid this task is indexing.
 	 *
-	 * @return	Tx_Solr_Site	The site's root page uid this task is indexing
+	 * @return Tx_Solr_Site The site's root page uid this task is indexing
 	 */
 	public function getSite() {
 		return $this->site;
@@ -246,7 +246,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	/**
 	 * Sets the task's site to indexing.
 	 *
-	 * @param	Tx_Solr_Site	$site The site to index by this task
+	 * @param Tx_Solr_Site $site The site to index by this task
 	 * @return	void
 	 */
 	public function setSite(Tx_Solr_Site $site) {
@@ -271,7 +271,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	 * root page information we can determine the correct host although being
 	 * in a CLI environment.
 	 *
-	 * @param	Tx_Solr_IndexQueue_Item	$item Index Queue item to use to determine the host.
+	 * @param Tx_Solr_IndexQueue_Item $item Index Queue item to use to determine the host.
 	 */
 	protected function initializeHttpHost(Tx_Solr_IndexQueue_Item $item) {
 		static $hosts = array();

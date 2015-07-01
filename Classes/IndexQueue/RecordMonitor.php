@@ -27,9 +27,9 @@
  * A class that monitors changes to records so that the changed record gets
  * passed to the index queue to update the according index document.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_RecordMonitor {
 
@@ -61,11 +61,11 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	/**
 	 * Hooks into TCE main and tracks record deletion commands.
 	 *
-	 * @param	string	The command.
-	 * @param	string	The table the record belongs to
-	 * @param	integer	The record's uid
+	 * @param string The command.
+	 * @param string The table the record belongs to
+	 * @param integer The record's uid
 	 * @param	string
-	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
+	 * @param t3lib_TCEmain TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 		if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
@@ -78,11 +78,11 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * Hooks into TCE main and tracks workspace publish/swap events and
 	 * page move commands in LIVE workspace.
 	 *
-	 * @param	string	The command.
-	 * @param	string	The table the record belongs to
-	 * @param	integer	The record's uid
+	 * @param string The command.
+	 * @param string The table the record belongs to
+	 * @param integer The record's uid
 	 * @param	string
-	 * @param	t3lib_TCEmain	TYPO3 Core Engine parent object
+	 * @param t3lib_TCEmain TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
 		if (Tx_Solr_Util::isDraftRecord($table, $uid)) {
@@ -307,8 +307,8 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * Gets an array of tables configured for indexing by the Index Queue. The
 	 * record monitor must watch these tables for manipulation.
 	 *
-	 * @param	integer	The page id for which we need to retrieve the configuration for
-	 * @return	array	Array of table names to be watched by the record monitor.
+	 * @param integer The page id for which we need to retrieve the configuration for
+	 * @return array Array of table names to be watched by the record monitor.
 	 */
 	protected function getMonitoredTables($pageId) {
 		$monitoredTables = array();

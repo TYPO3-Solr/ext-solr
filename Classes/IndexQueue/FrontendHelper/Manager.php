@@ -28,31 +28,31 @@
  *
  * Manages frontend helpers and creates instances.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_FrontendHelper_Manager {
 
 	/**
 	 * Frontend helper descriptions.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected static $frontendHelperRegistry = array();
 
 	/**
 	 * Instances of activated frontend helpers.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $activatedFrontendHelpers = array();
 
 	/**
 	 * Registers a frontend helper class for a certain action.
 	 *
-	 * @param	string	$action Action to register.
-	 * @param	string	$class Class to register for an action.
+	 * @param string $action Action to register.
+	 * @param string $class Class to register for an action.
 	 */
 	public static function registerFrontendHelper($action, $class) {
 		self::$frontendHelperRegistry[$action] = $class;
@@ -62,8 +62,8 @@ class Tx_Solr_IndexQueue_FrontendHelper_Manager {
 	 * Tries to find a frontend helper for a given action. If found, creates an
 	 * instance of the helper.
 	 *
-	 * @param	string	$action The action to get a frontend helper for.
-	 * @return	Tx_Solr_IndexQueuePageIndexerFrontendHelper	Index Queue page indexer frontend helper
+	 * @param string $action The action to get a frontend helper for.
+	 * @return Tx_Solr_IndexQueuePageIndexerFrontendHelper Index Queue page indexer frontend helper
 	 * @throws	RuntimeException if the class registered for an action is not an implementation of Tx_Solr_IndexQueuePageIndexerFrontendHelper
 	 */
 	public function resolveAction($action) {
@@ -89,7 +89,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_Manager {
 	/**
 	 * Gets an array with references to activated frontend helpers.
 	 *
-	 * @return	array	Array of references to activated frontend helpers.
+	 * @return array Array of references to activated frontend helpers.
 	 */
 	public function getActivatedFrontendHelpers() {
 		return $this->activatedFrontendHelpers;

@@ -26,23 +26,23 @@
 /**
  * A content extractor to get clean, indexable content from HTML markup.
  *
- * @author	Ingo Renner <ingo.renner@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo.renner@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_HtmlContentExtractor {
 
 	/**
 	 * The raw HTML markup content to extract clean content from.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $content;
 
 	/**
 	 * Mapping of HTML tags to Solr document fields.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $tagToFieldMapping = array(
 		'h1'     => 'tagsH1',
@@ -83,7 +83,7 @@ class Tx_Solr_HtmlContentExtractor {
 	/**
 	 * Constructor.
 	 *
-	 * @param	string	Content HTML markup
+	 * @param string Content HTML markup
 	 */
 	public function __construct($content) {
 		$this->content = $content;
@@ -95,7 +95,7 @@ class Tx_Solr_HtmlContentExtractor {
 	 * The content is cleaned from HTML tags and control chars Solr could
 	 * stumble on.
 	 *
-	 * @return	string	Indexable, cleaned content ready for indexing.
+	 * @return string Indexable, cleaned content ready for indexing.
 	 */
 	public function getIndexableContent() {
 		$content = self::cleanContent($this->content);
@@ -110,9 +110,9 @@ class Tx_Solr_HtmlContentExtractor {
 	/**
 	 * Strips control characters that cause Jetty/Solr to fail.
 	 *
-	 * @param	string	the content to sanitize
-	 * @return	string	the sanitized content
-	 * @see	http://w3.org/International/questions/qa-forms-utf-8.html
+	 * @param string the content to sanitize
+	 * @return string the sanitized content
+	 * @see http://w3.org/International/questions/qa-forms-utf-8.html
 	 */
 	public static function stripControlCharacters($content) {
 			// Printable utf-8 does not include any of these chars below x7F
@@ -149,8 +149,8 @@ class Tx_Solr_HtmlContentExtractor {
 	 * Strips html tags, and tab, new-line, carriage-return, &nbsp; whitespace
 	 * characters.
 	 *
-	 * @param	string	String to clean
-	 * @return	string	String cleaned from tags and special whitespace characters
+	 * @param string String to clean
+	 * @return string String cleaned from tags and special whitespace characters
 	 */
 	public static function cleanContent($content) {
 		$content = self::stripControlCharacters($content);
@@ -174,7 +174,7 @@ class Tx_Solr_HtmlContentExtractor {
 	/**
 	 * Extracts HTML tag content from tags in the content marked for indexing.
 	 *
-	 * @return	array	A mapping of Solr document field names to content found in defined tags.
+	 * @return array A mapping of Solr document field names to content found in defined tags.
 	 */
 	public function getTagContent() {
 		$result  = array();

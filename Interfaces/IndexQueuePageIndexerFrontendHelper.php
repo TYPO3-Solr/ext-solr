@@ -29,9 +29,9 @@
 /**
  * Index Queue Frontend Helper interface.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_IndexQueuePageIndexerFrontendHelper {
 
@@ -50,15 +50,15 @@ interface Tx_Solr_IndexQueuePageIndexerFrontendHelper {
 	/**
 	 * Starts the execution of a frontend helper.
 	 *
-	 * @param	Tx_Solr_IndexQueue_PageIndexerRequest	$request Page indexer request
-	 * @param	Tx_Solr_IndexQueue_PageIndexerResponse	$response Page indexer response
+	 * @param Tx_Solr_IndexQueue_PageIndexerRequest $request Page indexer request
+	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response Page indexer response
 	 */
 	public function processRequest(Tx_Solr_IndexQueue_PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response);
 
 	/**
 	 * Returns the collected data.
 	 *
-	 * @return	array	Collected data.
+	 * @return array Collected data.
 	 */
 	public function getData();
 

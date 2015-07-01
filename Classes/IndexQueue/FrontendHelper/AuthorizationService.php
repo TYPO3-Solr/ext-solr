@@ -27,9 +27,9 @@
  * Authentication service to authorize the Index Queue page indexer to access
  * protected pages.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends tx_sv_authbase {
 
@@ -38,14 +38,14 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends tx_sv_authb
 	 * to allow the indexer to access and protected content. May also allow to
 	 * identify requests by the page indexer.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const SOLR_INDEXER_USERNAME = '__SolrIndexerUser__';
 
 	/**
 	 * Gets a fake frontend user record to allow access to protected pages.
 	 *
-	 * @return	array	An array representing a frontend user.
+	 * @return array An array representing a frontend user.
 	 */
 	public function getUser() {
 		return array(
@@ -63,9 +63,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends tx_sv_authb
 	 * conduct other services that might be registered for "their opinion"
 	 * whether a user is authenticated.
 	 *
-	 * @see	t3lib_userAuth::checkAuthentication()
-	 * @param	array	Array of user data
-	 * @return	integer	Returns 200 to grant access for the page indexer.
+	 * @see t3lib_userAuth::checkAuthentication()
+	 * @param array Array of user data
+	 * @return integer Returns 200 to grant access for the page indexer.
 	 */
 	public function authUser($user) {
 			// shouldn't happen, but in case we get a regular user we just
@@ -83,9 +83,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends tx_sv_authb
 	 * Creates user group records so that the page indexer is granted access to
 	 * protected pages.
 	 *
-	 * @param	array		$user Data of user.
-	 * @param	array		$knownGroups Group data array of already known groups. This is handy if you want select other related groups. Keys in this array are unique IDs of those groups.
-	 * @return	mixed		Groups array, keys = uid which must be unique
+	 * @param array $user Data of user.
+	 * @param array $knownGroups Group data array of already known groups. This is handy if you want select other related groups. Keys in this array are unique IDs of those groups.
+	 * @return mixed Groups array, keys = uid which must be unique
 	 */
 	public function getGroups($user, $knownGroups)	{
 		$groupData = array();

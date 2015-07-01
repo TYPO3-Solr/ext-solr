@@ -26,9 +26,9 @@
 /**
  * PHP Unittest for viehelper Tx_Solr_viewhelper_Ts
  *
- * @author	Timo Webler <timo.webler@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Timo Webler <timo.webler@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 

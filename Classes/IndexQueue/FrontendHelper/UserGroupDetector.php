@@ -27,9 +27,9 @@
  * Index Queue Page Indexer frontend helper to track which user groups are used
  * on a page.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 
@@ -52,14 +52,14 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	/**
 	 * Holds the original, unmodified TCA during user group detection
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $originalTca = NULL;
 
 	/**
 	 * Collects the usergroups used on a page.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $frontendGroups = array();
 
@@ -98,8 +98,8 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * Deactivates the frontend user grroup fields in TCA so that no access
 	 * restrictions apply during page rendering.
 	 *
-	 * @param	array	Parameters from frontend
-	 * @param	tslib_fe	TSFE object
+	 * @param array Parameters from frontend
+	 * @param tslib_fe TSFE object
 	 */
 	public function deactivateTcaFrontendGroupEnableFields(&$parameters, $parentObject) {
 		$this->originalTca = $GLOBALS['TCA'];
@@ -117,9 +117,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * Modifies the database query parameters so that access checks for pages
 	 * are not performed any longer.
 	 *
-	 * @param	integer	The page ID
-	 * @param	boolean	If set, the check for group access is disabled. VERY rarely used
-	 * @param	\TYPO3\CMS\Frontend\Page\PageRepository	parent t3lib_pageSelect object
+	 * @param integer The page ID
+	 * @param boolean If set, the check for group access is disabled. VERY rarely used
+	 * @param \TYPO3\CMS\Frontend\Page\PageRepository parent t3lib_pageSelect object
 	 */
 	public function getPage_preProcess(&$uid, &$disableGroupAccessCheck, \TYPO3\CMS\Frontend\Page\PageRepository $parentObject) {
 		$disableGroupAccessCheck = TRUE;
@@ -130,9 +130,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * Modifies page records so that when checking for access through fe groups
 	 * no groups or extendToSubpages flag is found and thus access is granted.
 	 *
-	 * @param	array	Page record
-	 * @param	integer	Overlay language ID
-	 * @param	\TYPO3\CMS\Frontend\Page\PageRepository	Parent t3lib_pageSelect object
+	 * @param array Page record
+	 * @param integer Overlay language ID
+	 * @param \TYPO3\CMS\Frontend\Page\PageRepository Parent t3lib_pageSelect object
 	 */
 	public function getPageOverlay_preProcess(&$pageRecord, &$languageUid, \TYPO3\CMS\Frontend\Page\PageRepository $parentObject) {
 		if (is_array($pageRecord)) {
@@ -146,7 +146,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	/**
 	 * Hook for post processing the initialization of tslib_cObj
 	 *
-	 * @param	\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer	parent content object
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer parent content object
 	 */
 	public function postProcessContentObjectInitialization(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
 		if (!empty($parentObject->currentRecord)) {
@@ -161,8 +161,8 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	/**
 	 * Tracks user groups access restriction applied to records.
 	 *
-	 * @param	array	A record as an array of fieldname => fieldvalue mappings
-	 * @param	string	Table name the record belongs to
+	 * @param array A record as an array of fieldname => fieldvalue mappings
+	 * @param string Table name the record belongs to
 	 */
 	protected function findFrontendGroups($record, $table) {
 		if ($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']) {
@@ -189,7 +189,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * Returns an array of user groups that have been tracked during page
 	 * rendering.
 	 *
-	 * @return	array	Array of user group IDs
+	 * @return array Array of user group IDs
 	 */
 	protected function getFrontendGroups() {
 		$frontendGroupsList = implode(',', $this->frontendGroups);
@@ -210,7 +210,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	/**
 	 * Returns the user groups found.
 	 *
-	 * @return	array	Array of user groups.
+	 * @return array Array of user groups.
 	 */
 	public function getData() {
 		return $this->getFrontendGroups();

@@ -27,37 +27,37 @@
  * An element in the "Access Rootline". Represents the frontend user group
  * access restrictions for a page, a page's content, or a generic record.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Access_RootlineElement {
 
 	/**
 	 * Page access rootline element.
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	const ELEMENT_TYPE_PAGE = 1;
 
 	/**
 	 * Content access rootline element.
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	const ELEMENT_TYPE_CONTENT = 2;
 
 	/**
 	 * Record access rootline element.
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	const ELEMENT_TYPE_RECORD = 3;
 
 	/**
 	 * Delimiter between the page ID and the groups set for a page.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	const PAGE_ID_GROUP_DELIMITER = ':';
 
@@ -66,28 +66,28 @@ class Tx_Solr_Access_RootlineElement {
 	 * access is granted differently. For pages the user must meet at least one
 	 * group requirement, for content all group requirements must be met.
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	protected $type = self::ELEMENT_TYPE_PAGE;
 
 	/**
 	 * Page Id for the element. NULL for the content type.
 	 *
-	 * @var	integer
+	 * @var integer
 	 */
 	protected $pageId = NULL;
 
 	/**
 	 * Set of access groups assigned to the element.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $accessGroups = array();
 
 	/**
 	 * Constructor for Tx_Solr_Access_RootlineElement.
 	 *
-	 * @param	string	$element String representation of an element in the access rootline, usually of the form pageId:commaSeparatedPageAccessGroups
+	 * @param string $element String representation of an element in the access rootline, usually of the form pageId:commaSeparatedPageAccessGroups
 	 * @throws	Tx_Solr_Access_RootlineElementFormatException on wrong access format.
 	 */
 	public function __construct($element) {
@@ -133,7 +133,7 @@ class Tx_Solr_Access_RootlineElement {
 	/**
 	 * Returns the String representation of an access rootline element.
 	 *
-	 * @return	string	Access Rootline Element string representation
+	 * @return string Access Rootline Element string representation
 	 */
 	public function __toString() {
 		$rootlineElement = '';
@@ -155,7 +155,7 @@ class Tx_Solr_Access_RootlineElement {
 	/**
 	 * Gets the access rootline element's type.
 	 *
-	 * @return	integer	ELEMENT_TYPE_PAGE for page, ELEMENT_TYPE_CONTENT for content access rootline elements
+	 * @return integer ELEMENT_TYPE_PAGE for page, ELEMENT_TYPE_CONTENT for content access rootline elements
 	 */
 	public function getType() {
 		return $this->type;
@@ -164,7 +164,7 @@ class Tx_Solr_Access_RootlineElement {
 	/**
 	 * Gets the page Id for page type elements.
 	 *
-	 * @return	integer	Page Id.
+	 * @return integer Page Id.
 	 */
 	public function getPageId() {
 		return $this->pageId;
@@ -173,7 +173,7 @@ class Tx_Solr_Access_RootlineElement {
 	/**
 	 * Gets the element's access group restrictions.
 	 *
-	 * @return	array	Array of user group Ids
+	 * @return array Array of user group Ids
 	 */
 	public function getGroups() {
 		return $this->accessGroups;

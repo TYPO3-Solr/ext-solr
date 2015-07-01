@@ -27,9 +27,9 @@
  * Provides an status report, which checks whether the configuration of the
  * extension is ok.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvider {
 
@@ -66,7 +66,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 	 * Checks whether the "Use as Root Page" page property has been set for any
 	 * site.
 	 *
-	 * @return	NULL|tx_reports_reports_status_Status	An error status is returned if no root pages were found.
+	 * @return NULL|tx_reports_reports_status_Status An error status is returned if no root pages were found.
 	 */
 	protected function getRootPageFlagStatus() {
 		$status    = NULL;
@@ -89,7 +89,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 	/**
 	 * Checks whether a domain record (sys_domain) has been configured for each site root.
 	 *
-	 * @return	NULL|tx_reports_reports_status_Status	An error status is returned for each site root page without domain record.
+	 * @return NULL|tx_reports_reports_status_Status An error status is returned for each site root page without domain record.
 	 */
 	protected function getDomainRecordAvailableStatus() {
 		$status                 = NULL;
@@ -139,7 +139,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 	 * Checks whether config.index_enable is set to 1, otherwise indexing will
 	 * not work.
 	 *
-	 * @return	NULL|tx_reports_reports_status_Status	An error status is returned for each site root page config.index_enable = 0.
+	 * @return NULL|tx_reports_reports_status_Status An error status is returned for each site root page config.index_enable = 0.
 	 */
 	protected function getConfigIndexEnableStatus() {
 		$status                   = NULL;
@@ -186,7 +186,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 	 * Gets the site's root pages. The "Is root of website" flag must be set,
 	 * which usually is the case for pages with pid = 0.
 	 *
-	 * @return	array	An array of (partial) root page records, containing the uid and title fields
+	 * @return array An array of (partial) root page records, containing the uid and title fields
 	 */
 	protected function getRootPages() {
 		$rootPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(

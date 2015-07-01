@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008-2012 Ingo Renner <ingo@typo3.org>
+*  (c) 2008-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,9 +27,9 @@
  * A template engine to simplify the work with marker based templates. The
  * engine supports easy management of markers, subparts, and even loops.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Template {
 
@@ -54,9 +54,9 @@ class Tx_Solr_Template {
 	/**
 	 * Constructor for the html marker template engine.
 	 *
-	 * @param	tslib_cObj	content object
-	 * @param	string	path to the template file
-	 * @param	string	name of the subpart to work on
+	 * @param tslib_cObj $contentObject content object
+	 * @param string $templateFile path to the template file
+	 * @param string $subpart name of the subpart to work on
 	 */
 	public function __construct(tslib_cObj $contentObject, $templateFile, $subpart) {
 		$this->cObj = $contentObject;
@@ -79,7 +79,7 @@ class Tx_Solr_Template {
 	 * Loads the content of a html template file. Resolves paths beginning with
 	 * "EXT:".
 	 *
-	 * @param	string	path to html template file
+	 * @param string $htmlFile path to html template file
 	 */
 	public function loadHtmlFile($htmlFile) {
 		$this->template = $this->cObj->fileResource($htmlFile);
@@ -95,8 +95,8 @@ class Tx_Solr_Template {
 	/**
 	 * Sets the content for the template we're working on
 	 *
-	 * @param	string	the template's content - usually HTML
-	 * @return unknown_type
+	 * @param string $templateContent the template's content - usually HTML
+	 * @return void
 	 */
 	public function setWorkingTemplateContent($templateContent) {
 		$this->workOnSubpart = $templateContent;
@@ -105,7 +105,7 @@ class Tx_Solr_Template {
 	/**
 	 * Finds the view helpers in the template and loads them.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	protected function initializeViewHelpers($content) {
 		$viewHelpersFound = $this->findViewHelpers($content);
@@ -126,21 +126,22 @@ class Tx_Solr_Template {
 	}
 
 	/**
-	 * Adds an inlcude path where the template engine should look for template
+	 * Adds an include path where the template engine should look for template
 	 * view helpers.
 	 *
-	 * @param	string	Extension key
-	 * @param	string	Path inside the extension to look for view helpers
+	 * @param string $extensionKey Extension key
+	 * @param string $viewHelperPath Path inside the extension to look for view helpers
 	 */
 	public function addViewHelperIncludePath($extensionKey, $viewHelperPath) {
 		$this->viewHelperIncludePath[$extensionKey] = $viewHelperPath;
 	}
 
 	/**
-	 * adds a view helper
+	 * Adds a view helper
 	 *
-	 * @param	string	view helper name
-	 * @param	array	optional array of arguments
+	 * @param string $helperName view helper name
+	 * @param array $arguments optional array of arguments
+	 * @return bool
 	 */
 	public function addViewHelper($helperName, array $arguments = array()) {
 		$success = FALSE;
@@ -199,16 +200,16 @@ class Tx_Solr_Template {
 			}
 		}
 
-			// viewhelper could not be found
+			// view helper could not be found
 		return FALSE;
 	}
 
 	/**
-	 * adds an already instantiated viewhelper
+	 * adds an already instantiated view helper
 	 *
 	 * @param $helperName
 	 * @param $helperObject
-	 * @return	boolean
+	 * @return boolean
 	 */
 	public function addViewHelperObject($helperName, Tx_Solr_ViewHelper $helperObject) {
 		$success = FALSE;
@@ -226,7 +227,7 @@ class Tx_Solr_Template {
 	/**
 	 * Renders the template and fills its markers.
 	 *
-	 * @return	string the rendered html template with markers replaced with their content
+	 * @return string the rendered html template with markers replaced with their content
 	 */
 	public function render($cleanTemplate = FALSE) {
 
@@ -395,10 +396,10 @@ class Tx_Solr_Template {
 	/**
 	 * Renders single marker view helpers.
 	 *
-	 * @param	Tx_Solr_ViewHelper	$viewHelper View helper instance to execute.
-	 * @param	string	$helperKey The view helper marker key.
-	 * @param	string	$content Markup that contains the unsubstituted view helper marker.
-	 * @return	string	Markup with the view helper replaced by the content it returned.
+	 * @param Tx_Solr_ViewHelper $viewHelper View helper instance to execute.
+	 * @param string $helperKey The view helper marker key.
+	 * @param string $content Markup that contains the unsubstituted view helper marker.
+	 * @return string Markup with the view helper replaced by the content it returned.
 	 */
 	protected function renderMarkerViewHelper(Tx_Solr_ViewHelper $viewHelper, $helperKey, $content) {
 		$viewHelperArgumentLists = $this->getViewHelperArgumentLists($helperKey, $content);
@@ -435,10 +436,10 @@ class Tx_Solr_Template {
 	/**
 	 * Renders subpart view helpers.
 	 *
-	 * @param	Tx_Solr_ViewHelper	$viewHelper View helper instance to execute.
-	 * @param	string	$helperKey The view helper marker key.
-	 * @param	string	$content Markup that contains the unsubstituted view helper subpart.
-	 * @return	string	Markup with the view helper replaced by the content it returned.
+	 * @param Tx_Solr_ViewHelper $viewHelper View helper instance to execute.
+	 * @param string $helperKey The view helper marker key.
+	 * @param string $content Markup that contains the unsubstituted view helper subpart.
+	 * @return string Markup with the view helper replaced by the content it returned.
 	 */
 	protected function renderSubpartViewHelper(Tx_Solr_SubpartViewHelper $viewHelper, $helperKey, $content) {
 		$viewHelperArgumentLists = $this->getViewHelperArgumentLists($helperKey, $content);
@@ -491,7 +492,7 @@ class Tx_Solr_Template {
 	/**
 	 * Renders the loop for a given loop name.
 	 *
-	 * @param	string	Key from $this->loops to render
+	 * @param string $loopName Key from $this->loops to render
 	 */
 	protected function renderLoop($loopName) {
 		$loopContent  = '';
@@ -580,11 +581,11 @@ class Tx_Solr_Template {
 	 * This is useful especially for calling view helpers with the current
 	 * iteration's value as a parameter.
 	 *
-	 * @param unknown_type $content
-	 * @param unknown_type $loopName
+	 * @param string $content
+	 * @param string $loopName
 	 * @param array $markers
-	 * @param unknown_type $currentIterationValue
-	 * @return unknown
+	 * @param string $currentIterationValue
+	 * @return string
 	 */
 	protected function processInLoopMarkers($content, $loopName, array $markers, $currentIterationValue) {
 
@@ -625,8 +626,8 @@ class Tx_Solr_Template {
 	 * others when rendering loops so that they are not replaced and left in
 	 * the template for rendering by the correct command.
 	 *
-	 * @param	array	An arry of loop markers found during rendering of a loop.
-	 * @return	array	The array with protected subpart markers removed.
+	 * @param array $loopMarkers An array of loop markers found during rendering of a loop.
+	 * @return array The array with protected subpart markers removed.
 	 */
 	protected function filterProtectedLoops($loopMarkers) {
 		$protectedMarkers = array('result_documents');
@@ -643,7 +644,8 @@ class Tx_Solr_Template {
 	/**
 	 * Processes conditions: finds and evaluates them in HTML code.
 	 *
-	 * @param	string	HTML
+	 * @param string $content HTML
+	 * @return string
 	 */
 	protected function processConditions($content) {
 			// find conditions
@@ -700,8 +702,8 @@ class Tx_Solr_Template {
 	 * [operator] the condition operator
 	 * [comparand1] and [comparand2] the comparands.
 	 *
-	 * @param	string	HTML
-	 * @return	array	An array describing the conditions found
+	 * @param string $content HTML
+	 * @return array An array describing the conditions found
 	 */
 	protected function findConditions($content) {
 		$conditions = array();
@@ -732,9 +734,9 @@ class Tx_Solr_Template {
 	 *
 	 * Supported operators are ==, !=, <, <=, >, >=, %
 	 *
-	 * @param string First comaprand
-	 * @param string Second comaprand
-	 * @param string Operator
+	 * @param string $comparand1 First comparand
+	 * @param string $comparand2 Second comparand
+	 * @param string $operator Operator
 	 * @return boolean Boolean evaluation of the condition.
 	 * @throws InvalidArgumentException for unknown $operator
 	 */
@@ -781,9 +783,9 @@ class Tx_Solr_Template {
 	 * ###MY_MARKER## or "nested" markers which devide their sub values by a
 	 * dot: ###MY_MARKER.MY_VALUE### ###MY_MARKER.MY_OTHER_VALUE###.
 	 *
-	 * @param	array	array with markers to resolve
-	 * @param	mixed	the marker's value, which can be an array of values, an object with certain getter methods or a simple string
-	 * @return	array	with marker as index and value for it
+	 * @param array $markers array with markers to resolve
+	 * @param mixed $variableValue the marker's value, which can be an array of values, an object with certain getter methods or a simple string
+	 * @return array with marker as index and value for it
 	 */
 	protected function resolveVariableMarkers(array $markers, $variableValue) {
 		$resolvedMarkers = array();
@@ -843,8 +845,8 @@ class Tx_Solr_Template {
 	 * file_mime_type_string_s => file_mime_type_string_s
 	 * fileMimeType_stringS    => file_mime_type_string_s
 	 *
-	 * @param	string	A string in upper case with underscores, lowercase with underscores, camel case, or a mix.
-	 * @return	string	A lowercased, underscorized version of the given string
+	 * @param string $selector A string in upper case with underscores, lowercase with underscores, camel case, or a mix.
+	 * @return string A lowercased, underscorized version of the given string
 	 */
 	protected function normalizeString($selector) {
 		static $normalizeCache = array();
@@ -868,22 +870,23 @@ class Tx_Solr_Template {
 	/**
 	 * Selects a subpart to work on / to apply all operations to.
 	 *
-	 * @param	string	subpart name
+	 * @param string $subpartName subpart name
 	 */
 	public function workOnSubpart($subpartName) {
 		$this->workOnSubpart = $this->getSubpart($subpartName, $this->template);
 	}
 
 	/**
-	 * Retrievs a supart from the given html template.
+	 * Retrieves a subpart from the given html template.
 	 *
-	 * @param	string	subpart marker name, can be lowercase, doesn't need the ### delimiters
-	 * @return	string	the html subpart
+	 * @param string $subpartName subpart marker name, can be lowercase, doesn't need the ### delimiters
+	 * @param string $alternativeTemplate
+	 * @return string the html subpart
 	 */
 	public function getSubpart($subpartName, $alternativeTemplate = '') {
 		$template = $this->workOnSubpart;
 
-			// set altenative template to work on
+			// set alternative template to work on
 		if (!empty($alternativeTemplate)) {
 			$template = $alternativeTemplate;
 		}
@@ -899,8 +902,8 @@ class Tx_Solr_Template {
 	/**
 	 * Sets a marker's value.
 	 *
-	 * @param	string	marker name, can be lower case, doesn't need the ### delimiters
-	 * @param	string	the marker's value
+	 * @param string $marker marker name, can be lower case, doesn't need the ### delimiters
+	 * @param string $content the marker's value
 	 */
 	public function addMarker($marker, $content) {
 		$this->markers['###' . strtoupper($marker) . '###'] = $content;
@@ -909,7 +912,7 @@ class Tx_Solr_Template {
 	/**
 	 * Sets an array of markers with their values.
 	 *
-	 * @param	array	array of markers
+	 * @param array $markers array of markers
 	 */
 	public function addMarkerArray(array $markers) {
 		foreach ($markers as $marker => $content) {
@@ -920,8 +923,8 @@ class Tx_Solr_Template {
 	/**
 	 * Sets a subpart's value.
 	 *
-	 * @param	string	subpart name, can be lower case, doesn't need the ### delimiters
-	 * @param	string	the subpart's value
+	 * @param string $subpartMarker subpart name, can be lower case, doesn't need the ### delimiters
+	 * @param string $content the subpart's value
 	 */
 	public function addSubpart($subpartMarker, $content) {
 		$this->subparts['###' . strtoupper($subpartMarker) . '###'] = $content;
@@ -933,8 +936,8 @@ class Tx_Solr_Template {
 	 * VAR:"VARIABLE_NAME" (without the quotes). Objects can be used in the
 	 * form VAR:"OBJECT_NAME"."PROPERTY_NAME" (without the quotes).
 	 *
-	 * @param	string	variable key
-	 * @param	mixed	variable value
+	 * @param string $key variable key
+	 * @param mixed $value variable value
 	 */
 	public function addVariable($key, $value) {
 		$key = strtolower($key);
@@ -945,8 +948,9 @@ class Tx_Solr_Template {
 	/**
 	 * Adds a named loop. The given array is looped over in the template.
 	 *
-	 * @param	string	loop name
-	 * @param	array	variables array
+	 * @param string $loopName loop name
+	 * @param string $markerName
+	 * @param array $variables variables array
 	 */
 	public function addLoop($loopName, $markerName, array $variables) {
 		$this->loops[$loopName] = array(
@@ -958,8 +962,10 @@ class Tx_Solr_Template {
 	/**
 	 * Gets a list of Markers from the selected subpart.
 	 *
-	 * @param	string	marker name
-	 * @return	array	array of markers
+	 * @param string $template marker name
+	 * @param string $markerPrefix
+	 * @param bool $capturePrefix
+	 * @return array Array of markers
 	 */
 	public function getMarkersFromTemplate($template, $markerPrefix = '', $capturePrefix = TRUE) {
 		$regex = '!###([A-Z0-9_-|:.]*)\###!is';
@@ -981,8 +987,8 @@ class Tx_Solr_Template {
 	/**
 	 * returns the markers found in the template
 	 *
-	 * @param	string	a prefix to limit the result to markers beginning with the specified prefix
-	 * @return	array	array of markers names
+	 * @param string $markerPrefix a prefix to limit the result to markers beginning with the specified prefix
+	 * @return array Array of markers names
 	 */
 	public function findMarkers($markerPrefix = '') {
 		return $this->getMarkersFromTemplate($this->workOnSubpart, $markerPrefix);
@@ -992,10 +998,10 @@ class Tx_Solr_Template {
 	 * Gets a list of view helper marker arguments for a given view helper from
 	 * the selected subpart.
 	 *
-	 * @param	string	marker name, can be lower case, doesn't need the ### delimiters
-	 * @param	string	subpart markup to search in
-	 * @param	boolean	Optionally determines whether duplicate view helpers are removed. Defaults to TRUE.
-	 * @return	array	array of markers
+	 * @param string $helperMarker marker name, can be lower case, doesn't need the ### delimiters
+	 * @param string $subpart subpart markup to search in
+	 * @param boolean $removeDuplicates Optionally determines whether duplicate view helpers are removed. Defaults to TRUE.
+	 * @return array Array of markers
 	 */
 	protected function getViewHelperArgumentLists($helperMarker, $subpart, $removeDuplicates = TRUE) {
 			// already tried (and failed) variants:
@@ -1021,8 +1027,8 @@ class Tx_Solr_Template {
 	/**
 	 * Finds view helpers used in the current subpart being worked on.
 	 *
-	 * @param	string	A string that should be searched for view helpers.
-	 * @return	array	A list of view helper names used in the template.
+	 * @param string $content A string that should be searched for view helpers.
+	 * @return array A list of view helper names used in the template.
 	 */
 	public function findViewHelpers($content) {
 		preg_match_all('!###([\w]+):.*?\###!is', $content, $match);
@@ -1050,9 +1056,9 @@ class Tx_Solr_Template {
 	/**
 	 * Gets a list of given markers from the selected subpart.
 	 *
-	 * @param	string	marker name, can be lower case, doesn't need the ### delimiters
-	 * @param	string	subpartname
-	 * @return	array	array of markers
+	 * @param string $variableMarker marker name, can be lower case, doesn't need the ### delimiters
+	 * @param string $subpart subpart name
+	 * @return array array of markers
 	 */
 	public function getVariableMarkers($variableMarker, $subpart) {
 		preg_match_all(
@@ -1078,6 +1084,10 @@ class Tx_Solr_Template {
 		return (boolean) $isVariableMarker;
 	}
 
+	/**
+	 * @param $templateContent
+	 * @return mixed
+	 */
 	public function setTemplateContent($templateContent) {
 		return $this->template = $templateContent;
 	}
@@ -1093,7 +1103,7 @@ class Tx_Solr_Template {
 	/**
 	 * Sets the debug mode on or off.
 	 *
-	 * @param	boolean	debug mode, TRUE to enable debug mode, FALSE to turn off again, off by default
+	 * @param boolean $mode debug mode, TRUE to enable debug mode, FALSE to turn off again, off by default
 	 */
 	public function setDebugMode($mode) {
 		$this->debugMode = (boolean) $mode;

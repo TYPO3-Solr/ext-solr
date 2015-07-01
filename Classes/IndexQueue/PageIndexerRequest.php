@@ -26,58 +26,58 @@
 /**
  * Index Queue Page Indexer request with details about which actions to perform.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_PageIndexerRequest {
 
 	/**
 	 * List of actions to perform during page rendering.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $actions = array();
 
 	/**
 	 * Parameters as sent from the Index Queue page indexer.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $parameters = array();
 
 	/**
 	 * Headers as sent from the Index Queue page indexer.
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $header = array();
 
 	/**
 	 * Unique request ID.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $requestId;
 
 	/**
 	 * Username to use for basic auth protected URLs.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $username = '';
 
 	/**
 	 * Password to use for basic auth protected URLs.
 	 *
-	 * @var	string
+	 * @var string
 	 */
 	protected $password = '';
 
 	/**
 	 * An Index Queue item related to this request.
 	 *
-	 * @var	Tx_Solr_IndexQueue_Item
+	 * @var Tx_Solr_IndexQueue_Item
 	 */
 	protected $indexQueueItem = NULL;
 
@@ -91,7 +91,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Constructor for Tx_Solr_IndexQueue_PageIndexerRequest
 	 *
-	 * @param	string	$header	JSON encoded Index Queue page indexer parameters
+	 * @param string	$header JSON encoded Index Queue page indexer parameters
 	 */
 	public function __construct($header = NULL) {
 		$this->requestId = uniqid();
@@ -119,8 +119,8 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	 * Uses headers to submit additonal data and avoiding to have these
 	 * arguments integrated into the URL when created by RealURL.
 	 *
-	 * @param	string	$url The URL to request.
-	 * @return	Tx_Solr_IndexQueue_PageIndexerResponse	Response
+	 * @param string $url The URL to request.
+	 * @return Tx_Solr_IndexQueue_PageIndexerResponse Response
 	 */
 	public function send($url) {
 		$headers  = $this->getHeaders();
@@ -196,7 +196,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Generates the headers to be send with the request.
 	 *
-	 * @return	array	Array of HTTP headers.
+	 * @return array Array of HTTP headers.
 	 */
 	public function getHeaders() {
 		$headers   = $this->header;
@@ -230,7 +230,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	 * Checks whether this is a legitimate request coming from the Index Queue
 	 * page indexer worker task.
 	 *
-	 * @return	boolean	TRUE if it's a legitimate request, FALSE otherwise.
+	 * @return boolean TRUE if it's a legitimate request, FALSE otherwise.
 	 */
 	public function isAuthenticated() {
 		$authenticated = FALSE;
@@ -253,7 +253,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Adds an action to perform during page rendering.
 	 *
-	 * @param	string	$action Action name.
+	 * @param string $action Action name.
 	 */
 	public function addAction($action) {
 		$this->actions[] = $action;
@@ -262,7 +262,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Gets the list of actions to perform during page rendering.
 	 *
-	 * @return	array	List of actions
+	 * @return array List of actions
 	 */
 	public function getActions() {
 		return $this->actions;
@@ -271,7 +271,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Gets the request's parameters.
 	 *
-	 * @return	array	Request parameters.
+	 * @return array Request parameters.
 	 */
 	public function getParameters() {
 		return $this->parameters;
@@ -280,7 +280,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Gets the request's unique ID.
 	 *
-	 * @return	string	Unique request ID.
+	 * @return string Unique request ID.
 	 */
 	public function getRequestId() {
 		return $this->requestId;
@@ -289,8 +289,8 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Gets a specific parameter's value.
 	 *
-	 * @param	string	$parameterName The parameter to retrieve.
-	 * @return	mixed	NULL if a parameter was not set or it's value otherwise.
+	 * @param string $parameterName The parameter to retrieve.
+	 * @return mixed NULL if a parameter was not set or it's value otherwise.
 	 */
 	public function getParameter($parameterName) {
 		$value = NULL;
@@ -305,8 +305,8 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Sets a request's parameter and its value.
 	 *
-	 * @param	string	$parameter Parameter name
-	 * @param	mixed	$value Parameter value.
+	 * @param string $parameter Parameter name
+	 * @param mixed $value Parameter value.
 	 */
 	public function setParameter($parameter, $value) {
 		if (is_bool($value)) {
@@ -319,8 +319,8 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Sets username and password to be used for a basic auth request header.
 	 *
-	 * @param	string	$username username.
-	 * @param	string	$password password.
+	 * @param string $username username.
+	 * @param string $password password.
 	 */
 	public function setAuthorizationCredentials($username, $password) {
 		$this->username = $username;

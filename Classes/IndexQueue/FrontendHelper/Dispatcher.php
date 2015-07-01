@@ -26,16 +26,16 @@
 /**
  * Dispatches the actions requested to the matching frontend helpers.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
 
 	/**
 	 * Frontend helper manager.
 	 *
-	 * @var	Tx_Solr_IndexQueue_FrontendHelper_Manager
+	 * @var Tx_Solr_IndexQueue_FrontendHelper_Manager
 	 */
 	protected $frontendHelperManager;
 
@@ -50,8 +50,8 @@ class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
 	 * Takes the request's actions and hands them of to the according frontend
 	 * helpers.
 	 *
-	 * @param	Tx_Solr_IndexQueue_PageIndexerRequest	$request The request to dispatch
-	 * @param	Tx_Solr_IndexQueue_PageIndexerResponse	$response The request's response
+	 * @param Tx_Solr_IndexQueue_PageIndexerRequest $request The request to dispatch
+	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response The request's response
 	 */
 	public function dispatch(Tx_Solr_IndexQueue_PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
 		$actions = $request->getActions();

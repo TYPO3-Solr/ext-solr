@@ -27,9 +27,9 @@
  * Provides an status report about whether a connection to the Solr server can
  * be established.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
 
@@ -61,7 +61,7 @@ class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
 	/**
 	 * Checks whether a Solr server is available and provides some information.
 	 *
-	 * @param	array	Solr connection parameters
+	 * @param array Solr connection parameters
 	 * @return	tx_reports_reports_status_Status Status of the Solr connection
 	 */
 	protected function getConnectionStatus(array $solrConection) {
@@ -118,8 +118,8 @@ class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
 	 * more information though, in case of custom builds, their complete
 	 * version will be added, too.
 	 *
-	 * @param	string	$solrVersion Unformatted Apache Solr version number as provided by Solr.
-	 * @return	string	formatted short version number, in case of custom builds followed by the complete version number
+	 * @param string $solrVersion Unformatted Apache Solr version number as provided by Solr.
+	 * @return string formatted short version number, in case of custom builds followed by the complete version number
 	 */
 	protected function formatSolrVersion($solrVersion) {
 		$explodedSolrVersion = explode('.', $solrVersion);

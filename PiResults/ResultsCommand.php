@@ -26,9 +26,9 @@
 /**
  * Results view command
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 
@@ -47,7 +47,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
 
@@ -160,8 +160,8 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	 * The default is to do nothing and just add the document's field to the
 	 * resulting array.
 	 *
-	 * @param	Apache_Solr_Document	$document the Apache_Solr_Document result document
-	 * @return	array	An array with field values processed like defined in TS
+	 * @param Apache_Solr_Document $document the Apache_Solr_Document result document
+	 * @return array An array with field values processed like defined in TS
 	 */
 	protected function processDocumentFieldsToArray(Apache_Solr_Document $document) {
 		$processingInstructions = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['results.']['fieldProcessingInstructions.'];
@@ -290,7 +290,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Determines whether filters have been applied to the query or not.
 	 *
-	 * @return	string	1 if filters are applied, 0 if not (for use in templates)
+	 * @return string 1 if filters are applied, 0 if not (for use in templates)
 	 */
 	protected function isFiltered() {
 		$filters = $this->search->getQuery()->getFilters();
@@ -303,7 +303,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	 * Determines whether filters have been applied by the user (facets for
 	 * example) to the query or not.
 	 *
-	 * @return	string	1 if filters are applied, 0 if not (for use in templates)
+	 * @return string 1 if filters are applied, 0 if not (for use in templates)
 	 */
 	protected function isFilteredByUser() {
 		$userFiltered = FALSE;

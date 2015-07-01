@@ -26,7 +26,7 @@
 /**
  * Facet Options Renderer Interface
  *
- * @author	Ingo Renner <ingo@typo3.org>
+ * @author Ingo Renner <ingo@typo3.org>
  */
 interface Tx_Solr_FacetOptionsRenderer {
 

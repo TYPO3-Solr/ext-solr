@@ -27,8 +27,8 @@
  * Processes a value that may appear as field value in documents
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_FieldProcessor_PathToHierarchy implements Tx_Solr_FieldProcessor {
 

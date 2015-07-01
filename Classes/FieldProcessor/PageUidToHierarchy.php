@@ -56,8 +56,8 @@ class Tx_Solr_FieldProcessor_PageUidToHierarchy extends Tx_Solr_FieldProcessor_A
 	 * Expects a page ID of a page. Returns a Solr hierarchy notation for the
 	 * rootline of the page ID.
 	 *
-	 * @param	array	Array of values, an array because of multivalued fields
-	 * @return	array	Modified array of values
+	 * @param array Array of values, an array because of multivalued fields
+	 * @return array Modified array of values
 	 */
 	public function process(array $values) {
 		$results = array();

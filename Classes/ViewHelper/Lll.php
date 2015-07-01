@@ -27,9 +27,9 @@
  * view helper to replace label markers starting with "LLL:"
  * Replaces viewhelpers ###LLL:languageKey###
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 
@@ -115,8 +115,8 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 	 * Resolves a label given through a full LLL path by loading the specified
 	 * local lang file and then returning the requested label.
 	 *
-	 * @param	string	full path specifying a label, LLL:EXT:path/to/locallang.xml:my_label
-	 * @return	string	the requested label
+	 * @param string full path specifying a label, LLL:EXT:path/to/locallang.xml:my_label
+	 * @return string the requested label
 	 */
 	protected function resolveFullPathLabel($path) {
 		$pathParts = explode(':', $path);
@@ -139,9 +139,9 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 	/**
 	 * Gets a label from the already loaded and cached labels
 	 *
-	 * @param	string	key for a local lang file
-	 * @param	string	label key
-	 * @return	string	requested label in the current language if available, in default language otherwise
+	 * @param string key for a local lang file
+	 * @param string label key
+	 * @return string requested label in the current language if available, in default language otherwise
 	 */
 	protected function getLabel($locallang, $labelKey) {
 		$label = '';

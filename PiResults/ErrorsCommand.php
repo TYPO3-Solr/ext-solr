@@ -27,9 +27,9 @@
  * Errors command class to render error messages for errors that may have
  * occurred during searching.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 
@@ -43,7 +43,7 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Configuration
 	 *
-	 * @var	array
+	 * @var array
 	 */
 	protected $configuration;
 
@@ -60,7 +60,7 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Provides the values for the markers in the errors template subpart.
 	 *
-	 * @return	array	Array of markers in the errors template subpart
+	 * @return array Array of markers in the errors template subpart
 	 */
 	public function execute() {
 		$marker = array();
@@ -78,7 +78,7 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Gets errors that may have been found with the user's query.
 	 *
-	 * @return	array	An array of errors, each error is an array itself and has a message and a code key.
+	 * @return array An array of errors, each error is an array itself and has a message and a code key.
 	 */
 	protected function getErrors() {
 		$errors = array();

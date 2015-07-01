@@ -31,18 +31,18 @@
  * Tx_Solr_IndexQueuePageIndexerDataUrlModifier interface, allows to modify the data url
  * before call the frontend form the index queue
  *
- * @author	Markus Goldbach <markus.goldbach@dkd.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 interface Tx_Solr_IndexQueuePageIndexerDataUrlModifier {
 
 	/**
 	 * Modifies the given data url
 	 *
-	 * @param	string	the current data url.
-	 * @param	array	An array of url data
-	 * @return	string	the final data url
+	 * @param string the current data url.
+	 * @param array An array of url data
+	 * @return string the final data url
 	 */
 	public function modifyDataUrl($pageUrl, array $urlData);
 

@@ -28,9 +28,9 @@
  * Plugin 'Solr Searchbox' for the 'solr' extension. A cached plugin version of
  * just the search input field.
  *
- * @author	Timo Schmidt <timo.schmidt@aoemedia.de>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Timo Schmidt <timo.schmidt@aoemedia.de>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 
@@ -42,7 +42,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	/**
 	 * Additional filters, which will be added to suggest queries.
 	 *
-	 * @var	 array
+	 * @var  array
 	 */
 	protected $additionalFilters = array();
 
@@ -52,7 +52,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 *
 	 * @todo	currently the commands of the resultview are used, we should discuss if we use own command here
 	 * @see Tx_Solr_PluginBase_CommandPluginBase#getCommandResolver()
-	 * @return	Tx_Solr_CommandResolver	A command resolver
+	 * @return Tx_Solr_CommandResolver A command resolver
 	 */
 	protected function getCommandResolver(){
 		return t3lib_div::makeInstance('Tx_Solr_CommandResolver');
@@ -61,7 +61,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	/**
 	 * Retrievs the list of commands we have to process for the results view
 	 *
-	 * @return	array	Array of command names to process for the result view
+	 * @return array Array of command names to process for the result view
 	 */
 	protected function getCommandList() {
 		$commandList = Tx_Solr_CommandResolver::getPluginCommands(
@@ -110,7 +110,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	/**
 	 * Gets additional filters configured through TypoScript.
 	 *
-	 * @return	array	An array of additional filters to use for queries.
+	 * @return array An array of additional filters to use for queries.
 	 */
 	public function getAdditionalFilters() {
 		return $this->additionalFilters;
@@ -120,7 +120,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 * Gets a list of EXT:solr variables like the prefix ID.
 	 *
 	 * @todo	refactor into baseclass
-	 * @return	array	array of EXT:solr variables
+	 * @return array array of EXT:solr variables
 	 */
 	protected function getSolrVariables() {
 		$currentUrl = $this->pi_linkTP_keepPIvars_url();
@@ -161,7 +161,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 * for this view.
 	 *
 	 * @see Tx_Solr_PluginBase_PluginBase#getTemplateFileKey()
-	 * @return	string	TypoScript key used to determine the template file.
+	 * @return string TypoScript key used to determine the template file.
  	 */
 	protected function getTemplateFileKey() {
 		return 'search';
@@ -171,7 +171,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 * Return the plugin key, used to initialize the template engine.
 	 *
 	 * @see Tx_Solr_PluginBase_PluginBase#getPluginKey()
-	 * @return	string	Plugin key used during initialization of the template engine
+	 * @return string Plugin key used during initialization of the template engine
 	 */
 	protected function getPluginKey() {
 		return 'PiSearch';
@@ -181,7 +181,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 * Returns the name of the template subpart used by the plugin.
 	 *
 	 * @see Tx_Solr_PluginBase_PluginBase#getSubpart()
-	 * @return	string	Name of the template subpart to use for rendering
+	 * @return string Name of the template subpart to use for rendering
 	 */
 	protected function getSubpart() {
 		return 'solr_search';

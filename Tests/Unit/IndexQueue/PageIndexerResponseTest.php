@@ -26,9 +26,9 @@
 /**
  * Index Queue Page Indexer response test.
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_IndexQueue_PageIndexerResponseTest extends Tx_Phpunit_TestCase {
 

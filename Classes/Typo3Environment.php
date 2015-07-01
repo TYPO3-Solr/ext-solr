@@ -26,16 +26,16 @@
 /**
  * TYPO3 Environment Information
  *
- * @author	Ingo Renner <ingo@typo3.org>
- * @package	TYPO3
- * @subpackage	solr
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
 class Tx_Solr_Typo3Environment implements t3lib_Singleton {
 
 	/**
 	 * Checks whether file indexing is enabled.
 	 *
-	 * @return	boolean	TRUE if file indexing is enabled, FALSE otherwise.
+	 * @return boolean TRUE if file indexing is enabled, FALSE otherwise.
 	 */
 	public function isFileIndexingEnabled() {
 		return (boolean) $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['files'];
