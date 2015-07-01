@@ -123,3 +123,16 @@ textarea,
 .uneditable-input {
 	width: 206px;
 }
+
+table.typo3-TCEforms-select-checkbox {
+	border-collapse: separate;
+}
+
+.typo3-TCEforms table.typo3-TCEforms-select-checkbox tr {
+	background-color: #fff;
+}
+
+.typo3-TCEforms table.typo3-TCEforms-select-checkbox tr.t3-row-header,
+.typo3-TCEforms table.typo3-TCEforms-select-checkbox tr.t3-row-header:hover {
+	background-color: #666;
+}
