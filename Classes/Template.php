@@ -305,7 +305,6 @@ class Tx_Solr_Template {
 	 * @return string escaped content
 	 */
 	protected function escapeResultContent($content) {
-
 		$content = htmlspecialchars($content, NULL, NULL, FALSE);
 
 		$configuration = Tx_Solr_Util::getSolrConfiguration();
@@ -322,7 +321,6 @@ class Tx_Solr_Template {
 		#$pattern = '/&lt;span class="results-highlight"&gt;(.+?)&lt;\/span&gt;/is';
 		#$replacement = '<span class="results-highlight">$1</span>';
 		$content = preg_replace($pattern, $replacement, $content);
-
 
 		return $content;
 	}
