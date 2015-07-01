@@ -318,8 +318,6 @@ class Tx_Solr_Template {
 			. '/is';
 		$replacement = $highlightingWrap[0] . '$1' . $highlightingWrap[1];
 
-		#$pattern = '/&lt;span class="results-highlight"&gt;(.+?)&lt;\/span&gt;/is';
-		#$replacement = '<span class="results-highlight">$1</span>';
 		$content = preg_replace($pattern, $replacement, $content);
 
 		return $content;
