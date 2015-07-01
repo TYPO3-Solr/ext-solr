@@ -2,7 +2,8 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011-2012 Stefan Sprenger <stefan.sprenger@dkd.de>
+*  (c) 2011-2015 Stefan Sprenger <stefan.sprenger@dkd.de>
+*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is

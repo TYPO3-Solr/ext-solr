@@ -4,7 +4,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014 Hans Höchtl <hans.hoechtl@typovision.de>
+*  (c) 2014-2015 Hans Höchtl <hans.hoechtl@typovision.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is

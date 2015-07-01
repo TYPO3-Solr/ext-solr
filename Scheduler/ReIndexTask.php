@@ -2,8 +2,8 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011-2013 Christoph Moeller <support@network-publishing.de>
-*  (c) 2012-2013 Ingo Renner <ingo@typo3.org>
+*  (c) 2011-2015 Christoph Moeller <support@network-publishing.de>
+*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *
 *  All rights reserved
 *

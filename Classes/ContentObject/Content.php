@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011-2012 Ingo Renner <ingo.renner@dkd.de>
+*  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,7 @@
  * A content object (cObj) to clean a database field in a way so that it can be
  * used to fill a Solr document's content field.
  *
- * @author Ingo Renner <ingo.renner@dkd.de>
+ * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
