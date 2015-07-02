@@ -13,3 +13,7 @@
     background: black;
     border-radius: 10px;
 }
+
+.t3-help-link .t3-help-teaser-icon .t3-icon {
+    margin-top: 4px;
+}
