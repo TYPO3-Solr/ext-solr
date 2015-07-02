@@ -51,16 +51,16 @@
 			<source>Initializing the Index Queue is the most complete way to force re-indexing, or to build the Index Queue for the first time. The Index Queue Worker scheduler task will then index the items listed in the Index Queue.</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.status.errors" xml:space="preserve">
-			<source> Errors:</source>
+			<source> Errors</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.status.header" xml:space="preserve">
 			<source>Indexing Progress</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.status.indexed" xml:space="preserve">
-			<source> Indexed:</source>
+			<source> Indexed</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.status.pending" xml:space="preserve">
-			<source> Pending:</source>
+			<source> Pending</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.header_init" xml:space="preserve">
 			<source>Index Queue Initialization</source>

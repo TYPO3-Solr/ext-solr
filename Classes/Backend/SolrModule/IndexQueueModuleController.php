@@ -57,9 +57,13 @@ class IndexQueueModuleController extends AbstractModuleController {
 	 * @return void
 	 */
 	public function indexAction() {
-		$this->view->assign('indexQueueInitializationSelector', $this->getIndexQueueInitializationSelector());
-		$this->view->assign('indexqueue_stats', json_encode($this->getIndexQueueStats()));
-		$this->view->assign('indexqueue_errors', $this->getIndexQueueErrors());
+		$statisticsCounts       = $this->getIndexQueueStatistics();
+		$statisticsPercentages = $this->getIndexQueueStatisticsPercentages($statisticsCounts);
+
+		$this->view->assign('indexQueueInitializationSelector',  $this->getIndexQueueInitializationSelector());
+		$this->view->assign('indexqueue_statistics_counts',      $statisticsCounts);
+		$this->view->assign('indexqueue_statistics_percentages', $statisticsPercentages);
+		$this->view->assign('indexqueue_errors',                 $this->getIndexQueueErrors());
 	}
 
 	/**
@@ -180,28 +184,60 @@ class IndexQueueModuleController extends AbstractModuleController {
 	 *
 	 * @return array
 	 */
-	protected function getIndexQueueStats() {
+	protected function getIndexQueueStatistics() {
 		$indexQueueStats = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'indexed < changed as pending,'
-				. '(errors not like "") as erroneous,'
+				. '(errors not like "") as failed,'
 				. 'COUNT(*) as count',
 			'tx_solr_indexqueue_item',
 			'root = ' . $this->site->getRootPageId() ,
-			'pending, erroneous'
+			'pending, failed'
 		);
 
-		$stats = array();
+		$statistics = array(
+			'errors'  => 0,
+			'pending' => 0,
+			'indexed' => 0
+		);
 		foreach($indexQueueStats as $row) {
-			if($row['erroneous'] == 1) {
-				$stats['erroneous'] = $row['count'];
+			if($row['failed'] == 1) {
+				$statistics['errors'] = $row['count'];
 			} elseif($row['pending'] == 1) {
-				$stats['pending'] = $row['count'];
+				$statistics['pending'] = $row['count'];
 			} else {
-				$stats['indexed'] = $row['count'];
+				$statistics['indexed'] = $row['count'];
 			}
 		}
 
-		return $stats;
+		$total = 0;
+		foreach ($statistics as $count) {
+			$total += $count;
+		}
+		$statistics['total'] = $total;
+
+		return $statistics;
+	}
+
+	/**
+	 * Gets the Index Queue statistics as percentages
+	 *
+	 * @param array $statistics Input from getIndexQueueStatistics()
+	 * @return array
+	 */
+	protected function getIndexQueueStatisticsPercentages($statistics) {
+		$percentages = array(
+			'errors'  => 0,
+			'pending' => 0,
+			'indexed' => 0
+		);
+
+		if ($statistics['total'] > 0) {
+			foreach ($statistics as $key => $count) {
+				$percentages[$key] = round(($count * 100 / $statistics['total']), 0);
+			}
+		}
+
+		return $percentages;
 	}
 
 	/**
