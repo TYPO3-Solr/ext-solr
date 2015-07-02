@@ -242,27 +242,20 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 
 	/**
 	 * Call the /admin/ping servlet, can be used to quickly tell if a connection to the
-	 * server is able to be made.
+	 * server is available.
 	 *
 	 * Simply overrides the SolrPhpClient implementation, changing ping from a
 	 * HEAD to a GET request, see http://forge.typo3.org/issues/44167
 	 *
+	 * Also does not report the time, see https://forge.typo3.org/issues/64551
+	 *
 	 * @param float|integer $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
-	 * @return float Actual time taken to ping the server, FALSE if timeout or HTTP error status occurs
+	 * @return bool TRUE if Solr can be reached, FALSE if not
 	 */
 	public function ping($timeout = 2) {
-		$start = microtime(TRUE);
+		$httpResponse = $this->getHttpTransport()->performGetRequest($this->_pingUrl, $timeout);
 
-		$httpTransport = $this->getHttpTransport();
-
-		$httpResponse = $httpTransport->performGetRequest($this->_pingUrl, $timeout);
-		$solrResponse = new Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
-
-		if ($solrResponse->getHttpStatus() == 200) {
-			return microtime(TRUE) - $start;
-		} else {
-			return FALSE;
-		}
+		return ($httpResponse->getStatusCode() === 200);
 	}
 
 	/**
