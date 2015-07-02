@@ -53,8 +53,8 @@
 		<trans-unit id="solr.backend.index_queue_module.status.errors" xml:space="preserve">
 			<source> Errors:</source>
 		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.status.headline" xml:space="preserve">
-			<source>Index Queue Status</source>
+		<trans-unit id="solr.backend.index_queue_module.status.header" xml:space="preserve">
+			<source>Indexing Progress</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.status.indexed" xml:space="preserve">
 			<source> Indexed:</source>
@@ -65,8 +65,8 @@
 		<trans-unit id="solr.backend.index_queue_module.header_init" xml:space="preserve">
 			<source>Index Queue Initialization</source>
 		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.header_errors" xml:space="preserve">
-			<source>Errors</source>
+		<trans-unit id="solr.backend.index_queue_module.header_status" xml:space="preserve">
+			<source>Index Queue Status</source>
 		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.button.clear_index_queue" xml:space="preserve">
 			<source>Clear Index Queue</source>
