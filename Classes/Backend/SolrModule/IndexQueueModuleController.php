@@ -176,7 +176,8 @@ class IndexQueueModuleController extends AbstractModuleController {
 
 	/**
 	 * Extracts the number of pending, indexed and erroneous items from the
-	 * index queue.
+	 * Index Queue.
+	 *
 	 * @return array
 	 */
 	protected function getIndexQueueStats() {
@@ -185,7 +186,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 				. '(errors not like "") as erroneous,'
 				. 'COUNT(*) as count',
 			'tx_solr_indexqueue_item',
-			'',
+			'root = ' . $this->site->getRootPageId() ,
 			'pending, erroneous'
 		);
 
@@ -204,13 +205,15 @@ class IndexQueueModuleController extends AbstractModuleController {
 	}
 
 	/**
-	 * @return array Index queue with an associated error
+	 * Finds indexing errors for the current site
+	 *
+	 * @return array Error items for the current site's Index Queue
 	 */
 	protected function getIndexQueueErrors() {
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid, item_type, item_uid, errors',
 			'tx_solr_indexqueue_item',
-			'errors NOT LIKE ""'
+			'errors NOT LIKE "" AND root = ' . $this->site->getRootPageId()
 		);
 	}
 }
