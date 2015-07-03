@@ -39,7 +39,7 @@ class Tx_Solr_Cli_Dispatcher extends t3lib_cli {
 	 *
 	 */
 	public function __construct() {
-		parent::t3lib_cli();
+		parent::__construct();
 
 			// Setting help texts:
 		$this->cli_help['name']        = 'solr -- Solr commands for TYPO3 installations';
