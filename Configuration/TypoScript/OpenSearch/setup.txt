@@ -3,8 +3,6 @@
 
 page {
 
-	headTag = <head profile="http://a9.com/-/spec/opensearch/1.1/">
-
 	headerData.7567 = TEXT
 	headerData.7567 {
 		typolink.parameter.data = leveluid:0
@@ -13,6 +11,7 @@ page {
 		typolink.returnLast = url
 
 		wrap (
+			<link rel="profile" href="http://a9.com/-/spec/opensearch/1.1/" />
 			<link rel="search"
 				  type="application/opensearchdescription+xml"
 				  href="|"
