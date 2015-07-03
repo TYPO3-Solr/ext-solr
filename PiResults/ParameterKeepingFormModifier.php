@@ -79,6 +79,11 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 
 		if ($this->parentPlugin instanceof Tx_Solr_PiResults_Results && $this->configuration['search.']['keepExistingParametersForNewSearches']) {
 			foreach ($this->parentPlugin->piVars as $key => $value) {
+				if ($key == 'page') {
+					// must reset page
+					continue;
+				}
+
 				$name = $this->parentPlugin->prefixId . '[' . $key . ']';
 
 				if (is_array($value)) {
