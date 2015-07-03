@@ -99,7 +99,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends AbstractAut
 		if ($user['username'] == self::SOLR_INDEXER_USERNAME && !empty($accessRootline)) {
 
 			$accessRootline = GeneralUtility::makeInstance(
-				'Tx_Solr_Access_Rootline',
+				'ApacheSolrForTypo3\\Solr\\Access\\Rootline',
 				$accessRootline
 			);
 

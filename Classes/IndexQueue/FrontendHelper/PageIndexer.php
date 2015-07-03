@@ -135,7 +135,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	/**
 	 * Gets the access rootline as defined by the request.
 	 *
-	 * @return Tx_Solr_Access_Rootline The access rootline to use for indexing.
+	 * @return \ApacheSolrForTypo3\Solr\Access\Rootline The access rootline to use for indexing.
 	 */
 	protected function getAccessRootline() {
 		$stringAccessRootline = '';
@@ -145,7 +145,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 		}
 
 		$accessRootline = GeneralUtility::makeInstance(
-			'Tx_Solr_Access_Rootline',
+			'ApacheSolrForTypo3\\Solr\\Access\\Rootline',
 			$stringAccessRootline
 		);
 

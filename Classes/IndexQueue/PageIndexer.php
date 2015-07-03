@@ -370,7 +370,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 		}
 
 		if (!isset($accessRootlineCache[$accessRootlineCacheEntryId])) {
-			$accessRootline = Tx_Solr_Access_Rootline::getAccessRootlineByPageId(
+			$accessRootline = \ApacheSolrForTypo3\Solr\Access\Rootline::getAccessRootlineByPageId(
 				$item->getRecordUid()
 			);
 

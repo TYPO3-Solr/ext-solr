@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Access;
 /***************************************************************
 *  Copyright notice
 *
@@ -23,7 +24,6 @@
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 
 /**
  * "Access Rootline", represents all pages and specifically those setting
@@ -63,7 +63,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Access_Rootline {
+class Rootline {
 
 	/**
 	 * Delimiter for page and content access right elements in the rootline.
@@ -92,10 +92,10 @@ class Tx_Solr_Access_Rootline {
 			foreach ($rawRootlineElements as $rawRootlineElement) {
 				try {
 					$this->push(GeneralUtility::makeInstance(
-						'Tx_Solr_Access_RootlineElement',
+						'\Tx_Solr_Access_RootlineElement',
 						$rawRootlineElement
 					));
-				} catch (Tx_Solr_Access_RootlineElementFormatException $e) {
+				} catch (\Tx_Solr_Access_RootlineElementFormatException $e) {
 					// just ignore the faulty element for now, might log this later
 				}
 			}
@@ -120,20 +120,20 @@ class Tx_Solr_Access_Rootline {
 	/**
 	 * Adds an Access Rootline Element to the end of the rootline.
 	 *
-	 * @param Tx_Solr_Access_RootlineElement $rootlineElement Element to add.
+	 * @param \Tx_Solr_Access_RootlineElement $rootlineElement Element to add.
 	 */
-	public function push(Tx_Solr_Access_RootlineElement $rootlineElement) {
+	public function push(\Tx_Solr_Access_RootlineElement $rootlineElement) {
 		$lastElementIndex = max(0, (count($this->rootlineElements) - 1));
 
 		if (!empty($this->rootlineElements[$lastElementIndex])) {
-			if ($this->rootlineElements[$lastElementIndex]->getType() == Tx_Solr_Access_RootlineElement::ELEMENT_TYPE_CONTENT) {
+			if ($this->rootlineElements[$lastElementIndex]->getType() == \Tx_Solr_Access_RootlineElement::ELEMENT_TYPE_CONTENT) {
 				throw new Tx_Solr_Access_RootlineElementFormatException(
 					'Can not add an element to an Access Rootline whose\' last element is a content type element.',
 					1294422132
 				);
 			}
 
-			if ($this->rootlineElements[$lastElementIndex]->getType() == Tx_Solr_Access_RootlineElement::ELEMENT_TYPE_RECORD) {
+			if ($this->rootlineElements[$lastElementIndex]->getType() == \Tx_Solr_Access_RootlineElement::ELEMENT_TYPE_RECORD) {
 				throw new Tx_Solr_Access_RootlineElementFormatException(
 					'Can not add an element to an Access Rootline whose\' last element is a record type element.',
 					1308343423
@@ -166,10 +166,10 @@ class Tx_Solr_Access_Rootline {
 	 * Gets the Access Rootline for a specific page Id.
 	 *
 	 * @param integer $pageId The page Id to generate the Access Rootline for.
-	 * @return Tx_Solr_Access_Rootline Access Rootline for the given page Id.
+	 * @return \ApacheSolrForTypo3\Solr\Access\Rootline Access Rootline for the given page Id.
 	 */
 	public static function getAccessRootlineByPageId($pageId) {
-		$accessRootline = GeneralUtility::makeInstance('Tx_Solr_Access_Rootline');
+		$accessRootline = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Access\\Rootline');
 
 		$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$pageSelector->init(FALSE);
@@ -183,7 +183,7 @@ class Tx_Solr_Access_Rootline {
 				&& $pageRecord['uid'] != $pageId
 			) {
 				$accessRootline->push(GeneralUtility::makeInstance(
-					'Tx_Solr_Access_RootlineElement',
+					'\Tx_Solr_Access_RootlineElement',
 					$pageRecord['uid'] . Tx_Solr_Access_RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
 				));
 			}
@@ -193,7 +193,7 @@ class Tx_Solr_Access_Rootline {
 		$currentPageRecord = $pageSelector->getPage($pageId);
 		if ($currentPageRecord['fe_group']) {
 			$accessRootline->push(GeneralUtility::makeInstance(
-				'Tx_Solr_Access_RootlineElement',
+				'\Tx_Solr_Access_RootlineElement',
 				$currentPageRecord['uid'] . Tx_Solr_Access_RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
 			));
 		}
@@ -215,4 +215,3 @@ class Tx_Solr_Access_Rootline {
 		return $groups;
 	}
 }
-

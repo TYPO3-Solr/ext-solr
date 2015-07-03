@@ -22,9 +22,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-
 
 /**
  * Page Indexer to index TYPO3 pages used by the Index Queue.
@@ -68,7 +65,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * The page's access rootline
 	 *
-	 * @var Tx_Solr_Access_Rootline
+	 * @var \ApacheSolrForTypo3\Solr\Access\Rootline
 	 */
 	protected $pageAccessRootline = NULL;
 
@@ -123,7 +120,7 @@ class Tx_Solr_Typo3PageIndexer {
 		);
 
 		$this->pageAccessRootline = GeneralUtility::makeInstance(
-			'Tx_Solr_Access_Rootline',
+			'ApacheSolrForTypo3\\Solr\\Access\\Rootline',
 			''
 		);
 	}
@@ -460,7 +457,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Gets the page's access rootline.
 	 *
-	 * @return	Tx_Solr_Access_Rootline The page's access rootline
+	 * @return	\ApacheSolrForTypo3\Solr\Access\Rootline The page's access rootline
 	 */
 	public function getPageAccessRootline() {
 		return $this->pageAccessRootline;
@@ -469,9 +466,9 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Sets the page's access rootline.
 	 *
-	 * @param Tx_Solr_Access_Rootline $accessRootline The page's access rootline
+	 * @param \ApacheSolrForTypo3\Solr\Access\Rootline $accessRootline The page's access rootline
 	 */
-	public function setPageAccessRootline(Tx_Solr_Access_Rootline $accessRootline) {
+	public function setPageAccessRootline(\ApacheSolrForTypo3\Solr\Access\Rootline $accessRootline) {
 		$this->pageAccessRootline = $accessRootline;
 	}
 
@@ -510,7 +507,7 @@ class Tx_Solr_Typo3PageIndexer {
 	 */
 	protected function getDocumentIdGroups() {
 		$groups = $this->pageAccessRootline->getGroups();
-		$groups = Tx_Solr_Access_Rootline::cleanGroupArray($groups);
+		$groups = \ApacheSolrForTypo3\Solr\Access\Rootline::cleanGroupArray($groups);
 
 		if (empty($groups)) {
 			$groups[] = 0;

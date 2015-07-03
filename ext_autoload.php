@@ -193,7 +193,7 @@ return array(
 	'tx_solr_scheduler_reindextask' => $extensionPath . 'Scheduler/ReIndexTask.php',
 	'tx_solr_scheduler_reindextaskadditionalfieldprovider' => $extensionPath . 'Scheduler/ReIndexTaskAdditionalFieldProvider.php',
 
-		// reports
+	// reports
 
 	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'Report/AccessFilterPluginInstalledStatus.php',
 	'tx_solr_report_allowurlfopenstatus' => $extensionPath . 'Report/AllowUrlFOpenStatus.php',
@@ -203,8 +203,17 @@ return array(
 	'tx_solr_report_solrconfigurationstatus' => $extensionPath . 'Report/SolrConfigurationStatus.php',
 	'tx_solr_report_solrstatus' => $extensionPath . 'Report/SolrStatus.php',
 	'tx_solr_report_solrversionstatus' => $extensionPath . 'Report/SolrVersionStatus.php',
+	'Tx_Solr_Report_AccessFilterPluginInstalledStatus' => $extensionPath . 'Report/AccessFilterPluginInstalledStatus.php',
+	'Tx_Solr_Report_AllowUrlFOpenStatus' => $extensionPath . 'Report/AllowUrlFOpenStatus.php',
+	'Tx_Solr_Report_FilterVarStatus' => $extensionPath . 'Report/FilterVarStatus.php',
+	'Tx_Solr_Report_IndexReport' => $extensionPath . 'Report/IndexReport.php',
+	'Tx_Solr_Report_SchemaStatus' => $extensionPath . 'Report/SchemaStatus.php',
+	'Tx_Solr_Report_SolrConfigStatus' => $extensionPath . 'Report/SolrConfigStatus.php',
+	'Tx_Solr_Report_SolrConfigurationStatus' => $extensionPath . 'Report/SolrConfigurationStatus.php',
+	'Tx_Solr_Report_SolrStatus' => $extensionPath . 'Report/SolrStatus.php',
+	'Tx_Solr_Report_SolrVersionStatus' => $extensionPath . 'Report/SolrVersionStatus.php',
 
-		// interfaces
+	// interfaces
 
 	'tx_solr_additionalindexqueueitemindexer' => $extensionPath . 'Interfaces/AdditionalIndexQueueItemIndexer.php',
 	'tx_solr_additionalpageindexer' => $extensionPath . 'Interfaces/AdditionalPageIndexer.php',
