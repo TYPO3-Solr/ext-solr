@@ -119,7 +119,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 		$query->setFieldList('*');
 		$query->setSorting('type asc, title asc');
 
-		$this->search->search($query);
+		$this->search->search($query, 0, 10000);
 
 		return $this->search->getResultDocuments();
 	}
