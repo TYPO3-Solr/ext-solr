@@ -90,7 +90,7 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 	protected function getSubMenu(array $facetOptions, $menuName, $level) {
 		$menu = array();
 
-		$subMenuEntryPrefix = $level . '-' . $menuName;
+		$subMenuEntryPrefix = $level . '-' . $menuName . '/';
 
 		foreach ($facetOptions as $facetOptionKey => $facetOption) {
 				// find the sub menu items for the current menu
