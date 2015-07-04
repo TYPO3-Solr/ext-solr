@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Access;
 /***************************************************************
 *  Copyright notice
 *
@@ -24,7 +25,6 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * An element in the "Access Rootline". Represents the frontend user group
  * access restrictions for a page, a page's content, or a generic record.
@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Access_RootlineElement {
+class RootlineElement {
 
 	/**
 	 * Page access rootline element.
@@ -87,10 +87,10 @@ class Tx_Solr_Access_RootlineElement {
 	protected $accessGroups = array();
 
 	/**
-	 * Constructor for Tx_Solr_Access_RootlineElement.
+	 * Constructor for RootlineElement.
 	 *
 	 * @param string $element String representation of an element in the access rootline, usually of the form pageId:commaSeparatedPageAccessGroups
-	 * @throws	\ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException on wrong access format.
+	 * @throws	RootlineElementFormatException on wrong access format.
 	 */
 	public function __construct($element) {
 		$elementAccess = explode(self::PAGE_ID_GROUP_DELIMITER, $element);
@@ -108,7 +108,7 @@ class Tx_Solr_Access_RootlineElement {
 		} elseif($elementAccess[0] == 'r') {
 				// record element type
 			if (count($elementAccess) !== 2) {
-				throw new ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException(
+				throw new RootlineElementFormatException(
 					'Wrong Access Rootline Element format for a record type element.',
 					1308342937
 				);
@@ -119,7 +119,7 @@ class Tx_Solr_Access_RootlineElement {
 		} else {
 				// page element type
 			if (count($elementAccess) !== 2 || !is_numeric($elementAccess[0])) {
-				throw new \ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException(
+				throw new RootlineElementFormatException(
 					'Wrong Access Rootline Element format for a page type element.',
 					1294421105
 				);
@@ -181,4 +181,3 @@ class Tx_Solr_Access_RootlineElement {
 		return $this->accessGroups;
 	}
 }
-

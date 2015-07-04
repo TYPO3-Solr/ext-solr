@@ -50,7 +50,7 @@ return array(
 	'tx_solr_util' => $extensionPath . 'Classes/Util.php',
 
 	'ApacheSolrForTypo3\Solr\Access\Rootline' => $extensionPath . 'Classes/Access/Rootline.php',
-	'Tx_Solr_Access_RootlineElement' => $extensionPath . 'Classes/Access/RootlineElement.php',
+	'ApacheSolrForTypo3\Solr\Access\RootlineElement' => $extensionPath . 'Classes/Access/RootlineElement.php',
 	'ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException' => $extensionPath . 'Classes/Access/RootlineElementFormatException.php',
 
 	'tx_solr_backend_indexingconfigurationselectorfield' => $extensionPath . 'Classes/Backend/IndexingConfigurationSelectorField.php',

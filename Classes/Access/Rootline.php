@@ -92,7 +92,7 @@ class Rootline {
 			foreach ($rawRootlineElements as $rawRootlineElement) {
 				try {
 					$this->push(GeneralUtility::makeInstance(
-						'\Tx_Solr_Access_RootlineElement',
+						'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
 						$rawRootlineElement
 					));
 				} catch (RootlineElementFormatException $e) {
@@ -120,20 +120,20 @@ class Rootline {
 	/**
 	 * Adds an Access Rootline Element to the end of the rootline.
 	 *
-	 * @param \Tx_Solr_Access_RootlineElement $rootlineElement Element to add.
+	 * @param RootlineElement $rootlineElement Element to add.
 	 */
-	public function push(\Tx_Solr_Access_RootlineElement $rootlineElement) {
+	public function push(RootlineElement $rootlineElement) {
 		$lastElementIndex = max(0, (count($this->rootlineElements) - 1));
 
 		if (!empty($this->rootlineElements[$lastElementIndex])) {
-			if ($this->rootlineElements[$lastElementIndex]->getType() == \Tx_Solr_Access_RootlineElement::ELEMENT_TYPE_CONTENT) {
+			if ($this->rootlineElements[$lastElementIndex]->getType() == RootlineElement::ELEMENT_TYPE_CONTENT) {
 				throw new RootlineElementFormatException(
 					'Can not add an element to an Access Rootline whose\' last element is a content type element.',
 					1294422132
 				);
 			}
 
-			if ($this->rootlineElements[$lastElementIndex]->getType() == \Tx_Solr_Access_RootlineElement::ELEMENT_TYPE_RECORD) {
+			if ($this->rootlineElements[$lastElementIndex]->getType() == RootlineElement::ELEMENT_TYPE_RECORD) {
 				throw new RootlineElementFormatException(
 					'Can not add an element to an Access Rootline whose\' last element is a record type element.',
 					1308343423
@@ -183,8 +183,8 @@ class Rootline {
 				&& $pageRecord['uid'] != $pageId
 			) {
 				$accessRootline->push(GeneralUtility::makeInstance(
-					'\Tx_Solr_Access_RootlineElement',
-					$pageRecord['uid'] . Tx_Solr_Access_RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
+					'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
+					$pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
 				));
 			}
 		}
@@ -193,8 +193,8 @@ class Rootline {
 		$currentPageRecord = $pageSelector->getPage($pageId);
 		if ($currentPageRecord['fe_group']) {
 			$accessRootline->push(GeneralUtility::makeInstance(
-				'\Tx_Solr_Access_RootlineElement',
-				$currentPageRecord['uid'] . Tx_Solr_Access_RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
+				'ApacheSolrForTypo3\Solr\Access\RootlineElement',
+				$currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
 			));
 		}
 

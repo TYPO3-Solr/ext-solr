@@ -25,7 +25,6 @@
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A special purpose indexer to index pages.
  *
@@ -380,7 +379,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 				$contentAccessGroups = $this->getAccessGroupsFromContent($item, $language);
 			}
 			$accessRootline->push(GeneralUtility::makeInstance(
-				'Tx_Solr_Access_RootlineElement',
+				'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
 				'c:' . implode(',', $contentAccessGroups)
 			));
 
@@ -432,4 +431,3 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	}
 
 }
-
