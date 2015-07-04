@@ -61,7 +61,7 @@ class IndexingConfigurationSelectorField {
 	 *
 	 * @param Tx_Solr_Site $site The site to use to determine indexing configurations
 	 */
-	public function __construct(Tx_Solr_Site $site = NULL) {
+	public function __construct(\Tx_Solr_Site $site = NULL) {
 		$this->site = $site;
 	}
 
@@ -140,7 +140,7 @@ class IndexingConfigurationSelectorField {
 	protected function getIndexQueueConfigurationTableMap() {
 		$indexingTableMap = array();
 
-		$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
+		$solrConfiguration = \Tx_Solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
 
 		foreach ($solrConfiguration['index.']['queue.'] as $name => $configuration) {
 			if (is_array($configuration)) {
