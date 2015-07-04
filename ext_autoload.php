@@ -55,7 +55,7 @@ return array(
 
 	'ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField' => $extensionPath . 'Classes/Backend/IndexingConfigurationSelectorField.php',
 
-	'tx_solr_cli_dispatcher' => $extensionPath . 'Classes/Cli/Dispatcher.php',
+	'ApacheSolrForTypo3\Solr\Cli\Dispatcher' => $extensionPath . 'Classes/Cli/Dispatcher.php',
 
 	'tx_solr_contentobject_content' => $extensionPath . 'Classes/ContentObject/Content.php',
 	'tx_solr_contentobject_multivalue' => $extensionPath . 'Classes/ContentObject/Multivalue.php',
