@@ -303,9 +303,9 @@ tt_content.search {
 
 	// add custom Solr content objects
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Tx_Solr_ContentObject_Multivalue::CONTENT_OBJECT_NAME] = array(
-	Tx_Solr_ContentObject_Multivalue::CONTENT_OBJECT_NAME,
-	'Tx_Solr_ContentObject_Multivalue'
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = array(
+	ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
+	'ApacheSolrForTypo3\Solr\ContentObject\Multivalue'
 );
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME] = array(

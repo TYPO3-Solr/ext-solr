@@ -58,7 +58,7 @@ return array(
 	'ApacheSolrForTypo3\Solr\Cli\Dispatcher' => $extensionPath . 'Classes/Cli/Dispatcher.php',
 
 	'ApacheSolrForTypo3\Solr\ContentObject\Content' => $extensionPath . 'Classes/ContentObject/Content.php',
-	'tx_solr_contentobject_multivalue' => $extensionPath . 'Classes/ContentObject/Multivalue.php',
+	'ApacheSolrForTypo3\Solr\ContentObject\Multivalue' => $extensionPath . 'Classes/ContentObject/Multivalue.php',
 	'tx_solr_contentobject_relation' => $extensionPath . 'Classes/ContentObject/Relation.php',
 
 	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'Classes/Facet/AbstractFacetRenderer.php',
@@ -203,15 +203,6 @@ return array(
 	'tx_solr_report_solrconfigurationstatus' => $extensionPath . 'Report/SolrConfigurationStatus.php',
 	'tx_solr_report_solrstatus' => $extensionPath . 'Report/SolrStatus.php',
 	'tx_solr_report_solrversionstatus' => $extensionPath . 'Report/SolrVersionStatus.php',
-	'Tx_Solr_Report_AccessFilterPluginInstalledStatus' => $extensionPath . 'Report/AccessFilterPluginInstalledStatus.php',
-	'Tx_Solr_Report_AllowUrlFOpenStatus' => $extensionPath . 'Report/AllowUrlFOpenStatus.php',
-	'Tx_Solr_Report_FilterVarStatus' => $extensionPath . 'Report/FilterVarStatus.php',
-	'Tx_Solr_Report_IndexReport' => $extensionPath . 'Report/IndexReport.php',
-	'Tx_Solr_Report_SchemaStatus' => $extensionPath . 'Report/SchemaStatus.php',
-	'Tx_Solr_Report_SolrConfigStatus' => $extensionPath . 'Report/SolrConfigStatus.php',
-	'Tx_Solr_Report_SolrConfigurationStatus' => $extensionPath . 'Report/SolrConfigurationStatus.php',
-	'Tx_Solr_Report_SolrStatus' => $extensionPath . 'Report/SolrStatus.php',
-	'Tx_Solr_Report_SolrVersionStatus' => $extensionPath . 'Report/SolrVersionStatus.php',
 
 	// interfaces
 
