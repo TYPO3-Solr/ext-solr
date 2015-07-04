@@ -49,9 +49,9 @@ return array(
 	'tx_solr_typo3pageindexer' => $extensionPath . 'Classes/Typo3PageIndexer.php',
 	'tx_solr_util' => $extensionPath . 'Classes/Util.php',
 
-	'tx_solr_access_rootline' => $extensionPath . 'Classes/Access/Rootline.php',
-	'tx_solr_access_rootlineelement' => $extensionPath . 'Classes/Access/RootlineElement.php',
-	'tx_solr_access_rootlineelementformatexception' => $extensionPath . 'Classes/Access/RootlineElementFormatException.php',
+	'ApacheSolrForTypo3\Solr\Access\Rootline' => $extensionPath . 'Classes/Access/Rootline.php',
+	'Tx_Solr_Access_RootlineElement' => $extensionPath . 'Classes/Access/RootlineElement.php',
+	'ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException' => $extensionPath . 'Classes/Access/RootlineElementFormatException.php',
 
 	'tx_solr_backend_indexingconfigurationselectorfield' => $extensionPath . 'Classes/Backend/IndexingConfigurationSelectorField.php',
 

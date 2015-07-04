@@ -95,7 +95,7 @@ class Rootline {
 						'\Tx_Solr_Access_RootlineElement',
 						$rawRootlineElement
 					));
-				} catch (\Tx_Solr_Access_RootlineElementFormatException $e) {
+				} catch (RootlineElementFormatException $e) {
 					// just ignore the faulty element for now, might log this later
 				}
 			}
@@ -127,14 +127,14 @@ class Rootline {
 
 		if (!empty($this->rootlineElements[$lastElementIndex])) {
 			if ($this->rootlineElements[$lastElementIndex]->getType() == \Tx_Solr_Access_RootlineElement::ELEMENT_TYPE_CONTENT) {
-				throw new Tx_Solr_Access_RootlineElementFormatException(
+				throw new RootlineElementFormatException(
 					'Can not add an element to an Access Rootline whose\' last element is a content type element.',
 					1294422132
 				);
 			}
 
 			if ($this->rootlineElements[$lastElementIndex]->getType() == \Tx_Solr_Access_RootlineElement::ELEMENT_TYPE_RECORD) {
-				throw new Tx_Solr_Access_RootlineElementFormatException(
+				throw new RootlineElementFormatException(
 					'Can not add an element to an Access Rootline whose\' last element is a record type element.',
 					1308343423
 				);
