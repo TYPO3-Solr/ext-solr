@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ContentObject;
 /***************************************************************
 *  Copyright notice
 *
@@ -45,7 +46,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ContentObject_Relation {
+class Relation {
 
 	const CONTENT_OBJECT_NAME = 'SOLR_RELATION';
 
@@ -322,5 +323,3 @@ class Tx_Solr_ContentObject_Relation {
 	}
 
 }
-
-

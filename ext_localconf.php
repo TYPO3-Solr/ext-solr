@@ -313,9 +313,9 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClas
 	'ApacheSolrForTypo3\Solr\ContentObject\Content'
 );
 
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Tx_Solr_ContentObject_Relation::CONTENT_OBJECT_NAME] = array(
-	Tx_Solr_ContentObject_Relation::CONTENT_OBJECT_NAME,
-	'Tx_Solr_ContentObject_Relation'
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME] = array(
+	ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME,
+	'ApacheSolrForTypo3\Solr\ContentObject\Relation'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
