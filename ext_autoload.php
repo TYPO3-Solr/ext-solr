@@ -57,7 +57,7 @@ return array(
 
 	'ApacheSolrForTypo3\Solr\Cli\Dispatcher' => $extensionPath . 'Classes/Cli/Dispatcher.php',
 
-	'tx_solr_contentobject_content' => $extensionPath . 'Classes/ContentObject/Content.php',
+	'ApacheSolrForTypo3\Solr\ContentObject\Content' => $extensionPath . 'Classes/ContentObject/Content.php',
 	'tx_solr_contentobject_multivalue' => $extensionPath . 'Classes/ContentObject/Multivalue.php',
 	'tx_solr_contentobject_relation' => $extensionPath . 'Classes/ContentObject/Relation.php',
 
