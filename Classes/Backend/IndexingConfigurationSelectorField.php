@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Backend;
 /***************************************************************
 *  Copyright notice
 *
@@ -24,7 +25,6 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Index Queue indexing configuration selector form field.
  *
@@ -32,12 +32,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Backend_IndexingConfigurationSelectorField {
+class IndexingConfigurationSelectorField {
 
 	/**
 	 * Site used to determine indexing configurations
 	 *
-	 * @var Tx_Solr_Site
+	 * @var \Tx_Solr_Site
 	 */
 	protected $site;
 

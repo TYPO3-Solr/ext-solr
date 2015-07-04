@@ -53,7 +53,7 @@ return array(
 	'ApacheSolrForTypo3\Solr\Access\RootlineElement' => $extensionPath . 'Classes/Access/RootlineElement.php',
 	'ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException' => $extensionPath . 'Classes/Access/RootlineElementFormatException.php',
 
-	'tx_solr_backend_indexingconfigurationselectorfield' => $extensionPath . 'Classes/Backend/IndexingConfigurationSelectorField.php',
+	'ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField' => $extensionPath . 'Classes/Backend/IndexingConfigurationSelectorField.php',
 
 	'tx_solr_cli_dispatcher' => $extensionPath . 'Classes/Cli/Dispatcher.php',
 
@@ -188,10 +188,10 @@ return array(
 
 		// scheduler tasks
 
-	'tx_solr_scheduler_indexqueueworkertask' => $extensionPath . 'Scheduler/IndexQueueWorkerTask.php',
-	'tx_solr_scheduler_indexqueueworkertaskadditionalfieldprovider' => $extensionPath . 'Scheduler/IndexQueueWorkerTaskAdditionalFieldProvider.php',
-	'tx_solr_scheduler_reindextask' => $extensionPath . 'Scheduler/ReIndexTask.php',
-	'tx_solr_scheduler_reindextaskadditionalfieldprovider' => $extensionPath . 'Scheduler/ReIndexTaskAdditionalFieldProvider.php',
+	'Tx_Solr_Piresults_Parameterkeepingformmodifier' => $extensionPath . 'PiResults/ParameterKeepingFormModifier.php',
+	'Tx_Solr_Piresults_Spellcheckformmodifier' => $extensionPath . 'PiResults/SpellCheckFormModifier.php',
+	'Tx_Solr_Piresults_Suggestformmodifier' => $extensionPath . 'PiResults/SuggestFormModifier.php',
+	'Tx_Solr_Piresults_Queryanalyzerformmodifier' => $extensionPath . 'PiResults/QueryAnalyzerFormModifier.php',
 
 	// reports
 
