@@ -59,7 +59,7 @@ class IndexingConfigurationSelectorField {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Solr_Site $site The site to use to determine indexing configurations
+	 * @param \Tx_Solr_Site $site The site to use to determine indexing configurations
 	 */
 	public function __construct(\Tx_Solr_Site $site = NULL) {
 		$this->site = $site;
@@ -250,4 +250,5 @@ class IndexingConfigurationSelectorField {
 		return '';
 	}
 
+}
 }
