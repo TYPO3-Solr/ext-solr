@@ -78,5 +78,4 @@ class Content {
 		return $content;
 	}
 
-
 }

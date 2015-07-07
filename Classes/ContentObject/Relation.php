@@ -27,7 +27,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * A content object (cObj) to resolve relations between database records
  *
@@ -154,7 +153,7 @@ class Relation {
 
 			$whereClause = $foreignTableName . '.' . $foreignTableField . ' = ' . (int) $localRecordUid;
 		} else {
-			$foreignTableUids = GeneralUtility::intExplode(',', $parentContentObject->data[$localFieldName]);
+			$foreignTableUids = t3lib_div::intExplode(',', $parentContentObject->data[$localFieldName]);
 
 			if (count($foreignTableUids) > 1) {
 				$whereClause = $foreignTableName . '.uid IN (' . implode(',', $foreignTableUids) . ')';
@@ -162,7 +161,7 @@ class Relation {
 				$whereClause = $foreignTableName . '.uid = ' . (int) array_shift($foreignTableUids);
 			}
 		}
-		$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+		$pageSelector = t3lib_div::makeInstance('t3lib_pageSelect');
 		$whereClause .= $pageSelector->enableFields( $foreignTableName );
 
 		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
