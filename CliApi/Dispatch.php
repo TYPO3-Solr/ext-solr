@@ -6,5 +6,3 @@ if (!defined('TYPO3_cliMode')) {
 
 $cliDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Cli\\Dispatcher');
 $cliDispatcher->dispatch();
-
-

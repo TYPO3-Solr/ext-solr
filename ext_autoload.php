@@ -188,10 +188,10 @@ return array(
 
 		// scheduler tasks
 
-	'Tx_Solr_Piresults_Parameterkeepingformmodifier' => $extensionPath . 'PiResults/ParameterKeepingFormModifier.php',
-	'Tx_Solr_Piresults_Spellcheckformmodifier' => $extensionPath . 'PiResults/SpellCheckFormModifier.php',
-	'Tx_Solr_Piresults_Suggestformmodifier' => $extensionPath . 'PiResults/SuggestFormModifier.php',
-	'Tx_Solr_Piresults_Queryanalyzerformmodifier' => $extensionPath . 'PiResults/QueryAnalyzerFormModifier.php',
+	'tx_solr_piresults_parameterkeepingformmodifier' => $extensionPath . 'PiResults/ParameterKeepingFormModifier.php',
+	'tx_solr_piresults_spellcheckformmodifier' => $extensionPath . 'PiResults/SpellCheckFormModifier.php',
+	'tx_solr_piresults_suggestformmodifier' => $extensionPath . 'PiResults/SuggestFormModifier.php',
+	'tx_solr_piresults_queryanalyzerformmodifier' => $extensionPath . 'PiResults/QueryAnalyzerFormModifier.php',
 
 	// reports
 
