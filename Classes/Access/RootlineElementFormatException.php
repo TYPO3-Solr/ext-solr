@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Access;
 /***************************************************************
 *  Copyright notice
 *
