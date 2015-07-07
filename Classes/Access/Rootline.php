@@ -88,7 +88,6 @@ class Rootline {
 	public function __construct($accessRootline = NULL) {
 		if (!is_null($accessRootline)) {
 			$rawRootlineElements = explode(self::ELEMENT_DELIMITER, $accessRootline);
-
 			foreach ($rawRootlineElements as $rawRootlineElement) {
 				try {
 					$this->push(GeneralUtility::makeInstance(

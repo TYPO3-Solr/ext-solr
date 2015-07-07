@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Access;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * An element in the "Access Rootline". Represents the frontend user group
  * access restrictions for a page, a page's content, or a generic record.
