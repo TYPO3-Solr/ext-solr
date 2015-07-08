@@ -516,7 +516,6 @@ class Tx_Solr_Template {
 			$iterationCount = 0;
 			foreach ($loopVariables as $value) {
 				// escape content and title
-				$value = str_replace('#', '&#35;', $value);
 				if (isset($value['content'])) {
 					$value['content'] = $this->escapeResultContent($value['content']);
 				}
