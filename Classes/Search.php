@@ -158,7 +158,7 @@ class Tx_Solr_Search implements t3lib_Singleton {
 	/**
 	 * Allows to modify a query before eventually handing it over to Solr.
 	 *
-	 * @param Tx_Solr_Query The current query before it's being handed over to Solr.
+	 * @param Tx_Solr_Query $query The current query before it's being handed over to Solr.
 	 * @return Tx_Solr_Query The modified query that is actually going to be given to Solr.
 	 */
 	protected function modifyQuery(Tx_Solr_Query $query) {

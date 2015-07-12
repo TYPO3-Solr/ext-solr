@@ -38,7 +38,7 @@ interface Tx_Solr_QueryModifier {
 	/**
 	 * Modifies the given query and returns the modified query as result
 	 *
-	 * @param Tx_Solr_Query The query to modify
+	 * @param Tx_Solr_Query $query The query to modify
 	 * @return Tx_Solr_Query The modified query
 	 */
 	public function modifyQuery(Tx_Solr_Query $query);
