@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -58,10 +59,10 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 	 * constructor for class Tx_Solr_ViewHelper_SortUrl
 	 */
 	public function __construct(array $arguments = array()) {
-		$this->search = t3lib_div::makeInstance('Tx_Solr_Search');
+		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
 
 		$this->configuration    = Tx_Solr_Util::getSolrConfiguration();
-		$this->queryLinkBuilder = t3lib_div::makeInstance('Tx_Solr_Query_LinkBuilder', $this->search->getQuery());
+		$this->queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $this->search->getQuery());
 	}
 
 	/**
@@ -72,12 +73,12 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 	 */
 	public function execute(array $arguments = array()) {
 		$sortUrl           = '';
-		$urlParameters     = t3lib_div::_GP('tx_solr');
-		$urlSortParameters = t3lib_div::trimExplode(',', $urlParameters['sort']);
-		$sortOptions       = t3lib_div::trimExplode(',', $arguments[0]);
+		$urlParameters     = GeneralUtility::_GP('tx_solr');
+		$urlSortParameters = GeneralUtility::trimExplode(',', $urlParameters['sort']);
+		$sortOptions       = GeneralUtility::trimExplode(',', $arguments[0]);
 		$currentSortOption = '';
 
-		$sortHelper  = t3lib_div::makeInstance(
+		$sortHelper  = GeneralUtility::makeInstance(
 			'Tx_Solr_Sorting',
 			$this->configuration['search.']['sorting.']['options.']
 		);

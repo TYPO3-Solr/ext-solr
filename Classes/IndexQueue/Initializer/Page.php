@@ -24,6 +24,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -125,7 +126,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 			} else {
 					// Add page like a regular page, as only the sub tree is
 					// mounted. The page itself has its own content.
-				t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue')->updateItem(
+				GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue')->updateItem(
 					$this->type,
 					$mountPage['uid'],
 					$this->indexingConfigurationName
@@ -148,7 +149,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 			} catch (Exception $e) {
 				Tx_Solr_DatabaseUtility::transactionRollback();
 
-				t3lib_div::devLog(
+				GeneralUtility::devLog(
 					'Index Queue initialization failed for mount pages',
 					'solr',
 					3,
@@ -173,7 +174,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 		if (empty($mountPage['mountPageSource'])) {
 			$isValidMountPage = FALSE;
 
-			$flashMessage = t3lib_div::makeInstance(
+			$flashMessage = GeneralUtility::makeInstance(
 				't3lib_FlashMessage',
 				'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPage['uid'] . '.',
 				'Failed to initialize Mount Page tree. ',
@@ -185,7 +186,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 		if (!$this->mountedPageExists($mountPage['mountPageSource'])) {
 			$isValidMountPage = FALSE;
 
-			$flashMessage = t3lib_div::makeInstance(
+			$flashMessage = GeneralUtility::makeInstance(
 				't3lib_FlashMessage',
 				'The mounted page must be accessible in the frontend. '
 					. 'Invalid Mount Page configuration for page ID '
@@ -260,7 +261,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 		);
 
 		foreach ($mountPageItems as $mountPageItemRecord) {
-			$mountPageItem = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Item', $mountPageItemRecord);
+			$mountPageItem = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Item', $mountPageItemRecord);
 
 			$mountPageItem->setIndexingProperty('mountPageSource',      $mountPage['mountPageSource']);
 			$mountPageItem->setIndexingProperty('mountPageDestination', $mountPage['mountPageDestination']);

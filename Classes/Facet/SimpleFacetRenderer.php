@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The simple / default facet renderer.
@@ -52,7 +53,7 @@ class Tx_Solr_Facet_SimpleFacetRenderer extends Tx_Solr_Facet_AbstractFacetRende
 		$facetOptions = $this->getFacetOptions();
 
 		if (!empty($facetOptions) || !empty($this->facetConfiguration['showEvenWhenEmpty'])) {
-			$facetOptionsRenderer = t3lib_div::makeInstance(
+			$facetOptionsRenderer = GeneralUtility::makeInstance(
 				'Tx_Solr_Facet_SimpleFacetOptionsRenderer',
 				$this->facetName,
 				$facetOptions,

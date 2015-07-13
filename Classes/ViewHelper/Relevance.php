@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -56,7 +57,7 @@ class Tx_Solr_ViewHelper_Relevance implements Tx_Solr_ViewHelper {
 	 */
 	public function __construct(array $arguments = array()) {
 		if(is_null($this->search)) {
-			$this->search   = t3lib_div::makeInstance('Tx_Solr_Search');
+			$this->search   = GeneralUtility::makeInstance('Tx_Solr_Search');
 			$this->maxScore = $this->search->getMaximumResultScore();
 		}
 	}
@@ -98,7 +99,7 @@ class Tx_Solr_ViewHelper_Relevance implements Tx_Solr_ViewHelper {
 
 		if (is_numeric($document)) {
 				// backwards compatibility
-			t3lib_div::deprecationLog('You are using an old notation of the '
+			GeneralUtility::deprecationLog('You are using an old notation of the '
 				. 'relevance view helpers. The notation used to be '
 				. '###RELEVANCE:###RESULT_DOCUMENT.SCORE######, please change '
 				. 'this to simply provide the whole result document: '
@@ -118,7 +119,7 @@ class Tx_Solr_ViewHelper_Relevance implements Tx_Solr_ViewHelper {
 		} else {
 			$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
 			if ($solrConfiguration['logging.']['exceptions']) {
-				t3lib_div::devLog('Could not resolve document score for relevance calculation', 'solr', 3, array(
+				GeneralUtility::devLog('Could not resolve document score for relevance calculation', 'solr', 3, array(
 					'rawDocument'          => $rawDocument,
 					'unserializedDocument' => $document
 				));

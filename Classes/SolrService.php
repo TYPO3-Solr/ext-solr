@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -159,7 +160,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	protected function _constructUrl($servlet, $params = array()) {
 		$url = parent::_constructUrl($servlet, $params);
 
-		if (!t3lib_div::isFirstPartOfStr($url, $this->_scheme)) {
+		if (!GeneralUtility::isFirstPartOfStr($url, $this->_scheme)) {
 			$parsedUrl = parse_url($url);
 
 				// unfortunately can't use str_replace as it replace all
@@ -278,7 +279,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 				$query->getRawPostFileData()
 			);
 		} catch (Exception $e) {
-			t3lib_div::devLog('Extracting text and meta data through Solr Cell over HTTP POST', 'solr', 3, array(
+			GeneralUtility::devLog('Extracting text and meta data through Solr Cell over HTTP POST', 'solr', 3, array(
 				'query'      => (array) $query,
 				'parameters' => $query->getQueryParameters(),
 				'file'       => $query->getFile(),
@@ -323,7 +324,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 				$logData['response data'] = print_r($response, TRUE);
 			}
 
-			t3lib_div::devLog('Querying Solr using GET', 'solr', $logSeverity, $logData);
+			GeneralUtility::devLog('Querying Solr using GET', 'solr', $logSeverity, $logData);
 		}
 
 		return $response;
@@ -367,7 +368,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 				$logData['response data'] = print_r($solrResponse, TRUE);
 			}
 
-			t3lib_div::devLog('Querying Solr using GET', 'solr', $logSeverity, $logData);
+			GeneralUtility::devLog('Querying Solr using GET', 'solr', $logSeverity, $logData);
 		}
 
 		return $solrResponse;
@@ -403,7 +404,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 				$logData['exception'] = $e->__toString();
 			}
 
-			t3lib_div::devLog('Querying Solr using POST', 'solr', $logSeverity, $logData);
+			GeneralUtility::devLog('Querying Solr using POST', 'solr', $logSeverity, $logData);
 		}
 
 		return $response;
@@ -646,7 +647,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	public function delete($rawPost, $timeout = 3600) {
 		$response = $this->_sendRawPost($this->_updateUrl, $rawPost, $timeout);
 
-		t3lib_div::devLog(
+		GeneralUtility::devLog(
 			'Delete Query sent.',
 			'solr',
 			1,

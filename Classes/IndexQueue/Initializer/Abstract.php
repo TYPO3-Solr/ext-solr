@@ -24,6 +24,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -159,7 +160,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 		}
 
 		if ($solrConfiguration['logging.']['indexing.']['indexQueueInitialization']) {
-			t3lib_div::devLog(
+			GeneralUtility::devLog(
 				'Index Queue initialized for indexing configuration ' . $this->indexingConfigurationName,
 				'solr',
 				$logSeverity,
@@ -220,7 +221,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 
 		$additionalPageIds = array();
 		if (!empty($this->indexingConfiguration['additionalPageIds'])) {
-			$additionalPageIds = t3lib_div::intExplode(
+			$additionalPageIds = GeneralUtility::intExplode(
 				',',
 				$this->indexingConfiguration['additionalPageIds']
 			);

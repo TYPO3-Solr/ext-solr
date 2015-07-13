@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -97,7 +98,7 @@ class Tx_Solr_JavascriptManager {
 			if (!empty($fileReference)) {
 				self::$files[$fileKey] = array(
 					'addedToPage' => FALSE,
-					'file'        => t3lib_div::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($fileReference))
+					'file'        => GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($fileReference))
 				);
 			}
 		}

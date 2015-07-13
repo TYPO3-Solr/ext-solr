@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A content object (cObj) to resolve relations between database records
@@ -149,7 +151,7 @@ class Tx_Solr_ContentObject_Relation {
 
 			$whereClause = $foreignTableName . '.' . $foreignTableField . ' = ' . (int) $localRecordUid;
 		} else {
-			$foreignTableUids = t3lib_div::intExplode(',', $parentContentObject->data[$localFieldName]);
+			$foreignTableUids = GeneralUtility::intExplode(',', $parentContentObject->data[$localFieldName]);
 
 			if (count($foreignTableUids) > 1) {
 				$whereClause = $foreignTableName . '.uid IN (' . implode(',', $foreignTableUids) . ')';
@@ -157,7 +159,7 @@ class Tx_Solr_ContentObject_Relation {
 				$whereClause = $foreignTableName . '.uid = ' . (int) array_shift($foreignTableUids);
 			}
 		}
-		$pageSelector = t3lib_div::makeInstance('t3lib_pageSelect');
+		$pageSelector = GeneralUtility::makeInstance('t3lib_pageSelect');
 		$whereClause .= $pageSelector->enableFields( $foreignTableName );
 
 		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -259,7 +261,7 @@ class Tx_Solr_ContentObject_Relation {
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-		$relationHandler = t3lib_div::makeInstance('t3lib_loadDBGroup');
+		$relationHandler = GeneralUtility::makeInstance('t3lib_loadDBGroup');
 		$relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
 
 		$selectUids = $relationHandler->tableArray[$foreignTableName];

@@ -88,7 +88,7 @@ class Tx_Solr_Query_LinkBuilder {
 	 */
 	public function __construct(Tx_Solr_Query $query) {
 		$this->solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
-		$this->contentObject     = t3lib_div::makeInstance('tslib_cObj');
+		$this->contentObject     = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
 		$this->query             = $query;
 
 		$targetPageUid = $this->contentObject->stdWrap(
@@ -110,7 +110,7 @@ class Tx_Solr_Query_LinkBuilder {
 	 * @return array Array of GET and POST parameters for the extension.
 	 */
 	protected function getPluginParameters() {
-		$pluginParameters = t3lib_div::_GPmerged($this->prefix);
+		$pluginParameters = \TYPO3\CMS\Core\Utility\GeneralUtility::_GPmerged($this->prefix);
 
 		return $pluginParameters;
 	}
@@ -222,7 +222,7 @@ class Tx_Solr_Query_LinkBuilder {
 			'useCacheHash'     => FALSE,
 			'no_cache'         => FALSE,
 			'parameter'        => $this->linkTargetPageId,
-			'additionalParams' => t3lib_div::implodeArrayForUrl('', array($this->prefix => $queryParameters), '', TRUE)
+			'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', array($this->prefix => $queryParameters), '', TRUE)
 				. $this->getUrlParameters()
 				. $queryGetParameter
 		);

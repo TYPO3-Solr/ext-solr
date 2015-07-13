@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -52,7 +53,7 @@ class Tx_Solr_SpellChecker {
 	 *
 	 */
 	public function __construct() {
-		$this->search        = t3lib_div::makeInstance('Tx_Solr_Search');
+		$this->search        = GeneralUtility::makeInstance('Tx_Solr_Search');
 		$this->configuration = Tx_Solr_Util::getSolrConfiguration();
 	}
 
@@ -100,7 +101,7 @@ class Tx_Solr_SpellChecker {
 		$query = clone $this->search->getQuery();
 		$query->setKeywords($suggestions['collation']);
 
-		$queryLinkBuilder = t3lib_div::makeInstance('Tx_Solr_Query_LinkBuilder', $query);
+		$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $query);
 		$queryLinkBuilder->setLinkTargetPageId($GLOBALS['TSFE']->id);
 
 		return $queryLinkBuilder->getQueryUrl();
@@ -117,7 +118,7 @@ class Tx_Solr_SpellChecker {
 		$query = clone $this->search->getQuery();
 		$query->setKeywords($suggestions['collation']);
 
-		$queryLinkBuilder = t3lib_div::makeInstance('Tx_Solr_Query_LinkBuilder', $query);
+		$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $query);
 		$queryLinkBuilder->setLinkTargetPageId($GLOBALS['TSFE']->id);
 
 		return $queryLinkBuilder->getQueryLink(htmlspecialchars($query->getKeywordsRaw()));

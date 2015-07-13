@@ -33,7 +33,7 @@
 */
 
 
-$domain     = t3lib_div::_GP('domain');
+$domain     = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('domain');
 $returnData = '';
 
 if (!empty($domain)) {

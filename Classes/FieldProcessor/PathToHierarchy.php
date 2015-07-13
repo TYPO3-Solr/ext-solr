@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -59,7 +60,7 @@ class Tx_Solr_FieldProcessor_PathToHierarchy implements Tx_Solr_FieldProcessor {
 	protected function buildSolrHierarchyFromPath($path) {
 		$hierarchy = array();
 
-		$treeParts = t3lib_div::trimExplode('/', $path, TRUE);
+		$treeParts = GeneralUtility::trimExplode('/', $path, TRUE);
 		$currentTreeParts = array();
 
 		foreach ($treeParts as $i => $part) {

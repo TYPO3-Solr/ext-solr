@@ -24,6 +24,8 @@
 ***************************************************************/
 
 // workaround
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 if (!class_exists('Tx_Solr_QueryFilterEncoder')) {
 	require_once __DIR__ . '../../../../../Interfaces/interface.tx_solr_queryfilterencoder.php';
 }
@@ -38,7 +40,7 @@ class Tx_Solr_Query_FilterEncoder_HierarchyTest extends Tx_Phpunit_TestCase {
 	private $parser;
 
 	public function setUp() {
-		$this->parser = t3lib_div::makeInstance('Tx_Solr_Query_FilterEncoder_Hierarchy');
+		$this->parser = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_Hierarchy');
 	}
 
 	/**

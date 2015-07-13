@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -71,7 +72,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 	 * @param Apache_Solr_Response The response for the last query.
 	 */
 	public function processResponse(Tx_Solr_Query $query, Apache_Solr_Response $response) {
-		$urlParameters = t3lib_div::_GP('tx_solr');
+		$urlParameters = GeneralUtility::_GP('tx_solr');
 		$keywords      = $query->getKeywords();
 		$filters       = isset($urlParameters['filter']) ? $urlParameters['filter'] : array();
 
@@ -108,7 +109,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 
 			'feuser_id'         => (int) $GLOBALS['TSFE']->fe_user->user['uid'],
 			'cookie'            => $GLOBALS['TSFE']->fe_user->id,
-			'ip'                => $this->applyIpMask(t3lib_div::getIndpEnv('REMOTE_ADDR'),$ipMaskLength),
+			'ip'                => $this->applyIpMask(GeneralUtility::getIndpEnv('REMOTE_ADDR'),$ipMaskLength),
 
 			'page'              => (int) $urlParameters['page'],
 			'keywords'          => $keywords,
@@ -127,7 +128,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 	 * @return string Sanitized string
 	 */
 	protected function sanitizeString($string) {
-		$string = t3lib_div::removeXSS($string);
+		$string = GeneralUtility::removeXSS($string);
 		$string = htmlentities($string, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
 
 		return $string;

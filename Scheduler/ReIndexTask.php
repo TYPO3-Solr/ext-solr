@@ -23,6 +23,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -61,7 +62,7 @@ class Tx_Solr_Scheduler_ReIndexTask extends tx_scheduler_Task {
 		$cleanUpResult = $this->cleanUpIndex();
 
 			// initialize for re-indexing
-		$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 		$indexQueueInitializationResults = array();
 		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
 			$indexQueueInitializationResults = $indexQueue->initialize($this->site, $indexingConfigurationName);
@@ -78,7 +79,7 @@ class Tx_Solr_Scheduler_ReIndexTask extends tx_scheduler_Task {
 	protected function cleanUpIndex() {
 		$cleanUpResult     = TRUE;
 		$solrConfiguration = $this->site->getSolrConfiguration();
-		$solrServers       = t3lib_div::makeInstance('Tx_Solr_ConnectionManager')->getConnectionsBySite($this->site);
+		$solrServers       = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionsBySite($this->site);
 		$typesToCleanUp    = array();
 
 		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {

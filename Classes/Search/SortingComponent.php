@@ -53,13 +53,13 @@ class Tx_Solr_Search_SortingComponent extends Tx_Solr_Search_AbstractComponent i
 			$this->query->addQueryParameter('sort', $this->searchConfiguration['query.']['sortBy']);
 		}
 
-		$solrGetParameters = t3lib_div::_GET('tx_solr');
+		$solrGetParameters = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('tx_solr');
 
 		if (!empty($this->searchConfiguration['sorting'])
 			&& !empty($solrGetParameters['sort'])
 			&& preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $solrGetParameters['sort'])
 		) {
-			$sortHelper = t3lib_div::makeInstance('Tx_Solr_Sorting', $this->searchConfiguration['sorting.']['options.']);
+			$sortHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Sorting', $this->searchConfiguration['sorting.']['options.']);
 			$sortField = $sortHelper->getSortFieldFromUrlParameter($solrGetParameters['sort']);
 
 			$this->query->setSorting($sortField);

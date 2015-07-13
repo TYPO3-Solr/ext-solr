@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * An element in the "Access Rootline". Represents the frontend user group
@@ -127,7 +129,7 @@ class Tx_Solr_Access_RootlineElement {
 			$elementGroups = $elementAccess[1];
 		}
 
-		$this->accessGroups = t3lib_div::intExplode(',', $elementGroups);
+		$this->accessGroups = GeneralUtility::intExplode(',', $elementGroups);
 	}
 
 	/**

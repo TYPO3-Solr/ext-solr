@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -58,7 +59,7 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin parent plugin
 	 */
 	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
-		$this->cObj = t3lib_div::makeInstance('tslib_cObj');
+		$this->cObj = GeneralUtility::makeInstance('tslib_cObj');
 
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
@@ -85,7 +86,7 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 			// hook to modify the search form
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'] as $classReference) {
-				$formModifier = t3lib_div::getUserObj($classReference);
+				$formModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($formModifier instanceof Tx_Solr_FormModifier) {
 					if ($formModifier instanceof Tx_Solr_CommandPluginAware) {

@@ -22,6 +22,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Date range facet renderer.
@@ -78,8 +79,8 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 	 * tbd
 	 */
 	protected function buildAddFacetUrl($facetName) {
-		$facetOption      = t3lib_div::makeInstance('Tx_Solr_Facet_FacetOption', $this->facetName, '');
-		$facetLinkBuilder = t3lib_div::makeInstance('Tx_Solr_Facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
+		$facetOption      = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption', $this->facetName, '');
+		$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
 		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 		return $facetLinkBuilder->getAddFacetOptionUrl();
@@ -90,7 +91,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 	 *
 	 */
 	protected function loadJavaScriptFiles() {
-		$javascriptManager = t3lib_div::makeInstance('Tx_Solr_JavascriptManager');
+		$javascriptManager = GeneralUtility::makeInstance('Tx_Solr_JavascriptManager');
 
 		$javascriptManager->loadFile('library');
 		$javascriptManager->loadFile('ui');

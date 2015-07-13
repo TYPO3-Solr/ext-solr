@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A content object (cObj) to turn comma separated strings into an array to be
@@ -78,7 +80,7 @@ class Tx_Solr_ContentObject_Multivalue {
 			$removeEmptyValues = FALSE;
 		}
 
-		$listAsArray = t3lib_div::trimExplode(
+		$listAsArray = GeneralUtility::trimExplode(
 			$configuration['separator'],
 			$data,
 			$removeEmptyValues

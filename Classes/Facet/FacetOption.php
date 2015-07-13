@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A facet option
@@ -93,7 +94,7 @@ class Tx_Solr_Facet_FacetOption {
 		$renderedFacetOption = $this->value;
 
 		if (isset($this->facetConfiguration['renderingInstruction'])) {
-			$contentObject = t3lib_div::makeInstance('tslib_cObj');
+			$contentObject = GeneralUtility::makeInstance('tslib_cObj');
 			$contentObject->start(array(
 				'optionValue' => $this->value,
 				'optionCount' => $this->numberOfResults,
@@ -119,7 +120,7 @@ class Tx_Solr_Facet_FacetOption {
 	public function isSelectedInFacet($facetName) {
 		$isSelected = FALSE;
 
-		$resultParameters = t3lib_div::_GET('tx_solr');
+		$resultParameters = GeneralUtility::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
 			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);

@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -70,16 +71,16 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer'] = 'Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer';
 
 			// making sure this instance is reused when called by the hooks registered before
-			// t3lib_div::callUserFunction() and t3lib_div::getUserObj() use
+			// \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction() and \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj() use
 			// these storages while the object was instantiated by
 			// Tx_Solr_IndexQueue_FrontendHelper_Manager before.
-			// t3lib_div::makeInstance() also uses a dedicated cache
+			// \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance() also uses a dedicated cache
 		$GLOBALS['T3_VAR']['callUserFunction_classPool'][__CLASS__]     = $this;
 		$GLOBALS['T3_VAR']['getUserObj'][$pageIndexingHookRegistration] = $this;
 
 		$this->registerAuthorizationService();
 # Since TypoScript is not available at this point we cannot bind it to some TS configuration option whether to log or not
-#		t3lib_div::devLog('Registered Solr Page Indexer authorization service', 'solr', 1, array(
+#		\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Registered Solr Page Indexer authorization service', 'solr', 1, array(
 #			'auth services' => $GLOBALS['T3_SERVICES']['auth']
 #		));
 	}
@@ -140,7 +141,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 			$stringAccessRootline = $this->request->getParameter('accessRootline');
 		}
 
-		$accessRootline = t3lib_div::makeInstance(
+		$accessRootline = GeneralUtility::makeInstance(
 			'Tx_Solr_Access_Rootline',
 			$stringAccessRootline
 		);
@@ -218,14 +219,14 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 			return $this->request->getParameter('overridePageUrl');
 		}
 
-		$contentObject = t3lib_div::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
 
 		$typolinkConfiguration = array(
 			'parameter'                 => intval($this->page->id),
 			'linkAccessRestrictedPages' => '1'
 		);
 
-		$language = t3lib_div::_GET('L');
+		$language = GeneralUtility::_GET('L');
 		if (!empty($language)) {
 			$typolinkConfiguration['additionalParams'] = '&L=' . $language;
 		}
@@ -251,13 +252,13 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 
 		if (!$this->page->config['config']['index_enable']) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['pageIndexed']) {
-				t3lib_div::devLog('Indexing is disabled. Set config.index_enable = 1 .', 'solr', 3);
+				GeneralUtility::devLog('Indexing is disabled. Set config.index_enable = 1 .', 'solr', 3);
 			}
 			return;
 		}
 
 		try {
-			$indexer = t3lib_div::makeInstance('Tx_Solr_Typo3PageIndexer', $page);
+			$indexer = GeneralUtility::makeInstance('Tx_Solr_Typo3PageIndexer', $page);
 			$indexer->setSolrConnection($this->getSolrConnection());
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
@@ -271,7 +272,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 			}
 		} catch (Exception $e) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-				t3lib_div::devLog('Exception while trying to index page ' . $page->id, 'solr', 3, array(
+				GeneralUtility::devLog('Exception while trying to index page ' . $page->id, 'solr', 3, array(
 					$e->__toString()
 				));
 			}
@@ -281,7 +282,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 			$success  = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
 			$severity = $this->responseData['pageIndexed'] ? -1 : 3;
 
-			t3lib_div::devLog('Page indexed: ' . $success, 'solr', $severity, $this->responseData);
+			GeneralUtility::devLog('Page indexed: ' . $success, 'solr', $severity, $this->responseData);
 		}
 	}
 
@@ -292,8 +293,8 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 * @return Tx_Solr_SolrService Solr server connection
 	 */
 	protected function getSolrConnection() {
-		$indexQueue        = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
-		$connectionManager = t3lib_div::makeInstance('Tx_Solr_ConnectionManager');
+		$indexQueue        = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
 
 		$indexQueueItem = $indexQueue->getItem(
 			$this->request->getParameter('item')

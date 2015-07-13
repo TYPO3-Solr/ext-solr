@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -43,7 +44,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
 	 * Constructor for Tx_Solr_IndexQueue_FrontendHelper_Dispatcher
 	 */
 	public function __construct() {
-		$this->frontendHelperManager = t3lib_div::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Manager');
+		$this->frontendHelperManager = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Manager');
 	}
 
 	/**

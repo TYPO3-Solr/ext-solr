@@ -22,6 +22,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -55,7 +56,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 * @return Tx_Solr_CommandResolver A command resolver
 	 */
 	protected function getCommandResolver(){
-		return t3lib_div::makeInstance('Tx_Solr_CommandResolver');
+		return GeneralUtility::makeInstance('Tx_Solr_CommandResolver');
 	}
 
 	/**
@@ -126,7 +127,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 		$currentUrl = $this->pi_linkTP_keepPIvars_url();
 
 		if ($this->solrAvailable && $this->search->hasSearched()) {
-			$queryLinkBuilder = t3lib_div::makeInstance('Tx_Solr_Query_LinkBuilder', $this->search->getQuery());
+			$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $this->search->getQuery());
 			$currentUrl = $queryLinkBuilder->getQueryUrl();
 		}
 

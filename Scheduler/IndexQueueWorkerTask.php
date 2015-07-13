@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -68,7 +69,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	 */
 	protected function indexItems() {
 		$limit      = $this->documentsToIndexLimit;
-		$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 
 			// get items to index
 		$itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);
@@ -82,7 +83,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 					$e->getCode() . ': ' . $e->__toString()
 				);
 
-				t3lib_div::devLog(
+				GeneralUtility::devLog(
 					'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid(),
 					'solr',
 					3,
@@ -137,7 +138,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	protected function cleanIndex() {
 		if (rand(1, 100) == 50) {
 				// clean the index about once in every 100 executions
-			$garbageCollector = t3lib_div::makeInstance('Tx_Solr_GarbageCollector');
+			$garbageCollector = GeneralUtility::makeInstance('Tx_Solr_GarbageCollector');
 			$garbageCollector->cleanIndex($this->site, FALSE);
 		}
 	}
@@ -169,7 +170,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 			$indexerOptions = $this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer.'];
 		}
 
-		$indexer = t3lib_div::makeInstance($indexerClass, $indexerOptions);
+		$indexer = GeneralUtility::makeInstance($indexerClass, $indexerOptions);
 		if (!($indexer instanceof Tx_Solr_IndexQueue_Indexer)) {
 			throw new RuntimeException(
 				'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of Tx_Solr_IndexQueue_Indexer.',

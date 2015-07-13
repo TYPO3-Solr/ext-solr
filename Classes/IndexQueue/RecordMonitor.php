@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -55,7 +56,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 *
 	 */
 	public function __construct() {
-		$this->indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$this->indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 	}
 
 	/**
@@ -248,7 +249,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * @param int $recordUid Id of record
 	 */
 	protected function removeFromIndexAndQueue($recordTable, $recordUid) {
-		$garbageCollector = t3lib_div::makeInstance('Tx_Solr_GarbageCollector');
+		$garbageCollector = GeneralUtility::makeInstance('Tx_Solr_GarbageCollector');
 		$garbageCollector->collectGarbage($recordTable, $recordUid);
 	}
 
@@ -316,7 +317,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			// FIXME!! $pageId might be outside of a site root and thus might not know about solr configuration
 			// -> leads to record not being queued for reindexing
 		$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($pageId);
-		$indexingConfigurations = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue')
+		$indexingConfigurations = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue')
 			->getTableIndexingConfigurations($solrConfiguration);
 
 		foreach ($indexingConfigurations as $indexingConfigurationName) {
@@ -373,7 +374,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	protected function updateMountPages($pageId) {
 
 			// get the root line of the page, every parent page could be a Mount Page source
-		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+		$pageSelect = GeneralUtility::makeInstance('t3lib_pageSelect');
 		$rootLine   = $pageSelect->getRootLine($pageId);
 
 			// remove the current page / newly created page
@@ -427,7 +428,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties) {
 		$mountingSite = Tx_Solr_Site::getSiteByPageId($mountProperties['mountPageDestination']);
 
-		$pageInitializer = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Initializer_Page');
+		$pageInitializer = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Initializer_Page');
 		$pageInitializer->setSite($mountingSite);
 
 		$pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);

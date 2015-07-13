@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -40,7 +41,7 @@ class Tx_Solr_PluginBase_BackendSummary {
 	protected function initialize(array $contentElement) {
 		$this->pluginContentElement = $contentElement;
 
-		$flexformAsArray = t3lib_div::xml2array($contentElement['pi_flexform']);
+		$flexformAsArray = GeneralUtility::xml2array($contentElement['pi_flexform']);
 		$this->flexformData = $flexformAsArray['data'];
 	}
 

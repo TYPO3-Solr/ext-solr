@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -62,7 +63,7 @@ class Tx_Solr_PiResults_ResultsPerPageSwitchCommand implements Tx_Solr_PluginCom
 
 		$selectOptions = $this->getResultsPerPageOptions();
 		if ($selectOptions) {
-			$queryLinkBuilder = t3lib_div::makeInstance('Tx_Solr_Query_LinkBuilder', $this->parentPlugin->getSearch()->getQuery());
+			$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $this->parentPlugin->getSearch()->getQuery());
 			$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 			$form = array(
 				'action' => $queryLinkBuilder->getQueryUrl()
@@ -85,10 +86,10 @@ class Tx_Solr_PiResults_ResultsPerPageSwitchCommand implements Tx_Solr_PluginCom
 	public function getResultsPerPageOptions() {
 		$resultsPerPageOptions = array();
 
-		$resultsPerPageSwitchOptions = t3lib_div::intExplode(',', $this->configuration['search.']['results.']['resultsPerPageSwitchOptions'], TRUE);
+		$resultsPerPageSwitchOptions = GeneralUtility::intExplode(',', $this->configuration['search.']['results.']['resultsPerPageSwitchOptions'], TRUE);
 		$currentNumberOfResultsShown = $this->parentPlugin->getNumberOfResultsPerPage();
 
-		$queryLinkBuilder = t3lib_div::makeInstance('Tx_Solr_Query_LinkBuilder', $this->parentPlugin->getSearch()->getQuery());
+		$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $this->parentPlugin->getSearch()->getQuery());
 		$queryLinkBuilder->removeUnwantedUrlParameter('resultsPerPage');
 		$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 

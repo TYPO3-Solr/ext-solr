@@ -24,8 +24,8 @@
 ***************************************************************/
 
 
-$api = t3lib_div::_GP('api');
-$apiKey = trim(t3lib_div::_GP('apiKey'));
+$api = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('api');
+$apiKey = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('apiKey'));
 
 if (!Tx_Solr_Api::isValidApiKey($apiKey)) {
 

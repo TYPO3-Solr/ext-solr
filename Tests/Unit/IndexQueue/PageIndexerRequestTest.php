@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -42,7 +43,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestTest extends Tx_Phpunit_TestCase {
 			'hash' => md5('1|1|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])
 		));
 
-		$request = t3lib_div::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest', $header);
+		$request = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest', $header);
 		$this->assertTrue($request->isAuthenticated());
 	}
 
@@ -56,7 +57,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestTest extends Tx_Phpunit_TestCase {
 			'hash' => md5('invalid|invalid|invalid')
 		));
 
-		$request = t3lib_div::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest', $header);
+		$request = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest', $header);
 		$this->assertFalse($request->isAuthenticated());
 	}
 
@@ -69,7 +70,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestTest extends Tx_Phpunit_TestCase {
 			'requestId' => $id
 		));
 
-		$request = t3lib_div::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest', $header);
+		$request = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest', $header);
 		$this->assertEquals($id, $request->getRequestId());
 	}
 }

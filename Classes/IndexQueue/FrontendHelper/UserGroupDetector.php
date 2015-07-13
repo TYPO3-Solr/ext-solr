@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -173,7 +174,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 				$frontendGroups = 0;
 			} else {
 				if ($this->request->getParameter('loggingEnabled')) {
-					t3lib_div::devLog('Access restriction found', 'solr', 0, array(
+					GeneralUtility::devLog('Access restriction found', 'solr', 0, array(
 						'groups'      => $frontendGroups,
 						'record'      => $record,
 						'record type' => $table,
@@ -193,7 +194,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 */
 	protected function getFrontendGroups() {
 		$frontendGroupsList = implode(',', $this->frontendGroups);
-		$frontendGroups     = t3lib_div::trimExplode(',', $frontendGroupsList, TRUE);
+		$frontendGroups     = GeneralUtility::trimExplode(',', $frontendGroupsList, TRUE);
 
 			// clean up: filter double groups
 		$frontendGroups = array_unique($frontendGroups);

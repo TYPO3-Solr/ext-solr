@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -64,12 +65,12 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 		$label = '';
 
 		$isFullPath = FALSE;
-		if (t3lib_div::isFirstPartOfStr($arguments[0], 'FILE')) {
+		if (GeneralUtility::isFirstPartOfStr($arguments[0], 'FILE')) {
 			$arguments[0] = substr($arguments[0], 5);
 			$isFullPath = TRUE;
 		}
 
-		if ($isFullPath || t3lib_div::isFirstPartOfStr($arguments[0], 'EXT')) {
+		if ($isFullPath || GeneralUtility::isFirstPartOfStr($arguments[0], 'EXT')) {
 				// a full path reference...
 			$label = $this->resolveFullPathLabel($arguments[0]);
 		} else {
@@ -87,7 +88,7 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 	protected function loadLL() {
 		$configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
 
-		$this->localLang[$this->languageFile] = t3lib_div::readLLfile(
+		$this->localLang[$this->languageFile] = GeneralUtility::readLLfile(
 			$this->languageFile,
 			$this->llKey,
 			$GLOBALS['TSFE']->renderCharset
@@ -122,11 +123,11 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 		$pathParts = explode(':', $path);
 
 		$labelKey = array_pop($pathParts);
-		$path     = t3lib_div::getFileAbsFileName(implode(':', $pathParts));
+		$path     = GeneralUtility::getFileAbsFileName(implode(':', $pathParts));
 
 		if (!isset($this->localLang[$path])) {
 				// do some nice caching
-			$this->localLang[$path] = t3lib_div::readLLfile(
+			$this->localLang[$path] = GeneralUtility::readLLfile(
 				$path,
 				$this->llKey,
 				$GLOBALS['TSFE']->renderCharset

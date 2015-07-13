@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -49,7 +50,7 @@ class Tx_Solr_CommandResolver {
 	 */
 	public static function registerPluginCommand($plugins, $commandName, $commandClass, $requirements = Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED) {
 		if (!array_key_exists($commandName, self::$commands)) {
-			$plugins = t3lib_div::trimExplode(',', $plugins, TRUE);
+			$plugins = GeneralUtility::trimExplode(',', $plugins, TRUE);
 
 			self::$commands[$commandName] = array(
 				'plugins'      => $plugins,
@@ -155,7 +156,7 @@ class Tx_Solr_CommandResolver {
 
 		if (array_key_exists($commandName, self::$commands)) {
 			$className = self::$commands[$commandName]['commandClass'];
-			$command   = t3lib_div::makeInstance($className, $parent);
+			$command   = GeneralUtility::makeInstance($className, $parent);
 
 			if (!($command instanceof Tx_Solr_PluginCommand)) {
 				throw new RuntimeException(

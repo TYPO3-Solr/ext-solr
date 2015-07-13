@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Facet renderer factory, creates facet renderers depending on the configured
@@ -95,7 +96,7 @@ class Tx_Solr_Facet_FacetRendererFactory {
 			$facetRendererClassName = $this->getFacetRendererClassNameByFacetType($facetConfiguration['type']);
 		}
 
-		$facetRenderer = t3lib_div::makeInstance($facetRendererClassName, $facet);
+		$facetRenderer = GeneralUtility::makeInstance($facetRendererClassName, $facet);
 		$this->validateObjectIsFacetRenderer($facetRenderer);
 
 		return $facetRenderer;
@@ -167,7 +168,7 @@ class Tx_Solr_Facet_FacetRendererFactory {
 		&& !empty(self::$facetTypes[$facetConfiguration['type']]['filterEncoder'])) {
 			$filterEncoderClassName = self::$facetTypes[$facetConfiguration['type']]['filterEncoder'];
 
-			$filterEncoder = t3lib_div::makeInstance($filterEncoderClassName);
+			$filterEncoder = GeneralUtility::makeInstance($filterEncoderClassName);
 			$this->validateObjectIsQueryFilterEncoder($filterEncoder);
 		}
 
@@ -204,7 +205,7 @@ class Tx_Solr_Facet_FacetRendererFactory {
 		&& !empty(self::$facetTypes[$facetConfiguration['type']]['queryFacetBuilder'])) {
 			$queryFacetBuilderClassName = self::$facetTypes[$facetConfiguration['type']]['queryFacetBuilder'];
 
-			$queryFacetBuilder = t3lib_div::makeInstance($queryFacetBuilderClassName);
+			$queryFacetBuilder = GeneralUtility::makeInstance($queryFacetBuilderClassName);
 			$this->validateObjectIsQueryFacetBuilder($queryFacetBuilder);
 		}
 

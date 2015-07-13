@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -96,7 +97,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 	 */
 	protected function resolveFieldValue(array $indexingConfiguration, $solrFieldName, array $data) {
 		$fieldValue    = '';
-		$contentObject = t3lib_div::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
 
 		if (isset($indexingConfiguration[$solrFieldName . '.'])) {
 				// configuration found => need to resolve a cObj
@@ -125,7 +126,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 
 		} elseif (substr($indexingConfiguration[$solrFieldName], 0, 1) === '<') {
 			$referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName], 1));
-			$typoScriptParser = t3lib_div::makeInstance('t3lib_TSparser');
+			$typoScriptParser = GeneralUtility::makeInstance('t3lib_TSparser');
 			// $name and $conf is loaded with the referenced values.
 			list($name, $conf) = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
 
@@ -226,7 +227,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] as $classReference) {
-				$serializedValueDetector = t3lib_div::getUserObj($classReference);
+				$serializedValueDetector = GeneralUtility::getUserObj($classReference);
 
 				if ($serializedValueDetector instanceof Tx_Solr_SerializedValueDetector) {
 					$isSerialized = (boolean) $serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);

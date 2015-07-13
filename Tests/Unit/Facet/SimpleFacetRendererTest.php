@@ -22,6 +22,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -44,12 +45,12 @@ class Tx_Solr_Facet_SimpleFacetRendererTest extends Tx_Phpunit_TestCase {
 			'selectingSelectedFacetOptionRemovesFilter' => 0,
 			'renderingInstruction'
 		);
-		$parentPlugin       = t3lib_div::makeInstance('Tx_Solr_PiResults_Results');
-		$parentPlugin->cObj = t3lib_div::makeInstance('tslib_cObj');
+		$parentPlugin       = GeneralUtility::makeInstance('Tx_Solr_PiResults_Results');
+		$parentPlugin->cObj = GeneralUtility::makeInstance('tslib_cObj');
 		$parentPlugin->main('', array());
-		$query = t3lib_div::makeInstance('Tx_Solr_Query', array('test'));
+		$query = GeneralUtility::makeInstance('Tx_Solr_Query', array('test'));
 
-		$this->facetRenderer = t3lib_div::makeInstance(
+		$this->facetRenderer = GeneralUtility::makeInstance(
 			'Tx_Solr_Facet_SimpleFacetRenderer',
 			$facetName,
 			$facetOptions,

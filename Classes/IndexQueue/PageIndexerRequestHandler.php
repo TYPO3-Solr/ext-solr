@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -61,12 +62,12 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements t3lib_Singleton {
 	 *
 	 */
 	public function __construct() {
-		$this->dispatcher = t3lib_div::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Dispatcher');
+		$this->dispatcher = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Dispatcher');
 
-		$this->request    = t3lib_div::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest',
+		$this->request    = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest',
 			$_SERVER['HTTP_X_TX_SOLR_IQ']
 		);
-		$this->response   = t3lib_div::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
+		$this->response   = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
 		$this->response->setRequestId($this->request->getRequestId());
 	}
 
@@ -79,7 +80,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements t3lib_Singleton {
 	 */
 	public function run() {
 		if (!$this->request->isAuthenticated()) {
-			t3lib_div::devLog(
+			GeneralUtility::devLog(
 				'Invalid Index Queue Frontend Request detected!',
 				'solr',
 				3,

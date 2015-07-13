@@ -22,6 +22,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -88,7 +89,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['renderTemplate'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['renderTemplate'] as $classReference) {
-				$templateModifier = &t3lib_div::getUserObj($classReference);
+				$templateModifier = &GeneralUtility::getUserObj($classReference);
 
 				if ($templateModifier instanceof Tx_Solr_TemplateModifier) {
 					$templateModifier->modifyTemplate($this->template);
@@ -137,7 +138,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()][$commandName]['postProcessCommandVariables'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()][$commandName]['postProcessCommandVariables'] as $classReference) {
-				$commandPostProcessor = t3lib_div::getUserObj($classReference);
+				$commandPostProcessor = GeneralUtility::getUserObj($classReference);
 
 				if ($commandPostProcessor instanceof Tx_Solr_CommandPostProcessor) {
 					$commandVariables = $commandPostProcessor->postProcessCommandVariables($commandName, $commandVariables);
@@ -164,13 +165,13 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 		$subpartTemplate = $this->getCommandTemplate($commandName);
 
 		foreach ($commandVariables as $variableName => $commandVariable) {
-			if (t3lib_div::isFirstPartOfStr($variableName, 'loop_')) {
+			if (GeneralUtility::isFirstPartOfStr($variableName, 'loop_')) {
 				$dividerPosition  = strpos($variableName, '|');
 				$loopName         = substr($variableName, 5, ($dividerPosition - 5));
 				$loopedMarkerName = substr($variableName, ($dividerPosition + 1));
 
 				$subpartTemplate->addLoop($loopName, $loopedMarkerName, $commandVariable);
-			} elseif (t3lib_div::isFirstPartOfStr($variableName, 'subpart_')) {
+			} elseif (GeneralUtility::isFirstPartOfStr($variableName, 'subpart_')) {
 				$subpartName = substr($variableName, 8);
 				$subpartTemplate->addSubpart($subpartName, $commandVariable);
 			} elseif (is_array($commandVariable) || is_object($commandVariable)) {

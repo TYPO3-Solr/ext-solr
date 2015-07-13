@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -70,7 +71,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_Manager {
 		$frontendHelper = NULL;
 
 		if (array_key_exists($action, self::$frontendHelperRegistry)) {
-			$helperCandidate = t3lib_div::makeInstance(self::$frontendHelperRegistry[$action]);
+			$helperCandidate = GeneralUtility::makeInstance(self::$frontendHelperRegistry[$action]);
 
 			if ($helperCandidate instanceof Tx_Solr_IndexQueuePageIndexerFrontendHelper) {
 				$frontendHelper = $helperCandidate;

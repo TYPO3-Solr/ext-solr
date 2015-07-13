@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -109,7 +110,7 @@ class Tx_Solr_Query {
 
 		// What fields to return from Solr
 		if (!empty($this->solrConfiguration['search.']['query.']['returnFields'])) {
-			$this->fieldList = t3lib_div::trimExplode(',', $this->solrConfiguration['search.']['query.']['returnFields']);
+			$this->fieldList = GeneralUtility::trimExplode(',', $this->solrConfiguration['search.']['query.']['returnFields']);
 		}
 
 		$this->linkTargetPageId = $this->solrConfiguration['search.']['targetPage'];
@@ -362,7 +363,7 @@ class Tx_Solr_Query {
 		} else {
 			foreach ($this->queryParameters as $key => $value) {
 					// remove all group.* settings
-				if (t3lib_div::isFirstPartOfStr($key, 'group')) {
+				if (GeneralUtility::isFirstPartOfStr($key, 'group')) {
 					unset($this->queryParameters[$key]);
 				}
 			}
@@ -514,7 +515,7 @@ class Tx_Solr_Query {
 			$this->queryParameters['facet'] = 'true';
 			$this->queryParameters['facet.mincount'] = $this->solrConfiguration['search.']['faceting.']['minimumCount'];
 
-			if (t3lib_div::inList('count,index,alpha,lex,1,0,true,false', $this->solrConfiguration['search.']['faceting.']['sortBy'])) {
+			if (GeneralUtility::inList('count,index,alpha,lex,1,0,true,false', $this->solrConfiguration['search.']['faceting.']['sortBy'])) {
 				$sorting = $this->solrConfiguration['search.']['faceting.']['sortBy'];
 
 					// alpha and lex alias for index
@@ -527,12 +528,12 @@ class Tx_Solr_Query {
 		} else {
 			foreach ($this->queryParameters as $key => $value) {
 					// remove all facet.* settings
-				if (t3lib_div::isFirstPartOfStr($key, 'facet')) {
+				if (GeneralUtility::isFirstPartOfStr($key, 'facet')) {
 					unset($this->queryParameters[$key]);
 				}
 
 					// remove all f.*.facet.* settings (overrides for individual fields)
-				if (t3lib_div::isFirstPartOfStr($key, 'f.') && strpos($key, '.facet.') !== FALSE) {
+				if (GeneralUtility::isFirstPartOfStr($key, 'f.') && strpos($key, '.facet.') !== FALSE) {
 					unset($this->queryParameters[$key]);
 				}
 			}
@@ -574,7 +575,7 @@ class Tx_Solr_Query {
 	public function addFilter($filterString) {
 			// TODO refactor to split filter field and filter value, @see Drupal
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['filters']) {
-			t3lib_div::devLog('adding filter', 'solr', 0, array($filterString));
+			GeneralUtility::devLog('adding filter', 'solr', 0, array($filterString));
 		}
 
 		$this->filters[] = $filterString;
@@ -588,7 +589,7 @@ class Tx_Solr_Query {
 	 */
 	public function removeFilter($filterFieldName) {
 		foreach ($this->filters as $key => $filterString) {
-			if (t3lib_div::isFirstPartOfStr($filterString, $filterFieldName . ':')) {
+			if (GeneralUtility::isFirstPartOfStr($filterString, $filterFieldName . ':')) {
 				unset($this->filters[$key]);
 			}
 		}
@@ -617,7 +618,7 @@ class Tx_Solr_Query {
 		$accessFilter = '{!typo3access}' . implode(',', $groups);
 
 		foreach ($this->filters as $key => $filter) {
-			if (t3lib_div::isFirstPartOfStr($filter, '{!typo3access}')) {
+			if (GeneralUtility::isFirstPartOfStr($filter, '{!typo3access}')) {
 				unset($this->filters[$key]);
 			}
 		}
@@ -631,7 +632,7 @@ class Tx_Solr_Query {
 	 * @param string $allowedSites Comma-separated list of domains
 	 */
 	public function setSiteHashFilter($allowedSites) {
-		$allowedSites = t3lib_div::trimExplode(',', $allowedSites);
+		$allowedSites = GeneralUtility::trimExplode(',', $allowedSites);
 		$filters      = array();
 
 		foreach($allowedSites as $site) {
@@ -649,10 +650,10 @@ class Tx_Solr_Query {
 	 * @param array $pageIds Comma-separated list of page IDs
 	 */
 	public function setRootlineFilter($pageIds) {
-		$pageIds = t3lib_div::trimExplode(',', $pageIds);
+		$pageIds = GeneralUtility::trimExplode(',', $pageIds);
 		$filters = array();
 
-		$processor   = t3lib_div::makeInstance('tx_solr_fieldprocessor_PageUidToHierarchy');
+		$processor   = GeneralUtility::makeInstance('tx_solr_fieldprocessor_PageUidToHierarchy');
 		$hierarchies = $processor->process($pageIds);
 
 		foreach($hierarchies as $hierarchy) {
@@ -719,7 +720,7 @@ class Tx_Solr_Query {
 	 */
 	public function setFieldList($fieldList = array('*', 'score')) {
 		if (is_string($fieldList)) {
-			$fieldList = t3lib_div::trimExplode(',', $fieldList);
+			$fieldList = GeneralUtility::trimExplode(',', $fieldList);
 		}
 
 		if (!is_array($fieldList) || empty($fieldList)) {
@@ -899,7 +900,7 @@ class Tx_Solr_Query {
 	 */
 	public static function cleanKeywords($keywords) {
 		$keywords = trim($keywords);
-		$keywords = t3lib_div::removeXSS($keywords);
+		$keywords = GeneralUtility::removeXSS($keywords);
 		$keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
 
 		// escape triple hashes as they are used in the template engine
@@ -987,7 +988,7 @@ class Tx_Solr_Query {
 	 * @return void
 	 */
 	public function setQueryFieldsFromString($queryFields) {
-		$fields = t3lib_div::trimExplode(',', $queryFields, TRUE);
+		$fields = GeneralUtility::trimExplode(',', $queryFields, TRUE);
 
 		foreach ($fields as $field) {
 			$fieldNameAndBoost = explode('^', $field);
@@ -1092,7 +1093,7 @@ class Tx_Solr_Query {
 		} else {
 				// remove all hl.* settings
 			foreach ($this->queryParameters as $key => $value) {
-				if (t3lib_div::isFirstPartOfStr($key, 'hl')) {
+				if (GeneralUtility::isFirstPartOfStr($key, 'hl')) {
 					unset($this->queryParameters[$key]);
 				}
 			}

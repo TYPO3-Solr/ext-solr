@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -51,7 +52,7 @@ class Tx_Solr_ViewHelper_Link implements Tx_Solr_ViewHelper {
 	 */
 	public function __construct(array $arguments = array()) {
 		if(is_null($this->contentObject)) {
-			$this->contentObject = t3lib_div::makeInstance('tslib_cObj');
+			$this->contentObject = GeneralUtility::makeInstance('tslib_cObj');
 		}
 	}
 
@@ -88,7 +89,7 @@ class Tx_Solr_ViewHelper_Link implements Tx_Solr_ViewHelper {
 						throw $e;
 					}
 				}
-			} elseif (t3lib_div::isValidUrl($linkArgument) || t3lib_div::isValidUrl(t3lib_div::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $linkArgument)) {
+			} elseif (GeneralUtility::isValidUrl($linkArgument) || GeneralUtility::isValidUrl(GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $linkArgument)) {
 					// $linkTarget is an URL
 				$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
 			}

@@ -57,7 +57,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 		parent::init();
 
 			// initialize doc
-		$this->doc = t3lib_div::makeInstance('template');
+		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('template');
 		$this->doc->setModuleTemplate(t3lib_extMgm::extPath('solr') . 'ModAdmin/mod_admin.html');
 		$this->doc->backPath = $BACK_PATH;
 		$this->doc->bodyTagId = 'typo3-mod-php';
@@ -71,7 +71,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 	 * @return	void
 	 */
 	public function menuConfig() {
-		$registry = t3lib_div::makeInstance('t3lib_Registry');
+		$registry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_Registry');
 		$sites    = Tx_Solr_Site::getAvailableSites();
 
 			// TODO add a menu entry on top to manage all indexes, otherwise when selecting a specific index actions will only affect that specific one
@@ -100,8 +100,8 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 		$rootPageId = $this->MOD_SETTINGS['function'];
 
 		if ($rootPageId) {
-			$this->site              = t3lib_div::makeInstance('Tx_Solr_Site', $rootPageId);
-			$this->connectionManager = t3lib_div::makeInstance('Tx_Solr_ConnectionManager');
+			$this->site              = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Site', $rootPageId);
+			$this->connectionManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
 		}
 
 		$docHeaderButtons = $this->getButtons();
@@ -259,7 +259,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 	 *  @return string Markup for the select field
 	 */
 	protected function renderIndexQueueInitializationSelector() {
-		$selector = t3lib_div::makeInstance('Tx_Solr_backend_IndexingConfigurationSelectorField', $this->site);
+		$selector = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_backend_IndexingConfigurationSelectorField', $this->site);
 		$selector->setFormElementName('tx_solr-index-queue-initialization');
 
 		return $selector->render();
@@ -290,9 +290,9 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 	protected function initializeIndexQueue() {
 		$initializedIndexingConfigurations = array();
 
-		$itemIndexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$itemIndexQueue = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 
-		$indexingConfigurationsToInitialize = t3lib_div::_POST('tx_solr-index-queue-initialization');
+		$indexingConfigurationsToInitialize = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('tx_solr-index-queue-initialization');
 		if (!empty($indexingConfigurationsToInitialize)) {
 				// initialize selected indexing configuration only
 			foreach ($indexingConfigurationsToInitialize as $indexingConfigurationName) {
@@ -322,7 +322,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			$messagesForConfigurations[] = $indexingConfigurationName . ' (' . $itemCount . ' records)';
 		}
 
-		$flashMessage = t3lib_div::makeInstance(
+		$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 			't3lib_FlashMessage',
 			'Initialized indexing configurations: ' . implode(', ', $messagesForConfigurations),
 			'Index Queue initialized',
@@ -349,7 +349,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			$severity = t3lib_FlashMessage::ERROR;
 		}
 
-		$flashMessage = t3lib_div::makeInstance(
+		$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 			't3lib_FlashMessage',
 			$message,
 			'',
@@ -359,10 +359,10 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 	}
 
 	protected function cleanupSiteIndex() {
-		$garbageCollector = t3lib_div::makeInstance('Tx_Solr_garbageCollector');
+		$garbageCollector = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_garbageCollector');
 		$garbageCollector->cleanIndex($this->site);
 
-		$flashMessage = t3lib_div::makeInstance(
+		$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 			't3lib_FlashMessage',
 			'Index cleaned up.',
 			'',
@@ -390,7 +390,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			$severity = t3lib_FlashMessage::ERROR;
 		}
 
-		$flashMessage = t3lib_div::makeInstance(
+		$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 			't3lib_FlashMessage',
 			$message,
 			'',
@@ -426,7 +426,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			if ($solrResponse->getHttpStatus() != 200) {
 				$coresReloaded = FALSE;
 
-				$flashMessage = t3lib_div::makeInstance(
+				$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 					't3lib_FlashMessage',
 					'Failed to reload index configuration for core "' . $coreName . '"',
 					'',
@@ -437,7 +437,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 		}
 
 		if ($coresReloaded) {
-			$flashMessage = t3lib_div::makeInstance(
+			$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 				't3lib_FlashMessage',
 				'Index configuration reloaded.',
 				'',
@@ -448,8 +448,8 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 	}
 
 	protected function deleteDocument() {
-		$documentUid  = t3lib_div::_POST('delete_uid');
-		$documentType = t3lib_div::_POST('delete_type');
+		$documentUid  = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('delete_uid');
+		$documentType = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('delete_type');
 
 		$message  = 'Document(s) with type '. $documentType . ' and id ' . $documentUid . ' deleted';
 		$severity = t3lib_FlashMessage::OK;
@@ -459,7 +459,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			$severity = t3lib_FlashMessage::ERROR;
 		} else {
 			try {
-				$uids         = t3lib_div::trimExplode(',', $documentUid);
+				$uids         = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $documentUid);
 				$uidCondition = implode(' OR ', $uids);
 
 				$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
@@ -481,7 +481,7 @@ class  Tx_Solr_ModuleAdmin extends t3lib_SCbase {
 			}
 		}
 
-		$flashMessage = t3lib_div::makeInstance(
+		$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
 			't3lib_FlashMessage',
 			$message,
 			'',
@@ -538,7 +538,7 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 
 
 // Make instance:
-$SOBE = t3lib_div::makeInstance('Tx_Solr_ModuleAdmin');
+$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_ModuleAdmin');
 $SOBE->init();
 
 // Include files?

@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A content object (cObj) to clean a database field in a way so that it can be
@@ -47,7 +49,7 @@ class Tx_Solr_ContentObject_Content {
 	 * @return string serialized array representation of the given list
 	 */
 	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $contentObject) {
-		$contentExtractor = t3lib_div::makeInstance(
+		$contentExtractor = GeneralUtility::makeInstance(
 			'Tx_Solr_HtmlContentExtractor',
 			$this->getRawContent($contentObject, $configuration)
 		);

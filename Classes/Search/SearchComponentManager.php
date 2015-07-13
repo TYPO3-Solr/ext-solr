@@ -81,7 +81,7 @@ class Tx_Solr_Search_SearchComponentManager {
 			);
 		}
 
-		$searchComponent = t3lib_div::makeInstance(self::$searchComponents[$componentName]);
+		$searchComponent = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(self::$searchComponents[$componentName]);
 
 		if (!($searchComponent instanceof Tx_Solr_SearchComponent)) {
 			throw new RuntimeException(

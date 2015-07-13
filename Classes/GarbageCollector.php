@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -51,7 +52,7 @@ class Tx_Solr_GarbageCollector {
 			$this->collectGarbage($table, $uid);
 
 			if ($table == 'pages') {
-				$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+				$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 				$indexQueue->deleteItem($table, $uid);
 			}
 		}
@@ -77,7 +78,7 @@ class Tx_Solr_GarbageCollector {
 			$this->collectGarbage($table, $uid);
 
 				// now re-index with new properties
-			$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+			$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 			$indexQueue->updateItem($table, $uid);
 		}
 	}
@@ -243,7 +244,7 @@ class Tx_Solr_GarbageCollector {
 	 * @return boolean True if the record is marked as being indexed
 	 */
 	protected function isMarkedAsIndexed($table, $record) {
-		$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 		return $indexQueue->containsIndexedItem($table, $record['uid']);
 	}
 
@@ -312,7 +313,7 @@ class Tx_Solr_GarbageCollector {
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
-				$garbageCollectorPostProcessor = t3lib_div::getUserObj($classReference);
+				$garbageCollectorPostProcessor = GeneralUtility::getUserObj($classReference);
 
 				if ($garbageCollectorPostProcessor instanceof Tx_Solr_GarbageCollectorPostProcessor) {
 					$garbageCollectorPostProcessor->postProcessGarbageCollector($table, $uid);
@@ -351,7 +352,7 @@ class Tx_Solr_GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function collectRecordGarbage($table, $uid) {
-		$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 
 		$this->deleteIndexDocuments($table, $uid);
 		$indexQueue->deleteItem($table, $uid);
@@ -365,7 +366,7 @@ class Tx_Solr_GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function collectPageGarbage($table, $uid) {
-		$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 
 		switch ($table) {
 			case 'tt_content':
@@ -402,8 +403,8 @@ class Tx_Solr_GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function deleteIndexDocuments($table, $uid) {
-		$indexQueue        = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
-		$connectionManager = t3lib_div::makeInstance('Tx_Solr_ConnectionManager');
+		$indexQueue        = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
 
 			// record can be indexed for multiple sites
 		$indexQueueItems = $indexQueue->getItems($table, $uid);

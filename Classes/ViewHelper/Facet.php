@@ -22,6 +22,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -62,7 +63,7 @@ class Tx_Solr_ViewHelper_Facet extends Tx_Solr_ViewHelper_AbstractSubpartViewHel
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 		$facetContent     = '';
 		$template         = clone $this->template;
-		$search           = t3lib_div::makeInstance('Tx_Solr_Search');
+		$search           = GeneralUtility::makeInstance('Tx_Solr_Search');
 
 		if (!array_key_exists($facetName . '.', $configuredFacets)) {
 			throw new UnexpectedValueException(
@@ -72,12 +73,12 @@ class Tx_Solr_ViewHelper_Facet extends Tx_Solr_ViewHelper_AbstractSubpartViewHel
 		}
 
 		if ($search->hasSearched()) {
-			$facetRendererFactory = t3lib_div::makeInstance(
+			$facetRendererFactory = GeneralUtility::makeInstance(
 				'Tx_Solr_Facet_FacetRendererFactory',
 				$configuredFacets
 			);
 
-			$facet = t3lib_div::makeInstance(
+			$facet = GeneralUtility::makeInstance(
 				'Tx_Solr_Facet_Facet',
 				$facetName,
 				$facetRendererFactory->getFacetInternalType($facetName)

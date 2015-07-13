@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -112,7 +113,7 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 		$value = urldecode($value);
 
 		$value = filter_var(strip_tags($value), FILTER_SANITIZE_STRING);
-		$value = t3lib_div::removeXSS($value);
+		$value = GeneralUtility::removeXSS($value);
 
 		return urlencode($value);
 	}

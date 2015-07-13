@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -99,7 +100,7 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 			// hook to provide additional error messages
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['addSearchErrors'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['addSearchErrors'] as $classReference) {
-				$errorDetector = t3lib_div::getUserObj($classReference);
+				$errorDetector = GeneralUtility::getUserObj($classReference);
 
 				if ($errorDetector instanceof Tx_Solr_ErrorDetector) {
 					if ($errorDetector instanceof Tx_Solr_CommandPluginAware) {

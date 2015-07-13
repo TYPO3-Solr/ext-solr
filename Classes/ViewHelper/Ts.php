@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -108,7 +109,7 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 	 */
 	protected function getContentObject() {
 		if (is_null($this->contentObject)) {
-			$this->contentObject = t3lib_div::makeInstance('tslib_cObj');
+			$this->contentObject = GeneralUtility::makeInstance('tslib_cObj');
 		}
 
 		return $this->contentObject;

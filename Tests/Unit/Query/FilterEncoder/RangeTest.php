@@ -22,6 +22,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  *
@@ -34,7 +35,7 @@ class Tx_Solr_Query_FilterEncoder_RangeTest extends Tx_Phpunit_TestCase {
 	private $rangeParser;
 
 	public function setUp() {
-		$this->rangeParser = t3lib_div::makeInstance('Tx_Solr_Query_FilterEncoder_Range');
+		$this->rangeParser = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_Range');
 	}
 
 	/**

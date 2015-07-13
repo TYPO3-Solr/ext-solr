@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -249,7 +250,7 @@ class Tx_Solr_Util {
 		if ($initializeTsfe) {
 			self::initializeTsfe($pageId, $language);
 
-			$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
+			$tmpl = GeneralUtility::makeInstance('t3lib_tsparser_ext');
 			$configuration = $tmpl->ext_getSetup(
 				$GLOBALS['TSFE']->tmpl->setup,
 				$path
@@ -259,10 +260,10 @@ class Tx_Solr_Util {
 		} else {
 			if (!isset($configurationCache[$cacheId])) {
 				if (is_int($language)) {
-					t3lib_div::_GETset($language, 'L');
+					GeneralUtility::_GETset($language, 'L');
 				}
 
-				$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+				$pageSelect = GeneralUtility::makeInstance('t3lib_pageSelect');
 				$rootLine   = $pageSelect->getRootLine($pageId);
 
 				if (empty($GLOBALS['TSFE']->sys_page)) {
@@ -277,7 +278,7 @@ class Tx_Solr_Util {
 					$GLOBALS['TSFE']->sys_page = $pageSelect;
 				}
 
-				$tmpl = t3lib_div::makeInstance('t3lib_tsparser_ext');
+				$tmpl = GeneralUtility::makeInstance('t3lib_tsparser_ext');
 				$tmpl->tt_track = FALSE; // Do not log time-performance information
 				$tmpl->init();
 				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
@@ -309,13 +310,13 @@ class Tx_Solr_Util {
 		$cacheId = $pageId . '|' . $language;
 
 		if (!is_object($GLOBALS['TT'])) {
-			$GLOBALS['TT'] = t3lib_div::makeInstance('t3lib_TimeTrackNull');
+			$GLOBALS['TT'] = GeneralUtility::makeInstance('t3lib_TimeTrackNull');
 		}
 
 		if (!isset($tsfeCache[$cacheId]) || !$useCache) {
-			t3lib_div::_GETset($language, 'L');
+			GeneralUtility::_GETset($language, 'L');
 
-			$GLOBALS['TSFE'] = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
+			$GLOBALS['TSFE'] = GeneralUtility::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
 				// for certain situations we need to trick TSFE into granting us
 				// access to the page in any case to make getPageAndRootline() work
@@ -324,7 +325,7 @@ class Tx_Solr_Util {
 			$groupListBackup = $GLOBALS['TSFE']->gr_list;
 			$GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
 
-			$GLOBALS['TSFE']->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
+			$GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('t3lib_pageSelect');
 			$GLOBALS['TSFE']->getPageAndRootline();
 
 				// restore gr_list
@@ -372,7 +373,7 @@ class Tx_Solr_Util {
 
 			// fallback, backend
 		if ($pageId != 0 && (empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
-			$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+			$pageSelect = GeneralUtility::makeInstance('t3lib_pageSelect');
 			$rootLine   = $pageSelect->getRootLine($pageId, '', TRUE);
 		}
 
@@ -605,7 +606,7 @@ class Tx_Solr_Util {
 	 */
 	public static function getAllowedPageTypes($pageId) {
 		$configuration = self::getConfigurationFromPageId($pageId, 'plugin.tx_solr');
-		$allowedPageTypes = t3lib_div::trimExplode(',', $configuration['index.']['queue.']['pages.']['allowedPageTypes']);
+		$allowedPageTypes = GeneralUtility::trimExplode(',', $configuration['index.']['queue.']['pages.']['allowedPageTypes']);
 
 		return $allowedPageTypes;
 	}

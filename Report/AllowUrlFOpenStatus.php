@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -53,7 +54,7 @@ class Tx_Solr_Report_AllowUrlFOpenStatus implements tx_reports_StatusProvider {
 				this setting disabled.';
 		}
 
-		$reports[] = t3lib_div::makeInstance('tx_reports_reports_status_Status',
+		$reports[] = GeneralUtility::makeInstance('tx_reports_reports_status_Status',
 			'allow_url_fopen',
 			$value,
 			$message,

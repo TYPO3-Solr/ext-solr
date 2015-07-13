@@ -22,6 +22,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -51,7 +52,7 @@ class Tx_Solr_Sorting {
 	 */
 	public function getSortFields() {
 		$sortFields    = array();
-		$contentObject = t3lib_div::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
 
 		foreach ($this->configuration as $optionName => $optionConfiguration) {
 			$fieldName = $contentObject->stdWrap(
@@ -73,7 +74,7 @@ class Tx_Solr_Sorting {
 	 */
 	public function getSortOptions() {
 		$sortOptions   = array();
-		$contentObject = t3lib_div::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
 
 		foreach ($this->configuration as $optionName => $optionConfiguration) {
 			$optionField = $contentObject->stdWrap(
@@ -109,7 +110,7 @@ class Tx_Solr_Sorting {
 	 */
 	public function getSortFieldFromUrlParameter($urlParameters) {
 		$sortFields           = array();
-		$sortParameters       = t3lib_div::trimExplode(',', $urlParameters);
+		$sortParameters       = GeneralUtility::trimExplode(',', $urlParameters);
 		$availableSortOptions = $this->getSortOptions();
 
 		foreach ($sortParameters as $sortParameter){

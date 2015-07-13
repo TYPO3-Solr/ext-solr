@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -68,7 +69,7 @@ class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 
 			$content = $this->renderData($data);
 		} catch (Exception $e) {
-			$message = t3lib_div::makeInstance(
+			$message = GeneralUtility::makeInstance(
 				't3lib_FlashMessage',
 				'Failed to establish Solr connection.',
 				'',
@@ -92,7 +93,7 @@ class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 	 */
 	protected function renderData(Apache_Solr_Response $data) {
 		$content  = '';
-		$registry = t3lib_div::makeInstance('t3lib_Registry');
+		$registry = GeneralUtility::makeInstance('t3lib_Registry');
 		$limit    = $registry->get('tx_solr', 'luke.limit', 20000);
 
 		$numberOfDocuments = $data->index->numDocs;
@@ -171,7 +172,7 @@ class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 			// updating module settings after modifying MOD_MENU
 		$this->reportsModule->MOD_SETTINGS = t3lib_BEfunc::getModuleData(
 			$this->reportsModule->MOD_MENU,
-			t3lib_div::_GP('SET'),
+			GeneralUtility::_GP('SET'),
 			$this->reportsModule->MCONF['name'],
 			$this->reportsModule->modMenu_type,
 			$this->reportsModule->modMenu_dontValidateList,
@@ -203,7 +204,7 @@ class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 			}
 		}
 
-		$solr = t3lib_div::makeInstance('Tx_Solr_ConnectionManager')->getConnection(
+		$solr = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnection(
 			$solrServer['solrHost'],
 			$solrServer['solrPort'],
 			$solrServer['solrPath'],
@@ -222,7 +223,7 @@ class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 	}
 
 	protected function getConfiguredSolrConnections() {
-		$registry = t3lib_div::makeInstance('t3lib_Registry');
+		$registry = GeneralUtility::makeInstance('t3lib_Registry');
 		$configuredSolrConnections = $registry->get('tx_solr', 'servers', array());
 
 		return $configuredSolrConnections;

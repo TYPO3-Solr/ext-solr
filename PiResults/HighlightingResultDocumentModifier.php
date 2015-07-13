@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -51,7 +52,7 @@ class Tx_Solr_PiResults_HighlightingResultDocumentModifier implements Tx_Solr_Re
 
 		$highlightedContent = $this->search->getHighlightedContent();
 
-		$highlightFields = t3lib_div::trimExplode(',', $configuration['search.']['results.']['resultsHighlighting.']['highlightFields'], TRUE);
+		$highlightFields = GeneralUtility::trimExplode(',', $configuration['search.']['results.']['resultsHighlighting.']['highlightFields'], TRUE);
 		foreach ($highlightFields as $highlightField) {
 			if (!empty($highlightedContent->{$resultDocument['id']}->{$highlightField}[0])) {
 				$fragments = array();

@@ -22,6 +22,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -49,7 +50,7 @@ class Tx_Solr_ResultDocumentModifier_SiteHighlighter implements Tx_Solr_ResultDo
 
 			// remove quotes from phrase searches - they've been escaped by getCleanUserQuery()
 		$searchWords = str_replace('&quot;', '', $searchWords);
-		$searchWords = t3lib_div::trimExplode(' ', $searchWords, TRUE);
+		$searchWords = GeneralUtility::trimExplode(' ', $searchWords, TRUE);
 
 		$url = $resultDocument['url'];
 		$fragment = '';

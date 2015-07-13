@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Helper for the hierarchical menu structure.
@@ -94,7 +95,7 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 
 		foreach ($facetOptions as $facetOptionKey => $facetOption) {
 				// find the sub menu items for the current menu
-			if (t3lib_div::isFirstPartOfStr($facetOptionKey, $subMenuEntryPrefix)) {
+			if (GeneralUtility::isFirstPartOfStr($facetOptionKey, $subMenuEntryPrefix)) {
 				$currentMenu = array(
 					'title'           => $this->getFacetOptionLabel($facetOptionKey, $facetOption['numberOfResults']),
 					'facetKey'        => Tx_Solr_Facet_HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey),

@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A CLI command dispatcher
@@ -58,7 +60,7 @@ class Tx_Solr_Cli_Dispatcher extends t3lib_cli {
 
 		switch ($command) {
 			case 'updateConnections':
-				$connectionManager = t3lib_div::makeInstance('Tx_Solr_ConnectionManager');
+				$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
 				$connectionManager->updateConnections();
 				break;
 

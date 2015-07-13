@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -46,7 +47,7 @@ class Tx_Solr_ViewHelper_CurrentResultNumber implements Tx_Solr_ViewHelper {
 	 * constructor for class Tx_Solr_ViewHelper_Date
 	 */
 	public function __construct(array $arguments = array()) {
-		$this->search = t3lib_div::makeInstance('Tx_Solr_Search');
+		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
 	}
 
 	/**
@@ -61,7 +62,7 @@ class Tx_Solr_ViewHelper_CurrentResultNumber implements Tx_Solr_ViewHelper {
 		$currentIterationIndex = $arguments[0];
 		$resultsPerPage = $this->search->getResultsPerPage();
 		$currentPage = 0;
-		$getParameters = t3lib_div::_GET('tx_solr');
+		$getParameters = GeneralUtility::_GET('tx_solr');
 
 		if (isset($getParameters['page'])) {
 			$currentPage = intval($getParameters['page']);

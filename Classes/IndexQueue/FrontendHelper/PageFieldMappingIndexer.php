@@ -24,6 +24,7 @@
 
 
 // TODO use/extend Tx_Solr_IndexQueue_AbstractIndexer
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Indexer to add / overwrite page document fields as defined in
@@ -120,7 +121,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer implements Tx_So
 
 		if (isset($indexingConfiguration[$solrFieldName . '.'])) {
 				// configuration found => need to resolve a cObj
-			$contentObject = t3lib_div::makeInstance('tslib_cObj');
+			$contentObject = GeneralUtility::makeInstance('tslib_cObj');
 			$contentObject->start($pageRecord, 'pages');
 
 			$fieldValue = $contentObject->cObjGetSingle(

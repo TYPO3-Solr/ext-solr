@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -81,7 +82,7 @@ class Tx_Solr_ViewHelper_Crop implements Tx_Solr_ViewHelper {
 			$this->cropFullWords = TRUE;
 		}
 
-		$contentObject = t3lib_div::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
 		$contentObject->start(array(), '');
 		$croppedString = $contentObject->cropHTML(
 			$stringToCrop,

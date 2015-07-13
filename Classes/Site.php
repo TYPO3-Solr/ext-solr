@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -96,7 +97,7 @@ class Tx_Solr_Site {
 		$rootPageId = Tx_Solr_Util::getRootPageId($pageId);
 
 		if (!isset(self::$sitesCache[$rootPageId])) {
-			self::$sitesCache[$rootPageId] = t3lib_div::makeInstance(__CLASS__, $rootPageId);
+			self::$sitesCache[$rootPageId] = GeneralUtility::makeInstance(__CLASS__, $rootPageId);
 		}
 
 		return self::$sitesCache[$rootPageId];
@@ -110,12 +111,12 @@ class Tx_Solr_Site {
 	public static function getAvailableSites() {
 		$sites = array();
 
-		$registry = t3lib_div::makeInstance('t3lib_Registry');
+		$registry = GeneralUtility::makeInstance('t3lib_Registry');
 		$servers  = $registry->get('tx_solr', 'servers', array());
 
 		foreach ($servers as $server) {
 			if (!isset($sites[$server['rootPageUid']])) {
-				$sites[$server['rootPageUid']] = t3lib_div::makeInstance(__CLASS__, $server['rootPageUid']);
+				$sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__, $server['rootPageUid']);
 			}
 		}
 
@@ -167,7 +168,7 @@ class Tx_Solr_Site {
 	 * @return string The site's main domain.
 	 */
 	public function getDomain() {
-		$pageSelect = t3lib_div::makeInstance('t3lib_pageSelect');
+		$pageSelect = GeneralUtility::makeInstance('t3lib_pageSelect');
 		$rootLine   = $pageSelect->getRootLine($this->rootPage['uid']);
 
 		return t3lib_BEfunc::firstDomainRecord($rootLine);
@@ -182,7 +183,7 @@ class Tx_Solr_Site {
 	public function getLanguages() {
 		$siteLanguages = array();
 
-		$registry        = t3lib_div::makeInstance('t3lib_Registry');
+		$registry        = GeneralUtility::makeInstance('t3lib_Registry');
 		$solrConnections = $registry->get('tx_solr', 'servers');
 
 		foreach ($solrConnections as $connectionKey => $solrConnection) {

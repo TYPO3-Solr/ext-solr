@@ -198,7 +198,7 @@ options.contextMenu.table.pages.items.850 = ITEM
 options.contextMenu.table.pages.items.850 {
 	name = Tx_Solr_initializeSolrConnections
 	label = Initialize Solr Connections
-	icon = ' . t3lib_div::locationHeaderUrl($GLOBALS['PATHrel_solr'] . 'Resources/Images/cache-init-solr-connections.png') . '
+	icon = ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($GLOBALS['PATHrel_solr'] . 'Resources/Images/cache-init-solr-connections.png') . '
 	displayCondition = getRecord|is_siteroot = 1
 	callbackAction = initializeSolrConnections
 }

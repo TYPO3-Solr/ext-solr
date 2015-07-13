@@ -21,6 +21,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A facet
@@ -79,7 +80,7 @@ class Tx_Solr_Facet_Facet {
 	public function __construct($facetName, $facetType = self::TYPE_FIELD) {
 		$this->name   = $facetName;
 		$this->type   = $facetType;
-		$this->search = t3lib_div::makeInstance('Tx_Solr_Search');
+		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
 
 		$this->initializeConfiguration();
 	}
@@ -120,7 +121,7 @@ class Tx_Solr_Facet_Facet {
 	public function getSelectedOptions() {
 		$selectedOptions = array();
 
-		$resultParameters = t3lib_div::_GET('tx_solr');
+		$resultParameters = GeneralUtility::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
 			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
@@ -190,7 +191,7 @@ class Tx_Solr_Facet_Facet {
 				$requirements[] = array(
 					'name'   => substr($name, 0, -1),
 					'facet'  => $requirement['facet'],
-					'values' => t3lib_div::trimExplode(',', $requirement['values']),
+					'values' => GeneralUtility::trimExplode(',', $requirement['values']),
 				);
 			}
 		}
@@ -207,7 +208,7 @@ class Tx_Solr_Facet_Facet {
 	protected function isRequirementMet(array $requirement) {
 		$requirementMet = FALSE;
 
-		$requiredFacet      = t3lib_div::makeInstance('Tx_Solr_Facet_Facet', $requirement['facet']);
+		$requiredFacet      = GeneralUtility::makeInstance('Tx_Solr_Facet_Facet', $requirement['facet']);
 		$selectedOptions    = $requiredFacet->getSelectedOptions();
 		$csvSelectedOptions = implode(', ', $selectedOptions);
 

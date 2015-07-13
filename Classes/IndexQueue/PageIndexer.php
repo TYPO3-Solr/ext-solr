@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -97,7 +98,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 				$logStatus   = 'Success';
 			}
 
-			t3lib_div::devLog('Page Indexer: ' . $logStatus, 'solr', $logSeverity, array(
+			GeneralUtility::devLog('Page Indexer: ' . $logStatus, 'solr', $logSeverity, array(
 				'item'                => (array) $item,
 				'language'            => $language,
 				'user group'          => $userGroup,
@@ -125,7 +126,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	 * @return Tx_Solr_IndexQueue_PageIndexerRequest Base page indexer request
 	 */
 	protected function buildBasePageIndexerRequest() {
-		$request = t3lib_div::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest');
+		$request = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest');
 		$request->setParameter('loggingEnabled', $this->loggingEnabled);
 
 		if (!empty($this->options['authorization.'])) {
@@ -192,7 +193,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 
 			// deprecated
 		if (!empty($this->options['scheme'])) {
-			t3lib_div::devLog(
+			GeneralUtility::devLog(
 				'Using deprecated option "scheme" to set the scheme (http / https) for the page indexer frontend helper. Use plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.scheme instead',
 				'solr',
 				2
@@ -219,8 +220,8 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 		$dataUrl .= $this->getMountPageDataUrlParameter($item);
 		$dataUrl .= '&L=' . $language;
 
-		if (!t3lib_div::isValidUrl($dataUrl)) {
-			t3lib_div::devLog(
+		if (!GeneralUtility::isValidUrl($dataUrl)) {
+			GeneralUtility::devLog(
 				'Could not create a valid URL to get frontend data while trying to index a page.',
 				'solr',
 				3,
@@ -242,7 +243,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 		}
 
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']) {
-			$dataUrlModifier = t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
+			$dataUrlModifier = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
 
 			if ($dataUrlModifier instanceof Tx_Solr_IndexQueuePageIndexerDataUrlModifier) {
 				$dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, array(
@@ -298,13 +299,13 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 		$solrConnections = parent::getSolrConnectionsByItem($item);
 
 		$page = $item->getRecord();
-			// may use t3lib_div::hideIfDefaultLanguage($page['l18n_cfg']) with TYPO3 4.6
+			// may use \TYPO3\CMS\Core\Utility\GeneralUtility::hideIfDefaultLanguage($page['l18n_cfg']) with TYPO3 4.6
 		if ($page['l18n_cfg'] & 1) {
 				// page is configured to hide the default translation -> remove Solr connection for default language
 			unset($solrConnections[0]);
 		}
 
-		if (t3lib_div::hideIfNotTranslated($page['l18n_cfg'])) {
+		if (GeneralUtility::hideIfNotTranslated($page['l18n_cfg'])) {
 			$accessibleSolrConnections = array();
 			if (isset($solrConnections[0])) {
 				$accessibleSolrConnections[0] = $solrConnections[0];
@@ -376,7 +377,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 			if (is_null($contentAccessGroup)) {
 				$contentAccessGroups = $this->getAccessGroupsFromContent($item, $language);
 			}
-			$accessRootline->push(t3lib_div::makeInstance(
+			$accessRootline->push(GeneralUtility::makeInstance(
 				'Tx_Solr_Access_RootlineElement',
 				'c:' . implode(',', $contentAccessGroups)
 			));
@@ -414,7 +415,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 			}
 
 			if ($this->loggingEnabled) {
-				t3lib_div::devLog('Page Access Groups', 'solr', 0, array(
+				GeneralUtility::devLog('Page Access Groups', 'solr', 0, array(
 					'item'              => (array) $item,
 					'language'          => $language,
 					'index request url' => $indexRequestUrl,

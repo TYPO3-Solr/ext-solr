@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -96,7 +97,7 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 	 */
 	protected function addSuggestStylesheets() {
 		if ($this->configuration['cssFiles.']['ui'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
-			$cssFile = t3lib_div::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->configuration['cssFiles.']['ui']));
+			$cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->configuration['cssFiles.']['ui']));
 			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss'] =
 				'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
 		}
@@ -122,7 +123,7 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 	 * @return string the full URL to the eID script including the needed parameters
 	 */
 	protected function getSuggestEidUrl() {
-		$suggestUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+		$suggestUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 
 		if ($this->configuration['suggest.']['forceHttps']) {
 			$suggestUrl = str_replace('http://', 'https://', $suggestUrl);

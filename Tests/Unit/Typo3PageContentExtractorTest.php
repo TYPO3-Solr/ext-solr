@@ -21,7 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -40,7 +40,7 @@ class Tx_Solr_Typo3PageContentExtractorTest extends Tx_Phpunit_TestCase {
 		$content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
 		$expectedResult = 'In Olten ist';
 
-		$contentExtractor = t3lib_div::makeInstance(
+		$contentExtractor = GeneralUtility::makeInstance(
 			'Tx_Solr_Typo3PageContentExtractor',
 			$content
 		);
