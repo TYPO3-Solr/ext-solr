@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 
@@ -75,7 +76,7 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 	 * Creates a Fluid form node
 	 *
 	 * @param string $actionUri Action URI
-	 * @return \TYPO3\CMS\Fluid\Core\Parser\SyntaxTree\ViewHelperNode
+	 * @return ViewHelperNode
 	 */
 	protected function getForm($actionUri) {
 		$actionUriArgumentNode = $this->objectManager->get(
@@ -101,7 +102,7 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 	 *
 	 * @param string $label Label
 	 * @param string $cssClass Optional CSS class(es), defaults to empty string
-	 * @return \TYPO3\CMS\Fluid\Core\Parser\SyntaxTree\ViewHelperNode
+	 * @return ViewHelperNode
 	 */
 	protected function getButton($label, $cssClass = '') {
 		$valueArgumentNode = $this->objectManager->get(

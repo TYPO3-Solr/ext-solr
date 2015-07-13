@@ -31,6 +31,8 @@ use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Mvc\ResponseInterface;
+use TYPO3\CMS\Extbase\Mvc\Web\Request;
+use TYPO3\CMS\Extbase\Mvc\Web\Response;
 
 
 /**
@@ -78,7 +80,7 @@ class AdministrationController extends ActionController {
 	/**
 	 * Currently active module
 	 *
-	 * @var null|\ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleInterface|\TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+	 * @var null|\ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleInterface|ActionController
 	 */
 	protected $activeModule = NULL;
 
@@ -93,9 +95,9 @@ class AdministrationController extends ActionController {
 	/**
 	 * Loads and persists module data
 	 *
-	 * @param \TYPO3\CMS\Extbase\Mvc\RequestInterface $request
-	 * @param \TYPO3\CMS\Extbase\Mvc\ResponseInterface $response
-	 * @throws \Exception|\TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+	 * @param RequestInterface $request
+	 * @param ResponseInterface $response
+	 * @throws \Exception|StopActionException
 	 * @return void
 	 */
 	public function processRequest(RequestInterface $request, ResponseInterface $response) {
@@ -152,8 +154,8 @@ class AdministrationController extends ActionController {
 	protected function invokeModuleController() {
 		$activeModuleDescription = $this->moduleManager->getModuleDescription($this->activeModuleName);
 
-		$request = $this->objectManager->get('TYPO3\CMS\Extbase\Mvc\Web\Request');
-		/* @var \TYPO3\CMS\Extbase\Mvc\Web\Request $request */
+		$request = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Request');
+		/* @var Request $request */
 		$request->setControllerExtensionName(ucfirst($activeModuleDescription['extensionKey']));
 		$request->setControllerName($activeModuleDescription['controller'] . 'Module');
 		$request->setControllerActionName('index');
@@ -173,8 +175,8 @@ class AdministrationController extends ActionController {
 			$request->setArgument($argumentName, $argumentValue);
 		}
 
-		$response = $this->objectManager->get('TYPO3\CMS\Extbase\Mvc\Web\Response');
-		/* @var \TYPO3\CMS\Extbase\Mvc\Web\Response $response */
+		$response = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Response');
+		/* @var Response $response */
 
 		while (!$request->isDispatched()) {
 			try {

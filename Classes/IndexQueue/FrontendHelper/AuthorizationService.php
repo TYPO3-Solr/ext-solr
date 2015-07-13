@@ -21,7 +21,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Sv\AbstractAuthenticationService;
 
 
 /**
@@ -32,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends tx_sv_authbase {
+class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends AbstractAuthenticationService {
 
 	/**
 	 * User used when authenticating the page indexer for protected pages,

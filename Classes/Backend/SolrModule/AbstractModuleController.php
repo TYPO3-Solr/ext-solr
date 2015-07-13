@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -192,7 +193,7 @@ abstract class AbstractModuleController extends ActionController implements Admi
 	 * @throws \InvalidArgumentException if the message body is no string
 	 * @see \TYPO3\CMS\Core\Messaging\FlashMessage
 	 */
-	public function addFlashMessage($messageBody, $messageTitle = '', $severity = \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, $storeInSession = TRUE) {
+	public function addFlashMessage($messageBody, $messageTitle = '', $severity = AbstractMessage::OK, $storeInSession = TRUE) {
 		if (version_compare(TYPO3_version, '6.2.0', '>=')) {
 			parent::addFlashMessage($messageBody, $messageTitle, $severity, $storeInSession);
 		} else {

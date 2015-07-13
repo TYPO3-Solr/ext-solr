@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Service;
 
 use TYPO3\CMS\Core\SingletonInterface;
 use ApacheSolrForTypo3\Solr\Domain\Model\ModuleData;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Module data storage service. Used to store and retrieve module state (eg.
@@ -40,7 +41,7 @@ class ModuleDataStorageService implements SingletonInterface {
 	const KEY = 'tx_solr';
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+	 * @var ObjectManagerInterface
 	 * @inject
 	 */
 	protected $objectManager;
