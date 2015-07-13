@@ -21,7 +21,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 
 /**
@@ -35,9 +37,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 
 	/**
-	 * instance of tslib_cObj
+	 * instance of ContentObjectRenderer
 	 *
-	 * @var tslib_cObj
+	 * @var ContentObjectRenderer
 	 */
 	protected $contentObject = NULL;
 
@@ -105,11 +107,11 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 	 * Returns the viewhelper's internal cObj. If it has not been used yet, a
 	 * new cObj ist instantiated on demand.
 	 *
-	 * @return tslib_cObj A content object.
+	 * @return ContentObjectRenderer A content object.
 	 */
 	protected function getContentObject() {
 		if (is_null($this->contentObject)) {
-			$this->contentObject = GeneralUtility::makeInstance('tslib_cObj');
+			$this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		}
 
 		return $this->contentObject;

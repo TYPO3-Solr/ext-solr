@@ -203,7 +203,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 
 	protected function renderDocumentFields(array $document) {
 		$renderingInstructions = $this->configuration['search.']['results.']['fieldRenderingInstructions.'];
-		$cObj = GeneralUtility::makeInstance('tslib_cObj');
+		$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$cObj->start($document);
 
 		foreach ($renderingInstructions as $renderingInstructionName => $renderingInstruction) {
@@ -250,7 +250,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 			);
 
 				// Get page browser
-			$cObj = GeneralUtility::makeInstance('tslib_cObj');
+			$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 			$cObj->start(array(), '');
 
 			$cObjectType = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1'];

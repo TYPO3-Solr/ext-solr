@@ -24,6 +24,7 @@
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 
 /**
@@ -393,7 +394,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	/**
 	 * Finds the FE user groups used on a page including all groups of content
 	 * elements and groups of records of extensions that have correctly been
-	 * pushed through tslib_cObj during rendering.
+	 * pushed through ContentObjectRenderer during rendering.
 	 *
 	 * @param Tx_Solr_IndexQueue_Item $item Index queue item representing the current page to get the user groups from
 	 * @param integer $language The sys_language_uid language ID

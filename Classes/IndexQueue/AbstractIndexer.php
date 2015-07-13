@@ -98,7 +98,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 	 */
 	protected function resolveFieldValue(array $indexingConfiguration, $solrFieldName, array $data) {
 		$fieldValue    = '';
-		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		if (isset($indexingConfiguration[$solrFieldName . '.'])) {
 				// configuration found => need to resolve a cObj

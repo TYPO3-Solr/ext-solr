@@ -21,7 +21,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 
 /**
@@ -43,9 +45,9 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 	protected $search = NULL;
 
 	/**
-	 * Instance of tslib_cObj
+	 * Instance of ContentObjectRenderer
 	 *
-	 * @var tslib_cObj
+	 * @var ContentObjectRenderer
 	 */
 	protected $contentObject = NULL;
 
@@ -56,7 +58,7 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 	 */
 	public function __construct(array $arguments = array()) {
 		if(is_null($this->contentObject)) {
-			$this->contentObject = GeneralUtility::makeInstance('tslib_cObj');
+			$this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		}
 
 		if(is_null($this->search)) {

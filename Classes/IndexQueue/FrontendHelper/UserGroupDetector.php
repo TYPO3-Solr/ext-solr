@@ -25,10 +25,10 @@
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
-
 
 /**
  * Index Queue Page Indexer frontend helper to track which user groups are used
@@ -151,11 +151,11 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	// execution
 
 	/**
-	 * Hook for post processing the initialization of tslib_cObj
+	 * Hook for post processing the initialization of ContentObjectRenderer
 	 *
-	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer parent content object
+	 * @param ContentObjectRenderer $parentObject parent content object
 	 */
-	public function postProcessContentObjectInitialization(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
+	public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject) {
 		if (!empty($parentObject->currentRecord)) {
 			list($table) = explode(':', $parentObject->currentRecord);
 

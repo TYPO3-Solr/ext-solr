@@ -87,7 +87,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 			$facetText = $facetOption->render();
 		}
 
-		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$facetLabel = $contentObject->stdWrap(
 			$solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label'],
 			$solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label.']

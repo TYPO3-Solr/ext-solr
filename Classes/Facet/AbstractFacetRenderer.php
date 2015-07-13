@@ -169,7 +169,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 		$facet['empty']     = $this->facet->isEmpty() ? '1' : '0';
 		$facet['reset_url'] = $this->buildResetFacetUrl();
 
-		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$facet['label'] = $contentObject->stdWrap(
 			$this->facetConfiguration['label'],
 			$this->facetConfiguration['label.']

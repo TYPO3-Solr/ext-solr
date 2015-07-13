@@ -25,6 +25,7 @@
 use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 
 /**
@@ -58,11 +59,11 @@ class Tx_Solr_Template {
 	/**
 	 * Constructor for the html marker template engine.
 	 *
-	 * @param tslib_cObj $contentObject content object
+	 * @param ContentObjectRenderer $contentObject content object
 	 * @param string $templateFile path to the template file
 	 * @param string $subpart name of the subpart to work on
 	 */
-	public function __construct(tslib_cObj $contentObject, $templateFile, $subpart) {
+	public function __construct(ContentObjectRenderer $contentObject, $templateFile, $subpart) {
 		$this->cObj = $contentObject;
 		$this->templateFile = $templateFile;
 

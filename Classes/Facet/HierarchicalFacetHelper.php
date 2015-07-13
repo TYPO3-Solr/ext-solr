@@ -21,7 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
 
 /**
  * Helper for the hierarchical menu structure.
@@ -31,9 +34,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Tx_Solr_Facet_HierarchicalFacetHelper {
 
 	/**
-	 * Parent content object, set when called by tslib_cObj->callUserFunction()
+	 * Parent content object, set when called by ContentObjectRenderer->callUserFunction()
 	 *
-	 * @var tslib_cObj
+	 * @var ContentObjectRenderer
 	 */
 	public $cObj;
 

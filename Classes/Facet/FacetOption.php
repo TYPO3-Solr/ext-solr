@@ -94,7 +94,7 @@ class Tx_Solr_Facet_FacetOption {
 		$renderedFacetOption = $this->value;
 
 		if (isset($this->facetConfiguration['renderingInstruction'])) {
-			$contentObject = GeneralUtility::makeInstance('tslib_cObj');
+			$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 			$contentObject->start(array(
 				'optionValue' => $this->value,
 				'optionCount' => $this->numberOfResults,

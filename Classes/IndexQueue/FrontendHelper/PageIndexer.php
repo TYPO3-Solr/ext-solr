@@ -222,7 +222,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 			return $this->request->getParameter('overridePageUrl');
 		}
 
-		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
+		$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		$typolinkConfiguration = array(
 			'parameter'                 => intval($this->page->id),

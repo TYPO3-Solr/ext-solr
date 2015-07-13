@@ -22,7 +22,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Renderer for hierarchical facets.
@@ -33,9 +35,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
 
 	/**
-	 * Parent content object, set when called by tslib_cObj->callUserFunction()
+	 * Parent content object, set when called by ContentObjectRenderer->callUserFunction()
 	 *
-	 * @var tslib_cObj
+	 * @var ContentObjectRenderer
 	 */
 	public $cObj;
 
@@ -114,10 +116,10 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFace
 	 * @return string Hierarchical facet rendered by a cObject
 	 */
 	protected function renderHierarchicalFacet($facetOptions) {
-			// assuming a rendering instruction is always set for hierarchical facets
-			// passing field name and facet options to the necessary userFunc
-		/* @var $contentObject tslib_cObj */
-		$contentObject = GeneralUtility::makeInstance('tslib_cObj');
+		// assuming a rendering instruction is always set for hierarchical facets
+		// passing field name and facet options to the necessary userFunc
+		/* @var $contentObject ContentObjectRenderer */
+		$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$contentObject->start(array(
 			'facetFieldName' => $this->facetConfiguration['field'],
 			'facetOptions'   => $facetOptions

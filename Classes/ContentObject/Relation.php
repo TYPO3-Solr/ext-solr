@@ -24,6 +24,7 @@
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 
 /**
@@ -75,7 +76,7 @@ class Tx_Solr_ContentObject_Relation {
 	 * @param string $name content object name 'SOLR_RELATION'
 	 * @param array $configuration for the content object
 	 * @param string $TyposcriptKey not used
-	 * @param tslib_cObj $contentObject parent content object
+	 * @param TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentContentObject parent content object
 	 * @return string serialized array representation of the given list
 	 */
 	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $parentContentObject) {
@@ -106,10 +107,10 @@ class Tx_Solr_ContentObject_Relation {
 	 * Gets the related items of the current record's configured field.
 	 *
 	 * @param array $configuration for the content object
-	 * @param tslib_cObj $parentContentObject parent content object
+	 * @param ContentObjectRenderer $parentContentObject parent content object
 	 * @return array Array of related items, values already resolved from related records
 	 */
-	protected function getRelatedItems(tslib_cObj $parentContentObject) {
+	protected function getRelatedItems(ContentObjectRenderer $parentContentObject) {
 		$relatedItems = array();
 
 		list($localTableName, $localRecordUid) = explode(':', $parentContentObject->currentRecord);
@@ -135,10 +136,10 @@ class Tx_Solr_ContentObject_Relation {
 	 * @param string $localFieldName Local table field name
 	 * @param integer $localRecordUid Local record uid
 	 * @param array $localFieldTca The local table's TCA
-	 * @param tslib_cObj $parentContentObject parent content object
+	 * @param ContentObjectRenderer $parentContentObject parent content object
 	 * @return array Array of related items, values already resolved from related records
 	 */
-	protected function getRelatedItemsFromForeignTable($localFieldName, $localRecordUid, array $localFieldTca, tslib_cObj $parentContentObject) {
+	protected function getRelatedItemsFromForeignTable($localFieldName, $localRecordUid, array $localFieldTca, ContentObjectRenderer $parentContentObject) {
 		$relatedItems = array();
 
 		$foreignTableName = $localFieldTca['config']['foreign_table'];
@@ -196,12 +197,12 @@ class Tx_Solr_ContentObject_Relation {
 	 * @param array $relatedRecord Related record as array
 	 * @param array $foreignTableTca TCA of the related table
 	 * @param string $foreignTableLabelField Field name of the foreign label field
-	 * @param tslib_cObj $parentContentObject cObject
+	 * @param ContentObjectRenderer $parentContentObject cObject
 	 * @param string $foreignTableName Related record table name
 	 *
 	 * @return string
 	 */
-	protected function resolveRelatedValue(array $relatedRecord, $foreignTableTca, $foreignTableLabelField, tslib_cObj $parentContentObject, $foreignTableName = '') {
+	protected function resolveRelatedValue(array $relatedRecord, $foreignTableTca, $foreignTableLabelField, ContentObjectRenderer $parentContentObject, $foreignTableName = '') {
 
 		if ($GLOBALS['TSFE']->sys_language_uid > 0 && !empty($foreignTableName)) {
 			$relatedRecord = $this->getTranslationOverlay($foreignTableName, $relatedRecord);
