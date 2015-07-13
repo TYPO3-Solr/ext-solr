@@ -37,7 +37,6 @@
       "Lib/",
       "Classes/",
       "CliApi/",
-      "Compat/",
       "EidApi/",
       "EidSuggest/",
       "Interfaces/",

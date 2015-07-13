@@ -190,9 +190,6 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 		$itemsIndexedPercentage = $this->getProgress();
 
 		$message = 'Site: ' . $this->site->getLabel();
-		if (SOLR_COMPAT) {
-			$message .= ', Indexed ' . $itemsIndexedPercentage . '%.';
-		}
 
 		$failedItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
 			'uid',
