@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -65,10 +67,10 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * @param string The command.
 	 * @param string The table the record belongs to
 	 * @param integer The record's uid
-	 * @param	string
-	 * @param t3lib_TCEmain TYPO3 Core Engine parent object
+	 * @param string
+	 * @param DataHandler TYPO3 Core Engine parent object
 	 */
-	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
+	public function processCmdmap_preProcess($command, $table, $uid, $value, DataHandler $tceMain) {
 		if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
 				// skip workspaces: index only LIVE workspace
 			$this->indexQueue->updateItem('pages', $tceMain->getPID($table, $uid));
@@ -83,9 +85,9 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * @param string The table the record belongs to
 	 * @param integer The record's uid
 	 * @param	string
-	 * @param t3lib_TCEmain TYPO3 Core Engine parent object
+	 * @param DataHandler TYPO3 Core Engine parent object
 	 */
-	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
+	public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain) {
 		if (Tx_Solr_Util::isDraftRecord($table, $uid)) {
 				// skip workspaces: index only LIVE workspace
 			return;
@@ -164,10 +166,10 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * @param string $table The table the record belongs to
 	 * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
 	 * @param array $fields The record's data
-	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object
+	 * @param DataHandler $tceMain TYPO3 Core Engine parent object
 	 * @return void
 	 */
-	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, t3lib_TCEmain $tceMain) {
+	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, DataHandler $tceMain) {
 		$recordTable  = $table;
 		$recordUid    = $uid;
 		$recordPageId = 0;

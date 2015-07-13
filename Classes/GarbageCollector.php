@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -43,10 +45,10 @@ class Tx_Solr_GarbageCollector {
 	 * @param string $table The table the record belongs to
 	 * @param integer $uid The record's uid
 	 * @param string $value Not used
-	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
+	 * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
 	 * @return void
 	 */
-	public function processCmdmap_preProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
+	public function processCmdmap_preProcess($command, $table, $uid, $value, DataHandler $tceMain) {
 			// workspaces: collect garbage only for LIVE workspace
 		if ($command == 'delete' && $GLOBALS['BE_USER']->workspace == 0) {
 			$this->collectGarbage($table, $uid);
@@ -65,9 +67,9 @@ class Tx_Solr_GarbageCollector {
 	 * @param string $table The table the record belongs to
 	 * @param integer $uid The record's uid
 	 * @param string $value Not used
-	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
+	 * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
 	 */
-	public function processCmdmap_postProcess($command, $table, $uid, $value, t3lib_TCEmain $tceMain) {
+	public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain) {
 			// workspaces: collect garbage only for LIVE workspace
 		if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
 				// TODO the below comment is not valid anymore, pid has been removed from doc ID
@@ -91,9 +93,9 @@ class Tx_Solr_GarbageCollector {
 	 * @param array $incomingFields An array of incoming fields, new or changed, not used
 	 * @param string $table The table the record belongs to
 	 * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
-	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
+	 * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
 	 */
-	public function processDatamap_preProcessFieldArray($incomingFields, $table, $uid, t3lib_TCEmain $tceMain) {
+	public function processDatamap_preProcessFieldArray($incomingFields, $table, $uid, DataHandler $tceMain) {
 		if (!is_int($uid)) {
 				// a newly created record, skip
 			return;
@@ -132,9 +134,9 @@ class Tx_Solr_GarbageCollector {
 	 * @param string $table The table the record belongs to
 	 * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
 	 * @param array $fields The record's data, not used
-	 * @param t3lib_TCEmain $tceMain TYPO3 Core Engine parent object, not used
+	 * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
 	 */
-	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, t3lib_TCEmain $tceMain) {
+	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, DataHandler $tceMain) {
 		if ($status == 'new') {
 				// a newly created record, skip
 			return;
