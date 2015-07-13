@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 
 /**
  * Provides the icon and entry for the content element wizard
@@ -40,7 +42,7 @@ class Tx_Solr_Backend_ContentElementWizardIconProvider {
 	 */
 	public function proc($wizardItems) {
 		$wizardItems['plugins_tx_solr_results'] = array(
-			'icon'        => t3lib_extMgm::extRelPath('solr') . 'Resources/Public/Images/ContentElement.gif',
+			'icon'        => ExtensionManagementUtility::extRelPath('solr') . 'Resources/Public/Images/ContentElement.gif',
 			'title'       => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/Backend.xml:plugin_results'),
 			'description' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/Backend.xml:plugin_results_description'),
 			'params'      => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=solr_pi_results'

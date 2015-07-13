@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -182,12 +184,12 @@ class Tx_Solr_Template {
 				$viewHelperRealPath = substr($viewHelperRealPath, 0, -1);
 			}
 
-			$classNamePrefix = t3lib_extMgm::getCN($extensionKey);
+			$classNamePrefix = ExtensionManagementUtility::getCN($extensionKey);
 
 			$possibleFilename  = Tx_Solr_Util::underscoredToUpperCamelCase($helperKey) . '.php';
 			$possibleClassName = $classNamePrefix . '_' . str_replace('/', '_', $viewHelperRealPath) . '_' . Tx_Solr_Util::underscoredToUpperCamelCase($helperKey);
 
-			$viewHelperIncludePath = t3lib_extMgm::extPath($extensionKey)
+			$viewHelperIncludePath = ExtensionManagementUtility::extPath($extensionKey)
 				. $viewHelperPath . $possibleFilename;
 
 			if (file_exists($viewHelperIncludePath)) {

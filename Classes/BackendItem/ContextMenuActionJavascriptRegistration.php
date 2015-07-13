@@ -6,7 +6,7 @@ if (!defined('TYPO3_MODE')) {
 if (is_object($TYPO3backend)) {
 	$pageRenderer = $GLOBALS['TBE_TEMPLATE']->getPageRenderer();
 
-	$javascriptPath = t3lib_extMgm::extRelPath('solr') . 'Resources/JavaScript/ContextMenu/';
+	$javascriptPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('solr') . 'Resources/JavaScript/ContextMenu/';
 	$pageRenderer->addJsFile($javascriptPath . 'initializesolrconnectionsclickmenuaction.js');
 }
 

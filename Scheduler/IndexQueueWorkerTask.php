@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -275,7 +277,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 		static $hosts = array();
 
 			// relevant for realURL environments, only
-		if (t3lib_extMgm::isLoaded('realurl')) {
+		if (ExtensionManagementUtility::isLoaded('realurl')) {
 			$rootpageId = $item->getRootPageUid();
 			$hostFound  = !empty($hosts[$rootpageId]);
 

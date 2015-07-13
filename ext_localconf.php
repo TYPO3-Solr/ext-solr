@@ -3,7 +3,7 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-$GLOBALS['PATH_solr'] = t3lib_extMgm::extPath('solr');
+$GLOBALS['PATH_solr'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -16,7 +16,7 @@ if(!function_exists('strptime')) {
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 	// adding the Search plugin
-t3lib_extMgm::addPItoST43(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
 	$_EXTKEY,
 	'PiResults/Results.php',
 	'_pi_results',
@@ -25,7 +25,7 @@ t3lib_extMgm::addPItoST43(
 );
 
 	// adding the Search Form plugin
-t3lib_extMgm::addPItoST43(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
 	$_EXTKEY,
 	'PiSearch/Search.php',
 	'_pi_search',
@@ -34,7 +34,7 @@ t3lib_extMgm::addPItoST43(
 );
 
 	// adding the Frequent Searches plugin
-t3lib_extMgm::addPItoST43(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
 	$_EXTKEY,
 	'PiFrequentSearches/FrequentSearches.php',
 	'_pi_frequentsearches',
@@ -63,7 +63,7 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-t3lib_extMgm::registerExtDirectComponent(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
 	'TYPO3.tx_solr.IndexInspector.Remote',
 	$GLOBALS['PATH_solr'] . 'ModIndex/IndexInspectorRemoteController.php:Tx_Solr_ModIndex_IndexInspectorRemoteController',
 	'web_info',
@@ -292,7 +292,7 @@ tt_content.search {
 }
 ');
 
-t3lib_extMgm::addTypoScript(
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
 	$_EXTKEY,
 	'setup',
 	'# Setting ' . $_EXTKEY . ' plugin TypoScript' . $searchReplacementTypoScript,

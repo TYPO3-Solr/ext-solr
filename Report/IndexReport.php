@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -50,7 +52,7 @@ class Tx_Solr_Report_IndexReport implements tx_reports_Report {
 
 		$this->reportsModule->doc->addStyleSheet(
 			'tx_solr',
-			'../' . t3lib_extMgm::siteRelPath('solr') . 'Resources/Css/Report/index.css'
+			'../' . ExtensionManagementUtility::siteRelPath('solr') . 'Resources/Css/Report/index.css'
 		);
 	}
 

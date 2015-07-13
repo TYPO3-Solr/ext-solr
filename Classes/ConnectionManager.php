@@ -23,6 +23,7 @@
 ***************************************************************/
 
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 if (version_compare(TYPO3_version, '6.1', '<=')) {
@@ -304,7 +305,7 @@ class Tx_Solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 				'id'    => 'clearSolrConnectionCache',
 				'title' => $title,
 				'href'  => $GLOBALS['BACK_PATH'] . 'ajax.php?ajaxID=solr::clearSolrConnectionCache',
-				'icon'  => '<img '.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], t3lib_extMgm::extRelPath('solr') . 'Resources/Images/cache-init-solr-connections.png', 'width="16" height="16"').' title="'.$title.'" alt="'.$title.'" />'
+				'icon'  => '<img '.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], ExtensionManagementUtility::extRelPath('solr') . 'Resources/Images/cache-init-solr-connections.png', 'width="16" height="16"').' title="'.$title.'" alt="'.$title.'" />'
 			);
 			$optionValues[] = 'clearSolrConnectionCache';
 		}

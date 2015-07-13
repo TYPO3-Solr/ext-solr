@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -158,7 +160,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	protected function registerAuthorizationService() {
 		$overrulingPriority = $this->getHighestAuthenticationServicePriority() + 1;
 
-		t3lib_extMgm::addService(
+		ExtensionManagementUtility::addService(
 			'solr', // extension key
 			'auth', // service type
 			'Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService', // service key
