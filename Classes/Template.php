@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -247,7 +248,7 @@ class Tx_Solr_Template {
 			if (count($variableMarkers)) {
 				$resolvedMarkers = $this->resolveVariableMarkers($variableMarkers, $variable);
 
-				$this->workOnSubpart = t3lib_parsehtml::substituteMarkerArray(
+				$this->workOnSubpart = HtmlParser::substituteMarkerArray(
 					$this->workOnSubpart,
 					$resolvedMarkers,
 					'###|###'
@@ -256,14 +257,14 @@ class Tx_Solr_Template {
 		}
 
 			// process markers
-		$this->workOnSubpart = t3lib_parsehtml::substituteMarkerArray(
+		$this->workOnSubpart = HtmlParser::substituteMarkerArray(
 			$this->workOnSubpart,
 			$this->markers
 		);
 
 			// process subparts
 		foreach ($this->subparts as $subpart => $content) {
-			$this->workOnSubpart = t3lib_parsehtml::substituteSubpart(
+			$this->workOnSubpart = HtmlParser::substituteSubpart(
 				$this->workOnSubpart,
 				$subpart,
 				$content
@@ -362,7 +363,7 @@ class Tx_Solr_Template {
 		$unresolvedConditions = $this->findConditions($this->workOnSubpart);
 		foreach ($unresolvedConditions as $unresolvedCondition) {
 				// if condition evaluates to FALSE, remove the content from the template
-			$this->workOnSubpart = t3lib_parsehtml::substituteSubpart(
+			$this->workOnSubpart = HtmlParser::substituteSubpart(
 				$this->workOnSubpart,
 				$unresolvedCondition['marker'],
 				''
@@ -426,7 +427,7 @@ class Tx_Solr_Template {
 
 			$viewHelperContent = $viewHelper->execute($viewHelperArguments);
 
-			$content = t3lib_parsehtml::substituteMarker(
+			$content = HtmlParser::substituteMarker(
 				$content,
 				'###' . $helperKey . ':' . $viewHelperArgumentList . '###',
 				$viewHelperContent
@@ -450,7 +451,7 @@ class Tx_Solr_Template {
 		foreach ($viewHelperArgumentLists as $viewHelperArgumentList) {
 			$subpartMarker = '###' . $helperKey . ':' . $viewHelperArgumentList . '###';
 
-			$subpart = t3lib_parsehtml::getSubpart(
+			$subpart = HtmlParser::getSubpart(
 				$content,
 				$subpartMarker
 			);
@@ -473,7 +474,7 @@ class Tx_Solr_Template {
 				$viewHelperContent = '';
 			}
 
-			$content = t3lib_parsehtml::substituteSubpart(
+			$content = HtmlParser::substituteSubpart(
 				$content,
 				$subpartMarker,
 				$viewHelperContent,
@@ -531,7 +532,7 @@ class Tx_Solr_Template {
 					// pass the whole object / array / variable as is (serialized though)
 				$resolvedMarkers[$loopMarker] = serialize($value);
 
-				$currentIterationContent = t3lib_parsehtml::substituteMarkerArray(
+				$currentIterationContent = HtmlParser::substituteMarkerArray(
 					$loopSingleItem,
 					$resolvedMarkers,
 					'###|###'
@@ -558,19 +559,19 @@ class Tx_Solr_Template {
 			}
 		}
 
-		$loopContent = t3lib_parsehtml::substituteSubpart(
+		$loopContent = HtmlParser::substituteSubpart(
 			$loopTemplate,
 			'###' . strtoupper($loopContentMarker) . '###',
 			$loopContent
 		);
 
-		$loopContent = t3lib_parsehtml::substituteMarkerArray(
+		$loopContent = HtmlParser::substituteMarkerArray(
 			$loopContent,
 			array('LOOP_ELEMENT_COUNT' => $loopCount),
 			'###|###'
 		);
 
-		$this->workOnSubpart = t3lib_parsehtml::substituteSubpart(
+		$this->workOnSubpart = HtmlParser::substituteSubpart(
 			$this->workOnSubpart,
 			'###LOOP:' . strtoupper($loopName) . '###',
 			$loopContent
@@ -670,14 +671,14 @@ class Tx_Solr_Template {
 			if ($conditionResult) {
 					// if condition evaluates to TRUE, simply replace it with
 					// the original content to have the surrounding markers removed
-				$content = t3lib_parsehtml::substituteSubpart(
+				$content = HtmlParser::substituteSubpart(
 					$content,
 					$condition['marker'],
 					$condition['content']
 				);
 			} else {
 					// if condition evaluates to FALSE, remove the content from the template
-				$content = t3lib_parsehtml::substituteSubpart(
+				$content = HtmlParser::substituteSubpart(
 					$content,
 					$condition['marker'],
 					''
@@ -714,7 +715,7 @@ class Tx_Solr_Template {
 		foreach ($ifMarkers as $ifMarker) {
 			list($comparand1, $operator, $comparand2) = explode('|', $ifMarker);
 
-			$ifContent = t3lib_parsehtml::getSubpart(
+			$ifContent = HtmlParser::getSubpart(
 				$content,
 				'###IF:' . $ifMarker . '###'
 			);
@@ -893,7 +894,7 @@ class Tx_Solr_Template {
 			$template = $alternativeTemplate;
 		}
 
-		$subpart = t3lib_parsehtml::getSubpart(
+		$subpart = HtmlParser::getSubpart(
 			$template,
 			'###' . strtoupper($subpartName) . '###'
 		);
