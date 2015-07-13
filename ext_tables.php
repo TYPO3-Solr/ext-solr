@@ -87,56 +87,53 @@ $iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
 );
 
 if (TYPO3_MODE == 'BE') {
-	if (version_compare(TYPO3_version, '6.0.0', '>=')) {
-		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-			'ApacheSolrForTypo3.' . $_EXTKEY,
-			'tools',
-			'administration',
-			'',
-			array(
-				// An array holding the controller-action-combinations that are accessible
-				'Administration' => 'index,setSite,setCore'
-			),
-			array(
-				'access' => 'admin',
-				'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/Icons/ModuleAdministration.png',
-				'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/ModuleAdministration.xlf',
-			)
-		);
+	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+		'ApacheSolrForTypo3.' . $_EXTKEY,
+		'tools',
+		'administration',
+		'',
+		array(
+			// An array holding the controller-action-combinations that are accessible
+			'Administration' => 'index,setSite,setCore'
+		),
+		array(
+			'access' => 'admin',
+			'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/Icons/ModuleAdministration.png',
+			'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/ModuleAdministration.xlf',
+		)
+	);
 
-		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
-			'ApacheSolrForTypo3.' . $_EXTKEY,
-			'Overview',
-			array('index')
-		);
+	ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
+		'ApacheSolrForTypo3.' . $_EXTKEY,
+		'Overview',
+		array('index')
+	);
 
-		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
-			'ApacheSolrForTypo3.' . $_EXTKEY,
-			'IndexQueue',
-			array('index,initializeIndexQueue,resetLogErrors,clearIndexQueue')
-		);
+	ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
+		'ApacheSolrForTypo3.' . $_EXTKEY,
+		'IndexQueue',
+		array('index,initializeIndexQueue,resetLogErrors,clearIndexQueue')
+	);
 
-		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
-			'ApacheSolrForTypo3.' . $_EXTKEY,
-			'IndexMaintenance',
-			array('index,cleanUpIndex,emptyIndex,reloadIndexConfiguration')
-		);
+	ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
+		'ApacheSolrForTypo3.' . $_EXTKEY,
+		'IndexMaintenance',
+		array('index,cleanUpIndex,emptyIndex,reloadIndexConfiguration')
+	);
 
-		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
-			'ApacheSolrForTypo3.' . $_EXTKEY,
-			'IndexFields',
-			array('index')
-		);
+	ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
+		'ApacheSolrForTypo3.' . $_EXTKEY,
+		'IndexFields',
+		array('index')
+	);
 
-		ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
-			'ApacheSolrForTypo3.' . $_EXTKEY,
-			'Synonyms',
-			array('index,addSynonyms,deleteSynonyms')
-		);
-	} else {
-		t3lib_extMgm::addModulePath('tools_txsolrMAdmin', t3lib_extMgm::extPath($_EXTKEY) . 'ModAdmin/');
-		t3lib_extMgm::addModule('tools', 'txsolrMAdmin', '', t3lib_extMgm::extPath($_EXTKEY) . 'ModAdmin/');
-	}
+	ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
+		'ApacheSolrForTypo3.' . $_EXTKEY,
+		'Synonyms',
+		array('index,addSynonyms,deleteSynonyms')
+	);
+
+
 
 	// registering reports
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(

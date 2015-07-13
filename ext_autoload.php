@@ -160,8 +160,6 @@ return array(
 
 		// modules
 
-	'tx_solr_moduleadmin' => $extensionPath . 'ModAdmin/index.php',
-
 	'tx_solr_modindex_indexinspector' => $extensionPath . 'ModIndex/IndexInspector.php',
 	'tx_solr_modindex_indexinspectorremotecontroller' => $extensionPath . 'ModIndex/IndexInspectorRemoteController.php',
 
