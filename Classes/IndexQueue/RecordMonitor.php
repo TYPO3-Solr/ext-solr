@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -213,7 +214,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 					}
 
 					$tableEnableFields = implode(', ', $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
-					$l10nParentRecord = t3lib_BEfunc::getRecord($recordTable, $recordUid, $tableEnableFields, '', FALSE);
+					$l10nParentRecord = BackendUtility::getRecord($recordTable, $recordUid, $tableEnableFields, '', FALSE);
 					if (!$this->isEnabledRecord($recordTable, $l10nParentRecord)) {
 						// the l10n parent record must be visible to have it's translation indexed
 						return;
@@ -277,7 +278,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 
 			if ($tableToIndex === $recordTable) {
 				$recordWhereClause = $this->buildUserWhereClause($indexingConfigurationName);
-				$record = t3lib_BEfunc::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+				$record = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
 
 				if (!empty($record)) {
 						// if we found a record which matches the conditions, we can continue
@@ -355,7 +356,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			'uid',
 			'pages',
 			'content_from_pid = ' . $pageId
-				. t3lib_BEfunc::deleteClause('pages')
+				. BackendUtility::deleteClause('pages')
 		);
 
 		foreach ($canonicalPages as $page) {
@@ -414,7 +415,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 				'uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed',
 				'pages',
 				'doktype = 7 AND no_search = 0 AND mount_pid IN(' . implode(',', $pageIds) . ')'
-					. t3lib_BEfunc::deleteClause('pages')
+					. BackendUtility::deleteClause('pages')
 			);
 		}
 
@@ -491,7 +492,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 
 			if ($tableToIndex === $recordTable) {
 				$recordWhereClause = $this->buildUserWhereClause($indexingConfigurationName);
-				$record = t3lib_BEfunc::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+				$record = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
 
 				if (!empty($record)) {
 					// we found a record which matches the conditions

@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -315,8 +317,8 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 				'pid, sys_language_uid',
 				'pages_language_overlay',
 				'pid = ' . $page['uid']
-					. t3lib_BEfunc::deleteClause('pages_language_overlay')
-					. t3lib_BEfunc::BEenableFields('pages_language_overlay')
+					. BackendUtility::deleteClause('pages_language_overlay')
+					. BackendUtility::BEenableFields('pages_language_overlay')
 			);
 
 			foreach ($translationOverlays as $overlay) {

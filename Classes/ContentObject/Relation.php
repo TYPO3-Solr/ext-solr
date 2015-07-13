@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -270,7 +271,7 @@ class Tx_Solr_ContentObject_Relation {
 				'uid, pid, ' .$foreignTableLabelField,
 				$foreignTableName,
 				'uid IN (' . implode(',', $selectUids) . ')'
-					. t3lib_BEfunc::deleteClause($foreignTableName)
+					. BackendUtility::deleteClause($foreignTableName)
 			);
 			foreach ($relatedRecords as $record) {
 				if ($GLOBALS['TSFE']->sys_language_uid > 0) {

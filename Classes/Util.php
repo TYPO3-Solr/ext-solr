@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -321,7 +322,7 @@ class Tx_Solr_Util {
 				// for certain situations we need to trick TSFE into granting us
 				// access to the page in any case to make getPageAndRootline() work
 				// see http://forge.typo3.org/issues/42122
-			$pageRecord = t3lib_BEfunc::getRecord('pages', $pageId);
+			$pageRecord = BackendUtility::getRecord('pages', $pageId);
 			$groupListBackup = $GLOBALS['TSFE']->gr_list;
 			$GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
 
@@ -415,7 +416,7 @@ class Tx_Solr_Util {
 	public static function isRootPage($pageId) {
 		$isRootPage = FALSE;
 
-		$page = t3lib_BEfunc::getRecord('pages', $pageId);
+		$page = BackendUtility::getRecord('pages', $pageId);
 		if ($page['is_siteroot']) {
 			$isRootPage = TRUE;
 		}
@@ -564,8 +565,8 @@ class Tx_Solr_Util {
 	public static function isDraftRecord($table, $uid) {
 		$isWorkspaceRecord = FALSE;
 
-		if (t3lib_BEfunc::isTableWorkspaceEnabled($table)) {
-			$record = t3lib_BEfunc::getRecord($table, $uid);
+		if (BackendUtility::isTableWorkspaceEnabled($table)) {
+			$record = BackendUtility::getRecord($table, $uid);
 
 			if ($record['pid'] == '-1' || $record['t3ver_state'] > 0) {
 				$isWorkspaceRecord = TRUE;

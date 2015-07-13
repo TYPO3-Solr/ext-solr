@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -103,7 +104,7 @@ class Tx_Solr_PluginBase_BackendSummary {
 		$targetPageId = $this->getFieldFromFlexform('targetPage');
 
 		if (!empty($targetPageId)) {
-			$page = t3lib_BEfunc::getRecord('pages', $targetPageId, 'title');
+			$page = BackendUtility::getRecord('pages', $targetPageId, 'title');
 			$this->settings['Target Page'] = '[' . (int) $targetPageId . '] ' . $page['title'];
 		}
 	}

@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -111,7 +112,7 @@ class Tx_Solr_GarbageCollector {
 		if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
 			&& array_key_exists('fe_group', $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
 
-			$record = t3lib_BEfunc::getRecord(
+			$record = BackendUtility::getRecord(
 				$table,
 				$uid,
 				$visibilityAffectingFields,
@@ -149,7 +150,7 @@ class Tx_Solr_GarbageCollector {
 
 		$garbageCollectionRelevantFields = $this->getVisibilityAffectingFieldsByTable($table);
 
-		$record = t3lib_BEfunc::getRecord($table, $uid, $garbageCollectionRelevantFields, '', FALSE);
+		$record = BackendUtility::getRecord($table, $uid, $garbageCollectionRelevantFields, '', FALSE);
 		$record = $this->normalizeFrontendGroupField($table, $record);
 
 		if ($this->isHidden($table, $record)
@@ -372,7 +373,7 @@ class Tx_Solr_GarbageCollector {
 
 		switch ($table) {
 			case 'tt_content':
-				$contentElement = t3lib_BEfunc::getRecord('tt_content', $uid, 'uid, pid', '', FALSE);
+				$contentElement = BackendUtility::getRecord('tt_content', $uid, 'uid, pid', '', FALSE);
 
 				$table = 'pages';
 				$uid   = $contentElement['pid'];
@@ -382,7 +383,7 @@ class Tx_Solr_GarbageCollector {
 				$indexQueue->updateItem($table, $uid);
 				break;
 			case 'pages_language_overlay':
-				$pageOverlayRecord = t3lib_BEfunc::getRecord('pages_language_overlay', $uid, 'uid, pid', '', FALSE);
+				$pageOverlayRecord = BackendUtility::getRecord('pages_language_overlay', $uid, 'uid, pid', '', FALSE);
 
 				$table = 'pages';
 				$uid   = $pageOverlayRecord['pid'];

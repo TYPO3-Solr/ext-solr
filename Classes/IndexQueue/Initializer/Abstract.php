@@ -24,6 +24,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -272,7 +274,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 			$conditions['endtime'] = '(' . $endTimeFieldName . ' > ' . time() . ' OR ' . $endTimeFieldName . ' = 0)';
 		}
 
-		if (t3lib_BEfunc::isTableLocalizable($this->type)) {
+		if (BackendUtility::isTableLocalizable($this->type)) {
 			$conditions['languageField'] = array(
 				$GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0', // default language
 				$GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1' // all languages

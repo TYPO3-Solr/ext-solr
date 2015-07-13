@@ -24,6 +24,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -213,7 +215,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 	protected function mountedPageExists($mountedPageId) {
 		$mountedPageExists = FALSE;
 
-		$mountedPage = t3lib_BEfunc::getRecord('pages', $mountedPageId, '*', ' AND hidden = 0');
+		$mountedPage = BackendUtility::getRecord('pages', $mountedPageId, '*', ' AND hidden = 0');
 		if (!empty($mountedPage)) {
 			$mountedPageExists = TRUE;
 		}

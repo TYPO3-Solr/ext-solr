@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -282,8 +283,8 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 			$hostFound  = !empty($hosts[$rootpageId]);
 
 			if (!$hostFound) {
-				$rootline = t3lib_BEfunc::BEgetRootLine($rootpageId);
-				$host     = t3lib_BEfunc::firstDomainRecord($rootline);
+				$rootline = BackendUtility::BEgetRootLine($rootpageId);
+				$host     = BackendUtility::firstDomainRecord($rootline);
 
 				$hosts[$rootpageId] = $host;
 			}

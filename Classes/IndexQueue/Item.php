@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -201,7 +203,7 @@ class Tx_Solr_IndexQueue_Item {
 	 */
 	public function getRecord() {
 		if (empty($this->record)) {
-			$this->record = t3lib_BEfunc::getRecord(
+			$this->record = BackendUtility::getRecord(
 				$this->type,
 				$this->recordUid,
 				'*',

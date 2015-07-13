@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -328,7 +330,7 @@ class Tx_Solr_IndexQueue_Queue {
 			$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 				'uid',
 				'pages',
-				'pid = ' . $startPageId . ' ' . t3lib_BEfunc::deleteClause('pages')
+				'pid = ' . $startPageId . ' ' . BackendUtility::deleteClause('pages')
 			);
 
 			while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
@@ -399,7 +401,7 @@ class Tx_Solr_IndexQueue_Queue {
 			$additionalRecordFields = ', doktype, uid';
 		}
 
-		$record = t3lib_BEfunc::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
+		$record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
 
 		if (empty($record) || ($itemType == 'pages' && !Tx_Solr_Util::isAllowedPageType($record))) {
 			return;
@@ -438,7 +440,7 @@ class Tx_Solr_IndexQueue_Queue {
 				$addItemToQueue = TRUE;
 				// Ensure additionalWhereClause is applied.
 				if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
-					$indexingConfigurationCheckRecord = t3lib_BEfunc::getRecord(
+					$indexingConfigurationCheckRecord = BackendUtility::getRecord(
 						$itemType,
 						$itemUid,
 						'pid' . $additionalRecordFields,
@@ -491,7 +493,7 @@ class Tx_Solr_IndexQueue_Queue {
 			$changedTimeColumns .= ', content_from_pid';
 		}
 
-		$record          = t3lib_BEfunc::getRecord($itemType, $itemUid, $changedTimeColumns);
+		$record          = BackendUtility::getRecord($itemType, $itemUid, $changedTimeColumns);
 		$itemChangedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
 
 		if ($itemTypeHasStartTimeColumn) {
