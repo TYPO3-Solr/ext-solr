@@ -1,7 +1,7 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
 
 <f:be.container
-	addCssFile="{f:uri.resource(path:'StyleSheets/ModuleAdministration.css')}"
+	includeCssFiles="{solrAdmin: '{f:uri.resource(path:\'StyleSheets/ModuleAdministration.css\')}'}"
 >
 	<div class="typo3-fullDoc" id="ext-solr-mod-administration-php">
 		<div id="typo3-docheader">

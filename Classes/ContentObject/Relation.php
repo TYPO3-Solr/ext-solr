@@ -111,14 +111,7 @@ class Tx_Solr_ContentObject_Relation {
 
 		list($localTableName, $localRecordUid) = explode(':', $parentContentObject->currentRecord);
 
-		$GLOBALS['TSFE']->includeTCA();
-		if (version_compare(TYPO3_version, '6.0.0', '>=')) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA($localTableName);
-		} else {
-			t3lib_div::loadTCA($localTableName);
-		}
 		$localTableTca  = $GLOBALS['TCA'][$localTableName];
-
 		$localFieldName = $this->configuration['localField'];
 
 		if (isset($localTableTca['columns'][$localFieldName])) {
@@ -146,8 +139,6 @@ class Tx_Solr_ContentObject_Relation {
 		$relatedItems = array();
 
 		$foreignTableName = $localFieldTca['config']['foreign_table'];
-		t3lib_div::loadTCA($foreignTableName);
-
 		$foreignTableTca  = $GLOBALS['TCA'][$foreignTableName];
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
@@ -264,7 +255,6 @@ class Tx_Solr_ContentObject_Relation {
 		}
 
 		$foreignTableName = $localFieldTca['config']['foreign_table'];
-		t3lib_div::loadTCA($foreignTableName);
 		$foreignTableTca  = $GLOBALS['TCA'][$foreignTableName];
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
