@@ -21,7 +21,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 
 /**
@@ -57,7 +59,7 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	 * Disables the frontend output for index queue requests.
 	 *
 	 * @param array Parameters from frontend
-	 * @param tslib_fe TSFE object
+	 * @param TypoScriptFrontendController TSFE object
 	 */
 	public function disableFrontendOutput(&$parameters, $parentObject) {
 		$parameters['enableOutput'] = FALSE;
@@ -67,7 +69,7 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	 * Disables caching for page generation to get reliable results.
 	 *
 	 * @param array Parameters from frontend
-	 * @param tslib_fe TSFE object
+	 * @param TypoScriptFrontendController TSFE object
 	 */
 	public function disableCaching(&$parameters, $parentObject) {
 		$parentObject->no_cache = TRUE;

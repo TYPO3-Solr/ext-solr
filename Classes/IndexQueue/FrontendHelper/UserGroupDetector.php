@@ -25,6 +25,7 @@
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
@@ -93,7 +94,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * Will be called by the hook in the TypoScriptFrontendController in the checkEnableFields() method.
 	 *
 	 * @param array $parameters
-	 * @param \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController $tsfe
+	 * @param TypoScriptFrontendController $tsfe
 	 * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
 	 */
 	public function checkEnableFields($parameters, $tsfe) {
@@ -105,7 +106,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * restrictions apply during page rendering.
 	 *
 	 * @param array Parameters from frontend
-	 * @param tslib_fe TSFE object
+	 * @param TypoScriptFrontendController TSFE object
 	 */
 	public function deactivateTcaFrontendGroupEnableFields(&$parameters, $parentObject) {
 		$this->originalTca = $GLOBALS['TCA'];

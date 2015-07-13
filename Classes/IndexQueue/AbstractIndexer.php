@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 
 /**
@@ -103,7 +104,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 				// configuration found => need to resolve a cObj
 
 				// setup locales
-			if ($GLOBALS['TSFE'] instanceof tslib_fe) {
+			if ($GLOBALS['TSFE'] instanceof TypoScriptFrontendController) {
 				$GLOBALS['TSFE']->settingLocale();
 			}
 

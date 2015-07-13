@@ -24,6 +24,7 @@
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 
 /**
@@ -46,7 +47,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	/**
 	 * the page currently being indexed.
 	 *
-	 * @var tslib_fe
+	 * @var TypoScriptFrontendController
 	 */
 	protected $page;
 
@@ -247,9 +248,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 * Handles the indexing of the page content during post processing of a
 	 * generated page.
 	 *
-	 * @param tslib_fe $page TypoScript frontend
+	 * @param TypoScriptFrontendController $page TypoScript frontend
 	 */
-	public function hook_indexContent(tslib_fe $page) {
+	public function hook_indexContent(TypoScriptFrontendController $page) {
 		$this->page = $page;
 
 		if (!$this->page->config['config']['index_enable']) {

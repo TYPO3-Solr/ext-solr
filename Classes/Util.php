@@ -317,7 +317,7 @@ class Tx_Solr_Util {
 		if (!isset($tsfeCache[$cacheId]) || !$useCache) {
 			GeneralUtility::_GETset($language, 'L');
 
-			$GLOBALS['TSFE'] = GeneralUtility::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
+			$GLOBALS['TSFE'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
 				// for certain situations we need to trick TSFE into granting us
 				// access to the page in any case to make getPageAndRootline() work

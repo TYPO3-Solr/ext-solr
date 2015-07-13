@@ -21,7 +21,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 
 /**
@@ -45,7 +47,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Frontend page object (TSFE).
 	 *
-	 * @var tslib_fe
+	 * @var TypoScriptFrontendController
 	 */
 	protected $page = NULL;
 
@@ -95,9 +97,9 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Constructor for class Tx_Solr_Indexer
 	 *
-	 * @param tslib_fe $page The page to index
+	 * @param TypoScriptFrontendController $page The page to index
 	 */
-	public function __construct(tslib_fe $page) {
+	public function __construct(TypoScriptFrontendController $page) {
 		$this->page        = $page;
 		$this->pageUrl     = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
 

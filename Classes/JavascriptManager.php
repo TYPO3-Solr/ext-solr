@@ -21,7 +21,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 
 /**
@@ -161,9 +163,9 @@ class Tx_Solr_JavascriptManager {
 	 * Adds all the loaded javascript files and snippets to the page footer.
 	 *
 	 * @param array Array of parameters - not used
-	 * @param tslib_fe TYPO3 Frontend
+	 * @param TypoScriptFrontendController TYPO3 Frontend
 	 */
-	public function addJavascriptToPageFooter($parameters, tslib_fe $parentObject) {
+	public function addJavascriptToPageFooter($parameters, TypoScriptFrontendController $parentObject) {
 		$this->buildJavascriptTags();
 
 		$parentObject->content = str_replace(
