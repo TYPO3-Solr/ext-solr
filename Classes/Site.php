@@ -112,7 +112,7 @@ class Tx_Solr_Site {
 	public static function getAvailableSites() {
 		$sites = array();
 
-		$registry = GeneralUtility::makeInstance('t3lib_Registry');
+		$registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
 		$servers  = $registry->get('tx_solr', 'servers', array());
 
 		foreach ($servers as $server) {
@@ -169,7 +169,7 @@ class Tx_Solr_Site {
 	 * @return string The site's main domain.
 	 */
 	public function getDomain() {
-		$pageSelect = GeneralUtility::makeInstance('t3lib_pageSelect');
+		$pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$rootLine   = $pageSelect->getRootLine($this->rootPage['uid']);
 
 		return BackendUtility::firstDomainRecord($rootLine);
@@ -184,7 +184,7 @@ class Tx_Solr_Site {
 	public function getLanguages() {
 		$siteLanguages = array();
 
-		$registry        = GeneralUtility::makeInstance('t3lib_Registry');
+		$registry        = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
 		$solrConnections = $registry->get('tx_solr', 'servers');
 
 		foreach ($solrConnections as $connectionKey => $solrConnection) {

@@ -39,7 +39,7 @@ class Tx_Solr_ContextMenuActionController {
 	 * @param object $nodeData Tree node
 	 */
 	public function initializeSolrConnectionsByRootPage($nodeData) {
-		$node = GeneralUtility::makeInstance('t3lib_tree_pagetree_Node', (array) $nodeData);
+		$node = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\Pagetree\\PagetreeNode', (array) $nodeData);
 
 		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
 		$connectionManager->updateConnectionByRootPageId($node->getId());

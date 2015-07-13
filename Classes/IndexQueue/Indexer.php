@@ -187,7 +187,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 		$itemRecord = $item->getRecord();
 
 		if ($language > 0) {
-			$page = GeneralUtility::makeInstance('t3lib_pageSelect');
+			$page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 			$page->init(FALSE);
 
 			$itemRecord = $page->getRecordOverlay(

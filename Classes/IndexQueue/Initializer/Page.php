@@ -179,7 +179,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 			$isValidMountPage = FALSE;
 
 			$flashMessage = GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPage['uid'] . '.',
 				'Failed to initialize Mount Page tree. ',
 				FlashMessage::ERROR
@@ -191,7 +191,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 			$isValidMountPage = FALSE;
 
 			$flashMessage = GeneralUtility::makeInstance(
-				't3lib_FlashMessage',
+				'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 				'The mounted page must be accessible in the frontend. '
 					. 'Invalid Mount Page configuration for page ID '
 					. $mountPage['uid'] . ', the mounted page with ID '

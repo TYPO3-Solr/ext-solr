@@ -92,7 +92,7 @@ class Tx_Solr_FieldProcessor_PageUidToHierarchy extends Tx_Solr_FieldProcessor_A
 	protected function buildPageIdRootline($pageId) {
 		$rootlinePageIds = array();
 
-		$pageSelector = GeneralUtility::makeInstance('t3lib_pageSelect');
+		$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$rootline = $pageSelector->getRootLine($pageId);
 
 		foreach($rootline as $page) {

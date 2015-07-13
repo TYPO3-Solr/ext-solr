@@ -171,7 +171,7 @@ class Tx_Solr_Access_Rootline {
 	public static function getAccessRootlineByPageId($pageId) {
 		$accessRootline = GeneralUtility::makeInstance('Tx_Solr_Access_Rootline');
 
-		$pageSelector = GeneralUtility::makeInstance('t3lib_pageSelect');
+		$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$pageSelector->init(FALSE);
 		$rootline = $pageSelector->getRootLine($pageId);
 		$rootline = array_reverse($rootline);

@@ -251,7 +251,7 @@ class Tx_Solr_Util {
 		if ($initializeTsfe) {
 			self::initializeTsfe($pageId, $language);
 
-			$tmpl = GeneralUtility::makeInstance('t3lib_tsparser_ext');
+			$tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
 			$configuration = $tmpl->ext_getSetup(
 				$GLOBALS['TSFE']->tmpl->setup,
 				$path
@@ -264,7 +264,7 @@ class Tx_Solr_Util {
 					GeneralUtility::_GETset($language, 'L');
 				}
 
-				$pageSelect = GeneralUtility::makeInstance('t3lib_pageSelect');
+				$pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 				$rootLine   = $pageSelect->getRootLine($pageId);
 
 				if (empty($GLOBALS['TSFE']->sys_page)) {
@@ -279,7 +279,7 @@ class Tx_Solr_Util {
 					$GLOBALS['TSFE']->sys_page = $pageSelect;
 				}
 
-				$tmpl = GeneralUtility::makeInstance('t3lib_tsparser_ext');
+				$tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
 				$tmpl->tt_track = FALSE; // Do not log time-performance information
 				$tmpl->init();
 				$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
@@ -311,7 +311,7 @@ class Tx_Solr_Util {
 		$cacheId = $pageId . '|' . $language;
 
 		if (!is_object($GLOBALS['TT'])) {
-			$GLOBALS['TT'] = GeneralUtility::makeInstance('t3lib_TimeTrackNull');
+			$GLOBALS['TT'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TimeTracker\\NullTimeTracker');
 		}
 
 		if (!isset($tsfeCache[$cacheId]) || !$useCache) {
@@ -326,7 +326,7 @@ class Tx_Solr_Util {
 			$groupListBackup = $GLOBALS['TSFE']->gr_list;
 			$GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
 
-			$GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('t3lib_pageSelect');
+			$GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 			$GLOBALS['TSFE']->getPageAndRootline();
 
 				// restore gr_list
@@ -374,7 +374,7 @@ class Tx_Solr_Util {
 
 			// fallback, backend
 		if ($pageId != 0 && (empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
-			$pageSelect = GeneralUtility::makeInstance('t3lib_pageSelect');
+			$pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 			$rootLine   = $pageSelect->getRootLine($pageId, '', TRUE);
 		}
 

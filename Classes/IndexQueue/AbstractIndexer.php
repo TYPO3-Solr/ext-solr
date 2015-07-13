@@ -126,7 +126,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 
 		} elseif (substr($indexingConfiguration[$solrFieldName], 0, 1) === '<') {
 			$referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName], 1));
-			$typoScriptParser = GeneralUtility::makeInstance('t3lib_TSparser');
+			$typoScriptParser = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
 			// $name and $conf is loaded with the referenced values.
 			list($name, $conf) = $typoScriptParser->getVal($referencedTsPath, $GLOBALS['TSFE']->tmpl->setup);
 

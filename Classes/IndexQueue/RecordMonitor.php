@@ -377,7 +377,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	protected function updateMountPages($pageId) {
 
 			// get the root line of the page, every parent page could be a Mount Page source
-		$pageSelect = GeneralUtility::makeInstance('t3lib_pageSelect');
+		$pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$rootLine   = $pageSelect->getRootLine($pageId);
 
 			// remove the current page / newly created page

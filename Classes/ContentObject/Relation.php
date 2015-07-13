@@ -160,7 +160,7 @@ class Tx_Solr_ContentObject_Relation {
 				$whereClause = $foreignTableName . '.uid = ' . (int) array_shift($foreignTableUids);
 			}
 		}
-		$pageSelector = GeneralUtility::makeInstance('t3lib_pageSelect');
+		$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$whereClause .= $pageSelector->enableFields( $foreignTableName );
 
 		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -262,7 +262,7 @@ class Tx_Solr_ContentObject_Relation {
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-		$relationHandler = GeneralUtility::makeInstance('t3lib_loadDBGroup');
+		$relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
 		$relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
 
 		$selectUids = $relationHandler->tableArray[$foreignTableName];
