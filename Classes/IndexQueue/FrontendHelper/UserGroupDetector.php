@@ -122,7 +122,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 *
 	 * @param integer The page ID
 	 * @param boolean If set, the check for group access is disabled. VERY rarely used
-	 * @param \TYPO3\CMS\Frontend\Page\PageRepository parent t3lib_pageSelect object
+	 * @param \TYPO3\CMS\Frontend\Page\PageRepository parent \TYPO3\CMS\Frontend\Page\PageRepository object
 	 */
 	public function getPage_preProcess(&$uid, &$disableGroupAccessCheck, \TYPO3\CMS\Frontend\Page\PageRepository $parentObject) {
 		$disableGroupAccessCheck = TRUE;
@@ -135,7 +135,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 *
 	 * @param array Page record
 	 * @param integer Overlay language ID
-	 * @param \TYPO3\CMS\Frontend\Page\PageRepository Parent t3lib_pageSelect object
+	 * @param \TYPO3\CMS\Frontend\Page\PageRepository Parent \TYPO3\CMS\Frontend\Page\PageRepository object
 	 */
 	public function getPageOverlay_preProcess(&$pageRecord, &$languageUid, \TYPO3\CMS\Frontend\Page\PageRepository $parentObject) {
 		if (is_array($pageRecord)) {
