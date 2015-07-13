@@ -23,6 +23,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Command to list frequent searched terms.
@@ -72,8 +75,8 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
-		$this->cacheFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheFactory');
-		$this->cacheManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+		$this->cacheFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheFactory');
+		$this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
 
 		$this->initializeCache();
 	}
@@ -88,7 +91,7 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 
 		try {
 			$this->cacheInstance = $this->cacheManager->getCache('tx_solr');
-		} catch (\TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException  $e) {
+		} catch (NoSuchCacheException  $e) {
 			$this->cacheInstance = $this->cacheFactory->create(
 				'tx_solr',
 				$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['frontend'],

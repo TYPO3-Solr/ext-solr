@@ -22,21 +22,24 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Utility\EidUtility;
+
 
 # TSFE initialization
 
-$pageId     = filter_var(\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('id'), FILTER_SANITIZE_NUMBER_INT);
+$pageId     = filter_var(GeneralUtility::_GET('id'), FILTER_SANITIZE_NUMBER_INT);
 $languageId = filter_var(
-	\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('L'),
+	GeneralUtility::_GET('L'),
 	FILTER_VALIDATE_INT,
 	array('options' => array('default' => 0, 'min_range' => 0))
 );
-$GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, TRUE);
+$GLOBALS['TSFE'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, TRUE);
 $GLOBALS['TSFE']->initFEuser();
 $GLOBALS['TSFE']->initUserGroups();
 // load TCA
-\TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
-$GLOBALS['TSFE']->sys_page = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+EidUtility::initTCA();
+$GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 $GLOBALS['TSFE']->rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($pageId, '');
 $GLOBALS['TSFE']->initTemplate();
 $GLOBALS['TSFE']->getConfigArray();
@@ -50,12 +53,12 @@ $solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 # Building Suggest Query
-$q = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('termLowercase'));
+$q = trim(GeneralUtility::_GP('termLowercase'));
 
 $isOpenSearchRequest = FALSE;
-if ('OpenSearch' == \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('format')) {
+if ('OpenSearch' == GeneralUtility::_GET('format')) {
 	$isOpenSearchRequest = TRUE;
-	$q = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('q');
+	$q = GeneralUtility::_GET('q');
 }
 
 $allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
@@ -63,12 +66,12 @@ $allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
 	$solrConfiguration['search.']['query.']['allowedSites']
 );
 
-$suggestQuery = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_SuggestQuery', $q);
+$suggestQuery = GeneralUtility::makeInstance('Tx_Solr_SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 $suggestQuery->setSiteHashFilter($allowedSites);
 $suggestQuery->setOmitHeader();
 
-$additionalFilters = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('filters');
+$additionalFilters = GeneralUtility::_GET('filters');
 if (!empty($additionalFilters)) {
 	$additionalFilters = json_decode($additionalFilters);
 	foreach ($additionalFilters as $additionalFilter) {
@@ -79,11 +82,11 @@ if (!empty($additionalFilters)) {
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 	// Search
-$solr   = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+$solr   = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
 	$pageId,
 	$languageId
 );
-$search = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Search', $solr);
+$search = GeneralUtility::makeInstance('Tx_Solr_Search', $solr);
 
 if ($search->ping()) {
 	$results = json_decode($search->search($suggestQuery, 0, 0)->getRawResponse());

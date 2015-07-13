@@ -24,6 +24,11 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
+
 
 /**
  * Adds an additional field to specify the Solr server to initialize the index queue for
@@ -32,7 +37,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
+class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface {
 
 	/**
 	 * Task information
@@ -63,7 +68,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements \TYPO3\CMS
 	protected $site = NULL;
 
 
-	protected function initialize(array $taskInfo, \TYPO3\CMS\Scheduler\Task\AbstractTask $task = NULL, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
+	protected function initialize(array $taskInfo, AbstractTask $task = NULL, SchedulerModuleController $schedulerModule) {
 		$this->taskInformation = $taskInfo;
 		$this->task            = $task;
 		$this->schedulerModule = $schedulerModule;
@@ -78,13 +83,13 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements \TYPO3\CMS
 	 * or editing a task.
 	 *
 	 * @param array $taskInfo: reference to the array containing the info used in the add/edit form
-	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task: when editing, reference to the current task object. Null when adding.
-	 * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
-	 * @return array Array containg all the information pertaining to the additional fields
+	 * @param AbstractTask $task: when editing, reference to the current task object. Null when adding.
+	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
+	 * @return array Array containing all the information pertaining to the additional fields
 	 *									The array is multidimensional, keyed to the task class name and each field's id
 	 *									For each field it provides an associative sub-array with the following:
 	 */
-	public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
+	public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule) {
 		$this->initialize($taskInfo, $task, $schedulerModule);
 
 		$additionalFields = array();
@@ -112,7 +117,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements \TYPO3\CMS
 		$this->schedulerModule->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/Backend/indexingconfigurationselectorfield.css');
 
 		if (!is_null($this->site)) {
-			$selectorField = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			$selectorField = GeneralUtility::makeInstance(
 				'Tx_Solr_Backend_IndexingConfigurationSelectorField',
 				$this->site
 			);
@@ -133,7 +138,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements \TYPO3\CMS
 	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
 	 * @return boolean True if validation was ok (or selected class is not relevant), FALSE otherwise
 	 */
-	public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
+	public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule) {
 		$result = FALSE;
 
 			// validate site
@@ -152,8 +157,8 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements \TYPO3\CMS
 	 * @param array $submittedData: array containing the data submitted by the user
 	 * @param AbstractTask $task: reference to the current task object
 	 */
-	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
-		$task->setSite(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Site', $submittedData['site']));
+	public function saveAdditionalFields(array $submittedData, AbstractTask $task) {
+		$task->setSite(GeneralUtility::makeInstance('Tx_Solr_Site', $submittedData['site']));
 
 		$indexingConfigurations = array();
 		if (!empty($submittedData['indexingConfigurations'])) {

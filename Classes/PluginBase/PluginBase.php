@@ -23,6 +23,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+
 
 /**
  * Abstract base class for all solr plugins.
@@ -161,7 +163,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	 */
 	protected function initialize($configuration) {
 		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
-		\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+		ArrayUtility::mergeRecursiveWithOverrule(
 			$this->conf,
 			$configuration
 		);
@@ -194,7 +196,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 
 			$piVars = is_array($this->piVars) ? $this->piVars : array();
 			$this->piVars = $this->conf['_DEFAULT_PI_VARS.'];
-			\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule(
+			ArrayUtility::mergeRecursiveWithOverrule(
 				$this->piVars,
 				$piVars
 			);

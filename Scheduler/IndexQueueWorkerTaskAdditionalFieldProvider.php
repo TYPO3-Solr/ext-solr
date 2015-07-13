@@ -22,6 +22,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
+
 
 /**
  * Additional field provider for the index queue worker task
@@ -30,20 +34,20 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
+class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface {
 
 	/**
 	 * Used to define fields to provide the TYPO3 site to index and number of
 	 * items to index per run when adding or editing a task.
 	 *
 	 * @param array $taskInfo: reference to the array containing the info used in the add/edit form
-	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task: when editing, reference to the current task object. Null when adding.
-	 * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
+	 * @param AbstractTask $task: when editing, reference to the current task object. Null when adding.
+	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
 	 * @return array Array containg all the information pertaining to the additional fields
 	 *									The array is multidimensional, keyed to the task class name and each field's id
 	 *									For each field it provides an associative sub-array with the following:
 	 */
-	public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
+	public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule) {
 		$additionalFields = array();
 
 		if ($schedulerModule->CMD == 'add') {
@@ -81,7 +85,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements \
 	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
 	 * @return boolean True if validation was ok (or selected class is not relevant), FALSE otherwise
 	 */
-	public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
+	public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule) {
 		$result = FALSE;
 
 			// validate site
@@ -101,9 +105,9 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements \
 	 * class matches.
 	 *
 	 * @param array $submittedData: array containing the data submitted by the user
-	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task: reference to the current task object
+	 * @param AbstractTask $task: reference to the current task object
 	 */
-	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
+	public function saveAdditionalFields(array $submittedData, AbstractTask $task) {
 		$task->setSite(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Site', $submittedData['site']));
 		$task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
 	}

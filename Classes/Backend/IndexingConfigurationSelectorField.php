@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Index Queue indexing configuration selector form field.
@@ -209,13 +211,13 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 			)
 		);
 
-		$selectFieldRenderer = $formEngine = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
+		$selectFieldRenderer = $formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
 		if (!method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
 			if (class_exists('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement')) { // TYPO3 CMS 7.2
-				$selectFieldRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement', $formEngine);
+				$selectFieldRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement', $formEngine);
 			} elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\Element\\SelectCheckBoxElement')) { // TYPO3 CMS >= 7.3
 				/** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
-				$nodeFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
+				$nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
 				$options = array(
 					'renderType' => 'selectCheckBox',
 					'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
