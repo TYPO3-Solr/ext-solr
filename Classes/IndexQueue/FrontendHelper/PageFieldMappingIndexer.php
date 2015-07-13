@@ -33,7 +33,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_frontendhelper_PageFieldMappingIndexer implements Tx_Solr_SubstitutePageIndexer {
+class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer implements Tx_Solr_SubstitutePageIndexer {
 
 	/**
 	 * Returns a substitute document for the currently being indexed page.

@@ -25,43 +25,37 @@
 
 # TSFE initialization
 
-tslib_eidtools::connectDB();
-$pageId     = filter_var(t3lib_div::_GET('id'), FILTER_SANITIZE_NUMBER_INT);
+$pageId     = filter_var(\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('id'), FILTER_SANITIZE_NUMBER_INT);
 $languageId = filter_var(
-	t3lib_div::_GET('L'),
+	\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('L'),
 	FILTER_VALIDATE_INT,
 	array('options' => array('default' => 0, 'min_range' => 0))
 );
-
-$TSFE = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, TRUE);
-$TSFE->initFEuser();
-$TSFE->initUserGroups();
+$GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, TRUE);
+$GLOBALS['TSFE']->initFEuser();
+$GLOBALS['TSFE']->initUserGroups();
 // load TCA
-if (version_compare(TYPO3_version, '6.1-dev', '>=')) {
-	\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
-} else {
-	$TSFE->includeTCA();
-}
-$TSFE->sys_page = t3lib_div::makeInstance('t3lib_pageSelect');
-$TSFE->rootLine = $TSFE->sys_page->getRootLine($pageId, '');
-$TSFE->initTemplate();
-$TSFE->getConfigArray();
+\TYPO3\CMS\Frontend\Utility\EidUtility::initTCA();
+$GLOBALS['TSFE']->sys_page = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+$GLOBALS['TSFE']->rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($pageId, '');
+$GLOBALS['TSFE']->initTemplate();
+$GLOBALS['TSFE']->getConfigArray();
 
 
 
-$TSFE->sys_language_uid = $languageId;
+$GLOBALS['TSFE']->sys_language_uid = $languageId;
 
 $solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
 
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 # Building Suggest Query
-$q = trim(t3lib_div::_GP('termLowercase'));
+$q = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('termLowercase'));
 
 $isOpenSearchRequest = FALSE;
-if ('OpenSearch' == t3lib_div::_GET('format')) {
+if ('OpenSearch' == \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('format')) {
 	$isOpenSearchRequest = TRUE;
-	$q = t3lib_div::_GET('q');
+	$q = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('q');
 }
 
 $allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
@@ -69,12 +63,12 @@ $allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
 	$solrConfiguration['search.']['query.']['allowedSites']
 );
 
-$suggestQuery = t3lib_div::makeInstance('Tx_Solr_SuggestQuery', $q);
-$suggestQuery->setUserAccessGroups(explode(',', $TSFE->gr_list));
+$suggestQuery = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_SuggestQuery', $q);
+$suggestQuery->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 $suggestQuery->setSiteHashFilter($allowedSites);
 $suggestQuery->setOmitHeader();
 
-$additionalFilters = t3lib_div::_GET('filters');
+$additionalFilters = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('filters');
 if (!empty($additionalFilters)) {
 	$additionalFilters = json_decode($additionalFilters);
 	foreach ($additionalFilters as $additionalFilter) {
@@ -85,11 +79,11 @@ if (!empty($additionalFilters)) {
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 	// Search
-$solr   = t3lib_div::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+$solr   = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
 	$pageId,
 	$languageId
 );
-$search = t3lib_div::makeInstance('Tx_Solr_Search', $solr);
+$search = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Search', $solr);
 
 if ($search->ping()) {
 	$results = json_decode($search->search($suggestQuery, 0, 0)->getRawResponse());
@@ -122,5 +116,3 @@ header('Content-Length: ' . strlen($ajaxReturnData));
 header('Content-Type: application/json; charset=utf-8');
 header('Content-Transfer-Encoding: 8bit');
 echo $ajaxReturnData;
-
-?>

@@ -71,14 +71,14 @@ plugin.tx_solr {
 
 			pages = 1
 			pages {
-				initialization = tx_solr_indexqueue_Initializer_Page
+				initialization = Tx_Solr_IndexQueue_Initializer_Page
 
 				// allowed page types (doktype) when indexing records from table "pages"
 				allowedPageTypes = 1,7
 
 				indexingPriority = 0
 
-				indexer = tx_solr_indexqueue_PageIndexer
+				indexer = Tx_Solr_IndexQueue_PageIndexer
 				indexer {
 					// add options for the indexer here
 				}
