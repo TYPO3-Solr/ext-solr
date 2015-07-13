@@ -33,9 +33,8 @@ jQuery(document).ready(function(){
 						output = [];
 
 					jQuery.each(data, function(term, termIndex) {
-						var unformatted_label = term;
 						output.push({
-							label : unformatted_label.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' +
+							label : term.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' +
 										jQuery.ui.autocomplete.escapeRegex(request.term) +
 										')(?![^<>]*>)(?![^&;]+;)', 'gi'), '<strong>$1</strong>'),
 							value : term
