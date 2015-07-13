@@ -26,9 +26,6 @@
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-if (version_compare(TYPO3_version, '6.1', '<=')) {
-	require_once(PATH_typo3 . 'interfaces/interface.backend_cacheActionsHook.php');
-}
 
 /**
  * A class to easily create a connection to a Solr server.
