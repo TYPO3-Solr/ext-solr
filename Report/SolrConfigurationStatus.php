@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -156,7 +158,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 				}
 			} catch (RuntimeException $rte) {
 				$rootPagesWithIndexingOff[] = $rootPage;
-			} catch (t3lib_error_http_ServiceUnavailableException $sue) {
+			} catch (ServiceUnavailableException $sue) {
 				if ($sue->getCode() == 1294587218) {
 						//  No TypoScript template found, continue with next site
 					$rootPagesWithIndexingOff[] = $rootPage;

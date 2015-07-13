@@ -24,6 +24,9 @@
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
+use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
+use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
 
 /**
@@ -41,9 +44,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 
 	implements
 		SingletonInterface,
-		tslib_content_PostInitHook,
-		t3lib_pageSelect_getPageHook,
-		t3lib_pageSelect_getPageOverlayHook {
+		ContentObjectPostInitHookInterface,
+		PageRepositoryGetPageHookInterface,
+		PageRepositoryGetPageOverlayHookInterface {
 
 
 

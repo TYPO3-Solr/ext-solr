@@ -64,7 +64,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends tx_sv_authb
 	 * conduct other services that might be registered for "their opinion"
 	 * whether a user is authenticated.
 	 *
-	 * @see t3lib_userAuth::checkAuthentication()
+	 * @see \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication::checkAuthentication()
 	 * @param array Array of user data
 	 * @return integer Returns 200 to grant access for the page indexer.
 	 */

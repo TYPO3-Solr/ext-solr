@@ -109,7 +109,6 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 	protected function storeKeywordsToDatabase($keywords) {
 		$nextSequenceId = $this->getNextSequenceId();
 
-			// TODO try to add a execREPLACEquery to t3lib_db
 		$GLOBALS['TYPO3_DB']->sql_query(
 			'INSERT INTO tx_solr_last_searches (sequence_id, tstamp, keywords)
 			VALUES ('

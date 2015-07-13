@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
+
 
 /**
  * Index Inspector to see what documents have been indexed for a selected page.
@@ -30,7 +32,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ModIndex_IndexInspector extends t3lib_extobjbase {
+class Tx_Solr_ModIndex_IndexInspector extends AbstractFunctionModule {
 
 	/**
 	 * The parent Web -> Info module's template

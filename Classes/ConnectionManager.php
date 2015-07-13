@@ -23,6 +23,7 @@
 ***************************************************************/
 
 
+use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -303,7 +304,7 @@ class Tx_Solr_ConnectionManager implements SingletonInterface, backend_cacheActi
 				'id'    => 'clearSolrConnectionCache',
 				'title' => $title,
 				'href'  => $GLOBALS['BACK_PATH'] . 'ajax.php?ajaxID=solr::clearSolrConnectionCache',
-				'icon'  => '<img '.t3lib_iconWorks::skinImg($GLOBALS['BACK_PATH'], ExtensionManagementUtility::extRelPath('solr') . 'Resources/Images/cache-init-solr-connections.png', 'width="16" height="16"').' title="'.$title.'" alt="'.$title.'" />'
+				'icon'  => '<img '. IconUtility::skinImg($GLOBALS['BACK_PATH'], ExtensionManagementUtility::extRelPath('solr') . 'Resources/Images/cache-init-solr-connections.png', 'width="16" height="16"').' title="'.$title.'" alt="'.$title.'" />'
 			);
 			$optionValues[] = 'clearSolrConnectionCache';
 		}

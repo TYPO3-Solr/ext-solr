@@ -26,6 +26,8 @@
 ***************************************************************/
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -180,9 +182,9 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 				't3lib_FlashMessage',
 				'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPage['uid'] . '.',
 				'Failed to initialize Mount Page tree. ',
-				t3lib_FlashMessage::ERROR
+				FlashMessage::ERROR
 			);
-			t3lib_FlashMessageQueue::addMessage($flashMessage);
+			FlashMessageQueue::addMessage($flashMessage);
 		}
 
 		if (!$this->mountedPageExists($mountPage['mountPageSource'])) {
@@ -196,9 +198,9 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 					. $mountPage['mountPageSource']
 					. ' is not accessible in the frontend.',
 				'Failed to initialize Mount Page tree. ',
-				t3lib_FlashMessage::ERROR
+				FlashMessage::ERROR
 			);
-			t3lib_FlashMessageQueue::addMessage($flashMessage);
+			FlashMessageQueue::addMessage($flashMessage);
 		}
 
 		return $isValidMountPage;
