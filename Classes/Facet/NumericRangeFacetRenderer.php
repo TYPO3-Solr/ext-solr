@@ -159,8 +159,8 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends Tx_Solr_Facet_AbstractFace
 	 *
 	 */
 	protected function loadStylesheets() {
-		if ($this->configuration['cssFiles.']['ui'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
-			$cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->configuration['cssFiles.']['ui']));
+		if ($this->solrConfiguration['cssFiles.']['ui'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
+			$cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->solrConfiguration['cssFiles.']['ui']));
 			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss'] =
 				'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
 		}
