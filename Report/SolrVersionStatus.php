@@ -22,7 +22,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Reports\Status;
+use TYPO3\CMS\Reports\StatusProviderInterface;
 
 
 /**
@@ -33,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
+class Tx_Solr_Report_SolrVersionStatus implements StatusProviderInterface {
 
 	/**
 	 * Required Solr version. The version that gets installed when using the
@@ -46,7 +49,6 @@ class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
 	/**
 	 * Compiles a version check against each configured Solr server.
 	 *
-	 * @see typo3/sysext/reports/interfaces/tx_reports_StatusProvider::getStatus()
 	 */
 	public function getStatus() {
 		$reports = array();
@@ -76,11 +78,11 @@ class Tx_Solr_Report_SolrVersionStatus implements tx_reports_StatusProvider {
 						. '<li><strong>Version: ' . $this->formatSolrVersion($solrVersion) . '</strong></li>
 						</ul>';
 
-					$status = GeneralUtility::makeInstance('tx_reports_reports_status_Status',
+					$status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
 						'Apache Solr Version',
 						'Outdated, Unsupported',
 						$message,
-						tx_reports_reports_status_Status::ERROR
+						Status::ERROR
 					);
 
 					$reports[] = $status;

@@ -21,7 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Reports\Status;
+use TYPO3\CMS\Reports\StatusProviderInterface;
 
 
 /**
@@ -32,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SchemaStatus implements tx_reports_StatusProvider {
+class Tx_Solr_Report_SchemaStatus implements StatusProviderInterface {
 
 	/**
 	 * The schema name property is constructed as follows:
@@ -52,7 +55,6 @@ class Tx_Solr_Report_SchemaStatus implements tx_reports_StatusProvider {
 	 * Solr server. Only adds an entry if a schema other than the
 	 * recommended one was found.
 	 *
-	 * @see typo3/sysext/reports/interfaces/tx_reports_StatusProvider::getStatus()
 	 */
 	public function getStatus() {
 		$reports = array();
@@ -91,11 +93,11 @@ class Tx_Solr_Report_SchemaStatus implements tx_reports_StatusProvider {
 					. '<li>Path: ' . $solrConnection->getPath() . '</li>
 					</ul>';
 
-				$status = GeneralUtility::makeInstance('tx_reports_reports_status_Status',
+				$status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
 					'Schema Version',
 					'Unsupported Schema',
 					$message,
-					tx_reports_reports_status_Status::WARNING
+					Status::WARNING
 				);
 
 				$reports[] = $status;

@@ -21,7 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Reports\Status;
+use TYPO3\CMS\Reports\StatusProviderInterface;
 
 
 /**
@@ -32,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
+class Tx_Solr_Report_SolrStatus implements StatusProviderInterface {
 
 	/**
 	 * Connection Manager
@@ -44,7 +47,6 @@ class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
 	/**
 	 * Compiles a collection of status checks against each configured Solr server.
 	 *
-	 * @see typo3/sysext/reports/interfaces/tx_reports_StatusProvider::getStatus()
 	 */
 	public function getStatus() {
 		$reports = array();
@@ -63,11 +65,11 @@ class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
 	 * Checks whether a Solr server is available and provides some information.
 	 *
 	 * @param array Solr connection parameters
-	 * @return	tx_reports_reports_status_Status Status of the Solr connection
+	 * @return    Status Status of the Solr connection
 	 */
 	protected function getConnectionStatus(array $solrConnection) {
 		$value    = 'Your site was unable to contact the Apache Solr server.';
-		$severity = tx_reports_reports_status_Status::ERROR;
+		$severity = Status::ERROR;
 
 		$solr = $this->connectionManager->getConnection(
 			$solrConnection['solrHost'],
@@ -87,7 +89,7 @@ class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
 		$pingQueryTime = $solr->ping();
 
 		if ($pingQueryTime !== FALSE) {
-			$severity = tx_reports_reports_status_Status::OK;
+			$severity = Status::OK;
 			$value = 'Your site has contacted the Apache Solr server.';
 
 			$solrVersion = $this->formatSolrVersion($solr->getSolrServerVersion());
@@ -105,7 +107,7 @@ class Tx_Solr_Report_SolrStatus implements tx_reports_StatusProvider {
 
 		$message .= '</ul>';
 
-		return GeneralUtility::makeInstance('tx_reports_reports_status_Status',
+		return GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
 			'Apache Solr',
 			$value,
 			$message,

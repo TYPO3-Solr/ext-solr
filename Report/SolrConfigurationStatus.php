@@ -24,6 +24,8 @@
 
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Reports\Status;
+use TYPO3\CMS\Reports\StatusProviderInterface;
 
 
 /**
@@ -34,12 +36,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvider {
+class Tx_Solr_Report_SolrConfigurationStatus implements StatusProviderInterface {
 
 	/**
 	 * Compiles a collection of configuration status checks.
 	 *
-	 * @see typo3/sysext/reports/interfaces/tx_reports_StatusProvider::getStatus()
 	 */
 	public function getStatus() {
 		$reports = array();
@@ -69,20 +70,20 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 	 * Checks whether the "Use as Root Page" page property has been set for any
 	 * site.
 	 *
-	 * @return NULL|tx_reports_reports_status_Status An error status is returned if no root pages were found.
+	 * @return NULL|Status An error status is returned if no root pages were found.
 	 */
 	protected function getRootPageFlagStatus() {
 		$status    = NULL;
 		$rootPages = $this->getRootPages();
 
 		if (empty($rootPages)) {
-			$status = GeneralUtility::makeInstance('tx_reports_reports_status_Status',
+			$status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
 				'Sites',
 				'No sites found',
 				'Connections to your Solr server are detected automatically.
 				To make this work you need to set the "Use as Root Page" page
 				property for your site root pages.',
-				tx_reports_reports_status_Status::ERROR
+				Status::ERROR
 			);
 		}
 
@@ -92,7 +93,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 	/**
 	 * Checks whether a domain record (sys_domain) has been configured for each site root.
 	 *
-	 * @return NULL|tx_reports_reports_status_Status An error status is returned for each site root page without domain record.
+	 * @return NULL|Status An error status is returned for each site root page without domain record.
 	 */
 	protected function getDomainRecordAvailableStatus() {
 		$status                 = NULL;
@@ -125,13 +126,13 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 				$rootPagesWithoutDomain[$pageId] = '[' . $page['uid'] . '] ' . $page['title'];
 			}
 
-			$status = GeneralUtility::makeInstance('tx_reports_reports_status_Status',
+			$status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
 				'Domain Records',
 				'Domain records missing',
 				'Domain records are needed to properly index pages. The following
 				sites are marked as root pages, but do not have a domain configured:
 				<ul><li>' . implode('</li><li>', $rootPagesWithoutDomain) . '</li></ul>',
-				tx_reports_reports_status_Status::ERROR
+				Status::ERROR
 			);
 		}
 
@@ -142,7 +143,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 	 * Checks whether config.index_enable is set to 1, otherwise indexing will
 	 * not work.
 	 *
-	 * @return NULL|tx_reports_reports_status_Status An error status is returned for each site root page config.index_enable = 0.
+	 * @return NULL|Status An error status is returned for each site root page config.index_enable = 0.
 	 */
 	protected function getConfigIndexEnableStatus() {
 		$status                   = NULL;
@@ -172,13 +173,13 @@ class Tx_Solr_Report_SolrConfigurationStatus implements tx_reports_StatusProvide
 				$rootPagesWithIndexingOff[$key] = '[' . $rootPageWithIndexingOff['uid'] . '] ' . $rootPageWithIndexingOff['title'];
 			}
 
-			$status = GeneralUtility::makeInstance('tx_reports_reports_status_Status',
+			$status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
 				'Page Indexing',
 				'Indexing is disabled',
 				'You need to set config.index_enable = 1 to allow page indexing.
 				The following sites were found with indexing disabled:
 				<ul><li>' . implode('</li><li>', $rootPagesWithIndexingOff) . '</li></ul>',
-				tx_reports_reports_status_Status::ERROR
+				Status::ERROR
 			);
 		}
 

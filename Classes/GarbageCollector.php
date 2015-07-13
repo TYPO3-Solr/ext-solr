@@ -296,7 +296,7 @@ class Tx_Solr_GarbageCollector {
 	 * @return boolean TRUE if the page can be indexed according to its page type, FALSE otherwise
 	 */
 	protected function isIndexablePageType(array $record) {
-		return tx_solr_Util::isAllowedPageType($record);
+		return Tx_Solr_Util::isAllowedPageType($record);
 	}
 
 	/**

@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Reports\Status;
+use TYPO3\CMS\Reports\StatusProviderInterface;
 
 
 /**
@@ -32,12 +34,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_FilterVarStatus implements tx_reports_StatusProvider {
+class Tx_Solr_Report_FilterVarStatus implements StatusProviderInterface {
 
 	/**
 	 * Checks whether allow_url_fopen is enabled.
 	 *
-	 * @see typo3/sysext/reports/interfaces/tx_reports_StatusProvider::getStatus()
 	 */
 	public function getStatus() {
 		$reports  = array();
@@ -53,11 +54,11 @@ class Tx_Solr_Report_FilterVarStatus implements tx_reports_StatusProvider {
 				More information is available at
 				<a href="https://bugs.php.net/bug.php?id=51192">php.net</a>.';
 
-			$reports[] = GeneralUtility::makeInstance('tx_reports_reports_status_Status',
+			$reports[] = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
 				'PHP filter_var() bug',
 				'Affected PHP version detected.',
 				$message,
-				tx_reports_reports_status_Status::ERROR
+				Status::ERROR
 			);
 		}
 
