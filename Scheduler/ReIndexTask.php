@@ -23,7 +23,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 
 /**
@@ -34,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Scheduler_ReIndexTask extends tx_scheduler_Task {
+class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
 
 	/**
 	 * The site this task is supposed to initialize the index queue for.

@@ -25,6 +25,7 @@
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 
 /**
@@ -35,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implements tx_scheduler_ProgressProvider {
+class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements tx_scheduler_ProgressProvider {
 
 	/**
 	 * The site this task is indexing.
@@ -52,7 +53,6 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	 * Works through the indexing queue and indexes the queued items into Solr.
 	 *
 	 * @return boolean Returns TRUE on success, FALSE if no items were indexed or none were found.
-	 * @see typo3/sysext/scheduler/tx_scheduler_Task#execute()
 	 */
 	public function execute() {
 		$executionSucceeded = FALSE;

@@ -49,14 +49,14 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 	/**
 	 * Scheduler task
 	 *
-	 * @var tx_scheduler_Task|Tx_Solr_Scheduler_ReIndexTask|NULL
+	 * @var AbstractTask|Tx_Solr_Scheduler_ReIndexTask|NULL
 	 */
 	protected $task = NULL;
 
 	/**
 	 * Scheduler Module
 	 *
-	 * @var tx_scheduler_Module
+	 * @var SchedulerModuleController
 	 */
 	protected $schedulerModule;
 
