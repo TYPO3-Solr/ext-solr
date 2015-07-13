@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Model\ModuleData;
-use ApacheSolrForTypo3\Solr\Service\ModuleDataStorageService;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
