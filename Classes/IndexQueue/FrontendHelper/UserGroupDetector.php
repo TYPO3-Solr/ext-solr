@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -38,7 +40,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 		Tx_Solr_IndexQueue_FrontendHelper_Abstract
 
 	implements
-		t3lib_Singleton,
+		SingletonInterface,
 		tslib_content_PostInitHook,
 		t3lib_pageSelect_getPageHook,
 		t3lib_pageSelect_getPageOverlayHook {

@@ -30,7 +30,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Typo3Environment implements t3lib_Singleton {
+class Tx_Solr_Typo3Environment implements \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
 	 * Checks whether file indexing is enabled.
