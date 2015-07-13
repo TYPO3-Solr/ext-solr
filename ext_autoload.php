@@ -198,7 +198,6 @@ return array(
 	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'Report/AccessFilterPluginInstalledStatus.php',
 	'tx_solr_report_allowurlfopenstatus' => $extensionPath . 'Report/AllowUrlFOpenStatus.php',
 	'tx_solr_report_filtervarstatus' => $extensionPath . 'Report/FilterVarStatus.php',
-	'tx_solr_report_indexreport' => $extensionPath . 'Report/IndexReport.php',
 	'tx_solr_report_schemastatus' => $extensionPath . 'Report/SchemaStatus.php',
 	'tx_solr_report_solrconfigstatus' => $extensionPath . 'Report/SolrConfigStatus.php',
 	'tx_solr_report_solrconfigurationstatus' => $extensionPath . 'Report/SolrConfigurationStatus.php',
