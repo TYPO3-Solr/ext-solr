@@ -183,4 +183,3 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 
 }
 
-?>

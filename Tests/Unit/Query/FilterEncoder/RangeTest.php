@@ -49,4 +49,3 @@ class Tx_Solr_Query_FilterEncoder_RangeTest extends Tx_Phpunit_TestCase {
 	}
 
 }
-?>

@@ -74,4 +74,3 @@ class ModuleDataStorageService implements SingletonInterface {
 
 }
 
-?>

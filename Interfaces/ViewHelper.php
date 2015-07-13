@@ -51,4 +51,3 @@ interface Tx_Solr_ViewHelper {
 	public function execute(array $arguments = array());
 }
 
-?>

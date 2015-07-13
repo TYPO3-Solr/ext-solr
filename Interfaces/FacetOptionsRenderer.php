@@ -37,4 +37,3 @@ interface Tx_Solr_FacetOptionsRenderer {
 	public function renderFacetOptions();
 }
 
-?>

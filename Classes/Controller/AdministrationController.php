@@ -253,4 +253,3 @@ class AdministrationController extends ActionController {
 	}
 }
 
-?>

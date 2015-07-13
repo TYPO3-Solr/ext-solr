@@ -157,4 +157,3 @@ class SynonymsModuleController extends AbstractModuleController {
 
 }
 
-?>

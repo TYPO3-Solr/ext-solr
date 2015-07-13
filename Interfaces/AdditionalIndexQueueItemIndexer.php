@@ -48,4 +48,3 @@ interface Tx_Solr_AdditionalIndexQueueItemIndexer {
 
 }
 
-?>

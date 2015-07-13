@@ -5,4 +5,3 @@ return array(
 	'tx_solr_pi_search' => 'Tx_Solr_PiSearch_Search',
 	'tx_solr_pi_frequentsearches' => 'Tx_Solr_PiFrequentSearches_FrequentSearches',
 );
-?>

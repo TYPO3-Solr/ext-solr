@@ -111,4 +111,3 @@ class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 		$this->assertEquals($expected, $actual);
 	}
 }
-?>

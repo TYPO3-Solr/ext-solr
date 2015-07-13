@@ -45,4 +45,3 @@ interface Tx_Solr_SubstitutePageIndexer {
 	public function getPageDocument(Apache_Solr_Document $originalPageDocument);
 }
 
-?>

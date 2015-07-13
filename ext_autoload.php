@@ -243,4 +243,4 @@ return array(
 	'tx_solr_viewhelper' => $extensionPath . 'Interfaces/ViewHelper.php',
 	'tx_solr_viewhelperprovider' => $extensionPath . 'Interfaces/ViewHelperProvider.php',
 );
-?>
+

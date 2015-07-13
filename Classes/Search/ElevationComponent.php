@@ -42,4 +42,3 @@ class Tx_Solr_Search_ElevationComponent extends Tx_Solr_Search_AbstractComponent
 
 }
 
-?>

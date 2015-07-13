@@ -113,4 +113,3 @@ class Tx_Solr_FieldProcessor_CategoryUidToHierarchy extends Tx_Solr_FieldProcess
 
 }
 
-?>

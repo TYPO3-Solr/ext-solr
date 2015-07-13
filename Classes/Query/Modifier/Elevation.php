@@ -51,4 +51,3 @@ class Tx_Solr_Query_Modifier_Elevation implements Tx_Solr_QueryModifier {
 	}
 }
 
-?>

@@ -57,4 +57,3 @@ class Tx_Solr_Query_FilterEncoder_DateRangeTest extends Tx_Phpunit_TestCase {
 	}
 
 }
-?>

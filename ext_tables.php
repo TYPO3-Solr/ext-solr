@@ -238,4 +238,4 @@ $TCA['tt_content']['types']['search']['showitem'] =
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended';
 
 
-?>
+

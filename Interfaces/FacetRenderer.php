@@ -82,4 +82,3 @@ interface Tx_Solr_FacetRenderer {
 
 }
 
-?>

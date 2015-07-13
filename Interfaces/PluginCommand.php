@@ -58,4 +58,3 @@ interface Tx_Solr_PluginCommand {
 	public function execute();
 }
 
-?>

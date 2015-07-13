@@ -45,4 +45,3 @@ interface Tx_Solr_CommandPluginAware {
 	public function setParentPlugin(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin);
 }
 
-?>

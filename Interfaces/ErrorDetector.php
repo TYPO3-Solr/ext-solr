@@ -47,4 +47,3 @@ interface Tx_Solr_ErrorDetector {
 	public function getErrors();
 }
 
-?>

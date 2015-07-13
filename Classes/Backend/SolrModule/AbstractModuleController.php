@@ -208,4 +208,3 @@ abstract class AbstractModuleController extends ActionController implements Admi
 	}
 }
 
-?>

@@ -53,4 +53,3 @@ class Tx_Solr_FieldProcessor_PathToHierarchyTest extends Tx_Phpunit_TestCase {
 	}
 }
 
-?>

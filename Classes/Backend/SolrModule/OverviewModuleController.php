@@ -116,4 +116,3 @@ class OverviewModuleController extends AbstractModuleController {
 
 }
 
-?>

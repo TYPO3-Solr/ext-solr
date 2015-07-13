@@ -121,4 +121,3 @@ class Tx_Solr_FieldProcessor_ServiceTest extends Tx_Phpunit_TestCase {
 
 }
 
-?>

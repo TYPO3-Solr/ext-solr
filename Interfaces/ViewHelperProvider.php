@@ -43,4 +43,3 @@ interface Tx_Solr_ViewHelperProvider {
 	public function getViewHelpers();
 }
 
-?>

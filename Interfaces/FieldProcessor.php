@@ -44,4 +44,3 @@ interface Tx_Solr_FieldProcessor {
 	public function process(array $values);
 }
 
-?>

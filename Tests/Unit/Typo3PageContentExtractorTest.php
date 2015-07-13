@@ -51,4 +51,3 @@ class Tx_Solr_Typo3PageContentExtractorTest extends Tx_Phpunit_TestCase {
 
 }
 
-?>

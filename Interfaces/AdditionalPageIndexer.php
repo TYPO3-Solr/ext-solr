@@ -46,4 +46,3 @@ interface Tx_Solr_AdditionalPageIndexer {
 	public function getAdditionalPageDocuments(Apache_Solr_Document $pageDocument, array $allDocuments);
 }
 
-?>

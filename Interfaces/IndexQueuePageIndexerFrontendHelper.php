@@ -64,4 +64,3 @@ interface Tx_Solr_IndexQueuePageIndexerFrontendHelper {
 
 }
 
-?>

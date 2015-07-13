@@ -76,4 +76,3 @@ class Tx_Solr_IndexQueue_PageIndexerRequestTest extends Tx_Phpunit_TestCase {
 }
 
 
-?>

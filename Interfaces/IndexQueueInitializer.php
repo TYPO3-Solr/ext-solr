@@ -73,4 +73,3 @@ interface Tx_Solr_IndexQueueInitializer {
 
 }
 
-?>

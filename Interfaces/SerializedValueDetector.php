@@ -47,4 +47,3 @@ interface Tx_Solr_SerializedValueDetector {
 	public function isSerializedValue(array $indexingConfiguration, $solrFieldName);
 }
 
-?>

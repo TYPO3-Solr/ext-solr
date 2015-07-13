@@ -45,4 +45,3 @@ interface Tx_Solr_GarbageCollectorPostProcessor {
 	public function postProcessGarbageCollector($table, $uid);
 }
 
-?>

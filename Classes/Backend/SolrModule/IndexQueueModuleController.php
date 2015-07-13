@@ -254,4 +254,4 @@ class IndexQueueModuleController extends AbstractModuleController {
 	}
 }
 
-?>
+

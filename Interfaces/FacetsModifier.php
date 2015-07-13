@@ -46,4 +46,3 @@ interface Tx_Solr_FacetsModifier {
 
 }
 
-?>

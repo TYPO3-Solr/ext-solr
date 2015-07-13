@@ -56,4 +56,3 @@ class IconViewHelper extends AbstractBackendViewHelper {
 	}
 }
 
-?>

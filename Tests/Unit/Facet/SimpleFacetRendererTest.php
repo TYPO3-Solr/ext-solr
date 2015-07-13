@@ -74,4 +74,3 @@ class Tx_Solr_Facet_SimpleFacetRendererTest extends Tx_Phpunit_TestCase {
 	}
 }
 
-?>

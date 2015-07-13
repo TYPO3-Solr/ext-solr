@@ -38,4 +38,3 @@ interface Tx_Solr_TemplateModifier {
 	public function modifyTemplate(Tx_Solr_Template $template);
 }
 
-?>

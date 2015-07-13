@@ -45,4 +45,3 @@ interface Tx_Solr_FormModifier {
 	public function modifyForm(array $marker, Tx_Solr_Template $template);
 }
 
-?>

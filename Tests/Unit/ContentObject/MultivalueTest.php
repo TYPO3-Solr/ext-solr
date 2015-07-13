@@ -89,4 +89,3 @@ class Tx_Solr_ContentObject_MultivalueTest extends Tx_Phpunit_TestCase {
 }
 
 
-?>

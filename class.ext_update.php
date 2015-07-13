@@ -118,4 +118,3 @@ class ext_update {
 
 }
 
-?>

@@ -50,4 +50,3 @@ interface Tx_Solr_SearchComponent {
 
 }
 
-?>

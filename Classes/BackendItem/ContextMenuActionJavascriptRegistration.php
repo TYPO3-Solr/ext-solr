@@ -10,4 +10,3 @@ if (is_object($TYPO3backend)) {
 	$pageRenderer->addJsFile($javascriptPath . 'initializesolrconnectionsclickmenuaction.js');
 }
 
-?>

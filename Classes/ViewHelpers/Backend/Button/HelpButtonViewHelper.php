@@ -51,4 +51,3 @@ class HelpButtonViewHelper extends AbstractViewHelper {
 
 }
 
-?>

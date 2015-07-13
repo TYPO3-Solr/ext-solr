@@ -92,4 +92,3 @@ class CoreSelectorMenuViewHelper extends AbstractTagBasedViewHelper {
 
 }
 
-?>

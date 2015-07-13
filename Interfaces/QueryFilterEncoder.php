@@ -50,4 +50,3 @@ interface Tx_Solr_QueryFilterEncoder {
 	public function decodeFilter($filterValue, array $configuration = array());
 }
 
-?>

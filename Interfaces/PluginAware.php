@@ -44,4 +44,3 @@ interface Tx_Solr_PluginAware {
 	public function setParentPlugin(tslib_pibase $parentPlugin);
 }
 
-?>

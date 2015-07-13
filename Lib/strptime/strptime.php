@@ -155,4 +155,3 @@ function strptime($sDate, $sFormat)
 
 }
 
-?>

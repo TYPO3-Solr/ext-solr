@@ -37,4 +37,4 @@ interface AdministrationModuleInterface {
 
 }
 
-?>
+

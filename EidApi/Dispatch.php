@@ -51,4 +51,3 @@ if (!Tx_Solr_Api::isValidApiKey($apiKey)) {
 }
 
 exit();
-?>

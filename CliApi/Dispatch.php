@@ -8,4 +8,3 @@ $cliDispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_C
 $cliDispatcher->dispatch();
 
 
-?>

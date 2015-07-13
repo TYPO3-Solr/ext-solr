@@ -62,4 +62,3 @@ abstract class Tx_Solr_FieldProcessor_AbstractHierarchyProcessor {
 }
 
 
-?>

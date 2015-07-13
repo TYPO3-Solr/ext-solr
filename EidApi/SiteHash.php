@@ -56,4 +56,3 @@ header('Content-Length: ' . strlen($returnData));
 
 echo $returnData;
 
-?>

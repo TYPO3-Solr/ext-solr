@@ -38,4 +38,3 @@ interface Tx_Solr_QueryFacetBuilder {
 	public function buildFacetParameters($facetName, array $facetConfiguration);
 }
 
-?>

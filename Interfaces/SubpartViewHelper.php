@@ -52,4 +52,3 @@ interface Tx_Solr_SubpartViewHelper extends Tx_Solr_ViewHelper {
 
 }
 
-?>
