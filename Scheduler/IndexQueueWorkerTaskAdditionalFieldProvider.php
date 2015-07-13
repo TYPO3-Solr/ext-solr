@@ -77,15 +77,9 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements \
 	 * Checks any additional data that is relevant to this task. If the task
 	 * class is not relevant, the method is expected to return TRUE
 	 *
-<<<<<<< HEAD
-	 * @param array				 $submittedData: reference to the array containing the data submitted by the user
-	 * @param tx_scheduler_module1 $parentObject: reference to the calling object (Scheduler's BE module)
-	 * @return boolean				 True if validation was ok (or selected class is not relevant), FALSE otherwise
-=======
-	 * @param	array														$submittedData: reference to the array containing the data submitted by the user
-	 * @param	\TYPO3\CMS\Scheduler\Controller\SchedulerModuleController	$schedulerModule: reference to the calling object (Scheduler's BE module)
-	 * @return	boolean					True if validation was ok (or selected class is not relevant), FALSE otherwise
->>>>>>> 8d1e72c42bfe6ed07aad2c2c2fc9895552212fff
+	 * @param array $submittedData: reference to the array containing the data submitted by the user
+	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
+	 * @return boolean True if validation was ok (or selected class is not relevant), FALSE otherwise
 	 */
 	public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
 		$result = FALSE;
@@ -106,13 +100,8 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements \
 	 * Saves any additional input into the current task object if the task
 	 * class matches.
 	 *
-<<<<<<< HEAD
-	 * @param array			 $submittedData: array containing the data submitted by the user
-	 * @param tx_scheduler_Task $task: reference to the current task object
-=======
-	 * @param	array									$submittedData: array containing the data submitted by the user
-	 * @param	\TYPO3\CMS\Scheduler\Task\AbstractTask	$task: reference to the current task object
->>>>>>> 8d1e72c42bfe6ed07aad2c2c2fc9895552212fff
+	 * @param array $submittedData: array containing the data submitted by the user
+	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task: reference to the current task object
 	 */
 	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
 		$task->setSite(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Site', $submittedData['site']));
