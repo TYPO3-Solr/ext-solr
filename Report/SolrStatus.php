@@ -64,8 +64,8 @@ class Tx_Solr_Report_SolrStatus implements StatusProviderInterface {
 	/**
 	 * Checks whether a Solr server is available and provides some information.
 	 *
-	 * @param array Solr connection parameters
-	 * @return    Status Status of the Solr connection
+	 * @param array $solrConnection Solr connection parameters
+	 * @return Status Status of the Solr connection
 	 */
 	protected function getConnectionStatus(array $solrConnection) {
 		$value    = 'Your site was unable to contact the Apache Solr server.';

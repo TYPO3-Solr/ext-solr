@@ -37,8 +37,8 @@ class Tx_Solr_PiResults_SpellCheckFormModifier implements Tx_Solr_FormModifier {
 	 * Modifies the search form by providing an additional marker linking to a
 	 * new query with the suggestions provided by Solr as the search terms.
 	 *
-	 * @param array An array of existing form markers
-	 * @param Tx_Solr_Template An instance of the template engine
+	 * @param array $markers An array of existing form markers
+	 * @param Tx_Solr_Template $template An instance of the template engine
 	 * @return array Array with additional markers for suggestions
 	 */
 	public function modifyForm(array $markers, Tx_Solr_Template $template) {

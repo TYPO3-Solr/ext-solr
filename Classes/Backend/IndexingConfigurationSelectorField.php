@@ -213,9 +213,11 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 
 		$selectFieldRenderer = $formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
 		if (!method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
-			if (class_exists('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement')) { // TYPO3 CMS 7.2
+			if (class_exists('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement')) {
+				// TYPO3 CMS 7.2
 				$selectFieldRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement', $formEngine);
-			} elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\Element\\SelectCheckBoxElement')) { // TYPO3 CMS >= 7.3
+			} elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\Element\\SelectCheckBoxElement')) {
+				// TYPO3 CMS >= 7.3
 				/** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
 				$nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
 				$options = array(
@@ -228,6 +230,7 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 				$options['parameterArray']['fieldConf']['config']['items'] = $items;
 				$options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
 				$selectCheckboxResult = $nodeFactory->create($options)->render();
+
 				return $selectCheckboxResult['html'];
 			}
 		}

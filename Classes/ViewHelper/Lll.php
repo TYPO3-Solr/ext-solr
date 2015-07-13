@@ -116,7 +116,7 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 	 * Resolves a label given through a full LLL path by loading the specified
 	 * local lang file and then returning the requested label.
 	 *
-	 * @param string full path specifying a label, LLL:EXT:path/to/locallang.xml:my_label
+	 * @param string $path full path specifying a label, LLL:EXT:path/to/locallang.xml:my_label
 	 * @return string the requested label
 	 */
 	protected function resolveFullPathLabel($path) {
@@ -140,8 +140,8 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 	/**
 	 * Gets a label from the already loaded and cached labels
 	 *
-	 * @param string key for a local lang file
-	 * @param string label key
+	 * @param string $locallang key for a local lang file
+	 * @param string $labelKey label key
 	 * @return string requested label in the current language if available, in default language otherwise
 	 */
 	protected function getLabel($locallang, $labelKey) {

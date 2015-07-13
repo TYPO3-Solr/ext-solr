@@ -41,7 +41,7 @@ class Tx_Solr_ResultDocumentModifier_SiteHighlighter implements Tx_Solr_ResultDo
 	 * which will result in having the current search terms highlighted on the
 	 * target page.
 	 *
-	 * @param Tx_Solr_PiResults_ResultsCommand The search result command
+	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
 	 * @param array $resultDocument The result document's fields as an array
 	 * @return array The document with fields as array
 	 */

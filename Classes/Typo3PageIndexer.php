@@ -393,7 +393,7 @@ class Tx_Solr_Typo3PageIndexer {
 	 * Sends the given documents to the field processing service which takes
 	 * care of manipulating fields as defined in the field's configuration.
 	 *
-	 * @param array An array of documents to manipulate
+	 * @param array $documents An array of documents to manipulate
 	 */
 	protected function processDocuments(array $documents) {
 		if (is_array($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.'])) {
@@ -413,9 +413,10 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Logs messages to devlog and TS log (admin panel)
 	 *
-	 * @param string	 Message to set
-	 * @param integer	 Error number
-	 * @return	void
+	 * @param string $message Message to set
+	 * @param integer $errorNum Error number
+	 * @param array $data Additional data to log
+	 * @return void
 	 */
 	protected function log($message, $errorNum = 0, array $data = array()) {
 		if (is_object($GLOBALS['TT'])) {

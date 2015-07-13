@@ -113,8 +113,8 @@ class Tx_Solr_IndexQueue_Item {
 	 * Constructor for class Tx_Solr_IndexQueue_Item, takes item meta data
 	 * information and resolves that to the full record.
 	 *
-	 * @param array Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
-	 * @param array Optional full record for the item. If provided, can save some SQL queries.
+	 * @param array $itemMetaData Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
+	 * @param array $fullRecord Optional full record for the item. If provided, can save some SQL queries.
 	 */
 	public function __construct(array $itemMetaData, array $fullRecord = array()) {
 		$this->indexQueueUid = $itemMetaData['uid'];

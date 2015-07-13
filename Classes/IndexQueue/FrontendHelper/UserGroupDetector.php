@@ -105,8 +105,8 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * Deactivates the frontend user grroup fields in TCA so that no access
 	 * restrictions apply during page rendering.
 	 *
-	 * @param array Parameters from frontend
-	 * @param TypoScriptFrontendController TSFE object
+	 * @param array $parameters Parameters from frontend
+	 * @param TypoScriptFrontendController $parentObject TSFE object
 	 */
 	public function deactivateTcaFrontendGroupEnableFields(&$parameters, $parentObject) {
 		$this->originalTca = $GLOBALS['TCA'];
@@ -124,9 +124,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * Modifies the database query parameters so that access checks for pages
 	 * are not performed any longer.
 	 *
-	 * @param integer The page ID
-	 * @param boolean If set, the check for group access is disabled. VERY rarely used
-	 * @param \TYPO3\CMS\Frontend\Page\PageRepository parent \TYPO3\CMS\Frontend\Page\PageRepository object
+	 * @param integer $uid The page ID
+	 * @param boolean $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
+	 * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject parent \TYPO3\CMS\Frontend\Page\PageRepository object
 	 */
 	public function getPage_preProcess(&$uid, &$disableGroupAccessCheck, \TYPO3\CMS\Frontend\Page\PageRepository $parentObject) {
 		$disableGroupAccessCheck = TRUE;
@@ -137,9 +137,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 * Modifies page records so that when checking for access through fe groups
 	 * no groups or extendToSubpages flag is found and thus access is granted.
 	 *
-	 * @param array Page record
-	 * @param integer Overlay language ID
-	 * @param \TYPO3\CMS\Frontend\Page\PageRepository Parent \TYPO3\CMS\Frontend\Page\PageRepository object
+	 * @param array $pageRecord Page record
+	 * @param integer $languageUid Overlay language ID
+	 * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject Parent \TYPO3\CMS\Frontend\Page\PageRepository object
 	 */
 	public function getPageOverlay_preProcess(&$pageRecord, &$languageUid, \TYPO3\CMS\Frontend\Page\PageRepository $parentObject) {
 		if (is_array($pageRecord)) {
@@ -168,8 +168,8 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	/**
 	 * Tracks user groups access restriction applied to records.
 	 *
-	 * @param array A record as an array of fieldname => fieldvalue mappings
-	 * @param string Table name the record belongs to
+	 * @param array $record A record as an array of fieldname => fieldvalue mappings
+	 * @param string $table Table name the record belongs to
 	 */
 	protected function findFrontendGroups($record, $table) {
 		if ($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']) {

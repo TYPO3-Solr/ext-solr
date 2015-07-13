@@ -156,7 +156,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 * (Tx_Solr_IndexQueue_PageIndexer). In all other cases a dedicated indexer
 	 * can be specified through TypoScript if needed.
 	 *
-	 * @param string Indexing configuration name.
+	 * @param string $indexingConfigurationName Indexing configuration name.
 	 * @return Tx_Solr_IndexQueue_Indexer An instance of Tx_Solr_IndexQueue_Indexer or a sub class of it.
 	 */
 	protected function getIndexerByItem($indexingConfigurationName) {

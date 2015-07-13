@@ -214,9 +214,9 @@ class Tx_Solr_Util {
 	 * Gets the Solr configuration for a specific root page id.
 	 * To be used from the backend.
 	 *
-	 * @param integer Id of the (root) page to get the Solr configuration from.
-	 * @param boolean Optionally initializes a full TSFE to get the configuration, defaults to FALSE
-	 * @param integer System language uid, optional, defaults to 0
+	 * @param integer $pageId Id of the (root) page to get the Solr configuration from.
+	 * @param boolean $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+	 * @param integer $language System language uid, optional, defaults to 0
 	 * @return array The Solr configuration for the requested tree.
 	 */
 	public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = FALSE, $language = 0) {
@@ -228,10 +228,10 @@ class Tx_Solr_Util {
 	 * Language usage may be disabled to get the default TypoScript
 	 * configuration.
 	 *
-	 * @param integer Id of the (root) page to get the Solr configuration from.
-	 * @param string The TypoScript configuration path to retrieve.
-	 * @param boolean Optionally initializes a full TSFE to get the configuration, defaults to FALSE
-	 * @param integer|boolean System language uid or FALSE to disable language usage, optional, defaults to 0
+	 * @param integer $pageId Id of the (root) page to get the Solr configuration from.
+	 * @param string $path The TypoScript configuration path to retrieve.
+	 * @param boolean $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+	 * @param integer|boolean $language System language uid or FALSE to disable language usage, optional, defaults to 0
 	 * @return array The Solr configuration for the requested tree.
 	 */
 	public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = FALSE, $language = 0) {
@@ -297,9 +297,9 @@ class Tx_Solr_Util {
 	/**
 	 * Initializes the TSFE for a given page ID and language.
 	 *
-	 * @param integer The page id to initialize the TSFE for
-	 * @param integer System language uid, optional, defaults to 0
-	 * @param boolean Use cache to reuse TSFE
+	 * @param integer $pageId The page id to initialize the TSFE for
+	 * @param integer $language System language uid, optional, defaults to 0
+	 * @param boolean $useCache Use cache to reuse TSFE
 	 * @return	void
 	 */
 	public static function initializeTsfe($pageId, $language = 0, $useCache = TRUE) {
@@ -360,7 +360,7 @@ class Tx_Solr_Util {
 	/**
 	 * Determines the rootpage ID for a given page.
 	 *
-	 * @param integer A page ID somewhere in a tree.
+	 * @param integer $pageId A page ID somewhere in a tree.
 	 * @return integer The page's tree branch's root page ID
 	 */
 	public static function getRootPageId($pageId = 0) {

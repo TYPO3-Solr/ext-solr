@@ -119,7 +119,7 @@ class Tx_Solr_Query_LinkBuilder {
 	/**
 	 * Sets the target page Id for links
 	 *
-	 * @param integer Page Id links shall point to.
+	 * @param integer $pageId Page Id links shall point to.
 	 */
 	public function setLinkTargetPageId($pageId) {
 		$this->linkTargetPageId = intval($pageId);
@@ -258,7 +258,7 @@ class Tx_Solr_Query_LinkBuilder {
 	/**
 	 * Filters out unwanted parameters when building query URLs
 	 *
-	 * @param array An array of parameters that shall be used to build a URL.
+	 * @param array $urlParameters An array of parameters that shall be used to build a URL.
 	 * @return array Array with wanted parameters only, ready to be used for URL building.
 	 */
 	public function removeUnwantedUrlParameters(array $urlParameters) {

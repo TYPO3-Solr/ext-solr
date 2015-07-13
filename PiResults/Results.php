@@ -100,8 +100,8 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	/**
 	 * Provides a hook for other classes to process the search's response.
 	 *
-	 * @param Tx_Solr_Query The query that has been searched for.
-	 * @param Apache_Solr_Response The search's response.
+	 * @param Tx_Solr_Query $query The query that has been searched for.
+	 * @param Apache_Solr_Response $response The search's response.
 	 */
 	protected function processResponse(Tx_Solr_Query $query, Apache_Solr_Response &$response) {
 		$rawUserQuery = $this->getRawUserQuery();
@@ -386,7 +386,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Post initialization of the template engine, adding some Solr variables.
 	 *
 	 * @see Tx_Solr_pluginbase_PluginBase#postInitializeTemplate($template)
-	 * @param Tx_Solr_Template The template object as initialized thus far.
+	 * @param Tx_Solr_Template $template The template object as initialized thus far.
 	 * @return Tx_Solr_Template The modified template instance with additional variables available for rendering.
 	 */
 	protected function postInitializeTemplateEngine($template) {

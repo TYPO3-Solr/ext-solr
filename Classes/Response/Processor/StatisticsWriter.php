@@ -68,8 +68,8 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 	/**
 	 * Processes a query and its response after searching for that query.
 	 *
-	 * @param Tx_Solr_Query The query that has been searched for.
-	 * @param Apache_Solr_Response The response for the last query.
+	 * @param Tx_Solr_Query $query The query that has been searched for.
+	 * @param Apache_Solr_Response $response The response for the last query.
 	 */
 	public function processResponse(Tx_Solr_Query $query, Apache_Solr_Response $response) {
 		$urlParameters = GeneralUtility::_GP('tx_solr');

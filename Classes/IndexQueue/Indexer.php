@@ -89,7 +89,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Indexes an item from the indexing queue.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item An index queue item
+	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
 	 * @return Apache_Solr_Response The Apache Solr response
 	 */
 	public function index(Tx_Solr_IndexQueue_Item $item) {
@@ -122,8 +122,8 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Creates a single Solr Document for an item in a specific language.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item An index queue item to index.
-	 * @param integer The language to use.
+	 * @param Tx_Solr_IndexQueue_Item $item An index queue item to index.
+	 * @param integer $language The language to use.
 	 * @return boolean TRUE if item was indexed successfully, FALSE on failure
 	 */
 	protected function indexItem(Tx_Solr_IndexQueue_Item $item, $language = 0) {
@@ -248,8 +248,8 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Gets the configuration how to process an item's fields for indexing.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item An index queue item
-	 * @param integer Language ID
+	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param integer $language Language ID
 	 * @return array Configuration array from TypoScript
 	 */
 	protected function getItemTypeConfiguration(Tx_Solr_IndexQueue_Item $item, $language = 0) {
@@ -355,8 +355,8 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Sends the documents to the field processing service which takes care of
 	 * manipulating fields as defined in the field's configuration.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item An index queue item
-	 * @param array An array of Apache_Solr_Document objects to manipulate.
+	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param array $documents An array of Apache_Solr_Document objects to manipulate.
 	 * @return array Array of manipulated Apache_Solr_Document objects.
 	 */
 	protected function processDocuments(Tx_Solr_IndexQueue_Item $item, array $documents) {
@@ -380,9 +380,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Allows third party extensions to provide additional documents which
 	 * should be indexed for the current item.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item The item currently being indexed.
-	 * @param integer The language uid currently being indexed.
-	 * @param Apache_Solr_Document	$itemDocument The document representing the item for the given language.
+	 * @param Tx_Solr_IndexQueue_Item $item The item currently being indexed.
+	 * @param integer $language The language uid currently being indexed.
+	 * @param Apache_Solr_Document $itemDocument The document representing the item for the given language.
 	 * @return array An array of additional Apache_Solr_Document objects to index.
 	 */
 	protected function getAdditionalDocuments(Tx_Solr_IndexQueue_Item $item, $language, Apache_Solr_Document $itemDocument) {
@@ -414,9 +414,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Provides a hook to manipulate documents right before they get added to
 	 * the Solr index.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item The item currently being indexed.
-	 * @param integer The language uid of the documents
-	 * @param array An array of documents to be indexed
+	 * @param Tx_Solr_IndexQueue_Item $item The item currently being indexed.
+	 * @param integer $language The language uid of the documents
+	 * @param array $documents An array of documents to be indexed
 	 * @return array An array of modified documents
 	 */
 	protected function preAddModifyDocuments(Tx_Solr_IndexQueue_Item $item, $language, array $documents) {
@@ -540,7 +540,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Checks for which languages connections have been configured and returns
 	 * these connections.
 	 *
-	 * @param array An array of translation overlays to check for configured connections.
+	 * @param array $translationOverlays An array of translation overlays to check for configured connections.
 	 * @return array An array of Tx_Solr_SolrService connections.
 	 */
 	protected function getConnectionsForIndexableLanguages(array $translationOverlays) {
@@ -593,9 +593,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Logs the item and what document was created from it
 	 *
-	 * @param Tx_Solr_IndexQueue_Item The item that is being indexed.
-	 * @param array An array of Solr documents created from the item's data
-	 * @param Apache_Solr_Response The Solr response for the particular index document
+	 * @param Tx_Solr_IndexQueue_Item $item The item that is being indexed.
+	 * @param array $itemDocuments An array of Solr documents created from the item's data
+	 * @param Apache_Solr_Response $response The Solr response for the particular index document
 	 */
 	protected function log(Tx_Solr_IndexQueue_Item $item, array $itemDocuments, Apache_Solr_Response $response) {
 		if (!$this->loggingEnabled) {

@@ -38,7 +38,7 @@ interface Tx_Solr_ViewHelper {
 	/**
 	 * constructor, takes an optional array of arguments for initialisation
 	 *
-	 * @param array optional initialisation arguments
+	 * @param array $arguments optional initialisation arguments
 	 */
 	public function __construct(array $arguments = array());
 

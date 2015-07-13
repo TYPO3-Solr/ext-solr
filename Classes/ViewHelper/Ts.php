@@ -64,10 +64,9 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 	/**
 	 * Resolves a TS path and returns its value
 	 *
-	 * @param string a TS path, separated with dots
-	 * @return	string
-	 * @author Ingo Renner <ingo@typo3.org>
-	 * @throws	InvalidArgumentException
+	 * @param string $path a TS path, separated with dots
+	 * @return string
+	 * @throws InvalidArgumentException
 	 */
 	protected function resolveTypoScriptPath($path, $arguments = NULL) {
 		$value           = '';

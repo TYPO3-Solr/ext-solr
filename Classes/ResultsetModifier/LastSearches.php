@@ -72,8 +72,8 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 	/**
 	 * Stores the keywords from the current query to the user's session.
 	 *
-	 * @param string The current query's keywords
-	 * @return	void
+	 * @param string $keywords The current query's keywords
+	 * @return void
 	 */
 	protected function storeKeywordsToSession($keywords) {
 		$currentLastSearches = $GLOBALS['TSFE']->fe_user->getKey(
@@ -103,8 +103,8 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 	/**
 	 * Stores the keywords from the current query to the database.
 	 *
-	 * @param string The current query's keywords
-	 * @return	void
+	 * @param string $keywords The current query's keywords
+	 * @return void
 	 */
 	protected function storeKeywordsToDatabase($keywords) {
 		$nextSequenceId = $this->getNextSequenceId();

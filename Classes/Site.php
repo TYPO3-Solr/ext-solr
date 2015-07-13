@@ -231,9 +231,9 @@ class Tx_Solr_Site {
 	 * Generates a list of page IDs in this site. Attention, this includes
 	 * all page types! Deleted pages are not included.
 	 *
-	 * @param integer	 Page ID from where to start collection sub pages
-	 * @param integer	 Maximum depth to decend into the site tree
-	 * @return array	 Array of pages (IDs) in this site
+	 * @param integer|string $rootPageId Page ID from where to start collection sub pages
+	 * @param integer $maxDepth Maximum depth to decend into the site tree
+	 * @return array Array of pages (IDs) in this site
 	 */
 	public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999) {
 		$pageIds  = array();

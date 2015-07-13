@@ -40,8 +40,8 @@ interface Tx_Solr_IndexQueuePageIndexerDataUrlModifier {
 	/**
 	 * Modifies the given data url
 	 *
-	 * @param string the current data url.
-	 * @param array An array of url data
+	 * @param string $pageUrl the current data url.
+	 * @param array $urlData An array of url data
 	 * @return string the final data url
 	 */
 	public function modifyDataUrl($pageUrl, array $urlData);

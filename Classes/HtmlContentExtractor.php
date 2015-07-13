@@ -83,7 +83,7 @@ class Tx_Solr_HtmlContentExtractor {
 	/**
 	 * Constructor.
 	 *
-	 * @param string Content HTML markup
+	 * @param string $content Content HTML markup
 	 */
 	public function __construct($content) {
 		$this->content = $content;
@@ -110,7 +110,7 @@ class Tx_Solr_HtmlContentExtractor {
 	/**
 	 * Strips control characters that cause Jetty/Solr to fail.
 	 *
-	 * @param string the content to sanitize
+	 * @param string $content the content to sanitize
 	 * @return string the sanitized content
 	 * @see http://w3.org/International/questions/qa-forms-utf-8.html
 	 */

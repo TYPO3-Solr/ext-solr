@@ -44,7 +44,8 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 	/**
 	 * Modifies the given query and returns the modified query as result
 	 *
-	 * @param Tx_Solr_PiResults_ResultsCommand The search result command
+	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
+	 * @param array $resultDocument Result document
 	 * @return array The document with fields as array
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
@@ -101,7 +102,7 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 	 * Renders an overview of how the score for a certain document has been
 	 * calculated.
 	 *
-	 * @param array The result document which to analyse
+	 * @param array $highScores The result document which to analyse
 	 * @return string The HTML showing the score analysis
 	 */
 	protected function renderScoreAnalysis(array $highScores) {

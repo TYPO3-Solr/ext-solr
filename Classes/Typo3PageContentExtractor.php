@@ -66,7 +66,7 @@ class Tx_Solr_Typo3PageContentExtractor extends Tx_Solr_HtmlContentExtractor {
 	 * Extracts the markup wrapped with TYPO3SEARCH_begin and TYPO3SEARCH_end
 	 * markers.
 	 *
-	 * @param string HTML markup with TYPO3SEARCH markers for content that should be indexed
+	 * @param string $html HTML markup with TYPO3SEARCH markers for content that should be indexed
 	 * @return string HTML markup found between TYPO3SEARCH markers
 	 */
 	protected function extractContentMarkedForIndexing($html) {

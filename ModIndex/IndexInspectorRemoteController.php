@@ -112,6 +112,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * @return array An array of Apache_Solr_Document objects
 	 */
 	protected function getIndexDocuments() {
+		/* @var Tx_Solr_Query $query */
 		$query = GeneralUtility::makeInstance('Tx_Solr_Query', '');
 		$query->setQueryType('standard');
 		$query->useRawQueryString(TRUE);

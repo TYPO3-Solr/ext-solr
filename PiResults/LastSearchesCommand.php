@@ -51,7 +51,7 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase Parent plugin object.
+	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Parent plugin object.
 	 */
 	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
 		$this->parentPlugin  = $parentPlugin;

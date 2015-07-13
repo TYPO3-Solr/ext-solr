@@ -39,7 +39,7 @@ interface Tx_Solr_SearchAware {
 	 * Provides the extension component with an instance of the currently
 	 * active search.
 	 *
-	 * @param Tx_Solr_Search Currently active search instance
+	 * @param Tx_Solr_Search $search Currently active search instance
 	 */
 	public function setSearch(Tx_Solr_Search $search);
 

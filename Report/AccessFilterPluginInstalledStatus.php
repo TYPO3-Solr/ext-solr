@@ -152,7 +152,7 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements StatusProvider
 	 * Checks whether the Access Filter Query Parser Plugin is installed for
 	 * the given Solr server instance.
 	 *
-	 * @param Tx_Solr_SolrService Solr connection to check for the plugin.
+	 * @param Tx_Solr_SolrService $solrConnection Solr connection to check for the plugin.
 	 * @return boolean True if the plugin is installed, FALSE otherwise.
 	 */
 	protected function isPluginInstalled(Tx_Solr_SolrService $solrConnection) {
@@ -170,7 +170,7 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements StatusProvider
 	/**
 	 * Checks whether the installed plugin is current.
 	 *
-	 *  @param Tx_Solr_SolrService Solr connection to check for the plugin.
+	 *  @param Tx_Solr_SolrService $solrConnection Solr connection to check for the plugin.
 	 * @return boolean True if the plugin is outdated, FALSE if it meets the current version recommendation.
 	 */
 	protected function isPluginOutdated(Tx_Solr_SolrService $solrConnection) {
@@ -188,7 +188,7 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements StatusProvider
 	/**
 	 * Gets the version of the installed plugin.
 	 *
-	 * @param Tx_Solr_SolrService Solr connection to check for the plugin.
+	 * @param Tx_Solr_SolrService $solrConnection Solr connection to check for the plugin.
 	 * @return string The installed plugin's version number.
 	 */
 	public function getInstalledPluginVersion(Tx_Solr_SolrService $solrConnection) {

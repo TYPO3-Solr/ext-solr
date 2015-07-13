@@ -40,7 +40,7 @@ interface Tx_Solr_CommandPluginAware {
 	 * Provides the extension component with an instance of the currently active
 	 * plugin.
 	 *
-	 * @param Tx_Solr_pluginbase_CommandPluginBase Currently active plugin
+	 * @param Tx_Solr_pluginbase_CommandPluginBase $parentPlugin Currently active plugin
 	 */
 	public function setParentPlugin(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin);
 }

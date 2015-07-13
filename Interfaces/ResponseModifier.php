@@ -38,7 +38,7 @@ interface Tx_Solr_ResponseModifier {
 	/**
 	 * Modifies the given response and returns the modified response as result
 	 *
-	 * @param Apache_Solr_Response The response to modify
+	 * @param Apache_Solr_Response $response The response to modify
 	 * @return Apache_Solr_Response The modified response
 	 */
 	public function modifyResponse(Apache_Solr_Response $response);

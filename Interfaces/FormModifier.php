@@ -38,8 +38,8 @@ interface Tx_Solr_FormModifier {
 	/**
 	 * Modifies the search form by providing  additional markers.
 	 *
-	 * @param array An array of existing form markers.
-	 * @param Tx_Solr_Template An instance of the template engine.
+	 * @param array $marker An array of existing form markers.
+	 * @param Tx_Solr_Template $template An instance of the template engine.
 	 * @return array Array with additional markers.
 	 */
 	public function modifyForm(array $marker, Tx_Solr_Template $template);

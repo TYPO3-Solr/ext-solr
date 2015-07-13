@@ -39,7 +39,8 @@ interface Tx_Solr_ResultSetModifier {
 	/**
 	 * Modifies the given resultset and returns the modified resultset as array
 	 *
-	 * @param Tx_Solr_PiResults_ResultsCommand The search result command
+	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
+	 * @param array $resultSet Result set
 	 * @return array The resultset with fields as array
 	 */
 	public function modifyResultSet(Tx_Solr_PiResults_ResultsCommand $resultCommand, array $resultSet);

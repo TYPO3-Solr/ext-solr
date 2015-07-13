@@ -205,7 +205,7 @@ class Tx_Solr_Access_Rootline {
 	 * Cleans an array of frontend user group IDs. Removes duplicates and sorts
 	 * the array.
 	 *
-	 * @param array An array of frontend user group IDs
+	 * @param array $groups An array of frontend user group IDs
 	 * @return array An array of cleaned frontend user group IDs, unique, sorted.
 	 */
 	public static function cleanGroupArray(array $groups) {

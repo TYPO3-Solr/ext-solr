@@ -57,7 +57,7 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	/**
 	 * Sets the currently active parent plugin.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase Currently active parent plugin
+	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Currently active parent plugin
 	 */
 	public function setParentPlugin(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
 		$this->parentPlugin = $parentPlugin;
@@ -67,8 +67,8 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	 * Modifies the search form by providing an additional marker showing
 	 * the parsed lucene query used by Solr.
 	 *
-	 * @param array An array of existing form markers
-	 * @param tx_solr_Template An instance of the template engine
+	 * @param array $markers An array of existing form markers
+	 * @param tx_solr_Template $template An instance of the template engine
 	 * @return array Array with additional markers for queryAnalysis
 	 */
 	public function modifyForm(array $markers, tx_solr_Template $template) {

@@ -65,11 +65,11 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	/**
 	 * Hooks into TCE main and tracks record deletion commands.
 	 *
-	 * @param string The command.
-	 * @param string The table the record belongs to
-	 * @param integer The record's uid
-	 * @param string
-	 * @param DataHandler TYPO3 Core Engine parent object
+	 * @param string $command The command.
+	 * @param string $table The table the record belongs to
+	 * @param integer $uid The record's uid
+	 * @param string $value
+	 * @param DataHandler $tceMain TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, DataHandler $tceMain) {
 		if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
@@ -82,11 +82,11 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * Hooks into TCE main and tracks workspace publish/swap events and
 	 * page move commands in LIVE workspace.
 	 *
-	 * @param string The command.
-	 * @param string The table the record belongs to
-	 * @param integer The record's uid
-	 * @param	string
-	 * @param DataHandler TYPO3 Core Engine parent object
+	 * @param string $command The command.
+	 * @param string $table The table the record belongs to
+	 * @param integer $uid The record's uid
+	 * @param string $value
+	 * @param DataHandler $tceMain TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain) {
 		if (Tx_Solr_Util::isDraftRecord($table, $uid)) {
@@ -98,6 +98,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			// command "version"
 		if ($command == 'version' && $value['action'] == 'swap') {
 			switch ($table) {
+				/** @noinspection PhpMissingBreakStatementInspection */
 				case 'tt_content':
 					$uid   = $tceMain->getPID($table, $uid);
 					$table = 'pages';
@@ -311,7 +312,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * Gets an array of tables configured for indexing by the Index Queue. The
 	 * record monitor must watch these tables for manipulation.
 	 *
-	 * @param integer The page id for which we need to retrieve the configuration for
+	 * @param integer $pageId The page id for which we need to retrieve the configuration for
 	 * @return array Array of table names to be watched by the record monitor.
 	 */
 	protected function getMonitoredTables($pageId) {

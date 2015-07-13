@@ -54,7 +54,7 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 	 * Modifies the given query and adds the parameters necessary for faceted
 	 * search.
 	 *
-	 * @param Tx_Solr_Query The query to modify
+	 * @param Tx_Solr_Query $query The query to modify
 	 * @return Tx_Solr_Query The modified query with faceting parameters
 	 */
 	public function modifyQuery(Tx_Solr_Query $query) {
