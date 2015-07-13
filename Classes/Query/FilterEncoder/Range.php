@@ -92,9 +92,3 @@ class Tx_Solr_Query_FilterEncoder_Range implements Tx_Solr_QueryFilterEncoder, T
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Query/FilterEncoder/Range.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Query/FilterEncoder/Range.php']);
-}
-
-?>

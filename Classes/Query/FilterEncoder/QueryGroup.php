@@ -105,9 +105,3 @@ class Tx_Solr_Query_FilterEncoder_QueryGroup implements Tx_Solr_QueryFilterEncod
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Query/FilterEncoder/QueryGroup.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Query/FilterEncoder/QueryGroup.php']);
-}
-
-?>

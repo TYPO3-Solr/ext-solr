@@ -293,9 +293,3 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends tx_scheduler_Task implement
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Scheduler/IndexQueueWorkerTask.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Scheduler/IndexQueueWorkerTask.php']);
-}
-
-?>

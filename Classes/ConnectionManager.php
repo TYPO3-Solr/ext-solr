@@ -571,9 +571,3 @@ class Tx_Solr_ConnectionManager implements t3lib_Singleton, backend_cacheActions
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ConnectionManager.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ConnectionManager.php']);
-}
-
-?>

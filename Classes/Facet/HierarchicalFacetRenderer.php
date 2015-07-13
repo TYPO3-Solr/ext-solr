@@ -156,9 +156,3 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFace
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Facet/HierarchicalFacetRenderer.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Facet/HierarchicalFacetRenderer.php']);
-}
-
-?>

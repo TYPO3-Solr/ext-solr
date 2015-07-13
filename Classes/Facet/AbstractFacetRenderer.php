@@ -249,9 +249,3 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Facet/AbstractFacetRenderer.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Facet/AbstractFacetRenderer.php']);
-}
-
-?>

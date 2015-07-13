@@ -147,9 +147,3 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/query/modifier/class.Tx_Solr_Query_modifier_lastsearches.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/query/modifier/class.Tx_Solr_Query_modifier_lastsearches.php']);
-}
-
-?>

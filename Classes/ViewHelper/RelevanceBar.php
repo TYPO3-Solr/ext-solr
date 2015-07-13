@@ -59,9 +59,3 @@ class Tx_Solr_ViewHelper_RelevanceBar extends Tx_Solr_ViewHelper_Relevance {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ViewHelper/RelevanceBar.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ViewHelper/RelevanceBar.php']);
-}
-
-?>

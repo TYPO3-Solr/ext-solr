@@ -140,9 +140,3 @@ class Tx_Solr_ModIndex_IndexInspector extends t3lib_extobjbase {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/ModIndex/IndexInspector.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/ModIndex/IndexInspector.php']);
-}
-
-?>

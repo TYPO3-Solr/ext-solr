@@ -135,9 +135,3 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/resultdocumentmodifier/ScoreAnalyzer.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/resultdocumentmodifier/ScoreAnalyzer.php']);
-}
-
-?>

@@ -62,9 +62,3 @@ class Tx_Solr_Search_SpellcheckingComponent extends Tx_Solr_Search_AbstractCompo
 
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Search/SpellcheckingComponent.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Search/SpellcheckingComponent.php']);
-}
-
-?>

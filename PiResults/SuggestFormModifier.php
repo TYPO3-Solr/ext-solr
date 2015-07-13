@@ -149,9 +149,3 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/SuggestFormModifier.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/SuggestFormModifier.php']);
-}
-
-?>

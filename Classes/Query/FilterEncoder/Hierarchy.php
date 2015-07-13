@@ -69,9 +69,3 @@ class Tx_Solr_Query_FilterEncoder_Hierarchy implements Tx_Solr_QueryFilterEncode
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Query/FilterEncoder/Hierarchy.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Query/FilterEncoder/Hierarchy.php']);
-}
-
-?>

@@ -73,9 +73,3 @@ class Tx_Solr_FieldProcessor_PathToHierarchy implements Tx_Solr_FieldProcessor {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/FieldProcessor/PathToHierarchy.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/FieldProcessor/PathToHierarchy.php']);
-}
-
-?>

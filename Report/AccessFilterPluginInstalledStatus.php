@@ -216,9 +216,3 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements tx_reports_Sta
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Report/AccessFilterPluginInstalledStatus.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Report/AccessFilterPluginInstalledStatus.php']);
-}
-
-?>

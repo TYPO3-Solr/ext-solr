@@ -317,9 +317,3 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 		return $solrConnection;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/IndexQueue/FrontendHelper/Pageindexer.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/IndexQueue/FrontendHelper/Pageindexer.php']);
-}
-
-?>

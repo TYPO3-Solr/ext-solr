@@ -77,9 +77,3 @@ class Tx_Solr_ResultDocumentModifier_SiteHighlighter implements Tx_Solr_ResultDo
 
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/resultdocumentmodifier/SiteHighlighter.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/resultdocumentmodifier/SiteHighlighter.php']);
-}
-
-?>

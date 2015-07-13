@@ -185,9 +185,3 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/pluginbase/CommandPluginBase.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/pluginbase/CommandPluginBase.php']);
-}
-
-?>

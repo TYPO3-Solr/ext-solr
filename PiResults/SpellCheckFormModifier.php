@@ -53,9 +53,3 @@ class Tx_Solr_PiResults_SpellCheckFormModifier implements Tx_Solr_FormModifier {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/SpellCheckFormModifier.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/SpellCheckFormModifier.php']);
-}
-
-?>

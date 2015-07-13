@@ -80,9 +80,3 @@ class Tx_Solr_ContentObject_Content {
 
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ContentObject/Content.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ContentObject/Content.php']);
-}
-
-?>

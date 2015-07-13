@@ -52,9 +52,3 @@ class Tx_Solr_FieldProcessor_TimestampToIsoDate implements Tx_Solr_FieldProcesso
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/FieldProcessor/TimestampToIsoDate.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/FieldProcessor/TimestampToIsoDate.php']);
-}
-
-?>

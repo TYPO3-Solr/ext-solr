@@ -148,9 +148,3 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_Com
 
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiFrequentSearches/FrequentSearches.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiFrequentSearches/FrequentSearches.php']);
-}
-
-?>

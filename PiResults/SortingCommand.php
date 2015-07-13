@@ -179,9 +179,3 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/SortingCommand.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/SortingCommand.php']);
-}
-
-?>

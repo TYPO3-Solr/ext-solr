@@ -127,9 +127,3 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/ErrorsCommand.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/ErrorsCommand.php']);
-}
-
-?>

@@ -189,9 +189,3 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiSearch/Search.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiSearch/Search.php']);
-}
-
-?>

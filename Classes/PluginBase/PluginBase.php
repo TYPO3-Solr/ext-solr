@@ -543,9 +543,3 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/pluginbase/PluginBase.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/pluginbase/PluginBase.php']);
-}
-
-?>

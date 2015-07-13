@@ -167,9 +167,3 @@ class Tx_Solr_Scheduler_ReIndexTask extends tx_scheduler_Task {
 		return $information;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Scheduler/ReIndexTask.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Scheduler/ReIndexTask.php']);
-}
-
-?>

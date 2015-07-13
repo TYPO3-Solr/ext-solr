@@ -138,9 +138,3 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements t3lib_Singleton {
 		return $this->response;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/IndexQueue/PageIndexerRequestHandler.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/IndexQueue/PageIndexerRequestHandler.php']);
-}
-
-?>

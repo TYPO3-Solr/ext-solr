@@ -73,9 +73,3 @@ class Tx_Solr_Cli_Dispatcher extends t3lib_cli {
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Cli/Dispatcher.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Cli/Dispatcher.php']);
-}
-
-?>

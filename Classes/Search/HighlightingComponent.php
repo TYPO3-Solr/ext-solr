@@ -71,9 +71,3 @@ class Tx_Solr_Search_HighlightingComponent extends Tx_Solr_Search_AbstractCompon
 
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Search/HighlightingComponent.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Search/HighlightingComponent.php']);
-}
-
-?>

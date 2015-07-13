@@ -508,9 +508,3 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/Results.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/PiResults/Results.php']);
-}
-
-?>

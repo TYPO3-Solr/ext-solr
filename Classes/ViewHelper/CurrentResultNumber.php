@@ -72,9 +72,3 @@ class Tx_Solr_ViewHelper_CurrentResultNumber implements Tx_Solr_ViewHelper {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ViewHelper/CurrentResultNumber.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ViewHelper/CurrentResultNumber.php']);
-}
-
-?>

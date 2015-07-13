@@ -106,9 +106,3 @@ class Tx_Solr_Report_SchemaStatus implements tx_reports_StatusProvider {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Report/SchemaStatus.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Report/SchemaStatus.php']);
-}
-
-?>

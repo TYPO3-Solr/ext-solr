@@ -117,9 +117,3 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 		return $facetToRemove;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Facet/UsedFacetRenderer.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Facet/UsedFacetRenderer.php']);
-}
-
-?>

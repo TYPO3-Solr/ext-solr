@@ -110,9 +110,3 @@ class Tx_Solr_FieldProcessor_PageUidToHierarchy extends Tx_Solr_FieldProcessor_A
 
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/FieldProcessor/class.Tx_Solr_fieldprocessor_pageuidohierarchy.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/FieldProcessor/PageUidToHierarchy.php']);
-}
-
-?>

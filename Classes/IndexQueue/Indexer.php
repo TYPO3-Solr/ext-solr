@@ -631,9 +631,3 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/IndexQueue/Indexer.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/IndexQueue/Indexer.php']);
-}
-
-?>

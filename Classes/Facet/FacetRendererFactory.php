@@ -228,9 +228,3 @@ class Tx_Solr_Facet_FacetRendererFactory {
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Facet/FacetRendererFactory.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/Facet/FacetRendererFactory.php']);
-}
-
-?>

@@ -100,9 +100,3 @@ class Tx_Solr_ViewHelper_Facet extends Tx_Solr_ViewHelper_AbstractSubpartViewHel
 	}
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ViewHelper/Facet.php'])	{
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/solr/Classes/ViewHelper/Facet.php']);
-}
-
-?>
