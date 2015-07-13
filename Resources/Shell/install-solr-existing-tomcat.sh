@@ -16,16 +16,17 @@ EXT_SOLR_PLUGIN_LANG_VERSION=3.1
 JAVA_VERSION=7
 
 # Tomcat specific settings
-TOMCAT_USER="tomcat6"
-TOMCAT_GROUP="tomcat6"
-TOMCAT_HOME="/usr/share/tomcat6"
-TOMCAT_BASE="/var/lib/tomcat6"
-TOMCAT_CONFIG_DIR="/etc/tomcat6"
-TOMCAT_LOG_DIR="/var/log/tomcat6"
-TOMCAT_TMP_DIR="/tmp/tomcat6-tmp"
-TOMCAT_WORK_DIR="/var/cache/tomcat6"
+TOMCAT_VERSION="tomcat6"
+TOMCAT_USER="${TOMCAT_VERSION}"
+TOMCAT_GROUP="${TOMCAT_VERSION}"
+TOMCAT_HOME="/usr/share/${TOMCAT_VERSION}"
+TOMCAT_BASE="/var/lib/${TOMCAT_VERSION}"
+TOMCAT_CONFIG_DIR="/etc/${TOMCAT_VERSION}"
+TOMCAT_LOG_DIR="/var/log/${TOMCAT_VERSION}"
+TOMCAT_TMP_DIR="/tmp/${TOMCAT_VERSION}-tmp"
+TOMCAT_WORK_DIR="/var/cache/${TOMCAT_VERSION}"
 TOMCAT_CONTEXT_DIR="${TOMCAT_CONFIG_DIR}/Catalina/localhost"
-TOMCAT_WEBAPP_DIR="/var/lib/tomcat6/webapps"
+TOMCAT_WEBAPP_DIR="/var/lib/${TOMCAT_VERSION}/webapps"
 
 GITBRANCH_PATH="release-$EXT_SOLR_VERSION.x"
 
@@ -233,7 +234,7 @@ fi
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 cecho "Stopping Tomcat." $green
-service tomcat6 stop
+service ${TOMCAT_VERSION} stop
 
 mkdir -p /opt/solr-tomcat
 cd /opt/solr-tomcat/
@@ -333,7 +334,7 @@ rm -rf solr-$SOLR_VERSION
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 cecho "Re-Starting Tomcat." $green
-service tomcat6 restart
+service ${TOMCAT_VERSION} restart
 
 cecho "Done." $green
 cecho "Now browse to http://localhost:8080/solr/" $green
