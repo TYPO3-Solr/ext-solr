@@ -23,6 +23,7 @@
 ***************************************************************/
 
 
+use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -39,7 +40,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ConnectionManager implements SingletonInterface, backend_cacheActionsHook {
+class Tx_Solr_ConnectionManager implements SingletonInterface, ClearCacheActionsHookInterface {
 
 		// TODO add parametrized singleton capabilities to \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance()
 
