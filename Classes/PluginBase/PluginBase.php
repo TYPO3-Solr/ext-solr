@@ -25,6 +25,7 @@
 
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 
 /**
@@ -38,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
+abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 
 	public $prefixId = 'tx_solr';
 	public $extKey   = 'solr';

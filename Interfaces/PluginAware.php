@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
+
 
 /**
  * Plugin awareness interface for extension components.
@@ -39,8 +41,8 @@ interface Tx_Solr_PluginAware {
 	 * Provides the extension component with an instance of the currently active
 	 * plugin.
 	 *
-	 * @param tslib_pibase Currently active plugin
+	 * @param AbstractPlugin $parentPlugin Currently active plugin
 	 */
-	public function setParentPlugin(tslib_pibase $parentPlugin);
+	public function setParentPlugin(AbstractPlugin $parentPlugin);
 }
 
