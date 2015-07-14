@@ -48,7 +48,7 @@ class ActionButtonViewHelper extends AbstractViewHelper {
 	 * @param string $class
 	 * @return string Markup for form with button
 	 */
-	public function render($action, $label, $class) {
+	public function render($action, $label, $class = '') {
 		$module = $this->renderingContext->getTemplateVariableContainer()->get('module');
 		/** @var \ApacheSolrForTypo3\Solr\Backend\SolrModule\AbstractModuleController $module */
 
