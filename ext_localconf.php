@@ -19,7 +19,7 @@ if(!function_exists('strptime')) {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
 	$_EXTKEY,
 	'PiResults/Results.php',
-	'_pi_results',
+	'_PiResults_Results',
 	'list_type',
 	FALSE
 );
@@ -28,7 +28,7 @@ if(!function_exists('strptime')) {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
 	$_EXTKEY,
 	'PiSearch/Search.php',
-	'_pi_search',
+	'_PiSearch_Search',
 	'list_type',
 	TRUE
 );
@@ -37,7 +37,7 @@ if(!function_exists('strptime')) {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
 	$_EXTKEY,
 	'PiFrequentSearches/FrequentSearches.php',
-	'_pi_frequentsearches',
+	'_PiFrequentSearches_FrequentSearches',
 	'list_type',
 	TRUE
 );
@@ -287,7 +287,7 @@ tt_content.search = COA
 tt_content.search {
 	10 = < lib.stdheader
 	20 >
-	20 = < plugin.tx_solr_pi_results
+	20 = < plugin.tx_solr_PiResults_Results
 	30 >
 }
 ');
