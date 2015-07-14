@@ -129,6 +129,7 @@ class AdministrationController extends ActionController {
 			$this->activeModule = $this->moduleManager->getModule($this->activeModuleName);
 		}
 
+		$this->moduleManager->sortModules();
 		$this->modules = $this->moduleManager->getModules();
 	}
 

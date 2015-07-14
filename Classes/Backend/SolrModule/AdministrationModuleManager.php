@@ -81,6 +81,23 @@ class AdministrationModuleManager {
 	}
 
 	/**
+	 * Makes sure all third party modules come after the EXT:solr modules
+	 *
+	 */
+	public function sortModules() {
+		$thirdPartyModules = array();
+
+		foreach (self::$modules as $moduleName => $module) {
+			if ($module['extensionKey'] != 'solr') {
+				$thirdPartyModules[$moduleName] = $module;
+				unset(self::$modules[$moduleName]);
+			}
+		}
+
+		self::$modules = array_merge(self::$modules, $thirdPartyModules);
+	}
+
+	/**
 	 * Returns all currently registered administration modules.
 	 *
 	 * @return array An array of administration module instances
