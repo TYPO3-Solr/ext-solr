@@ -23,7 +23,6 @@
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 
 /**
@@ -35,12 +34,23 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class Tx_Solr_JavascriptManager {
 
+	const POSITION_HEADER = 'header';
+	const POSITION_FOOTER = 'footer';
+	const POSITION_NONE   = 'none';
+
 	/**
 	 * Javascript file configuration.
 	 *
 	 * @var array
 	 */
 	protected $configuration;
+
+	/**
+	 * Where to insert the JS, either header or footer
+	 *
+	 * @var string
+	 */
+	protected $javascriptInsertPosition;
 
 	/**
 	 * Javascript files to load.
@@ -117,19 +127,17 @@ class Tx_Solr_JavascriptManager {
 		$position = Tx_Solr_Util::getTypoScriptValue('plugin.tx_solr.javascriptFiles.loadIn');
 
 		if (empty($position)) {
-			$position = 'none';
+			$position = self::POSITION_NONE;
 		}
 
 		switch ($position) {
-			case 'header':
-				$this->buildJavascriptTags();
+			case self::POSITION_HEADER:
 				$this->addJavascriptToPageHeader();
 				break;
-			case 'footer':
-
-				$this->registerForEndOfFrontendHook();
+			case self::POSITION_FOOTER:
+				$this->registerForRenderPreProcessHook();
 				break;
-			case 'none':
+			case self::POSITION_NONE:
 					// do nothing, JS is handled by the integrator
 				break;
 			default:
@@ -145,8 +153,8 @@ class Tx_Solr_JavascriptManager {
 	 *
 	 */
 	protected function addJavascriptToPageHeader() {
-		$scripts = implode("\n", $this->javaScriptTags);
-		$GLOBALS['TSFE']->additionalHeaderData[uniqid('tx_solr-javascript-')] = $scripts;
+		$this->javascriptInsertPosition = self::POSITION_HEADER;
+		$this->buildJavascriptTags();
 	}
 
 	/**
@@ -154,32 +162,24 @@ class Tx_Solr_JavascriptManager {
 	 * so that the Javascript can be added at the end of the page.
 	 *
 	 */
-	protected function registerForEndOfFrontendHook() {
-		$GLOBALS['TSFE']->TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-cached']['tx_solr-javascript'] = 'Tx_Solr_JavascriptManager->addJavascriptToPageFooter';
-		$GLOBALS['TSFE']->TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe']['tx_solr-javascript'] = 'Tx_Solr_JavascriptManager->addJavascriptToPageFooter';
+	protected function registerForRenderPreProcessHook() {
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['tx_solr-javascript'] = 'Tx_Solr_JavascriptManager->addJavascriptToPageFooter';
 	}
 
 	/**
 	 * Adds all the loaded javascript files and snippets to the page footer.
 	 *
-	 * @param array Array of parameters - not used
-	 * @param TypoScriptFrontendController TYPO3 Frontend
 	 */
-	public function addJavascriptToPageFooter($parameters, TypoScriptFrontendController $parentObject) {
+	public function addJavascriptToPageFooter() {
+		$this->javascriptInsertPosition = self::POSITION_FOOTER;
 		$this->buildJavascriptTags();
-
-		$parentObject->content = str_replace(
-			'</body>',
-			implode("\n", $this->javaScriptTags) . "\n\n</body>",
-			$parentObject->content
-		);
 	}
 
 	/**
 	 * Builds the tags to load the javascript needed for different features.
 	 *
 	 */
-	protected function buildJavascriptTags() {
+	public function buildJavascriptTags() {
 		$filePathPrefix = '';
 		if (!empty($GLOBALS['TSFE']->config['config']['absRefPrefix'])) {
 			$filePathPrefix = $GLOBALS['TSFE']->config['config']['absRefPrefix'];
@@ -189,7 +189,8 @@ class Tx_Solr_JavascriptManager {
 		foreach (self::$files as $identifier => $file) {
 			if (!$file['addedToPage']) {
 				self::$files[$identifier]['addedToPage'] = TRUE;
-				$this->javaScriptTags[$identifier] = '<script src="' . $filePathPrefix . $file['file'] . '" type="text/javascript"></script>';
+
+				$this->addJsFile($filePathPrefix . $file['file']);
 			}
 		}
 
@@ -207,15 +208,33 @@ class Tx_Solr_JavascriptManager {
 
 			// add snippets
 		if (!empty($snippets)) {
-			$snippets = <<<SNIPPETS
-<script type="text/javascript">
-	/*<![CDATA[*/
-	$snippets
-	/*]]>*/
-</script>
-SNIPPETS;
+			$this->addJsInline($snippets);
+		}
+	}
 
-			$this->javaScriptTags['snippets'] = $snippets;
+	/**
+	 * Adds a JavaScript file to the page
+	 *
+	 * @param string $file File path
+	 */
+	protected function addJsFile($file) {
+		if ($this->javascriptInsertPosition == self::POSITION_HEADER) {
+			$GLOBALS['TSFE']->getPageRenderer()->addJsFile($file);
+		} else {
+			$GLOBALS['TSFE']->getPageRenderer()->addJsFooterFile($file);
+		}
+	}
+
+	/**
+	 * Adds a JavaScript snippet to the page
+	 *
+	 * @param string $snippet JS snippet
+	 */
+	protected function addJsInline($snippet) {
+		if ($this->javascriptInsertPosition == self::POSITION_HEADER) {
+			$GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_solr-javascript-inline', $snippet);
+		} else {
+			$GLOBALS['TSFE']->getPageRenderer()->addJsFooterInlineCode('tx_solr-javascript-inline', $snippet);
 		}
 	}
 
