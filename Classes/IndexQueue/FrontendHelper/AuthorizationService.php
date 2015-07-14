@@ -52,6 +52,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends AbstractAut
 	 */
 	public function getUser() {
 		return array(
+			'uid'           => 0,
 			'username'      => self::SOLR_INDEXER_USERNAME,
 			'authenticated' => TRUE
 		);
