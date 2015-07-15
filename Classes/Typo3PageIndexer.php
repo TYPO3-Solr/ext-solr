@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Page Indexer to index TYPO3 pages used by the Index Queue.
