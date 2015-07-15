@@ -49,6 +49,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends tx_sv_authb
 	 */
 	public function getUser() {
 		return array(
+			'uid'           => 0,
 			'username'      => self::SOLR_INDEXER_USERNAME,
 			'authenticated' => TRUE
 		);
