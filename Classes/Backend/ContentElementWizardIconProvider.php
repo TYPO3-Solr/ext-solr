@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Backend;
 /***************************************************************
  *  Copyright notice
  *
@@ -24,7 +25,6 @@
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-
 /**
  * Provides the icon and entry for the content element wizard
  *
@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Backend_ContentElementWizardIconProvider {
+class ContentElementWizardIconProvider {
 
 	/**
 	 * Adds the results plugin to the content element wizard

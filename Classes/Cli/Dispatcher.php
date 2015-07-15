@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Cli;
 /***************************************************************
 *  Copyright notice
 *
@@ -25,7 +26,6 @@
 use TYPO3\CMS\Core\Controller\CommandLineController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A CLI command dispatcher
  *
@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Cli_Dispatcher extends CommandLineController {
+class Dispatcher extends CommandLineController {
 
 	/**
 	 * Constructor.

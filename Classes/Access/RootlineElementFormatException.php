@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Access;
 /***************************************************************
 *  Copyright notice
 *
@@ -30,7 +31,6 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Access_RootlineElementFormatException extends InvalidArgumentException {
+class RootlineElementFormatException extends \InvalidArgumentException {
 
 }
-

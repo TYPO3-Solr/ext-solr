@@ -29,7 +29,6 @@ use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-
 /**
  * Adds an additional field to specify the Solr server to initialize the index queue for
  *
@@ -118,7 +117,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 
 		if (!is_null($this->site)) {
 			$selectorField = GeneralUtility::makeInstance(
-				'Tx_Solr_Backend_IndexingConfigurationSelectorField',
+				'ApacheSolrForTypo3\\Solr\\Backend\\IndexingConfigurationSelectorField',
 				$this->site
 			);
 			$selectorField->setFormElementName('tx_scheduler[indexingConfigurations]');

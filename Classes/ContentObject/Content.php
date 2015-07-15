@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ContentObject;
 /***************************************************************
 *  Copyright notice
 *
@@ -24,7 +25,6 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A content object (cObj) to clean a database field in a way so that it can be
  * used to fill a Solr document's content field.
@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ContentObject_Content {
+class Content {
 
 	const CONTENT_OBJECT_NAME = 'SOLR_CONTENT';
 
@@ -79,4 +79,3 @@ class Tx_Solr_ContentObject_Content {
 	}
 
 }
-

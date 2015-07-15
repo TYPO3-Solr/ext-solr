@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Backend;
 /***************************************************************
 *  Copyright notice
 *
@@ -24,7 +25,6 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Index Queue indexing configuration selector form field.
  *
@@ -32,12 +32,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Backend_IndexingConfigurationSelectorField {
+class IndexingConfigurationSelectorField {
 
 	/**
 	 * Site used to determine indexing configurations
 	 *
-	 * @var Tx_Solr_Site
+	 * @var \Tx_Solr_Site
 	 */
 	protected $site;
 
@@ -59,9 +59,9 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Solr_Site $site The site to use to determine indexing configurations
+	 * @param \Tx_Solr_Site $site The site to use to determine indexing configurations
 	 */
-	public function __construct(Tx_Solr_Site $site = NULL) {
+	public function __construct(\Tx_Solr_Site $site = NULL) {
 		$this->site = $site;
 	}
 
@@ -140,7 +140,7 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 	protected function getIndexQueueConfigurationTableMap() {
 		$indexingTableMap = array();
 
-		$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
+		$solrConfiguration = \Tx_Solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
 
 		foreach ($solrConfiguration['index.']['queue.'] as $name => $configuration) {
 			if (is_array($configuration)) {
@@ -250,4 +250,5 @@ class Tx_Solr_Backend_IndexingConfigurationSelectorField {
 		return '';
 	}
 
+}
 }

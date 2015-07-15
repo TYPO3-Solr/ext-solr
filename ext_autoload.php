@@ -49,17 +49,17 @@ return array(
 	'tx_solr_typo3pageindexer' => $extensionPath . 'Classes/Typo3PageIndexer.php',
 	'tx_solr_util' => $extensionPath . 'Classes/Util.php',
 
-	'tx_solr_access_rootline' => $extensionPath . 'Classes/Access/Rootline.php',
-	'tx_solr_access_rootlineelement' => $extensionPath . 'Classes/Access/RootlineElement.php',
-	'tx_solr_access_rootlineelementformatexception' => $extensionPath . 'Classes/Access/RootlineElementFormatException.php',
+	'ApacheSolrForTypo3\Solr\Access\Rootline' => $extensionPath . 'Classes/Access/Rootline.php',
+	'ApacheSolrForTypo3\Solr\Access\RootlineElement' => $extensionPath . 'Classes/Access/RootlineElement.php',
+	'ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException' => $extensionPath . 'Classes/Access/RootlineElementFormatException.php',
 
-	'tx_solr_backend_indexingconfigurationselectorfield' => $extensionPath . 'Classes/Backend/IndexingConfigurationSelectorField.php',
+	'ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField' => $extensionPath . 'Classes/Backend/IndexingConfigurationSelectorField.php',
 
-	'tx_solr_cli_dispatcher' => $extensionPath . 'Classes/Cli/Dispatcher.php',
+	'ApacheSolrForTypo3\Solr\Cli\Dispatcher' => $extensionPath . 'Classes/Cli/Dispatcher.php',
 
-	'tx_solr_contentobject_content' => $extensionPath . 'Classes/ContentObject/Content.php',
-	'tx_solr_contentobject_multivalue' => $extensionPath . 'Classes/ContentObject/Multivalue.php',
-	'tx_solr_contentobject_relation' => $extensionPath . 'Classes/ContentObject/Relation.php',
+	'ApacheSolrForTypo3\Solr\ContentObject\Content' => $extensionPath . 'Classes/ContentObject/Content.php',
+	'ApacheSolrForTypo3\Solr\ContentObject\Multivalue' => $extensionPath . 'Classes/ContentObject/Multivalue.php',
+	'ApacheSolrForTypo3\Solr\ContentObject\Relation' => $extensionPath . 'Classes/ContentObject/Relation.php',
 
 	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'Classes/Facet/AbstractFacetRenderer.php',
 	'tx_solr_facet_daterangefacetrenderer' => $extensionPath . 'Classes/Facet/DateRangeFacetRenderer.php',
@@ -193,7 +193,7 @@ return array(
 	'tx_solr_scheduler_reindextask' => $extensionPath . 'Scheduler/ReIndexTask.php',
 	'tx_solr_scheduler_reindextaskadditionalfieldprovider' => $extensionPath . 'Scheduler/ReIndexTaskAdditionalFieldProvider.php',
 
-		// reports
+	// reports
 
 	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'Report/AccessFilterPluginInstalledStatus.php',
 	'tx_solr_report_allowurlfopenstatus' => $extensionPath . 'Report/AllowUrlFOpenStatus.php',
@@ -204,7 +204,7 @@ return array(
 	'tx_solr_report_solrstatus' => $extensionPath . 'Report/SolrStatus.php',
 	'tx_solr_report_solrversionstatus' => $extensionPath . 'Report/SolrVersionStatus.php',
 
-		// interfaces
+	// interfaces
 
 	'tx_solr_additionalindexqueueitemindexer' => $extensionPath . 'Interfaces/AdditionalIndexQueueItemIndexer.php',
 	'tx_solr_additionalpageindexer' => $extensionPath . 'Interfaces/AdditionalPageIndexer.php',

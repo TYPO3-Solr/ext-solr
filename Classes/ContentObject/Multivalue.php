@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ContentObject;
 /***************************************************************
 *  Copyright notice
 *
@@ -24,7 +25,6 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A content object (cObj) to turn comma separated strings into an array to be
  * used in a multi value field in a Solr document.
@@ -43,7 +43,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ContentObject_Multivalue {
+class Multivalue {
 
 	const CONTENT_OBJECT_NAME = 'SOLR_MULTIVALUE';
 
@@ -95,4 +95,3 @@ class Tx_Solr_ContentObject_Multivalue {
 
 
 }
-
