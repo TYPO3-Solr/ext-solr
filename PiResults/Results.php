@@ -252,7 +252,9 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 		if(!empty($this->conf['search.']['query.']['filter.'])) {
 			// special filter to limit search to specific page tree branches
 			if (array_key_exists('__pageSections', $this->conf['search.']['query.']['filter.'])) {
-				$this->query->setRootlineFilter($this->conf['search.']['query.']['filter.']['__pageSections']);
+				/* @var $query	Tx_Solr_Query */
+				$query = GeneralUtility::makeInstance('Tx_Solr_Query', '');
+				$additionalFilters['rootline'] = $query->getRootlineFilter($this->conf['search.']['query.']['filter.']['__pageSections']);
 				unset($this->conf['search.']['query.']['filter.']['__pageSections']);
 			}
 
