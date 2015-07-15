@@ -153,7 +153,7 @@ class Relation {
 
 			$whereClause = $foreignTableName . '.' . $foreignTableField . ' = ' . (int) $localRecordUid;
 		} else {
-			$foreignTableUids = t3lib_div::intExplode(',', $parentContentObject->data[$localFieldName]);
+			$foreignTableUids = GeneralUtility::intExplode(',', $parentContentObject->data[$localFieldName]);
 
 			if (count($foreignTableUids) > 1) {
 				$whereClause = $foreignTableName . '.uid IN (' . implode(',', $foreignTableUids) . ')';
@@ -161,7 +161,7 @@ class Relation {
 				$whereClause = $foreignTableName . '.uid = ' . (int) array_shift($foreignTableUids);
 			}
 		}
-		$pageSelector = t3lib_div::makeInstance('t3lib_pageSelect');
+		$pageSelector = GeneralUtility::makeInstance('t3lib_pageSelect');
 		$whereClause .= $pageSelector->enableFields( $foreignTableName );
 
 		$relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
