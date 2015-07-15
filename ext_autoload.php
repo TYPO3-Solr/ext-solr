@@ -188,10 +188,10 @@ return array(
 
 		// scheduler tasks
 
-	'tx_solr_piresults_parameterkeepingformmodifier' => $extensionPath . 'PiResults/ParameterKeepingFormModifier.php',
-	'tx_solr_piresults_spellcheckformmodifier' => $extensionPath . 'PiResults/SpellCheckFormModifier.php',
-	'tx_solr_piresults_suggestformmodifier' => $extensionPath . 'PiResults/SuggestFormModifier.php',
-	'tx_solr_piresults_queryanalyzerformmodifier' => $extensionPath . 'PiResults/QueryAnalyzerFormModifier.php',
+	'tx_solr_scheduler_indexqueueworkertask' => $extensionPath . 'Scheduler/IndexQueueWorkerTask.php',
+	'tx_solr_scheduler_indexqueueworkertaskadditionalfieldprovider' => $extensionPath . 'Scheduler/IndexQueueWorkerTaskAdditionalFieldProvider.php',
+	'tx_solr_scheduler_reindextask' => $extensionPath . 'Scheduler/ReIndexTask.php',
+	'tx_solr_scheduler_reindextaskadditionalfieldprovider' => $extensionPath . 'Scheduler/ReIndexTaskAdditionalFieldProvider.php',
 
 	// reports
 
