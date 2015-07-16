@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 /**
  * Facet renderer factory, creates facet renderers depending on the configured
  * type of a facet.
@@ -84,7 +84,7 @@ class Tx_Solr_Facet_FacetRendererFactory {
 	/**
 	 * Looks up a facet's configuration and creates a facet renderer accordingly.
 	 *
-	 * @param Tx_Solr_Facet_Facet $facet Facet
+	 * @param Facet $facet Facet
 	 * @return Tx_Solr_FacetRenderer Facet renderer as defined by the facet's configuration
 	 */
 	public function getFacetRendererByFacet($facet) {

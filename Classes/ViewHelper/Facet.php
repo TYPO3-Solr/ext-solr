@@ -79,7 +79,7 @@ class Tx_Solr_ViewHelper_Facet extends Tx_Solr_ViewHelper_AbstractSubpartViewHel
 			);
 
 			$facet = GeneralUtility::makeInstance(
-				'Tx_Solr_Facet_Facet',
+				'ApacheSolrForTypo3\\Solr\\Facet\\Facet',
 				$facetName,
 				$facetRendererFactory->getFacetInternalType($facetName)
 			);

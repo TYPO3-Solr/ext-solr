@@ -39,7 +39,7 @@ class DateRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacet
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return \Tx_Solr_Facet_Facet::TYPE_RANGE;
+		return Facet::TYPE_RANGE;
 	}
 
 	/**

@@ -48,7 +48,7 @@ abstract class AbstractFacetRenderer implements \Tx_Solr_FacetRenderer {
 	/**
 	 * The facet to render.
 	 *
-	 * @var \Tx_Solr_Facet_Facet
+	 * @var Facet
 	 */
 	protected $facet;
 
@@ -88,9 +88,9 @@ abstract class AbstractFacetRenderer implements \Tx_Solr_FacetRenderer {
 	/**
 	 * Constructor.
 	 *
-	 * @param \Tx_Solr_Facet_Facet $facet The facet to render.
+	 * @param Facet $facet The facet to render.
 	 */
-	public function __construct(\Tx_Solr_Facet_Facet $facet) {
+	public function __construct(Facet $facet) {
 		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
 
 		$this->facet              = $facet;
@@ -162,7 +162,7 @@ abstract class AbstractFacetRenderer implements \Tx_Solr_FacetRenderer {
 	public function getFacetProperties() {
 		$facet = $this->facetConfiguration;
 
-			// TODO move these properties into \Tx_Solr_Facet_Facet and provide them via ArrayAccess interface
+			// TODO move these properties into Facet and provide them via ArrayAccess interface
 
 		$facet['name']      = $this->facetName;
 		$facet['count']     = $this->getFacetOptionsCount();

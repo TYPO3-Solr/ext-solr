@@ -25,6 +25,7 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 
 /**
  * Renderer for hierarchical facets.
@@ -49,7 +50,7 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends ApacheSolrForTypo3\Solr\Fa
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_FIELD;
+		return Facet::TYPE_FIELD;
 	}
 
 	/**
