@@ -193,27 +193,27 @@ Tx_Solr_CommandResolver::registerPluginCommand(
 
 	// registering facet types
 
-Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'numericRange',
 	'Tx_Solr_Facet_NumericRangeFacetRenderer',
 	'Tx_Solr_Query_FilterEncoder_Range',
 	'Tx_Solr_Query_FilterEncoder_Range'
 );
 
-Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'dateRange',
 	'ApacheSolrForTypo3\Solr\Facet\DateRangeFacetRenderer',
 	'Tx_Solr_Query_FilterEncoder_DateRange',
 	'Tx_Solr_Query_FilterEncoder_DateRange'
 );
 
-Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'hierarchy',
 	'Tx_Solr_Facet_HierarchicalFacetRenderer',
 	'Tx_Solr_Query_FilterEncoder_Hierarchy'
 );
 
-Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'queryGroup',
 	'Tx_Solr_Facet_QueryGroupFacetRenderer',
 	'Tx_Solr_Query_FilterEncoder_QueryGroup',

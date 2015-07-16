@@ -65,7 +65,7 @@ return array(
 	'ApacheSolrForTypo3\Solr\Facet\DateRangeFacetRenderer' => $extensionPath . 'Classes/Facet/DateRangeFacetRenderer.php',
 	'ApacheSolrForTypo3\Solr\Facet\Facet' => $extensionPath . 'Classes/Facet/Facet.php',
 	'ApacheSolrForTypo3\Solr\Facet\FacetOption' => $extensionPath . 'Classes/Facet/FacetOption.php',
-	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'Classes/Facet/FacetRendererFactory.php',
+	'ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory' => $extensionPath . 'Classes/Facet/FacetRendererFactory.php',
 	'tx_solr_facet_hierarchicalfacetrenderer' => $extensionPath . 'Classes/Facet/HierarchicalFacetRenderer.php',
 	'tx_solr_facet_hierarchicalfacethelper' => $extensionPath . 'Classes/Facet/HierarchicalFacetHelper.php',
 	'tx_solr_facet_linkbuilder' => $extensionPath . 'Classes/Facet/LinkBuilder.php',

@@ -117,9 +117,9 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 
 		$facetRendererFactory = GeneralUtility::makeInstance(
-			'Tx_Solr_Facet_FacetRendererFactory',
+			'ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory',
 			$configuredFacets
-		); /** @var $facetRendererFactory Tx_Solr_Facet_FacetRendererFactory */
+		); /** @var $facetRendererFactory ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory */
 
 		foreach ($configuredFacets as $facetName => $facetConfiguration) {
 			$facetName = substr($facetName, 0, -1);
