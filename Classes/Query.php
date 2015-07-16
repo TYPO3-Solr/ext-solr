@@ -650,16 +650,6 @@ class Tx_Solr_Query {
 	 * @param string $pageIds Comma-separated list of page IDs
 	 */
 	public function setRootlineFilter($pageIds) {
-		$this->addFilter($this->getRootlineFilter($pageIds));
-	}
-
-	/**
-	 * Returns the rootline filter (certain page tree branches)
-	 *
-	 * @param string $pageIds Comma-separated list of page IDs
-	 * @return string
-	 */
-	public function getRootlineFilter($pageIds) {
 		$pageIds = GeneralUtility::trimExplode(',', $pageIds);
 		$filters = array();
 
@@ -671,7 +661,7 @@ class Tx_Solr_Query {
 			$filters[] = 'rootline:"' . $lastLevel . '"';
 		}
 
-		return implode(' OR ', $filters);
+		$this->addFilter(implode(' OR ', $filters));
 	}
 
 
