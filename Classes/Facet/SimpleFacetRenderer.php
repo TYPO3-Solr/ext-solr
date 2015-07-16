@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_SimpleFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class Tx_Solr_Facet_SimpleFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -73,7 +73,7 @@ class Tx_Solr_Facet_SimpleFacetRenderer extends Tx_Solr_Facet_AbstractFacetRende
 	 * reached.
 	 *
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::getFacetProperties()
+	 * @see ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::getFacetProperties()
 	 */
 	public function getFacetProperties() {
 		$facet = parent::getFacetProperties();

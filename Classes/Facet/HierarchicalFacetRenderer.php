@@ -32,7 +32,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class Tx_Solr_Facet_HierarchicalFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {
 
 	/**
 	 * Parent content object, set when called by ContentObjectRenderer->callUserFunction()
@@ -55,7 +55,7 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFace
 	/**
 	 * Renders the complete hierarchical facet.
 	 *
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::renderFacetOptions()
+	 * @see ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::renderFacetOptions()
 	 * @return string Facet markup.
 	 */
 	protected function renderFacetOptions() {

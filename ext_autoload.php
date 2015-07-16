@@ -61,7 +61,7 @@ return array(
 	'ApacheSolrForTypo3\Solr\ContentObject\Multivalue' => $extensionPath . 'Classes/ContentObject/Multivalue.php',
 	'ApacheSolrForTypo3\Solr\ContentObject\Relation' => $extensionPath . 'Classes/ContentObject/Relation.php',
 
-	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'Classes/Facet/AbstractFacetRenderer.php',
+	'ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer' => $extensionPath . 'Classes/Facet/AbstractFacetRenderer.php',
 	'tx_solr_facet_daterangefacetrenderer' => $extensionPath . 'Classes/Facet/DateRangeFacetRenderer.php',
 	'tx_solr_facet_facet' => $extensionPath . 'Classes/Facet/Facet.php',
 	'tx_solr_facet_facetoption' => $extensionPath . 'Classes/Facet/FacetOption.php',

@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_NumericRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class Tx_Solr_Facet_NumericRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -46,7 +46,7 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends Tx_Solr_Facet_AbstractFace
 	/**
 	 * Renders a numeric range facet by providing a slider
 	 *
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::renderFacet()
+	 * @see ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::renderFacet()
 	 */
 	protected function renderFacetOptions() {
 		$facetContent = '';
