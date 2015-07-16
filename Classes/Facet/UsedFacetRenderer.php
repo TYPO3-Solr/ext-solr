@@ -64,7 +64,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	public function render() {
 		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
 
-		$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+		$facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 			$this->facetName,
 			$this->filterValue
 		);

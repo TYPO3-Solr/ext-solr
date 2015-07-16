@@ -131,11 +131,11 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 				continue;
 			}
 
-			$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+			$facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 				$this->facetName,
 				$facetOption,
 				$facetOptionResultCount
-			);	/* @var $facetOption Tx_Solr_Facet_FacetOption */
+			);	/* @var $facetOption FacetOption */
 
 			$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder',
 				$this->query,

@@ -63,8 +63,8 @@ return array(
 
 	'ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer' => $extensionPath . 'Classes/Facet/AbstractFacetRenderer.php',
 	'ApacheSolrForTypo3\Solr\Facet\DateRangeFacetRenderer' => $extensionPath . 'Classes/Facet/DateRangeFacetRenderer.php',
-	'tx_solr_facet_facet' => $extensionPath . 'Classes/Facet/Facet.php',
-	'tx_solr_facet_facetoption' => $extensionPath . 'Classes/Facet/FacetOption.php',
+	'ApacheSolrForTypo3\Solr\Facet\Facet' => $extensionPath . 'Classes/Facet/Facet.php',
+	'ApacheSolrForTypo3\Solr\Facet\FacetOption' => $extensionPath . 'Classes/Facet/FacetOption.php',
 	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'Classes/Facet/FacetRendererFactory.php',
 	'tx_solr_facet_hierarchicalfacetrenderer' => $extensionPath . 'Classes/Facet/HierarchicalFacetRenderer.php',
 	'tx_solr_facet_hierarchicalfacethelper' => $extensionPath . 'Classes/Facet/HierarchicalFacetHelper.php',

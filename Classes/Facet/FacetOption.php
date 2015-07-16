@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
 /***************************************************************
 *  Copyright notice
 *
@@ -28,7 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_FacetOption {
+class FacetOption {
 
 	/**
 	 * Facet name.
@@ -80,7 +81,7 @@ class Tx_Solr_Facet_FacetOption {
 		$this->value           = $facetOptionValue;
 		$this->numberOfResults = intval($facetOptionNumberOfResults);
 
-		$solrConfiguration        = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration        = \Tx_Solr_Util::getSolrConfiguration();
 		$this->facetConfiguration = $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 	}
 
