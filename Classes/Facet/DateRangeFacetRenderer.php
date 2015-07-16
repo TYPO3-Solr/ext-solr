@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
 /***************************************************************
 *  Copyright notice
 *
@@ -29,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
-class Tx_Solr_Facet_DateRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {
+class DateRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -38,14 +39,14 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_RANGE;
+		return \Tx_Solr_Facet_Facet::TYPE_RANGE;
 	}
 
 	/**
 	 * Renders a date renage facet by providing two input fields, enhanced with
 	 * date pickers.
 	 *
-	 * @see Tx_Solr_Facet_SimpleFacetRenderer::render()
+	 * @see \Tx_Solr_Facet_SimpleFacetRenderer::render()
 	 */
 	public function renderFacetOptions() {
 		$this->loadJavaScriptFiles();
@@ -59,7 +60,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet
 					jQuery(".dateselector").change(function(){ solrRequest("'
 						. $this->facetName
 						. '", "'
-						. Tx_Solr_Query_FilterEncoder_DateRange::DELIMITER
+						. \Tx_Solr_Query_FilterEncoder_DateRange::DELIMITER
 						. '") });
 					});
 				/*]]>*/
