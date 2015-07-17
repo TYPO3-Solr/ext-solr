@@ -242,12 +242,12 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 		}
 
 			// SOLR_MULTIVALUE - always returns serialized array
-		if ($indexingConfiguration[$solrFieldName] == Tx_Solr_ContentObject_Multivalue::CONTENT_OBJECT_NAME) {
+		if ($indexingConfiguration[$solrFieldName] == \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME) {
 			$isSerialized = TRUE;
 		}
 
 			// SOLR_RELATION - returns serialized array if multiValue option is set
-		if ($indexingConfiguration[$solrFieldName] == Tx_Solr_ContentObject_Relation::CONTENT_OBJECT_NAME
+		if ($indexingConfiguration[$solrFieldName] == \ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME
 			&& !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])
 		) {
 			$isSerialized = TRUE;
