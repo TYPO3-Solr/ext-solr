@@ -23,7 +23,8 @@ $iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
 		'ModuleIndexQueue' => $iconPath . 'IndexQueue.png',
 		'ModuleIndexMaintenance' => $iconPath . 'IndexMaintenance.png',
 		'ModuleIndexFields' => $iconPath . 'IndexFields.png',
-		'ModuleSynonyms' => $iconPath . 'Synonyms.png'
+		'ModuleSynonyms' => $iconPath . 'Synonyms.png',
+		'InitSolrConnections' => $iconPath . 'InitSolrConnections.png'
 	),
 	$_EXTKEY
 );
@@ -101,7 +102,10 @@ if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&Tx_Solr_ConnectionManager';
 
 	// register Clear Cache Menu ajax call
-	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = 'Tx_Solr_ConnectionManager->updateConnections';
+	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = array(
+		'callbackMethod' => 'Tx_Solr_ConnectionManager->updateConnections',
+		'csrfTokenCheck' => true
+	);
 
 
 	// the order of registering the garbage collector and the record monitor is important!
