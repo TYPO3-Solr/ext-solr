@@ -15,44 +15,6 @@ if(!function_exists('strptime')) {
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// adding the Search plugin
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-	$_EXTKEY,
-	'PiResults/Results.php',
-	'_PiResults_Results',
-	'list_type',
-	FALSE
-);
-// backwards compatibility due to class name change
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup', '
-	tt_content.list.20.solr_pi_results =< plugin.tx_solr_PiResults_Results
-', 'defaultContentRendering');
-
-	// adding the Search Form plugin
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-	$_EXTKEY,
-	'PiSearch/Search.php',
-	'_PiSearch_Search',
-	'list_type',
-	TRUE
-);
-// backwards compatibility due to class name change
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup', '
-	tt_content.list.20.solr_pi_search =< plugin.tx_solr_PiSearch_Search
-', 'defaultContentRendering');
-
-	// adding the Frequent Searches plugin
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
-	$_EXTKEY,
-	'PiFrequentSearches/FrequentSearches.php',
-	'_PiFrequentSearches_FrequentSearches',
-	'list_type',
-	TRUE
-);
-// backwards compatibility due to class name change
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript($_EXTKEY, 'setup', '
-	tt_content.list.20.solr_pi_frequentsearches =< plugin.tx_solr_PiFrequentSearches_FrequentSearches
-', 'defaultContentRendering');
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
