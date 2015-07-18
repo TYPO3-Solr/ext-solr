@@ -19,12 +19,12 @@ if (TYPO3_MODE == 'BE') {
 $iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
 \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
 	array(
-		'ModuleOverview' => $iconPath . 'Search.png',
-		'ModuleIndexQueue' => $iconPath . 'IndexQueue.png',
+		'ModuleOverview'         => $iconPath . 'Search.png',
+		'ModuleIndexQueue'       => $iconPath . 'IndexQueue.png',
 		'ModuleIndexMaintenance' => $iconPath . 'IndexMaintenance.png',
-		'ModuleIndexFields' => $iconPath . 'IndexFields.png',
-		'ModuleSynonyms' => $iconPath . 'Synonyms.png',
-		'InitSolrConnections' => $iconPath . 'InitSolrConnections.png'
+		'ModuleIndexFields'      => $iconPath . 'IndexFields.png',
+		'ModuleSynonyms'         => $iconPath . 'Synonyms.png',
+		'InitSolrConnections'    => $iconPath . 'InitSolrConnections.png'
 	),
 	$_EXTKEY
 );
