@@ -304,8 +304,8 @@ class Tx_Solr_ConnectionManager implements SingletonInterface, ClearCacheActions
 			$cacheActions[] = array(
 				'id'    => 'clearSolrConnectionCache',
 				'title' => $title,
-				'href'  => $GLOBALS['BACK_PATH'] . 'ajax.php?ajaxID=solr::clearSolrConnectionCache',
-				'icon'  => '<img '. IconUtility::skinImg($GLOBALS['BACK_PATH'], ExtensionManagementUtility::extRelPath('solr') . 'Resources/Images/cache-init-solr-connections.png', 'width="16" height="16"').' title="'.$title.'" alt="'.$title.'" />'
+				'href'  => \TYPO3\CMS\Backend\Utility\BackendUtility::getAjaxUrl('solr::clearSolrConnectionCache'),
+				'icon'  => IconUtility::getSpriteIcon('extensions-solr-InitSolrConnection')
 			);
 			$optionValues[] = 'clearSolrConnectionCache';
 		}

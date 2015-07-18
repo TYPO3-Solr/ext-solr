@@ -87,8 +87,6 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	 * @return void
 	 */
 	protected function initializeCache() {
-		\TYPO3\CMS\Core\Cache\Cache::initializeCachingFramework();
-
 		try {
 			$this->cacheInstance = $this->cacheManager->getCache('tx_solr');
 		} catch (NoSuchCacheException  $e) {
