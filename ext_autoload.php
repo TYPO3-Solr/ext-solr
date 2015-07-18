@@ -169,7 +169,6 @@ return array(
 	'tx_solr_piresults_results' => $extensionPath . 'PiResults/Results.php',
 	'tx_solr_pisearch_search' => $extensionPath . 'PiSearch/Search.php',
 
-	'tx_solr_piresults_advancedformcommand' => $extensionPath . 'PiResults/AdvancedFormCommand.php',
 	'tx_solr_piresults_errorscommand' => $extensionPath . 'PiResults/ErrorsCommand.php',
 	'tx_solr_piresults_facetingcommand' => $extensionPath . 'PiResults/FacetingCommand.php',
 	'tx_solr_piresults_formcommand' => $extensionPath . 'PiResults/FormCommand.php',

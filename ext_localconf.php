@@ -113,13 +113,6 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 	// register plugin commands
 
-#Tx_Solr_CommandResolver::registerPluginCommand(
-#	'results',
-#	'advanced_form',
-#	'Tx_Solr_PiResults_AdvancedFormCommand',
-#	Tx_Solr_PluginCommand::REQUIREMENT_NONE
-#);
-
 Tx_Solr_CommandResolver::registerPluginCommand(
 	'results, frequentsearches',
 	'frequentSearches',
