@@ -444,7 +444,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 * This method should be implemented to return the TSconfig key which
 	 * contains the template name for this template.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#initializeTemplateEngine()
+	 * @see initializeTemplateEngine()
 	 * @return string The TSconfig key containing the template name
 	 */
 	protected abstract function getTemplateFileKey();
@@ -470,7 +470,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * Should return the relevant subpart of the template.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#initializeTemplateEngine()
+	 * @see initializeTemplateEngine()
 	 * @return string The subpart of the template to be used
 	 */
 	protected abstract function getSubpart();
@@ -479,7 +479,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 * This method should return the plugin key. Reads some configuration
 	 * options in initializeTemplateEngine()
 	 *
- 	 * @see Tx_Solr_pluginBase_PluginBase#initializeTemplateEngine()
+ 	 * @see initializeTemplateEngine()
 	 * @return string The plugin key
 	 */
 	protected abstract function getPluginKey();
