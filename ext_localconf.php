@@ -304,7 +304,7 @@ if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations
 
 if (TYPO3_MODE == 'BE') {
 	$TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array(
-		'EXT:' . $_EXTKEY . '/CliApi/Dispatch.php',
+		'EXT:' . $_EXTKEY . '/Classes/Cli/Api.php',
 		'_CLI_solr'
 	);
 }

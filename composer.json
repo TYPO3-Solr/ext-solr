@@ -36,7 +36,6 @@
     "classmap": [
       "Lib/",
       "Classes/",
-      "CliApi/",
       "EidApi/",
       "EidSuggest/",
       "Interfaces/",
