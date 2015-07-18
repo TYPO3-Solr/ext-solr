@@ -190,9 +190,13 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 */
 	protected function initializeSearch() {
 		parent::initializeSearch();
-		$this->initializeAdditionalFilters();
 
 		$rawUserQuery = $this->getRawUserQuery();
+
+		/* @var $query	Tx_Solr_Query */
+		$query = GeneralUtility::makeInstance('Tx_Solr_Query', $rawUserQuery);
+
+		$this->initializeAdditionalFilters($query);
 
 			// TODO check whether a search has been conducted already?
 		if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])) {
@@ -200,9 +204,6 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
 				GeneralUtility::devLog('received search query', 'solr', 0, array($rawUserQuery));
 			}
-
-			$query = GeneralUtility::makeInstance('Tx_Solr_Query', $rawUserQuery);
-			/* @var $query	Tx_Solr_Query */
 
 			$resultsPerPage = $this->getNumberOfResultsPerPage();
 			$query->setResultsPerPage($resultsPerPage);
@@ -244,15 +245,16 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Initializes additional filters configured through TypoScript and
 	 * Flexforms for use in regular queries and suggest queries.
 	 *
+	 * @param Tx_Solr_Query $query
 	 * @return void
 	 */
-	protected function initializeAdditionalFilters() {
+	protected function initializeAdditionalFilters(Tx_Solr_Query $query) {
 		$additionalFilters = array();
 
 		if(!empty($this->conf['search.']['query.']['filter.'])) {
 			// special filter to limit search to specific page tree branches
 			if (array_key_exists('__pageSections', $this->conf['search.']['query.']['filter.'])) {
-				$this->query->setRootlineFilter($this->conf['search.']['query.']['filter.']['__pageSections']);
+				$query->setRootlineFilter($this->conf['search.']['query.']['filter.']['__pageSections']);
 				unset($this->conf['search.']['query.']['filter.']['__pageSections']);
 			}
 

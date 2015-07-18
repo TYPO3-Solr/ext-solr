@@ -647,7 +647,7 @@ class Tx_Solr_Query {
 	/**
 	 * Limits the query to certain page tree branches
 	 *
-	 * @param array $pageIds Comma-separated list of page IDs
+	 * @param string $pageIds Comma-separated list of page IDs
 	 */
 	public function setRootlineFilter($pageIds) {
 		$pageIds = GeneralUtility::trimExplode(',', $pageIds);
