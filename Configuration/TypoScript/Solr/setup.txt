@@ -1,14 +1,14 @@
 plugin.tx_solr_PiResults_Results = USER_INT
 plugin.tx_solr_PiResults_Results.userFunc = Tx_Solr_PiResults_Results->main
-tt_content.list.20.solr_pi_results < plugin.tx_solr_PiResults_Results
+tt_content.list.20.solr_pi_results =< plugin.tx_solr_PiResults_Results
 
 plugin.tx_solr_PiSearch_Search = USER
 plugin.tx_solr_PiSearch_Search.userFunc = Tx_Solr_PiSearch_Search->main
-tt_content.list.20.solr_pi_search < plugin.tx_solr_PiSearch_Search
+tt_content.list.20.solr_pi_search =< plugin.tx_solr_PiSearch_Search
 
 plugin.tx_solr_PiFrequentSearches_FrequentSearches = USER
 plugin.tx_solr_PiFrequentSearches_FrequentSearches.userFunc = Tx_Solr_PiFrequentSearches_FrequentSearches->main
-tt_content.list.20.solr_pi_frequentsearches < plugin.tx_solr_PiFrequentSearches_FrequentSearches
+tt_content.list.20.solr_pi_frequentsearches =< plugin.tx_solr_PiFrequentSearches_FrequentSearches
 
 
 plugin.tx_solr {
