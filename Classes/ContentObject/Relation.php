@@ -268,11 +268,13 @@ class Relation {
 
 		$selectUids = $relationHandler->tableArray[$foreignTableName];
 		if (is_array($selectUids) && count($selectUids) > 0) {
+			$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+			$whereClause = $pageSelector->enableFields( $foreignTableName );
 			$relatedRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'uid, pid, ' .$foreignTableLabelField,
 				$foreignTableName,
 				'uid IN (' . implode(',', $selectUids) . ')'
-					. BackendUtility::deleteClause($foreignTableName)
+					. $whereClause
 			);
 			foreach ($relatedRecords as $record) {
 				if ($GLOBALS['TSFE']->sys_language_uid > 0) {
