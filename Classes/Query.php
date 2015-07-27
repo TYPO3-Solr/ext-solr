@@ -596,6 +596,15 @@ class Tx_Solr_Query {
 	}
 
 	/**
+	 * Removes a filter based on key of filter array
+	 *
+	 * @param string $key array key
+	 */
+	public function removeFilterByKey($key) {
+		unset($this->filters[$key]);
+	}
+
+	/**
 	 * Gets all currently applied filters.
 	 *
 	 * @return array Array of filters
