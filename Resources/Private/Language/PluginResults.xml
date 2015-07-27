@@ -99,12 +99,17 @@
 			<label index="results_found">@resultsTotal résultats ont été trouvés en @resultsTime millisecondes.</label>
 			<label index="results_searched_for">Recherche de "@searchWord".</label>
 			<label index="no_results_nothing_found">Rien trouvé pour "@searchWord".</label>
+			<label index="no_results_showing_results_suggestion">Affichage des résultats pour "@suggestedWord"</label>
+			<label index="no_results_search_for_original">Chercher "@searchWord" à la place.</label>
 			<label index="lastSearches">Dernières recherches</label>
 			<label index="frequentSearches">Recherches fréquentes</label>
 			<label index="relevance">Pertinence</label>
+			<label index="sponsored">Sponsorisé</label>
 			<label index="file_mimetype">Type de fichier</label>
 			<label index="file_referenced">Référencé par</label>
 			<label index="results_per_page">Résultats par page:</label>
+			<label index="error_errors">Veuillez nous excuser, des erreurs sont survenues :</label>
+			<label index="error_emptyQuery">Veuillez remplir les termes de recherche dans le champ ci-dessus.</label>
 		</languageKey>
 		<languageKey index="it" type="array">
 			<label index="searchUnavailable">La ricerca non è al momento disponibile.</label>
