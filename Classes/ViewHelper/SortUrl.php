@@ -86,8 +86,11 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 
 		$sortParameters = array();
 		foreach($sortOptions as $sortOption){
-			if (array_key_exists($sortOption, $configuredSortOptions)) {
+			if (isset($configuredSortOptions[$sortOption])) {
 				$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
+				if (isset($configuredSortOptions[$sortOption]['defaultOrder'])) {
+					$sortDirection = $configuredSortOptions[$sortOption]['defaultOrder'];
+				}
 				$sortParameter = $sortOption . ' ' . $sortDirection;
 
 				foreach($urlSortParameters as $urlSortParameter){
