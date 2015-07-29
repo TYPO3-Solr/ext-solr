@@ -64,7 +64,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	public function render() {
 		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
 
-		$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+		$facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 			$this->facetName,
 			$this->filterValue
 		);
@@ -79,7 +79,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 		if ($this->facetConfiguration['type'] == 'hierarchy') {
 				// FIXME decouple this
 			$filterEncoder = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_Hierarchy');
-			$facet         = GeneralUtility::makeInstance('Tx_Solr_Facet_Facet', $this->facetName);
+			$facet         = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', $this->facetName);
 			$facetRenderer = GeneralUtility::makeInstance('Tx_Solr_Facet_HierarchicalFacetRenderer', $facet);
 
 			$facetText = $facetRenderer->getLastPathSegmentFromHierarchicalFacetOption($filterEncoder->decodeFilter($this->filterValue));

@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
 /***************************************************************
 *  Copyright notice
 *
@@ -30,10 +31,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRenderer {
+abstract class AbstractFacetRenderer implements \Tx_Solr_FacetRenderer {
 
 	/**
-	 * @var Tx_Solr_Search
+	 * @var \Tx_Solr_Search
 	 */
 	protected $search;
 
@@ -47,7 +48,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	/**
 	 * The facet to render.
 	 *
-	 * @var Tx_Solr_Facet_Facet
+	 * @var Facet
 	 */
 	protected $facet;
 
@@ -64,7 +65,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	/**
 	 * Template
 	 *
-	 * @var Tx_Solr_Template
+	 * @var \Tx_Solr_Template
 	 */
 	protected $template = NULL;
 
@@ -78,7 +79,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	/**
 	 * Query link builder
 	 *
-	 * @var Tx_Solr_Query_LinkBuilder
+	 * @var \Tx_Solr_Query_LinkBuilder
 	 */
 	protected $queryLinkBuilder;
 
@@ -87,15 +88,15 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_Facet_Facet $facet The facet to render.
+	 * @param Facet $facet The facet to render.
 	 */
-	public function __construct(Tx_Solr_Facet_Facet $facet) {
+	public function __construct(Facet $facet) {
 		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
 
 		$this->facet              = $facet;
 		$this->facetName          = $facet->getName();
 
-		$this->solrConfiguration  = Tx_Solr_Util::getSolrConfiguration();
+		$this->solrConfiguration  = \Tx_Solr_Util::getSolrConfiguration();
 		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 		$this->linkTargetPageId   = $GLOBALS['TSFE']->id;
 
@@ -156,12 +157,12 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::getFacetProperties()
+	 * @see \Tx_Solr_FacetRenderer::getFacetProperties()
 	 */
 	public function getFacetProperties() {
 		$facet = $this->facetConfiguration;
 
-			// TODO move these properties into Tx_Solr_Facet_Facet and provide them via ArrayAccess interface
+			// TODO move these properties into Facet and provide them via ArrayAccess interface
 
 		$facet['name']      = $this->facetName;
 		$facet['count']     = $this->getFacetOptionsCount();
@@ -185,7 +186,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::getFacetOptions()
+	 * @see \Tx_Solr_FacetRenderer::getFacetOptions()
 	 */
 	public function getFacetOptions() {
 		return $this->facet->getOptionsRaw();
@@ -193,7 +194,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::getFacetOptionsCount()
+	 * @see \Tx_Solr_FacetRenderer::getFacetOptionsCount()
 	 */
 	public function getFacetOptionsCount() {
 		return $this->facet->getOptionsCount();
@@ -201,15 +202,15 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::setTemplate()
+	 * @see \Tx_Solr_FacetRenderer::setTemplate()
 	 */
-	public function setTemplate(Tx_Solr_Template $template) {
+	public function setTemplate(\Tx_Solr_Template $template) {
 		$this->template = $template;
 	}
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::setLinkTargetPageId()
+	 * @see \Tx_Solr_FacetRenderer::setLinkTargetPageId()
 	 */
 	public function setLinkTargetPageId($linkTargetPageId){
 		$this->linkTargetPageId = intval($linkTargetPageId);

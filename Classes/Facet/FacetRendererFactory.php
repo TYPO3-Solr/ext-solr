@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
 /***************************************************************
 *  Copyright notice
 *
@@ -22,7 +23,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Facet renderer factory, creates facet renderers depending on the configured
  * type of a facet.
@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_FacetRendererFactory {
+class FacetRendererFactory {
 
 	/**
 	 * Registration information for facet types.
@@ -84,7 +84,7 @@ class Tx_Solr_Facet_FacetRendererFactory {
 	/**
 	 * Looks up a facet's configuration and creates a facet renderer accordingly.
 	 *
-	 * @param Tx_Solr_Facet_Facet $facet Facet
+	 * @param \ApacheSolrForTypo3\Solr\Facet\Facet $facet Facet
 	 * @return Tx_Solr_FacetRenderer Facet renderer as defined by the facet's configuration
 	 */
 	public function getFacetRendererByFacet($facet) {
@@ -129,7 +129,7 @@ class Tx_Solr_Facet_FacetRendererFactory {
 	 */
 	protected function getFacetRendererClassNameByFacetType($facetType) {
 		if (!array_key_exists($facetType, self::$facetTypes)) {
-			throw new InvalidArgumentException(
+			throw new \InvalidArgumentException(
 				'No renderer configured for facet type "' . $facetType .'"',
 				1328041286
 			);
@@ -145,8 +145,8 @@ class Tx_Solr_Facet_FacetRendererFactory {
 	 * @throws UnexpectedValueException if $object does not implement Tx_Solr_FacetRenderer
 	 */
 	protected function validateObjectIsFacetRenderer($object) {
-		if (!($object instanceof Tx_Solr_FacetRenderer)) {
-			throw new UnexpectedValueException(
+		if (!($object instanceof \Tx_Solr_FacetRenderer)) {
+			throw new \UnexpectedValueException(
 				get_class($object) . ' is not an implementation of Tx_Solr_FacetRenderer',
 				1328038100
 			);

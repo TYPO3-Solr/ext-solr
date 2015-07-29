@@ -25,6 +25,8 @@
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use ApacheSolrForTypo3\Solr\Facet\Facet;
+use ApacheSolrForTypo3\Solr\Facet\FacetOption;
 
 /**
  * Renderer for hierarchical facets.
@@ -32,7 +34,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class Tx_Solr_Facet_HierarchicalFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {
 
 	/**
 	 * Parent content object, set when called by ContentObjectRenderer->callUserFunction()
@@ -49,13 +51,13 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFace
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_FIELD;
+		return Facet::TYPE_FIELD;
 	}
 
 	/**
 	 * Renders the complete hierarchical facet.
 	 *
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::renderFacetOptions()
+	 * @see ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::renderFacetOptions()
 	 * @return string Facet markup.
 	 */
 	protected function renderFacetOptions() {
@@ -68,13 +70,13 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFace
 			// enrich the facet options with links before building the menu structure
 		$enrichedFacetOptions = array();
 		foreach ($facetOptions as $facetOptionValue => $facetOptionResultCount) {
-			$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+			$facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 				$this->facetName,
 				$facetOptionValue,
 				$facetOptionResultCount
 			);
 
-			/* @var $facetOption Tx_Solr_Facet_FacetOption */
+			/* @var $facetOption FacetOption */
 			$facetOption->setUrlValue($filterEncoder->encodeFilter($facetOptionValue));
 
 			$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);

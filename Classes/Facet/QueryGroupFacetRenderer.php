@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 /**
  * Query group facet renderer.
  *
@@ -39,7 +39,7 @@ class Tx_Solr_Facet_QueryGroupFacetRenderer extends Tx_Solr_Facet_SimpleFacetRen
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_QUERY;
+		return Facet::TYPE_QUERY;
 	}
 
 	/**
@@ -47,7 +47,7 @@ class Tx_Solr_Facet_QueryGroupFacetRenderer extends Tx_Solr_Facet_SimpleFacetRen
 	 * can be easily used in rendering instructions and URL generation.
 	 *
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::getFacetOptions()
+	 * @see ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::getFacetOptions()
 	 */
 	public function getFacetOptions() {
 		$facetOptions    = array();

@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
 /***************************************************************
 *  Copyright notice
 *
@@ -29,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
-class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class DateRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -38,14 +39,14 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_RANGE;
+		return Facet::TYPE_RANGE;
 	}
 
 	/**
 	 * Renders a date renage facet by providing two input fields, enhanced with
 	 * date pickers.
 	 *
-	 * @see Tx_Solr_Facet_SimpleFacetRenderer::render()
+	 * @see \Tx_Solr_Facet_SimpleFacetRenderer::render()
 	 */
 	public function renderFacetOptions() {
 		$this->loadJavaScriptFiles();
@@ -59,7 +60,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 					jQuery(".dateselector").change(function(){ solrRequest("'
 						. $this->facetName
 						. '", "'
-						. Tx_Solr_Query_FilterEncoder_DateRange::DELIMITER
+						. \Tx_Solr_Query_FilterEncoder_DateRange::DELIMITER
 						. '") });
 					});
 				/*]]>*/
@@ -79,7 +80,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 	 * tbd
 	 */
 	protected function buildAddFacetUrl($facetName) {
-		$facetOption      = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption', $this->facetName, '');
+		$facetOption      = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption', $this->facetName, '');
 		$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
 		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 

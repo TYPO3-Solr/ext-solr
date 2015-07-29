@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
 /***************************************************************
  *  Copyright notice
  *
@@ -28,7 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_Facet {
+class Facet {
 
 	const TYPE_FIELD = 'field';
 
@@ -38,7 +39,7 @@ class Tx_Solr_Facet_Facet {
 
 
 	/**
-	 * @var Tx_Solr_Search
+	 * @var \Tx_Solr_Search
 	 */
 	protected $search;
 
@@ -90,7 +91,7 @@ class Tx_Solr_Facet_Facet {
 	 *
 	 */
 	protected function initializeConfiguration() {
-		$solrConfiguration   = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration   = \Tx_Solr_Util::getSolrConfiguration();
 		$this->configuration = $solrConfiguration['search.']['faceting.']['facets.'][$this->name . '.'];
 
 		$this->field = $this->configuration['field'];
@@ -208,7 +209,7 @@ class Tx_Solr_Facet_Facet {
 	protected function isRequirementMet(array $requirement) {
 		$requirementMet = FALSE;
 
-		$requiredFacet      = GeneralUtility::makeInstance('Tx_Solr_Facet_Facet', $requirement['facet']);
+		$requiredFacet      = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', $requirement['facet']);
 		$selectedOptions    = $requiredFacet->getSelectedOptions();
 		$csvSelectedOptions = implode(', ', $selectedOptions);
 

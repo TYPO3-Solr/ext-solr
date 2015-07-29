@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 
 /**
  * Numeric range facet renderer.
@@ -31,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_NumericRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class Tx_Solr_Facet_NumericRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -40,13 +41,13 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends Tx_Solr_Facet_AbstractFace
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_RANGE;
+		return Facet::TYPE_RANGE;
 	}
 
 	/**
 	 * Renders a numeric range facet by providing a slider
 	 *
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::renderFacet()
+	 * @see ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::renderFacet()
 	 */
 	protected function renderFacetOptions() {
 		$facetContent = '';
@@ -56,7 +57,7 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends Tx_Solr_Facet_AbstractFace
 		$handlePositions = $this->getHandlePositions();
 
 			// the option's value will be appended by javascript after the slide event
-		$incompleteFacetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+		$incompleteFacetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 			$this->facetName,
 			''
 		);
