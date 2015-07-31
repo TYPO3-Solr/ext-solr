@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -427,7 +429,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * @return int number of results to show per page
 	 */
 	public function getNumberOfResultsPerPage() {
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 		$resultsPerPageSwitchOptions = GeneralUtility::intExplode(',', $configuration['search.']['results.']['resultsPerPageSwitchOptions']);
 
 		$solrParameters     = array();

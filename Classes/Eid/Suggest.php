@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 
@@ -48,7 +49,7 @@ $GLOBALS['TSFE']->getConfigArray();
 
 $GLOBALS['TSFE']->sys_language_uid = $languageId;
 
-$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+$solrConfiguration = Util::getSolrConfiguration();
 
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -61,7 +62,7 @@ if ('OpenSearch' == GeneralUtility::_GET('format')) {
 	$q = GeneralUtility::_GET('q');
 }
 
-$allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
+$allowedSites = Util::resolveSiteHashAllowedSites(
 	$pageId,
 	$solrConfiguration['search.']['query.']['allowedSites']
 );

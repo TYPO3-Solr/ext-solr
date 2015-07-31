@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -90,7 +91,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * @param DataHandler $tceMain TYPO3 Core Engine parent object
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain) {
-		if (Tx_Solr_Util::isDraftRecord($table, $uid)) {
+		if (Util::isDraftRecord($table, $uid)) {
 				// skip workspaces: index only LIVE workspace
 			return;
 		}
@@ -104,7 +105,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 					$uid   = $tceMain->getPID($table, $uid);
 					$table = 'pages';
 				case 'pages':
-					$this->solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($uid);
+					$this->solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
 					$record                  = $this->getRecord($table, $uid);
 
 					if (!empty($record) && $this->isEnabledRecord($table, $record)) {
@@ -120,14 +121,14 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 					break;
 				default:
 					$recordPageId            = $tceMain->getPID($table, $uid);
-					$this->solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($recordPageId);
+					$this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
 					$monitoredTables         = $this->getMonitoredTables($recordPageId);
 
 					if (in_array($table, $monitoredTables)) {
 						$record = $this->getRecord($table, $uid);
 
 						if (!empty($record) && $this->isEnabledRecord($table, $record)) {
-							if (Tx_Solr_Util::isLocalizedRecord($table, $record)) {
+							if (Util::isLocalizedRecord($table, $record)) {
 									// if it's a localization overlay, update the original record instead
 								$uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
 							}
@@ -147,7 +148,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 
 		if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
 				// moving pages in LIVE workspace
-			$this->solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($uid);
+			$this->solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
 			$record = $this->getRecord('pages', $uid);
 			if (!empty($record) && $this->isEnabledRecord($table, $record)) {
 				$this->indexQueue->updateItem('pages', $uid);
@@ -181,7 +182,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			$recordUid = $tceMain->substNEWwithIDs[$recordUid];
 		}
 
-		if (Tx_Solr_Util::isDraftRecord($table, $recordUid)) {
+		if (Util::isDraftRecord($table, $recordUid)) {
 				// skip workspaces: index only LIVE workspace
 			return;
 		}
@@ -198,7 +199,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			$recordUid   = $recordPageId;
 		}
 
-		$this->solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($recordPageId);
+		$this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
 		$monitoredTables = $this->getMonitoredTables($recordPageId);
 
 		if (in_array($recordTable, $monitoredTables, TRUE)) {
@@ -207,7 +208,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			if (!empty($record)) {
 					// only update/insert the item if we actually found a record
 
-				if (Tx_Solr_Util::isLocalizedRecord($recordTable, $record)) {
+				if (Util::isLocalizedRecord($recordTable, $record)) {
 					// if it's a localization overlay, update the original record instead
 					$recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
 
@@ -321,7 +322,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 
 			// FIXME!! $pageId might be outside of a site root and thus might not know about solr configuration
 			// -> leads to record not being queued for reindexing
-		$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($pageId);
+		$solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
 		$indexingConfigurations = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue')
 			->getTableIndexingConfigurations($solrConfiguration);
 

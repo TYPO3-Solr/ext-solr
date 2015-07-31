@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -53,7 +55,7 @@ class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 	public function execute(array $arguments = array()) {
 		$content            = '';
 		$sortDirection      = trim($arguments[0]);
-		$configuration      = Tx_Solr_Util::getSolrConfiguration();
+		$configuration      = Util::getSolrConfiguration();
 		$contentObject      = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$defaultImagePrefix = 'EXT:solr/Resources/Images/Indicator';
 

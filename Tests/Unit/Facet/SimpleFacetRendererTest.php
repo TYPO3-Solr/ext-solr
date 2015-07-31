@@ -22,6 +22,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +35,7 @@ class Tx_Solr_Facet_SimpleFacetRendererTest extends Tx_Phpunit_TestCase {
 	protected $facetRenderer;
 
 	public function setUp() {
-		Tx_Solr_Util::initializeTsfe('1');
+		Util::initializeTsfe('1');
 
 		$GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
 		$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = '0';

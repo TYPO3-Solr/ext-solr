@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,7 +24,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use InvalidArgumentException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Util {
+class Util {
 
 	const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
 
@@ -61,10 +63,10 @@ class Tx_Solr_Util {
 	/**
 	 * Returns the document id for a given file.
 	 *
-	 * @param Tx_Solr_FileIndexer_File $file	The file
+	 * @param \Tx_Solr_FileIndexer_File $file The file
 	 * @return string The document id for that file
 	 */
-	public static function getFileDocumentId(Tx_Solr_FileIndexer_File $file) {
+	public static function getFileDocumentId(\Tx_Solr_FileIndexer_File $file) {
 
 		try {
 			$documentId = self::getDocumentId(
@@ -170,8 +172,8 @@ class Tx_Solr_Util {
 	 * Returns a given CamelCasedString as an lowercase string with underscores.
 	 * Example: Converts BlogExample to blog_example, and minimalValue to minimal_value
 	 *
-	 * @param string	 $string: String to be converted to lowercase underscore
-	 * @return string	 lowercase_and_underscored_string
+	 * @param string $string String to be converted to lowercase underscore
+	 * @return string     lowercase_and_underscored_string
 	 */
 	public static function camelCaseToLowerCaseUnderscored($string) {
 		return strtolower(preg_replace('/(?<=\w)([A-Z])/', '_\\1', $string));
@@ -181,8 +183,8 @@ class Tx_Solr_Util {
 	 * Returns a given string with underscores as UpperCamelCase.
 	 * Example: Converts blog_example to BlogExample
 	 *
-	 * @param string	 $string: String to be converted to camel case
-	 * @return string	 UpperCamelCasedWord
+	 * @param string $string String to be converted to camel case
+	 * @return string     UpperCamelCasedWord
 	 */
 	public static function underscoredToUpperCamelCase($string) {
 		return str_replace(' ', '', ucwords(str_replace('_', ' ', strtolower($string))));
@@ -207,8 +209,8 @@ class Tx_Solr_Util {
 	 * @return array EXT:solr TypoScript configuration from plugin.tx_solr
 	 */
 	public static function getSolrConfiguration() {
-			// TODO if in BE, create a fake TSFE and retrieve the configuration
-			// TODO merge flexform configuration
+		// TODO if in BE, create a fake TSFE and retrieve the configuration
+		// TODO merge flexform configuration
 		return $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
 	}
 
@@ -240,14 +242,14 @@ class Tx_Solr_Util {
 		static $configurationCache = array();
 		$configuration             = array();
 
-			// If we're on UID 0, we cannot retrieve a configuration currently.
-			// getRootline() below throws an exception (since #typo3-60 )
-			// as UID 0 cannot have any parent rootline by design.
+		// If we're on UID 0, we cannot retrieve a configuration currently.
+		// getRootline() below throws an exception (since #typo3-60 )
+		// as UID 0 cannot have any parent rootline by design.
 		if ($pageId == 0) {
 			return array();
 		}
 
-			// TODO needs some caching -> caching framework?
+		// TODO needs some caching -> caching framework?
 		$cacheId = $pageId . '|' . $path . '|' . $language;
 
 		if ($initializeTsfe) {
@@ -267,12 +269,12 @@ class Tx_Solr_Util {
 				}
 
 				$pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-				$rootLine   = $pageSelect->getRootLine($pageId);
+				$rootLine = $pageSelect->getRootLine($pageId);
 
 				if (empty($GLOBALS['TSFE']->sys_page)) {
 					if (empty($GLOBALS['TSFE'])) {
-						$GLOBALS['TSFE'] = new stdClass();
-						$GLOBALS['TSFE']->tmpl = new stdClass();
+						$GLOBALS['TSFE'] = new \stdClass();
+						$GLOBALS['TSFE']->tmpl = new \stdClass();
 						$GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
 						$GLOBALS['TSFE']->sys_page       = $pageSelect;
 						$GLOBALS['TSFE']->id             = $pageId;
@@ -302,12 +304,12 @@ class Tx_Solr_Util {
 	 * @param integer $pageId The page id to initialize the TSFE for
 	 * @param integer $language System language uid, optional, defaults to 0
 	 * @param boolean $useCache Use cache to reuse TSFE
-	 * @return	void
+	 * @return void
 	 */
 	public static function initializeTsfe($pageId, $language = 0, $useCache = TRUE) {
 		static $tsfeCache = array();
 
-			// resetting, a TSFE instance with data from a different page Id could be set already
+		// resetting, a TSFE instance with data from a different page Id could be set already
 		unset($GLOBALS['TSFE']);
 
 		$cacheId = $pageId . '|' . $language;
@@ -321,9 +323,9 @@ class Tx_Solr_Util {
 
 			$GLOBALS['TSFE'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
-				// for certain situations we need to trick TSFE into granting us
-				// access to the page in any case to make getPageAndRootline() work
-				// see http://forge.typo3.org/issues/42122
+			// for certain situations we need to trick TSFE into granting us
+			// access to the page in any case to make getPageAndRootline() work
+			// see http://forge.typo3.org/issues/42122
 			$pageRecord = BackendUtility::getRecord('pages', $pageId);
 			$groupListBackup = $GLOBALS['TSFE']->gr_list;
 			$GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
@@ -331,7 +333,7 @@ class Tx_Solr_Util {
 			$GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 			$GLOBALS['TSFE']->getPageAndRootline();
 
-				// restore gr_list
+			// restore gr_list
 			$GLOBALS['TSFE']->gr_list = $groupListBackup;
 
 			$GLOBALS['TSFE']->initTemplate();
@@ -367,18 +369,18 @@ class Tx_Solr_Util {
 	 * @return integer The page's tree branch's root page ID
 	 */
 	public static function getRootPageId($pageId = 0) {
-		$rootLine   = array();
+		$rootLine = array();
 		$rootPageId = intval($pageId) ? intval($pageId) : $GLOBALS['TSFE']->id;
 
-			// frontend
+		// frontend
 		if (!empty($GLOBALS['TSFE']->rootLine)) {
 			$rootLine = $GLOBALS['TSFE']->rootLine;
 		}
 
-			// fallback, backend
+		// fallback, backend
 		if ($pageId != 0 && (empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
 			$pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-			$rootLine   = $pageSelect->getRootLine($pageId, '', TRUE);
+			$rootLine = $pageSelect->getRootLine($pageId, '', TRUE);
 		}
 
 		$rootLine = array_reverse($rootLine);
@@ -444,7 +446,7 @@ class Tx_Solr_Util {
 		}
 
 		$pathExploded = explode('.', trim($path));
-			// remove last object
+		// remove last object
 		$lastPathSegment = array_pop($pathExploded);
 		$pathBranch      = $GLOBALS['TSFE']->tmpl->setup;
 

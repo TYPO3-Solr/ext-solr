@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -97,7 +99,7 @@ class Tx_Solr_Query {
 	 *
 	 */
 	public function __construct($keywords) {
-		$this->solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+		$this->solrConfiguration = Util::getSolrConfiguration();
 
 		$this->fieldList = array('*', 'score');
 		$this->setKeywords($keywords);
@@ -645,7 +647,7 @@ class Tx_Solr_Query {
 		$filters      = array();
 
 		foreach($allowedSites as $site) {
-			$siteHash = Tx_Solr_Util::getSiteHashForDomain($site);
+			$siteHash = Util::getSiteHashForDomain($site);
 
 			$filters[] = 'siteHash:"' . $siteHash . '"';
 		}

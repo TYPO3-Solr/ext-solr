@@ -22,7 +22,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Default facet renderer.
@@ -90,7 +93,7 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 		$this->template           = clone $template;
 		$this->query              = $query;
 
-		$solrConfiguration        = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration        = Util::getSolrConfiguration();
 		$this->facetConfiguration = $solrConfiguration['search.']['faceting.']['facets.'][$facetName . '.'];
 	}
 
@@ -112,7 +115,7 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 	 */
 	public function renderFacetOptions() {
 		$facetOptionLinks  = array();
-		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration = Util::getSolrConfiguration();
 		$this->template->workOnSubpart('single_facet_option');
 
 		if (!empty($this->facetConfiguration['manualSortOrder'])) {

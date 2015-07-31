@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * QueryAnalyzer form modifier, outputs parsed lucene query
@@ -51,7 +53,7 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	 *
 	 */
 	public function __construct() {
-		$this->configuration = Tx_Solr_Util::getSolrConfiguration();
+		$this->configuration = Util::getSolrConfiguration();
 	}
 
 	/**

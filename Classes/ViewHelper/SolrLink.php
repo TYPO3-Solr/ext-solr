@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -126,7 +127,7 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 		} elseif (is_string($linkArgument) && !empty($linkArgument)) {
 				// interpret a TypoScript path
 			try {
-				$typoscript      = Tx_Solr_Util::getTypoScriptObject($linkArgument);
+				$typoscript      = Util::getTypoScriptObject($linkArgument);
 				$pathExploded    = explode('.', $linkArgument);
 				$lastPathSegment = array_pop($pathExploded);
 

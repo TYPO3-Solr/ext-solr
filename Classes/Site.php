@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_Util;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -99,7 +99,7 @@ class Site {
 	 * @return Site Site for the given page Id.
 	 */
 	public static function getSiteByPageId($pageId) {
-		$rootPageId = Tx_Solr_Util::getRootPageId($pageId);
+		$rootPageId = Util::getRootPageId($pageId);
 
 		if (!isset(self::$sitesCache[$rootPageId])) {
 			self::$sitesCache[$rootPageId] = GeneralUtility::makeInstance(__CLASS__, $rootPageId);
@@ -163,7 +163,7 @@ class Site {
 	 * @return array The Solr TypoScript configuration
 	 */
 	public function getSolrConfiguration() {
-		return Tx_Solr_Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
+		return Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
 	}
 
 	/**
@@ -212,7 +212,7 @@ class Site {
 	public function getDefaultLanguage() {
 		$siteDefaultLanguage = 0;
 
-		$configuration = Tx_Solr_Util::getConfigurationFromPageId(
+		$configuration = Util::getConfigurationFromPageId(
 			$this->rootPage['uid'],
 			'config',
 			FALSE,
@@ -291,7 +291,7 @@ class Site {
 	 * @return string Site Hash.
 	 */
 	public function getSiteHash() {
-		return Tx_Solr_Util::getSiteHashForDomain($this->getDomain());
+		return Util::getSiteHashForDomain($this->getDomain());
 	}
 
 	/**
@@ -338,7 +338,7 @@ class Site {
 	 */
 	public function getSysLanguageMode() {
 		if (is_null($this->sysLanguageMode)) {
-			Tx_Solr_Util::initializeTsfe($this->getRootPageId());
+			Util::initializeTsfe($this->getRootPageId());
 			$this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
 		}
 

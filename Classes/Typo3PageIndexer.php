@@ -23,8 +23,10 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+
 
 /**
  * Page Indexer to index TYPO3 pages used by the Index Queue.
@@ -225,7 +227,7 @@ class Tx_Solr_Typo3PageIndexer {
 		$site       = Site::getSiteByPageId($this->page->id);
 		$pageRecord = $this->page->page;
 
-		self::$pageSolrDocumentId = $documentId = Tx_Solr_Util::getPageDocumentId(
+		self::$pageSolrDocumentId = $documentId = Util::getPageDocumentId(
 			$this->page->id,
 			$this->page->type,
 			$this->page->sys_language_uid,

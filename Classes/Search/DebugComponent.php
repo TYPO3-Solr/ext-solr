@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Debug search component
@@ -48,7 +50,7 @@ class Tx_Solr_Search_DebugComponent extends Tx_Solr_Search_AbstractComponent imp
 	 *
 	 */
 	public function initializeSearchComponent() {
-		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration = Util::getSolrConfiguration();
 
 		if ($solrConfiguration['enableDebugMode']) {
 			$this->query->setDebugMode();

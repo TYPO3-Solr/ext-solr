@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Enables query elevation
@@ -39,7 +41,7 @@ class Tx_Solr_Query_Modifier_Elevation implements Tx_Solr_QueryModifier {
 	 * @return Tx_Solr_Query The modified query with enabled elevation mode
 	 */
 	public function modifyQuery(Tx_Solr_Query $query) {
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 
 		$query->setQueryElevation(
 			$configuration['search.']['elevation'],

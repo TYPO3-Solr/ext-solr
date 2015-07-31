@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -88,7 +90,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 			$sorting = $this->sanitizeString($urlParameters['sort']);
 		}
 
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 		if ($configuration['search.']['frequentSearches.']['useLowercaseKeywords']) {
 			$keywords = strtolower($keywords);
 		}

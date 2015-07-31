@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -72,7 +73,7 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 		$value           = '';
 		$pathExploded    = explode('.', trim($path));
 		$lastPathSegment = array_pop($pathExploded);
-		$pathBranch      = Tx_Solr_Util::getTypoScriptObject($path);
+		$pathBranch      = Util::getTypoScriptObject($path);
 
 			// generate ts content
 		$cObj = $this->getContentObject();

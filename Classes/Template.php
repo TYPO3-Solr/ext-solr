@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -188,8 +189,8 @@ class Tx_Solr_Template {
 
 			$classNamePrefix = ExtensionManagementUtility::getCN($extensionKey);
 
-			$possibleFilename  = Tx_Solr_Util::underscoredToUpperCamelCase($helperKey) . '.php';
-			$possibleClassName = $classNamePrefix . '_' . str_replace('/', '_', $viewHelperRealPath) . '_' . Tx_Solr_Util::underscoredToUpperCamelCase($helperKey);
+			$possibleFilename  = Util::underscoredToUpperCamelCase($helperKey) . '.php';
+			$possibleClassName = $classNamePrefix . '_' . str_replace('/', '_', $viewHelperRealPath) . '_' . Util::underscoredToUpperCamelCase($helperKey);
 
 			$viewHelperIncludePath = ExtensionManagementUtility::extPath($extensionKey)
 				. $viewHelperPath . $possibleFilename;
@@ -313,7 +314,7 @@ class Tx_Solr_Template {
 	protected function escapeResultContent($content) {
 		$content = htmlspecialchars($content, NULL, NULL, FALSE);
 
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 		$highlightingWrap = $configuration['search.']['results.']['resultsHighlighting.']['wrap'];
 		$highlightingWrap = explode('|', $highlightingWrap);
 
@@ -814,7 +815,7 @@ class Tx_Solr_Template {
 				if (is_array($variableValue) && array_key_exists($valueSelector, $normalizedKeysArray)) {
 						$resolvedValue = $normalizedKeysArray[$valueSelector];
 				} elseif (is_object($variableValue)) {
-					$resolveMethod = 'get' . Tx_Solr_Util::camelize($valueSelector);
+					$resolveMethod = 'get' . Util::camelize($valueSelector);
 					$resolvedValue = $variableValue->$resolveMethod();
 				}
 			} else {

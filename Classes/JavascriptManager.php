@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -79,7 +80,7 @@ class Tx_Solr_JavascriptManager {
 	 *
 	 */
 	public function __construct() {
-		$this->configuration = Tx_Solr_Util::getSolrConfiguration();
+		$this->configuration = Util::getSolrConfiguration();
 	}
 
 	/**
@@ -105,7 +106,7 @@ class Tx_Solr_JavascriptManager {
 	public function loadFile($fileKey) {
 		if (!array_key_exists($fileKey, self::$files)) {
 			$typoScriptPath = 'plugin.tx_solr.javascriptFiles.' . $fileKey;
-			$fileReference  = Tx_Solr_Util::getTypoScriptValue($typoScriptPath);
+			$fileReference  = Util::getTypoScriptValue($typoScriptPath);
 
 			if (!empty($fileReference)) {
 				self::$files[$fileKey] = array(
@@ -124,7 +125,7 @@ class Tx_Solr_JavascriptManager {
 	 *
 	 */
 	public function addJavascriptToPage() {
-		$position = Tx_Solr_Util::getTypoScriptValue('plugin.tx_solr.javascriptFiles.loadIn');
+		$position = Util::getTypoScriptValue('plugin.tx_solr.javascriptFiles.loadIn');
 
 		if (empty($position)) {
 			$position = self::POSITION_NONE;

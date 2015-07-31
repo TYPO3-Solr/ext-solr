@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -103,7 +104,7 @@ class Tx_Solr_GarbageCollector {
 			return;
 		}
 
-		if (Tx_Solr_Util::isDraftRecord($table, $uid)) {
+		if (Util::isDraftRecord($table, $uid)) {
 				// skip workspaces: collect garbage only for LIVE workspace
 			return;
 		}
@@ -144,7 +145,7 @@ class Tx_Solr_GarbageCollector {
 			return;
 		}
 
-		if (Tx_Solr_Util::isDraftRecord($table, $uid)) {
+		if (Util::isDraftRecord($table, $uid)) {
 				// skip workspaces: collect garbage only for LIVE workspace
 			return;
 		}
@@ -297,7 +298,7 @@ class Tx_Solr_GarbageCollector {
 	 * @return boolean TRUE if the page can be indexed according to its page type, FALSE otherwise
 	 */
 	protected function isIndexablePageType(array $record) {
-		return Tx_Solr_Util::isAllowedPageType($record);
+		return Util::isAllowedPageType($record);
 	}
 
 	/**

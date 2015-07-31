@@ -21,7 +21,10 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A facet
@@ -90,7 +93,7 @@ class Tx_Solr_Facet_Facet {
 	 *
 	 */
 	protected function initializeConfiguration() {
-		$solrConfiguration   = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration   = Util::getSolrConfiguration();
 		$this->configuration = $solrConfiguration['search.']['faceting.']['facets.'][$this->name . '.'];
 
 		$this->field = $this->configuration['field'];

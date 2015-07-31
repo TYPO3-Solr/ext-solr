@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Statistics search component
@@ -37,7 +39,7 @@ class Tx_Solr_Search_StatisticsComponent extends Tx_Solr_Search_AbstractComponen
 	 *
 	 */
 	public function initializeSearchComponent() {
-		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration = Util::getSolrConfiguration();
 
 		if(!empty($solrConfiguration['statistics'])) {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics']     = 'Tx_Solr_Query_Modifier_Statistics';

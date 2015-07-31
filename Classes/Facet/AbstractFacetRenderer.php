@@ -21,7 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Facet renderer.
@@ -95,7 +98,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 		$this->facet              = $facet;
 		$this->facetName          = $facet->getName();
 
-		$this->solrConfiguration  = Tx_Solr_Util::getSolrConfiguration();
+		$this->solrConfiguration  = Util::getSolrConfiguration();
 		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 		$this->linkTargetPageId   = $GLOBALS['TSFE']->id;
 

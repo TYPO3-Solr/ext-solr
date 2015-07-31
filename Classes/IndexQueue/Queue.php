@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -289,7 +290,7 @@ class Tx_Solr_IndexQueue_Queue {
 
 		if (!is_null($rootPageId)) {
 			// get configuration for the root's branch
-			$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($rootPageId);
+			$solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
 			// which configurations are there?
 			$indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
 
@@ -404,17 +405,17 @@ class Tx_Solr_IndexQueue_Queue {
 
 		$record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
 
-		if (empty($record) || ($itemType == 'pages' && !Tx_Solr_Util::isAllowedPageType($record))) {
+		if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record))) {
 			return;
 		}
 
 		if ($itemType == 'pages') {
-			$rootPageId = Tx_Solr_Util::getRootPageId($itemUid);
+			$rootPageId = Util::getRootPageId($itemUid);
 		} else {
-			$rootPageId = Tx_Solr_Util::getRootPageId($record['pid']);
+			$rootPageId = Util::getRootPageId($record['pid']);
 		}
 
-		if (Tx_Solr_Util::isRootPage($rootPageId)) {
+		if (Util::isRootPage($rootPageId)) {
 			$item = array(
 				'root'      => $rootPageId,
 				'item_type' => $itemType,
@@ -430,7 +431,7 @@ class Tx_Solr_IndexQueue_Queue {
 				);
 			}
 
-			$solrConfiguration = tx_solr_Util::getSolrConfigurationFromPageId($rootPageId);
+			$solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
 
 			// make a backup of the current item
 			$baseItem = $item;

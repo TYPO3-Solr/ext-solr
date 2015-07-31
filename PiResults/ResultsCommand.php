@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -176,7 +178,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 				// TODO allow to have multiple (comma-separated) instructions for each field
 			switch ($processingInstruction) {
 				case 'timestamp':
-					$processedFieldValue = Tx_Solr_Util::isoToTimestamp($document->{$fieldName});
+					$processedFieldValue = Util::isoToTimestamp($document->{$fieldName});
 					break;
 				case 'serialize':
 					if(!empty($document->{$fieldName})){

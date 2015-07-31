@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -117,7 +119,7 @@ class Tx_Solr_ViewHelper_Relevance implements Tx_Solr_ViewHelper {
 			// may happen when using search.spellchecking.searchUsingSpellCheckerSuggestion
 			// -> ignore
 		} else {
-			$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+			$solrConfiguration = Util::getSolrConfiguration();
 			if ($solrConfiguration['logging.']['exceptions']) {
 				GeneralUtility::devLog('Could not resolve document score for relevance calculation', 'solr', 3, array(
 					'rawDocument'          => $rawDocument,

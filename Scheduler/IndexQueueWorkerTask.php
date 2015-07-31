@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -59,7 +60,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	public function execute() {
 		$executionSucceeded = FALSE;
 
-		$this->configuration = Tx_Solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
+		$this->configuration = Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
 		$this->indexItems();
 		$this->cleanIndex();
 		$executionSucceeded = TRUE;

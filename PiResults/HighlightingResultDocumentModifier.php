@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -48,7 +50,7 @@ class Tx_Solr_PiResults_HighlightingResultDocumentModifier implements Tx_Solr_Re
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
 		$this->search  = $resultCommand->getParentPlugin()->getSearch();
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 
 		$highlightedContent = $this->search->getHighlightedContent();
 
