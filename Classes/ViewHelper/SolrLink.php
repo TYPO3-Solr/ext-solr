@@ -97,7 +97,7 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 		if ($this->search->hasSearched()) {
 			$query = $this->search->getQuery();
 		} else {
-			$query = GeneralUtility::makeInstance('Tx_Solr_Query', '');
+			$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', '');
 		}
 
 		$linkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $query);

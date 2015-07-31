@@ -25,12 +25,10 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_query' => $extensionPath . 'Classes/Query.php',
 	'tx_solr_search' => $extensionPath . 'Classes/Search.php',
 	'tx_solr_solrservice' => $extensionPath . 'Classes/SolrService.php',
 	'tx_solr_sorting' => $extensionPath . 'Classes/Sorting.php',
 	'tx_solr_spellchecker' => $extensionPath . 'Classes/SpellChecker.php',
-	'tx_solr_suggestquery' => $extensionPath . 'Classes/SuggestQuery.php',
 	'tx_solr_template' => $extensionPath . 'Classes/Template.php',
 	'tx_solr_typo3environment' => $extensionPath . 'Classes/Typo3Environment.php',
 	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'Classes/Typo3PageContentExtractor.php',

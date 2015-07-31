@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,7 +46,7 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * The search query
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query = NULL;
 
@@ -110,12 +111,12 @@ class Tx_Solr_Search implements SingletonInterface {
 	 * 2) Conducts the actual search
 	 * 3) Checks debug settings
 	 *
-	 * @param Tx_Solr_Query $query The query with keywords, filters, and so on.
+	 * @param Query $query The query with keywords, filters, and so on.
 	 * @param integer $offset Result offset for pagination.
 	 * @param integer $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
 	 * @return Apache_Solr_Response Solr response
 	 */
-	public function search(Tx_Solr_Query $query, $offset = 0, $limit = 10) {
+	public function search(Query $query, $offset = 0, $limit = 10) {
 		$query = $this->modifyQuery($query);
 		$this->query = $query;
 
@@ -161,10 +162,10 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * Allows to modify a query before eventually handing it over to Solr.
 	 *
-	 * @param Tx_Solr_Query $query The current query before it's being handed over to Solr.
-	 * @return Tx_Solr_Query The modified query that is actually going to be given to Solr.
+	 * @param Query $query The current query before it's being handed over to Solr.
+	 * @return Query The modified query that is actually going to be given to Solr.
 	 */
-	protected function modifyQuery(Tx_Solr_Query $query) {
+	protected function modifyQuery(Query $query) {
 			// hook to modify the search query
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
@@ -261,7 +262,7 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * Gets the query object.
 	 *
-	 * @return Tx_Solr_Query Query
+	 * @return Query Query
 	 */
 	public function getQuery() {
 		return $this->query;

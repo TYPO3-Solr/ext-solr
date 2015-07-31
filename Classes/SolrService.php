@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solrfile\ExtractingQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -262,10 +264,10 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Performs a content and meta data extraction request.
 	 *
-	 * @param Tx_Solr_ExtractingQuery $query An extraction query
+	 * @param ExtractingQuery $query An extraction query
 	 * @return array An array containing the extracted content [0] and meta data [1]
 	 */
-	public function extract(Tx_Solr_ExtractingQuery $query) {
+	public function extract(ExtractingQuery $query) {
 		$headers = array(
 			'Content-Type' => 'multipart/form-data; boundary=' . $query->getMultiPartPostDataBoundary()
 		);

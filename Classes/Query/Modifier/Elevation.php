@@ -22,6 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 
 
@@ -37,10 +38,10 @@ class Tx_Solr_Query_Modifier_Elevation implements Tx_Solr_QueryModifier {
 	/**
 	 * Enables the query's elevation mode.
 	 *
-	 * @param Tx_Solr_Query $query The query to modify
-	 * @return Tx_Solr_Query The modified query with enabled elevation mode
+	 * @param Query $query The query to modify
+	 * @return Query The modified query with enabled elevation mode
 	 */
-	public function modifyQuery(Tx_Solr_Query $query) {
+	public function modifyQuery(Query $query) {
 		$configuration = Util::getSolrConfiguration();
 
 		$query->setQueryElevation(

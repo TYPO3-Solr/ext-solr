@@ -23,6 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -66,7 +67,7 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 	/**
 	 * The query which is going to be sent to Solr when a user selects a facet.
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query;
 
@@ -84,9 +85,9 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 	 * @param string $facetName The facet's name
 	 * @param array $facetOptions The facet's options.
 	 * @param Tx_Solr_Template $template Template to use to render the facet
-	 * @param Tx_Solr_Query $query Query instance used to build links.
+	 * @param Query $query Query instance used to build links.
 	 */
-	public function __construct($facetName, array $facetOptions, Tx_Solr_Template $template, Tx_Solr_Query $query) {
+	public function __construct($facetName, array $facetOptions, Tx_Solr_Template $template, Query $query) {
 		$this->facetName          = $facetName;
 		$this->facetOptions       = $facetOptions;
 

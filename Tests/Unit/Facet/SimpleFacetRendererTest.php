@@ -50,7 +50,7 @@ class Tx_Solr_Facet_SimpleFacetRendererTest extends Tx_Phpunit_TestCase {
 		$parentPlugin       = GeneralUtility::makeInstance('Tx_Solr_PiResults_Results');
 		$parentPlugin->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$parentPlugin->main('', array());
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', array('test'));
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', array('test'));
 
 		$this->facetRenderer = GeneralUtility::makeInstance(
 			'Tx_Solr_Facet_SimpleFacetRenderer',

@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
+use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -103,10 +104,10 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	/**
 	 * Provides a hook for other classes to process the search's response.
 	 *
-	 * @param Tx_Solr_Query $query The query that has been searched for.
+	 * @param Query $query The query that has been searched for.
 	 * @param Apache_Solr_Response $response The search's response.
 	 */
-	protected function processResponse(Tx_Solr_Query $query, Apache_Solr_Response &$response) {
+	protected function processResponse(Query $query, Apache_Solr_Response &$response) {
 		$rawUserQuery = $this->getRawUserQuery();
 
 		if (($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])
@@ -196,8 +197,8 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 
 		$rawUserQuery = $this->getRawUserQuery();
 
-		/* @var $query	Tx_Solr_Query */
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', $rawUserQuery);
+		/* @var $query	Query */
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', $rawUserQuery);
 
 		$this->initializeAdditionalFilters($query);
 
@@ -248,10 +249,10 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Initializes additional filters configured through TypoScript and
 	 * Flexforms for use in regular queries and suggest queries.
 	 *
-	 * @param Tx_Solr_Query $query
+	 * @param Query $query
 	 * @return void
 	 */
-	protected function initializeAdditionalFilters(Tx_Solr_Query $query) {
+	protected function initializeAdditionalFilters(Query $query) {
 		$additionalFilters = array();
 
 		if(!empty($this->conf['search.']['query.']['filter.'])) {

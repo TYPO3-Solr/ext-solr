@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 
 
@@ -56,10 +57,10 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 	 * Modifies the given query and adds the parameters necessary for faceted
 	 * search.
 	 *
-	 * @param Tx_Solr_Query $query The query to modify
-	 * @return Tx_Solr_Query The modified query with faceting parameters
+	 * @param Query $query The query to modify
+	 * @return Query The modified query with faceting parameters
 	 */
-	public function modifyQuery(Tx_Solr_Query $query) {
+	public function modifyQuery(Query $query) {
 		$query->setFaceting();
 		$this->buildFacetingParameters();
 		$this->addFacetQueryFilters();

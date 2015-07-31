@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\JavascriptManager;
+use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -55,7 +56,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * The plugin's query
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query = NULL;
 
@@ -525,7 +526,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 		$userQuery = $this->getRawUserQuery();
 
 		if (!is_null($userQuery)) {
-			$userQuery = Tx_Solr_Query::cleanKeywords($userQuery);
+			$userQuery = Query::cleanKeywords($userQuery);
 		}
 
 		// escape triple hashes as they are used in the template engine

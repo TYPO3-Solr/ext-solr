@@ -67,7 +67,7 @@ $allowedSites = Util::resolveSiteHashAllowedSites(
 	$solrConfiguration['search.']['query.']['allowedSites']
 );
 
-$suggestQuery = GeneralUtility::makeInstance('Tx_Solr_SuggestQuery', $q);
+$suggestQuery = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 $suggestQuery->setSiteHashFilter($allowedSites);
 $suggestQuery->setOmitHeader();

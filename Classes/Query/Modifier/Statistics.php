@@ -22,7 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-// TODO maybe rename the class to DetailedStatistics (or so)
+use ApacheSolrForTypo3\Solr\Query;
 
 
 /**
@@ -37,10 +37,10 @@ class Tx_Solr_Query_Modifier_Statistics implements Tx_Solr_QueryModifier {
 	/**
 	 * Enables the query's debug mode to get more detailed information.
 	 *
-	 * @param Tx_Solr_Query $query The query to modify
-	 * @return Tx_Solr_Query The modified query with enabled debugging mode
+	 * @param Query $query The query to modify
+	 * @return Query The modified query with enabled debugging mode
 	 */
-	public function modifyQuery(Tx_Solr_Query $query) {
+	public function modifyQuery(Query $query) {
 		$query->setDebugMode(TRUE);
 
 		return $query;

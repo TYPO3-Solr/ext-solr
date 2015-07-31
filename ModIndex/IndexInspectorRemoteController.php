@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -113,8 +114,8 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * @return array An array of Apache_Solr_Document objects
 	 */
 	protected function getIndexDocuments() {
-		/* @var Tx_Solr_Query $query */
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', '');
+		/* @var Query $query */
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', '');
 		$query->setQueryType('standard');
 		$query->useRawQueryString(TRUE);
 		$query->setQueryString('*:*');

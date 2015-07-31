@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -30,13 +32,15 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_SuggestQuery extends Tx_Solr_Query {
+class SuggestQuery extends Query {
 
 	protected $configuration;
 	protected $prefix;
 
+
 	/**
-	 * constructor for class Tx_Solr_SuggestQuery
+	 * Constructor
+	 *
 	 */
 	public function __construct($keywords) {
 		parent::__construct('');

@@ -21,6 +21,8 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -56,11 +58,11 @@ class Tx_Solr_Facet_LinkBuilder extends Tx_Solr_Query_LinkBuilder {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_Query $query Solr query
+	 * @param Query $query Solr query
 	 * @param string $facetName Facet name
 	 * @param Tx_Solr_Facet_FacetOption $facetOption Facet option
 	 */
-	public function __construct(Tx_Solr_Query $query, $facetName, Tx_Solr_Facet_FacetOption $facetOption) {
+	public function __construct(Query $query, $facetName, Tx_Solr_Facet_FacetOption $facetOption) {
 		parent::__construct($query);
 
 		$this->facetName          = $facetName;
