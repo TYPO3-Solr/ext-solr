@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -31,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_CommandResolver {
+class CommandResolver {
 
 	/**
 	 * A mapping of command names to command classes to use when executing plugins.
@@ -48,7 +51,7 @@ class Tx_Solr_CommandResolver {
 	 * @param string $commandClass name of the class implementing the command
 	 * @param integer $requirements Bitmask of which requirements need to be met for a command to be executed
 	 */
-	public static function registerPluginCommand($plugins, $commandName, $commandClass, $requirements = Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED) {
+	public static function registerPluginCommand($plugins, $commandName, $commandClass, $requirements = \Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED) {
 		if (!array_key_exists($commandName, self::$commands)) {
 			$plugins = GeneralUtility::trimExplode(',', $plugins, TRUE);
 
@@ -87,7 +90,7 @@ class Tx_Solr_CommandResolver {
 	 * @param integer $pluginStatus Bitmask required by commands to be registered for.
 	 * @return array An array of plugin command names registered
 	 */
-	public static function getPluginCommands($pluginName, $pluginStatus = Tx_Solr_PluginCommand::REQUIREMENT_NONE) {
+	public static function getPluginCommands($pluginName, $pluginStatus = \Tx_Solr_PluginCommand::REQUIREMENT_NONE) {
 		$commands = array();
 
 		$requiredBits = self::getRequiredBits($pluginStatus);
@@ -96,14 +99,14 @@ class Tx_Solr_CommandResolver {
 				continue;
 			}
 
-			if ($command['requirements'] == Tx_Solr_PluginCommand::REQUIREMENT_NONE) {
+			if ($command['requirements'] == \Tx_Solr_PluginCommand::REQUIREMENT_NONE) {
 				$commands[] = $command['commandName'];
 				continue;
 			}
 
 			foreach ($requiredBits as $requiredBit) {
 				$currentBitValue = (1 << $requiredBit);
-				$bitMatched = (boolean) ($command['requirements'] & $currentBitValue);
+				$bitMatched = (boolean)($command['requirements'] & $currentBitValue);
 
 				if (!$bitMatched) {
 					continue 2;
@@ -134,7 +137,7 @@ class Tx_Solr_CommandResolver {
 	protected static function getRequiredBits($bitmask) {
 		$requiredBits = array();
 
-		for ($i = 0; $i < Tx_Solr_PluginCommand::REQUIREMENTS_NUM_BITS; $i++) {
+		for ($i = 0; $i < \Tx_Solr_PluginCommand::REQUIREMENTS_NUM_BITS; $i++) {
 			if (!(($bitmask & pow(2, $i)) == 0)) {
 				$requiredBits[] = $i;
 			}
@@ -148,8 +151,8 @@ class Tx_Solr_CommandResolver {
 	 *
 	 * @param string $commandName command name
 	 * @param object $parent parent object, most likely a plugin object
-	 * @return Tx_Solr_PluginCommand the requested command if found, or NULL otherwise
-	 * @throws RuntimeException when a command fails to implement interface Tx_Solr_PluginCommand
+	 * @return \Tx_Solr_PluginCommand the requested command if found, or NULL otherwise
+	 * @throws \RuntimeException when a command fails to implement interface \Tx_Solr_PluginCommand
 	 */
 	public function getCommand($commandName, $parent) {
 		$command = NULL;
@@ -158,9 +161,9 @@ class Tx_Solr_CommandResolver {
 			$className = self::$commands[$commandName]['commandClass'];
 			$command   = GeneralUtility::makeInstance($className, $parent);
 
-			if (!($command instanceof Tx_Solr_PluginCommand)) {
-				throw new RuntimeException(
-					self::$commands[$commandName]['commandClass'] . ' is not an implementation of Tx_Solr_PluginCommand',
+			if (!($command instanceof \Tx_Solr_PluginCommand)) {
+				throw new \RuntimeException(
+					self::$commands[$commandName]['commandClass'] . ' is not an implementation of \Tx_Solr_PluginCommand',
 					1297899998
 				);
 			}

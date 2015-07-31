@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -155,7 +156,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * @see Tx_Solr_pluginbase_CommandPluginBase#getCommandResolver()
 	 */
 	protected function getCommandResolver() {
-		return GeneralUtility::makeInstance('Tx_Solr_CommandResolver');
+		return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\CommandResolver');
 	}
 
 	/**
@@ -177,7 +178,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			}
 		}
 
-		$commandList = Tx_Solr_CommandResolver::getPluginCommands(
+		$commandList = CommandResolver::getPluginCommands(
 			'results',
 			$requirements
 		);

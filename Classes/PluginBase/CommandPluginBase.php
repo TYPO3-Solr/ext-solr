@@ -22,6 +22,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\CommandResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -42,7 +44,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	 * Should be implemented by an inheriting class to provide a correctly
 	 * initialized instance of a command resolver.
 	 *
-	 * @return Tx_Solr_CommandResolver
+	 * @return CommandResolver
 	 */
 	abstract protected function getCommandResolver();
 
@@ -63,7 +65,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	 * @return string Rendered plugin content
 	 */
 	protected function render($actionResult) {
-		$allCommands = Tx_Solr_CommandResolver::getAllPluginCommandsList();
+		$allCommands = CommandResolver::getAllPluginCommandsList();
 		$commandList = $this->getCommandList();
 
 		// render commands matching the plugin's requirements

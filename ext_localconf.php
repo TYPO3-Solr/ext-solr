@@ -113,21 +113,21 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 	// register plugin commands
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results, frequentsearches',
 	'frequentSearches',
 	'Tx_Solr_PiResults_FrequentSearchesCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'search, results',
 	'form',
 	'Tx_Solr_PiResults_FormCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'resultsPerPageSwitch',
 	'Tx_Solr_PiResults_ResultsPerPageSwitchCommand',
@@ -135,21 +135,21 @@ Tx_Solr_CommandResolver::registerPluginCommand(
 	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'search, results',
 	'errors',
 	'Tx_Solr_PiResults_ErrorsCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'lastSearches',
 	'Tx_Solr_PiResults_LastSearchesCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'no_results',
 	'Tx_Solr_PiResults_NoResultsCommand',
@@ -157,7 +157,7 @@ Tx_Solr_CommandResolver::registerPluginCommand(
 	+ Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'faceting',
 	'Tx_Solr_PiResults_FacetingCommand',
@@ -166,7 +166,7 @@ Tx_Solr_CommandResolver::registerPluginCommand(
 	+ Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'results',
 	'Tx_Solr_PiResults_ResultsCommand',
@@ -174,7 +174,7 @@ Tx_Solr_CommandResolver::registerPluginCommand(
 	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
-Tx_Solr_CommandResolver::registerPluginCommand(
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'sorting',
 	'Tx_Solr_PiResults_SortingCommand',

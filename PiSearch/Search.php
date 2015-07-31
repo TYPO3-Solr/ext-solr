@@ -22,6 +22,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\CommandResolver;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -53,10 +55,10 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 *
 	 * @todo	currently the commands of the resultview are used, we should discuss if we use own command here
 	 * @see Tx_Solr_PluginBase_CommandPluginBase#getCommandResolver()
-	 * @return Tx_Solr_CommandResolver A command resolver
+	 * @return CommandResolver A command resolver
 	 */
 	protected function getCommandResolver(){
-		return GeneralUtility::makeInstance('Tx_Solr_CommandResolver');
+		return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\CommandResolver');
 	}
 
 	/**
@@ -65,7 +67,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 * @return array Array of command names to process for the result view
 	 */
 	protected function getCommandList() {
-		$commandList = Tx_Solr_CommandResolver::getPluginCommands(
+		$commandList = CommandResolver::getPluginCommands(
 			'search'
 		);
 
