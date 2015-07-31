@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\DatabaseUtility;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -700,7 +701,7 @@ class Tx_Solr_IndexQueue_Queue {
 					$indexingConfigurationName . '\'';
 		}
 
-		Tx_Solr_DatabaseUtility::transactionStart();
+		DatabaseUtility::transactionStart();
 		try {
 			// reset Index Queue
 			$result = $GLOBALS['TYPO3_DB']->exec_DELETEquery(
@@ -732,9 +733,9 @@ class Tx_Solr_IndexQueue_Queue {
 				);
 			}
 
-			Tx_Solr_DatabaseUtility::transactionCommit();
+			DatabaseUtility::transactionCommit();
 		} catch (RuntimeException $e) {
-			Tx_Solr_DatabaseUtility::transactionRollback();
+			DatabaseUtility::transactionRollback();
 		}
 	}
 
