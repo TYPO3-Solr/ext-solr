@@ -50,7 +50,7 @@ class Content {
 	 */
 	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $contentObject) {
 		$contentExtractor = GeneralUtility::makeInstance(
-			'Tx_Solr_HtmlContentExtractor',
+			'ApacheSolrForTypo3\Solr\HtmlContentExtractor',
 			$this->getRawContent($contentObject, $configuration)
 		);
 

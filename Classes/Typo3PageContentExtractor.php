@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -31,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Typo3PageContentExtractor extends Tx_Solr_HtmlContentExtractor {
+class Tx_Solr_Typo3PageContentExtractor extends HtmlContentExtractor {
 
 	/**
 	 * Shortcut method to retrieve the raw content marked for indexing.
