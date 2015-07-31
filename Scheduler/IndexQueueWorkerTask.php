@@ -143,8 +143,8 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 */
 	protected function cleanIndex() {
 		if (rand(1, 100) == 50) {
-				// clean the index about once in every 100 executions
-			$garbageCollector = GeneralUtility::makeInstance('Tx_Solr_GarbageCollector');
+			// clean the index about once in every 100 executions
+			$garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\GarbageCollector');
 			$garbageCollector->cleanIndex($this->site, FALSE);
 		}
 	}

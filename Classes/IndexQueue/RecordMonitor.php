@@ -255,7 +255,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * @param int $recordUid Id of record
 	 */
 	protected function removeFromIndexAndQueue($recordTable, $recordUid) {
-		$garbageCollector = GeneralUtility::makeInstance('Tx_Solr_GarbageCollector');
+		$garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\GarbageCollector');
 		$garbageCollector->collectGarbage($recordTable, $recordUid);
 	}
 

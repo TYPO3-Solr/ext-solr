@@ -25,7 +25,6 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_garbagecollector' => $extensionPath . 'Classes/GarbageCollector.php',
 	'tx_solr_htmlcontentextractor' => $extensionPath . 'Classes/HtmlContentExtractor.php',
 	'tx_solr_javascriptmanager' => $extensionPath . 'Classes/JavascriptManager.php',
 	'tx_solr_languagefileunavailableexception' => $extensionPath . 'Classes/LanguageFileUnavailableException.php',
