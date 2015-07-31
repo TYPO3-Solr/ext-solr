@@ -142,7 +142,7 @@ options.contextMenu.table.pages.items.851 = DIVIDER
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
 	'TYPO3.Solr.ContextMenuActionController',
-	$GLOBALS['PATHrel_solr'] . 'Classes/ContextMenuActionController.php:Tx_Solr_ContextMenuActionController',
+	'ApacheSolrForTypo3\Solr\ContextMenuActionController',
 	'web',
 	'admin'
 );
