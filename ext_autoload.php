@@ -25,7 +25,6 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_javascriptmanager' => $extensionPath . 'Classes/JavascriptManager.php',
 	'tx_solr_languagefileunavailableexception' => $extensionPath . 'Classes/LanguageFileUnavailableException.php',
 	'tx_solr_nosolrconnectionfoundexception' => $extensionPath . 'Classes/NoSolrConnectionFoundException.php',
 	'tx_solr_query' => $extensionPath . 'Classes/Query.php',

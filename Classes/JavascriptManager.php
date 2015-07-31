@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,7 +24,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_JavascriptManager {
+class JavascriptManager {
 
 	const POSITION_HEADER = 'header';
 	const POSITION_FOOTER = 'footer';
@@ -139,10 +140,10 @@ class Tx_Solr_JavascriptManager {
 				$this->registerForRenderPreProcessHook();
 				break;
 			case self::POSITION_NONE:
-					// do nothing, JS is handled by the integrator
+				// do nothing, JS is handled by the integrator
 				break;
 			default:
-				throw new RuntimeException(
+				throw new \RuntimeException(
 					'Invalid value "' . $position . '" for Javascript position. Choose from "header", "footer", or "none".',
 					1336911986
 				);
@@ -164,7 +165,7 @@ class Tx_Solr_JavascriptManager {
 	 *
 	 */
 	protected function registerForRenderPreProcessHook() {
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['tx_solr-javascript'] = 'Tx_Solr_JavascriptManager->addJavascriptToPageFooter';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['tx_solr-javascript'] = 'ApacheSolrForTypo3\Solr\JavascriptManager->addJavascriptToPageFooter';
 	}
 
 	/**
@@ -186,7 +187,7 @@ class Tx_Solr_JavascriptManager {
 			$filePathPrefix = $GLOBALS['TSFE']->config['config']['absRefPrefix'];
 		}
 
-			// add files
+		// add files
 		foreach (self::$files as $identifier => $file) {
 			if (!$file['addedToPage']) {
 				self::$files[$identifier]['addedToPage'] = TRUE;
@@ -195,7 +196,7 @@ class Tx_Solr_JavascriptManager {
 			}
 		}
 
-			// concatenate snippets
+		// concatenate snippets
 		$snippets = '';
 		foreach (self::$snippets as $identifier => $snippet) {
 			if (!$snippet['addedToPage']) {
@@ -207,7 +208,7 @@ class Tx_Solr_JavascriptManager {
 			}
 		}
 
-			// add snippets
+		// add snippets
 		if (!empty($snippets)) {
 			$this->addJsInline($snippets);
 		}

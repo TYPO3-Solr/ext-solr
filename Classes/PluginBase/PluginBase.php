@@ -23,6 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\JavascriptManager;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -71,9 +72,9 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	protected $template;
 
 	/**
-	 * An instance of Tx_Solr_JavascriptManager
+	 * An instance of ApacheSolrForTypo3\Solr\JavascriptManager
 	 *
-	 * @var Tx_Solr_JavascriptManager
+	 * @var JavascriptManager
 	 */
 	protected $javascriptManager;
 
@@ -349,7 +350,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 *
 	 */
 	protected function initializeJavascriptManager() {
-		$this->javascriptManager = GeneralUtility::makeInstance('Tx_Solr_JavascriptManager');
+		$this->javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
 	}
 
 	/**
@@ -461,7 +462,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * Gets the plugin's javascript manager.
 	 *
-	 * @return Tx_Solr_JavascriptManager The plugin's javascript manager.
+	 * @return JavascriptManager The plugin's javascript manager.
 	 */
 	public function getJavascriptManager() {
 		return $this->javascriptManager;
