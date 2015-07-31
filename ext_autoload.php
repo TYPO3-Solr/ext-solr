@@ -32,7 +32,6 @@ return array(
 	'tx_solr_typo3environment' => $extensionPath . 'Classes/Typo3Environment.php',
 	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'Classes/Typo3PageContentExtractor.php',
 	'tx_solr_typo3pageindexer' => $extensionPath . 'Classes/Typo3PageIndexer.php',
-	'tx_solr_util' => $extensionPath . 'Classes/Util.php',
 
 	'ApacheSolrForTypo3\Solr\Access\Rootline' => $extensionPath . 'Classes/Access/Rootline.php',
 	'ApacheSolrForTypo3\Solr\Access\RootlineElement' => $extensionPath . 'Classes/Access/RootlineElement.php',
