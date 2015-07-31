@@ -23,13 +23,14 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Api;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 
 
 $api = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('api');
 $apiKey = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('apiKey'));
 
-if (!Tx_Solr_Api::isValidApiKey($apiKey)) {
+if (!Api::isValidApiKey($apiKey)) {
 
 	header(HttpUtility::HTTP_STATUS_403);
 	header('Content-Type: application/json; charset=utf-8');
