@@ -22,7 +22,7 @@ if(!function_exists('strptime')) {
 
 if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['Tx_Solr_IndexQueue_PageIndexerRequestHandler'] = '&Tx_Solr_IndexQueue_PageIndexerRequestHandler->run';
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['Tx_Solr_AdditionalFieldsIndexer'] = 'Tx_Solr_AdditionalFieldsIndexer';
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = 'ApacheSolrForTypo3\\Solr\\AdditionalFieldsIndexer';
 
 	Tx_Solr_IndexQueue_FrontendHelper_Manager::registerFrontendHelper(
 		'findUserGroups',
