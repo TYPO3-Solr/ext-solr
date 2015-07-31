@@ -24,6 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Model;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
+
+
 /**
  * Persistent module data.
  *
@@ -31,7 +34,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Model;
 class ModuleData {
 
 	/**
-	 * @var \Tx_Solr_Site
+	 * @var Site
 	 */
 	protected $site = NULL;
 
@@ -44,17 +47,17 @@ class ModuleData {
 	/**
 	 * Sets the site to work with.
 	 *
-	 * @param \Tx_Solr_Site $site
+	 * @param Site $site
 	 * @return void
 	 */
-	public function setSite(\Tx_Solr_Site $site) {
+	public function setSite(Site $site) {
 		$this->site = $site;
 	}
 
 	/**
 	 * Gets the site to work with.
 	 *
-	 * @return \Tx_Solr_Site
+	 * @return Site
 	 */
 	public function getSite() {
 		return $this->site;

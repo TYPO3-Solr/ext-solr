@@ -38,7 +38,6 @@ return array(
 	'tx_solr_nosolrconnectionfoundexception' => $extensionPath . 'Classes/NoSolrConnectionFoundException.php',
 	'tx_solr_query' => $extensionPath . 'Classes/Query.php',
 	'tx_solr_search' => $extensionPath . 'Classes/Search.php',
-	'tx_solr_site' => $extensionPath . 'Classes/Site.php',
 	'tx_solr_solrservice' => $extensionPath . 'Classes/SolrService.php',
 	'tx_solr_sorting' => $extensionPath . 'Classes/Sorting.php',
 	'tx_solr_spellchecker' => $extensionPath . 'Classes/SpellChecker.php',

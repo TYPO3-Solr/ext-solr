@@ -24,10 +24,12 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
+
 
 /**
  * Adds an additional field to specify the Solr server to initialize the index queue for
@@ -62,7 +64,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 	/**
 	 * Selected site
 	 *
-	 * @var Tx_Solr_Site
+	 * @var Site
 	 */
 	protected $site = NULL;
 
@@ -94,7 +96,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 		$additionalFields = array();
 
 		$additionalFields['site'] = array(
-			'code'     => Tx_Solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $this->site),
+			'code'     => Site::getAvailableSitesSelector('tx_scheduler[site]', $this->site),
 			'label'    => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:field_site',
 			'cshKey'   => '',
 			'cshLabel' => ''
@@ -141,7 +143,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 		$result = FALSE;
 
 			// validate site
-		$sites = Tx_Solr_Site::getAvailableSites();
+		$sites = Site::getAvailableSites();
 		if (array_key_exists($submittedData['site'], $sites)) {
 			$result = TRUE;
 		}
@@ -157,7 +159,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 	 * @param AbstractTask $task: reference to the current task object
 	 */
 	public function saveAdditionalFields(array $submittedData, AbstractTask $task) {
-		$task->setSite(GeneralUtility::makeInstance('Tx_Solr_Site', $submittedData['site']));
+		$task->setSite(GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $submittedData['site']));
 
 		$indexingConfigurations = array();
 		if (!empty($submittedData['indexingConfigurations'])) {

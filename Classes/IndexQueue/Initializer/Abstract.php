@@ -25,6 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -42,7 +43,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 	/**
 	 * Site to initialize
 	 *
-	 * @var Tx_Solr_Site
+	 * @var Site
 	 */
 	protected $site;
 
@@ -74,10 +75,10 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 	/**
 	 * Sets the site for the initializer.
 	 *
-	 * @param Tx_Solr_Site $site The site to initialize Index Queue items for.
+	 * @param Site $site The site to initialize Index Queue items for.
 	 * @see Tx_Solr_IndexQueueInitializer::setSite()
 	 */
-	public function setSite(Tx_Solr_Site $site) {
+	public function setSite(Site $site) {
 		$this->site = $site;
 	}
 

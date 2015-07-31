@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
@@ -85,7 +86,7 @@ class AdministrationController extends ActionController {
 	/**
 	 * The site to work with
 	 *
-	 * @var \Tx_Solr_Site
+	 * @var Site
 	 */
 	protected $site;
 
@@ -194,7 +195,7 @@ class AdministrationController extends ActionController {
 	 * @return void
 	 */
 	public function setSiteAction($site) {
-		$site = \Tx_Solr_Site::getSiteByPageId((int) $site);
+		$site = Site::getSiteByPageId((int) $site);
 		$this->moduleData->setSite($site);
 		// when switching the site, reset the core
 		$this->moduleData->setCore('');

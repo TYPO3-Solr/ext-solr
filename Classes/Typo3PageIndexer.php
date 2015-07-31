@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -221,7 +222,7 @@ class Tx_Solr_Typo3PageIndexer {
 	protected function getPageDocument() {
 		$document   = GeneralUtility::makeInstance('Apache_Solr_Document');
 		/* @var $document	Apache_Solr_Document */
-		$site       = Tx_Solr_Site::getSiteByPageId($this->page->id);
+		$site       = Site::getSiteByPageId($this->page->id);
 		$pageRecord = $this->page->page;
 
 		self::$pageSolrDocumentId = $documentId = Tx_Solr_Util::getPageDocumentId(

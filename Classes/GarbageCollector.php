@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -339,11 +340,11 @@ class Tx_Solr_GarbageCollector {
 	 * The method remains as a dummy for possible later cleanups and to prevent
 	 * things from breaking if others were using it.
 	 *
-	 * @param Tx_Solr_Site $site The site to clean indexes on
+	 * @param Site $site The site to clean indexes on
 	 * @param boolean $commitAfterCleanUp Whether to commit right after the clean up, defaults to TRUE
 	 * @return void
 	 */
-	public function cleanIndex(Tx_Solr_Site $site, $commitAfterCleanUp = TRUE) {
+	public function cleanIndex(Site $site, $commitAfterCleanUp = TRUE) {
 
 	}
 

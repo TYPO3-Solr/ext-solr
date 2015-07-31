@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
+
 
 /**
  * Interface to initialize items in the Index Queue.
@@ -38,9 +40,9 @@ interface Tx_Solr_IndexQueueInitializer {
 	/**
 	 * Sets the site for the initializer.
 	 *
-	 * @param Tx_Solr_Site $site The site to initialize Index Queue items for.
+	 * @param Site $site The site to initialize Index Queue items for.
 	 */
-	public function setSite(Tx_Solr_Site $site);
+	public function setSite(Site $site);
 
 	/**
 	 * Set the type (usually a Db table name) of items to initialize.

@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -97,13 +98,13 @@ class Tx_Solr_IndexQueue_Queue {
 	 * complete way to force reindexing, or to build the Index Queue for the
 	 * first time. The Index Queue initialization is site-specific.
 	 *
-	 * @param Tx_Solr_Site $site The site to initialize
+	 * @param Site $site The site to initialize
 	 * @param string $indexingConfigurationName Name of a specific
 	 *      indexing configuration
 	 * @return array An array of booleans, each representing whether the
 	 *      initialization for an indexing configuration was successful
 	 */
-	public function initialize(Tx_Solr_Site $site, $indexingConfigurationName = '') {
+	public function initialize(Site $site, $indexingConfigurationName = '') {
 		$indexingConfigurations = array();
 		$initializationStatus   = array();
 
@@ -147,12 +148,12 @@ class Tx_Solr_IndexQueue_Queue {
 	/**
 	 * Initializes the Index Queue for a specific indexing configuration.
 	 *
-	 * @param Tx_Solr_Site $site The site to initialize
+	 * @param Site $site The site to initialize
 	 * @param string $indexingConfigurationName name of a specific
 	 *      indexing configuration
 	 * @return boolean TRUE if the initialization was successful, FALSE otherwise
 	 */
-	protected function initializeIndexingConfiguration(Tx_Solr_Site $site, $indexingConfigurationName) {
+	protected function initializeIndexingConfiguration(Site $site, $indexingConfigurationName) {
 		// clear queue
 		$this->deleteItemsBySite($site, $indexingConfigurationName);
 
@@ -684,11 +685,11 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Removes all items of a certain site from the Index Queue. Accepts an
 	 * optional parameter to limit the deleted items by indexing configuration.
 	 *
-	 * @param Tx_Solr_Site $site The site to remove items for.
+	 * @param Site $site The site to remove items for.
 	 * @param string $indexingConfigurationName Name of a specific indexing
 	 *      configuration
 	 */
-	public function deleteItemsBySite(Tx_Solr_Site $site, $indexingConfigurationName = '') {
+	public function deleteItemsBySite(Site $site, $indexingConfigurationName = '') {
 		$rootPageConstraint = 'tx_solr_indexqueue_item.root = ' . $site->getRootPageId();
 
 		$indexingConfigurationConstraint = '';
@@ -794,13 +795,13 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Gets number of Index Queue items for a specific site / indexing configuration
 	 * optional parameter to limit the deleted items by indexing configuration.
 	 *
-	 * @param tx_solr_Site $site The site to search for.
+	 * @param Site $site The site to search for.
 	 * @param string $indexingConfigurationName name of a specific indexing
 	 *      configuration
 	 * @return mixed Number of items (integer) or FALSE if something went
 	 *      wrong (boolean)
 	 */
-	public function getItemsCountBySite(Tx_Solr_Site $site, $indexingConfigurationName = '') {
+	public function getItemsCountBySite(Site $site, $indexingConfigurationName = '') {
 		$indexingConfigurationConstraint = '';
 		if (!empty($indexingConfigurationName)) {
 			$indexingConfigurationConstraint = ' AND indexing_configuration = \'' . $indexingConfigurationName . '\'';
@@ -818,11 +819,11 @@ class Tx_Solr_IndexQueue_Queue {
 	/**
 	 * Gets $limit number of items to index for a particular $site.
 	 *
-	 * @param Tx_Solr_Site $site TYPO3 site
+	 * @param Site $site TYPO3 site
 	 * @param integer $limit Number of items to get from the queue
 	 * @return Tx_Solr_IndexQueue_Item[] Items to index to the given solr server
 	 */
-	public function getItemsToIndex(Tx_Solr_Site $site, $limit = 50) {
+	public function getItemsToIndex(Site $site, $limit = 50) {
 		$itemsToIndex = array();
 
 		// determine which items to index with this run

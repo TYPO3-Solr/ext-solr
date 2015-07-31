@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -61,7 +63,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements A
 		}
 
 		$additionalFields['site'] = array(
-			'code'     => Tx_Solr_Site::getAvailableSitesSelector('tx_scheduler[site]', $taskInfo['site']),
+			'code'     => Site::getAvailableSitesSelector('tx_scheduler[site]', $taskInfo['site']),
 			'label'    => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:field_site',
 			'cshKey'   => '',
 			'cshLabel' => ''
@@ -89,7 +91,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements A
 		$result = FALSE;
 
 			// validate site
-		$sites = Tx_Solr_Site::getAvailableSites();
+		$sites = Site::getAvailableSites();
 		if (array_key_exists($submittedData['site'], $sites)) {
 			$result = TRUE;
 		}
@@ -108,7 +110,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements A
 	 * @param AbstractTask $task: reference to the current task object
 	 */
 	public function saveAdditionalFields(array $submittedData, AbstractTask $task) {
-		$task->setSite(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Site', $submittedData['site']));
+		$task->setSite(GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $submittedData['site']));
 		$task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
 	}
 }

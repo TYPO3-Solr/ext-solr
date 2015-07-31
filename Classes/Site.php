@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use Tx_Solr_Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -33,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Site {
+class Site {
 
 	/**
 	 * Root page record.
@@ -50,7 +54,7 @@ class Tx_Solr_Site {
 	protected $sysLanguageMode = null;
 
 	/**
-	 * Cache for Tx_Solr_Site objects
+	 * Cache for ApacheSolrForTypo3\Solr\Site objects
 	 *
 	 * @var array
 	 */
@@ -78,9 +82,9 @@ class Tx_Solr_Site {
 		$page = BackendUtility::getRecord('pages', $rootPageId);
 
 		if (!$page['is_siteroot']) {
-			throw new InvalidArgumentException(
+			throw new \InvalidArgumentException(
 				'The page for the given page ID \'' . $rootPageId
-					. '\' is not marked as root page and can therefore not be used as site root page.',
+				. '\' is not marked as root page and can therefore not be used as site root page.',
 				1309272922
 			);
 		}
@@ -92,7 +96,7 @@ class Tx_Solr_Site {
 	 * Gets the Site for a specific page Id.
 	 *
 	 * @param integer $pageId The page Id to get a Site object for.
-	 * @return Tx_Solr_Site Site for the given page Id.
+	 * @return Site Site for the given page Id.
 	 */
 	public static function getSiteByPageId($pageId) {
 		$rootPageId = Tx_Solr_Util::getRootPageId($pageId);
@@ -107,7 +111,7 @@ class Tx_Solr_Site {
 	/**
 	 * Gets all available TYPO3 sites with Solr configured.
 	 *
-	 *  @return Tx_Solr_Site[] An array of available sites
+	 * @return Site[] An array of available sites
 	 */
 	public static function getAvailableSites() {
 		$sites = array();
@@ -129,12 +133,12 @@ class Tx_Solr_Site {
 	 * configured.
 	 *
 	 * @param string $selectorName Name to be used in the select's name attribute
-	 * @param Tx_Solr_Site $selectedSite Optional, currently selected site
+	 * @param Site $selectedSite Optional, currently selected site
 	 * @return string Site selector HTML code
 	 * @todo Extract into own class like indexing configuration selector
 	 */
-	public static function getAvailableSitesSelector($selectorName, Tx_Solr_Site $selectedSite = NULL) {
-		$sites    = self::getAvailableSites();
+	public static function getAvailableSitesSelector($selectorName, Site $selectedSite = NULL) {
+		$sites = self::getAvailableSites();
 		$selector = '<select name="' . $selectorName . '">';
 
 		foreach ($sites as $site) {
@@ -219,7 +223,7 @@ class Tx_Solr_Site {
 			$siteDefaultLanguage = $configuration['sys_language_uid'];
 		}
 
-			// default language is set through default L GET parameter -> overruling config.sys_language_uid
+		// default language is set through default L GET parameter -> overruling config.sys_language_uid
 		if (isset($configuration['defaultGetVars.']['L'])) {
 			$siteDefaultLanguage = intval($configuration['defaultGetVars.']['L']);
 		}
@@ -270,7 +274,7 @@ class Tx_Solr_Site {
 		}
 
 		if (empty(self::$sitePagesCache[$rootPageId])) {
-				// exiting the recursion loop, may write to cache now
+			// exiting the recursion loop, may write to cache now
 			self::$sitePagesCache[$rootPageId] = $pageIds;
 		}
 

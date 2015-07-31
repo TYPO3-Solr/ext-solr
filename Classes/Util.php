@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -97,7 +99,7 @@ class Tx_Solr_Util {
 	 * @return string A document id
 	 */
 	public static function getDocumentId($table, $pid, $uid, $additionalIdParameters = '') {
-		$siteHash = Tx_Solr_Site::getSiteByPageId($pid)->getSiteHash();
+		$siteHash = Site::getSiteByPageId($pid)->getSiteHash();
 
 		$documentId = $siteHash . '/' . $table . '/' . $uid;
 		if (!empty($additionalIdParameters)) {
@@ -538,7 +540,7 @@ class Tx_Solr_Util {
 	 */
 	public static function resolveSiteHashAllowedSites($pageId, $allowedSitesConfiguration) {
 		if ($allowedSitesConfiguration == '*' || $allowedSitesConfiguration == '__all') {
-			$sites   = Tx_Solr_Site::getAvailableSites();
+			$sites   = Site::getAvailableSites();
 			$domains = array();
 			foreach ($sites as $site) {
 				$domains[] = $site->getDomain();
@@ -548,7 +550,7 @@ class Tx_Solr_Util {
 		} else {
 			$allowedSites = str_replace(
 				array('__solr_current_site', '__current_site'),
-				Tx_Solr_Site::getSiteByPageId($pageId)->getDomain(),
+				Site::getSiteByPageId($pageId)->getDomain(),
 				$allowedSitesConfiguration
 			);
 		}

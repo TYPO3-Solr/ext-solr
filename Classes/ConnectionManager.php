@@ -23,6 +23,7 @@
 ***************************************************************/
 
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -249,10 +250,10 @@ class Tx_Solr_ConnectionManager implements SingletonInterface, ClearCacheActions
 	/**
 	 * Gets all connection configurations for a given site.
 	 *
-	 * @param Tx_Solr_Site $site A TYPO3 site
+	 * @param Site $site A TYPO3 site
 	 * @return array An array of Solr connection configurations for a site
 	 */
-	public function getConfigurationsBySite(Tx_Solr_Site $site) {
+	public function getConfigurationsBySite(Site $site) {
 		$solrConfigurations = array();
 
 		$allConfigurations = $this->getAllConfigurations();
@@ -268,10 +269,10 @@ class Tx_Solr_ConnectionManager implements SingletonInterface, ClearCacheActions
 	/**
 	 * Gets all connections configured for a given site.
 	 *
-	 * @param Tx_Solr_Site $site A TYPO3 site
+	 * @param Site $site A TYPO3 site
 	 * @return Tx_Solr_SolrService[] An array of Solr connection objects (Tx_Solr_SolrService)
 	 */
-	public function getConnectionsBySite(Tx_Solr_Site $site) {
+	public function getConnectionsBySite(Site $site) {
 		$connections = array();
 
 		$solrServers = $this->getConfigurationsBySite($site);
@@ -332,7 +333,7 @@ class Tx_Solr_ConnectionManager implements SingletonInterface, ClearCacheActions
 	 */
 	public function updateConnectionByRootPageId($rootPageId) {
 		$systemLanguages = $this->getSystemLanguages();
-		$rootPage        = GeneralUtility::makeInstance('Tx_Solr_Site', $rootPageId)->getRootPage();
+		$rootPage        = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $rootPageId)->getRootPage();
 
 		$updatedSolrConnections = array();
 		foreach ($systemLanguages as $languageId) {
@@ -403,7 +404,7 @@ class Tx_Solr_ConnectionManager implements SingletonInterface, ClearCacheActions
 		$tmpl->init();
 		$tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
 
-			// fake micro TSFE to get correct conditon parsing
+			// fake micro TSFE to get correct condition parsing
 		$GLOBALS['TSFE'] = new stdClass();
 		$GLOBALS['TSFE']->tmpl = new stdClass();
 		$GLOBALS['TSFE']->tmpl->rootLine = $rootLine;

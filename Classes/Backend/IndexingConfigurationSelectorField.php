@@ -1,5 +1,6 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Backend;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,7 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Index Queue indexing configuration selector form field.
@@ -37,7 +40,7 @@ class IndexingConfigurationSelectorField {
 	/**
 	 * Site used to determine indexing configurations
 	 *
-	 * @var \Tx_Solr_Site
+	 * @var Site
 	 */
 	protected $site;
 
@@ -59,9 +62,9 @@ class IndexingConfigurationSelectorField {
 	/**
 	 * Constructor
 	 *
-	 * @param \Tx_Solr_Site $site The site to use to determine indexing configurations
+	 * @param Site $site The site to use to determine indexing configurations
 	 */
-	public function __construct(\Tx_Solr_Site $site = NULL) {
+	public function __construct(Site $site = NULL) {
 		$this->site = $site;
 	}
 

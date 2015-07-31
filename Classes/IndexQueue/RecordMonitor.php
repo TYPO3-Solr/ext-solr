@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -430,7 +431,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
 	 */
 	protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties) {
-		$mountingSite = Tx_Solr_Site::getSiteByPageId($mountProperties['mountPageDestination']);
+		$mountingSite = Site::getSiteByPageId($mountProperties['mountPageDestination']);
 
 		$pageInitializer = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Initializer_Page');
 		$pageInitializer->setSite($mountingSite);

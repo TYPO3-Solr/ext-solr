@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -118,7 +119,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 		$query->useRawQueryString(TRUE);
 		$query->setQueryString('*:*');
 		$query->addFilter('(type:pages AND uid:' . $this->pageId . ') OR (*:* AND pid:' . $this->pageId . ' NOT type:pages)');
-		$query->addFilter('siteHash:' . Tx_Solr_Site::getSiteByPageId($this->pageId)->getSiteHash());
+		$query->addFilter('siteHash:' . Site::getSiteByPageId($this->pageId)->getSiteHash());
 		$query->setFieldList('*');
 		$query->setSorting('type asc, title asc');
 

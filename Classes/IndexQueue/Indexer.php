@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -288,7 +289,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * @return Apache_Solr_Document A basic Solr document
 	 */
 	protected function getBaseDocument(Tx_Solr_IndexQueue_Item $item, array $itemRecord) {
-		$site     = GeneralUtility::makeInstance('Tx_Solr_Site', $item->getRootPageUid());
+		$site     = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $item->getRootPageUid());
 		$document = GeneralUtility::makeInstance('Apache_Solr_Document');
 		/* @var $document Apache_Solr_Document */
 
@@ -505,7 +506,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	protected function getTranslationOverlaysForPage($pageId) {
 		$translationOverlays = array();
 		$pageId              = intval($pageId);
-		$site                = Tx_Solr_Site::getSiteByPageId($pageId);
+		$site                = Site::getSiteByPageId($pageId);
 
 		$languageModes         = array('content_fallback', 'strict', 'ignore');
 		$hasOverlayMode        = in_array($site->getSysLanguageMode(), $languageModes, TRUE);

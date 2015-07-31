@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
+
 
 /**
  * Interface to post process initialization of the Index Queue.
@@ -38,11 +40,11 @@ interface Tx_Solr_IndexQueueInitializationPostProcessor {
 	/**
 	 * Post process Index Queue initialization
 	 *
-	 * @param Tx_Solr_Site $site The site to initialize
+	 * @param Site $site The site to initialize
 	 * @param array $indexingConfigurations Initialized indexing configurations
 	 * @param array $initializationStatus Results of Index Queue initializations
 	 */
-	public function postProcessIndexQueueInitialization(Tx_Solr_Site $site, array $indexingConfigurations, array $initializationStatus);
+	public function postProcessIndexQueueInitialization(Site $site, array $indexingConfigurations, array $initializationStatus);
 
 }
 
