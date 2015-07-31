@@ -87,7 +87,7 @@ $solr   = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionMana
 	$pageId,
 	$languageId
 );
-$search = GeneralUtility::makeInstance('Tx_Solr_Search', $solr);
+$search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solr);
 
 if ($search->ping()) {
 	$results = json_decode($search->search($suggestQuery, 0, 0)->getRawResponse());

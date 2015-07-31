@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -36,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 
 	/**
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search;
 

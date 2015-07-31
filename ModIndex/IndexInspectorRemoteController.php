@@ -24,6 +24,7 @@
 
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -46,7 +47,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	/**
 	 * Search
 	 *
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search = NULL;
 
@@ -75,7 +76,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 		$solrConnection = $connectionManager->getConnectionByPageId($this->pageId);
 
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search', $solrConnection);
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
 	}
 
 	/**

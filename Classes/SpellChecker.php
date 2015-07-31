@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -38,7 +39,7 @@ class Tx_Solr_SpellChecker {
 	/**
 	 * Search instance
 	 *
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search;
 
@@ -55,7 +56,7 @@ class Tx_Solr_SpellChecker {
 	 *
 	 */
 	public function __construct() {
-		$this->search        = GeneralUtility::makeInstance('Tx_Solr_Search');
+		$this->search        = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 		$this->configuration = Util::getSolrConfiguration();
 	}
 

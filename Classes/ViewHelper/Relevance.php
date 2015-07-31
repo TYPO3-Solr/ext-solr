@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,9 +40,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Tx_Solr_ViewHelper_Relevance implements Tx_Solr_ViewHelper {
 
 	/**
-	 * instance of Tx_Solr_Search
+	 * instance of ApacheSolrForTypo3\Solr\Search
 	 *
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search = NULL;
 
@@ -59,7 +60,7 @@ class Tx_Solr_ViewHelper_Relevance implements Tx_Solr_ViewHelper {
 	 */
 	public function __construct(array $arguments = array()) {
 		if(is_null($this->search)) {
-			$this->search   = GeneralUtility::makeInstance('Tx_Solr_Search');
+			$this->search   = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 			$this->maxScore = $this->search->getMaximumResultScore();
 		}
 	}

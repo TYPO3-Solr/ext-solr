@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -36,7 +38,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Search instance
 	 *
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search;
 
@@ -60,7 +62,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Parent plugin object.
 	 */
 	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
