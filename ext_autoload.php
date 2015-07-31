@@ -25,10 +25,6 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_api' => $extensionPath . 'Classes/Api.php',
-	'tx_solr_additionalfieldsindexer' => $extensionPath . 'Classes/AdditionalFieldsIndexer.php',
-	'tx_solr_commandresolver' => $extensionPath . 'Classes/CommandResolver.php',
-	'tx_solr_connectionmanager' => $extensionPath . 'Classes/ConnectionManager.php',
 	'tx_solr_garbagecollector' => $extensionPath . 'Classes/GarbageCollector.php',
 	'tx_solr_htmlcontentextractor' => $extensionPath . 'Classes/HtmlContentExtractor.php',
 	'tx_solr_javascriptmanager' => $extensionPath . 'Classes/JavascriptManager.php',
