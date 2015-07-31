@@ -83,7 +83,7 @@ if (!empty($additionalFilters)) {
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 	// Search
-$solr   = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+$solr   = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
 	$pageId,
 	$languageId
 );

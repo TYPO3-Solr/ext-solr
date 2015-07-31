@@ -136,7 +136,7 @@ class Tx_Solr_Typo3PageIndexer {
 	 * @throws	Exception when no Solr connection can be established.
 	 */
 	protected function initializeSolrConnection() {
-		$solr = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+		$solr = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
 			$this->page->id,
 			$this->page->sys_language_uid
 		);

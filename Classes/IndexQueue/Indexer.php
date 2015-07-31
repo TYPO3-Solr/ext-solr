@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -52,7 +53,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	protected $solr;
 
 	/**
-	 * @var Tx_Solr_ConnectionManager
+	 * @var ConnectionManager
 	 */
 	protected $connectionManager;
 
@@ -85,7 +86,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 */
 	public function __construct(array $options = array()) {
 		$this->options           = $options;
-		$this->connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$this->connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 	}
 
 	/**

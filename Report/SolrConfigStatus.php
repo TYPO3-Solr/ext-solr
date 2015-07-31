@@ -58,7 +58,7 @@ class Tx_Solr_Report_SolrConfigStatus implements StatusProviderInterface {
 	 */
 	public function getStatus() {
 		$reports = array();
-		$solrConnections = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getAllConnections();
+		$solrConnections = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getAllConnections();
 
 		foreach ($solrConnections as $solrConnection) {
 

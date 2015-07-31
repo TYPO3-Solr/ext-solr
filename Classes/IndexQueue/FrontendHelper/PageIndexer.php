@@ -297,7 +297,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 */
 	protected function getSolrConnection() {
 		$indexQueue        = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 
 		$indexQueueItem = $indexQueue->getItem(
 			$this->request->getParameter('item')

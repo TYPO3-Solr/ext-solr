@@ -68,7 +68,7 @@ abstract class AbstractModuleController extends ActionController implements Admi
 	protected $extensionKey = '';
 
 	/**
-	 * @var \Tx_Solr_ConnectionManager
+	 * @var \ApacheSolrForTypo3\Solr\ConnectionManager
 	 * @inject
 	 */
 	protected $connectionManager = NULL;

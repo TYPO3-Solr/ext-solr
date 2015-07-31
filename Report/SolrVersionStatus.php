@@ -52,7 +52,7 @@ class Tx_Solr_Report_SolrVersionStatus implements StatusProviderInterface {
 	 */
 	public function getStatus() {
 		$reports = array();
-		$solrConnections = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getAllConnections();
+		$solrConnections = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getAllConnections();
 
 		foreach ($solrConnections as $solrConnection) {
 			if ($solrConnection->ping()) {

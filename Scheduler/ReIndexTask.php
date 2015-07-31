@@ -82,7 +82,7 @@ class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
 	protected function cleanUpIndex() {
 		$cleanUpResult     = TRUE;
 		$solrConfiguration = $this->site->getSolrConfiguration();
-		$solrServers       = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionsBySite($this->site);
+		$solrServers       = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionsBySite($this->site);
 		$typesToCleanUp    = array();
 
 		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {

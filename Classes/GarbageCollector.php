@@ -409,7 +409,7 @@ class Tx_Solr_GarbageCollector {
 	 */
 	protected function deleteIndexDocuments($table, $uid) {
 		$indexQueue        = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 
 			// record can be indexed for multiple sites
 		$indexQueueItems = $indexQueue->getItems($table, $uid);

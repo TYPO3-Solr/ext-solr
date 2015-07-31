@@ -71,7 +71,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * @return	void
 	 */
 	protected function initializeSearch() {
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 		$solrConnection = $connectionManager->getConnectionByPageId($this->pageId);
 
 		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search', $solrConnection);

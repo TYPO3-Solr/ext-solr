@@ -41,7 +41,7 @@ class Tx_Solr_ContextMenuActionController {
 	public function initializeSolrConnectionsByRootPage($nodeData) {
 		$node = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\Pagetree\\PagetreeNode', (array) $nodeData);
 
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 		$connectionManager->updateConnectionByRootPageId($node->getId());
 	}
 

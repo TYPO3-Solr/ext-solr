@@ -75,7 +75,7 @@ class Tx_Solr_Search implements SingletonInterface {
 		$this->solr = $solrConnection;
 
 		if (is_null($solrConnection)) {
-			$this->solr = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+			$this->solr = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
 				$GLOBALS['TSFE']->id,
 				$GLOBALS['TSFE']->sys_language_uid
 			);

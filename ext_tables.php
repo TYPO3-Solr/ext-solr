@@ -99,11 +99,11 @@ if (TYPO3_MODE == 'BE') {
 	);
 
 	// register Clear Cache Menu hook
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&Tx_Solr_ConnectionManager';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&ApacheSolrForTypo3\\Solr\\ConnectionManager';
 
 	// register Clear Cache Menu ajax call
 	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = array(
-		'callbackMethod' => 'Tx_Solr_ConnectionManager->updateConnections',
+		'callbackMethod' => 'ApacheSolrForTypo3\\Solr\\ConnectionManager->updateConnections',
 		'csrfTokenCheck' => true
 	);
 

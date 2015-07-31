@@ -277,7 +277,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 *
 	 */
 	protected function initializeSearch() {
-		$solrConnection = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+		$solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
 			$GLOBALS['TSFE']->id,
 			$GLOBALS['TSFE']->sys_language_uid,
 			$GLOBALS['TSFE']->MP
