@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\LanguageFileUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -44,7 +46,7 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 	public function __construct(array $arguments = array()) {
 
 		if (!isset($arguments['languageFile'])) {
-			throw new Tx_Solr_LanguageFileUnavailableException(
+			throw new LanguageFileUnavailableException(
 				'No Language File given',
 				1234972358
 			);

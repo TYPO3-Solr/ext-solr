@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
-use Tx_Solr_NoSolrConnectionFoundException;
 use Tx_Solr_SolrService;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -109,7 +107,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	 * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
 	 * @param string $mount Comma list of MountPoint parameters
 	 * @return array A solr configuration.
-	 * @throws Tx_Solr_NoSolrConnectionFoundException
+	 * @throws NoSolrConnectionFoundException
 	 */
 	public function getConfigurationByPageId($pageId, $language = 0, $mount = '') {
 		$solrConfiguration = array();
@@ -121,10 +119,10 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 
 		try {
 			$solrConfiguration = $this->getConfigurationByRootPageId($siteRootPageId, $language);
-		} catch (Tx_Solr_NoSolrConnectionFoundException $nscfe) {
-			/* @var $noSolrConnectionException Tx_Solr_NoSolrConnectionFoundException */
+		} catch (NoSolrConnectionFoundException $nscfe) {
+			/* @var $noSolrConnectionException NoSolrConnectionFoundException */
 			$noSolrConnectionException = GeneralUtility::makeInstance(
-				'Tx_Solr_NoSolrConnectionFoundException',
+				'ApacheSolrForTypo3\\Solr\\NoSolrConnectionFoundException',
 				$nscfe->getMessage() . ' Initial page used was [' . $pageId . ']',
 				1275399922
 			);
@@ -143,7 +141,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	 * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
 	 * @param string $mount Comma list of MountPoint parameters
 	 * @return Tx_Solr_SolrService A solr connection.
-	 * @throws Tx_Solr_NoSolrConnectionFoundException
+	 * @throws NoSolrConnectionFoundException
 	 */
 	public function getConnectionByPageId($pageId, $language = 0, $mount = '') {
 		$solrConnection = NULL;
@@ -165,7 +163,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	 * @param integer $pageId A root page ID.
 	 * @param integer $language The language ID to get the configuration for as the path may differ. Optional, defaults to 0.
 	 * @return array A solr configuration.
-	 * @throws Tx_Solr_NoSolrConnectionFoundException
+	 * @throws NoSolrConnectionFoundException
 	 */
 	public function getConfigurationByRootPageId($pageId, $language = 0) {
 		$solrConfiguration = FALSE;
@@ -177,9 +175,9 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 		if (isset($solrServers[$connectionKey])) {
 			$solrConfiguration = $solrServers[$connectionKey];
 		} else {
-			/* @var $noSolrConnectionException Tx_Solr_NoSolrConnectionFoundException */
+			/* @var $noSolrConnectionException NoSolrConnectionFoundException */
 			$noSolrConnectionException = GeneralUtility::makeInstance(
-				'Tx_Solr_NoSolrConnectionFoundException',
+				'ApacheSolrForTypo3\\Solr\\NoSolrConnectionFoundException',
 				'Could not find a Solr connection for root page ['
 				. $pageId . '] and language [' . $language . '].',
 				1275396474
@@ -199,7 +197,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	 * @param integer $pageId A root page ID.
 	 * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
 	 * @return Tx_Solr_SolrService A solr connection.
-	 * @throws Tx_Solr_NoSolrConnectionFoundException
+	 * @throws NoSolrConnectionFoundException
 	 */
 	public function getConnectionByRootPageId($pageId, $language = 0) {
 		$solrConnection = NULL;

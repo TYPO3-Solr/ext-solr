@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Util;
@@ -556,7 +557,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 			try {
 				$connection = $this->connectionManager->getConnectionByPageId($pageId, $languageId);
 				$connections[$languageId] = $connection;
-			} catch (Tx_Solr_NoSolrConnectionFoundException $e) {
+			} catch (NoSolrConnectionFoundException $e) {
 				// ignore the exception as we seek only those connections
 				// actually available
 			}
