@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,7 +25,6 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\LanguageFileUnavailableException;
-use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -35,14 +36,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Lll implements ViewHelper {
+class Lll implements ViewHelper {
 
 	protected $languageFile;
 	protected $llKey;
 	protected $localLang;
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_Lll
+	 * Constructor
+	 *
+	 * @param array $arguments
+	 * @throws \ApacheSolrForTypo3\Solr\LanguageFileUnavailableException
 	 */
 	public function __construct(array $arguments = array()) {
 
@@ -53,16 +57,16 @@ class Tx_Solr_ViewHelper_Lll implements ViewHelper {
 			);
 		}
 		$this->languageFile = $arguments['languageFile'];
-		$this->llKey        = $arguments['llKey'];
+		$this->llKey = $arguments['llKey'];
 
 		$this->loadLL();
 	}
 
 	/**
-	 * returns a label for the given key
+	 * Returns a label for the given key
 	 *
 	 * @param array $arguments
-	 * @return	string
+	 * @return string
 	 */
 	public function execute(array $arguments = array()) {
 		$label = '';
@@ -74,7 +78,7 @@ class Tx_Solr_ViewHelper_Lll implements ViewHelper {
 		}
 
 		if ($isFullPath || GeneralUtility::isFirstPartOfStr($arguments[0], 'EXT')) {
-				// a full path reference...
+			// a full path reference...
 			$label = $this->resolveFullPathLabel($arguments[0]);
 		} else {
 			$label = $this->getLabel($this->languageFile, $arguments[0]);
@@ -97,7 +101,7 @@ class Tx_Solr_ViewHelper_Lll implements ViewHelper {
 			$GLOBALS['TSFE']->renderCharset
 		);
 
-			// Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
+		// Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
 		if (is_array($configuration['_LOCAL_LANG.'])) {
 			foreach ($configuration['_LOCAL_LANG.'] as $language => $overrideLabels) {
 				$language = substr($language, 0, -1);
@@ -129,7 +133,7 @@ class Tx_Solr_ViewHelper_Lll implements ViewHelper {
 		$path     = GeneralUtility::getFileAbsFileName(implode(':', $pathParts));
 
 		if (!isset($this->localLang[$path])) {
-				// do some nice caching
+			// do some nice caching
 			$this->localLang[$path] = GeneralUtility::readLLfile(
 				$path,
 				$this->llKey,
@@ -156,7 +160,7 @@ class Tx_Solr_ViewHelper_Lll implements ViewHelper {
 			$label = $this->localLang[$locallang]['default'][$labelKey];
 		}
 
-			// TYPO3 4.6 workaround until we support xliff
+		// TYPO3 4.6 workaround until we support xliff
 		if (is_array($label)) {
 			if (!empty($label[0]['target'])) {
 				$label = $label[0]['target'];
