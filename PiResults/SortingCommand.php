@@ -86,7 +86,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 	}
 
 	protected function getSortingLinks() {
-		$sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Tx_Solr_Sorting', $this->configuration['search.']['sorting.']['options.']);
+		$sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Sorting', $this->configuration['search.']['sorting.']['options.']);
 
 		$query = $this->search->getQuery();
 
