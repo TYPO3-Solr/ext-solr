@@ -38,7 +38,7 @@ interface Tx_Solr_ViewHelperProvider {
 	/**
 	 * provides additional viewhelper objects to be added to the templating engine
 	 *
-	 * @param array array with a structure of view helper name => Tx_Solr_ViewHelper objects
+	 * @param array array with a structure of view helper name => ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper objects
 	 */
 	public function getViewHelpers();
 }

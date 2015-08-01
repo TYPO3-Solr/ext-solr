@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 
 
 /**
@@ -33,7 +34,7 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Multivalue implements Tx_Solr_ViewHelper {
+class Tx_Solr_ViewHelper_Multivalue implements ViewHelper {
 
 		// defaults if neither is given trough the view helper marker, nor through TS
 	protected $glue = ', ';

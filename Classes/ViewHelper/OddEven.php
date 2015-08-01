@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
+
 
 /**
  * Odd / Even viewhelper to add Zebra stripes to table rows f.e.
@@ -34,7 +36,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_OddEven implements Tx_Solr_ViewHelper {
+class Tx_Solr_ViewHelper_OddEven implements ViewHelper {
 
 	/**
 	 * constructor for class Tx_Solr_ViewHelper_OddEven

@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_ViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -37,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Crop implements Tx_Solr_ViewHelper {
+class Crop implements ViewHelper {
 
 	// defaults if neither is given trough the view helper marker, nor through TS
 	protected $maxLength = 30;

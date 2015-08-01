@@ -24,6 +24,7 @@
 
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
+class Tx_Solr_ViewHelper_SortUrl implements ViewHelper {
 
 	/**
 	 * Holds the solr configuration

@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\LanguageFileUnavailableException;
+use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
+class Tx_Solr_ViewHelper_Lll implements ViewHelper {
 
 	protected $languageFile;
 	protected $llKey;
