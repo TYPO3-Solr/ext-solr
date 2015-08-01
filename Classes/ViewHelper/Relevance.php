@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,7 +26,6 @@
 
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
-use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -38,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Relevance implements ViewHelper {
+class Relevance implements ViewHelper {
 
 	/**
 	 * instance of ApacheSolrForTypo3\Solr\Search
@@ -56,11 +57,12 @@ class Tx_Solr_ViewHelper_Relevance implements ViewHelper {
 
 
 	/**
-	 * Constructor.
+	 * Constructor
 	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
-		if(is_null($this->search)) {
+		if (is_null($this->search)) {
 			$this->search   = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 			$this->maxScore = $this->search->getMaximumResultScore();
 		}
@@ -77,7 +79,7 @@ class Tx_Solr_ViewHelper_Relevance implements ViewHelper {
 		$document = $arguments[0];
 
 		if (count($arguments) > 1) {
-				// a pipe character caused the serialized document to be split up
+			// a pipe character caused the serialized document to be split up
 			$document = implode('|', $arguments);
 		}
 
@@ -95,14 +97,14 @@ class Tx_Solr_ViewHelper_Relevance implements ViewHelper {
 	 *
 	 * @param string $document The result document as serialized array
 	 * @return float The document's score
-	 * @throws RuntimeException if the serialized result document array cannot be unserialized
+	 * @throws \RuntimeException if the serialized result document array cannot be unserialized
 	 */
 	protected function getScore($document) {
 		$rawDocument = $document;
 		$score       = 0;
 
 		if (is_numeric($document)) {
-				// backwards compatibility
+			// backwards compatibility
 			GeneralUtility::deprecationLog('You are using an old notation of the '
 				. 'relevance view helpers. The notation used to be '
 				. '###RELEVANCE:###RESULT_DOCUMENT.SCORE######, please change '
@@ -129,7 +131,7 @@ class Tx_Solr_ViewHelper_Relevance implements ViewHelper {
 				));
 			}
 
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Could not resolve document score for relevance calculation',
 				1343670545
 			);

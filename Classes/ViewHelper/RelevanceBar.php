@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ViewHelper\Relevance;
+
 
 /**
  * View helper class to turn a result document's relevance score into a nicer
@@ -33,7 +35,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_RelevanceBar extends Tx_Solr_ViewHelper_Relevance {
+class Tx_Solr_ViewHelper_RelevanceBar extends Relevance {
 
 
 	/**
