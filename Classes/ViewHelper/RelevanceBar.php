@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,8 +24,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ViewHelper\Relevance;
-
 
 /**
  * View helper class to turn a result document's relevance score into a nicer
@@ -35,8 +35,7 @@ use ApacheSolrForTypo3\Solr\ViewHelper\Relevance;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_RelevanceBar extends Relevance {
-
+class RelevanceBar extends Relevance {
 
 	/**
 	 * Renders the HTML for the relevance bar.
