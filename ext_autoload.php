@@ -106,7 +106,6 @@ return array(
 	'tx_solr_search_spellcheckingcomponent' => $extensionPath . 'Classes/Search/SpellcheckingComponent.php',
 	'tx_solr_search_statisticscomponent' => $extensionPath . 'Classes/Search/StatisticsComponent.php',
 
-	'tx_solr_viewhelper_oddeven' => $extensionPath . 'Classes/ViewHelper/OddEven.php',
 	'tx_solr_viewhelper_relevance' => $extensionPath . 'Classes/ViewHelper/Relevance.php',
 	'tx_solr_viewhelper_relevancebar' => $extensionPath . 'Classes/ViewHelper/RelevanceBar.php',
 	'tx_solr_viewhelper_solrlink' => $extensionPath . 'Classes/ViewHelper/SolrLink.php',
