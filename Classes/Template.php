@@ -833,7 +833,7 @@ class Template {
 			}
 
 			if (is_array($resolvedValue)) {
-				// handling multivalue fields, @see Tx_Solr_ViewHelper_Multivalue
+				// handling multivalue fields, @see ApacheSolrForTypo3\Solr\ViewHelper\Multivalue
 				$resolvedValue = serialize($resolvedValue);
 			}
 
