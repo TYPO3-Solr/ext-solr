@@ -51,7 +51,7 @@ class Tx_Solr_PiResults_NoResultsCommand implements Tx_Solr_PluginCommand {
 	}
 
 	public function execute() {
-		$spellChecker    = GeneralUtility::makeInstance('Tx_Solr_SpellChecker');
+		$spellChecker    = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SpellChecker');
 		$suggestionsLink = $spellChecker->getSpellcheckingSuggestions();
 
 		$markers = $this->getLabelMarkers();
@@ -74,7 +74,7 @@ class Tx_Solr_PiResults_NoResultsCommand implements Tx_Solr_PluginCommand {
 	 * @return array Array of label markers.
 	 */
 	protected function getLabelMarkers() {
-		$spellChecker = GeneralUtility::makeInstance('Tx_Solr_SpellChecker');
+		$spellChecker = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SpellChecker');
 		$searchWord   = $this->parentPlugin->getCleanUserQuery();
 
 		$nothingFound = strtr(
@@ -126,7 +126,7 @@ class Tx_Solr_PiResults_NoResultsCommand implements Tx_Solr_PluginCommand {
 	 * @return string The rendered results command for the results of the suggested keywords.
 	 */
 	protected function getSuggestionResults() {
-		$spellChecker      = GeneralUtility::makeInstance('Tx_Solr_SpellChecker');
+		$spellChecker      = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SpellChecker');
 		$suggestedKeywords = $spellChecker->getCollatedSuggestion();
 		$suggestionResults = '';
 

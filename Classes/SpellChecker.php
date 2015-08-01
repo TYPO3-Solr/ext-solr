@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,8 +24,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_SpellChecker {
+class SpellChecker {
 
 	/**
 	 * Search instance
@@ -52,7 +52,7 @@ class Tx_Solr_SpellChecker {
 
 
 	/**
-	 * Constructor for class Tx_Solr_SpellChecker
+	 * Constructor
 	 *
 	 */
 	public function __construct() {
@@ -139,7 +139,7 @@ class Tx_Solr_SpellChecker {
 		if ($this->configuration['search.']['spellchecking'] && $this->search->hasSearched()) {
 
 			$suggestions = $this->getSuggestions();
-			if($suggestions && !$suggestions['correctlySpelled'] && !empty($suggestions['collation'])) {
+			if ($suggestions && !$suggestions['correctlySpelled'] && !empty($suggestions['collation'])) {
 				$suggestionsLink = $GLOBALS['TSFE']->cObj->noTrimWrap(
 					$this->getSuggestionQueryLink(),
 					$this->configuration['search.']['spellchecking.']['wrap']
