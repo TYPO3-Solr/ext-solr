@@ -44,6 +44,11 @@
       "PiSearch/",
       "Report/",
       "Scheduler/"
-     ]
+    ]
+  },
+  "extra": {
+    "class-alias-maps": [
+      "Migrations/Code/ClassAliasMap.php"
+    ]
   }
 }
