@@ -53,6 +53,11 @@ class ModuleDataStorageService implements SingletonInterface {
 	public function loadModuleData() {
 		$moduleData = $GLOBALS['BE_USER']->getModuleData(self::KEY);
 
+		if (FALSE !== strpos($moduleData, 'Tx_Solr_Site')) {
+			// compat: may not be able to unserialize the now gone class
+			$moduleData = '';
+		}
+
 		if (empty($moduleData) || !$moduleData) {
 			$moduleData = $this->objectManager->get('ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData');
 		} else {
