@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
 
 
 /**
@@ -32,10 +33,10 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
+class Tx_Solr_ViewHelper_TsTest extends \Tx_Phpunit_TestCase {
 
 	/**
-	 * @var Tx_Solr_viewhelper_Ts
+	 * @var Ts
 	 */
 	protected $viewHelper = NULL;
 
@@ -68,7 +69,7 @@ class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 
 		$this->fixtures = array('argument content', '<span>argument content with html</span>', 'third argument content');
 
-		$this->viewHelper = new Tx_Solr_viewhelper_Ts();
+		$this->viewHelper = new Ts();
 	}
 
 	/**
