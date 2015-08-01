@@ -200,6 +200,6 @@ return array(
 	'tx_solr_subpartviewhelper' => $extensionPath . 'Interfaces/SubpartViewHelper.php',
 	'tx_solr_substitutepageindexer' => $extensionPath . 'Interfaces/SubstitutePageIndexer.php',
 	'tx_solr_templatemodifier' => $extensionPath . 'Interfaces/TemplateModifier.php',
-	'tx_solr_viewhelperprovider' => $extensionPath . 'Interfaces/ViewHelperProvider.php',
+
 );
 
