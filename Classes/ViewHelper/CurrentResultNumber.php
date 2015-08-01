@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,7 +25,6 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -37,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_CurrentResultNumber implements ViewHelper {
+class CurrentResultNumber implements ViewHelper {
 
 	/**
 	 * @var Search
@@ -47,7 +48,9 @@ class Tx_Solr_ViewHelper_CurrentResultNumber implements ViewHelper {
 	protected $configuration;
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_Date
+	 * Constructor
+	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
 		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
@@ -58,7 +61,7 @@ class Tx_Solr_ViewHelper_CurrentResultNumber implements ViewHelper {
 	 * number counting from zero of the total number of results.
 	 *
 	 * @param array $arguments
-	 * @return	string
+	 * @return string
 	 */
 	public function execute(array $arguments = array()) {
 		$numberOfResults = $this->search->getNumberOfResults();
