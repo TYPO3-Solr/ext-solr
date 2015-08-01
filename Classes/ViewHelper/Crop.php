@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,6 +25,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_ViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,15 +37,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Crop implements Tx_Solr_ViewHelper {
+class Crop implements Tx_Solr_ViewHelper {
 
-		// defaults if neither is given trough the view helper marker, nor through TS
+	// defaults if neither is given trough the view helper marker, nor through TS
 	protected $maxLength = 30;
 	protected $cropIndicator = '...';
 	protected $cropFullWords = TRUE;
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_Crop
+	 * Constructor
 	 */
 	public function __construct(array $arguments = array()) {
 		$configuration = Util::getSolrConfiguration();
@@ -56,7 +59,7 @@ class Tx_Solr_ViewHelper_Crop implements Tx_Solr_ViewHelper {
 		}
 
 		if (isset($configuration['viewHelpers.']['crop.']['cropFullWords'])) {
-			$this->cropFullWords = (boolean) $configuration['viewHelpers.']['crop.']['cropFullWords'];
+			$this->cropFullWords = (boolean)$configuration['viewHelpers.']['crop.']['cropFullWords'];
 		}
 	}
 
@@ -65,14 +68,14 @@ class Tx_Solr_ViewHelper_Crop implements Tx_Solr_ViewHelper {
 	 * If no maxLength and/or cropIndicator parameters are set, default values apply
 	 *
 	 * @param array $arguments
-	 * @return	string
+	 * @return string
 	 */
 	public function execute(array $arguments = array()) {
 		$croppedString = $stringToCrop = $arguments[0];
 
 		$maxLength = $this->maxLength;
 		if (isset($arguments[1])) {
-			$maxLength = (int) $arguments[1];
+			$maxLength = (int)$arguments[1];
 		}
 
 		$cropIndicator = $this->cropIndicator;
