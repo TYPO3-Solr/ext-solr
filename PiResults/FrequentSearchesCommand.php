@@ -23,6 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -138,7 +139,7 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 			foreach ($frequentSearchTerms as $term => $hits) {
 				$size = round($minimumSize + (($hits - $minimumHits) * $step));
 				$frequentSearches[] = array(
-					'term'       => Tx_Solr_Template::escapeMarkers($term),
+					'term'       => Template::escapeMarkers($term),
 					'hits'       => $hits,
 					'style'      => 'font-size: ' . $size . 'px',
 					'class'      => 'tx-solr-frequent-term-' . $size,

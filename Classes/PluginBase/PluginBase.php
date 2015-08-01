@@ -26,6 +26,7 @@
 use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -67,9 +68,9 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	protected $solrAvailable;
 
 	/**
-	 * An instance of Tx_Solr_Template
+	 * An instance of ApacheSolrForTypo3\Solr\Template
 	 *
-	 * @var Tx_Solr_Template
+	 * @var Template
 	 */
 	protected $template;
 
@@ -293,7 +294,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * Initializes the template engine and returns the initialized instance.
 	 *
-	 * @return Tx_Solr_Template
+	 * @return Template
 	 * @throws UnexpectedValueException if a view helper provider fails to implement interface Tx_Solr_ViewHelperProvider
 	 */
 	protected function initializeTemplateEngine() {
@@ -309,9 +310,9 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 			$templateFile = $flexformTemplateFile;
 		}
 
-		/** @var Tx_Solr_Template $template */
+		/** @var Template $template */
 		$template = GeneralUtility::makeInstance(
-			'Tx_Solr_Template',
+			'ApacheSolrForTypo3\\Solr\\Template',
 			$this->cObj,
 			$templateFile,
 			$subPart
@@ -366,10 +367,10 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * Overwrite this method to do own initialisations  of the template.
 	 *
-	 * @param Tx_Solr_Template $template Template
-	 * @return Tx_Solr_Template
+	 * @param Template $template Template
+	 * @return Template
 	 */
-	protected function postInitializeTemplateEngine(Tx_Solr_Template $template) {
+	protected function postInitializeTemplateEngine(Template $template) {
 		return $template;
 	}
 
@@ -455,7 +456,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * Gets the plugin's template instance.
 	 *
-	 * @return Tx_Solr_Template The plugin's template.
+	 * @return Template The plugin's template.
 	 */
 	public function getTemplate() {
 		return $this->template;
@@ -532,7 +533,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 
 		// escape triple hashes as they are used in the template engine
 		// TODO remove after switching to fluid templates
-		$userQuery = Tx_Solr_Template::escapeMarkers($userQuery);
+		$userQuery = Template::escapeMarkers($userQuery);
 
 		return $userQuery;
 	}

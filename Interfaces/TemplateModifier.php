@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
+
 
 /**
  * Template modifier interface
@@ -35,6 +37,6 @@
  */
 interface Tx_Solr_TemplateModifier {
 
-	public function modifyTemplate(Tx_Solr_Template $template);
+	public function modifyTemplate(Template $template);
 }
 

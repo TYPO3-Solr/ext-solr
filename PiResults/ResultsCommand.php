@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -196,7 +197,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 
 			// escape markers in document fields
 			// TODO remove after switching to fluid templates
-			$processedFieldValue = Tx_Solr_Template::escapeMarkers($processedFieldValue);
+			$processedFieldValue = Template::escapeMarkers($processedFieldValue);
 
 			$result[$fieldName] = $processedFieldValue;
 		}

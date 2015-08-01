@@ -23,6 +23,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
+
 
 /**
  * Abstract subpart viewhelper
@@ -34,14 +36,14 @@
 abstract class Tx_Solr_ViewHelper_AbstractSubpartViewHelper implements Tx_Solr_SubpartViewHelper {
 
 	/**
-	 * @var Tx_Solr_Template
+	 * @var Template
 	 */
 	protected $template = NULL;
 
 	/**
 	 * Gets the view helper's subpart template
 	 *
-	 * @return	Tx_Solr_Template
+	 * @return Template
 	 */
 	public function getTemplate() {
 		return $this->template;
@@ -50,9 +52,9 @@ abstract class Tx_Solr_ViewHelper_AbstractSubpartViewHelper implements Tx_Solr_S
 	/**
 	 * Sets the view helper's subpart template
 	 *
-	 * @param Tx_Solr_Template $template view helper's subpart template
+	 * @param Template $template view helper's subpart template
 	 */
-	public function setTemplate(Tx_Solr_Template $template) {
+	public function setTemplate(Template $template) {
 		$this->template = $template;
 	}
 

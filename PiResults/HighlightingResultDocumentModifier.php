@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -60,7 +61,7 @@ class Tx_Solr_PiResults_HighlightingResultDocumentModifier implements Tx_Solr_Re
 			if (!empty($highlightedContent->{$resultDocument['id']}->{$highlightField}[0])) {
 				$fragments = array();
 				foreach ($highlightedContent->{$resultDocument['id']}->{$highlightField} as $fragment) {
-					$fragments[] = tx_solr_Template::escapeMarkers($fragment);
+					$fragments[] = Template::escapeMarkers($fragment);
 				}
 				$resultDocument[$highlightField] = implode(
 					' ' . $configuration['search.']['results.']['resultsHighlighting.']['fragmentSeparator'] . ' ',

@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
+use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -106,14 +107,14 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 
 		$this->javascriptManager->addJavascriptToPage();
 
-		return $this->template->render(Tx_Solr_Template::CLEAN_TEMPLATE_YES);
+		return $this->template->render(Template::CLEAN_TEMPLATE_YES);
 	}
 
 	/**
 	 * Gets the template to be used for rendering a command.
 	 *
 	 * @param string $commandName Name of the command to get the template for
-	 * @return Tx_Solr_Template The template for the given command
+	 * @return Template The template for the given command
 	 */
 	protected function getCommandTemplate($commandName) {
 		$subpartTemplate = clone $this->template;

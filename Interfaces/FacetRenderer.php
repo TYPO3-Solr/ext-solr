@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
+
 
 /**
  * Facet Renderer Interface
@@ -33,9 +35,9 @@ interface Tx_Solr_FacetRenderer {
 	/**
 	 * Sets the template to use to render the facet.
 	 *
-	 * @param Tx_Solr_Template $template Template
+	 * @param Template $template Template
 	 */
-	public function setTemplate(Tx_Solr_Template $template);
+	public function setTemplate(Template $template);
 
 	/**
 	 * Sets the target page ID for all links generated

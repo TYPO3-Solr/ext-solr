@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,7 +24,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,7 +38,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Template {
+class Template {
 
 	const CLEAN_TEMPLATE_YES = TRUE;
 	const CLEAN_TEMPLATE_NO  = FALSE;
@@ -91,7 +92,7 @@ class Tx_Solr_Template {
 		$this->template = $this->cObj->fileResource($htmlFile);
 
 		if (empty($this->template)) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Could not load template file "' . htmlspecialchars($htmlFile) . '"',
 				1327490358
 			);
@@ -121,8 +122,8 @@ class Tx_Solr_Template {
 				$viewHelperLoaded = $this->loadViewHelper($helperKey);
 
 				if (!$viewHelperLoaded) {
-						// skipping processing in case we couldn't find a class
-						// to handle the view helper
+					// skipping processing in case we couldn't find a class
+					// to handle the view helper
 					continue;
 				}
 
@@ -155,12 +156,12 @@ class Tx_Solr_Template {
 		if (!isset($this->helpers[strtolower($helperName)])) {
 			$viewHelperClassName = $this->loadViewHelper($helperName);
 
-				// could be FALSE if not matching view helper class was found
+			// could be FALSE if not matching view helper class was found
 			if ($viewHelperClassName) {
 				try {
 					$helperInstance = GeneralUtility::makeInstance($viewHelperClassName, $arguments);
 					$success = $this->addViewHelperObject($helperName, $helperInstance);
-				} catch(Exception $e) {
+				} catch (\Exception $e) {
 					if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 						GeneralUtility::devLog('exception while adding a viewhelper', 'solr', 3, array(
 							$e->__toString()
@@ -189,7 +190,7 @@ class Tx_Solr_Template {
 
 			$classNamePrefix = ExtensionManagementUtility::getCN($extensionKey);
 
-			$possibleFilename  = Util::underscoredToUpperCamelCase($helperKey) . '.php';
+			$possibleFilename = Util::underscoredToUpperCamelCase($helperKey) . '.php';
 			$possibleClassName = $classNamePrefix . '_' . str_replace('/', '_', $viewHelperRealPath) . '_' . Util::underscoredToUpperCamelCase($helperKey);
 
 			$viewHelperIncludePath = ExtensionManagementUtility::extPath($extensionKey)
@@ -206,7 +207,7 @@ class Tx_Solr_Template {
 			}
 		}
 
-			// view helper could not be found
+		// view helper could not be found
 		return FALSE;
 	}
 
@@ -217,7 +218,7 @@ class Tx_Solr_Template {
 	 * @param $helperObject
 	 * @return boolean
 	 */
-	public function addViewHelperObject($helperName, Tx_Solr_ViewHelper $helperObject) {
+	public function addViewHelperObject($helperName, \Tx_Solr_ViewHelper $helperObject) {
 		$success = FALSE;
 
 		$helperName = strtolower($helperName);
@@ -237,14 +238,14 @@ class Tx_Solr_Template {
 	 */
 	public function render($cleanTemplate = FALSE) {
 
-			// process loops
+		// process loops
 		foreach ($this->loops as $key => $loopVariables) {
 			$this->renderLoop($key);
 		}
 
-			// process variables
+		// process variables
 		foreach ($this->variables as $variableKey => $variable) {
-			$variableKey     = strtoupper($variableKey);
+			$variableKey = strtoupper($variableKey);
 			$variableMarkers = $this->getVariableMarkers($variableKey, $this->workOnSubpart);
 
 			if (count($variableMarkers)) {
@@ -258,13 +259,13 @@ class Tx_Solr_Template {
 			}
 		}
 
-			// process markers
+		// process markers
 		$this->workOnSubpart = HtmlParser::substituteMarkerArray(
 			$this->workOnSubpart,
 			$this->markers
 		);
 
-			// process subparts
+		// process subparts
 		foreach ($this->subparts as $subpart => $content) {
 			$this->workOnSubpart = HtmlParser::substituteSubpart(
 				$this->workOnSubpart,
@@ -273,14 +274,14 @@ class Tx_Solr_Template {
 			);
 		}
 
-			// process view helpers, they need to be the last objects processing the template
+		// process view helpers, they need to be the last objects processing the template
 		$this->initializeViewHelpers($this->workOnSubpart);
 		$this->workOnSubpart = $this->renderViewHelpers($this->workOnSubpart);
 
-			// process conditions
+		// process conditions
 		$this->workOnSubpart = $this->processConditions($this->workOnSubpart);
 
-			// finally, do a cleanup if not disabled
+		// finally, do a cleanup if not disabled
 		if ($cleanTemplate) {
 			$this->cleanTemplate();
 		}
@@ -341,7 +342,7 @@ class Tx_Solr_Template {
 		foreach ($remainingMarkers as $remainingMarker) {
 			$isSubpart = preg_match_all(
 				'/(\<\!\-\-[\s]+###' . $remainingMarker . '###.*###'
-					. $remainingMarker . '###.+\-\-\>)/sU',
+				. $remainingMarker . '###.+\-\-\>)/sU',
 				$this->workOnSubpart,
 				$matches,
 				PREG_SET_ORDER
@@ -364,7 +365,7 @@ class Tx_Solr_Template {
 
 		$unresolvedConditions = $this->findConditions($this->workOnSubpart);
 		foreach ($unresolvedConditions as $unresolvedCondition) {
-				// if condition evaluates to FALSE, remove the content from the template
+			// if condition evaluates to FALSE, remove the content from the template
 			$this->workOnSubpart = HtmlParser::substituteSubpart(
 				$this->workOnSubpart,
 				$unresolvedCondition['marker'],
@@ -388,7 +389,7 @@ class Tx_Solr_Template {
 			if (array_key_exists(strtolower($helperKey), $this->helpers)) {
 				$helper = $this->helpers[strtolower($helperKey)];
 
-				if ($helper instanceof Tx_Solr_SubpartViewHelper) {
+				if ($helper instanceof \Tx_Solr_SubpartViewHelper) {
 					$content = $this->renderSubpartViewHelper($helper, $helperKey, $content);
 				} else {
 					$content = $this->renderMarkerViewHelper($helper, $helperKey, $content);
@@ -402,24 +403,24 @@ class Tx_Solr_Template {
 	/**
 	 * Renders single marker view helpers.
 	 *
-	 * @param Tx_Solr_ViewHelper $viewHelper View helper instance to execute.
+	 * @param \Tx_Solr_ViewHelper $viewHelper View helper instance to execute.
 	 * @param string $helperKey The view helper marker key.
 	 * @param string $content Markup that contains the unsubstituted view helper marker.
 	 * @return string Markup with the view helper replaced by the content it returned.
 	 */
-	protected function renderMarkerViewHelper(Tx_Solr_ViewHelper $viewHelper, $helperKey, $content) {
+	protected function renderMarkerViewHelper(\Tx_Solr_ViewHelper $viewHelper, $helperKey, $content) {
 		$viewHelperArgumentLists = $this->getViewHelperArgumentLists($helperKey, $content);
 
 		foreach ($viewHelperArgumentLists as $viewHelperArgumentList) {
 			$viewHelperArguments = explode('|', $viewHelperArgumentList);
-				// TODO check whether one of the parameters is a Helper
-				// itself, if so resolve it before handing it off to the
-				// actual helper, this way the order in which viewhelpers
-				// get added to the template do not matter anymore
-				// may use findViewHelpers()
+			// TODO check whether one of the parameters is a Helper
+			// itself, if so resolve it before handing it off to the
+			// actual helper, this way the order in which viewhelpers
+			// get added to the template do not matter anymore
+			// may use findViewHelpers()
 
-				// checking whether any of the helper arguments should be
-				// replaced by a variable available to the template
+			// checking whether any of the helper arguments should be
+			// replaced by a variable available to the template
 			foreach ($viewHelperArguments as $i => $helperArgument) {
 				$lowercaseHelperArgument = strtolower($helperArgument);
 				if (array_key_exists($lowercaseHelperArgument, $this->variables)) {
@@ -442,12 +443,12 @@ class Tx_Solr_Template {
 	/**
 	 * Renders subpart view helpers.
 	 *
-	 * @param Tx_Solr_ViewHelper $viewHelper View helper instance to execute.
+	 * @param \Tx_Solr_ViewHelper $viewHelper View helper instance to execute.
 	 * @param string $helperKey The view helper marker key.
 	 * @param string $content Markup that contains the unsubstituted view helper subpart.
 	 * @return string Markup with the view helper replaced by the content it returned.
 	 */
-	protected function renderSubpartViewHelper(Tx_Solr_SubpartViewHelper $viewHelper, $helperKey, $content) {
+	protected function renderSubpartViewHelper(\Tx_Solr_SubpartViewHelper $viewHelper, $helperKey, $content) {
 		$viewHelperArgumentLists = $this->getViewHelperArgumentLists($helperKey, $content);
 
 		foreach ($viewHelperArgumentLists as $viewHelperArgumentList) {
@@ -466,7 +467,7 @@ class Tx_Solr_Template {
 
 			try {
 				$viewHelperContent = $viewHelper->execute($viewHelperArguments);
-			} catch (UnexpectedValueException $e) {
+			} catch (\UnexpectedValueException $e) {
 				if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 					GeneralUtility::devLog('Exception while rendering a viewhelper', 'solr', 3, array(
 						$e->__toString()
@@ -483,9 +484,9 @@ class Tx_Solr_Template {
 				FALSE
 			);
 
-				// there might be more occurrences of the same subpart maker with
-				// the same arguments but different markup to be used...
-				// that's the case with the facet subpart view helper f.e.
+			// there might be more occurrences of the same subpart maker with
+			// the same arguments but different markup to be used...
+			// that's the case with the facet subpart view helper f.e.
 			$furtherOccurrences = strpos($content, $subpartMarker);
 			if ($furtherOccurrences !== FALSE) {
 				$content = $this->renderSubpartViewHelper($viewHelper, $helperKey, $content);
@@ -501,21 +502,21 @@ class Tx_Solr_Template {
 	 * @param string $loopName Key from $this->loops to render
 	 */
 	protected function renderLoop($loopName) {
-		$loopContent  = '';
+		$loopContent = '';
 		$loopTemplate = $this->getSubpart('LOOP:' . $loopName);
 
 		$loopContentMarker = 'loop_content:' . $loopName;
-		$loopSingleItem    = $this->getSubpart($loopContentMarker, $loopTemplate);
+		$loopSingleItem = $this->getSubpart($loopContentMarker, $loopTemplate);
 		if (empty($loopSingleItem)) {
-				// backwards compatible fallback for unnamed loops
+			// backwards compatible fallback for unnamed loops
 			$loopContentMarker = 'loop_content';
-			$loopSingleItem    = $this->getSubpart($loopContentMarker, $loopTemplate);
+			$loopSingleItem = $this->getSubpart($loopContentMarker, $loopTemplate);
 		}
 
-		$loopMarker    = strtoupper($this->loops[$loopName]['marker']);
+		$loopMarker = strtoupper($this->loops[$loopName]['marker']);
 		$loopVariables = $this->loops[$loopName]['data'];
-		$foundMarkers  = $this->getMarkersFromTemplate($loopSingleItem, $loopMarker . '\.');
-		$loopCount     = count($loopVariables);
+		$foundMarkers = $this->getMarkersFromTemplate($loopSingleItem, $loopMarker . '\.');
+		$loopCount = count($loopVariables);
 
 		if (count($foundMarkers)) {
 			$iterationCount = 0;
@@ -531,7 +532,7 @@ class Tx_Solr_Template {
 				$resolvedMarkers = $this->resolveVariableMarkers($foundMarkers, $value);
 				$resolvedMarkers['LOOP_CURRENT_ITERATION_COUNT'] = ++$iterationCount;
 
-					// pass the whole object / array / variable as is (serialized though)
+				// pass the whole object / array / variable as is (serialized though)
 				$resolvedMarkers[$loopMarker] = serialize($value);
 
 				$currentIterationContent = HtmlParser::substituteMarkerArray(
@@ -600,8 +601,8 @@ class Tx_Solr_Template {
 			$helperName      = strtolower($helperName);
 			$helperArguments = explode('|', $helperArguments);
 
-				// checking whether any of the helper arguments should be
-				// replaced by the current iteration's value
+			// checking whether any of the helper arguments should be
+			// replaced by the current iteration's value
 			if (isset($this->loops[$loopName])) {
 				foreach ($helperArguments as $i => $helperArgument) {
 					if (strtoupper($this->loops[$loopName]['marker']) == strtoupper($helperArgument)) {
@@ -613,7 +614,7 @@ class Tx_Solr_Template {
 			if (array_key_exists($helperName, $this->helpers)) {
 				$markerContent = $this->helpers[$helperName]->execute($helperArguments);
 			} else {
-				throw new RuntimeException(
+				throw new \RuntimeException(
 					'No matching view helper found for marker "' . $marker . '".',
 					1311005284
 				);
@@ -653,14 +654,15 @@ class Tx_Solr_Template {
 	 * @return string
 	 */
 	protected function processConditions($content) {
-			// find conditions
+		// find conditions
 		$conditions = $this->findConditions($content);
 
-			// evaluate conditions
+		// evaluate conditions
 		foreach ($conditions as $condition) {
 			if ($this->isVariableMarker($condition['comparand1'])
-			|| $this->isVariableMarker($condition['comparand2'])) {
-					// unresolved marker => skip, will be resolved later
+				|| $this->isVariableMarker($condition['comparand2'])
+			) {
+				// unresolved marker => skip, will be resolved later
 				continue;
 			}
 
@@ -671,15 +673,15 @@ class Tx_Solr_Template {
 			);
 
 			if ($conditionResult) {
-					// if condition evaluates to TRUE, simply replace it with
-					// the original content to have the surrounding markers removed
+				// if condition evaluates to TRUE, simply replace it with
+				// the original content to have the surrounding markers removed
 				$content = HtmlParser::substituteSubpart(
 					$content,
 					$condition['marker'],
 					$condition['content']
 				);
 			} else {
-					// if condition evaluates to FALSE, remove the content from the template
+				// if condition evaluates to FALSE, remove the content from the template
 				$content = HtmlParser::substituteSubpart(
 					$content,
 					$condition['marker'],
@@ -712,7 +714,7 @@ class Tx_Solr_Template {
 	 */
 	protected function findConditions($content) {
 		$conditions = array();
-		$ifMarkers  = $this->getViewHelperArgumentLists('IF', $content, FALSE);
+		$ifMarkers = $this->getViewHelperArgumentLists('IF', $content, FALSE);
 
 		foreach ($ifMarkers as $ifMarker) {
 			list($comparand1, $operator, $comparand2) = explode('|', $ifMarker);
@@ -723,9 +725,9 @@ class Tx_Solr_Template {
 			);
 
 			$conditions[] = array(
-				'marker'     => '###IF:' . $ifMarker . '###',
-				'content'    => $ifContent,
-				'operator'   => trim($operator),
+				'marker' => '###IF:' . $ifMarker . '###',
+				'content' => $ifContent,
+				'operator' => trim($operator),
 				'comparand1' => $comparand1,
 				'comparand2' => $comparand2
 			);
@@ -743,12 +745,12 @@ class Tx_Solr_Template {
 	 * @param string $comparand2 Second comparand
 	 * @param string $operator Operator
 	 * @return boolean Boolean evaluation of the condition.
-	 * @throws InvalidArgumentException for unknown $operator
+	 * @throws \InvalidArgumentException for unknown $operator
 	 */
 	protected function evaluateCondition($comparand1, $comparand2, $operator) {
 		$conditionResult = FALSE;
 
-		switch($operator) {
+		switch ($operator) {
 			case '==':
 				$conditionResult = ($comparand1 == $comparand2);
 				break;
@@ -771,14 +773,14 @@ class Tx_Solr_Template {
 				$conditionResult = ($comparand1 % $comparand2);
 				break;
 			default:
-				throw new InvalidArgumentException(
+				throw new \InvalidArgumentException(
 					'Unknown condition operator "' . htmlspecialchars($operator) . '"',
 					1344340207
 				);
 		}
 
-			// explicit casting, just in case
-		$conditionResult = (boolean) $conditionResult;
+		// explicit casting, just in case
+		$conditionResult = (boolean)$conditionResult;
 
 		return $conditionResult;
 	}
@@ -796,7 +798,7 @@ class Tx_Solr_Template {
 		$resolvedMarkers = array();
 
 		$normalizedKeysArray = array();
-		foreach($variableValue as $key => $value) {
+		foreach ($variableValue as $key => $value) {
 			$key = $this->normalizeString($key);
 			$normalizedKeysArray[$key] = $value;
 		}
@@ -807,13 +809,13 @@ class Tx_Solr_Template {
 			if ($dotPosition !== FALSE) {
 				$resolvedValue = NULL;
 
-					// the marker contains a dot, thus we have to resolve the
-					// second part of the marker
+				// the marker contains a dot, thus we have to resolve the
+				// second part of the marker
 				$valueSelector = substr($marker, $dotPosition + 1);
 				$valueSelector = $this->normalizeString($valueSelector);
 
 				if (is_array($variableValue) && array_key_exists($valueSelector, $normalizedKeysArray)) {
-						$resolvedValue = $normalizedKeysArray[$valueSelector];
+					$resolvedValue = $normalizedKeysArray[$valueSelector];
 				} elseif (is_object($variableValue)) {
 					$resolveMethod = 'get' . Util::camelize($valueSelector);
 					$resolvedValue = $variableValue->$resolveMethod();
@@ -831,7 +833,7 @@ class Tx_Solr_Template {
 			}
 
 			if (is_array($resolvedValue)) {
-					// handling multivalue fields, @see Tx_Solr_ViewHelper_Multivalue
+				// handling multivalue fields, @see Tx_Solr_ViewHelper_Multivalue
 				$resolvedValue = serialize($resolvedValue);
 			}
 
@@ -860,12 +862,12 @@ class Tx_Solr_Template {
 			$originalSelector = $selector;
 			$selector = str_replace('-', '_', $selector);
 
-				// when switching from lowercase to Uppercase in camel cased
-				// strings, insert an underscore
+			// when switching from lowercase to Uppercase in camel cased
+			// strings, insert an underscore
 			$underscorized = preg_replace('/([a-z])([A-Z])/', '\\1_\\2', $selector);
 
-				// for all other cases - all upper or all lower case
-				// we simply lowercase the complete string
+			// for all other cases - all upper or all lower case
+			// we simply lowercase the complete string
 			$normalizeCache[$originalSelector] = strtolower($underscorized);
 		}
 
@@ -891,7 +893,7 @@ class Tx_Solr_Template {
 	public function getSubpart($subpartName, $alternativeTemplate = '') {
 		$template = $this->workOnSubpart;
 
-			// set alternative template to work on
+		// set alternative template to work on
 		if (!empty($alternativeTemplate)) {
 			$template = $alternativeTemplate;
 		}
@@ -1009,11 +1011,11 @@ class Tx_Solr_Template {
 	 * @return array Array of markers
 	 */
 	protected function getViewHelperArgumentLists($helperMarker, $subpart, $removeDuplicates = TRUE) {
-			// already tried (and failed) variants:
-			// '!###' . $helperMarker . ':([A-Z0-9_-|.]*)\###!is'
-			// '!###' . $helperMarker . ':(.*?)\###!is',
-			// '!###' . $helperMarker . ':((.*?)+?(\###(.*?)\###(|.*?)?)?)?\###!is'
-			// '!###' . $helperMarker . ':((?:###(?:.+?)###)(?:\|.+?)*|(?:.+?)+)###!is'
+		// already tried (and failed) variants:
+		// '!###' . $helperMarker . ':([A-Z0-9_-|.]*)\###!is'
+		// '!###' . $helperMarker . ':(.*?)\###!is',
+		// '!###' . $helperMarker . ':((.*?)+?(\###(.*?)\###(|.*?)?)?)?\###!is'
+		// '!###' . $helperMarker . ':((?:###(?:.+?)###)(?:\|.+?)*|(?:.+?)+)###!is'
 		preg_match_all(
 			'/###' . $helperMarker . ':((?:###.+?###(?:\|.+?)*)|(?:.+?)?)###/si',
 			$subpart,
@@ -1039,7 +1041,7 @@ class Tx_Solr_Template {
 		preg_match_all('!###([\w]+):.*?\###!is', $content, $match);
 		$viewHelpers = array_unique($match[1]);
 
-			// remove / protect LOOP, LOOP_CONTENT subparts
+		// remove / protect LOOP, LOOP_CONTENT subparts
 		$loopIndex = array_search('LOOP', $viewHelpers);
 		if ($loopIndex !== FALSE) {
 			unset($viewHelpers[$loopIndex]);
@@ -1049,7 +1051,7 @@ class Tx_Solr_Template {
 			unset($viewHelpers[$loopContentIndex]);
 		}
 
-			// remove / protect IF subparts
+		// remove / protect IF subparts
 		$ifIndex = array_search('IF', $viewHelpers);
 		if ($ifIndex !== FALSE) {
 			unset($viewHelpers[$ifIndex]);
@@ -1086,7 +1088,7 @@ class Tx_Solr_Template {
 		$regex = '!###[A-Z0-9_-]*\.[A-Z0-9_-|:.]*\###!is';
 		$isVariableMarker = preg_match($regex, $potentialVariableMarker);
 
-		return (boolean) $isVariableMarker;
+		return (boolean)$isVariableMarker;
 	}
 
 	/**
@@ -1111,7 +1113,7 @@ class Tx_Solr_Template {
 	 * @param boolean $mode debug mode, TRUE to enable debug mode, FALSE to turn off again, off by default
 	 */
 	public function setDebugMode($mode) {
-		$this->debugMode = (boolean) $mode;
+		$this->debugMode = (boolean)$mode;
 	}
 }
 

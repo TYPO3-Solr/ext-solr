@@ -22,6 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 
 
@@ -70,10 +71,10 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	 * the parsed lucene query used by Solr.
 	 *
 	 * @param array $markers An array of existing form markers
-	 * @param tx_solr_Template $template An instance of the template engine
+	 * @param Template $template An instance of the template engine
 	 * @return array Array with additional markers for queryAnalysis
 	 */
-	public function modifyForm(array $markers, tx_solr_Template $template) {
+	public function modifyForm(array $markers, Template $template) {
 		$markers['debug_query'] = '<br><strong>Parsed Query:</strong><br>' .
 			$this->parentPlugin->getSearch()->getDebugResponse()->parsedquery;
 

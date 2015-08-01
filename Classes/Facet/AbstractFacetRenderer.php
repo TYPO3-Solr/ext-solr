@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -68,7 +69,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	/**
 	 * Template
 	 *
-	 * @var Tx_Solr_Template
+	 * @var Template
 	 */
 	protected $template = NULL;
 
@@ -207,7 +208,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	 * (non-PHPdoc)
 	 * @see Tx_Solr_FacetRenderer::setTemplate()
 	 */
-	public function setTemplate(Tx_Solr_Template $template) {
+	public function setTemplate(Template $template) {
 		$this->template = $template;
 	}
 

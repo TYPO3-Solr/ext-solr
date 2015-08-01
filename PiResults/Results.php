@@ -24,6 +24,7 @@
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -392,8 +393,8 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Post initialization of the template engine, adding some Solr variables.
 	 *
 	 * @see Tx_Solr_pluginbase_PluginBase#postInitializeTemplate($template)
-	 * @param Tx_Solr_Template $template The template object as initialized thus far.
-	 * @return Tx_Solr_Template The modified template instance with additional variables available for rendering.
+	 * @param Template $template The template object as initialized thus far.
+	 * @return Template The modified template instance with additional variables available for rendering.
 	 */
 	protected function postInitializeTemplateEngine($template) {
 		$template->addVariable('tx_solr', $this->getSolrVariables());

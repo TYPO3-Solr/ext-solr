@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -52,7 +53,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	 */
 	protected $filterValue;
 
-	public function __construct($facetName, $filterValue, $filter , Tx_Solr_Template $template, Query $query) {
+	public function __construct($facetName, $filterValue, $filter , Template $template, Query $query) {
 		parent::__construct($facetName, array(), $template, $query);
 
 		$this->filter      = $filter;

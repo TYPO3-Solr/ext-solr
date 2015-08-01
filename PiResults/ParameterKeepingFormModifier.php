@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -74,10 +75,10 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 	 * parameters to a news search.
 	 *
 	 * @param array $markers An array of existing form markers
-	 * @param Tx_Solr_Template $template An instance of the template engine
+	 * @param Template $template An instance of the template engine
 	 * @return array Array with additional markers for suggestions
 	 */
-	public function modifyForm(array $markers, Tx_Solr_Template $template) {
+	public function modifyForm(array $markers, Template $template) {
 		$hiddenFields = array();
 
 		if ($this->parentPlugin instanceof Tx_Solr_PiResults_Results && $this->configuration['search.']['keepExistingParametersForNewSearches']) {

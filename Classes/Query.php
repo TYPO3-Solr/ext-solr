@@ -918,7 +918,7 @@ class Query {
 
 		// escape triple hashes as they are used in the template engine
 		// TODO remove after switching to fluid templates
-		$keywords = \Tx_Solr_Template::escapeMarkers($keywords);
+		$keywords = Template::escapeMarkers($keywords);
 
 		return $keywords;
 	}
