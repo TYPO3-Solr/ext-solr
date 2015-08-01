@@ -49,7 +49,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_Com
 	 * @return CommandResolver A command resolver
 	 */
 	protected function getCommandResolver(){
-		return GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Tx_Solr_CommandResolver');
+		return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\CommandResolver');
 	}
 
 	/**
