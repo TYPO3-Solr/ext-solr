@@ -63,7 +63,7 @@ class Tx_Solr_ViewHelper_Facet extends Tx_Solr_ViewHelper_AbstractSubpartViewHel
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 		$facetContent     = '';
 		$template         = clone $this->template;
-		$search           = GeneralUtility::makeInstance('Tx_Solr_Search');
+		$search           = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		if (!array_key_exists($facetName . '.', $configuredFacets)) {
 			throw new UnexpectedValueException(

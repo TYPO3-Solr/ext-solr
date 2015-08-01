@@ -23,6 +23,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Parser to build solr range queries from tx_solr[filter]
@@ -53,9 +55,9 @@ class Tx_Solr_Query_FilterEncoder_DateRange implements Tx_Solr_QueryFilterEncode
 		$dateRangeEnd  .= '59'; // adding 59 seconds
 
 			// TODO for PHP 5.3 use date_parse_from_format() / date_create_from_format() / DateTime::createFromFormat()
-		$dateRangeFilter  = '[' . Tx_Solr_Util::timestampToIso(strtotime($dateRangeStart));
+		$dateRangeFilter  = '[' . Util::timestampToIso(strtotime($dateRangeStart));
 		$dateRangeFilter .= ' TO ';
-		$dateRangeFilter .= Tx_Solr_Util::timestampToIso(strtotime($dateRangeEnd)) . ']';
+		$dateRangeFilter .= Util::timestampToIso(strtotime($dateRangeEnd)) . ']';
 
 		return $dateRangeFilter;
 	}

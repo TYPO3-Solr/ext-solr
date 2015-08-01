@@ -22,6 +22,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Provides an analysis of how the score of a document was calculated below
@@ -37,7 +40,7 @@
 class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocumentModifier {
 
 	/**
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search;
 
@@ -50,7 +53,7 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
 		$this->search  = $resultCommand->getParentPlugin()->getSearch();
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 
 			// only check whether a BE user is logged in, don't need to check
 			// for enabled score analysis as we wouldn't be here if it was disabled
@@ -106,7 +109,7 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 	 * @return string The HTML showing the score analysis
 	 */
 	protected function renderScoreAnalysis(array $highScores) {
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 		$content       = '';
 		$scores        = array();
 		$totalScore    = 0;

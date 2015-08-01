@@ -21,7 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A facet option
@@ -80,7 +83,7 @@ class Tx_Solr_Facet_FacetOption {
 		$this->value           = $facetOptionValue;
 		$this->numberOfResults = intval($facetOptionNumberOfResults);
 
-		$solrConfiguration        = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration        = Util::getSolrConfiguration();
 		$this->facetConfiguration = $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 	}
 

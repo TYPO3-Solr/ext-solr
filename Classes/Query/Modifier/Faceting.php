@@ -22,6 +22,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Modifies a query to add faceting parameters
@@ -46,7 +49,7 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 	 * constructor for class Tx_Solr_Query_Modifier_Faceting
 	 */
 	public function __construct() {
-		$this->configuration = Tx_Solr_Util::getSolrConfiguration();
+		$this->configuration = Util::getSolrConfiguration();
 		$this->facetRendererFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Facet_FacetRendererFactory', $this->configuration['search.']['faceting.']['facets.']);
 	}
 
@@ -54,10 +57,10 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 	 * Modifies the given query and adds the parameters necessary for faceted
 	 * search.
 	 *
-	 * @param Tx_Solr_Query $query The query to modify
-	 * @return Tx_Solr_Query The modified query with faceting parameters
+	 * @param Query $query The query to modify
+	 * @return Query The modified query with faceting parameters
 	 */
-	public function modifyQuery(Tx_Solr_Query $query) {
+	public function modifyQuery(Query $query) {
 		$query->setFaceting();
 		$this->buildFacetingParameters();
 		$this->addFacetQueryFilters();

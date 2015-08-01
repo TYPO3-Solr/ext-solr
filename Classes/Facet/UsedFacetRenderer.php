@@ -22,7 +22,12 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Template;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Renderer for Used Facets.
@@ -48,7 +53,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	 */
 	protected $filterValue;
 
-	public function __construct($facetName, $filterValue, $filter , Tx_Solr_Template $template, Tx_Solr_Query $query) {
+	public function __construct($facetName, $filterValue, $filter , Template $template, Query $query) {
 		parent::__construct($facetName, array(), $template, $query);
 
 		$this->filter      = $filter;
@@ -62,7 +67,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	 * @return string Rendered HTML representing the used facet.
 	 */
 	public function render() {
-		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration = Util::getSolrConfiguration();
 
 		$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
 			$this->facetName,

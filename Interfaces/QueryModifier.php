@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+
 
 /**
  * QueryModifier interface, allows to modify search queries
@@ -38,10 +40,10 @@ interface Tx_Solr_QueryModifier {
 	/**
 	 * Modifies the given query and returns the modified query as result
 	 *
-	 * @param Tx_Solr_Query $query The query to modify
-	 * @return Tx_Solr_Query The modified query
+	 * @param Query $query The query to modify
+	 * @return Query The modified query
 	 */
-	public function modifyQuery(Tx_Solr_Query $query);
+	public function modifyQuery(Query $query);
 
 }
 

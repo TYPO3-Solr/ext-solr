@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search;
+
 
 /**
  * Search awareness interface for extension components.
@@ -39,9 +41,9 @@ interface Tx_Solr_SearchAware {
 	 * Provides the extension component with an instance of the currently
 	 * active search.
 	 *
-	 * @param Tx_Solr_Search $search Currently active search instance
+	 * @param Search $search Currently active search instance
 	 */
-	public function setSearch(Tx_Solr_Search $search);
+	public function setSearch(Search $search);
 
 }
 

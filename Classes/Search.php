@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Tx_Solr_FacetsModifier;
+use Tx_Solr_QueryModifier;
+use Tx_Solr_ResponseModifier;
+use Tx_Solr_SearchAware;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -33,26 +39,26 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search implements SingletonInterface {
+class Search implements SingletonInterface {
 
 	/**
 	 * An instance of the Solr service
 	 *
-	 * @var Tx_Solr_SolrService
+	 * @var SolrService
 	 */
 	protected $solr = NULL;
 
 	/**
 	 * The search query
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query = NULL;
 
 	/**
 	 * The search response
 	 *
-	 * @var Apache_Solr_Response
+	 * @var \Apache_Solr_Response
 	 */
 	protected $response = NULL;
 
@@ -69,13 +75,13 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Solr_SolrService $solrConnection The Solr connection to use for searching
+	 * @param SolrService $solrConnection The Solr connection to use for searching
 	 */
-	public function __construct(Tx_Solr_SolrService $solrConnection = NULL) {
+	public function __construct(SolrService $solrConnection = NULL) {
 		$this->solr = $solrConnection;
 
 		if (is_null($solrConnection)) {
-			$this->solr = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+			$this->solr = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
 				$GLOBALS['TSFE']->id,
 				$GLOBALS['TSFE']->sys_language_uid
 			);
@@ -86,7 +92,7 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * Gets the Solr connection used by this search.
 	 *
-	 * @return Tx_Solr_SolrService Solr connection
+	 * @return SolrService Solr connection
 	 */
 	public function getSolrConnection() {
 		return $this->solr;
@@ -95,11 +101,11 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * Sets the Solr connection used by this search.
 	 *
-	 * Since Tx_Solr_Search is a \TYPO3\CMS\Core\SingletonInterface, this is needed to
+	 * Since ApacheSolrForTypo3\Solr\Search is a \TYPO3\CMS\Core\SingletonInterface, this is needed to
 	 * be able to switch between multiple cores/connections during
 	 * one request
 	 */
-	public function setSolrConnection(Tx_Solr_SolrService $solrConnection) {
+	public function setSolrConnection(SolrService $solrConnection) {
 		$this->solr = $solrConnection;
 	}
 
@@ -110,12 +116,12 @@ class Tx_Solr_Search implements SingletonInterface {
 	 * 2) Conducts the actual search
 	 * 3) Checks debug settings
 	 *
-	 * @param Tx_Solr_Query $query The query with keywords, filters, and so on.
+	 * @param Query $query The query with keywords, filters, and so on.
 	 * @param integer $offset Result offset for pagination.
 	 * @param integer $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
-	 * @return Apache_Solr_Response Solr response
+	 * @return \Apache_Solr_Response Solr response
 	 */
-	public function search(Tx_Solr_Query $query, $offset = 0, $limit = 10) {
+	public function search(Query $query, $offset = 0, $limit = 10) {
 		$query = $this->modifyQuery($query);
 		$this->query = $query;
 
@@ -138,7 +144,7 @@ class Tx_Solr_Search implements SingletonInterface {
 					'response'         => json_decode($response->getRawResponse(), TRUE)
 				));
 			}
-		} catch (RuntimeException $e) {
+		} catch (\RuntimeException $e) {
 			$response = $this->solr->getResponse();
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
@@ -161,13 +167,13 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * Allows to modify a query before eventually handing it over to Solr.
 	 *
-	 * @param Tx_Solr_Query $query The current query before it's being handed over to Solr.
-	 * @return Tx_Solr_Query The modified query that is actually going to be given to Solr.
+	 * @param Query $query The current query before it's being handed over to Solr.
+	 * @return Query The modified query that is actually going to be given to Solr.
 	 */
-	protected function modifyQuery(Tx_Solr_Query $query) {
-			// hook to modify the search query
+	protected function modifyQuery(Query $query) {
+		// hook to modify the search query
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
 				$queryModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($queryModifier instanceof Tx_Solr_QueryModifier) {
@@ -177,7 +183,7 @@ class Tx_Solr_Search implements SingletonInterface {
 
 					$query = $queryModifier->modifyQuery($query);
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($queryModifier) . ' must implement interface Tx_Solr_QueryModifier',
 						1310387414
 					);
@@ -192,14 +198,14 @@ class Tx_Solr_Search implements SingletonInterface {
 	 * Allows to modify a response returned from Solr before returning it to
 	 * the rest of the extension.
 	 *
-	 * @param Apache_Solr_Response $response The response as returned by Solr
-	 * @return Apache_Solr_Response The modified response that is actually going to be returned to the extension.
-	 * @throws UnexpectedValueException if a response modifier does not implement interface Tx_Solr_ResponseModifier
+	 * @param \Apache_Solr_Response $response The response as returned by Solr
+	 * @return \Apache_Solr_Response The modified response that is actually going to be returned to the extension.
+	 * @throws \UnexpectedValueException if a response modifier does not implement interface Tx_Solr_ResponseModifier
 	 */
-	protected function modifyResponse(Apache_Solr_Response $response) {
-			// hook to modify the search response
+	protected function modifyResponse(\Apache_Solr_Response $response) {
+		// hook to modify the search response
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'] as $classReference) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'] as $classReference) {
 				$responseModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($responseModifier instanceof Tx_Solr_ResponseModifier) {
@@ -209,14 +215,14 @@ class Tx_Solr_Search implements SingletonInterface {
 
 					$response = $responseModifier->modifyResponse($response);
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($responseModifier) . ' must implement interface Tx_Solr_ResponseModifier',
 						1343147211
 					);
 				}
 			}
 
-				// add modification indicator
+			// add modification indicator
 			$response->response->isModified = TRUE;
 		}
 
@@ -227,18 +233,18 @@ class Tx_Solr_Search implements SingletonInterface {
 	 * Sends a ping to the solr server to see whether it is available.
 	 *
 	 * @return boolean Returns TRUE on successful ping.
-	 * @throws	Exception	Throws an exception in case ping was not successful.
+	 * @throws    \Exception    Throws an exception in case ping was not successful.
 	 */
 	public function ping() {
 		$solrAvailable = FALSE;
 
 		try {
 			if (!$this->solr->ping()) {
-				throw new Exception('Solr Server not responding.', 1237475791);
+				throw new \Exception('Solr Server not responding.', 1237475791);
 			}
 
 			$solrAvailable = TRUE;
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				GeneralUtility::devLog('exception while trying to ping the solr server', 'solr', 3, array(
 					$e->__toString()
@@ -252,7 +258,7 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * checks whether a search has been executed
 	 *
-	 * @return boolean	TRUE if there was a search, FALSE otherwise (if the user just visited the search page f.e.)
+	 * @return boolean    TRUE if there was a search, FALSE otherwise (if the user just visited the search page f.e.)
 	 */
 	public function hasSearched() {
 		return $this->hasSearched;
@@ -261,7 +267,7 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * Gets the query object.
 	 *
-	 * @return Tx_Solr_Query Query
+	 * @return Query Query
 	 */
 	public function getQuery() {
 		return $this->query;
@@ -270,7 +276,7 @@ class Tx_Solr_Search implements SingletonInterface {
 	/**
 	 * Gets the Solr response
 	 *
-	 * @return Apache_Solr_Response
+	 * @return \Apache_Solr_Response
 	 */
 	public function getResponse() {
 		return $this->response;
@@ -331,14 +337,14 @@ class Tx_Solr_Search implements SingletonInterface {
 			if (!$facetCountsModified) {
 				$facetCounts = $unmodifiedFacetCounts;
 
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
 					$facetsModifier = GeneralUtility::getUserObj($classReference);
 
 					if ($facetsModifier instanceof Tx_Solr_FacetsModifier) {
 						$facetCounts = $facetsModifier->modifyFacets($facetCounts);
 						$facetCountsModified = TRUE;
 					} else {
-						throw new UnexpectedValueException(
+						throw new \UnexpectedValueException(
 							get_class($facetsModifier) . ' must implement interface Tx_Solr_FacetsModifier',
 							1310387526
 						);
@@ -368,8 +374,8 @@ class Tx_Solr_Search implements SingletonInterface {
 
 		$facetQueries = get_object_vars($this->getFacetCounts()->facet_queries);
 		foreach ($facetQueries as $facetQuery => $numberOfResults) {
-				// remove tags from the facet.query response, for facet.field
-				// and facet.range Solr does that on its own automatically
+			// remove tags from the facet.query response, for facet.field
+			// and facet.range Solr does that on its own automatically
 			$facetQuery = preg_replace('/^\{!ex=[^\}]*\}(.*)/', '\\1', $facetQuery);
 
 			if (GeneralUtility::isFirstPartOfStr($facetQuery, $facetField)) {
@@ -377,7 +383,7 @@ class Tx_Solr_Search implements SingletonInterface {
 			}
 		}
 
-			// filter out queries with no results
+		// filter out queries with no results
 		$options = array_filter($options);
 
 		return $options;
@@ -405,7 +411,7 @@ class Tx_Solr_Search implements SingletonInterface {
 	}
 
 	public function getDebugResponse() {
-		return$this->response->debug;
+		return $this->response->debug;
 	}
 
 	public function getHighlightedContent() {
@@ -421,7 +427,7 @@ class Tx_Solr_Search implements SingletonInterface {
 	public function getSpellcheckingSuggestions() {
 		$spellcheckingSuggestions = FALSE;
 
-		$suggestions = (array) $this->response->spellcheck->suggestions;
+		$suggestions = (array)$this->response->spellcheck->suggestions;
 		if (!empty($suggestions)) {
 			$spellcheckingSuggestions = $suggestions;
 		}

@@ -22,7 +22,10 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
 
 /**
  * Link builder for queries.
@@ -48,7 +51,7 @@ class Tx_Solr_Query_LinkBuilder {
 	/**
 	 * Solr query. This query's parameters are used in URL parameters.
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query = null;
 
@@ -85,10 +88,10 @@ class Tx_Solr_Query_LinkBuilder {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_Query $query Solr query
+	 * @param Query $query Solr query
 	 */
-	public function __construct(Tx_Solr_Query $query) {
-		$this->solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+	public function __construct(Query $query) {
+		$this->solrConfiguration = Util::getSolrConfiguration();
 		$this->contentObject     = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$this->query             = $query;
 

@@ -21,6 +21,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -68,10 +71,10 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 	/**
 	 * Processes a query and its response after searching for that query.
 	 *
-	 * @param Tx_Solr_Query $query The query that has been searched for.
+	 * @param Query $query The query that has been searched for.
 	 * @param Apache_Solr_Response $response The response for the last query.
 	 */
-	public function processResponse(Tx_Solr_Query $query, Apache_Solr_Response $response) {
+	public function processResponse(Query $query, Apache_Solr_Response $response) {
 		$urlParameters = GeneralUtility::_GP('tx_solr');
 		$keywords      = $query->getKeywords();
 		$filters       = isset($urlParameters['filter']) ? $urlParameters['filter'] : array();
@@ -88,7 +91,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 			$sorting = $this->sanitizeString($urlParameters['sort']);
 		}
 
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 		if ($configuration['search.']['frequentSearches.']['useLowercaseKeywords']) {
 			$keywords = strtolower($keywords);
 		}

@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\DatabaseUtility;
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
@@ -143,15 +145,15 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 				continue;
 			}
 
-			Tx_Solr_DatabaseUtility::transactionStart();
+			DatabaseUtility::transactionStart();
 			try {
 				$this->addMountedPagesToIndexQueue($mountedPages);
 				$this->addIndexQueueItemIndexingProperties($mountPage, $mountedPages);
 
-				Tx_Solr_DatabaseUtility::transactionCommit();
+				DatabaseUtility::transactionCommit();
 				$mountPagesInitialized = TRUE;
 			} catch (Exception $e) {
-				Tx_Solr_DatabaseUtility::transactionRollback();
+				DatabaseUtility::transactionRollback();
 
 				GeneralUtility::devLog(
 					'Index Queue initialization failed for mount pages',
@@ -305,7 +307,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 	 * @return array An array of page IDs in the mounted page tree
 	 */
 	protected function resolveMountPageTree($mountPageSourceId) {
-		$mountedSite = Tx_Solr_Site::getSiteByPageId($mountPageSourceId);
+		$mountedSite = Site::getSiteByPageId($mountPageSourceId);
 
 		return $mountedSite->getPages($mountPageSourceId);
 	}

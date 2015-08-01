@@ -91,7 +91,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 	 *
 	 */
 	protected function loadJavaScriptFiles() {
-		$javascriptManager = GeneralUtility::makeInstance('Tx_Solr_JavascriptManager');
+		$javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
 
 		$javascriptManager->loadFile('library');
 		$javascriptManager->loadFile('ui');

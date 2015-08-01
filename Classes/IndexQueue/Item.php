@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -151,10 +152,10 @@ class Tx_Solr_IndexQueue_Item {
 	/**
 	 * Gets the site the item belongs to.
 	 *
-	 * @return Tx_Solr_Site Site instance the item belongs to.
+	 * @return Site Site instance the item belongs to.
 	 */
 	public function getSite() {
-		return GeneralUtility::makeInstance('Tx_Solr_Site', $this->rootPageUid);
+		return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $this->rootPageUid);
 	}
 
 	public function getType() {

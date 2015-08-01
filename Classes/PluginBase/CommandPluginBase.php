@@ -22,6 +22,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\CommandResolver;
+use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -42,7 +45,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	 * Should be implemented by an inheriting class to provide a correctly
 	 * initialized instance of a command resolver.
 	 *
-	 * @return Tx_Solr_CommandResolver
+	 * @return CommandResolver
 	 */
 	abstract protected function getCommandResolver();
 
@@ -63,7 +66,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	 * @return string Rendered plugin content
 	 */
 	protected function render($actionResult) {
-		$allCommands = Tx_Solr_CommandResolver::getAllPluginCommandsList();
+		$allCommands = CommandResolver::getAllPluginCommandsList();
 		$commandList = $this->getCommandList();
 
 		// render commands matching the plugin's requirements
@@ -104,14 +107,14 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 
 		$this->javascriptManager->addJavascriptToPage();
 
-		return $this->template->render(Tx_Solr_Template::CLEAN_TEMPLATE_YES);
+		return $this->template->render(Template::CLEAN_TEMPLATE_YES);
 	}
 
 	/**
 	 * Gets the template to be used for rendering a command.
 	 *
 	 * @param string $commandName Name of the command to get the template for
-	 * @return Tx_Solr_Template The template for the given command
+	 * @return Template The template for the given command
 	 */
 	protected function getCommandTemplate($commandName) {
 		$subpartTemplate = clone $this->template;

@@ -21,6 +21,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Template;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -52,7 +55,7 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 	 *
 	 */
 	public function __construct() {
-		$this->configuration = Tx_Solr_Util::getSolrConfiguration();
+		$this->configuration = Util::getSolrConfiguration();
 	}
 
 	/**
@@ -69,10 +72,10 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 	 * suggest eID script URL and adding javascript to the page's header.
 	 *
 	 * @param array $markers An array of existing form markers
-	 * @param Tx_Solr_Template $template An instance of the template engine
+	 * @param Template $template An instance of the template engine
 	 * @return array Array with additional markers for suggestions
 	 */
-	public function modifyForm(array $markers, Tx_Solr_Template $template) {
+	public function modifyForm(array $markers, Template $template) {
 		$suggestionsEnabled = $this->configuration['suggest'];
 
 		if ($suggestionsEnabled) {

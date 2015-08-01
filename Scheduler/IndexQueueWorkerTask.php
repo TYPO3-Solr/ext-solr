@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -42,7 +44,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	/**
 	 * The site this task is indexing.
 	 *
-	 * @var Tx_Solr_Site
+	 * @var Site
 	 */
 	protected $site;
 
@@ -58,7 +60,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	public function execute() {
 		$executionSucceeded = FALSE;
 
-		$this->configuration = Tx_Solr_Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
+		$this->configuration = Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
 		$this->indexItems();
 		$this->cleanIndex();
 		$executionSucceeded = TRUE;
@@ -141,8 +143,8 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 */
 	protected function cleanIndex() {
 		if (rand(1, 100) == 50) {
-				// clean the index about once in every 100 executions
-			$garbageCollector = GeneralUtility::makeInstance('Tx_Solr_GarbageCollector');
+			// clean the index about once in every 100 executions
+			$garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\GarbageCollector');
 			$garbageCollector->cleanIndex($this->site, FALSE);
 		}
 	}
@@ -239,7 +241,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	/**
 	 * Gets the site / the site's root page uid this task is indexing.
 	 *
-	 * @return Tx_Solr_Site The site's root page uid this task is indexing
+	 * @return Site The site's root page uid this task is indexing
 	 */
 	public function getSite() {
 		return $this->site;
@@ -248,10 +250,10 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	/**
 	 * Sets the task's site to indexing.
 	 *
-	 * @param Tx_Solr_Site $site The site to index by this task
+	 * @param Site $site The site to index by this task
 	 * @return	void
 	 */
-	public function setSite(Tx_Solr_Site $site) {
+	public function setSite(Site $site) {
 		$this->site = $site;
 	}
 

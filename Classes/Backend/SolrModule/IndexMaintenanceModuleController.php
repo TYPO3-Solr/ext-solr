@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -65,7 +66,7 @@ class IndexMaintenanceModuleController extends AbstractModuleController {
 	 * @return void
 	 */
 	public function cleanUpIndexAction() {
-		$garbageCollector = GeneralUtility::makeInstance('Tx_Solr_GarbageCollector');
+		$garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\GarbageCollector');
 		$garbageCollector->cleanIndex($this->site);
 
 		$this->addFlashMessage(
@@ -90,7 +91,7 @@ class IndexMaintenanceModuleController extends AbstractModuleController {
 		try {
 			$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 			foreach($solrServers as $solrServer) {
-				/* @var $solrServer \Tx_Solr_SolrService */
+				/* @var $solrServer SolrService */
 				// make sure maybe not-yet committed documents are committed
 				$solrServer->commit();
 				$solrServer->deleteByQuery('siteHash:' . $siteHash);
@@ -121,7 +122,7 @@ class IndexMaintenanceModuleController extends AbstractModuleController {
 		$solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 
 		foreach($solrServers as $solrServer) {
-			/* @var $solrServer \Tx_Solr_SolrService */
+			/* @var $solrServer SolrService */
 
 			$coreName = array_pop(explode('/', trim($solrServer->getPath(), '/')));
 			$coreReloaded = $this->reloadCore($solrServer, $coreName);
@@ -152,11 +153,11 @@ class IndexMaintenanceModuleController extends AbstractModuleController {
 	/**
 	 * Reloads a single Solr core.
 	 *
-	 * @param \Tx_Solr_SolrService $solrServer A Solr server connection
+	 * @param SolrService $solrServer A Solr server connection
 	 * @param string $coreName Name of the core to reload
 	 * @return bool TRUE if reloading the core was successful, FALSE otherwise
 	 */
-	protected function reloadCore(\Tx_Solr_SolrService $solrServer, $coreName) {
+	protected function reloadCore(SolrService $solrServer, $coreName) {
 		$coreReloaded = FALSE;
 
 		$path = $solrServer->getPath();

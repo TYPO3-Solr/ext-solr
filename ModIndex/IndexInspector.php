@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 
 
@@ -51,7 +52,7 @@ class Tx_Solr_ModIndex_IndexInspector extends AbstractFunctionModule {
 	/**
 	 * Search
 	 *
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search = NULL;
 

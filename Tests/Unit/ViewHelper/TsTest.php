@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * PHP Unit test for view helper Tx_Solr_viewhelper_Ts
@@ -43,7 +45,7 @@ class Tx_Solr_ViewHelper_TsTest extends Tx_Phpunit_TestCase {
 	protected $fixtures = array();
 
 	public function setUp() {
-		Tx_Solr_Util::initializeTsfe('1');
+		Util::initializeTsfe('1');
 
 		$GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
 		$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = '0';

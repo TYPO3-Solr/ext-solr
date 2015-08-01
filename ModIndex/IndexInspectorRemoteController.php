@@ -22,6 +22,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -44,7 +47,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	/**
 	 * Search
 	 *
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search = NULL;
 
@@ -70,10 +73,10 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * @return	void
 	 */
 	protected function initializeSearch() {
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 		$solrConnection = $connectionManager->getConnectionByPageId($this->pageId);
 
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search', $solrConnection);
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
 	}
 
 	/**
@@ -112,13 +115,13 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * @return array An array of Apache_Solr_Document objects
 	 */
 	protected function getIndexDocuments() {
-		/* @var Tx_Solr_Query $query */
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', '');
+		/* @var Query $query */
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', '');
 		$query->setQueryType('standard');
 		$query->useRawQueryString(TRUE);
 		$query->setQueryString('*:*');
 		$query->addFilter('(type:pages AND uid:' . $this->pageId . ') OR (*:* AND pid:' . $this->pageId . ' NOT type:pages)');
-		$query->addFilter('siteHash:' . Tx_Solr_Site::getSiteByPageId($this->pageId)->getSiteHash());
+		$query->addFilter('siteHash:' . Site::getSiteByPageId($this->pageId)->getSiteHash());
 		$query->setFieldList('*');
 		$query->setSorting('type asc, title asc');
 

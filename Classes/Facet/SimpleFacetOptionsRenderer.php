@@ -22,7 +22,12 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Template;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Default facet renderer.
@@ -56,14 +61,14 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 	/**
 	 * Template engine to replace template markers with their values.
 	 *
-	 * @var Tx_Solr_Template
+	 * @var Template
 	 */
 	protected $template;
 
 	/**
 	 * The query which is going to be sent to Solr when a user selects a facet.
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query;
 
@@ -80,17 +85,17 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 	 *
 	 * @param string $facetName The facet's name
 	 * @param array $facetOptions The facet's options.
-	 * @param Tx_Solr_Template $template Template to use to render the facet
-	 * @param Tx_Solr_Query $query Query instance used to build links.
+	 * @param Template $template Template to use to render the facet
+	 * @param Query $query Query instance used to build links.
 	 */
-	public function __construct($facetName, array $facetOptions, Tx_Solr_Template $template, Tx_Solr_Query $query) {
+	public function __construct($facetName, array $facetOptions, Template $template, Query $query) {
 		$this->facetName          = $facetName;
 		$this->facetOptions       = $facetOptions;
 
 		$this->template           = clone $template;
 		$this->query              = $query;
 
-		$solrConfiguration        = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration        = Util::getSolrConfiguration();
 		$this->facetConfiguration = $solrConfiguration['search.']['faceting.']['facets.'][$facetName . '.'];
 	}
 
@@ -112,7 +117,7 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 	 */
 	public function renderFacetOptions() {
 		$facetOptionLinks  = array();
-		$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+		$solrConfiguration = Util::getSolrConfiguration();
 		$this->template->workOnSubpart('single_facet_option');
 
 		if (!empty($this->facetConfiguration['manualSortOrder'])) {

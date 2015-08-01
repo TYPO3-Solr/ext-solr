@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
@@ -152,7 +153,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements StatusProviderInterface 
 
 		foreach ($rootPages as $rootPage) {
 			try {
-				Tx_Solr_Util::initializeTsfe($rootPage['uid']);
+				Util::initializeTsfe($rootPage['uid']);
 
 				if (!$GLOBALS['TSFE']->config['config']['index_enable']) {
 					$rootPagesWithIndexingOff[] = $rootPage;

@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 
@@ -48,7 +49,7 @@ $GLOBALS['TSFE']->getConfigArray();
 
 $GLOBALS['TSFE']->sys_language_uid = $languageId;
 
-$solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+$solrConfiguration = Util::getSolrConfiguration();
 
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -61,12 +62,12 @@ if ('OpenSearch' == GeneralUtility::_GET('format')) {
 	$q = GeneralUtility::_GET('q');
 }
 
-$allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
+$allowedSites = Util::resolveSiteHashAllowedSites(
 	$pageId,
 	$solrConfiguration['search.']['query.']['allowedSites']
 );
 
-$suggestQuery = GeneralUtility::makeInstance('Tx_Solr_SuggestQuery', $q);
+$suggestQuery = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 $suggestQuery->setSiteHashFilter($allowedSites);
 $suggestQuery->setOmitHeader();
@@ -82,11 +83,11 @@ if (!empty($additionalFilters)) {
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 	// Search
-$solr   = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+$solr   = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
 	$pageId,
 	$languageId
 );
-$search = GeneralUtility::makeInstance('Tx_Solr_Search', $solr);
+$search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solr);
 
 if ($search->ping()) {
 	$results = json_decode($search->search($suggestQuery, 0, 0)->getRawResponse());

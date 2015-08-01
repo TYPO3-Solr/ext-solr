@@ -23,6 +23,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
+
+
 /**
  * Last searches view command to display a user's last searches or the last
  * searches of all users.
@@ -106,7 +109,7 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 
 			$keywords       = stripslashes($keywords);
 			$lastSearches[] = array(
-				'q'          => Tx_Solr_Template::escapeMarkers($keywords),
+				'q'          => Template::escapeMarkers($keywords),
 				'parameters' => '&q=' . html_entity_decode($keywords, ENT_NOQUOTES, 'UTF-8'),
 				'pid'        => $this->parentPlugin->getLinkTargetPageId()
 			);

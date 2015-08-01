@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Menu;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 
@@ -58,7 +59,7 @@ class SiteSelectorMenuViewHelper extends AbstractTagBasedViewHelper {
 	public function render() {
 		$this->tag->addAttribute('onchange', 'jumpToUrl(document.URL + \'&tx_solr_tools_solradministration[action]=setSite&tx_solr_tools_solradministration[site]=\'+this.options[this.selectedIndex].value,this);');
 
-		$sites = \Tx_Solr_Site::getAvailableSites();
+		$sites = Site::getAvailableSites();
 		$currentSite = $this->moduleDataStorageService->loadModuleData()->getSite();
 
 		$options = '';

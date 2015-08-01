@@ -22,6 +22,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Access search component
@@ -35,7 +38,7 @@ class Tx_Solr_Search_AccessComponent extends Tx_Solr_Search_AbstractComponent im
 	/**
 	 * Solr query
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query;
 
@@ -46,7 +49,7 @@ class Tx_Solr_Search_AccessComponent extends Tx_Solr_Search_AbstractComponent im
 	 *
 	 */
 	public function initializeSearchComponent() {
-		$allowedSites = Tx_Solr_Util::resolveSiteHashAllowedSites(
+		$allowedSites = Util::resolveSiteHashAllowedSites(
 			$GLOBALS['TSFE']->id,
 			$this->searchConfiguration['query.']['allowedSites']
 		);
@@ -57,9 +60,9 @@ class Tx_Solr_Search_AccessComponent extends Tx_Solr_Search_AbstractComponent im
 	/**
 	 * Provides the extension component with an instance of the current query.
 	 *
-	 * @param Tx_Solr_Query $query Current query
+	 * @param Query $query Current query
 	 */
-	public function setQuery(Tx_Solr_Query $query) {
+	public function setQuery(Query $query) {
 		$this->query = $query;
 	}
 

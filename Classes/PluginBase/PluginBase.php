@@ -23,6 +23,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\JavascriptManager;
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -45,16 +49,16 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	public $extKey   = 'solr';
 
 	/**
-	 * an instance of Tx_Solr_Search
+	 * an instance of ApacheSolrForTypo3\Solr\Search
 	 *
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search;
 
 	/**
 	 * The plugin's query
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query = NULL;
 
@@ -64,16 +68,16 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	protected $solrAvailable;
 
 	/**
-	 * An instance of Tx_Solr_Template
+	 * An instance of ApacheSolrForTypo3\Solr\Template
 	 *
-	 * @var Tx_Solr_Template
+	 * @var Template
 	 */
 	protected $template;
 
 	/**
-	 * An instance of Tx_Solr_JavascriptManager
+	 * An instance of ApacheSolrForTypo3\Solr\JavascriptManager
 	 *
-	 * @var Tx_Solr_JavascriptManager
+	 * @var JavascriptManager
 	 */
 	protected $javascriptManager;
 
@@ -277,20 +281,20 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 *
 	 */
 	protected function initializeSearch() {
-		$solrConnection = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionByPageId(
+		$solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
 			$GLOBALS['TSFE']->id,
 			$GLOBALS['TSFE']->sys_language_uid,
 			$GLOBALS['TSFE']->MP
 		);
 
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search', $solrConnection);
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
 		$this->solrAvailable = $this->search->ping();
 	}
 
 	/**
 	 * Initializes the template engine and returns the initialized instance.
 	 *
-	 * @return Tx_Solr_Template
+	 * @return Template
 	 * @throws UnexpectedValueException if a view helper provider fails to implement interface Tx_Solr_ViewHelperProvider
 	 */
 	protected function initializeTemplateEngine() {
@@ -306,9 +310,9 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 			$templateFile = $flexformTemplateFile;
 		}
 
-		/** @var Tx_Solr_Template $template */
+		/** @var Template $template */
 		$template = GeneralUtility::makeInstance(
-			'Tx_Solr_Template',
+			'ApacheSolrForTypo3\\Solr\\Template',
 			$this->cObj,
 			$templateFile,
 			$subPart
@@ -349,7 +353,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 *
 	 */
 	protected function initializeJavascriptManager() {
-		$this->javascriptManager = GeneralUtility::makeInstance('Tx_Solr_JavascriptManager');
+		$this->javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
 	}
 
 	/**
@@ -363,10 +367,10 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * Overwrite this method to do own initialisations  of the template.
 	 *
-	 * @param Tx_Solr_Template $template Template
-	 * @return Tx_Solr_Template
+	 * @param Template $template Template
+	 * @return Template
 	 */
-	protected function postInitializeTemplateEngine(Tx_Solr_Template $template) {
+	protected function postInitializeTemplateEngine(Template $template) {
 		return $template;
 	}
 
@@ -452,7 +456,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * Gets the plugin's template instance.
 	 *
-	 * @return Tx_Solr_Template The plugin's template.
+	 * @return Template The plugin's template.
 	 */
 	public function getTemplate() {
 		return $this->template;
@@ -461,7 +465,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	/**
 	 * Gets the plugin's javascript manager.
 	 *
-	 * @return Tx_Solr_JavascriptManager The plugin's javascript manager.
+	 * @return JavascriptManager The plugin's javascript manager.
 	 */
 	public function getJavascriptManager() {
 		return $this->javascriptManager;
@@ -495,22 +499,22 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	}
 
 	/**
-	 * Gets the Tx_Solr_Search instance used for the query. Mainly used as a
+	 * Gets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
 	 * helper function for result document modifiers.
 	 *
-	 * @return Tx_Solr_Search
+	 * @return Search
 	 */
 	public function getSearch() {
 		return $this->search;
 	}
 
 	/**
-	 * Sets the Tx_Solr_Search instance used for the query. Mainly used as a
+	 * Sets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
 	 * helper function for result document modifiers.
 	 *
-	 * @param Tx_Solr_Search $search Search instance
+	 * @param Search $search Search instance
 	 */
-	public function setSearch(Tx_Solr_Search $search) {
+	public function setSearch(Search $search) {
 		$this->search = $search;
 	}
 
@@ -524,12 +528,12 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 		$userQuery = $this->getRawUserQuery();
 
 		if (!is_null($userQuery)) {
-			$userQuery = Tx_Solr_Query::cleanKeywords($userQuery);
+			$userQuery = Query::cleanKeywords($userQuery);
 		}
 
 		// escape triple hashes as they are used in the template engine
 		// TODO remove after switching to fluid templates
-		$userQuery = Tx_Solr_Template::escapeMarkers($userQuery);
+		$userQuery = Template::escapeMarkers($userQuery);
 
 		return $userQuery;
 	}

@@ -21,11 +21,13 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
- * Tests the Query class
+ * Tests the ApacheSolrForTypo3\Solr\Query class
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
@@ -37,7 +39,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function noFiltersAreSetAfterInitialization() {
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', 'test');
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
 		$filters = $query->getFilters();
 
 		$this->assertTrue(
@@ -50,7 +52,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function addsCorrectAccessFilterForAnonymousUser() {
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', 'test');
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
 		$query->setUserAccessGroups(array(-1, 0));
 		$filters = $query->getFilters();
 
@@ -65,7 +67,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function grantsAccessToGroupZeroIfNoGroupsProvided() {
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', 'test');
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
 		$query->setUserAccessGroups(array());
 		$filters = $query->getFilters();
 
@@ -80,7 +82,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function grantsAccessToGroupZeroIfZeroNotProvided() {
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', 'test');
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
 		$query->setUserAccessGroups(array(5));
 		$filters = $query->getFilters();
 
@@ -95,7 +97,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function filtersDuplicateAccessGroups() {
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', 'test');
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
 		$query->setUserAccessGroups(array(1,1));
 		$filters = $query->getFilters();
 
@@ -110,7 +112,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function allowsOnlyOneAccessFilter() {
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', 'test');
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
 		$query->setUserAccessGroups(array(1));
 		$query->setUserAccessGroups(array(2));
 		$filters = $query->getFilters();
@@ -132,7 +134,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function groupingIsNotActiveAfterInitialization() {
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', 'test');
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
 
 		$queryParameters = $query->getQueryParameters();
 		foreach ($queryParameters as $queryParameter => $value) {
@@ -147,7 +149,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function settingGroupingTrueActivatesGrouping() {
-		$query = GeneralUtility::makeInstance('Tx_Solr_Query', 'test');
+		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
 
 		$query->setGrouping(TRUE);
 
@@ -168,7 +170,7 @@ class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 * @depends settingGroupingTrueActivatesGrouping
 	 */
-	public function settingGroupingFalseDeactivatesGrouping(Tx_Solr_Query $query) {
+	public function settingGroupingFalseDeactivatesGrouping(Query $query) {
 		$query->setGrouping(FALSE);
 
 		$queryParameters = $query->getQueryParameters();

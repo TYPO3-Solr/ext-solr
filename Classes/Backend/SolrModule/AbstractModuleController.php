@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -67,7 +68,7 @@ abstract class AbstractModuleController extends ActionController implements Admi
 	protected $extensionKey = '';
 
 	/**
-	 * @var \Tx_Solr_ConnectionManager
+	 * @var \ApacheSolrForTypo3\Solr\ConnectionManager
 	 * @inject
 	 */
 	protected $connectionManager = NULL;
@@ -75,7 +76,7 @@ abstract class AbstractModuleController extends ActionController implements Admi
 	/**
 	 * The currently selected Site.
 	 *
-	 * @var \Tx_Solr_Site
+	 * @var Site
 	 */
 	protected $site;
 
@@ -127,12 +128,12 @@ abstract class AbstractModuleController extends ActionController implements Admi
 
 			if (is_numeric($site)) {
 				$siteRootPageId = $this->request->getArgument('site');
-				$this->site = \Tx_Solr_Site::getSiteByPageId($siteRootPageId);
-			} else if ($site instanceof \Tx_Solr_Site) {
+				$this->site = Site::getSiteByPageId($siteRootPageId);
+			} else if ($site instanceof Site) {
 				$this->site = $site;
 			}
 		} catch (NoSuchArgumentException $nsae) {
-			$sites = \Tx_Solr_Site::getAvailableSites();
+			$sites = Site::getAvailableSites();
 
 			$site = array_shift($sites);
 			$this->site = $site;

@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Filter encoder to build facet query parameters
@@ -34,7 +36,7 @@ class Tx_Solr_Query_FilterEncoder_QueryGroup implements Tx_Solr_QueryFilterEncod
 	 * constructor for class Tx_Solr_Query_FilterEncoder_QueryGroup
 	 */
 	public function __construct() {
-		$this->configuration = Tx_Solr_Util::getSolrConfiguration();
+		$this->configuration = Util::getSolrConfiguration();
 	}
 
 	/**

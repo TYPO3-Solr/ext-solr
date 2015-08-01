@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solrfile\ExtractingQuery;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -31,17 +35,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_SolrService extends Apache_Solr_Service {
+class SolrService extends \Apache_Solr_Service {
 
-	const LUKE_SERVLET = 'admin/luke';
-	const SYSTEM_SERVLET = 'admin/system';
-	const PLUGINS_SERVLET = 'admin/plugins';
-	const CORES_SERVLET = 'admin/cores';
-	const SCHEMA_SERVLET = 'schema';
+	const LUKE_SERVLET     = 'admin/luke';
+	const SYSTEM_SERVLET   = 'admin/system';
+	const PLUGINS_SERVLET  = 'admin/plugins';
+	const CORES_SERVLET    = 'admin/cores';
+	const SCHEMA_SERVLET   = 'schema';
 	const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
 
-	const SCHEME_HTTP  = 'http';
-	const SCHEME_HTTPS = 'https';
+	const SCHEME_HTTP      = 'http';
+	const SCHEME_HTTPS     = 'https';
 
 	/**
 	 * Server connection scheme. http or https.
@@ -75,21 +79,21 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	protected $debug;
 
 	/**
-	 * @var Apache_Solr_Response
+	 * @var \Apache_Solr_Response
 	 */
 	protected $responseCache = NULL;
-	protected $hasSearched   = FALSE;
+	protected $hasSearched = FALSE;
 
-	protected $lukeData       = array();
-	protected $systemData     = NULL;
-	protected $pluginsData    = NULL;
+	protected $lukeData = array();
+	protected $systemData = NULL;
+	protected $pluginsData = NULL;
 
-	protected $schemaName     = NULL;
+	protected $schemaName = NULL;
 	protected $solrconfigName = NULL;
 
 
 	/**
-	 * Constructor for class Tx_Solr_SolrService.
+	 * Constructor
 	 *
 	 * @param string $host Solr host
 	 * @param string $port Solr port
@@ -128,7 +132,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			)
 		);
 
-		$this->_pluginsUrl  = $this->_constructUrl(
+		$this->_pluginsUrl = $this->_constructUrl(
 			self::PLUGINS_SERVLET,
 			array('wt' => self::SOLR_WRITER)
 		);
@@ -143,7 +147,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 
 		$this->_schemaUrl = $this->_constructUrl(self::SCHEMA_SERVLET);
 
-		$managedLanguage    = $this->getManagedLanguage();
+		$managedLanguage = $this->getManagedLanguage();
 		$this->_synonymsUrl = $this->_constructUrl(
 			self::SYNONYMS_SERVLET
 		) . $managedLanguage;
@@ -163,8 +167,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		if (!GeneralUtility::isFirstPartOfStr($url, $this->_scheme)) {
 			$parsedUrl = parse_url($url);
 
-				// unfortunately can't use str_replace as it replace all
-				// occurrences of $needle and can't be limited to replace only once
+			// unfortunately can't use str_replace as it replace all
+			// occurrences of $needle and can't be limited to replace only once
 			$url = $this->_scheme . substr($url, strlen($parsedUrl['scheme']));
 		}
 
@@ -180,19 +184,19 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * @param array $requestHeaders Key value pairs of header names and values. Should include 'Content-Type' for POST and PUT.
 	 * @param string $rawPost Must be an empty string unless method is POST or PUT.
 	 * @param float|boolean $timeout Read timeout in seconds, defaults to FALSE.
-	 * @return Apache_Solr_Response Response object
-	 * @throws Apache_Solr_HttpTransportException if returned HTTP status is other than 200
+	 * @return \Apache_Solr_Response Response object
+	 * @throws \Apache_Solr_HttpTransportException if returned HTTP status is other than 200
 	 */
 	public function requestServlet($servlet, $parameters = array(), $method = 'GET', $requestHeaders = array(), $rawPost = '', $timeout = FALSE) {
 		$httpTransport = $this->getHttpTransport();
-		$solrResponse  = NULL;
+		$solrResponse = NULL;
 
 		if ($method == 'GET' || $method == 'HEAD') {
-				// Make sure we are not sending a request body.
+			// Make sure we are not sending a request body.
 			$rawPost = '';
 		}
 
-			// Add default parameters
+		// Add default parameters
 		$parameters['wt'] = self::SOLR_WRITER;
 		$parameters['json.nl'] = $this->_namedListTreatment;
 		$url = $this->_constructUrl($servlet, $parameters);
@@ -200,14 +204,14 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		if ($method == self::METHOD_GET) {
 			$httpResponse = $httpTransport->performGetRequest($url, $timeout);
 		} elseif ($method == self::METHOD_POST) {
-				// FIXME should respect all headers, not only Content-Type
+			// FIXME should respect all headers, not only Content-Type
 			$httpResponse = $httpTransport->performPostRequest($url, $rawPost, $requestHeaders['Content-Type'], $timeout);
 		}
 
-		$solrResponse = new Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
+		$solrResponse = new \Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
 
 		if ($solrResponse->getHttpStatus() != 200) {
-			throw new Apache_Solr_HttpTransportException($solrResponse);
+			throw new \Apache_Solr_HttpTransportException($solrResponse);
 		}
 
 		return $solrResponse;
@@ -220,8 +224,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * @param integer $offset result offset for pagination
 	 * @param integer $limit number of results to retrieve
 	 * @param array $params additional HTTP GET parameters
-	 * @return Apache_Solr_Response Solr response
-	 * @throws RuntimeException if Solr returns a HTTP status code other than 200
+	 * @return \Apache_Solr_Response Solr response
+	 * @throws \RuntimeException if Solr returns a HTTP status code other than 200
 	 */
 	public function search($query, $offset = 0, $limit = 10, $params = array()) {
 		$response = parent::search($query, $offset, $limit, $params);
@@ -230,10 +234,10 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		$this->responseCache = $response;
 
 		if ($response->getHttpStatus() != 200) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Invalid query. Solr returned an error: '
-					. $response->getHttpStatus() . ' '
-					. $response->getHttpStatusMessage(),
+				. $response->getHttpStatus() . ' '
+				. $response->getHttpStatusMessage(),
 				1293109870
 			);
 		}
@@ -262,10 +266,10 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Performs a content and meta data extraction request.
 	 *
-	 * @param Tx_Solr_ExtractingQuery $query An extraction query
+	 * @param ExtractingQuery $query An extraction query
 	 * @return array An array containing the extracted content [0] and meta data [1]
 	 */
-	public function extract(Tx_Solr_ExtractingQuery $query) {
+	public function extract(ExtractingQuery $query) {
 		$headers = array(
 			'Content-Type' => 'multipart/form-data; boundary=' . $query->getMultiPartPostDataBoundary()
 		);
@@ -278,7 +282,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 				$headers,
 				$query->getRawPostFileData()
 			);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			GeneralUtility::devLog('Extracting text and meta data through Solr Cell over HTTP POST', 'solr', 3, array(
 				'query'      => (array) $query,
 				'parameters' => $query->getQueryParameters(),
@@ -290,7 +294,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			));
 		}
 
-		return array($response->extracted, (array) $response->extracted_metadata);
+		return array($response->extracted, (array)$response->extracted_metadata);
 	}
 
 	/**
@@ -298,14 +302,14 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 *
 	 * @param string $url
 	 * @param float|boolean $timeout Read timeout in seconds
-	 * @return Apache_Solr_Response
+	 * @return \Apache_Solr_Response
 	 */
 	protected function _sendRawGet($url, $timeout = FALSE) {
 		$logSeverity = 0; // info
 
 		try {
 			$response = parent::_sendRawGet($url, $timeout);
-		} catch (Apache_Solr_HttpTransportException $e) {
+		} catch (\Apache_Solr_HttpTransportException $e) {
 			$logSeverity = 3; // fatal error
 			$response    = $e->getResponse();
 		}
@@ -319,7 +323,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			if (!empty($e)) {
 				$logData['exception'] = $e->__toString();
 			} else {
-					// trigger data parsing
+				// trigger data parsing
 				$response->response;
 				$logData['response data'] = print_r($response, TRUE);
 			}
@@ -335,7 +339,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 *
 	 * @param $url
 	 * @param bool|float $timeout Read timeout in seconds
-	 * @return Apache_Solr_Response
+	 * @return \Apache_Solr_Response
 	 */
 	protected function _sendRawDelete($url, $timeout = FALSE) {
 		$logSeverity = 0; // info
@@ -344,20 +348,20 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			$httpTransport = $this->getHttpTransport();
 
 			$httpResponse = $httpTransport->performDeleteRequest($url, $timeout);
-			$solrResponse = new Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
+			$solrResponse = new \Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
 
 			if ($solrResponse->getHttpStatus() != 200) {
-				throw new Apache_Solr_HttpTransportException($solrResponse);
+				throw new \Apache_Solr_HttpTransportException($solrResponse);
 			}
-		} catch (Apache_Solr_HttpTransportException $e) {
-			$logSeverity  = 3; // fatal error
+		} catch (\Apache_Solr_HttpTransportException $e) {
+			$logSeverity = 3; // fatal error
 			$solrResponse = $e->getResponse();
 		}
 
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawDelete'] || $solrResponse->getHttpStatus() != 200) {
 			$logData = array(
 				'query url' => $url,
-				'response'  => (array) $solrResponse
+				'response' => (array)$solrResponse
 			);
 
 			if (!empty($e)) {
@@ -381,23 +385,23 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * @param string $rawPost
 	 * @param float|boolean $timeout Read timeout in seconds
 	 * @param string $contentType
-	 * @return Apache_Solr_Response
+	 * @return \Apache_Solr_Response
 	 */
 	protected function _sendRawPost($url, $rawPost, $timeout = FALSE, $contentType = 'text/xml; charset=UTF-8') {
 		$logSeverity = 0; // info
 
 		try {
 			$response = parent::_sendRawPost($url, $rawPost, $timeout, $contentType);
-		} catch (Apache_Solr_HttpTransportException $e) {
+		} catch (\Apache_Solr_HttpTransportException $e) {
 			$logSeverity = 3; // fatal error
-			$response    = $e->getResponse();
+			$response = $e->getResponse();
 		}
 
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawPost'] || $response->getHttpStatus() != 200) {
 			$logData = array(
 				'query url' => $url,
-				'content'   => $rawPost,
-				'response'  => (array) $response
+				'content' => $rawPost,
+				'response' => (array)$response
 			);
 
 			if (!empty($e)) {
@@ -423,17 +427,17 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * Set the scheme used. If empty will fallback to constants
 	 *
 	 * @param string $scheme Either http or https
-	 * @throws UnexpectedValueException
+	 * @throws \UnexpectedValueException
 	 */
 	public function setScheme($scheme) {
-			// Use the provided scheme or use the default
+		// Use the provided scheme or use the default
 		if (empty($scheme)) {
-			throw new UnexpectedValueException('Scheme parameter is empty', 1380756390);
+			throw new \UnexpectedValueException('Scheme parameter is empty', 1380756390);
 		} else {
 			if (in_array($scheme, array(self::SCHEME_HTTP, self::SCHEME_HTTPS))) {
 				$this->_scheme = $scheme;
 			} else {
-				throw new UnexpectedValueException('Unsupported scheme parameter, scheme must be http or https', 1380756442);
+				throw new \UnexpectedValueException('Unsupported scheme parameter, scheme must be http or https', 1380756442);
 			}
 		}
 
@@ -446,7 +450,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * Retrieves meta data about the index from the luke request handler
 	 *
 	 * @param integer $numberOfTerms Number of top terms to fetch for each field
-	 * @return Apache_Solr_Response Index meta data
+	 * @return \Apache_Solr_Response Index meta data
 	 */
 	public function getLukeMetaData($numberOfTerms = 0) {
 		if (!isset($this->lukeData[$numberOfTerms])) {
@@ -487,7 +491,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Gets the most recent response (if any)
 	 *
-	 * @return Apache_Solr_Response Most recent response, or NULL if a search has not been executed yet.
+	 * @return \Apache_Solr_Response Most recent response, or NULL if a search has not been executed yet.
 	 */
 	public function getResponse() {
 		return $this->responseCache;
@@ -499,7 +503,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * @param boolean $debug TRUE to enable debug mode, FALSE to turn off, off by default
 	 */
 	public function setDebug($debug) {
-		$this->debug = (boolean) $debug;
+		$this->debug = (boolean)$debug;
 	}
 
 	/**
@@ -512,7 +516,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		if (empty($this->systemData)) {
 			$systemInformation = $this->system();
 
-				// access a random property to trigger response parsing
+			// access a random property to trigger response parsing
 			$systemInformation->responseHeader;
 			$this->systemData = $systemInformation;
 		}
@@ -530,7 +534,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 		if (empty($this->pluginsData)) {
 			$pluginsInformation = $this->_sendRawGet($this->_pluginsUrl);
 
-				// access a random property to trigger response parsing
+			// access a random property to trigger response parsing
 			$pluginsInformation->responseHeader;
 			$this->pluginsData = $pluginsInformation;
 		}
@@ -541,7 +545,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Get the configured schema for the current core
 	 *
-	 * @return stdClass
+	 * @return \stdClass
 	 */
 	protected function getSchema() {
 		$response = $this->_sendRawGet($this->_schemaUrl);
@@ -598,11 +602,11 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	public function getSolrconfigName() {
 		if (is_null($this->solrconfigName)) {
 			$solrconfigXmlUrl = $this->_scheme . '://'
-			. $this->_host . ':' . $this->_port
-			. $this->_path . 'admin/file/?file=solrconfig.xml';
+				. $this->_host . ':' . $this->_port
+				. $this->_path . 'admin/file/?file=solrconfig.xml';
 
 			$solrconfigXml = simplexml_load_file($solrconfigXmlUrl);
-			$this->solrconfigName = (string) $solrconfigXml->attributes()->name;
+			$this->solrconfigName = (string)$solrconfigXml->attributes()->name;
 		}
 
 		return $this->solrconfigName;
@@ -616,8 +620,8 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	public function getSolrServerVersion() {
 		$systemInformation = $this->getSystemInformation();
 
-			// don't know why $systemInformation->lucene->solr-spec-version won't work
-		$luceneInformation = (array) $systemInformation->lucene;
+		// don't know why $systemInformation->lucene->solr-spec-version won't work
+		$luceneInformation = (array)$systemInformation->lucene;
 		return $luceneInformation['solr-spec-version'];
 	}
 
@@ -642,7 +646,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 *
 	 * @param string $rawPost Expected to be utf-8 encoded xml document
 	 * @param float|integer $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
-	 * @return Apache_Solr_Response
+	 * @return \Apache_Solr_Response
 	 */
 	public function delete($rawPost, $timeout = 3600) {
 		$response = $this->_sendRawPost($this->_updateUrl, $rawPost, $timeout);
@@ -652,9 +656,9 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 			'solr',
 			1,
 			array(
-				'query'     => $rawPost,
+				'query' => $rawPost,
 				'query url' => $this->_updateUrl,
-				'response'  => (array) $response
+				'response' => (array)$response
 			)
 		);
 
@@ -696,13 +700,13 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * @param $baseWord
 	 * @param array $synonyms
 	 *
-	 * @return Apache_Solr_Response
+	 * @return \Apache_Solr_Response
 	 *
-	 * @throws Apache_Solr_InvalidArgumentException If $baseWord or $synonyms are empty
+	 * @throws \Apache_Solr_InvalidArgumentException If $baseWord or $synonyms are empty
 	 */
 	public function addSynonym($baseWord, array $synonyms) {
 		if (empty($baseWord) || empty($synonyms)) {
-			throw new Apache_Solr_InvalidArgumentException('Must provide base word and synonyms.');
+			throw new \Apache_Solr_InvalidArgumentException('Must provide base word and synonyms.');
 		}
 
 		$rawPut = json_encode(array($baseWord => $synonyms));
@@ -713,12 +717,12 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	 * Remove a synonym from the synonyms map
 	 *
 	 * @param $baseWord
-	 * @return Apache_Solr_Response
-	 * @throws Apache_Solr_InvalidArgumentException
+	 * @return \Apache_Solr_Response
+	 * @throws \Apache_Solr_InvalidArgumentException
 	 */
 	public function deleteSynonym($baseWord) {
 		if (empty($baseWord)) {
-			throw new Apache_Solr_InvalidArgumentException('Must provide base word.');
+			throw new \Apache_Solr_InvalidArgumentException('Must provide base word.');
 		}
 
 		return $this->_sendRawDelete($this->_synonymsUrl . '/' . $baseWord);
@@ -727,7 +731,7 @@ class Tx_Solr_SolrService extends Apache_Solr_Service {
 	/**
 	 * Reloads the current core
 	 *
-	 * @return Apache_Solr_Response
+	 * @return \Apache_Solr_Response
 	 */
 	public function reloadCore() {
 		$coreName = array_pop(explode('/', trim($this->_path, '/')));

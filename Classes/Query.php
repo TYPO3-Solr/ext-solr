@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -31,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Query {
+class Query {
 
 	// FIXME extract link building from the query, it's not the query's domain
 
@@ -97,7 +100,7 @@ class Tx_Solr_Query {
 	 *
 	 */
 	public function __construct($keywords) {
-		$this->solrConfiguration = Tx_Solr_Util::getSolrConfiguration();
+		$this->solrConfiguration = Util::getSolrConfiguration();
 
 		$this->fieldList = array('*', 'score');
 		$this->setKeywords($keywords);
@@ -137,7 +140,7 @@ class Tx_Solr_Query {
 	 * @return void
 	 */
 	protected function buildQueryString() {
-			// very simple for now
+		// very simple for now
 		$this->queryString = $this->keywords;
 	}
 
@@ -157,7 +160,7 @@ class Tx_Solr_Query {
 	 * @param boolean $useRawQueryString TRUE to use raw queries (like Lucene Query Language) or FALSE for regular, escaped queries
 	 */
 	public function useRawQueryString($useRawQueryString) {
-		$this->rawQueryString = (boolean) $useRawQueryString;
+		$this->rawQueryString = (boolean)$useRawQueryString;
 	}
 
 	/**
@@ -203,11 +206,11 @@ class Tx_Solr_Query {
 	public function escape($string) {
 		if (!is_numeric($string)) {
 			if (preg_match('/\W/', $string) == 1) {
-					// multiple words
+				// multiple words
 
 				$stringLength = strlen($string);
 				if ($string{0} == '"' && $string{$stringLength - 1} == '"') {
-						// phrase
+					// phrase
 					$string = trim($string, '"');
 					$string = $this->escapePhrase($string);
 				} else {
@@ -228,10 +231,10 @@ class Tx_Solr_Query {
 	 * @return string Escaped - "clean" - string
 	 */
 	protected function escapeSpecialCharacters($value) {
-			// list taken from http://lucene.apache.org/core/4_4_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
-			// which mentions: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /
-			// of which we escape: ( ) { } [ ] ^ " ~ : \ /
-			// and explicitly don't escape: + - && || ! * ?
+		// list taken from http://lucene.apache.org/core/4_4_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
+		// which mentions: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /
+		// of which we escape: ( ) { } [ ] ^ " ~ : \ /
+		// and explicitly don't escape: + - && || ! * ?
 		$pattern = '/(\\(|\\)|\\{|\\}|\\[|\\]|\\^|"|~|\:|\\\\|\\/)/';
 		$replace = '\\\$1';
 
@@ -362,7 +365,7 @@ class Tx_Solr_Query {
 			$this->queryParameters['group.ngroups'] = 'true';
 		} else {
 			foreach ($this->queryParameters as $key => $value) {
-					// remove all group.* settings
+				// remove all group.* settings
 				if (GeneralUtility::isFirstPartOfStr($key, 'group')) {
 					unset($this->queryParameters[$key]);
 				}
@@ -490,7 +493,7 @@ class Tx_Solr_Query {
 	 * @return integer Maximum number of results per group to return
 	 */
 	public function getNumberOfResultsPerGroup() {
-			// default if nothing else set is 1, @see http://wiki.apache.org/solr/FieldCollapsing
+		// default if nothing else set is 1, @see http://wiki.apache.org/solr/FieldCollapsing
 		$numberOfResultsPerGroup = 1;
 
 		if (!empty($this->queryParameters['group.limit'])) {
@@ -518,7 +521,7 @@ class Tx_Solr_Query {
 			if (GeneralUtility::inList('count,index,alpha,lex,1,0,true,false', $this->solrConfiguration['search.']['faceting.']['sortBy'])) {
 				$sorting = $this->solrConfiguration['search.']['faceting.']['sortBy'];
 
-					// alpha and lex alias for index
+				// alpha and lex alias for index
 				if ($sorting == 'alpha' || $sorting == 'lex') {
 					$sorting = 'index';
 				}
@@ -527,12 +530,12 @@ class Tx_Solr_Query {
 			}
 		} else {
 			foreach ($this->queryParameters as $key => $value) {
-					// remove all facet.* settings
+				// remove all facet.* settings
 				if (GeneralUtility::isFirstPartOfStr($key, 'facet')) {
 					unset($this->queryParameters[$key]);
 				}
 
-					// remove all f.*.facet.* settings (overrides for individual fields)
+				// remove all f.*.facet.* settings (overrides for individual fields)
 				if (GeneralUtility::isFirstPartOfStr($key, 'f.') && strpos($key, '.facet.') !== FALSE) {
 					unset($this->queryParameters[$key]);
 				}
@@ -548,7 +551,7 @@ class Tx_Solr_Query {
 	public function setFacetFields(array $facetFields) {
 		$this->queryParameters['facet.field'] = array();
 
-		foreach($facetFields as $facetField) {
+		foreach ($facetFields as $facetField) {
 			$this->addFacetField($facetField);
 		}
 	}
@@ -573,7 +576,7 @@ class Tx_Solr_Query {
 	 * @return void
 	 */
 	public function addFilter($filterString) {
-			// TODO refactor to split filter field and filter value, @see Drupal
+		// TODO refactor to split filter field and filter value, @see Drupal
 		if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['filters']) {
 			GeneralUtility::devLog('adding filter', 'solr', 0, array($filterString));
 		}
@@ -644,8 +647,8 @@ class Tx_Solr_Query {
 		$allowedSites = GeneralUtility::trimExplode(',', $allowedSites);
 		$filters      = array();
 
-		foreach($allowedSites as $site) {
-			$siteHash = Tx_Solr_Util::getSiteHashForDomain($site);
+		foreach ($allowedSites as $site) {
+			$siteHash = Util::getSiteHashForDomain($site);
 
 			$filters[] = 'siteHash:"' . $siteHash . '"';
 		}
@@ -662,10 +665,10 @@ class Tx_Solr_Query {
 		$pageIds = GeneralUtility::trimExplode(',', $pageIds);
 		$filters = array();
 
-		$processor   = GeneralUtility::makeInstance('tx_solr_fieldprocessor_PageUidToHierarchy');
+		$processor   = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PageUidToHierarchy');
 		$hierarchies = $processor->process($pageIds);
 
-		foreach($hierarchies as $hierarchy) {
+		foreach ($hierarchies as $hierarchy) {
 			$lastLevel = array_pop($hierarchy);
 			$filters[] = 'rootline:"' . $lastLevel . '"';
 		}
@@ -681,9 +684,9 @@ class Tx_Solr_Query {
 	 * Adds a sort field and the sorting direction for that field
 	 *
 	 * @param string $fieldName The field name to sort by
-	 * @param string $direction Either Tx_Solr_Query::SORT_ASC to sort the field ascending or Tx_Solr_Query::SORT_DESC to sort descending
+	 * @param string $direction Either ApacheSolrForTypo3\Solr\Query::SORT_ASC to sort the field ascending or ApacheSolrForTypo3\Solr\Query::SORT_DESC to sort descending
 	 * @return void
-	 * @throws InvalidArgumentException if the $direction parameter given is neither Tx_Solr_Query::SORT_ASC nor Tx_Solr_Query::SORT_DESC
+	 * @throws \InvalidArgumentException if the $direction parameter given is neither ApacheSolrForTypo3\Solr\Query::SORT_ASC nor ApacheSolrForTypo3\Solr\Query::SORT_DESC
 	 */
 	public function addSortField($fieldName, $direction) {
 		switch ($direction) {
@@ -692,7 +695,7 @@ class Tx_Solr_Query {
 				$this->sortingFields[$fieldName] = $direction;
 				break;
 			default:
-				throw new InvalidArgumentException(
+				throw new \InvalidArgumentException(
 					'Invalid sort direction "' . $direction . '"',
 					1235051723
 				);
@@ -725,7 +728,7 @@ class Tx_Solr_Query {
 	 * Sets the fields to return by a query.
 	 *
 	 * @param array|string $fieldList an array or comma-separated list of field names
-	 * @throws UnexpectedValueException on parameters other than comma-separated lists and arrays
+	 * @throws \UnexpectedValueException on parameters other than comma-separated lists and arrays
 	 */
 	public function setFieldList($fieldList = array('*', 'score')) {
 		if (is_string($fieldList)) {
@@ -733,7 +736,7 @@ class Tx_Solr_Query {
 		}
 
 		if (!is_array($fieldList) || empty($fieldList)) {
-			throw new UnexpectedValueException(
+			throw new \UnexpectedValueException(
 				'Field list must be a comma-separated list or array and must not be empty.',
 				1310740308
 			);
@@ -751,7 +754,8 @@ class Tx_Solr_Query {
 	public function addReturnField($fieldName) {
 		if (strpos($fieldName, '[') === false
 			&& strpos($fieldName, ']') === false
-			&& in_array('*', $this->fieldList)) {
+			&& in_array('*', $this->fieldList)
+		) {
 			$this->fieldList = array_diff($this->fieldList, array('*'));
 		}
 
@@ -798,7 +802,7 @@ class Tx_Solr_Query {
 	 * Sets the query operator to AND or OR. Unsets the query operator (actually
 	 * sets it back to default) for FALSE.
 	 *
-	 * @param string|boolean	$operator AND or OR, FALSE to unset
+	 * @param string|boolean $operator AND or OR, FALSE to unset
 	 */
 	public function setOperator($operator) {
 		if (in_array($operator, array(self::OPERATOR_AND, self::OPERATOR_OR))) {
@@ -914,7 +918,7 @@ class Tx_Solr_Query {
 
 		// escape triple hashes as they are used in the template engine
 		// TODO remove after switching to fluid templates
-		$keywords = Tx_Solr_Template::escapeMarkers($keywords);
+		$keywords = Template::escapeMarkers($keywords);
 
 		return $keywords;
 	}
@@ -980,7 +984,7 @@ class Tx_Solr_Query {
 	 * @return void
 	 */
 	public function setQueryField($fieldName, $boost = 1.0) {
-		$this->queryFields[$fieldName] = (float) $boost;
+		$this->queryFields[$fieldName] = (float)$boost;
 	}
 
 	/**
@@ -1090,7 +1094,7 @@ class Tx_Solr_Query {
 	public function setHighlighting($highlighting = TRUE, $fragmentSize = 200) {
 		if ($highlighting) {
 			$this->queryParameters['hl'] = 'true';
-			$this->queryParameters['hl.fragsize'] = (int) $fragmentSize;
+			$this->queryParameters['hl.fragsize'] = (int)$fragmentSize;
 
 			if (isset($this->solrConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'])) {
 				$this->queryParameters['hl.fl'] = $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'];
@@ -1100,7 +1104,7 @@ class Tx_Solr_Query {
 			$this->queryParameters['hl.simple.pre']  = $wrap[0];
 			$this->queryParameters['hl.simple.post'] = $wrap[1];
 		} else {
-				// remove all hl.* settings
+			// remove all hl.* settings
 			foreach ($this->queryParameters as $key => $value) {
 				if (GeneralUtility::isFirstPartOfStr($key, 'hl')) {
 					unset($this->queryParameters[$key]);
@@ -1148,7 +1152,7 @@ class Tx_Solr_Query {
 				$sortParameter = '';
 			}
 
-			$this->queryParameters['sort'] =  $sortParameter;
+			$this->queryParameters['sort'] = $sortParameter;
 		} else {
 			unset($this->queryParameters['sort']);
 		}

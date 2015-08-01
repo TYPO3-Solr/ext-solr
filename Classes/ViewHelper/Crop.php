@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -43,7 +45,7 @@ class Tx_Solr_ViewHelper_Crop implements Tx_Solr_ViewHelper {
 	 * constructor for class Tx_Solr_ViewHelper_Crop
 	 */
 	public function __construct(array $arguments = array()) {
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 
 		if (!empty($configuration['viewHelpers.']['crop.']['maxLength'])) {
 			$this->maxLength = $configuration['viewHelpers.']['crop.']['maxLength'];

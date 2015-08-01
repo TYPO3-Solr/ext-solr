@@ -21,7 +21,12 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Template;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Facet renderer.
@@ -33,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRenderer {
 
 	/**
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search;
 
@@ -64,7 +69,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	/**
 	 * Template
 	 *
-	 * @var Tx_Solr_Template
+	 * @var Template
 	 */
 	protected $template = NULL;
 
@@ -90,12 +95,12 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	 * @param Tx_Solr_Facet_Facet $facet The facet to render.
 	 */
 	public function __construct(Tx_Solr_Facet_Facet $facet) {
-		$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
+		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		$this->facet              = $facet;
 		$this->facetName          = $facet->getName();
 
-		$this->solrConfiguration  = Tx_Solr_Util::getSolrConfiguration();
+		$this->solrConfiguration  = Util::getSolrConfiguration();
 		$this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
 		$this->linkTargetPageId   = $GLOBALS['TSFE']->id;
 
@@ -203,7 +208,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	 * (non-PHPdoc)
 	 * @see Tx_Solr_FacetRenderer::setTemplate()
 	 */
-	public function setTemplate(Tx_Solr_Template $template) {
+	public function setTemplate(Template $template) {
 		$this->template = $template;
 	}
 

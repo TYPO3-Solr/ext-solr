@@ -21,6 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Template;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -35,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Tx_Solr_PiResults_HighlightingResultDocumentModifier implements Tx_Solr_ResultDocumentModifier {
 
 	/**
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search;
 
@@ -48,7 +52,7 @@ class Tx_Solr_PiResults_HighlightingResultDocumentModifier implements Tx_Solr_Re
 	 */
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
 		$this->search  = $resultCommand->getParentPlugin()->getSearch();
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 
 		$highlightedContent = $this->search->getHighlightedContent();
 
@@ -57,7 +61,7 @@ class Tx_Solr_PiResults_HighlightingResultDocumentModifier implements Tx_Solr_Re
 			if (!empty($highlightedContent->{$resultDocument['id']}->{$highlightField}[0])) {
 				$fragments = array();
 				foreach ($highlightedContent->{$resultDocument['id']}->{$highlightField} as $fragment) {
-					$fragments[] = tx_solr_Template::escapeMarkers($fragment);
+					$fragments[] = Template::escapeMarkers($fragment);
 				}
 				$resultDocument[$highlightField] = implode(
 					' ' . $configuration['search.']['results.']['resultsHighlighting.']['fragmentSeparator'] . ' ',

@@ -22,11 +22,13 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+
 
 /**
  * Sorting search component
  *
- * TODO maybe merge Tx_Solr_Sorting into Tx_Solr_Search_SortingComponent
+ * TODO maybe merge ApacheSolrForTypo3\Solr\Sorting into Tx_Solr_Search_SortingComponent
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
@@ -37,7 +39,7 @@ class Tx_Solr_Search_SortingComponent extends Tx_Solr_Search_AbstractComponent i
 	/**
 	 * Solr query
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query;
 
@@ -59,7 +61,7 @@ class Tx_Solr_Search_SortingComponent extends Tx_Solr_Search_AbstractComponent i
 			&& !empty($solrGetParameters['sort'])
 			&& preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $solrGetParameters['sort'])
 		) {
-			$sortHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Sorting', $this->searchConfiguration['sorting.']['options.']);
+			$sortHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Tx_Solr_Sorting', $this->searchConfiguration['sorting.']['options.']);
 			$sortField = $sortHelper->getSortFieldFromUrlParameter($solrGetParameters['sort']);
 
 			$this->query->setSorting($sortField);
@@ -69,9 +71,9 @@ class Tx_Solr_Search_SortingComponent extends Tx_Solr_Search_AbstractComponent i
 	/**
 	 * Provides the extension component with an instance of the current query.
 	 *
-	 * @param Tx_Solr_Query $query Current query
+	 * @param Query $query Current query
 	 */
-	public function setQuery(Tx_Solr_Query $query) {
+	public function setQuery(Query $query) {
 		$this->query = $query;
 	}
 

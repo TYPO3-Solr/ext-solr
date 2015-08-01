@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * Multivalue viewhelper to output multivalue fields
@@ -41,7 +43,7 @@ class Tx_Solr_ViewHelper_Multivalue implements Tx_Solr_ViewHelper {
 	 *
 	 */
 	public function __construct(array $arguments = array()) {
-		$configuration = Tx_Solr_Util::getSolrConfiguration();
+		$configuration = Util::getSolrConfiguration();
 
 		if (!empty($configuration['viewhelpers.']['multivalue.']['glue'])) {
 			$this->glue = $configuration['viewhelpers.']['multivalue.']['glue'];

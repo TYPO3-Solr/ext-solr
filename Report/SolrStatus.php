@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
@@ -40,7 +41,7 @@ class Tx_Solr_Report_SolrStatus implements StatusProviderInterface {
 	/**
 	 * Connection Manager
 	 *
-	 * @var Tx_Solr_ConnectionManager
+	 * @var ConnectionManager
 	 */
 	protected $connectionManager = NULL;
 
@@ -50,7 +51,7 @@ class Tx_Solr_Report_SolrStatus implements StatusProviderInterface {
 	 */
 	public function getStatus() {
 		$reports = array();
-		$this->connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$this->connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 
 		$solrConnections = $this->connectionManager->getAllConfigurations();
 

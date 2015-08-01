@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -31,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ContextMenuActionController {
+class ContextMenuActionController {
 
 	/**
 	 * Initializes the Solr connections for a given site.
@@ -39,9 +42,9 @@ class Tx_Solr_ContextMenuActionController {
 	 * @param object $nodeData Tree node
 	 */
 	public function initializeSolrConnectionsByRootPage($nodeData) {
-		$node = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\Pagetree\\PagetreeNode', (array) $nodeData);
+		$node = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\Pagetree\\PagetreeNode', (array)$nodeData);
 
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 		$connectionManager->updateConnectionByRootPageId($node->getId());
 	}
 

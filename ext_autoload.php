@@ -25,42 +25,6 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_api' => $extensionPath . 'Classes/Api.php',
-	'tx_solr_additionalfieldsindexer' => $extensionPath . 'Classes/AdditionalFieldsIndexer.php',
-	'tx_solr_commandresolver' => $extensionPath . 'Classes/CommandResolver.php',
-	'tx_solr_connectionmanager' => $extensionPath . 'Classes/ConnectionManager.php',
-	'tx_solr_contextmenuactioncontroller' => $extensionPath . 'Classes/ContextMenuActionController.php',
-	'tx_solr_databaseutility' => $extensionPath . 'Classes/DatabaseUtility.php',
-	'tx_solr_garbagecollector' => $extensionPath . 'Classes/GarbageCollector.php',
-	'tx_solr_htmlcontentextractor' => $extensionPath . 'Classes/HtmlContentExtractor.php',
-	'tx_solr_javascriptmanager' => $extensionPath . 'Classes/JavascriptManager.php',
-	'tx_solr_languagefileunavailableexception' => $extensionPath . 'Classes/LanguageFileUnavailableException.php',
-	'tx_solr_nosolrconnectionfoundexception' => $extensionPath . 'Classes/NoSolrConnectionFoundException.php',
-	'tx_solr_query' => $extensionPath . 'Classes/Query.php',
-	'tx_solr_search' => $extensionPath . 'Classes/Search.php',
-	'tx_solr_site' => $extensionPath . 'Classes/Site.php',
-	'tx_solr_solrservice' => $extensionPath . 'Classes/SolrService.php',
-	'tx_solr_sorting' => $extensionPath . 'Classes/Sorting.php',
-	'tx_solr_spellchecker' => $extensionPath . 'Classes/SpellChecker.php',
-	'tx_solr_suggestquery' => $extensionPath . 'Classes/SuggestQuery.php',
-	'tx_solr_template' => $extensionPath . 'Classes/Template.php',
-	'tx_solr_typo3environment' => $extensionPath . 'Classes/Typo3Environment.php',
-	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'Classes/Typo3PageContentExtractor.php',
-	'tx_solr_typo3pageindexer' => $extensionPath . 'Classes/Typo3PageIndexer.php',
-	'tx_solr_util' => $extensionPath . 'Classes/Util.php',
-
-	'ApacheSolrForTypo3\Solr\Access\Rootline' => $extensionPath . 'Classes/Access/Rootline.php',
-	'ApacheSolrForTypo3\Solr\Access\RootlineElement' => $extensionPath . 'Classes/Access/RootlineElement.php',
-	'ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException' => $extensionPath . 'Classes/Access/RootlineElementFormatException.php',
-
-	'ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField' => $extensionPath . 'Classes/Backend/IndexingConfigurationSelectorField.php',
-
-	'ApacheSolrForTypo3\Solr\Cli\Dispatcher' => $extensionPath . 'Classes/Cli/Dispatcher.php',
-
-	'ApacheSolrForTypo3\Solr\ContentObject\Content' => $extensionPath . 'Classes/ContentObject/Content.php',
-	'ApacheSolrForTypo3\Solr\ContentObject\Multivalue' => $extensionPath . 'Classes/ContentObject/Multivalue.php',
-	'ApacheSolrForTypo3\Solr\ContentObject\Relation' => $extensionPath . 'Classes/ContentObject/Relation.php',
-
 	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'Classes/Facet/AbstractFacetRenderer.php',
 	'tx_solr_facet_daterangefacetrenderer' => $extensionPath . 'Classes/Facet/DateRangeFacetRenderer.php',
 	'tx_solr_facet_facet' => $extensionPath . 'Classes/Facet/Facet.php',

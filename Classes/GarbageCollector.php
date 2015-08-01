@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_GarbageCollector {
+class GarbageCollector {
 
 	protected $trackedRecords = array();
 
@@ -50,7 +52,7 @@ class Tx_Solr_GarbageCollector {
 	 * @return void
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, DataHandler $tceMain) {
-			// workspaces: collect garbage only for LIVE workspace
+		// workspaces: collect garbage only for LIVE workspace
 		if ($command == 'delete' && $GLOBALS['BE_USER']->workspace == 0) {
 			$this->collectGarbage($table, $uid);
 
@@ -71,16 +73,16 @@ class Tx_Solr_GarbageCollector {
 	 * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain) {
-			// workspaces: collect garbage only for LIVE workspace
+		// workspaces: collect garbage only for LIVE workspace
 		if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
-				// TODO the below comment is not valid anymore, pid has been removed from doc ID
-				// ...still needed?
+			// TODO the below comment is not valid anymore, pid has been removed from doc ID
+			// ...still needed?
 
-				// must be removed from index since the pid changes and
-				// is part of the Solr document ID
+			// must be removed from index since the pid changes and
+			// is part of the Solr document ID
 			$this->collectGarbage($table, $uid);
 
-				// now re-index with new properties
+			// now re-index with new properties
 			$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
 			$indexQueue->updateItem($table, $uid);
 		}
@@ -98,19 +100,20 @@ class Tx_Solr_GarbageCollector {
 	 */
 	public function processDatamap_preProcessFieldArray($incomingFields, $table, $uid, DataHandler $tceMain) {
 		if (!is_int($uid)) {
-				// a newly created record, skip
+			// a newly created record, skip
 			return;
 		}
 
-		if (Tx_Solr_Util::isDraftRecord($table, $uid)) {
-				// skip workspaces: collect garbage only for LIVE workspace
+		if (Util::isDraftRecord($table, $uid)) {
+			// skip workspaces: collect garbage only for LIVE workspace
 			return;
 		}
 
 		$visibilityAffectingFields = $this->getVisibilityAffectingFieldsByTable($table);
 
 		if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
-			&& array_key_exists('fe_group', $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
+			&& array_key_exists('fe_group', $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
+		) {
 
 			$record = BackendUtility::getRecord(
 				$table,
@@ -121,7 +124,7 @@ class Tx_Solr_GarbageCollector {
 			);
 			$record = $this->normalizeFrontendGroupField($table, $record);
 
-				// keep previous state of important fields for later comparison
+			// keep previous state of important fields for later comparison
 			$this->trackedRecords[$table][$uid] = $record;
 		}
 	}
@@ -139,12 +142,12 @@ class Tx_Solr_GarbageCollector {
 	 */
 	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fields, DataHandler $tceMain) {
 		if ($status == 'new') {
-				// a newly created record, skip
+			// a newly created record, skip
 			return;
 		}
 
-		if (Tx_Solr_Util::isDraftRecord($table, $uid)) {
-				// skip workspaces: collect garbage only for LIVE workspace
+		if (Util::isDraftRecord($table, $uid)) {
+			// skip workspaces: collect garbage only for LIVE workspace
 			return;
 		}
 
@@ -174,7 +177,7 @@ class Tx_Solr_GarbageCollector {
 		static $visibilityAffectingFields;
 
 		if (!isset($visibilityAffectingFields[$table])) {
-				// we always want to get the uid and pid although they do not affect visibility
+			// we always want to get the uid and pid although they do not affect visibility
 			$fields = array('uid', 'pid');
 			if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
 				$fields = array_merge($fields, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);
@@ -267,12 +270,12 @@ class Tx_Solr_GarbageCollector {
 			$frontendGroupsField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group'];
 			$previousGroups = $this->trackedRecords[$table][$record['uid']][$frontendGroupsField];
 
-			$previousGroups = explode(',', (string) $this->trackedRecords[$table][$record['uid']][$frontendGroupsField]);
-			$currentGroups  = explode(',', (string) $record[$frontendGroupsField]);
+			$previousGroups = explode(',', (string)$this->trackedRecords[$table][$record['uid']][$frontendGroupsField]);
+			$currentGroups  = explode(',', (string)$record[$frontendGroupsField]);
 
 			$removedGroups  = array_diff($previousGroups, $currentGroups);
 
-			$frontendGroupsRemoved = (boolean) count($removedGroups);
+			$frontendGroupsRemoved = (boolean)count($removedGroups);
 		}
 
 		return $frontendGroupsRemoved;
@@ -285,7 +288,7 @@ class Tx_Solr_GarbageCollector {
 	 * @return boolean True if the page has been excluded from searching, FALSE otherwise
 	 */
 	protected function isPageExcludedFromSearch($record) {
-		return (boolean) $record['no_search'];
+		return (boolean)$record['no_search'];
 	}
 
 	/**
@@ -296,7 +299,7 @@ class Tx_Solr_GarbageCollector {
 	 * @return boolean TRUE if the page can be indexed according to its page type, FALSE otherwise
 	 */
 	protected function isIndexablePageType(array $record) {
-		return Tx_Solr_Util::isAllowedPageType($record);
+		return Util::isAllowedPageType($record);
 	}
 
 	/**
@@ -305,7 +308,7 @@ class Tx_Solr_GarbageCollector {
 	 *
 	 * @param string $table The record's table name.
 	 * @param integer $uid The record's uid.
-	 * @throws UnexpectedValueException if a hook object does not implement interface Tx_Solr_GarbageCollectorPostProcessor
+	 * @throws \UnexpectedValueException if a hook object does not implement interface \Tx_Solr_GarbageCollectorPostProcessor
 	 */
 	public function collectGarbage($table, $uid) {
 		if ($table == 'tt_content' || $table == 'pages' || $table == 'pages_language_overlay') {
@@ -318,11 +321,11 @@ class Tx_Solr_GarbageCollector {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
 				$garbageCollectorPostProcessor = GeneralUtility::getUserObj($classReference);
 
-				if ($garbageCollectorPostProcessor instanceof Tx_Solr_GarbageCollectorPostProcessor) {
+				if ($garbageCollectorPostProcessor instanceof \Tx_Solr_GarbageCollectorPostProcessor) {
 					$garbageCollectorPostProcessor->postProcessGarbageCollector($table, $uid);
 				} else {
-					throw new UnexpectedValueException(
-						get_class($garbageCollectorPostProcessor) . ' must implement interface Tx_Solr_GarbageCollectorPostProcessor',
+					throw new \UnexpectedValueException(
+						get_class($garbageCollectorPostProcessor) . ' must implement interface \Tx_Solr_GarbageCollectorPostProcessor',
 						1345807460
 					);
 				}
@@ -339,11 +342,11 @@ class Tx_Solr_GarbageCollector {
 	 * The method remains as a dummy for possible later cleanups and to prevent
 	 * things from breaking if others were using it.
 	 *
-	 * @param Tx_Solr_Site $site The site to clean indexes on
+	 * @param Site $site The site to clean indexes on
 	 * @param boolean $commitAfterCleanUp Whether to commit right after the clean up, defaults to TRUE
 	 * @return void
 	 */
-	public function cleanIndex(Tx_Solr_Site $site, $commitAfterCleanUp = TRUE) {
+	public function cleanIndex(Site $site, $commitAfterCleanUp = TRUE) {
 
 	}
 
@@ -379,7 +382,7 @@ class Tx_Solr_GarbageCollector {
 				$uid   = $contentElement['pid'];
 
 				$this->deleteIndexDocuments($table, $uid);
-					// only a content element was removed, now update/re-index the page
+				// only a content element was removed, now update/re-index the page
 				$indexQueue->updateItem($table, $uid);
 				break;
 			case 'pages_language_overlay':
@@ -389,7 +392,7 @@ class Tx_Solr_GarbageCollector {
 				$uid   = $pageOverlayRecord['pid'];
 
 				$this->deleteIndexDocuments($table, $uid);
-					// only a page overlay was removed, now update/re-index the page
+				// only a page overlay was removed, now update/re-index the page
 				$indexQueue->updateItem($table, $uid);
 				break;
 			case 'pages':
@@ -407,15 +410,15 @@ class Tx_Solr_GarbageCollector {
 	 */
 	protected function deleteIndexDocuments($table, $uid) {
 		$indexQueue        = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 
-			// record can be indexed for multiple sites
+		// record can be indexed for multiple sites
 		$indexQueueItems = $indexQueue->getItems($table, $uid);
 
 		foreach ($indexQueueItems as $indexQueueItem) {
 			$site = $indexQueueItem->getSite();
 
-				// a site can have multiple connections (cores / languages)
+			// a site can have multiple connections (cores / languages)
 			$solrConnections = $connectionManager->getConnectionsBySite($site);
 			foreach ($solrConnections as $solr) {
 				$solr->deleteByQuery('type:' . $table . ' AND uid:' . intval($uid));

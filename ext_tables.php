@@ -99,11 +99,11 @@ if (TYPO3_MODE == 'BE') {
 	);
 
 	// register Clear Cache Menu hook
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&Tx_Solr_ConnectionManager';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&ApacheSolrForTypo3\\Solr\\ConnectionManager';
 
 	// register Clear Cache Menu ajax call
 	$TYPO3_CONF_VARS['BE']['AJAX']['solr::clearSolrConnectionCache'] = array(
-		'callbackMethod' => 'Tx_Solr_ConnectionManager->updateConnections',
+		'callbackMethod' => 'ApacheSolrForTypo3\\Solr\\ConnectionManager->updateConnections',
 		'csrfTokenCheck' => true
 	);
 
@@ -112,8 +112,8 @@ if (TYPO3_MODE == 'BE') {
 	// for certain scenarios items must be removed by GC first, and then be re-added to to Index Queue
 
 	// hooking into TCE Main to monitor record updates that may require deleting documents from the index
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = '&Tx_Solr_GarbageCollector';
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = '&Tx_Solr_GarbageCollector';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = '&ApacheSolrForTypo3\Solr\GarbageCollector';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = '&ApacheSolrForTypo3\Solr\GarbageCollector';
 
 	// hooking into TCE Main to monitor record updates that may require reindexing by the index queue
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'Tx_Solr_IndexQueue_RecordMonitor';
@@ -142,7 +142,7 @@ options.contextMenu.table.pages.items.851 = DIVIDER
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
 	'TYPO3.Solr.ContextMenuActionController',
-	$GLOBALS['PATHrel_solr'] . 'Classes/ContextMenuActionController.php:Tx_Solr_ContextMenuActionController',
+	'ApacheSolrForTypo3\Solr\ContextMenuActionController',
 	'web',
 	'admin'
 );

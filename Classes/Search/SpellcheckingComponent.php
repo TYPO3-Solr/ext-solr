@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+
 
 /**
  * Spellchecking search component
@@ -35,7 +37,7 @@ class Tx_Solr_Search_SpellcheckingComponent extends Tx_Solr_Search_AbstractCompo
 	/**
 	 * Solr query
 	 *
-	 * @var Tx_Solr_Query
+	 * @var Query
 	 */
 	protected $query;
 
@@ -54,9 +56,9 @@ class Tx_Solr_Search_SpellcheckingComponent extends Tx_Solr_Search_AbstractCompo
 	/**
 	 * Provides the extension component with an instance of the current query.
 	 *
-	 * @param Tx_Solr_Query $query Current query
+	 * @param Query $query Current query
 	 */
-	public function setQuery(Tx_Solr_Query $query) {
+	public function setQuery(Query $query) {
 		$this->query = $query;
 	}
 

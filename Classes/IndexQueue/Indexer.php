@@ -22,6 +22,11 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,12 +50,12 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * A Solr service instance to interact with the Solr server
 	 *
-	 * @var Tx_Solr_SolrService
+	 * @var SolrService
 	 */
 	protected $solr;
 
 	/**
-	 * @var Tx_Solr_ConnectionManager
+	 * @var ConnectionManager
 	 */
 	protected $connectionManager;
 
@@ -83,7 +88,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 */
 	public function __construct(array $options = array()) {
 		$this->options           = $options;
-		$this->connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$this->connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 	}
 
 	/**
@@ -180,7 +185,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 		$rootPageUid = $item->getRootPageUid();
 		$overlayIdentifier = $rootPageUid . '|' . $language;
 		if (!isset($this->sysLanguageOverlay[$overlayIdentifier])) {
-			Tx_Solr_Util::initializeTsfe($rootPageUid, $language);
+			Util::initializeTsfe($rootPageUid, $language);
 			$this->sysLanguageOverlay[$overlayIdentifier] = $GLOBALS['TSFE']->sys_language_contentOL;
 		}
 
@@ -253,7 +258,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * @return array Configuration array from TypoScript
 	 */
 	protected function getItemTypeConfiguration(Tx_Solr_IndexQueue_Item $item, $language = 0) {
-		$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid(), TRUE, $language);
+		$solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(), TRUE, $language);
 
 		return $solrConfiguration['index.']['queue.'][$item->getIndexingConfigurationName() . '.']['fields.'];
 	}
@@ -288,12 +293,12 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * @return Apache_Solr_Document A basic Solr document
 	 */
 	protected function getBaseDocument(Tx_Solr_IndexQueue_Item $item, array $itemRecord) {
-		$site     = GeneralUtility::makeInstance('Tx_Solr_Site', $item->getRootPageUid());
+		$site     = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $item->getRootPageUid());
 		$document = GeneralUtility::makeInstance('Apache_Solr_Document');
 		/* @var $document Apache_Solr_Document */
 
 			// required fields
-		$document->setField('id', Tx_Solr_Util::getDocumentId(
+		$document->setField('id', Util::getDocumentId(
 			$item->getType(),
 			$itemRecord['pid'],
 			$itemRecord['uid']
@@ -361,7 +366,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 */
 	protected function processDocuments(Tx_Solr_IndexQueue_Item $item, array $documents) {
 			// needs to respect the TS settings for the page the item is on, conditions may apply
-		$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid());
+		$solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid());
 		$fieldProcessingInstructions = $solrConfiguration['index.']['fieldProcessingInstructions.'];
 
 			// same as in the FE indexer
@@ -453,7 +458,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * for translations of an item.
 	 *
 	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
-	 * @return array An array of Tx_Solr_SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+	 * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
 	 */
 	protected function getSolrConnectionsByItem(Tx_Solr_IndexQueue_Item $item) {
 		$solrConnections = array();
@@ -505,7 +510,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	protected function getTranslationOverlaysForPage($pageId) {
 		$translationOverlays = array();
 		$pageId              = intval($pageId);
-		$site                = Tx_Solr_Site::getSiteByPageId($pageId);
+		$site                = Site::getSiteByPageId($pageId);
 
 		$languageModes         = array('content_fallback', 'strict', 'ignore');
 		$hasOverlayMode        = in_array($site->getSysLanguageMode(), $languageModes, TRUE);
@@ -541,7 +546,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * these connections.
 	 *
 	 * @param array $translationOverlays An array of translation overlays to check for configured connections.
-	 * @return array An array of Tx_Solr_SolrService connections.
+	 * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections.
 	 */
 	protected function getConnectionsForIndexableLanguages(array $translationOverlays) {
 		$connections = array();
@@ -553,7 +558,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 			try {
 				$connection = $this->connectionManager->getConnectionByPageId($pageId, $languageId);
 				$connections[$languageId] = $connection;
-			} catch (Tx_Solr_NoSolrConnectionFoundException $e) {
+			} catch (NoSolrConnectionFoundException $e) {
 				// ignore the exception as we seek only those connections
 				// actually available
 			}
@@ -579,7 +584,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 			// reset
 		$this->loggingEnabled = FALSE;
 
-		$solrConfiguration = Tx_Solr_Util::getSolrConfigurationFromPageId($item->getRootPageUid());
+		$solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid());
 
 		if (!empty($solrConfiguration['logging.']['indexing'])
 			|| !empty($solrConfiguration['logging.']['indexing.']['queue'])

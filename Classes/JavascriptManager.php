@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -32,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_JavascriptManager {
+class JavascriptManager {
 
 	const POSITION_HEADER = 'header';
 	const POSITION_FOOTER = 'footer';
@@ -79,7 +81,7 @@ class Tx_Solr_JavascriptManager {
 	 *
 	 */
 	public function __construct() {
-		$this->configuration = Tx_Solr_Util::getSolrConfiguration();
+		$this->configuration = Util::getSolrConfiguration();
 	}
 
 	/**
@@ -105,7 +107,7 @@ class Tx_Solr_JavascriptManager {
 	public function loadFile($fileKey) {
 		if (!array_key_exists($fileKey, self::$files)) {
 			$typoScriptPath = 'plugin.tx_solr.javascriptFiles.' . $fileKey;
-			$fileReference  = Tx_Solr_Util::getTypoScriptValue($typoScriptPath);
+			$fileReference  = Util::getTypoScriptValue($typoScriptPath);
 
 			if (!empty($fileReference)) {
 				self::$files[$fileKey] = array(
@@ -124,7 +126,7 @@ class Tx_Solr_JavascriptManager {
 	 *
 	 */
 	public function addJavascriptToPage() {
-		$position = Tx_Solr_Util::getTypoScriptValue('plugin.tx_solr.javascriptFiles.loadIn');
+		$position = Util::getTypoScriptValue('plugin.tx_solr.javascriptFiles.loadIn');
 
 		if (empty($position)) {
 			$position = self::POSITION_NONE;
@@ -138,10 +140,10 @@ class Tx_Solr_JavascriptManager {
 				$this->registerForRenderPreProcessHook();
 				break;
 			case self::POSITION_NONE:
-					// do nothing, JS is handled by the integrator
+				// do nothing, JS is handled by the integrator
 				break;
 			default:
-				throw new RuntimeException(
+				throw new \RuntimeException(
 					'Invalid value "' . $position . '" for Javascript position. Choose from "header", "footer", or "none".',
 					1336911986
 				);
@@ -163,7 +165,7 @@ class Tx_Solr_JavascriptManager {
 	 *
 	 */
 	protected function registerForRenderPreProcessHook() {
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['tx_solr-javascript'] = 'Tx_Solr_JavascriptManager->addJavascriptToPageFooter';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess']['tx_solr-javascript'] = 'ApacheSolrForTypo3\Solr\JavascriptManager->addJavascriptToPageFooter';
 	}
 
 	/**
@@ -185,7 +187,7 @@ class Tx_Solr_JavascriptManager {
 			$filePathPrefix = $GLOBALS['TSFE']->config['config']['absRefPrefix'];
 		}
 
-			// add files
+		// add files
 		foreach (self::$files as $identifier => $file) {
 			if (!$file['addedToPage']) {
 				self::$files[$identifier]['addedToPage'] = TRUE;
@@ -194,7 +196,7 @@ class Tx_Solr_JavascriptManager {
 			}
 		}
 
-			// concatenate snippets
+		// concatenate snippets
 		$snippets = '';
 		foreach (self::$snippets as $identifier => $snippet) {
 			if (!$snippet['addedToPage']) {
@@ -206,7 +208,7 @@ class Tx_Solr_JavascriptManager {
 			}
 		}
 
-			// add snippets
+		// add snippets
 		if (!empty($snippets)) {
 			$this->addJsInline($snippets);
 		}

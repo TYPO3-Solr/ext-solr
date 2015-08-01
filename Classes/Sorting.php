@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -32,9 +35,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Sorting {
+class Sorting {
 
 	protected $configuration;
+
 
 	/**
 	 * Constructor
@@ -48,7 +52,7 @@ class Tx_Solr_Sorting {
 	/**
 	 * Gets a list of configured sorting fields.
 	 *
-	 *  @return array Array of (resolved) sorting field names.
+	 * @return array Array of (resolved) sorting field names.
 	 */
 	public function getSortFields() {
 		$sortFields    = array();
@@ -106,18 +110,18 @@ class Tx_Solr_Sorting {
 	 *
 	 * @param string $urlParameters tx_solr[sort] URL parameter.
 	 * @return string The actual index field configured to sort by for the given sort option name
-	 * @throws InvalidArgumentException if the given sort option is not configured
+	 * @throws \InvalidArgumentException if the given sort option is not configured
 	 */
 	public function getSortFieldFromUrlParameter($urlParameters) {
 		$sortFields           = array();
 		$sortParameters       = GeneralUtility::trimExplode(',', $urlParameters);
 		$availableSortOptions = $this->getSortOptions();
 
-		foreach ($sortParameters as $sortParameter){
+		foreach ($sortParameters as $sortParameter) {
 			list($sortOption, $sortDirection) = explode(' ', $sortParameter);
 
 			if (!array_key_exists($sortOption, $availableSortOptions)) {
-				throw new InvalidArgumentException(
+				throw new \InvalidArgumentException(
 					'No sorting configuration found for option name ' . $sortOption,
 					1316187644
 				);
@@ -127,6 +131,6 @@ class Tx_Solr_Sorting {
 			$sortFields[] = $sortField . ' ' . $sortDirection;
 		}
 
-		return implode(', ',$sortFields);
+		return implode(', ', $sortFields);
 	}
 }

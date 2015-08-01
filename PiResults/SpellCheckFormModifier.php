@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -38,11 +40,11 @@ class Tx_Solr_PiResults_SpellCheckFormModifier implements Tx_Solr_FormModifier {
 	 * new query with the suggestions provided by Solr as the search terms.
 	 *
 	 * @param array $markers An array of existing form markers
-	 * @param Tx_Solr_Template $template An instance of the template engine
+	 * @param Template $template An instance of the template engine
 	 * @return array Array with additional markers for suggestions
 	 */
-	public function modifyForm(array $markers, Tx_Solr_Template $template) {
-		$spellChecker = GeneralUtility::makeInstance('Tx_Solr_SpellChecker');
+	public function modifyForm(array $markers, Template $template) {
+		$spellChecker = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SpellChecker');
 		$suggestionsLink = $spellChecker->getSpellCheckingSuggestions();
 
 		if (!empty($suggestionsLink)) {

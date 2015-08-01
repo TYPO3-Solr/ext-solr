@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -30,7 +32,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_NoSolrConnectionFoundException extends Exception {
+class NoSolrConnectionFoundException extends \Exception {
 
 	protected $pageId;
 

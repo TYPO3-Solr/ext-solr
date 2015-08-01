@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+
 
 /**
  * Query awareness interface for extension components.
@@ -38,9 +40,9 @@ interface Tx_Solr_QueryAware {
 	/**
 	 * Provides the extension component with an instance of the current query.
 	 *
-	 * @param Tx_Solr_Query $query Current query
+	 * @param Query $query Current query
 	 */
-	public function setQuery(Tx_Solr_Query $query);
+	public function setQuery(Query $query);
 
 }
 

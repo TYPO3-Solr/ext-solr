@@ -1,5 +1,6 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Cli;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -62,7 +63,7 @@ class Dispatcher extends CommandLineController {
 
 		switch ($command) {
 			case 'updateConnections':
-				$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+				$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 				$connectionManager->updateConnections();
 				break;
 

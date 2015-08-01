@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,11 +24,13 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Tx_Solr_SubstitutePageIndexer;
+
 
 /**
  * Additional fields indexer.
  *
- * @todo	Move this to an Index Queue frontend helper
+ * @todo Move this to an Index Queue frontend helper
  *
  * Adds page document fields as configured in
  * plugin.tx_solr.index.additionalFields.
@@ -35,7 +39,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_AdditionalFieldsIndexer implements Tx_Solr_SubstitutePageIndexer {
+class AdditionalFieldsIndexer implements Tx_Solr_SubstitutePageIndexer {
 
 	/**
 	 * Returns a substitute document for the currently being indexed page.
@@ -43,16 +47,16 @@ class Tx_Solr_AdditionalFieldsIndexer implements Tx_Solr_SubstitutePageIndexer {
 	 * Uses the original document and adds fields as defined in
 	 * plugin.tx_solr.index.additionalFields.
 	 *
-	 * @param Apache_Solr_Document $pageDocument The original page document.
-	 * @return Apache_Solr_Document A Apache_Solr_Document object that replace the default page document
+	 * @param \Apache_Solr_Document $pageDocument The original page document.
+	 * @return \Apache_Solr_Document A Apache_Solr_Document object that replace the default page document
 	 */
-	public function getPageDocument(Apache_Solr_Document $pageDocument) {
+	public function getPageDocument(\Apache_Solr_Document $pageDocument) {
 		$substitutePageDocument = clone $pageDocument;
 		$additionalFields = $this->getAdditionalFields();
 
 		foreach ($additionalFields as $fieldName => $fieldValue) {
 			if (!isset($pageDocument->{$fieldName})) {
-					// making sure we only _add_ new fields
+				// making sure we only _add_ new fields
 				$substitutePageDocument->setField($fieldName, $fieldValue);
 			}
 		}
@@ -88,7 +92,7 @@ class Tx_Solr_AdditionalFieldsIndexer implements Tx_Solr_SubstitutePageIndexer {
 		if (is_array($additionalFields)) {
 			foreach ($additionalFields as $fieldName => $fieldValue) {
 				if (is_array($fieldValue)) {
-						// if its just the configuration array skip this field
+					// if its just the configuration array skip this field
 					continue;
 				}
 
@@ -109,7 +113,7 @@ class Tx_Solr_AdditionalFieldsIndexer implements Tx_Solr_SubstitutePageIndexer {
 		$fieldValue       = '';
 		$additionalFields = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['additionalFields.'];
 
-			// support for cObject if the value is a configuration
+		// support for cObject if the value is a configuration
 		if (is_array($additionalFields[$fieldName . '.'])) {
 			$fieldValue = $GLOBALS['TSFE']->cObj->cObjGetSingle(
 				$additionalFields[$fieldName],

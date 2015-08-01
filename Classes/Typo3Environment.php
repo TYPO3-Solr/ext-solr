@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\SingletonInterface;
+
 
 /**
  * TYPO3 Environment Information
@@ -30,7 +34,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Typo3Environment implements \TYPO3\CMS\Core\SingletonInterface {
+class Typo3Environment implements SingletonInterface {
 
 	/**
 	 * Checks whether file indexing is enabled.
@@ -38,7 +42,7 @@ class Tx_Solr_Typo3Environment implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @return boolean TRUE if file indexing is enabled, FALSE otherwise.
 	 */
 	public function isFileIndexingEnabled() {
-		return (boolean) $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['files'];
+		return (boolean)$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['files'];
 	}
 }
 

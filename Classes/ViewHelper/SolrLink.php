@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -38,9 +40,9 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 
 	/**
-	 * Instance of Tx_Solr_Search
+	 * Instance of ApacheSolrForTypo3\Solr\Search
 	 *
-	 * @var Tx_Solr_Search
+	 * @var Search
 	 */
 	protected $search = NULL;
 
@@ -62,7 +64,7 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 		}
 
 		if(is_null($this->search)) {
-			$this->search = GeneralUtility::makeInstance('Tx_Solr_Search');
+			$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 		}
 	}
 
@@ -96,7 +98,7 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 		if ($this->search->hasSearched()) {
 			$query = $this->search->getQuery();
 		} else {
-			$query = GeneralUtility::makeInstance('Tx_Solr_Query', '');
+			$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', '');
 		}
 
 		$linkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $query);
@@ -126,7 +128,7 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 		} elseif (is_string($linkArgument) && !empty($linkArgument)) {
 				// interpret a TypoScript path
 			try {
-				$typoscript      = Tx_Solr_Util::getTypoScriptObject($linkArgument);
+				$typoscript      = Util::getTypoScriptObject($linkArgument);
 				$pathExploded    = explode('.', $linkArgument);
 				$lastPathSegment = array_pop($pathExploded);
 

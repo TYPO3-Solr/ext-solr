@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Api;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -61,7 +62,7 @@ class OverviewModuleController extends AbstractModuleController {
 	protected function initializeAction() {
 		parent::initializeAction();
 
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 		$this->connections = $connectionManager->getConnectionsBySite($this->site);
 	}
 
@@ -74,7 +75,7 @@ class OverviewModuleController extends AbstractModuleController {
 		$this->checkConnections();
 
 		$this->view->assign('site', $this->request->getArgument('site'));
-		$this->view->assign('apiKey', \Tx_Solr_Api::getApiKey());
+		$this->view->assign('apiKey', Api::getApiKey());
 	}
 
 	/**

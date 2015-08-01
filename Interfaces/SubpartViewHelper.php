@@ -26,6 +26,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
+
 
 /**
  * Subpart View Helper marker interface
@@ -39,16 +41,16 @@ interface Tx_Solr_SubpartViewHelper extends Tx_Solr_ViewHelper {
 	/**
 	 * Gets the view helper's subpart template
 	 *
-	 * @return	Tx_Solr_Template
+	 * @return Template
 	 */
 	public function getTemplate();
 
 	/**
 	 * Sets the view helper's subpart template
 	 *
-	 * @param Tx_Solr_Template $template view helper's subpart template
+	 * @param Template $template view helper's subpart template
 	 */
-	public function setTemplate(Tx_Solr_Template $template);
+	public function setTemplate(Template $template);
 
 }
 

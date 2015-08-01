@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -261,7 +262,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 		}
 
 		try {
-			$indexer = GeneralUtility::makeInstance('Tx_Solr_Typo3PageIndexer', $page);
+			$indexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Typo3PageIndexer', $page);
 			$indexer->setSolrConnection($this->getSolrConnection());
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
@@ -293,11 +294,11 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 * Gets the solr connection to use for indexing the page based on the
 	 * Index Queue item's properties.
 	 *
-	 * @return Tx_Solr_SolrService Solr server connection
+	 * @return SolrService Solr server connection
 	 */
 	protected function getSolrConnection() {
 		$indexQueue        = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
-		$connectionManager = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager');
+		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 
 		$indexQueueItem = $indexQueue->getItem(
 			$this->request->getParameter('item')

@@ -24,6 +24,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -41,7 +42,7 @@ class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
 	/**
 	 * The site this task is supposed to initialize the index queue for.
 	 *
-	 * @var Tx_Solr_Site
+	 * @var Site
 	 */
 	protected $site;
 
@@ -81,7 +82,7 @@ class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
 	protected function cleanUpIndex() {
 		$cleanUpResult     = TRUE;
 		$solrConfiguration = $this->site->getSolrConfiguration();
-		$solrServers       = GeneralUtility::makeInstance('Tx_Solr_ConnectionManager')->getConnectionsBySite($this->site);
+		$solrServers       = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionsBySite($this->site);
 		$typesToCleanUp    = array();
 
 		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
@@ -114,7 +115,7 @@ class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
 	/**
 	 * Gets the site / the site's root page uid this task is running on.
 	 *
-	 * @return Tx_Solr_Site The site's root page uid this task is optimizing
+	 * @return Site The site's root page uid this task is optimizing
 	 */
 	public function getSite() {
 		return $this->site;
@@ -123,9 +124,9 @@ class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
 	/**
 	 * Sets the task's site.
 	 *
-	 * @param Tx_Solr_Site $site The site to be handled by this task
+	 * @param Site $site The site to be handled by this task
 	 */
-	public function setSite(Tx_Solr_Site $site) {
+	public function setSite(Site $site) {
 		$this->site = $site;
 	}
 

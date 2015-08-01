@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
+
 
 /**
  * A field processor that converts timestamps to ISO dates as needed by Solr
@@ -45,7 +47,7 @@ class Tx_Solr_FieldProcessor_TimestampToUtcIsoDate implements Tx_Solr_FieldProce
 		$results = array();
 
 		foreach ($values as $timestamp) {
-			$results[] = Tx_Solr_Util::timestampToUtcIso($timestamp);
+			$results[] = Util::timestampToUtcIso($timestamp);
 		}
 
 		return $results;
