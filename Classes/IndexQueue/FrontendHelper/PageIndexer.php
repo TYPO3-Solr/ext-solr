@@ -262,7 +262,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 		}
 
 		try {
-			$indexer = GeneralUtility::makeInstance('Tx_Solr_Typo3PageIndexer', $page);
+			$indexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Typo3PageIndexer', $page);
 			$indexer->setSolrConnection($this->getSolrConnection());
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
