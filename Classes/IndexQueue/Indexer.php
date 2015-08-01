@@ -25,6 +25,7 @@
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,7 +50,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * A Solr service instance to interact with the Solr server
 	 *
-	 * @var Tx_Solr_SolrService
+	 * @var SolrService
 	 */
 	protected $solr;
 
@@ -457,7 +458,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * for translations of an item.
 	 *
 	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
-	 * @return array An array of Tx_Solr_SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+	 * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
 	 */
 	protected function getSolrConnectionsByItem(Tx_Solr_IndexQueue_Item $item) {
 		$solrConnections = array();
@@ -545,7 +546,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * these connections.
 	 *
 	 * @param array $translationOverlays An array of translation overlays to check for configured connections.
-	 * @return array An array of Tx_Solr_SolrService connections.
+	 * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections.
 	 */
 	protected function getConnectionsForIndexableLanguages(array $translationOverlays) {
 		$connections = array();

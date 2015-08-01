@@ -294,7 +294,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Tx_Solr_IndexQueue_Indexer {
 	 * for translations of a page.
 	 *
 	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
-	 * @return array An array of Tx_Solr_SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+	 * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
 	 */
 	protected function getSolrConnectionsByItem(Tx_Solr_IndexQueue_Item $item) {
 		$solrConnections = parent::getSolrConnectionsByItem($item);

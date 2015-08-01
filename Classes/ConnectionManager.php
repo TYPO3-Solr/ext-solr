@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_SolrService;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
@@ -60,7 +59,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	 * @param integer $port Solr port (optional)
 	 * @param string $path Solr path (optional)
 	 * @param string $scheme Solr scheme, defaults to http, can be https (optional)
-	 * @return Tx_Solr_SolrService A solr connection.
+	 * @return SolrService A solr connection.
 	 */
 	public function getConnection($host = '', $port = 8080, $path = '/solr/', $scheme = 'http') {
 		$connection = NULL;
@@ -87,7 +86,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 
 		if (!isset(self::$connections[$connectionHash])) {
 			$connection = GeneralUtility::makeInstance(
-				'Tx_Solr_SolrService',
+				'ApacheSolrForTypo3\\Solr\\SolrService',
 				$host,
 				$port,
 				$path,
@@ -140,7 +139,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	 * @param integer $pageId A page ID.
 	 * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
 	 * @param string $mount Comma list of MountPoint parameters
-	 * @return Tx_Solr_SolrService A solr connection.
+	 * @return SolrService A solr connection.
 	 * @throws NoSolrConnectionFoundException
 	 */
 	public function getConnectionByPageId($pageId, $language = 0, $mount = '') {
@@ -196,7 +195,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	 *
 	 * @param integer $pageId A root page ID.
 	 * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
-	 * @return Tx_Solr_SolrService A solr connection.
+	 * @return SolrService A solr connection.
 	 * @throws NoSolrConnectionFoundException
 	 */
 	public function getConnectionByRootPageId($pageId, $language = 0) {
@@ -228,7 +227,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	/**
 	 * Gets all connections found.
 	 *
-	 * @return Tx_Solr_SolrService[] An array of initialized Tx_Solr_SolrService connections
+	 * @return SolrService[] An array of initialized ApacheSolrForTypo3\Solr\SolrService connections
 	 */
 	public function getAllConnections() {
 		$connections = array();
@@ -269,7 +268,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 	 * Gets all connections configured for a given site.
 	 *
 	 * @param Site $site A TYPO3 site
-	 * @return Tx_Solr_SolrService[] An array of Solr connection objects (Tx_Solr_SolrService)
+	 * @return SolrService[] An array of Solr connection objects (ApacheSolrForTypo3\Solr\SolrService)
 	 */
 	public function getConnectionsBySite(Site $site) {
 		$connections = array();

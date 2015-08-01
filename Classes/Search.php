@@ -28,7 +28,6 @@ use Tx_Solr_FacetsModifier;
 use Tx_Solr_QueryModifier;
 use Tx_Solr_ResponseModifier;
 use Tx_Solr_SearchAware;
-use Tx_Solr_SolrService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,7 +44,7 @@ class Search implements SingletonInterface {
 	/**
 	 * An instance of the Solr service
 	 *
-	 * @var Tx_Solr_SolrService
+	 * @var SolrService
 	 */
 	protected $solr = NULL;
 
@@ -76,9 +75,9 @@ class Search implements SingletonInterface {
 	/**
 	 * Constructor
 	 *
-	 * @param Tx_Solr_SolrService $solrConnection The Solr connection to use for searching
+	 * @param SolrService $solrConnection The Solr connection to use for searching
 	 */
-	public function __construct(Tx_Solr_SolrService $solrConnection = NULL) {
+	public function __construct(SolrService $solrConnection = NULL) {
 		$this->solr = $solrConnection;
 
 		if (is_null($solrConnection)) {
@@ -93,7 +92,7 @@ class Search implements SingletonInterface {
 	/**
 	 * Gets the Solr connection used by this search.
 	 *
-	 * @return Tx_Solr_SolrService Solr connection
+	 * @return SolrService Solr connection
 	 */
 	public function getSolrConnection() {
 		return $this->solr;
@@ -106,7 +105,7 @@ class Search implements SingletonInterface {
 	 * be able to switch between multiple cores/connections during
 	 * one request
 	 */
-	public function setSolrConnection(Tx_Solr_SolrService $solrConnection) {
+	public function setSolrConnection(SolrService $solrConnection) {
 		$this->solr = $solrConnection;
 	}
 

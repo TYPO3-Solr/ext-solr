@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -42,7 +43,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Solr server connection.
 	 *
-	 * @var Tx_Solr_SolrService
+	 * @var SolrService
 	 */
 	protected $solrConnection = NULL;
 
@@ -156,10 +157,10 @@ class Tx_Solr_Typo3PageIndexer {
 	 * Allows to provide a Solr server connection other than the one
 	 * initialized by the constructor.
 	 *
-	 * @param Tx_Solr_SolrService $solrConnection Solr connection
+	 * @param SolrService $solrConnection Solr connection
 	 * @throws Exception if the Solr server cannot be reached
 	 */
-	public function setSolrConnection(Tx_Solr_SolrService $solrConnection) {
+	public function setSolrConnection(SolrService $solrConnection) {
 		if (!$solrConnection->ping()) {
 			throw new Exception(
 				'Could not connect to Solr server.',

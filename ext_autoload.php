@@ -25,7 +25,6 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_solrservice' => $extensionPath . 'Classes/SolrService.php',
 	'tx_solr_sorting' => $extensionPath . 'Classes/Sorting.php',
 	'tx_solr_spellchecker' => $extensionPath . 'Classes/SpellChecker.php',
 	'tx_solr_template' => $extensionPath . 'Classes/Template.php',
