@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,7 +25,6 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
-use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -42,7 +43,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Link implements ViewHelper {
+class Link implements ViewHelper {
 
 	/**
 	 * instance of ContentObjectRenderer
@@ -52,10 +53,12 @@ class Tx_Solr_ViewHelper_Link implements ViewHelper {
 	protected $contentObject = NULL;
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_Link
+	 * Constructor
+	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
-		if(is_null($this->contentObject)) {
+		if (is_null($this->contentObject)) {
 			$this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		}
 	}
@@ -72,10 +75,10 @@ class Tx_Solr_ViewHelper_Link implements ViewHelper {
 		$useCache             = $arguments[3] ? TRUE : FALSE;
 		$ATagParams           = $arguments[4] ? $arguments[4] : '';
 
-			// by default or if no link target is set, link to the current page
+		// by default or if no link target is set, link to the current page
 		$linkTarget = $GLOBALS['TSFE']->id;
 
-			// if the link target is a number, interpret it as a page ID
+		// if the link target is a number, interpret it as a page ID
 		$linkArgument = trim($arguments[1]);
 		if (is_numeric($linkArgument)) {
 			$linkTarget = intval($linkArgument);
@@ -87,14 +90,14 @@ class Tx_Solr_ViewHelper_Link implements ViewHelper {
 					$lastPathSegment = array_pop($pathExploded);
 
 					$linkTarget = intval($typoscript[$lastPathSegment]);
-				} catch (InvalidArgumentException $e) {
-						// ignore exceptions caused by markers, but accept the exception for wrong TS paths
+				} catch (\InvalidArgumentException $e) {
+					// ignore exceptions caused by markers, but accept the exception for wrong TS paths
 					if (substr($linkArgument, 0, 3) != '###') {
 						throw $e;
 					}
 				}
 			} elseif (GeneralUtility::isValidUrl($linkArgument) || GeneralUtility::isValidUrl(GeneralUtility::getIndpEnv('TYPO3_REQUEST_HOST') . '/' . $linkArgument)) {
-					// $linkTarget is an URL
+				// $linkTarget is an URL
 				$linkTarget = filter_var($linkArgument, FILTER_SANITIZE_URL);
 			}
 		}
