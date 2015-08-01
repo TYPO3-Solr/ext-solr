@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,7 +25,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ViewHelper\AbstractSubpartViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -35,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Facet extends AbstractSubpartViewHelper {
+class Facet extends AbstractSubpartViewHelper {
 
 	/**
 	 * TypoScript configuration of tx_solr
@@ -45,7 +46,7 @@ class Tx_Solr_ViewHelper_Facet extends AbstractSubpartViewHelper {
 	protected $configuration = NULL;
 
 	/**
-	 * Constructor for class Tx_Solr_ViewHelper_Facet
+	 * Constructor
 	 *
 	 */
 	public function __construct(array $arguments = array()) {
@@ -58,7 +59,7 @@ class Tx_Solr_ViewHelper_Facet extends AbstractSubpartViewHelper {
 	 * Renders a facet.
 	 *
 	 * @param array $arguments
-	 * @return	string
+	 * @return string
 	 */
 	public function execute(array $arguments = array()) {
 		$facetName        = trim($arguments[0]);
@@ -68,7 +69,7 @@ class Tx_Solr_ViewHelper_Facet extends AbstractSubpartViewHelper {
 		$search           = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		if (!array_key_exists($facetName . '.', $configuredFacets)) {
-			throw new UnexpectedValueException(
+			throw new \UnexpectedValueException(
 				'Tried rendering facet "' . $facetName . '", no configuration found.',
 				1329138206
 			);
