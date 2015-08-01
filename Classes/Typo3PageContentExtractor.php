@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,7 +24,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Typo3PageContentExtractor extends HtmlContentExtractor {
+class Typo3PageContentExtractor extends HtmlContentExtractor {
 
 	/**
 	 * Shortcut method to retrieve the raw content marked for indexing.
@@ -55,7 +56,7 @@ class Tx_Solr_Typo3PageContentExtractor extends HtmlContentExtractor {
 	public function getIndexableContent() {
 		$content = $this->extractContentMarkedForIndexing($this->content);
 
-			// clean content
+		// clean content
 		$content = self::cleanContent($content);
 		$content = html_entity_decode($content, ENT_QUOTES, 'UTF-8');
 		$content = strip_tags($content); // after entity decoding we might have tags again
@@ -75,7 +76,7 @@ class Tx_Solr_Typo3PageContentExtractor extends HtmlContentExtractor {
 		preg_match_all('/<!--\s*?TYPO3SEARCH_begin\s*?-->.*?<!--\s*?TYPO3SEARCH_end\s*?-->/mis', $html, $indexableContents);
 		$indexableContent = implode($indexableContents[0], '');
 
-		if(empty($indexableContent) && $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['missingTypo3SearchMarkers']) {
+		if (empty($indexableContent) && $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['missingTypo3SearchMarkers']) {
 			GeneralUtility::devLog('No TYPO3SEARCH markers found.', 'solr', 2);
 		}
 

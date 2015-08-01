@@ -24,6 +24,7 @@
 
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -57,7 +58,7 @@ class Tx_Solr_Typo3PageIndexer {
 	/**
 	 * Content extractor to extract content from TYPO3 pages
 	 *
-	 * @var Tx_Solr_Typo3PageContentExtractor
+	 * @var Typo3PageContentExtractor
 	 */
 	protected $contentExtractor = NULL;
 
@@ -120,7 +121,7 @@ class Tx_Solr_Typo3PageIndexer {
 		}
 
 		$this->contentExtractor = GeneralUtility::makeInstance(
-			'Tx_Solr_Typo3PageContentExtractor',
+			'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
 			$this->page->content,
 			$this->page->renderCharset
 		);

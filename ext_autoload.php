@@ -25,7 +25,6 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_typo3pagecontentextractor' => $extensionPath . 'Classes/Typo3PageContentExtractor.php',
 	'tx_solr_typo3pageindexer' => $extensionPath . 'Classes/Typo3PageIndexer.php',
 
 	'ApacheSolrForTypo3\Solr\Access\Rootline' => $extensionPath . 'Classes/Access/Rootline.php',
