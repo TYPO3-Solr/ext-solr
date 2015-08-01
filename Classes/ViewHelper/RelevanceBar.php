@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,8 +35,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_RelevanceBar extends Tx_Solr_ViewHelper_Relevance {
-
+class RelevanceBar extends Relevance {
 
 	/**
 	 * Renders the HTML for the relevance bar.

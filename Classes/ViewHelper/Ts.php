@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
+class Ts implements ViewHelper {
 
 	/**
 	 * instance of ContentObjectRenderer
@@ -45,16 +47,22 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 	protected $contentObject = NULL;
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_Ts
+	 * Constructor
+	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
 
 	}
 
+	/**
+	 * @param array $arguments
+	 * @return string
+	 */
 	public function execute(array $arguments = array()) {
 		$typoScriptPath = array_shift($arguments);
 
-			// TODO add a feature to resolve content objects
+		// TODO add a feature to resolve content objects
 		if (count($arguments)) {
 			return $this->resolveTypoScriptPath($typoScriptPath, $arguments);
 		} else {
@@ -67,7 +75,6 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 	 *
 	 * @param string $path a TS path, separated with dots
 	 * @return string
-	 * @throws InvalidArgumentException
 	 */
 	protected function resolveTypoScriptPath($path, $arguments = NULL) {
 		$value           = '';
@@ -75,7 +82,7 @@ class Tx_Solr_ViewHelper_Ts implements Tx_Solr_ViewHelper {
 		$lastPathSegment = array_pop($pathExploded);
 		$pathBranch      = Util::getTypoScriptObject($path);
 
-			// generate ts content
+		// generate ts content
 		$cObj = $this->getContentObject();
 
 		if (!isset($pathBranch[$lastPathSegment . '.'])) {

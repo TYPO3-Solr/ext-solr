@@ -27,6 +27,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Template;
+use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 
 
 /**
@@ -36,7 +37,7 @@ use ApacheSolrForTypo3\Solr\Template;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SubpartViewHelper extends Tx_Solr_ViewHelper {
+interface Tx_Solr_SubpartViewHelper extends ViewHelper {
 
 	/**
 	 * Gets the view helper's subpart template

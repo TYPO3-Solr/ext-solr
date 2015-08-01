@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,10 +37,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
+class SortIndicator implements ViewHelper {
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_SortIndicator
+	 * Constructor
+	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
 
@@ -50,7 +54,7 @@ class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 	 *
 	 * @param array $arguments Expects 'asc' or 'desc' as sorting direction in key 0
 	 * @return string
-	 * @throws InvalidArgumentException when providing an invalid sorting direction
+	 * @throws \InvalidArgumentException when providing an invalid sorting direction
 	 */
 	public function execute(array $arguments = array()) {
 		$content            = '';
@@ -79,7 +83,7 @@ class Tx_Solr_ViewHelper_SortIndicator implements Tx_Solr_ViewHelper {
 				// ignore
 				break;
 			default:
-				throw new InvalidArgumentException(
+				throw new \InvalidArgumentException(
 					'Invalid sorting direction "' . $arguments[0] . '", must be "asc" or "desc".',
 					1390868460
 				);

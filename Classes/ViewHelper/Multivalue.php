@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,14 +35,20 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Multivalue implements Tx_Solr_ViewHelper {
-
-		// defaults if neither is given trough the view helper marker, nor through TS
-	protected $glue = ', ';
+class Multivalue implements ViewHelper {
 
 	/**
-	 * Constructor for class Tx_Solr_ViewHelper_Multivalue
+	 * Default glue string if none is set trough the view helper marker or TS
 	 *
+	 * @var string
+	 */
+	protected $glue = ', ';
+
+
+	/**
+	 * Constructor
+	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
 		$configuration = Util::getSolrConfiguration();

@@ -106,22 +106,6 @@ return array(
 	'tx_solr_search_spellcheckingcomponent' => $extensionPath . 'Classes/Search/SpellcheckingComponent.php',
 	'tx_solr_search_statisticscomponent' => $extensionPath . 'Classes/Search/StatisticsComponent.php',
 
-	'tx_solr_viewhelper_abstractsubpartviewhelper' => $extensionPath . 'Classes/ViewHelper/AbstractSubpartViewHelper.php',
-	'tx_solr_viewhelper_crop' => $extensionPath . 'Classes/ViewHelper/Crop.php',
-	'tx_solr_viewhelper_currentresultnumber' => $extensionPath . 'Classes/ViewHelper/CurrentResultNumber.php',
-	'tx_solr_viewhelper_date' => $extensionPath . 'Classes/ViewHelper/Date.php',
-	'tx_solr_viewhelper_facet' => $extensionPath . 'Classes/ViewHelper/Facet.php',
-	'tx_solr_viewhelper_link' => $extensionPath . 'Classes/ViewHelper/Link.php',
-	'tx_solr_viewhelper_lll' => $extensionPath . 'Classes/ViewHelper/Lll.php',
-	'tx_solr_viewhelper_multivalue' => $extensionPath . 'Classes/ViewHelper/Multivalue.php',
-	'tx_solr_viewhelper_oddeven' => $extensionPath . 'Classes/ViewHelper/OddEven.php',
-	'tx_solr_viewhelper_relevance' => $extensionPath . 'Classes/ViewHelper/Relevance.php',
-	'tx_solr_viewhelper_relevancebar' => $extensionPath . 'Classes/ViewHelper/RelevanceBar.php',
-	'tx_solr_viewhelper_solrlink' => $extensionPath . 'Classes/ViewHelper/SolrLink.php',
-	'tx_solr_viewhelper_sortindicator' => $extensionPath . 'Classes/ViewHelper/SortIndicator.php',
-	'tx_solr_viewhelper_sorturl' => $extensionPath . 'Classes/ViewHelper/SortUrl.php',
-	'tx_solr_viewhelper_ts' => $extensionPath . 'Classes/ViewHelper/Ts.php',
-
 		// modules
 
 	'tx_solr_modindex_indexinspector' => $extensionPath . 'ModIndex/IndexInspector.php',
@@ -202,7 +186,6 @@ return array(
 	'tx_solr_subpartviewhelper' => $extensionPath . 'Interfaces/SubpartViewHelper.php',
 	'tx_solr_substitutepageindexer' => $extensionPath . 'Interfaces/SubstitutePageIndexer.php',
 	'tx_solr_templatemodifier' => $extensionPath . 'Interfaces/TemplateModifier.php',
-	'tx_solr_viewhelper' => $extensionPath . 'Interfaces/ViewHelper.php',
-	'tx_solr_viewhelperprovider' => $extensionPath . 'Interfaces/ViewHelperProvider.php',
+
 );
 

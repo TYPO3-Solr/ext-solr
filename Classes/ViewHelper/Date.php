@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,7 +35,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Date implements Tx_Solr_ViewHelper {
+class Date implements ViewHelper {
 
 	protected $dateFormat = NULL;
 
@@ -45,10 +47,12 @@ class Tx_Solr_ViewHelper_Date implements Tx_Solr_ViewHelper {
 	protected $contentObject = NULL;
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_Date
+	 * Constructor
+	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
-		if(is_null($this->dateFormat) || is_null($this->contentObject)) {
+		if (is_null($this->dateFormat) || is_null($this->contentObject)) {
 			$this->dateFormat = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['general.']['dateFormat.'];
 			$this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		}
@@ -58,7 +62,7 @@ class Tx_Solr_ViewHelper_Date implements Tx_Solr_ViewHelper {
 	 * Converts a given unix timestamp to a human readable date
 	 *
 	 * @param array $arguments
-	 * @return	string
+	 * @return string
 	 */
 	public function execute(array $arguments = array()) {
 		$content = '';

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Template;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_ViewHelper_AbstractSubpartViewHelper implements Tx_Solr_SubpartViewHelper {
+abstract class AbstractSubpartViewHelper implements \Tx_Solr_SubpartViewHelper {
 
 	/**
 	 * @var Template

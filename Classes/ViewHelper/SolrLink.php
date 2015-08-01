@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -37,7 +39,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
+class SolrLink implements ViewHelper {
 
 	/**
 	 * Instance of ApacheSolrForTypo3\Solr\Search
@@ -55,15 +57,16 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 
 
 	/**
-	 * Constructor.
+	 * Constructor
 	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
-		if(is_null($this->contentObject)) {
+		if (is_null($this->contentObject)) {
 			$this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		}
 
-		if(is_null($this->search)) {
+		if (is_null($this->search)) {
 			$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 		}
 	}
@@ -80,9 +83,9 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 		$pageId                  = $this->determinePageId(trim($arguments[1]));
 		$additionalUrlParameters = $arguments[2] ? $arguments[2] : '';
 		$useCache                = $arguments[3] ? TRUE : FALSE;
-		$returnOnlyUrl            = $arguments[4] ? TRUE : FALSE;
+		$returnOnlyUrl           = $arguments[4] ? TRUE : FALSE;
 
-			// FIXME pass anything not prefixed with tx_solr in $additionalParameters as 4th parameter
+		// FIXME pass anything not prefixed with tx_solr in $additionalParameters as 4th parameter
 		$additionalUrlParameters = GeneralUtility::explodeUrl2Array($additionalUrlParameters, TRUE);
 		$solrUrlParameters = array();
 		if (!empty($additionalUrlParameters['tx_solr'])) {
@@ -117,24 +120,24 @@ class Tx_Solr_ViewHelper_SolrLink implements Tx_Solr_ViewHelper {
 	 *
 	 * @param string $linkArgument The viewhelper's link target argument
 	 * @return integer Page ID
-	 * @throws InvalidArgumentException if an invalid TypoScript path was given
+	 * @throws \InvalidArgumentException if an invalid TypoScript path was given
 	 */
 	protected function determinePageId($linkArgument) {
 		$pageId = $GLOBALS['TSFE']->id;
 
 		if (is_numeric($linkArgument)) {
-				// if the link target is a number, interpret it as a page ID
+			// if the link target is a number, interpret it as a page ID
 			$pageId = intval($linkArgument);
 		} elseif (is_string($linkArgument) && !empty($linkArgument)) {
-				// interpret a TypoScript path
+			// interpret a TypoScript path
 			try {
 				$typoscript      = Util::getTypoScriptObject($linkArgument);
 				$pathExploded    = explode('.', $linkArgument);
 				$lastPathSegment = array_pop($pathExploded);
 
 				$pageId = intval($typoscript[$lastPathSegment]);
-			} catch (InvalidArgumentException $e) {
-					// ignore exceptions caused by markers, but accept the exception for wrong TS paths
+			} catch (\InvalidArgumentException $e) {
+				// ignore exceptions caused by markers, but accept the exception for wrong TS paths
 				if (substr($linkArgument, 0, 3) != '###') {
 					throw $e;
 				}

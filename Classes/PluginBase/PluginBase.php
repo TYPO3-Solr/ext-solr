@@ -27,6 +27,7 @@ use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
+use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -295,7 +296,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 * Initializes the template engine and returns the initialized instance.
 	 *
 	 * @return Template
-	 * @throws UnexpectedValueException if a view helper provider fails to implement interface Tx_Solr_ViewHelperProvider
+	 * @throws UnexpectedValueException if a view helper provider fails to implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider
 	 */
 	protected function initializeTemplateEngine() {
 		$templateFile = $this->getTemplateFile();
@@ -328,7 +329,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'] as $classReference) {
 				$viewHelperProvider = &GeneralUtility::getUserObj($classReference);
 
-				if ($viewHelperProvider instanceof Tx_Solr_ViewHelperProvider) {
+				if ($viewHelperProvider instanceof ViewHelperProvider) {
 					$viewHelpers = $viewHelperProvider->getViewHelpers();
 					foreach ($viewHelpers as $helperName => $helperObject) {
 						// TODO check whether $helperAdded is TRUE, throw an exception if not
@@ -336,7 +337,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 					}
 				} else {
 					throw new UnexpectedValueException(
-						get_class($viewHelperProvider) . ' must implement interface Tx_Solr_ViewHelperProvider',
+						get_class($viewHelperProvider) . ' must implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider',
 						1310387296
 					);
 				}

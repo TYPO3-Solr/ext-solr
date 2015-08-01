@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -34,10 +36,12 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_OddEven implements Tx_Solr_ViewHelper {
+class OddEven implements ViewHelper {
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_OddEven
+	 * Constructor
+	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
 
@@ -47,7 +51,7 @@ class Tx_Solr_ViewHelper_OddEven implements Tx_Solr_ViewHelper {
 	 * returns either "odd" or "even" depending on the current row's number
 	 *
 	 * @param array $arguments
-	 * @return	string
+	 * @return string
 	 */
 	public function execute(array $arguments = array()) {
 		$oddEven = 'even';

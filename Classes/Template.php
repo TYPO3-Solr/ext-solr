@@ -218,7 +218,7 @@ class Template {
 	 * @param $helperObject
 	 * @return boolean
 	 */
-	public function addViewHelperObject($helperName, \Tx_Solr_ViewHelper $helperObject) {
+	public function addViewHelperObject($helperName, ViewHelper\ViewHelper $helperObject) {
 		$success = FALSE;
 
 		$helperName = strtolower($helperName);
@@ -403,12 +403,12 @@ class Template {
 	/**
 	 * Renders single marker view helpers.
 	 *
-	 * @param \Tx_Solr_ViewHelper $viewHelper View helper instance to execute.
+	 * @param \ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper $viewHelper View helper instance to execute.
 	 * @param string $helperKey The view helper marker key.
 	 * @param string $content Markup that contains the unsubstituted view helper marker.
 	 * @return string Markup with the view helper replaced by the content it returned.
 	 */
-	protected function renderMarkerViewHelper(\Tx_Solr_ViewHelper $viewHelper, $helperKey, $content) {
+	protected function renderMarkerViewHelper(ViewHelper\ViewHelper $viewHelper, $helperKey, $content) {
 		$viewHelperArgumentLists = $this->getViewHelperArgumentLists($helperKey, $content);
 
 		foreach ($viewHelperArgumentLists as $viewHelperArgumentList) {
@@ -443,7 +443,7 @@ class Template {
 	/**
 	 * Renders subpart view helpers.
 	 *
-	 * @param \Tx_Solr_ViewHelper $viewHelper View helper instance to execute.
+	 * @param \ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper $viewHelper View helper instance to execute.
 	 * @param string $helperKey The view helper marker key.
 	 * @param string $content Markup that contains the unsubstituted view helper subpart.
 	 * @return string Markup with the view helper replaced by the content it returned.
@@ -833,7 +833,7 @@ class Template {
 			}
 
 			if (is_array($resolvedValue)) {
-				// handling multivalue fields, @see Tx_Solr_ViewHelper_Multivalue
+				// handling multivalue fields, @see ApacheSolrForTypo3\Solr\ViewHelper\Multivalue
 				$resolvedValue = serialize($resolvedValue);
 			}
 

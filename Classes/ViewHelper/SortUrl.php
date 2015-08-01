@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +26,7 @@
 
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_Query_LinkBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
+class SortUrl implements ViewHelper {
 
 	/**
 	 * Holds the solr configuration
@@ -59,7 +62,9 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 
 
 	/**
-	 * constructor for class Tx_Solr_ViewHelper_SortUrl
+	 * Constructor
+	 *
+	 * @param array $arguments
 	 */
 	public function __construct(array $arguments = array()) {
 		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
@@ -72,7 +77,7 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 	 * Returns an URL that switches sorting to the given sort option
 	 *
 	 * @param array $arguments
-	 * @return	string
+	 * @return string
 	 */
 	public function execute(array $arguments = array()) {
 		$sortUrl           = '';
@@ -81,14 +86,14 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 		$sortOptions       = GeneralUtility::trimExplode(',', $arguments[0]);
 		$currentSortOption = '';
 
-		$sortHelper  = GeneralUtility::makeInstance(
+		$sortHelper = GeneralUtility::makeInstance(
 			'ApacheSolrForTypo3\\Solr\\Tx_Solr_Sorting',
 			$this->configuration['search.']['sorting.']['options.']
 		);
 		$configuredSortOptions = $sortHelper->getSortOptions();
 
 		$sortParameters = array();
-		foreach($sortOptions as $sortOption){
+		foreach ($sortOptions as $sortOption) {
 			if (isset($configuredSortOptions[$sortOption])) {
 				$sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
 				if (isset($configuredSortOptions[$sortOption]['defaultOrder'])) {
@@ -96,10 +101,10 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 				}
 				$sortParameter = $sortOption . ' ' . $sortDirection;
 
-				foreach($urlSortParameters as $urlSortParameter){
+				foreach ($urlSortParameters as $urlSortParameter) {
 					$explodedUrlSortParameter = explode(' ', $urlSortParameter);
 
-					if($explodedUrlSortParameter[0] == $sortOption){
+					if ($explodedUrlSortParameter[0] == $sortOption) {
 						list($currentSortOption, $currentSortDirection) = $explodedUrlSortParameter;
 						break;
 					}
@@ -125,7 +130,7 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 				$sortParameters[] = $sortParameter;
 			}
 		}
-		$sortUrl = $this->queryLinkBuilder->getQueryUrl(array('sort' => implode(', ',$sortParameters)));
+		$sortUrl = $this->queryLinkBuilder->getQueryUrl(array('sort' => implode(', ', $sortParameters)));
 
 		return $sortUrl;
 	}
