@@ -82,7 +82,7 @@ class Tx_Solr_ViewHelper_SortUrl implements Tx_Solr_ViewHelper {
 		$currentSortOption = '';
 
 		$sortHelper  = GeneralUtility::makeInstance(
-			'Tx_Solr_Sorting',
+			'ApacheSolrForTypo3\\Solr\\Tx_Solr_Sorting',
 			$this->configuration['search.']['sorting.']['options.']
 		);
 		$configuredSortOptions = $sortHelper->getSortOptions();
