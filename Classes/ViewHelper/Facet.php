@@ -22,6 +22,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\ViewHelper\AbstractSubpartViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_Facet extends Tx_Solr_ViewHelper_AbstractSubpartViewHelper {
+class Tx_Solr_ViewHelper_Facet extends AbstractSubpartViewHelper {
 
 	/**
 	 * TypoScript configuration of tx_solr

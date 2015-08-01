@@ -106,7 +106,6 @@ return array(
 	'tx_solr_search_spellcheckingcomponent' => $extensionPath . 'Classes/Search/SpellcheckingComponent.php',
 	'tx_solr_search_statisticscomponent' => $extensionPath . 'Classes/Search/StatisticsComponent.php',
 
-	'tx_solr_viewhelper_abstractsubpartviewhelper' => $extensionPath . 'Classes/ViewHelper/AbstractSubpartViewHelper.php',
 	'tx_solr_viewhelper_crop' => $extensionPath . 'Classes/ViewHelper/Crop.php',
 	'tx_solr_viewhelper_currentresultnumber' => $extensionPath . 'Classes/ViewHelper/CurrentResultNumber.php',
 	'tx_solr_viewhelper_date' => $extensionPath . 'Classes/ViewHelper/Date.php',
