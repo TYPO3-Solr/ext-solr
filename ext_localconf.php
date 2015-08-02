@@ -76,7 +76,7 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'analysis',
-	'Tx_Solr_Search_AnalysisComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\AnalysisComponent'
 );
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
