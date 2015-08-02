@@ -22,6 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search\AbstractComponent;
 use ApacheSolrForTypo3\Solr\Util;
 
 
@@ -32,7 +33,7 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_StatisticsComponent extends Tx_Solr_Search_AbstractComponent {
+class Tx_Solr_Search_StatisticsComponent extends AbstractComponent {
 
 	/**
 	 * Initializes the search component.

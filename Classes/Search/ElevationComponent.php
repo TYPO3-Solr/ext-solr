@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search\AbstractComponent;
+
 
 /**
  * Elevation search component
@@ -30,7 +32,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_ElevationComponent extends Tx_Solr_Search_AbstractComponent {
+class Tx_Solr_Search_ElevationComponent extends AbstractComponent {
 
 	/**
 	 * Initializes the search component.

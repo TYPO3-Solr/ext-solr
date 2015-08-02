@@ -23,6 +23,7 @@
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Search\AbstractComponent;
 
 
 /**
@@ -32,7 +33,7 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_HighlightingComponent extends Tx_Solr_Search_AbstractComponent implements Tx_Solr_QueryAware {
+class Tx_Solr_Search_HighlightingComponent extends AbstractComponent implements Tx_Solr_QueryAware {
 
 	/**
 	 * Solr query

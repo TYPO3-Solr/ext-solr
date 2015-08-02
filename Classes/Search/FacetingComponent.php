@@ -22,6 +22,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Search\AbstractComponent;
+
 
 /**
  * Faceting search component
@@ -30,7 +32,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_FacetingComponent extends Tx_Solr_Search_AbstractComponent {
+class Tx_Solr_Search_FacetingComponent extends AbstractComponent {
 
 	/**
 	 * Initializes the search component.

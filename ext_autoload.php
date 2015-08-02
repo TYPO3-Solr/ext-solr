@@ -85,7 +85,6 @@ return array(
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'Classes/Query/Modifier/Faceting.php',
 	'tx_solr_query_modifier_statistics' => $extensionPath . 'Classes/Query/Modifier/Statistics.php',
 
-	'tx_solr_search_abstractcomponent' => $extensionPath . 'Classes/Search/AbstractComponent.php',
 	'tx_solr_search_accesscomponent' => $extensionPath . 'Classes/Search/AccessComponent.php',
 	'tx_solr_search_analysiscomponent' => $extensionPath . 'Classes/Search/AnalysisComponent.php',
 	'tx_solr_search_debugcomponent' => $extensionPath . 'Classes/Search/DebugComponent.php',
