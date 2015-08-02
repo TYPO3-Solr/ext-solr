@@ -1,7 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
+
 /***************************************************************
  *  Copyright notice
  *
+ *  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
  *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
  *  All rights reserved
  *
@@ -13,6 +16,9 @@
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,25 +28,26 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Tx_Solr_PiResults_ResultsCommand;
+
 
 /**
- * Last searches search component
+ * ResultSetModifier interface, allows to modify search result set
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_LastSearchesComponent extends Tx_Solr_Search_AbstractComponent {
+interface ResultSetModifier {
 
 	/**
-	 * Initializes the search component.
+	 * Modifies the given resultset and returns the modified resultset as array
 	 *
+	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
+	 * @param array $resultSet Result set
+	 * @return array The resultset with fields as array
 	 */
-	public function initializeSearchComponent() {
-		if($this->searchConfiguration['lastSearches']) {
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['lastSearches'] = 'ApacheSolrForTypo3\\Solr\\ResultsetModifier\\LastSearches';
-		}
-	}
+	public function modifyResultSet(Tx_Solr_PiResults_ResultsCommand $resultCommand, array $resultSet);
 
 }
 

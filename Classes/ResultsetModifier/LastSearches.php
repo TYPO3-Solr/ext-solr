@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Tx_Solr_PiResults_ResultsCommand;
+
 
 /**
  * Logs the keywords from the query into the user's session or the database -
@@ -31,7 +35,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifier {
+class LastSearches implements ResultSetModifier {
 
 	protected $prefix = 'tx_solr';
 	protected $configuration;
@@ -48,7 +52,7 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 		$keywords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
 
 		$keywords = trim($keywords);
-		if(empty($keywords)) {
+		if (empty($keywords)) {
 			return $resultSet;
 		}
 
@@ -60,7 +64,7 @@ class Tx_Solr_ResultsetModifier_LastSearches implements Tx_Solr_ResultSetModifie
 				$this->storeKeywordsToDatabase($keywords);
 				break;
 			default:
-				throw new UnexpectedValueException(
+				throw new \UnexpectedValueException(
 					'Unknown mode for plugin.tx_solr.search.lastSearches.mode, valid modes are "user" or "global".',
 					1342456570
 				);

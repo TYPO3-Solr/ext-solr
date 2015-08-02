@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
@@ -119,11 +120,11 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
 				$resultSetModifier = GeneralUtility::getUserObj($classReference);
 
-				if ($resultSetModifier instanceof Tx_Solr_ResultSetModifier) {
+				if ($resultSetModifier instanceof ResultSetModifier) {
 					$responseDocuments = $resultSetModifier->modifyResultSet($this, $responseDocuments);
 				} else {
 					throw new UnexpectedValueException(
-						get_class($resultSetModifier) . ' must implement interface Tx_Solr_ResultSetModifier',
+						get_class($resultSetModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultsetModifier\Tx_Solr_ResultSetModifier',
 						1310386927
 					);
 				}

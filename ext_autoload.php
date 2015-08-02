@@ -90,8 +90,6 @@ return array(
 	'tx_solr_resultdocumentmodifier_scoreanalyzer' => $extensionPath . 'Classes/ResultDocumentModifier/ScoreAnalyzer.php',
 	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'Classes/ResultDocumentModifier/SiteHighlighter.php',
 
-	'tx_solr_resultsetmodifier_lastsearches' => $extensionPath . 'Classes/ResultsetModifier/LastSearches.php',
-
 	'tx_solr_search_abstractcomponent' => $extensionPath . 'Classes/Search/AbstractComponent.php',
 	'tx_solr_search_accesscomponent' => $extensionPath . 'Classes/Search/AccessComponent.php',
 	'tx_solr_search_analysiscomponent' => $extensionPath . 'Classes/Search/AnalysisComponent.php',
@@ -179,7 +177,6 @@ return array(
 	'tx_solr_responsemodifier' => $extensionPath . 'Interfaces/ResponseModifier.php',
 	'tx_solr_responseprocessor' => $extensionPath . 'Interfaces/ResponseProcessor.php',
 	'tx_solr_resultdocumentmodifier' => $extensionPath . 'Interfaces/ResultDocumentModifier.php',
-	'tx_solr_resultsetmodifier' => $extensionPath . 'Interfaces/ResultSetModifier.php',
 	'tx_solr_searchaware' => $extensionPath . 'Interfaces/SearchAware.php',
 	'tx_solr_searchcomponent' => $extensionPath . 'Interfaces/SearchComponent.php',
 	'tx_solr_serializedvaluedetector' => $extensionPath . 'Interfaces/SerializedValueDetector.php',
