@@ -125,7 +125,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 					$responseDocuments = $resultSetModifier->modifyResultSet($this, $responseDocuments);
 				} else {
 					throw new UnexpectedValueException(
-						get_class($resultSetModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultsetModifier\Tx_Solr_ResultSetModifier',
+						get_class($resultSetModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier',
 						1310386927
 					);
 				}
