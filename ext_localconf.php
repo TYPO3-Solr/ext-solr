@@ -91,7 +91,7 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'faceting',
-	'Tx_Solr_Search_FacetingComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\FacetingComponent'
 );
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
