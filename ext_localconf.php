@@ -81,7 +81,7 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'highlighting',
-	'Tx_Solr_Search_HighlightingComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\HighlightingComponent'
 );
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
