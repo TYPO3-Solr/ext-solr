@@ -66,7 +66,7 @@ ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'sorting',
-	'Tx_Solr_Search_SortingComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\SortingComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
