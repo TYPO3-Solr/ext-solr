@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use Tx_Solr_PiResults_ResultsCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ResultDocumentModifier_SiteHighlighter implements Tx_Solr_ResultDocumentModifier {
+class SiteHighlighter implements ResultDocumentModifier {
 
 	/**
 	 * Modifies the given result document's url field by appending parameters
@@ -48,7 +52,7 @@ class Tx_Solr_ResultDocumentModifier_SiteHighlighter implements Tx_Solr_ResultDo
 	public function modifyResultDocument($resultCommand, array $resultDocument) {
 		$searchWords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
 
-			// remove quotes from phrase searches - they've been escaped by getCleanUserQuery()
+		// remove quotes from phrase searches - they've been escaped by getCleanUserQuery()
 		$searchWords = str_replace('&quot;', '', $searchWords);
 		$searchWords = GeneralUtility::trimExplode(' ', $searchWords, TRUE);
 
@@ -63,13 +67,13 @@ class Tx_Solr_ResultDocumentModifier_SiteHighlighter implements Tx_Solr_ResultDo
 		$url .= (strpos($url, '?') !== FALSE) ? '&' : '?';
 		$url .= 'sword_list[]=' . array_shift($searchWords);
 
-		foreach($searchWords as $word) {
+		foreach ($searchWords as $word) {
 			$url .= '&sword_list[]=' . $word;
 		}
 
 		$url .= '&no_cache=1' . ($fragment ? '#' . $fragment : '');
 
-			// eventually, replace the document's URL with the one that enables highlighting
+		// eventually, replace the document's URL with the one that enables highlighting
 		$resultDocument['url'] = $url;
 
 		return $resultDocument;

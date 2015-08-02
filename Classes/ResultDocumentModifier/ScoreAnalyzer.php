@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +26,7 @@
 
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_PiResults_ResultsCommand;
 
 
 /**
@@ -37,12 +40,13 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocumentModifier {
+class ScoreAnalyzer implements ResultDocumentModifier {
 
 	/**
 	 * @var Search
 	 */
 	protected $search;
+
 
 	/**
 	 * Modifies the given query and returns the modified query as result
@@ -55,8 +59,8 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 		$this->search  = $resultCommand->getParentPlugin()->getSearch();
 		$configuration = Util::getSolrConfiguration();
 
-			// only check whether a BE user is logged in, don't need to check
-			// for enabled score analysis as we wouldn't be here if it was disabled
+		// only check whether a BE user is logged in, don't need to check
+		// for enabled score analysis as we wouldn't be here if it was disabled
 		if ($GLOBALS['TSFE']->beUserLogin) {
 			$highScores = $this->analyzeScore($resultDocument);
 			$resultDocument['score_analysis'] = $this->renderScoreAnalysis($highScores);
@@ -78,18 +82,19 @@ class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer implements Tx_Solr_ResultDocu
 		 * 		* ...
 		 */
 
-			// matches search term weights, ex: 0.42218783 = (MATCH) weight(content:iPod^40.0 in 43), product of:
+		// matches search term weights, ex: 0.42218783 = (MATCH) weight(content:iPod^40.0 in 43), product of:
 		$pattern = '/(.*) = \(MATCH\) weight\((.*)\^/';
 		$matches = array();
 		preg_match_all($pattern, $debugData, $matches);
 
-		foreach($matches[0] as $key => $value) {
-				// split field from search term
+		foreach ($matches[0] as $key => $value) {
+			// split field from search term
 			list($field, $searchTerm) = explode(':', $matches[2][$key]);
 
-				// keep track of highest score per search term
+			// keep track of highest score per search term
 			if (!isset($highScores[$field])
-			|| $highScores[$field]['score'] < $matches[1][$key]) {
+				|| $highScores[$field]['score'] < $matches[1][$key]
+			) {
 				$highScores[$field] = array(
 					'score'      => $matches[1][$key],
 					'field'      => $field,

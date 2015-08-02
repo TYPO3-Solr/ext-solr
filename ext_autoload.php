@@ -87,9 +87,6 @@ return array(
 
 	'tx_solr_response_processor_statisticswriter' => $extensionPath . 'Classes/Response/Processor/StatisticsWriter.php',
 
-	'tx_solr_resultdocumentmodifier_scoreanalyzer' => $extensionPath . 'Classes/ResultDocumentModifier/ScoreAnalyzer.php',
-	'tx_solr_resultdocumentmodifier_sitehighlighter' => $extensionPath . 'Classes/ResultDocumentModifier/SiteHighlighter.php',
-
 	'tx_solr_search_abstractcomponent' => $extensionPath . 'Classes/Search/AbstractComponent.php',
 	'tx_solr_search_accesscomponent' => $extensionPath . 'Classes/Search/AccessComponent.php',
 	'tx_solr_search_analysiscomponent' => $extensionPath . 'Classes/Search/AnalysisComponent.php',
@@ -119,7 +116,6 @@ return array(
 	'tx_solr_piresults_facetingcommand' => $extensionPath . 'PiResults/FacetingCommand.php',
 	'tx_solr_piresults_formcommand' => $extensionPath . 'PiResults/FormCommand.php',
 	'tx_solr_piresults_frequentsearchescommand' => $extensionPath . 'PiResults/FrequentSearchesCommand.php',
-	'tx_solr_piresults_highlightingresultdocumentmodifier' => $extensionPath . 'PiResults/HighlightingResultDocumentModifier.php',
 	'tx_solr_piresults_lastsearchescommand' => $extensionPath . 'PiResults/LastSearchesCommand.php',
 	'tx_solr_piresults_noresultscommand' => $extensionPath . 'PiResults/NoResultsCommand.php',
 	'tx_solr_piresults_resultscommand' => $extensionPath . 'PiResults/ResultsCommand.php',
@@ -176,7 +172,6 @@ return array(
 	'tx_solr_querymodifier' => $extensionPath . 'Interfaces/QueryModifier.php',
 	'tx_solr_responsemodifier' => $extensionPath . 'Interfaces/ResponseModifier.php',
 	'tx_solr_responseprocessor' => $extensionPath . 'Interfaces/ResponseProcessor.php',
-	'tx_solr_resultdocumentmodifier' => $extensionPath . 'Interfaces/ResultDocumentModifier.php',
 	'tx_solr_searchaware' => $extensionPath . 'Interfaces/SearchAware.php',
 	'tx_solr_searchcomponent' => $extensionPath . 'Interfaces/SearchComponent.php',
 	'tx_solr_serializedvaluedetector' => $extensionPath . 'Interfaces/SerializedValueDetector.php',

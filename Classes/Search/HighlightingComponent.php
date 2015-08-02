@@ -49,7 +49,7 @@ class Tx_Solr_Search_HighlightingComponent extends Tx_Solr_Search_AbstractCompon
 	 */
 	public function initializeSearchComponent() {
 		if ($this->searchConfiguration['results.']['siteHighlighting']) {
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'Tx_Solr_ResultDocumentModifier_SiteHighlighter';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\SiteHighlighter';
 		}
 
 		if ($this->searchConfiguration['results.']['resultsHighlighting']) {
@@ -58,7 +58,7 @@ class Tx_Solr_Search_HighlightingComponent extends Tx_Solr_Search_AbstractCompon
 				$this->searchConfiguration['results.']['resultsHighlighting.']['fragmentSize']
 			);
 
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'Tx_Solr_PiResults_HighlightingResultDocumentModifier';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\DocumentHighlighter';
 		}
 	}
 

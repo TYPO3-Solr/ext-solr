@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,6 +27,7 @@
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_PiResults_ResultsCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -36,12 +39,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_HighlightingResultDocumentModifier implements Tx_Solr_ResultDocumentModifier {
+class DocumentHighlighter implements ResultDocumentModifier {
 
 	/**
 	 * @var Search
 	 */
 	protected $search;
+
 
 	/**
 	 * Modifies the given document and returns the modified document as result.
