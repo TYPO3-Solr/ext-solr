@@ -61,7 +61,7 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'relevance',
-	'Tx_Solr_Search_RelevanceComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\RelevanceComponent'
 );
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
