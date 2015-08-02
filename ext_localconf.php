@@ -71,7 +71,7 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'debug',
-	'Tx_Solr_Search_DebugComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\DebugComponent'
 );
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
