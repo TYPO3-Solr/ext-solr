@@ -54,57 +54,57 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php'][
 
 	// register search components
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'access',
 	'ApacheSolrForTypo3\\Solr\\Search\\AccessComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'relevance',
 	'ApacheSolrForTypo3\\Solr\\Search\\RelevanceComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'sorting',
 	'Tx_Solr_Search_SortingComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'debug',
 	'ApacheSolrForTypo3\\Solr\\Search\\DebugComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'analysis',
 	'ApacheSolrForTypo3\\Solr\\Search\\AnalysisComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'highlighting',
 	'ApacheSolrForTypo3\\Solr\\Search\\HighlightingComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'spellchecking',
 	'Tx_Solr_Search_SpellcheckingComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'faceting',
 	'ApacheSolrForTypo3\\Solr\\Search\\FacetingComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'statistics',
 	'Tx_Solr_Search_StatisticsComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'lastSearches',
 	'ApacheSolrForTypo3\\Solr\\Search\\LastSearchesComponent'
 );
 
-Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
+ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'elevation',
 	'ApacheSolrForTypo3\\Solr\\Search\\ElevationComponent'
 );
