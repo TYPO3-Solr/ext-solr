@@ -96,7 +96,7 @@ ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'statistics',
-	'Tx_Solr_Search_StatisticsComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\StatisticsComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(

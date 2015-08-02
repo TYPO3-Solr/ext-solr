@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,7 +24,6 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Search\AbstractComponent;
 use ApacheSolrForTypo3\Solr\Util;
 
 
@@ -33,7 +34,7 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_StatisticsComponent extends AbstractComponent {
+class StatisticsComponent extends AbstractComponent {
 
 	/**
 	 * Initializes the search component.
@@ -42,7 +43,7 @@ class Tx_Solr_Search_StatisticsComponent extends AbstractComponent {
 	public function initializeSearchComponent() {
 		$solrConfiguration = Util::getSolrConfiguration();
 
-		if(!empty($solrConfiguration['statistics'])) {
+		if (!empty($solrConfiguration['statistics'])) {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics']     = 'Tx_Solr_Query_Modifier_Statistics';
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['statistics'] = 'ApacheSolrForTypo3\\Solr\\Response\\Processor\\StatisticsWriter';
 		}
