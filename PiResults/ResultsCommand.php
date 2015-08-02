@@ -70,6 +70,9 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 		$this->search        = $parentPlugin->getSearch();
 	}
 
+	/**
+	 * @return array
+	 */
 	public function execute() {
 		$numberOfResults = $this->search->getNumberOfResults();
 
@@ -112,6 +115,9 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 		);
 	}
 
+	/**
+	 * @return \Apache_Solr_Document[]
+	 */
 	protected function getResultDocuments() {
 		$responseDocuments = $this->search->getResultDocuments();
 		$resultDocuments   = array();
@@ -178,8 +184,8 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 		foreach ($availableFields as $fieldName) {
 			$processingInstruction = $processingInstructions[$fieldName];
 
-				// TODO switch to field processors
-				// TODO allow to have multiple (comma-separated) instructions for each field
+			// TODO switch to field processors
+			// TODO allow to have multiple (comma-separated) instructions for each field
 			switch ($processingInstruction) {
 				case 'timestamp':
 					$processedFieldValue = Util::isoToTimestamp($document->{$fieldName});
@@ -207,6 +213,10 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 		return $result;
 	}
 
+	/**
+	 * @param array $document
+	 * @return array
+	 */
 	protected function renderDocumentFields(array $document) {
 		$renderingInstructions = $this->configuration['search.']['results.']['fieldRenderingInstructions.'];
 		$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
@@ -226,6 +236,10 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 		return $document;
 	}
 
+	/**
+	 * @param $numberOfResults
+	 * @return string
+	 */
 	protected function getPageBrowser($numberOfResults) {
 		$pageBrowser = '';
 
@@ -266,6 +280,9 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 		return $pageBrowser;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function getPageBrowserRange() {
 		$label = '';
 
