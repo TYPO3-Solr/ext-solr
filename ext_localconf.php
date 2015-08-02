@@ -56,7 +56,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php'][
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'access',
-	'Tx_Solr_Search_AccessComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\AccessComponent'
 );
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
