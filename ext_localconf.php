@@ -101,7 +101,7 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'lastSearches',
-	'Tx_Solr_Search_LastSearchesComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\LastSearchesComponent'
 );
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
