@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Response\Processor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,16 +37,16 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_ResponseProcessor {
+interface ResponseProcessor {
 
 	/**
 	 * Processes a query and its response after searching for that query.
 	 *
 	 * @param Query $query The query that has been searched for.
-	 * @param Apache_Solr_Response $response The response for the last query.
+	 * @param \Apache_Solr_Response $response The response for the last query.
 	 * @return void
 	 */
-	public function processResponse(Query $query, Apache_Solr_Response $response);
+	public function processResponse(Query $query, \Apache_Solr_Response $response);
 
 }
 

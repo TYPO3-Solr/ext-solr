@@ -24,6 +24,7 @@
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -126,7 +127,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
 				$responseProcessor = GeneralUtility::getUserObj($classReference);
 
-				if ($responseProcessor instanceof Tx_Solr_ResponseProcessor) {
+				if ($responseProcessor instanceof ResponseProcessor) {
 					$responseProcessor->processResponse($query, $response);
 				}
 			}

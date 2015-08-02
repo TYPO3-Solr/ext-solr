@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Response\Processor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponseProcessor {
+class StatisticsWriter implements ResponseProcessor {
 
 	/**
 	 * Internal function to mask portions of the visitor IP address
@@ -72,15 +75,15 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 	 * Processes a query and its response after searching for that query.
 	 *
 	 * @param Query $query The query that has been searched for.
-	 * @param Apache_Solr_Response $response The response for the last query.
+	 * @param \Apache_Solr_Response $response The response for the last query.
 	 */
-	public function processResponse(Query $query, Apache_Solr_Response $response) {
+	public function processResponse(Query $query, \Apache_Solr_Response $response) {
 		$urlParameters = GeneralUtility::_GP('tx_solr');
 		$keywords      = $query->getKeywords();
 		$filters       = isset($urlParameters['filter']) ? $urlParameters['filter'] : array();
 
 		if (empty($keywords)) {
-				// do not track empty queries
+			// do not track empty queries
 			return;
 		}
 
@@ -96,7 +99,7 @@ class Tx_Solr_Response_Processor_StatisticsWriter implements Tx_Solr_ResponsePro
 			$keywords = strtolower($keywords);
 		}
 
-		$ipMaskLength = (int) $configuration['statistics.']['anonymizeIP'];
+		$ipMaskLength = (int)$configuration['statistics.']['anonymizeIP'];
 
 		$insertFields = array(
 			'pid'               => $GLOBALS['TSFE']->id,

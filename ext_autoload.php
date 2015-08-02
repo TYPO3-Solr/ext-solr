@@ -85,8 +85,6 @@ return array(
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'Classes/Query/Modifier/Faceting.php',
 	'tx_solr_query_modifier_statistics' => $extensionPath . 'Classes/Query/Modifier/Statistics.php',
 
-	'tx_solr_response_processor_statisticswriter' => $extensionPath . 'Classes/Response/Processor/StatisticsWriter.php',
-
 	'tx_solr_search_abstractcomponent' => $extensionPath . 'Classes/Search/AbstractComponent.php',
 	'tx_solr_search_accesscomponent' => $extensionPath . 'Classes/Search/AccessComponent.php',
 	'tx_solr_search_analysiscomponent' => $extensionPath . 'Classes/Search/AnalysisComponent.php',
@@ -171,7 +169,6 @@ return array(
 	'tx_solr_queryfilterencoder' => $extensionPath . 'Interfaces/QueryFilterEncoder.php',
 	'tx_solr_querymodifier' => $extensionPath . 'Interfaces/QueryModifier.php',
 	'tx_solr_responsemodifier' => $extensionPath . 'Interfaces/ResponseModifier.php',
-	'tx_solr_responseprocessor' => $extensionPath . 'Interfaces/ResponseProcessor.php',
 	'tx_solr_searchaware' => $extensionPath . 'Interfaces/SearchAware.php',
 	'tx_solr_searchcomponent' => $extensionPath . 'Interfaces/SearchComponent.php',
 	'tx_solr_serializedvaluedetector' => $extensionPath . 'Interfaces/SerializedValueDetector.php',
