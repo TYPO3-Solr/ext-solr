@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_Solr_SearchComponent;
+use ApacheSolrForTypo3\Solr\Search\SearchComponent;
 
 
 /**
@@ -34,7 +34,7 @@ use Tx_Solr_SearchComponent;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class AbstractComponent implements Tx_Solr_SearchComponent {
+abstract class AbstractComponent implements SearchComponent {
 
 	/**
 	 * Search configuration - plugin.tx_solr.search
