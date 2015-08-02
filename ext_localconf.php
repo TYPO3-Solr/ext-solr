@@ -86,7 +86,7 @@ ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 	'spellchecking',
-	'Tx_Solr_Search_SpellcheckingComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\SpellcheckingComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
