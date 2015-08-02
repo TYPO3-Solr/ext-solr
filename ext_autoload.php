@@ -85,20 +85,6 @@ return array(
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'Classes/Query/Modifier/Faceting.php',
 	'tx_solr_query_modifier_statistics' => $extensionPath . 'Classes/Query/Modifier/Statistics.php',
 
-	'tx_solr_search_abstractcomponent' => $extensionPath . 'Classes/Search/AbstractComponent.php',
-	'tx_solr_search_accesscomponent' => $extensionPath . 'Classes/Search/AccessComponent.php',
-	'tx_solr_search_analysiscomponent' => $extensionPath . 'Classes/Search/AnalysisComponent.php',
-	'tx_solr_search_debugcomponent' => $extensionPath . 'Classes/Search/DebugComponent.php',
-	'tx_solr_search_elevationcomponent' => $extensionPath . 'Classes/Search/ElevationComponent.php',
-	'tx_solr_search_facetingcomponent' => $extensionPath . 'Classes/Search/FacetingComponent.php',
-	'tx_solr_search_highlightingcomponent' => $extensionPath . 'Classes/Search/HighlightingComponent.php',
-	'tx_solr_search_lastsearchescomponent' => $extensionPath . 'Classes/Search/LastSearchesComponent.php',
-	'tx_solr_search_relevancecomponent' => $extensionPath . 'Classes/Search/RelevanceComponent.php',
-	'tx_solr_search_searchcomponentmanager' => $extensionPath . 'Classes/Search/SearchComponentManager.php',
-	'tx_solr_search_sortingcomponent' => $extensionPath . 'Classes/Search/SortingComponent.php',
-	'tx_solr_search_spellcheckingcomponent' => $extensionPath . 'Classes/Search/SpellcheckingComponent.php',
-	'tx_solr_search_statisticscomponent' => $extensionPath . 'Classes/Search/StatisticsComponent.php',
-
 		// modules
 
 	'tx_solr_modindex_indexinspector' => $extensionPath . 'ModIndex/IndexInspector.php',
@@ -170,7 +156,6 @@ return array(
 	'tx_solr_querymodifier' => $extensionPath . 'Interfaces/QueryModifier.php',
 	'tx_solr_responsemodifier' => $extensionPath . 'Interfaces/ResponseModifier.php',
 	'tx_solr_searchaware' => $extensionPath . 'Interfaces/SearchAware.php',
-	'tx_solr_searchcomponent' => $extensionPath . 'Interfaces/SearchComponent.php',
 	'tx_solr_serializedvaluedetector' => $extensionPath . 'Interfaces/SerializedValueDetector.php',
 	'tx_solr_subpartviewhelper' => $extensionPath . 'Interfaces/SubpartViewHelper.php',
 	'tx_solr_substitutepageindexer' => $extensionPath . 'Interfaces/SubstitutePageIndexer.php',

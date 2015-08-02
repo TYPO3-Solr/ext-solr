@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,18 +25,20 @@
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use Tx_Solr_QueryAware;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
  * Sorting search component
  *
- * TODO maybe merge ApacheSolrForTypo3\Solr\Sorting into Tx_Solr_Search_SortingComponent
+ * TODO maybe merge ApacheSolrForTypo3\Solr\Sorting into ApacheSolrForTypo3\Solr\Search\SortingComponent
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_SortingComponent extends Tx_Solr_Search_AbstractComponent implements Tx_Solr_QueryAware {
+class SortingComponent extends AbstractComponent implements Tx_Solr_QueryAware {
 
 	/**
 	 * Solr query
@@ -55,13 +59,13 @@ class Tx_Solr_Search_SortingComponent extends Tx_Solr_Search_AbstractComponent i
 			$this->query->addQueryParameter('sort', $this->searchConfiguration['query.']['sortBy']);
 		}
 
-		$solrGetParameters = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('tx_solr');
+		$solrGetParameters = GeneralUtility::_GET('tx_solr');
 
 		if (!empty($this->searchConfiguration['sorting'])
 			&& !empty($solrGetParameters['sort'])
 			&& preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $solrGetParameters['sort'])
 		) {
-			$sortHelper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Tx_Solr_Sorting', $this->searchConfiguration['sorting.']['options.']);
+			$sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Tx_Solr_Sorting', $this->searchConfiguration['sorting.']['options.']);
 			$sortField = $sortHelper->getSortFieldFromUrlParameter($solrGetParameters['sort']);
 
 			$this->query->setSorting($sortField);

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,7 +35,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SearchComponent {
+interface SearchComponent {
 
 	/**
 	 * Provides the plugin's search configuration from plugin.tx_solr.search

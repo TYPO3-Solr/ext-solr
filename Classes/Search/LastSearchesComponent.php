@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -30,14 +32,14 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_LastSearchesComponent extends Tx_Solr_Search_AbstractComponent {
+class LastSearchesComponent extends AbstractComponent {
 
 	/**
 	 * Initializes the search component.
 	 *
 	 */
 	public function initializeSearchComponent() {
-		if($this->searchConfiguration['lastSearches']) {
+		if ($this->searchConfiguration['lastSearches']) {
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['lastSearches'] = 'ApacheSolrForTypo3\\Solr\\ResultsetModifier\\LastSearches';
 		}
 	}

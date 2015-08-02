@@ -214,7 +214,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			$resultsPerPage = $this->getNumberOfResultsPerPage();
 			$query->setResultsPerPage($resultsPerPage);
 
-			$searchComponents = GeneralUtility::makeInstance('Tx_Solr_Search_SearchComponentManager')->getSearchComponents();
+			$searchComponents = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search\\SearchComponentManager')->getSearchComponents();
 			foreach ($searchComponents as $searchComponent) {
 				$searchComponent->setSearchConfiguration($this->conf['search.']);
 

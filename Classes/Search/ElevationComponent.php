@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -30,7 +32,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_ElevationComponent extends Tx_Solr_Search_AbstractComponent {
+class ElevationComponent extends AbstractComponent {
 
 	/**
 	 * Initializes the search component.

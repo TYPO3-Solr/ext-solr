@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,6 +25,7 @@
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use Tx_Solr_QueryAware;
 
 
 /**
@@ -32,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Search_SpellcheckingComponent extends Tx_Solr_Search_AbstractComponent implements Tx_Solr_QueryAware {
+class SpellcheckingComponent extends AbstractComponent implements Tx_Solr_QueryAware {
 
 	/**
 	 * Solr query
