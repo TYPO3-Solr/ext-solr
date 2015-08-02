@@ -106,7 +106,7 @@ Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 
 Tx_Solr_Search_SearchComponentManager::registerSearchComponent(
 	'elevation',
-	'Tx_Solr_Search_ElevationComponent'
+	'ApacheSolrForTypo3\\Solr\\Search\\ElevationComponent'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
