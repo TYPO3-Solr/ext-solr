@@ -26,6 +26,7 @@
  * Query filter builder interface
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @todo move\rename to ApacheSolrForTypo3\Solr\Facet\FacetBuilder
  */
 interface Tx_Solr_QueryFacetBuilder {
 
