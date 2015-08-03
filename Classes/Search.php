@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
 ***************************************************************/
 
 use Tx_Solr_FacetsModifier;
-use Tx_Solr_QueryModifier;
+use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use Tx_Solr_ResponseModifier;
 use Tx_Solr_SearchAware;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -176,7 +176,7 @@ class Search implements SingletonInterface {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
 				$queryModifier = GeneralUtility::getUserObj($classReference);
 
-				if ($queryModifier instanceof Tx_Solr_QueryModifier) {
+				if ($queryModifier instanceof Modifier) {
 					if ($queryModifier instanceof Tx_Solr_SearchAware) {
 						$queryModifier->setSearch($this);
 					}
@@ -184,7 +184,7 @@ class Search implements SingletonInterface {
 					$query = $queryModifier->modifyQuery($query);
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($queryModifier) . ' must implement interface Tx_Solr_QueryModifier',
+						get_class($queryModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Query\Modifier\Tx_Solr_QueryModifier',
 						1310387414
 					);
 				}

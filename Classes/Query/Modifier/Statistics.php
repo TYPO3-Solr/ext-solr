@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
-use Tx_Solr_QueryModifier;
 
 
 /**
@@ -35,7 +34,7 @@ use Tx_Solr_QueryModifier;
  * @package TYPO3
  * @subpackage solr
  */
-class Statistics implements Tx_Solr_QueryModifier {
+class Statistics implements Modifier {
 
 	/**
 	 * Enables the query's debug mode to get more detailed information.

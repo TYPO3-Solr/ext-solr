@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_QueryModifier;
 
 
 /**
@@ -38,7 +37,7 @@ use Tx_Solr_QueryModifier;
  * @package TYPO3
  * @subpackage solr
  */
-class Faceting implements Tx_Solr_QueryModifier {
+class Faceting implements Modifier {
 
 	protected $configuration;
 
