@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,6 +25,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use Tx_Solr_QueryModifier;
 
 
 /**
@@ -32,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Query_Modifier_Statistics implements Tx_Solr_QueryModifier {
+class Statistics implements Tx_Solr_QueryModifier {
 
 	/**
 	 * Enables the query's debug mode to get more detailed information.

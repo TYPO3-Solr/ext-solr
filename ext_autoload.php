@@ -74,8 +74,6 @@ return array(
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
 
-	'tx_solr_query_modifier_statistics' => $extensionPath . 'Classes/Query/Modifier/Statistics.php',
-
 		// modules
 
 	'tx_solr_modindex_indexinspector' => $extensionPath . 'ModIndex/IndexInspector.php',
