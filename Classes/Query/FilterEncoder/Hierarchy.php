@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,13 +24,15 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Tx_Solr_QueryFilterEncoder;
+
 
 /**
  * Filter encoder to build Solr hierarchy queries from tx_solr[filter]
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Query_FilterEncoder_Hierarchy implements Tx_Solr_QueryFilterEncoder {
+class Hierarchy implements Tx_Solr_QueryFilterEncoder {
 
 	/**
 	 * Delimiter for hierarchies in the URL.

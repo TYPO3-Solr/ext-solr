@@ -53,6 +53,16 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	 */
 	protected $filterValue;
 
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $facetName
+	 * @param array $filterValue
+	 * @param \ApacheSolrForTypo3\Solr\Template $filter
+	 * @param \ApacheSolrForTypo3\Solr\Template $template
+	 * @param \ApacheSolrForTypo3\Solr\Query $query
+	 */
 	public function __construct($facetName, $filterValue, $filter , Template $template, Query $query) {
 		parent::__construct($facetName, array(), $template, $query);
 
@@ -83,7 +93,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 
 		if ($this->facetConfiguration['type'] == 'hierarchy') {
 				// FIXME decouple this
-			$filterEncoder = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_Hierarchy');
+			$filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
 			$facet         = GeneralUtility::makeInstance('Tx_Solr_Facet_Facet', $this->facetName);
 			$facetRenderer = GeneralUtility::makeInstance('Tx_Solr_Facet_HierarchicalFacetRenderer', $facet);
 

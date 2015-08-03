@@ -203,7 +203,7 @@ Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'hierarchy',
 	'Tx_Solr_Facet_HierarchicalFacetRenderer',
-	'Tx_Solr_Query_FilterEncoder_Hierarchy'
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy'
 );
 
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(

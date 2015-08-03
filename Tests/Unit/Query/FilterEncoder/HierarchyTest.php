@@ -40,7 +40,7 @@ class Tx_Solr_Query_FilterEncoder_HierarchyTest extends Tx_Phpunit_TestCase {
 	private $parser;
 
 	public function setUp() {
-		$this->parser = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_Hierarchy');
+		$this->parser = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
 	}
 
 	/**

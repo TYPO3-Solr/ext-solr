@@ -23,6 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -62,8 +63,8 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends Tx_Solr_Facet_AbstractFace
 		$facetContent = '';
 		$facetOptions = $this->getFacetOptions();
 
-		/* @var $filterEncoder Tx_Solr_Query_FilterEncoder_Hierarchy */
-		$filterEncoder = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_Hierarchy');
+		/* @var $filterEncoder Hierarchy */
+		$filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
 
 			// enrich the facet options with links before building the menu structure
 		$enrichedFacetOptions = array();
