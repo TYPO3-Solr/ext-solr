@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
 
 use ApacheSolrForTypo3\Solr\Util;
 use Tx_Solr_QueryFacetBuilder;
-use Tx_Solr_QueryFilterEncoder;
 
 
 /**
@@ -35,7 +34,7 @@ use Tx_Solr_QueryFilterEncoder;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
-class DateRange implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
+class DateRange implements FilterEncoder, Tx_Solr_QueryFacetBuilder {
 
 	/**
 	 * Delimiter for date parts in the URL.

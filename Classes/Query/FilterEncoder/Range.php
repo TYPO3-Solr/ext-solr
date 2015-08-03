@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
 ***************************************************************/
 
 use Tx_Solr_QueryFacetBuilder;
-use Tx_Solr_QueryFilterEncoder;
 
 
 /**
@@ -35,7 +34,7 @@ use Tx_Solr_QueryFilterEncoder;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Range implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
+class Range implements FilterEncoder, Tx_Solr_QueryFacetBuilder {
 
 	/**
 	 * Delimiter for ranges in the URL.

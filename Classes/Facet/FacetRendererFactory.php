@@ -21,7 +21,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Facet renderer factory, creates facet renderers depending on the configured
@@ -158,7 +161,7 @@ class Tx_Solr_Facet_FacetRendererFactory {
 	 * if one is configured.
 	 *
 	 * @param string $facetName Facet name
-	 * @return NULL|Tx_Solr_QueryFilterEncoder NULL if no filter parser is configured for the facet's type or an instance of Tx_Solr_QueryFilterEncoder otherwise
+	 * @return NULL|FilterEncoder NULL if no filter parser is configured for the facet's type or an instance of ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder otherwise
 	 */
 	public function getFacetFilterEncoderByFacetName($facetName) {
 		$filterEncoder       = NULL;
@@ -176,15 +179,15 @@ class Tx_Solr_Facet_FacetRendererFactory {
 	}
 
 	/**
-	 * Validates an object for implementing the Tx_Solr_QueryFilterEncoder interface.
+	 * Validates an object for implementing the ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder interface.
 	 *
-	 * @param object $object A potential filter parser object to check for implementing the Tx_Solr_QueryFilterEncoder interface
-	 * @throws UnexpectedValueException if $object does not implement Tx_Solr_QueryFilterEncoder
+	 * @param object $object A potential filter parser object to check for implementing the ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder interface
+	 * @throws UnexpectedValueException if $object does not implement ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder
 	 */
 	protected function validateObjectIsQueryFilterEncoder($object) {
-		if (!($object instanceof Tx_Solr_QueryFilterEncoder)) {
+		if (!($object instanceof FilterEncoder)) {
 			throw new UnexpectedValueException(
-				get_class($object) . ' is not an implementation of Tx_Solr_QueryFilterEncoder',
+				get_class($object) . ' is not an implementation of ApacheSolrForTypo3\Solr\Query\FilterEncoder\Tx_Solr_QueryFilterEncoder',
 				1328105893
 			);
 		}

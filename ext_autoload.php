@@ -141,7 +141,6 @@ return array(
 	'tx_solr_plugincommand' => $extensionPath . 'Interfaces/PluginCommand.php',
 	'tx_solr_queryaware' => $extensionPath . 'Interfaces/QueryAware.php',
 	'tx_solr_queryfacetbuilder' => $extensionPath . 'Interfaces/QueryFacetBuilder.php',
-	'tx_solr_queryfilterencoder' => $extensionPath . 'Interfaces/QueryFilterEncoder.php',
 	'tx_solr_querymodifier' => $extensionPath . 'Interfaces/QueryModifier.php',
 	'tx_solr_responsemodifier' => $extensionPath . 'Interfaces/ResponseModifier.php',
 	'tx_solr_searchaware' => $extensionPath . 'Interfaces/SearchAware.php',
