@@ -48,7 +48,7 @@ class Tx_Solr_Facet_FacetOption {
 	protected $value;
 
 	/**
-	 * Facet option value encoded by a Tx_Solr_QueryFilterEncoder for use in
+	 * Facet option value encoded by a ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder for use in
 	 * URLs.
 	 *
 	 * @var string

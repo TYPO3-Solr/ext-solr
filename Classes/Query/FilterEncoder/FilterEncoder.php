@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,12 +24,13 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+
 /**
  * Query Filter Encoder Interface
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-interface Tx_Solr_QueryFilterEncoder {
+interface FilterEncoder {
 
 	/**
 	 * Takes a filter value and encodes it to a human readable format to be

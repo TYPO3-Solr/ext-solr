@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_Query_LinkBuilder;
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -56,7 +56,7 @@ class SortUrl implements ViewHelper {
 	/**
 	 * Query Link Builder
 	 *
-	 * @var Tx_Solr_Query_LinkBuilder
+	 * @var \ApacheSolrForTypo3\Solr\Query\LinkBuilder
 	 */
 	protected $queryLinkBuilder = NULL;
 
@@ -70,7 +70,7 @@ class SortUrl implements ViewHelper {
 		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		$this->configuration    = Util::getSolrConfiguration();
-		$this->queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $this->search->getQuery());
+		$this->queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $this->search->getQuery());
 	}
 
 	/**

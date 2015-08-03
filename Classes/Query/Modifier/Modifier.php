@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_QueryModifier {
+interface Modifier {
 
 	/**
 	 * Modifies the given query and returns the modified query as result

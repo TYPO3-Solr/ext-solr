@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +26,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_QueryFacetBuilder;
 
 
 /**
@@ -31,7 +34,7 @@ use ApacheSolrForTypo3\Solr\Util;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
-class Tx_Solr_Query_FilterEncoder_DateRange implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
+class DateRange implements FilterEncoder, Tx_Solr_QueryFacetBuilder {
 
 	/**
 	 * Delimiter for date parts in the URL.
@@ -52,10 +55,10 @@ class Tx_Solr_Query_FilterEncoder_DateRange implements Tx_Solr_QueryFilterEncode
 	public function decodeFilter($dateRange, array $configuration = array()) {
 		list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER, $dateRange);
 
-		$dateRangeEnd  .= '59'; // adding 59 seconds
+		$dateRangeEnd .= '59'; // adding 59 seconds
 
-			// TODO for PHP 5.3 use date_parse_from_format() / date_create_from_format() / DateTime::createFromFormat()
-		$dateRangeFilter  = '[' . Util::timestampToIso(strtotime($dateRangeStart));
+		// TODO for PHP 5.3 use date_parse_from_format() / date_create_from_format() / DateTime::createFromFormat()
+		$dateRangeFilter = '[' . Util::timestampToIso(strtotime($dateRangeStart));
 		$dateRangeFilter .= ' TO ';
 		$dateRangeFilter .= Util::timestampToIso(strtotime($dateRangeEnd)) . ']';
 

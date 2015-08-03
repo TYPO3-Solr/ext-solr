@@ -74,17 +74,6 @@ return array(
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
 
-	'tx_solr_query_linkbuilder' => $extensionPath . 'Classes/Query/LinkBuilder.php',
-
-	'tx_solr_query_filterencoder_daterange' => $extensionPath . 'Classes/Query/FilterEncoder/DateRange.php',
-	'tx_solr_query_filterencoder_hierarchy' => $extensionPath . 'Classes/Query/FilterEncoder/Hierarchy.php',
-	'tx_solr_query_filterencoder_querygroup' => $extensionPath . 'Classes/Query/FilterEncoder/QueryGroup.php',
-	'tx_solr_query_filterencoder_range' => $extensionPath . 'Classes/Query/FilterEncoder/Range.php',
-
-	'tx_solr_query_modifier_elevation' => $extensionPath . 'Classes/Query/Modifier/Elevation.php',
-	'tx_solr_query_modifier_faceting' => $extensionPath . 'Classes/Query/Modifier/Faceting.php',
-	'tx_solr_query_modifier_statistics' => $extensionPath . 'Classes/Query/Modifier/Statistics.php',
-
 		// modules
 
 	'tx_solr_modindex_indexinspector' => $extensionPath . 'ModIndex/IndexInspector.php',
@@ -152,8 +141,6 @@ return array(
 	'tx_solr_plugincommand' => $extensionPath . 'Interfaces/PluginCommand.php',
 	'tx_solr_queryaware' => $extensionPath . 'Interfaces/QueryAware.php',
 	'tx_solr_queryfacetbuilder' => $extensionPath . 'Interfaces/QueryFacetBuilder.php',
-	'tx_solr_queryfilterencoder' => $extensionPath . 'Interfaces/QueryFilterEncoder.php',
-	'tx_solr_querymodifier' => $extensionPath . 'Interfaces/QueryModifier.php',
 	'tx_solr_responsemodifier' => $extensionPath . 'Interfaces/ResponseModifier.php',
 	'tx_solr_searchaware' => $extensionPath . 'Interfaces/SearchAware.php',
 	'tx_solr_serializedvaluedetector' => $extensionPath . 'Interfaces/SerializedValueDetector.php',

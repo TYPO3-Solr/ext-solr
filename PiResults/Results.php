@@ -412,7 +412,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 		$currentUrl = $this->pi_linkTP_keepPIvars_url();
 
 		if ($this->solrAvailable && $this->search->hasSearched()) {
-			$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $this->search->getQuery());
+			$queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $this->search->getQuery());
 			$currentUrl = $queryLinkBuilder->getQueryUrl();
 		}
 

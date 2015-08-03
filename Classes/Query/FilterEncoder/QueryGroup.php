@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,6 +25,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_QueryFacetBuilder;
 
 
 /**
@@ -30,10 +33,11 @@ use ApacheSolrForTypo3\Solr\Util;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Query_FilterEncoder_QueryGroup implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
+class QueryGroup implements FilterEncoder, Tx_Solr_QueryFacetBuilder {
 
 	/**
-	 * constructor for class Tx_Solr_Query_FilterEncoder_QueryGroup
+	 * Constructor
+	 *
 	 */
 	public function __construct() {
 		$this->configuration = Util::getSolrConfiguration();

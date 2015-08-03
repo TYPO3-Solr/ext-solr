@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -32,7 +34,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Query_LinkBuilder {
+class LinkBuilder {
 
 	/**
 	 * Content object.
@@ -176,8 +178,8 @@ class Tx_Solr_Query_LinkBuilder {
 	 * @param string $unwantedUrlParameter URL GET parameter
 	 */
 	public function removeUnwantedUrlParameter($unwantedUrlParameter) {
-		$key = array_search($unwantedUrlParameter,$this->unwantedUrlParameters);
-		if($key!==false){
+		$key = array_search($unwantedUrlParameter, $this->unwantedUrlParameters);
+		if ($key !== false) {
 			unset($this->unwantedUrlParameters[$key]);
 		}
 	}
@@ -213,7 +215,7 @@ class Tx_Solr_Query_LinkBuilder {
 			$this->getPluginParameters(),
 			$additionalQueryParameters
 		);
-		$queryParameters   = $this->removeUnwantedUrlParameters($queryParameters);
+		$queryParameters = $this->removeUnwantedUrlParameters($queryParameters);
 
 		$queryGetParameter = '';
 
@@ -231,7 +233,7 @@ class Tx_Solr_Query_LinkBuilder {
 				. $queryGetParameter
 		);
 
-			// merge linkConfiguration with typolinkOptions
+		// merge linkConfiguration with typolinkOptions
 		$linkConfiguration = array_merge($linkConfiguration, $typolinkOptions);
 
 		return $this->contentObject->typoLink($linkText, $linkConfiguration);

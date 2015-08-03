@@ -189,28 +189,28 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'numericRange',
 	'Tx_Solr_Facet_NumericRangeFacetRenderer',
-	'Tx_Solr_Query_FilterEncoder_Range',
-	'Tx_Solr_Query_FilterEncoder_Range'
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range',
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range'
 );
 
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'dateRange',
 	'Tx_Solr_Facet_DateRangeFacetRenderer',
-	'Tx_Solr_Query_FilterEncoder_DateRange',
-	'Tx_Solr_Query_FilterEncoder_DateRange'
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange',
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange'
 );
 
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'hierarchy',
 	'Tx_Solr_Facet_HierarchicalFacetRenderer',
-	'Tx_Solr_Query_FilterEncoder_Hierarchy'
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy'
 );
 
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'queryGroup',
 	'Tx_Solr_Facet_QueryGroupFacetRenderer',
-	'Tx_Solr_Query_FilterEncoder_QueryGroup',
-	'Tx_Solr_Query_FilterEncoder_QueryGroup'
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup',
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

@@ -40,7 +40,7 @@ class FacetingComponent extends AbstractComponent {
 	 */
 	public function initializeSearchComponent() {
 		if ($this->searchConfiguration['faceting']) {
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'Tx_Solr_Query_Modifier_Faceting';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'ApacheSolrForTypo3\\Solr\\Query\\Modifier\\Faceting';
 		}
 	}
 

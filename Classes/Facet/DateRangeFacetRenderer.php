@@ -22,7 +22,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Date range facet renderer.
@@ -59,7 +62,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 					jQuery(".dateselector").change(function(){ solrRequest("'
 						. $this->facetName
 						. '", "'
-						. Tx_Solr_Query_FilterEncoder_DateRange::DELIMITER
+						. DateRange::DELIMITER
 						. '") });
 					});
 				/*]]>*/

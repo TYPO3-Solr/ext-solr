@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 
 // workaround
-if (!class_exists('Tx_Solr_QueryFilterEncoder')) {
+if (!class_exists('ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder')) {
 	require_once __DIR__ . '../../../../../Interfaces/interface.tx_solr_queryfilterencoder.php';
 }
 if (!class_exists('Tx_Solr_QueryFacetBuilder')) {
@@ -43,7 +43,7 @@ class Tx_Solr_Query_FilterEncoder_DateRangeTest extends Tx_Phpunit_TestCase {
 	private $rangeParser;
 
 	public function setUp() {
-		$this->rangeParser = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_DateRange');
+		$this->rangeParser = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange');
 	}
 
 	/**

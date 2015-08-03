@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -33,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Query_Modifier_Elevation implements Tx_Solr_QueryModifier {
+class Elevation implements Modifier {
 
 	/**
 	 * Enables the query's elevation mode.

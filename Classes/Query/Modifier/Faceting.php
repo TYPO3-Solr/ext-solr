@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\Modifier;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +26,7 @@
 
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -35,7 +38,7 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
+class Faceting implements Modifier {
 
 	protected $configuration;
 
@@ -45,12 +48,14 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 
 	protected $facetRendererFactory = NULL;
 
+
 	/**
-	 * constructor for class Tx_Solr_Query_Modifier_Faceting
+	 * Constructor
+	 *
 	 */
 	public function __construct() {
 		$this->configuration = Util::getSolrConfiguration();
-		$this->facetRendererFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Facet_FacetRendererFactory', $this->configuration['search.']['faceting.']['facets.']);
+		$this->facetRendererFactory = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetRendererFactory', $this->configuration['search.']['faceting.']['facets.']);
 	}
 
 	/**
@@ -108,7 +113,7 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 	protected function buildFacetParameters(array $facetConfiguration) {
 		$facetParameters = array();
 
-			// simple for now, may add overrides f.<field_name>.facet.* later
+		// simple for now, may add overrides f.<field_name>.facet.* later
 
 		if ($this->configuration['search.']['faceting.']['keepAllFacetsOnSelection'] == 1) {
 			$facets = array();
@@ -140,22 +145,22 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 	 *
 	 */
 	protected function addFacetQueryFilters() {
-		$resultParameters = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('tx_solr');
+		$resultParameters = GeneralUtility::_GET('tx_solr');
 
-			// format for filter URL parameter:
-			// tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
+		// format for filter URL parameter:
+		// tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
 		if (is_array($resultParameters['filter'])) {
 			$filters = array_map('urldecode', $resultParameters['filter']);
-				// $filters look like array('name:value1','name:value2','fieldname2:foo')
+			// $filters look like array('name:value1','name:value2','fieldname2:foo')
 			$configuredFacets = $this->getConfiguredFacets();
 
-				// first group the filters by facetName - so that we can
-				// decide later whether we need to do AND or OR for multiple
-				// filters for a certain facet/field
-				// $filtersByFacetName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('foo'))
+			// first group the filters by facetName - so that we can
+			// decide later whether we need to do AND or OR for multiple
+			// filters for a certain facet/field
+			// $filtersByFacetName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('foo'))
 			$filtersByFacetName = array();
 			foreach ($filters as $filter) {
-					// only split by the first colon to allow using colons in the filter value itself
+				// only split by the first colon to allow using colons in the filter value itself
 				list($filterFacetName, $filterValue) = explode(':', $filter, 2);
 				if (in_array($filterFacetName, $configuredFacets)) {
 					$filtersByFacetName[$filterFacetName][] = $filterValue;
@@ -171,7 +176,7 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 				if ($facetConfiguration['keepAllOptionsOnSelection'] == 1
 					|| $this->configuration['search.']['faceting.']['keepAllFacetsOnSelection'] == 1
 				) {
-					$tag = '{!tag=' . addslashes( $facetConfiguration['field'] ) . '}';
+					$tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
 				}
 
 				$filterParts = array();
@@ -185,7 +190,7 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 						$filterValue = $filterEncoder->decodeFilter($filterValue, $filterOptions);
 						$filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
 					} else {
-						$filterParts[] = $facetConfiguration['field'] . ':"' . addslashes( $filterValue ) . '"';
+						$filterParts[] = $facetConfiguration['field'] . ':"' . addslashes($filterValue) . '"';
 					}
 				}
 
@@ -208,7 +213,7 @@ class Tx_Solr_Query_Modifier_Faceting implements Tx_Solr_QueryModifier {
 			$facetName = substr($facetName, 0, -1);
 
 			if (empty($facetConfiguration['field'])) {
-					// TODO later check for query and date, too
+				// TODO later check for query and date, too
 				continue;
 			}
 

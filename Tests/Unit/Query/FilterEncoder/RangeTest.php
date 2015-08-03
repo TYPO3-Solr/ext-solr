@@ -35,7 +35,7 @@ class Tx_Solr_Query_FilterEncoder_RangeTest extends Tx_Phpunit_TestCase {
 	private $rangeParser;
 
 	public function setUp() {
-		$this->rangeParser = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_Range');
+		$this->rangeParser = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range');
 	}
 
 	/**
