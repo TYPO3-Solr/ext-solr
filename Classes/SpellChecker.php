@@ -104,7 +104,7 @@ class SpellChecker {
 		$query = clone $this->search->getQuery();
 		$query->setKeywords($suggestions['collation']);
 
-		$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $query);
+		$queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $query);
 		$queryLinkBuilder->setLinkTargetPageId($GLOBALS['TSFE']->id);
 
 		return $queryLinkBuilder->getQueryUrl();
@@ -121,7 +121,7 @@ class SpellChecker {
 		$query = clone $this->search->getQuery();
 		$query->setKeywords($suggestions['collation']);
 
-		$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $query);
+		$queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $query);
 		$queryLinkBuilder->setLinkTargetPageId($GLOBALS['TSFE']->id);
 
 		return $queryLinkBuilder->getQueryLink(htmlspecialchars($query->getKeywordsRaw()));

@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -166,8 +167,8 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 
 		$query = $this->search->getQuery();
 
-		$queryLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $this->search->getQuery());
-		/* @var $queryLinkBuilder Tx_Solr_Query_LinkBuilder */
+		$queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $this->search->getQuery());
+		/* @var $queryLinkBuilder LinkBuilder */
 		$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
 			// URL parameters added to facet URLs may not need to be added to the facets reset URL

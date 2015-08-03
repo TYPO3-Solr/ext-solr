@@ -104,7 +104,7 @@ class SolrLink implements ViewHelper {
 			$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', '');
 		}
 
-		$linkBuilder = GeneralUtility::makeInstance('Tx_Solr_Query_LinkBuilder', $query);
+		$linkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $query);
 		$linkBuilder->setLinkTargetPageId($pageId);
 		$queryLink = $linkBuilder->getQueryLink(
 			$linkText,

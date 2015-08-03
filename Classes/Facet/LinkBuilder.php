@@ -23,6 +23,7 @@
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -31,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_LinkBuilder extends Tx_Solr_Query_LinkBuilder {
+class Tx_Solr_Facet_LinkBuilder extends LinkBuilder {
 
 	/**
 	 * Facet name.
