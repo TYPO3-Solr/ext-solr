@@ -74,7 +74,6 @@ return array(
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
 
-	'tx_solr_query_filterencoder_querygroup' => $extensionPath . 'Classes/Query/FilterEncoder/QueryGroup.php',
 	'tx_solr_query_filterencoder_range' => $extensionPath . 'Classes/Query/FilterEncoder/Range.php',
 
 	'tx_solr_query_modifier_elevation' => $extensionPath . 'Classes/Query/Modifier/Elevation.php',

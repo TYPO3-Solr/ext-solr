@@ -53,7 +53,7 @@ class Tx_Solr_Facet_QueryGroupFacetRenderer extends Tx_Solr_Facet_SimpleFacetRen
 		$facetOptions    = array();
 		$facetOptionsRaw = parent::getFacetOptions();
 
-		$filterEncoder = GeneralUtility::makeInstance('Tx_Solr_Query_FilterEncoder_QueryGroup');
+		$filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup');
 		foreach ($facetOptionsRaw as $facetOption => $numberOfResults) {
 			$facetOption = $filterEncoder->encodeFilter($facetOption, $this->facetConfiguration);
 			$facetOptions[$facetOption] = $numberOfResults;
