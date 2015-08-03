@@ -196,8 +196,8 @@ Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'dateRange',
 	'Tx_Solr_Facet_DateRangeFacetRenderer',
-	'Tx_Solr_Query_FilterEncoder_DateRange',
-	'Tx_Solr_Query_FilterEncoder_DateRange'
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange',
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange'
 );
 
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
