@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,6 +25,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Tx_Solr_QueryFacetBuilder;
+use Tx_Solr_QueryFilterEncoder;
+
 
 /**
  * Parser to build Solr range queries from tx_solr[filter]
@@ -30,7 +35,7 @@
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Query_FilterEncoder_Range implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
+class Range implements Tx_Solr_QueryFilterEncoder, Tx_Solr_QueryFacetBuilder {
 
 	/**
 	 * Delimiter for ranges in the URL.

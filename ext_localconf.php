@@ -189,8 +189,8 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
 	'numericRange',
 	'Tx_Solr_Facet_NumericRangeFacetRenderer',
-	'Tx_Solr_Query_FilterEncoder_Range',
-	'Tx_Solr_Query_FilterEncoder_Range'
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range',
+	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range'
 );
 
 Tx_Solr_Facet_FacetRendererFactory::registerFacetType(

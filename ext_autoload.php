@@ -74,8 +74,6 @@ return array(
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
 
-	'tx_solr_query_filterencoder_range' => $extensionPath . 'Classes/Query/FilterEncoder/Range.php',
-
 	'tx_solr_query_modifier_elevation' => $extensionPath . 'Classes/Query/Modifier/Elevation.php',
 	'tx_solr_query_modifier_faceting' => $extensionPath . 'Classes/Query/Modifier/Faceting.php',
 	'tx_solr_query_modifier_statistics' => $extensionPath . 'Classes/Query/Modifier/Statistics.php',
