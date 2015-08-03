@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -54,7 +55,7 @@ class Faceting implements Modifier {
 	 */
 	public function __construct() {
 		$this->configuration = Util::getSolrConfiguration();
-		$this->facetRendererFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_Facet_FacetRendererFactory', $this->configuration['search.']['faceting.']['facets.']);
+		$this->facetRendererFactory = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetRendererFactory', $this->configuration['search.']['faceting.']['facets.']);
 	}
 
 	/**
@@ -144,7 +145,7 @@ class Faceting implements Modifier {
 	 *
 	 */
 	protected function addFacetQueryFilters() {
-		$resultParameters = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('tx_solr');
+		$resultParameters = GeneralUtility::_GET('tx_solr');
 
 		// format for filter URL parameter:
 		// tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
