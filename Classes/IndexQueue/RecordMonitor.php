@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_IndexQueue_Queue;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -54,7 +53,7 @@ class RecordMonitor {
 	/**
 	 * Index Queue
 	 *
-	 * @var Tx_Solr_IndexQueue_Queue
+	 * @var Queue
 	 */
 	protected $indexQueue;
 
@@ -64,7 +63,7 @@ class RecordMonitor {
 	 *
 	 */
 	public function __construct() {
-		$this->indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 	}
 
 	/**
@@ -326,7 +325,7 @@ class RecordMonitor {
 		// FIXME!! $pageId might be outside of a site root and thus might not know about solr configuration
 		// -> leads to record not being queued for reindexing
 		$solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
-		$indexingConfigurations = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue')
+		$indexingConfigurations = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue')
 			->getTableIndexingConfigurations($solrConfiguration);
 
 		foreach ($indexingConfigurations as $indexingConfigurationName) {

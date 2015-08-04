@@ -74,7 +74,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 	public function initializeIndexQueueAction() {
 		$initializedIndexingConfigurations = array();
 
-		$itemIndexQueue                     = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$itemIndexQueue                     = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 		$indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
 		if (!empty($indexingConfigurationsToInitialize)) {
 				// initialize selected indexing configuration
@@ -128,7 +128,7 @@ class IndexQueueModuleController extends AbstractModuleController {
 	 * @return void
 	 */
 	public function clearIndexQueueAction() {
-		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 		$indexQueue->deleteItemsBySite($this->site);
 
 		$this->forward('index');

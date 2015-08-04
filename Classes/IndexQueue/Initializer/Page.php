@@ -132,7 +132,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 			} else {
 					// Add page like a regular page, as only the sub tree is
 					// mounted. The page itself has its own content.
-				GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue')->updateItem(
+				GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue')->updateItem(
 					$this->type,
 					$mountPage['uid'],
 					$this->indexingConfigurationName

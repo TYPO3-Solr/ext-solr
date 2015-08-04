@@ -77,7 +77,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 */
 	protected function indexItems() {
 		$limit      = $this->documentsToIndexLimit;
-		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 
 			// get items to index
 		$itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);

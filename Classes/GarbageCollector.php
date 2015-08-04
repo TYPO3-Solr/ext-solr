@@ -57,7 +57,7 @@ class GarbageCollector {
 			$this->collectGarbage($table, $uid);
 
 			if ($table == 'pages') {
-				$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+				$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 				$indexQueue->deleteItem($table, $uid);
 			}
 		}
@@ -83,7 +83,7 @@ class GarbageCollector {
 			$this->collectGarbage($table, $uid);
 
 			// now re-index with new properties
-			$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+			$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 			$indexQueue->updateItem($table, $uid);
 		}
 	}
@@ -250,7 +250,7 @@ class GarbageCollector {
 	 * @return boolean True if the record is marked as being indexed
 	 */
 	protected function isMarkedAsIndexed($table, $record) {
-		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 		return $indexQueue->containsIndexedItem($table, $record['uid']);
 	}
 
@@ -358,7 +358,7 @@ class GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function collectRecordGarbage($table, $uid) {
-		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 
 		$this->deleteIndexDocuments($table, $uid);
 		$indexQueue->deleteItem($table, $uid);
@@ -372,7 +372,7 @@ class GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function collectPageGarbage($table, $uid) {
-		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 
 		switch ($table) {
 			case 'tt_content':
@@ -409,7 +409,7 @@ class GarbageCollector {
 	 * @param integer $uid The record's uid.
 	 */
 	protected function deleteIndexDocuments($table, $uid) {
-		$indexQueue        = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue        = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 
 		// record can be indexed for multiple sites
