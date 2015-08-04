@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -54,9 +55,9 @@ class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
 	 * helpers.
 	 *
 	 * @param PageIndexerRequest $request The request to dispatch
-	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response The request's response
+	 * @param PageIndexerResponse $response The request's response
 	 */
-	public function dispatch(PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
+	public function dispatch(PageIndexerRequest $request, PageIndexerResponse $response) {
 		$actions = $request->getActions();
 
 		foreach ($actions as $action) {

@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_IndexQueue_PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -125,11 +124,11 @@ class PageIndexerRequest {
 	 * arguments integrated into the URL when created by RealURL.
 	 *
 	 * @param string $url The URL to request.
-	 * @return Tx_Solr_IndexQueue_PageIndexerResponse Response
+	 * @return PageIndexerResponse Response
 	 */
 	public function send($url) {
 		$headers  = $this->getHeaders();
-		$response = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
+		$response = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
 
 		$parsedURL = parse_url($url);
 		if (!preg_match('/^https?/', $parsedURL['scheme'])) {

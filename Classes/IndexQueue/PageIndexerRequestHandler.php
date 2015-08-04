@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 ***************************************************************/
 
 use Tx_Solr_IndexQueue_FrontendHelper_Dispatcher;
-use Tx_Solr_IndexQueue_PageIndexerResponse;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -50,7 +49,7 @@ class PageIndexerRequestHandler implements SingletonInterface {
 	/**
 	 * Index Queue page indexer response.
 	 *
-	 * @var Tx_Solr_IndexQueue_PageIndexerResponse
+	 * @var PageIndexerResponse
 	 */
 	protected $response;
 
@@ -73,7 +72,7 @@ class PageIndexerRequestHandler implements SingletonInterface {
 		$this->request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest',
 			$_SERVER['HTTP_X_TX_SOLR_IQ']
 		);
-		$this->response = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
+		$this->response = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
 		$this->response->setRequestId($this->request->getRequestId());
 	}
 
@@ -136,9 +135,9 @@ class PageIndexerRequestHandler implements SingletonInterface {
 	}
 
 	/**
-	 * Gets the Index Queue page indexer resposne.
+	 * Gets the Index Queue page indexer response.
 	 *
-	 * @return Tx_Solr_IndexQueue_PageIndexerResponse
+	 * @return PageIndexerResponse
 	 */
 	public function getResponse() {
 		return $this->response;

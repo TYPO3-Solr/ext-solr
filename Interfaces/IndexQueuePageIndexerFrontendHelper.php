@@ -26,6 +26,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 
 
 /**
@@ -53,9 +54,9 @@ interface Tx_Solr_IndexQueuePageIndexerFrontendHelper {
 	 * Starts the execution of a frontend helper.
 	 *
 	 * @param PageIndexerRequest $request Page indexer request
-	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response Page indexer response
+	 * @param PageIndexerResponse $response Page indexer response
 	 */
-	public function processRequest(PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response);
+	public function processRequest(PageIndexerRequest $request, PageIndexerResponse $response);
 
 	/**
 	 * Returns the collected data.

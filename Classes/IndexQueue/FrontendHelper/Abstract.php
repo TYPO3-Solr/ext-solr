@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -47,7 +48,7 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	/**
 	 * Index Queue page indexer response.
 	 *
-	 * @var Tx_Solr_IndexQueue_PageIndexerResponse
+	 * @var PageIndexerResponse
 	 */
 	protected $response;
 
@@ -80,9 +81,9 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	 * Starts the execution of a frontend helper.
 	 *
 	 * @param PageIndexerRequest $request Page indexer request
-	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response Page indexer response
+	 * @param PageIndexerResponse $response Page indexer response
 	 */
-	public function processRequest(PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
+	public function processRequest(PageIndexerRequest $request, PageIndexerResponse $response) {
 		$this->request  = $request;
 		$this->response = $response;
 

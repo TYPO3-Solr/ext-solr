@@ -80,7 +80,7 @@ class PageIndexer extends Indexer {
 	 * @param Item $item The index queue item representing the page.
 	 * @param integer $language The language to use.
 	 * @param integer $userGroup The frontend user group to use.
-	 * @return \Tx_Solr_IndexQueue_PageIndexerResponse Page indexer response
+	 * @return PageIndexerResponse Page indexer response
 	 * @throws \RuntimeException if indexing an item failed
 	 */
 	protected function indexPage(Item $item, $language = 0, $userGroup = 0) {
