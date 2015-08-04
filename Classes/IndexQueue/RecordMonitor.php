@@ -436,7 +436,7 @@ class RecordMonitor {
 	protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties) {
 		$mountingSite = Site::getSiteByPageId($mountProperties['mountPageDestination']);
 
-		$pageInitializer = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Initializer_Page');
+		$pageInitializer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Initializer\\Page');
 		$pageInitializer->setSite($mountingSite);
 
 		$pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);
