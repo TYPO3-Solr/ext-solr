@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +26,7 @@
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
+use Tx_Solr_IndexQueuePageIndexerFrontendHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -36,7 +39,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_IndexQueuePageIndexerFrontendHelper {
+abstract class AbstractFrontendHelper implements Tx_Solr_IndexQueuePageIndexerFrontendHelper {
 
 	/**
 	 * Index Queue page indexer request.
@@ -56,6 +59,7 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	 * The action a frontend helper executes.
 	 */
 	protected $action = NULL;
+
 
 	/**
 	 * Disables the frontend output for index queue requests.
@@ -89,7 +93,7 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 
 		if ($request->getParameter('loggingEnabled')) {
 			GeneralUtility::devLog('Page indexer request received', 'solr', 0, array(
-				'request' => (array) $request,
+				'request' => (array)$request,
 			));
 		}
 	}

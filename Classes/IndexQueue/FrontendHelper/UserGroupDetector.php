@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AbstractFrontendHelper;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
@@ -41,7 +42,7 @@ use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 
 	extends
-		Tx_Solr_IndexQueue_FrontendHelper_Abstract
+		AbstractFrontendHelper
 
 	implements
 		SingletonInterface,
