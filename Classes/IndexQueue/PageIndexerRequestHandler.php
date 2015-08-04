@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_IndexQueue_FrontendHelper_Dispatcher;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -56,7 +56,7 @@ class PageIndexerRequestHandler implements SingletonInterface {
 	/**
 	 * Index Queue page indexer frontend helper dispatcher.
 	 *
-	 * @var Tx_Solr_IndexQueue_FrontendHelper_Dispatcher
+	 * @var \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher
 	 */
 	protected $dispatcher;
 
@@ -67,7 +67,7 @@ class PageIndexerRequestHandler implements SingletonInterface {
 	 *
 	 */
 	public function __construct() {
-		$this->dispatcher = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Dispatcher');
+		$this->dispatcher = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\Dispatcher');
 
 		$this->request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest',
 			$_SERVER['HTTP_X_TX_SOLR_IQ']

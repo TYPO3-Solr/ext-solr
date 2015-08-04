@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +26,7 @@
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
+use Tx_Solr_IndexQueue_FrontendHelper_Manager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
+class Dispatcher {
 
 	/**
 	 * Frontend helper manager.
@@ -43,8 +46,10 @@ class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
 	 */
 	protected $frontendHelperManager;
 
+
 	/**
-	 * Constructor for Tx_Solr_IndexQueue_FrontendHelper_Dispatcher
+	 * Constructor
+	 *
 	 */
 	public function __construct() {
 		$this->frontendHelperManager = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Manager');
@@ -70,7 +75,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
 	/**
 	 * Sends a shutdown signal to all activated frontend helpers.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function shutdown() {
 		$frontendHelpers = $this->frontendHelperManager->getActivatedFrontendHelpers();
