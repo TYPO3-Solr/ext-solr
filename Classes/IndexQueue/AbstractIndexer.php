@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 ***************************************************************/
 
 use Apache_Solr_Document;
-use Tx_Solr_IndexQueue_InvalidFieldNameException;
 use Tx_Solr_SerializedValueDetector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -67,7 +66,7 @@ abstract class AbstractIndexer {
 			}
 
 			if ($solrFieldName == 'type') {
-				throw new Tx_Solr_IndexQueue_InvalidFieldNameException(
+				throw new InvalidFieldNameException(
 					'Must not overwrite field "type".',
 					1435441863
 				);
