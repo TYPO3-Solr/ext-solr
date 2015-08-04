@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -36,7 +38,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_FrontendHelper_Abstract {
+class PageIndexer extends AbstractFrontendHelper {
 
 	/**
 	 * This frontend helper's executed action.
@@ -65,20 +67,20 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 * resources required by the frontend helper to work.
 	 */
 	public function activate() {
-		$pageIndexingHookRegistration = '&Tx_Solr_IndexQueue_FrontendHelper_PageIndexer';
+		$pageIndexingHookRegistration = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageIndexer';
 
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__]        = $pageIndexingHookRegistration . '->authorizeFrontendUser';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = $pageIndexingHookRegistration . '->disableCaching';
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__]      = $pageIndexingHookRegistration;
 
-			// indexes fields defined in plugin.tx_solr.index.queue.pages.fields
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer'] = 'Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer';
+		// indexes fields defined in plugin.tx_solr.index.queue.pages.fields
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer';
 
-			// making sure this instance is reused when called by the hooks registered before
-			// \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction() and \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj() use
-			// these storages while the object was instantiated by
-			// Tx_Solr_IndexQueue_FrontendHelper_Manager before.
-			// \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance() also uses a dedicated cache
+		// making sure this instance is reused when called by the hooks registered before
+		// \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction() and \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj() use
+		// these storages while the object was instantiated by
+		// ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager before.
+		// \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance() also uses a dedicated cache
 		$GLOBALS['T3_VAR']['callUserFunction_classPool'][__CLASS__]     = $this;
 		$GLOBALS['T3_VAR']['getUserObj'][$pageIndexingHookRegistration] = $this;
 
@@ -111,7 +113,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 */
 	public function authorizeFrontendUser() {
 		$accessRootline = $this->getAccessRootline();
-		$stringAccessRootline = (string) $accessRootline;
+		$stringAccessRootline = (string)$accessRootline;
 
 		if (empty($stringAccessRootline)) {
 			return;
@@ -124,7 +126,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 		$groups    = $accessRootline->getGroups();
 		$groupList = implode(',', $groups);
 
-		$GLOBALS['TSFE']->fe_user->user['username']  = Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService::SOLR_INDEXER_USERNAME;
+		$GLOBALS['TSFE']->fe_user->user['username']  = AuthorizationService::SOLR_INDEXER_USERNAME;
 		$GLOBALS['TSFE']->fe_user->user['usergroup'] = $groupList;
 
 		$this->responseData['authorization'] = array(
@@ -165,7 +167,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 		ExtensionManagementUtility::addService(
 			'solr', // extension key
 			'auth', // service type
-			'Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService', // service key
+			'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\AuthorizationService', // service key
 			array( // service meta data
 				'title'       => 'Solr Indexer Authorization',
 				'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
@@ -180,7 +182,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 				'exec'        => '',
 
 				'classFile'   => $GLOBALS['PATH_solr'] . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
-				'className'   => 'Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService',
+				'className'   => 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\AuthorizationService',
 			)
 		);
 	}
@@ -237,7 +239,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 
 		$url = $contentObject->typoLink_URL($typolinkConfiguration);
 
-			// clean up
+		// clean up
 		if ($url == '') {
 			$url = '/';
 		}
@@ -267,14 +269,14 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
 
-			$this->responseData['pageIndexed']          = (int)   $indexer->indexPage();
-			$this->responseData['originalPageDocument'] = (array) $indexer->getPageSolrDocument();
+			$this->responseData['pageIndexed']          = (int)$indexer->indexPage();
+			$this->responseData['originalPageDocument'] = (array)$indexer->getPageSolrDocument();
 
 			$documentsSentToSolr = $indexer->getDocumentsSentToSolr();
 			foreach ($documentsSentToSolr as $document) {
-				$this->responseData['documentsSentToSolr'][] = (array) $document;
+				$this->responseData['documentsSentToSolr'][] = (array)$document;
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				GeneralUtility::devLog('Exception while trying to index page ' . $page->id, 'solr', 3, array(
 					$e->__toString()
@@ -297,7 +299,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 	 * @return SolrService Solr server connection
 	 */
 	protected function getSolrConnection() {
-		$indexQueue        = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue        = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
 
 		$indexQueueItem = $indexQueue->getItem(
@@ -309,7 +311,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends Tx_Solr_IndexQueue_F
 			$GLOBALS['TSFE']->sys_language_uid
 		);
 
-			// log the Solr connection used and why
+		// log the Solr connection used and why
 		$this->responseData['solrConnection'] = array(
 			'rootPage'         => $indexQueueItem->getRootPageUid(),
 			'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid,

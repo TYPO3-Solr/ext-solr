@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,11 +24,15 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Apache_Solr_Document;
+use Apache_Solr_Response;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_AdditionalIndexQueueItemIndexer;
+use Tx_Solr_IndexQueuePageIndexerDocumentsModifier;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,7 +47,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
+class Indexer extends AbstractIndexer {
 
 
 	# TODO change to singular $document instead of plural $documents
@@ -94,10 +100,10 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Indexes an item from the indexing queue.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param Item $item An index queue item
 	 * @return Apache_Solr_Response The Apache Solr response
 	 */
-	public function index(Tx_Solr_IndexQueue_Item $item) {
+	public function index(Item $item) {
 		$indexed = TRUE;
 
 		$this->type = $item->getType();
@@ -127,11 +133,11 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Creates a single Solr Document for an item in a specific language.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item to index.
+	 * @param Item $item An index queue item to index.
 	 * @param integer $language The language to use.
 	 * @return boolean TRUE if item was indexed successfully, FALSE on failure
 	 */
-	protected function indexItem(Tx_Solr_IndexQueue_Item $item, $language = 0) {
+	protected function indexItem(Item $item, $language = 0) {
 		$itemIndexed = FALSE;
 		$documents   = array();
 
@@ -146,8 +152,8 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 			return TRUE;
 		}
 
-		$documents[]  = $itemDocument;
-		$documents    = array_merge($documents, $this->getAdditionalDocuments(
+		$documents[] = $itemDocument;
+		$documents   = array_merge($documents, $this->getAdditionalDocuments(
 			$item,
 			$language,
 			$itemDocument
@@ -177,11 +183,11 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * more specialized indexers may provide more data for their specific item
 	 * types.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item The item to be indexed
+	 * @param Item $item The item to be indexed
 	 * @param integer $language Language Id (sys_language.uid)
 	 * @return array|NULL The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
 	 */
-	protected function getFullItemRecord(Tx_Solr_IndexQueue_Item $item, $language = 0) {
+	protected function getFullItemRecord(Item $item, $language = 0) {
 		$rootPageUid = $item->getRootPageUid();
 		$overlayIdentifier = $rootPageUid . '|' . $language;
 		if (!isset($this->sysLanguageOverlay[$overlayIdentifier])) {
@@ -244,7 +250,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 		}
 
 		if (!is_null($itemRecord)) {
-			$itemRecord['__solr_index_language'] =  $language;
+			$itemRecord['__solr_index_language'] = $language;
 		}
 
 		return $itemRecord;
@@ -253,11 +259,11 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Gets the configuration how to process an item's fields for indexing.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param Item $item An index queue item
 	 * @param integer $language Language ID
 	 * @return array Configuration array from TypoScript
 	 */
-	protected function getItemTypeConfiguration(Tx_Solr_IndexQueue_Item $item, $language = 0) {
+	protected function getItemTypeConfiguration(Item $item, $language = 0) {
 		$solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(), TRUE, $language);
 
 		return $solrConfiguration['index.']['queue.'][$item->getIndexingConfigurationName() . '.']['fields.'];
@@ -267,11 +273,11 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Converts an item array (record) to a Solr document by mapping the
 	 * record's fields onto Solr document fields as configured in TypoScript.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param Item $item An index queue item
 	 * @param integer $language Language Id
 	 * @return Apache_Solr_Document The Solr document converted from the record
 	 */
-	protected function itemToDocument(Tx_Solr_IndexQueue_Item $item, $language = 0) {
+	protected function itemToDocument(Item $item, $language = 0) {
 		$document = NULL;
 
 		$itemRecord = $this->getFullItemRecord($item, $language);
@@ -288,16 +294,16 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Creates a Solr document with the basic / core fields set already.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item The item to index
+	 * @param Item $item The item to index
 	 * @param array $itemRecord The record to use to build the base document
 	 * @return Apache_Solr_Document A basic Solr document
 	 */
-	protected function getBaseDocument(Tx_Solr_IndexQueue_Item $item, array $itemRecord) {
+	protected function getBaseDocument(Item $item, array $itemRecord) {
 		$site     = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $item->getRootPageUid());
 		$document = GeneralUtility::makeInstance('Apache_Solr_Document');
 		/* @var $document Apache_Solr_Document */
 
-			// required fields
+		// required fields
 		$document->setField('id', Util::getDocumentId(
 			$item->getType(),
 			$itemRecord['pid'],
@@ -306,15 +312,15 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 		$document->setField('type',   $item->getType());
 		$document->setField('appKey', 'EXT:solr');
 
-			// site, siteHash
+		// site, siteHash
 		$document->setField('site',     $site->getDomain());
 		$document->setField('siteHash', $site->getSiteHash());
 
-			// uid, pid
+		// uid, pid
 		$document->setField('uid', $itemRecord['uid']);
 		$document->setField('pid', $itemRecord['pid']);
 
-			// created, changed
+		// created, changed
 		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['crdate'])) {
 			$document->setField('created', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['crdate']]);
 		}
@@ -322,10 +328,11 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 			$document->setField('changed', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['tstamp']]);
 		}
 
-			// access, endtime
+		// access, endtime
 		$document->setField('access', $this->getAccessRootline($item));
 		if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime'])
-		&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime']] != 0) {
+			&& $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime']] != 0
+		) {
 			$document->setField('endtime', $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['endtime']]);
 		}
 
@@ -335,20 +342,20 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Generates an Access Rootline for an item.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item Index Queue item to index.
+	 * @param Item $item Index Queue item to index.
 	 * @return string The Access Rootline for the item
 	 */
-	protected function getAccessRootline(Tx_Solr_IndexQueue_Item $item) {
+	protected function getAccessRootline(Item $item) {
 		$accessRestriction = '0';
 		$itemRecord        = $item->getRecord();
 
-			// TODO support access restrictions set on storage page
+		// TODO support access restrictions set on storage page
 
 		if (isset($GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['fe_group'])) {
 			$accessRestriction = $itemRecord[$GLOBALS['TCA'][$item->getType()]['ctrl']['enablecolumns']['fe_group']];
 
 			if (empty($accessRestriction)) {
-					// public
+				// public
 				$accessRestriction = '0';
 			}
 		}
@@ -360,16 +367,16 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Sends the documents to the field processing service which takes care of
 	 * manipulating fields as defined in the field's configuration.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param Item $item An index queue item
 	 * @param array $documents An array of Apache_Solr_Document objects to manipulate.
 	 * @return array Array of manipulated Apache_Solr_Document objects.
 	 */
-	protected function processDocuments(Tx_Solr_IndexQueue_Item $item, array $documents) {
-			// needs to respect the TS settings for the page the item is on, conditions may apply
+	protected function processDocuments(Item $item, array $documents) {
+		// needs to respect the TS settings for the page the item is on, conditions may apply
 		$solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid());
 		$fieldProcessingInstructions = $solrConfiguration['index.']['fieldProcessingInstructions.'];
 
-			// same as in the FE indexer
+		// same as in the FE indexer
 		if (is_array($fieldProcessingInstructions)) {
 			$service = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_Service');
 			$service->processDocuments(
@@ -385,12 +392,12 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Allows third party extensions to provide additional documents which
 	 * should be indexed for the current item.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item The item currently being indexed.
+	 * @param Item $item The item currently being indexed.
 	 * @param integer $language The language uid currently being indexed.
 	 * @param Apache_Solr_Document $itemDocument The document representing the item for the given language.
 	 * @return array An array of additional Apache_Solr_Document objects to index.
 	 */
-	protected function getAdditionalDocuments(Tx_Solr_IndexQueue_Item $item, $language, Apache_Solr_Document $itemDocument) {
+	protected function getAdditionalDocuments(Item $item, $language, Apache_Solr_Document $itemDocument) {
 		$documents = array();
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'])) {
@@ -404,7 +411,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 						$documents = array_merge($documents, $additionalDocuments);
 					}
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($additionalIndexer) . ' must implement interface Tx_Solr_AdditionalIndexQueueItemIndexer',
 						1326284551
 					);
@@ -419,12 +426,12 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * Provides a hook to manipulate documents right before they get added to
 	 * the Solr index.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item The item currently being indexed.
+	 * @param Item $item The item currently being indexed.
 	 * @param integer $language The language uid of the documents
 	 * @param array $documents An array of documents to be indexed
 	 * @return array An array of modified documents
 	 */
-	protected function preAddModifyDocuments(Tx_Solr_IndexQueue_Item $item, $language, array $documents) {
+	protected function preAddModifyDocuments(Item $item, $language, array $documents) {
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
@@ -433,7 +440,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 				if ($documentsModifier instanceof Tx_Solr_IndexQueuePageIndexerDocumentsModifier) {
 					$documents = $documentsModifier->modifyDocuments($item, $language, $documents);
 				} else {
-					throw new RuntimeException(
+					throw new \RuntimeException(
 						'The class "' . get_class($documentsModifier)
 							. '" registered as document modifier in hook
 							preAddModifyDocuments must implement interface
@@ -457,10 +464,10 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	 * The connections include the default connection and connections to be used
 	 * for translations of an item.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param Item $item An index queue item
 	 * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
 	 */
-	protected function getSolrConnectionsByItem(Tx_Solr_IndexQueue_Item $item) {
+	protected function getSolrConnectionsByItem(Item $item) {
 		$solrConnections = array();
 
 		$pageId = $item->getRootPageUid();
@@ -468,7 +475,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 			$pageId = $item->getRecordUid();
 		}
 
-			// Solr configurations possible for this item
+		// Solr configurations possible for this item
 		$solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($item->getSite());
 
 		$siteLanguages = array();
@@ -525,9 +532,9 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 					. BackendUtility::BEenableFields('pages_language_overlay')
 			);
 		} else {
-				// ! If no sys_language_mode is configured, all languages will be indexed !
+			// ! If no sys_language_mode is configured, all languages will be indexed !
 			$languages = BackendUtility::getSystemLanguages();
-				// remove default language (L = 0)
+			// remove default language (L = 0)
 			array_shift($languages);
 
 			foreach ($languages as $language) {
@@ -571,17 +578,17 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	// Utility methods
 
 
-	// FIXME extract log() and setLogging() to Tx_Solr_IndexQueue_AbstractIndexer
+	// FIXME extract log() and setLogging() to ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
 	// FIXME extract an interface Tx_Solr_IndexQueue_ItemInterface
 
 	/**
 	 * Enables logging dependent on the configuration of the item's site
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An item being indexed
-	 * @return	void
+	 * @param Item $item An item being indexed
+	 * @return    void
 	 */
-	protected function setLogging(Tx_Solr_IndexQueue_Item $item) {
-			// reset
+	protected function setLogging(Item $item) {
+		// reset
 		$this->loggingEnabled = FALSE;
 
 		$solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid());
@@ -598,11 +605,11 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	/**
 	 * Logs the item and what document was created from it
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item The item that is being indexed.
+	 * @param Item $item The item that is being indexed.
 	 * @param array $itemDocuments An array of Solr documents created from the item's data
 	 * @param Apache_Solr_Response $response The Solr response for the particular index document
 	 */
-	protected function log(Tx_Solr_IndexQueue_Item $item, array $itemDocuments, Apache_Solr_Response $response) {
+	protected function log(Item $item, array $itemDocuments, Apache_Solr_Response $response) {
 		if (!$this->loggingEnabled) {
 			return;
 		}
@@ -611,16 +618,16 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 			. $item->getRecordUid() . ' - ';
 		$severity = 0; // info
 
-			// preparing data
+		// preparing data
 		$documents = array();
 		foreach ($itemDocuments as $document) {
-			$documents[] = (array) $document;
+			$documents[] = (array)$document;
 		}
 
 		$logData = array(
 			'item'      => (array) $item,
 			'documents' => $documents,
-			'response'  => (array) $response
+			'response'  => (array)$response
 		);
 
 		if ($response->getHttpStatus() == 200) {

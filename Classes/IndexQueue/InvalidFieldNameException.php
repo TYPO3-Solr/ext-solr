@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -31,6 +33,6 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_InvalidFieldNameException extends RuntimeException {
+class InvalidFieldNameException extends \RuntimeException {
 
 }

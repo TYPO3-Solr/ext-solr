@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -37,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_RecordMonitor {
+class RecordMonitor {
 
 	/**
 	 * Solr TypoScript configuration
@@ -51,7 +53,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	/**
 	 * Index Queue
 	 *
-	 * @var Tx_Solr_IndexQueue_Queue
+	 * @var Queue
 	 */
 	protected $indexQueue;
 
@@ -61,7 +63,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 *
 	 */
 	public function __construct() {
-		$this->indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 	}
 
 	/**
@@ -75,7 +77,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 */
 	public function processCmdmap_preProcess($command, $table, $uid, $value, DataHandler $tceMain) {
 		if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
-				// skip workspaces: index only LIVE workspace
+			// skip workspaces: index only LIVE workspace
 			$this->indexQueue->updateItem('pages', $tceMain->getPID($table, $uid));
 		}
 	}
@@ -92,12 +94,12 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 */
 	public function processCmdmap_postProcess($command, $table, $uid, $value, DataHandler $tceMain) {
 		if (Util::isDraftRecord($table, $uid)) {
-				// skip workspaces: index only LIVE workspace
+			// skip workspaces: index only LIVE workspace
 			return;
 		}
 
-			// track publish / swap events for records (workspace support)
-			// command "version"
+		// track publish / swap events for records (workspace support)
+		// command "version"
 		if ($command == 'version' && $value['action'] == 'swap') {
 			switch ($table) {
 				/** @noinspection PhpMissingBreakStatementInspection */
@@ -113,7 +115,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 
 						$this->indexQueue->updateItem($table, $uid);
 					} else {
-							// TODO should be moved to garbage collector
+						// TODO should be moved to garbage collector
 						if ($this->indexQueue->containsItem($table, $uid)) {
 							$this->removeFromIndexAndQueue($table, $uid);
 						}
@@ -129,14 +131,14 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 
 						if (!empty($record) && $this->isEnabledRecord($table, $record)) {
 							if (Util::isLocalizedRecord($table, $record)) {
-									// if it's a localization overlay, update the original record instead
+								// if it's a localization overlay, update the original record instead
 								$uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
 							}
 
 							$configurationName = $this->getIndexingConfigurationName($table, $uid);
 							$this->indexQueue->updateItem($table, $uid, $configurationName);
 						} else {
-								// TODO should be moved to garbage collector
+							// TODO should be moved to garbage collector
 							if ($this->indexQueue->containsItem($table, $uid)) {
 								$this->removeFromIndexAndQueue($table, $uid);
 							}
@@ -147,7 +149,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 		}
 
 		if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
-				// moving pages in LIVE workspace
+			// moving pages in LIVE workspace
 			$this->solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
 			$record = $this->getRecord('pages', $uid);
 			if (!empty($record) && $this->isEnabledRecord($table, $record)) {
@@ -183,7 +185,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 		}
 
 		if (Util::isDraftRecord($table, $recordUid)) {
-				// skip workspaces: index only LIVE workspace
+			// skip workspaces: index only LIVE workspace
 			return;
 		}
 
@@ -193,7 +195,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			$recordPageId = $fields['pid'];
 		}
 
-			// when a content element changes we need to updated the page instead
+		// when a content element changes we need to updated the page instead
 		if ($recordTable == 'tt_content') {
 			$recordTable = 'pages';
 			$recordUid   = $recordPageId;
@@ -206,7 +208,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			$record = $this->getRecord($recordTable, $recordUid);
 
 			if (!empty($record)) {
-					// only update/insert the item if we actually found a record
+				// only update/insert the item if we actually found a record
 
 				if (Util::isLocalizedRecord($recordTable, $record)) {
 					// if it's a localization overlay, update the original record instead
@@ -240,7 +242,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 			} else {
 				// TODO move this part to the garbage collector
 
-					// check if the item should be removed from the index because it no longer matches the conditions
+				// check if the item should be removed from the index because it no longer matches the conditions
 				if ($this->indexQueue->containsItem($recordTable, $recordUid)) {
 					$this->removeFromIndexAndQueue($recordTable, $recordUid);
 				}
@@ -275,7 +277,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 		foreach ($indexingConfigurations as $indexingConfigurationName) {
 			$tableToIndex = $indexingConfigurationName;
 			if (!empty($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-					// table has been set explicitly. Allows to index the same table with different configurations
+				// table has been set explicitly. Allows to index the same table with different configurations
 				$tableToIndex = $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
 			}
 
@@ -284,7 +286,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 				$record = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
 
 				if (!empty($record)) {
-						// if we found a record which matches the conditions, we can continue
+					// if we found a record which matches the conditions, we can continue
 					break;
 				}
 			}
@@ -299,10 +301,10 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 * @param string $indexingConfigurationName Indexing configuration name
 	 * @return string Optional extra where clause
 	 */
-	protected function buildUserWhereClause($indexingConfigurationName){
+	protected function buildUserWhereClause($indexingConfigurationName) {
 		$condition = '';
 
-			// FIXME replace this with the mechanism described in Tx_Solr_IndexQueue_Initializer_Abstract::buildUserWhereClause()
+		// FIXME replace this with the mechanism described in ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer::buildUserWhereClause()
 		if (isset($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'])) {
 			$condition = ' AND ' . $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'];
 		}
@@ -320,23 +322,23 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	protected function getMonitoredTables($pageId) {
 		$monitoredTables = array();
 
-			// FIXME!! $pageId might be outside of a site root and thus might not know about solr configuration
-			// -> leads to record not being queued for reindexing
+		// FIXME!! $pageId might be outside of a site root and thus might not know about solr configuration
+		// -> leads to record not being queued for reindexing
 		$solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
-		$indexingConfigurations = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue')
+		$indexingConfigurations = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue')
 			->getTableIndexingConfigurations($solrConfiguration);
 
 		foreach ($indexingConfigurations as $indexingConfigurationName) {
 			$monitoredTable = $indexingConfigurationName;
 
 			if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-					// table has been set explicitly. Allows to index the same table with different configurations
+				// table has been set explicitly. Allows to index the same table with different configurations
 				$monitoredTable = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
 			}
 
 			$monitoredTables[] = $monitoredTable;
 			if ($monitoredTable == 'pages') {
-					// when monitoring pages, also monitor creation of translations
+				// when monitoring pages, also monitor creation of translations
 				$monitoredTables[] = 'pages_language_overlay';
 			}
 		}
@@ -379,11 +381,11 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	 */
 	protected function updateMountPages($pageId) {
 
-			// get the root line of the page, every parent page could be a Mount Page source
+		// get the root line of the page, every parent page could be a Mount Page source
 		$pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$rootLine   = $pageSelect->getRootLine($pageId);
 
-			// remove the current page / newly created page
+		// remove the current page / newly created page
 		array_shift($rootLine);
 
 		$destinationMountProperties = $this->getDestinationMountPropertiesByRootLine($rootLine);
@@ -434,7 +436,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 	protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties) {
 		$mountingSite = Site::getSiteByPageId($mountProperties['mountPageDestination']);
 
-		$pageInitializer = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Initializer_Page');
+		$pageInitializer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Initializer\\Page');
 		$pageInitializer->setSite($mountingSite);
 
 		$pageInitializer->initializeMountedPage($mountProperties, $mountedPageId);

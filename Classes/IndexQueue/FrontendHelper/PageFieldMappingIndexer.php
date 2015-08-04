@@ -1,4 +1,5 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 /***************************************************************
 *  Copyright notice
 *
@@ -23,7 +24,9 @@
 ***************************************************************/
 
 
-// TODO use/extend Tx_Solr_IndexQueue_AbstractIndexer
+// TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
+use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
+use Tx_Solr_SubstitutePageIndexer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer implements Tx_Solr_SubstitutePageIndexer {
+class PageFieldMappingIndexer implements Tx_Solr_SubstitutePageIndexer {
 
 	/**
 	 * Returns a substitute document for the currently being indexed page.
@@ -42,21 +45,21 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer implements Tx_So
 	 * Uses the original document and adds fields as defined in
 	 * plugin.tx_solr.index.queue.pages.fields.
 	 *
-	 * @param Apache_Solr_Document $pageDocument The original page document.
-	 * @return Apache_Solr_Document A Apache_Solr_Document object that replace the default page document
+	 * @param \Apache_Solr_Document $pageDocument The original page document.
+	 * @return \Apache_Solr_Document A Apache_Solr_Document object that replace the default page document
 	 */
-	public function getPageDocument(Apache_Solr_Document $pageDocument) {
+	public function getPageDocument(\Apache_Solr_Document $pageDocument) {
 		$substitutePageDocument = clone $pageDocument;
 		$mappedFields = $this->getMappedFields();
 
 		foreach ($mappedFields as $fieldName => $fieldValue) {
 			if (isset($substitutePageDocument->{$fieldName})) {
-					// reset = overwrite, especially important to not make fields
-					// multi valued where they may not accept multiple values
+				// reset = overwrite, especially important to not make fields
+				// multi valued where they may not accept multiple values
 				unset($substitutePageDocument->{$fieldName});
 			}
 
-				// add new field / overwrite field if it was set before
+			// add new field / overwrite field if it was set before
 			if ($fieldValue !== '' && $fieldValue !== NULL) {
 				$substitutePageDocument->setField($fieldName, $fieldValue);
 			}
@@ -93,7 +96,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer implements Tx_So
 
 		foreach ($mappedFields as $indexFieldName => $recordFieldName) {
 			if (is_array($recordFieldName)) {
-					// configuration for a content object, skipping
+				// configuration for a content object, skipping
 				continue;
 			}
 
@@ -120,7 +123,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer implements Tx_So
 
 
 		if (isset($indexingConfiguration[$solrFieldName . '.'])) {
-				// configuration found => need to resolve a cObj
+			// configuration found => need to resolve a cObj
 			$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 			$contentObject->start($pageRecord, 'pages');
 
@@ -129,7 +132,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer implements Tx_So
 				$indexingConfiguration[$solrFieldName . '.']
 			);
 
-			if (Tx_Solr_IndexQueue_AbstractIndexer::isSerializedValue($indexingConfiguration, $solrFieldName)) {
+			if (AbstractIndexer::isSerializedValue($indexingConfiguration, $solrFieldName)) {
 				$fieldValue = unserialize($fieldValue);
 			}
 		} else {

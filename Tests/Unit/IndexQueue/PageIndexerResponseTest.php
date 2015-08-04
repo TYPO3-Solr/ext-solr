@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -40,7 +41,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponseTest extends Tx_Phpunit_TestCase {
 		$action = 'testAction';
 		$result = 'testResult';
 
-		$request = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
+		$request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
 		$request->addActionResult($action, $result);
 
 		$this->assertEquals($result, $request->getActionResult($action));
@@ -50,7 +51,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponseTest extends Tx_Phpunit_TestCase {
 	 * @test
 	 */
 	public function getResultReturnsAllResults() {
-		$request = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
+		$request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
 		$request->addActionResult('action1', 'result1');
 		$request->addActionResult('action2', 'result2');
 

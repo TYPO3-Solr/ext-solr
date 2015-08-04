@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+
 
 /**
  * IndexQueuePageIndexerDocumentsModifier interface, allows to modify documents
@@ -39,12 +41,12 @@ interface Tx_Solr_IndexQueuePageIndexerDocumentsModifier {
 	/**
 	 * Modifies the given documents
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item The currently being indexed item.
+	 * @param Item $item The currently being indexed item.
 	 * @param integer $language The language uid of the documents
 	 * @param array $documents An array of documents to be indexed
 	 * @return array An array of modified documents
 	 */
-	public function modifyDocuments(Tx_Solr_IndexQueue_Item $item, $language, array $documents);
+	public function modifyDocuments(Item $item, $language, array $documents);
 
 }
 

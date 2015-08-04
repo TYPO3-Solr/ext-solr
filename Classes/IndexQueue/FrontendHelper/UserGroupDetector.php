@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -30,6 +32,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
+
 /**
  * Index Queue Page Indexer frontend helper to track which user groups are used
  * on a page.
@@ -38,17 +41,16 @@ use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
+class UserGroupDetector
 
 	extends
-		Tx_Solr_IndexQueue_FrontendHelper_Abstract
+		AbstractFrontendHelper
 
 	implements
 		SingletonInterface,
 		ContentObjectPostInitHookInterface,
 		PageRepositoryGetPageHookInterface,
 		PageRepositoryGetPageOverlayHookInterface {
-
 
 
 	/**
@@ -70,23 +72,25 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 	 */
 	protected $frontendGroups = array();
 
+
 	// activation
+
 
 	/**
 	 * Activates a frontend helper by registering for hooks and other
 	 * resources required by the frontend helper to work.
 	 */
 	public function activate() {
-			// register hooks
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__]        = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->disableFrontendOutput';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__]   = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->disableCaching';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->deactivateTcaFrontendGroupEnableFields';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector->checkEnableFields';
+		// register hooks
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__]           = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->disableFrontendOutput';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__]      = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->disableCaching';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__]    = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->deactivateTcaFrontendGroupEnableFields';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->checkEnableFields';
 
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__]           = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__]    = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__]              = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__]       = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
 
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__]       = '&Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector';
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__]          = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
 	}
 
 	/**
@@ -176,7 +180,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 			$frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']];
 
 			if (empty($frontendGroups)) {
-					// default = public access
+				// default = public access
 				$frontendGroups = 0;
 			} else {
 				if ($this->request->getParameter('loggingEnabled')) {
@@ -202,12 +206,12 @@ class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector
 		$frontendGroupsList = implode(',', $this->frontendGroups);
 		$frontendGroups     = GeneralUtility::trimExplode(',', $frontendGroupsList, TRUE);
 
-			// clean up: filter double groups
+		// clean up: filter double groups
 		$frontendGroups = array_unique($frontendGroups);
 		$frontendGroups = array_values($frontendGroups);
 
 		if (empty($frontendGroups)) {
-				// most likely an empty page with no content elements => public
+			// most likely an empty page with no content elements => public
 			$frontendGroups[] = '0';
 		}
 

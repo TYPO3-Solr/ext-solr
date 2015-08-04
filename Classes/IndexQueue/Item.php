@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -28,14 +30,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
- * Representation of an index queue item, carying meta data and the record to be
+ * Representation of an index queue item, carrying meta data and the record to be
  * indexed.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_Item {
+class Item {
 
 	/**
 	 * The item's uid in the index queue (tx_solr_indexqueue_item.uid)
@@ -111,8 +113,7 @@ class Tx_Solr_IndexQueue_Item {
 
 
 	/**
-	 * Constructor for class Tx_Solr_IndexQueue_Item, takes item meta data
-	 * information and resolves that to the full record.
+	 * Constructor, takes item meta data information and resolves that to the full record.
 	 *
 	 * @param array $itemMetaData Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
 	 * @param array $fullRecord Optional full record for the item. If provided, can save some SQL queries.
@@ -185,12 +186,12 @@ class Tx_Solr_IndexQueue_Item {
 	/**
 	 * Sets the timestamp of when an item has been indexed.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function updateIndexedTime() {
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			'tx_solr_indexqueue_item',
-			'uid = ' . (int) $this->indexQueueUid,
+			'uid = ' . (int)$this->indexQueueUid,
 			array('indexed' => time())
 		);
 	}
@@ -271,7 +272,7 @@ class Tx_Solr_IndexQueue_Item {
 	/**
 	 * Removes existing indexing properties.
 	 *
-	 * @throws RuntimeException when an SQL error occurs
+	 * @throws \RuntimeException when an SQL error occurs
 	 */
 	protected function removeIndexingProperties() {
 		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
@@ -281,7 +282,7 @@ class Tx_Solr_IndexQueue_Item {
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_error()) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Could not remove indexing properties for item ' . $this->indexQueueUid,
 				1323802532
 			);
@@ -291,7 +292,7 @@ class Tx_Solr_IndexQueue_Item {
 	/**
 	 * Writes all indexing properties.
 	 *
-	 * @throws RuntimeException when an SQL error occurs
+	 * @throws \RuntimeException when an SQL error occurs
 	 */
 	protected function writeIndexingProperties() {
 		$properties = array();
@@ -311,7 +312,7 @@ class Tx_Solr_IndexQueue_Item {
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_error()) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Could not insert indexing properties for item ' . $this->indexQueueUid,
 				1323802570
 			);
@@ -321,7 +322,7 @@ class Tx_Solr_IndexQueue_Item {
 	/**
 	 * Updates the "has_indexing_properties" flag in the Index Queue.
 	 *
-	 * @throws RuntimeException when an SQL error occurs
+	 * @throws \RuntimeException when an SQL error occurs
 	 */
 	protected function updateHasIndexingPropertiesFlag() {
 		$hasIndexingProperties = '0';
@@ -336,7 +337,7 @@ class Tx_Solr_IndexQueue_Item {
 		);
 
 		if ($GLOBALS['TYPO3_DB']->sql_error()) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Could not update has_indexing_properties flag in Index Queue for item ' . $this->indexQueueUid,
 				1323802610
 			);
@@ -358,17 +359,17 @@ class Tx_Solr_IndexQueue_Item {
 	 *
 	 * @param string $key Indexing property name
 	 * @param string|int|float $value Indexing property value
-	 * @throws InvalidArgumentException when $value is not string, integer or float
+	 * @throws \InvalidArgumentException when $value is not string, integer or float
 	 */
 	public function setIndexingProperty($key, $value) {
 
-			// make sure to not interfere with existing indexing properties
+		// make sure to not interfere with existing indexing properties
 		$this->loadIndexingProperties();
 
-		$key = (string) $key; // Scalar typehints now!
+		$key = (string)$key; // Scalar typehints now!
 
 		if (!is_string($value) && !is_int($value) && !is_float($value)) {
-			throw new InvalidArgumentException(
+			throw new \InvalidArgumentException(
 				'Cannot set indexing property "' . $key
 					. '", its value must be string, integer or float, '
 					. 'type given was "' . gettype($value) . '"',
@@ -384,13 +385,13 @@ class Tx_Solr_IndexQueue_Item {
 	 * Gets a specific indexing property by its name/key.
 	 *
 	 * @param string $key Indexing property name/key.
-	 * @throws InvalidArgumentException when the given $key does not exist.
+	 * @throws \InvalidArgumentException when the given $key does not exist.
 	 */
 	public function getIndexingProperty($key) {
 		$this->loadIndexingProperties();
 
 		if (!array_key_exists($key, $this->indexingProperties)) {
-			throw new InvalidArgumentException(
+			throw new \InvalidArgumentException(
 				'No indexing property "' . $key . '".',
 				1323174143
 			);

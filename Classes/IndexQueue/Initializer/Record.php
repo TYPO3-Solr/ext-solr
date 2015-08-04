@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -34,7 +36,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_Initializer_Record extends Tx_Solr_IndexQueue_Initializer_Abstract {
+class Record extends AbstractInitializer {
 
 
 	// just the default behavior as in the abstract class

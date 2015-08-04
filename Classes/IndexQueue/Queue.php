@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,6 +27,8 @@
 use ApacheSolrForTypo3\Solr\DatabaseUtility;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
+use Tx_Solr_IndexQueueInitializationPostProcessor;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -37,8 +41,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_Queue {
-
+class Queue {
 
 	// FIXME some of the methods should be renamed to plural forms
 	// FIXME singular form methods should deal with exactly one item only
@@ -57,7 +60,7 @@ class Tx_Solr_IndexQueue_Queue {
 		$lastIndexedRow = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'indexed',
 			'tx_solr_indexqueue_item',
-			'root = ' . (int) $rootPageId,
+			'root = ' . (int)$rootPageId,
 			'',
 			'indexed DESC',
 			1
@@ -83,7 +86,7 @@ class Tx_Solr_IndexQueue_Queue {
 		$lastIndexedItemRow = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid',
 			'tx_solr_indexqueue_item',
-			'root = ' . (int) $rootPageId,
+			'root = ' . (int)$rootPageId,
 			'',
 			'indexed DESC',
 			1
@@ -135,9 +138,9 @@ class Tx_Solr_IndexQueue_Queue {
 						$initializationStatus
 					);
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($indexQueueInitializationPostProcessor) .
-							' must implement interface Tx_Solr_IndexQueueInitializationPostProcessor',
+						' must implement interface Tx_Solr_IndexQueueInitializationPostProcessor',
 						1345815561
 					);
 				}
@@ -165,7 +168,7 @@ class Tx_Solr_IndexQueue_Queue {
 		$initializerClass = $this->resolveInitializerClass($solrConfiguration, $indexingConfigurationName);
 
 		$initializer = GeneralUtility::makeInstance($initializerClass);
-		/** @var $initializer Tx_Solr_IndexQueue_Initializer_Abstract */
+		/** @var $initializer \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer */
 		$initializer->setSite($site);
 		$initializer->setType($tableToIndex);
 		$initializer->setIndexingConfigurationName($indexingConfigurationName);
@@ -214,7 +217,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 * @return string Name of the initializer class
 	 */
 	protected function resolveInitializerClass($solrConfiguration, $indexingConfigurationName) {
-		$initializerClass = 'Tx_Solr_IndexQueue_Initializer_Record';
+		$initializerClass = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\Initializer\\Record';
 
 		if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['initialization'])) {
 			$initializerClass = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['initialization'];
@@ -377,7 +380,7 @@ class Tx_Solr_IndexQueue_Queue {
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				'tx_solr_indexqueue_item',
 				'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
-					' AND item_uid = ' . (int) $itemUid,
+					' AND item_uid = ' . (int)$itemUid,
 				$changes
 			);
 		} else {
@@ -539,7 +542,7 @@ class Tx_Solr_IndexQueue_Queue {
 			$pageContentLastChangedTime = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
 				'MAX(tstamp) AS changed_time',
 				'tt_content',
-				'pid = ' . (int) $page['uid']
+				'pid = ' . (int)$page['uid']
 			);
 			$pageContentLastChangedTime = $pageContentLastChangedTime['changed_time'];
 		}
@@ -584,11 +587,11 @@ class Tx_Solr_IndexQueue_Queue {
 	 * @return boolean TRUE if the item is found in the queue, FALSE otherwise
 	 */
 	public function containsItem($itemType, $itemUid) {
-		$itemIsInQueue = (boolean) $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+		$itemIsInQueue = (boolean)$GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
 			'uid',
 			'tx_solr_indexqueue_item',
 			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
-				' AND item_uid = ' . (int) $itemUid
+				' AND item_uid = ' . (int)$itemUid
 		);
 
 		return $itemIsInQueue;
@@ -605,11 +608,11 @@ class Tx_Solr_IndexQueue_Queue {
 	 *      indexed, FALSE otherwise
 	 */
 	public function containsIndexedItem($itemType, $itemUid) {
-		$itemIsInQueue = (boolean) $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+		$itemIsInQueue = (boolean)$GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
 			'uid',
 			'tx_solr_indexqueue_item',
 			'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
-				' AND item_uid = ' . (int) $itemUid .
+				' AND item_uid = ' . (int)$itemUid .
 				' AND indexed > 0'
 		);
 
@@ -698,7 +701,7 @@ class Tx_Solr_IndexQueue_Queue {
 		if (!empty($indexingConfigurationName)) {
 			$indexingConfigurationConstraint =
 				' AND tx_solr_indexqueue_item.indexing_configuration = \'' .
-					$indexingConfigurationName . '\'';
+				$indexingConfigurationName . '\'';
 		}
 
 		DatabaseUtility::transactionStart();
@@ -709,7 +712,7 @@ class Tx_Solr_IndexQueue_Queue {
 				$rootPageConstraint . $indexingConfigurationConstraint
 			);
 			if (!$result) {
-				throw new RuntimeException(
+				throw new \RuntimeException(
 					'Failed to reset Index Queue for site ' . $site->getLabel(),
 					1412986560
 				);
@@ -727,14 +730,14 @@ class Tx_Solr_IndexQueue_Queue {
 
 			$result = $GLOBALS['TYPO3_DB']->sql_query($indexQueuePropertyResetQuery);
 			if (!$result) {
-				throw new RuntimeException(
+				throw new \RuntimeException(
 					'Failed to reset Index Queue properties for site ' . $site->getLabel(),
 					1412986604
 				);
 			}
 
 			DatabaseUtility::transactionCommit();
-		} catch (RuntimeException $e) {
+		} catch (\RuntimeException $e) {
 			DatabaseUtility::transactionRollback();
 		}
 	}
@@ -751,7 +754,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Gets a single Index Queue item by its uid.
 	 *
 	 * @param integer $itemId Index Queue item uid
-	 * @return Tx_Solr_IndexQueue_Item The request Index Queue item or NULL
+	 * @return Item The request Index Queue item or NULL
 	 *      if no item with $itemId was found
 	 */
 	public function getItem($itemId) {
@@ -767,7 +770,7 @@ class Tx_Solr_IndexQueue_Queue {
 			$indexQueueItemRecord = $indexQueueItemRecord[0];
 
 			$item = GeneralUtility::makeInstance(
-				'Tx_Solr_IndexQueue_Item',
+				'ApacheSolrForTypo3\\Solr\\IndexQueue\\Item',
 				$indexQueueItemRecord
 			);
 		}
@@ -823,7 +826,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 *
 	 * @param Site $site TYPO3 site
 	 * @param integer $limit Number of items to get from the queue
-	 * @return Tx_Solr_IndexQueue_Item[] Items to index to the given solr server
+	 * @return Item[] Items to index to the given solr server
 	 */
 	public function getItemsToIndex(Site $site, $limit = 50) {
 		$itemsToIndex = array();
@@ -850,11 +853,11 @@ class Tx_Solr_IndexQueue_Queue {
 	}
 
 	/**
-	 * Creates an array of Tx_Solr_IndexQueue_Item objects from an array of
+	 * Creates an array of ApacheSolrForTypo3\Solr\IndexQueue\Item objects from an array of
 	 * index queue records.
 	 *
 	 * @param array $indexQueueItemRecords Array of plain index queue records
-	 * @return array Array of Tx_Solr_IndexQueue_Item objects
+	 * @return array Array of ApacheSolrForTypo3\Solr\IndexQueue\Item objects
 	 */
 	protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords) {
 		$indexQueueItems = array();
@@ -884,7 +887,7 @@ class Tx_Solr_IndexQueue_Queue {
 		foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
 			if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
 				$indexQueueItems[] = GeneralUtility::makeInstance(
-					'Tx_Solr_IndexQueue_Item',
+					'ApacheSolrForTypo3\\Solr\\IndexQueue\\Item',
 					$indexQueueItemRecord,
 					$tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
 				);
@@ -901,17 +904,17 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Marks an item as failed and causes the indexer to skip the item in the
 	 * next run.
 	 *
-	 * @param int|Tx_Solr_IndexQueue_Item $item Either the item's Index Queue
+	 * @param int|Item $item Either the item's Index Queue
 	 *      uid or the complete item
 	 * @param string $errorMessage Error message
 	 */
 	public function markItemAsFailed($item, $errorMessage = '') {
 		$itemUid = 0;
 
-		if ($item instanceof Tx_Solr_IndexQueue_Item) {
+		if ($item instanceof Item) {
 			$itemUid = $item->getIndexQueueUid();
 		} else {
-			$itemUid = (int) $item;
+			$itemUid = (int)$item;
 		}
 
 		if (empty($errorMessage)) {

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,42 +37,42 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements SingletonInterface {
+class PageIndexerRequestHandler implements SingletonInterface {
 
 	/**
 	 * Index Queue page indexer request.
 	 *
-	 * @var Tx_Solr_IndexQueue_PageIndexerRequest
+	 * @var PageIndexerRequest
 	 */
 	protected $request;
 
 	/**
 	 * Index Queue page indexer response.
 	 *
-	 * @var Tx_Solr_IndexQueue_PageIndexerResponse
+	 * @var PageIndexerResponse
 	 */
 	protected $response;
 
 	/**
 	 * Index Queue page indexer frontend helper dispatcher.
 	 *
-	 * @var Tx_Solr_IndexQueue_FrontendHelper_Dispatcher
+	 * @var \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher
 	 */
 	protected $dispatcher;
 
 	/**
-	 * Constructor for Tx_Solr_IndexQueue_PageIndexerRequestHandler.
+	 * Constructor.
 	 *
 	 * Initializes request, response, and dispatcher.
 	 *
 	 */
 	public function __construct() {
-		$this->dispatcher = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Dispatcher');
+		$this->dispatcher = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\Dispatcher');
 
-		$this->request    = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest',
+		$this->request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest',
 			$_SERVER['HTTP_X_TX_SOLR_IQ']
 		);
-		$this->response   = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
+		$this->response = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
 		$this->response->setRequestId($this->request->getRequestId());
 	}
 
@@ -78,7 +81,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements SingletonInterface
 	 * request, and registers its own shutdown() method for execution at
 	 * hook_eofe in tslib/class.tslib_fe.php.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function run() {
 		if (!$this->request->isAuthenticated()) {
@@ -87,7 +90,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements SingletonInterface
 				'solr',
 				3,
 				array(
-					'page indexer request' => (array) $this->request,
+					'page indexer request' => (array)$this->request,
 					'index queue header'   => $_SERVER['HTTP_X_TX_SOLR_IQ']
 				)
 			);
@@ -97,44 +100,44 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements SingletonInterface
 
 		$this->dispatcher->dispatch($this->request, $this->response);
 
-			// register shutdown method here instead of in ext_localconf.php to
-			// allow frontend helpers to execute at hook_eofe in
-			// tslib/class.tslib_fe.php before shuting down
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe'][__CLASS__] = '&Tx_Solr_IndexQueue_PageIndexerRequestHandler->shutdown';
+		// register shutdown method here instead of in ext_localconf.php to
+		// allow frontend helpers to execute at hook_eofe in
+		// tslib/class.tslib_fe.php before shuting down
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequestHandler->shutdown';
 	}
 
 	/**
 	 * Completes the Index Queue page indexer request and returns the response
 	 * with the collected results.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function shutdown() {
 		$this->dispatcher->shutdown();
 
-			// make sure that no other output messes up the data
+		// make sure that no other output messes up the data
 		ob_end_clean();
 
 		$this->response->sendHeaders();
 		echo $this->response->getContent();
 
-			// exit since we don't want anymore output
+		// exit since we don't want anymore output
 		exit;
 	}
 
 	/**
 	 * Gets the Index Queue page indexer request.
 	 *
-	 * @return	Tx_Solr_IndexQueue_PageIndexerRequest
+	 * @return PageIndexerRequest
 	 */
 	public function getRequest() {
 		return $this->request;
 	}
 
 	/**
-	 * Gets the Index Queue page indexer resposne.
+	 * Gets the Index Queue page indexer response.
 	 *
-	 * @return	Tx_Solr_IndexQueue_PageIndexerResponse
+	 * @return PageIndexerResponse
 	 */
 	public function getResponse() {
 		return $this->response;

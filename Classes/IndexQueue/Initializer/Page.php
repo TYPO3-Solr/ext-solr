@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -41,7 +43,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer_Abstract {
+class Page extends AbstractInitializer {
 
 	/**
 	 * Constructor, sets type and indexingConfigurationName to "pages".
@@ -125,14 +127,14 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 
 			$mountedPages = $this->resolveMountPageTree($mountPage['mountPageSource']);
 
-				// handling mount_pid_ol behavior
+			// handling mount_pid_ol behavior
 			if ($mountPage['mountPageOverlayed']) {
-					// the page shows the mounted page's content
+				// the page shows the mounted page's content
 				$mountedPages[] = $mountPage['mountPageSource'];
 			} else {
-					// Add page like a regular page, as only the sub tree is
-					// mounted. The page itself has its own content.
-				GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue')->updateItem(
+				// Add page like a regular page, as only the sub tree is
+				// mounted. The page itself has its own content.
+				GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue')->updateItem(
 					$this->type,
 					$mountPage['uid'],
 					$this->indexingConfigurationName
@@ -152,7 +154,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 
 				DatabaseUtility::transactionCommit();
 				$mountPagesInitialized = TRUE;
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				DatabaseUtility::transactionRollback();
 
 				GeneralUtility::devLog(
@@ -267,7 +269,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 		);
 
 		foreach ($mountPageItems as $mountPageItemRecord) {
-			$mountPageItem = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Item', $mountPageItemRecord);
+			$mountPageItem = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Item', $mountPageItemRecord);
 
 			$mountPageItem->setIndexingProperty('mountPageSource',      $mountPage['mountPageSource']);
 			$mountPageItem->setIndexingProperty('mountPageDestination', $mountPage['mountPageDestination']);
@@ -278,7 +280,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 	}
 
 
-		// Mount Page resolution
+	// Mount Page resolution
 
 
 	/**

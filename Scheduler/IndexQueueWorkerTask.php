@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -75,7 +77,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 */
 	protected function indexItems() {
 		$limit      = $this->documentsToIndexLimit;
-		$indexQueue = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Queue');
+		$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 
 			// get items to index
 		$itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);
@@ -107,10 +109,10 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	/**
 	 * Indexes an item from the Index Queue.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item to index
+	 * @param Item $item An index queue item to index
 	 * @return boolean TRUE if the item was successfully indexed, FALSE otherwise
 	 */
-	protected function indexItem(Tx_Solr_IndexQueue_Item $item) {
+	protected function indexItem(Item $item) {
 		$itemIndexed = FALSE;
 		$indexer     = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
@@ -153,16 +155,16 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 * A factory method to get an indexer depending on an item's configuration.
 	 *
 	 * By default all items are indexed using the default indexer
-	 * (Tx_Solr_IndexQueue_Indexer) coming with EXT:solr. Pages by default are
+	 * (ApacheSolrForTypo3\Solr\IndexQueue\Indexer) coming with EXT:solr. Pages by default are
 	 * configured to be indexed through a dedicated indexer
-	 * (Tx_Solr_IndexQueue_PageIndexer). In all other cases a dedicated indexer
+	 * (ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer). In all other cases a dedicated indexer
 	 * can be specified through TypoScript if needed.
 	 *
 	 * @param string $indexingConfigurationName Indexing configuration name.
-	 * @return Tx_Solr_IndexQueue_Indexer An instance of Tx_Solr_IndexQueue_Indexer or a sub class of it.
+	 * @return Indexer An instance of ApacheSolrForTypo3\Solr\IndexQueue\Indexer or a sub class of it.
 	 */
 	protected function getIndexerByItem($indexingConfigurationName) {
-		$indexerClass   = 'Tx_Solr_IndexQueue_Indexer';
+		$indexerClass   = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\Indexer';
 		$indexerOptions = array();
 
 			// allow to overwrite indexers per indexing configuration
@@ -177,9 +179,9 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 		}
 
 		$indexer = GeneralUtility::makeInstance($indexerClass, $indexerOptions);
-		if (!($indexer instanceof Tx_Solr_IndexQueue_Indexer)) {
+		if (!($indexer instanceof Indexer)) {
 			throw new RuntimeException(
-				'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of Tx_Solr_IndexQueue_Indexer.',
+				'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',
 				1260463206
 			);
 		}
@@ -275,9 +277,9 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 * root page information we can determine the correct host although being
 	 * in a CLI environment.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item Index Queue item to use to determine the host.
+	 * @param Item $item Index Queue item to use to determine the host.
 	 */
-	protected function initializeHttpHost(Tx_Solr_IndexQueue_Item $item) {
+	protected function initializeHttpHost(Item $item) {
 		static $hosts = array();
 
 			// relevant for realURL environments, only

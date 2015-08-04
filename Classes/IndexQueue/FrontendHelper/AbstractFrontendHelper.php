@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
+use Tx_Solr_IndexQueuePageIndexerFrontendHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -34,19 +39,19 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_IndexQueuePageIndexerFrontendHelper {
+abstract class AbstractFrontendHelper implements Tx_Solr_IndexQueuePageIndexerFrontendHelper {
 
 	/**
 	 * Index Queue page indexer request.
 	 *
-	 * @var Tx_Solr_IndexQueue_PageIndexerRequest
+	 * @var PageIndexerRequest
 	 */
 	protected $request;
 
 	/**
 	 * Index Queue page indexer response.
 	 *
-	 * @var Tx_Solr_IndexQueue_PageIndexerResponse
+	 * @var PageIndexerResponse
 	 */
 	protected $response;
 
@@ -54,6 +59,7 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	 * The action a frontend helper executes.
 	 */
 	protected $action = NULL;
+
 
 	/**
 	 * Disables the frontend output for index queue requests.
@@ -78,16 +84,16 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	/**
 	 * Starts the execution of a frontend helper.
 	 *
-	 * @param Tx_Solr_IndexQueue_PageIndexerRequest $request Page indexer request
-	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response Page indexer response
+	 * @param PageIndexerRequest $request Page indexer request
+	 * @param PageIndexerResponse $response Page indexer response
 	 */
-	public function processRequest(Tx_Solr_IndexQueue_PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
+	public function processRequest(PageIndexerRequest $request, PageIndexerResponse $response) {
 		$this->request  = $request;
 		$this->response = $response;
 
 		if ($request->getParameter('loggingEnabled')) {
 			GeneralUtility::devLog('Page indexer request received', 'solr', 0, array(
-				'request' => (array) $request,
+				'request' => (array)$request,
 			));
 		}
 	}

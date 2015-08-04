@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -30,7 +32,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_PageIndexerResponse {
+class PageIndexerResponse {
 
 	/**
 	 * Unique request ID.
@@ -46,15 +48,17 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	 */
 	protected $results = array();
 
+
 	/**
 	 * Adds an action's result.
 	 *
 	 * @param string $action The action name.
 	 * @param mixed $result The action's result.
+	 * @throws \RuntimeException if $action is null
 	 */
 	public function addActionResult($action, $result) {
 		if (is_null($action)) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Attempt to provide a result without providing an action',
 				1294080509
 			);
@@ -82,7 +86,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	/**
 	 * Sends the response's headers.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function sendHeaders() {
 		// This overwrites the "Content-Encoding: gzip" header that is usually sent by TYPO3 by default. This header
@@ -156,7 +160,7 @@ class Tx_Solr_IndexQueue_PageIndexerResponse {
 	 * Sets the Id of the request this response belongs to.
 	 *
 	 * @param string $requestId Request Id.
-	 * @return	void
+	 * @return void
 	 */
 	public function setRequestId($requestId) {
 		$this->requestId = $requestId;

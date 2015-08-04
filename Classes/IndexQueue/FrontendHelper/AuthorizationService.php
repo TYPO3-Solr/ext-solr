@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -34,7 +36,7 @@ use TYPO3\CMS\Sv\AbstractAuthenticationService;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends AbstractAuthenticationService {
+class AuthorizationService extends AbstractAuthenticationService {
 
 	/**
 	 * User used when authenticating the page indexer for protected pages,
@@ -72,8 +74,8 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends AbstractAut
 	 * @return integer Returns 200 to grant access for the page indexer.
 	 */
 	public function authUser($user) {
-			// shouldn't happen, but in case we get a regular user we just
-			// pass it on to another (regular) auth service
+		// shouldn't happen, but in case we get a regular user we just
+		// pass it on to another (regular) auth service
 		$authenticationLevel = 100;
 
 		if ($user['username'] == self::SOLR_INDEXER_USERNAME) {
@@ -91,10 +93,10 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends AbstractAut
 	 * @param array $knownGroups Group data array of already known groups. This is handy if you want select other related groups. Keys in this array are unique IDs of those groups.
 	 * @return mixed Groups array, keys = uid which must be unique
 	 */
-	public function getGroups($user, $knownGroups)	{
+	public function getGroups($user, $knownGroups) {
 		$groupData = array();
 
-		$requestHandler = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequestHandler');
+		$requestHandler = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequestHandler');
 		$accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 
 		if ($user['username'] == self::SOLR_INDEXER_USERNAME && !empty($accessRootline)) {
@@ -107,7 +109,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends AbstractAut
 			$groups = $accessRootline->getGroups();
 
 			foreach ($groups as $groupId) {
-					// faking a user group record
+				// faking a user group record
 				$groupData[] = array(
 					'uid'      => $groupId,
 					'pid'      => 0,

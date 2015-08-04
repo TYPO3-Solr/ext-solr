@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -31,30 +36,32 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
+class Dispatcher {
 
 	/**
 	 * Frontend helper manager.
 	 *
-	 * @var Tx_Solr_IndexQueue_FrontendHelper_Manager
+	 * @var Manager
 	 */
 	protected $frontendHelperManager;
 
+
 	/**
-	 * Constructor for Tx_Solr_IndexQueue_FrontendHelper_Dispatcher
+	 * Constructor
+	 *
 	 */
 	public function __construct() {
-		$this->frontendHelperManager = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Manager');
+		$this->frontendHelperManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\Manager');
 	}
 
 	/**
 	 * Takes the request's actions and hands them of to the according frontend
 	 * helpers.
 	 *
-	 * @param Tx_Solr_IndexQueue_PageIndexerRequest $request The request to dispatch
-	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response The request's response
+	 * @param PageIndexerRequest $request The request to dispatch
+	 * @param PageIndexerResponse $response The request's response
 	 */
-	public function dispatch(Tx_Solr_IndexQueue_PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
+	public function dispatch(PageIndexerRequest $request, PageIndexerResponse $response) {
 		$actions = $request->getActions();
 
 		foreach ($actions as $action) {
@@ -67,7 +74,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
 	/**
 	 * Sends a shutdown signal to all activated frontend helpers.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function shutdown() {
 		$frontendHelpers = $this->frontendHelperManager->getActivatedFrontendHelpers();
