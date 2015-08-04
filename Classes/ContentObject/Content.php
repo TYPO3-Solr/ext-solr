@@ -1,5 +1,6 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\ContentObject;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A content object (cObj) to clean a database field in a way so that it can be

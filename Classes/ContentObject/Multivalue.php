@@ -1,5 +1,6 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\ContentObject;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A content object (cObj) to turn comma separated strings into an array to be
