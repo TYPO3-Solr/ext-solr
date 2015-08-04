@@ -31,7 +31,7 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
 	ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
 		'indexPage',
-		'Tx_Solr_IndexQueue_FrontendHelper_PageIndexer'
+		'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageIndexer'
 	);
 }
 
