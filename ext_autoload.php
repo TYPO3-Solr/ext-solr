@@ -47,7 +47,6 @@ return array(
 	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'Classes/FieldProcessor/TimestampToIsoDate.php',
 	'tx_solr_fieldprocessor_timestamptoutcisodate' => $extensionPath . 'Classes/FieldProcessor/TimestampToUtcIsoDate.php',
 
-	'tx_solr_indexqueue_abstractindexer' => $extensionPath . 'Classes/IndexQueue/AbstractIndexer.php',
 	'tx_solr_indexqueue_indexer' => $extensionPath . 'Classes/IndexQueue/Indexer.php',
 	'tx_solr_indexqueue_invalidfieldnameexception' => $extensionPath . 'Classes/IndexQueue/InvalidFieldNameException.php',
 	'tx_solr_indexqueue_item' => $extensionPath . 'Classes/IndexQueue/Item.php',

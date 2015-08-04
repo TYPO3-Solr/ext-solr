@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
@@ -41,7 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
+class Tx_Solr_IndexQueue_Indexer extends AbstractIndexer {
 
 
 	# TODO change to singular $document instead of plural $documents
@@ -571,7 +572,7 @@ class Tx_Solr_IndexQueue_Indexer extends Tx_Solr_IndexQueue_AbstractIndexer {
 	// Utility methods
 
 
-	// FIXME extract log() and setLogging() to Tx_Solr_IndexQueue_AbstractIndexer
+	// FIXME extract log() and setLogging() to ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
 	// FIXME extract an interface Tx_Solr_IndexQueue_ItemInterface
 
 	/**

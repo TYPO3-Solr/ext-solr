@@ -23,7 +23,8 @@
 ***************************************************************/
 
 
-// TODO use/extend Tx_Solr_IndexQueue_AbstractIndexer
+// TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
+use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -129,7 +130,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer implements Tx_So
 				$indexingConfiguration[$solrFieldName . '.']
 			);
 
-			if (Tx_Solr_IndexQueue_AbstractIndexer::isSerializedValue($indexingConfiguration, $solrFieldName)) {
+			if (AbstractIndexer::isSerializedValue($indexingConfiguration, $solrFieldName)) {
 				$fieldValue = unserialize($fieldValue);
 			}
 		} else {

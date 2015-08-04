@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,10 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use Apache_Solr_Document;
+use Tx_Solr_IndexQueue_InvalidFieldNameException;
+use Tx_Solr_SerializedValueDetector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -33,7 +39,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_IndexQueue_AbstractIndexer {
+abstract class AbstractIndexer {
 
 	/**
 	 * Holds the type of the data to be indexed, usually that is the table name.
@@ -53,10 +59,10 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 	 */
 	protected function addDocumentFieldsFromTyposcript(Apache_Solr_Document $document, array $indexingConfiguration, array $data) {
 
-			// mapping of record fields => solr document fields, resolving cObj
+		// mapping of record fields => solr document fields, resolving cObj
 		foreach ($indexingConfiguration as $solrFieldName => $recordFieldName) {
 			if (is_array($recordFieldName)) {
-					// configuration for a content object, skipping
+				// configuration for a content object, skipping
 				continue;
 			}
 
@@ -70,7 +76,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 			$fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data);
 
 			if (is_array($fieldValue)) {
-					// multi value
+				// multi value
 				foreach ($fieldValue as $multiValue) {
 					$document->addField($solrFieldName, $multiValue);
 				}
@@ -101,15 +107,15 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 		$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		if (isset($indexingConfiguration[$solrFieldName . '.'])) {
-				// configuration found => need to resolve a cObj
+			// configuration found => need to resolve a cObj
 
-				// setup locales
+			// setup locales
 			if ($GLOBALS['TSFE'] instanceof TypoScriptFrontendController) {
 				$GLOBALS['TSFE']->settingLocale();
 			}
 
-				// need to change directory to make IMAGE content objects work in BE context
-				// see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
+			// need to change directory to make IMAGE content objects work in BE context
+			// see http://blog.netzelf.de/lang/de/tipps-und-tricks/tslib_cobj-image-im-backend
 			$backupWorkingDirectory = getcwd();
 			chdir(PATH_site);
 
@@ -220,7 +226,7 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 	 * unserialized.
 	 *
 	 * @param array $indexingConfiguration Current item's indexing configuration
-	 * @param string $solrFieldName	Current field being indexed
+	 * @param string $solrFieldName Current field being indexed
 	 * @return boolean TRUE if the value is expected to be serialized, FALSE otherwise
 	 */
 	public static function isSerializedValue(array $indexingConfiguration, $solrFieldName) {
@@ -231,9 +237,9 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 				$serializedValueDetector = GeneralUtility::getUserObj($classReference);
 
 				if ($serializedValueDetector instanceof Tx_Solr_SerializedValueDetector) {
-					$isSerialized = (boolean) $serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
+					$isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($serializedValueDetector) . ' must implement interface Tx_Solr_SerializedValueDetector',
 						1404471741
 					);
@@ -241,12 +247,12 @@ abstract class Tx_Solr_IndexQueue_AbstractIndexer {
 			}
 		}
 
-			// SOLR_MULTIVALUE - always returns serialized array
+		// SOLR_MULTIVALUE - always returns serialized array
 		if ($indexingConfiguration[$solrFieldName] == \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME) {
 			$isSerialized = TRUE;
 		}
 
-			// SOLR_RELATION - returns serialized array if multiValue option is set
+		// SOLR_RELATION - returns serialized array if multiValue option is set
 		if ($indexingConfiguration[$solrFieldName] == \ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME
 			&& !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])
 		) {
