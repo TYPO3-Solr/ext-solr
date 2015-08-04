@@ -74,7 +74,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends AbstractFrontendHelp
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__]      = $pageIndexingHookRegistration;
 
 			// indexes fields defined in plugin.tx_solr.index.queue.pages.fields
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer'] = 'Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer';
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer';
 
 			// making sure this instance is reused when called by the hooks registered before
 			// \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction() and \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj() use
