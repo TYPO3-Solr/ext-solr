@@ -56,7 +56,6 @@ return array(
 	'tx_solr_indexqueue_frontendhelper_pageindexer' => $extensionPath . 'Classes/IndexQueue/FrontendHelper/PageIndexer.php',
 
 	'tx_solr_indexqueue_initializer_page' => $extensionPath . 'Classes/IndexQueue/Initializer/Page.php',
-	'tx_solr_indexqueue_initializer_record' => $extensionPath . 'Classes/IndexQueue/Initializer/Record.php',
 
 	'tx_solr_pluginbase_backendsummary' => $extensionPath . 'Classes/PluginBase/BackendSummary.php',
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
