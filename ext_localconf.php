@@ -26,7 +26,7 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
 	ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
 		'findUserGroups',
-		'Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector'
+		'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector'
 	);
 
 	ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
