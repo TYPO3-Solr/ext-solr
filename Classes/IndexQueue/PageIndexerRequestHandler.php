@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,7 +40,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements SingletonInterface
 	/**
 	 * Index Queue page indexer request.
 	 *
-	 * @var Tx_Solr_IndexQueue_PageIndexerRequest
+	 * @var PageIndexerRequest
 	 */
 	protected $request;
 
@@ -66,7 +67,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements SingletonInterface
 	public function __construct() {
 		$this->dispatcher = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Dispatcher');
 
-		$this->request    = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest',
+		$this->request    = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest',
 			$_SERVER['HTTP_X_TX_SOLR_IQ']
 		);
 		$this->response   = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerResponse');
@@ -125,7 +126,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequestHandler implements SingletonInterface
 	/**
 	 * Gets the Index Queue page indexer request.
 	 *
-	 * @return	Tx_Solr_IndexQueue_PageIndexerRequest
+	 * @return	PageIndexerRequest
 	 */
 	public function getRequest() {
 		return $this->request;

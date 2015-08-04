@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,7 +24,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use Tx_Solr_IndexQueue_PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_PageIndexerRequest {
+class PageIndexerRequest {
 
 	/**
 	 * List of actions to perform during page rendering.
@@ -92,14 +94,14 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	protected $timeout;
 
 	/**
-	 * Constructor for Tx_Solr_IndexQueue_PageIndexerRequest
+	 * Constructor.
 	 *
-	 * @param string	$header JSON encoded Index Queue page indexer parameters
+	 * @param string $header JSON encoded Index Queue page indexer parameters
 	 */
 	public function __construct($header = NULL) {
 		$this->requestId = uniqid();
 
-		$this->timeout = (float) ini_get('default_socket_timeout');
+		$this->timeout = (float)ini_get('default_socket_timeout');
 
 		if (!is_null($header)) {
 			$this->parameters = json_decode($header, TRUE);
@@ -131,7 +133,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 
 		$parsedURL = parse_url($url);
 		if (!preg_match('/^https?/', $parsedURL['scheme'])) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Cannot send request headers for HTTPS protocol',
 				1320319214
 			);
@@ -146,7 +148,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 
 		$rawResponse = file_get_contents($url, FALSE, $context);
 
-			// convert JSON response to response object properties
+		// convert JSON response to response object properties
 		$decodedResponse = $response->getResultsFromJson($rawResponse);
 
 		if ($rawResponse === FALSE || $decodedResponse === FALSE) {
@@ -163,14 +165,14 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 				)
 			);
 
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Failed to execute Page Indexer Request. See log for details. Request ID: ' . $this->requestId,
 				1319116885
 			);
 		}
 
 		if ($decodedResponse['requestId'] != $this->requestId) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Request ID mismatch. Request ID was ' . $this->requestId . ', received ' . $decodedResponse['requestId'] . '. Are requests cached?',
 				1351260655
 			);
@@ -354,6 +356,6 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	 * @param float $timeout Timeout seconds
 	 */
 	public function setTimeout($timeout) {
-		$this->timeout = (float) $timeout;
+		$this->timeout = (float)$timeout;
 	}
 }

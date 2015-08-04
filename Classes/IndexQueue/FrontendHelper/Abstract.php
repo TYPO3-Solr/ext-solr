@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -39,7 +40,7 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	/**
 	 * Index Queue page indexer request.
 	 *
-	 * @var Tx_Solr_IndexQueue_PageIndexerRequest
+	 * @var PageIndexerRequest
 	 */
 	protected $request;
 
@@ -78,10 +79,10 @@ abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract implements Tx_Solr_Ind
 	/**
 	 * Starts the execution of a frontend helper.
 	 *
-	 * @param Tx_Solr_IndexQueue_PageIndexerRequest $request Page indexer request
+	 * @param PageIndexerRequest $request Page indexer request
 	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response Page indexer response
 	 */
-	public function processRequest(Tx_Solr_IndexQueue_PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
+	public function processRequest(PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
 		$this->request  = $request;
 		$this->response = $response;
 

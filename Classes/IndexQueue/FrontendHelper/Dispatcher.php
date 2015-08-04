@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -51,10 +53,10 @@ class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher {
 	 * Takes the request's actions and hands them of to the according frontend
 	 * helpers.
 	 *
-	 * @param Tx_Solr_IndexQueue_PageIndexerRequest $request The request to dispatch
+	 * @param PageIndexerRequest $request The request to dispatch
 	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response The request's response
 	 */
-	public function dispatch(Tx_Solr_IndexQueue_PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
+	public function dispatch(PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response) {
 		$actions = $request->getActions();
 
 		foreach ($actions as $action) {

@@ -128,10 +128,10 @@ class PageIndexer extends Indexer {
 	 * Builds a base page indexer request with configured headers and other
 	 * parameters.
 	 *
-	 * @return \Tx_Solr_IndexQueue_PageIndexerRequest Base page indexer request
+	 * @return PageIndexerRequest Base page indexer request
 	 */
 	protected function buildBasePageIndexerRequest() {
-		$request = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest');
+		$request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest');
 		$request->setParameter('loggingEnabled', $this->loggingEnabled);
 
 		if (!empty($this->options['authorization.'])) {

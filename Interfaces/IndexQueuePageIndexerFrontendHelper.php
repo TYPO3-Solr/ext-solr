@@ -25,6 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+
 
 /**
  * Index Queue Frontend Helper interface.
@@ -50,10 +52,10 @@ interface Tx_Solr_IndexQueuePageIndexerFrontendHelper {
 	/**
 	 * Starts the execution of a frontend helper.
 	 *
-	 * @param Tx_Solr_IndexQueue_PageIndexerRequest $request Page indexer request
+	 * @param PageIndexerRequest $request Page indexer request
 	 * @param Tx_Solr_IndexQueue_PageIndexerResponse $response Page indexer response
 	 */
-	public function processRequest(Tx_Solr_IndexQueue_PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response);
+	public function processRequest(PageIndexerRequest $request, Tx_Solr_IndexQueue_PageIndexerResponse $response);
 
 	/**
 	 * Returns the collected data.
