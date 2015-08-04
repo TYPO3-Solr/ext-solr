@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -78,7 +80,7 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * An Index Queue item related to this request.
 	 *
-	 * @var Tx_Solr_IndexQueue_Item
+	 * @var Item
 	 */
 	protected $indexQueueItem = NULL;
 
@@ -331,9 +333,9 @@ class Tx_Solr_IndexQueue_PageIndexerRequest {
 	/**
 	 * Sets the Index Queue item this request is related to.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item Related Index Queue item.
+	 * @param Item $item Related Index Queue item.
 	 */
-	public function setIndexQueueItem(Tx_Solr_IndexQueue_Item $item) {
+	public function setIndexQueueItem(Item $item) {
 		$this->indexQueueItem = $item;
 	}
 

@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -42,10 +43,10 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	/**
 	 * Indexes an item from the indexing queue.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param Item $item An index queue item
 	 * @return Apache_Solr_Response The Apache Solr response
 	 */
-	public function index(Tx_Solr_IndexQueue_Item $item) {
+	public function index(Item $item) {
 		$this->setLogging($item);
 
 			// check whether we should move on at all
@@ -75,12 +76,12 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * Creates a single Solr Document for a page in a specific language and for
 	 * a specific frontend user group.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item The index queue item representing the page.
+	 * @param Item $item The index queue item representing the page.
 	 * @param integer $language The language to use.
 	 * @param integer $userGroup The frontend user group to use.
 	 * @return Tx_Solr_IndexQueue_PageIndexerResponse Page indexer response
 	 */
-	protected function indexPage(Tx_Solr_IndexQueue_Item $item, $language = 0, $userGroup = 0) {
+	protected function indexPage(Item $item, $language = 0, $userGroup = 0) {
 		$accessRootline = $this->getAccessRootline($item, $language, $userGroup);
 
 		$request = $this->buildBasePageIndexerRequest();
@@ -154,10 +155,10 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	/**
 	 * Checks whether we can index this page.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item The page we want to index encapsulated in an index queue item
+	 * @param Item $item The page we want to index encapsulated in an index queue item
 	 * @return boolean True if we can index this page, FALSE otherwise
 	 */
-	protected function isPageIndexable(Tx_Solr_IndexQueue_Item $item) {
+	protected function isPageIndexable(Item $item) {
 
 			// TODO do we still need this?
 			// shouldn't those be sorted out by the record monitor / garbage collector already?
@@ -183,11 +184,11 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * Tries to find a domain record to use to build an URL for a given page ID
 	 * and then actually build and return the page URL.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item Item to index
+	 * @param Item $item Item to index
 	 * @param integer $language The language id
 	 * @return string URL to send the index request to
 	 */
-	protected function getDataUrl(Tx_Solr_IndexQueue_Item $item, $language = 0) {
+	protected function getDataUrl(Item $item, $language = 0) {
 		$scheme = 'http';
 		$host   = $item->getSite()->getDomain();
 		$path   = '/';
@@ -272,10 +273,10 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * Generates the MP URL parameter needed to access mount pages. If the item
 	 * is identified as being a mounted page, the &MP parameter is generated.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item Item to get an &MP URL parameter for
+	 * @param Item $item Item to get an &MP URL parameter for
 	 * @return string &MP URL parameter if $item is a mounted page
 	 */
-	protected function getMountPageDataUrlParameter(Tx_Solr_IndexQueue_Item $item) {
+	protected function getMountPageDataUrlParameter(Item $item) {
 		$mountPageUrlParameter = '';
 
 		if ($item->hasIndexingProperty('isMountedPage')) {
@@ -294,10 +295,10 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * The connections include the default connection and connections to be used
 	 * for translations of a page.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item
+	 * @param Item $item An index queue item
 	 * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
 	 */
-	protected function getSolrConnectionsByItem(Tx_Solr_IndexQueue_Item $item) {
+	protected function getSolrConnectionsByItem(Item $item) {
 		$solrConnections = parent::getSolrConnectionsByItem($item);
 
 		$page = $item->getRecord();
@@ -356,12 +357,12 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * The content access element does not have a page ID, instead it replaces
 	 * the ID by a lower case C.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item Index queue item representing the current page
+	 * @param Item $item Index queue item representing the current page
 	 * @param integer $language The sys_language_uid language ID
 	 * @param integer $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
 	 * @return string An Access Rootline.
 	 */
-	protected function getAccessRootline(Tx_Solr_IndexQueue_Item $item, $language = 0, $contentAccessGroup = null) {
+	protected function getAccessRootline(Item $item, $language = 0, $contentAccessGroup = null) {
 		static $accessRootlineCache;
 
 		$accessRootlineCacheEntryId = $item->getRecordUid() . '|' . $language;
@@ -395,11 +396,11 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * elements and groups of records of extensions that have correctly been
 	 * pushed through ContentObjectRenderer during rendering.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item Index queue item representing the current page to get the user groups from
+	 * @param Item $item Index queue item representing the current page to get the user groups from
 	 * @param integer $language The sys_language_uid language ID
 	 * @return array Array of user group IDs
 	 */
-	protected function getAccessGroupsFromContent(Tx_Solr_IndexQueue_Item $item, $language = 0) {
+	protected function getAccessGroupsFromContent(Item $item, $language = 0) {
 		static $accessGroupsCache;
 
 		$accessGroupsCacheEntryId = $item->getRecordUid() . '|' . $language;

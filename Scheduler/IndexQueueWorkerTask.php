@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -108,10 +109,10 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	/**
 	 * Indexes an item from the Index Queue.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item An index queue item to index
+	 * @param Item $item An index queue item to index
 	 * @return boolean TRUE if the item was successfully indexed, FALSE otherwise
 	 */
-	protected function indexItem(Tx_Solr_IndexQueue_Item $item) {
+	protected function indexItem(Item $item) {
 		$itemIndexed = FALSE;
 		$indexer     = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
@@ -276,9 +277,9 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 * root page information we can determine the correct host although being
 	 * in a CLI environment.
 	 *
-	 * @param Tx_Solr_IndexQueue_Item $item Index Queue item to use to determine the host.
+	 * @param Item $item Index Queue item to use to determine the host.
 	 */
-	protected function initializeHttpHost(Tx_Solr_IndexQueue_Item $item) {
+	protected function initializeHttpHost(Item $item) {
 		static $hosts = array();
 
 			// relevant for realURL environments, only

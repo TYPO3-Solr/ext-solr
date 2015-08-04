@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\DatabaseUtility;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -751,7 +752,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Gets a single Index Queue item by its uid.
 	 *
 	 * @param integer $itemId Index Queue item uid
-	 * @return Tx_Solr_IndexQueue_Item The request Index Queue item or NULL
+	 * @return Item The request Index Queue item or NULL
 	 *      if no item with $itemId was found
 	 */
 	public function getItem($itemId) {
@@ -767,7 +768,7 @@ class Tx_Solr_IndexQueue_Queue {
 			$indexQueueItemRecord = $indexQueueItemRecord[0];
 
 			$item = GeneralUtility::makeInstance(
-				'Tx_Solr_IndexQueue_Item',
+				'ApacheSolrForTypo3\\Solr\\IndexQueue\\Item',
 				$indexQueueItemRecord
 			);
 		}
@@ -823,7 +824,7 @@ class Tx_Solr_IndexQueue_Queue {
 	 *
 	 * @param Site $site TYPO3 site
 	 * @param integer $limit Number of items to get from the queue
-	 * @return Tx_Solr_IndexQueue_Item[] Items to index to the given solr server
+	 * @return Item[] Items to index to the given solr server
 	 */
 	public function getItemsToIndex(Site $site, $limit = 50) {
 		$itemsToIndex = array();
@@ -850,11 +851,11 @@ class Tx_Solr_IndexQueue_Queue {
 	}
 
 	/**
-	 * Creates an array of Tx_Solr_IndexQueue_Item objects from an array of
+	 * Creates an array of ApacheSolrForTypo3\Solr\IndexQueue\Item objects from an array of
 	 * index queue records.
 	 *
 	 * @param array $indexQueueItemRecords Array of plain index queue records
-	 * @return array Array of Tx_Solr_IndexQueue_Item objects
+	 * @return array Array of ApacheSolrForTypo3\Solr\IndexQueue\Item objects
 	 */
 	protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords) {
 		$indexQueueItems = array();
@@ -884,7 +885,7 @@ class Tx_Solr_IndexQueue_Queue {
 		foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
 			if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
 				$indexQueueItems[] = GeneralUtility::makeInstance(
-					'Tx_Solr_IndexQueue_Item',
+					'ApacheSolrForTypo3\\Solr\\IndexQueue\\Item',
 					$indexQueueItemRecord,
 					$tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
 				);
@@ -901,14 +902,14 @@ class Tx_Solr_IndexQueue_Queue {
 	 * Marks an item as failed and causes the indexer to skip the item in the
 	 * next run.
 	 *
-	 * @param int|Tx_Solr_IndexQueue_Item $item Either the item's Index Queue
+	 * @param int|Item $item Either the item's Index Queue
 	 *      uid or the complete item
 	 * @param string $errorMessage Error message
 	 */
 	public function markItemAsFailed($item, $errorMessage = '') {
 		$itemUid = 0;
 
-		if ($item instanceof Tx_Solr_IndexQueue_Item) {
+		if ($item instanceof Item) {
 			$itemUid = $item->getIndexQueueUid();
 		} else {
 			$itemUid = (int) $item;

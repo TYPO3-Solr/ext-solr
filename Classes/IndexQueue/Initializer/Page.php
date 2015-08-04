@@ -267,7 +267,7 @@ class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer
 		);
 
 		foreach ($mountPageItems as $mountPageItemRecord) {
-			$mountPageItem = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_Item', $mountPageItemRecord);
+			$mountPageItem = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Item', $mountPageItemRecord);
 
 			$mountPageItem->setIndexingProperty('mountPageSource',      $mountPage['mountPageSource']);
 			$mountPageItem->setIndexingProperty('mountPageDestination', $mountPage['mountPageDestination']);
