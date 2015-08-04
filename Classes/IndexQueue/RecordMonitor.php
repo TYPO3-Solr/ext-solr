@@ -304,7 +304,7 @@ class RecordMonitor {
 	protected function buildUserWhereClause($indexingConfigurationName) {
 		$condition = '';
 
-		// FIXME replace this with the mechanism described in Tx_Solr_IndexQueue_Initializer_Abstract::buildUserWhereClause()
+		// FIXME replace this with the mechanism described in ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer::buildUserWhereClause()
 		if (isset($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'])) {
 			$condition = ' AND ' . $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'];
 		}

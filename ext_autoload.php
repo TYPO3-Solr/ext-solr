@@ -55,7 +55,6 @@ return array(
 	'tx_solr_indexqueue_frontendhelper_pagefieldmappingindexer' => $extensionPath . 'Classes/IndexQueue/FrontendHelper/PageFieldMappingIndexer.php',
 	'tx_solr_indexqueue_frontendhelper_pageindexer' => $extensionPath . 'Classes/IndexQueue/FrontendHelper/PageIndexer.php',
 
-	'tx_solr_indexqueue_initializer_abstract' => $extensionPath . 'Classes/IndexQueue/Initializer/Abstract.php',
 	'tx_solr_indexqueue_initializer_page' => $extensionPath . 'Classes/IndexQueue/Initializer/Page.php',
 	'tx_solr_indexqueue_initializer_record' => $extensionPath . 'Classes/IndexQueue/Initializer/Record.php',
 

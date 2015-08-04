@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\DatabaseUtility;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_IndexQueue_Initializer_Abstract;
+use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
 use Tx_Solr_IndexQueueInitializationPostProcessor;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -168,7 +168,7 @@ class Queue {
 		$initializerClass = $this->resolveInitializerClass($solrConfiguration, $indexingConfigurationName);
 
 		$initializer = GeneralUtility::makeInstance($initializerClass);
-		/** @var $initializer Tx_Solr_IndexQueue_Initializer_Abstract */
+		/** @var $initializer \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer */
 		$initializer->setSite($site);
 		$initializer->setType($tableToIndex);
 		$initializer->setIndexingConfigurationName($indexingConfigurationName);

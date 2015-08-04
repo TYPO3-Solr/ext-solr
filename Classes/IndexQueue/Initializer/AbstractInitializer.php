@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -26,6 +28,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use Tx_Solr_IndexQueueInitializer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -38,7 +41,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQueueInitializer {
+abstract class AbstractInitializer implements Tx_Solr_IndexQueueInitializer {
 
 	/**
 	 * Site to initialize
@@ -69,7 +72,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 	protected $indexingConfigurationName;
 
 
-		// Object initialization
+	// Object initialization
 
 
 	/**
@@ -109,11 +112,11 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 	 * @see Tx_Solr_IndexQueueInitializer::setIndexingConfigurationName()
 	 */
 	public function setIndexingConfigurationName($indexingConfigurationName) {
-		$this->indexingConfigurationName = (string) $indexingConfigurationName;
+		$this->indexingConfigurationName = (string)$indexingConfigurationName;
 	}
 
 
-		// Index Queue initialization
+	// Index Queue initialization
 
 
 	/**
@@ -173,7 +176,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 	}
 
 
-		// initialization query building
+	// initialization query building
 
 
 	/**
@@ -245,7 +248,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 		$priority = 0;
 
 		if (!empty($this->indexingConfiguration['indexingPriority'])) {
-			$priority = (int) $this->indexingConfiguration['indexingPriority'];
+			$priority = (int)$this->indexingConfiguration['indexingPriority'];
 		}
 
 		return $priority;
@@ -270,7 +273,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 		}
 
 		if (isset($GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['endtime'])) {
-				// only include records with a future endtime or default value (0)
+			// only include records with a future endtime or default value (0)
 			$endTimeFieldName = $GLOBALS['TCA'][$this->type]['ctrl']['enablecolumns']['endtime'];
 			$conditions['endtime'] = '(' . $endTimeFieldName . ' > ' . time() . ' OR ' . $endTimeFieldName . ' = 0)';
 		}
@@ -287,7 +290,7 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 		}
 
 		if (!empty($GLOBALS['TCA'][$this->type]['ctrl']['versioningWS'])) {
-				// versioning is enabled for this table: exclude draft workspace records
+			// versioning is enabled for this table: exclude draft workspace records
 			$conditions['versioningWS'] = 'pid != -1';
 		}
 
@@ -307,9 +310,9 @@ abstract class Tx_Solr_IndexQueue_Initializer_Abstract implements Tx_Solr_IndexQ
 	protected function buildUserWhereClause() {
 		$condition = '';
 
-			// FIXME replace this with the mechanism described below
+		// FIXME replace this with the mechanism described below
 		if (isset($this->indexingConfiguration['additionalWhereClause'])) {
-			$condition = ' AND '  . $this->indexingConfiguration['additionalWhereClause'];
+			$condition = ' AND ' . $this->indexingConfiguration['additionalWhereClause'];
 		}
 
 		return $condition;

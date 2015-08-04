@@ -26,6 +26,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\DatabaseUtility;
+use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -41,7 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_Initializer_Page extends Tx_Solr_IndexQueue_Initializer_Abstract {
+class Tx_Solr_IndexQueue_Initializer_Page extends AbstractInitializer {
 
 	/**
 	 * Constructor, sets type and indexingConfigurationName to "pages".
