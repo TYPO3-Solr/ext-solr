@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,10 +24,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * A special purpose indexer to index pages.
@@ -38,18 +39,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
+class PageIndexer extends Indexer {
 
 	/**
 	 * Indexes an item from the indexing queue.
 	 *
 	 * @param Item $item An index queue item
-	 * @return Apache_Solr_Response The Apache Solr response
+	 * @return bool Whether indexing was successful
 	 */
 	public function index(Item $item) {
 		$this->setLogging($item);
 
-			// check whether we should move on at all
+		// check whether we should move on at all
 		if (!$this->isPageIndexable($item)) {
 			return FALSE;
 		}
@@ -59,8 +60,8 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 			$contentAccessGroups = $this->getAccessGroupsFromContent($item, $systemLanguageUid);
 
 			if (empty($contentAccessGroups)) {
-					// might be an empty page w/no content elements or some TYPO3 error / bug
-					// FIXME logging needed
+				// might be an empty page w/no content elements or some TYPO3 error / bug
+				// FIXME logging needed
 				continue;
 			}
 
@@ -79,7 +80,8 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * @param Item $item The index queue item representing the page.
 	 * @param integer $language The language to use.
 	 * @param integer $userGroup The frontend user group to use.
-	 * @return Tx_Solr_IndexQueue_PageIndexerResponse Page indexer response
+	 * @return \Tx_Solr_IndexQueue_PageIndexerResponse Page indexer response
+	 * @throws \RuntimeException if indexing an item failed
 	 */
 	protected function indexPage(Item $item, $language = 0, $userGroup = 0) {
 		$accessRootline = $this->getAccessRootline($item, $language, $userGroup);
@@ -87,7 +89,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 		$request = $this->buildBasePageIndexerRequest();
 		$request->setIndexQueueItem($item);
 		$request->addAction('indexPage');
-		$request->setParameter('accessRootline', (string) $accessRootline);
+		$request->setParameter('accessRootline', (string)$accessRootline);
 
 		$indexRequestUrl   = $this->getDataUrl($item, $language);
 		$response          = $request->send($indexRequestUrl);
@@ -113,7 +115,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 		}
 
 		if (!$indexActionResult['pageIndexed']) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Failed indexing page Index Queue item ' . $item->getIndexQueueUid(),
 				1331837081
 			);
@@ -126,7 +128,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * Builds a base page indexer request with configured headers and other
 	 * parameters.
 	 *
-	 * @return Tx_Solr_IndexQueue_PageIndexerRequest Base page indexer request
+	 * @return \Tx_Solr_IndexQueue_PageIndexerRequest Base page indexer request
 	 */
 	protected function buildBasePageIndexerRequest() {
 		$request = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequest');
@@ -146,7 +148,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 		}
 
 		if (!empty($this->options['frontendDataHelper.']['requestTimeout'])) {
-			$request->setTimeout((float) $this->options['frontendDataHelper.']['requestTimeout']);
+			$request->setTimeout((float)$this->options['frontendDataHelper.']['requestTimeout']);
 		}
 
 		return $request;
@@ -160,14 +162,15 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 */
 	protected function isPageIndexable(Item $item) {
 
-			// TODO do we still need this?
-			// shouldn't those be sorted out by the record monitor / garbage collector already?
+		// TODO do we still need this?
+		// shouldn't those be sorted out by the record monitor / garbage collector already?
 
 		$isIndexable = TRUE;
 		$record = $item->getRecord();
 
 		if (isset($GLOBALS['TCA']['pages']['ctrl']['enablecolumns']['disabled'])
-		&& $record[$GLOBALS['TCA']['pages']['ctrl']['enablecolumns']['disabled']]) {
+			&& $record[$GLOBALS['TCA']['pages']['ctrl']['enablecolumns']['disabled']]
+		) {
 			$isIndexable = FALSE;
 		}
 
@@ -187,6 +190,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 	 * @param Item $item Item to index
 	 * @param integer $language The language id
 	 * @return string URL to send the index request to
+	 * @throws \RuntimeException
 	 */
 	protected function getDataUrl(Item $item, $language = 0) {
 		$scheme = 'http';
@@ -194,7 +198,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 		$path   = '/';
 		$pageId = $item->getRecordUid();
 
-			// deprecated
+		// deprecated
 		if (!empty($this->options['scheme'])) {
 			GeneralUtility::devLog(
 				'Using deprecated option "scheme" to set the scheme (http / https) for the page indexer frontend helper. Use plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.scheme instead',
@@ -204,17 +208,17 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 			$scheme = $this->options['scheme'];
 		}
 
-			// check whether we should use ssl / https
+		// check whether we should use ssl / https
 		if (!empty($this->options['frontendDataHelper.']['scheme'])) {
 			$scheme = $this->options['frontendDataHelper.']['scheme'];
 		}
 
-			// overwriting the host
+		// overwriting the host
 		if (!empty($this->options['frontendDataHelper.']['host'])) {
 			$host = $this->options['frontendDataHelper.']['host'];
 		}
 
-			// setting a path if TYPO3 is installed in a sub directory
+		// setting a path if TYPO3 is installed in a sub directory
 		if (!empty($this->options['frontendDataHelper.']['path'])) {
 			$path = $this->options['frontendDataHelper.']['path'];
 		}
@@ -229,7 +233,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 				'solr',
 				3,
 				array(
-					'item'            => (array) $item,
+					'item'            => (array)$item,
 					'constructed URL' => $dataUrl,
 					'scheme'          => $scheme,
 					'host'            => $host,
@@ -239,7 +243,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 				)
 			);
 
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'Could not create a valid URL to get frontend data while trying to index a page. Created URL: ' . $dataUrl,
 				1311080805
 			);
@@ -248,7 +252,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']) {
 			$dataUrlModifier = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
 
-			if ($dataUrlModifier instanceof Tx_Solr_IndexQueuePageIndexerDataUrlModifier) {
+			if ($dataUrlModifier instanceof \Tx_Solr_IndexQueuePageIndexerDataUrlModifier) {
 				$dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, array(
 					'item'     => $item,
 					'scheme'   => $scheme,
@@ -258,7 +262,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 					'language' => $language
 				));
 			} else {
-				throw new RuntimeException(
+				throw new \RuntimeException(
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']
 						. ' is not an implementation of Tx_Solr_IndexQueuePageIndexerDataUrlModifier',
 					1290523345
@@ -302,9 +306,9 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 		$solrConnections = parent::getSolrConnectionsByItem($item);
 
 		$page = $item->getRecord();
-			// may use \TYPO3\CMS\Core\Utility\GeneralUtility::hideIfDefaultLanguage($page['l18n_cfg']) with TYPO3 4.6
+		// may use \TYPO3\CMS\Core\Utility\GeneralUtility::hideIfDefaultLanguage($page['l18n_cfg']) with TYPO3 4.6
 		if ($page['l18n_cfg'] & 1) {
-				// page is configured to hide the default translation -> remove Solr connection for default language
+			// page is configured to hide the default translation -> remove Solr connection for default language
 			unset($solrConnections[0]);
 		}
 
@@ -375,7 +379,7 @@ class Tx_Solr_IndexQueue_PageIndexer extends Indexer {
 				$item->getRecordUid()
 			);
 
-				// current page's content access groups
+			// current page's content access groups
 			$contentAccessGroups = array($contentAccessGroup);
 			if (is_null($contentAccessGroup)) {
 				$contentAccessGroups = $this->getAccessGroupsFromContent($item, $language);

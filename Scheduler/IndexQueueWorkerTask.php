@@ -157,7 +157,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 * By default all items are indexed using the default indexer
 	 * (ApacheSolrForTypo3\Solr\IndexQueue\Indexer) coming with EXT:solr. Pages by default are
 	 * configured to be indexed through a dedicated indexer
-	 * (Tx_Solr_IndexQueue_PageIndexer). In all other cases a dedicated indexer
+	 * (ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer). In all other cases a dedicated indexer
 	 * can be specified through TypoScript if needed.
 	 *
 	 * @param string $indexingConfigurationName Indexing configuration name.

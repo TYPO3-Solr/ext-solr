@@ -90,7 +90,7 @@ plugin.tx_solr {
 
 				indexingPriority = 0
 
-				indexer = Tx_Solr_IndexQueue_PageIndexer
+				indexer = ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexer
 				indexer {
 					// add options for the indexer here
 				}
