@@ -94,7 +94,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends AbstractAut
 	public function getGroups($user, $knownGroups)	{
 		$groupData = array();
 
-		$requestHandler = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_PageIndexerRequestHandler');
+		$requestHandler = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequestHandler');
 		$accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 
 		if ($user['username'] == self::SOLR_INDEXER_USERNAME && !empty($accessRootline)) {
