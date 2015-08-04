@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AbstractFrontendHelper;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -125,7 +126,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends AbstractFrontendHelp
 		$groups    = $accessRootline->getGroups();
 		$groupList = implode(',', $groups);
 
-		$GLOBALS['TSFE']->fe_user->user['username']  = Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService::SOLR_INDEXER_USERNAME;
+		$GLOBALS['TSFE']->fe_user->user['username']  = AuthorizationService::SOLR_INDEXER_USERNAME;
 		$GLOBALS['TSFE']->fe_user->user['usergroup'] = $groupList;
 
 		$this->responseData['authorization'] = array(
@@ -166,7 +167,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends AbstractFrontendHelp
 		ExtensionManagementUtility::addService(
 			'solr', // extension key
 			'auth', // service type
-			'Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService', // service key
+			'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\AuthorizationService', // service key
 			array( // service meta data
 				'title'       => 'Solr Indexer Authorization',
 				'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
@@ -181,7 +182,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends AbstractFrontendHelp
 				'exec'        => '',
 
 				'classFile'   => $GLOBALS['PATH_solr'] . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
-				'className'   => 'Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService',
+				'className'   => 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\AuthorizationService',
 			)
 		);
 	}
