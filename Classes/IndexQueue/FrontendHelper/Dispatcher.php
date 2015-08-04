@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
-use Tx_Solr_IndexQueue_FrontendHelper_Manager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -42,7 +41,7 @@ class Dispatcher {
 	/**
 	 * Frontend helper manager.
 	 *
-	 * @var Tx_Solr_IndexQueue_FrontendHelper_Manager
+	 * @var Manager
 	 */
 	protected $frontendHelperManager;
 
@@ -52,7 +51,7 @@ class Dispatcher {
 	 *
 	 */
 	public function __construct() {
-		$this->frontendHelperManager = GeneralUtility::makeInstance('Tx_Solr_IndexQueue_FrontendHelper_Manager');
+		$this->frontendHelperManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\Manager');
 	}
 
 	/**

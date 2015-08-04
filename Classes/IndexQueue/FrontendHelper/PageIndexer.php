@@ -79,7 +79,7 @@ class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends AbstractFrontendHelp
 			// making sure this instance is reused when called by the hooks registered before
 			// \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction() and \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj() use
 			// these storages while the object was instantiated by
-			// Tx_Solr_IndexQueue_FrontendHelper_Manager before.
+			// ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager before.
 			// \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance() also uses a dedicated cache
 		$GLOBALS['T3_VAR']['callUserFunction_classPool'][__CLASS__]     = $this;
 		$GLOBALS['T3_VAR']['getUserObj'][$pageIndexingHookRegistration] = $this;
