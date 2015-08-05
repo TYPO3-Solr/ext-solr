@@ -400,7 +400,7 @@ class Typo3PageIndexer {
 	 */
 	protected function processDocuments(array $documents) {
 		if (is_array($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.'])) {
-			$service = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_Service');
+			$service = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\Service');
 			$service->processDocuments(
 				$documents,
 				$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.']

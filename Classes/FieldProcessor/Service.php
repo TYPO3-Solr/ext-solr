@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,12 +35,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_Service {
+class Service {
 
 	/**
 	 * Modifies a list of documents
 	 *
-	 * @param Apache_Solr_Document[] $documents
+	 * @param \Apache_Solr_Document[] $documents
 	 * @param array $processingConfiguration
 	 */
 	public function processDocuments(array $documents, array $processingConfiguration) {
@@ -50,10 +52,10 @@ class Tx_Solr_FieldProcessor_Service {
 	/**
 	 * modifies a document according to the given configuration
 	 *
-	 * @param Apache_Solr_Document $document
+	 * @param \Apache_Solr_Document $document
 	 * @param array $processingConfiguration
 	 */
-	public function processDocument(Apache_Solr_Document $document, array $processingConfiguration) {
+	public function processDocument(\Apache_Solr_Document $document, array $processingConfiguration) {
 		foreach ($processingConfiguration as $fieldName => $instruction) {
 			$fieldInformation = $document->getField($fieldName);
 			$isSingleValueField = FALSE;
@@ -62,7 +64,7 @@ class Tx_Solr_FieldProcessor_Service {
 				$fieldValue = $fieldInformation['value'];
 
 				if (!is_array($fieldValue)) {
-						// turn single value field into multi value field
+					// turn single value field into multi value field
 					$fieldValue = array($fieldValue);
 					$isSingleValueField = TRUE;
 				}
@@ -94,7 +96,7 @@ class Tx_Solr_FieldProcessor_Service {
 				}
 
 				if ($isSingleValueField) {
-						// turn multi value field back into single value field
+					// turn multi value field back into single value field
 					$fieldValue = $fieldValue[0];
 				}
 

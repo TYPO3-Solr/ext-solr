@@ -23,6 +23,8 @@
 ***************************************************************/
 
 // workaround
+use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
+
 if (!class_exists('Apache_Solr_Document')) {
   require_once __DIR__ . '../../../../Lib/SolrPhpClient/Apache/Solr/Document.php';
 }
@@ -44,13 +46,13 @@ class Tx_Solr_FieldProcessor_ServiceTest extends Tx_Phpunit_TestCase {
 	/**
 	 * the service
 	 *
-	 * @var Tx_Solr_FieldProcessor_Service
+	 * @var Service
 	 */
 	private $service;
 
 	public function setUp() {
 		$this->documentMock = new Apache_Solr_Document();
-		$this->service = new Tx_Solr_FieldProcessor_Service();
+		$this->service = new Service();
 	}
 
 	/**
