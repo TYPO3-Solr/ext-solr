@@ -77,7 +77,7 @@ class Tx_Solr_FieldProcessor_Service {
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'pathToHierarchy':
-						$processor  = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PathToHierarchy');
+						$processor  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\PathToHierarchy');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'pageUidToHierarchy':

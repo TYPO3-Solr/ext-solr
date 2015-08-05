@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+
+use Tx_Solr_FieldProcessor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -31,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_PathToHierarchy implements Tx_Solr_FieldProcessor {
+class PathToHierarchy implements Tx_Solr_FieldProcessor {
 
 	/**
 	 * Expects a value like "some/hierarchy/value"
