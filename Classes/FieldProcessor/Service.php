@@ -71,7 +71,7 @@ class Service {
 
 				switch ($instruction) {
 					case 'timestampToUtcIsoDate':
-						$processor  = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_TimestampToUtcIsoDate');
+						$processor  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\TimestampToUtcIsoDate');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'timestampToIsoDate':
