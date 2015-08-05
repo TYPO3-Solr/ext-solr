@@ -24,9 +24,7 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_FieldProcessor;
 
 
 /**
@@ -36,7 +34,7 @@ use Tx_Solr_FieldProcessor;
  * @package TYPO3
  * @subpackage solr
  */
-class TimestampToUtcIsoDate implements Tx_Solr_FieldProcessor {
+class TimestampToUtcIsoDate implements FieldProcessor {
 
 	/**
 	 * Expects a timestamp and converts it to an ISO 8601 date in UTC as needed by Solr.

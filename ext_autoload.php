@@ -97,7 +97,6 @@ return array(
 	'tx_solr_facetoptionsrenderer' => $extensionPath . 'Interfaces/FacetOptionsRenderer.php',
 	'tx_solr_facetrenderer' => $extensionPath . 'Interfaces/FacetRenderer.php',
 	'tx_solr_facetsmodifier' =>  $extensionPath . 'Interfaces/FacetsModifier.php',
-	'tx_solr_fieldprocessor' => $extensionPath . 'Interfaces/FieldProcessor.php',
 	'tx_solr_formmodifier' => $extensionPath . 'Interfaces/FormModifier.php',
 	'tx_solr_garbagecollectorpostprocessor' => $extensionPath . 'Interfaces/GarbageCollectorPostProcessor.php',
 	'tx_solr_indexqueueinitializationpostprocessor' => $extensionPath . 'Interfaces/IndexQueueInitializationPostProcessor.php',

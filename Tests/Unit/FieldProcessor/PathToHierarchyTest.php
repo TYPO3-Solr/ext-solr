@@ -25,7 +25,7 @@
 // workaround
 use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
 
-if (!class_exists('Tx_Solr_FieldProcessor')) {
+if (!class_exists('ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor')) {
   require_once __DIR__ . '../../../../Interfaces/interface.tx_solr_fieldprocessor.php';
 }
 

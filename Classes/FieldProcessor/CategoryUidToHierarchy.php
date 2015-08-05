@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_FieldProcessor;
-
 
 /**
  * This Processor takes a UID of sys_category, and resolves its rootline in solr notation.
@@ -54,7 +52,7 @@ use Tx_Solr_FieldProcessor;
  * @package TYPO3
  * @subpackage solr
  */
-class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
+class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor {
 
 	/**
 	 * Expects a uid ID of a category. Returns a Solr hierarchy notation for the

@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_FieldProcessor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -55,7 +54,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class PageUidToHierarchy extends AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
+class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor {
 
 	/**
 	 * Expects a page ID of a page. Returns a Solr hierarchy notation for the
