@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -30,7 +32,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_FieldProcessor_AbstractHierarchyProcessor {
+abstract class AbstractHierarchyProcessor {
 
 	/**
 	 * Builds a Solr hierarchy from an array of uids that make up a rootline.

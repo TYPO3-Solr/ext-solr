@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use ApacheSolrForTypo3\Solr\FieldProcessor\AbstractHierarchyProcessor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -51,7 +52,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_PageUidToHierarchy extends Tx_Solr_FieldProcessor_AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
+class Tx_Solr_FieldProcessor_PageUidToHierarchy extends AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
 
 	/**
 	 * Expects a page ID of a page. Returns a Solr hierarchy notation for the
