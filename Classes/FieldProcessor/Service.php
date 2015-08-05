@@ -75,7 +75,7 @@ class Service {
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'timestampToIsoDate':
-						$processor  = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_TimestampToIsoDate');
+						$processor  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\TimestampToIsoDate');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'pathToHierarchy':

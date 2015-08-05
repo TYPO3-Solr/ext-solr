@@ -39,7 +39,6 @@ return array(
 	'tx_solr_facet_simplefacetoptionsrenderer' => $extensionPath . 'Classes/Facet/SimpleFacetOptionsRenderer.php',
 	'tx_solr_facet_usedfacetrenderer' => $extensionPath . 'Classes/Facet/UsedFacetRenderer.php',
 
-	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'Classes/FieldProcessor/TimestampToIsoDate.php',
 	'tx_solr_fieldprocessor_timestamptoutcisodate' => $extensionPath . 'Classes/FieldProcessor/TimestampToUtcIsoDate.php',
 
 	'tx_solr_pluginbase_backendsummary' => $extensionPath . 'Classes/PluginBase/BackendSummary.php',
