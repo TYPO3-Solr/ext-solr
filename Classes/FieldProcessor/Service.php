@@ -22,6 +22,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Service class that modifies fields in a Apache_Solr_Document, used for
@@ -67,23 +69,23 @@ class Tx_Solr_FieldProcessor_Service {
 
 				switch ($instruction) {
 					case 'timestampToUtcIsoDate':
-						$processor  = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_TimestampToUtcIsoDate');
+						$processor  = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_TimestampToUtcIsoDate');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'timestampToIsoDate':
-						$processor  = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_TimestampToIsoDate');
+						$processor  = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_TimestampToIsoDate');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'pathToHierarchy':
-						$processor  = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PathToHierarchy');
+						$processor  = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PathToHierarchy');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'pageUidToHierarchy':
-						$processor  = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PageUidToHierarchy');
+						$processor  = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PageUidToHierarchy');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'categoryUidToHierarchy':
-						$processor = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_CategoryUidToHierarchy');
+						$processor = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\CategoryUidToHierarchy');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'uppercase':

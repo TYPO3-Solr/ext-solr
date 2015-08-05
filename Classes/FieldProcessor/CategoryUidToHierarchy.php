@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,7 +23,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use ApacheSolrForTypo3\Solr\FieldProcessor\AbstractHierarchyProcessor;
+
+use Tx_Solr_FieldProcessor;
 
 
 /**
@@ -51,7 +54,7 @@ use ApacheSolrForTypo3\Solr\FieldProcessor\AbstractHierarchyProcessor;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
+class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
 
 	/**
 	 * Expects a uid ID of a category. Returns a Solr hierarchy notation for the
