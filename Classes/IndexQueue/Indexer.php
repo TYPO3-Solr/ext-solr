@@ -378,7 +378,7 @@ class Indexer extends AbstractIndexer {
 
 		// same as in the FE indexer
 		if (is_array($fieldProcessingInstructions)) {
-			$service = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_Service');
+			$service = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\Service');
 			$service->processDocuments(
 				$documents,
 				$fieldProcessingInstructions

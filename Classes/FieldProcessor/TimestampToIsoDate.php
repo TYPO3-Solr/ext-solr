@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -32,7 +34,7 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_TimestampToIsoDate implements Tx_Solr_FieldProcessor {
+class TimestampToIsoDate implements FieldProcessor {
 
 	/**
 	 * Expects a timestamp and converts it to an ISO 8601 date as needed by Solr.

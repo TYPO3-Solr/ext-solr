@@ -23,7 +23,9 @@
 ***************************************************************/
 
 // workaround
-if (!class_exists('Tx_Solr_FieldProcessor')) {
+use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
+
+if (!class_exists('ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor')) {
   require_once __DIR__ . '../../../../Interfaces/interface.tx_solr_fieldprocessor.php';
 }
 
@@ -39,7 +41,7 @@ class Tx_Solr_FieldProcessor_PathToHierarchyTest extends Tx_Phpunit_TestCase {
 	private $processor;
 
 	public function setUp() {
-		$this->processor = new Tx_Solr_FieldProcessor_PathToHierarchy();
+		$this->processor = new PathToHierarchy();
 	}
 
 	/**

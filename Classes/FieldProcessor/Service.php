@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Service class that modifies fields in a Apache_Solr_Document, used for
@@ -31,12 +35,12 @@
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_Service {
+class Service {
 
 	/**
 	 * Modifies a list of documents
 	 *
-	 * @param Apache_Solr_Document[] $documents
+	 * @param \Apache_Solr_Document[] $documents
 	 * @param array $processingConfiguration
 	 */
 	public function processDocuments(array $documents, array $processingConfiguration) {
@@ -48,10 +52,10 @@ class Tx_Solr_FieldProcessor_Service {
 	/**
 	 * modifies a document according to the given configuration
 	 *
-	 * @param Apache_Solr_Document $document
+	 * @param \Apache_Solr_Document $document
 	 * @param array $processingConfiguration
 	 */
-	public function processDocument(Apache_Solr_Document $document, array $processingConfiguration) {
+	public function processDocument(\Apache_Solr_Document $document, array $processingConfiguration) {
 		foreach ($processingConfiguration as $fieldName => $instruction) {
 			$fieldInformation = $document->getField($fieldName);
 			$isSingleValueField = FALSE;
@@ -60,30 +64,30 @@ class Tx_Solr_FieldProcessor_Service {
 				$fieldValue = $fieldInformation['value'];
 
 				if (!is_array($fieldValue)) {
-						// turn single value field into multi value field
+					// turn single value field into multi value field
 					$fieldValue = array($fieldValue);
 					$isSingleValueField = TRUE;
 				}
 
 				switch ($instruction) {
 					case 'timestampToUtcIsoDate':
-						$processor  = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_TimestampToUtcIsoDate');
+						$processor  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\TimestampToUtcIsoDate');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'timestampToIsoDate':
-						$processor  = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_TimestampToIsoDate');
+						$processor  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\TimestampToIsoDate');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'pathToHierarchy':
-						$processor  = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PathToHierarchy');
+						$processor  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\PathToHierarchy');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'pageUidToHierarchy':
-						$processor  = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PageUidToHierarchy');
+						$processor  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\PageUidToHierarchy');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'categoryUidToHierarchy':
-						$processor = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_CategoryUidToHierarchy');
+						$processor = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\CategoryUidToHierarchy');
 						$fieldValue = $processor->process($fieldValue);
 						break;
 					case 'uppercase':
@@ -92,7 +96,7 @@ class Tx_Solr_FieldProcessor_Service {
 				}
 
 				if ($isSingleValueField) {
-						// turn multi value field back into single value field
+					// turn multi value field back into single value field
 					$fieldValue = $fieldValue[0];
 				}
 

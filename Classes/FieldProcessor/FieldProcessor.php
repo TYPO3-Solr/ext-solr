@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,7 +35,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_FieldProcessor {
+interface FieldProcessor {
 
 	/**
 	 * process method

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\FieldProcessor;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -51,7 +54,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_PageUidToHierarchy extends Tx_Solr_FieldProcessor_AbstractHierarchyProcessor implements Tx_Solr_FieldProcessor {
+class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor {
 
 	/**
 	 * Expects a page ID of a page. Returns a Solr hierarchy notation for the
@@ -93,9 +96,9 @@ class Tx_Solr_FieldProcessor_PageUidToHierarchy extends Tx_Solr_FieldProcessor_A
 		$rootlinePageIds = array();
 
 		$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-		$rootline = $pageSelector->getRootLine($pageId);
+		$rootline     = $pageSelector->getRootLine($pageId);
 
-		foreach($rootline as $page) {
+		foreach ($rootline as $page) {
 			if ($page['is_siteroot']) {
 				break;
 			}

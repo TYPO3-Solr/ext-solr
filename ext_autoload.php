@@ -39,14 +39,6 @@ return array(
 	'tx_solr_facet_simplefacetoptionsrenderer' => $extensionPath . 'Classes/Facet/SimpleFacetOptionsRenderer.php',
 	'tx_solr_facet_usedfacetrenderer' => $extensionPath . 'Classes/Facet/UsedFacetRenderer.php',
 
-	'tx_solr_fieldprocessor_abstracthierarchyprocessor' => $extensionPath . 'Classes/FieldProcessor/AbstractHierarchyProcessor.php',
-	'tx_solr_fieldprocessor_categoryuidtohierarchy' => $extensionPath . 'Classes/FieldProcessor/CategoryUidToHierarchy.php',
-	'tx_solr_fieldprocessor_pageuidtohierarchy' => $extensionPath . 'Classes/FieldProcessor/PageUidToHierarchy.php',
-	'tx_solr_fieldprocessor_pathtohierarchy' => $extensionPath . 'Classes/FieldProcessor/PathToHierarchy.php',
-	'tx_solr_fieldprocessor_service' => $extensionPath . 'Classes/FieldProcessor/Service.php',
-	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'Classes/FieldProcessor/TimestampToIsoDate.php',
-	'tx_solr_fieldprocessor_timestamptoutcisodate' => $extensionPath . 'Classes/FieldProcessor/TimestampToUtcIsoDate.php',
-
 	'tx_solr_pluginbase_backendsummary' => $extensionPath . 'Classes/PluginBase/BackendSummary.php',
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
@@ -105,7 +97,6 @@ return array(
 	'tx_solr_facetoptionsrenderer' => $extensionPath . 'Interfaces/FacetOptionsRenderer.php',
 	'tx_solr_facetrenderer' => $extensionPath . 'Interfaces/FacetRenderer.php',
 	'tx_solr_facetsmodifier' =>  $extensionPath . 'Interfaces/FacetsModifier.php',
-	'tx_solr_fieldprocessor' => $extensionPath . 'Interfaces/FieldProcessor.php',
 	'tx_solr_formmodifier' => $extensionPath . 'Interfaces/FormModifier.php',
 	'tx_solr_garbagecollectorpostprocessor' => $extensionPath . 'Interfaces/GarbageCollectorPostProcessor.php',
 	'tx_solr_indexqueueinitializationpostprocessor' => $extensionPath . 'Interfaces/IndexQueueInitializationPostProcessor.php',
