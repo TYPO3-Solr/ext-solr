@@ -665,7 +665,7 @@ class Query {
 		$pageIds = GeneralUtility::trimExplode(',', $pageIds);
 		$filters = array();
 
-		$processor   = GeneralUtility::makeInstance('Tx_Solr_FieldProcessor_PageUidToHierarchy');
+		$processor   = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\PageUidToHierarchy');
 		$hierarchies = $processor->process($pageIds);
 
 		foreach ($hierarchies as $hierarchy) {

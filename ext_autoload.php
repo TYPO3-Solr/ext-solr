@@ -39,7 +39,6 @@ return array(
 	'tx_solr_facet_simplefacetoptionsrenderer' => $extensionPath . 'Classes/Facet/SimpleFacetOptionsRenderer.php',
 	'tx_solr_facet_usedfacetrenderer' => $extensionPath . 'Classes/Facet/UsedFacetRenderer.php',
 
-	'tx_solr_fieldprocessor_pageuidtohierarchy' => $extensionPath . 'Classes/FieldProcessor/PageUidToHierarchy.php',
 	'tx_solr_fieldprocessor_pathtohierarchy' => $extensionPath . 'Classes/FieldProcessor/PathToHierarchy.php',
 	'tx_solr_fieldprocessor_service' => $extensionPath . 'Classes/FieldProcessor/Service.php',
 	'tx_solr_fieldprocessor_timestamptoisodate' => $extensionPath . 'Classes/FieldProcessor/TimestampToIsoDate.php',
