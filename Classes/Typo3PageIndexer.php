@@ -223,7 +223,7 @@ class Typo3PageIndexer {
 	 * @return \Apache_Solr_Document A document representing the page
 	 */
 	protected function getPageDocument() {
-		$document = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Document');
+		$document = GeneralUtility::makeInstance('Apache_Solr_Document');
 		/* @var $document \Apache_Solr_Document */
 		$site       = Site::getSiteByPageId($this->page->id);
 		$pageRecord = $this->page->page;
