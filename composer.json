@@ -33,6 +33,9 @@
   "require-dev": {
     "typo3-ci/typo3cms": "dev-master"
   },
+  "replace": {
+    "solr": "*"
+  },
   "autoload": {
     "classmap": [
       "Lib/",
