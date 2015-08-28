@@ -65,7 +65,7 @@ class SortingComponent extends AbstractComponent implements Tx_Solr_QueryAware {
 			&& !empty($solrGetParameters['sort'])
 			&& preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $solrGetParameters['sort'])
 		) {
-			$sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Tx_Solr_Sorting', $this->searchConfiguration['sorting.']['options.']);
+			$sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Sorting', $this->searchConfiguration['sorting.']['options.']);
 			$sortField = $sortHelper->getSortFieldFromUrlParameter($solrGetParameters['sort']);
 
 			$this->query->setSorting($sortField);
