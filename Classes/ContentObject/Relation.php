@@ -264,6 +264,13 @@ class Relation {
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
+        // Remove the first option of foreignLabelField for recursion
+        if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
+            $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
+            unset($foreignTableLabelFieldArr[0]);
+            $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
+        }
+
 		$relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
 		$relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
 
@@ -278,11 +285,22 @@ class Relation {
 					. $whereClause
 			);
 			foreach ($relatedRecords as $record) {
-				if ($GLOBALS['TSFE']->sys_language_uid > 0) {
-					$record = $this->getTranslationOverlay($foreignTableName, $record);
-				}
-				$relatedItems[] = $record[$foreignTableLabelField];
+                // Recursion
+                if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])  && $this->configuration['enableRecursiveValueResolution']) {
+                    t3lib_div::loadTCA($foreignTableName);
+                    $foreignTableTca  = $GLOBALS['TCA'][$foreignTableName]['columns'][$foreignTableLabelField];
+                    return $this->getRelatedItemsFromMMTable($foreignTableName, $record['uid'], $foreignTableTca);
+                }
+                else {
+                    if ($GLOBALS['TSFE']->sys_language_uid > 0) {
+                        $record = $this->getTranslationOverlay($foreignTableName, $record);
+                    }
+                    $relatedItems[] = $record[$foreignTableLabelField];
+                }
 			}
+            if (!empty($this->configuration['removeDuplicateValues'])) {
+                $relatedItems = array_unique($relatedItems);
+            }
 		}
 
 		return $relatedItems;
