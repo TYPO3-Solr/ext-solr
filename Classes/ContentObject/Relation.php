@@ -285,11 +285,19 @@ class Relation {
 					. $whereClause
 			);
 			foreach ($relatedRecords as $record) {
-                // Recursion
                 if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])  && $this->configuration['enableRecursiveValueResolution']) {
-                    t3lib_div::loadTCA($foreignTableName);
-                    $foreignTableTca  = $GLOBALS['TCA'][$foreignTableName]['columns'][$foreignTableLabelField];
-                    return $this->getRelatedItemsFromMMTable($foreignTableName, $record['uid'], $foreignTableTca);
+                    if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
+                        $foreignLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
+                        unset($foreignLabelFieldArr[0]);
+                        $this->configuration['foreignLabelField'] = implode('.', $foreignLabelFieldArr);
+                    }
+
+                    $this->configuration['localField'] = $foreignTableLabelField;
+
+                    $contentObject = t3lib_div::makeInstance('\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
+                    $contentObject->start($record, $foreignTableName);
+
+                    return $this->getRelatedItems($contentObject);
                 }
                 else {
                     if ($GLOBALS['TSFE']->sys_language_uid > 0) {
