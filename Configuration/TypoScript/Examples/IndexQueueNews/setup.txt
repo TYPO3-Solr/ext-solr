@@ -16,14 +16,7 @@ plugin.tx_solr.index.queue {
 
 			content = SOLR_CONTENT
 			content {
-				cObject = COA
-				cObject {
-					10 = TEXT
-					10 {
-						field = bodytext
-						noTrimWrap = || |
-					}
-				}
+				field = bodytext
 			}
 
 			category_stringM = SOLR_RELATION
