@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,8 +25,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange;
+use Tx_Solr_Facet_Facet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
-class Tx_Solr_Facet_DateRangeFacetRenderer extends AbstractFacetRenderer {
+class DateRangeFacetRenderer extends AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -103,7 +105,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends AbstractFacetRenderer {
 
 		$language = $GLOBALS['TSFE']->tmpl->setup['config.']['language'];
 		if ($language != 'en') {
-				// load date picker translation
+			// load date picker translation
 			$javascriptManager->loadFile('ui.datepicker.' . $language);
 		}
 
