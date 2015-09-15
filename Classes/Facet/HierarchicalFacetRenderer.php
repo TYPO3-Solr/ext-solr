@@ -25,6 +25,7 @@
 
 use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
 use ApacheSolrForTypo3\Solr\Facet\Facet;
+use ApacheSolrForTypo3\Solr\Facet\FacetOption;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -71,13 +72,13 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
 			// enrich the facet options with links before building the menu structure
 		$enrichedFacetOptions = array();
 		foreach ($facetOptions as $facetOptionValue => $facetOptionResultCount) {
-			$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+			$facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 				$this->facetName,
 				$facetOptionValue,
 				$facetOptionResultCount
 			);
 
-			/* @var $facetOption Tx_Solr_Facet_FacetOption */
+			/* @var $facetOption FacetOption */
 			$facetOption->setUrlValue($filterEncoder->encodeFilter($facetOptionValue));
 
 			$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);

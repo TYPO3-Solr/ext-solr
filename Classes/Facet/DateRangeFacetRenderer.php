@@ -84,7 +84,7 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer {
 	 * tbd
 	 */
 	protected function buildAddFacetUrl($facetName) {
-		$facetOption      = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption', $this->facetName, '');
+		$facetOption      = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption', $this->facetName, '');
 		$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
 		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 

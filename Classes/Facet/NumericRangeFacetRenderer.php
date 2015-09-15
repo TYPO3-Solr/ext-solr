@@ -59,7 +59,7 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends AbstractFacetRenderer {
 		$handlePositions = $this->getHandlePositions();
 
 			// the option's value will be appended by javascript after the slide event
-		$incompleteFacetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+		$incompleteFacetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 			$this->facetName,
 			''
 		);

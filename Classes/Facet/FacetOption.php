@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -31,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_FacetOption {
+class FacetOption {
 
 	/**
 	 * Facet name.
@@ -126,7 +128,7 @@ class Tx_Solr_Facet_FacetOption {
 		$resultParameters = GeneralUtility::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
+			$filterParameters = (array)array_map('urldecode', $resultParameters['filter']);
 		}
 
 		foreach ($filterParameters as $filter) {
