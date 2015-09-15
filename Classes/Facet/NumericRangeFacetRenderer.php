@@ -21,6 +21,8 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -31,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_NumericRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class Tx_Solr_Facet_NumericRangeFacetRenderer extends AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.

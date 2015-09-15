@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -26,6 +28,8 @@ use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_Facet_Facet;
+use Tx_Solr_FacetRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -36,7 +40,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRenderer {
+abstract class AbstractFacetRenderer implements Tx_Solr_FacetRenderer {
 
 	/**
 	 * @var Search
@@ -89,7 +93,6 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	protected $queryLinkBuilder;
 
 
-
 	/**
 	 * Constructor.
 	 *
@@ -114,7 +117,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	 * @return string Facet markup.
 	 */
 	public function renderFacet() {
-			// TODO must check whether $this->template is set
+		// TODO must check whether $this->template is set
 
 		$facetContent = '';
 
@@ -128,8 +131,8 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 			$showEvenWhenEmpty = TRUE;
 		}
 
-			// if the facet doesn't provide any options, don't render it unless
-			// it is configured to be rendered nevertheless
+		// if the facet doesn't provide any options, don't render it unless
+		// it is configured to be rendered nevertheless
 		if (!$this->facet->isEmpty() || $showEmptyFacets || $showEvenWhenEmpty) {
 			$facetTemplate = clone $this->template;
 			$facetTemplate->workOnSubpart('single_facet');
@@ -139,7 +142,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 
 			$facet = $this->getFacetProperties();
 
-				// remove properties irrelevant for rendering in the template engine
+			// remove properties irrelevant for rendering in the template engine
 			unset(
 				$facet['renderingInstruction'],
 				$facet['renderingInstruction.'],
@@ -167,7 +170,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	public function getFacetProperties() {
 		$facet = $this->facetConfiguration;
 
-			// TODO move these properties into Tx_Solr_Facet_Facet and provide them via ArrayAccess interface
+		// TODO move these properties into Tx_Solr_Facet_Facet and provide them via ArrayAccess interface
 
 		$facet['name']      = $this->facetName;
 		$facet['count']     = $this->getFacetOptionsCount();
@@ -217,7 +220,7 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 	 * (non-PHPdoc)
 	 * @see Tx_Solr_FacetRenderer::setLinkTargetPageId()
 	 */
-	public function setLinkTargetPageId($linkTargetPageId){
+	public function setLinkTargetPageId($linkTargetPageId) {
 		$this->linkTargetPageId = intval($linkTargetPageId);
 		$this->queryLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 	}
@@ -233,11 +236,11 @@ abstract class Tx_Solr_Facet_AbstractFacetRenderer implements Tx_Solr_FacetRende
 		$resultParameters = GeneralUtility::_GPmerged('tx_solr');
 
 		if (is_array($resultParameters['filter'])) {
-				// urldecode the array to get the original representation
-			$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
+			// urldecode the array to get the original representation
+			$filterParameters = array_values((array)array_map('urldecode', $resultParameters['filter']));
 			$filterParameters = array_unique($filterParameters);
 
-				// find and remove all options for this facet
+			// find and remove all options for this facet
 			foreach ($filterParameters as $key => $filter) {
 				list($filterName, $filterValue) = explode(':', $filter);
 				if ($filterName == $this->facetName) {

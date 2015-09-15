@@ -23,6 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
-class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class Tx_Solr_Facet_DateRangeFacetRenderer extends AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
