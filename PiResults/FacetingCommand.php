@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -126,10 +127,10 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 
 		foreach ($configuredFacets as $facetName => $facetConfiguration) {
 			$facetName = substr($facetName, 0, -1);
-			$facet = GeneralUtility::makeInstance('Tx_Solr_Facet_Facet',
+			$facet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet',
 				$facetName,
 				$facetRendererFactory->getFacetInternalType($facetName)
-			); /** @var $facet Tx_Solr_Facet_Facet */
+			); /** @var $facet Facet */
 
 			if (
 				(isset($facetConfiguration['includeInAvailableFacets']) && $facetConfiguration['includeInAvailableFacets'] == '0')

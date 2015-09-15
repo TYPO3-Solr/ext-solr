@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -51,7 +52,7 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_FIELD;
+		return Facet::TYPE_FIELD;
 	}
 
 	/**

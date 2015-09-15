@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -39,7 +40,7 @@ class Tx_Solr_Facet_QueryGroupFacetRenderer extends Tx_Solr_Facet_SimpleFacetRen
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_QUERY;
+		return Facet::TYPE_QUERY;
 	}
 
 	/**

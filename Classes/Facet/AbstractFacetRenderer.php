@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_Facet_Facet;
 use Tx_Solr_FacetRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -57,7 +56,7 @@ abstract class AbstractFacetRenderer implements Tx_Solr_FacetRenderer {
 	/**
 	 * The facet to render.
 	 *
-	 * @var Tx_Solr_Facet_Facet
+	 * @var Facet
 	 */
 	protected $facet;
 
@@ -96,9 +95,9 @@ abstract class AbstractFacetRenderer implements Tx_Solr_FacetRenderer {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_Facet_Facet $facet The facet to render.
+	 * @param Facet $facet The facet to render.
 	 */
-	public function __construct(Tx_Solr_Facet_Facet $facet) {
+	public function __construct(Facet $facet) {
 		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		$this->facet              = $facet;
@@ -170,7 +169,7 @@ abstract class AbstractFacetRenderer implements Tx_Solr_FacetRenderer {
 	public function getFacetProperties() {
 		$facet = $this->facetConfiguration;
 
-		// TODO move these properties into Tx_Solr_Facet_Facet and provide them via ArrayAccess interface
+		// TODO move these properties into ApacheSolrForTypo3\Solr\Facet\Facet and provide them via ArrayAccess interface
 
 		$facet['name']      = $this->facetName;
 		$facet['count']     = $this->getFacetOptionsCount();

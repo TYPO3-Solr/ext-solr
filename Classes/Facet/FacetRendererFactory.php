@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -87,7 +88,7 @@ class Tx_Solr_Facet_FacetRendererFactory {
 	/**
 	 * Looks up a facet's configuration and creates a facet renderer accordingly.
 	 *
-	 * @param Tx_Solr_Facet_Facet $facet Facet
+	 * @param Facet $facet Facet
 	 * @return Tx_Solr_FacetRenderer Facet renderer as defined by the facet's configuration
 	 */
 	public function getFacetRendererByFacet($facet) {

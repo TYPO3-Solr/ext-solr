@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,7 +42,7 @@ class Tx_Solr_Facet_SimpleFacetRenderer extends AbstractFacetRenderer {
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_FIELD;
+		return Facet::TYPE_FIELD;
 	}
 
 	/**

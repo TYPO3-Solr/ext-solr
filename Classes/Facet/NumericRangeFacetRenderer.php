@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
+use ApacheSolrForTypo3\Solr\Facet\Facet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -42,7 +43,7 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends AbstractFacetRenderer {
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_RANGE;
+		return Facet::TYPE_RANGE;
 	}
 
 	/**

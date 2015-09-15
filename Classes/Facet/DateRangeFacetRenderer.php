@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange;
-use Tx_Solr_Facet_Facet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -44,7 +43,7 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer {
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_RANGE;
+		return Facet::TYPE_RANGE;
 	}
 
 	/**
