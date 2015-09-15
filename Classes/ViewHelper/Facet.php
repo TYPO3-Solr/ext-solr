@@ -77,7 +77,7 @@ class Facet extends AbstractSubpartViewHelper {
 
 		if ($search->hasSearched()) {
 			$facetRendererFactory = GeneralUtility::makeInstance(
-				'Tx_Solr_Facet_FacetRendererFactory',
+				'ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory',
 				$configuredFacets
 			);
 

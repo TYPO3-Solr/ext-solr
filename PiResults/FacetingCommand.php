@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Facet\Facet;
+use ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory;
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -121,9 +122,9 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		$configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
 
 		$facetRendererFactory = GeneralUtility::makeInstance(
-			'Tx_Solr_Facet_FacetRendererFactory',
+			'ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory',
 			$configuredFacets
-		); /** @var $facetRendererFactory Tx_Solr_Facet_FacetRendererFactory */
+		); /** @var $facetRendererFactory FacetRendererFactory */
 
 		foreach ($configuredFacets as $facetName => $facetConfiguration) {
 			$facetName = substr($facetName, 0, -1);
