@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <solr persistent="true">
-	<cores adminPath="/admin/cores" shareSchema="true">
+	<cores adminPath="/admin/cores">
 		<core name="core_ar" instanceDir="typo3cores" schema="arabic/schema.xml" dataDir="data/core_ar" />
 		<core name="core_hy" instanceDir="typo3cores" schema="armenian/schema.xml" dataDir="data/core_hy" />
 		<core name="core_eu" instanceDir="typo3cores" schema="basque/schema.xml" dataDir="data/core_eu" />
