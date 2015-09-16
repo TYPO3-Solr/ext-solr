@@ -132,7 +132,7 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
 		if (!isset($this->facetConfiguration['hierarchy.']['special'])) {
 				// pre-setting some configuration needed to turn the facet options into a menu structure
 			$this->facetConfiguration['hierarchy.']['special'] = 'userfunction';
-			$this->facetConfiguration['hierarchy.']['special.']['userFunc'] = 'Tx_Solr_Facet_HierarchicalFacetHelper->getMenuStructure';
+			$this->facetConfiguration['hierarchy.']['special.']['userFunc'] = 'ApacheSolrForTypo3\Solr\Facet\HierarchicalFacetHelper->getMenuStructure';
 		}
 
 		$renderedFacet = $contentObject->cObjGetSingle(
