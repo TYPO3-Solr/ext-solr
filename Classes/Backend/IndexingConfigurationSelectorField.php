@@ -215,9 +215,13 @@ class IndexingConfigurationSelectorField {
 			)
 		);
 
-		$selectFieldRenderer = $formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
-		if (!method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
-			if (class_exists('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement')) {
+		$selectFieldRenderer = $formEngine = NULL;
+		if (class_exists('TYPO3\\CMS\\Backend\\Form\\FormEngine')) {
+			$selectFieldRenderer = $formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
+		}
+
+		if (!isset($selectFieldRenderer) || !method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
+			if (class_exists('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement') && isset($formEngine)) {
 				// TYPO3 CMS 7.2
 				$selectFieldRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\Backend\\Form\\Element\\SelectElement', $formEngine);
 			} elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\Element\\SelectCheckBoxElement')) {
@@ -239,7 +243,7 @@ class IndexingConfigurationSelectorField {
 			}
 		}
 
-		if (method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
+		if (isset($selectFieldRenderer) && method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
 			return $selectFieldRenderer->getSingleField_typeSelect_checkbox(
 				'', // table
 				'', // field
