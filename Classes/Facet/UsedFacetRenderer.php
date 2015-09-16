@@ -95,7 +95,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 				// FIXME decouple this
 			$filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
 			$facet         = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', $this->facetName);
-			$facetRenderer = GeneralUtility::makeInstance('Tx_Solr_Facet_HierarchicalFacetRenderer', $facet);
+			$facetRenderer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\HierarchicalFacetRenderer', $facet);
 
 			$facetText = $facetRenderer->getLastPathSegmentFromHierarchicalFacetOption($filterEncoder->decodeFilter($this->filterValue));
 		} else {

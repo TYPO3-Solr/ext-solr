@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,12 +25,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
-use ApacheSolrForTypo3\Solr\Facet\Facet;
-use ApacheSolrForTypo3\Solr\Facet\FacetOption;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
 
 /**
  * Renderer for hierarchical facets.
@@ -36,7 +36,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
+class HierarchicalFacetRenderer extends AbstractFacetRenderer {
 
 	/**
 	 * Parent content object, set when called by ContentObjectRenderer->callUserFunction()
@@ -69,7 +69,7 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
 		/* @var $filterEncoder Hierarchy */
 		$filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
 
-			// enrich the facet options with links before building the menu structure
+		// enrich the facet options with links before building the menu structure
 		$enrichedFacetOptions = array();
 		foreach ($facetOptions as $facetOptionValue => $facetOptionResultCount) {
 			$facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
@@ -86,7 +86,7 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
 			$optionSelected = $facetOption->isSelectedInFacet($this->facetName);
 			$optionLinkUrl  = $facetLinkBuilder->getAddFacetOptionUrl();
 
-				// negating the facet option links to remove a filter
+			// negating the facet option links to remove a filter
 			if ($this->facetConfiguration['selectingSelectedFacetOptionRemovesFilter'] && $optionSelected) {
 				$optionLinkUrl = $facetLinkBuilder->getRemoveFacetOptionUrl();
 			}
@@ -95,9 +95,9 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
 				$optionLinkUrl = $facetLinkBuilder->getReplaceFacetOptionUrl();
 			}
 
-				// by default the facet link builder creates htmlspecialchars()ed URLs
-				// HMENU will also apply htmlspecialchars(), to prevent corrupt URLs
-				// we're reverting the facet builder's htmlspecials() here
+			// by default the facet link builder creates htmlspecialchars()ed URLs
+			// HMENU will also apply htmlspecialchars(), to prevent corrupt URLs
+			// we're reverting the facet builder's htmlspecials() here
 			$optionLinkUrl = htmlspecialchars_decode($optionLinkUrl);
 
 			$enrichedFacetOptions[$facetOption->getValue()] = array(
@@ -130,7 +130,7 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
 		));
 
 		if (!isset($this->facetConfiguration['hierarchy.']['special'])) {
-				// pre-setting some configuration needed to turn the facet options into a menu structure
+			// pre-setting some configuration needed to turn the facet options into a menu structure
 			$this->facetConfiguration['hierarchy.']['special'] = 'userfunction';
 			$this->facetConfiguration['hierarchy.']['special.']['userFunc'] = 'ApacheSolrForTypo3\Solr\Facet\HierarchicalFacetHelper->getMenuStructure';
 		}
@@ -151,7 +151,7 @@ class Tx_Solr_Facet_HierarchicalFacetRenderer extends AbstractFacetRenderer {
 	 * @return string The last path segment of the hierarchical facet option
 	 */
 	public static function getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey) {
-			// first remove the level indicator in front of the path
+		// first remove the level indicator in front of the path
 		$facetOptionKey = trim($facetOptionKey, '"');
 		list(, $path) = explode('-', $facetOptionKey, 2);
 
