@@ -211,7 +211,7 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 			}
 
 			$usedFacetRenderer = GeneralUtility::makeInstance(
-				'Tx_Solr_Facet_UsedFacetRenderer',
+				'ApacheSolrForTypo3\\Solr\\Facet\\UsedFacetRenderer',
 				$filterName,
 				$filterValue,
 				$filter ,

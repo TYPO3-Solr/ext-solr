@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,8 +25,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Facet\LinkBuilder;
-use ApacheSolrForTypo3\Solr\Facet\SimpleFacetOptionsRenderer;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_UsedFacetRenderer extends SimpleFacetOptionsRenderer {
+class UsedFacetRenderer extends SimpleFacetOptionsRenderer {
 
 	/**
 	 * The name of the facet the filter is applied to.
@@ -65,7 +65,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends SimpleFacetOptionsRenderer {
 	 * @param \ApacheSolrForTypo3\Solr\Template $template
 	 * @param \ApacheSolrForTypo3\Solr\Query $query
 	 */
-	public function __construct($facetName, $filterValue, $filter , Template $template, Query $query) {
+	public function __construct($facetName, $filterValue, $filter, Template $template, Query $query) {
 		parent::__construct($facetName, array(), $template, $query);
 
 		$this->filter      = $filter;
@@ -94,7 +94,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends SimpleFacetOptionsRenderer {
 		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 		if ($this->facetConfiguration['type'] == 'hierarchy') {
-				// FIXME decouple this
+			// FIXME decouple this
 			$filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
 			$facet         = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', $this->facetName);
 			$facetRenderer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\HierarchicalFacetRenderer', $facet);
