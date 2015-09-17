@@ -208,7 +208,7 @@ ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 
 ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'queryGroup',
-	'Tx_Solr_Facet_QueryGroupFacetRenderer',
+	'ApacheSolrForTypo3\\Solr\\Facet\\QueryGroupFacetRenderer',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup'
 );

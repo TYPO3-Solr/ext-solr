@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,8 +23,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use ApacheSolrForTypo3\Solr\Facet\Facet;
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Query group facet renderer.
@@ -31,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_QueryGroupFacetRenderer extends Tx_Solr_Facet_SimpleFacetRenderer {
+class QueryGroupFacetRenderer extends \Tx_Solr_Facet_SimpleFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
