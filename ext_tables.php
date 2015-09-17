@@ -83,7 +83,7 @@ if (TYPO3_MODE == 'BE') {
 		'ApacheSolrForTypo3\\Solr\\Report\\SchemaStatus',
 		'ApacheSolrForTypo3\\Solr\\Report\\SolrConfigStatus',
 		'ApacheSolrForTypo3\\Solr\\Report\\SolrConfigurationStatus',
-		'Tx_Solr_Report_SolrStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\SolrStatus',
 		'Tx_Solr_Report_SolrVersionStatus',
 		'ApacheSolrForTypo3\\Solr\\Report\\AccessFilterPluginInstalledStatus',
 		'ApacheSolrForTypo3\\Solr\\Report\\AllowUrlFOpenStatus',
