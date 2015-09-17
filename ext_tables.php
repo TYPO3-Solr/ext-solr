@@ -93,8 +93,8 @@ if (TYPO3_MODE == 'BE') {
 	// Index Inspector
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
 		'web_info',
-		'Tx_Solr_ModIndex_IndexInspector',
-		$GLOBALS['PATH_solr'] . 'ModIndex/IndexInspector.php',
+		'ApacheSolrForTypo3\\Solr\\Backend\\IndexInspector\\IndexInspector',
+		NULL,
 		'LLL:EXT:solr/Resources/Private/Language/Backend.xml:module_indexinspector'
 	);
 

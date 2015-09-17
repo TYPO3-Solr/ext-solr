@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Backend\IndexInspector;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,6 +25,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Search;
+use template;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 
 
@@ -33,7 +36,7 @@ use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ModIndex_IndexInspector extends AbstractFunctionModule {
+class IndexInspector extends AbstractFunctionModule {
 
 	/**
 	 * The parent Web -> Info module's template
@@ -79,7 +82,7 @@ class Tx_Solr_ModIndex_IndexInspector extends AbstractFunctionModule {
 		$content = '';
 
 		if ($this->pObj->id <= 0) {
-				// return if there's no page id
+			// return if there's no page id
 			return $content;
 		}
 
