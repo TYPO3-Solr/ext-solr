@@ -43,12 +43,10 @@
       "Lib/",
       "Classes/",
       "Interfaces/",
-      "ModIndex/",
       "PiFrequentSearches/",
       "PiResults/",
       "PiSearch/",
-      "Report/",
-      "Scheduler/"
+      "Report/"
     ]
   },
   "extra": {
