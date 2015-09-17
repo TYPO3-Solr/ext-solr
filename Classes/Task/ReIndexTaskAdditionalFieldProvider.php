@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Task;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,7 +27,6 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
@@ -39,7 +40,7 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface {
+class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface {
 
 	/**
 	 * Task information
@@ -70,6 +71,12 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 	protected $site = NULL;
 
 
+	/**
+	 *
+	 * @param array $taskInfo
+	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask|NULL $task
+	 * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
+	 */
 	protected function initialize(array $taskInfo, AbstractTask $task = NULL, SchedulerModuleController $schedulerModule) {
 		$this->taskInformation = $taskInfo;
 		$this->task            = $task;
@@ -84,12 +91,12 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 	 * Used to define fields to provide the Solr server address when adding
 	 * or editing a task.
 	 *
-	 * @param array $taskInfo: reference to the array containing the info used in the add/edit form
-	 * @param AbstractTask $task: when editing, reference to the current task object. Null when adding.
-	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
+	 * @param array $taskInfo reference to the array containing the info used in the add/edit form
+	 * @param AbstractTask $task when editing, reference to the current task object. Null when adding.
+	 * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
 	 * @return array Array containing all the information pertaining to the additional fields
-	 *									The array is multidimensional, keyed to the task class name and each field's id
-	 *									For each field it provides an associative sub-array with the following:
+	 *						The array is multidimensional, keyed to the task class name and each field's id
+	 *						For each field it provides an associative sub-array with the following:
 	 */
 	public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule) {
 		$this->initialize($taskInfo, $task, $schedulerModule);
@@ -136,14 +143,14 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 	 * Checks any additional data that is relevant to this task. If the task
 	 * class is not relevant, the method is expected to return TRUE
 	 *
-	 * @param array $submittedData: reference to the array containing the data submitted by the user
-	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
+	 * @param array $submittedData reference to the array containing the data submitted by the user
+	 * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
 	 * @return boolean True if validation was ok (or selected class is not relevant), FALSE otherwise
 	 */
 	public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule) {
 		$result = FALSE;
 
-			// validate site
+		// validate site
 		$sites = Site::getAvailableSites();
 		if (array_key_exists($submittedData['site'], $sites)) {
 			$result = TRUE;
@@ -156,8 +163,8 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 	 * Saves any additional input into the current task object if the task
 	 * class matches.
 	 *
-	 * @param array $submittedData: array containing the data submitted by the user
-	 * @param AbstractTask $task: reference to the current task object
+	 * @param array $submittedData array containing the data submitted by the user
+	 * @param AbstractTask $task reference to the current task object
 	 */
 	public function saveAdditionalFields(array $submittedData, AbstractTask $task) {
 		$task->setSite(GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $submittedData['site']));
