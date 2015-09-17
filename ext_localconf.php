@@ -39,7 +39,7 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
 	'TYPO3.tx_solr.IndexInspector.Remote',
-	$GLOBALS['PATH_solr'] . 'ModIndex/IndexInspectorRemoteController.php:Tx_Solr_ModIndex_IndexInspectorRemoteController',
+	'ApacheSolrForTypo3\\Solr\\Backend\\IndexInspector\\IndexInspectorRemoteController',
 	'web_info',
 	'user,group'
 );

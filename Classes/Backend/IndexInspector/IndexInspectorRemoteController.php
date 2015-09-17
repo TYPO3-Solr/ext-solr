@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Backend\IndexInspector;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ModIndex_IndexInspectorRemoteController {
+class IndexInspectorRemoteController {
 
 	/**
 	 * The current page ID.
@@ -56,11 +58,11 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * received.
 	 *
 	 * @param integer $pageId ID of the current page, the pages' table uid column
-	 * @throws	InvalidArgumentException if page ID is 0 or not an integer
+	 * @throws \InvalidArgumentException if page ID is 0 or not an integer
 	 */
 	protected function initialize($pageId) {
 		if (empty($pageId) || !is_int($pageId)) {
-			throw new InvalidArgumentException('Invalid page ID.', 1303893535);
+			throw new \InvalidArgumentException('Invalid page ID.', 1303893535);
 		}
 		$this->pageId = $pageId;
 
@@ -70,7 +72,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	/**
 	 * Initializes the Solr connection.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	protected function initializeSearch() {
 		$connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
@@ -100,7 +102,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 			);
 		}
 
-		$response = new stdClass();
+		$response = new \stdClass();
 		$response->success   = TRUE;
 		$response->metaData  = $this->buildResponseMetaData();
 		$response->numFound  = $this->search->getNumberOfResults();
@@ -136,7 +138,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * @return object Response meta data
 	 */
 	protected function buildResponseMetaData() {
-		$metaData = new stdClass();
+		$metaData = new \stdClass();
 		$metaData->idProperty    = 'id';
 		$metaData->root          = 'documents';
 		$metaData->totalProperty = 'numFound';
@@ -159,7 +161,7 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 		$fieldNames = array('id', 'type', 'title', '__data');
 
 		foreach ($fieldNames as $fieldName) {
-			$field = new stdClass();
+			$field = new \stdClass();
 			$field->name = $fieldName;
 
 			$fields[] = $field;
@@ -172,10 +174,10 @@ class Tx_Solr_ModIndex_IndexInspectorRemoteController {
 	 * Formats a document's fields so that they can be iterated by an
 	 * ExtJs XTemplate.
 	 *
-	 * @param Apache_Solr_Document $document The Solr document to format
+	 * @param \Apache_Solr_Document $document The Solr document to format
 	 * @return array Formatted document field data, ready to be used in an ExtJs XTemplate iterator
 	 */
-	protected function formatDocumentData(Apache_Solr_Document $document) {
+	protected function formatDocumentData(\Apache_Solr_Document $document) {
 		$fields = array();
 		foreach ($document as $fieldName => $value) {
 			$fields[$fieldName] = $value;
