@@ -26,11 +26,6 @@ return array(
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
 
-		// modules
-
-	'tx_solr_modindex_indexinspector' => $extensionPath . 'ModIndex/IndexInspector.php',
-	'tx_solr_modindex_indexinspectorremotecontroller' => $extensionPath . 'ModIndex/IndexInspectorRemoteController.php',
-
 		// plugins
 
 	'tx_solr_pifrequentsearches_frequentsearches' => $extensionPath . 'PiFrequentSearches/FrequentSearches.php',
