@@ -25,20 +25,6 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_facet_abstractfacetrenderer' => $extensionPath . 'Classes/Facet/AbstractFacetRenderer.php',
-	'tx_solr_facet_daterangefacetrenderer' => $extensionPath . 'Classes/Facet/DateRangeFacetRenderer.php',
-	'tx_solr_facet_facet' => $extensionPath . 'Classes/Facet/Facet.php',
-	'tx_solr_facet_facetoption' => $extensionPath . 'Classes/Facet/FacetOption.php',
-	'tx_solr_facet_facetrendererfactory' => $extensionPath . 'Classes/Facet/FacetRendererFactory.php',
-	'tx_solr_facet_hierarchicalfacetrenderer' => $extensionPath . 'Classes/Facet/HierarchicalFacetRenderer.php',
-	'tx_solr_facet_hierarchicalfacethelper' => $extensionPath . 'Classes/Facet/HierarchicalFacetHelper.php',
-	'tx_solr_facet_linkbuilder' => $extensionPath . 'Classes/Facet/LinkBuilder.php',
-	'tx_solr_facet_numericrangefacetrenderer' => $extensionPath . 'Classes/Facet/NumericRangeFacetRenderer.php',
-	'tx_solr_facet_querygroupfacetrenderer' => $extensionPath . 'Classes/Facet/QueryGroupFacetRenderer.php',
-	'tx_solr_facet_simplefacetrenderer' => $extensionPath . 'Classes/Facet/SimpleFacetRenderer.php',
-	'tx_solr_facet_simplefacetoptionsrenderer' => $extensionPath . 'Classes/Facet/SimpleFacetOptionsRenderer.php',
-	'tx_solr_facet_usedfacetrenderer' => $extensionPath . 'Classes/Facet/UsedFacetRenderer.php',
-
 	'tx_solr_pluginbase_backendsummary' => $extensionPath . 'Classes/PluginBase/BackendSummary.php',
 	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
 	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
