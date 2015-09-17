@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -37,7 +39,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SolrConfigurationStatus implements StatusProviderInterface {
+class SolrConfigurationStatus implements StatusProviderInterface {
 
 	/**
 	 * Compiles a collection of configuration status checks.
@@ -50,7 +52,7 @@ class Tx_Solr_Report_SolrConfigurationStatus implements StatusProviderInterface 
 		if (!is_null($rootPageFlagStatus)) {
 			$reports[] = $rootPageFlagStatus;
 
-				// intended early return, no sense in going on if there are no root pages
+			// intended early return, no sense in going on if there are no root pages
 			return $reports;
 		}
 
@@ -158,11 +160,11 @@ class Tx_Solr_Report_SolrConfigurationStatus implements StatusProviderInterface 
 				if (!$GLOBALS['TSFE']->config['config']['index_enable']) {
 					$rootPagesWithIndexingOff[] = $rootPage;
 				}
-			} catch (RuntimeException $rte) {
+			} catch (\RuntimeException $rte) {
 				$rootPagesWithIndexingOff[] = $rootPage;
 			} catch (ServiceUnavailableException $sue) {
 				if ($sue->getCode() == 1294587218) {
-						//  No TypoScript template found, continue with next site
+					//  No TypoScript template found, continue with next site
 					$rootPagesWithIndexingOff[] = $rootPage;
 					continue;
 				}

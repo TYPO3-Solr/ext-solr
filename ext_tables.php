@@ -82,7 +82,7 @@ if (TYPO3_MODE == 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
 		'ApacheSolrForTypo3\\Solr\\Report\\SchemaStatus',
 		'ApacheSolrForTypo3\\Solr\\Report\\SolrConfigStatus',
-		'Tx_Solr_Report_SolrConfigurationStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\SolrConfigurationStatus',
 		'Tx_Solr_Report_SolrStatus',
 		'Tx_Solr_Report_SolrVersionStatus',
 		'ApacheSolrForTypo3\\Solr\\Report\\AccessFilterPluginInstalledStatus',
