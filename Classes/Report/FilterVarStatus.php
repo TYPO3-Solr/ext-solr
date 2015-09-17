@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,6 +23,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
@@ -34,14 +37,14 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_FilterVarStatus implements StatusProviderInterface {
+class FilterVarStatus implements StatusProviderInterface {
 
 	/**
 	 * Checks whether allow_url_fopen is enabled.
 	 *
 	 */
 	public function getStatus() {
-		$reports  = array();
+		$reports = array();
 
 		$validUrl = 'http://www.typo3-solr.com';
 		if (!filter_var($validUrl, FILTER_VALIDATE_URL)) {
