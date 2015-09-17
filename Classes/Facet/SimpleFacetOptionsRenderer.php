@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRenderer {
+class SimpleFacetOptionsRenderer implements \Tx_Solr_FacetOptionsRenderer {
 
 	/**
 	 * The facet's name as configured in TypoScript.
@@ -130,23 +132,24 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 
 		$i = 0;
 		foreach ($this->facetOptions as $facetOption => $facetOptionResultCount) {
-			$facetOption = (string) $facetOption;
+			$facetOption = (string)$facetOption;
 			if ($facetOption == '_empty_') {
-					// TODO - for now we don't handle facet missing.
+				// TODO - for now we don't handle facet missing.
 				continue;
 			}
 
-			$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+			$facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 				$this->facetName,
 				$facetOption,
 				$facetOptionResultCount
-			);	/* @var $facetOption Tx_Solr_Facet_FacetOption */
+			);	/* @var $facetOption FacetOption */
 
-			$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder',
+			$facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
 				$this->query,
 				$this->facetName,
 				$facetOption
-			); /* @var $facetLinkBuilder Tx_Solr_Facet_LinkBuilder */
+			);
+			/* @var $facetLinkBuilder LinkBuilder */
 			$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 			$optionText    = $facetOption->render();
@@ -160,7 +163,7 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 
 			$optionSelected = $facetOption->isSelectedInFacet($this->facetName);
 
-				// negating the facet option links to remove a filter
+			// negating the facet option links to remove a filter
 			if ($this->facetConfiguration['selectingSelectedFacetOptionRemovesFilter']
 				&& $optionSelected
 			) {
@@ -200,7 +203,7 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 		$manualFacetOptionSortOrder = GeneralUtility::trimExplode(',', $this->facetConfiguration['manualSortOrder']);
 		$availableFacetOptions      = array_keys($this->facetOptions);
 
-			// move the configured options to the top, in their defined order
+		// move the configured options to the top, in their defined order
 		foreach ($manualFacetOptionSortOrder as $manuallySortedFacetOption) {
 			if (in_array($manuallySortedFacetOption, $availableFacetOptions)) {
 				$sortedOptions[$manuallySortedFacetOption] = $this->facetOptions[$manuallySortedFacetOption];
@@ -208,8 +211,8 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 			}
 		}
 
-			// set the facet options to the new order,
-			// appending the remaining unsorted/regularly sorted options
+		// set the facet options to the new order,
+		// appending the remaining unsorted/regularly sorted options
 		$this->facetOptions = $sortedOptions + $this->facetOptions;
 	}
 

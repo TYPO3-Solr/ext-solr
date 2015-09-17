@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -37,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRenderer {
+class UsedFacetRenderer extends SimpleFacetOptionsRenderer {
 
 	/**
 	 * The name of the facet the filter is applied to.
@@ -63,7 +65,7 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	 * @param \ApacheSolrForTypo3\Solr\Template $template
 	 * @param \ApacheSolrForTypo3\Solr\Query $query
 	 */
-	public function __construct($facetName, $filterValue, $filter , Template $template, Query $query) {
+	public function __construct($facetName, $filterValue, $filter, Template $template, Query $query) {
 		parent::__construct($facetName, array(), $template, $query);
 
 		$this->filter      = $filter;
@@ -79,23 +81,23 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 	public function render() {
 		$solrConfiguration = Util::getSolrConfiguration();
 
-		$facetOption = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption',
+		$facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 			$this->facetName,
 			$this->filterValue
 		);
 
-		$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder',
+		$facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
 			$this->query,
 			$this->facetName,
 			$facetOption
-		); /* @var $facetLinkBuilder Tx_Solr_Facet_LinkBuilder */
+		); /* @var $facetLinkBuilder LinkBuilder */
 		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 		if ($this->facetConfiguration['type'] == 'hierarchy') {
-				// FIXME decouple this
+			// FIXME decouple this
 			$filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
-			$facet         = GeneralUtility::makeInstance('Tx_Solr_Facet_Facet', $this->facetName);
-			$facetRenderer = GeneralUtility::makeInstance('Tx_Solr_Facet_HierarchicalFacetRenderer', $facet);
+			$facet         = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', $this->facetName);
+			$facetRenderer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\HierarchicalFacetRenderer', $facet);
 
 			$facetText = $facetRenderer->getLastPathSegmentFromHierarchicalFacetOption($filterEncoder->decodeFilter($this->filterValue));
 		} else {

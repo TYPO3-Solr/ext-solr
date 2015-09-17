@@ -55,7 +55,7 @@ class Faceting implements Modifier {
 	 */
 	public function __construct() {
 		$this->configuration = Util::getSolrConfiguration();
-		$this->facetRendererFactory = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetRendererFactory', $this->configuration['search.']['faceting.']['facets.']);
+		$this->facetRendererFactory = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory', $this->configuration['search.']['faceting.']['facets.']);
 	}
 
 	/**

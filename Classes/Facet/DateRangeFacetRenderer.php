@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -32,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
-class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class DateRangeFacetRenderer extends AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -41,7 +43,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_RANGE;
+		return Facet::TYPE_RANGE;
 	}
 
 	/**
@@ -82,8 +84,8 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 	 * tbd
 	 */
 	protected function buildAddFacetUrl($facetName) {
-		$facetOption      = GeneralUtility::makeInstance('Tx_Solr_Facet_FacetOption', $this->facetName, '');
-		$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
+		$facetOption      = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption', $this->facetName, '');
+		$facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
 		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 		return $facetLinkBuilder->getAddFacetOptionUrl();
@@ -102,7 +104,7 @@ class Tx_Solr_Facet_DateRangeFacetRenderer extends Tx_Solr_Facet_AbstractFacetRe
 
 		$language = $GLOBALS['TSFE']->tmpl->setup['config.']['language'];
 		if ($language != 'en') {
-				// load date picker translation
+			// load date picker translation
 			$javascriptManager->loadFile('ui.datepicker.' . $language);
 		}
 

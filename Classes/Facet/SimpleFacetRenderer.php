@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,7 +23,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * The simple / default facet renderer.
@@ -30,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_SimpleFacetRenderer extends Tx_Solr_Facet_AbstractFacetRenderer {
+class SimpleFacetRenderer extends AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -39,7 +43,7 @@ class Tx_Solr_Facet_SimpleFacetRenderer extends Tx_Solr_Facet_AbstractFacetRende
 	 * @return string Facet internal type
 	 */
 	public static function getFacetInternalType() {
-		return Tx_Solr_Facet_Facet::TYPE_FIELD;
+		return Facet::TYPE_FIELD;
 	}
 
 	/**
@@ -54,7 +58,7 @@ class Tx_Solr_Facet_SimpleFacetRenderer extends Tx_Solr_Facet_AbstractFacetRende
 
 		if (!empty($facetOptions) || !empty($this->facetConfiguration['showEvenWhenEmpty'])) {
 			$facetOptionsRenderer = GeneralUtility::makeInstance(
-				'Tx_Solr_Facet_SimpleFacetOptionsRenderer',
+				'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetOptionsRenderer',
 				$this->facetName,
 				$facetOptions,
 				$this->template,

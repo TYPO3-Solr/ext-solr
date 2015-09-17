@@ -53,7 +53,7 @@ class Tx_Solr_Facet_SimpleFacetRendererTest extends Tx_Phpunit_TestCase {
 		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', array('test'));
 
 		$this->facetRenderer = GeneralUtility::makeInstance(
-			'Tx_Solr_Facet_SimpleFacetRenderer',
+			'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetRenderer',
 			$facetName,
 			$facetOptions,
 			$facetConfiguration,

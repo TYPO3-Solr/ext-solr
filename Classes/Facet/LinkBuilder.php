@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -23,7 +25,6 @@
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
-use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -32,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_LinkBuilder extends LinkBuilder {
+class LinkBuilder extends Query\LinkBuilder {
 
 	/**
 	 * Facet name.
@@ -44,7 +45,7 @@ class Tx_Solr_Facet_LinkBuilder extends LinkBuilder {
 	/**
 	 * Facet option.
 	 *
-	 * @var Tx_Solr_Facet_FacetOption
+	 * @var FacetOption
 	 */
 	protected $facetOption;
 
@@ -61,9 +62,9 @@ class Tx_Solr_Facet_LinkBuilder extends LinkBuilder {
 	 *
 	 * @param Query $query Solr query
 	 * @param string $facetName Facet name
-	 * @param Tx_Solr_Facet_FacetOption $facetOption Facet option
+	 * @param FacetOption $facetOption Facet option
 	 */
-	public function __construct(Query $query, $facetName, Tx_Solr_Facet_FacetOption $facetOption) {
+	public function __construct(Query $query, $facetName, FacetOption $facetOption) {
 		parent::__construct($query);
 
 		$this->facetName          = $facetName;
@@ -166,8 +167,8 @@ class Tx_Solr_Facet_LinkBuilder extends LinkBuilder {
 		$indexToRemove    = FALSE;
 
 		if (isset($resultParameters['filter'])) {
-				// urldecode the array to get the original representation
-			$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
+			// urldecode the array to get the original representation
+			$filterParameters = array_values((array)array_map('urldecode', $resultParameters['filter']));
 			$filterParameters = array_unique($filterParameters);
 			$indexToRemove    = array_search($this->facetName . ':' . $this->facetOption->getUrlValue(), $filterParameters);
 		}
@@ -222,11 +223,11 @@ class Tx_Solr_Facet_LinkBuilder extends LinkBuilder {
 		$indexToReplace   = FALSE;
 
 		if (isset($resultParameters['filter'])) {
-				// urlencode the array to get the original representation
-			$filterParameters = array_values((array) array_map('urldecode', $resultParameters['filter']));
+			// urlencode the array to get the original representation
+			$filterParameters = array_values((array)array_map('urldecode', $resultParameters['filter']));
 			$filterParameters = array_unique($filterParameters);
 
-				// find the currently used option for this facet
+			// find the currently used option for this facet
 			foreach ($filterParameters as $key => $filter) {
 				list($filterName, $filterValue) = explode(':', $filter);
 
@@ -263,7 +264,7 @@ class Tx_Solr_Facet_LinkBuilder extends LinkBuilder {
 	 * @return array $typolinkOptions Array were the options ATagParams may included
 	 */
 	protected function getTypolinkOptions() {
-		$typolinkOptions   = array();
+		$typolinkOptions = array();
 
 		if (!empty($this->solrConfiguration['search.']['faceting.']['facetLinkATagParams'])) {
 			$typolinkOptions['ATagParams'] = $this->solrConfiguration['search.']['faceting.']['facetLinkATagParams'];

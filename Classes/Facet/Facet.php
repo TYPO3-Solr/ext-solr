@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -32,12 +34,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_Facet {
+class Facet {
 
 	const TYPE_FIELD = 'field';
-
 	const TYPE_QUERY = 'query';
-
 	const TYPE_RANGE = 'range';
 
 
@@ -128,7 +128,7 @@ class Tx_Solr_Facet_Facet {
 		$resultParameters = GeneralUtility::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
+			$filterParameters = (array)array_map('urldecode', $resultParameters['filter']);
 		}
 
 		foreach ($filterParameters as $filter) {
@@ -153,7 +153,7 @@ class Tx_Solr_Facet_Facet {
 		$options      = $this->getOptionsRaw();
 		$optionsCount = count($options);
 
-			// facet options include '_empty_', if no options are given
+		// facet options include '_empty_', if no options are given
 		if ($optionsCount == 0
 			|| ($optionsCount == 1 && array_key_exists('_empty_', $options))
 		) {
@@ -191,7 +191,7 @@ class Tx_Solr_Facet_Facet {
 		$requirements = array();
 
 		if (!empty($this->configuration['requirements.'])) {
-			foreach($this->configuration['requirements.'] as $name => $requirement) {
+			foreach ($this->configuration['requirements.'] as $name => $requirement) {
 				$requirements[] = array(
 					'name'   => substr($name, 0, -1),
 					'facet'  => $requirement['facet'],
@@ -212,7 +212,7 @@ class Tx_Solr_Facet_Facet {
 	protected function isRequirementMet(array $requirement) {
 		$requirementMet = FALSE;
 
-		$requiredFacet      = GeneralUtility::makeInstance('Tx_Solr_Facet_Facet', $requirement['facet']);
+		$requiredFacet      = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', $requirement['facet']);
 		$selectedOptions    = $requiredFacet->getSelectedOptions();
 		$csvSelectedOptions = implode(', ', $selectedOptions);
 

@@ -186,29 +186,29 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 
 	// registering facet types
 
-Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'numericRange',
-	'Tx_Solr_Facet_NumericRangeFacetRenderer',
+	'ApacheSolrForTypo3\\Solr\\Facet\\NumericRangeFacetRenderer',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range'
 );
 
-Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'dateRange',
-	'Tx_Solr_Facet_DateRangeFacetRenderer',
+	'ApacheSolrForTypo3\\Solr\\Facet\\DateRangeFacetRenderer',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange'
 );
 
-Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'hierarchy',
-	'Tx_Solr_Facet_HierarchicalFacetRenderer',
+	'ApacheSolrForTypo3\\Solr\\Facet\\HierarchicalFacetRenderer',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy'
 );
 
-Tx_Solr_Facet_FacetRendererFactory::registerFacetType(
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 	'queryGroup',
-	'Tx_Solr_Facet_QueryGroupFacetRenderer',
+	'ApacheSolrForTypo3\\Solr\\Facet\\QueryGroupFacetRenderer',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup',
 	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup'
 );
@@ -233,15 +233,15 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Schedul
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// TODO move into pi_results, initializeSearch, add only when features are activated
+// TODO move into pi_results, initializeSearch, add only when features are activated
 $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['keepParameters'] = 'Tx_Solr_PiResults_ParameterKeepingFormModifier';
 $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck']     = 'Tx_Solr_PiResults_SpellCheckFormModifier';
 $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest']        = 'Tx_Solr_PiResults_SuggestFormModifier';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// registering the eID scripts
-	// TODO move to suggest form modifier
+// registering the eID scripts
+// TODO move to suggest form modifier
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/Classes/Eid/Suggest.php';
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api']     = 'EXT:solr/Classes/Eid/Api.php';
 

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -31,7 +33,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_HierarchicalFacetHelper {
+class HierarchicalFacetHelper {
 
 	/**
 	 * Parent content object, set when called by ContentObjectRenderer->callUserFunction()
@@ -56,12 +58,11 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 		$facetOptions  = $this->cObj->data['facetOptions'];
 
 		foreach ($facetOptions as $facetOptionKey => $facetOption) {
-
-				// let's start with top level menu options
+			// let's start with top level menu options
 			if (substr($facetOptionKey, 0, 1) == '0') {
 				$topLevelMenu = array(
 					'title'           => $this->getFacetOptionLabel($facetOptionKey, $facetOption['numberOfResults']),
-					'facetKey'        => Tx_Solr_Facet_HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey),
+					'facetKey'        => HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey),
 					'numberOfResults' => $facetOption['numberOfResults'],
 					'_OVERRIDE_HREF'  => $facetOption['url'],
 					'ITEM_STATE'      => $facetOption['selected'] ? 'ACT' : 'NO',
@@ -70,7 +71,7 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 
 				list(, $mainMenuName) = explode('-', $facetOptionKey, 2);
 
-					// build sub menus recursively
+				// build sub menus recursively
 				$subMenu = $this->getSubMenu($facetOptions, $mainMenuName, 1);
 				if (!empty($subMenu)) {
 					$topLevelMenu['_SUB_MENU'] = $subMenu;
@@ -97,20 +98,20 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 		$subMenuEntryPrefix = $level . '-' . $menuName . '/';
 
 		foreach ($facetOptions as $facetOptionKey => $facetOption) {
-				// find the sub menu items for the current menu
+			// find the sub menu items for the current menu
 			if (GeneralUtility::isFirstPartOfStr($facetOptionKey, $subMenuEntryPrefix)) {
 				$currentMenu = array(
 					'title'           => $this->getFacetOptionLabel($facetOptionKey, $facetOption['numberOfResults']),
-					'facetKey'        => Tx_Solr_Facet_HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey),
+					'facetKey'        => HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey),
 					'numberOfResults' => $facetOption['numberOfResults'],
 					'_OVERRIDE_HREF'  => $facetOption['url'],
 					'ITEM_STATE'      => $facetOption['selected'] ? 'ACT' : 'NO',
 					'_PAGES_OVERLAY'  => ($GLOBALS['TSFE']->sys_language_uid > 0)
 				);
 
-				$lastPathSegment = Tx_Solr_Facet_HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey);
+				$lastPathSegment = HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey);
 
-					// move one level down (recursion)
+				// move one level down (recursion)
 				$subMenu = $this->getSubMenu(
 					$facetOptions,
 					$menuName . '/' . $lastPathSegment,
@@ -124,7 +125,7 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 			}
 		}
 
-			// return one level up
+		// return one level up
 		return $menu;
 	}
 
@@ -136,8 +137,8 @@ class Tx_Solr_Facet_HierarchicalFacetHelper {
 	 * @return string The label for the facet option consisting of the last part of the path and the options result count
 	 */
 	protected function getFacetOptionLabel($facetOptionKey, $facetOptionResultCount) {
-			// use the last path segment and the result count to build the label
-		$lastPathSegment  = Tx_Solr_Facet_HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey);
+		// use the last path segment and the result count to build the label
+		$lastPathSegment  = HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey);
 		$facetOptionLabel = $lastPathSegment . ' (' . $facetOptionResultCount . ')';
 
 		return $facetOptionLabel;
