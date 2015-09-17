@@ -22,9 +22,9 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_pluginbase_backendsummary' => $extensionPath . 'Classes/PluginBase/BackendSummary.php',
-	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
-	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
+	'tx_solr_pluginbase_backendsummary' => $extensionPath . 'Classes/Plugin/BackendSummary.php',
+	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/Plugin/CommandPluginBase.php',
+	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/Plugin/Plugin.php',
 
 		// plugins
 
