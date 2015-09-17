@@ -47,17 +47,6 @@ return array(
 	'tx_solr_piresults_suggestformmodifier' => $extensionPath . 'PiResults/SuggestFormModifier.php',
 	'tx_solr_piresults_queryanalyzerformmodifier' => $extensionPath . 'PiResults/QueryAnalyzerFormModifier.php',
 
-		// reports
-
-	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'Report/AccessFilterPluginInstalledStatus.php',
-	'tx_solr_report_allowurlfopenstatus' => $extensionPath . 'Report/AllowUrlFOpenStatus.php',
-	'tx_solr_report_filtervarstatus' => $extensionPath . 'Report/FilterVarStatus.php',
-	'tx_solr_report_schemastatus' => $extensionPath . 'Report/SchemaStatus.php',
-	'tx_solr_report_solrconfigstatus' => $extensionPath . 'Report/SolrConfigStatus.php',
-	'tx_solr_report_solrconfigurationstatus' => $extensionPath . 'Report/SolrConfigurationStatus.php',
-	'tx_solr_report_solrstatus' => $extensionPath . 'Report/SolrStatus.php',
-	'tx_solr_report_solrversionstatus' => $extensionPath . 'Report/SolrVersionStatus.php',
-
 		// interfaces
 
 	'tx_solr_additionalindexqueueitemindexer' => $extensionPath . 'Interfaces/AdditionalIndexQueueItemIndexer.php',
