@@ -228,7 +228,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTy
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_title',
 	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_description',
-	'additionalFields' => 'Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider'
+	'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
