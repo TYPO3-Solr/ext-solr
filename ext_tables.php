@@ -80,7 +80,7 @@ if (TYPO3_MODE == 'BE') {
 
 	// registering reports
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
-		'Tx_Solr_Report_SchemaStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\SchemaStatus',
 		'Tx_Solr_Report_SolrConfigStatus',
 		'Tx_Solr_Report_SolrConfigurationStatus',
 		'Tx_Solr_Report_SolrStatus',
