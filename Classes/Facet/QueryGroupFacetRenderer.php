@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class QueryGroupFacetRenderer extends \Tx_Solr_Facet_SimpleFacetRenderer {
+class QueryGroupFacetRenderer extends SimpleFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,9 +24,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
-use ApacheSolrForTypo3\Solr\Facet\Facet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * The simple / default facet renderer.
@@ -33,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_SimpleFacetRenderer extends AbstractFacetRenderer {
+class SimpleFacetRenderer extends AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
