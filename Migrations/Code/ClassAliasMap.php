@@ -1,5 +1,13 @@
 <?php
 return array(
+
+	'Tx_Solr_Site' => 'ApacheSolrForTypo3\\Solr\\Site',
+
+	'Tx_Solr_Scheduler_IndexQueueWorkerTask' => 'ApacheSolrForTypo3\\Solr\\Task\\IndexQueueWorkerTask',
+	'Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider' => 'ApacheSolrForTypo3\\Solr\\Task\\IndexQueueWorkerTaskAdditionalFieldProvider',
+	'Tx_Solr_Scheduler_ReIndexTask' => 'ApacheSolrForTypo3\\Solr\\Task\\ReIndexTask',
+	'Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider' => 'ApacheSolrForTypo3\\Solr\\Task\\ReIndexTaskAdditionalFieldProvider',
+
 	'Tx_Solr_ViewHelper_AbstractSubpartViewHelper' => 'ApacheSolrForTypo3\\Solr\\ViewHelper\\AbstractSubpartViewHelper',
 	'Tx_Solr_ViewHelper_Crop' => 'ApacheSolrForTypo3\\Solr\\ViewHelper\\Crop',
 	'Tx_Solr_ViewHelper_CurrentResultNumber' => 'ApacheSolrForTypo3\\Solr\\ViewHelper\\CurrentResultNumber',
