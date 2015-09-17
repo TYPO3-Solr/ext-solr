@@ -47,13 +47,6 @@ return array(
 	'tx_solr_piresults_suggestformmodifier' => $extensionPath . 'PiResults/SuggestFormModifier.php',
 	'tx_solr_piresults_queryanalyzerformmodifier' => $extensionPath . 'PiResults/QueryAnalyzerFormModifier.php',
 
-		// scheduler tasks
-
-	'tx_solr_scheduler_indexqueueworkertask' => $extensionPath . 'Scheduler/IndexQueueWorkerTask.php',
-	'tx_solr_scheduler_indexqueueworkertaskadditionalfieldprovider' => $extensionPath . 'Scheduler/IndexQueueWorkerTaskAdditionalFieldProvider.php',
-	'tx_solr_scheduler_reindextask' => $extensionPath . 'Scheduler/ReIndexTask.php',
-	'tx_solr_scheduler_reindextaskadditionalfieldprovider' => $extensionPath . 'Scheduler/ReIndexTaskAdditionalFieldProvider.php',
-
 		// reports
 
 	'tx_solr_report_accessfilterplugininstalledstatus' => $extensionPath . 'Report/AccessFilterPluginInstalledStatus.php',

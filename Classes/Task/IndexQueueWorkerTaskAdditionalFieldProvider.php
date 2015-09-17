@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Task;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -42,12 +44,12 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements A
 	 * Used to define fields to provide the TYPO3 site to index and number of
 	 * items to index per run when adding or editing a task.
 	 *
-	 * @param array $taskInfo: reference to the array containing the info used in the add/edit form
-	 * @param AbstractTask $task: when editing, reference to the current task object. Null when adding.
+	 * @param array $taskInfo reference to the array containing the info used in the add/edit form
+	 * @param AbstractTask $task when editing, reference to the current task object. Null when adding.
 	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
 	 * @return array Array containg all the information pertaining to the additional fields
-	 *									The array is multidimensional, keyed to the task class name and each field's id
-	 *									For each field it provides an associative sub-array with the following:
+	 *					The array is multidimensional, keyed to the task class name and each field's id
+	 *					For each field it provides an associative sub-array with the following:
 	 */
 	public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule) {
 		$additionalFields = array();
@@ -83,20 +85,20 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements A
 	 * Checks any additional data that is relevant to this task. If the task
 	 * class is not relevant, the method is expected to return TRUE
 	 *
-	 * @param array $submittedData: reference to the array containing the data submitted by the user
-	 * @param SchedulerModuleController $schedulerModule: reference to the calling object (Scheduler's BE module)
+	 * @param array $submittedData reference to the array containing the data submitted by the user
+	 * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
 	 * @return boolean True if validation was ok (or selected class is not relevant), FALSE otherwise
 	 */
 	public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule) {
 		$result = FALSE;
 
-			// validate site
+		// validate site
 		$sites = Site::getAvailableSites();
 		if (array_key_exists($submittedData['site'], $sites)) {
 			$result = TRUE;
 		}
 
-			// escape limit
+		// escape limit
 		$submittedData['documentsToIndexLimit'] = intval($submittedData['documentsToIndexLimit']);
 
 		return $result;
@@ -106,8 +108,8 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements A
 	 * Saves any additional input into the current task object if the task
 	 * class matches.
 	 *
-	 * @param array $submittedData: array containing the data submitted by the user
-	 * @param AbstractTask $task: reference to the current task object
+	 * @param array $submittedData array containing the data submitted by the user
+	 * @param AbstractTask $task reference to the current task object
 	 */
 	public function saveAdditionalFields(array $submittedData, AbstractTask $task) {
 		$task->setSite(GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $submittedData['site']));

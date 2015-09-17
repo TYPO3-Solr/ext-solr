@@ -217,18 +217,18 @@ ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 
 	// adding scheduler tasks
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_ReIndexTask'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\ReIndexTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_title',
 	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_description',
-	'additionalFields' => 'Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider'
+	'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\ReIndexTaskAdditionalFieldProvider'
 );
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_Solr_Scheduler_IndexQueueWorkerTask'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask'] = array(
 	'extension'        => $_EXTKEY,
 	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_title',
 	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_description',
-	'additionalFields' => 'Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider'
+	'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
