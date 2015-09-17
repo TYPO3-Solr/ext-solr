@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Task;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -38,7 +40,7 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
+class ReIndexTask extends AbstractTask {
 
 	/**
 	 * The site this task is supposed to initialize the index queue for.
@@ -62,10 +64,10 @@ class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
 	 * @return boolean Returns TRUE on success, FALSE on failure.
 	 */
 	public function execute() {
-			// clean up
+		// clean up
 		$cleanUpResult = $this->cleanUpIndex();
 
-			// initialize for re-indexing
+		// initialize for re-indexing
 		$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 		$indexQueueInitializationResults = array();
 		foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
@@ -96,18 +98,18 @@ class Tx_Solr_Scheduler_ReIndexTask extends AbstractTask {
 		}
 
 		foreach ($solrServers as $solrServer) {
-					// make sure not-yet committed documents are removed, too
-				$solrServer->commit();
+			// make sure not-yet committed documents are removed, too
+			$solrServer->commit();
 
-				$deleteQuery = 'type:(' . implode(' OR ', $typesToCleanUp) . ')'
+			$deleteQuery = 'type:(' . implode(' OR ', $typesToCleanUp) . ')'
 					. ' AND siteHash:' . $this->site->getSiteHash();
-				$solrServer->deleteByQuery($deleteQuery);
+			$solrServer->deleteByQuery($deleteQuery);
 
-				$response = $solrServer->commit(FALSE, FALSE, FALSE);
-				if ($response->getHttpStatus() != 200) {
-					$cleanUpResult = FALSE;
-					break;
-				}
+			$response = $solrServer->commit(FALSE, FALSE, FALSE);
+			if ($response->getHttpStatus() != 200) {
+				$cleanUpResult = FALSE;
+				break;
+			}
 		}
 
 		return $cleanUpResult;

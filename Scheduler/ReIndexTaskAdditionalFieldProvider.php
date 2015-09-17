@@ -25,6 +25,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
@@ -50,7 +51,7 @@ class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider implements Additional
 	/**
 	 * Scheduler task
 	 *
-	 * @var AbstractTask|Tx_Solr_Scheduler_ReIndexTask|NULL
+	 * @var AbstractTask|ReIndexTask|NULL
 	 */
 	protected $task = NULL;
 
