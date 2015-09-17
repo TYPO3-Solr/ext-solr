@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,9 +24,8 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer;
-use ApacheSolrForTypo3\Solr\Facet\Facet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Numeric range facet renderer.
@@ -34,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Facet_NumericRangeFacetRenderer extends AbstractFacetRenderer {
+class NumericRangeFacetRenderer extends AbstractFacetRenderer {
 
 	/**
 	 * Provides the internal type of facets the renderer handles.
@@ -58,7 +59,7 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends AbstractFacetRenderer {
 		$this->loadStylesheets();
 		$handlePositions = $this->getHandlePositions();
 
-			// the option's value will be appended by javascript after the slide event
+		// the option's value will be appended by javascript after the slide event
 		$incompleteFacetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
 			$this->facetName,
 			''
@@ -85,15 +86,15 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends AbstractFacetRenderer {
 	 * @return array Array with keys start and end
 	 */
 	protected function getHandlePositions() {
-			// default to maximum range: start - end
+		// default to maximum range: start - end
 		$facetOptions    = $this->getFacetOptions();
 		$handle1Position = $facetOptions['start'];
 		$handle2Position = $facetOptions['end'];
 
-			// TODO implement $query->getFacetFilter($facetName), provide facet name, get filters for facet
+		// TODO implement $query->getFacetFilter($facetName), provide facet name, get filters for facet
 		$filters = $this->search->getQuery()->getFilters();
 		foreach ($filters as $filter) {
-			if (preg_match("/\(" . $this->facetConfiguration['field'] . ":\[(.*)\]\)/", $filter, $matches) ){
+			if (preg_match("/\(" . $this->facetConfiguration['field'] . ":\[(.*)\]\)/", $filter, $matches)) {
 				$range = explode('TO', $matches[1]);
 				$range = array_map('trim', $range);
 
