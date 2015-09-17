@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Facet\LinkBuilder;
+use ApacheSolrForTypo3\Solr\Facet\SimpleFacetOptionsRenderer;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
@@ -38,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRenderer {
+class Tx_Solr_Facet_UsedFacetRenderer extends SimpleFacetOptionsRenderer {
 
 	/**
 	 * The name of the facet the filter is applied to.
