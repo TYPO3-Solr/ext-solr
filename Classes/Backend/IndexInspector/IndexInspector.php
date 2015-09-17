@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\IndexInspector;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Search;
-use template;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 
 
@@ -41,7 +40,7 @@ class IndexInspector extends AbstractFunctionModule {
 	/**
 	 * The parent Web -> Info module's template
 	 *
-	 * @var template
+	 * @var \TYPO3\CMS\Backend\Template\DocumentTemplate
 	 */
 	private $document;
 
