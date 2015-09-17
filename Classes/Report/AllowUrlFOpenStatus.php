@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,20 +23,21 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
 
 /**
- * There's a buggy PHP version in Ubuntu LTS 10.04 which causes filter_var to
- * produces incorrect results. This status checks for this issue.
+ * Provides a status report about whether the php.ini setting allow_url_fopen
+ * is activated or not.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_FilterVarStatus implements StatusProviderInterface {
+class AllowUrlFOpenStatus implements StatusProviderInterface {
 
 	/**
 	 * Checks whether allow_url_fopen is enabled.
@@ -42,25 +45,25 @@ class Tx_Solr_Report_FilterVarStatus implements StatusProviderInterface {
 	 */
 	public function getStatus() {
 		$reports  = array();
+		$severity = Status::OK;
+		$value    = 'On';
+		$message  = '';
 
-		$validUrl = 'http://www.typo3-solr.com';
-		if (!filter_var($validUrl, FILTER_VALIDATE_URL)) {
-			$message = 'You are using a PHP version that is affected by a bug in
-				function filter_var(). This bug causes said function to
-				incorrectly report valid URLs as invalid if they contain a
-				dash (-). EXT:solr uses this function to validate URLs when
-				indexing TYPO3 pages. Please check with your administrator
-				whether a newer version can be installed.
-				More information is available at
-				<a href="https://bugs.php.net/bug.php?id=51192">php.net</a>.';
-
-			$reports[] = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
-				'PHP filter_var() bug',
-				'Affected PHP version detected.',
-				$message,
-				Status::ERROR
-			);
+		if (!ini_get('allow_url_fopen')) {
+			$severity = Status::ERROR;
+			$value    = 'Off';
+			$message  = 'allow_url_fopen must be enabled in php.ini to allow
+				communication between TYPO3 and the Apache Solr server.
+				Indexing pages using the Index Queue will also not work with
+				this setting disabled.';
 		}
+
+		$reports[] = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+			'allow_url_fopen',
+			$value,
+			$message,
+			$severity
+		);
 
 		return $reports;
 	}

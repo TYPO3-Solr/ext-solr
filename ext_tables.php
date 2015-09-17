@@ -80,14 +80,14 @@ if (TYPO3_MODE == 'BE') {
 
 	// registering reports
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
-		'Tx_Solr_Report_SchemaStatus',
-		'Tx_Solr_Report_SolrConfigStatus',
-		'Tx_Solr_Report_SolrConfigurationStatus',
-		'Tx_Solr_Report_SolrStatus',
-		'Tx_Solr_Report_SolrVersionStatus',
-		'Tx_Solr_Report_AccessFilterPluginInstalledStatus',
-		'Tx_Solr_Report_AllowUrlFOpenStatus',
-		'Tx_Solr_Report_FilterVarStatus'
+		'ApacheSolrForTypo3\\Solr\\Report\\SchemaStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\SolrConfigStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\SolrConfigurationStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\SolrStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\SolrVersionStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\AccessFilterPluginInstalledStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\AllowUrlFOpenStatus',
+		'ApacheSolrForTypo3\\Solr\\Report\\FilterVarStatus'
 	);
 
 	// Index Inspector

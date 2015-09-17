@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -36,7 +38,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SolrStatus implements StatusProviderInterface {
+class SolrStatus implements StatusProviderInterface {
 
 	/**
 	 * Connection Manager
@@ -100,7 +102,7 @@ class Tx_Solr_Report_SolrStatus implements StatusProviderInterface {
 			$message .= '<li>schema.xml: ' . $solr->getSchemaName() . '</li>';
 			$message .= '<li>solrconfig.xml: ' . $solr->getSolrconfigName() . '</li>';
 
-			$accessFilterPluginStatus = GeneralUtility::makeInstance('Tx_Solr_Report_AccessFilterPluginInstalledStatus');
+			$accessFilterPluginStatus  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Report\\AccessFilterPluginInstalledStatus');
 			$accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solr);
 
 			$message .= '<li>Access Filter Plugin: ' . $accessFilterPluginVersion . '</li>';

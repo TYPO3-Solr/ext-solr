@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -28,31 +30,31 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
 
 
 /**
- * Provides an status report about which schema version is used and checks
+ * Provides a status report about which solrconfig version is used and checks
  * whether it fits the recommended version shipping with the extension.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SchemaStatus implements StatusProviderInterface {
+class SolrConfigStatus implements StatusProviderInterface {
 
 	/**
-	 * The schema name property is constructed as follows:
+	 * The config name property is constructed as follows:
 	 *
-	 * tx_solr  - The extension key
-	 * x-y-z    - The extension version this schema is meant to work with
-	 * YYYYMMDD - The date the schema file was changed the last time
+	 * tx_solr	- The extension key
+	 * x-y-z	- The extension version this config is meant to work with
+	 * YYYYMMDD	- The date the config file was changed the last time
 	 *
-	 * Must be updated when changing the schema.
+	 * Must be updated when changing the solrconfig.
 	 *
 	 * @var string
 	 */
-	const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-3-1-0--20150614';
+	const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-3-0-0--20140516';
 
 	/**
-	 * Compiles a collection of schema version checks against each configured
-	 * Solr server. Only adds an entry if a schema other than the
+	 * Compiles a collection of solrconfig version checks against each configured
+	 * Solr server. Only adds an entry if a solrconfig other than the
 	 * recommended one was found.
 	 *
 	 */
@@ -63,28 +65,34 @@ class Tx_Solr_Report_SchemaStatus implements StatusProviderInterface {
 		foreach ($solrConnections as $solrConnection) {
 
 			if ($solrConnection->ping()
-				&& $solrConnection->getSchemaName() != self::RECOMMENDED_SCHEMA_VERSION) {
+				&& $solrConnection->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION
+			) {
+				$solrconfigName = $solrConnection->getSolrconfigName();
+				if (empty($solrconfigName)) {
+					$solrconfigName = '&lt;not set&gt;';
+				}
 
-				$message = '<p style="margin-bottom: 10px;">A schema different
-					from the one provided with the extension was detected.</p>
+				$message = '<p style="margin-bottom: 10px;">A solrconfig.xml
+					different from the one provided with the extension was
+					detected.</p>
 					<p style="margin-bottom: 10px;">It is recommended to use the
-					schema.xml file shipping with the Apache Solr for TYPO3
-					extension as it provides an optimized field setup for
-					using Solr with TYPO3. A difference can occur when you
-					update the TYPO3 extension, but forget to update the
-					schema.xml file on the Solr server. The schema sometimes
+					solrconfig.xml file shipping with the Apache Solr for TYPO3
+					extension as it provides an optimized setup for the  use of
+					Solr with TYPO3. A difference can occur when you  update the
+					TYPO3 extension, but forget to update the solrconfig.xml
+					file on the Solr server. The Solr configuration sometimes
 					changes to accommodate changes or new features in Apache
 					Solr. Also make sure to restart the Tomcat server after
-					updating the schema.xml file.</p>
+					updating solrconfig.xml.</p>
 					<p style="margin-bottom: 10px;">Your Solr server is
-					currently using schema version <strong>'
-					. $solrConnection->getSchemaName() . '</strong>, the
-					recommended schema version is <strong>'
-					. self::RECOMMENDED_SCHEMA_VERSION . '</strong>. You can
-					find the recommended schema.xml file in the extension\'s
-					resources folder: EXT:solr/Resources/Solr/. While
-					you\'re at it, please make sure you\'re using the
-					current solrconfig.xml file, too.</p>';
+					currently using a Solr configuration file named <strong>'
+					. $solrconfigName . '</strong>, the
+					recommended schema is called <strong>'
+					. self::RECOMMENDED_SOLRCONFIG_VERSION . '</strong>. You can
+					find the recommended solrconfig.xml file in the extension\'s
+					resources folder: EXT:solr/Resources/Solr/.
+					While you\'re at it, please check whether you\'re using the
+					current schema.xml file, too.</p>';
 
 				$message .= '<p>Affected Solr server:</p>
 					<ul>'
@@ -94,8 +102,8 @@ class Tx_Solr_Report_SchemaStatus implements StatusProviderInterface {
 					</ul>';
 
 				$status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
-					'Schema Version',
-					'Unsupported Schema',
+					'Solrconfig Version',
+					'Unsupported solrconfig.xml',
 					$message,
 					Status::WARNING
 				);
