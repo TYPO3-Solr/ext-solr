@@ -23,6 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Facet\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
@@ -84,11 +85,11 @@ class Tx_Solr_Facet_UsedFacetRenderer extends Tx_Solr_Facet_SimpleFacetOptionsRe
 			$this->filterValue
 		);
 
-		$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder',
+		$facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
 			$this->query,
 			$this->facetName,
 			$facetOption
-		); /* @var $facetLinkBuilder Tx_Solr_Facet_LinkBuilder */
+		); /* @var $facetLinkBuilder LinkBuilder */
 		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 		if ($this->facetConfiguration['type'] == 'hierarchy') {

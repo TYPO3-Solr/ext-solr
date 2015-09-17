@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Facet\FacetOption;
+use ApacheSolrForTypo3\Solr\Facet\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
@@ -143,11 +144,11 @@ class Tx_Solr_Facet_SimpleFacetOptionsRenderer implements Tx_Solr_FacetOptionsRe
 				$facetOptionResultCount
 			);	/* @var $facetOption FacetOption */
 
-			$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder',
+			$facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
 				$this->query,
 				$this->facetName,
 				$facetOption
-			); /* @var $facetLinkBuilder Tx_Solr_Facet_LinkBuilder */
+			); /* @var $facetLinkBuilder LinkBuilder */
 			$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
 			$optionText    = $facetOption->render();

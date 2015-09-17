@@ -81,7 +81,7 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer {
 			/* @var $facetOption FacetOption */
 			$facetOption->setUrlValue($filterEncoder->encodeFilter($facetOptionValue));
 
-			$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
+			$facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
 
 			$optionSelected = $facetOption->isSelectedInFacet($this->facetName);
 			$optionLinkUrl  = $facetLinkBuilder->getAddFacetOptionUrl();

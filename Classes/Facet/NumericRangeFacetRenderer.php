@@ -64,7 +64,7 @@ class Tx_Solr_Facet_NumericRangeFacetRenderer extends AbstractFacetRenderer {
 			''
 		);
 
-		$facetLinkBuilder = GeneralUtility::makeInstance('Tx_Solr_Facet_LinkBuilder',
+		$facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
 			$this->search->getQuery(),
 			$this->facetName,
 			$incompleteFacetOption
