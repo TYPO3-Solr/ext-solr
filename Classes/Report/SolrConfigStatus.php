@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SolrConfigStatus implements StatusProviderInterface {
+class SolrConfigStatus implements StatusProviderInterface {
 
 	/**
 	 * The config name property is constructed as follows:
