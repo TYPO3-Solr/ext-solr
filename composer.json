@@ -28,13 +28,15 @@
     }
   ],
   "require": {
-    "php": ">=5.3.7 <6.0"
+    "php": ">=5.3.7 <6.0",
+    "typo3/cms-core": "~6.2.14,<8.0"
   },
   "require-dev": {
-    "typo3-ci/typo3cms": "dev-master"
+    "phpunit/phpunit": "~4.7.0"
   },
   "replace": {
-    "solr": "*"
+    "solr": "self.version",
+    "typo3-ter/solr": "self.version"
   },
   "autoload": {
     "classmap": [
