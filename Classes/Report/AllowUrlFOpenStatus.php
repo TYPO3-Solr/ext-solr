@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_AllowUrlFOpenStatus implements StatusProviderInterface {
+class AllowUrlFOpenStatus implements StatusProviderInterface {
 
 	/**
 	 * Checks whether allow_url_fopen is enabled.
