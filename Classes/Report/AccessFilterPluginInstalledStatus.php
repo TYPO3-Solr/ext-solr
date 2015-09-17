@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -36,7 +38,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements StatusProviderInterface {
+class AccessFilterPluginInstalledStatus implements StatusProviderInterface {
 
 	/**
 	 * Solr Access Filter plugin version.
@@ -83,6 +85,12 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements StatusProvider
 		return $reports;
 	}
 
+	/**
+	 * Checks whether the Solr plugin is installed.
+	 *
+	 * @param \ApacheSolrForTypo3\Solr\SolrService $solrConnection
+	 * @return null|\TYPO3\CMS\Reports\Status
+	 */
 	protected function checkPluginInstallationStatus(SolrService $solrConnection) {
 		$status = NULL;
 
@@ -115,6 +123,12 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements StatusProvider
 		return $status;
 	}
 
+	/**
+	 * Checks whether the Solr plugin version is up to date.
+	 *
+	 * @param \ApacheSolrForTypo3\Solr\SolrService $solrConnection
+	 * @return null|\TYPO3\CMS\Reports\Status
+	 */
 	protected function checkPluginVersion(SolrService $solrConnection) {
 		$status = NULL;
 
@@ -171,7 +185,7 @@ class Tx_Solr_Report_AccessFilterPluginInstalledStatus implements StatusProvider
 	/**
 	 * Checks whether the installed plugin is current.
 	 *
-	 *  @param SolrService $solrConnection Solr connection to check for the plugin.
+	 * @param SolrService $solrConnection Solr connection to check for the plugin.
 	 * @return boolean True if the plugin is outdated, FALSE if it meets the current version recommendation.
 	 */
 	protected function isPluginOutdated(SolrService $solrConnection) {

@@ -100,7 +100,7 @@ class Tx_Solr_Report_SolrStatus implements StatusProviderInterface {
 			$message .= '<li>schema.xml: ' . $solr->getSchemaName() . '</li>';
 			$message .= '<li>solrconfig.xml: ' . $solr->getSolrconfigName() . '</li>';
 
-			$accessFilterPluginStatus = GeneralUtility::makeInstance('Tx_Solr_Report_AccessFilterPluginInstalledStatus');
+			$accessFilterPluginStatus  = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Report\\AccessFilterPluginInstalledStatus');
 			$accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solr);
 
 			$message .= '<li>Access Filter Plugin: ' . $accessFilterPluginVersion . '</li>';
