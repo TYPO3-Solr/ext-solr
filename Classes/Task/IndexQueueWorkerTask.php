@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Task;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -41,7 +43,7 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInterface {
+class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInterface {
 
 	/**
 	 * The site this task is indexing.
@@ -79,13 +81,13 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 		$limit      = $this->documentsToIndexLimit;
 		$indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
 
-			// get items to index
+		// get items to index
 		$itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);
 		foreach ($itemsToIndex as $itemToIndex) {
 			try {
-					// try indexing
+				// try indexing
 				$itemIndexed = $this->indexItem($itemToIndex);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$indexQueue->markItemAsFailed(
 					$itemToIndex,
 					$e->getCode() . ': ' . $e->__toString()
@@ -167,12 +169,12 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 		$indexerClass   = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\Indexer';
 		$indexerOptions = array();
 
-			// allow to overwrite indexers per indexing configuration
+		// allow to overwrite indexers per indexing configuration
 		if (isset($this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer'])) {
 			$indexerClass = $this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer'];
 		}
 
-			// get indexer options
+		// get indexer options
 		if (isset($this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer.'])
 		&& !empty($this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer.'])) {
 			$indexerOptions = $this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer.'];
@@ -180,7 +182,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 
 		$indexer = GeneralUtility::makeInstance($indexerClass, $indexerOptions);
 		if (!($indexer instanceof Indexer)) {
-			throw new RuntimeException(
+			throw new \RuntimeException(
 				'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',
 				1260463206
 			);
@@ -253,7 +255,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	 * Sets the task's site to indexing.
 	 *
 	 * @param Site $site The site to index by this task
-	 * @return	void
+	 * @return void
 	 */
 	public function setSite(Site $site) {
 		$this->site = $site;
@@ -282,7 +284,7 @@ class Tx_Solr_Scheduler_IndexQueueWorkerTask extends AbstractTask implements Pro
 	protected function initializeHttpHost(Item $item) {
 		static $hosts = array();
 
-			// relevant for realURL environments, only
+		// relevant for realURL environments, only
 		if (ExtensionManagementUtility::isLoaded('realurl')) {
 			$rootpageId = $item->getRootPageUid();
 			$hostFound  = !empty($hosts[$rootpageId]);
