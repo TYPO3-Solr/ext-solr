@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Report;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -36,7 +38,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Report_SolrVersionStatus implements StatusProviderInterface {
+class SolrVersionStatus implements StatusProviderInterface {
 
 	/**
 	 * Required Solr version. The version that gets installed when using the
