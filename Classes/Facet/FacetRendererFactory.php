@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder;
-use Tx_Solr_FacetRenderer;
 use Tx_Solr_QueryFacetBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -92,7 +91,7 @@ class FacetRendererFactory {
 	 * Looks up a facet's configuration and creates a facet renderer accordingly.
 	 *
 	 * @param Facet $facet Facet
-	 * @return Tx_Solr_FacetRenderer Facet renderer as defined by the facet's configuration
+	 * @return FacetRenderer Facet renderer as defined by the facet's configuration
 	 */
 	public function getFacetRendererByFacet($facet) {
 		$facetRenderer      = NULL;
@@ -146,15 +145,15 @@ class FacetRendererFactory {
 	}
 
 	/**
-	 * Validates an object for implementing the Tx_Solr_FacetRenderer interface.
+	 * Validates an object for implementing the ApacheSolrForTypo3\Solr\Facet\FacetRenderer interface.
 	 *
-	 * @param object $object A potential facet renderer object to check for implementing the Tx_Solr_FacetRenderer interface
-	 * @throws \UnexpectedValueException if $object does not implement Tx_Solr_FacetRenderer
+	 * @param object $object A potential facet renderer object to check for implementing the ApacheSolrForTypo3\Solr\Facet\FacetRenderer interface
+	 * @throws \UnexpectedValueException if $object does not implement ApacheSolrForTypo3\Solr\Facet\FacetRenderer
 	 */
 	protected function validateObjectIsFacetRenderer($object) {
-		if (!($object instanceof Tx_Solr_FacetRenderer)) {
+		if (!($object instanceof FacetRenderer)) {
 			throw new \UnexpectedValueException(
-				get_class($object) . ' is not an implementation of Tx_Solr_FacetRenderer',
+				get_class($object) . ' is not an implementation of ApacheSolrForTypo3\Solr\Facet\FacetRenderer',
 				1328038100
 			);
 		}

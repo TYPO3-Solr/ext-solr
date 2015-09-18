@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_FacetRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -39,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class AbstractFacetRenderer implements Tx_Solr_FacetRenderer {
+abstract class AbstractFacetRenderer implements FacetRenderer {
 
 	/**
 	 * @var Search

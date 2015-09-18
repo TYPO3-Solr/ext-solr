@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -30,7 +32,7 @@ use ApacheSolrForTypo3\Solr\Template;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-interface Tx_Solr_FacetRenderer {
+interface FacetRenderer {
 
 	/**
 	 * Sets the template to use to render the facet.
