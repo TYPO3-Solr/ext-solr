@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,23 +27,26 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
+
 
 /**
- * ResponseModifier interface, allows to modify the search response
+ * Interface to post process initialization of the Index Queue.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_ResponseModifier {
+interface InitializationPostProcessor {
 
 	/**
-	 * Modifies the given response and returns the modified response as result
+	 * Post process Index Queue initialization
 	 *
-	 * @param Apache_Solr_Response $response The response to modify
-	 * @return Apache_Solr_Response The modified response
+	 * @param Site $site The site to initialize
+	 * @param array $indexingConfigurations Initialized indexing configurations
+	 * @param array $initializationStatus Results of Index Queue initializations
 	 */
-	public function modifyResponse(Apache_Solr_Response $response);
+	public function postProcessIndexQueueInitialization(Site $site, array $indexingConfigurations, array $initializationStatus);
 
 }
 

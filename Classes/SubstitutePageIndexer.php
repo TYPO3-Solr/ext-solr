@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,18 +27,23 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Template;
-
 
 /**
- * Template modifier interface
+ * Substitute page indexer interface, describes the method an indexer must
+ * implement to provide a substitute page document
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_TemplateModifier {
+interface SubstitutePageIndexer {
 
-	public function modifyTemplate(Template $template);
+	/**
+	 * returns a substitute document for the currently being indexed page
+	 *
+	 * @param \Apache_Solr_Document $originalPageDocument The original page document.
+	 * @return \Apache_Solr_Document returns an Apache_Solr_Document object that replace the default page document
+	 */
+	public function getPageDocument(\Apache_Solr_Document $originalPageDocument);
 }
 

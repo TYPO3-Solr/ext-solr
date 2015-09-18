@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -27,21 +29,24 @@
 
 
 /**
- * Garbage Collector Post Processor interface
+ * Interface that defines the method an indexer must implement to provide
+ * additional documents to index for an item being indexed by the Index Queue.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_GarbageCollectorPostProcessor {
+interface AdditionalIndexQueueItemIndexer {
 
 	/**
-	 * Post processing of garbage collector
+	 * Provides additional documents that should be indexed together with an Index Queue item.
 	 *
-	 * @param string $table The record's table name.
-	 * @param integer $uid The record's uid.
-	 * @see Tx_Solr_GarbageCollector->collectGarbage()
+	 * @param Item $item The item currently being indexed.
+	 * @param integer $language The language uid of the documents
+	 * @param \Apache_Solr_Document $itemDocument The original item document.
+	 * @return array An array of additional Apache_Solr_Document objects
 	 */
-	public function postProcessGarbageCollector($table, $uid);
+	public function getAdditionalItemDocuments(Item $item, $language, \Apache_Solr_Document $itemDocument);
+
 }
 

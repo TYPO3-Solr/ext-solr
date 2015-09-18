@@ -1,9 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011-2015 Stefan Sprenger <stefan.sprenger@dkd.de>
-*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2014-2015 Steffen Ritter <steffen.ritter@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,32 +27,27 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Template;
-use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 
 /**
- * Subpart View Helper marker interface
+ * Page document post processor interface to handle page documents after they
+ * have been put together, but not yet submitted to Solr.
  *
- * @author Stefan Sprenger <stefan.sprenger@dkd.de>
+ * @author Steffen Ritter <steffen.ritter@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SubpartViewHelper extends ViewHelper {
+interface PageDocumentPostProcessor {
 
 	/**
-	 * Gets the view helper's subpart template
+	 * Allows Modification of the PageDocument
+	 * Can be used to trigger actions when all contextual variables of the pageDocument to be indexed are known
 	 *
-	 * @return Template
+	 * @param \Apache_Solr_Document $pageDocument the generated page document
+	 * @param TypoScriptFrontendController $page the page object with information about page id or language
+	 * @return void
 	 */
-	public function getTemplate();
-
-	/**
-	 * Sets the view helper's subpart template
-	 *
-	 * @param Template $template view helper's subpart template
-	 */
-	public function setTemplate(Template $template);
+	public function postProcessPageDocument(\Apache_Solr_Document $pageDocument, TypoScriptFrontendController $page);
 
 }
-

@@ -37,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class SimpleFacetOptionsRenderer implements \Tx_Solr_FacetOptionsRenderer {
+class SimpleFacetOptionsRenderer implements FacetOptionsRenderer {
 
 	/**
 	 * The facet's name as configured in TypoScript.

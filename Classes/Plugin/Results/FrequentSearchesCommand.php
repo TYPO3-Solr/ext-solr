@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
-use Tx_Solr_PluginCommand;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class FrequentSearchesCommand implements Tx_Solr_PluginCommand {
+class FrequentSearchesCommand implements PluginCommand {
 
 	/**
 	 * Instance of the caching frontend used to cache this command's output.

@@ -1,8 +1,11 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
+*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,24 +28,23 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
-
 
 /**
- * Plugin awareness interface for extension components.
+ * FacetsModifier interface, allows to modify facet fields and their counts.
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_PluginAware {
+interface FacetsModifier {
 
 	/**
-	 * Provides the extension component with an instance of the currently active
-	 * plugin.
+	 * Modifies the given facets and returns the modified facets as array
 	 *
-	 * @param AbstractPlugin $parentPlugin Currently active plugin
+	 * @param array $facets
+	 * @return array The facets with fields as array
 	 */
-	public function setParentPlugin(AbstractPlugin $parentPlugin);
+	public function modifyFacets($facets);
+
 }
 

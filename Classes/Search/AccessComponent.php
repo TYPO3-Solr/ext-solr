@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_QueryAware;
 
 
 /**
@@ -36,7 +35,7 @@ use Tx_Solr_QueryAware;
  * @package TYPO3
  * @subpackage solr
  */
-class AccessComponent extends AbstractComponent implements Tx_Solr_QueryAware {
+class AccessComponent extends AbstractComponent implements QueryAware {
 
 	/**
 	 * Solr query

@@ -24,10 +24,10 @@ namespace ApacheSolrForTypo3\Solr;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_FacetsModifier;
+use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
-use Tx_Solr_ResponseModifier;
-use Tx_Solr_SearchAware;
+use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
+use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -177,7 +177,7 @@ class Search implements SingletonInterface {
 				$queryModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($queryModifier instanceof Modifier) {
-					if ($queryModifier instanceof Tx_Solr_SearchAware) {
+					if ($queryModifier instanceof SearchAware) {
 						$queryModifier->setSearch($this);
 					}
 
@@ -200,7 +200,7 @@ class Search implements SingletonInterface {
 	 *
 	 * @param \Apache_Solr_Response $response The response as returned by Solr
 	 * @return \Apache_Solr_Response The modified response that is actually going to be returned to the extension.
-	 * @throws \UnexpectedValueException if a response modifier does not implement interface Tx_Solr_ResponseModifier
+	 * @throws \UnexpectedValueException if a response modifier does not implement interface ApacheSolrForTypo3\Solr\Search\ResponseModifier
 	 */
 	protected function modifyResponse(\Apache_Solr_Response $response) {
 		// hook to modify the search response
@@ -208,15 +208,15 @@ class Search implements SingletonInterface {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'] as $classReference) {
 				$responseModifier = GeneralUtility::getUserObj($classReference);
 
-				if ($responseModifier instanceof Tx_Solr_ResponseModifier) {
-					if ($responseModifier instanceof Tx_Solr_SearchAware) {
+				if ($responseModifier instanceof ResponseModifier) {
+					if ($responseModifier instanceof SearchAware) {
 						$responseModifier->setSearch($this);
 					}
 
 					$response = $responseModifier->modifyResponse($response);
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($responseModifier) . ' must implement interface Tx_Solr_ResponseModifier',
+						get_class($responseModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Search\ResponseModifier',
 						1343147211
 					);
 				}
@@ -233,7 +233,7 @@ class Search implements SingletonInterface {
 	 * Sends a ping to the solr server to see whether it is available.
 	 *
 	 * @return boolean Returns TRUE on successful ping.
-	 * @throws    \Exception    Throws an exception in case ping was not successful.
+	 * @throws \Exception Throws an exception in case ping was not successful.
 	 */
 	public function ping() {
 		$solrAvailable = FALSE;
@@ -340,12 +340,12 @@ class Search implements SingletonInterface {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
 					$facetsModifier = GeneralUtility::getUserObj($classReference);
 
-					if ($facetsModifier instanceof Tx_Solr_FacetsModifier) {
+					if ($facetsModifier instanceof FacetsModifier) {
 						$facetCounts = $facetsModifier->modifyFacets($facetCounts);
 						$facetCountsModified = TRUE;
 					} else {
 						throw new \UnexpectedValueException(
-							get_class($facetsModifier) . ' must implement interface Tx_Solr_FacetsModifier',
+							get_class($facetsModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Facet\Tx_Solr_FacetsModifier',
 							1310387526
 						);
 					}

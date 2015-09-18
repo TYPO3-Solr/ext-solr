@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2014-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,28 +27,25 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-
 
 /**
- * Interface that defines the method an indexer must implement to provide
- * additional documents to index for an item being indexed by the Index Queue.
+ * Serialized value detector interface
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_AdditionalIndexQueueItemIndexer {
+interface SerializedValueDetector {
 
 	/**
-	 * Provides additional documents that should be indexed together with an Index Queue item.
+	 * Uses a field's configuration to detect whether its value returned by a
+	 * content object is expected to be serialized and thus needs to be
+	 * unserialized.
 	 *
-	 * @param Item $item The item currently being indexed.
-	 * @param integer $language The language uid of the documents
-	 * @param Apache_Solr_Document $itemDocument The original item document.
-	 * @return array An array of additional Apache_Solr_Document objects
+	 * @param array $indexingConfiguration Current item's indexing configuration
+	 * @param string $solrFieldName Current field being indexed
+	 * @return boolean TRUE if the value is expected to be serialized, FALSE otherwise
 	 */
-	public function getAdditionalItemDocuments(Item $item, $language, Apache_Solr_Document $itemDocument);
-
+	public function isSerializedValue(array $indexingConfiguration, $solrFieldName);
 }
 

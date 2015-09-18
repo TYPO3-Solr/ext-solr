@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,25 +27,45 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 
 
 /**
- * Search awareness interface for extension components.
+ * Index Queue Frontend Helper interface.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SearchAware {
+interface FrontendHelper {
 
 	/**
-	 * Provides the extension component with an instance of the currently
-	 * active search.
-	 *
-	 * @param Search $search Currently active search instance
+	 * Activates a frontend helper by registering for hooks and other
+	 * resources required by the frontend helper to work.
 	 */
-	public function setSearch(Search $search);
+	public function activate();
+
+	/**
+	 * Deactivates a frontend helper by unregistering from hooks and releasing
+	 * resources.
+	 */
+	public function deactivate();
+
+	/**
+	 * Starts the execution of a frontend helper.
+	 *
+	 * @param PageIndexerRequest $request Page indexer request
+	 * @param PageIndexerResponse $response Page indexer response
+	 */
+	public function processRequest(PageIndexerRequest $request, PageIndexerResponse $response);
+
+	/**
+	 * Returns the collected data.
+	 *
+	 * @return array Collected data.
+	 */
+	public function getData();
 
 }
 

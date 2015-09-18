@@ -30,7 +30,7 @@ use ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_PluginCommand;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -41,7 +41,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class ResultsCommand implements Tx_Solr_PluginCommand {
+class ResultsCommand implements PluginCommand {
 
 	/**
 	 * @var Search

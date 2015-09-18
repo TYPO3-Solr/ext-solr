@@ -35,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Template;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class AbstractSubpartViewHelper implements \Tx_Solr_SubpartViewHelper {
+abstract class AbstractSubpartViewHelper implements SubpartViewHelper {
 
 	/**
 	 * @var Template

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -27,22 +29,21 @@
 
 
 /**
- * Interface that defines the method an indexer must implement to provide
- * additional documents to index for a page being indexed.
+ * Plugin awareness interface for extension components used in
+ * Tx_Solr_pluginbase_CommandPluginBase plugins.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_AdditionalPageIndexer {
+interface CommandPluginAware {
 
 	/**
-	 * Provides additional documents that should be indexed together with a page.
+	 * Provides the extension component with an instance of the currently active
+	 * plugin.
 	 *
-	 * @param Apache_Solr_Document $pageDocument The original page document.
-	 * @param array $allDocuments An array containing all the documents collected until here, including the page document
-	 * @return array An array of additional Apache_Solr_Document objects
+	 * @param CommandPluginBase $parentPlugin Currently active plugin
 	 */
-	public function getAdditionalPageDocuments(Apache_Solr_Document $pageDocument, array $allDocuments);
+	public function setParentPlugin(CommandPluginBase $parentPlugin);
 }
 

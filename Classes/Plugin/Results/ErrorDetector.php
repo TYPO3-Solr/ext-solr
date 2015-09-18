@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2013-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,45 +27,25 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
-
 
 /**
- * Index Queue Frontend Helper interface.
+ * Error detector interface
+ *
+ * An error detector can detect additional errors / do additional validation on
+ * searches and report the errors found to ApacheSolrForTypo3\Solr\Plugin\Results\ErrorsCommand so
+ * that they get shown on the search results page.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_IndexQueuePageIndexerFrontendHelper {
+interface ErrorDetector {
 
 	/**
-	 * Activates a frontend helper by registering for hooks and other
-	 * resources required by the frontend helper to work.
-	 */
-	public function activate();
-
-	/**
-	 * Deactivates a frontend helper by unregistering from hooks and releasing
-	 * resources.
-	 */
-	public function deactivate();
-
-	/**
-	 * Starts the execution of a frontend helper.
+	 * Provides additional error messages for user feedback.
 	 *
-	 * @param PageIndexerRequest $request Page indexer request
-	 * @param PageIndexerResponse $response Page indexer response
+	 * @return array An array of errors, each error is an array with keys 'message' and 'code'
 	 */
-	public function processRequest(PageIndexerRequest $request, PageIndexerResponse $response);
-
-	/**
-	 * Returns the collected data.
-	 *
-	 * @return array Collected data.
-	 */
-	public function getData();
-
+	public function getErrors();
 }
 

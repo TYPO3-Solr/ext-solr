@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_QueryFacetBuilder;
+use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
 
 
 /**
@@ -34,7 +34,7 @@ use Tx_Solr_QueryFacetBuilder;
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Range implements FilterEncoder, Tx_Solr_QueryFacetBuilder {
+class Range implements FilterEncoder, FacetBuilder {
 
 	/**
 	 * Delimiter for ranges in the URL.

@@ -27,8 +27,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\DatabaseUtility;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
-use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer;
-use Tx_Solr_IndexQueueInitializationPostProcessor;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -131,7 +129,7 @@ class Queue {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
 				$indexQueueInitializationPostProcessor = GeneralUtility::getUserObj($classReference);
 
-				if ($indexQueueInitializationPostProcessor instanceof Tx_Solr_IndexQueueInitializationPostProcessor) {
+				if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
 					$indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization(
 						$site,
 						$indexingConfigurations,
@@ -140,7 +138,7 @@ class Queue {
 				} else {
 					throw new \UnexpectedValueException(
 						get_class($indexQueueInitializationPostProcessor) .
-						' must implement interface Tx_Solr_IndexQueueInitializationPostProcessor',
+						' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor',
 						1345815561
 					);
 				}

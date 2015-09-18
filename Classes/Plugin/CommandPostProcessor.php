@@ -1,8 +1,9 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
 *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
@@ -28,23 +29,22 @@
 
 
 /**
- * Tx_Solr_IndexQueuePageIndexerDataUrlModifier interface, allows to modify the data url
- * before call the frontend form the index queue
+ * Plugin command post processor - allows to manipulate command template
+ * variables.
  *
- * @author Markus Goldbach <markus.goldbach@dkd.de>
+ * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_IndexQueuePageIndexerDataUrlModifier {
+interface CommandPostProcessor {
 
 	/**
-	 * Modifies the given data url
+	 * Allows to manipulate command template variables.
 	 *
-	 * @param string $pageUrl the current data url.
-	 * @param array $urlData An array of url data
-	 * @return string the final data url
+	 * @param string $commandName Command name
+	 * @param array|NULL $commandVariables Command variables or NULL
 	 */
-	public function modifyDataUrl($pageUrl, array $urlData);
+	public function postProcessCommandVariables($commandName, $commandVariables);
 
 }
 

@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
-use Tx_Solr_IndexQueuePageIndexerFrontendHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -39,7 +38,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class AbstractFrontendHelper implements Tx_Solr_IndexQueuePageIndexerFrontendHelper {
+abstract class AbstractFrontendHelper implements FrontendHelper {
 
 	/**
 	 * Index Queue page indexer request.

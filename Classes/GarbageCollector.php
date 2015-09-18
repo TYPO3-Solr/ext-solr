@@ -308,7 +308,7 @@ class GarbageCollector {
 	 *
 	 * @param string $table The record's table name.
 	 * @param integer $uid The record's uid.
-	 * @throws \UnexpectedValueException if a hook object does not implement interface \Tx_Solr_GarbageCollectorPostProcessor
+	 * @throws \UnexpectedValueException if a hook object does not implement interface \ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor
 	 */
 	public function collectGarbage($table, $uid) {
 		if ($table == 'tt_content' || $table == 'pages' || $table == 'pages_language_overlay') {
@@ -321,11 +321,11 @@ class GarbageCollector {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
 				$garbageCollectorPostProcessor = GeneralUtility::getUserObj($classReference);
 
-				if ($garbageCollectorPostProcessor instanceof \Tx_Solr_GarbageCollectorPostProcessor) {
+				if ($garbageCollectorPostProcessor instanceof GarbageCollectorPostProcessor) {
 					$garbageCollectorPostProcessor->postProcessGarbageCollector($table, $uid);
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($garbageCollectorPostProcessor) . ' must implement interface \Tx_Solr_GarbageCollectorPostProcessor',
+						get_class($garbageCollectorPostProcessor) . ' must implement interface ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor',
 						1345807460
 					);
 				}

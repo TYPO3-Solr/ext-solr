@@ -29,7 +29,7 @@ use ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
-use Tx_Solr_PluginCommand;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -40,7 +40,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class FacetingCommand implements Tx_Solr_PluginCommand {
+class FacetingCommand implements PluginCommand {
 
 	/**
 	 * Search instance

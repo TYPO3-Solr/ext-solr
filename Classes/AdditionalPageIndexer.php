@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,21 +29,22 @@
 
 
 /**
- * Substitute page indexer interface, describes the method an indexer must
- * implement to provide a substitute page document
+ * Interface that defines the method an indexer must implement to provide
+ * additional documents to index for a page being indexed.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SubstitutePageIndexer {
+interface AdditionalPageIndexer {
 
 	/**
-	 * returns a substitute document for the currently being indexed page
+	 * Provides additional documents that should be indexed together with a page.
 	 *
-	 * @param Apache_Solr_Document $originalPageDocument The original page document.
-	 * @return Apache_Solr_Document returns an Apache_Solr_Document object that replace the default page document
+	 * @param \Apache_Solr_Document $pageDocument The original page document.
+	 * @param array $allDocuments An array containing all the documents collected until here, including the page document
+	 * @return array An array of additional Apache_Solr_Document objects
 	 */
-	public function getPageDocument(Apache_Solr_Document $originalPageDocument);
+	public function getAdditionalPageDocuments(\Apache_Solr_Document $pageDocument, array $allDocuments);
 }
 

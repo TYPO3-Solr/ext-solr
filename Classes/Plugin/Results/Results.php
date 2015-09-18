@@ -30,9 +30,9 @@ use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_PluginAware;
-use Tx_Solr_PluginCommand;
-use Tx_Solr_QueryAware;
+use ApacheSolrForTypo3\Solr\Plugin\PluginAware;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
+use ApacheSolrForTypo3\Solr\Search\QueryAware;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -174,16 +174,16 @@ class Results extends CommandPluginBase {
 	 * @return array An array of command names to process for the result view
 	 */
 	protected function getCommandList() {
-		$requirements = Tx_Solr_PluginCommand::REQUIREMENT_NONE;
+		$requirements = PluginCommand::REQUIREMENT_NONE;
 		$commandList  = array();
 
 		if ($this->search->hasSearched()) {
-			$requirements = Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED;
+			$requirements = PluginCommand::REQUIREMENT_HAS_SEARCHED;
 
 			if ($this->search->getNumberOfResults() > 0) {
-				$requirements += Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS;
+				$requirements += PluginCommand::REQUIREMENT_HAS_RESULTS;
 			} else {
-				$requirements += Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS;
+				$requirements += PluginCommand::REQUIREMENT_NO_RESULTS;
 			}
 		}
 
@@ -224,11 +224,11 @@ class Results extends CommandPluginBase {
 			foreach ($searchComponents as $searchComponent) {
 				$searchComponent->setSearchConfiguration($this->conf['search.']);
 
-				if ($searchComponent instanceof Tx_Solr_QueryAware) {
+				if ($searchComponent instanceof QueryAware) {
 					$searchComponent->setQuery($query);
 				}
 
-				if ($searchComponent instanceof Tx_Solr_PluginAware) {
+				if ($searchComponent instanceof PluginAware) {
 					$searchComponent->setParentPlugin($this);
 				}
 

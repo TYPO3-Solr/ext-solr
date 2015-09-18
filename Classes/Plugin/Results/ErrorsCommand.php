@@ -25,9 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
-use Tx_Solr_CommandPluginAware;
-use Tx_Solr_ErrorDetector;
-use Tx_Solr_PluginCommand;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -39,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class ErrorsCommand implements Tx_Solr_PluginCommand {
+class ErrorsCommand implements PluginCommand {
 
 	/**
 	 * Parent plugin
@@ -109,8 +108,8 @@ class ErrorsCommand implements Tx_Solr_PluginCommand {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['addSearchErrors'] as $classReference) {
 				$errorDetector = GeneralUtility::getUserObj($classReference);
 
-				if ($errorDetector instanceof Tx_Solr_ErrorDetector) {
-					if ($errorDetector instanceof Tx_Solr_CommandPluginAware) {
+				if ($errorDetector instanceof ErrorDetector) {
+					if ($errorDetector instanceof CommandPluginAware) {
 						$errorDetector->setParentPlugin($this->parentPlugin);
 					}
 
@@ -123,7 +122,7 @@ class ErrorsCommand implements Tx_Solr_PluginCommand {
 					}
 				} else {
 					throw new \InvalidArgumentException(
-						'Error detector "' . $classReference . '" must implement interface Tx_Solr_ErrorDetector.',
+						'Error detector "' . $classReference . '" must implement interface ApacheSolrForTypo3\Solr\Plugin\Results\ErrorDetector.',
 						1359156192
 					);
 				}

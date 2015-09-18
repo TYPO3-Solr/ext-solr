@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014-2015 Steffen Ritter <steffen.ritter@typo3.org>
+*  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,27 +27,36 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-
 
 /**
- * Page document post processor interface to handle page documents after they
- * have been put together, but not yet submitted to Solr.
+ * Plugin command interface
  *
- * @author Steffen Ritter <steffen.ritter@typo3.org>
+ * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_PageDocumentPostProcessor {
+interface PluginCommand {
+
+	const REQUIREMENTS_NUM_BITS    = 4;
+
+	const REQUIREMENT_NONE         = 1; // 0001
+	const REQUIREMENT_HAS_SEARCHED = 2; // 0010
+	const REQUIREMENT_NO_RESULTS   = 4; // 0100
+	const REQUIREMENT_HAS_RESULTS  = 8; // 1000
 
 	/**
-	 * Allows Modification of the PageDocument
-	 * Can be used to trigger actions when all contextual variables of the pageDocument to be indexed are known
+	 * Constructor.
 	 *
-	 * @param Apache_Solr_Document $pageDocument the generated page document
-	 * @param TypoScriptFrontendController $page the page object with information about page id or language
-	 * @return void
+	 * FIXME interface must not define a constructor, change this to a setter
+	 *
+	 * @param CommandPluginBase $parent Parent plugin object.
 	 */
-	public function postProcessPageDocument(Apache_Solr_Document $pageDocument, TypoScriptFrontendController $page);
+	public function __construct(CommandPluginBase $parent);
 
+	/**
+	 * execute method
+	 *
+	 */
+	public function execute();
 }
+

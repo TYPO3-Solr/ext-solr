@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,26 +27,25 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Search;
 
 
 /**
- * Interface to post process initialization of the Index Queue.
+ * Search awareness interface for extension components.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_IndexQueueInitializationPostProcessor {
+interface SearchAware {
 
 	/**
-	 * Post process Index Queue initialization
+	 * Provides the extension component with an instance of the currently
+	 * active search.
 	 *
-	 * @param Site $site The site to initialize
-	 * @param array $indexingConfigurations Initialized indexing configurations
-	 * @param array $initializationStatus Results of Index Queue initializations
+	 * @param Search $search Currently active search instance
 	 */
-	public function postProcessIndexQueueInitialization(Site $site, array $indexingConfigurations, array $initializationStatus);
+	public function setSearch(Search $search);
 
 }
 

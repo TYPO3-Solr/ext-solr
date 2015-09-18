@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2014-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,23 +29,21 @@
 
 
 /**
- * Serialized value detector interface
+ * Garbage Collector Post Processor interface
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SerializedValueDetector {
+interface GarbageCollectorPostProcessor {
 
 	/**
-	 * Uses a field's configuration to detect whether its value returned by a
-	 * content object is expected to be serialized and thus needs to be
-	 * unserialized.
+	 * Post processing of garbage collector
 	 *
-	 * @param array $indexingConfiguration Current item's indexing configuration
-	 * @param string $solrFieldName Current field being indexed
-	 * @return boolean TRUE if the value is expected to be serialized, FALSE otherwise
+	 * @param string $table The record's table name.
+	 * @param integer $uid The record's uid.
+	 * @see \ApacheSolrForTypo3\Solr\GarbageCollector->collectGarbage()
 	 */
-	public function isSerializedValue(array $indexingConfiguration, $solrFieldName);
+	public function postProcessGarbageCollector($table, $uid);
 }
 

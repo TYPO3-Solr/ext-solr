@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2013-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,23 +29,14 @@
 
 
 /**
- * Error detector interface
- *
- * An error detector can detect additional errors / do additional validation on
- * searches and report the errors found to ApacheSolrForTypo3\Solr\Plugin\Results\ErrorsCommand so
- * that they get shown on the search results page.
+ * Template modifier interface
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_ErrorDetector {
+interface TemplateModifier {
 
-	/**
-	 * Provides additional error messages for user feedback.
-	 *
-	 * @return array An array of errors, each error is an array with keys 'message' and 'code'
-	 */
-	public function getErrors();
+	public function modifyTemplate(Template $template);
 }
 

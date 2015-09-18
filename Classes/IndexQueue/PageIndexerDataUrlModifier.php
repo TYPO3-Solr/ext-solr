@@ -1,8 +1,11 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
+*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,25 +28,24 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Template;
-
 
 /**
- * Form modifier interface
+ * Allows to modify the data url before call the frontend form the index queue
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_FormModifier {
+interface PageIndexerDataUrlModifier {
 
 	/**
-	 * Modifies the search form by providing  additional markers.
+	 * Modifies the given data url
 	 *
-	 * @param array $marker An array of existing form markers.
-	 * @param Template $template An instance of the template engine.
-	 * @return array Array with additional markers.
+	 * @param string $pageUrl the current data url.
+	 * @param array $urlData An array of url data
+	 * @return string the final data url
 	 */
-	public function modifyForm(array $marker, Template $template);
+	public function modifyDataUrl($pageUrl, array $urlData);
+
 }
 

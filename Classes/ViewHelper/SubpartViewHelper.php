@@ -1,7 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
+*  (c) 2011-2015 Stefan Sprenger <stefan.sprenger@dkd.de>
 *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
@@ -25,24 +28,31 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Template;
 
 
 /**
- * Query awareness interface for extension components.
+ * Subpart View Helper marker interface
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Stefan Sprenger <stefan.sprenger@dkd.de>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_QueryAware {
+interface SubpartViewHelper extends ViewHelper {
 
 	/**
-	 * Provides the extension component with an instance of the current query.
+	 * Gets the view helper's subpart template
 	 *
-	 * @param Query $query Current query
+	 * @return Template
 	 */
-	public function setQuery(Query $query);
+	public function getTemplate();
+
+	/**
+	 * Sets the view helper's subpart template
+	 *
+	 * @param Template $template view helper's subpart template
+	 */
+	public function setTemplate(Template $template);
 
 }
 

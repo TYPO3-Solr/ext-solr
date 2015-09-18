@@ -117,69 +117,69 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results, frequentsearches',
 	'frequentSearches',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FrequentSearchesCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_NONE
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'search, results',
 	'form',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FormCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_NONE
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'resultsPerPageSwitch',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\ResultsPerPageSwitchCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'search, results',
 	'errors',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ErrorsCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_NONE
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'lastSearches',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\LastSearchesCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_NONE
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'no_results',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\NoResultsCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'faceting',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FacetingCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
-	+ Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
+	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'results',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ResultsCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'sorting',
 	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SortingCommand',
-	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
+	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

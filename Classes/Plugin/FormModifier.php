@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,53 +27,25 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Template;
 
 
 /**
- * Interface to initialize items in the Index Queue.
+ * Form modifier interface
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_IndexQueueInitializer {
+interface FormModifier {
 
 	/**
-	 * Sets the site for the initializer.
+	 * Modifies the search form by providing  additional markers.
 	 *
-	 * @param Site $site The site to initialize Index Queue items for.
+	 * @param array $marker An array of existing form markers.
+	 * @param Template $template An instance of the template engine.
+	 * @return array Array with additional markers.
 	 */
-	public function setSite(Site $site);
-
-	/**
-	 * Set the type (usually a Db table name) of items to initialize.
-	 *
-	 * @param string $type Type to initialize.
-	 */
-	public function setType($type);
-
-	/**
-	 * Sets the name of the indexing configuration to initialize.
-	 *
-	 * @param string $indexingConfigurationName Indexing configuration name
-	 */
-	public function setIndexingConfigurationName($indexingConfigurationName);
-
-	/**
-	 * Sets the configuration for how to index a type of items.
-	 *
-	 * @param array $indexingConfiguration Indexing configuration from TypoScript
-	 */
-	public function setIndexingConfiguration(array $indexingConfiguration);
-
-	/**
-	 * Initializes Index Queue items for a certain site and indexing
-	 * configuration.
-	 *
-	 * @return boolean TRUE if initialization was successful, FALSE on error.
-	 */
-	public function initialize();
-
+	public function modifyForm(array $marker, Template $template);
 }
 

@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
-use Tx_Solr_PluginCommand;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 
 
 /**
@@ -39,7 +39,7 @@ use Tx_Solr_PluginCommand;
  * @package TYPO3
  * @subpackage solr
  */
-class LastSearchesCommand implements Tx_Solr_PluginCommand {
+class LastSearchesCommand implements PluginCommand {
 
 	/**
 	 * Parent plugin

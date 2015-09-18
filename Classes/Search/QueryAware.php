@@ -1,8 +1,9 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
 *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
@@ -26,23 +27,24 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+
 
 /**
- * FacetsModifier interface, allows to modify facet fields and their counts.
+ * Query awareness interface for extension components.
  *
- * @author Markus Goldbach <markus.goldbach@dkd.de>
+ * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_FacetsModifier {
+interface QueryAware {
 
 	/**
-	 * Modifies the given facets and returns the modified facets as array
+	 * Provides the extension component with an instance of the current query.
 	 *
-	 * @param array $facets
-	 * @return array The facets with fields as array
+	 * @param Query $query Current query
 	 */
-	public function modifyFacets($facets);
+	public function setQuery(Query $query);
 
 }
 

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,25 +26,24 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 
 
 /**
- * Plugin awareness interface for extension components used in
- * Tx_Solr_pluginbase_CommandPluginBase plugins.
+ * ResponseModifier interface, allows to modify the search response
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_CommandPluginAware {
+interface ResponseModifier {
 
 	/**
-	 * Provides the extension component with an instance of the currently active
-	 * plugin.
+	 * Modifies the given response and returns the modified response as result
 	 *
-	 * @param CommandPluginBase $parentPlugin Currently active plugin
+	 * @param \Apache_Solr_Response $response The response to modify
+	 * @return \Apache_Solr_Response The modified response
 	 */
-	public function setParentPlugin(CommandPluginBase $parentPlugin);
+	public function modifyResponse(\Apache_Solr_Response $response);
+
 }
 

@@ -1,8 +1,10 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
+*  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,38 +26,54 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+
+use ApacheSolrForTypo3\Solr\Site;
 
 
 /**
- * Plugin command interface
+ * Interface to initialize items in the Index Queue.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_PluginCommand {
-
-	const REQUIREMENTS_NUM_BITS    = 4;
-
-	const REQUIREMENT_NONE         = 1; // 0001
-	const REQUIREMENT_HAS_SEARCHED = 2; // 0010
-	const REQUIREMENT_NO_RESULTS   = 4; // 0100
-	const REQUIREMENT_HAS_RESULTS  = 8; // 1000
+interface IndexQueueInitializer {
 
 	/**
-	 * Constructor.
+	 * Sets the site for the initializer.
 	 *
-	 * FIXME interface must not define a constructor, change this to a setter
-	 *
-	 * @param CommandPluginBase $parent Parent plugin object.
+	 * @param Site $site The site to initialize Index Queue items for.
 	 */
-	public function __construct(CommandPluginBase $parent);
+	public function setSite(Site $site);
 
 	/**
-	 * execute method
+	 * Set the type (usually a Db table name) of items to initialize.
 	 *
+	 * @param string $type Type to initialize.
 	 */
-	public function execute();
+	public function setType($type);
+
+	/**
+	 * Sets the name of the indexing configuration to initialize.
+	 *
+	 * @param string $indexingConfigurationName Indexing configuration name
+	 */
+	public function setIndexingConfigurationName($indexingConfigurationName);
+
+	/**
+	 * Sets the configuration for how to index a type of items.
+	 *
+	 * @param array $indexingConfiguration Indexing configuration from TypoScript
+	 */
+	public function setIndexingConfiguration(array $indexingConfiguration);
+
+	/**
+	 * Initializes Index Queue items for a certain site and indexing
+	 * configuration.
+	 *
+	 * @return boolean TRUE if initialization was successful, FALSE on error.
+	 */
+	public function initialize();
+
 }
 
