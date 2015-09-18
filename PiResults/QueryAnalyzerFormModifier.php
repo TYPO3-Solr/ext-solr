@@ -22,6 +22,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 
@@ -45,7 +46,7 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	/**
 	 * The currently active plugin
 	 *
-	 * @var Tx_Solr_PluginBase_CommandPluginBase
+	 * @var CommandPluginBase
 	 */
 	protected $parentPlugin;
 
@@ -60,9 +61,9 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	/**
 	 * Sets the currently active parent plugin.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Currently active parent plugin
+	 * @param CommandPluginBase $parentPlugin Currently active parent plugin
 	 */
-	public function setParentPlugin(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function setParentPlugin(CommandPluginBase $parentPlugin) {
 		$this->parentPlugin = $parentPlugin;
 	}
 

@@ -23,6 +23,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -71,9 +72,9 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Parent plugin object.
+	 * @param CommandPluginBase $parentPlugin Parent plugin object.
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
 		$this->cacheFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheFactory');

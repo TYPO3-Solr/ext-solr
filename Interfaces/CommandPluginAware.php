@@ -24,6 +24,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 
 
 /**
@@ -40,8 +41,8 @@ interface Tx_Solr_CommandPluginAware {
 	 * Provides the extension component with an instance of the currently active
 	 * plugin.
 	 *
-	 * @param Tx_Solr_pluginbase_CommandPluginBase $parentPlugin Currently active plugin
+	 * @param CommandPluginBase $parentPlugin Currently active plugin
 	 */
-	public function setParentPlugin(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin);
+	public function setParentPlugin(CommandPluginBase $parentPlugin);
 }
 

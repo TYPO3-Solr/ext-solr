@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiFrequentSearches_FrequentSearches extends Tx_Solr_PluginBase_CommandPluginBase{
+class Tx_Solr_PiFrequentSearches_FrequentSearches extends CommandPluginBase{
 
 	/**
 	 * Path to this script relative to the extension dir.

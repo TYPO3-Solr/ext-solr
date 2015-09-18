@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -35,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
+class Tx_Solr_PiSearch_Search extends CommandPluginBase{
 
 	/**
 	 * Path to this script relative to the extension dir.

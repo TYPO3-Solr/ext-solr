@@ -21,6 +21,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -44,9 +45,9 @@ class Tx_Solr_PiResults_NoResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Parent plugin object.
+	 * @param CommandPluginBase $parentPlugin Parent plugin object.
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->parentPlugin = $parentPlugin;
 	}
 

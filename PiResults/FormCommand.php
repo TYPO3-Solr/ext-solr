@@ -22,6 +22,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -44,7 +45,7 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PluginBase_CommandPluginBase
+	 * @var CommandPluginBase
 	 */
 	protected $parentPlugin;
 
@@ -58,9 +59,9 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Constructor for class Tx_Solr_PiResults_FormCommand
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin parent plugin
+	 * @param CommandPluginBase $parentPlugin parent plugin
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		$this->parentPlugin  = $parentPlugin;

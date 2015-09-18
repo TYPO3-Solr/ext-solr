@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,6 +27,9 @@
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Template;
+use Tx_Solr_CommandPostProcessor;
+use Tx_Solr_PluginBase_PluginBase;
+use Tx_Solr_TemplateModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -39,7 +44,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_PluginBase {
+abstract class CommandPluginBase extends Tx_Solr_PluginBase_PluginBase {
 
 	/**
 	 * Should be implemented by an inheriting class to provide a correctly
@@ -61,8 +66,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	 * the template.
 	 *
 	 * @param $actionResult
-	 * @throws RuntimeException
-	 * @throws UnexpectedValueException
+	 * @throws \UnexpectedValueException
 	 * @return string Rendered plugin content
 	 */
 	protected function render($actionResult) {
@@ -97,7 +101,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 				if ($templateModifier instanceof Tx_Solr_TemplateModifier) {
 					$templateModifier->modifyTemplate($this->template);
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($templateModifier) . ' must implement interface Tx_Solr_TemplateModifier',
 						1310387230
 					);
@@ -132,7 +136,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 	 *
 	 * @param string $commandName Name of the command to be executed.
 	 * @return array Array of template variables returned by the command.
-	 * @throws UnexpectedValueException if a command post processor fails to implement interface Tx_Solr_CommandPostProcessor
+	 * @throws \UnexpectedValueException if a command post processor fails to implement interface Tx_Solr_CommandPostProcessor
 	 */
 	protected function executeCommand($commandName) {
 		$commandResolver  = $this->getCommandResolver();
@@ -146,7 +150,7 @@ abstract class Tx_Solr_PluginBase_CommandPluginBase extends Tx_Solr_PluginBase_P
 				if ($commandPostProcessor instanceof Tx_Solr_CommandPostProcessor) {
 					$commandVariables = $commandPostProcessor->postProcessCommandVariables($commandName, $commandVariables);
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($commandPostProcessor) . ' must implement interface Tx_Solr_CommandPostProcessor',
 						1346079897
 					);
