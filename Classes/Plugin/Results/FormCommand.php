@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
-use Tx_Solr_CommandPluginAware;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
 use Tx_Solr_FormModifier;
 use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -97,7 +97,7 @@ class FormCommand implements Tx_Solr_PluginCommand {
 				$formModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($formModifier instanceof Tx_Solr_FormModifier) {
-					if ($formModifier instanceof Tx_Solr_CommandPluginAware) {
+					if ($formModifier instanceof CommandPluginAware) {
 						$formModifier->setParentPlugin($this->parentPlugin);
 					}
 

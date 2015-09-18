@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
-use Tx_Solr_CommandPluginAware;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
 use Tx_Solr_ErrorDetector;
 use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -110,7 +110,7 @@ class ErrorsCommand implements Tx_Solr_PluginCommand {
 				$errorDetector = GeneralUtility::getUserObj($classReference);
 
 				if ($errorDetector instanceof Tx_Solr_ErrorDetector) {
-					if ($errorDetector instanceof Tx_Solr_CommandPluginAware) {
+					if ($errorDetector instanceof CommandPluginAware) {
 						$errorDetector->setParentPlugin($this->parentPlugin);
 					}
 

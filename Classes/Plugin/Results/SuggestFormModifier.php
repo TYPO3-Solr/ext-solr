@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_CommandPluginAware;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
 use Tx_Solr_FormModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -39,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class SuggestFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
+class SuggestFormModifier implements Tx_Solr_FormModifier, CommandPluginAware {
 
 	/**
 	 * Configuration
