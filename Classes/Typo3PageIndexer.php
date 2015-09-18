@@ -175,7 +175,7 @@ class Typo3PageIndexer {
 	 * Indexes a page.
 	 *
 	 * @return boolean TRUE after successfully indexing the page, FALSE on error
-	 * @throws \UnexpectedValueException if a page document post processor fails to implement interface Tx_Solr_PageDocumentPostProcessor
+	 * @throws \UnexpectedValueException if a page document post processor fails to implement interface ApacheSolrForTypo3\Solr\PageDocumentPostProcessor
 	 */
 	public function indexPage() {
 		$pageIndexed = FALSE;
@@ -195,11 +195,11 @@ class Typo3PageIndexer {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] as $classReference) {
 				$postProcessor = GeneralUtility::getUserObj($classReference);
-				if ($postProcessor instanceof \Tx_Solr_PageDocumentPostProcessor) {
+				if ($postProcessor instanceof PageDocumentPostProcessor) {
 					$postProcessor->postProcessPageDocument($pageDocument, $this->page);
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($pageDocument) . ' must implement interface Tx_Solr_PageDocumentPostProcessor',
+						get_class($pageDocument) . ' must implement interface ApacheSolrForTypo3\Solr\PageDocumentPostProcessor',
 						1397739154
 					);
 				}

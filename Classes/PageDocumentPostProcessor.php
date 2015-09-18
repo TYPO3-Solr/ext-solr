@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -36,16 +38,16 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_PageDocumentPostProcessor {
+interface PageDocumentPostProcessor {
 
 	/**
 	 * Allows Modification of the PageDocument
 	 * Can be used to trigger actions when all contextual variables of the pageDocument to be indexed are known
 	 *
-	 * @param Apache_Solr_Document $pageDocument the generated page document
+	 * @param \Apache_Solr_Document $pageDocument the generated page document
 	 * @param TypoScriptFrontendController $page the page object with information about page id or language
 	 * @return void
 	 */
-	public function postProcessPageDocument(Apache_Solr_Document $pageDocument, TypoScriptFrontendController $page);
+	public function postProcessPageDocument(\Apache_Solr_Document $pageDocument, TypoScriptFrontendController $page);
 
 }
