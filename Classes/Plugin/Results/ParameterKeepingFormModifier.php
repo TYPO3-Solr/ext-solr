@@ -59,7 +59,7 @@ class ParameterKeepingFormModifier implements Tx_Solr_FormModifier, Tx_Solr_Comm
 	protected $parentPlugin;
 
 	/**
-	 * Constructor for class ApacheSolrForTypo3\Solr\Plugin\Results\ParameterKeepingFormModifier
+	 * Constructor
 	 *
 	 */
 	public function __construct() {
