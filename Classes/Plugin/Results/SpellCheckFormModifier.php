@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,6 +25,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Template;
+use Tx_Solr_FormModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_SpellCheckFormModifier implements Tx_Solr_FormModifier {
+class SpellCheckFormModifier implements Tx_Solr_FormModifier {
 
 	/**
 	 * Modifies the search form by providing an additional marker linking to a
