@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -34,15 +36,15 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_AdditionalPageIndexer {
+interface AdditionalPageIndexer {
 
 	/**
 	 * Provides additional documents that should be indexed together with a page.
 	 *
-	 * @param Apache_Solr_Document $pageDocument The original page document.
+	 * @param \Apache_Solr_Document $pageDocument The original page document.
 	 * @param array $allDocuments An array containing all the documents collected until here, including the page document
 	 * @return array An array of additional Apache_Solr_Document objects
 	 */
-	public function getAdditionalPageDocuments(Apache_Solr_Document $pageDocument, array $allDocuments);
+	public function getAdditionalPageDocuments(\Apache_Solr_Document $pageDocument, array $allDocuments);
 }
 

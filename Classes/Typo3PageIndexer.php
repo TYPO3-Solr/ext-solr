@@ -374,7 +374,7 @@ class Typo3PageIndexer {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'] as $classReference) {
 				$additionalIndexer = GeneralUtility::getUserObj($classReference);
 
-				if ($additionalIndexer instanceof \Tx_Solr_AdditionalPageIndexer) {
+				if ($additionalIndexer instanceof AdditionalPageIndexer) {
 					$additionalDocuments = $additionalIndexer->getAdditionalPageDocuments($pageDocument, $documents);
 
 					if (is_array($additionalDocuments)) {
@@ -382,7 +382,7 @@ class Typo3PageIndexer {
 					}
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($additionalIndexer) . ' must implement interface Tx_Solr_AdditionalPageIndexer',
+						get_class($additionalIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\Tx_Solr_AdditionalPageIndexer',
 						1310491024
 					);
 				}
