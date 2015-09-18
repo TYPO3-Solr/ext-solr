@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_QueryFacetBuilder;
+use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
 
 
 /**
@@ -33,7 +33,7 @@ use Tx_Solr_QueryFacetBuilder;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class QueryGroup implements FilterEncoder, Tx_Solr_QueryFacetBuilder {
+class QueryGroup implements FilterEncoder, FacetBuilder {
 
 	/**
 	 * Constructor

@@ -29,15 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase for query parser range
  * @author Markus Goldbach
  */
-
-// workaround
-if (!class_exists('ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder')) {
-	require_once __DIR__ . '../../../../../Interfaces/interface.tx_solr_queryfilterencoder.php';
-}
-if (!class_exists('Tx_Solr_QueryFacetBuilder')) {
-	require_once __DIR__ . '../../../../../Interfaces/interface.tx_solr_queryfacetbuilder.php';
-}
-
 class Tx_Solr_Query_FilterEncoder_DateRangeTest extends Tx_Phpunit_TestCase {
 
 	private $rangeParser;

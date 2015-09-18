@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,13 +24,13 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+
 /**
  * Query filter builder interface
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @todo move\rename to ApacheSolrForTypo3\Solr\Facet\FacetBuilder
  */
-interface Tx_Solr_QueryFacetBuilder {
+interface FacetBuilder {
 
 	/**
 	 * Builds the facet parameters depending on a facet's configuration
