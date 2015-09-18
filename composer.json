@@ -41,12 +41,7 @@
   "autoload": {
     "classmap": [
       "Lib/",
-      "Classes/",
-      "Interfaces/",
-      "PiFrequentSearches/",
-      "PiResults/",
-      "PiSearch/",
-      "Report/"
+      "Classes/"
     ]
   },
   "extra": {
