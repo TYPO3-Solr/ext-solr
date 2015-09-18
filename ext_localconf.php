@@ -130,7 +130,7 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'resultsPerPageSwitch',
-	'Tx_Solr_PiResults_ResultsPerPageSwitchCommand',
+	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\ResultsPerPageSwitchCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
 	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );
