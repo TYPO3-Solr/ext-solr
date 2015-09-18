@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,14 +35,14 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_GarbageCollectorPostProcessor {
+interface GarbageCollectorPostProcessor {
 
 	/**
 	 * Post processing of garbage collector
 	 *
 	 * @param string $table The record's table name.
 	 * @param integer $uid The record's uid.
-	 * @see Tx_Solr_GarbageCollector->collectGarbage()
+	 * @see \ApacheSolrForTypo3\Solr\GarbageCollector->collectGarbage()
 	 */
 	public function postProcessGarbageCollector($table, $uid);
 }
