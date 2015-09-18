@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ViewHelper\SubpartViewHelper;
+use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Html\HtmlParser;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -404,12 +405,12 @@ class Template {
 	/**
 	 * Renders single marker view helpers.
 	 *
-	 * @param \ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper $viewHelper View helper instance to execute.
+	 * @param ViewHelper $viewHelper View helper instance to execute.
 	 * @param string $helperKey The view helper marker key.
 	 * @param string $content Markup that contains the unsubstituted view helper marker.
 	 * @return string Markup with the view helper replaced by the content it returned.
 	 */
-	protected function renderMarkerViewHelper(ViewHelper\ViewHelper $viewHelper, $helperKey, $content) {
+	protected function renderMarkerViewHelper(ViewHelper $viewHelper, $helperKey, $content) {
 		$viewHelperArgumentLists = $this->getViewHelperArgumentLists($helperKey, $content);
 
 		foreach ($viewHelperArgumentLists as $viewHelperArgumentList) {
