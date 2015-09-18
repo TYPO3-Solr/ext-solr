@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_PluginAware {
+interface PluginAware {
 
 	/**
 	 * Provides the extension component with an instance of the currently active
