@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Facet;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -28,7 +30,7 @@
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-interface Tx_Solr_FacetOptionsRenderer {
+interface FacetOptionsRenderer {
 
 	/**
 	 * Takes care of rendering the facet options
