@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -37,7 +39,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_ErrorDetector {
+interface ErrorDetector {
 
 	/**
 	 * Provides additional error messages for user feedback.
