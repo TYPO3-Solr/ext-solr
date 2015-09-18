@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 
@@ -50,11 +51,11 @@ class ScoreAnalyzer implements ResultDocumentModifier {
 	/**
 	 * Modifies the given query and returns the modified query as result
 	 *
-	 * @param \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand $resultCommand The search result command
+	 * @param ResultsCommand $resultCommand The search result command
 	 * @param array $resultDocument Result document
 	 * @return array The document with fields as array
 	 */
-	public function modifyResultDocument($resultCommand, array $resultDocument) {
+	public function modifyResultDocument(ResultsCommand $resultCommand, array $resultDocument) {
 		$this->search  = $resultCommand->getParentPlugin()->getSearch();
 		$configuration = Util::getSolrConfiguration();
 

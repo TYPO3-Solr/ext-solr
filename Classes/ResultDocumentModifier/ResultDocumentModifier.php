@@ -46,7 +46,7 @@ interface ResultDocumentModifier {
 	 * @param array $resultDocument Result document as array
 	 * @return array The document with fields as array
 	 */
-	public function modifyResultDocument($resultCommand, array $resultDocument);
+	public function modifyResultDocument(ResultsCommand $resultCommand, array $resultDocument);
 
 }
 

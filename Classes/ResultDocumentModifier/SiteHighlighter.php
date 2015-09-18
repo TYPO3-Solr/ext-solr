@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -44,11 +45,11 @@ class SiteHighlighter implements ResultDocumentModifier {
 	 * which will result in having the current search terms highlighted on the
 	 * target page.
 	 *
-	 * @param \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand $resultCommand The search result command
+	 * @param ResultsCommand $resultCommand The search result command
 	 * @param array $resultDocument The result document's fields as an array
 	 * @return array The document with fields as array
 	 */
-	public function modifyResultDocument($resultCommand, array $resultDocument) {
+	public function modifyResultDocument(ResultsCommand $resultCommand, array $resultDocument) {
 		$searchWords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
 
 		// remove quotes from phrase searches - they've been escaped by getCleanUserQuery()
