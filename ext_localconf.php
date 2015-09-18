@@ -177,7 +177,7 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'sorting',
-	'Tx_Solr_PiResults_SortingCommand',
+	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SortingCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
 	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 );

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,8 +25,8 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
-use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
 use ApacheSolrForTypo3\Solr\Search;
+use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -35,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
+class SortingCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 * Search instance
@@ -70,6 +72,9 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 		$this->configuration = $parentPlugin->conf;
 	}
 
+	/**
+	 * @return array|null
+	 */
 	public function execute() {
 		$marker = array();
 
@@ -78,9 +83,9 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 		}
 
 		if (count($marker) === 0) {
-				// in case we didn't fill any markers - like when there are no
-				// search results - we set markers to NULL to signal that we
-				// want to have the subpart removed completely
+			// in case we didn't fill any markers - like when there are no
+			// search results - we set markers to NULL to signal that we
+			// want to have the subpart removed completely
 			$marker = NULL;
 		}
 
@@ -111,15 +116,15 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 			$sortIndicator        = $sortDirection;
 			$currentSortOption    = '';
 			$currentSortDirection = '';
-			foreach($urlSortParameters as $urlSortParameter){
+			foreach ($urlSortParameters as $urlSortParameter) {
 				$explodedUrlSortParameter = explode(' ', $urlSortParameter);
-				if($explodedUrlSortParameter[0] == $sortOptionName){
+				if ($explodedUrlSortParameter[0] == $sortOptionName) {
 					list($currentSortOption, $currentSortDirection) = $explodedUrlSortParameter;
 					break;
 				}
 			}
 
-				// toggle sorting direction for the current sorting field
+			// toggle sorting direction for the current sorting field
 			if ($currentSortOption == $sortOptionName) {
 				switch ($currentSortDirection) {
 					case 'asc':
@@ -156,7 +161,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 				'current_direction' => ' '
 			);
 
-				// set sort indicator for the current sorting field
+			// set sort indicator for the current sorting field
 			if ($currentSortOption == $sortOptionName) {
 				$temp['selected']          = 'selected="selected"';
 				$temp['current']           = 'current';
@@ -164,7 +169,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 				$temp['current_direction'] = $sortIndicator;
 			}
 
-				// special case relevance: just reset the search to normal behavior
+			// special case relevance: just reset the search to normal behavior
 			if ($sortOptionName == 'relevance') {
 				$temp['link'] = $queryLinkBuilder->getQueryLink(
 					$sortOption['label'],
