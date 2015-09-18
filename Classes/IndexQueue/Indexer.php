@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_AdditionalIndexQueueItemIndexer;
 use Tx_Solr_IndexQueuePageIndexerDocumentsModifier;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -404,7 +403,7 @@ class Indexer extends AbstractIndexer {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] as $classReference) {
 				$additionalIndexer = GeneralUtility::getUserObj($classReference);
 
-				if ($additionalIndexer instanceof Tx_Solr_AdditionalIndexQueueItemIndexer) {
+				if ($additionalIndexer instanceof AdditionalIndexQueueItemIndexer) {
 					$additionalDocuments = $additionalIndexer->getAdditionalItemDocuments($item, $language, $itemDocument);
 
 					if (is_array($additionalDocuments)) {
@@ -412,7 +411,7 @@ class Indexer extends AbstractIndexer {
 					}
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($additionalIndexer) . ' must implement interface Tx_Solr_AdditionalIndexQueueItemIndexer',
+						get_class($additionalIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer',
 						1326284551
 					);
 				}
