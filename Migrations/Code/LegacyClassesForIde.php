@@ -73,6 +73,11 @@ class Tx_Solr_Query extends ApacheSolrForTypo3\Solr\Query {}
 /**
  * @deprecated
  */
+class Tx_Solr_ExtractingQuery extends ApacheSolrForTypo3\Solr\ExtractingQuery {}
+
+/**
+ * @deprecated
+ */
 class Tx_Solr_Search extends ApacheSolrForTypo3\Solr\Search {}
 
 /**

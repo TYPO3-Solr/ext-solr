@@ -15,6 +15,7 @@ return array(
 	'Tx_Solr_LanguageFileUnavailableException' => 'ApacheSolrForTypo3\\Solr\\LanguageFileUnavailableException',
 	'Tx_Solr_NoSolrConnectionFoundException' => 'ApacheSolrForTypo3\\Solr\\NoSolrConnectionFoundException',
 	'Tx_Solr_Query' => 'ApacheSolrForTypo3\\Solr\\Query',
+	'Tx_Solr_ExtractingQuery' => 'ApacheSolrForTypo3\\Solr\\ExtractingQuery',
 	'Tx_Solr_Search' => 'ApacheSolrForTypo3\\Solr\\Search',
 	'Tx_Solr_Site' => 'ApacheSolrForTypo3\\Solr\\Site',
 	'Tx_Solr_SolrService' => 'ApacheSolrForTypo3\\Solr\\SolrService',
