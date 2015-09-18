@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 // TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
-use Tx_Solr_SubstitutePageIndexer;
+use ApacheSolrForTypo3\Solr\SubstitutePageIndexer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class PageFieldMappingIndexer implements Tx_Solr_SubstitutePageIndexer {
+class PageFieldMappingIndexer implements SubstitutePageIndexer {
 
 	/**
 	 * Returns a substitute document for the currently being indexed page.

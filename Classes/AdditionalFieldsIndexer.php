@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_SubstitutePageIndexer;
-
 
 /**
  * Additional fields indexer.
@@ -39,7 +37,7 @@ use Tx_Solr_SubstitutePageIndexer;
  * @package TYPO3
  * @subpackage solr
  */
-class AdditionalFieldsIndexer implements Tx_Solr_SubstitutePageIndexer {
+class AdditionalFieldsIndexer implements SubstitutePageIndexer {
 
 	/**
 	 * Returns a substitute document for the currently being indexed page.

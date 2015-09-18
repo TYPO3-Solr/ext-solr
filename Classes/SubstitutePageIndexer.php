@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -34,14 +36,14 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SubstitutePageIndexer {
+interface SubstitutePageIndexer {
 
 	/**
 	 * returns a substitute document for the currently being indexed page
 	 *
-	 * @param Apache_Solr_Document $originalPageDocument The original page document.
-	 * @return Apache_Solr_Document returns an Apache_Solr_Document object that replace the default page document
+	 * @param \Apache_Solr_Document $originalPageDocument The original page document.
+	 * @return \Apache_Solr_Document returns an Apache_Solr_Document object that replace the default page document
 	 */
-	public function getPageDocument(Apache_Solr_Document $originalPageDocument);
+	public function getPageDocument(\Apache_Solr_Document $originalPageDocument);
 }
 
