@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\FrequentSearches;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -34,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiFrequentSearches_FrequentSearches extends CommandPluginBase{
+class FrequentSearches extends CommandPluginBase {
 
 	/**
 	 * Path to this script relative to the extension dir.
@@ -49,7 +51,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends CommandPluginBase{
 	 * @see Tx_Solr_PluginBase_CommandPluginBase#getCommandResolver()
 	 * @return CommandResolver A command resolver
 	 */
-	protected function getCommandResolver(){
+	protected function getCommandResolver() {
 		return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\CommandResolver');
 	}
 
@@ -69,7 +71,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends CommandPluginBase{
 	/**
 	 * Gets a list of EXT:solr variables like the prefix ID.
 	 *
-	 * @todo	refactor into base class
+	 * @todo refactor into base class
 	 * @return array array of EXT:solr variables
 	 */
 	protected function getSolrVariables() {
@@ -92,7 +94,8 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends CommandPluginBase{
 	 *
 	 * @return void
 	 */
-	protected function performAction() {}
+	protected function performAction() {
+	}
 
 	/**
 	 * Post initialization of the template engine.
@@ -111,7 +114,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends CommandPluginBase{
 	 *
 	 * @see Tx_Solr_PluginBase_PluginBase#getTemplateFileKey()
 	 * @return string TypoScript key used to determine the template file.
- 	 */
+	 */
 	protected function getTemplateFileKey() {
 		return 'frequentSearches';
 	}
@@ -142,7 +145,7 @@ class Tx_Solr_PiFrequentSearches_FrequentSearches extends CommandPluginBase{
 	 * @see Tx_Solr_PluginBase_PluginBase#preRender()
 	 */
 	protected function preRender() {
-		if($this->conf['cssFiles.']['results']) {
+		if ($this->conf['cssFiles.']['results']) {
 			$cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['results']));
 			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-resultsCss'] =
 					'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';

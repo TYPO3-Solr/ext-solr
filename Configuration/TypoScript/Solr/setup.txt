@@ -7,7 +7,7 @@ plugin.tx_solr_PiSearch_Search.userFunc = Tx_Solr_PiSearch_Search->main
 tt_content.list.20.solr_pi_search =< plugin.tx_solr_PiSearch_Search
 
 plugin.tx_solr_PiFrequentSearches_FrequentSearches = USER
-plugin.tx_solr_PiFrequentSearches_FrequentSearches.userFunc = Tx_Solr_PiFrequentSearches_FrequentSearches->main
+plugin.tx_solr_PiFrequentSearches_FrequentSearches.userFunc = ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches->main
 tt_content.list.20.solr_pi_frequentsearches =< plugin.tx_solr_PiFrequentSearches_FrequentSearches
 
 
