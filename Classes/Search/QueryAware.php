@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_QueryAware {
+interface QueryAware {
 
 	/**
 	 * Provides the extension component with an instance of the current query.

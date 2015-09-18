@@ -32,7 +32,7 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Plugin\PluginAware;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
-use Tx_Solr_QueryAware;
+use ApacheSolrForTypo3\Solr\Search\QueryAware;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -224,7 +224,7 @@ class Results extends CommandPluginBase {
 			foreach ($searchComponents as $searchComponent) {
 				$searchComponent->setSearchConfiguration($this->conf['search.']);
 
-				if ($searchComponent instanceof Tx_Solr_QueryAware) {
+				if ($searchComponent instanceof QueryAware) {
 					$searchComponent->setQuery($query);
 				}
 
