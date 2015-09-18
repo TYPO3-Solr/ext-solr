@@ -50,7 +50,6 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer {
 	/**
 	 * Renders a numeric range facet by providing a slider
 	 *
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::renderFacet()
 	 */
 	protected function renderFacetOptions() {
 		$facetContent = '';

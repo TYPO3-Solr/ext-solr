@@ -75,7 +75,6 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer {
 	/**
 	 * Renders the block of used / applied facets.
 	 *
-	 * @see Tx_Solr_FacetRenderer::render()
 	 * @return string Rendered HTML representing the used facet.
 	 */
 	public function render() {

@@ -114,7 +114,6 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer {
 	/**
 	 * Renders the complete facet.
 	 *
-	 * @see Tx_Solr_FacetRenderer::render()
 	 * @return string Rendered HTML representing the facet.
 	 */
 	public function renderFacetOptions() {

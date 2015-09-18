@@ -48,7 +48,6 @@ abstract class AbstractComponent implements SearchComponent {
 	 * Sets the plugin's search configuration.
 	 *
 	 * @param array $configuration Configuration
-	 * @see Tx_Solr_SearchComponent::setSearchConfiguration()
 	 */
 	public function setSearchConfiguration(array $configuration) {
 		$this->searchConfiguration = $configuration;

@@ -184,7 +184,7 @@ class Search implements SingletonInterface {
 					$query = $queryModifier->modifyQuery($query);
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($queryModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Query\Modifier\Tx_Solr_QueryModifier',
+						get_class($queryModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Query\Modifier\QueryModifier',
 						1310387414
 					);
 				}
@@ -345,7 +345,7 @@ class Search implements SingletonInterface {
 						$facetCountsModified = TRUE;
 					} else {
 						throw new \UnexpectedValueException(
-							get_class($facetsModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Facet\Tx_Solr_FacetsModifier',
+							get_class($facetsModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Facet\FacetsModifier',
 							1310387526
 						);
 					}

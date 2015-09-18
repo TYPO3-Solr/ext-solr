@@ -59,7 +59,6 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer {
 	/**
 	 * Renders the complete hierarchical facet.
 	 *
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::renderFacetOptions()
 	 * @return string Facet markup.
 	 */
 	protected function renderFacetOptions() {

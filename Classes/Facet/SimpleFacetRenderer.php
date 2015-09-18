@@ -77,7 +77,7 @@ class SimpleFacetRenderer extends AbstractFacetRenderer {
 	 * reached.
 	 *
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::getFacetProperties()
+	 * @see \ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::getFacetProperties()
 	 */
 	public function getFacetProperties() {
 		$facet = parent::getFacetProperties();

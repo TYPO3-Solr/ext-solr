@@ -30,7 +30,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 
 /**
  * Plugin awareness interface for extension components used in
- * Tx_Solr_pluginbase_CommandPluginBase plugins.
+ * \ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase plugins.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3

@@ -143,7 +143,6 @@ class Results extends CommandPluginBase {
 	/**
 	 * Implementation of preRender() method. Used to include CSS files.
 	 *
-	 * @see Tx_Solr_pluginbase_PluginBase#preRender()
 	 */
 	protected function preRender() {
 		if ($this->conf['cssFiles.']['results']) {
@@ -162,7 +161,6 @@ class Results extends CommandPluginBase {
 	/**
 	 * Returns an initialized CommandResolver.
 	 *
-	 * @see Tx_Solr_pluginbase_CommandPluginBase#getCommandResolver()
 	 */
 	protected function getCommandResolver() {
 		return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\CommandResolver');
@@ -198,7 +196,6 @@ class Results extends CommandPluginBase {
 	/**
 	 * Performs special search initialization for the result plugin.
 	 *
-	 * @see Tx_Solr_pluginbase_PluginBase#initializeSearch()
 	 */
 	protected function initializeSearch() {
 		parent::initializeSearch();
@@ -307,7 +304,6 @@ class Results extends CommandPluginBase {
 	/**
 	 * Performs post initialization.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#postInitialize()
 	 */
 	protected function postInitialize() {
 		// disable caching
@@ -399,7 +395,6 @@ class Results extends CommandPluginBase {
 	/**
 	 * Post initialization of the template engine, adding some Solr variables.
 	 *
-	 * @see Tx_Solr_pluginbase_PluginBase#postInitializeTemplate($template)
 	 * @param Template $template The template object as initialized thus far.
 	 * @return Template The modified template instance with additional variables available for rendering.
 	 */
@@ -495,7 +490,6 @@ class Results extends CommandPluginBase {
 	/**
 	 * Returns the key which is used to determine the template file from the typoscript setup.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#getTemplateFileKey()
 	 * @return string
 	 */
 	protected function getTemplateFileKey() {
@@ -505,7 +499,6 @@ class Results extends CommandPluginBase {
 	/**
 	 * Returns the plugin key, used in various base methods.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#getPluginKey()
 	 * @return string
 	 */
 	protected function getPluginKey() {
@@ -515,7 +508,6 @@ class Results extends CommandPluginBase {
 	/**
 	 * Returns the main subpart to work on.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#getSubpart()
 	 */
 	protected function getSubpart() {
 		return 'solr_search';

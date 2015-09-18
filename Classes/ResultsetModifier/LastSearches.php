@@ -45,7 +45,7 @@ class LastSearches implements ResultSetModifier {
 	 * Does not actually modify the result set, but tracks the search keywords.
 	 *
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_ResultSetModifier::modifyResultSet()
+	 * @see ResultSetModifier::modifyResultSet()
 	 * @param \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand $resultCommand
 	 * @param array $resultSet
 	 * @return array

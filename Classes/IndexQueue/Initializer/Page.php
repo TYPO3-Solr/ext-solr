@@ -58,7 +58,6 @@ class Page extends AbstractInitializer {
 	 * Overrides the general setType() implementation, forcing type to "pages".
 	 *
 	 * @param string $type Type to initialize (ignored).
-	 * @see Tx_Solr_IndexQueueInitializer::setType()
 	 */
 	public function setType($type) {
 		$this->type = 'pages';
@@ -69,7 +68,6 @@ class Page extends AbstractInitializer {
 	 * forcing indexingConfigurationName to "pages".
 	 *
 	 * @param string $indexingConfigurationName Indexing configuration name (ignored)
-	 * @see Tx_Solr_IndexQueueInitializer::setIndexingConfigurationName()
 	 */
 	public function setIndexingConfigurationName($indexingConfigurationName) {
 		$this->indexingConfigurationName = 'pages';
@@ -80,8 +78,6 @@ class Page extends AbstractInitializer {
 	 * and mounted pages - no nested mount page structures though.
 	 *
 	 * @return boolean TRUE if initialization was successful, FALSE on error.
-	 * @see Tx_Solr_IndexQueue_initializer_Abstract::initialize()
-	 * @see Tx_Solr_IndexQueueInitializer::initialize()
 	 */
 	public function initialize() {
 		$pagesInitialized      = parent::initialize();

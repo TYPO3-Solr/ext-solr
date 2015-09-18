@@ -51,7 +51,7 @@ class QueryGroupFacetRenderer extends SimpleFacetRenderer {
 	 * can be easily used in rendering instructions and URL generation.
 	 *
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_Facet_AbstractFacetRenderer::getFacetOptions()
+	 * @see \ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer::getFacetOptions()
 	 */
 	public function getFacetOptions() {
 		$facetOptions    = array();

@@ -48,7 +48,6 @@ class FrequentSearches extends CommandPluginBase {
 	 * of the results view.
 	 *
 	 * @todo currently the commands of the result view are used, we should discuss if we use own command here
-	 * @see Tx_Solr_PluginBase_CommandPluginBase#getCommandResolver()
 	 * @return CommandResolver A command resolver
 	 */
 	protected function getCommandResolver() {
@@ -100,7 +99,6 @@ class FrequentSearches extends CommandPluginBase {
 	/**
 	 * Post initialization of the template engine.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#postInitializeTemplateEngine($template)
 	 */
 	protected function postInitializeTemplateEngine($template) {
 		$template->addVariable('tx_solr', $this->getSolrVariables());
@@ -112,7 +110,6 @@ class FrequentSearches extends CommandPluginBase {
 	 * Provides the typoscript key, which is used to determine the template file
 	 * for this view.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#getTemplateFileKey()
 	 * @return string TypoScript key used to determine the template file.
 	 */
 	protected function getTemplateFileKey() {
@@ -122,7 +119,6 @@ class FrequentSearches extends CommandPluginBase {
 	/**
 	 * Return the plugin key, used to initialize the template engine.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#getPluginKey()
 	 * @return string Plugin key used during initialization of the template engine
 	 */
 	protected function getPluginKey() {
@@ -132,7 +128,6 @@ class FrequentSearches extends CommandPluginBase {
 	/**
 	 * Returns the name of the template subpart used by the plugin.
 	 *
-	 * @see Tx_Solr_pluginBase_PluginBase#getSubpart()
 	 * @return string Name of the template subpart to use for rendering
 	 */
 	protected function getSubpart() {
@@ -142,7 +137,6 @@ class FrequentSearches extends CommandPluginBase {
 	/**
 	 * Implementation of preRender() method. Used to include CSS files.
 	 *
-	 * @see Tx_Solr_PluginBase_PluginBase#preRender()
 	 */
 	protected function preRender() {
 		if ($this->conf['cssFiles.']['results']) {

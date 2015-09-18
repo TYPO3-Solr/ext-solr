@@ -50,7 +50,6 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer {
 	 * Renders a date renage facet by providing two input fields, enhanced with
 	 * date pickers.
 	 *
-	 * @see Tx_Solr_Facet_SimpleFacetRenderer::render()
 	 */
 	public function renderFacetOptions() {
 		$this->loadJavaScriptFiles();

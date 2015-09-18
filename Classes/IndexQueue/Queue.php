@@ -204,7 +204,7 @@ class Queue {
 	 * Gets the class name of the initializer class.
 	 *
 	 * For most cases the default initializer
-	 * "Tx_Solr_IndexQueue_initializer_Record" will be enough. For special cases
+	 * "\ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record" will be enough. For special cases
 	 * like pages we need to do some more work though. In the case of pages we
 	 * also need to take care of resolving mount pages and their mounted sub
 	 * trees for example. For these cases it is possible to define a initializer

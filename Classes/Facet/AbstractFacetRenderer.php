@@ -163,7 +163,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::getFacetProperties()
+	 * @see \ApacheSolrForTypo3\Solr\Facet\FacetRenderer::getFacetProperties()
 	 */
 	public function getFacetProperties() {
 		$facet = $this->facetConfiguration;
@@ -192,7 +192,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::getFacetOptions()
+	 * @see \ApacheSolrForTypo3\Solr\Facet\FacetRenderer::getFacetOptions()
 	 */
 	public function getFacetOptions() {
 		return $this->facet->getOptionsRaw();
@@ -200,7 +200,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::getFacetOptionsCount()
+	 * @see \ApacheSolrForTypo3\Solr\Facet\FacetRenderer::getFacetOptionsCount()
 	 */
 	public function getFacetOptionsCount() {
 		return $this->facet->getOptionsCount();
@@ -208,7 +208,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::setTemplate()
+	 * @see \ApacheSolrForTypo3\Solr\Facet\FacetRenderer::setTemplate()
 	 */
 	public function setTemplate(Template $template) {
 		$this->template = $template;
@@ -216,7 +216,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer {
 
 	/**
 	 * (non-PHPdoc)
-	 * @see Tx_Solr_FacetRenderer::setLinkTargetPageId()
+	 * @see \ApacheSolrForTypo3\Solr\Facet\FacetRenderer::setLinkTargetPageId()
 	 */
 	public function setLinkTargetPageId($linkTargetPageId) {
 		$this->linkTargetPageId = intval($linkTargetPageId);

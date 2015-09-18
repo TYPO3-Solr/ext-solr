@@ -98,7 +98,7 @@ class Typo3PageIndexer {
 
 
 	/**
-	 * Constructor for class Tx_Solr_Indexer
+	 * Constructor
 	 *
 	 * @param TypoScriptFrontendController $page The page to index
 	 */
@@ -382,7 +382,7 @@ class Typo3PageIndexer {
 					}
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($additionalIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\Tx_Solr_AdditionalPageIndexer',
+						get_class($additionalIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\AdditionalPageIndexer',
 						1310491024
 					);
 				}

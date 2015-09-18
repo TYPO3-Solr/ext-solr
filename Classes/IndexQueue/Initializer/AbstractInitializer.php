@@ -78,7 +78,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer {
 	 * Sets the site for the initializer.
 	 *
 	 * @param Site $site The site to initialize Index Queue items for.
-	 * @see Tx_Solr_IndexQueueInitializer::setSite()
 	 */
 	public function setSite(Site $site) {
 		$this->site = $site;
@@ -88,7 +87,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer {
 	 * Set the type (usually a Db table name) of items to initialize.
 	 *
 	 * @param string $type Type to initialize.
-	 * @see Tx_Solr_IndexQueueInitializer::setType()
 	 */
 	public function setType($type) {
 		$this->type = $type;
@@ -98,7 +96,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer {
 	 * Sets the configuration for how to index a type of items.
 	 *
 	 * @param array $indexingConfiguration Indexing configuration from TypoScript
-	 * @see Tx_Solr_IndexQueueInitializer::setIndexingConfiguration()
 	 */
 	public function setIndexingConfiguration(array $indexingConfiguration) {
 		$this->indexingConfiguration = $indexingConfiguration;
@@ -108,7 +105,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer {
 	 * Sets the name of the indexing configuration to initialize.
 	 *
 	 * @param string $indexingConfigurationName Indexing configuration name
-	 * @see Tx_Solr_IndexQueueInitializer::setIndexingConfigurationName()
 	 */
 	public function setIndexingConfigurationName($indexingConfigurationName) {
 		$this->indexingConfigurationName = (string)$indexingConfigurationName;
@@ -123,7 +119,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer {
 	 * configuration.
 	 *
 	 * @return boolean TRUE if initialization was successful, FALSE on error.
-	 * @see Tx_Solr_IndexQueueInitializer::initialize()
 	 */
 	public function initialize() {
 		$initialized = FALSE;
