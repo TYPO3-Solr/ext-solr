@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -36,7 +38,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_IndexQueuePageIndexerFrontendHelper {
+interface FrontendHelper {
 
 	/**
 	 * Activates a frontend helper by registering for hooks and other
