@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\ViewHelper;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -27,7 +29,6 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Template;
-use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 
 
 /**
@@ -37,7 +38,7 @@ use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SubpartViewHelper extends ViewHelper {
+interface SubpartViewHelper extends ViewHelper {
 
 	/**
 	 * Gets the view helper's subpart template
