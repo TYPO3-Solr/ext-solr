@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
-use Tx_Solr_IndexQueueInitializer;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,7 +40,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class AbstractInitializer implements Tx_Solr_IndexQueueInitializer {
+abstract class AbstractInitializer implements IndexQueueInitializer {
 
 	/**
 	 * Site to initialize
