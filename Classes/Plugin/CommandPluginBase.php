@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Template;
-use Tx_Solr_CommandPostProcessor;
 use Tx_Solr_TemplateModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -135,7 +134,7 @@ abstract class CommandPluginBase extends PluginBase {
 	 *
 	 * @param string $commandName Name of the command to be executed.
 	 * @return array Array of template variables returned by the command.
-	 * @throws \UnexpectedValueException if a command post processor fails to implement interface Tx_Solr_CommandPostProcessor
+	 * @throws \UnexpectedValueException if a command post processor fails to implement interface ApacheSolrForTypo3\Solr\Plugin\CommandPostProcessor
 	 */
 	protected function executeCommand($commandName) {
 		$commandResolver  = $this->getCommandResolver();
@@ -146,11 +145,11 @@ abstract class CommandPluginBase extends PluginBase {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()][$commandName]['postProcessCommandVariables'] as $classReference) {
 				$commandPostProcessor = GeneralUtility::getUserObj($classReference);
 
-				if ($commandPostProcessor instanceof Tx_Solr_CommandPostProcessor) {
+				if ($commandPostProcessor instanceof CommandPostProcessor) {
 					$commandVariables = $commandPostProcessor->postProcessCommandVariables($commandName, $commandVariables);
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($commandPostProcessor) . ' must implement interface Tx_Solr_CommandPostProcessor',
+						get_class($commandPostProcessor) . ' must implement interface ApacheSolrForTypo3\Solr\Plugin\CommandPostProcessor',
 						1346079897
 					);
 				}

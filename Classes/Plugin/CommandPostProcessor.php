@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -34,7 +36,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_CommandPostProcessor {
+interface CommandPostProcessor {
 
 	/**
 	 * Allows to manipulate command template variables.
