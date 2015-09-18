@@ -129,7 +129,7 @@ class Queue {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
 				$indexQueueInitializationPostProcessor = GeneralUtility::getUserObj($classReference);
 
-				if ($indexQueueInitializationPostProcessor instanceof IndexQueueInitializationPostProcessor) {
+				if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
 					$indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization(
 						$site,
 						$indexingConfigurations,
@@ -138,7 +138,7 @@ class Queue {
 				} else {
 					throw new \UnexpectedValueException(
 						get_class($indexQueueInitializationPostProcessor) .
-						' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\IndexQueueInitializationPostProcessor',
+						' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor',
 						1345815561
 					);
 				}

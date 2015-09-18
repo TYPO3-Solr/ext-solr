@@ -37,7 +37,7 @@ use ApacheSolrForTypo3\Solr\Site;
  * @package TYPO3
  * @subpackage solr
  */
-interface IndexQueueInitializationPostProcessor {
+interface InitializationPostProcessor {
 
 	/**
 	 * Post process Index Queue initialization
