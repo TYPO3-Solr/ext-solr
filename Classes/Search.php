@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
-use Tx_Solr_SearchAware;
+use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -177,7 +177,7 @@ class Search implements SingletonInterface {
 				$queryModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($queryModifier instanceof Modifier) {
-					if ($queryModifier instanceof Tx_Solr_SearchAware) {
+					if ($queryModifier instanceof SearchAware) {
 						$queryModifier->setSearch($this);
 					}
 
@@ -209,7 +209,7 @@ class Search implements SingletonInterface {
 				$responseModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($responseModifier instanceof ResponseModifier) {
-					if ($responseModifier instanceof Tx_Solr_SearchAware) {
+					if ($responseModifier instanceof SearchAware) {
 						$responseModifier->setSearch($this);
 					}
 
