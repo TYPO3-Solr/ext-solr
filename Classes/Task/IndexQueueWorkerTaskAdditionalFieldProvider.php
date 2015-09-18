@@ -38,7 +38,7 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface {
+class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface {
 
 	/**
 	 * Used to define fields to provide the TYPO3 site to index and number of
