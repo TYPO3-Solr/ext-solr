@@ -145,7 +145,7 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'lastSearches',
-	'Tx_Solr_PiResults_LastSearchesCommand',
+	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\LastSearchesCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
