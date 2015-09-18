@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,9 +25,10 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
-use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_CommandPluginAware;
+use Tx_Solr_FormModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -39,7 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
+class ParameterKeepingFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
 
 	/**
 	 * Configuration
@@ -56,7 +59,7 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 	protected $parentPlugin;
 
 	/**
-	 * Constructor for class Tx_Solr_PiResults_ParameterKeepingFormModifier
+	 * Constructor for class ApacheSolrForTypo3\Solr\Plugin\Results\ParameterKeepingFormModifier
 	 *
 	 */
 	public function __construct() {
