@@ -272,17 +272,17 @@ tt_content.search {
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = array(
 	ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
-	'ApacheSolrForTypo3\Solr\ContentObject\Multivalue'
+	'ApacheSolrForTypo3\\Solr\\ContentObject\\Multivalue'
 );
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME] = array(
 	ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME,
-	'ApacheSolrForTypo3\Solr\ContentObject\Content'
+	'ApacheSolrForTypo3\\Solr\\ContentObject\\Content'
 );
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME] = array(
 	ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME,
-	'ApacheSolrForTypo3\Solr\ContentObject\Relation'
+	'ApacheSolrForTypo3\\Solr\\ContentObject\\Relation'
 );
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
