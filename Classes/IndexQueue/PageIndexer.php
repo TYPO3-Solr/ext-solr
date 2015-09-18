@@ -252,7 +252,7 @@ class PageIndexer extends Indexer {
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']) {
 			$dataUrlModifier = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
 
-			if ($dataUrlModifier instanceof \Tx_Solr_IndexQueuePageIndexerDataUrlModifier) {
+			if ($dataUrlModifier instanceof PageIndexerDataUrlModifier) {
 				$dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, array(
 					'item'     => $item,
 					'scheme'   => $scheme,
@@ -264,7 +264,7 @@ class PageIndexer extends Indexer {
 			} else {
 				throw new \RuntimeException(
 					$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']
-						. ' is not an implementation of Tx_Solr_IndexQueuePageIndexerDataUrlModifier',
+						. ' is not an implementation of ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier',
 					1290523345
 				);
 			}

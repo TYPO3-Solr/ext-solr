@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -28,14 +30,13 @@
 
 
 /**
- * Tx_Solr_IndexQueuePageIndexerDataUrlModifier interface, allows to modify the data url
- * before call the frontend form the index queue
+ * Allows to modify the data url before call the frontend form the index queue
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_IndexQueuePageIndexerDataUrlModifier {
+interface PageIndexerDataUrlModifier {
 
 	/**
 	 * Modifies the given data url
