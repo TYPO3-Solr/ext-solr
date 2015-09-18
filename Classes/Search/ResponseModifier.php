@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,15 +35,15 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_ResponseModifier {
+interface ResponseModifier {
 
 	/**
 	 * Modifies the given response and returns the modified response as result
 	 *
-	 * @param Apache_Solr_Response $response The response to modify
-	 * @return Apache_Solr_Response The modified response
+	 * @param \Apache_Solr_Response $response The response to modify
+	 * @return \Apache_Solr_Response The modified response
 	 */
-	public function modifyResponse(Apache_Solr_Response $response);
+	public function modifyResponse(\Apache_Solr_Response $response);
 
 }
 
