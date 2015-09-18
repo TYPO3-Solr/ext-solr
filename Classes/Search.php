@@ -233,7 +233,7 @@ class Search implements SingletonInterface {
 	 * Sends a ping to the solr server to see whether it is available.
 	 *
 	 * @return boolean Returns TRUE on successful ping.
-	 * @throws    \Exception    Throws an exception in case ping was not successful.
+	 * @throws \Exception Throws an exception in case ping was not successful.
 	 */
 	public function ping() {
 		$solrAvailable = FALSE;
