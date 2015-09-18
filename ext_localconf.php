@@ -160,7 +160,7 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'faceting',
-	'Tx_Solr_PiResults_FacetingCommand',
+	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FacetingCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
 	+ Tx_Solr_PluginCommand::REQUIREMENT_HAS_RESULTS
 	+ Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS
