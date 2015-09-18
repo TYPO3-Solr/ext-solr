@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_PiResults_ResultsCommand;
+use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 
 
 /**
@@ -46,8 +46,11 @@ class LastSearches implements ResultSetModifier {
 	 *
 	 * (non-PHPdoc)
 	 * @see Tx_Solr_ResultSetModifier::modifyResultSet()
+	 * @param \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand $resultCommand
+	 * @param array $resultSet
+	 * @return array
 	 */
-	public function modifyResultSet(Tx_Solr_PiResults_ResultsCommand $resultCommand, array $resultSet) {
+	public function modifyResultSet(ResultsCommand $resultCommand, array $resultSet) {
 		$this->configuration = $resultCommand->getParentPlugin()->getConfiguration();
 		$keywords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
 

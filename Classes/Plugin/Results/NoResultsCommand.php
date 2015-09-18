@@ -144,7 +144,7 @@ class NoResultsCommand implements Tx_Solr_PluginCommand {
 			$search->search($query);
 
 			$resultsCommand = GeneralUtility::makeInstance(
-				'Tx_Solr_PiResults_ResultsCommand',
+				'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ResultsCommand',
 				$plugin
 			);
 			$commandVariables = $resultsCommand->execute();

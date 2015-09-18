@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_Solr_PiResults_ResultsCommand;
+use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 
 
 /**
@@ -42,7 +42,7 @@ interface ResultDocumentModifier {
 	/**
 	 * Modifies the given document and returns the modified document as result.
 	 *
-	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
+	 * @param ResultsCommand $resultCommand The search result command
 	 * @param array $resultDocument Result document as array
 	 * @return array The document with fields as array
 	 */

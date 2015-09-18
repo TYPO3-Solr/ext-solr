@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_PiResults_ResultsCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -50,7 +49,7 @@ class DocumentHighlighter implements ResultDocumentModifier {
 	/**
 	 * Modifies the given document and returns the modified document as result.
 	 *
-	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
+	 * @param \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand $resultCommand The search result command
 	 * @param array $resultDocument Result document as array
 	 * @return array The document with fields as array
 	 */

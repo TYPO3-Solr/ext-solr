@@ -28,7 +28,7 @@ namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_Solr_PiResults_ResultsCommand;
+use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 
 
 /**
@@ -43,11 +43,11 @@ interface ResultSetModifier {
 	/**
 	 * Modifies the given resultset and returns the modified resultset as array
 	 *
-	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
+	 * @param ResultsCommand $resultCommand The search result command
 	 * @param array $resultSet Result set
 	 * @return array The resultset with fields as array
 	 */
-	public function modifyResultSet(Tx_Solr_PiResults_ResultsCommand $resultCommand, array $resultSet);
+	public function modifyResultSet(ResultsCommand $resultCommand, array $resultSet);
 
 }
 
