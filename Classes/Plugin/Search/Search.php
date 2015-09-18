@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Search;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,6 +26,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -35,12 +38,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
+class Search extends CommandPluginBase {
 
 	/**
 	 * Path to this script relative to the extension dir.
 	 */
-	public $scriptRelPath = 'PiSearch/Search.php';
+	public $scriptRelPath = 'Classes/Plugin/Search/Search.php';
 
 	/**
 	 * Additional filters, which will be added to suggest queries.
@@ -53,11 +56,11 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 * Returns an initialized commandResolver. In this case we use the command
 	 * of the results view.
 	 *
-	 * @todo	currently the commands of the resultview are used, we should discuss if we use own command here
+	 * @todo currently the commands of the resultview are used, we should discuss if we use own command here
 	 * @see Tx_Solr_PluginBase_CommandPluginBase#getCommandResolver()
 	 * @return CommandResolver A command resolver
 	 */
-	protected function getCommandResolver(){
+	protected function getCommandResolver() {
 		return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\CommandResolver');
 	}
 
@@ -92,8 +95,8 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	protected function initializeAdditionalFilters() {
 		$additionalFilters = array();
 
-		if(!empty($this->conf['search.']['query.']['filter.'])) {
-			foreach($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
+		if (!empty($this->conf['search.']['query.']['filter.'])) {
+			foreach ($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
 				if (!is_array($this->conf['search.']['query.']['filter.'][$filterKey])) {
 					if (is_array($this->conf['search.']['query.']['filter.'][$filterKey . '.'])) {
 						$filter = $this->cObj->stdWrap(
@@ -122,7 +125,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	/**
 	 * Gets a list of EXT:solr variables like the prefix ID.
 	 *
-	 * @todo	refactor into base class
+	 * @todo refactor into base class
 	 * @return array array of EXT:solr variables
 	 */
 	protected function getSolrVariables() {
@@ -146,7 +149,8 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 *
 	 * @return void
 	 */
-	protected function performAction() {}
+	protected function performAction() {
+	}
 
 	/**
 	 * Post initialization of the template engine.
@@ -165,7 +169,7 @@ class Tx_Solr_PiSearch_Search extends Tx_Solr_PluginBase_CommandPluginBase{
 	 *
 	 * @see Tx_Solr_PluginBase_PluginBase#getTemplateFileKey()
 	 * @return string TypoScript key used to determine the template file.
- 	 */
+	 */
 	protected function getTemplateFileKey() {
 		return 'search';
 	}

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,7 +25,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
+use Tx_Solr_PluginCommand;
 
 
 /**
@@ -35,12 +39,12 @@ use ApacheSolrForTypo3\Solr\Template;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
+class LastSearchesCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PiResults_Results
+	 * @var Results
 	 */
 	protected $parentPlugin;
 
@@ -54,9 +58,9 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Parent plugin object.
+	 * @param CommandPluginBase $parentPlugin Parent plugin object.
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
 	}
@@ -64,19 +68,19 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Provides the values for the markers for the last search links
 	 *
-	 * @return array	an array containing values for markers for the last search links template
+	 * @return array an array containing values for markers for the last search links template
 	 */
 	public function execute() {
 		if ($this->configuration['search.']['lastSearches'] == 0) {
-				// command is not activated, intended early return
+			// command is not activated, intended early return
 			return NULL;
 		}
 
 		$lastSearches = $this->getLastSearches();
-		if(empty($lastSearches)) {
+		if (empty($lastSearches)) {
 			return NULL;
 		}
-		
+
 		$marker = array(
 			'loop_lastsearches|lastsearch' => $lastSearches
 		);
@@ -99,7 +103,7 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 				$lastSearchesKeywords = $this->getLastSearchesFromDatabase($this->configuration['search.']['lastSearches.']['limit']);
 				break;
 		}
-			// fill array for output
+		// fill array for output
 		$i = 0;
 		$lastSearches = array();
 		foreach ($lastSearchesKeywords as $keywords) {

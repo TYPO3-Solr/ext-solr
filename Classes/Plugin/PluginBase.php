@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -40,11 +42,11 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  * need to be implemented by an inheriting plugin.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @author Timo Schmidt <timo.schmidt@aoemedia.de
+ * @author Timo Schmidt <timo.schmidt@aoemedia.de>
  * @package TYPO3
  * @subpackage solr
  */
-abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
+abstract class PluginBase extends AbstractPlugin {
 
 	public $prefixId = 'tx_solr';
 	public $extKey   = 'solr';
@@ -119,7 +121,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 			}
 
 			$content = $this->postRender($content);
-		} catch(Exception $e) {
+		} catch (\Exception $e) {
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
 				GeneralUtility::devLog(
 					$e->getCode() . ': ' . $e->__toString(),
@@ -267,7 +269,8 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 * Allows to override TypoScript settings with Flexform values.
 	 *
 	 */
-	protected function overrideTyposcriptWithFlexformSettings() {}
+	protected function overrideTyposcriptWithFlexformSettings() {
+	}
 
 	/**
 	 * Initializes the query from the GET query parameter.
@@ -296,7 +299,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 * Initializes the template engine and returns the initialized instance.
 	 *
 	 * @return Template
-	 * @throws UnexpectedValueException if a view helper provider fails to implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider
+	 * @throws \UnexpectedValueException if a view helper provider fails to implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider
 	 */
 	protected function initializeTemplateEngine() {
 		$templateFile = $this->getTemplateFile();
@@ -324,7 +327,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 			'llKey'        => $this->LLkey
 		));
 
-			// can be used for view helpers that need configuration during initialization
+		// can be used for view helpers that need configuration during initialization
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'] as $classReference) {
 				$viewHelperProvider = &GeneralUtility::getUserObj($classReference);
@@ -336,7 +339,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 						$helperAdded = $template->addViewHelperObject($helperName, $helperObject);
 					}
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($viewHelperProvider) . ' must implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider',
 						1310387296
 					);
@@ -363,7 +366,8 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 *
 	 * @return void
 	 */
-	protected function postInitialize() {}
+	protected function postInitialize() {
+	}
 
 	/**
 	 * Overwrite this method to do own initialisations  of the template.
@@ -414,7 +418,8 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 * Should be overwritten to do things before rendering.
 	 *
 	 */
-	protected function preRender() {}
+	protected function preRender() {
+	}
 
 	/**
 	 * Overwrite this method to perform changes to the content after rendering.
@@ -484,7 +489,7 @@ abstract class Tx_Solr_PluginBase_PluginBase extends AbstractPlugin {
 	 * This method should return the plugin key. Reads some configuration
 	 * options in initializeTemplateEngine()
 	 *
- 	 * @see initializeTemplateEngine()
+	 * @see initializeTemplateEngine()
 	 * @return string The plugin key
 	 */
 	protected abstract function getPluginKey();

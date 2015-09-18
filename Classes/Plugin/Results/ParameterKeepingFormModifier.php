@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,8 +24,11 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_CommandPluginAware;
+use Tx_Solr_FormModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -37,7 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
+class ParameterKeepingFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
 
 	/**
 	 * Configuration
@@ -49,12 +54,12 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 	/**
 	 * The currently active plugin
 	 *
-	 * @var Tx_Solr_PluginBase_CommandPluginBase
+	 * @var CommandPluginBase
 	 */
 	protected $parentPlugin;
 
 	/**
-	 * Constructor for class Tx_Solr_PiResults_ParameterKeepingFormModifier
+	 * Constructor
 	 *
 	 */
 	public function __construct() {
@@ -64,9 +69,9 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 	/**
 	 * Sets the currently active parent plugin.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Currently active parent plugin
+	 * @param CommandPluginBase $parentPlugin Currently active parent plugin
 	 */
-	public function setParentPlugin(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function setParentPlugin(CommandPluginBase $parentPlugin) {
 		$this->parentPlugin = $parentPlugin;
 	}
 
@@ -81,7 +86,7 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 	public function modifyForm(array $markers, Template $template) {
 		$hiddenFields = array();
 
-		if ($this->parentPlugin instanceof Tx_Solr_PiResults_Results && $this->configuration['search.']['keepExistingParametersForNewSearches']) {
+		if ($this->parentPlugin instanceof Results && $this->configuration['search.']['keepExistingParametersForNewSearches']) {
 			foreach ($this->parentPlugin->piVars as $key => $value) {
 				if ($key == 'page') {
 					// must reset page

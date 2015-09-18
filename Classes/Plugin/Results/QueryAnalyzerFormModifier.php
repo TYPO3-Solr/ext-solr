@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,8 +24,11 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_CommandPluginAware;
+use Tx_Solr_FormModifier;
 
 
 /**
@@ -33,7 +38,7 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
+class QueryAnalyzerFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
 
 	/**
 	 * Configuration
@@ -45,12 +50,12 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	/**
 	 * The currently active plugin
 	 *
-	 * @var Tx_Solr_PluginBase_CommandPluginBase
+	 * @var CommandPluginBase
 	 */
 	protected $parentPlugin;
 
 	/**
-	 * Constructor for class Tx_Solr_PiResults_QueryAnalyzerFormModifier
+	 * Constructor
 	 *
 	 */
 	public function __construct() {
@@ -60,9 +65,9 @@ class Tx_Solr_PiResults_QueryAnalyzerFormModifier implements Tx_Solr_FormModifie
 	/**
 	 * Sets the currently active parent plugin.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Currently active parent plugin
+	 * @param CommandPluginBase $parentPlugin Currently active parent plugin
 	 */
-	public function setParentPlugin(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function setParentPlugin(CommandPluginBase $parentPlugin) {
 		$this->parentPlugin = $parentPlugin;
 	}
 

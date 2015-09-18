@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
 
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_PiResults_ResultsCommand;
 
 
 /**
@@ -51,7 +50,7 @@ class ScoreAnalyzer implements ResultDocumentModifier {
 	/**
 	 * Modifies the given query and returns the modified query as result
 	 *
-	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
+	 * @param \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand $resultCommand The search result command
 	 * @param array $resultDocument Result document
 	 * @return array The document with fields as array
 	 */

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,7 +24,9 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Search;
+use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
+class SortingCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 * Search instance
@@ -45,7 +49,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PiResults_Results
+	 * @var Results
 	 */
 	protected $parentPlugin;
 
@@ -59,15 +63,18 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Parent plugin object.
+	 * @param CommandPluginBase $parentPlugin Parent plugin object.
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
 	}
 
+	/**
+	 * @return array|null
+	 */
 	public function execute() {
 		$marker = array();
 
@@ -76,9 +83,9 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 		}
 
 		if (count($marker) === 0) {
-				// in case we didn't fill any markers - like when there are no
-				// search results - we set markers to NULL to signal that we
-				// want to have the subpart removed completely
+			// in case we didn't fill any markers - like when there are no
+			// search results - we set markers to NULL to signal that we
+			// want to have the subpart removed completely
 			$marker = NULL;
 		}
 
@@ -109,15 +116,15 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 			$sortIndicator        = $sortDirection;
 			$currentSortOption    = '';
 			$currentSortDirection = '';
-			foreach($urlSortParameters as $urlSortParameter){
+			foreach ($urlSortParameters as $urlSortParameter) {
 				$explodedUrlSortParameter = explode(' ', $urlSortParameter);
-				if($explodedUrlSortParameter[0] == $sortOptionName){
+				if ($explodedUrlSortParameter[0] == $sortOptionName) {
 					list($currentSortOption, $currentSortDirection) = $explodedUrlSortParameter;
 					break;
 				}
 			}
 
-				// toggle sorting direction for the current sorting field
+			// toggle sorting direction for the current sorting field
 			if ($currentSortOption == $sortOptionName) {
 				switch ($currentSortDirection) {
 					case 'asc':
@@ -154,7 +161,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 				'current_direction' => ' '
 			);
 
-				// set sort indicator for the current sorting field
+			// set sort indicator for the current sorting field
 			if ($currentSortOption == $sortOptionName) {
 				$temp['selected']          = 'selected="selected"';
 				$temp['current']           = 'current';
@@ -162,7 +169,7 @@ class Tx_Solr_PiResults_SortingCommand implements Tx_Solr_PluginCommand {
 				$temp['current_direction'] = $sortIndicator;
 			}
 
-				// special case relevance: just reset the search to normal behavior
+			// special case relevance: just reset the search to normal behavior
 			if ($sortOptionName == 'relevance') {
 				$temp['link'] = $queryLinkBuilder->getQueryLink(
 					$sortOption['label'],

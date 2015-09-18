@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,11 +24,13 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
 use ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -37,7 +41,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
+class ResultsCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 * @var Search
@@ -47,7 +51,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PiResults_Results
+	 * @var Results
 	 */
 	protected $parentPlugin;
 
@@ -62,9 +66,9 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Parent plugin object.
+	 * @param CommandPluginBase $parentPlugin Parent plugin object.
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
 		$this->search        = $parentPlugin->getSearch();
@@ -124,13 +128,13 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
 				$resultSetModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($resultSetModifier instanceof ResultSetModifier) {
 					$responseDocuments = $resultSetModifier->modifyResultSet($this, $responseDocuments);
 				} else {
-					throw new UnexpectedValueException(
+					throw new \UnexpectedValueException(
 						get_class($resultSetModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier',
 						1310386927
 					);
@@ -143,13 +147,13 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 			$temporaryResultDocument = $this->processDocumentFieldsToArray($resultDocument);
 
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'])) {
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'] as $classReference) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'] as $classReference) {
 					$resultDocumentModifier = GeneralUtility::getUserObj($classReference);
 
 					if ($resultDocumentModifier instanceof ResultDocumentModifier) {
 						$temporaryResultDocument = $resultDocumentModifier->modifyResultDocument($this, $temporaryResultDocument);
 					} else {
-						throw new UnexpectedValueException(
+						throw new \UnexpectedValueException(
 							get_class($resultDocumentModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier',
 							1310386725
 						);
@@ -167,16 +171,16 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * takes a search result document and processes its fields according to the
 	 * instructions configured in TS. Currently available instructions are
-	 * 	* timestamp - converts a date field into a unix timestamp
-	 * 	* serialize - uses serialize() to encode multivalue fields which then can be put out using the MULTIVALUE view helper
-	 * 	* skip - skips the whole field so that it is not available in the result, useful for the spell field f.e.
+	 *    * timestamp - converts a date field into a unix timestamp
+	 *    * serialize - uses serialize() to encode multivalue fields which then can be put out using the MULTIVALUE view helper
+	 *    * skip - skips the whole field so that it is not available in the result, useful for the spell field f.e.
 	 * The default is to do nothing and just add the document's field to the
 	 * resulting array.
 	 *
-	 * @param Apache_Solr_Document $document the Apache_Solr_Document result document
+	 * @param \Apache_Solr_Document $document the Apache_Solr_Document result document
 	 * @return array An array with field values processed like defined in TS
 	 */
-	protected function processDocumentFieldsToArray(Apache_Solr_Document $document) {
+	protected function processDocumentFieldsToArray(\Apache_Solr_Document $document) {
 		$processingInstructions = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['results.']['fieldProcessingInstructions.'];
 		$availableFields = $document->getFieldNames();
 		$result = array();
@@ -191,7 +195,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 					$processedFieldValue = Util::isoToTimestamp($document->{$fieldName});
 					break;
 				case 'serialize':
-					if(!empty($document->{$fieldName})){
+					if (!empty($document->{$fieldName})) {
 						$processedFieldValue = serialize($document->{$fieldName});
 					} else {
 						$processedFieldValue = '';
@@ -269,7 +273,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 				)
 			);
 
-				// Get page browser
+			// Get page browser
 			$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 			$cObj->start(array(), '');
 
@@ -305,7 +309,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Gets the parent plugin.
 	 *
-	 * @return Tx_Solr_PiResults_Results
+	 * @return Results
 	 */
 	public function getParentPlugin() {
 		return $this->parentPlugin;

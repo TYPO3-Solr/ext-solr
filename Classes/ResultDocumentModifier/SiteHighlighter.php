@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_PiResults_ResultsCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -45,7 +44,7 @@ class SiteHighlighter implements ResultDocumentModifier {
 	 * which will result in having the current search terms highlighted on the
 	 * target page.
 	 *
-	 * @param Tx_Solr_PiResults_ResultsCommand $resultCommand The search result command
+	 * @param \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand $resultCommand The search result command
 	 * @param array $resultDocument The result document's fields as an array
 	 * @return array The document with fields as array
 	 */

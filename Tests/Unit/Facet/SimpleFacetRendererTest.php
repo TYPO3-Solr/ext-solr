@@ -47,7 +47,7 @@ class Tx_Solr_Facet_SimpleFacetRendererTest extends Tx_Phpunit_TestCase {
 			'selectingSelectedFacetOptionRemovesFilter' => 0,
 			'renderingInstruction'
 		);
-		$parentPlugin       = GeneralUtility::makeInstance('Tx_Solr_PiResults_Results');
+		$parentPlugin       = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Plugin\\Results\\Results');
 		$parentPlugin->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 		$parentPlugin->main('', array());
 		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', array('test'));

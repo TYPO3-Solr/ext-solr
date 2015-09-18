@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -23,10 +25,14 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_PluginAware;
+use Tx_Solr_PluginCommand;
+use Tx_Solr_QueryAware;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -38,20 +44,20 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
+class Results extends CommandPluginBase {
 
 	/**
 	 * Path to this script relative to the extension dir.
 	 *
 	 * @var string
 	 */
-	public $scriptRelPath = 'PiResults/Results.php';
+	public $scriptRelPath = 'Classes/Plugin/Results/Results.php';
 
 	/**
 	 * Additional filters, which will be added to the query, as well as to
 	 * suggest queries.
 	 *
-	 * @var  array
+	 * @var array
 	 */
 	protected $additionalFilters = array();
 
@@ -67,10 +73,10 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Perform the action for the plugin. In this case it calls the search()
 	 * method which internally performs the search.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	protected function performAction() {
-			// perform the current search.
+		// perform the current search.
 		$this->search();
 	}
 
@@ -88,14 +94,14 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 		)) {
 			$currentPage = max(0, intval($this->piVars['page']));
 
-				// if the number of results per page has been changed by the current request, reset the pagebrowser
-			if($this->resultsPerPageChanged) {
+			// if the number of results per page has been changed by the current request, reset the pagebrowser
+			if ($this->resultsPerPageChanged) {
 				$currentPage = 0;
 			}
 
 			$offSet = $currentPage * $this->query->getResultsPerPage();
 
-				// performing the actual search, sending the query to the Solr server
+			// performing the actual search, sending the query to the Solr server
 			$this->search->search($this->query, $offSet, NULL);
 			$response = $this->search->getResponse();
 
@@ -107,9 +113,9 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * Provides a hook for other classes to process the search's response.
 	 *
 	 * @param Query $query The query that has been searched for.
-	 * @param Apache_Solr_Response $response The search's response.
+	 * @param \Apache_Solr_Response $response The search's response.
 	 */
-	protected function processResponse(Query $query, Apache_Solr_Response &$response) {
+	protected function processResponse(Query $query, \Apache_Solr_Response &$response) {
 		$rawUserQuery = $this->getRawUserQuery();
 
 		if (($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])
@@ -117,14 +123,14 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			&& !$this->conf['search.']['showResultsOfInitialQuery']
 			&& empty($rawUserQuery)
 		) {
-				// explicitly set number of results to 0 as we just wanted
-				// facets and the like according to configuration
-				// @see getNumberOfResultsPerPage()
+			// explicitly set number of results to 0 as we just wanted
+			// facets and the like according to configuration
+			// @see getNumberOfResultsPerPage()
 			$response->response->numFound = 0;
 		}
 
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
 				$responseProcessor = GeneralUtility::getUserObj($classReference);
 
 				if ($responseProcessor instanceof ResponseProcessor) {
@@ -140,13 +146,13 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * @see Tx_Solr_pluginbase_PluginBase#preRender()
 	 */
 	protected function preRender() {
-		if($this->conf['cssFiles.']['results']) {
+		if ($this->conf['cssFiles.']['results']) {
 			$cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['results']));
 			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-resultsCss'] =
 				'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
 		}
 
-		if($this->conf['cssFiles.']['pagebrowser']) {
+		if ($this->conf['cssFiles.']['pagebrowser']) {
 			$cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['pagebrowser']));
 			$GLOBALS['TSFE']->additionalHeaderData['tx_solr-pageBrowserCss'] =
 				'<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
@@ -199,12 +205,12 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 
 		$rawUserQuery = $this->getRawUserQuery();
 
-		/* @var $query	Query */
+		/* @var $query Query */
 		$query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', $rawUserQuery);
 
 		$this->initializeAdditionalFilters($query);
 
-			// TODO check whether a search has been conducted already?
+		// TODO check whether a search has been conducted already?
 		if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])) {
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
@@ -222,7 +228,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 					$searchComponent->setQuery($query);
 				}
 
-				if ($searchComponent instanceof  Tx_Solr_PluginAware) {
+				if ($searchComponent instanceof Tx_Solr_PluginAware) {
 					$searchComponent->setParentPlugin($this);
 				}
 
@@ -230,16 +236,16 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			}
 
 			if ($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['query.']['allowEmptyQuery']) {
-					// empty main query, but using a "return everything"
-					// alternative query in q.alt
+				// empty main query, but using a "return everything"
+				// alternative query in q.alt
 				$query->setAlternativeQuery('*:*');
 			}
 
-			if ($this->conf['search.']['initializeWithQuery']) {;
+			if ($this->conf['search.']['initializeWithQuery']) {
 				$query->setAlternativeQuery($this->conf['search.']['initializeWithQuery']);
 			}
 
-			foreach($this->additionalFilters as $additionalFilter) {
+			foreach ($this->additionalFilters as $additionalFilter) {
 				$query->addFilter($additionalFilter);
 			}
 
@@ -257,7 +263,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	protected function initializeAdditionalFilters(Query $query) {
 		$additionalFilters = array();
 
-		if(!empty($this->conf['search.']['query.']['filter.'])) {
+		if (!empty($this->conf['search.']['query.']['filter.'])) {
 			// special filter to limit search to specific page tree branches
 			if (array_key_exists('__pageSections', $this->conf['search.']['query.']['filter.'])) {
 				$query->setRootlineFilter($this->conf['search.']['query.']['filter.']['__pageSections']);
@@ -265,7 +271,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			}
 
 			// all other regular filters
-			foreach($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
+			foreach ($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
 				if (!is_array($this->conf['search.']['query.']['filter.'][$filterKey])) {
 					if (is_array($this->conf['search.']['query.']['filter.'][$filterKey . '.'])) {
 						$filter = $this->cObj->stdWrap(
@@ -279,7 +285,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			}
 		}
 
-			// flexform overwrites _all_ filters set through TypoScript
+		// flexform overwrites _all_ filters set through TypoScript
 		$flexformFilters = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filter', 'sQuery');
 		if (!empty($flexformFilters)) {
 			$additionalFilters = GeneralUtility::trimExplode('|', $flexformFilters);
@@ -304,7 +310,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 * @see Tx_Solr_PluginBase_PluginBase#postInitialize()
 	 */
 	protected function postInitialize() {
-			// disable caching
+		// disable caching
 		$this->pi_USER_INT_obj = 1;
 	}
 
@@ -314,8 +320,8 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 	 *
 	 */
 	protected function overrideTyposcriptWithFlexformSettings() {
-			// initialize with empty query, useful when no search has been
-			// conducted yet but needs to show facets already.
+		// initialize with empty query, useful when no search has been
+		// conducted yet but needs to show facets already.
 		$initializeWithEmptyQuery = $this->pi_getFFvalue(
 			$this->cObj->data['pi_flexform'],
 			'initializeWithEmptyQuery',
@@ -334,7 +340,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			$this->conf['search.']['showResultsOfInitialEmptyQuery'] = 1;
 		}
 
-			// initialize with non-empty query
+		// initialize with non-empty query
 		$initialQuery = $this->pi_getFFvalue(
 			$this->cObj->data['pi_flexform'],
 			'initializeWithQuery',
@@ -353,9 +359,9 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			$this->conf['search.']['showResultsOfInitialQuery'] = 1;
 		}
 
-			// target page
-		$targetPage = (int) $this->conf['search.']['targetPage'];
-		$flexformTargetPage = (int) $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'targetPage');
+		// target page
+		$targetPage = (int)$this->conf['search.']['targetPage'];
+		$flexformTargetPage = (int)$this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'targetPage');
 		if ($flexformTargetPage) {
 			$targetPage = $flexformTargetPage;
 		}
@@ -365,25 +371,25 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			$this->conf['search.']['targetPage'] = $GLOBALS['TSFE']->id;
 		}
 
-			// boost function
+		// boost function
 		$boostFunction = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'boostFunction', 'sQuery');
 		if ($boostFunction) {
 			$this->conf['search.']['query.']['boostFunction'] = $boostFunction;
 		}
 
-			// boost query
+		// boost query
 		$boostQuery = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'boostQuery', 'sQuery');
 		if ($boostQuery) {
 			$this->conf['search.']['query.']['boostQuery'] = $boostQuery;
 		}
 
-			// sorting
+		// sorting
 		$flexformSorting = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'sortBy', 'sQuery');
 		if ($flexformSorting) {
 			$this->conf['search.']['query.']['sortBy'] = $flexformSorting;
 		}
 
-			// results per page
+		// results per page
 		$resultsPerPage = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'resultsPerPage', 'sQuery');
 		if ($resultsPerPage) {
 			$this->conf['search.']['results.']['resultsPerPage'] = $resultsPerPage;
@@ -440,7 +446,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 		$solrPostParameters = GeneralUtility::_POST('tx_solr');
 		$solrGetParameters  = GeneralUtility::_GET('tx_solr');
 
-			// check for GET parameters, POST takes precedence
+		// check for GET parameters, POST takes precedence
 		if (isset($solrGetParameters) && is_array($solrGetParameters)) {
 			$solrParameters = $solrGetParameters;
 		}
@@ -458,7 +464,7 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 
 		$currentNumberOfResultsShown = $defaultNumberOfResultsShown;
 		if (!is_null($userSetNumberOfResultsShown) && in_array($userSetNumberOfResultsShown, $resultsPerPageSwitchOptions)) {
-			$currentNumberOfResultsShown = (int) $userSetNumberOfResultsShown;
+			$currentNumberOfResultsShown = (int)$userSetNumberOfResultsShown;
 		}
 
 		$rawUserQuery = $this->getRawUserQuery();
@@ -468,9 +474,9 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 			&& !$this->conf['search.']['showResultsOfInitialQuery']
 			&& empty($rawUserQuery)
 		) {
-				// initialize search with an empty query, which would by default return all documents
-				// anyway, tell Solr to not return any result documents
-				// Solr will still return facets though
+			// initialize search with an empty query, which would by default return all documents
+			// anyway, tell Solr to not return any result documents
+			// Solr will still return facets though
 			$currentNumberOfResultsShown = 0;
 		}
 

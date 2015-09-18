@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,8 +26,10 @@
 
 use ApacheSolrForTypo3\Solr\Facet\Facet;
 use ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
+use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -36,7 +40,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
+class FacetingCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 * Search instance
@@ -48,7 +52,7 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PiResults_Results
+	 * @var Results
 	 */
 	protected $parentPlugin;
 
@@ -69,9 +73,9 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Constructor.
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin Parent plugin object.
+	 * @param CommandPluginBase $parentPlugin Parent plugin object.
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
 		$this->parentPlugin  = $parentPlugin;
@@ -99,9 +103,9 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		}
 
 		if (count($marker) === 0) {
-				// in case we didn't fill any markers - like when there are no
-				// search results - we set markers to NULL to signal that we
-				// want to have the subpart removed completely
+			// in case we didn't fill any markers - like when there are no
+			// search results - we set markers to NULL to signal that we
+			// want to have the subpart removed completely
 			$marker = NULL;
 		}
 
@@ -137,8 +141,8 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 				(isset($facetConfiguration['includeInAvailableFacets']) && $facetConfiguration['includeInAvailableFacets'] == '0')
 				|| !$facet->isRenderingAllowed()
 			) {
-					// don't render facets that should not be included in available facets
-					// or that do not meet their requirements to be rendered
+				// don't render facets that should not be included in available facets
+				// or that do not meet their requirements to be rendered
 				continue;
 			}
 
@@ -173,10 +177,11 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		/* @var $queryLinkBuilder LinkBuilder */
 		$queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
-			// URL parameters added to facet URLs may not need to be added to the facets reset URL
+		// URL parameters added to facet URLs may not need to be added to the facets reset URL
 		if (!empty($this->configuration['search.']['faceting.']['facetLinkUrlParameters'])
-		&& isset($this->configuration['search.']['faceting.']['facetLinkUrlParameters.']['useForFacetResetLinkUrl'])
-		&& $this->configuration['search.']['faceting.']['facetLinkUrlParameters.']['useForFacetResetLinkUrl'] === '0') {
+			&& isset($this->configuration['search.']['faceting.']['facetLinkUrlParameters.']['useForFacetResetLinkUrl'])
+			&& $this->configuration['search.']['faceting.']['facetLinkUrlParameters.']['useForFacetResetLinkUrl'] === '0'
+		) {
 			$addedUrlParameters = GeneralUtility::explodeUrl2Array($this->configuration['search.']['faceting.']['facetLinkUrlParameters']);
 			$addedUrlParameterKeys = array_keys($addedUrlParameters);
 
@@ -195,17 +200,17 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 		$resultParameters = GeneralUtility::_GET('tx_solr');
 		$filterParameters = array();
 		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array) array_map('urldecode', $resultParameters['filter']);
+			$filterParameters = (array)array_map('urldecode', $resultParameters['filter']);
 		}
 
 		$facetsInUse = array();
 		foreach ($filterParameters as $filter) {
-				// only split by the first ":" to allow the use of colons in the filter value
+			// only split by the first ":" to allow the use of colons in the filter value
 			list($filterName, $filterValue) = explode(':', $filter, 2);
 
 			$facetConfiguration = $this->configuration['search.']['faceting.']['facets.'][$filterName . '.'];
 
-				// don't render facets that should not be included in used facets
+			// don't render facets that should not be included in used facets
 			if (isset($facetConfiguration['includeInUsedFacets']) && $facetConfiguration['includeInUsedFacets'] == '0') {
 				continue;
 			}
@@ -216,7 +221,7 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 				$filterValue,
 				$filter ,
 				$this->parentPlugin->getTemplate(),
-# FIXME usage of $query
+#FIXME usage of $query
 				$query
 			);
 			$usedFacetRenderer->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
@@ -261,4 +266,3 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 	}
 
 }
-

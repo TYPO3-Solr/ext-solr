@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -22,6 +24,10 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use Tx_Solr_CommandPluginAware;
+use Tx_Solr_FormModifier;
+use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -33,7 +39,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
+class FormCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 *
@@ -44,7 +50,7 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PluginBase_CommandPluginBase
+	 * @var CommandPluginBase
 	 */
 	protected $parentPlugin;
 
@@ -56,14 +62,14 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 	protected $configuration;
 
 	/**
-	 * Constructor for class Tx_Solr_PiResults_FormCommand
+	 * Constructor for class ApacheSolrForTypo3\Solr\Plugin\Results\FormCommand
 	 *
-	 * @param Tx_Solr_PluginBase_CommandPluginBase $parentPlugin parent plugin
+	 * @param CommandPluginBase $parentPlugin parent plugin
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parentPlugin) {
+	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
-		$this->parentPlugin  = $parentPlugin;
+		$this->parentPlugin = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
 	}
 
@@ -71,23 +77,23 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 	 * Provides the values for the markers in the simple form template
 	 *
 	 * @return array An array containing values for markers in the simple form template
-	 * @throws InvalidArgumentException if an registered form modifier fails to implement the required interface Tx_Solr_FormModifier
+	 * @throws \InvalidArgumentException if an registered form modifier fails to implement the required interface Tx_Solr_FormModifier
 	 */
 	public function execute() {
 		$url = $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']);
 
 		$marker = array(
-			'action'                    => htmlspecialchars($url),
-			'action_id'                 => intval($this->parentPlugin->conf['search.']['targetPage']),
-			'action_language'           => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
-			'action_language_parameter' => 'L',
-			'accept-charset'            => $GLOBALS['TSFE']->metaCharset,
-			'q'                         => $this->parentPlugin->getCleanUserQuery()
+				'action' => htmlspecialchars($url),
+				'action_id' => intval($this->parentPlugin->conf['search.']['targetPage']),
+				'action_language' => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
+				'action_language_parameter' => 'L',
+				'accept-charset' => $GLOBALS['TSFE']->metaCharset,
+				'q' => $this->parentPlugin->getCleanUserQuery()
 		);
 
-			// hook to modify the search form
+		// hook to modify the search form
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'] as $classReference) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'] as $classReference) {
 				$formModifier = GeneralUtility::getUserObj($classReference);
 
 				if ($formModifier instanceof Tx_Solr_FormModifier) {
@@ -97,9 +103,9 @@ class Tx_Solr_PiResults_FormCommand implements Tx_Solr_PluginCommand {
 
 					$marker = $formModifier->modifyForm($marker, $this->parentPlugin->getTemplate());
 				} else {
-					throw new InvalidArgumentException(
-						'Form modifier "' . $classReference . '" must implement the Tx_Solr_FormModifier interface.',
-						1262864703
+					throw new \InvalidArgumentException(
+							'Form modifier "' . $classReference . '" must implement the Tx_Solr_FormModifier interface.',
+							1262864703
 					);
 				}
 			}

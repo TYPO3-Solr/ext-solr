@@ -22,31 +22,6 @@ return array(
 
 		// EXT:solr
 
-	'tx_solr_pluginbase_backendsummary' => $extensionPath . 'Classes/PluginBase/BackendSummary.php',
-	'tx_solr_pluginbase_commandpluginbase' => $extensionPath . 'Classes/PluginBase/CommandPluginBase.php',
-	'tx_solr_pluginbase_pluginbase' => $extensionPath . 'Classes/PluginBase/PluginBase.php',
-
-		// plugins
-
-	'tx_solr_pifrequentsearches_frequentsearches' => $extensionPath . 'PiFrequentSearches/FrequentSearches.php',
-	'tx_solr_piresults_results' => $extensionPath . 'PiResults/Results.php',
-	'tx_solr_pisearch_search' => $extensionPath . 'PiSearch/Search.php',
-
-	'tx_solr_piresults_errorscommand' => $extensionPath . 'PiResults/ErrorsCommand.php',
-	'tx_solr_piresults_facetingcommand' => $extensionPath . 'PiResults/FacetingCommand.php',
-	'tx_solr_piresults_formcommand' => $extensionPath . 'PiResults/FormCommand.php',
-	'tx_solr_piresults_frequentsearchescommand' => $extensionPath . 'PiResults/FrequentSearchesCommand.php',
-	'tx_solr_piresults_lastsearchescommand' => $extensionPath . 'PiResults/LastSearchesCommand.php',
-	'tx_solr_piresults_noresultscommand' => $extensionPath . 'PiResults/NoResultsCommand.php',
-	'tx_solr_piresults_resultscommand' => $extensionPath . 'PiResults/ResultsCommand.php',
-	'tx_solr_piresults_resultsperpageswitchcommand' => $extensionPath . 'PiResults/ResultsPerPageSwitchCommand.php',
-	'tx_solr_piresults_sortingcommand' => $extensionPath . 'PiResults/SortingCommand.php',
-
-	'tx_solr_piresults_parameterkeepingformmodifier' => $extensionPath . 'PiResults/ParameterKeepingFormModifier.php',
-	'tx_solr_piresults_spellcheckformmodifier' => $extensionPath . 'PiResults/SpellCheckFormModifier.php',
-	'tx_solr_piresults_suggestformmodifier' => $extensionPath . 'PiResults/SuggestFormModifier.php',
-	'tx_solr_piresults_queryanalyzerformmodifier' => $extensionPath . 'PiResults/QueryAnalyzerFormModifier.php',
-
 		// interfaces
 
 	'tx_solr_additionalindexqueueitemindexer' => $extensionPath . 'Interfaces/AdditionalIndexQueueItemIndexer.php',

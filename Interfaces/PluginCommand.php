@@ -24,6 +24,7 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 
 
 /**
@@ -47,9 +48,9 @@ interface Tx_Solr_PluginCommand {
 	 *
 	 * FIXME interface must not define a constructor, change this to a setter
 	 *
-	 * @param Tx_Solr_pluginbase_CommandPluginBase $parent Parent plugin object.
+	 * @param CommandPluginBase $parent Parent plugin object.
 	 */
-	public function __construct(Tx_Solr_PluginBase_CommandPluginBase $parent);
+	public function __construct(CommandPluginBase $parent);
 
 	/**
 	 * execute method
