@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use ApacheSolrForTypo3\Solr\Site;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_IndexQueueInitializationPostProcessor {
+interface IndexQueueInitializationPostProcessor {
 
 	/**
 	 * Post process Index Queue initialization
