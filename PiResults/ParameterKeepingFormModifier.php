@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -82,7 +83,7 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 	public function modifyForm(array $markers, Template $template) {
 		$hiddenFields = array();
 
-		if ($this->parentPlugin instanceof Tx_Solr_PiResults_Results && $this->configuration['search.']['keepExistingParametersForNewSearches']) {
+		if ($this->parentPlugin instanceof Results && $this->configuration['search.']['keepExistingParametersForNewSearches']) {
 			foreach ($this->parentPlugin->piVars as $key => $value) {
 				if ($key == 'page') {
 					// must reset page

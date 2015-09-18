@@ -23,6 +23,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
 use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
 use ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier;
 use ApacheSolrForTypo3\Solr\Search;
@@ -48,7 +49,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PiResults_Results
+	 * @var Results
 	 */
 	protected $parentPlugin;
 
@@ -306,7 +307,7 @@ class Tx_Solr_PiResults_ResultsCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Gets the parent plugin.
 	 *
-	 * @return Tx_Solr_PiResults_Results
+	 * @return Results
 	 */
 	public function getParentPlugin() {
 		return $this->parentPlugin;

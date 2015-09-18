@@ -25,6 +25,7 @@
 use ApacheSolrForTypo3\Solr\Facet\Facet;
 use ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,7 +50,7 @@ class Tx_Solr_PiResults_FacetingCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PiResults_Results
+	 * @var Results
 	 */
 	protected $parentPlugin;
 

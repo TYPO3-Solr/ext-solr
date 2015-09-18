@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
 use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -48,7 +49,7 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PiResults_Results
+	 * @var Results
 	 */
 	protected $parentPlugin;
 

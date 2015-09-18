@@ -1,5 +1,5 @@
 plugin.tx_solr_PiResults_Results = USER_INT
-plugin.tx_solr_PiResults_Results.userFunc = Tx_Solr_PiResults_Results->main
+plugin.tx_solr_PiResults_Results.userFunc = ApacheSolrForTypo3\Solr\Plugin\Results\Results->main
 tt_content.list.20.solr_pi_results =< plugin.tx_solr_PiResults_Results
 
 plugin.tx_solr_PiSearch_Search = USER

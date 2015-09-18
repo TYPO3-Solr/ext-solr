@@ -24,6 +24,7 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
 use ApacheSolrForTypo3\Solr\Template;
 
 
@@ -41,7 +42,7 @@ class Tx_Solr_PiResults_LastSearchesCommand implements Tx_Solr_PluginCommand {
 	/**
 	 * Parent plugin
 	 *
-	 * @var Tx_Solr_PiResults_Results
+	 * @var Results
 	 */
 	protected $parentPlugin;
 
