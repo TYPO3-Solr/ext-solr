@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Search;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -34,7 +36,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_FacetsModifier {
+interface FacetsModifier {
 
 	/**
 	 * Modifies the given facets and returns the modified facets as array

@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Tx_Solr_FacetsModifier;
+use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use Tx_Solr_ResponseModifier;
 use Tx_Solr_SearchAware;
@@ -340,12 +340,12 @@ class Search implements SingletonInterface {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
 					$facetsModifier = GeneralUtility::getUserObj($classReference);
 
-					if ($facetsModifier instanceof Tx_Solr_FacetsModifier) {
+					if ($facetsModifier instanceof FacetsModifier) {
 						$facetCounts = $facetsModifier->modifyFacets($facetCounts);
 						$facetCountsModified = TRUE;
 					} else {
 						throw new \UnexpectedValueException(
-							get_class($facetsModifier) . ' must implement interface Tx_Solr_FacetsModifier',
+							get_class($facetsModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Facet\Tx_Solr_FacetsModifier',
 							1310387526
 						);
 					}
