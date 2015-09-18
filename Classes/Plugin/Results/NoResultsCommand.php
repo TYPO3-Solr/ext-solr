@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,8 +23,9 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
-use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
+use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -33,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_NoResultsCommand implements Tx_Solr_PluginCommand {
+class NoResultsCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 * Parent plugin
@@ -62,7 +65,7 @@ class Tx_Solr_PiResults_NoResultsCommand implements Tx_Solr_PluginCommand {
 			$markers['suggestion_results'] = $this->getSuggestionResults();
 		}
 
-			// TODO change to if $spellChecker->hasSuggestions()
+		// TODO change to if $spellChecker->hasSuggestions()
 		if (!empty($suggestionsLink)) {
 			$markers['suggestion'] = $suggestionsLink;
 		}

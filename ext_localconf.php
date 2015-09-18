@@ -152,7 +152,7 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results',
 	'no_results',
-	'Tx_Solr_PiResults_NoResultsCommand',
+	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\NoResultsCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_HAS_SEARCHED
 	+ Tx_Solr_PluginCommand::REQUIREMENT_NO_RESULTS
 );
