@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Template;
-use Tx_Solr_FormModifier;
+use ApacheSolrForTypo3\Solr\Plugin\FormModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -36,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class SpellCheckFormModifier implements Tx_Solr_FormModifier {
+class SpellCheckFormModifier implements FormModifier {
 
 	/**
 	 * Modifies the search form by providing an additional marker linking to a

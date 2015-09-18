@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -35,7 +37,7 @@ use ApacheSolrForTypo3\Solr\Template;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_FormModifier {
+interface FormModifier {
 
 	/**
 	 * Modifies the search form by providing  additional markers.

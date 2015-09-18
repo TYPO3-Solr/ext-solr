@@ -28,7 +28,7 @@ use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
-use Tx_Solr_FormModifier;
+use ApacheSolrForTypo3\Solr\Plugin\FormModifier;
 
 
 /**
@@ -38,7 +38,7 @@ use Tx_Solr_FormModifier;
  * @package TYPO3
  * @subpackage solr
  */
-class QueryAnalyzerFormModifier implements Tx_Solr_FormModifier, CommandPluginAware {
+class QueryAnalyzerFormModifier implements FormModifier, CommandPluginAware {
 
 	/**
 	 * Configuration
