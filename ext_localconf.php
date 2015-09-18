@@ -236,7 +236,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTy
 // TODO move into pi_results, initializeSearch, add only when features are activated
 $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['keepParameters'] = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ParameterKeepingFormModifier';
 $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck']     = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SpellCheckFormModifier';
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest']        = 'Tx_Solr_PiResults_SuggestFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest']        = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SuggestFormModifier';
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 

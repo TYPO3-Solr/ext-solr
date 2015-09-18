@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,6 +27,8 @@
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
+use Tx_Solr_CommandPluginAware;
+use Tx_Solr_FormModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -35,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
+class SuggestFormModifier implements Tx_Solr_FormModifier, Tx_Solr_CommandPluginAware {
 
 	/**
 	 * Configuration
@@ -52,7 +56,7 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 	protected $parentPlugin;
 
 	/**
-	 * Constructor for class Tx_Solr_PiResults_SuggestFormModifier
+	 * Constructor
 	 *
 	 */
 	public function __construct() {
@@ -135,7 +139,7 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 
 		$suggestUrl .= '?eID=tx_solr_suggest&id=' . $GLOBALS['TSFE']->id;
 
-			// add filters
+		// add filters
 		$additionalFilters = $this->parentPlugin->getAdditionalFilters();
 		if (!empty($additionalFilters)) {
 			$additionalFilters = json_encode($additionalFilters);
@@ -144,7 +148,7 @@ class Tx_Solr_PiResults_SuggestFormModifier implements Tx_Solr_FormModifier, Tx_
 			$suggestUrl .= '&filters=' . $additionalFilters;
 		}
 
-			// adds the language parameter to the suggest URL
+		// adds the language parameter to the suggest URL
 		if ($GLOBALS['TSFE']->sys_language_uid > 0) {
 			$suggestUrl .= '&L=' . $GLOBALS['TSFE']->sys_language_uid;
 		}
