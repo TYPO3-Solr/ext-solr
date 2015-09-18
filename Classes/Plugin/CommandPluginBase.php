@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Template;
 use Tx_Solr_CommandPostProcessor;
-use Tx_Solr_PluginBase_PluginBase;
 use Tx_Solr_TemplateModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -44,7 +43,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class CommandPluginBase extends Tx_Solr_PluginBase_PluginBase {
+abstract class CommandPluginBase extends PluginBase {
 
 	/**
 	 * Should be implemented by an inheriting class to provide a correctly
