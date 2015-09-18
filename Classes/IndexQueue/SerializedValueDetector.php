@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -33,7 +35,7 @@
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_SerializedValueDetector {
+interface SerializedValueDetector {
 
 	/**
 	 * Uses a field's configuration to detect whether its value returned by a

@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 ***************************************************************/
 
 use Apache_Solr_Document;
-use Tx_Solr_SerializedValueDetector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -235,11 +234,11 @@ abstract class AbstractIndexer {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] as $classReference) {
 				$serializedValueDetector = GeneralUtility::getUserObj($classReference);
 
-				if ($serializedValueDetector instanceof Tx_Solr_SerializedValueDetector) {
+				if ($serializedValueDetector instanceof SerializedValueDetector) {
 					$isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($serializedValueDetector) . ' must implement interface Tx_Solr_SerializedValueDetector',
+						get_class($serializedValueDetector) . ' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\SerializedValueDetector',
 						1404471741
 					);
 				}
