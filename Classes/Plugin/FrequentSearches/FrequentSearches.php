@@ -41,7 +41,7 @@ class FrequentSearches extends CommandPluginBase {
 	/**
 	 * Path to this script relative to the extension dir.
 	 */
-	public $scriptRelPath = 'PiFrequentSearches/FrequentSearches.php';
+	public $scriptRelPath = 'Classes/Plugin/FrequentSearches/FrequentSearches.php';
 
 	/**
 	 * Returns an initialized commandResolver. In this case we use the command

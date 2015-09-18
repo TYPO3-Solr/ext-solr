@@ -43,7 +43,7 @@ class Search extends CommandPluginBase {
 	/**
 	 * Path to this script relative to the extension dir.
 	 */
-	public $scriptRelPath = 'PiSearch/Search.php';
+	public $scriptRelPath = 'Classes/Plugin/Search/Search.php';
 
 	/**
 	 * Additional filters, which will be added to suggest queries.
