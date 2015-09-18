@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,8 +26,8 @@
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
-use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
 use ApacheSolrForTypo3\Solr\Template;
+use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -37,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand {
+class FrequentSearchesCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 * Instance of the caching frontend used to cache this command's output.
@@ -78,8 +80,8 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	public function __construct(CommandPluginBase $parentPlugin) {
 		$this->parentPlugin  = $parentPlugin;
 		$this->configuration = $parentPlugin->conf;
-		$this->cacheFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheFactory');
-		$this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+		$this->cacheFactory  = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheFactory');
+		$this->cacheManager  = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
 
 		$this->initializeCache();
 	}
@@ -105,11 +107,11 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	/**
 	 * Provides the values for the markers for the frequent searches links
 	 *
-	 * @return array	An array containing values for markers for the frequent searches links template
+	 * @return array An array containing values for markers for the frequent searches links template
 	 */
 	public function execute() {
 		if ($this->configuration['search.']['frequentSearches'] == 0) {
-				// command is not activated, intended early return
+			// command is not activated, intended early return
 			return NULL;
 		}
 
@@ -163,24 +165,24 @@ class Tx_Solr_PiResults_FrequentSearchesCommand implements Tx_Solr_PluginCommand
 	protected function getFrequentSearchTerms() {
 		$terms = array();
 
-			// Use configuration as cache identifier
+		// Use configuration as cache identifier
 		$identifier = 'frequentSearchesTags';
 
 		if ($this->configuration['search.']['frequentSearches.']['select.']['checkRootPageId']) {
-			$identifier.= '_RP' . (int)$GLOBALS['TSFE']->tmpl->rootLine[0]['uid'];
+			$identifier .= '_RP' . (int)$GLOBALS['TSFE']->tmpl->rootLine[0]['uid'];
 		}
 		if ($this->configuration['search.']['frequentSearches.']['select.']['checkLanguage']) {
-			$identifier.= '_L' . (int)$GLOBALS['TSFE']->sys_language_uid;
+			$identifier .= '_L' . (int)$GLOBALS['TSFE']->sys_language_uid;
 		}
 
-		$identifier.= '_' . md5(serialize($this->configuration['search.']['frequentSearches.']));
+		$identifier .= '_' . md5(serialize($this->configuration['search.']['frequentSearches.']));
 
 		if ($this->cacheInstance->has($identifier)) {
 			$terms = $this->cacheInstance->get($identifier);
 		} else {
 			$terms = $this->getFrequentSearchTermsFromStatistics();
 
-			if($this->configuration['search.']['frequentSearches.']['sortBy'] == 'hits') {
+			if ($this->configuration['search.']['frequentSearches.']['sortBy'] == 'hits') {
 				arsort($terms);
 			} else {
 				ksort($terms);

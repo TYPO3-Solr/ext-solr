@@ -116,7 +116,7 @@ ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'results, frequentsearches',
 	'frequentSearches',
-	'Tx_Solr_PiResults_FrequentSearchesCommand',
+	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FrequentSearchesCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
