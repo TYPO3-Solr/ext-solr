@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Template;
-use Tx_Solr_TemplateModifier;
+use ApacheSolrForTypo3\Solr\TemplateModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -96,11 +96,11 @@ abstract class CommandPluginBase extends PluginBase {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['renderTemplate'] as $classReference) {
 				$templateModifier = &GeneralUtility::getUserObj($classReference);
 
-				if ($templateModifier instanceof Tx_Solr_TemplateModifier) {
+				if ($templateModifier instanceof TemplateModifier) {
 					$templateModifier->modifyTemplate($this->template);
 				} else {
 					throw new \UnexpectedValueException(
-						get_class($templateModifier) . ' must implement interface Tx_Solr_TemplateModifier',
+						get_class($templateModifier) . ' must implement interface ApacheSolrForTypo3\Solr\TemplateModifier',
 						1310387230
 					);
 				}

@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,8 +27,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Template;
-
 
 /**
  * Template modifier interface
@@ -35,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Template;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_TemplateModifier {
+interface TemplateModifier {
 
 	public function modifyTemplate(Template $template);
 }
