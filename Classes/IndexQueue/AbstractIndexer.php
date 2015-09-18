@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use Apache_Solr_Document;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -50,12 +49,12 @@ abstract class AbstractIndexer {
 	/**
 	 * Adds fields to the document as defined in $indexingConfiguration
 	 *
-	 * @param Apache_Solr_Document $document base document to add fields to
+	 * @param \Apache_Solr_Document $document base document to add fields to
 	 * @param array $indexingConfiguration Indexing configuration / mapping
 	 * @param array $data Record data
-	 * @return Apache_Solr_Document Modified document with added fields
+	 * @return \Apache_Solr_Document Modified document with added fields
 	 */
-	protected function addDocumentFieldsFromTyposcript(Apache_Solr_Document $document, array $indexingConfiguration, array $data) {
+	protected function addDocumentFieldsFromTyposcript(\Apache_Solr_Document $document, array $indexingConfiguration, array $data) {
 
 		// mapping of record fields => solr document fields, resolving cObj
 		foreach ($indexingConfiguration as $solrFieldName => $recordFieldName) {
