@@ -123,7 +123,7 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'search, results',
 	'form',
-	'Tx_Solr_PiResults_FormCommand',
+	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FormCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
