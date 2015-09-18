@@ -54,7 +54,7 @@ class AnalysisComponent extends AbstractComponent implements Tx_Solr_QueryAware 
 		if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis']) {
 			$this->query->setDebugMode();
 			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['scoreAnalysis'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\ScoreAnalyzer';
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm']['queryAnalysis'] = 'Tx_Solr_PiResults_QueryAnalyzerFormModifier';
+			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm']['queryAnalysis']     = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\QueryAnalyzerFormModifier';
 		}
 	}
 
