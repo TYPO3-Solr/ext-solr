@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
-use Tx_Solr_PluginCommand;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -38,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class ErrorsCommand implements Tx_Solr_PluginCommand {
+class ErrorsCommand implements PluginCommand {
 
 	/**
 	 * Parent plugin

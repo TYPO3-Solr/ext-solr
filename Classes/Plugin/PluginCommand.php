@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -24,7 +26,6 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 
 
 /**
@@ -34,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_PluginCommand {
+interface PluginCommand {
 
 	const REQUIREMENTS_NUM_BITS    = 4;
 

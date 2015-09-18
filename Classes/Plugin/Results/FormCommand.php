@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
 use ApacheSolrForTypo3\Solr\Plugin\FormModifier;
-use Tx_Solr_PluginCommand;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -39,7 +39,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * @package TYPO3
  * @subpackage solr
  */
-class FormCommand implements Tx_Solr_PluginCommand {
+class FormCommand implements PluginCommand {
 
 	/**
 	 *
