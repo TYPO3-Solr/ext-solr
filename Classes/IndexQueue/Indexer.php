@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Util;
-use Tx_Solr_IndexQueuePageIndexerDocumentsModifier;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -436,14 +435,14 @@ class Indexer extends AbstractIndexer {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
 				$documentsModifier = &GeneralUtility::getUserObj($classReference);
 
-				if ($documentsModifier instanceof Tx_Solr_IndexQueuePageIndexerDocumentsModifier) {
+				if ($documentsModifier instanceof PageIndexerDocumentsModifier) {
 					$documents = $documentsModifier->modifyDocuments($item, $language, $documents);
 				} else {
 					throw new \RuntimeException(
 						'The class "' . get_class($documentsModifier)
 							. '" registered as document modifier in hook
 							preAddModifyDocuments must implement interface
-							Tx_Solr_IndexQueuePageIndexerDocumentsModifier',
+							ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier',
 						1309522677
 					);
 				}

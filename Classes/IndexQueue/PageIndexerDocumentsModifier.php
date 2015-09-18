@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\IndexQueue;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -25,8 +27,6 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-
 
 /**
  * IndexQueuePageIndexerDocumentsModifier interface, allows to modify documents
@@ -36,7 +36,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
  * @package TYPO3
  * @subpackage solr
  */
-interface Tx_Solr_IndexQueuePageIndexerDocumentsModifier {
+interface PageIndexerDocumentsModifier {
 
 	/**
 	 * Modifies the given documents
