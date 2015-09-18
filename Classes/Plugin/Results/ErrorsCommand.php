@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -21,8 +23,11 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
-use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
+use Tx_Solr_CommandPluginAware;
+use Tx_Solr_ErrorDetector;
+use Tx_Solr_PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
+class ErrorsCommand implements Tx_Solr_PluginCommand {
 
 	/**
 	 * Parent plugin
@@ -86,7 +91,7 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 	protected function getErrors() {
 		$errors = array();
 
-			// detect empty user queries
+		// detect empty user queries
 		$userQuery = $this->parentPlugin->getRawUserQuery();
 
 		if (!is_null($userQuery)
@@ -99,9 +104,9 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 			);
 		}
 
-			// hook to provide additional error messages
+		// hook to provide additional error messages
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['addSearchErrors'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['addSearchErrors'] as $classReference) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['addSearchErrors'] as $classReference) {
 				$errorDetector = GeneralUtility::getUserObj($classReference);
 
 				if ($errorDetector instanceof Tx_Solr_ErrorDetector) {
@@ -114,10 +119,10 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 					if (is_array($additionalErrors)) {
 						$errors = array_merge($errors, $additionalErrors);
 					} else {
-						throw new UnexpectedValueException($classReference . ' must return an array', 1359156111);
+						throw new \UnexpectedValueException($classReference . ' must return an array', 1359156111);
 					}
 				} else {
-					throw new InvalidArgumentException(
+					throw new \InvalidArgumentException(
 						'Error detector "' . $classReference . '" must implement interface Tx_Solr_ErrorDetector.',
 						1359156192
 					);
@@ -128,4 +133,3 @@ class Tx_Solr_PiResults_ErrorsCommand implements Tx_Solr_PluginCommand {
 		return $errors;
 	}
 }
-

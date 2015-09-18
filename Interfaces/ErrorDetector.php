@@ -30,7 +30,7 @@
  * Error detector interface
  *
  * An error detector can detect additional errors / do additional validation on
- * searches and report the errors found to Tx_Solr_PiResults_ErrorsCommand so
+ * searches and report the errors found to ApacheSolrForTypo3\Solr\Plugin\Results\ErrorsCommand so
  * that they get shown on the search results page.
  *
  * @author Ingo Renner <ingo@typo3.org>

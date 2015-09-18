@@ -138,7 +138,7 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 	'search, results',
 	'errors',
-	'Tx_Solr_PiResults_ErrorsCommand',
+	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ErrorsCommand',
 	Tx_Solr_PluginCommand::REQUIREMENT_NONE
 );
 
