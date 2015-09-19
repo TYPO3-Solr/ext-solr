@@ -559,77 +559,77 @@ class Tx_Solr_Search_StatisticsComponent extends ApacheSolrForTypo3\Solr\Search\
 /**
  * @deprecated
  */
-abstract class Tx_Solr_Viewhelper_AbstractSubpartViewHelper extends ApacheSolrForTypo3\Solr\ViewHelper\AbstractSubpartViewHelper {}
+abstract class Tx_Solr_ViewHelper_AbstractSubpartViewHelper extends ApacheSolrForTypo3\Solr\ViewHelper\AbstractSubpartViewHelper {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_Crop extends ApacheSolrForTypo3\Solr\ViewHelper\Crop {}
+class Tx_Solr_ViewHelper_Crop extends ApacheSolrForTypo3\Solr\ViewHelper\Crop {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_CurrentResultNumber extends ApacheSolrForTypo3\Solr\ViewHelper\CurrentResultNumber {}
+class Tx_Solr_ViewHelper_CurrentResultNumber extends ApacheSolrForTypo3\Solr\ViewHelper\CurrentResultNumber {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_Date extends ApacheSolrForTypo3\Solr\ViewHelper\Date {}
+class Tx_Solr_ViewHelper_Date extends ApacheSolrForTypo3\Solr\ViewHelper\Date {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_Facet extends ApacheSolrForTypo3\Solr\ViewHelper\Facet {}
+class Tx_Solr_ViewHelper_Facet extends ApacheSolrForTypo3\Solr\ViewHelper\Facet {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_Link extends ApacheSolrForTypo3\Solr\ViewHelper\Link {}
+class Tx_Solr_ViewHelper_Link extends ApacheSolrForTypo3\Solr\ViewHelper\Link {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_Lll extends ApacheSolrForTypo3\Solr\ViewHelper\Lll {}
+class Tx_Solr_ViewHelper_Lll extends ApacheSolrForTypo3\Solr\ViewHelper\Lll {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_Multivalue extends ApacheSolrForTypo3\Solr\ViewHelper\Multivalue {}
+class Tx_Solr_ViewHelper_Multivalue extends ApacheSolrForTypo3\Solr\ViewHelper\Multivalue {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_OddEven extends ApacheSolrForTypo3\Solr\ViewHelper\OddEven {}
+class Tx_Solr_ViewHelper_OddEven extends ApacheSolrForTypo3\Solr\ViewHelper\OddEven {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_Relevance extends ApacheSolrForTypo3\Solr\ViewHelper\Relevance {}
+class Tx_Solr_ViewHelper_Relevance extends ApacheSolrForTypo3\Solr\ViewHelper\Relevance {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_RelevanceBar extends ApacheSolrForTypo3\Solr\ViewHelper\RelevanceBar {}
+class Tx_Solr_ViewHelper_RelevanceBar extends ApacheSolrForTypo3\Solr\ViewHelper\RelevanceBar {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_SolrLink extends ApacheSolrForTypo3\Solr\ViewHelper\SolrLink {}
+class Tx_Solr_ViewHelper_SolrLink extends ApacheSolrForTypo3\Solr\ViewHelper\SolrLink {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_SortIndicator extends ApacheSolrForTypo3\Solr\ViewHelper\SortIndicator {}
+class Tx_Solr_ViewHelper_SortIndicator extends ApacheSolrForTypo3\Solr\ViewHelper\SortIndicator {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_SortUrl extends ApacheSolrForTypo3\Solr\ViewHelper\SortUrl {}
+class Tx_Solr_ViewHelper_SortUrl extends ApacheSolrForTypo3\Solr\ViewHelper\SortUrl {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Viewhelper_Ts extends ApacheSolrForTypo3\Solr\ViewHelper\Ts {}
+class Tx_Solr_ViewHelper_Ts extends ApacheSolrForTypo3\Solr\ViewHelper\Ts {}
 
 
 
