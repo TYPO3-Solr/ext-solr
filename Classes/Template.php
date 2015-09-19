@@ -217,7 +217,7 @@ class Template {
 	 * adds an already instantiated view helper
 	 *
 	 * @param $helperName
-	 * @param $helperObject
+	 * @param ViewHelper $helperObject
 	 * @return boolean
 	 */
 	public function addViewHelperObject($helperName, ViewHelper $helperObject) {
