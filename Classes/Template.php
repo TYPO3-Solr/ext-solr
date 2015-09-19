@@ -220,7 +220,7 @@ class Template {
 	 * @param $helperObject
 	 * @return boolean
 	 */
-	public function addViewHelperObject($helperName, ViewHelper\ViewHelper $helperObject) {
+	public function addViewHelperObject($helperName, ViewHelper $helperObject) {
 		$success = FALSE;
 
 		$helperName = strtolower($helperName);
