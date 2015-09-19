@@ -194,7 +194,7 @@ class Template {
 
 			//FIXME for PHP 5.4.32, 5.5.16: $classNamePrefix = ucwords($classNamePrefix, '_');
 			$classNamePrefix = explode('_', $classNamePrefix);
-			$classNamePrefix = array_map('ucwords', $classNamePrefix);
+			$classNamePrefix = array_map('ucfirst', $classNamePrefix);
 			$classNamePrefix = implode('_', $classNamePrefix);
 
 			$possibleFilename = Util::underscoredToUpperCamelCase($helperKey) . '.php';
