@@ -206,7 +206,7 @@ class Template {
 			if (file_exists($viewHelperIncludePath)) {
 				include_once($viewHelperIncludePath);
 				$this->loadedHelperFiles[strtolower($helperKey)] = array(
-					'file' => $viewHelperIncludePath,
+					'file'  => $viewHelperIncludePath,
 					'class' => $possibleClassName
 				);
 
