@@ -265,37 +265,37 @@ class Tx_Solr_Facet_UsedFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\Used
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_AbstractHierarchyProcessor extends ApacheSolrForTypo3\Solr\Fieldprocessor\AbstractHierarchyProcessor {}
+class Tx_Solr_FieldProcessor_AbstractHierarchyProcessor extends ApacheSolrForTypo3\Solr\FieldProcessor\AbstractHierarchyProcessor {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_CategoryUidToHierarchy extends ApacheSolrForTypo3\Solr\Fieldprocessor\CategoryUidToHierarchy {}
+class Tx_Solr_FieldProcessor_CategoryUidToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_PageUidToHierarchy extends ApacheSolrForTypo3\Solr\Fieldprocessor\PageUidToHierarchy {}
+class Tx_Solr_FieldProcessor_PageUidToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_PathToHierarchy extends ApacheSolrForTypo3\Solr\Fieldprocessor\PathToHierarchy {}
+class Tx_Solr_FieldProcessor_PathToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_Service extends ApacheSolrForTypo3\Solr\Fieldprocessor\Service {}
+class Tx_Solr_FieldProcessor_Service extends ApacheSolrForTypo3\Solr\FieldProcessor\Service {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_TimestampToIsoDate extends ApacheSolrForTypo3\Solr\Fieldprocessor\TimestampToIsoDate {}
+class Tx_Solr_FieldProcessor_TimestampToIsoDate extends ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_TimestampToUtcIsoDate extends ApacheSolrForTypo3\Solr\Fieldprocessor\TimestampToUtcIsoDate {}
+class Tx_Solr_FieldProcessor_TimestampToUtcIsoDate extends ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate {}
 
 
 
