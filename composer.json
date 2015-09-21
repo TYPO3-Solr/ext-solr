@@ -40,9 +40,11 @@
   },
   "autoload": {
     "classmap": [
-      "Lib/",
-      "Classes/"
-    ]
+      "Lib/"
+    ],
+    "psr-4": {
+      "ApacheSolrForTypo3\\Solr\\": "Classes/"
+    }
   },
   "extra": {
     "class-alias-maps": [
