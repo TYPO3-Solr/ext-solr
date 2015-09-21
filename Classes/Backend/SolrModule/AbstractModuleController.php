@@ -25,9 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
