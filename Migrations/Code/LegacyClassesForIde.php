@@ -265,138 +265,138 @@ class Tx_Solr_Facet_UsedFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\Used
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_AbstractHierarchyProcessor extends ApacheSolrForTypo3\Solr\Fieldprocessor\AbstractHierarchyProcessor {}
+class Tx_Solr_FieldProcessor_AbstractHierarchyProcessor extends ApacheSolrForTypo3\Solr\FieldProcessor\AbstractHierarchyProcessor {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_CategoryUidToHierarchy extends ApacheSolrForTypo3\Solr\Fieldprocessor\CategoryUidToHierarchy {}
+class Tx_Solr_FieldProcessor_CategoryUidToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_PageUidToHierarchy extends ApacheSolrForTypo3\Solr\Fieldprocessor\PageUidToHierarchy {}
+class Tx_Solr_FieldProcessor_PageUidToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_PathToHierarchy extends ApacheSolrForTypo3\Solr\Fieldprocessor\PathToHierarchy {}
+class Tx_Solr_FieldProcessor_PathToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_Service extends ApacheSolrForTypo3\Solr\Fieldprocessor\Service {}
+class Tx_Solr_FieldProcessor_Service extends ApacheSolrForTypo3\Solr\FieldProcessor\Service {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_TimestampToIsoDate extends ApacheSolrForTypo3\Solr\Fieldprocessor\TimestampToIsoDate {}
+class Tx_Solr_FieldProcessor_TimestampToIsoDate extends ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Fieldprocessor_TimestampToUtcIsoDate extends ApacheSolrForTypo3\Solr\Fieldprocessor\TimestampToUtcIsoDate {}
-
-
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_AbstractIndexer extends ApacheSolrForTypo3\Solr\Indexqueue\AbstractIndexer {}
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_Indexer extends ApacheSolrForTypo3\Solr\Indexqueue\Indexer {}
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_Item extends ApacheSolrForTypo3\Solr\Indexqueue\Item {}
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_PageIndexer extends ApacheSolrForTypo3\Solr\Indexqueue\PageIndexer {}
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_PageIndexerRequest extends ApacheSolrForTypo3\Solr\Indexqueue\PageIndexerRequest {}
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_PageIndexerRequestHandler extends ApacheSolrForTypo3\Solr\Indexqueue\PageIndexerRequestHandler {}
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_PageIndexerResponse extends ApacheSolrForTypo3\Solr\Indexqueue\PageIndexerResponse {}
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_Queue extends ApacheSolrForTypo3\Solr\Indexqueue\Queue {}
-
-/**
- * @deprecated
- */
-class Tx_Solr_Indexqueue_RecordMonitor extends ApacheSolrForTypo3\Solr\Indexqueue\RecordMonitor {}
+class Tx_Solr_FieldProcessor_TimestampToUtcIsoDate extends ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate {}
 
 
 
 /**
  * @deprecated
  */
-abstract class Tx_Solr_Indexqueue_Frontendhelper_Abstract extends ApacheSolrForTypo3\Solr\Indexqueue\Frontendhelper\AbstractFrontendHelper {}
+class Tx_Solr_IndexQueue_AbstractIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Indexqueue_Frontendhelper_AuthorizationService extends ApacheSolrForTypo3\Solr\Indexqueue\Frontendhelper\AuthorizationService {}
+class Tx_Solr_IndexQueue_Indexer extends ApacheSolrForTypo3\Solr\IndexQueue\Indexer {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Indexqueue_Frontendhelper_Dispatcher extends ApacheSolrForTypo3\Solr\Indexqueue\Frontendhelper\Dispatcher {}
+class Tx_Solr_IndexQueue_Item extends ApacheSolrForTypo3\Solr\IndexQueue\Item {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Indexqueue_Frontendhelper_Manager extends ApacheSolrForTypo3\Solr\Indexqueue\Frontendhelper\Manager {}
+class Tx_Solr_IndexQueue_PageIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Indexqueue_Frontendhelper_UserGroupDetector extends ApacheSolrForTypo3\Solr\Indexqueue\Frontendhelper\UserGroupDetector {}
+class Tx_Solr_IndexQueue_PageIndexerRequest extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Indexqueue_Frontendhelper_PageFieldMappingIndexer extends ApacheSolrForTypo3\Solr\Indexqueue\Frontendhelper\PageFieldMappingIndexer {}
+class Tx_Solr_IndexQueue_PageIndexerRequestHandler extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Indexqueue_Frontendhelper_PageIndexer extends ApacheSolrForTypo3\Solr\Indexqueue\Frontendhelper\PageIndexer {}
+class Tx_Solr_IndexQueue_PageIndexerResponse extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse {}
+
+/**
+ * @deprecated
+ */
+class Tx_Solr_IndexQueue_Queue extends ApacheSolrForTypo3\Solr\IndexQueue\Queue {}
+
+/**
+ * @deprecated
+ */
+class Tx_Solr_IndexQueue_RecordMonitor extends ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor {}
 
 
 
 /**
  * @deprecated
  */
-abstract class Tx_Solr_Indexqueue_Initializer_Abstract extends ApacheSolrForTypo3\Solr\Indexqueue\Initializer\AbstractInitializer {}
+abstract class Tx_Solr_IndexQueue_Frontendhelper_Abstract extends ApacheSolrForTypo3\Solr\IndexQueue\Frontendhelper\AbstractFrontendHelper {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Indexqueue_Initializer_Page extends ApacheSolrForTypo3\Solr\Indexqueue\Initializer\Page {}
+class Tx_Solr_IndexQueue_Frontendhelper_AuthorizationService extends ApacheSolrForTypo3\Solr\IndexQueue\Frontendhelper\AuthorizationService {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Indexqueue_Initializer_Record extends ApacheSolrForTypo3\Solr\Indexqueue\Initializer\Record {}
+class Tx_Solr_IndexQueue_Frontendhelper_Dispatcher extends ApacheSolrForTypo3\Solr\IndexQueue\Frontendhelper\Dispatcher {}
+
+/**
+ * @deprecated
+ */
+class Tx_Solr_IndexQueue_Frontendhelper_Manager extends ApacheSolrForTypo3\Solr\IndexQueue\Frontendhelper\Manager {}
+
+/**
+ * @deprecated
+ */
+class Tx_Solr_IndexQueue_Frontendhelper_UserGroupDetector extends ApacheSolrForTypo3\Solr\IndexQueue\Frontendhelper\UserGroupDetector {}
+
+/**
+ * @deprecated
+ */
+class Tx_Solr_IndexQueue_Frontendhelper_PageFieldMappingIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\Frontendhelper\PageFieldMappingIndexer {}
+
+/**
+ * @deprecated
+ */
+class Tx_Solr_IndexQueue_Frontendhelper_PageIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\Frontendhelper\PageIndexer {}
+
+
+
+/**
+ * @deprecated
+ */
+abstract class Tx_Solr_IndexQueue_Initializer_Abstract extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer {}
+
+/**
+ * @deprecated
+ */
+class Tx_Solr_IndexQueue_Initializer_Page extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page {}
+
+/**
+ * @deprecated
+ */
+class Tx_Solr_IndexQueue_Initializer_Record extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record {}
 
 
 
