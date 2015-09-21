@@ -84,11 +84,11 @@ class Tx_Solr_PiResults_ParameterKeepingFormModifier implements Tx_Solr_FormModi
 					continue;
 				}
 
-				$name = $this->parentPlugin->prefixId . '[' . $key . ']';
+				$name = $this->parentPlugin->prefixId . '[' . $this->cleanFormValue($key) . ']';
 
 				if (is_array($value)) {
 					foreach ($value as $k => $v) {
-						$hiddenFields[] = '<input type="hidden" name="' . $name . '[' . $k . ']" value="' . $this->cleanFormValue($v) . '" />';
+						$hiddenFields[] = '<input type="hidden" name="' . $name . '[' . $this->cleanFormValue($k) . ']" value="' . $this->cleanFormValue($v) . '" />';
 					}
 				} else {
 					$hiddenFields[] = '<input type="hidden" name="' . $name . '" value="' . $this->cleanFormValue($value) . '" />';
