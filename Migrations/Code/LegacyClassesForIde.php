@@ -166,17 +166,17 @@ class Tx_Solr_Cli_Dispatcher extends ApacheSolrForTypo3\Solr\Cli\Dispatcher {}
 /**
  * @deprecated
  */
-class Tx_Solr_Contentobject_Content extends ApacheSolrForTypo3\Solr\Contentobject\Content {}
+class Tx_Solr_ContentObject_Content extends ApacheSolrForTypo3\Solr\ContentObject\Content {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Contentobject_Multivalue extends ApacheSolrForTypo3\Solr\Contentobject\Multivalue {}
+class Tx_Solr_ContentObject_Multivalue extends ApacheSolrForTypo3\Solr\ContentObject\Multivalue {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Contentobject_Relation extends ApacheSolrForTypo3\Solr\Contentobject\Relation {}
+class Tx_Solr_ContentObject_Relation extends ApacheSolrForTypo3\Solr\ContentObject\Relation {}
 
 
 
