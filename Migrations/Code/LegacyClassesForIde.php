@@ -648,89 +648,89 @@ class Tx_Solr_Modindex_IndexInspectorRemoteController extends ApacheSolrForTypo3
 /**
  * @deprecated
  */
-class Tx_Solr_Pifrequentsearches_FrequentSearches extends ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches {}
+class Tx_Solr_PiFrequentSearches_FrequentSearches extends ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_Results extends ApacheSolrForTypo3\Solr\Plugin\Results\Results {}
+class Tx_Solr_PiResults_Results extends ApacheSolrForTypo3\Solr\Plugin\Results\Results {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Pisearch_Search extends ApacheSolrForTypo3\Solr\Plugin\Search\Search {}
+class Tx_Solr_PiSearch_Search extends ApacheSolrForTypo3\Solr\Plugin\Search\Search {}
 
 
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_ErrorsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ErrorsCommand {}
+class Tx_Solr_PiResults_ErrorsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ErrorsCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_FacetingCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FacetingCommand {}
+class Tx_Solr_PiResults_FacetingCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FacetingCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_FormCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FormCommand {}
+class Tx_Solr_PiResults_FormCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FormCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_FrequentSearchesCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FrequentSearchesCommand {}
+class Tx_Solr_PiResults_FrequentSearchesCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FrequentSearchesCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_HighlightingResultDocumentModifier extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\DocumentHighlighter {}
+class Tx_Solr_PiResults_HighlightingResultDocumentModifier extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\DocumentHighlighter {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_LastSearchesCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\LastSearchesCommand {}
+class Tx_Solr_PiResults_LastSearchesCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\LastSearchesCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_NoResultsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\NoResultsCommand {}
+class Tx_Solr_PiResults_NoResultsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\NoResultsCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_ResultsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand {}
+class Tx_Solr_PiResults_ResultsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_ResultsPerPageSwitchCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ResultsPerPageSwitchCommand {}
+class Tx_Solr_PiResults_ResultsPerPageSwitchCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ResultsPerPageSwitchCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_SortingCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\SortingCommand {}
+class Tx_Solr_PiResults_SortingCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\SortingCommand {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_ParameterKeepingFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\ParameterKeepingFormModifier {}
+class Tx_Solr_PiResults_ParameterKeepingFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\ParameterKeepingFormModifier {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_SpellCheckFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\SpellCheckFormModifier {}
+class Tx_Solr_PiResults_SpellCheckFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\SpellCheckFormModifier {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_SuggestFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\SuggestFormModifier {}
+class Tx_Solr_PiResults_SuggestFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\SuggestFormModifier {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Piresults_QueryAnalyzerFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\QueryAnalyzerFormModifier {}
+class Tx_Solr_PiResults_QueryAnalyzerFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\QueryAnalyzerFormModifier {}
 
 
 
