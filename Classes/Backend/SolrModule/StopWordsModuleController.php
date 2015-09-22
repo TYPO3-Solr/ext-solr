@@ -83,14 +83,15 @@ class StopWordsModuleController extends AbstractModuleController {
 			}
 		}
 
+		$wordsAdded     = TRUE;
 		$addedStopWords = array_diff($newStopWords, $oldStopWords);
-		$wordsAddedResponse = $solrConnection->addStopWords($addedStopWords);
+		if (!empty($addedStopWords)) {
+			$wordsAddedResponse = $solrConnection->addStopWords($addedStopWords);
+			$wordsAdded         = ($wordsAddedResponse->getHttpStatus() == 200);
+		}
 
 		$reloadResponse = $solrConnection->reloadCore();
-		if ($wordsRemoved
-			&& $wordsAddedResponse->getHttpStatus() == 200
-			&& $reloadResponse->getHttpStatus() == 200
-		) {
+		if ($wordsRemoved && $wordsAdded && $reloadResponse->getHttpStatus() == 200) {
 			$this->addFlashMessage(
 				'Stop Words Updated.'
 			);
