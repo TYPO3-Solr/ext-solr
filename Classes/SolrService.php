@@ -768,6 +768,7 @@ class SolrService extends \Apache_Solr_Service {
 			$stopWords = array($stopWords);
 		}
 
+		$stopWords = array_values($stopWords);
 		$rawPut = json_encode($stopWords);
 		return $this->_sendRawPost($this->_stopWordsUrl, $rawPut, $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
 	}
