@@ -403,17 +403,17 @@ class Tx_Solr_IndexQueue_Initializer_Record extends ApacheSolrForTypo3\Solr\Inde
 /**
  * @deprecated
  */
-class Tx_Solr_Pluginbase_BackendSummary extends ApacheSolrForTypo3\Solr\Plugin\BackendSummary {}
+class Tx_Solr_PluginBase_BackendSummary extends ApacheSolrForTypo3\Solr\Plugin\BackendSummary {}
 
 /**
  * @deprecated
  */
-abstract class Tx_Solr_Pluginbase_CommandPluginBase extends ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase {}
+abstract class Tx_Solr_PluginBase_CommandPluginBase extends ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase {}
 
 /**
  * @deprecated
  */
-abstract class Tx_Solr_Pluginbase_PluginBase extends ApacheSolrForTypo3\Solr\Plugin\PluginBase {}
+abstract class Tx_Solr_PluginBase_PluginBase extends ApacheSolrForTypo3\Solr\Plugin\PluginBase {}
 
 
 
