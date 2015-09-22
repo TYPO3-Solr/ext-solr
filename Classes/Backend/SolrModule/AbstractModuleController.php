@@ -177,5 +177,32 @@ abstract class AbstractModuleController extends ActionController implements Admi
 
 		$this->forward('index');
 	}
+
+	/**
+	 * Finds the Solr connection to use for the currently selected core.
+	 *
+	 * @return \ApacheSolrForTypo3\Solr\SolrService Solr connection
+	 */
+	protected function getSelectedCoreSolrConnection() {
+		$currentCoreConnection = NULL;
+
+		$solrConnections = $this->connectionManager->getConnectionsBySite($this->site);
+		$currentCore     = $this->moduleDataStorageService->loadModuleData()->getCore();
+
+		foreach ($solrConnections as $solrConnection) {
+			if ($solrConnection->getPath() == $currentCore) {
+				$currentCoreConnection = $solrConnection;
+				break;
+			}
+		}
+
+		if (is_null($currentCoreConnection)) {
+			// when switching sites $currentCore is empty and nothing matched
+			// fall back to the connection's first core
+			$currentCoreConnection = $solrConnections[0];
+		}
+
+		return $currentCoreConnection;
+	}
 }
 

@@ -94,6 +94,9 @@ form div {
 form div.submit {
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+form div.submit.indented {
 	padding-left: 100px;
 }
 

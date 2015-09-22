@@ -37,12 +37,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SolrService extends \Apache_Solr_Service {
 
-	const LUKE_SERVLET     = 'admin/luke';
-	const SYSTEM_SERVLET   = 'admin/system';
-	const PLUGINS_SERVLET  = 'admin/plugins';
-	const CORES_SERVLET    = 'admin/cores';
-	const SCHEMA_SERVLET   = 'schema';
-	const SYNONYMS_SERVLET = 'schema/analysis/synonyms/';
+	const LUKE_SERVLET      = 'admin/luke';
+	const SYSTEM_SERVLET    = 'admin/system';
+	const PLUGINS_SERVLET   = 'admin/plugins';
+	const CORES_SERVLET     = 'admin/cores';
+	const SCHEMA_SERVLET    = 'schema';
+	const SYNONYMS_SERVLET  = 'schema/analysis/synonyms/';
+	const STOPWORDS_SERVLET = 'schema/analysis/stopwords/';
 
 	const SCHEME_HTTP      = 'http';
 	const SCHEME_HTTPS     = 'https';
@@ -73,6 +74,8 @@ class SolrService extends \Apache_Solr_Service {
 	protected $_extractUrl;
 
 	protected $_synonymsUrl;
+
+	protected $_stopWordsUrl;
 
 	protected $_schemaUrl;
 
@@ -150,6 +153,9 @@ class SolrService extends \Apache_Solr_Service {
 		$managedLanguage = $this->getManagedLanguage();
 		$this->_synonymsUrl = $this->_constructUrl(
 			self::SYNONYMS_SERVLET
+		) . $managedLanguage;
+		$this->_stopWordsUrl = $this->_constructUrl(
+			self::STOPWORDS_SERVLET
 		) . $managedLanguage;
 	}
 
@@ -726,6 +732,60 @@ class SolrService extends \Apache_Solr_Service {
 		}
 
 		return $this->_sendRawDelete($this->_synonymsUrl . '/' . $baseWord);
+	}
+
+	/**
+	 * Get currently configured stop words
+	 *
+	 * @return array
+	 */
+	public function getStopWords() {
+		$stopWords = array();
+
+		$response = $this->_sendRawGet($this->_stopWordsUrl);
+		$decodedResponse = json_decode($response->getRawResponse());
+
+		if (isset($decodedResponse->wordSet->managedList)) {
+			$stopWords = (array)$decodedResponse->wordSet->managedList;
+		}
+
+		return $stopWords;
+	}
+
+	/**
+	 * Adds stop words to the managed stop word list
+	 *
+	 * @param array|string $stopWords string for a single word, array for multiple words
+	 * @return \Apache_Solr_Response
+	 * @throws \Apache_Solr_InvalidArgumentException If $stopWords is empty
+	 */
+	public function addStopWords($stopWords) {
+		if (empty($stopWords)) {
+			throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
+		}
+
+		if (is_string($stopWords)) {
+			$stopWords = array($stopWords);
+		}
+
+		$stopWords = array_values($stopWords);
+		$rawPut = json_encode($stopWords);
+		return $this->_sendRawPost($this->_stopWordsUrl, $rawPut, $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
+	}
+
+	/**
+	 * Deletes a words from the managed stop word list
+	 *
+	 * @param string $stopWord stop word to delete
+	 * @return \Apache_Solr_Response
+	 * @throws \Apache_Solr_InvalidArgumentException If $stopWords is empty
+	 */
+	public function deleteStopWord($stopWord) {
+		if (empty($stopWord)) {
+			throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
+		}
+
+		return $this->_sendRawDelete($this->_stopWordsUrl . '/' . $stopWord);
 	}
 
 	/**
