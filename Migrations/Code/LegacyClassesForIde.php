@@ -427,22 +427,22 @@ class Tx_Solr_Query_LinkBuilder extends ApacheSolrForTypo3\Solr\Query\LinkBuilde
 /**
  * @deprecated
  */
-class Tx_Solr_Query_Filterencoder_DateRange extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange {}
+class Tx_Solr_Query_FilterEncoder_DateRange extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query_Filterencoder_Hierarchy extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy {}
+class Tx_Solr_Query_FilterEncoder_Hierarchy extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query_Filterencoder_QueryGroup extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup {}
+class Tx_Solr_Query_FilterEncoder_QueryGroup extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query_Filterencoder_Range extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range {}
+class Tx_Solr_Query_FilterEncoder_Range extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range {}
 
 
 
