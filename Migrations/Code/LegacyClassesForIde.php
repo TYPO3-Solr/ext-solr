@@ -473,12 +473,12 @@ class Tx_Solr_Response_Processor_StatisticsWriter extends ApacheSolrForTypo3\Sol
 /**
  * @deprecated
  */
-class Tx_Solr_Resultdocumentmodifier_ScoreAnalyzer extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\ScoreAnalyzer {}
+class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\ScoreAnalyzer {}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Resultdocumentmodifier_SiteHighlighter extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\SiteHighlighter {}
+class Tx_Solr_ResultDocumentModifier_SiteHighlighter extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\SiteHighlighter {}
 
 
 
