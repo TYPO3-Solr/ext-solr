@@ -63,7 +63,38 @@ class StopWordsModuleController extends AbstractModuleController {
 
 	public function saveStopWordsAction() {
 		$solrConnection = $this->getSelectedCoreSolrConnection();
-		$stopWords = GeneralUtility::_POST('tx_solr_tools_solradministration');
+
+		$postParameters = GeneralUtility::_POST('tx_solr_tools_solradministration');
+		$newStopWords   = GeneralUtility::trimExplode("\n", $postParameters['stopWords'], TRUE);
+		$oldStopWords   = $solrConnection->getStopWords();
+
+		$wordsRemoved     = TRUE;
+		$removedStopWords = array_diff($oldStopWords, $newStopWords);
+		foreach ($removedStopWords as $word) {
+			$response = $solrConnection->deleteStopWord($word);
+			if ($response->getHttpStatus() != 200) {
+				$wordsRemoved = FALSE;
+				$this->addFlashMessage(
+					'Failed to remove stop word "' . $word . '".',
+					'An error occurred',
+					FlashMessage::ERROR
+				);
+				break;
+			}
+		}
+
+		$addedStopWords = array_diff($newStopWords, $oldStopWords);
+		$wordsAddedResponse = $solrConnection->addStopWords($addedStopWords);
+
+		$reloadResponse = $solrConnection->reloadCore();
+		if ($wordsRemoved
+			&& $wordsAddedResponse->getHttpStatus() == 200
+			&& $reloadResponse->getHttpStatus() == 200
+		) {
+			$this->addFlashMessage(
+				'Stop Words Updated.'
+			);
+		}
 
 		$this->forwardToIndex();
 	}
