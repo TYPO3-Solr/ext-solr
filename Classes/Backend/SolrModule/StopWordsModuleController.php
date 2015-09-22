@@ -62,6 +62,11 @@ class StopWordsModuleController extends AbstractModuleController {
 		$this->view->assign('stopWordsCount', count($stopWords));
 	}
 
+	/**
+	 * Saves the edited stop word list to Solr
+	 *
+	 * @return void
+	 */
 	public function saveStopWordsAction() {
 		$solrConnection = $this->getSelectedCoreSolrConnection();
 
