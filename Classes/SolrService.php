@@ -753,6 +753,41 @@ class SolrService extends \Apache_Solr_Service {
 	}
 
 	/**
+	 * Adds stop words to the managed stop word list
+	 *
+	 * @param array|string $stopWords string for a single word, array for multiple words
+	 * @return \Apache_Solr_Response
+	 * @throws \Apache_Solr_InvalidArgumentException If $stopWords is empty
+	 */
+	public function addStopWords($stopWords) {
+		if (empty($stopWords)) {
+			throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
+		}
+
+		if (is_string($stopWords)) {
+			$stopWords = array($stopWords);
+		}
+
+		$rawPut = json_encode($stopWords);
+		return $this->_sendRawPost($this->_stopWordsUrl, $rawPut, $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
+	}
+
+	/**
+	 * Deletes a words from the managed stop word list
+	 *
+	 * @param string $stopWord stop word to delete
+	 * @return \Apache_Solr_Response
+	 * @throws \Apache_Solr_InvalidArgumentException If $stopWords is empty
+	 */
+	public function deleteStopWord($stopWord) {
+		if (empty($stopWord)) {
+			throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
+		}
+
+		return $this->_sendRawDelete($this->_stopWordsUrl . '/' . $stopWord);
+	}
+
+	/**
 	 * Reloads the current core
 	 *
 	 * @return \Apache_Solr_Response
