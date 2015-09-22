@@ -1,0 +1,23 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<!--<div class="well">-->
+	<!--Stop words allow you to ...-->
+<!--</div>-->
+
+<solr:backend.menu.CoreSelectorMenu/>
+
+<h3 style="margin-top: -20px;">Edit Stop Words</h3>
+<div class="row-fluid section section-with-header">
+	<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'saveStopWords'} )}"
+			id="edit-stopwords">
+		<textarea rows="20" cols="40">
+<f:for each="{stopWords}" as="stopWord">{stopWord}
+</f:for>
+		</textarea>
+
+		<div class="submit">
+			<f:form.submit value="Save Stop Word List"/>
+		</div>
+	</f:form>
+</div>
+
