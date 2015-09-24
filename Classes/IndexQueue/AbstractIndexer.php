@@ -235,6 +235,9 @@ abstract class AbstractIndexer {
 
 				if ($serializedValueDetector instanceof SerializedValueDetector) {
 					$isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
+					if ($isSerialized) {
+						return TRUE;
+					}
 				} else {
 					throw new \UnexpectedValueException(
 						get_class($serializedValueDetector) . ' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\SerializedValueDetector',
