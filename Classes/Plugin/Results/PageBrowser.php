@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
- * This class implements page browser plugin
+ * The page browser used in search result listings
  *
  */
 class PageBrowser {
