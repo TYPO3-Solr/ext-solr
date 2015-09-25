@@ -290,7 +290,7 @@ class PageBrowser extends AbstractPlugin {
 		$conf = array(
 			'parameter' => $GLOBALS['TSFE']->id,
 			'additionalParams' => $additionalParams,
-			'useCacheHash' => (strlen($additionalParams) > 1) && !$this->configuration['disableCacheHash'],
+			'useCacheHash' => FALSE,
 		);
 		return htmlspecialchars($this->cObj->typoLink_URL($conf));
 	}

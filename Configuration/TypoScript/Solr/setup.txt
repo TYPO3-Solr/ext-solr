@@ -160,7 +160,6 @@ plugin.tx_solr {
 
 			pagebrowser {
 				enabled = 1
-				disableCacheHash = 1
 
 				_LOCAL_LANG.default {
 					text_first = First
