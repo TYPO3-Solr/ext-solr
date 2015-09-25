@@ -36,7 +36,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * This class implements page browser plugin
  *
  */
-class PageBrowser extends tslib_pibase {
+class PageBrowser extends \tslib_pibase {
 	// Default plugin variables:
 	public $prefixId = 'tx_pagebrowse_pi1';
 	public $scriptRelPath = 'pi1/class.tx_pagebrowse_pi1.php';
