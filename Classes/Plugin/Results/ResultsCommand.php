@@ -261,14 +261,16 @@ class ResultsCommand implements PluginCommand {
 			if (!is_array($solrGetParameters)) {
 				$solrGetParameters = array();
 			}
+			$currentPage = $solrGetParameters['page'];
 			unset($solrGetParameters['page']);
+
 			$pageBrowserConfiguration = array_merge(
 				$solrPageBrowserConfiguration,
 				array(
-					'pageParameterName' => 'tx_solr|page',
-					'numberOfPages'     => $numberOfPages,
-					'extraQueryString'  => GeneralUtility::implodeArrayForUrl('tx_solr', $solrGetParameters),
-					'templateFile'      => $this->configuration['templateFiles.']['pagebrowser']
+					'numberOfPages'    => $numberOfPages,
+					'currentPage'      => $currentPage,
+					'extraQueryString' => GeneralUtility::implodeArrayForUrl('tx_solr', $solrGetParameters),
+					'templateFile'     => $this->configuration['templateFiles.']['pagebrowser']
 				)
 			);
 
