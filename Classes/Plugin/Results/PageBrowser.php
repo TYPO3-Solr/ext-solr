@@ -1,8 +1,11 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Plugin\Results;
+
 /***************************************************************
 *  Copyright notice
 *
 *  (c) 2008-2014 Dmitry Dulepov (dmitry@typo3.org)
+*  (c) 2015 Ingo Renner (ingo@typo3.org)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,9 +31,8 @@
 /**
  * This class implements page browser plugin
  *
- * @author	Dmitry Dulepov [netcreators] <dmitry@typo3.org>
  */
-class tx_pagebrowse_pi1 extends tslib_pibase {
+class PageBrowser extends tslib_pibase {
 	// Default plugin variables:
 	public $prefixId = 'tx_pagebrowse_pi1';
 	public $scriptRelPath = 'pi1/class.tx_pagebrowse_pi1.php';
@@ -364,10 +366,4 @@ class tx_pagebrowse_pi1 extends tslib_pibase {
 		}
 		return $result;
 	}
-}
-
-/** @noinspection PhpUndefinedVariableInspection */
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pagebrowse/pi1/class.tx_pagebrowse_pi1.php'])	{
-	/** @noinspection PhpIncludeInspection */
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/pagebrowse/pi1/class.tx_pagebrowse_pi1.php']);
 }
