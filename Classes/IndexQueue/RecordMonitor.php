@@ -182,6 +182,9 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 
 		if ($status == 'update' && !isset($fields['pid'])) {
 			$recordPageId = $tceMain->getPID($recordTable, $recordUid);
+			if($recordTable == 'pages' && Tx_Solr_Util::isRootPage($recordUid)) {
+				$recordPageId = $uid;
+			}
 		} else {
 			$recordPageId = $fields['pid'];
 		}
