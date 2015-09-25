@@ -161,6 +161,12 @@ plugin.tx_solr {
 			pagebrowser {
 				enabled = 1
 
+				pagesBefore = 3
+				pagesAfter = 3
+
+				enableMorePages = 1
+				enableLessPages = 1
+
 				_LOCAL_LANG.default {
 					text_first = First
 					text_prev = Previous
