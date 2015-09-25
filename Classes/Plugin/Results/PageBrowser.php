@@ -133,7 +133,7 @@ class PageBrowser {
 	 *
 	 * @return string Generated content
 	 */
-	protected function render() {
+	public function render() {
 		$out = '';
 		if ($this->numberOfPages > 1) {
 			// Set up
