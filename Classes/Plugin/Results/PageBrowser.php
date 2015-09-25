@@ -207,10 +207,6 @@ class PageBrowser extends AbstractPlugin {
 
 			// Compile all together
 			$out = $this->cObj->substituteMarkerArrayCached($subPart, $markers, $subPartMarkers);
-			// Remove all comments
-			$out = preg_replace('/<!--\s*###.*?-->/', ' ', $out);
-			// Remove excessive spacing
-			$out = preg_replace('/\s{2,}/', ' ', $out);
 		}
 
 		return $out;
