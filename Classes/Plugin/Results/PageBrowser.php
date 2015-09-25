@@ -28,14 +28,15 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 
 /**
  * This class implements page browser plugin
  *
  */
-class PageBrowser extends \tslib_pibase {
+class PageBrowser extends AbstractPlugin {
 	// Default plugin variables:
 	public $prefixId = 'tx_solr';
 	public $scriptRelPath = 'pi1/class.tx_pagebrowse_pi1.php';
@@ -158,7 +159,7 @@ class PageBrowser extends \tslib_pibase {
 			$GLOBALS['TSFE']->additionalHeaderData[$key] =
 				$this->cObj->substituteMarkerArray($subPart, array(
 					'###SITE_REL_PATH###' => $GLOBALS['TSFE']->config['config']['absRefPrefix'] .
-						t3lib_extMgm::siteRelPath($this->extKey),
+						ExtensionManagementUtility::siteRelPath($this->extKey),
 				));
 		}
 	}
