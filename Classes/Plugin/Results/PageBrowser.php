@@ -68,46 +68,7 @@ class PageBrowser {
 		$this->pagesBefore = (int)$configuration['pagesBefore'];
 		$this->pagesAfter  = (int)$configuration['pagesAfter'];
 
-		$this->adjustForForcedNumberOfLinks();
-
 		$this->templateCode = $this->contentObject->fileResource($configuration['templateFile']);
-	}
-
-	/**
-	 * If a certain number of links should be displayed, adjust before and after
-	 * amounts accordingly.
-	 *
-	 * @return void
-	 */
-	protected function adjustForForcedNumberOfLinks() {
-		$forcedNumberOfLinks = intval(
-			$this->contentObject->stdWrap($this->configuration['numberOfLinks'],
-			$this->configuration['numberOfLinks.'])
-		);
-
-		if ($forcedNumberOfLinks > $this->numberOfPages) {
-			$forcedNumberOfLinks = $this->numberOfPages;
-		}
-
-		$totalNumberOfLinks = min($this->currentPage, $this->pagesBefore) +
-				min($this->pagesAfter, $this->numberOfPages - $this->currentPage) + 1;
-
-		if ($totalNumberOfLinks <= $forcedNumberOfLinks) {
-			$delta     = intval(ceil(($forcedNumberOfLinks - $totalNumberOfLinks)/2));
-			$increment = ($forcedNumberOfLinks & 1) == 0 ? 1 : 0;
-
-			if ($this->currentPage - ($this->pagesBefore + $delta) < 1) {
-				// Too little from the right to adjust
-				$this->pagesAfter  = $forcedNumberOfLinks - $this->currentPage - 1;
-				$this->pagesBefore = $forcedNumberOfLinks - $this->pagesAfter - 1;
-			} else if ($this->currentPage + ($this->pagesAfter + $delta) >= $this->numberOfPages) {
-				$this->pagesBefore = $forcedNumberOfLinks - ($this->numberOfPages - $this->currentPage);
-				$this->pagesAfter  = $forcedNumberOfLinks - $this->pagesBefore - 1;
-			} else {
-				$this->pagesBefore += $delta;
-				$this->pagesAfter  += $delta - $increment;
-			}
-		}
 	}
 
 	/**
