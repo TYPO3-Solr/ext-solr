@@ -43,7 +43,7 @@ class PageBrowser {
 	protected $pagesBefore = 3;
 	protected $pagesAfter = 3;
 
-	protected $templateCode;
+	protected $template;
 
 	protected $configuration = array();
 	protected $labels = array();
@@ -68,7 +68,7 @@ class PageBrowser {
 		$this->pagesBefore = (int)$configuration['pagesBefore'];
 		$this->pagesAfter  = (int)$configuration['pagesAfter'];
 
-		$this->templateCode = $this->contentObject->fileResource($configuration['templateFile']);
+		$this->template = $this->contentObject->fileResource($configuration['templateFile']);
 	}
 
 	/**
@@ -77,7 +77,8 @@ class PageBrowser {
 	 * @return string Generated content
 	 */
 	public function render() {
-		$out = '';
+		$pageBrowser = '';
+
 		if ($this->numberOfPages > 1) {
 			// Set up
 			$markers = array(
@@ -87,7 +88,7 @@ class PageBrowser {
 				'###TEXT_LAST###'  => htmlspecialchars($this->labels['pagebrowser_last']),
 			);
 			$subPartMarkers = array();
-			$subPart = $this->contentObject->getSubpart($this->templateCode, '###PAGE_BROWSER###');
+			$subPart = $this->contentObject->getSubpart($this->template, '###PAGE_BROWSER###');
 
 			// First page link
 			if ($this->currentPage == 0) {
@@ -152,12 +153,12 @@ class PageBrowser {
 			}
 
 			// Compile all together
-			$out = $this->contentObject->substituteMarkerArrayCached($subPart, $markers, $subPartMarkers);
+			$pageBrowser = $this->contentObject->substituteMarkerArrayCached($subPart, $markers, $subPartMarkers);
 			// Remove all comments
-			$out = preg_replace('/<!--\s*###.*?-->/', ' ', $out);
+			$pageBrowser = preg_replace('/<!--\s*###.*?-->/', ' ', $pageBrowser);
 		}
 
-		return $out;
+		return $pageBrowser;
 	}
 
 	/**
