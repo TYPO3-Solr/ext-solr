@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 
 /**
@@ -115,12 +114,8 @@ class PageBrowser extends \tslib_pibase {
 		$this->numberOfPages = intval($this->cObj->stdWrap($this->configuration['numberOfPages'], $this->configuration['numberOfPages.']));
 		$this->currentPage = max(0, intval($this->piVars['page']));
 
-		if (MathUtility::canBeInterpretedAsInteger($this->configuration['pagesBefore'])) {
-			$this->pagesBefore = intval($this->configuration['pagesBefore']);
-		}
-		if (MathUtility::canBeInterpretedAsInteger($this->configuration['pagesAfter'])) {
-			$this->pagesAfter = intval($this->configuration['pagesAfter']);
-		}
+		$this->pagesBefore = intval($this->configuration['pagesBefore']);
+		$this->pagesAfter = intval($this->configuration['pagesAfter']);
 
 		$this->adjustForForcedNumberOfLinks();
 
