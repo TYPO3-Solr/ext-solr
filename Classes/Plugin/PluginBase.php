@@ -225,10 +225,10 @@ abstract class PluginBase extends AbstractPlugin {
 	 */
 	public function pi_loadLL() {
 		if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
-			list($languageFileName) = explode('/', $this->scriptRelPath);
-			$languageFileName = str_replace('Pi', 'Plugin', $languageFileName);
+			$pathElements = pathinfo($this->scriptRelPath);
+			$languageFileName = $pathElements['filename'];
 
-			$basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/' . $languageFileName . '.xml';
+			$basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/Plugin' . $languageFileName . '.xml';
 
 			// Read the strings in the required charset (since TYPO3 4.2)
 			$this->LOCAL_LANG = GeneralUtility::readLLfile($basePath, $this->LLkey, $GLOBALS['TSFE']->renderCharset);
