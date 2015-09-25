@@ -152,9 +152,10 @@ class PageBrowser {
 				$subPartMarkers['###MORE_PAGES###'] = '';
 			}
 
-			// Compile all together
+			// Render / substitute markers
 			$pageBrowser = $this->contentObject->substituteMarkerArrayCached($subPart, $markers, $subPartMarkers);
-			// Remove all comments
+
+			// Clean up comments
 			$pageBrowser = preg_replace('/<!--\s*###.*?-->/', ' ', $pageBrowser);
 		}
 
