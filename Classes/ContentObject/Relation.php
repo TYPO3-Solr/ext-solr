@@ -77,7 +77,7 @@ class Relation {
 	 * @param string $name content object name 'SOLR_RELATION'
 	 * @param array $configuration for the content object
 	 * @param string $TyposcriptKey not used
-	 * @param TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentContentObject parent content object
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentContentObject parent content object
 	 * @return string serialized array representation of the given list
 	 */
 	public function cObjGetSingleExt($name, array $configuration, $TyposcriptKey, $parentContentObject) {
