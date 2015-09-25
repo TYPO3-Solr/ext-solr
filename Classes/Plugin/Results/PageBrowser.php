@@ -73,6 +73,18 @@ class PageBrowser extends AbstractPlugin {
 		$this->configuration = $configuration;
 
 		//FIXME $this->loadLabels();
+
+		$this->numberOfPages = $configuration['numberOfPages'];
+		$this->currentPage = $configuration['currentPage'];
+
+		$this->pagesBefore = (int)$configuration['pagesBefore'];
+		$this->pagesAfter = (int)$configuration['pagesAfter'];
+
+		$this->adjustForForcedNumberOfLinks();
+
+		// FIXME remove cObj
+		$this->templateCode = $this->cObj->fileResource($configuration['templateFile']);
+		$this->addHeaderParts();
 	}
 
 
@@ -91,27 +103,7 @@ class PageBrowser extends AbstractPlugin {
 			return $this->pi_wrapInBaseClass($this->pi_getLL('no_ts_template'));
 		}
 
-		$this->init();
 		return $this->pi_wrapInBaseClass($this->createPageBrowser());
-	}
-
-	/**
-	 * Initializes the plugin.
-	 *
-	 * @return void
-	 */
-	function init() {
-		$this->numberOfPages = intval($this->cObj->stdWrap($this->configuration['numberOfPages'], $this->configuration['numberOfPages.']));
-		$this->currentPage = max(0, intval($this->piVars['page']));
-
-		$this->pagesBefore = intval($this->configuration['pagesBefore']);
-		$this->pagesAfter = intval($this->configuration['pagesAfter']);
-
-		$this->adjustForForcedNumberOfLinks();
-
-		$this->templateCode = $this->cObj->fileResource($this->configuration['templateFile']);
-
-		$this->addHeaderParts();
 	}
 
 	/**
