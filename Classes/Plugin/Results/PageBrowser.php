@@ -73,6 +73,7 @@ class PageBrowser extends AbstractPlugin {
 		$this->configuration = $configuration;
 
 		//FIXME $this->loadLabels();
+		$this->pi_loadLL();
 
 		$this->numberOfPages = $configuration['numberOfPages'];
 		$this->currentPage = $configuration['currentPage'];
@@ -85,25 +86,6 @@ class PageBrowser extends AbstractPlugin {
 		// FIXME remove cObj
 		$this->templateCode = $this->cObj->fileResource($configuration['templateFile']);
 		$this->addHeaderParts();
-	}
-
-
-	/**
-	 * Produces plugin's output.
-	 *
-	 * @param string $content Unused
-	 * @param array $conf Configuration
-	 * @return string Generated content
-	 */
-	public function main($content, $conf) {
-		$this->configuration = $conf;
-		$this->pi_loadLL();
-
-		if (!isset($conf['templateFile'])) {
-			return $this->pi_wrapInBaseClass($this->pi_getLL('no_ts_template'));
-		}
-
-		return $this->pi_wrapInBaseClass($this->createPageBrowser());
 	}
 
 	/**
