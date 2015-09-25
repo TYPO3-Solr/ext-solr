@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 
@@ -85,7 +84,6 @@ class PageBrowser extends AbstractPlugin {
 
 		// FIXME remove cObj
 		$this->templateCode = $this->cObj->fileResource($configuration['templateFile']);
-		$this->addHeaderParts();
 	}
 
 	/**
@@ -122,25 +120,6 @@ class PageBrowser extends AbstractPlugin {
 				$this->pagesBefore += $delta;
 				$this->pagesAfter += $delta - $increment;
 			}
-		}
-	}
-
-	/**
-	 * Adds header parts from the template to the TSFE.
-	 * It fetches subpart identified by ###HEADER_ADDITIONSS### and replaces ###SITE_REL_PATH### with site-relative part to the extension.
-	 *
-	 * @return void
-	 */
-	protected function addHeaderParts() {
-		$subPart = $this->cObj->getSubpart($this->templateCode, '###HEADER_ADDITIONS###');
-		$key = $this->prefixId . '_' . md5($subPart);
-
-		if (!isset($GLOBALS['TSFE']->additionalHeaderData[$key])) {
-			$GLOBALS['TSFE']->additionalHeaderData[$key] =
-				$this->cObj->substituteMarkerArray($subPart, array(
-					'###SITE_REL_PATH###' => $GLOBALS['TSFE']->config['config']['absRefPrefix'] .
-						ExtensionManagementUtility::siteRelPath($this->extKey),
-				));
 		}
 	}
 
