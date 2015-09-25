@@ -38,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PageBrowser {
 
 	protected $numberOfPages;
-	protected $pageParameterName = '[page]';
+	protected $pageParameterName = 'tx_solr[page]';
 	protected $currentPage;
 	protected $pagesBefore = 3;
 	protected $pagesAfter = 3;
