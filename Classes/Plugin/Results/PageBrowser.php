@@ -79,9 +79,9 @@ class PageBrowser extends AbstractPlugin {
 	/**
 	 * Produces plugin's output.
 	 *
-	 * @param	string	$content	Unused
-	 * @param	array	$conf	Configuration
-	 * @return	string	Generated content
+	 * @param string $content Unused
+	 * @param array $conf Configuration
+	 * @return string Generated content
 	 */
 	public function main($content, $conf) {
 		$this->configuration = $conf;
@@ -98,7 +98,7 @@ class PageBrowser extends AbstractPlugin {
 	/**
 	 * Initializes the plugin.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	function init() {
 		$this->numberOfPages = intval($this->cObj->stdWrap($this->configuration['numberOfPages'], $this->configuration['numberOfPages.']));
@@ -150,7 +150,7 @@ class PageBrowser extends AbstractPlugin {
 	 * Adds header parts from the template to the TSFE.
 	 * It fetches subpart identified by ###HEADER_ADDITIONSS### and replaces ###SITE_REL_PATH### with site-relative part to the extension.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	protected function addHeaderParts() {
 		$subPart = $this->cObj->getSubpart($this->templateCode, '###HEADER_ADDITIONS###');
@@ -167,7 +167,7 @@ class PageBrowser extends AbstractPlugin {
 	/**
 	 * Produces the page browser HTML
 	 *
-	 * @return	string	Generated content
+	 * @return string Generated content
 	 */
 	protected function createPageBrowser() {
 		$out = '';
@@ -258,9 +258,9 @@ class PageBrowser extends AbstractPlugin {
 	/**
 	 * Generates page link. Keeps all current URL parameters except for cHash and tx_pagebrowse_pi1[page].
 	 *
-	 * @param	int		$page	Page number starting from 1
-	 * @param	int		$pageType	One of PAGE_xxx constants
-	 * @return	string		Generated link
+	 * @param int $page Page number starting from 1
+	 * @param int $pageType One of PAGE_xxx constants
+	 * @return string Generated link
 	 */
 	protected function getPageLink($page, $pageType) {
 		// Prepare query string. We do both urlencoded and non-encoded version
@@ -292,6 +292,7 @@ class PageBrowser extends AbstractPlugin {
 			'additionalParams' => $additionalParams,
 			'useCacheHash' => FALSE,
 		);
+
 		return htmlspecialchars($this->cObj->typoLink_URL($conf));
 	}
 
