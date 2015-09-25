@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 
@@ -90,7 +91,8 @@ class PageBrowser extends tslib_pibase {
 				$params = array(
 					'pObj' => &$this,
 				);
-				t3lib_div::callUserFunction($userFunc, $params, $this);
+				
+				GeneralUtility::callUserFunction($userFunc, $params, $this);
 			}
 		}
 
@@ -100,15 +102,15 @@ class PageBrowser extends tslib_pibase {
 			$this->currentPage = max(0, intval($this->piVars['page']));
 		}
 		else {
-			$parts = t3lib_div::trimExplode('|', $pageParameterName, 2);
+			$parts = GeneralUtility::trimExplode('|', $pageParameterName, 2);
 			if (count($parts) == 2) {
 				$this->pageParameterName = $parts[0] . '[' . $parts[1] . ']';
-				$vars = t3lib_div::_GP($parts[0]);
+				$vars = GeneralUtility::_GP($parts[0]);
 				$this->currentPage = max(0, intval($vars[$parts[1]]));
 			}
 			else {
 				$this->pageParameterName = $pageParameterName;
-				$this->currentPage = max(0, intval(t3lib_div::_GP($pageParameterName)));
+				$this->currentPage = max(0, intval(GeneralUtility::_GP($pageParameterName)));
 			}
 		}
 
@@ -129,7 +131,7 @@ class PageBrowser extends tslib_pibase {
 				$params = array(
 					'pObj' => &$this,
 				);
-				t3lib_div::callUserFunction($userFunc, $params, $this);
+				GeneralUtility::callUserFunction($userFunc, $params, $this);
 			}
 		}
 
@@ -259,7 +261,7 @@ class PageBrowser extends tslib_pibase {
 							'page' => $i,
 							'pObj' => &$this
 						);
-						t3lib_div::callUserFunction($userFunc, $params, $this);
+						GeneralUtility::callUserFunction($userFunc, $params, $this);
 					}
 				}
 				$pageLinks .= $this->cObj->substituteMarkerArray($template, $localMarkers);
@@ -287,7 +289,7 @@ class PageBrowser extends tslib_pibase {
 						'pObj' => &$this,
 						'subparts' => &$subPartMarkers
 					);
-					t3lib_div::callUserFunction($userFunc, $params, $this);
+					GeneralUtility::callUserFunction($userFunc, $params, $this);
 				}
 			}
 
@@ -341,7 +343,7 @@ class PageBrowser extends tslib_pibase {
 					'pageType' => $pageType,
 					'pageNumber' => $page,
 				);
-				$additionalParams = t3lib_div::callUserFunction($userFunc, $params, $this);
+				$additionalParams = GeneralUtility::callUserFunction($userFunc, $params, $this);
 			}
 		}
 		// Assemble typolink configuration
