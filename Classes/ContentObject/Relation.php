@@ -264,6 +264,13 @@ class Relation {
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
+        // Remove the first option of foreignLabelField for recursion
+        if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
+            $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
+            unset($foreignTableLabelFieldArr[0]);
+            $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
+        }
+
 		$relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
 		$relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
 
@@ -278,11 +285,30 @@ class Relation {
 					. $whereClause
 			);
 			foreach ($relatedRecords as $record) {
-				if ($GLOBALS['TSFE']->sys_language_uid > 0) {
-					$record = $this->getTranslationOverlay($foreignTableName, $record);
-				}
-				$relatedItems[] = $record[$foreignTableLabelField];
+                if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])  && $this->configuration['enableRecursiveValueResolution']) {
+                    if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
+                        $foreignLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
+                        unset($foreignLabelFieldArr[0]);
+                        $this->configuration['foreignLabelField'] = implode('.', $foreignLabelFieldArr);
+                    }
+
+                    $this->configuration['localField'] = $foreignTableLabelField;
+
+                    $contentObject = t3lib_div::makeInstance('\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
+                    $contentObject->start($record, $foreignTableName);
+
+                    return $this->getRelatedItems($contentObject);
+                }
+                else {
+                    if ($GLOBALS['TSFE']->sys_language_uid > 0) {
+                        $record = $this->getTranslationOverlay($foreignTableName, $record);
+                    }
+                    $relatedItems[] = $record[$foreignTableLabelField];
+                }
 			}
+            if (!empty($this->configuration['removeDuplicateValues'])) {
+                $relatedItems = array_unique($relatedItems);
+            }
 		}
 
 		return $relatedItems;
