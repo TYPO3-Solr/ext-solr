@@ -245,7 +245,7 @@ class ResultsCommand implements PluginCommand {
 	 * @return string
 	 */
 	protected function getPageBrowser($numberOfResults) {
-		$pageBrowser = '';
+		$pageBrowserMarkup = '';
 
 		$solrPageBrowserConfiguration = array();
 		if (isset($this->configuration['search.']['results.']['pagebrowser.'])) {
@@ -274,15 +274,15 @@ class ResultsCommand implements PluginCommand {
 				)
 			);
 
-			// Get page browser
-			$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-			$cObj->start(array(), '');
+			$pageBrowser = GeneralUtility::makeInstance(
+				'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\PageBrowser',
+				$pageBrowserConfiguration
+			);
 
-			$cObjectType = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1'];
-			$pageBrowser = $cObj->cObjGetSingle($cObjectType, $pageBrowserConfiguration);
+			$pageBrowserMarkup = $pageBrowser->render();
 		}
 
-		return $pageBrowser;
+		return $pageBrowserMarkup;
 	}
 
 	/**
