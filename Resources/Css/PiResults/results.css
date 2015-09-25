@@ -50,13 +50,33 @@
 	margin-left: 5px;
 }
 
-#tx-solr-pagination .tx-pagebrowse-pi1 {
+#tx-solr-pagination-page-browser {
 	float: right;
 }
 
-#tx-solr-search #tx-solr-pagination ul.tx-pagebrowse {
-	margin-top: 0;
+#tx-solr-pagination-page-browser ul {
 	padding-top: 2px;
+	margin-top: 10px;
+	text-align: center;
+	list-style: none inside none;
+	width: 100%;
+}
+
+#tx-solr-pagination-page-browser li {
+	display: inline;
+	list-style: none;
+	margin: 0;
+	padding: 0 5px 0 0
+}
+
+#tx-solr-pagination-page-browser .pages {
+	width: 80%
+}
+
+#tx-solr-pagination-page-browser .pages ol {
+	display: inline;
+	margin: 0;
+	padding: 0 10px
 }
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -135,10 +155,6 @@
 
 #tx-solr-search .tx-solr-search-word {
 	font-weight: bold;
-}
-
-#tx-solr-search .tx-pagebrowse {
-	margin-top: 10px;
 }
 
 #tx-solr-search .results-list {
