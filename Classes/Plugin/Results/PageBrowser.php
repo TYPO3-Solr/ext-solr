@@ -198,14 +198,14 @@ class PageBrowser {
 	}
 
 	/**
-	 * Generates page link. Keeps all current URL parameters except for cHash and tx_pagebrowse_pi1[page].
+	 * Generates page link. Keeps all current URL parameters except for cHash and page parameter.
 	 *
 	 * @param int $page Page number starting from 1
 	 * @return string Generated link
 	 */
 	protected function getPageLink($page) {
 		// Prepare query string. We do both urlencoded and non-encoded version
-		// because older TYPO3 versions use unencoded parameter names
+		// because older TYPO3 versions use un-encoded parameter names
 		$queryConf = array(
 			'exclude' => $this->pageParameterName . ',' .
 				rawurlencode($this->pageParameterName) .
