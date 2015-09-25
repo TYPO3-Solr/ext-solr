@@ -28,6 +28,9 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\MathUtility;
+
+
 /**
  * This class implements page browser plugin
  *
@@ -109,10 +112,10 @@ class PageBrowser extends tslib_pibase {
 			}
 		}
 
-		if (self::testInt($this->conf['pagesBefore'])) {
+		if (MathUtility::canBeInterpretedAsInteger($this->conf['pagesBefore'])) {
 			$this->pagesBefore = intval($this->conf['pagesBefore']);
 		}
-		if (self::testInt($this->conf['pagesAfter'])) {
+		if (MathUtility::canBeInterpretedAsInteger($this->conf['pagesAfter'])) {
 			$this->pagesAfter = intval($this->conf['pagesAfter']);
 		}
 
@@ -350,20 +353,4 @@ class PageBrowser extends tslib_pibase {
 		return htmlspecialchars($this->cObj->typoLink_URL($conf));
 	}
 
-	/**
-	 * Tests if the value can be interpreted as integer.
-	 *
-	 * @param mixed $value
-	 * @return bool
-	 */
-	static protected function testInt($value) {
-		if (class_exists('\\TYPO3\\CMS\\Core\\Utility\\MathUtility')) {
-			$result = \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($value);
-		} elseif (class_exists('t3lib_utility_Math')) {
-			$result = t3lib_utility_Math::canBeInterpretedAsInteger($value);
-		} else {
-			$result = t3lib_div::testInt($value);
-		}
-		return $result;
-	}
 }
