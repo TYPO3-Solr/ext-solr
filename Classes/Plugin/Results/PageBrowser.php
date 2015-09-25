@@ -153,6 +153,8 @@ class PageBrowser {
 
 			// Compile all together
 			$out = $this->contentObject->substituteMarkerArrayCached($subPart, $markers, $subPartMarkers);
+			// Remove all comments
+			$out = preg_replace('/<!--\s*###.*?-->/', ' ', $out);
 		}
 
 		return $out;
