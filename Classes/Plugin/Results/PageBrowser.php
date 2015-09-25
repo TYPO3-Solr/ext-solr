@@ -138,10 +138,10 @@ class PageBrowser {
 		if ($this->numberOfPages > 1) {
 			// Set up
 			$markers = array(
-				'###TEXT_FIRST###' => htmlspecialchars($this->pi_getLL('text_first')),
-				'###TEXT_NEXT###'  => htmlspecialchars($this->pi_getLL('text_next')),
-				'###TEXT_PREV###'  => htmlspecialchars($this->pi_getLL('text_prev')),
-				'###TEXT_LAST###'  => htmlspecialchars($this->pi_getLL('text_last')),
+				'###TEXT_FIRST###' => htmlspecialchars($this->pi_getLL('pagebrowser_first')),
+				'###TEXT_NEXT###'  => htmlspecialchars($this->pi_getLL('pagebrowser_next')),
+				'###TEXT_PREV###'  => htmlspecialchars($this->pi_getLL('pagebrowser_prev')),
+				'###TEXT_LAST###'  => htmlspecialchars($this->pi_getLL('pagebrowser_last')),
 			);
 			$subPartMarkers = array();
 			$subPart = $this->contentObject->getSubpart($this->templateCode, '###PAGE_BROWSER###');

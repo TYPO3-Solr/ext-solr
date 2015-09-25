@@ -166,13 +166,6 @@ plugin.tx_solr {
 
 				enableMorePages = 1
 				enableLessPages = 1
-
-				_LOCAL_LANG.default {
-					text_first = First
-					text_prev = Previous
-					text_next = Next
-					text_last = Last
-				}
 			}
 
 			// fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)
