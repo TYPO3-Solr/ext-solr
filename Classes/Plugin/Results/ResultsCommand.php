@@ -276,13 +276,35 @@ class ResultsCommand implements PluginCommand {
 
 			$pageBrowser = GeneralUtility::makeInstance(
 				'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\PageBrowser',
-				$pageBrowserConfiguration
+				$pageBrowserConfiguration,
+				$this->getPageBrowserLabels()
 			);
 
 			$pageBrowserMarkup = $pageBrowser->render();
 		}
 
 		return $pageBrowserMarkup;
+	}
+
+	/**
+	 * Gets the labels for us in the page browser
+	 *
+	 * @return array page browser labels
+	 */
+	protected function getPageBrowserLabels() {
+		$labelKeys = array(
+			'pagebrowser_first',
+			'pagebrowser_next',
+			'pagebrowser_prev',
+			'pagebrowser_last'
+		);
+
+		$labels = array();
+		foreach ($labelKeys as $labelKey) {
+			$labels[$labelKey] = $this->parentPlugin->pi_getLL($labelKey);
+		}
+
+		return $labels;
 	}
 
 	/**
