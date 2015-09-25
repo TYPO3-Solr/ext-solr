@@ -47,7 +47,7 @@ class PageBrowser extends \tslib_pibase {
 	public $pi_USER_INT_obj = false;
 
 	protected $numberOfPages;
-	protected $pageParameterName;
+	protected $pageParameterName = '[page]';
 	protected $currentPage;
 	protected $pagesBefore = 3;
 	protected $pagesAfter = 3;
@@ -113,22 +113,7 @@ class PageBrowser extends \tslib_pibase {
 		}
 
 		$this->numberOfPages = intval($this->cObj->stdWrap($this->configuration['numberOfPages'], $this->configuration['numberOfPages.']));
-		if (!($pageParameterName = trim($this->configuration['pageParameterName']))) {
-			$this->pageParameterName = $this->prefixId . '[page]';
-			$this->currentPage = max(0, intval($this->piVars['page']));
-		}
-		else {
-			$parts = GeneralUtility::trimExplode('|', $pageParameterName, 2);
-			if (count($parts) == 2) {
-				$this->pageParameterName = $parts[0] . '[' . $parts[1] . ']';
-				$vars = GeneralUtility::_GP($parts[0]);
-				$this->currentPage = max(0, intval($vars[$parts[1]]));
-			}
-			else {
-				$this->pageParameterName = $pageParameterName;
-				$this->currentPage = max(0, intval(GeneralUtility::_GP($pageParameterName)));
-			}
-		}
+		$this->currentPage = max(0, intval($this->piVars['page']));
 
 		if (MathUtility::canBeInterpretedAsInteger($this->configuration['pagesBefore'])) {
 			$this->pagesBefore = intval($this->configuration['pagesBefore']);
