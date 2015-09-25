@@ -52,14 +52,6 @@ class PageBrowser {
 	protected $pagesBefore = 3;
 	protected $pagesAfter = 3;
 
-	const PAGE_FIRST = 0;
-	const PAGE_PREV = 1;
-	const PAGE_BEFORE = 2;
-	const PAGE_CURRENT = 3;
-	const PAGE_AFTER = 4;
-	const PAGE_NEXT = 5;
-	const PAGE_LAST = 6;
-
 	protected $templateCode;
 
 	protected $configuration = array();
@@ -149,7 +141,7 @@ class PageBrowser {
 			if ($this->currentPage == 0) {
 				$subPartMarkers['###ACTIVE_FIRST###'] = '';
 			} else {
-				$markers['###FIRST_LINK###'] = $this->getPageLink(0, self::PAGE_FIRST);
+				$markers['###FIRST_LINK###'] = $this->getPageLink(0);
 				$subPartMarkers['###INACTIVE_FIRST###'] = '';
 			}
 
@@ -157,7 +149,7 @@ class PageBrowser {
 			if ($this->currentPage == 0) {
 				$subPartMarkers['###ACTIVE_PREV###'] = '';
 			} else {
-				$markers['###PREV_LINK###'] = $this->getPageLink($this->currentPage - 1, self::PAGE_PREV);
+				$markers['###PREV_LINK###'] = $this->getPageLink($this->currentPage - 1);
 				$subPartMarkers['###INACTIVE_PREV###'] = '';
 			}
 
@@ -165,7 +157,7 @@ class PageBrowser {
 			if ($this->currentPage >= $this->numberOfPages - 1) {
 				$subPartMarkers['###ACTIVE_NEXT###'] = '';
 			} else {
-				$markers['###NEXT_LINK###'] = $this->getPageLink($this->currentPage + 1, self::PAGE_NEXT);
+				$markers['###NEXT_LINK###'] = $this->getPageLink($this->currentPage + 1);
 				$subPartMarkers['###INACTIVE_NEXT###'] = '';
 			}
 
@@ -173,7 +165,7 @@ class PageBrowser {
 			if ($this->currentPage == $this->numberOfPages - 1) {
 				$subPartMarkers['###ACTIVE_LAST###'] = '';
 			} else {
-				$markers['###LAST_LINK###'] = $this->getPageLink($this->numberOfPages - 1, self::PAGE_LAST);
+				$markers['###LAST_LINK###'] = $this->getPageLink($this->numberOfPages - 1);
 				$subPartMarkers['###INACTIVE_LAST###'] = '';
 			}
 
@@ -186,12 +178,10 @@ class PageBrowser {
 
 			for ($i = $start; $i < $end; $i++) {
 				$template = ($i == $this->currentPage ? $actPageLinkSubPart : $inactivePageLinkSubPart);
-				$pageType = ($i < $this->currentPage ? self::PAGE_BEFORE :
-					($i > $this->currentPage ? self::PAGE_AFTER : self::PAGE_CURRENT));
 				$localMarkers = array(
 					'###NUMBER###'         => $i,
 					'###NUMBER_DISPLAY###' => $i + 1,
-					'###LINK###'           => $this->getPageLink($i, $pageType),
+					'###LINK###'           => $this->getPageLink($i),
 				);
 				$pageLinks .= $this->contentObject->substituteMarkerArray($template, $localMarkers);
 			}
@@ -220,10 +210,9 @@ class PageBrowser {
 	 * Generates page link. Keeps all current URL parameters except for cHash and tx_pagebrowse_pi1[page].
 	 *
 	 * @param int $page Page number starting from 1
-	 * @param int $pageType One of PAGE_xxx constants
 	 * @return string Generated link
 	 */
-	protected function getPageLink($page, $pageType) {
+	protected function getPageLink($page) {
 		// Prepare query string. We do both urlencoded and non-encoded version
 		// because older TYPO3 versions use unencoded parameter names
 		$queryConf = array(
