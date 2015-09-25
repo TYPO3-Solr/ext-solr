@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 
 /**
@@ -37,14 +36,6 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  *
  */
 class PageBrowser {
-	// Default plugin variables:
-	public $prefixId = 'tx_solr';
-	public $scriptRelPath = 'pi1/class.tx_pagebrowse_pi1.php';
-	public $extKey = 'solr';
-
-	// Required for proper caching! See in the typo3/sysext/cms/tslib/class.tslib_pibase.php
-	public $pi_checkCHash = true;
-	public $pi_USER_INT_obj = false;
 
 	protected $numberOfPages;
 	protected $pageParameterName = '[page]';
