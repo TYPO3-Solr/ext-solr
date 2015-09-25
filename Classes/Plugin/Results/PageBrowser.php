@@ -143,7 +143,7 @@ class PageBrowser extends AbstractPlugin {
 	 *
 	 * @return string Generated content
 	 */
-	protected function createPageBrowser() {
+	protected function render() {
 		$out = '';
 		if ($this->numberOfPages > 1) {
 			// Set up
