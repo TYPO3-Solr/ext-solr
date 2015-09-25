@@ -263,7 +263,6 @@ class ResultsCommand implements PluginCommand {
 			}
 			unset($solrGetParameters['page']);
 			$pageBrowserConfiguration = array_merge(
-				$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1.'],
 				$solrPageBrowserConfiguration,
 				array(
 					'pageParameterName' => 'tx_solr|page',
