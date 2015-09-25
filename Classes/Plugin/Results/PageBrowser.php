@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 
@@ -35,7 +36,7 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  * This class implements page browser plugin
  *
  */
-class PageBrowser extends AbstractPlugin {
+class PageBrowser {
 	// Default plugin variables:
 	public $prefixId = 'tx_solr';
 	public $scriptRelPath = 'pi1/class.tx_pagebrowse_pi1.php';
@@ -62,6 +63,8 @@ class PageBrowser extends AbstractPlugin {
 	protected $templateCode;
 
 	protected $configuration = array();
+	protected $contentObject = null;
+
 
 	/**
 	 * PageBrowser constructor.
@@ -70,6 +73,8 @@ class PageBrowser extends AbstractPlugin {
 	 */
 	public function __construct(array $configuration) {
 		$this->configuration = $configuration;
+
+		$this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		//FIXME $this->loadLabels();
 		$this->pi_loadLL();
@@ -83,7 +88,7 @@ class PageBrowser extends AbstractPlugin {
 		$this->adjustForForcedNumberOfLinks();
 
 		// FIXME remove cObj
-		$this->templateCode = $this->cObj->fileResource($configuration['templateFile']);
+		$this->templateCode = $this->contentObject->fileResource($configuration['templateFile']);
 	}
 
 	/**
@@ -94,7 +99,7 @@ class PageBrowser extends AbstractPlugin {
 	 */
 	protected function adjustForForcedNumberOfLinks() {
 		$forcedNumberOfLinks = intval(
-			$this->cObj->stdWrap($this->configuration['numberOfLinks'],
+			$this->contentObject->stdWrap($this->configuration['numberOfLinks'],
 			$this->configuration['numberOfLinks.'])
 		);
 
@@ -139,7 +144,7 @@ class PageBrowser extends AbstractPlugin {
 				'###TEXT_LAST###'  => htmlspecialchars($this->pi_getLL('text_last')),
 			);
 			$subPartMarkers = array();
-			$subPart = $this->cObj->getSubpart($this->templateCode, '###PAGE_BROWSER###');
+			$subPart = $this->contentObject->getSubpart($this->templateCode, '###PAGE_BROWSER###');
 
 			// First page link
 			if ($this->currentPage == 0) {
@@ -174,8 +179,8 @@ class PageBrowser extends AbstractPlugin {
 			}
 
 			// Page links
-			$actPageLinkSubPart      = trim($this->cObj->getSubpart($subPart, '###CURRENT###'));
-			$inactivePageLinkSubPart = trim($this->cObj->getSubpart($subPart, '###PAGE###'));
+			$actPageLinkSubPart      = trim($this->contentObject->getSubpart($subPart, '###CURRENT###'));
+			$inactivePageLinkSubPart = trim($this->contentObject->getSubpart($subPart, '###PAGE###'));
 			$pageLinks = '';
 			$start = max($this->currentPage - $this->pagesBefore, 0);
 			$end   = min($this->numberOfPages, $this->currentPage + $this->pagesAfter + 1);
@@ -189,7 +194,7 @@ class PageBrowser extends AbstractPlugin {
 					'###NUMBER_DISPLAY###' => $i + 1,
 					'###LINK###' => $this->getPageLink($i, $pageType),
 				);
-				$pageLinks .= $this->cObj->substituteMarkerArray($template, $localMarkers);
+				$pageLinks .= $this->contentObject->substituteMarkerArray($template, $localMarkers);
 			}
 			$subPartMarkers['###PAGE###'] = $pageLinks;
 			$subPartMarkers['###CURRENT###'] = '';
@@ -206,7 +211,7 @@ class PageBrowser extends AbstractPlugin {
 			}
 
 			// Compile all together
-			$out = $this->cObj->substituteMarkerArrayCached($subPart, $markers, $subPartMarkers);
+			$out = $this->contentObject->substituteMarkerArrayCached($subPart, $markers, $subPartMarkers);
 		}
 
 		return $out;
@@ -227,7 +232,7 @@ class PageBrowser extends AbstractPlugin {
 				rawurlencode($this->pageParameterName) .
 				',cHash',
 		);
-		$additionalParams = urldecode($this->cObj->getQueryArguments($queryConf));
+		$additionalParams = urldecode($this->contentObject->getQueryArguments($queryConf));
 
 		// Add page number
 		if ($page > 0) {
@@ -237,7 +242,7 @@ class PageBrowser extends AbstractPlugin {
 		// Add extra query string from config
 		$extraQueryString = trim($this->configuration['extraQueryString']);
 		if (is_array($this->configuration['extraQueryString.'])) {
-			$extraQueryString = $this->cObj->stdWrap($extraQueryString, $this->configuration['extraQueryString.']);
+			$extraQueryString = $this->contentObject->stdWrap($extraQueryString, $this->configuration['extraQueryString.']);
 		}
 
 		if (strlen($extraQueryString) > 2 && $extraQueryString{0} == '&') {
@@ -251,7 +256,7 @@ class PageBrowser extends AbstractPlugin {
 			'useCacheHash'     => FALSE,
 		);
 
-		return htmlspecialchars($this->cObj->typoLink_URL($conf));
+		return htmlspecialchars($this->contentObject->typoLink_URL($conf));
 	}
 
 }
