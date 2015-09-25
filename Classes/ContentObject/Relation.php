@@ -264,12 +264,12 @@ class Relation {
 
 		$foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-        // Remove the first option of foreignLabelField for recursion
-        if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
-            $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
-            unset($foreignTableLabelFieldArr[0]);
-            $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
-        }
+		// Remove the first option of foreignLabelField for recursion
+		if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
+			$foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
+			unset($foreignTableLabelFieldArr[0]);
+			$this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
+		}
 
 		$relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
 		$relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
@@ -277,38 +277,41 @@ class Relation {
 		$selectUids = $relationHandler->tableArray[$foreignTableName];
 		if (is_array($selectUids) && count($selectUids) > 0) {
 			$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-			$whereClause = $pageSelector->enableFields( $foreignTableName );
+			$whereClause = $pageSelector->enableFields($foreignTableName);
 			$relatedRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'uid, pid, ' .$foreignTableLabelField,
 				$foreignTableName,
 				'uid IN (' . implode(',', $selectUids) . ')'
 					. $whereClause
 			);
+
 			foreach ($relatedRecords as $record) {
-                if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])  && $this->configuration['enableRecursiveValueResolution']) {
-                    if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
-                        $foreignLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
-                        unset($foreignLabelFieldArr[0]);
-                        $this->configuration['foreignLabelField'] = implode('.', $foreignLabelFieldArr);
-                    }
+				if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
+					&& $this->configuration['enableRecursiveValueResolution']
+				) {
+					if (strpos($this->configuration['foreignLabelField'], '.') !== FALSE) {
+						$foreignLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
+						unset($foreignLabelFieldArr[0]);
+						$this->configuration['foreignLabelField'] = implode('.', $foreignLabelFieldArr);
+					}
 
-                    $this->configuration['localField'] = $foreignTableLabelField;
+					$this->configuration['localField'] = $foreignTableLabelField;
 
-                    $contentObject = t3lib_div::makeInstance('\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
-                    $contentObject->start($record, $foreignTableName);
+					$contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+					$contentObject->start($record, $foreignTableName);
 
-                    return $this->getRelatedItems($contentObject);
-                }
-                else {
-                    if ($GLOBALS['TSFE']->sys_language_uid > 0) {
-                        $record = $this->getTranslationOverlay($foreignTableName, $record);
-                    }
-                    $relatedItems[] = $record[$foreignTableLabelField];
-                }
+					return $this->getRelatedItems($contentObject);
+				} else {
+					if ($GLOBALS['TSFE']->sys_language_uid > 0) {
+						$record = $this->getTranslationOverlay($foreignTableName, $record);
+					}
+					$relatedItems[] = $record[$foreignTableLabelField];
+				}
 			}
-            if (!empty($this->configuration['removeDuplicateValues'])) {
-                $relatedItems = array_unique($relatedItems);
-            }
+
+			if (!empty($this->configuration['removeDuplicateValues'])) {
+				$relatedItems = array_unique($relatedItems);
+			}
 		}
 
 		return $relatedItems;
