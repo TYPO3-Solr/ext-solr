@@ -95,27 +95,32 @@ class PageBrowser extends AbstractPlugin {
 	 * @return void
 	 */
 	protected function adjustForForcedNumberOfLinks() {
-		$forcedNumberOfLinks = intval($this->cObj->stdWrap($this->configuration['numberOfLinks'], $this->configuration['numberOfLinks.']));
+		$forcedNumberOfLinks = intval(
+			$this->cObj->stdWrap($this->configuration['numberOfLinks'],
+			$this->configuration['numberOfLinks.'])
+		);
+
 		if ($forcedNumberOfLinks > $this->numberOfPages) {
 			$forcedNumberOfLinks = $this->numberOfPages;
 		}
+
 		$totalNumberOfLinks = min($this->currentPage, $this->pagesBefore) +
 				min($this->pagesAfter, $this->numberOfPages - $this->currentPage) + 1;
+
 		if ($totalNumberOfLinks <= $forcedNumberOfLinks) {
 			$delta = intval(ceil(($forcedNumberOfLinks - $totalNumberOfLinks)/2));
-			$incr = ($forcedNumberOfLinks & 1) == 0 ? 1 : 0;
+			$increment = ($forcedNumberOfLinks & 1) == 0 ? 1 : 0;
+
 			if ($this->currentPage - ($this->pagesBefore + $delta) < 1) {
 				// Too little from the right to adjust
 				$this->pagesAfter = $forcedNumberOfLinks - $this->currentPage - 1;
 				$this->pagesBefore = $forcedNumberOfLinks - $this->pagesAfter - 1;
-			}
-			elseif ($this->currentPage + ($this->pagesAfter + $delta) >= $this->numberOfPages) {
+			} else if ($this->currentPage + ($this->pagesAfter + $delta) >= $this->numberOfPages) {
 				$this->pagesBefore = $forcedNumberOfLinks - ($this->numberOfPages - $this->currentPage);
 				$this->pagesAfter = $forcedNumberOfLinks - $this->pagesBefore - 1;
-			}
-			else {
+			} else {
 				$this->pagesBefore += $delta;
-				$this->pagesAfter += $delta - $incr;
+				$this->pagesAfter += $delta - $increment;
 			}
 		}
 	}
@@ -129,6 +134,7 @@ class PageBrowser extends AbstractPlugin {
 	protected function addHeaderParts() {
 		$subPart = $this->cObj->getSubpart($this->templateCode, '###HEADER_ADDITIONS###');
 		$key = $this->prefixId . '_' . md5($subPart);
+
 		if (!isset($GLOBALS['TSFE']->additionalHeaderData[$key])) {
 			$GLOBALS['TSFE']->additionalHeaderData[$key] =
 				$this->cObj->substituteMarkerArray($subPart, array(
@@ -149,9 +155,9 @@ class PageBrowser extends AbstractPlugin {
 			// Set up
 			$markers = array(
 				'###TEXT_FIRST###' => htmlspecialchars($this->pi_getLL('text_first')),
-				'###TEXT_NEXT###' => htmlspecialchars($this->pi_getLL('text_next')),
-				'###TEXT_PREV###' => htmlspecialchars($this->pi_getLL('text_prev')),
-				'###TEXT_LAST###' => htmlspecialchars($this->pi_getLL('text_last')),
+				'###TEXT_NEXT###'  => htmlspecialchars($this->pi_getLL('text_next')),
+				'###TEXT_PREV###'  => htmlspecialchars($this->pi_getLL('text_prev')),
+				'###TEXT_LAST###'  => htmlspecialchars($this->pi_getLL('text_last')),
 			);
 			$subPartMarkers = array();
 			$subPart = $this->cObj->getSubpart($this->templateCode, '###PAGE_BROWSER###');
@@ -159,44 +165,44 @@ class PageBrowser extends AbstractPlugin {
 			// First page link
 			if ($this->currentPage == 0) {
 				$subPartMarkers['###ACTIVE_FIRST###'] = '';
-			}
-			else {
+			} else {
 				$markers['###FIRST_LINK###'] = $this->getPageLink(0, self::PAGE_FIRST);
 				$subPartMarkers['###INACTIVE_FIRST###'] = '';
 			}
+
 			// Prev page link
 			if ($this->currentPage == 0) {
 				$subPartMarkers['###ACTIVE_PREV###'] = '';
-			}
-			else {
+			} else {
 				$markers['###PREV_LINK###'] = $this->getPageLink($this->currentPage - 1, self::PAGE_PREV);
 				$subPartMarkers['###INACTIVE_PREV###'] = '';
 			}
+
 			// Next link
 			if ($this->currentPage >= $this->numberOfPages - 1) {
 				$subPartMarkers['###ACTIVE_NEXT###'] = '';
-			}
-			else {
+			} else {
 				$markers['###NEXT_LINK###'] = $this->getPageLink($this->currentPage + 1, self::PAGE_NEXT);
 				$subPartMarkers['###INACTIVE_NEXT###'] = '';
 			}
+
 			// Last link
 			if ($this->currentPage == $this->numberOfPages - 1) {
 				$subPartMarkers['###ACTIVE_LAST###'] = '';
-			}
-			else {
+			} else {
 				$markers['###LAST_LINK###'] = $this->getPageLink($this->numberOfPages - 1, self::PAGE_LAST);
 				$subPartMarkers['###INACTIVE_LAST###'] = '';
 			}
 
 			// Page links
-			$actPageLinkSubPart = trim($this->cObj->getSubpart($subPart, '###CURRENT###'));
-			$inactPageLinkSubPart = trim($this->cObj->getSubpart($subPart, '###PAGE###'));
+			$actPageLinkSubPart      = trim($this->cObj->getSubpart($subPart, '###CURRENT###'));
+			$inactivePageLinkSubPart = trim($this->cObj->getSubpart($subPart, '###PAGE###'));
 			$pageLinks = '';
 			$start = max($this->currentPage - $this->pagesBefore, 0);
-			$end = min($this->numberOfPages, $this->currentPage + $this->pagesAfter + 1);
+			$end   = min($this->numberOfPages, $this->currentPage + $this->pagesAfter + 1);
+
 			for ($i = $start; $i < $end; $i++) {
-				$template = ($i == $this->currentPage ? $actPageLinkSubPart : $inactPageLinkSubPart);
+				$template = ($i == $this->currentPage ? $actPageLinkSubPart : $inactivePageLinkSubPart);
 				$pageType = ($i < $this->currentPage ? self::PAGE_BEFORE :
 					($i > $this->currentPage ? self::PAGE_AFTER : self::PAGE_CURRENT));
 				$localMarkers = array(
@@ -213,6 +219,7 @@ class PageBrowser extends AbstractPlugin {
 			if ($start == 0 || !$this->configuration['enableLessPages']) {
 				$subPartMarkers['###LESS_PAGES###'] = '';
 			}
+
 			// More pages part
 			if ($end == $this->numberOfPages || !$this->configuration['enableMorePages']) {
 				// We have all pages covered. Remove this part.
@@ -226,6 +233,7 @@ class PageBrowser extends AbstractPlugin {
 			// Remove excessive spacing
 			$out = preg_replace('/\s{2,}/', ' ', $out);
 		}
+
 		return $out;
 	}
 
@@ -256,15 +264,16 @@ class PageBrowser extends AbstractPlugin {
 		if (is_array($this->configuration['extraQueryString.'])) {
 			$extraQueryString = $this->cObj->stdWrap($extraQueryString, $this->configuration['extraQueryString.']);
 		}
+
 		if (strlen($extraQueryString) > 2 && $extraQueryString{0} == '&') {
 			$additionalParams .= $extraQueryString;
 		}
 
 		// Assemble typolink configuration
 		$conf = array(
-			'parameter' => $GLOBALS['TSFE']->id,
+			'parameter'        => $GLOBALS['TSFE']->id,
 			'additionalParams' => $additionalParams,
-			'useCacheHash' => FALSE,
+			'useCacheHash'     => FALSE,
 		);
 
 		return htmlspecialchars($this->cObj->typoLink_URL($conf));
