@@ -63,6 +63,7 @@ class PageBrowser {
 	protected $templateCode;
 
 	protected $configuration = array();
+	protected $labels = array();
 	protected $contentObject = null;
 
 
@@ -70,14 +71,13 @@ class PageBrowser {
 	 * PageBrowser constructor.
 	 *
 	 * @param array $configuration
+	 * @param array $labels
 	 */
-	public function __construct(array $configuration) {
+	public function __construct(array $configuration, array $labels) {
 		$this->configuration = $configuration;
+		$this->labels        = $labels;
 
 		$this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-
-		//FIXME $this->loadLabels();
-		$this->pi_loadLL();
 
 		$this->numberOfPages = $configuration['numberOfPages'];
 		$this->currentPage = $configuration['currentPage'];
@@ -138,10 +138,10 @@ class PageBrowser {
 		if ($this->numberOfPages > 1) {
 			// Set up
 			$markers = array(
-				'###TEXT_FIRST###' => htmlspecialchars($this->pi_getLL('pagebrowser_first')),
-				'###TEXT_NEXT###'  => htmlspecialchars($this->pi_getLL('pagebrowser_next')),
-				'###TEXT_PREV###'  => htmlspecialchars($this->pi_getLL('pagebrowser_prev')),
-				'###TEXT_LAST###'  => htmlspecialchars($this->pi_getLL('pagebrowser_last')),
+				'###TEXT_FIRST###' => htmlspecialchars($this->labels['pagebrowser_first']),
+				'###TEXT_NEXT###'  => htmlspecialchars($this->labels['pagebrowser_next']),
+				'###TEXT_PREV###'  => htmlspecialchars($this->labels['pagebrowser_prev']),
+				'###TEXT_LAST###'  => htmlspecialchars($this->labels['pagebrowser_last']),
 			);
 			$subPartMarkers = array();
 			$subPart = $this->contentObject->getSubpart($this->templateCode, '###PAGE_BROWSER###');
