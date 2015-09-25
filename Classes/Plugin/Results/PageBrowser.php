@@ -100,17 +100,6 @@ class PageBrowser extends \tslib_pibase {
 	 * @return	void
 	 */
 	function init() {
-		// Call pre-init hook
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['preInit'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['preInit'] as $userFunc) {
-				$params = array(
-					'pObj' => &$this,
-				);
-				
-				GeneralUtility::callUserFunction($userFunc, $params, $this);
-			}
-		}
-
 		$this->numberOfPages = intval($this->cObj->stdWrap($this->configuration['numberOfPages'], $this->configuration['numberOfPages.']));
 		$this->currentPage = max(0, intval($this->piVars['page']));
 
@@ -120,16 +109,6 @@ class PageBrowser extends \tslib_pibase {
 		$this->adjustForForcedNumberOfLinks();
 
 		$this->templateCode = $this->cObj->fileResource($this->configuration['templateFile']);
-
-		// Call post-init hook
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['postInit'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['postInit'] as $userFunc) {
-				$params = array(
-					'pObj' => &$this,
-				);
-				GeneralUtility::callUserFunction($userFunc, $params, $this);
-			}
-		}
 
 		$this->addHeaderParts();
 	}
@@ -250,16 +229,6 @@ class PageBrowser extends \tslib_pibase {
 					'###NUMBER_DISPLAY###' => $i + 1,
 					'###LINK###' => $this->getPageLink($i, $pageType),
 				);
-				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['pageLinkMarkers'])) {
-					foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['pageLinkMarkers'] as $userFunc) {
-						$params = array(
-							'markers' => &$localMarkers,
-							'page' => $i,
-							'pObj' => &$this
-						);
-						GeneralUtility::callUserFunction($userFunc, $params, $this);
-					}
-				}
 				$pageLinks .= $this->cObj->substituteMarkerArray($template, $localMarkers);
 			}
 			$subPartMarkers['###PAGE###'] = $pageLinks;
@@ -273,20 +242,6 @@ class PageBrowser extends \tslib_pibase {
 			if ($end == $this->numberOfPages || !$this->configuration['enableMorePages']) {
 				// We have all pages covered. Remove this part.
 				$subPartMarkers['###MORE_PAGES###'] = '';
-			}
-
-			// Extra markers hook
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['additionalMarkers'])) {
-				foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['additionalMarkers'] as $userFunc) {
-					$params = array(
-						'currentPage' => $this->currentPage,
-						'markers' => &$markers,
-						'numberOfPages' => $this->numberOfPages,
-						'pObj' => &$this,
-						'subparts' => &$subPartMarkers
-					);
-					GeneralUtility::callUserFunction($userFunc, $params, $this);
-				}
 			}
 
 			// Compile all together
@@ -330,18 +285,6 @@ class PageBrowser extends \tslib_pibase {
 			$additionalParams .= $extraQueryString;
 		}
 
-		// Call extra parameter hook
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['additionalParameters'])) {
-			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['additionalParameters'] as $userFunc) {
-				$params = array(
-					'pObj' => &$this,
-					'additionalParameters' => $additionalParams,
-					'pageType' => $pageType,
-					'pageNumber' => $page,
-				);
-				$additionalParams = GeneralUtility::callUserFunction($userFunc, $params, $this);
-			}
-		}
 		// Assemble typolink configuration
 		$conf = array(
 			'parameter' => $GLOBALS['TSFE']->id,
