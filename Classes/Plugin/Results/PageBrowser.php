@@ -80,10 +80,10 @@ class PageBrowser {
 		$this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
 		$this->numberOfPages = $configuration['numberOfPages'];
-		$this->currentPage = $configuration['currentPage'];
+		$this->currentPage   = $configuration['currentPage'];
 
 		$this->pagesBefore = (int)$configuration['pagesBefore'];
-		$this->pagesAfter = (int)$configuration['pagesAfter'];
+		$this->pagesAfter  = (int)$configuration['pagesAfter'];
 
 		$this->adjustForForcedNumberOfLinks();
 
@@ -110,19 +110,19 @@ class PageBrowser {
 				min($this->pagesAfter, $this->numberOfPages - $this->currentPage) + 1;
 
 		if ($totalNumberOfLinks <= $forcedNumberOfLinks) {
-			$delta = intval(ceil(($forcedNumberOfLinks - $totalNumberOfLinks)/2));
+			$delta     = intval(ceil(($forcedNumberOfLinks - $totalNumberOfLinks)/2));
 			$increment = ($forcedNumberOfLinks & 1) == 0 ? 1 : 0;
 
 			if ($this->currentPage - ($this->pagesBefore + $delta) < 1) {
 				// Too little from the right to adjust
-				$this->pagesAfter = $forcedNumberOfLinks - $this->currentPage - 1;
+				$this->pagesAfter  = $forcedNumberOfLinks - $this->currentPage - 1;
 				$this->pagesBefore = $forcedNumberOfLinks - $this->pagesAfter - 1;
 			} else if ($this->currentPage + ($this->pagesAfter + $delta) >= $this->numberOfPages) {
 				$this->pagesBefore = $forcedNumberOfLinks - ($this->numberOfPages - $this->currentPage);
-				$this->pagesAfter = $forcedNumberOfLinks - $this->pagesBefore - 1;
+				$this->pagesAfter  = $forcedNumberOfLinks - $this->pagesBefore - 1;
 			} else {
 				$this->pagesBefore += $delta;
-				$this->pagesAfter += $delta - $increment;
+				$this->pagesAfter  += $delta - $increment;
 			}
 		}
 	}
@@ -189,9 +189,9 @@ class PageBrowser {
 				$pageType = ($i < $this->currentPage ? self::PAGE_BEFORE :
 					($i > $this->currentPage ? self::PAGE_AFTER : self::PAGE_CURRENT));
 				$localMarkers = array(
-					'###NUMBER###' => $i,
+					'###NUMBER###'         => $i,
 					'###NUMBER_DISPLAY###' => $i + 1,
-					'###LINK###' => $this->getPageLink($i, $pageType),
+					'###LINK###'           => $this->getPageLink($i, $pageType),
 				);
 				$pageLinks .= $this->contentObject->substituteMarkerArray($template, $localMarkers);
 			}
