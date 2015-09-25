@@ -87,7 +87,6 @@ class PageBrowser {
 
 		$this->adjustForForcedNumberOfLinks();
 
-		// FIXME remove cObj
 		$this->templateCode = $this->contentObject->fileResource($configuration['templateFile']);
 	}
 
