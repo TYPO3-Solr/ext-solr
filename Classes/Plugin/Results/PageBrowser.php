@@ -60,6 +60,20 @@ class PageBrowser extends tslib_pibase {
 
 	protected $templateCode;
 
+	protected $configuration = array();
+
+	/**
+	 * PageBrowser constructor.
+	 *
+	 * @param array $configuration
+	 */
+	public function __construct(array $configuration) {
+		$this->configuration = $configuration;
+
+		//FIXME $this->loadLabels();
+	}
+
+
 	/**
 	 * Produces plugin's output.
 	 *
@@ -68,7 +82,7 @@ class PageBrowser extends tslib_pibase {
 	 * @return	string	Generated content
 	 */
 	public function main($content, $conf) {
-		$this->conf = $conf;
+		$this->configuration = $conf;
 		$this->pi_loadLL();
 
 		if (!isset($conf['templateFile'])) {
@@ -96,8 +110,8 @@ class PageBrowser extends tslib_pibase {
 			}
 		}
 
-		$this->numberOfPages = intval($this->cObj->stdWrap($this->conf['numberOfPages'], $this->conf['numberOfPages.']));
-		if (!($pageParameterName = trim($this->conf['pageParameterName']))) {
+		$this->numberOfPages = intval($this->cObj->stdWrap($this->configuration['numberOfPages'], $this->configuration['numberOfPages.']));
+		if (!($pageParameterName = trim($this->configuration['pageParameterName']))) {
 			$this->pageParameterName = $this->prefixId . '[page]';
 			$this->currentPage = max(0, intval($this->piVars['page']));
 		}
@@ -114,16 +128,16 @@ class PageBrowser extends tslib_pibase {
 			}
 		}
 
-		if (MathUtility::canBeInterpretedAsInteger($this->conf['pagesBefore'])) {
-			$this->pagesBefore = intval($this->conf['pagesBefore']);
+		if (MathUtility::canBeInterpretedAsInteger($this->configuration['pagesBefore'])) {
+			$this->pagesBefore = intval($this->configuration['pagesBefore']);
 		}
-		if (MathUtility::canBeInterpretedAsInteger($this->conf['pagesAfter'])) {
-			$this->pagesAfter = intval($this->conf['pagesAfter']);
+		if (MathUtility::canBeInterpretedAsInteger($this->configuration['pagesAfter'])) {
+			$this->pagesAfter = intval($this->configuration['pagesAfter']);
 		}
 
 		$this->adjustForForcedNumberOfLinks();
 
-		$this->templateCode = $this->cObj->fileResource($this->conf['templateFile']);
+		$this->templateCode = $this->cObj->fileResource($this->configuration['templateFile']);
 
 		// Call post-init hook
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['postInit'])) {
@@ -145,7 +159,7 @@ class PageBrowser extends tslib_pibase {
 	 * @return void
 	 */
 	protected function adjustForForcedNumberOfLinks() {
-		$forcedNumberOfLinks = intval($this->cObj->stdWrap($this->conf['numberOfLinks'], $this->conf['numberOfLinks.']));
+		$forcedNumberOfLinks = intval($this->cObj->stdWrap($this->configuration['numberOfLinks'], $this->configuration['numberOfLinks.']));
 		if ($forcedNumberOfLinks > $this->numberOfPages) {
 			$forcedNumberOfLinks = $this->numberOfPages;
 		}
@@ -270,11 +284,11 @@ class PageBrowser extends tslib_pibase {
 			$subPartMarkers['###CURRENT###'] = '';
 
 			// Less pages part
-			if ($start == 0 || !$this->conf['enableLessPages']) {
+			if ($start == 0 || !$this->configuration['enableLessPages']) {
 				$subPartMarkers['###LESS_PAGES###'] = '';
 			}
 			// More pages part
-			if ($end == $this->numberOfPages || !$this->conf['enableMorePages']) {
+			if ($end == $this->numberOfPages || !$this->configuration['enableMorePages']) {
 				// We have all pages covered. Remove this part.
 				$subPartMarkers['###MORE_PAGES###'] = '';
 			}
@@ -326,9 +340,9 @@ class PageBrowser extends tslib_pibase {
 		}
 
 		// Add extra query string from config
-		$extraQueryString = trim($this->conf['extraQueryString']);
-		if (is_array($this->conf['extraQueryString.'])) {
-			$extraQueryString = $this->cObj->stdWrap($extraQueryString, $this->conf['extraQueryString.']);
+		$extraQueryString = trim($this->configuration['extraQueryString']);
+		if (is_array($this->configuration['extraQueryString.'])) {
+			$extraQueryString = $this->cObj->stdWrap($extraQueryString, $this->configuration['extraQueryString.']);
 		}
 		if (strlen($extraQueryString) > 2 && $extraQueryString{0} == '&') {
 			$additionalParams .= $extraQueryString;
@@ -350,7 +364,7 @@ class PageBrowser extends tslib_pibase {
 		$conf = array(
 			'parameter' => $GLOBALS['TSFE']->id,
 			'additionalParams' => $additionalParams,
-			'useCacheHash' => (strlen($additionalParams) > 1) && !$this->conf['disableCacheHash'],
+			'useCacheHash' => (strlen($additionalParams) > 1) && !$this->configuration['disableCacheHash'],
 		);
 		return htmlspecialchars($this->cObj->typoLink_URL($conf));
 	}
