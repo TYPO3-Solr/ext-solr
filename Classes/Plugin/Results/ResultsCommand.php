@@ -245,7 +245,7 @@ class ResultsCommand implements PluginCommand {
 	 * @return string
 	 */
 	protected function getPageBrowser($numberOfResults) {
-		$pageBrowser = '';
+		$pageBrowserMarkup = '';
 
 		$solrPageBrowserConfiguration = array();
 		if (isset($this->configuration['search.']['results.']['pagebrowser.'])) {
@@ -261,27 +261,50 @@ class ResultsCommand implements PluginCommand {
 			if (!is_array($solrGetParameters)) {
 				$solrGetParameters = array();
 			}
+			$currentPage = $solrGetParameters['page'];
 			unset($solrGetParameters['page']);
+
 			$pageBrowserConfiguration = array_merge(
-				$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1.'],
 				$solrPageBrowserConfiguration,
 				array(
-					'pageParameterName' => 'tx_solr|page',
-					'numberOfPages'     => $numberOfPages,
-					'extraQueryString'  => GeneralUtility::implodeArrayForUrl('tx_solr', $solrGetParameters),
-					'templateFile'      => $this->configuration['templateFiles.']['pagebrowser']
+					'numberOfPages'    => $numberOfPages,
+					'currentPage'      => $currentPage,
+					'extraQueryString' => GeneralUtility::implodeArrayForUrl('tx_solr', $solrGetParameters),
+					'templateFile'     => $this->configuration['templateFiles.']['pagebrowser']
 				)
 			);
 
-			// Get page browser
-			$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-			$cObj->start(array(), '');
+			$pageBrowser = GeneralUtility::makeInstance(
+				'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\PageBrowser',
+				$pageBrowserConfiguration,
+				$this->getPageBrowserLabels()
+			);
 
-			$cObjectType = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_pagebrowse_pi1'];
-			$pageBrowser = $cObj->cObjGetSingle($cObjectType, $pageBrowserConfiguration);
+			$pageBrowserMarkup = $pageBrowser->render();
 		}
 
-		return $pageBrowser;
+		return $pageBrowserMarkup;
+	}
+
+	/**
+	 * Gets the labels for us in the page browser
+	 *
+	 * @return array page browser labels
+	 */
+	protected function getPageBrowserLabels() {
+		$labelKeys = array(
+			'pagebrowser_first',
+			'pagebrowser_next',
+			'pagebrowser_prev',
+			'pagebrowser_last'
+		);
+
+		$labels = array();
+		foreach ($labelKeys as $labelKey) {
+			$labels[$labelKey] = $this->parentPlugin->pi_getLL($labelKey);
+		}
+
+		return $labels;
 	}
 
 	/**

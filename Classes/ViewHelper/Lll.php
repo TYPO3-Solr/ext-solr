@@ -38,8 +38,25 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Lll implements ViewHelper {
 
+	/**
+	 * Path to a label file
+	 *
+	 * @var string
+	 */
 	protected $languageFile;
+
+	/**
+	 * Language key, f.e. default, en, de, fr, ...
+	 *
+	 * @var string
+	 */
 	protected $llKey;
+
+	/**
+	 * Cache for loaded labels
+	 *
+	 * @var array
+	 */
 	protected $localLang;
 
 	/**

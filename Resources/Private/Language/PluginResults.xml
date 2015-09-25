@@ -32,6 +32,10 @@
 			<label index="results_per_page">Results per page:</label>
 			<label index="error_errors">We're sorry, there were some errors:</label>
 			<label index="error_emptyQuery">Please enter your search term in the box above.</label>
+			<label index="pagebrowser_first">First</label>
+			<label index="pagebrowser_prev">Previous</label>
+			<label index="pagebrowser_next">Next</label>
+			<label index="pagebrowser_last">Last</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="searchUnavailable">Die Suche steht im Moment nicht zur Verfügung.</label>

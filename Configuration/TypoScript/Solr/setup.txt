@@ -160,14 +160,12 @@ plugin.tx_solr {
 
 			pagebrowser {
 				enabled = 1
-				disableCacheHash = 1
 
-				_LOCAL_LANG.default {
-					text_first = First
-					text_prev = Previous
-					text_next = Next
-					text_last = Last
-				}
+				pagesBefore = 3
+				pagesAfter = 3
+
+				enableMorePages = 1
+				enableLessPages = 1
 			}
 
 			// fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)
