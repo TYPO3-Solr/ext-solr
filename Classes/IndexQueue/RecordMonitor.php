@@ -190,9 +190,10 @@ class RecordMonitor {
 		}
 
 		if ($status == 'update' && !isset($fields['pid'])) {
-            $recordPageId = $tceMain->getPID($recordTable, $recordUid);
-            if($recordTable == 'pages' && Tx_Solr_Util::isRootPage($recordUid))
-                $recordPageId = $uid;
+			$recordPageId = $tceMain->getPID($recordTable, $recordUid);
+			if($recordTable == 'pages' && Util::isRootPage($recordUid)) {
+				$recordPageId = $uid;
+			}
 		} else {
 			$recordPageId = $fields['pid'];
 		}
