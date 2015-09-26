@@ -48,7 +48,8 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 				1234972358
 			);
 		}
-		$this->languageFile = $arguments['languageFile'];
+
+		$this->languageFile = $this->overrideLocalLangFile($arguments['languageFile']);
 		$this->llKey        = $arguments['llKey'];
 
 		$this->loadLL();
@@ -77,6 +78,24 @@ class Tx_Solr_ViewHelper_Lll implements Tx_Solr_ViewHelper {
 		}
 
 		return $label;
+	}
+
+	/**
+	 * Resolves overridden language files
+	 *
+	 * @param string $languageFile language file path
+	 * @return string overridden language file path
+	 */
+	protected function overrideLocalLangFile($languageFile) {
+		$languageFileOverrideKey = substr($languageFile, strlen($GLOBALS['PATH_solr']));
+		$languageFileOverrideKey = 'EXT:solr/' . $languageFileOverrideKey;
+
+		if (array_key_exists($languageFileOverrideKey, $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride'])) {
+			$languageFile = t3lib_div::getIndpEnv('TYPO3_DOCUMENT_ROOT')
+				. '/' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride'][$languageFileOverrideKey][0];
+		}
+
+		return $languageFile;
 	}
 
 	/**
