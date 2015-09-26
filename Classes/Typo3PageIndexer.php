@@ -245,7 +245,7 @@ class Typo3PageIndexer {
 		$document->setField('pid',         $pageRecord['pid']);
 		$document->setField('typeNum',     $this->page->type);
 		$document->setField('created',     $pageRecord['crdate']);
-		$document->setField('changed',     $pageRecord['tstamp']);
+		$document->setField('changed',     $pageRecord['SYS_LASTCHANGED']);
 		$document->setField('rootline',    $this->page->id);
 
 		// access
