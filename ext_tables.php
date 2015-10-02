@@ -31,6 +31,7 @@ $iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
 );
 
 if (TYPO3_MODE == 'BE') {
+	$fileExtension = version_compare(TYPO3_branch, '7', '>=') ? 'svg' : 'png';
 	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
 		'ApacheSolrForTypo3.' . $_EXTKEY,
 		'tools',
@@ -42,7 +43,7 @@ if (TYPO3_MODE == 'BE') {
 		),
 		array(
 			'access' => 'admin',
-			'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/Icons/ModuleAdministration.png',
+			'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/Icons/ModuleAdministration.' . $fileExtension,
 			'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/ModuleAdministration.xlf',
 		)
 	);
