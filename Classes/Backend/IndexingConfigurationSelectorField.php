@@ -113,16 +113,9 @@ class IndexingConfigurationSelectorField {
 	 *  @return string Markup for the select field
 	 */
 	public function render() {
-			// transform selected values into the format used by TCEforms
-		$selectedValues = array();
-		foreach ($this->selectedValues as $selectedValue) {
-			$selectedValues[] = $selectedValue . '|1';
-		}
-		$selectedValues = implode(',', $selectedValues);
-
 		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
 
-		$formField = $this->renderSelectCheckbox($this->buildSelectorItems($tablesToIndex), $selectedValues);
+		$formField = $this->renderSelectCheckbox($this->buildSelectorItems($tablesToIndex), $this->selectedValues);
 
 			// need to wrap the field in a TCEforms table to make the CSS apply
 		$form = '
