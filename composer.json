@@ -50,7 +50,7 @@
     "class-alias-maps": [
       "Migrations/Code/ClassAliasMap.php"
     ],
-    "helhum/class-alias-loader": {
+    "typo3/class-alias-loader": {
       "always-add-alias-loader": true,
       "class-alias-maps": [
         "Migrations/Code/ClassAliasMap.php"
