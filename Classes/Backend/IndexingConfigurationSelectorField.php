@@ -114,11 +114,15 @@ class IndexingConfigurationSelectorField {
 	 */
 	public function render() {
 			// transform selected values into the format used by TCEforms
-		$selectedValues = array();
-		foreach ($this->selectedValues as $selectedValue) {
-			$selectedValues[] = $selectedValue . '|1';
+		if (version_compare(TYPO3_branch, '7.5', '<')) {
+			$selectedValues = array();
+			foreach ($this->selectedValues as $selectedValue) {
+				$selectedValues[] = $selectedValue . '|1';
+			}
+			$selectedValues = implode(',', $selectedValues);
+		} else {
+			$selectedValues = $this->selectedValues;
 		}
-		$selectedValues = implode(',', $selectedValues);
 
 		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
 
