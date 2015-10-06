@@ -46,6 +46,9 @@
       "ApacheSolrForTypo3\\Solr\\": "Classes/"
     }
   },
+  "config": {
+    "optimize-autoloader": true
+  },
   "extra": {
     "class-alias-maps": [
       "Migrations/Code/ClassAliasMap.php"
