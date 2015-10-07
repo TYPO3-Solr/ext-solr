@@ -348,7 +348,9 @@ class Util {
 			$GLOBALS['TSFE']->getConfigArray();
 
 			$GLOBALS['TSFE']->settingLanguage();
-			$GLOBALS['TSFE']->settingLocale();
+			if (!$useCache) {
+				$GLOBALS['TSFE']->settingLocale();
+			}
 
 			$GLOBALS['TSFE']->newCObj();
 			$GLOBALS['TSFE']->absRefPrefix = ($GLOBALS['TSFE']->config['config']['absRefPrefix'] ? trim($GLOBALS['TSFE']->config['config']['absRefPrefix']) : '');
@@ -361,6 +363,7 @@ class Util {
 
 		if ($useCache) {
 			$GLOBALS['TSFE'] = $tsfeCache[$cacheId];
+			$GLOBALS['TSFE']->settingLocale();
 		}
 	}
 
