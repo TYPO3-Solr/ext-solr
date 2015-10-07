@@ -368,6 +368,8 @@ class Tx_Solr_Util {
 			$GLOBALS['TSFE']->getConfigArray();
 
 			$GLOBALS['TSFE']->settingLanguage();
+			$GLOBALS['TSFE']->settingLocale();
+
 			$GLOBALS['TSFE']->newCObj();
 			$GLOBALS['TSFE']->absRefPrefix = ($GLOBALS['TSFE']->config['config']['absRefPrefix'] ? trim($GLOBALS['TSFE']->config['config']['absRefPrefix']) : '');
 
