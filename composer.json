@@ -46,6 +46,11 @@
       "ApacheSolrForTypo3\\Solr\\": "Classes/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+    }
+  },
   "config": {
     "optimize-autoloader": true
   },
