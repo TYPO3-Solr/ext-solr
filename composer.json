@@ -52,7 +52,15 @@
     }
   },
   "config": {
-    "optimize-autoloader": true
+    "optimize-autoloader": true,
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/Web/typo3conf/ext/",
+      "[ -L .Build/Web/typo3conf/ext/solr ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/solr"
+    ]
   },
   "extra": {
     "branch-alias": {
@@ -61,6 +69,10 @@
     "class-alias-maps": [
       "Migrations/Code/ClassAliasMap.php"
     ],
+    "typo3/cms": {
+      "cms-package-dir": "{$vendor-dir}/typo3/cms",
+      "web-dir": ".Build/Web"
+    },
     "typo3/class-alias-loader": {
       "always-add-alias-loader": true,
       "class-alias-maps": [
