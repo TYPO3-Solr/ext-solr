@@ -50,6 +50,9 @@
     "optimize-autoloader": true
   },
   "extra": {
+    "branch-alias": {
+      "dev-master": "3.1.x-dev"
+    },
     "class-alias-maps": [
       "Migrations/Code/ClassAliasMap.php"
     ],
