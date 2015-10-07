@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 
 /**
@@ -115,10 +116,14 @@ class IndexingConfigurationSelectorField {
 	public function render() {
 			// transform selected values into the format used by TCEforms
 		$selectedValues = array();
-		foreach ($this->selectedValues as $selectedValue) {
-			$selectedValues[] = $selectedValue . '|1';
+		if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 7005000) {
+			$selectedValues = $this->selectedValues;
+		} else {
+			foreach ($this->selectedValues as $selectedValue) {
+				$selectedValues[] = $selectedValue . '|1';
+			}
+			$selectedValues = implode(',', $selectedValues);
 		}
-		$selectedValues = implode(',', $selectedValues);
 
 		$tablesToIndex = $this->getIndexQueueConfigurationTableMap();
 
@@ -216,46 +221,36 @@ class IndexingConfigurationSelectorField {
 		);
 
 		$selectFieldRenderer = $formEngine = NULL;
-		if (class_exists('TYPO3\\CMS\\Backend\\Form\\FormEngine')) {
-			$selectFieldRenderer = $formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
-		}
-
-		if (!isset($selectFieldRenderer) || !method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
-			if (class_exists('TYPO3\\CMS\\Backend\\Form\\Element\\SelectElement') && isset($formEngine)) {
-				// TYPO3 CMS 7.2
-				$selectFieldRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\Element\\SelectElement', $formEngine);
-			} elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\Element\\SelectCheckBoxElement')) {
-				// TYPO3 CMS >= 7.3
-				/** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
-				$nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
-				$options = array(
-					'renderType' => 'selectCheckBox',
-					'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
-					'fieldName' => 'additionalFields',
-					'databaseRow' => array(),
-					'parameterArray' => $parameterArray
-				);
-				$options['parameterArray']['fieldConf']['config']['items'] = $items;
-				$options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
-				$selectCheckboxResult = $nodeFactory->create($options)->render();
-
-				return $selectCheckboxResult['html'];
-			}
-		}
-
-		if (isset($selectFieldRenderer) && method_exists($selectFieldRenderer, 'getSingleField_typeSelect_checkbox')) {
-			return $selectFieldRenderer->getSingleField_typeSelect_checkbox(
-				'', // table
-				'', // field
-				'', // row
-				$parameterArray, // array with additional configuration options
-				array(), // config,
-				$items, // items
-				'' // Label for no-matching-value
+		if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 7003000) {
+			/** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
+			$nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
+			$options = array(
+				'renderType' => 'selectCheckBox',
+				'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
+				'fieldName' => 'additionalFields',
+				'databaseRow' => array(),
+				'parameterArray' => $parameterArray
 			);
+			$options['parameterArray']['fieldConf']['config']['items'] = $items;
+			$options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
+			$selectCheckboxResult = $nodeFactory->create($options)->render();
+
+			return $selectCheckboxResult['html'];
+		} elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\FormEngine')) {
+			$formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
+			if (method_exists($formEngine, 'getSingleField_typeSelect_checkbox')) {
+				return $formEngine->getSingleField_typeSelect_checkbox(
+					'', // table
+					'', // field
+					'', // row
+					$parameterArray, // array with additional configuration options
+					array(), // config,
+					$items, // items
+					'' // Label for no-matching-value
+				);
+			}
 		}
 
 		return '';
 	}
-
 }
