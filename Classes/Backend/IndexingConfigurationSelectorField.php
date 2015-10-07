@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 
 /**
@@ -116,7 +115,7 @@ class IndexingConfigurationSelectorField {
 	public function render() {
 			// transform selected values into the format used by TCEforms
 		$selectedValues = array();
-		if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 7005000) {
+		if (version_compare(TYPO3_branch, '7.5', '>=')) {
 			$selectedValues = $this->selectedValues;
 		} else {
 			foreach ($this->selectedValues as $selectedValue) {
@@ -221,7 +220,7 @@ class IndexingConfigurationSelectorField {
 		);
 
 		$selectFieldRenderer = $formEngine = NULL;
-		if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 7003000) {
+		if (version_compare(TYPO3_branch, '7.3', '>=')) {
 			/** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
 			$nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
 			$options = array(
