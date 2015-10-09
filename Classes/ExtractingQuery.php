@@ -134,7 +134,7 @@ class ExtractingQuery extends Query {
 	public function getQueryParameters() {
 		$filename = basename($this->file);
 
-		// TODO create an Apache Solr patch to support the -m (and -l) options of Tika
+		// TODO create an Apache Solr patch to support Apache Tika's -m (and -l) options
 		$suggestParameters = array(
 			'resource.name' => $filename,
 			'extractFormat' => 'text', // Matches the -t command for the tika CLI app.
