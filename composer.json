@@ -21,12 +21,6 @@
     "wiki": "https://forge.typo3.org/projects/extension-solr/wiki",
     "source": "https://github.com/TYPO3-Solr/ext-solr"
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "http://composer.typo3.org/"
-    }
-  ],
   "require": {
     "php": ">=5.3.7 <6.0",
     "typo3/cms-core": ">=6.2.14,<8.0"
