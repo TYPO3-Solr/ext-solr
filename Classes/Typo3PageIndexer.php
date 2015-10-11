@@ -254,7 +254,13 @@ class Typo3PageIndexer {
 		$document->setField('typeNum',     $this->page->type);
 		$document->setField('created',     $pageRecord['crdate']);
 		$document->setField('changed',     $pageRecord['SYS_LASTCHANGED']);
-		$document->setField('rootline',    $this->page->id);
+
+		$rootline = $this->page->id;
+		$mountPointParameter = $this->getMountPointParameter();
+		if ($mountPointParameter !== '') {
+			$rootline .= ',' . $mountPointParameter;
+		}
+		$document->setField('rootline', $rootline);
 
 		// access
 		$document->setField('access', (string)$this->pageAccessRootline);
