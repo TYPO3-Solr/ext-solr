@@ -41,6 +41,13 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class Typo3PageIndexer {
 
 	/**
+	 * The mount point parameter used in the Frontend controller.
+	 *
+	 * @var string
+	 */
+	protected $mountPointParameter;
+
+	/**
 	 * Solr server connection.
 	 *
 	 * @var SolrService
@@ -232,7 +239,8 @@ class Typo3PageIndexer {
 			$this->page->id,
 			$this->page->type,
 			$this->page->sys_language_uid,
-			$this->getDocumentIdGroups()
+			$this->getDocumentIdGroups(),
+			$this->getMountPointParameter()
 		);
 		$document->setField('id',          $documentId);
 		$document->setField('site',        $site->getDomain());
@@ -458,6 +466,24 @@ class Typo3PageIndexer {
 	 */
 	public function setPageUrl($url) {
 		$this->pageUrl = $url;
+	}
+
+	/**
+	 * Sets the mount point parameter that is used in the Frontend controller.
+	 *
+	 * @param string $mountPointParameter
+	 */
+	public function setMountPointParameter($mountPointParameter) {
+		$this->mountPointParameter = (string)$mountPointParameter;
+	}
+
+	/**
+	 * Gets the mount point parameter that is used in the Frontend controller.
+	 *
+	 * @return string
+	 */
+	public function getMountPointParameter() {
+		return $this->mountPointParameter;
 	}
 
 	/**

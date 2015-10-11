@@ -47,14 +47,21 @@ class Util {
 	 * @param integer $typeNum The page's typeNum
 	 * @param integer $language the language id, defaults to 0
 	 * @param string $accessGroups comma separated list of uids of groups that have access to that page
+	 * @param string $mountPointParameter The mount point parameter that is used to access the page.
 	 * @return string The document id for that page
 	 */
-	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1') {
+	public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1', $mountPointParameter = '') {
+		$additionalParameters = $typeNum . '/' . $language . '/' . $accessGroups;
+
+		if ((string)$mountPointParameter !== '') {
+			$additionalParameters = $mountPointParameter . '/' . $additionalParameters;
+		}
+
 		$documentId = self::getDocumentId(
 			'pages',
 			$uid,
 			$uid,
-			$typeNum . '/' . $language . '/' . $accessGroups
+			$additionalParameters
 		);
 
 		return $documentId;

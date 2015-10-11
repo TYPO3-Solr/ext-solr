@@ -268,6 +268,7 @@ class PageIndexer extends AbstractFrontendHelper {
 			$indexer->setSolrConnection($this->getSolrConnection());
 			$indexer->setPageAccessRootline($this->getAccessRootline());
 			$indexer->setPageUrl($this->generatePageUrl());
+			$indexer->setMountPointParameter($GLOBALS['TSFE']->MP);
 
 			$this->responseData['pageIndexed']          = (int)$indexer->indexPage();
 			$this->responseData['originalPageDocument'] = (array)$indexer->getPageSolrDocument();
