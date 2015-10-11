@@ -95,8 +95,8 @@ plugin.tx_solr {
 					// add options for the indexer here
 				}
 
-				// only index standard pages
-				additionalWhereClause = doktype = 1 AND no_search = 0
+				// Only index standard pages and mount points that are not overlayed.
+				additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
 
 				fields {
 					sortSubTitle_stringS = subtitle
