@@ -10,9 +10,7 @@ clear
 
 SOLR_VERSION=4.10.4
 EXT_SOLR_VERSION=3.1
-EXT_SOLR_PLUGIN_ACCESS_VERSION=2.0
-EXT_SOLR_PLUGIN_UTILS_VERSION=1.1
-EXT_SOLR_PLUGIN_LANG_VERSION=3.1
+SOLR_TYPO3_PLUGIN_VERSION=1.3.0
 JAVA_VERSION=7
 
 # Tomcat specific settings
@@ -318,12 +316,10 @@ cp -r solr-$SOLR_VERSION/contrib solr/
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-cecho "Downloading the Solr TYPO3 plugin for access control. Version: $EXT_SOLR_PLUGIN_ACCESS_VERSION" $green
+cecho "Downloading the Solr TYPO3 plugin for access control. Version: $SOLR_TYPO3_PLUGIN_VERSION" $green
 mkdir solr/typo3lib
 cd solr/typo3lib
-wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-access-$EXT_SOLR_PLUGIN_ACCESS_VERSION.jar 2>&1 | progressfilt
-wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-utils-$EXT_SOLR_PLUGIN_UTILS_VERSION.jar 2>&1 | progressfilt
-wget --progress=bar:force http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/commons-lang3-$EXT_SOLR_PLUGIN_LANG_VERSION.jar 2>&1 | progressfilt
+wget --progress=bar:force https://github.com/TYPO3-Solr/solr-typo3-plugin/releases/download/release-${SOLR_TYPO3_PLUGIN_VERSION//\./_}/solr-typo3-plugin-$SOLR_TYPO3_PLUGIN_VERSION.jar 2>&1 | progressfilt
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
