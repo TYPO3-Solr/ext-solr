@@ -7,12 +7,12 @@
 	YYYYMMDD	- The date the config file was changed the last time
 
 	When changing the config, the name property must be updated. There is a
-	status report - tx_solr_report_SolrconfigStatus - checking against this
-	name property, that status check must be updated as well.
+	status report - \ApacheSolrForTypo3\Solr\Report\SolrConfigStatus - checking
+	against this name property, that status check must be updated as well.
 -->
-<config name="tx_solr-3-0-0--20140516">
+<config name="tx_solr-3-1-0--20151012">
 
-	<luceneMatchVersion>LUCENE_48</luceneMatchVersion>
+	<luceneMatchVersion>4.10.4</luceneMatchVersion>
 
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
