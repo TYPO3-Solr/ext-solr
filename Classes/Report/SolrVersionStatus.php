@@ -46,7 +46,7 @@ class SolrVersionStatus implements StatusProviderInterface {
 	 *
 	 * @var string
 	 */
-	const REQUIRED_SOLR_VERSION = '4.8.0';
+	const REQUIRED_SOLR_VERSION = '4.10.4';
 
 	/**
 	 * Compiles a version check against each configured Solr server.
