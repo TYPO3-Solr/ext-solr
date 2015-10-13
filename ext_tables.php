@@ -73,9 +73,9 @@ if (TYPO3_MODE == 'BE') {
 	);
 
 	ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
-			'ApacheSolrForTypo3.' . $_EXTKEY,
-			'StopWords',
-			array('index,saveStopWords')
+		'ApacheSolrForTypo3.' . $_EXTKEY,
+		'StopWords',
+		array('index,saveStopWords')
 	);
 
 	ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
