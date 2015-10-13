@@ -23,7 +23,7 @@ $iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
 		'ModuleIndexQueue'       => $iconPath . 'IndexQueue.png',
 		'ModuleIndexMaintenance' => $iconPath . 'IndexMaintenance.png',
 		'ModuleIndexFields'      => $iconPath . 'IndexFields.png',
-		'ModuleStopWords'         => $iconPath . 'StopWords.png',
+		'ModuleStopWords'        => $iconPath . 'StopWords.png',
 		'ModuleSynonyms'         => $iconPath . 'Synonyms.png',
 		'InitSolrConnections'    => $iconPath . 'InitSolrConnections.png'
 	),
