@@ -26,7 +26,7 @@
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 
 if (!class_exists('Apache_Solr_Document')) {
-  require_once __DIR__ . '../../../../Lib/SolrPhpClient/Apache/Solr/Document.php';
+  require_once __DIR__ . '../../../Resources/Php/SolrPhpClient/Apache/Solr/Document.php';
 }
 
 /**
