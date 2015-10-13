@@ -36,5 +36,13 @@ $EM_CONF[$_EXTKEY] = array(
 			'devlog' => '',
 		),
 	),
+	'autoload' => array(
+		'classmap' => array(
+			'Resources/Php/'
+		),
+		'psr-4' => array(
+			'ApacheSolrForTypo3\\Solr\\' => 'Classes/'
+		)
+	)
 );
 
