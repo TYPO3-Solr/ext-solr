@@ -16,16 +16,12 @@ $EM_CONF[$_EXTKEY] = array(
 	'category' => 'plugin',
 	'author' => 'Ingo Renner',
 	'author_email' => 'ingo@typo3.org',
-	'shy' => '',
-	'priority' => '',
 	'module' => '',
 	'state' => 'stable',
-	'internal' => '',
 	'uploadfolder' => 0,
 	'createDirs' => '',
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
-	'lockType' => '',
 	'author_company' => 'dkd Internet Service GmbH',
 	'version' => '3.1.0-dev',
 	'constraints' => array(
@@ -40,6 +36,5 @@ $EM_CONF[$_EXTKEY] = array(
 			'devlog' => '',
 		),
 	),
-	'_md5_values_when_last_written' => '',
 );
 
