@@ -31,7 +31,7 @@ $iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
 );
 
 if (TYPO3_MODE == 'BE') {
-	$fileExtension = version_compare(TYPO3_branch, '7', '>=') ? 'svg' : 'png';
+	$fileExtension = version_compare(TYPO3_branch, '7.0', '>=') ? 'svg' : 'png';
 	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
 		'ApacheSolrForTypo3.' . $_EXTKEY,
 		'tools',
