@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
 ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
@@ -69,6 +70,11 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
 	 * @var Site
 	 */
 	protected $site = NULL;
+
+	/**
+	 * @var PageRenderer
+	 */
+	protected $pageRenderer = NULL;
 
 
 	/**
@@ -123,7 +129,12 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
 	protected function getIndexingConfigurationSelector() {
 		$selectorMarkup = 'Please select a site first.';
 
-		$this->schedulerModule->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/Backend/indexingconfigurationselectorfield.css');
+		if (version_compare(TYPO3_branch, '7.6', '>=')) {
+			$this->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/Backend/indexingconfigurationselectorfield.css');
+		} else {
+			$this->schedulerModule->doc->getPageRenderer()->addCssFile('../typo3conf/ext/solr/Resources/Css/Backend/indexingconfigurationselectorfield.css');
+		}
+
 
 		if (!is_null($this->site)) {
 			$selectorField = GeneralUtility::makeInstance(
@@ -174,6 +185,16 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
 			$indexingConfigurations = $submittedData['indexingConfigurations'];
 		}
 		$task->setIndexingConfigurationsToReIndex($indexingConfigurations);
+	}
+
+	/**
+	 * @return PageRenderer
+	 */
+	protected function getPageRenderer() {
+		if (!isset($this->pageRenderer)) {
+			$this->pageRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Page\\PageRenderer');
+		}
+		return $this->pageRenderer;
 	}
 }
 
