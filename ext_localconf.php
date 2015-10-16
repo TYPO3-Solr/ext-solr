@@ -10,7 +10,7 @@ $GLOBALS['PATH_solr'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extP
 	// Windows compatibility
 
 if(!function_exists('strptime')) {
-	require_once($GLOBALS['PATH_solr'] . 'Resources/Php/strptime/strptime.php');
+	require_once($GLOBALS['PATH_solr'] . 'Resources/Private/Php/strptime/strptime.php');
 }
 
    # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
