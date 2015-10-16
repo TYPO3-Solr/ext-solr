@@ -74,8 +74,8 @@ class Lll implements ViewHelper {
 			);
 		}
 
-		$this->languageFile = $this->overrideLocalLangFile($arguments['languageFile']);
-		$this->llKey = $arguments['llKey'];
+		$this->languageFile = $arguments['languageFile'];
+		$this->llKey        = $arguments['llKey'];
 
 		$this->loadLL();
 	}
@@ -103,24 +103,6 @@ class Lll implements ViewHelper {
 		}
 
 		return $label;
-	}
-
-	/**
-	 * Resolves overridden language files
-	 *
-	 * @param string $languageFile language file path
-	 * @return string overridden language file path
-	 */
-	protected function overrideLocalLangFile($languageFile) {
-		$languageFileOverrideKey = substr($languageFile, strlen($GLOBALS['PATH_solr']));
-		$languageFileOverrideKey = 'EXT:solr/' . $languageFileOverrideKey;
-
-		if (array_key_exists($languageFileOverrideKey, $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride'])) {
-			$languageFile = GeneralUtility::getIndpEnv('TYPO3_DOCUMENT_ROOT')
-				. '/' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride'][$languageFileOverrideKey][0];
-		}
-
-		return $languageFile;
 	}
 
 	/**
