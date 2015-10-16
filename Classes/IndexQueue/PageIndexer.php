@@ -223,8 +223,9 @@ class PageIndexer extends Indexer {
 			$path = $this->options['frontendDataHelper.']['path'];
 		}
 
+		$mountPointParameter = $this->getMountPageDataUrlParameter($item);
 		$dataUrl = $scheme . '://' . $host . $path . 'index.php?id=' . $pageId;
-		$dataUrl .= $this->getMountPageDataUrlParameter($item);
+		$dataUrl .= ($mountPointParameter !== '') ? '&MP=' . $mountPointParameter : '';
 		$dataUrl .= '&L=' . $language;
 
 		if (!GeneralUtility::isValidUrl($dataUrl)) {
@@ -284,8 +285,8 @@ class PageIndexer extends Indexer {
 		$mountPageUrlParameter = '';
 
 		if ($item->hasIndexingProperty('isMountedPage')) {
-			$mountPageUrlParameter = '&MP='
-				. $item->getIndexingProperty('mountPageSource')
+			$mountPageUrlParameter =
+				$item->getIndexingProperty('mountPageSource')
 				. '-'
 				. $item->getIndexingProperty('mountPageDestination');
 		}
@@ -369,14 +370,20 @@ class PageIndexer extends Indexer {
 	protected function getAccessRootline(Item $item, $language = 0, $contentAccessGroup = null) {
 		static $accessRootlineCache;
 
+		$mountPointParameter = $this->getMountPageDataUrlParameter($item);
+
 		$accessRootlineCacheEntryId = $item->getRecordUid() . '|' . $language;
+		if ($mountPointParameter !== '') {
+			$accessRootlineCacheEntryId .= '|' . $mountPointParameter;
+		}
 		if (!is_null($contentAccessGroup)) {
 			$accessRootlineCacheEntryId .= '|' . $contentAccessGroup;
 		}
 
 		if (!isset($accessRootlineCache[$accessRootlineCacheEntryId])) {
 			$accessRootline = \ApacheSolrForTypo3\Solr\Access\Rootline::getAccessRootlineByPageId(
-				$item->getRecordUid()
+				$item->getRecordUid(),
+				$mountPointParameter
 			);
 
 			// current page's content access groups
