@@ -162,6 +162,15 @@ class Relation {
 				$whereClause = $foreignTableName . '.uid = ' . (int) array_shift($foreignTableUids);
 			}
 		}
+
+		if (!empty($localFieldTca['config']['foreign_match_fields']) && is_array($localFieldTca['config']['foreign_match_fields'])) {
+			$matchFieldQueryParts = array();
+			foreach ($localFieldTca['config']['foreign_match_fields'] as $fieldName => $value) {
+				$matchFieldQueryParts[] = $foreignTableName . '.' . $fieldName . '=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($value, $foreignTableName);
+			}
+			$whereClause .= ' AND (' . implode('AND ', $matchFieldQueryParts) . ')';
+		}
+
 		$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
 		$whereClause .= $pageSelector->enableFields( $foreignTableName );
 
