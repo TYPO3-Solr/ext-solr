@@ -95,7 +95,7 @@ class Page extends AbstractInitializer {
 	public function initializeMountedPage(array $mountProperties, $mountPageId) {
 		$mountedPages = array($mountPageId);
 
-		$this->addMountedPagesToIndexQueue($mountedPages);
+		$this->addMountedPagesToIndexQueue($mountedPages, $mountProperties);
 		$this->addIndexQueueItemIndexingProperties($mountProperties, $mountedPages);
 	}
 
@@ -145,7 +145,7 @@ class Page extends AbstractInitializer {
 
 			DatabaseUtility::transactionStart();
 			try {
-				$this->addMountedPagesToIndexQueue($mountedPages);
+				$this->addMountedPagesToIndexQueue($mountedPages, $mountPage);
 				$this->addIndexQueueItemIndexingProperties($mountPage, $mountedPages);
 
 				DatabaseUtility::transactionCommit();
@@ -230,10 +230,12 @@ class Page extends AbstractInitializer {
 	 * belong to the same site where they are mounted.
 	 *
 	 * @param array $mountedPages An array of mounted page IDs
+	 * @param array $mountProperties Array with mount point properties (mountPageSource, mountPageDestination, mountPageOverlayed)
 	 */
-	protected function addMountedPagesToIndexQueue(array $mountedPages) {
-		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties) '
-			. $this->buildSelectStatement() . ', 1 '
+	protected function addMountedPagesToIndexQueue(array $mountedPages, array $mountProperties) {
+		$mountIdentifier = $this->getMountPointIdentifier($mountProperties);
+		$initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier) '
+			. $this->buildSelectStatement() . ', 1, ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($mountIdentifier, 'tx_solr_indexqueue_item')
 			. 'FROM pages '
 			. 'WHERE '
 				. 'uid IN(' . implode(',', $mountedPages) . ') '
@@ -255,13 +257,15 @@ class Page extends AbstractInitializer {
 	 * @param array $mountedPages An array of mounted page IDs
 	 */
 	protected function addIndexQueueItemIndexingProperties(array $mountPage, array $mountedPages) {
+		$mountIdentifier = $this->getMountPointIdentifier($mountPage);
 		$mountPageItems = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			'tx_solr_indexqueue_item',
 			'root = ' . intval($this->site->getRootPageId()) . ' '
 				. 'AND item_type = \'pages\' '
 				. 'AND item_uid IN(' . implode(',', $mountedPages) . ') '
-				. 'AND has_indexing_properties = 1'
+				. 'AND has_indexing_properties = 1 '
+				. 'AND pages_mountidentifier=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($mountIdentifier, tx_solr_indexqueue_item)
 		);
 
 		foreach ($mountPageItems as $mountPageItemRecord) {
@@ -273,6 +277,18 @@ class Page extends AbstractInitializer {
 
 			$mountPageItem->storeIndexingProperties();
 		}
+	}
+
+	/**
+	 * Builds an identifier of the given mount point properties.
+	 *
+	 * @param array $mountProperties Array with mount point properties (mountPageSource, mountPageDestination, mountPageOverlayed)
+	 * @return string String consisting of mountPageDestination-mountPageSource-mountPageOverlayed
+	 */
+	protected function getMountPointIdentifier(array $mountProperties) {
+		return $mountProperties['mountPageDestination']
+			. '-' . $mountProperties['mountPageSource']
+			. '-' . $mountProperties['mountPageOverlayed'];
 	}
 
 

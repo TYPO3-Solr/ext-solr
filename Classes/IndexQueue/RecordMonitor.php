@@ -229,6 +229,11 @@ class RecordMonitor {
 					}
 				}
 
+				// Clear existing index queue items to prevent mount point duplicates.
+				if ($recordTable == 'pages') {
+					$this->indexQueue->deleteItem('pages', $recordUid);
+				}
+
 				if ($this->isEnabledRecord($recordTable, $record)) {
 					$configurationName = NULL;
 					if ($recordTable !== 'pages') {
