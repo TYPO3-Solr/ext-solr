@@ -10,7 +10,101 @@
 </div>
 
 
-<div class="row-fluid section-divider section-with-header">
+<f:if condition="{indexqueue_statistics_counts.total} > 0">
+	<div class="row-fluid section-divider section-with-header">
+		<h2>
+			<f:translate key="solr.backend.index_queue_module.header_status"/>
+		</h2>
+
+		<div class="row-fluid">
+			<div class="progress">
+				<f:if condition="{indexqueue_statistics_counts.indexed} > 0">
+					<div class="bar bar-success"
+						 style="width: {indexqueue_statistics_percentages.indexed}%"
+						 title="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}: {indexqueue_statistics_counts.indexed}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.indexed}%)">
+						<f:translate
+								key="solr.backend.index_queue_module.status.indexed"/>
+					</div>
+				</f:if>
+
+				<f:if condition="{indexqueue_statistics_counts.pending} > 0">
+					<div class="bar bar-warning"
+						 style="width: {indexqueue_statistics_percentages.pending}%"
+						 title="{f:translate(key:'solr.backend.index_queue_module.status.pending')}: {indexqueue_statistics_counts.pending}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.pending}%)">
+						<f:translate
+								key="solr.backend.index_queue_module.status.pending"/>
+					</div>
+				</f:if>
+
+				<f:if condition="{indexqueue_statistics_counts.errors} > 0">
+					<div class="bar bar-danger"
+						 style="width: {indexqueue_statistics_percentages.errors}%"
+						 title="{f:translate(key:'solr.backend.index_queue_module.status.errors')}: {indexqueue_statistics_counts.errors}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.errors}%)">
+						<f:translate
+								key="solr.backend.index_queue_module.status.errors"/>
+					</div>
+				</f:if>
+			</div>
+		</div>
+
+		<f:if condition="{indexqueue_errors}">
+			<div class="row-fluid">
+				<div class="span12 well">
+					<h2>
+						<f:translate
+								key="solr.backend.index_queue_module.errors.headline"/>
+					</h2>
+
+					<table class="table">
+						<tr>
+							<th>
+								<f:translate
+										key="solr.backend.index_queue_module.errors.id"/>
+							</th>
+							<th>
+								<f:translate
+										key="solr.backend.index_queue_module.errors.item_type"/>
+							</th>
+							<th>
+								<f:translate
+										key="solr.backend.index_queue_module.errors.item_uid"/>
+							</th>
+							<th></th>
+						</tr>
+
+						<f:for each="{indexqueue_errors}" as="item">
+							<tr>
+								<td>{item.uid}</td>
+								<td>{item.item_type}</td>
+								<td>{item.item_uid}</td>
+								<td>
+									<script type="text/plain">
+								{item.errors}
+							</script>
+									<a href="javascript:void(0);"
+									   class="show_error">
+										<f:translate
+												key="solr.backend.index_queue_module.errors.show_button"/>
+									</a>
+								</td>
+							</tr>
+						</f:for>
+					</table>
+
+					<solr:backend.button.ActionButton
+							action="resetLogErrors"
+							label="{f:translate(key:'solr.backend.index_queue_module.errors.reset_button')}"
+							class="btn-sm btn-default"
+					/>
+
+				</div>
+			</div>
+		</f:if>
+	</div>
+</f:if>
+
+
+<div class="row-fluid section-with-header">
 	<h2>
 		<f:translate key="solr.backend.index_queue_module.header_init" />
 	</h2>
@@ -25,88 +119,6 @@
 
 	</f:form>
 </div>
-
-
-<f:if condition="{indexqueue_statistics_counts.total} > 0">
-<div class="row-fluid section-with-header">
-	<h2>
-		<f:translate key="solr.backend.index_queue_module.header_status"/>
-	</h2>
-
-	<div class="row-fluid">
-		<div class="progress">
-			<f:if condition="{indexqueue_statistics_counts.indexed} > 0">
-			<div class="bar bar-success" style="width: {indexqueue_statistics_percentages.indexed}%"
-				title="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}: {indexqueue_statistics_counts.indexed}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.indexed}%)">
-				<f:translate key="solr.backend.index_queue_module.status.indexed"/>
-			</div>
-			</f:if>
-
-			<f:if condition="{indexqueue_statistics_counts.pending} > 0">
-			<div class="bar bar-warning" style="width: {indexqueue_statistics_percentages.pending}%"
-				 title="{f:translate(key:'solr.backend.index_queue_module.status.pending')}: {indexqueue_statistics_counts.pending}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.pending}%)">
-				<f:translate key="solr.backend.index_queue_module.status.pending"/>
-			</div>
-			</f:if>
-
-			<f:if condition="{indexqueue_statistics_counts.errors} > 0">
-			<div class="bar bar-danger" style="width: {indexqueue_statistics_percentages.errors}%"
-				 title="{f:translate(key:'solr.backend.index_queue_module.status.errors')}: {indexqueue_statistics_counts.errors}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.errors}%)">
-				<f:translate key="solr.backend.index_queue_module.status.errors"/>
-			</div>
-			</f:if>
-		</div>
-	</div>
-
-	<f:if condition="{indexqueue_errors}">
-	<div class="row-fluid">
-		<div class="span12 well">
-			<h2>
-				<f:translate key="solr.backend.index_queue_module.errors.headline" />
-			</h2>
-
-			<table class="table">
-				<tr>
-					<th>
-						<f:translate key="solr.backend.index_queue_module.errors.id" />
-					</th>
-					<th>
-						<f:translate key="solr.backend.index_queue_module.errors.item_type" />
-					</th>
-					<th>
-						<f:translate key="solr.backend.index_queue_module.errors.item_uid" />
-					</th>
-					<th></th>
-				</tr>
-
-				<f:for each="{indexqueue_errors}" as="item">
-					<tr>
-						<td>{item.uid}</td>
-						<td>{item.item_type}</td>
-						<td>{item.item_uid}</td>
-						<td>
-							<script type="text/plain">
-								{item.errors}
-							</script>
-							<a href="javascript:void(0);" class="show_error">
-								<f:translate key="solr.backend.index_queue_module.errors.show_button" />
-							</a>
-						</td>
-					</tr>
-				</f:for>
-			</table>
-
-			<solr:backend.button.ActionButton
-					action="resetLogErrors"
-					label="{f:translate(key:'solr.backend.index_queue_module.errors.reset_button')}"
-					class="btn-sm btn-default"
-			/>
-
-		</div>
-	</div>
-	</f:if>
-</div>
-</f:if>
 
 
 <div class="row-fluid section-with-header danger-zone">
