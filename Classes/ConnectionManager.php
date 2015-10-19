@@ -304,7 +304,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 				'id'    => 'clearSolrConnectionCache',
 				'title' => $title,
 				'href'  => BackendUtility::getAjaxUrl('solr::clearSolrConnectionCache'),
-				'icon'  => IconUtility::getSpriteIcon('extensions-solr-InitSolrConnection')
+				'icon'  => IconUtility::getSpriteIcon('extensions-solr-InitSolrConnections')
 			);
 			$optionValues[] = 'clearSolrConnectionCache';
 		}
