@@ -67,7 +67,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
 		$results = array();
 
 		foreach ($values as $value) {
-			list($rootPageUid, $mountPoint) = t3lib_div::trimExplode(',', $value, TRUE, 2);
+			list($rootPageUid, $mountPoint) = GeneralUtility::trimExplode(',', $value, TRUE, 2);
 			$results[] = $this->getSolrRootlineForPageId($rootPageUid, $mountPoint);
 		}
 
