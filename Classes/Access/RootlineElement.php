@@ -83,7 +83,7 @@ class RootlineElement
     protected $pageId = null;
 
     /**
-     * Set of access groups assignullto the element.
+     * Set of access groups assigned to the element.
      *
      * @var array
      */
