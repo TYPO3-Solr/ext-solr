@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
 /**
@@ -230,36 +231,38 @@ class IndexingConfigurationSelectorField
         );
 
         $selectFieldRenderer = $formEngine = null;
-        if (version_compare(TYPO3_branch, null', ' >= ')) {
-			/** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
-			$nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
-			$options = array(
-				'renderType' => 'selectCheckBox',
-				'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
-				'fieldName' => 'additionalFields',
-				'databaseRow' => array(),
-				'parameterArray' => $parameterArray
-			);
-			$options['parameterArray']['fieldConf']['config']['items'] = $items;
-			$options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
-			$selectCheckboxResult = $nodeFactory->create($options)->render();
+        if (version_compare(TYPO3_branch, '7.3', ' >= ')) {
+            /** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
+            $nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
+            $options = array(
+                'renderType' => 'selectCheckBox',
+                'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
+                'fieldName' => 'additionalFields',
+                'databaseRow' => array(),
+                'parameterArray' => $parameterArray
+            );
+            $options['parameterArray']['fieldConf']['config']['items'] = $items;
+            $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
+            $selectCheckboxResult = $nodeFactory->create($options)->render();
 
-			return $selectCheckboxResult['html'];
-		} elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\FormEngine')) {
-			$formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
-			if (method_exists($formEngine, 'getSingleField_typeSelect_checkbox')) {
-				return $formEngine->getSingleField_typeSelect_checkbox(
-					'', // table
-					'', // field
-					'', // row
-					$parameterArray, // array with additional configuration options
-					array(), // config,
-					$items, // items
-					'' // Label for no-matching-value
-				);
-			}
-		}
+            return $selectCheckboxResult['html'];
+        } elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\FormEngine')) {
+            $formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
+            if (method_exists($formEngine,
+                'getSingleField_typeSelect_checkbox')) {
+                return $formEngine->getSingleField_typeSelect_checkbox(
+                    '', // table
+                    '', // field
+                    '', // row
+                    $parameterArray,
+                    // array with additional configuration options
+                    array(), // config,
+                    $items, // items
+                    '' // Label for no-matching-value
+                );
+            }
+        }
 
-		return '';
-	}
+        return '';
+    }
 }
