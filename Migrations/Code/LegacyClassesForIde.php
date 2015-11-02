@@ -3,945 +3,1259 @@
 /**
  * @deprecated
  */
-class Tx_Solr_AdditionalFieldsIndexer extends ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer {}
+interface Tx_Solr_AdditionalPageIndexer extends ApacheSolrForTypo3\Solr\AdditionalPageIndexer
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_AdditionalPageIndexer extends ApacheSolrForTypo3\Solr\AdditionalPageIndexer {}
+interface Tx_Solr_GarbageCollectorPostProcessor extends ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Api extends ApacheSolrForTypo3\Solr\Api {}
+interface Tx_Solr_QueryFacetBuilder extends ApacheSolrForTypo3\Solr\Facet\FacetBuilder
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_CommandResolver extends ApacheSolrForTypo3\Solr\CommandResolver {}
+interface Tx_Solr_FacetOptionsRenderer extends ApacheSolrForTypo3\Solr\Facet\FacetOptionsRenderer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ConnectionManager extends ApacheSolrForTypo3\Solr\ConnectionManager {}
+interface Tx_Solr_FacetRenderer extends ApacheSolrForTypo3\Solr\Facet\FacetRenderer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ContextMenuActionController extends ApacheSolrForTypo3\Solr\ContextMenuActionController {}
+interface Tx_Solr_AdditionalIndexQueueItemIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_DatabaseUtility extends ApacheSolrForTypo3\Solr\DatabaseUtility {}
+interface Tx_Solr_CommandPluginAware extends ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_GarbageCollector extends ApacheSolrForTypo3\Solr\GarbageCollector {}
+interface Tx_Solr_CommandPostProcessor extends ApacheSolrForTypo3\Solr\Plugin\CommandPostProcessor
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_GarbageCollectorPostProcessor extends ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor {}
+interface Tx_Solr_ErrorDetector extends ApacheSolrForTypo3\Solr\Plugin\Results\ErrorDetector
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_HtmlContentExtractor extends ApacheSolrForTypo3\Solr\HtmlContentExtractor {}
+interface Tx_Solr_FacetsModifier extends ApacheSolrForTypo3\Solr\Search\FacetsModifier
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_JavascriptManager extends ApacheSolrForTypo3\Solr\JavascriptManager {}
+interface Tx_Solr_FieldProcessor extends ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_LanguageFileUnavailableException extends ApacheSolrForTypo3\Solr\LanguageFileUnavailableException {}
+interface Tx_Solr_FormModifier extends ApacheSolrForTypo3\Solr\Plugin\FormModifier
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_NoSolrConnectionFoundException extends ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException {}
+interface Tx_Solr_IndexQueueInitializationPostProcessor extends ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query extends ApacheSolrForTypo3\Solr\Query {}
+interface Tx_Solr_IndexQueueInitializer extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\IndexQueueInitializer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ExtractingQuery extends ApacheSolrForTypo3\Solr\ExtractingQuery {}
+interface Tx_Solr_IndexQueuePageIndexerDataUrlModifier extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search extends ApacheSolrForTypo3\Solr\Search {}
+interface Tx_Solr_IndexQueuePageIndexerDocumentsModifier extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Site extends ApacheSolrForTypo3\Solr\Site {}
+interface Tx_Solr_IndexQueuePageIndexerFrontendHelper extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_SolrService extends ApacheSolrForTypo3\Solr\SolrService {}
+interface Tx_Solr_PageDocumentPostProcessor extends ApacheSolrForTypo3\Solr\PageDocumentPostProcessor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Sorting extends ApacheSolrForTypo3\Solr\Sorting {}
+interface Tx_Solr_PluginAware extends ApacheSolrForTypo3\Solr\Plugin\PluginAware
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_SpellChecker extends ApacheSolrForTypo3\Solr\SpellChecker {}
+interface Tx_Solr_PluginCommand extends ApacheSolrForTypo3\Solr\Plugin\PluginCommand
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_SuggestQuery extends ApacheSolrForTypo3\Solr\SuggestQuery {}
+interface Tx_Solr_QueryAware extends ApacheSolrForTypo3\Solr\Search\QueryAware
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Template extends ApacheSolrForTypo3\Solr\Template {}
+interface Tx_Solr_QueryFilterEncoder extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Typo3Environment extends ApacheSolrForTypo3\Solr\Typo3Environment {}
+interface Tx_Solr_QueryModifier extends ApacheSolrForTypo3\Solr\Query\Modifier\Modifier
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Typo3PageContentExtractor extends ApacheSolrForTypo3\Solr\Typo3PageContentExtractor {}
+interface Tx_Solr_ResponseModifier extends ApacheSolrForTypo3\Solr\Search\ResponseModifier
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Typo3PageIndexer extends ApacheSolrForTypo3\Solr\Typo3PageIndexer {}
+interface Tx_Solr_ResponseProcessor extends ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Util extends ApacheSolrForTypo3\Solr\Util {}
+interface Tx_Solr_ResultDocumentModifier extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier
+{
+}
 
-
-
 /**
  * @deprecated
  */
-class Tx_Solr_Access_Rootline extends ApacheSolrForTypo3\Solr\Access\Rootline {}
+interface Tx_Solr_ResultSetModifier extends ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Access_RootlineElement extends ApacheSolrForTypo3\Solr\Access\RootlineElement {}
+interface Tx_Solr_SearchAware extends ApacheSolrForTypo3\Solr\Search\SearchAware
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Access_RootlineElementFormatException extends ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException {}
+interface Tx_Solr_SearchComponent extends ApacheSolrForTypo3\Solr\Search\SearchComponent
+{
+}
 
-
-
 /**
  * @deprecated
  */
-class Tx_Solr_Backend_IndexingConfigurationSelectorField extends ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField {}
-
+interface Tx_Solr_SerializedValueDetector extends ApacheSolrForTypo3\Solr\IndexQueue\SerializedValueDetector
+{
+}
 
-
 /**
  * @deprecated
  */
-class Tx_Solr_Cli_Dispatcher extends ApacheSolrForTypo3\Solr\Cli\Dispatcher {}
-
-
+interface Tx_Solr_SubpartViewHelper extends ApacheSolrForTypo3\Solr\ViewHelper\SubpartViewHelper
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ContentObject_Content extends ApacheSolrForTypo3\Solr\ContentObject\Content {}
+interface Tx_Solr_SubstitutePageIndexer extends ApacheSolrForTypo3\Solr\SubstitutePageIndexer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ContentObject_Multivalue extends ApacheSolrForTypo3\Solr\ContentObject\Multivalue {}
+interface Tx_Solr_TemplateModifier extends ApacheSolrForTypo3\Solr\TemplateModifier
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ContentObject_Relation extends ApacheSolrForTypo3\Solr\ContentObject\Relation {}
+interface Tx_Solr_ViewHelper extends ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper
+{
+}
 
-
-
 /**
  * @deprecated
  */
-abstract class Tx_Solr_Facet_AbstractFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer {}
+interface Tx_Solr_ViewHelperProvider extends ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_DateRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\DateRangeFacetRenderer {}
+class Tx_Solr_AdditionalFieldsIndexer extends ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_Facet extends ApacheSolrForTypo3\Solr\Facet\Facet {}
+class Tx_Solr_Api extends ApacheSolrForTypo3\Solr\Api
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_QueryFacetBuilder extends ApacheSolrForTypo3\Solr\Facet\FacetBuilder {}
+class Tx_Solr_CommandResolver extends ApacheSolrForTypo3\Solr\CommandResolver
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_FacetOption extends ApacheSolrForTypo3\Solr\Facet\FacetOption {}
+class Tx_Solr_ConnectionManager extends ApacheSolrForTypo3\Solr\ConnectionManager
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_FacetOptionsRenderer extends ApacheSolrForTypo3\Solr\Facet\FacetOptionsRenderer {}
+class Tx_Solr_ContextMenuActionController extends ApacheSolrForTypo3\Solr\ContextMenuActionController
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_FacetRenderer extends ApacheSolrForTypo3\Solr\Facet\FacetRenderer {}
+class Tx_Solr_DatabaseUtility extends ApacheSolrForTypo3\Solr\DatabaseUtility
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_FacetRendererFactory extends ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory {}
+class Tx_Solr_GarbageCollector extends ApacheSolrForTypo3\Solr\GarbageCollector
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_HierarchicalFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\HierarchicalFacetRenderer {}
+class Tx_Solr_HtmlContentExtractor extends ApacheSolrForTypo3\Solr\HtmlContentExtractor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_HierarchicalFacetHelper extends ApacheSolrForTypo3\Solr\Facet\HierarchicalFacetHelper {}
+class Tx_Solr_JavascriptManager extends ApacheSolrForTypo3\Solr\JavascriptManager
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_LinkBuilder extends ApacheSolrForTypo3\Solr\Facet\LinkBuilder {}
+class Tx_Solr_LanguageFileUnavailableException extends ApacheSolrForTypo3\Solr\LanguageFileUnavailableException
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_NumericRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\NumericRangeFacetRenderer {}
+class Tx_Solr_NoSolrConnectionFoundException extends ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_QueryGroupFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\QueryGroupFacetRenderer {}
+class Tx_Solr_Query extends ApacheSolrForTypo3\Solr\Query
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_SimpleFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\SimpleFacetRenderer {}
+class Tx_Solr_ExtractingQuery extends ApacheSolrForTypo3\Solr\ExtractingQuery
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_SimpleFacetOptionsRenderer extends ApacheSolrForTypo3\Solr\Facet\SimpleFacetOptionsRenderer {}
+class Tx_Solr_Search extends ApacheSolrForTypo3\Solr\Search
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Facet_UsedFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\UsedFacetRenderer {}
-
+class Tx_Solr_Site extends ApacheSolrForTypo3\Solr\Site
+{
+}
 
-
 /**
  * @deprecated
  */
-class Tx_Solr_FieldProcessor_AbstractHierarchyProcessor extends ApacheSolrForTypo3\Solr\FieldProcessor\AbstractHierarchyProcessor {}
+class Tx_Solr_SolrService extends ApacheSolrForTypo3\Solr\SolrService
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_FieldProcessor_CategoryUidToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy {}
+class Tx_Solr_Sorting extends ApacheSolrForTypo3\Solr\Sorting
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_FieldProcessor_PageUidToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy {}
+class Tx_Solr_SpellChecker extends ApacheSolrForTypo3\Solr\SpellChecker
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_FieldProcessor_PathToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy {}
+class Tx_Solr_SuggestQuery extends ApacheSolrForTypo3\Solr\SuggestQuery
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_FieldProcessor_Service extends ApacheSolrForTypo3\Solr\FieldProcessor\Service {}
+class Tx_Solr_Template extends ApacheSolrForTypo3\Solr\Template
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_FieldProcessor_TimestampToIsoDate extends ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate {}
+class Tx_Solr_Typo3Environment extends ApacheSolrForTypo3\Solr\Typo3Environment
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_FieldProcessor_TimestampToUtcIsoDate extends ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate {}
-
-
+class Tx_Solr_Typo3PageContentExtractor extends ApacheSolrForTypo3\Solr\Typo3PageContentExtractor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_AbstractIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer {}
+class Tx_Solr_Typo3PageIndexer extends ApacheSolrForTypo3\Solr\Typo3PageIndexer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_Indexer extends ApacheSolrForTypo3\Solr\IndexQueue\Indexer {}
+class Tx_Solr_Util extends ApacheSolrForTypo3\Solr\Util
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_Item extends ApacheSolrForTypo3\Solr\IndexQueue\Item {}
+class Tx_Solr_Access_Rootline extends ApacheSolrForTypo3\Solr\Access\Rootline
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_PageIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer {}
+class Tx_Solr_Access_RootlineElement extends ApacheSolrForTypo3\Solr\Access\RootlineElement
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_PageIndexerRequest extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest {}
+class Tx_Solr_Access_RootlineElementFormatException extends ApacheSolrForTypo3\Solr\Access\RootlineElementFormatException
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_PageIndexerRequestHandler extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler {}
+class Tx_Solr_Backend_IndexingConfigurationSelectorField extends ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_PageIndexerResponse extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse {}
+class Tx_Solr_Cli_Dispatcher extends ApacheSolrForTypo3\Solr\Cli\Dispatcher
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_Queue extends ApacheSolrForTypo3\Solr\IndexQueue\Queue {}
+class Tx_Solr_ContentObject_Content extends ApacheSolrForTypo3\Solr\ContentObject\Content
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_RecordMonitor extends ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor {}
+class Tx_Solr_ContentObject_Multivalue extends ApacheSolrForTypo3\Solr\ContentObject\Multivalue
+{
+}
 
-
-
 /**
  * @deprecated
  */
-abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AbstractFrontendHelper {}
+class Tx_Solr_ContentObject_Relation extends ApacheSolrForTypo3\Solr\ContentObject\Relation
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService {}
+abstract class Tx_Solr_Facet_AbstractFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\AbstractFacetRenderer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher {}
+class Tx_Solr_Facet_DateRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\DateRangeFacetRenderer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_FrontendHelper_Manager extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager {}
+class Tx_Solr_Facet_Facet extends ApacheSolrForTypo3\Solr\Facet\Facet
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector {}
+class Tx_Solr_Facet_FacetOption extends ApacheSolrForTypo3\Solr\Facet\FacetOption
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer {}
+class Tx_Solr_Facet_FacetRendererFactory extends ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer {}
-
+class Tx_Solr_Facet_HierarchicalFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\HierarchicalFacetRenderer
+{
+}
 
-
 /**
  * @deprecated
  */
-abstract class Tx_Solr_IndexQueue_Initializer_Abstract extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer {}
+class Tx_Solr_Facet_HierarchicalFacetHelper extends ApacheSolrForTypo3\Solr\Facet\HierarchicalFacetHelper
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_Initializer_Page extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page {}
+class Tx_Solr_Facet_LinkBuilder extends ApacheSolrForTypo3\Solr\Facet\LinkBuilder
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_IndexQueue_Initializer_Record extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record {}
-
-
+class Tx_Solr_Facet_NumericRangeFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\NumericRangeFacetRenderer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PluginBase_BackendSummary extends ApacheSolrForTypo3\Solr\Plugin\BackendSummary {}
+class Tx_Solr_Facet_QueryGroupFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\QueryGroupFacetRenderer
+{
+}
 
 /**
  * @deprecated
  */
-abstract class Tx_Solr_PluginBase_CommandPluginBase extends ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase {}
+class Tx_Solr_Facet_SimpleFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\SimpleFacetRenderer
+{
+}
 
 /**
  * @deprecated
  */
-abstract class Tx_Solr_PluginBase_PluginBase extends ApacheSolrForTypo3\Solr\Plugin\PluginBase {}
+class Tx_Solr_Facet_SimpleFacetOptionsRenderer extends ApacheSolrForTypo3\Solr\Facet\SimpleFacetOptionsRenderer
+{
+}
 
-
-
 /**
  * @deprecated
  */
-class Tx_Solr_Query_LinkBuilder extends ApacheSolrForTypo3\Solr\Query\LinkBuilder {}
-
+class Tx_Solr_Facet_UsedFacetRenderer extends ApacheSolrForTypo3\Solr\Facet\UsedFacetRenderer
+{
+}
 
-
 /**
  * @deprecated
  */
-class Tx_Solr_Query_FilterEncoder_DateRange extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange {}
+class Tx_Solr_FieldProcessor_AbstractHierarchyProcessor extends ApacheSolrForTypo3\Solr\FieldProcessor\AbstractHierarchyProcessor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query_FilterEncoder_Hierarchy extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy {}
+class Tx_Solr_FieldProcessor_CategoryUidToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query_FilterEncoder_QueryGroup extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup {}
+class Tx_Solr_FieldProcessor_PageUidToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query_FilterEncoder_Range extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range {}
-
+class Tx_Solr_FieldProcessor_PathToHierarchy extends ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy
+{
+}
 
-
 /**
  * @deprecated
  */
-class Tx_Solr_Query_Modifier_Elevation extends ApacheSolrForTypo3\Solr\Query\Modifier\Elevation {}
+class Tx_Solr_FieldProcessor_Service extends ApacheSolrForTypo3\Solr\FieldProcessor\Service
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query_Modifier_Faceting extends ApacheSolrForTypo3\Solr\Query\Modifier\Faceting {}
+class Tx_Solr_FieldProcessor_TimestampToIsoDate extends ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Query_Modifier_Statistics extends ApacheSolrForTypo3\Solr\Query\Modifier\Statistics {}
-
-
+class Tx_Solr_FieldProcessor_TimestampToUtcIsoDate extends ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Response_Processor_StatisticsWriter extends ApacheSolrForTypo3\Solr\Response\Processor\StatisticsWriter {}
+class Tx_Solr_IndexQueue_AbstractIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
+{
+}
 
-
-
 /**
  * @deprecated
  */
-class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\ScoreAnalyzer {}
+class Tx_Solr_IndexQueue_Indexer extends ApacheSolrForTypo3\Solr\IndexQueue\Indexer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ResultDocumentModifier_SiteHighlighter extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\SiteHighlighter {}
-
+class Tx_Solr_IndexQueue_Item extends ApacheSolrForTypo3\Solr\IndexQueue\Item
+{
+}
 
-
 /**
  * @deprecated
  */
-class Tx_Solr_Resultsetmodifier_LastSearches extends ApacheSolrForTypo3\Solr\ResultsetModifier\LastSearches {}
-
-
+class Tx_Solr_IndexQueue_PageIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+{
+}
 
 /**
  * @deprecated
  */
-abstract class Tx_Solr_Search_AbstractComponent extends ApacheSolrForTypo3\Solr\Search\AbstractComponent {}
+class Tx_Solr_IndexQueue_PageIndexerRequest extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_AccessComponent extends ApacheSolrForTypo3\Solr\Search\AccessComponent {}
+class Tx_Solr_IndexQueue_PageIndexerRequestHandler extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_AnalysisComponent extends ApacheSolrForTypo3\Solr\Search\AnalysisComponent {}
+class Tx_Solr_IndexQueue_PageIndexerResponse extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_DebugComponent extends ApacheSolrForTypo3\Solr\Search\DebugComponent {}
+class Tx_Solr_IndexQueue_Queue extends ApacheSolrForTypo3\Solr\IndexQueue\Queue
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_ElevationComponent extends ApacheSolrForTypo3\Solr\Search\ElevationComponent {}
+class Tx_Solr_IndexQueue_RecordMonitor extends ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_FacetingComponent extends ApacheSolrForTypo3\Solr\Search\FacetingComponent {}
+abstract class Tx_Solr_IndexQueue_FrontendHelper_Abstract extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AbstractFrontendHelper
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_HighlightingComponent extends ApacheSolrForTypo3\Solr\Search\HighlightingComponent {}
+class Tx_Solr_IndexQueue_FrontendHelper_AuthorizationService extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\AuthorizationService
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_LastSearchesComponent extends ApacheSolrForTypo3\Solr\Search\LastSearchesComponent {}
+class Tx_Solr_IndexQueue_FrontendHelper_Dispatcher extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_RelevanceComponent extends ApacheSolrForTypo3\Solr\Search\RelevanceComponent {}
+class Tx_Solr_IndexQueue_FrontendHelper_Manager extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_SearchComponentManager extends ApacheSolrForTypo3\Solr\Search\SearchComponentManager {}
+class Tx_Solr_IndexQueue_FrontendHelper_UserGroupDetector extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\UserGroupDetector
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_SortingComponent extends ApacheSolrForTypo3\Solr\Search\SortingComponent {}
+class Tx_Solr_IndexQueue_FrontendHelper_PageFieldMappingIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_SpellcheckingComponent extends ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent {}
+class Tx_Solr_IndexQueue_FrontendHelper_PageIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Search_StatisticsComponent extends ApacheSolrForTypo3\Solr\Search\StatisticsComponent {}
+abstract class Tx_Solr_IndexQueue_Initializer_Abstract extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer
+{
+}
 
-
-
 /**
  * @deprecated
  */
-abstract class Tx_Solr_ViewHelper_AbstractSubpartViewHelper extends ApacheSolrForTypo3\Solr\ViewHelper\AbstractSubpartViewHelper {}
+class Tx_Solr_IndexQueue_Initializer_Page extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_Crop extends ApacheSolrForTypo3\Solr\ViewHelper\Crop {}
+class Tx_Solr_IndexQueue_Initializer_Record extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_CurrentResultNumber extends ApacheSolrForTypo3\Solr\ViewHelper\CurrentResultNumber {}
+class Tx_Solr_PluginBase_BackendSummary extends ApacheSolrForTypo3\Solr\Plugin\BackendSummary
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_Date extends ApacheSolrForTypo3\Solr\ViewHelper\Date {}
+abstract class Tx_Solr_PluginBase_CommandPluginBase extends ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_Facet extends ApacheSolrForTypo3\Solr\ViewHelper\Facet {}
+abstract class Tx_Solr_PluginBase_PluginBase extends ApacheSolrForTypo3\Solr\Plugin\PluginBase
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_Link extends ApacheSolrForTypo3\Solr\ViewHelper\Link {}
+class Tx_Solr_Query_LinkBuilder extends ApacheSolrForTypo3\Solr\Query\LinkBuilder
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_Lll extends ApacheSolrForTypo3\Solr\ViewHelper\Lll {}
+class Tx_Solr_Query_FilterEncoder_DateRange extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_Multivalue extends ApacheSolrForTypo3\Solr\ViewHelper\Multivalue {}
+class Tx_Solr_Query_FilterEncoder_Hierarchy extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_OddEven extends ApacheSolrForTypo3\Solr\ViewHelper\OddEven {}
+class Tx_Solr_Query_FilterEncoder_QueryGroup extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_Relevance extends ApacheSolrForTypo3\Solr\ViewHelper\Relevance {}
+class Tx_Solr_Query_FilterEncoder_Range extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_RelevanceBar extends ApacheSolrForTypo3\Solr\ViewHelper\RelevanceBar {}
+class Tx_Solr_Query_Modifier_Elevation extends ApacheSolrForTypo3\Solr\Query\Modifier\Elevation
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_SolrLink extends ApacheSolrForTypo3\Solr\ViewHelper\SolrLink {}
+class Tx_Solr_Query_Modifier_Faceting extends ApacheSolrForTypo3\Solr\Query\Modifier\Faceting
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_SortIndicator extends ApacheSolrForTypo3\Solr\ViewHelper\SortIndicator {}
+class Tx_Solr_Query_Modifier_Statistics extends ApacheSolrForTypo3\Solr\Query\Modifier\Statistics
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_SortUrl extends ApacheSolrForTypo3\Solr\ViewHelper\SortUrl {}
+class Tx_Solr_Response_Processor_StatisticsWriter extends ApacheSolrForTypo3\Solr\Response\Processor\StatisticsWriter
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_ViewHelper_Ts extends ApacheSolrForTypo3\Solr\ViewHelper\Ts {}
-
+class Tx_Solr_ResultDocumentModifier_ScoreAnalyzer extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\ScoreAnalyzer
+{
+}
 
-
 /**
  * @deprecated
  */
-class Tx_Solr_Modindex_IndexInspector extends ApacheSolrForTypo3\Solr\Backend\IndexInspector\IndexInspector {}
+class Tx_Solr_ResultDocumentModifier_SiteHighlighter extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\SiteHighlighter
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Modindex_IndexInspectorRemoteController extends ApacheSolrForTypo3\Solr\Backend\IndexInspector\IndexInspectorRemoteController {}
-
-
+class Tx_Solr_Resultsetmodifier_LastSearches extends ApacheSolrForTypo3\Solr\ResultsetModifier\LastSearches
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiFrequentSearches_FrequentSearches extends ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches {}
+abstract class Tx_Solr_Search_AbstractComponent extends ApacheSolrForTypo3\Solr\Search\AbstractComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_Results extends ApacheSolrForTypo3\Solr\Plugin\Results\Results {}
+class Tx_Solr_Search_AccessComponent extends ApacheSolrForTypo3\Solr\Search\AccessComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiSearch_Search extends ApacheSolrForTypo3\Solr\Plugin\Search\Search {}
+class Tx_Solr_Search_AnalysisComponent extends ApacheSolrForTypo3\Solr\Search\AnalysisComponent
+{
+}
 
-
-
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_ErrorsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ErrorsCommand {}
+class Tx_Solr_Search_DebugComponent extends ApacheSolrForTypo3\Solr\Search\DebugComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_FacetingCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FacetingCommand {}
+class Tx_Solr_Search_ElevationComponent extends ApacheSolrForTypo3\Solr\Search\ElevationComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_FormCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FormCommand {}
+class Tx_Solr_Search_FacetingComponent extends ApacheSolrForTypo3\Solr\Search\FacetingComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_FrequentSearchesCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FrequentSearchesCommand {}
+class Tx_Solr_Search_HighlightingComponent extends ApacheSolrForTypo3\Solr\Search\HighlightingComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_HighlightingResultDocumentModifier extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\DocumentHighlighter {}
+class Tx_Solr_Search_LastSearchesComponent extends ApacheSolrForTypo3\Solr\Search\LastSearchesComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_LastSearchesCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\LastSearchesCommand {}
+class Tx_Solr_Search_RelevanceComponent extends ApacheSolrForTypo3\Solr\Search\RelevanceComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_NoResultsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\NoResultsCommand {}
+class Tx_Solr_Search_SearchComponentManager extends ApacheSolrForTypo3\Solr\Search\SearchComponentManager
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_ResultsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand {}
+class Tx_Solr_Search_SortingComponent extends ApacheSolrForTypo3\Solr\Search\SortingComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_ResultsPerPageSwitchCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ResultsPerPageSwitchCommand {}
+class Tx_Solr_Search_SpellcheckingComponent extends ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_SortingCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\SortingCommand {}
+class Tx_Solr_Search_StatisticsComponent extends ApacheSolrForTypo3\Solr\Search\StatisticsComponent
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_ParameterKeepingFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\ParameterKeepingFormModifier {}
+abstract class Tx_Solr_ViewHelper_AbstractSubpartViewHelper extends ApacheSolrForTypo3\Solr\ViewHelper\AbstractSubpartViewHelper
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_SpellCheckFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\SpellCheckFormModifier {}
+class Tx_Solr_ViewHelper_Crop extends ApacheSolrForTypo3\Solr\ViewHelper\Crop
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_SuggestFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\SuggestFormModifier {}
+class Tx_Solr_ViewHelper_CurrentResultNumber extends ApacheSolrForTypo3\Solr\ViewHelper\CurrentResultNumber
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_PiResults_QueryAnalyzerFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\QueryAnalyzerFormModifier {}
-
+class Tx_Solr_ViewHelper_Date extends ApacheSolrForTypo3\Solr\ViewHelper\Date
+{
+}
 
-
 /**
  * @deprecated
  */
-class Tx_Solr_Scheduler_IndexQueueWorkerTask extends ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask {}
+class Tx_Solr_ViewHelper_Facet extends ApacheSolrForTypo3\Solr\ViewHelper\Facet
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider extends ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider {}
+class Tx_Solr_ViewHelper_Link extends ApacheSolrForTypo3\Solr\ViewHelper\Link
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Scheduler_ReIndexTask extends ApacheSolrForTypo3\Solr\Task\ReIndexTask {}
+class Tx_Solr_ViewHelper_Lll extends ApacheSolrForTypo3\Solr\ViewHelper\Lll
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider extends ApacheSolrForTypo3\Solr\Task\ReIndexTaskAdditionalFieldProvider {}
-
-
+class Tx_Solr_ViewHelper_Multivalue extends ApacheSolrForTypo3\Solr\ViewHelper\Multivalue
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Report_AccessFilterPluginInstalledStatus extends ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus {}
+class Tx_Solr_ViewHelper_OddEven extends ApacheSolrForTypo3\Solr\ViewHelper\OddEven
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Report_AllowUrlFOpenStatus extends ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus {}
+class Tx_Solr_ViewHelper_Relevance extends ApacheSolrForTypo3\Solr\ViewHelper\Relevance
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Report_FilterVarStatus extends ApacheSolrForTypo3\Solr\Report\FilterVarStatus {}
+class Tx_Solr_ViewHelper_RelevanceBar extends ApacheSolrForTypo3\Solr\ViewHelper\RelevanceBar
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Report_SchemaStatus extends ApacheSolrForTypo3\Solr\Report\SchemaStatus {}
+class Tx_Solr_ViewHelper_SolrLink extends ApacheSolrForTypo3\Solr\ViewHelper\SolrLink
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Report_SolrConfigStatus extends ApacheSolrForTypo3\Solr\Report\SolrConfigStatus {}
+class Tx_Solr_ViewHelper_SortIndicator extends ApacheSolrForTypo3\Solr\ViewHelper\SortIndicator
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Report_SolrConfigurationStatus extends ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus {}
+class Tx_Solr_ViewHelper_SortUrl extends ApacheSolrForTypo3\Solr\ViewHelper\SortUrl
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Report_SolrStatus extends ApacheSolrForTypo3\Solr\Report\SolrStatus {}
+class Tx_Solr_ViewHelper_Ts extends ApacheSolrForTypo3\Solr\ViewHelper\Ts
+{
+}
 
 /**
  * @deprecated
  */
-class Tx_Solr_Report_SolrVersionStatus extends ApacheSolrForTypo3\Solr\Report\SolrVersionStatus {}
+class Tx_Solr_Modindex_IndexInspector extends ApacheSolrForTypo3\Solr\Backend\IndexInspector\IndexInspector
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_AdditionalIndexQueueItemIndexer extends ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer {}
+class Tx_Solr_Modindex_IndexInspectorRemoteController extends ApacheSolrForTypo3\Solr\Backend\IndexInspector\IndexInspectorRemoteController
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_CommandPluginAware extends ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware {}
+class Tx_Solr_PiFrequentSearches_FrequentSearches extends ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_CommandPostProcessor extends ApacheSolrForTypo3\Solr\Plugin\CommandPostProcessor {}
+class Tx_Solr_PiResults_Results extends ApacheSolrForTypo3\Solr\Plugin\Results\Results
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_ErrorDetector extends ApacheSolrForTypo3\Solr\Plugin\Results\ErrorDetector {}
+class Tx_Solr_PiSearch_Search extends ApacheSolrForTypo3\Solr\Plugin\Search\Search
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_FacetsModifier extends ApacheSolrForTypo3\Solr\Search\FacetsModifier {}
+class Tx_Solr_PiResults_ErrorsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ErrorsCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_FieldProcessor extends ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor {}
+class Tx_Solr_PiResults_FacetingCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FacetingCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_FormModifier extends ApacheSolrForTypo3\Solr\Plugin\FormModifier {}
+class Tx_Solr_PiResults_FormCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FormCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_IndexQueueInitializationPostProcessor extends ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor {}
+class Tx_Solr_PiResults_FrequentSearchesCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\FrequentSearchesCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_IndexQueueInitializer extends ApacheSolrForTypo3\Solr\IndexQueue\Initializer\IndexQueueInitializer {}
+class Tx_Solr_PiResults_HighlightingResultDocumentModifier extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\DocumentHighlighter
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_IndexQueuePageIndexerDataUrlModifier extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDataUrlModifier {}
+class Tx_Solr_PiResults_LastSearchesCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\LastSearchesCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_IndexQueuePageIndexerDocumentsModifier extends ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier {}
+class Tx_Solr_PiResults_NoResultsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\NoResultsCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_IndexQueuePageIndexerFrontendHelper extends ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\FrontendHelper {}
+class Tx_Solr_PiResults_ResultsCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_PageDocumentPostProcessor extends ApacheSolrForTypo3\Solr\PageDocumentPostProcessor {}
+class Tx_Solr_PiResults_ResultsPerPageSwitchCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\ResultsPerPageSwitchCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_PluginAware extends ApacheSolrForTypo3\Solr\Plugin\PluginAware {}
+class Tx_Solr_PiResults_SortingCommand extends ApacheSolrForTypo3\Solr\Plugin\Results\SortingCommand
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_PluginCommand extends ApacheSolrForTypo3\Solr\Plugin\PluginCommand {}
+class Tx_Solr_PiResults_ParameterKeepingFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\ParameterKeepingFormModifier
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_QueryAware extends ApacheSolrForTypo3\Solr\Search\QueryAware {}
+class Tx_Solr_PiResults_SpellCheckFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\SpellCheckFormModifier
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_QueryFilterEncoder extends ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder {}
+class Tx_Solr_PiResults_SuggestFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\SuggestFormModifier
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_QueryModifier extends ApacheSolrForTypo3\Solr\Query\Modifier\Modifier {}
+class Tx_Solr_PiResults_QueryAnalyzerFormModifier extends ApacheSolrForTypo3\Solr\Plugin\Results\QueryAnalyzerFormModifier
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_ResponseModifier extends ApacheSolrForTypo3\Solr\Search\ResponseModifier {}
+class Tx_Solr_Scheduler_IndexQueueWorkerTask extends ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_ResponseProcessor extends ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor {}
+class Tx_Solr_Scheduler_IndexQueueWorkerTaskAdditionalFieldProvider extends ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_ResultDocumentModifier extends ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier {}
+class Tx_Solr_Scheduler_ReIndexTask extends ApacheSolrForTypo3\Solr\Task\ReIndexTask
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_ResultSetModifier extends ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier {}
+class Tx_Solr_Scheduler_ReIndexTaskAdditionalFieldProvider extends ApacheSolrForTypo3\Solr\Task\ReIndexTaskAdditionalFieldProvider
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_SearchAware extends ApacheSolrForTypo3\Solr\Search\SearchAware {}
+class Tx_Solr_Report_AccessFilterPluginInstalledStatus extends ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_SearchComponent extends ApacheSolrForTypo3\Solr\Search\SearchComponent {}
+class Tx_Solr_Report_AllowUrlFOpenStatus extends ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_SerializedValueDetector extends ApacheSolrForTypo3\Solr\IndexQueue\SerializedValueDetector {}
+class Tx_Solr_Report_FilterVarStatus extends ApacheSolrForTypo3\Solr\Report\FilterVarStatus
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_SubpartViewHelper extends ApacheSolrForTypo3\Solr\ViewHelper\SubpartViewHelper {}
+class Tx_Solr_Report_SchemaStatus extends ApacheSolrForTypo3\Solr\Report\SchemaStatus
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_SubstitutePageIndexer extends ApacheSolrForTypo3\Solr\SubstitutePageIndexer {}
+class Tx_Solr_Report_SolrConfigStatus extends ApacheSolrForTypo3\Solr\Report\SolrConfigStatus
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_TemplateModifier extends ApacheSolrForTypo3\Solr\TemplateModifier {}
+class Tx_Solr_Report_SolrConfigurationStatus extends ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_ViewHelper extends ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper {}
+class Tx_Solr_Report_SolrStatus extends ApacheSolrForTypo3\Solr\Report\SolrStatus
+{
+}
 
 /**
  * @deprecated
  */
-interface Tx_Solr_ViewHelperProvider extends ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider {}
+class Tx_Solr_Report_SolrVersionStatus extends ApacheSolrForTypo3\Solr\Report\SolrVersionStatus
+{
+}

@@ -38,16 +38,20 @@ use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
  * @package TYPO3
  * @subpackage solr
  */
-interface ResultSetModifier {
+interface ResultSetModifier
+{
 
-	/**
-	 * Modifies the given resultset and returns the modified resultset as array
-	 *
-	 * @param ResultsCommand $resultCommand The search result command
-	 * @param array $resultSet Result set
-	 * @return array The resultset with fields as array
-	 */
-	public function modifyResultSet(ResultsCommand $resultCommand, array $resultSet);
+    /**
+     * Modifies the given resultset and returns the modified resultset as array
+     *
+     * @param ResultsCommand $resultCommand The search result command
+     * @param array $resultSet Result set
+     * @return array The resultset with fields as array
+     */
+    public function modifyResultSet(
+        ResultsCommand $resultCommand,
+        array $resultSet
+    );
 
 }
 

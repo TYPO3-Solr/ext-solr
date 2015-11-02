@@ -46,81 +46,91 @@ require_once(dirname(__FILE__) . '/Response.php');
  */
 interface Apache_Solr_HttpTransport_Interface
 {
-	/**
-	 * Get the current default timeout for all HTTP requests
-	 *
-	 * @return float
-	 */
-	public function getDefaultTimeout();
-	
-	/**
-	 * Set the current default timeout for all HTTP requests
-	 *
-	 * @param float $timeout
-	 */
-	public function setDefaultTimeout($timeout);
-	
-	/**
-	 * Set authentication credentials to pass along with the requests.
-	 * 
-	 * These will be used to perform HTTP Basic authentication.
-	 * 
-	 * @param string $username
-	 * @param string $password
-	 */
-	public function setAuthenticationCredentials($username, $password);
-	
-	/**
-	 * Perform a GET HTTP operation with an optional timeout and return the response
-	 * contents, use getLastResponseHeaders to retrieve HTTP headers
-	 *
-	 * @param string $url
-	 * @param float|boolean $timeout
-	 * @return Apache_Solr_HttpTransport_Response HTTP response
-	 */
-	public function performGetRequest($url, $timeout = false);
-	
-	/**
-	 * Perform a HEAD HTTP operation with an optional timeout and return the response
-	 * headers - NOTE: head requests have no response body
-	 *
-	 * @param string $url
-	 * @param float|boolean $timeout
-	 * @return Apache_Solr_HttpTransport_Response HTTP response
-	 */
-	public function performHeadRequest($url, $timeout = false);
-	
-	/**
-	 * Perform a POST HTTP operation with an optional timeout and return the response
-	 * contents, use getLastResponseHeaders to retrieve HTTP headers
-	 *
-	 * @param string $url
-	 * @param string $rawPost
-	 * @param string $contentType
-	 * @param float|boolean $timeout
-	 * @return Apache_Solr_HttpTransport_Response HTTP response
-	 */
-	public function performPostRequest($url, $rawPost, $contentType, $timeout = false);
+    /**
+     * Get the current default timeout for all HTTP requests
+     *
+     * @return float
+     */
+    public function getDefaultTimeout();
 
-	/**
-	 * Perform a PUT HTTP operation with an optional timeout and return the response
-	 * contents, use getLastResponseHeaders to retrieve HTTP headers
-	 *
-	 * @param string $url
-	 * @param string $rawPut
-	 * @param string $contentType
-	 * @param float|boolean $timeout
-	 * @return Apache_Solr_HttpTransport_Response HTTP response
-	 */
-	public function performPutRequest($url, $rawPut, $contentType, $timeout = false);
+    /**
+     * Set the current default timeout for all HTTP requests
+     *
+     * @param float $timeout
+     */
+    public function setDefaultTimeout($timeout);
 
-	/**
-	 * Perform a DELETE HTTP operation with an optional timeout and return the response
-	 * contents, use getLastResponseHeaders to retrieve HTTP headers
-	 *
-	 * @param string $url
-	 * @param float|boolean $timeout
-	 * @return Apache_Solr_HttpTransport_Response HTTP response
-	 */
-	public function performDeleteRequest($url, $timeout = false);
+    /**
+     * Set authentication credentials to pass along with the requests.
+     *
+     * These will be used to perform HTTP Basic authentication.
+     *
+     * @param string $username
+     * @param string $password
+     */
+    public function setAuthenticationCredentials($username, $password);
+
+    /**
+     * Perform a GET HTTP operation with an optional timeout and return the response
+     * contents, use getLastResponseHeaders to retrieve HTTP headers
+     *
+     * @param string $url
+     * @param float|boolean $timeout
+     * @return Apache_Solr_HttpTransport_Response HTTP response
+     */
+    public function performGetRequest($url, $timeout = false);
+
+    /**
+     * Perform a HEAD HTTP operation with an optional timeout and return the response
+     * headers - NOTE: head requests have no response body
+     *
+     * @param string $url
+     * @param float|boolean $timeout
+     * @return Apache_Solr_HttpTransport_Response HTTP response
+     */
+    public function performHeadRequest($url, $timeout = false);
+
+    /**
+     * Perform a POST HTTP operation with an optional timeout and return the response
+     * contents, use getLastResponseHeaders to retrieve HTTP headers
+     *
+     * @param string $url
+     * @param string $rawPost
+     * @param string $contentType
+     * @param float|boolean $timeout
+     * @return Apache_Solr_HttpTransport_Response HTTP response
+     */
+    public function performPostRequest(
+        $url,
+        $rawPost,
+        $contentType,
+        $timeout = false
+    );
+
+    /**
+     * Perform a PUT HTTP operation with an optional timeout and return the response
+     * contents, use getLastResponseHeaders to retrieve HTTP headers
+     *
+     * @param string $url
+     * @param string $rawPut
+     * @param string $contentType
+     * @param float|boolean $timeout
+     * @return Apache_Solr_HttpTransport_Response HTTP response
+     */
+    public function performPutRequest(
+        $url,
+        $rawPut,
+        $contentType,
+        $timeout = false
+    );
+
+    /**
+     * Perform a DELETE HTTP operation with an optional timeout and return the response
+     * contents, use getLastResponseHeaders to retrieve HTTP headers
+     *
+     * @param string $url
+     * @param float|boolean $timeout
+     * @return Apache_Solr_HttpTransport_Response HTTP response
+     */
+    public function performDeleteRequest($url, $timeout = false);
 }

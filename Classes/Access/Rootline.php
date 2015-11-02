@@ -1,28 +1,30 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\Access;
-/***************************************************************
-*  Copyright notice
-*
-*  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
 
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -63,155 +65,165 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Rootline {
+class Rootline
+{
 
-	/**
-	 * Delimiter for page and content access right elements in the rootline.
-	 *
-	 * @var string
-	 */
-	const ELEMENT_DELIMITER = '/';
+    /**
+     * Delimiter for page and content access right elements in the rootline.
+     *
+     * @var string
+     */
+    const ELEMENT_DELIMITER = '/';
 
-	/**
-	 * Storage for access rootline elements
-	 *
-	 * @var array
-	 */
-	protected $rootlineElements = array();
+    /**
+     * Storage for access rootline elements
+     *
+     * @var array
+     */
+    protected $rootlineElements = array();
 
-	/**
-	 * Constructor, turns a string representation of an access rootline into an
-	 * object representation.
-	 *
-	 * @param string $accessRootline Access Rootline String representation.
-	 */
-	public function __construct($accessRootline = NULL) {
-		if (!is_null($accessRootline)) {
-			$rawRootlineElements = explode(self::ELEMENT_DELIMITER, $accessRootline);
+    /**
+     * Constructor, turns a string representation of an access rootline into an
+     * object representation.
+     *
+     * @param string $accessRootline Access Rootline String representation.
+     */
+    public function __construct($accessRootline = null)
+    {
+        if (!is_null($accessRootline)) {
+            null$rawRootlineElements = explode(self::ELEMENT_DELIMITER,
+                $accessRootline);
 			foreach ($rawRootlineElements as $rawRootlineElement) {
-				try {
-					$this->push(GeneralUtility::makeInstance(
-						'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
-						$rawRootlineElement
-					));
-				} catch (RootlineElementFormatException $e) {
-					// just ignore the faulty element for now, might log this later
-				}
-			}
+                try {
+                    $this->push(GeneralUtility::makeInstance(
+                        'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
+                        $rawRootlineElement
+                    ));
+                } catch (RootlineElementFormatException $e) {
+                    // just ignore the faulty element for now, might log this later
+                }
+            }
 		}
-	}
+    }
 
-	/**
-	 * Returns the string representation of the access rootline.
-	 *
-	 * @return string String representation of the access rootline.
-	 */
-	public function __toString() {
-		$stringElements = array();
+    /**
+     * Adds an Access Rootline Element to the end of the rootline.
+     *
+     * @param RootlineElement $rootlineElement Element to add.
+     */
+    public function push(RootlineElement $rootlineElement)
+    {
+        $lastElementIndex = max(0, (count($this->rootlineElements) - 1));
 
-		foreach ($this->rootlineElements as $rootlineElement) {
-			$stringElements[] = (string) $rootlineElement;
-		}
+        if (!empty($this->rootlineElements[$lastElementIndex])) {
+            if ($this->rootlineElements[$lastElementIndex]->getType() == RootlineElement::ELEMENT_TYPE_CONTENT) {
+                throw new RootlineElementFormatException(
+                    'Can not add an element to an Access Rootline whose\' last element is a content type element.',
+                    1294422132
+                );
+            }
 
-		return implode(self::ELEMENT_DELIMITER, $stringElements);
-	}
+            if ($this->rootlineElements[$lastElementIndex]->getType() == RootlineElement::ELEMENT_TYPE_RECORD) {
+                throw new RootlineElementFormatException(
+                    'Can not add an element to an Access Rootline whose\' last element is a record type element.',
+                    1308343423
+                );
+            }
+        }
 
-	/**
-	 * Adds an Access Rootline Element to the end of the rootline.
-	 *
-	 * @param RootlineElement $rootlineElement Element to add.
-	 */
-	public function push(RootlineElement $rootlineElement) {
-		$lastElementIndex = max(0, (count($this->rootlineElements) - 1));
+        $this->rootlineElements[] = $rootlineElement;
+    }
 
-		if (!empty($this->rootlineElements[$lastElementIndex])) {
-			if ($this->rootlineElements[$lastElementIndex]->getType() == RootlineElement::ELEMENT_TYPE_CONTENT) {
-				throw new RootlineElementFormatException(
-					'Can not add an element to an Access Rootline whose\' last element is a content type element.',
-					1294422132
-				);
-			}
+    /**
+     * Gets the Access Rootline for a specific page Id.
+     *
+     * @param integer $pageId The page Id to generate the Access Rootline for.
+     * @param string $mountPointParameter The mount point parameter for generating the rootline.
+     * @return \ApacheSolrForTypo3\Solr\Access\Rootline Access Rootline for the given page Id.
+     */
+    public static function getAccessRootlineByPageId(
+        $pageId,
+        $mountPointParameter = ''
+    ) {
+        $accessRootline = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Access\\Rootline');
 
-			if ($this->rootlineElements[$lastElementIndex]->getType() == RootlineElement::ELEMENT_TYPE_RECORD) {
-				throw new RootlineElementFormatException(
-					'Can not add an element to an Access Rootline whose\' last element is a record type element.',
-					1308343423
-				);
-			}
-		}
+        $pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageSelector->init(false);
+        $rootline = $pageSelector->getRofalsee($pageId, $mountPointParameter);
+        $rootline = array_reverse($rootline);
 
-		$this->rootlineElements[] = $rootlineElement;
-	}
+        // parent pages
+        foreach ($rootline as $pageRecord) {
+            if ($pageRecord['fe_group']
+                && $pageRecord['extendToSubpages']
+                && $pageRecord['uid'] != $pageId
+            ) {
+                $accessRootline->push(GeneralUtility::makeInstance(
+                    'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
+                    $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
+                ));
+            }
+        }
 
-	/**
-	 * Gets a the groups in the Access Rootline.
-	 *
-	 * @return array An array of sorted, unique user group IDs required to access a page.
-	 */
-	public function getGroups() {
-		$groups = array();
+        // current page
+        $currentPageRecord = $pageSelector->getPage($pageId);
+        if ($currentPageRecord['fe_group']) {
+            $accessRootline->push(GeneralUtility::makeInstance(
+                'ApacheSolrForTypo3\Solr\Access\RootlineElement',
+                $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
+            ));
+        }
 
-		foreach ($this->rootlineElements as $rootlineElement) {
-			$rootlineElementGroups = $rootlineElement->getGroups();
-			$groups = array_merge($groups, $rootlineElementGroups);
-		}
+        return $accessRootline;
+    }
 
-		$groups = $this->cleanGroupArray($groups);
+    /**
+     * Returns the string representation of the access rootline.
+     *
+     * @return string String representation of the access rootline.
+     */
+    public function __toString()
+    {
+        $stringElements = array();
 
-		return $groups;
-	}
+        foreach ($this->rootlineElements as $rootlineElement) {
+            $stringElements[] = (string)$rootlineElement;
+        }
 
-	/**
-	 * Gets the Access Rootline for a specific page Id.
-	 *
-	 * @param integer $pageId The page Id to generate the Access Rootline for.
-	 * @param string $mountPointParameter The mount point parameter for generating the rootline.
-	 * @return \ApacheSolrForTypo3\Solr\Access\Rootline Access Rootline for the given page Id.
-	 */
-	public static function getAccessRootlineByPageId($pageId, $mountPointParameter = '') {
-		$accessRootline = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Access\\Rootline');
+        return implode(self::ELEMENT_DELIMITER, $stringElements);
+    }
 
-		$pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-		$pageSelector->init(FALSE);
-		$rootline = $pageSelector->getRootLine($pageId, $mountPointParameter);
-		$rootline = array_reverse($rootline);
+    /**
+     * Gets a the groups in the Access Rootline.
+     *
+     * @return array An array of sorted, unique user group IDs required to access a page.
+     */
+    public function getGroups()
+    {
+        $groups = array();
 
-			// parent pages
-		foreach ($rootline as $pageRecord) {
-			if ($pageRecord['fe_group']
-				&& $pageRecord['extendToSubpages']
-				&& $pageRecord['uid'] != $pageId
-			) {
-				$accessRootline->push(GeneralUtility::makeInstance(
-					'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
-					$pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
-				));
-			}
-		}
+        foreach ($this->rootlineElements as $rootlineElement) {
+            $rootlineElementGroups = $rootlineElement->getGroups();
+            $groups = array_merge($groups, $rootlineElementGroups);
+        }
 
-			// current page
-		$currentPageRecord = $pageSelector->getPage($pageId);
-		if ($currentPageRecord['fe_group']) {
-			$accessRootline->push(GeneralUtility::makeInstance(
-				'ApacheSolrForTypo3\Solr\Access\RootlineElement',
-				$currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
-			));
-		}
+        $groups = $this->cleanGroupArray($groups);
 
-		return $accessRootline;
-	}
+        return $groups;
+    }
 
-	/**
-	 * Cleans an array of frontend user group IDs. Removes duplicates and sorts
-	 * the array.
-	 *
-	 * @param array $groups An array of frontend user group IDs
-	 * @return array An array of cleaned frontend user group IDs, unique, sorted.
-	 */
-	public static function cleanGroupArray(array $groups) {
-		$groups = array_unique($groups); // removes duplicates
-		sort($groups, SORT_NUMERIC);     // sort
+    /**
+     * Cleans an array of frontend user group IDs. Removes duplicates and sorts
+     * the array.
+     *
+     * @param array $groups An array of frontend user group IDs
+     * @return array An array of cleaned frontend user group IDs, unique, sorted.
+     */
+    public static function cleanGroupArray(array $groups)
+    {
+        $groups = array_unique($groups); // removes duplicates
+        sort($groups, SORT_NUMERIC);     // sort
 
-		return $groups;
-	}
+        return $groups;
+    }
 }

@@ -37,16 +37,20 @@ use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
  * @package TYPO3
  * @subpackage solr
  */
-interface ResultDocumentModifier {
+interface ResultDocumentModifier
+{
 
-	/**
-	 * Modifies the given document and returns the modified document as result.
-	 *
-	 * @param ResultsCommand $resultCommand The search result command
-	 * @param array $resultDocument Result document as array
-	 * @return array The document with fields as array
-	 */
-	public function modifyResultDocument(ResultsCommand $resultCommand, array $resultDocument);
+    /**
+     * Modifies the given document and returns the modified document as result.
+     *
+     * @param ResultsCommand $resultCommand The search result command
+     * @param array $resultDocument Result document as array
+     * @return array The document with fields as array
+     */
+    public function modifyResultDocument(
+        ResultsCommand $resultCommand,
+        array $resultDocument
+    );
 
 }
 

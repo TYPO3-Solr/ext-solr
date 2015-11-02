@@ -34,35 +34,38 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-class SpellcheckingComponent extends AbstractComponent implements QueryAware {
+class SpellcheckingComponent extends AbstractComponent implements QueryAware
+{
 
-	/**
-	 * Solr query
-	 *
-	 * @var Query
-	 */
-	protected $query;
+    /**
+     * Solr query
+     *
+     * @var Query
+     */
+    protected $query;
 
 
-	/**
-	 * Initializes the search component.
-	 *
-	 *
-	 */
-	public function initializeSearchComponent() {
-		if ($this->searchConfiguration['spellchecking']) {
-			$this->query->setSpellchecking();
-		}
-	}
+    /**
+     * Initializes the search component.
+     *
+     *
+     */
+    public function initializeSearchComponent()
+    {
+        if ($this->searchConfiguration['spellchecking']) {
+            $this->query->setSpellchecking();
+        }
+    }
 
-	/**
-	 * Provides the extension component with an instance of the current query.
-	 *
-	 * @param Query $query Current query
-	 */
-	public function setQuery(Query $query) {
-		$this->query = $query;
-	}
+    /**
+     * Provides the extension component with an instance of the current query.
+     *
+     * @param Query $query Current query
+     */
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
+    }
 
 }
 

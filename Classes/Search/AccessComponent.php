@@ -35,38 +35,42 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class AccessComponent extends AbstractComponent implements QueryAware {
+class AccessComponent extends AbstractComponent implements QueryAware
+{
 
-	/**
-	 * Solr query
-	 *
-	 * @var Query
-	 */
-	protected $query;
+    /**
+     * Solr query
+     *
+     * @var Query
+     */
+    protected $query;
 
 
-	/**
-	 * Initializes the search component.
-	 *
-	 *
-	 */
-	public function initializeSearchComponent() {
-		$allowedSites = Util::resolveSiteHashAllowedSites(
-			$GLOBALS['TSFE']->id,
-			$this->searchConfiguration['query.']['allowedSites']
-		);
-		$this->query->setSiteHashFilter($allowedSites);
-		$this->query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
-	}
+    /**
+     * Initializes the search component.
+     *
+     *
+     */
+    public function initializeSearchComponent()
+    {
+        $allowedSites = Util::resolveSiteHashAllowedSites(
+            $GLOBALS['TSFE']->id,
+            $this->searchConfiguration['query.']['allowedSites']
+        );
+        $this->query->setSiteHashFilter($allowedSites);
+        $this->query->setUserAccessGroups(explode(',',
+            $GLOBALS['TSFE']->gr_list));
+    }
 
-	/**
-	 * Provides the extension component with an instance of the current query.
-	 *
-	 * @param Query $query Current query
-	 */
-	public function setQuery(Query $query) {
-		$this->query = $query;
-	}
+    /**
+     * Provides the extension component with an instance of the current query.
+     *
+     * @param Query $query Current query
+     */
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
+    }
 
 }
 

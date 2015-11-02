@@ -44,272 +44,285 @@ require_once(dirname(__FILE__) . '/Abstract.php');
  */
 class Apache_Solr_HttpTransport_FileGetContents extends Apache_Solr_HttpTransport_Abstract
 {
-	/**
-	 * SVN Revision meta data for this class
-	 */
-	const SVN_REVISION = '$Revision:  $';
+    /**
+     * SVN Revision meta data for this class
+     */
+    const SVN_REVISION = '$Revision:  $';
 
-	/**
-	 * SVN ID meta data for this class
-	 */
-	const SVN_ID = '$Id:  $';
-		
-	/**
-	 * Reusable stream context resources for HTTP operations
-	 *
-	 * @var resource
-	 */
-	private $_getContext, $_headContext, $_postContext, $_putContext, $_deleteContext;
-	
-	/**
-	 * For POST operations, we're already using the Header context value for
-	 * specifying the content type too, so we have to keep our computed
-	 * authorization header around
-	 * 
-	 * @var string
-	 */
-	private $_authHeader = "";
-	
-	/**
-	 * Initializes our reuseable get and post stream contexts
-	 */
-	public function __construct()
-	{
-		$this->_getContext = stream_context_create();
-		$this->_headContext = stream_context_create();
-		$this->_postContext = stream_context_create();
-		$this->_putContext = stream_context_create();
-		$this->_deleteContext = stream_context_create();
-	}
-	
-	public function setAuthenticationCredentials($username, $password)
-	{
-		// compute the Authorization header
-		$this->_authHeader = "Authorization: Basic " . base64_encode($username . ":" . $password);
-		
-		// set it now for get and head contexts
-		stream_context_set_option($this->_getContext, 'http', 'header', $this->_authHeader);
-		stream_context_set_option($this->_headContext, 'http', 'header', $this->_authHeader);
-		
-		// for post, it'll be set each time, so add an \r\n so it can be concatenated
-		// with the Content-Type
-		$this->_authHeader .= "\r\n";
-	}
+    /**
+     * SVN ID meta data for this class
+     */
+    const SVN_ID = '$Id:  $';
 
-	public function performGetRequest($url, $timeout = false)
-	{
-		// set the timeout if specified
-		if ($timeout !== FALSE && $timeout > 0.0)
-		{
-			// timeouts with file_get_contents seem to need
-			// to be halved to work as expected
-			$timeout = (float) $timeout / 2;
+    /**
+     * Reusable stream context resources for HTTP operations
+     *
+     * @var resource
+     */
+    private $_getContext, $_headContext, $_postContext, $_putContext, $_deleteContext;
 
-			stream_context_set_option($this->_getContext, 'http', 'timeout', $timeout);
-		}
-		else
-		{
-			// use the default timeout pulled from default_socket_timeout otherwise
-			stream_context_set_option($this->_getContext, 'http', 'timeout', $this->getDefaultTimeout());
-		}
-		
-		// $http_response_headers will be updated by the call to file_get_contents later
-		// see http://us.php.net/manual/en/wrappers.http.php for documentation
-		// Unfortunately, it will still create a notice in analyzers if we don't set it here
-		$http_response_header = null;
-		$responseBody = @file_get_contents($url, false, $this->_getContext);
-		
-		return $this->_getResponseFromParts($responseBody, $http_response_header);
-	}
+    /**
+     * For POST operations, we're already using the Header context value for
+     * specifying the content type too, so we have to keep our computed
+     * authorization header around
+     *
+     * @var string
+     */
+    private $_authHeader = "";
 
-	public function performHeadRequest($url, $timeout = false)
-	{
-		stream_context_set_option($this->_headContext, array(
-				'http' => array(
-					// set HTTP method
-					'method' => 'HEAD',
+    /**
+     * Initializes our reuseable get and post stream contexts
+     */
+    public function __construct()
+    {
+        $this->_getContext = stream_context_create();
+        $this->_headContext = stream_context_create();
+        $this->_postContext = stream_context_create();
+        $this->_putContext = stream_context_create();
+        $this->_deleteContext = stream_context_create();
+    }
 
-					// default timeout
-					'timeout' => $this->getDefaultTimeout()
-				)
-			)
-		);
+    public function setAuthenticationCredentials($username, $password)
+    {
+        // compute the Authorization header
+        $this->_authHeader = "Authorization: Basic " . base64_encode($username . ":" . $password);
 
-		// set the timeout if specified
-		if ($timeout !== FALSE && $timeout > 0.0)
-		{
-			// timeouts with file_get_contents seem to need
-			// to be halved to work as expected
-			$timeout = (float) $timeout / 2;
+        // set it now for get and head contexts
+        stream_context_set_option($this->_getContext, 'http', 'header',
+            $this->_authHeader);
+        stream_context_set_option($this->_headContext, 'http', 'header',
+            $this->_authHeader);
 
-			stream_context_set_option($this->_headContext, 'http', 'timeout', $timeout);
-		}
-		
-		// $http_response_headers will be updated by the call to file_get_contents later
-		// see http://us.php.net/manual/en/wrappers.http.php for documentation
-		// Unfortunately, it will still create a notice in analyzers if we don't set it here
-		$http_response_header = null;
-		$responseBody = @file_get_contents($url, false, $this->_headContext);
+        // for post, it'll be set each time, so add an \r\n so it can be concatenated
+        // with the Content-Type
+        $this->_authHeader .= "\r\n";
+    }
 
-		return $this->_getResponseFromParts($responseBody, $http_response_header);
-	}
-	
-	public function performPostRequest($url, $rawPost, $contentType, $timeout = false)
-	{
-		stream_context_set_option($this->_postContext, array(
-				'http' => array(
-					// set HTTP method
-					'method' => 'POST',
+    public function performGetRequest($url, $timeout = false)
+    {
+        // set the timeout if specified
+        if ($timeout !== false && $timeout > 0.0) {
+            // timeouts with file_get_contents seem to need
+            // to be halved to work as expected
+            $timeout = (float)$timeout / 2;
 
-					// Add our posted content type (and auth header - see setAuthentication)
-					'header' => "{$this->_authHeader}Content-Type: {$contentType}",
+            stream_context_set_option($this->_getContext, 'http', 'timeout',
+                $timeout);
+        } else {
+            // use the default timeout pulled from default_socket_timeout otherwise
+            stream_context_set_option($this->_getContext, 'http', 'timeout',
+                $this->getDefaultTimeout());
+        }
 
-					// the posted content
-					'content' => $rawPost,
+        // $http_response_headers will be updated by the call to file_get_contents later
+        // see http://us.php.net/manual/en/wrappers.http.php for documentation
+        // Unfortunately, it will still create a notice in analyzers if we don't set it here
+        $http_response_header = null;
+        $responseBody = @file_get_contents($url, false, $this->_getContext);
 
-					// default timeout
-					'timeout' => $this->getDefaultTimeout()
-				)
-			)
-		);
+        return $this->_getResponseFromParts($responseBody,
+            $http_response_header);
+    }
 
-		// set the timeout if specified
-		if ($timeout !== FALSE && $timeout > 0.0)
-		{
-			// timeouts with file_get_contents seem to need
-			// to be halved to work as expected
-			$timeout = (float) $timeout / 2;
+    private function _getResponseFromParts($rawResponse, $httpHeaders)
+    {
+        //Assume 0, false as defaults
+        $status = 0;
+        $contentType = false;
 
-			stream_context_set_option($this->_postContext, 'http', 'timeout', $timeout);
-		}
+        //iterate through headers for real status, type, and encoding
+        if (is_array($httpHeaders) && count($httpHeaders) > 0) {
+            //look at the first headers for the HTTP status code
+            //and message (errors are usually returned this way)
+            //
+            //HTTP 100 Continue response can also be returned before
+            //the REAL status header, so we need look until we find
+            //the last header starting with HTTP
+            //
+            //the spec: http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.1
+            //
+            //Thanks to Daniel Andersson for pointing out this oversight
+            while (isset($httpHeaders[0]) && substr($httpHeaders[0], 0,
+                    4) == 'HTTP') {
+                // we can do a intval on status line without the "HTTP/1.X " to get the code
+                $status = intval(substr($httpHeaders[0], 9));
 
-		// $http_response_header will be updated by the call to file_get_contents later
-		// see http://us.php.net/manual/en/wrappers.http.php for documentation
-		// Unfortunately, it will still create a notice in analyzers if we don't set it here
-		$http_response_header = null;
-		$responseBody = @file_get_contents($url, false, $this->_postContext);
-		
-		// reset content of post context to reclaim memory
-		stream_context_set_option($this->_postContext, 'http', 'content', '');
-		
-		return $this->_getResponseFromParts($responseBody, $http_response_header);
-	}
+                // remove this from the headers so we can check for more
+                array_shift($httpHeaders);
+            }
 
-	public function performPutRequest($url, $rawPut, $contentType, $timeout = false)
-	{
-		stream_context_set_option($this->_putContext, array(
-				'http' => array(
-					// set HTTP method
-					'method' => 'PUT',
+            //Look for the Content-Type response header and determine type
+            //and encoding from it (if possible - such as 'Content-Type: text/plain; charset=UTF-8')
+            foreach ($httpHeaders as $header) {
+                // look for the header that starts appropriately
+                if (strncasecmp($header, 'Content-Type:', 13) == 0) {
+                    $contentType = substr($header, 13);
+                    break;
+                }
+            }
+        }
 
-					// Add our posted content type (and auth header - see setAuthentication)
-					'header' => "{$this->_authHeader}Content-Type: {$contentType}",
+        return new Apache_Solr_HttpTransport_Response($status, $contentType,
+            $rawResponse);
+    }
 
-					// the posted content
-					'content' => $rawPost,
+    public function performHeadRequest($url, $timeout = false)
+    {
+        stream_context_set_option($this->_headContext, array(
+                'http' => array(
+                    // set HTTP method
+                    'method' => 'HEAD',
 
-					// default timeout
-					'timeout' => $this->getDefaultTimeout()
-				)
-			)
-		);
+                    // default timeout
+                    'timeout' => $this->getDefaultTimeout()
+                )
+            )
+        );
 
-		// set the timeout if specified
-		if ($timeout !== FALSE && $timeout > 0.0)
-		{
-			// timeouts with file_get_contents seem to need
-			// to be halved to work as expected
-			$timeout = (float) $timeout / 2;
+        // set the timeout if specified
+        if ($timeout !== false && $timeout > 0.0) {
+            // timeouts with file_get_contents seem to need
+            // to be halved to work as expected
+            $timeout = (float)$timeout / 2;
 
-			stream_context_set_option($this->_putContext, 'http', 'timeout', $timeout);
-		}
+            stream_context_set_option($this->_headContext, 'http', 'timeout',
+                $timeout);
+        }
 
-		// $http_response_headers will be updated by the call to file_get_contents later
-		// see http://us.php.net/manual/en/wrappers.http.php for documentation
-		// Unfortunately, it will still create a notice in analyzers if we don't set it here
-		$http_response_header = null;
-		$responseBody = file_get_contents($url, false, $this->_putContext);
+        // $http_response_headers will be updated by the call to file_get_contents later
+        // see http://us.php.net/manual/en/wrappers.http.php for documentation
+        // Unfortunately, it will still create a notice in analyzers if we don't set it here
+        $http_response_header = null;
+        $responseBody = @file_get_contents($url, false, $this->_headContext);
 
-		// reset content of post context to reclaim memory
-		stream_context_set_option($this->_putContext, 'http', 'content', '');
+        return $this->_getResponseFromParts($responseBody,
+            $http_response_header);
+    }
 
-		return $this->_getResponseFromParts($responseBody, $http_response_header);
-	}
+    public function performPostRequest(
+        $url,
+        $rawPost,
+        $contentType,
+        $timeout = false
+    ) {
+        stream_context_set_option($this->_postContext, array(
+                'http' => array(
+                    // set HTTP method
+                    'method' => 'POST',
 
-	public function performDeleteRequest($url, $timeout = false)
-	{
-		stream_context_set_option($this->_deleteContext, array(
-			'http' => array(
-				// set HTTP method
-				'method' => 'DELETE',
+                    // Add our posted content type (and auth header - see setAuthentication)
+                    'header' => "{$this->_authHeader}Content-Type: {$contentType}",
 
-				// Add auth header - see setAuthentication
-				'header' => "{$this->_authHeader}",
+                    // the posted content
+                    'content' => $rawPost,
 
-				// default timeout
-				'timeout' => $this->getDefaultTimeout()
-			)
-		));
+                    // default timeout
+                    'timeout' => $this->getDefaultTimeout()
+                )
+            )
+        );
 
-		// set the timeout if specified
-		if ($timeout !== FALSE && $timeout > 0.0) {
-			// timeouts with file_get_contents seem to need
-			// to be halved to work as expected
-			$timeout = (float)$timeout / 2;
+        // set the timeout if specified
+        if ($timeout !== false && $timeout > 0.0) {
+            // timeouts with file_get_contents seem to need
+            // to be halved to work as expected
+            $timeout = (float)$timeout / 2;
 
-			stream_context_set_option($this->_deleteContext, 'http', 'timeout', $timeout);
-		}
+            stream_context_set_option($this->_postContext, 'http', 'timeout',
+                $timeout);
+        }
 
-		// $http_response_headers will be updated by the call to file_get_contents later
-		// see http://us.php.net/manual/en/wrappers.http.php for documentation
-		// Unfortunately, it will still create a notice in analyzers if we don't set it here
-		$http_response_header = null;
-		$responseBody = file_get_contents($url, false, $this->_deleteContext);
+        // $http_response_header will be updated by the call to file_get_contents later
+        // see http://us.php.net/manual/en/wrappers.http.php for documentation
+        // Unfortunately, it will still create a notice in analyzers if we don't set it here
+        $http_response_header = null;
+        $responseBody = @file_get_contents($url, false, $this->_postContext);
 
-		return $this->_getResponseFromParts($responseBody, $http_response_header);
-	}
-	
-	private function _getResponseFromParts($rawResponse, $httpHeaders)
-	{
-		//Assume 0, false as defaults
-		$status = 0;
-		$contentType = false;
+        // reset content of post context to reclaim memory
+        stream_context_set_option($this->_postContext, 'http', 'content', '');
 
-		//iterate through headers for real status, type, and encoding
-		if (is_array($httpHeaders) && count($httpHeaders) > 0)
-		{
-			//look at the first headers for the HTTP status code
-			//and message (errors are usually returned this way)
-			//
-			//HTTP 100 Continue response can also be returned before
-			//the REAL status header, so we need look until we find
-			//the last header starting with HTTP
-			//
-			//the spec: http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.1
-			//
-			//Thanks to Daniel Andersson for pointing out this oversight
-			while (isset($httpHeaders[0]) && substr($httpHeaders[0], 0, 4) == 'HTTP')
-			{
-				// we can do a intval on status line without the "HTTP/1.X " to get the code
-				$status = intval(substr($httpHeaders[0], 9));
+        return $this->_getResponseFromParts($responseBody,
+            $http_response_header);
+    }
 
-				// remove this from the headers so we can check for more
-				array_shift($httpHeaders);
-			}
+    public function performPutRequest(
+        $url,
+        $rawPut,
+        $contentType,
+        $timeout = false
+    ) {
+        stream_context_set_option($this->_putContext, array(
+                'http' => array(
+                    // set HTTP method
+                    'method' => 'PUT',
 
-			//Look for the Content-Type response header and determine type
-			//and encoding from it (if possible - such as 'Content-Type: text/plain; charset=UTF-8')
-			foreach ($httpHeaders as $header)
-			{
-				// look for the header that starts appropriately
-				if (strncasecmp($header, 'Content-Type:', 13) == 0)
-				{
-					$contentType = substr($header, 13);
-					break;
-				}
-			}
-		}
-		
-		return new Apache_Solr_HttpTransport_Response($status, $contentType, $rawResponse);
-	}
+                    // Add our posted content type (and auth header - see setAuthentication)
+                    'header' => "{$this->_authHeader}Content-Type: {$contentType}",
+
+                    // the posted content
+                    'content' => $rawPost,
+
+                    // default timeout
+                    'timeout' => $this->getDefaultTimeout()
+                )
+            )
+        );
+
+        // set the timeout if specified
+        if ($timeout !== false && $timeout > 0.0) {
+            // timeouts with file_get_contents seem to need
+            // to be halved to work as expected
+            $timeout = (float)$timeout / 2;
+
+            stream_context_set_option($this->_putContext, 'http', 'timeout',
+                $timeout);
+        }
+
+        // $http_response_headers will be updated by the call to file_get_contents later
+        // see http://us.php.net/manual/en/wrappers.http.php for documentation
+        // Unfortunately, it will still create a notice in analyzers if we don't set it here
+        $http_response_header = null;
+        $responseBody = file_get_contents($url, false, $this->_putContext);
+
+        // reset content of post context to reclaim memory
+        stream_context_set_option($this->_putContext, 'http', 'content', '');
+
+        return $this->_getResponseFromParts($responseBody,
+            $http_response_header);
+    }
+
+    public function performDeleteRequest($url, $timeout = false)
+    {
+        stream_context_set_option($this->_deleteContext, array(
+            'http' => array(
+                // set HTTP method
+                'method' => 'DELETE',
+
+                // Add auth header - see setAuthentication
+                'header' => "{$this->_authHeader}",
+
+                // default timeout
+                'timeout' => $this->getDefaultTimeout()
+            )
+        ));
+
+        // set the timeout if specified
+        if ($timeout !== false && $timeout > 0.0) {
+            // timeouts with file_get_contents seem to need
+            // to be halved to work as expected
+            $timeout = (float)$timeout / 2;
+
+            stream_context_set_option($this->_deleteContext, 'http', 'timeout',
+                $timeout);
+        }
+
+        // $http_response_headers will be updated by the call to file_get_contents later
+        // see http://us.php.net/manual/en/wrappers.http.php for documentation
+        // Unfortunately, it will still create a notice in analyzers if we don't set it here
+        $http_response_header = null;
+        $responseBody = file_get_contents($url, false, $this->_deleteContext);
+
+        return $this->_getResponseFromParts($responseBody,
+            $http_response_header);
+    }
 }

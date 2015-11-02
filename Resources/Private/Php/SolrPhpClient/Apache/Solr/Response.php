@@ -47,201 +47,193 @@ require_once(dirname(__FILE__) . '/ParserException.php');
  */
 class Apache_Solr_Response
 {
-	/**
-	 * SVN Revision meta data for this class
-	 */
-	const SVN_REVISION = '$Revision$';
+    /**
+     * SVN Revision meta data for this class
+     */
+    const SVN_REVISION = '$Revision$';
 
-	/**
-	 * SVN ID meta data for this class
-	 */
-	const SVN_ID = '$Id$';
+    /**
+     * SVN ID meta data for this class
+     */
+    const SVN_ID = '$Id$';
 
-	/**
-	 * Holds the raw response used in construction
-	 *
-	 * @var Apache_Solr_HttpTransport_Response HTTP response
-	 */
-	protected $_response;
+    /**
+     * Holds the raw response used in construction
+     *
+     * @var Apache_Solr_HttpTransport_Response HTTP response
+     */
+    protected $_response;
 
-	/**
-	 * Whether the raw response has been parsed
-	 *
-	 * @var boolean
-	 */
-	protected $_isParsed = false;
+    /**
+     * Whether the raw response has been parsed
+     *
+     * @var boolean
+     */
+    protected $_isParsed = false;
 
-	/**
-	 * Parsed representation of the data
-	 *
-	 * @var mixed
-	 */
-	protected $_parsedData;
+    /**
+     * Parsed representation of the data
+     *
+     * @var mixed
+     */
+    protected $_parsedData;
 
-	/**
-	 * Data parsing flags.  Determines what extra processing should be done
-	 * after the data is initially converted to a data structure.
-	 *
-	 * @var boolean
-	 */
-	protected $_createDocuments = true,
-			$_collapseSingleValueArrays = true;
+    /**
+     * Data parsing flags.  Determines what extra processing should be done
+     * after the data is initially converted to a data structure.
+     *
+     * @var boolean
+     */
+    protected $_createDocuments = true,
+        $_collapseSingleValueArrays = true;
 
-	/**
-	 * Constructor. Takes the raw HTTP response body and the exploded HTTP headers
-	 *
-	 * @return Apache_Solr_HttpTransport_Response HTTP response
-	 * @param boolean $createDocuments Whether to convert the documents json_decoded as stdClass instances to Apache_Solr_Document instances
-	 * @param boolean $collapseSingleValueArrays Whether to make multivalued fields appear as single values
-	 */
-	public function __construct(Apache_Solr_HttpTransport_Response $response, $createDocuments = true, $collapseSingleValueArrays = true)
-	{
-		$this->_response = $response;
-		$this->_createDocuments = (bool) $createDocuments;
-		$this->_collapseSingleValueArrays = (bool) $collapseSingleValueArrays;
-	}
+    /**
+     * Constructor. Takes the raw HTTP response body and the exploded HTTP headers
+     *
+     * @return Apache_Solr_HttpTransport_Response HTTP response
+     * @param boolean $createDocuments Whether to convert the documents json_decoded as stdClass instances to Apache_Solr_Document instances
+     * @param boolean $collapseSingleValueArrays Whether to make multivalued fields appear as single values
+     */
+    public function __construct(
+        Apache_Solr_HttpTransport_Response $response,
+        $createDocuments = true,
+        $collapseSingleValueArrays = true
+    ) {
+        $this->_response = $response;
+        $this->_createDocuments = (bool)$createDocuments;
+        $this->_collapseSingleValueArrays = (bool)$collapseSingleValueArrays;
+    }
 
-	/**
-	 * Get the HTTP status code
-	 *
-	 * @return integer
-	 */
-	public function getHttpStatus()
-	{
-		return $this->_response->getStatusCode();
-	}
+    /**
+     * Get the HTTP status code
+     *
+     * @return integer
+     */
+    public function getHttpStatus()
+    {
+        return $this->_response->getStatusCode();
+    }
 
-	/**
-	 * Get the HTTP status message of the response
-	 *
-	 * @return string
-	 */
-	public function getHttpStatusMessage()
-	{
-		return $this->_response->getStatusMessage();
-	}
+    /**
+     * Get the HTTP status message of the response
+     *
+     * @return string
+     */
+    public function getHttpStatusMessage()
+    {
+        return $this->_response->getStatusMessage();
+    }
 
-	/**
-	 * Get content type of this Solr response
-	 *
-	 * @return string
-	 */
-	public function getType()
-	{
-		return $this->_response->getMimeType();
-	}
+    /**
+     * Get content type of this Solr response
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->_response->getMimeType();
+    }
 
-	/**
-	 * Get character encoding of this response. Should usually be utf-8, but just in case
-	 *
-	 * @return string
-	 */
-	public function getEncoding()
-	{
-		return $this->_response->getEncoding();
-	}
+    /**
+     * Get character encoding of this response. Should usually be utf-8, but just in case
+     *
+     * @return string
+     */
+    public function getEncoding()
+    {
+        return $this->_response->getEncoding();
+    }
 
-	/**
-	 * Get the raw response as it was given to this object
-	 *
-	 * @return string
-	 */
-	public function getRawResponse()
-	{
-		return $this->_response->getBody();
-	}
+    /**
+     * Get the raw response as it was given to this object
+     *
+     * @return string
+     */
+    public function getRawResponse()
+    {
+        return $this->_response->getBody();
+    }
 
-	/**
-	 * Magic get to expose the parsed data and to lazily load it
-	 *
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function __get($key)
-	{
-		if (!$this->_isParsed)
-		{
-			$this->_parseData();
-			$this->_isParsed = true;
-		}
+    /**
+     * Magic get to expose the parsed data and to lazily load it
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        if (!$this->_isParsed) {
+            $this->_parseData();
+            $this->_isParsed = true;
+        }
 
-		if (isset($this->_parsedData->$key))
-		{
-			return $this->_parsedData->$key;
-		}
+        if (isset($this->_parsedData->$key)) {
+            return $this->_parsedData->$key;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Magic function for isset function on parsed data
-	 *
-	 * @param string $key
-	 * @return boolean
-	 */
-	public function __isset($key)
-	{
-		if (!$this->_isParsed)
-		{
-			$this->_parseData();
-			$this->_isParsed = true;
-		}
+    /**
+     * Parse the raw response into the parsed_data array for access
+     *
+     * @throws Apache_Solr_ParserException If the data could not be parsed
+     */
+    protected function _parseData()
+    {
+        //An alternative would be to use Zend_Json::decode(...)
+        $data = json_decode($this->_response->getBody());
 
-		return isset($this->_parsedData->$key);
-	}
+        // check that we receive a valid JSON response - we should never receive a null
+        if ($data === null) {
+            throw new Apache_Solr_ParserException('Solr response does not appear to be valid JSON, please examine the raw response with getRawResponse() method');
+        }
 
-	/**
-	 * Parse the raw response into the parsed_data array for access
-	 *
-	 * @throws Apache_Solr_ParserException If the data could not be parsed
-	 */
-	protected function _parseData()
-	{
-		//An alternative would be to use Zend_Json::decode(...)
-		$data = json_decode($this->_response->getBody());
+        //if we're configured to collapse single valued arrays or to convert them to Apache_Solr_Document objects
+        //and we have response documents, then try to collapse the values and / or convert them now
+        if (($this->_createDocuments || $this->_collapseSingleValueArrays) && isset($data->response) && is_array($data->response->docs)) {
+            $documents = array();
 
-		// check that we receive a valid JSON response - we should never receive a null
-		if ($data === null)
-		{
-			throw new Apache_Solr_ParserException('Solr response does not appear to be valid JSON, please examine the raw response with getRawResponse() method');
-		}
+            foreach ($data->response->docs as $originalDocument) {
+                if ($this->_createDocuments) {
+                    $document = new Apache_Solr_Document();
+                } else {
+                    $document = $originalDocument;
+                }
 
-		//if we're configured to collapse single valued arrays or to convert them to Apache_Solr_Document objects
-		//and we have response documents, then try to collapse the values and / or convert them now
-		if (($this->_createDocuments || $this->_collapseSingleValueArrays) && isset($data->response) && is_array($data->response->docs))
-		{
-			$documents = array();
+                foreach ($originalDocument as $key => $value) {
+                    //If a result is an array with only a single
+                    //value then its nice to be able to access
+                    //it as if it were always a single value
+                    if ($this->_collapseSingleValueArrays && is_array($value) && count($value) <= 1) {
+                        $value = array_shift($value);
+                    }
 
-			foreach ($data->response->docs as $originalDocument)
-			{
-				if ($this->_createDocuments)
-				{
-					$document = new Apache_Solr_Document();
-				}
-				else
-				{
-					$document = $originalDocument;
-				}
+                    $document->$key = $value;
+                }
 
-				foreach ($originalDocument as $key => $value)
-				{
-					//If a result is an array with only a single
-					//value then its nice to be able to access
-					//it as if it were always a single value
-					if ($this->_collapseSingleValueArrays && is_array($value) && count($value) <= 1)
-					{
-						$value = array_shift($value);
-					}
+                $documents[] = $document;
+            }
 
-					$document->$key = $value;
-				}
+            $data->response->docs = $documents;
+        }
 
-				$documents[] = $document;
-			}
+        $this->_parsedData = $data;
+    }
 
-			$data->response->docs = $documents;
-		}
+    /**
+     * Magic function for isset function on parsed data
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function __isset($key)
+    {
+        if (!$this->_isParsed) {
+            $this->_parseData();
+            $this->_isParsed = true;
+        }
 
-		$this->_parsedData = $data;
-	}
+        return isset($this->_parsedData->$key);
+    }
 }

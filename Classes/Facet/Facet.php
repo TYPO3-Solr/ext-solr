@@ -34,273 +34,291 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Facet {
+class Facet
+{
 
-	const TYPE_FIELD = 'field';
-	const TYPE_QUERY = 'query';
-	const TYPE_RANGE = 'range';
-
-
-	/**
-	 * @var Search
-	 */
-	protected $search;
-
-	/**
-	 * The facet's name as configured on TypoScript
-	 *
-	 * @var string
-	 */
-	protected $name;
-
-	/**
-	 * Facet type, defaults to field facet.
-	 *
-	 * @var string
-	 */
-	protected $type = self::TYPE_FIELD;
-
-	/**
-	 * The index field the facet is built from.
-	 *
-	 * @var string
-	 */
-	protected $field;
-
-	/**
-	 * Facet configuration
-	 *
-	 * @var array
-	 */
-	protected $configuration;
+    const TYPE_FIELD = 'field';
+    const TYPE_QUERY = 'query';
+    const TYPE_RANGE = 'range';
 
 
-	/**
-	 * Constructor.
-	 *
-	 * @param string $facetName The facet's name
-	 * @param string $facetType The facet's internal type. field, range, or query
-	 */
-	public function __construct($facetName, $facetType = self::TYPE_FIELD) {
-		$this->name   = $facetName;
-		$this->type   = $facetType;
-		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+    /**
+     * @var Search
+     */
+    protected $search;
 
-		$this->initializeConfiguration();
-	}
+    /**
+     * The facet's name as configured on TypoScript
+     *
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Initializes/loads the facet configuration
-	 *
-	 */
-	protected function initializeConfiguration() {
-		$solrConfiguration   = Util::getSolrConfiguration();
-		$this->configuration = $solrConfiguration['search.']['faceting.']['facets.'][$this->name . '.'];
+    /**
+     * Facet type, defaults to field facet.
+     *
+     * @var string
+     */
+    protected $type = self::TYPE_FIELD;
 
-		$this->field = $this->configuration['field'];
-	}
+    /**
+     * The index field the facet is built from.
+     *
+     * @var string
+     */
+    protected $field;
 
-	/**
-	 * Checks whether an option of the facet has been selected by the user by
-	 * checking the URL GET parameters.
-	 *
-	 * @return boolean TRUE if any option of the facet is applied, FALSE otherwise
-	 */
-	public function isActive() {
-		$isActive = FALSE;
+    /**
+     * Facet configuration
+     *
+     * @var array
+     */
+    protected $configuration;
 
-		$selectedOptions = $this->getSelectedOptions();
-		if (!empty($selectedOptions)) {
-			$isActive = TRUE;
-		}
 
-		return $isActive;
-	}
+    /**
+     * Constructor.
+     *
+     * @param string $facetName The facet's name
+     * @param string $facetType The facet's internal type. field, range, or query
+     */
+    public function __construct($facetName, $facetType = self::TYPE_FIELD)
+    {
+        $this->name = $facetName;
+        $this->type = $facetType;
+        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
-	/**
-	 * Gets the facet's currently user-selected options
-	 *
-	 * @return array An array with user-selected facet options.
-	 */
-	public function getSelectedOptions() {
-		$selectedOptions = array();
+        $this->initializeConfiguration();
+    }
 
-		$resultParameters = GeneralUtility::_GET('tx_solr');
-		$filterParameters = array();
-		if (isset($resultParameters['filter'])) {
-			$filterParameters = (array)array_map('urldecode', $resultParameters['filter']);
-		}
+    /**
+     * Initializes/loads the facet configuration
+     *
+     */
+    protected function initializeConfiguration()
+    {
+        $solrConfiguration = Util::getSolrConfiguration();
+        $this->configuration = $solrConfiguration['search.']['faceting.']['facets.'][$this->name . '.'];
 
-		foreach ($filterParameters as $filter) {
-			list($facetName, $filterValue) = explode(':', $filter);
+        $this->field = $this->configuration['field'];
+    }
 
-			if ($facetName == $this->name) {
-				$selectedOptions[] = $filterValue;
-			}
-		}
+    /**
+     * Checks whether an option of the facet has been selected by the user by
+     * checking the URL GET parameters.
+     *
+     * @return boolean TRUE if any option of the facet is applied, FALSE otherwise
+     */
+    public function isActive()
+    {
+        $isActive = false;
 
-		return $selectedOptions;
-	}
+        $selectedOptions = $this->getSelectedOptions();
+        if (!empty($selectedOptions)) {
+            $isActive = true;
+        }
 
-	/**
-	 * Determines if a facet has any options.
-	 *
-	 * @return boolean TRUE if no facet options are given, FALSE if facet options are given
-	 */
-	public function isEmpty() {
-		$isEmpty = FALSE;
+        return $isActive;
+    }
 
-		$options      = $this->getOptionsRaw();
-		$optionsCount = count($options);
+    /**
+     * Gets the facet's currently user-selected options
+     *
+     * @return array An array with user-selected facet options.
+     */
+    public function getSelectedOptions()
+    {
+        $selectedOptions = array();
 
-		// facet options include '_empty_', if no options are given
-		if ($optionsCount == 0
-			|| ($optionsCount == 1 && array_key_exists('_empty_', $options))
-		) {
-			$isEmpty = TRUE;
-		}
+        $resultParameters = GeneralUtility::_GET('tx_solr');
+        $filterParameters = array();
+        if (isset($resultParameters['filter'])) {
+            $filterParameters = (array)array_map('urldecode',
+                $resultParameters['filter']);
+        }
 
-		return $isEmpty;
-	}
+        foreach ($filterParameters as $filter) {
+            list($facetName, $filterValue) = explode(':', $filter);
 
-	/**
-	 * Checks whether requirements are fullfilled
-	 *
-	 * @return boolean TRUE if conditions required to render this facet are met, FALSE otherwise
-	 */
-	public function isRenderingAllowed() {
-		$renderingAllowed = TRUE;
+            if ($facetName == $this->name) {
+                $selectedOptions[] = $filterValue;
+            }
+        }
 
-		$requirements = $this->getRequirements();
-		foreach ($requirements as $requirement) {
-			if (!$this->isRequirementMet($requirement)) {
-				$renderingAllowed = FALSE;
-				break;
-			}
-		}
+        return $selectedOptions;
+    }
 
-		return $renderingAllowed;
-	}
+    /**
+     * Determines if a facet has any options.
+     *
+     * @return boolean TRUE if no facet options are given, FALSE if facet options are given
+     */
+    public function isEmpty()
+    {
+        $isEmpty = false;
 
-	/**
-	 * Gets the configured requirements to allow rendering of the facet.
-	 *
-	 * @return array Requirements with keys "name", "facet", and "value".
-	 */
-	protected function getRequirements() {
-		$requirements = array();
+        $options = $this->getOptionsRaw();
+        $optionsCount = count($options);
 
-		if (!empty($this->configuration['requirements.'])) {
-			foreach ($this->configuration['requirements.'] as $name => $requirement) {
-				$requirements[] = array(
-					'name'   => substr($name, 0, -1),
-					'facet'  => $requirement['facet'],
-					'values' => GeneralUtility::trimExplode(',', $requirement['values']),
-				);
-			}
-		}
+        // facet options include '_empty_', if no options are given
+        if ($optionsCount == 0
+            || ($optionsCount == 1 && array_key_exists('_empty_', $options))
+        ) {
+            $isEmpty = true;
+        }
 
-		return $requirements;
-	}
+        return $isEmpty;
+    }
 
-	/**
-	 * Evaluates a single facet rendering requirement.
-	 *
-	 * @param array $requirement A requirement with keys "name", "facet", and "value".
-	 * @return boolean TRUE if the requirement is met, FALSE otherwise.
-	 */
-	protected function isRequirementMet(array $requirement) {
-		$requirementMet = FALSE;
+    /**
+     * Checks whether requirements are fullfilled
+     *
+     * @return boolean TRUE if conditions required to render this facet are met, FALSE otherwise
+     */
+    public function isRenderingAllowed()
+    {
+        $renderingAllowed = true;
 
-		$requiredFacet      = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', $requirement['facet']);
-		$selectedOptions    = $requiredFacet->getSelectedOptions();
-		$csvSelectedOptions = implode(', ', $selectedOptions);
+        $requirements = $this->getRequirements();
+        foreach ($requirements as $requirement) {
+            if (!$this->isRequirementMet($requirement)) {
+                $renderingAllowed = false;
+                break;
+            }
+        }
 
-		foreach ($requirement['values'] as $value) {
-			$noFacetOptionSelectedRequirementMet  = ($value === '__none' && empty($selectedOptions));
-			$anyFacetOptionSelectedRequirementMet = ($value === '__any' && !empty($selectedOptions));
+        return $renderingAllowed;
+    }
 
-			if ($noFacetOptionSelectedRequirementMet
-				|| $anyFacetOptionSelectedRequirementMet
-				|| in_array($value, $selectedOptions)
-				|| fnmatch($value, $csvSelectedOptions)
-			) {
-				$requirementMet = TRUE;
-				break;
-			}
-		}
+    /**
+     * Gets the configured requirements to allow rendering of the facet.
+     *
+     * @return array Requirements with keys "name", "facet", and "value".
+     */
+    protected function getRequirements()
+    {
+        $requirements = array();
 
-		return $requirementMet;
-	}
+        if (!empty($this->configuration['requirements.'])) {
+            foreach ($this->configuration['requirements.'] as $name => $requirement) {
+                $requirements[] = array(
+                    'name' => substr($name, 0, -1),
+                    'facet' => $requirement['facet'],
+                    'values' => GeneralUtility::trimExplode(',',
+                        $requirement['values']),
+                );
+            }
+        }
 
-	/**
-	 * Gets the facet's options
-	 *
-	 * @return array An array with facet options.
-	 */
-	public function getOptionsRaw() {
-		$facetOptions = array();
+        return $requirements;
+    }
 
-		switch ($this->type) {
-			case self::TYPE_FIELD:
-				$facetOptions = $this->search->getFacetFieldOptions($this->field);
-				break;
-			case self::TYPE_QUERY:
-				$facetOptions = $this->search->getFacetQueryOptions($this->field);
-				break;
-			case self::TYPE_RANGE:
-				$facetOptions = $this->search->getFacetRangeOptions($this->field);
-				break;
-		}
+    /**
+     * Evaluates a single facet rendering requirement.
+     *
+     * @param array $requirement A requirement with keys "name", "facet", and "value".
+     * @return boolean TRUE if the requirement is met, FALSE otherwise.
+     */
+    protected function isRequirementMet(array $requirement)
+    {
+        $requirementMet = false;
 
-		return $facetOptions;
-	}
+        $requiredFacet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet',
+            $requirement['facet']);
+        $selectedOptions = $requiredFacet->getSelectedOptions();
+        $csvSelectedOptions = implode(', ', $selectedOptions);
 
-	/**
-	 * Gets the number of options for a facet.
-	 *
-	 * @return integer Number of facet options for the current facet.
-	 */
-	public function getOptionsCount() {
-		$facetOptions = $this->getOptionsRaw();
+        foreach ($requirement['values'] as $value) {
+            $noFacetOptionSelectedRequirementMet = ($value === '__none' && empty($selectedOptions));
+            $anyFacetOptionSelectedRequirementMet = ($value === '__any' && !empty($selectedOptions));
 
-		return count($facetOptions);
-	}
+            if ($noFacetOptionSelectedRequirementMet
+                || $anyFacetOptionSelectedRequirementMet
+                || in_array($value, $selectedOptions)
+                || fnmatch($value, $csvSelectedOptions)
+            ) {
+                $requirementMet = true;
+                break;
+            }
+        }
 
-	/**
-	 * Gets the facet's name
-	 *
-	 * @return string The facet's name
-	 */
-	public function getName() {
-		return $this->name;
-	}
+        return $requirementMet;
+    }
 
-	/**
-	 * Gets the field name the facet is operating on.
-	 *
-	 * @return string The name of the field the facet is operating on.
-	 */
-	public function getField() {
-		return $this->field;
-	}
+    /**
+     * Gets the facet's options
+     *
+     * @return array An array with facet options.
+     */
+    public function getOptionsRaw()
+    {
+        $facetOptions = array();
 
-	/**
-	 * Gets the facet's configuration.
-	 *
-	 * @return array The facet's configuration as an array.
-	 */
-	public function getConfiguration() {
-		return $this->configuration;
-	}
+        switch ($this->type) {
+            case self::TYPE_FIELD:
+                $facetOptions = $this->search->getFacetFieldOptions($this->field);
+                break;
+            case self::TYPE_QUERY:
+                $facetOptions = $this->search->getFacetQueryOptions($this->field);
+                break;
+            case self::TYPE_RANGE:
+                $facetOptions = $this->search->getFacetRangeOptions($this->field);
+                break;
+        }
 
-	/**
-	 * Gets the facet's internal type. One of field, range, or query.
-	 *
-	 * @return string Facet type.
-	 */
-	public function getType() {
-		return $this->type;
-	}
+        return $facetOptions;
+    }
+
+    /**
+     * Gets the number of options for a facet.
+     *
+     * @return integer Number of facet options for the current facet.
+     */
+    public function getOptionsCount()
+    {
+        $facetOptions = $this->getOptionsRaw();
+
+        return count($facetOptions);
+    }
+
+    /**
+     * Gets the facet's name
+     *
+     * @return string The facet's name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Gets the field name the facet is operating on.
+     *
+     * @return string The name of the field the facet is operating on.
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    /**
+     * Gets the facet's configuration.
+     *
+     * @return array The facet's configuration as an array.
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
+    /**
+     * Gets the facet's internal type. One of field, range, or query.
+     *
+     * @return string Facet type.
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
 }

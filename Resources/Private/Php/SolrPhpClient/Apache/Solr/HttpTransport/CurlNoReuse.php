@@ -46,186 +46,187 @@ require_once(dirname(__FILE__) . '/Abstract.php');
  */
 class Apache_Solr_HttpTransport_CurlNoReuse extends Apache_Solr_HttpTransport_Abstract
 {
-	/**
-	 * SVN Revision meta data for this class
-	 */
-	const SVN_REVISION = '$Revision:$';
+    /**
+     * SVN Revision meta data for this class
+     */
+    const SVN_REVISION = '$Revision:$';
 
-	/**
-	 * SVN ID meta data for this class
-	 */
-	const SVN_ID = '$Id:$';
-	
-	private $_authString = false;
-	
-	public function setAuthenticationCredentials($username, $password)
-	{
-		// this is how curl wants it for the CURLOPT_USERPWD
-		$this->_authString = $username . ":" . $password;	
-	}
+    /**
+     * SVN ID meta data for this class
+     */
+    const SVN_ID = '$Id:$';
 
-	public function performGetRequest($url, $timeout = false)
-	{
-		// check the timeout value
-		if ($timeout === false || $timeout <= 0.0)
-		{
-			// use the default timeout
-			$timeout = $this->getDefaultTimeout();
-		}
-		
-		$curl = curl_init();
+    private $_authString = false;
 
-		// set curl GET options
-		curl_setopt_array($curl, array(
-			// return the response body from curl_exec
-			CURLOPT_RETURNTRANSFER => true,
+    public function setAuthenticationCredentials($username, $password)
+    {
+        // this is how curl wants it for the CURLOPT_USERPWD
+        $this->_authString = $username . ":" . $password;
+    }
 
-			// get the output as binary data
-			CURLOPT_BINARYTRANSFER => true,
+    public function performGetRequest($url, $timeout = false)
+    {
+        // check the timeout value
+        if ($timeout === false || $timeout <= 0.0) {
+            // use the default timeout
+            $timeout = $this->getDefaultTimeout();
+        }
 
-			// we do not need the headers in the output, we get everything we need from curl_getinfo
-			CURLOPT_HEADER => false,
-			
-			// set the URL
-			CURLOPT_URL => $url,
+        $curl = curl_init();
 
-			// set the timeout
-			CURLOPT_TIMEOUT => $timeout
-		));
-		
-		// set auth if appropriate
-		if ($this->_authString !== false)
-		{
-			curl_setopt_array($curl, array(
-				CURLOPT_USERPWD => $this->_authString,
-				CURLOPT_HTTPAUTH => CURLAUTH_BASIC		
-			));
-		}
+        // set curl GET options
+        curl_setopt_array($curl, array(
+            // return the response body from curl_exec
+            CURLOPT_RETURNTRANSFER => true,
 
-		// make the request
-		$responseBody = curl_exec($curl);
+            // get the output as binary data
+            CURLOPT_BINARYTRANSFER => true,
 
-		// get info from the transfer
-		$statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		$contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-		
-		// close our curl session - we're done with it
-		curl_close($curl);
+            // we do not need the headers in the output, we get everything we need from curl_getinfo
+            CURLOPT_HEADER => false,
 
-		return new Apache_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
-	}
+            // set the URL
+            CURLOPT_URL => $url,
 
-	public function performHeadRequest($url, $timeout = false)
-	{
-		// check the timeout value
-		if ($timeout === false || $timeout <= 0.0)
-		{
-			// use the default timeout
-			$timeout = $this->getDefaultTimeout();
-		}
-		
-		$curl = curl_init();
+            // set the timeout
+            CURLOPT_TIMEOUT => $timeout
+        ));
 
-		// set curl HEAD options
-		curl_setopt_array($curl, array(
-			// return the response body from curl_exec
-			CURLOPT_RETURNTRANSFER => true,
+        // set auth if appropriate
+        if ($this->_authString !== false) {
+            curl_setopt_array($curl, array(
+                CURLOPT_USERPWD => $this->_authString,
+                CURLOPT_HTTPAUTH => CURLAUTH_BASIC
+            ));
+        }
 
-			// get the output as binary data
-			CURLOPT_BINARYTRANSFER => true,
+        // make the request
+        $responseBody = curl_exec($curl);
 
-			// we do not need the headers in the output, we get everything we need from curl_getinfo
-			CURLOPT_HEADER => false,
-			
-			// this both sets the method to HEAD and says not to return a body
-			CURLOPT_NOBODY => true,
+        // get info from the transfer
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 
-			// set the URL
-			CURLOPT_URL => $url,
+        // close our curl session - we're done with it
+        curl_close($curl);
 
-			// set the timeout
-			CURLOPT_TIMEOUT => $timeout
-		));
+        return new Apache_Solr_HttpTransport_Response($statusCode, $contentType,
+            $responseBody);
+    }
 
-		// set auth if appropriate
-		if ($this->_authString !== false)
-		{
-			curl_setopt_array($curl, array(
-				CURLOPT_USERPWD => $this->_authString,
-				CURLOPT_HTTPAUTH => CURLAUTH_BASIC		
-			));
-		}
-		
-		// make the request
-		$responseBody = curl_exec($curl);
+    public function performHeadRequest($url, $timeout = false)
+    {
+        // check the timeout value
+        if ($timeout === false || $timeout <= 0.0) {
+            // use the default timeout
+            $timeout = $this->getDefaultTimeout();
+        }
 
-		// get info from the transfer
-		$statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		$contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-		
-		// close our curl session - we're done with it
-		curl_close($curl);
+        $curl = curl_init();
 
-		return new Apache_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
-	}
+        // set curl HEAD options
+        curl_setopt_array($curl, array(
+            // return the response body from curl_exec
+            CURLOPT_RETURNTRANSFER => true,
 
-	public function performPostRequest($url, $postData, $contentType, $timeout = false)
-	{
-		// check the timeout value
-		if ($timeout === false || $timeout <= 0.0)
-		{
-			// use the default timeout
-			$timeout = $this->getDefaultTimeout();
-		}
+            // get the output as binary data
+            CURLOPT_BINARYTRANSFER => true,
 
-		$curl = curl_init();
-		
-		// set curl POST options
-		curl_setopt_array($curl, array(
-			// return the response body from curl_exec
-			CURLOPT_RETURNTRANSFER => true,
+            // we do not need the headers in the output, we get everything we need from curl_getinfo
+            CURLOPT_HEADER => false,
 
-			// get the output as binary data
-			CURLOPT_BINARYTRANSFER => true,
+            // this both sets the method to HEAD and says not to return a body
+            CURLOPT_NOBODY => true,
 
-			// we do not need the headers in the output, we get everything we need from curl_getinfo
-			CURLOPT_HEADER => false,
-			
-			// make sure we're POST
-			CURLOPT_POST => true,
+            // set the URL
+            CURLOPT_URL => $url,
 
-			// set the URL
-			CURLOPT_URL => $url,
+            // set the timeout
+            CURLOPT_TIMEOUT => $timeout
+        ));
 
-			// set the post data
-			CURLOPT_POSTFIELDS => $postData,
+        // set auth if appropriate
+        if ($this->_authString !== false) {
+            curl_setopt_array($curl, array(
+                CURLOPT_USERPWD => $this->_authString,
+                CURLOPT_HTTPAUTH => CURLAUTH_BASIC
+            ));
+        }
 
-			// set the content type
-			CURLOPT_HTTPHEADER => array("Content-Type: {$contentType}"),
+        // make the request
+        $responseBody = curl_exec($curl);
 
-			// set the timeout
-			CURLOPT_TIMEOUT => $timeout
-		));
+        // get info from the transfer
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
 
-		// set auth if appropriate
-		if ($this->_authString !== false)
-		{
-			curl_setopt_array($curl, array(
-				CURLOPT_USERPWD => $this->_authString,
-				CURLOPT_HTTPAUTH => CURLAUTH_BASIC		
-			));
-		}
-		
-		// make the request
-		$responseBody = curl_exec($curl);
+        // close our curl session - we're done with it
+        curl_close($curl);
 
-		// get info from the transfer
-		$statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-		$contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+        return new Apache_Solr_HttpTransport_Response($statusCode, $contentType,
+            $responseBody);
+    }
 
-		// close our curl session - we're done with it
-		curl_close($curl);
+    public function performPostRequest(
+        $url,
+        $postData,
+        $contentType,
+        $timeout = false
+    ) {
+        // check the timeout value
+        if ($timeout === false || $timeout <= 0.0) {
+            // use the default timeout
+            $timeout = $this->getDefaultTimeout();
+        }
 
-		return new Apache_Solr_HttpTransport_Response($statusCode, $contentType, $responseBody);
-	}
+        $curl = curl_init();
+
+        // set curl POST options
+        curl_setopt_array($curl, array(
+            // return the response body from curl_exec
+            CURLOPT_RETURNTRANSFER => true,
+
+            // get the output as binary data
+            CURLOPT_BINARYTRANSFER => true,
+
+            // we do not need the headers in the output, we get everything we need from curl_getinfo
+            CURLOPT_HEADER => false,
+
+            // make sure we're POST
+            CURLOPT_POST => true,
+
+            // set the URL
+            CURLOPT_URL => $url,
+
+            // set the post data
+            CURLOPT_POSTFIELDS => $postData,
+
+            // set the content type
+            CURLOPT_HTTPHEADER => array("Content-Type: {$contentType}"),
+
+            // set the timeout
+            CURLOPT_TIMEOUT => $timeout
+        ));
+
+        // set auth if appropriate
+        if ($this->_authString !== false) {
+            curl_setopt_array($curl, array(
+                CURLOPT_USERPWD => $this->_authString,
+                CURLOPT_HTTPAUTH => CURLAUTH_BASIC
+            ));
+        }
+
+        // make the request
+        $responseBody = curl_exec($curl);
+
+        // get info from the transfer
+        $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
+
+        // close our curl session - we're done with it
+        curl_close($curl);
+
+        return new Apache_Solr_HttpTransport_Response($statusCode, $contentType,
+            $responseBody);
+    }
 }

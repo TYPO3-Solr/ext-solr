@@ -2,27 +2,27 @@
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2009-2015 Daniel Poetzinger <poetzinger@aoemedia.de>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2009-2015 Daniel Poetzinger <poetzinger@aoemedia.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,45 +34,48 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class PathToHierarchy implements FieldProcessor {
+class PathToHierarchy implements FieldProcessor
+{
 
-	/**
-	 * Expects a value like "some/hierarchy/value"
-	 *
-	 * @param array $values Array of values, an array because of multivalued fields
-	 * @return array Modified array of values
-	 */
-	public function process(array $values) {
-		$results = array();
+    /**
+     * Expects a value like "some/hierarchy/value"
+     *
+     * @param array $values Array of values, an array because of multivalued fields
+     * @return array Modified array of values
+     */
+    public function process(array $values)
+    {
+        $results = array();
 
-		foreach ($values as $value) {
-			$valueResults = $this->buildSolrHierarchyFromPath($value);
-			$results = array_merge($results, $valueResults);
-		}
+        foreach ($values as $value) {
+            $valueResults = $this->buildSolrHierarchyFromPath($value);
+            $results = array_merge($results, $valueResults);
+        }
 
-		return array_unique($results);
-	}
+        return array_unique($results);
+    }
 
-	/**
-	 * Builds a Solr hierarchy from path string.
-	 *
-	 * @param string $path path string
-	 * @return array Solr hierarchy
-	 * @see http://wiki.apache.org/solr/HierarchicalFaceting
-	 */
-	protected function buildSolrHierarchyFromPath($path) {
-		$hierarchy = array();
+    /**
+     * Builds a Solr hierarchy from path string.
+     *
+     * @param string $path path string
+     * @return array Solr hierarchy
+     * @see http://wiki.apache.org/solr/HierarchicalFaceting
+     */
+    protected function buildSolrHierarchyFromPath($path)
+    {
+        $hierarchy = array();
 
-		$treeParts = GeneralUtility::trimExplode('/', $path, TRUE);
-		$currentTreeParts = array();
+        $treeParts = GeneralUtility::trimExplode('/', $path, true);
+        $currentTreeParts = array();
 
-		foreach ($treeParts as $i => $part) {
-			$currentTreeParts[] = $part;
+        foreach ($treeParts as $i => $part) {
+            $currentTreeParts[] = $part;
 
-			$hierarchy[] = $i . '-' . implode('/', $currentTreeParts);
-		}
+            $hierarchy[] = $i . '-' . implode('/', $currentTreeParts);
+        }
 
-		return $hierarchy;
-	}
+        return $hierarchy;
+    }
 }
 

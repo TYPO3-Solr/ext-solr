@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2007-2011, Servigistics, Inc.
  * All rights reserved.
@@ -35,45 +36,45 @@
  * @subpackage Solr
  * @author Donovan Jimenez <djimenez@conduit-it.com>
  */
-
 class Apache_Solr_HttpTransportException extends Apache_Solr_Exception
 {
-	/**
-	 * SVN Revision meta data for this class
-	 */
-	const SVN_REVISION = '$Revision: 54 $';
+    /**
+     * SVN Revision meta data for this class
+     */
+    const SVN_REVISION = '$Revision: 54 $';
 
-	/**
-	 * SVN ID meta data for this class
-	 */
-	const SVN_ID = '$Id: HttpTransportException.php 54 2011-02-04 16:29:18Z donovan.jimenez $';
+    /**
+     * SVN ID meta data for this class
+     */
+    const SVN_ID = '$Id: HttpTransportException.php 54 2011-02-04 16:29:18Z donovan.jimenez $';
 
-	/**
-	 * Response for which exception was generated
-	 *
-	 * @var Apache_Solr_Response
-	 */
-	private $_response;
+    /**
+     * Response for which exception was generated
+     *
+     * @var Apache_Solr_Response
+     */
+    private $_response;
 
-	/**
-	 * HttpTransportException Constructor
-	 *
-	 * @param Apache_Solr_Response $response
-	 */
-	public function __construct(Apache_Solr_Response $response)
-	{
-		parent::__construct("'{$response->getHttpStatus()}' Status: {$response->getHttpStatusMessage()}", $response->getHttpStatus());
+    /**
+     * HttpTransportException Constructor
+     *
+     * @param Apache_Solr_Response $response
+     */
+    public function __construct(Apache_Solr_Response $response)
+    {
+        parent::__construct("'{$response->getHttpStatus()}' Status: {$response->getHttpStatusMessage()}",
+            $response->getHttpStatus());
 
-		$this->_response = $response;
-	}
+        $this->_response = $response;
+    }
 
-	/**
-	 * Get the response for which this exception was generated
-	 *
-	 * @return Apache_Solr_Response
-	 */
-	public function getResponse()
-	{
-		return $this->_response;
-	}
+    /**
+     * Get the response for which this exception was generated
+     *
+     * @return Apache_Solr_Response
+     */
+    public function getResponse()
+    {
+        return $this->_response;
+    }
 }

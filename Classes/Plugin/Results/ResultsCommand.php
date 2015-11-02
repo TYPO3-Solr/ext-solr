@@ -2,35 +2,35 @@
 namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
 use ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
-use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -41,330 +41,346 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class ResultsCommand implements PluginCommand {
+class ResultsCommand implements PluginCommand
+{
 
-	/**
-	 * @var Search
-	 */
-	protected $search;
+    /**
+     * @var Search
+     */
+    protected $search;
 
-	/**
-	 * Parent plugin
-	 *
-	 * @var Results
-	 */
-	protected $parentPlugin;
+    /**
+     * Parent plugin
+     *
+     * @var Results
+     */
+    protected $parentPlugin;
 
-	/**
-	 * Configuration
-	 *
-	 * @var array
-	 */
-	protected $configuration;
-
-
-	/**
-	 * Constructor.
-	 *
-	 * @param CommandPluginBase $parentPlugin Parent plugin object.
-	 */
-	public function __construct(CommandPluginBase $parentPlugin) {
-		$this->parentPlugin  = $parentPlugin;
-		$this->configuration = $parentPlugin->conf;
-		$this->search        = $parentPlugin->getSearch();
-	}
-
-	/**
-	 * @return array
-	 */
-	public function execute() {
-		$numberOfResults = $this->search->getNumberOfResults();
-
-		$query = $this->search->getQuery();
-		$rawQueryTerms = $query->getKeywordsRaw();
-		$queryTerms    = $query->getKeywordsCleaned();
-
-		$searchedFor = strtr(
-			$this->parentPlugin->pi_getLL('results_searched_for'),
-			array('@searchWord' => '<span class="tx-solr-search-word">' . $queryTerms . '</span>')
-		);
-
-		$foundResultsInfo = strtr(
-			$this->parentPlugin->pi_getLL('results_found'),
-			array(
-				'@resultsTotal' => $this->search->getNumberOfResults(),
-				'@resultsTime'  => $this->search->getQueryTime()
-			)
-		);
-
-		return array(
-			'searched_for'     => $searchedFor,
-			'query'            => $queryTerms,
-			'query_urlencoded' => rawurlencode($rawQueryTerms),
-			'query_raw'        => $rawQueryTerms,
-			'found'            => $foundResultsInfo,
-			'range'            => $this->getPageBrowserRange(),
-			'count'            => $this->search->getNumberOfResults(),
-			'offset'           => ($this->search->getResultOffset() + 1),
-			'query_time'       => $this->search->getQueryTime(),
-			'pagebrowser'      => $this->getPageBrowser($numberOfResults),
-			'filtered'         => $this->isFiltered(),
-			'filtered_by_user' => $this->isFilteredByUser(),
-				/* construction of the array key:
-				 * loop_ : tells the plugin that the content of that field should be processed in a loop
-				 * result_documents : is the loop name as in the template
-				 * result_document : is the marker name for the single items in the loop
-				 */
-			'loop_result_documents|result_document' => $this->getResultDocuments()
-		);
-	}
-
-	/**
-	 * @return \Apache_Solr_Document[]
-	 */
-	protected function getResultDocuments() {
-		$responseDocuments = $this->search->getResultDocuments();
-		$resultDocuments   = array();
+    /**
+     * Configuration
+     *
+     * @var array
+     */
+    protected $configuration;
 
 
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
-				$resultSetModifier = GeneralUtility::getUserObj($classReference);
+    /**
+     * Constructor.
+     *
+     * @param CommandPluginBase $parentPlugin Parent plugin object.
+     */
+    public function __construct(CommandPluginBase $parentPlugin)
+    {
+        $this->parentPlugin = $parentPlugin;
+        $this->configuration = $parentPlugin->conf;
+        $this->search = $parentPlugin->getSearch();
+    }
 
-				if ($resultSetModifier instanceof ResultSetModifier) {
-					$responseDocuments = $resultSetModifier->modifyResultSet($this, $responseDocuments);
-				} else {
-					throw new \UnexpectedValueException(
-						get_class($resultSetModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier',
-						1310386927
-					);
-				}
-			}
-		}
+    /**
+     * @return array
+     */
+    public function execute()
+    {
+        $numberOfResults = $this->search->getNumberOfResults();
 
-		foreach ($responseDocuments as $resultDocument) {
-			$temporaryResultDocument = array();
-			$temporaryResultDocument = $this->processDocumentFieldsToArray($resultDocument);
+        $query = $this->search->getQuery();
+        $rawQueryTerms = $query->getKeywordsRaw();
+        $queryTerms = $query->getKeywordsCleaned();
 
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'] as $classReference) {
-					$resultDocumentModifier = GeneralUtility::getUserObj($classReference);
+        $searchedFor = strtr(
+            $this->parentPlugin->pi_getLL('results_searched_for'),
+            array('@searchWord' => '<span class="tx-solr-search-word">' . $queryTerms . '</span>')
+        );
 
-					if ($resultDocumentModifier instanceof ResultDocumentModifier) {
-						$temporaryResultDocument = $resultDocumentModifier->modifyResultDocument($this, $temporaryResultDocument);
-					} else {
-						throw new \UnexpectedValueException(
-							get_class($resultDocumentModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier',
-							1310386725
-						);
-					}
-				}
-			}
+        $foundResultsInfo = strtr(
+            $this->parentPlugin->pi_getLL('results_found'),
+            array(
+                '@resultsTotal' => $this->search->getNumberOfResults(),
+                '@resultsTime' => $this->search->getQueryTime()
+            )
+        );
 
-			$resultDocuments[] = $this->renderDocumentFields($temporaryResultDocument);
-			unset($temporaryResultDocument);
-		}
+        return array(
+            'searched_for' => $searchedFor,
+            'query' => $queryTerms,
+            'query_urlencoded' => rawurlencode($rawQueryTerms),
+            'query_raw' => $rawQueryTerms,
+            'found' => $foundResultsInfo,
+            'range' => $this->getPageBrowserRange(),
+            'count' => $this->search->getNumberOfResults(),
+            'offset' => ($this->search->getResultOffset() + 1),
+            'query_time' => $this->search->getQueryTime(),
+            'pagebrowser' => $this->getPageBrowser($numberOfResults),
+            'filtered' => $this->isFiltered(),
+            'filtered_by_user' => $this->isFilteredByUser(),
+            /* construction of the array key:
+             * loop_ : tells the plugin that the content of that field should be processed in a loop
+             * result_documents : is the loop name as in the template
+             * result_document : is the marker name for the single items in the loop
+             */
+            'loop_result_documents|result_document' => $this->getResultDocuments()
+        );
+    }
 
-		return $resultDocuments;
-	}
+    /**
+     * @return \Apache_Solr_Document[]
+     */
+    protected function getResultDocuments()
+    {
+        $responseDocuments = $this->search->getResultDocuments();
+        $resultDocuments = array();
 
-	/**
-	 * takes a search result document and processes its fields according to the
-	 * instructions configured in TS. Currently available instructions are
-	 *    * timestamp - converts a date field into a unix timestamp
-	 *    * serialize - uses serialize() to encode multivalue fields which then can be put out using the MULTIVALUE view helper
-	 *    * skip - skips the whole field so that it is not available in the result, useful for the spell field f.e.
-	 * The default is to do nothing and just add the document's field to the
-	 * resulting array.
-	 *
-	 * @param \Apache_Solr_Document $document the Apache_Solr_Document result document
-	 * @return array An array with field values processed like defined in TS
-	 */
-	protected function processDocumentFieldsToArray(\Apache_Solr_Document $document) {
-		$processingInstructions = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['results.']['fieldProcessingInstructions.'];
-		$availableFields = $document->getFieldNames();
-		$result = array();
 
-		foreach ($availableFields as $fieldName) {
-			$processingInstruction = $processingInstructions[$fieldName];
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
+                $resultSetModifier = GeneralUtility::getUserObj($classReference);
 
-			// TODO switch to field processors
-			// TODO allow to have multiple (comma-separated) instructions for each field
-			switch ($processingInstruction) {
-				case 'timestamp':
-					$processedFieldValue = Util::isoToTimestamp($document->{$fieldName});
-					break;
-				case 'serialize':
-					if (!empty($document->{$fieldName})) {
-						$processedFieldValue = serialize($document->{$fieldName});
-					} else {
-						$processedFieldValue = '';
-					}
-					break;
-				case 'skip':
-					continue 2;
-				default:
-					$processedFieldValue = $document->{$fieldName};
-			}
+                if ($resultSetModifier instanceof ResultSetModifier) {
+                    $responseDocuments = $resultSetModifier->modifyResultSet($this,
+                        $responseDocuments);
+                } else {
+                    throw new \UnexpectedValueException(
+                        get_class($resultSetModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier',
+                        1310386927
+                    );
+                }
+            }
+        }
 
-			// escape markers in document fields
-			// TODO remove after switching to fluid templates
-			$processedFieldValue = Template::escapeMarkers($processedFieldValue);
+        foreach ($responseDocuments as $resultDocument) {
+            $temporaryResultDocument = array();
+            $temporaryResultDocument = $this->processDocumentFieldsToArray($resultDocument);
 
-			$result[$fieldName] = $processedFieldValue;
-		}
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'])) {
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'] as $classReference) {
+                    $resultDocumentModifier = GeneralUtility::getUserObj($classReference);
 
-		return $result;
-	}
+                    if ($resultDocumentModifier instanceof ResultDocumentModifier) {
+                        $temporaryResultDocument = $resultDocumentModifier->modifyResultDocument($this,
+                            $temporaryResultDocument);
+                    } else {
+                        throw new \UnexpectedValueException(
+                            get_class($resultDocumentModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier',
+                            1310386725
+                        );
+                    }
+                }
+            }
 
-	/**
-	 * @param array $document
-	 * @return array
-	 */
-	protected function renderDocumentFields(array $document) {
-		$renderingInstructions = $this->configuration['search.']['results.']['fieldRenderingInstructions.'];
-		$cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-		$cObj->start($document);
+            $resultDocuments[] = $this->renderDocumentFields($temporaryResultDocument);
+            unset($temporaryResultDocument);
+        }
 
-		foreach ($renderingInstructions as $renderingInstructionName => $renderingInstruction) {
-			if (!is_array($renderingInstruction)) {
-				$renderedField = $cObj->cObjGetSingle(
-					$renderingInstructions[$renderingInstructionName],
-					$renderingInstructions[$renderingInstructionName . '.']
-				);
+        return $resultDocuments;
+    }
 
-				$document[$renderingInstructionName] = $renderedField;
-			}
-		}
+    /**
+     * takes a search result document and processes its fields according to the
+     * instructions configured in TS. Currently available instructions are
+     *    * timestamp - converts a date field into a unix timestamp
+     *    * serialize - uses serialize() to encode multivalue fields which then can be put out using the MULTIVALUE view helper
+     *    * skip - skips the whole field so that it is not available in the result, useful for the spell field f.e.
+     * The default is to do nothing and just add the document's field to the
+     * resulting array.
+     *
+     * @param \Apache_Solr_Document $document the Apache_Solr_Document result document
+     * @return array An array with field values processed like defined in TS
+     */
+    protected function processDocumentFieldsToArray(
+        \Apache_Solr_Document $document
+    ) {
+        $processingInstructions = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['results.']['fieldProcessingInstructions.'];
+        $availableFields = $document->getFieldNames();
+        $result = array();
 
-		return $document;
-	}
+        foreach ($availableFields as $fieldName) {
+            $processingInstruction = $processingInstructions[$fieldName];
 
-	/**
-	 * @param $numberOfResults
-	 * @return string
-	 */
-	protected function getPageBrowser($numberOfResults) {
-		$pageBrowserMarkup = '';
+            // TODO switch to field processors
+            // TODO allow to have multiple (comma-separated) instructions for each field
+            switch ($processingInstruction) {
+                case 'timestamp':
+                    $processedFieldValue = Util::isoToTimestamp($document->{$fieldName});
+                    break;
+                case 'serialize':
+                    if (!empty($document->{$fieldName})) {
+                        $processedFieldValue = serialize($document->{$fieldName});
+                    } else {
+                        $processedFieldValue = '';
+                    }
+                    break;
+                case 'skip':
+                    continue 2;
+                default:
+                    $processedFieldValue = $document->{$fieldName};
+            }
 
-		$solrPageBrowserConfiguration = array();
-		if (isset($this->configuration['search.']['results.']['pagebrowser.'])) {
-			$solrPageBrowserConfiguration = $this->configuration['search.']['results.']['pagebrowser.'];
-		}
+            // escape markers in document fields
+            // TODO remove after switching to fluid templates
+            $processedFieldValue = Template::escapeMarkers($processedFieldValue);
 
-		if ($solrPageBrowserConfiguration['enabled']) {
-			$resultsPerPage = $this->parentPlugin->getNumberOfResultsPerPage();
-			$numberOfPages  = intval($numberOfResults / $resultsPerPage)
-				+ (($numberOfResults % $resultsPerPage) == 0 ? 0 : 1);
+            $result[$fieldName] = $processedFieldValue;
+        }
 
-			$solrGetParameters = GeneralUtility::_GET('tx_solr');
-			if (!is_array($solrGetParameters)) {
-				$solrGetParameters = array();
-			}
-			$currentPage = $solrGetParameters['page'];
-			unset($solrGetParameters['page']);
+        return $result;
+    }
 
-			$pageBrowserConfiguration = array_merge(
-				$solrPageBrowserConfiguration,
-				array(
-					'numberOfPages'    => $numberOfPages,
-					'currentPage'      => $currentPage,
-					'extraQueryString' => GeneralUtility::implodeArrayForUrl('tx_solr', $solrGetParameters),
-					'templateFile'     => $this->configuration['templateFiles.']['pagebrowser']
-				)
-			);
+    /**
+     * @param array $document
+     * @return array
+     */
+    protected function renderDocumentFields(array $document)
+    {
+        $renderingInstructions = $this->configuration['search.']['results.']['fieldRenderingInstructions.'];
+        $cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $cObj->start($document);
 
-			$pageBrowser = GeneralUtility::makeInstance(
-				'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\PageBrowser',
-				$pageBrowserConfiguration,
-				$this->getPageBrowserLabels()
-			);
+        foreach ($renderingInstructions as $renderingInstructionName => $renderingInstruction) {
+            if (!is_array($renderingInstruction)) {
+                $renderedField = $cObj->cObjGetSingle(
+                    $renderingInstructions[$renderingInstructionName],
+                    $renderingInstructions[$renderingInstructionName . '.']
+                );
 
-			$pageBrowserMarkup = $pageBrowser->render();
-		}
+                $document[$renderingInstructionName] = $renderedField;
+            }
+        }
 
-		return $pageBrowserMarkup;
-	}
+        return $document;
+    }
 
-	/**
-	 * Gets the labels for us in the page browser
-	 *
-	 * @return array page browser labels
-	 */
-	protected function getPageBrowserLabels() {
-		$labelKeys = array(
-			'pagebrowser_first',
-			'pagebrowser_next',
-			'pagebrowser_prev',
-			'pagebrowser_last'
-		);
+    /**
+     * @param $numberOfResults
+     * @return string
+     */
+    protected function getPageBrowser($numberOfResults)
+    {
+        $pageBrowserMarkup = '';
 
-		$labels = array();
-		foreach ($labelKeys as $labelKey) {
-			$labels[$labelKey] = $this->parentPlugin->pi_getLL($labelKey);
-		}
+        $solrPageBrowserConfiguration = array();
+        if (isset($this->configuration['search.']['results.']['pagebrowser.'])) {
+            $solrPageBrowserConfiguration = $this->configuration['search.']['results.']['pagebrowser.'];
+        }
 
-		return $labels;
-	}
+        if ($solrPageBrowserConfiguration['enabled']) {
+            $resultsPerPage = $this->parentPlugin->getNumberOfResultsPerPage();
+            $numberOfPages = intval($numberOfResults / $resultsPerPage)
+                + (($numberOfResults % $resultsPerPage) == 0 ? 0 : 1);
 
-	/**
-	 * @return string
-	 */
-	protected function getPageBrowserRange() {
-		$label = '';
+            $solrGetParameters = GeneralUtility::_GET('tx_solr');
+            if (!is_array($solrGetParameters)) {
+                $solrGetParameters = array();
+            }
+            $currentPage = $solrGetParameters['page'];
+            unset($solrGetParameters['page']);
 
-		$resultsFrom  = $this->search->getResponseBody()->start + 1;
-		$resultsTo    = $resultsFrom + count($this->search->getResultDocuments()) - 1;
-		$resultsTotal = $this->search->getNumberOfResults();
+            $pageBrowserConfiguration = array_merge(
+                $solrPageBrowserConfiguration,
+                array(
+                    'numberOfPages' => $numberOfPages,
+                    'currentPage' => $currentPage,
+                    'extraQueryString' => GeneralUtility::implodeArrayForUrl('tx_solr',
+                        $solrGetParameters),
+                    'templateFile' => $this->configuration['templateFiles.']['pagebrowser']
+                )
+            );
 
-		$label = strtr(
-			$this->parentPlugin->pi_getLL('results_range'),
-			array(
-				'@resultsFrom'  => $resultsFrom,
-				'@resultsTo'    => $resultsTo,
-				'@resultsTotal' => $resultsTotal
-			)
-		);
+            $pageBrowser = GeneralUtility::makeInstance(
+                'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\PageBrowser',
+                $pageBrowserConfiguration,
+                $this->getPageBrowserLabels()
+            );
 
-		return $label;
-	}
+            $pageBrowserMarkup = $pageBrowser->render();
+        }
 
-	/**
-	 * Gets the parent plugin.
-	 *
-	 * @return Results
-	 */
-	public function getParentPlugin() {
-		return $this->parentPlugin;
-	}
+        return $pageBrowserMarkup;
+    }
 
-	/**
-	 * Determines whether filters have been applied to the query or not.
-	 *
-	 * @return string 1 if filters are applied, 0 if not (for use in templates)
-	 */
-	protected function isFiltered() {
-		$filters = $this->search->getQuery()->getFilters();
-		$filtered = !empty($filters);
+    /**
+     * Gets the labels for us in the page browser
+     *
+     * @return array page browser labels
+     */
+    protected function getPageBrowserLabels()
+    {
+        $labelKeys = array(
+            'pagebrowser_first',
+            'pagebrowser_next',
+            'pagebrowser_prev',
+            'pagebrowser_last'
+        );
 
-		return ($filtered ? '1' : '0');
-	}
+        $labels = array();
+        foreach ($labelKeys as $labelKey) {
+            $labels[$labelKey] = $this->parentPlugin->pi_getLL($labelKey);
+        }
 
-	/**
-	 * Determines whether filters have been applied by the user (facets for
-	 * example) to the query or not.
-	 *
-	 * @return string 1 if filters are applied, 0 if not (for use in templates)
-	 */
-	protected function isFilteredByUser() {
-		$userFiltered = FALSE;
-		$resultParameters = GeneralUtility::_GET('tx_solr');
+        return $labels;
+    }
 
-		if (isset($resultParameters['filter'])) {
-			$userFiltered = TRUE;
-		}
+    /**
+     * @return string
+     */
+    protected function getPageBrowserRange()
+    {
+        $label = '';
 
-		return ($userFiltered ? '1' : '0');
-	}
+        $resultsFrom = $this->search->getResponseBody()->start + 1;
+        $resultsTo = $resultsFrom + count($this->search->getResultDocuments()) - 1;
+        $resultsTotal = $this->search->getNumberOfResults();
+
+        $label = strtr(
+            $this->parentPlugin->pi_getLL('results_range'),
+            array(
+                '@resultsFrom' => $resultsFrom,
+                '@resultsTo' => $resultsTo,
+                '@resultsTotal' => $resultsTotal
+            )
+        );
+
+        return $label;
+    }
+
+    /**
+     * Gets the parent plugin.
+     *
+     * @return Results
+     */
+    public function getParentPlugin()
+    {
+        return $this->parentPlugin;
+    }
+
+    /**
+     * Determines whether filters have been applied to the query or not.
+     *
+     * @return string 1 if filters are applied, 0 if not (for use in templates)
+     */
+    protected function isFiltered()
+    {
+        $filters = $this->search->getQuery()->getFilters();
+        $filtered = !empty($filters);
+
+        return ($filtered ? '1' : '0');
+    }
+
+    /**
+     * Determines whether filters have been applied by the user (facets for
+     * example) to the query or not.
+     *
+     * @return string 1 if filters are applied, 0 if not (for use in templates)
+     */
+    protected function isFilteredByUser()
+    {
+        $userFiltered = false;
+        $resultParameters = GeneralUtility::_GET('tx_solr');
+
+        if (isset($resultParameters['filter'])) {
+            $userFiltered = true;
+        }
+
+        return ($userFiltered ? '1' : '0');
+    }
 }
 

@@ -2,28 +2,28 @@
 namespace ApacheSolrForTypo3\Solr\Plugin;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2010-2015 Timo Schmidt <timo.schmidt@aoemedia.de>
-*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2010-2015 Timo Schmidt <timo.schmidt@aoemedia.de>
+ *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query;
@@ -46,511 +46,544 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class PluginBase extends AbstractPlugin {
-
-	public $prefixId = 'tx_solr';
-	public $extKey   = 'solr';
-
-	/**
-	 * an instance of ApacheSolrForTypo3\Solr\Search
-	 *
-	 * @var Search
-	 */
-	protected $search;
-
-	/**
-	 * The plugin's query
-	 *
-	 * @var Query
-	 */
-	protected $query = NULL;
-
-	/**
-	 * Determines whether the solr server is available or not.
-	 */
-	protected $solrAvailable;
-
-	/**
-	 * An instance of ApacheSolrForTypo3\Solr\Template
-	 *
-	 * @var Template
-	 */
-	protected $template;
-
-	/**
-	 * An instance of ApacheSolrForTypo3\Solr\JavascriptManager
-	 *
-	 * @var JavascriptManager
-	 */
-	protected $javascriptManager;
-
-	/**
-	 * The user's raw query.
-	 *
-	 * Private to enforce API usage.
-	 *
-	 * @var string
-	 */
-	private $rawUserQuery;
-
-
-	// Main
-
-
-	/**
-	 * The main method of the plugin
-	 *
-	 * @param string $content The plugin content
-	 * @param array $configuration The plugin configuration
-	 * @return string The content that is displayed on the website
-	 */
-	public function main($content, $configuration) {
-		/** @noinspection PhpUnusedLocalVariableInspection */
-		$content = '';
-
-		try {
-			$this->initialize($configuration);
-			$this->preRender();
-
-			$actionResult = $this->performAction();
-
-			if ($this->solrAvailable) {
-				$content = $this->render($actionResult);
-			} else {
-				$content = $this->renderError();
-			}
-
-			$content = $this->postRender($content);
-		} catch (\Exception $e) {
-			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
-				GeneralUtility::devLog(
-					$e->getCode() . ': ' . $e->__toString(),
-					'solr',
-					3,
-					(array) $e
-				);
-			}
-
-			$this->initializeTemplateEngine();
-			$content = $this->renderException();
-		}
-
-		return $this->baseWrap($content);
-	}
-
-	/**
-	 * Adds the possibility to use stdWrap on the plugins content instead of wrapInBaseClass.
-	 * Defaults to wrapInBaseClass to ensure downward compatibility.
-	 *
-	 * @param string $content The plugin content
-	 * @return string
-	 */
-	protected function baseWrap($content) {
-		if (isset($this->conf['general.']['baseWrap.'])) {
-			return $this->cObj->stdWrap($content, $this->conf['general.']['baseWrap.']);
-		} else {
-			return $this->pi_wrapInBaseClass($content);
-		}
-	}
-
-	/**
-	 * Implements the action logic. The result of this method is passed to the
-	 * render method.
-	 *
-	 * @return string Action result
-	 */
-	protected abstract function performAction();
-
-
-	// Initialization
-
-
-	/**
-	 * Initializes the plugin - configuration, language, caching, search...
-	 *
-	 * @param array $configuration configuration array as provided by the TYPO3 core
-	 */
-	protected function initialize($configuration) {
-		$this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
-		ArrayUtility::mergeRecursiveWithOverrule(
-			$this->conf,
-			$configuration
-		);
-
-		$this->pi_setPiVarDefaults();
-		$this->pi_loadLL();
-		$this->pi_initPIflexForm();
-		$this->overrideTyposcriptWithFlexformSettings();
-
-		$this->initializeQuery();
-		$this->initializeSearch();
-		$this->initializeTemplateEngine();
-		$this->initializeJavascriptManager();
-
-		$this->postInitialize();
-	}
-
-	/**
-	 * Overwrites pi_setPiVarDefaults to add stdWrap-functionality to _DEFAULT_PI_VARS
-	 *
-	 * @author Grigori Prokhorov <grigori.prokhorov@dkd.de>
-	 * @author Ivan Kartolo <ivan.kartolo@dkd.de>
-	 * @return void
-	 */
-	function pi_setPiVarDefaults() {
-		if (is_array($this->conf['_DEFAULT_PI_VARS.'])) {
-			foreach ($this->conf['_DEFAULT_PI_VARS.'] as $key => $defaultValue) {
-				$this->conf['_DEFAULT_PI_VARS.'][$key] = $this->cObj->cObjGetSingle($this->conf['_DEFAULT_PI_VARS.'][$key], $this->conf['_DEFAULT_PI_VARS.'][$key . '.']);
-			}
-
-			$piVars = is_array($this->piVars) ? $this->piVars : array();
-			$this->piVars = $this->conf['_DEFAULT_PI_VARS.'];
-			ArrayUtility::mergeRecursiveWithOverrule(
-				$this->piVars,
-				$piVars
-			);
-		}
-	}
-
-	/**
-	 * Overwrites pi_loadLL() to handle custom location of language files.
-	 *
-	 * Loads local-language values by looking for a "locallang" file in the
-	 * plugin class directory ($this->scriptRelPath) and if found includes it.
-	 * Also locallang values set in the TypoScript property "_LOCAL_LANG" are
-	 * merged onto the values found in the "locallang" file.
-	 * Supported file extensions xlf, xml, php
-	 *
-	 * @return void
-	 */
-	public function pi_loadLL() {
-		if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
-			$pathElements = pathinfo($this->scriptRelPath);
-			$languageFileName = $pathElements['filename'];
-
-			$basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/Plugin' . $languageFileName . '.xml';
-
-			// Read the strings in the required charset (since TYPO3 4.2)
-			$this->LOCAL_LANG = GeneralUtility::readLLfile($basePath, $this->LLkey, $GLOBALS['TSFE']->renderCharset);
-			$alternativeLanguageKeys = GeneralUtility::trimExplode(',', $this->altLLkey, TRUE);
-			foreach ($alternativeLanguageKeys as $languageKey) {
-				$tempLL = GeneralUtility::readLLfile($basePath, $languageKey);
-				if ($this->LLkey !== 'default' && isset($tempLL[$languageKey])) {
-					$this->LOCAL_LANG[$languageKey] = $tempLL[$languageKey];
-				}
-			}
-			// Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
-			if (isset($this->conf['_LOCAL_LANG.'])) {
-				// Clear the "unset memory"
-				$this->LOCAL_LANG_UNSET = array();
-				foreach ($this->conf['_LOCAL_LANG.'] as $languageKey => $languageArray) {
-					// Remove the dot after the language key
-					$languageKey = substr($languageKey, 0, -1);
-					// Don't process label if the language is not loaded
-					if (is_array($languageArray) && isset($this->LOCAL_LANG[$languageKey])) {
-						foreach ($languageArray as $labelKey => $labelValue) {
-							if (!is_array($labelValue)) {
-								$this->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
-								$this->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
-
-								if ($labelValue === '') {
-									$this->LOCAL_LANG_UNSET[$languageKey][$labelKey] = '';
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		$this->LOCAL_LANG_loaded = 1;
-	}
-
-	/**
-	 * Allows to override TypoScript settings with Flexform values.
-	 *
-	 */
-	protected function overrideTyposcriptWithFlexformSettings() {
-	}
-
-	/**
-	 * Initializes the query from the GET query parameter.
-	 *
-	 */
-	protected function initializeQuery() {
-		$this->rawUserQuery = GeneralUtility::_GET('q');
-	}
-
-	/**
-	 * Initializes the Solr connection and tests the connection through a ping.
-	 *
-	 */
-	protected function initializeSearch() {
-		$solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
-			$GLOBALS['TSFE']->id,
-			$GLOBALS['TSFE']->sys_language_uid,
-			$GLOBALS['TSFE']->MP
-		);
-
-		$this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
-		$this->solrAvailable = $this->search->ping();
-	}
-
-	/**
-	 * Initializes the template engine and returns the initialized instance.
-	 *
-	 * @return Template
-	 * @throws \UnexpectedValueException if a view helper provider fails to implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider
-	 */
-	protected function initializeTemplateEngine() {
-		$templateFile = $this->getTemplateFile();
-		$subPart      = $this->getSubpart();
-
-		$flexformTemplateFile = $this->pi_getFFvalue(
-			$this->cObj->data['pi_flexform'],
-			'templateFile',
-			'sOptions'
-		);
-		if (!empty($flexformTemplateFile)) {
-			$templateFile = $flexformTemplateFile;
-		}
-
-		/** @var Template $template */
-		$template = GeneralUtility::makeInstance(
-			'ApacheSolrForTypo3\\Solr\\Template',
-			$this->cObj,
-			$templateFile,
-			$subPart
-		);
-		$template->addViewHelperIncludePath($this->extKey, 'Classes/ViewHelper/');
-		$template->addViewHelper('LLL', array(
-			'languageFile' => 'EXT:solr/Resources/Private/Language/' . str_replace('Pi', 'Plugin', $this->getPluginKey()) . '.xml',
-			'llKey'        => $this->LLkey
-		));
-
-		// can be used for view helpers that need configuration during initialization
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'])) {
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'] as $classReference) {
-				$viewHelperProvider = &GeneralUtility::getUserObj($classReference);
-
-				if ($viewHelperProvider instanceof ViewHelperProvider) {
-					$viewHelpers = $viewHelperProvider->getViewHelpers();
-					foreach ($viewHelpers as $helperName => $helperObject) {
-						// TODO check whether $helperAdded is TRUE, throw an exception if not
-						$helperAdded = $template->addViewHelperObject($helperName, $helperObject);
-					}
-				} else {
-					throw new \UnexpectedValueException(
-						get_class($viewHelperProvider) . ' must implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider',
-						1310387296
-					);
-				}
-			}
-		}
-
-		$template = $this->postInitializeTemplateEngine($template);
-
-		$this->template = $template;
-	}
-
-	/**
-	 * Initializes the javascript manager.
-	 *
-	 */
-	protected function initializeJavascriptManager() {
-		$this->javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
-	}
-
-	/**
-	 * This method is called after initializing in the initialize method.
-	 * Overwrite this method to do your own initialization.
-	 *
-	 * @return void
-	 */
-	protected function postInitialize() {
-	}
-
-	/**
-	 * Overwrite this method to do own initialisations  of the template.
-	 *
-	 * @param Template $template Template
-	 * @return Template
-	 */
-	protected function postInitializeTemplateEngine(Template $template) {
-		return $template;
-	}
-
-
-	// Rendering
-
-
-	/**
-	 * This method executes the requested commands and applies the changes to
-	 * the template.
-	 *
-	 * @param $actionResult
-	 * @return string Rendered plugin content
-	 */
-	protected abstract function render($actionResult);
-
-	/**
-	 * Renders a solr error.
-	 *
-	 * @return string A representation of the error that should be understandable for the user.
-	 */
-	protected function renderError() {
-		$this->template->workOnSubpart('solr_search_unavailable');
-
-		return $this->template->render();
-	}
-
-	/**
-	 * Renders a solr exception.
-	 *
-	 * @return string A representation of the exception that should be understandable for the user.
-	 */
-	protected function renderException() {
-		$this->template->workOnSubpart('solr_search_error');
-
-		return $this->template->render();
-	}
-
-	/**
-	 * Should be overwritten to do things before rendering.
-	 *
-	 */
-	protected function preRender() {
-	}
-
-	/**
-	 * Overwrite this method to perform changes to the content after rendering.
-	 *
-	 * @param string $content The content rendered by the plugin so far
-	 * @return string The content that should be presented on the website, might be different from the output rendered before
-	 */
-	protected function postRender($content) {
-		if (isset($this->conf['stdWrap.'])) {
-			$content = $this->cObj->stdWrap($content, $this->conf['stdWrap.']);
-		}
-
-		return $content;
-	}
-
-
-	// Helper methods
-
-
-	/**
-	 * Determines the template file from the configuration.
-	 *
-	 * Overwrite this method to use a different template.
-	 *
-	 * @return string The template file name to be used for the plugin
-	 */
-	protected function getTemplateFile() {
-		return $this->conf['templateFiles.'][$this->getTemplateFileKey()];
-	}
-
-	/**
-	 * This method should be implemented to return the TSconfig key which
-	 * contains the template name for this template.
-	 *
-	 * @see initializeTemplateEngine()
-	 * @return string The TSconfig key containing the template name
-	 */
-	protected abstract function getTemplateFileKey();
-
-	/**
-	 * Gets the plugin's template instance.
-	 *
-	 * @return Template The plugin's template.
-	 */
-	public function getTemplate() {
-		return $this->template;
-	}
-
-	/**
-	 * Gets the plugin's javascript manager.
-	 *
-	 * @return JavascriptManager The plugin's javascript manager.
-	 */
-	public function getJavascriptManager() {
-		return $this->javascriptManager;
-	}
-
-	/**
-	 * Should return the relevant subpart of the template.
-	 *
-	 * @see initializeTemplateEngine()
-	 * @return string The subpart of the template to be used
-	 */
-	protected abstract function getSubpart();
-
-	/**
-	 * This method should return the plugin key. Reads some configuration
-	 * options in initializeTemplateEngine()
-	 *
-	 * @see initializeTemplateEngine()
-	 * @return string The plugin key
-	 */
-	protected abstract function getPluginKey();
-
-	/**
-	 * Gets the target page Id for links. Might have been set through either
-	 * flexform or TypoScript. If none is set, TSFE->id is used.
-	 *
-	 * @return integer The page Id to be used for links
-	 */
-	public function getLinkTargetPageId() {
-		return $this->conf['search.']['targetPage'];
-	}
-
-	/**
-	 * Gets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
-	 * helper function for result document modifiers.
-	 *
-	 * @return Search
-	 */
-	public function getSearch() {
-		return $this->search;
-	}
-
-	/**
-	 * Sets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
-	 * helper function for result document modifiers.
-	 *
-	 * @param Search $search Search instance
-	 */
-	public function setSearch(Search $search) {
-		$this->search = $search;
-	}
-
-	/**
-	 * Gets the user's query term and cleans it so that it can be used in
-	 * templates f.e.
-	 *
-	 * @return string The cleaned user query.
-	 */
-	public function getCleanUserQuery() {
-		$userQuery = $this->getRawUserQuery();
-
-		if (!is_null($userQuery)) {
-			$userQuery = Query::cleanKeywords($userQuery);
-		}
-
-		// escape triple hashes as they are used in the template engine
-		// TODO remove after switching to fluid templates
-		$userQuery = Template::escapeMarkers($userQuery);
-
-		return $userQuery;
-	}
-
-	/**
-	 * Gets the raw user query
-	 *
-	 * @return string Raw user query.
-	 */
-	public function getRawUserQuery() {
-		return $this->rawUserQuery;
-	}
+abstract class PluginBase extends AbstractPlugin
+{
+
+    public $prefixId = 'tx_solr';
+    public $extKey = 'solr';
+
+    /**
+     * an instance of ApacheSolrForTypo3\Solr\Search
+     *
+     * @var Search
+     */
+    protected $search;
+
+    /**
+     * The plugin's query
+     *
+     * @var Query
+     */
+    protected $query = null;
+
+    /**
+     * Determines whether the solr server is available or not.
+     */
+    protected $solrAvailable;
+
+    /**
+     * An instance of ApacheSolrForTypo3\Solr\Template
+     *
+     * @var Template
+     */
+    protected $template;
+
+    /**
+     * An instance of ApacheSolrForTypo3\Solr\JavascriptManager
+     *
+     * @var JavascriptManager
+     */
+    protected $javascriptManager;
+
+    /**
+     * The user's raw query.
+     *
+     * Private to enforce API usage.
+     *
+     * @var string
+     */
+    private $rawUserQuery;
+
+
+    // Main
+
+
+    /**
+     * The main method of the plugin
+     *
+     * @param string $content The plugin content
+     * @param array $configuration The plugin configuration
+     * @return string The content that is displayed on the website
+     */
+    public function main($content, $configuration)
+    {
+        /** @noinspection PhpUnusedLocalVariableInspection */
+        $content = '';
+
+        try {
+            $this->initialize($configuration);
+            $this->preRender();
+
+            $actionResult = $this->performAction();
+
+            if ($this->solrAvailable) {
+                $content = $this->render($actionResult);
+            } else {
+                $content = $this->renderError();
+            }
+
+            $content = $this->postRender($content);
+        } catch (\Exception $e) {
+            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
+                GeneralUtility::devLog(
+                    $e->getCode() . ': ' . $e->__toString(),
+                    'solr',
+                    3,
+                    (array)$e
+                );
+            }
+
+            $this->initializeTemplateEngine();
+            $content = $this->renderException();
+        }
+
+        return $this->baseWrap($content);
+    }
+
+    /**
+     * Adds the possibility to use stdWrap on the plugins content instead of wrapInBaseClass.
+     * Defaults to wrapInBaseClass to ensure downward compatibility.
+     *
+     * @param string $content The plugin content
+     * @return string
+     */
+    protected function baseWrap($content)
+    {
+        if (isset($this->conf['general.']['baseWrap.'])) {
+            return $this->cObj->stdWrap($content,
+                $this->conf['general.']['baseWrap.']);
+        } else {
+            return $this->pi_wrapInBaseClass($content);
+        }
+    }
+
+    /**
+     * Implements the action logic. The result of this method is passed to the
+     * render method.
+     *
+     * @return string Action result
+     */
+    protected abstract function performAction();
+
+
+    // Initialization
+
+
+    /**
+     * Initializes the plugin - configuration, language, caching, search...
+     *
+     * @param array $configuration configuration array as provided by the TYPO3 core
+     */
+    protected function initialize($configuration)
+    {
+        $this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
+        ArrayUtility::mergeRecursiveWithOverrule(
+            $this->conf,
+            $configuration
+        );
+
+        $this->pi_setPiVarDefaults();
+        $this->pi_loadLL();
+        $this->pi_initPIflexForm();
+        $this->overrideTyposcriptWithFlexformSettings();
+
+        $this->initializeQuery();
+        $this->initializeSearch();
+        $this->initializeTemplateEngine();
+        $this->initializeJavascriptManager();
+
+        $this->postInitialize();
+    }
+
+    /**
+     * Overwrites pi_setPiVarDefaults to add stdWrap-functionality to _DEFAULT_PI_VARS
+     *
+     * @author Grigori Prokhorov <grigori.prokhorov@dkd.de>
+     * @author Ivan Kartolo <ivan.kartolo@dkd.de>
+     * @return void
+     */
+    function pi_setPiVarDefaults()
+    {
+        if (is_array($this->conf['_DEFAULT_PI_VARS.'])) {
+            foreach ($this->conf['_DEFAULT_PI_VARS.'] as $key => $defaultValue) {
+                $this->conf['_DEFAULT_PI_VARS.'][$key] = $this->cObj->cObjGetSingle($this->conf['_DEFAULT_PI_VARS.'][$key],
+                    $this->conf['_DEFAULT_PI_VARS.'][$key . '.']);
+            }
+
+            $piVars = is_array($this->piVars) ? $this->piVars : array();
+            $this->piVars = $this->conf['_DEFAULT_PI_VARS.'];
+            ArrayUtility::mergeRecursiveWithOverrule(
+                $this->piVars,
+                $piVars
+            );
+        }
+    }
+
+    /**
+     * Overwrites pi_loadLL() to handle custom location of language files.
+     *
+     * Loads local-language values by looking for a "locallang" file in the
+     * plugin class directory ($this->scriptRelPath) and if found includes it.
+     * Also locallang values set in the TypoScript property "_LOCAL_LANG" are
+     * merged onto the values found in the "locallang" file.
+     * Supported file extensions xlf, xml, php
+     *
+     * @return void
+     */
+    public function pi_loadLL()
+    {
+        if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
+            $pathElements = pathinfo($this->scriptRelPath);
+            $languageFileName = $pathElements['filename'];
+
+            $basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/Plugin' . $languageFileName . '.xml';
+
+            // Read the strings in the required charset (since TYPO3 4.2)
+            $this->LOCAL_LANG = GeneralUtility::readLLfile($basePath,
+                $this->LLkey, $GLOBALS['TSFE']->renderCharset);
+            $alternativeLanguageKeys = GeneralUtility::trimExplode(',',
+                $this->altLLkey, true);
+            foreach ($alternativeLanguageKeys as $languageKey) {
+                $tempLL = GeneralUtility::readLLfile($basePath, $languageKey);
+                if ($this->LLkey !== 'default' && isset($tempLL[$languageKey])) {
+                    $this->LOCAL_LANG[$languageKey] = $tempLL[$languageKey];
+                }
+            }
+            // Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
+            if (isset($this->conf['_LOCAL_LANG.'])) {
+                // Clear the "unset memory"
+                $this->LOCAL_LANG_UNSET = array();
+                foreach ($this->conf['_LOCAL_LANG.'] as $languageKey => $languageArray) {
+                    // Remove the dot after the language key
+                    $languageKey = substr($languageKey, 0, -1);
+                    // Don't process label if the language is not loaded
+                    if (is_array($languageArray) && isset($this->LOCAL_LANG[$languageKey])) {
+                        foreach ($languageArray as $labelKey => $labelValue) {
+                            if (!is_array($labelValue)) {
+                                $this->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
+                                $this->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
+
+                                if ($labelValue === '') {
+                                    $this->LOCAL_LANG_UNSET[$languageKey][$labelKey] = '';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $this->LOCAL_LANG_loaded = 1;
+    }
+
+    /**
+     * Allows to override TypoScript settings with Flexform values.
+     *
+     */
+    protected function overrideTyposcriptWithFlexformSettings()
+    {
+    }
+
+    /**
+     * Initializes the query from the GET query parameter.
+     *
+     */
+    protected function initializeQuery()
+    {
+        $this->rawUserQuery = GeneralUtility::_GET('q');
+    }
+
+    /**
+     * Initializes the Solr connection and tests the connection through a ping.
+     *
+     */
+    protected function initializeSearch()
+    {
+        $solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
+            $GLOBALS['TSFE']->id,
+            $GLOBALS['TSFE']->sys_language_uid,
+            $GLOBALS['TSFE']->MP
+        );
+
+        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search',
+            $solrConnection);
+        $this->solrAvailable = $this->search->ping();
+    }
+
+    /**
+     * Initializes the template engine and returns the initialized instance.
+     *
+     * @return Template
+     * @throws \UnexpectedValueException if a view helper provider fails to implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider
+     */
+    protected function initializeTemplateEngine()
+    {
+        $templateFile = $this->getTemplateFile();
+        $subPart = $this->getSubpart();
+
+        $flexformTemplateFile = $this->pi_getFFvalue(
+            $this->cObj->data['pi_flexform'],
+            'templateFile',
+            'sOptions'
+        );
+        if (!empty($flexformTemplateFile)) {
+            $templateFile = $flexformTemplateFile;
+        }
+
+        /** @var Template $template */
+        $template = GeneralUtility::makeInstance(
+            'ApacheSolrForTypo3\\Solr\\Template',
+            $this->cObj,
+            $templateFile,
+            $subPart
+        );
+        $template->addViewHelperIncludePath($this->extKey,
+            'Classes/ViewHelper/');
+        $template->addViewHelper('LLL', array(
+            'languageFile' => 'EXT:solr/Resources/Private/Language/' . str_replace('Pi',
+                    'Plugin', $this->getPluginKey()) . '.xml',
+            'llKey' => $this->LLkey
+        ));
+
+        // can be used for view helpers that need configuration during initialization
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'] as $classReference) {
+                $viewHelperProvider = &GeneralUtility::getUserObj($classReference);
+
+                if ($viewHelperProvider instanceof ViewHelperProvider) {
+                    $viewHelpers = $viewHelperProvider->getViewHelpers();
+                    foreach ($viewHelpers as $helperName => $helperObject) {
+                        // TODO check whether $helperAdded is TRUE, throw an exception if not
+                        $helperAdded = $template->addViewHelperObject($helperName,
+                            $helperObject);
+                    }
+                } else {
+                    throw new \UnexpectedValueException(
+                        get_class($viewHelperProvider) . ' must implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider',
+                        1310387296
+                    );
+                }
+            }
+        }
+
+        $template = $this->postInitializeTemplateEngine($template);
+
+        $this->template = $template;
+    }
+
+    /**
+     * Initializes the javascript manager.
+     *
+     */
+    protected function initializeJavascriptManager()
+    {
+        $this->javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
+    }
+
+    /**
+     * This method is called after initializing in the initialize method.
+     * Overwrite this method to do your own initialization.
+     *
+     * @return void
+     */
+    protected function postInitialize()
+    {
+    }
+
+    /**
+     * Overwrite this method to do own initialisations  of the template.
+     *
+     * @param Template $template Template
+     * @return Template
+     */
+    protected function postInitializeTemplateEngine(Template $template)
+    {
+        return $template;
+    }
+
+
+    // Rendering
+
+
+    /**
+     * This method executes the requested commands and applies the changes to
+     * the template.
+     *
+     * @param $actionResult
+     * @return string Rendered plugin content
+     */
+    protected abstract function render($actionResult);
+
+    /**
+     * Renders a solr error.
+     *
+     * @return string A representation of the error that should be understandable for the user.
+     */
+    protected function renderError()
+    {
+        $this->template->workOnSubpart('solr_search_unavailable');
+
+        return $this->template->render();
+    }
+
+    /**
+     * Renders a solr exception.
+     *
+     * @return string A representation of the exception that should be understandable for the user.
+     */
+    protected function renderException()
+    {
+        $this->template->workOnSubpart('solr_search_error');
+
+        return $this->template->render();
+    }
+
+    /**
+     * Should be overwritten to do things before rendering.
+     *
+     */
+    protected function preRender()
+    {
+    }
+
+    /**
+     * Overwrite this method to perform changes to the content after rendering.
+     *
+     * @param string $content The content rendered by the plugin so far
+     * @return string The content that should be presented on the website, might be different from the output rendered before
+     */
+    protected function postRender($content)
+    {
+        if (isset($this->conf['stdWrap.'])) {
+            $content = $this->cObj->stdWrap($content, $this->conf['stdWrap.']);
+        }
+
+        return $content;
+    }
+
+
+    // Helper methods
+
+
+    /**
+     * Determines the template file from the configuration.
+     *
+     * Overwrite this method to use a different template.
+     *
+     * @return string The template file name to be used for the plugin
+     */
+    protected function getTemplateFile()
+    {
+        return $this->conf['templateFiles.'][$this->getTemplateFileKey()];
+    }
+
+    /**
+     * This method should be implemented to return the TSconfig key which
+     * contains the template name for this template.
+     *
+     * @see initializeTemplateEngine()
+     * @return string The TSconfig key containing the template name
+     */
+    protected abstract function getTemplateFileKey();
+
+    /**
+     * Gets the plugin's template instance.
+     *
+     * @return Template The plugin's template.
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * Gets the plugin's javascript manager.
+     *
+     * @return JavascriptManager The plugin's javascript manager.
+     */
+    public function getJavascriptManager()
+    {
+        return $this->javascriptManager;
+    }
+
+    /**
+     * Should return the relevant subpart of the template.
+     *
+     * @see initializeTemplateEngine()
+     * @return string The subpart of the template to be used
+     */
+    protected abstract function getSubpart();
+
+    /**
+     * This method should return the plugin key. Reads some configuration
+     * options in initializeTemplateEngine()
+     *
+     * @see initializeTemplateEngine()
+     * @return string The plugin key
+     */
+    protected abstract function getPluginKey();
+
+    /**
+     * Gets the target page Id for links. Might have been set through either
+     * flexform or TypoScript. If none is set, TSFE->id is used.
+     *
+     * @return integer The page Id to be used for links
+     */
+    public function getLinkTargetPageId()
+    {
+        return $this->conf['search.']['targetPage'];
+    }
+
+    /**
+     * Gets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
+     * helper function for result document modifiers.
+     *
+     * @return Search
+     */
+    public function getSearch()
+    {
+        return $this->search;
+    }
+
+    /**
+     * Sets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
+     * helper function for result document modifiers.
+     *
+     * @param Search $search Search instance
+     */
+    public function setSearch(Search $search)
+    {
+        $this->search = $search;
+    }
+
+    /**
+     * Gets the user's query term and cleans it so that it can be used in
+     * templates f.e.
+     *
+     * @return string The cleaned user query.
+     */
+    public function getCleanUserQuery()
+    {
+        $userQuery = $this->getRawUserQuery();
+
+        if (!is_null($userQuery)) {
+            $userQuery = Query::cleanKeywords($userQuery);
+        }
+
+        // escape triple hashes as they are used in the template engine
+        // TODO remove after switching to fluid templates
+        $userQuery = Template::escapeMarkers($userQuery);
+
+        return $userQuery;
+    }
+
+    /**
+     * Gets the raw user query
+     *
+     * @return string Raw user query.
+     */
+    public function getRawUserQuery()
+    {
+        return $this->rawUserQuery;
+    }
 }
 

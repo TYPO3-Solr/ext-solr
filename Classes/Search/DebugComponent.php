@@ -36,38 +36,41 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class DebugComponent extends AbstractComponent implements QueryAware {
+class DebugComponent extends AbstractComponent implements QueryAware
+{
 
-	/**
-	 * Solr query
-	 *
-	 * @var Query
-	 */
-	protected $query;
+    /**
+     * Solr query
+     *
+     * @var Query
+     */
+    protected $query;
 
 
-	/**
-	 * Initializes the search component.
-	 *
-	 * Sets the debug query parameter
-	 *
-	 */
-	public function initializeSearchComponent() {
-		$solrConfiguration = Util::getSolrConfiguration();
+    /**
+     * Initializes the search component.
+     *
+     * Sets the debug query parameter
+     *
+     */
+    public function initializeSearchComponent()
+    {
+        $solrConfiguration = Util::getSolrConfiguration();
 
-		if ($solrConfiguration['enableDebugMode']) {
-			$this->query->setDebugMode();
-		}
-	}
+        if ($solrConfiguration['enableDebugMode']) {
+            $this->query->setDebugMode();
+        }
+    }
 
-	/**
-	 * Provides the extension component with an instance of the current query.
-	 *
-	 * @param Query $query Current query
-	 */
-	public function setQuery(Query $query) {
-		$this->query = $query;
-	}
+    /**
+     * Provides the extension component with an instance of the current query.
+     *
+     * @param Query $query Current query
+     */
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
+    }
 
 }
 

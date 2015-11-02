@@ -37,48 +37,54 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class SortingComponent extends AbstractComponent implements QueryAware {
+class SortingComponent extends AbstractComponent implements QueryAware
+{
 
-	/**
-	 * Solr query
-	 *
-	 * @var Query
-	 */
-	protected $query;
+    /**
+     * Solr query
+     *
+     * @var Query
+     */
+    protected $query;
 
 
-	/**
-	 * Initializes the search component.
-	 *
-	 * Sets the sorting query parameters
-	 *
-	 */
-	public function initializeSearchComponent() {
-		if (!empty($this->searchConfiguration['query.']['sortBy'])) {
-			$this->query->addQueryParameter('sort', $this->searchConfiguration['query.']['sortBy']);
-		}
+    /**
+     * Initializes the search component.
+     *
+     * Sets the sorting query parameters
+     *
+     */
+    public function initializeSearchComponent()
+    {
+        if (!empty($this->searchConfiguration['query.']['sortBy'])) {
+            $this->query->addQueryParameter('sort',
+                $this->searchConfiguration['query.']['sortBy']);
+        }
 
-		$solrGetParameters = GeneralUtility::_GET('tx_solr');
+        $solrGetParameters = GeneralUtility::_GET('tx_solr');
 
-		if (!empty($this->searchConfiguration['sorting'])
-			&& !empty($solrGetParameters['sort'])
-			&& preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i', $solrGetParameters['sort'])
-		) {
-			$sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Sorting', $this->searchConfiguration['sorting.']['options.']);
-			$sortField = $sortHelper->getSortFieldFromUrlParameter($solrGetParameters['sort']);
+        if (!empty($this->searchConfiguration['sorting'])
+            && !empty($solrGetParameters['sort'])
+            && preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i',
+                $solrGetParameters['sort'])
+        ) {
+            $sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Sorting',
+                $this->searchConfiguration['sorting.']['options.']);
+            $sortField = $sortHelper->getSortFieldFromUrlParameter($solrGetParameters['sort']);
 
-			$this->query->setSorting($sortField);
-		}
-	}
+            $this->query->setSorting($sortField);
+        }
+    }
 
-	/**
-	 * Provides the extension component with an instance of the current query.
-	 *
-	 * @param Query $query Current query
-	 */
-	public function setQuery(Query $query) {
-		$this->query = $query;
-	}
+    /**
+     * Provides the extension component with an instance of the current query.
+     *
+     * @param Query $query Current query
+     */
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
+    }
 
 }
 

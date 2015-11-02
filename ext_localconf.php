@@ -1,250 +1,250 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
+if (!defined('TYPO3_MODE')) {
+    die ('Access denied.');
 }
 
 $GLOBALS['PATH_solr'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// Windows compatibility
+// Windows compatibility
 
-if(!function_exists('strptime')) {
-	require_once($GLOBALS['PATH_solr'] . 'Resources/Private/Php/strptime/strptime.php');
+if (!function_exists('strptime')) {
+    require_once($GLOBALS['PATH_solr'] . 'Resources/Private/Php/strptime/strptime.php');
 }
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// registering Index Queue page indexer helpers
+// registering Index Queue page indexer helpers
 
 if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
-	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler'] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequestHandler->run';
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = 'ApacheSolrForTypo3\\Solr\\AdditionalFieldsIndexer';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest']['ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler'] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequestHandler->run';
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\Solr\AdditionalFieldsIndexer'] = 'ApacheSolrForTypo3\\Solr\\AdditionalFieldsIndexer';
 
-	ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
-		'findUserGroups',
-		'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector'
-	);
+    ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
+        'findUserGroups',
+        'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector'
+    );
 
-	ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
-		'indexPage',
-		'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageIndexer'
-	);
+    ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager::registerFrontendHelper(
+        'indexPage',
+        'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageIndexer'
+    );
 }
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
-	'TYPO3.tx_solr.IndexInspector.Remote',
-	'ApacheSolrForTypo3\\Solr\\Backend\\IndexInspector\\IndexInspectorRemoteController',
-	'web_info',
-	'user,group'
+    'TYPO3.tx_solr.IndexInspector.Remote',
+    'ApacheSolrForTypo3\\Solr\\Backend\\IndexInspector\\IndexInspectorRemoteController',
+    'web_info',
+    'user,group'
 );
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// page module plugin settings summary
+// page module plugin settings summary
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_PiResults_Results'][$_EXTKEY] = 'ApacheSolrForTypo3\\Solr\\Plugin\\BackendSummary->getSummary';
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// register search components
+// register search components
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'access',
-	'ApacheSolrForTypo3\\Solr\\Search\\AccessComponent'
+    'access',
+    'ApacheSolrForTypo3\\Solr\\Search\\AccessComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'relevance',
-	'ApacheSolrForTypo3\\Solr\\Search\\RelevanceComponent'
+    'relevance',
+    'ApacheSolrForTypo3\\Solr\\Search\\RelevanceComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'sorting',
-	'ApacheSolrForTypo3\\Solr\\Search\\SortingComponent'
+    'sorting',
+    'ApacheSolrForTypo3\\Solr\\Search\\SortingComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'debug',
-	'ApacheSolrForTypo3\\Solr\\Search\\DebugComponent'
+    'debug',
+    'ApacheSolrForTypo3\\Solr\\Search\\DebugComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'analysis',
-	'ApacheSolrForTypo3\\Solr\\Search\\AnalysisComponent'
+    'analysis',
+    'ApacheSolrForTypo3\\Solr\\Search\\AnalysisComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'highlighting',
-	'ApacheSolrForTypo3\\Solr\\Search\\HighlightingComponent'
+    'highlighting',
+    'ApacheSolrForTypo3\\Solr\\Search\\HighlightingComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'spellchecking',
-	'ApacheSolrForTypo3\\Solr\\Search\\SpellcheckingComponent'
+    'spellchecking',
+    'ApacheSolrForTypo3\\Solr\\Search\\SpellcheckingComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'faceting',
-	'ApacheSolrForTypo3\\Solr\\Search\\FacetingComponent'
+    'faceting',
+    'ApacheSolrForTypo3\\Solr\\Search\\FacetingComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'statistics',
-	'ApacheSolrForTypo3\\Solr\\Search\\StatisticsComponent'
+    'statistics',
+    'ApacheSolrForTypo3\\Solr\\Search\\StatisticsComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'lastSearches',
-	'ApacheSolrForTypo3\\Solr\\Search\\LastSearchesComponent'
+    'lastSearches',
+    'ApacheSolrForTypo3\\Solr\\Search\\LastSearchesComponent'
 );
 
 ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
-	'elevation',
-	'ApacheSolrForTypo3\\Solr\\Search\\ElevationComponent'
+    'elevation',
+    'ApacheSolrForTypo3\\Solr\\Search\\ElevationComponent'
 );
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// register plugin commands
+// register plugin commands
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'results, frequentsearches',
-	'frequentSearches',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FrequentSearchesCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'search, results',
-	'form',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FormCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
+    'results, frequentsearches',
+    'frequentSearches',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FrequentSearchesCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'results',
-	'resultsPerPageSwitch',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\ResultsPerPageSwitchCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
+    'search, results',
+    'form',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FormCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'search, results',
-	'errors',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ErrorsCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
+    'results',
+    'resultsPerPageSwitch',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\ResultsPerPageSwitchCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'results',
-	'lastSearches',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\LastSearchesCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
+    'search, results',
+    'errors',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ErrorsCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'results',
-	'no_results',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\NoResultsCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NO_RESULTS
+    'results',
+    'lastSearches',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\LastSearchesCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'results',
-	'faceting',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FacetingCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
-	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NO_RESULTS
+    'results',
+    'no_results',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\NoResultsCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'results',
-	'results',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ResultsCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
+    'results',
+    'faceting',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\FacetingCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
+    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NO_RESULTS
 );
 
 ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-	'results',
-	'sorting',
-	'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SortingCommand',
-	ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-	+ ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
+    'results',
+    'results',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ResultsCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
 );
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
+    'results',
+    'sorting',
+    'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SortingCommand',
+    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
+    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
+);
 
-	// registering facet types
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+// registering facet types
 
 ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
-	'numericRange',
-	'ApacheSolrForTypo3\\Solr\\Facet\\NumericRangeFacetRenderer',
-	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range',
-	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range'
-);
-
-ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
-	'dateRange',
-	'ApacheSolrForTypo3\\Solr\\Facet\\DateRangeFacetRenderer',
-	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange',
-	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange'
+    'numericRange',
+    'ApacheSolrForTypo3\\Solr\\Facet\\NumericRangeFacetRenderer',
+    'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range',
+    'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range'
 );
 
 ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
-	'hierarchy',
-	'ApacheSolrForTypo3\\Solr\\Facet\\HierarchicalFacetRenderer',
-	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy'
+    'dateRange',
+    'ApacheSolrForTypo3\\Solr\\Facet\\DateRangeFacetRenderer',
+    'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange',
+    'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\DateRange'
 );
 
 ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
-	'queryGroup',
-	'ApacheSolrForTypo3\\Solr\\Facet\\QueryGroupFacetRenderer',
-	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup',
-	'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup'
+    'hierarchy',
+    'ApacheSolrForTypo3\\Solr\\Facet\\HierarchicalFacetRenderer',
+    'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy'
 );
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
+    'queryGroup',
+    'ApacheSolrForTypo3\\Solr\\Facet\\QueryGroupFacetRenderer',
+    'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup',
+    'ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup'
+);
 
-	// adding scheduler tasks
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+// adding scheduler tasks
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\ReIndexTask'] = array(
-	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_title',
-	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_description',
-	'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\ReIndexTaskAdditionalFieldProvider'
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_title',
+    'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_description',
+    'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\ReIndexTaskAdditionalFieldProvider'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask'] = array(
-	'extension'        => $_EXTKEY,
-	'title'            => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_title',
-	'description'      => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_description',
-	'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\IndexQueueWorkerTaskAdditionalFieldProvider'
+    'extension' => $_EXTKEY,
+    'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_title',
+    'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_description',
+    'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // TODO move into pi_results, initializeSearch, add only when features are activated
 $TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['keepParameters'] = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ParameterKeepingFormModifier';
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck']     = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SpellCheckFormModifier';
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest']        = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SuggestFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck'] = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SpellCheckFormModifier';
+$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest'] = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\SuggestFormModifier';
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // registering the eID scripts
 // TODO move to suggest form modifier
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/Classes/Eid/Suggest.php';
-$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api']     = 'EXT:solr/Classes/Eid/Api.php';
+$TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api.php';
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// replace the built-in search content element
+// replace the built-in search content element
 
 $searchReplacementTypoScript = trim('
 tt_content.search = COA
@@ -257,45 +257,45 @@ tt_content.search {
 ');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
-	$_EXTKEY,
-	'setup',
-	'# Setting ' . $_EXTKEY . ' plugin TypoScript' . $searchReplacementTypoScript,
-	43
+    $_EXTKEY,
+    'setup',
+    '# Setting ' . $_EXTKEY . ' plugin TypoScript' . $searchReplacementTypoScript,
+    43
 );
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// add custom Solr content objects
+// add custom Solr content objects
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = array(
-	ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
-	'ApacheSolrForTypo3\\Solr\\ContentObject\\Multivalue'
+    ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
+    'ApacheSolrForTypo3\\Solr\\ContentObject\\Multivalue'
 );
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME] = array(
-	ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME,
-	'ApacheSolrForTypo3\\Solr\\ContentObject\\Content'
+    ApacheSolrForTypo3\Solr\ContentObject\Content::CONTENT_OBJECT_NAME,
+    'ApacheSolrForTypo3\\Solr\\ContentObject\\Content'
 );
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME] = array(
-	ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME,
-	'ApacheSolrForTypo3\\Solr\\ContentObject\\Relation'
+    ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME,
+    'ApacheSolrForTypo3\\Solr\\ContentObject\\Relation'
 );
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-	// Register cache for frequent searches
+// Register cache for frequent searches
 
 if (!is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr'])) {
-	$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr'] = array();
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr'] = array();
 }
 
-   # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 if (TYPO3_MODE == 'BE') {
-	$TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array(
-		'EXT:' . $_EXTKEY . '/Classes/Cli/Api.php',
-		'_CLI_solr'
-	);
+    $TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array(
+        'EXT:' . $_EXTKEY . '/Classes/Cli/Api.php',
+        '_CLI_solr'
+    );
 }
 

@@ -1,28 +1,28 @@
 <?php
 namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
-/***************************************************************
-*  Copyright notice
-*
-*  (c) 2013-2015 Steffen Ritter <steffen.ritter@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+    /***************************************************************
+     *  Copyright notice
+     *
+     *  (c) 2013-2015 Steffen Ritter <steffen.ritter@typo3.org>
+     *  All rights reserved
+     *
+     *  This script is part of the TYPO3 project. The TYPO3 project is
+     *  free software; you can redistribute it and/or modify
+     *  it under the terms of the GNU General Public License as published by
+     *  the Free Software Foundation; either version 2 of the License, or
+     *  (at your option) any later version.
+     *
+     *  The GNU General Public License can be found at
+     *  http://www.gnu.org/copyleft/gpl.html.
+     *
+     *  This script is distributed in the hope that it will be useful,
+     *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+     *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     *  GNU General Public License for more details.
+     *
+     *  This copyright notice MUST APPEAR in all copies of the script!
+     ***************************************************************/
 
 
 /**
@@ -52,66 +52,71 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  * @package TYPO3
  * @subpackage solr
  */
-class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor {
+class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor
+{
 
-	/**
-	 * Expects a uid ID of a category. Returns a Solr hierarchy notation for the
-	 * rootline of the category ID.
-	 *
-	 * @param array $values Array of values, an array because of multivalued fields
-	 * @return array Modified array of values
-	 */
-	public function process(array $values) {
-		$results = array();
+    /**
+     * Expects a uid ID of a category. Returns a Solr hierarchy notation for the
+     * rootline of the category ID.
+     *
+     * @param array $values Array of values, an array because of multivalued fields
+     * @return array Modified array of values
+     */
+    public function process(array $values)
+    {
+        $results = array();
 
-		foreach ($values as $value) {
-			$results = array_merge($results, $this->getSolrRootlineForCategoryId($value));
-		}
+        foreach ($values as $value) {
+            $results = array_merge($results,
+                $this->getSolrRootlineForCategoryId($value));
+        }
 
-		return $results;
-	}
+        return $results;
+    }
 
-	/**
-	 * Returns a Solr hierarchy notation string for rootline of given category uid.
-	 *
-	 * @param integer $categoryId Category ID to get a rootline as Solr hierarchy for
-	 * @return string Rootline as Solr hierarchy
-	 */
-	protected function getSolrRootlineForCategoryId($categoryId) {
-		$categoryIdRootline = $this->buildCategoryIdRootline($categoryId);
-		$solrRootline       = $this->buildSolrHierarchyFromIdRootline($categoryIdRootline);
+    /**
+     * Returns a Solr hierarchy notation string for rootline of given category uid.
+     *
+     * @param integer $categoryId Category ID to get a rootline as Solr hierarchy for
+     * @return string Rootline as Solr hierarchy
+     */
+    protected function getSolrRootlineForCategoryId($categoryId)
+    {
+        $categoryIdRootline = $this->buildCategoryIdRootline($categoryId);
+        $solrRootline = $this->buildSolrHierarchyFromIdRootline($categoryIdRootline);
 
-		return $solrRootline;
-	}
+        return $solrRootline;
+    }
 
-	/**
-	 * Builds a category's rootline of parent category Ids
-	 *
-	 * @param integer $uid The category ID to build the rootline for
-	 * @return array Category ID rootline as array
-	 */
-	protected function buildCategoryIdRootline($uid) {
-		$rootlineIds    = array();
-		$parentCategory = intval($uid);
+    /**
+     * Builds a category's rootline of parent category Ids
+     *
+     * @param integer $uid The category ID to build the rootline for
+     * @return array Category ID rootline as array
+     */
+    protected function buildCategoryIdRootline($uid)
+    {
+        $rootlineIds = array();
+        $parentCategory = intval($uid);
 
-		while ($parentCategory !== 0) {
-			$rootlineIds[] = $parentCategory;
-			$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-				'parent',
-				'sys_category',
-				'uid = ' . intval($parentCategory)
-			);
+        while ($parentCategory !== 0) {
+            $rootlineIds[] = $parentCategory;
+            $row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+                'parent',
+                'sys_category',
+                'uid = ' . intval($parentCategory)
+            );
 
-			if ($row === NULL) {
-				$parentCategory = 0;
-			} else {
-				$parentCategory = intval($row['parent']);
-			}
-		}
-		krsort($rootlineIds);
+            if ($row === null) {
+                $parentCategory = 0;
+            } else {
+                $parentCategory = intval($row['parent']);
+            }
+        }
+        krsort($rootlineIds);
 
-		return array_values($rootlineIds);
-	}
+        return array_values($rootlineIds);
+    }
 
 }
 

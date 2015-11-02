@@ -2,27 +2,27 @@
 namespace ApacheSolrForTypo3\Solr\Report;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
@@ -37,18 +37,20 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class FilterVarStatus implements StatusProviderInterface {
+class FilterVarStatus implements StatusProviderInterface
+{
 
-	/**
-	 * Checks whether allow_url_fopen is enabled.
-	 *
-	 */
-	public function getStatus() {
-		$reports = array();
+    /**
+     * Checks whether allow_url_fopen is enabled.
+     *
+     */
+    public function getStatus()
+    {
+        $reports = array();
 
-		$validUrl = 'http://www.typo3-solr.com';
-		if (!filter_var($validUrl, FILTER_VALIDATE_URL)) {
-			$message = 'You are using a PHP version that is affected by a bug in
+        $validUrl = 'http://www.typo3-solr.com';
+        if (!filter_var($validUrl, FILTER_VALIDATE_URL)) {
+            $message = 'You are using a PHP version that is affected by a bug in
 				function filter_var(). This bug causes said function to
 				incorrectly report valid URLs as invalid if they contain a
 				dash (-). EXT:solr uses this function to validate URLs when
@@ -57,15 +59,15 @@ class FilterVarStatus implements StatusProviderInterface {
 				More information is available at
 				<a href="https://bugs.php.net/bug.php?id=51192">php.net</a>.';
 
-			$reports[] = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
-				'PHP filter_var() bug',
-				'Affected PHP version detected.',
-				$message,
-				Status::ERROR
-			);
-		}
+            $reports[] = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+                'PHP filter_var() bug',
+                'Affected PHP version detected.',
+                $message,
+                Status::ERROR
+            );
+        }
 
-		return $reports;
-	}
+        return $reports;
+    }
 }
 

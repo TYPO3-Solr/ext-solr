@@ -2,28 +2,28 @@
 namespace ApacheSolrForTypo3\Solr\Facet;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
-*  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
+ *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,37 +34,40 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  */
-class DateRangeFacetRenderer extends AbstractFacetRenderer {
+class DateRangeFacetRenderer extends AbstractFacetRenderer
+{
 
-	/**
-	 * Provides the internal type of facets the renderer handles.
-	 * The type is one of field, range, or query.
-	 *
-	 * @return string Facet internal type
-	 */
-	public static function getFacetInternalType() {
-		return Facet::TYPE_RANGE;
-	}
+    /**
+     * Provides the internal type of facets the renderer handles.
+     * The type is one of field, range, or query.
+     *
+     * @return string Facet internal type
+     */
+    public static function getFacetInternalType()
+    {
+        return Facet::TYPE_RANGE;
+    }
 
-	/**
-	 * Renders a date renage facet by providing two input fields, enhanced with
-	 * date pickers.
-	 *
-	 */
-	public function renderFacetOptions() {
-		$this->loadJavaScriptFiles();
+    /**
+     * Renders a date renage facet by providing two input fields, enhanced with
+     * date pickers.
+     *
+     */
+    public function renderFacetOptions()
+    {
+        $this->loadJavaScriptFiles();
 
-		$content = '
+        $content = '
 			<li>
 				<script type="text/javascript">
 				/*<![CDATA[*/
 					jQuery(document).ready(function() {
 					jQuery(".dateselector").datepicker();
 					jQuery(".dateselector").change(function(){ solrRequest("'
-						. $this->facetName
-						. '", "'
-						. DateRange::DELIMITER
-						. '") });
+            . $this->facetName
+            . '", "'
+            . DateRange::DELIMITER
+            . '") });
 					});
 				/*]]>*/
 				</script>
@@ -76,40 +79,44 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer {
 			</li>
 		';
 
-		return $content;
-	}
+        return $content;
+    }
 
-	/**
-	 * tbd
-	 */
-	protected function buildAddFacetUrl($facetName) {
-		$facetOption      = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption', $this->facetName, '');
-		$facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder', $this->search->getQuery(), $this->facetName, $facetOption);
-		$facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
+    /**
+     * Loads jQuery libraries for the date pickers.
+     *
+     */
+    protected function loadJavaScriptFiles()
+    {
+        $javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
 
-		return $facetLinkBuilder->getAddFacetOptionUrl();
-	}
+        $javascriptManager->loadFile('library');
+        $javascriptManager->loadFile('ui');
+        $javascriptManager->loadFile('ui.datepicker');
 
-	/**
-	 * Loads jQuery libraries for the date pickers.
-	 *
-	 */
-	protected function loadJavaScriptFiles() {
-		$javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
+        $language = $GLOBALS['TSFE']->tmpl->setup['config.']['language'];
+        if ($language != 'en') {
+            // load date picker translation
+            $javascriptManager->loadFile('ui.datepicker.' . $language);
+        }
 
-		$javascriptManager->loadFile('library');
-		$javascriptManager->loadFile('ui');
-		$javascriptManager->loadFile('ui.datepicker');
+        $javascriptManager->loadFile('faceting.dateRangeHelper');
 
-		$language = $GLOBALS['TSFE']->tmpl->setup['config.']['language'];
-		if ($language != 'en') {
-			// load date picker translation
-			$javascriptManager->loadFile('ui.datepicker.' . $language);
-		}
+        $javascriptManager->addJavascriptToPage();
+    }
 
-		$javascriptManager->loadFile('faceting.dateRangeHelper');
+    /**
+     * tbd
+     */
+    protected function buildAddFacetUrl($facetName)
+    {
+        $facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
+            $this->facetName, '');
+        $facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
+            $this->search->getQuery(), $this->facetName, $facetOption);
+        $facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 
-		$javascriptManager->addJavascriptToPage();
-	}
+        return $facetLinkBuilder->getAddFacetOptionUrl();
+    }
 
 }

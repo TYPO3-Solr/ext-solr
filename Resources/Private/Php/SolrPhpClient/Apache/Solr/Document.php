@@ -57,338 +57,329 @@
  */
 class Apache_Solr_Document implements IteratorAggregate
 {
-	/**
-	 * SVN Revision meta data for this class
-	 */
-	const SVN_REVISION = '$Revision$';
+    /**
+     * SVN Revision meta data for this class
+     */
+    const SVN_REVISION = '$Revision$';
 
-	/**
-	 * SVN ID meta data for this class
-	 */
-	const SVN_ID = '$Id$';
+    /**
+     * SVN ID meta data for this class
+     */
+    const SVN_ID = '$Id$';
 
-	/**
-	 * Document boost value
-	 *
-	 * @var float
-	 */
-	protected $_documentBoost = false;
+    /**
+     * Document boost value
+     *
+     * @var float
+     */
+    protected $_documentBoost = false;
 
-	/**
-	 * Document field values, indexed by name
-	 *
-	 * @var array
-	 */
-	protected $_fields = array();
+    /**
+     * Document field values, indexed by name
+     *
+     * @var array
+     */
+    protected $_fields = array();
 
-	/**
-	 * Document field boost values, indexed by name
-	 *
-	 * @var array array of floats
-	 */
-	protected $_fieldBoosts = array();
+    /**
+     * Document field boost values, indexed by name
+     *
+     * @var array array of floats
+     */
+    protected $_fieldBoosts = array();
 
-	/**
-	 * Clear all boosts and fields from this document
-	 */
-	public function clear()
-	{
-		$this->_documentBoost = false;
+    /**
+     * Clear all boosts and fields from this document
+     */
+    public function clear()
+    {
+        $this->_documentBoost = false;
 
-		$this->_fields = array();
-		$this->_fieldBoosts = array();
-	}
+        $this->_fields = array();
+        $this->_fieldBoosts = array();
+    }
 
-	/**
-	 * Get current document boost
-	 *
-	 * @return mixed will be false for default, or else a float
-	 */
-	public function getBoost()
-	{
-		return $this->_documentBoost;
-	}
+    /**
+     * Get current document boost
+     *
+     * @return mixed will be false for default, or else a float
+     */
+    public function getBoost()
+    {
+        return $this->_documentBoost;
+    }
 
-	/**
-	 * Set document boost factor
-	 *
-	 * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
-	 */
-	public function setBoost($boost)
-	{
-		$boost = (float) $boost;
+    /**
+     * Set document boost factor
+     *
+     * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
+     */
+    public function setBoost($boost)
+    {
+        $boost = (float)$boost;
 
-		if ($boost > 0.0)
-		{
-			$this->_documentBoost = $boost;
-		}
-		else
-		{
-			$this->_documentBoost = false;
-		}
-	}
+        if ($boost > 0.0) {
+            $this->_documentBoost = $boost;
+        } else {
+            $this->_documentBoost = false;
+        }
+    }
 
-	/**
-	 * Add a value to a multi-valued field
-	 *
-	 * NOTE: the solr XML format allows you to specify boosts
-	 * PER value even though the underlying Lucene implementation
-	 * only allows a boost per field. To remedy this, the final
-	 * field boost value will be the product of all specified boosts
-	 * on field values - this is similar to SolrJ's functionality.
-	 *
-	 * <code>
-	 * $doc = new Apache_Solr_Document();
-	 *
-	 * $doc->addField('foo', 'bar', 2.0);
-	 * $doc->addField('foo', 'baz', 3.0);
-	 *
-	 * // resultant field boost will be 6!
-	 * echo $doc->getFieldBoost('foo');
-	 * </code>
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
-	 */
-	public function addField($key, $value, $boost = false)
-	{
-		if (!isset($this->_fields[$key]))
-		{
-			// create holding array if this is the first value
-			$this->_fields[$key] = array();
-		}
-		else if (!is_array($this->_fields[$key]))
-		{
-			// move existing value into array if it is not already an array
-			$this->_fields[$key] = array($this->_fields[$key]);
-		}
+    /**
+     * Handle the array manipulation for a multi-valued field
+     *
+     * @param string $key
+     * @param string $value
+     * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
+     *
+     * @deprecated Use addField(...) instead
+     */
+    public function setMultiValue($key, $value, $boost = false)
+    {
+        $this->addField($key, $value, $boost);
+    }
 
-		if ($this->getFieldBoost($key) === false)
-		{
-			// boost not already set, set it now
-			$this->setFieldBoost($key, $boost);
-		}
-		else if ((float) $boost > 0.0)
-		{
-			// multiply passed boost with current field boost - similar to SolrJ implementation
-			$this->_fieldBoosts[$key] *= (float) $boost;
-		}
+    /**
+     * Add a value to a multi-valued field
+     *
+     * NOTE: the solr XML format allows you to specify boosts
+     * PER value even though the underlying Lucene implementation
+     * only allows a boost per field. To remedy this, the final
+     * field boost value will be the product of all specified boosts
+     * on field values - this is similar to SolrJ's functionality.
+     *
+     * <code>
+     * $doc = new Apache_Solr_Document();
+     *
+     * $doc->addField('foo', 'bar', 2.0);
+     * $doc->addField('foo', 'baz', 3.0);
+     *
+     * // resultant field boost will be 6!
+     * echo $doc->getFieldBoost('foo');
+     * </code>
+     *
+     * @param string $key
+     * @param mixed $value
+     * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
+     */
+    public function addField($key, $value, $boost = false)
+    {
+        if (!isset($this->_fields[$key])) {
+            // create holding array if this is the first value
+            $this->_fields[$key] = array();
+        } else {
+            if (!is_array($this->_fields[$key])) {
+                // move existing value into array if it is not already an array
+                $this->_fields[$key] = array($this->_fields[$key]);
+            }
+        }
 
-		// add value to array
-		$this->_fields[$key][] = $value;
-	}
+        if ($this->getFieldBoost($key) === false) {
+            // boost not already set, set it now
+            $this->setFieldBoost($key, $boost);
+        } else {
+            if ((float)$boost > 0.0) {
+                // multiply passed boost with current field boost - similar to SolrJ implementation
+                $this->_fieldBoosts[$key] *= (float)$boost;
+            }
+        }
 
-	/**
-	 * Handle the array manipulation for a multi-valued field
-	 *
-	 * @param string $key
-	 * @param string $value
-	 * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
-	 *
-	 * @deprecated Use addField(...) instead
-	 */
-	public function setMultiValue($key, $value, $boost = false)
-	{
-		$this->addField($key, $value, $boost);
-	}
+        // add value to array
+        $this->_fields[$key][] = $value;
+    }
 
-	/**
-	 * Get field information
-	 *
-	 * @param string $key
-	 * @return mixed associative array of info if field exists, false otherwise
-	 */
-	public function getField($key)
-	{
-		if (isset($this->_fields[$key]))
-		{
-			return array(
-				'name' => $key,
-				'value' => $this->_fields[$key],
-				'boost' => $this->getFieldBoost($key)
-			);
-		}
+    /**
+     * Get the currently set field boost for a document field
+     *
+     * @param string $key
+     * @return float currently set field boost, false if one is not set
+     */
+    public function getFieldBoost($key)
+    {
+        return isset($this->_fieldBoosts[$key]) ? $this->_fieldBoosts[$key] : false;
+    }
 
-		return false;
-	}
+    /**
+     * Set the field boost for a document field
+     *
+     * @param string $key field name for the boost
+     * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
+     */
+    public function setFieldBoost($key, $boost)
+    {
+        $boost = (float)$boost;
 
-	/**
-	 * Set a field value. Multi-valued fields should be set as arrays
-	 * or instead use the addField(...) function which will automatically
-	 * make sure the field is an array.
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
-	 */
-	public function setField($key, $value, $boost = false)
-	{
-		$this->_fields[$key] = $value;
-		$this->setFieldBoost($key, $boost);
-	}
+        if ($boost > 0.0) {
+            $this->_fieldBoosts[$key] = $boost;
+        } else {
+            $this->_fieldBoosts[$key] = false;
+        }
+    }
 
-	/**
-	 * Get the currently set field boost for a document field
-	 *
-	 * @param string $key
-	 * @return float currently set field boost, false if one is not set
-	 */
-	public function getFieldBoost($key)
-	{
-		return isset($this->_fieldBoosts[$key]) ? $this->_fieldBoosts[$key] : false;
-	}
+    /**
+     * Get field information
+     *
+     * @param string $key
+     * @return mixed associative array of info if field exists, false otherwise
+     */
+    public function getField($key)
+    {
+        if (isset($this->_fields[$key])) {
+            return array(
+                'name' => $key,
+                'value' => $this->_fields[$key],
+                'boost' => $this->getFieldBoost($key)
+            );
+        }
 
-	/**
-	 * Set the field boost for a document field
-	 *
-	 * @param string $key field name for the boost
-	 * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
-	 */
-	public function setFieldBoost($key, $boost)
-	{
-		$boost = (float) $boost;
+        return false;
+    }
 
-		if ($boost > 0.0)
-		{
-			$this->_fieldBoosts[$key] = $boost;
-		}
-		else
-		{
-			$this->_fieldBoosts[$key] = false;
-		}
-	}
+    /**
+     * Return current field boosts, indexed by field name
+     *
+     * @return array
+     */
+    public function getFieldBoosts()
+    {
+        return $this->_fieldBoosts;
+    }
 
-	/**
-	 * Return current field boosts, indexed by field name
-	 *
-	 * @return array
-	 */
-	public function getFieldBoosts()
-	{
-		return $this->_fieldBoosts;
-	}
+    /**
+     * Get the names of all fields in this document
+     *
+     * @return array
+     */
+    public function getFieldNames()
+    {
+        return array_keys($this->_fields);
+    }
 
-	/**
-	 * Get the names of all fields in this document
-	 *
-	 * @return array
-	 */
-	public function getFieldNames()
-	{
-		return array_keys($this->_fields);
-	}
+    /**
+     * Get the values of all fields in this document
+     *
+     * @return array
+     */
+    public function getFieldValues()
+    {
+        return array_values($this->_fields);
+    }
 
-	/**
-	 * Get the values of all fields in this document
-	 *
-	 * @return array
-	 */
-	public function getFieldValues()
-	{
-		return array_values($this->_fields);
-	}
+    /**
+     * IteratorAggregate implementation function. Allows usage:
+     *
+     * <code>
+     * foreach ($document as $key => $value)
+     * {
+     *    ...
+     * }
+     * </code>
+     */
+    public function getIterator()
+    {
+        $arrayObject = new ArrayObject($this->_fields);
 
-	/**
-	 * IteratorAggregate implementation function. Allows usage:
-	 *
-	 * <code>
-	 * foreach ($document as $key => $value)
-	 * {
-	 * 	...
-	 * }
-	 * </code>
-	 */
-	public function getIterator()
-	{
-		$arrayObject = new ArrayObject($this->_fields);
+        return $arrayObject->getIterator();
+    }
 
-		return $arrayObject->getIterator();
-	}
+    /**
+     * Magic get for field values
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        if (isset($this->_fields[$key])) {
+            return $this->_fields[$key];
+        }
 
-	/**
-	 * Magic get for field values
-	 *
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function __get($key)
-	{
-		if (isset($this->_fields[$key]))
-		{
-			return $this->_fields[$key];
-		}
+        return null;
+    }
 
-		return null;
-	}
+    /**
+     * Magic set for field values. Multi-valued fields should be set as arrays
+     * or instead use the addField(...) function which will automatically
+     * make sure the field is an array.
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function __set($key, $value)
+    {
+        $this->setField($key, $value);
+    }
 
-	/**
-	 * Magic set for field values. Multi-valued fields should be set as arrays
-	 * or instead use the addField(...) function which will automatically
-	 * make sure the field is an array.
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 */
-	public function __set($key, $value)
-	{
-		$this->setField($key, $value);
-	}
+    /**
+     * Set a field value. Multi-valued fields should be set as arrays
+     * or instead use the addField(...) function which will automatically
+     * make sure the field is an array.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @param mixed $boost Use false for default boost, else cast to float that should be > 0 or will be treated as false
+     */
+    public function setField($key, $value, $boost = false)
+    {
+        $this->_fields[$key] = $value;
+        $this->setFieldBoost($key, $boost);
+    }
 
-	/**
-	 * Magic isset for fields values.  Do not call directly. Allows usage:
-	 *
-	 * <code>
-	 * isset($document->some_field);
-	 * </code>
-	 *
-	 * @param string $key
-	 * @return boolean
-	 */
-	public function __isset($key)
-	{
-		return isset($this->_fields[$key]);
-	}
+    /**
+     * Magic isset for fields values.  Do not call directly. Allows usage:
+     *
+     * <code>
+     * isset($document->some_field);
+     * </code>
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function __isset($key)
+    {
+        return isset($this->_fields[$key]);
+    }
 
-	/**
-	 * Magic unset for field values. Do not call directly. Allows usage:
-	 *
-	 * <code>
-	 * unset($document->some_field);
-	 * </code>
-	 *
-	 * @param string $key
-	 */
-	public function __unset($key)
-	{
-		unset($this->_fields[$key]);
-		unset($this->_fieldBoosts[$key]);
-	}
+    /**
+     * Magic unset for field values. Do not call directly. Allows usage:
+     *
+     * <code>
+     * unset($document->some_field);
+     * </code>
+     *
+     * @param string $key
+     */
+    public function __unset($key)
+    {
+        unset($this->_fields[$key]);
+        unset($this->_fieldBoosts[$key]);
+    }
 
-	/**
-	 * Magic call method used to emulate getters as used by the template engine.
-	 *
-	 * @param	string	$name method name
-	 * @param	array	$arguments method arguments
-	 */
-	public function __call($name, $arguments) {
-		if (substr($name, 0, 3) == 'get') {
-			$field = substr($name, 3);
-			$field = strtolower($field[0]) . substr($field, 1);
+    /**
+     * Magic call method used to emulate getters as used by the template engine.
+     *
+     * @param    string $name method name
+     * @param    array $arguments method arguments
+     */
+    public function __call($name, $arguments)
+    {
+        if (substr($name, 0, 3) == 'get') {
+            $field = substr($name, 3);
+            $field = strtolower($field[0]) . substr($field, 1);
 
-			if (!isset($this->_fields[$field])) {
-				throw new RuntimeException(
-					'Tried to access non-existent field "' . $field . '".',
-					1311006894
-				);
-			}
+            if (!isset($this->_fields[$field])) {
+                throw new RuntimeException(
+                    'Tried to access non-existent field "' . $field . '".',
+                    1311006894
+                );
+            }
 
-			return $this->_fields[$field];
-		} else {
-			throw new RuntimeException(
-				'Call to undefined method. Supports magic getters only.',
-				1311006605
-			);
-		}
-	}
+            return $this->_fields[$field];
+        } else {
+            throw new RuntimeException(
+                'Call to undefined method. Supports magic getters only.',
+                1311006605
+            );
+        }
+    }
 }

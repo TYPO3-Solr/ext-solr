@@ -2,27 +2,27 @@
 namespace ApacheSolrForTypo3\Solr\Response\Processor;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2009-2015 Ingo Renner <ingo@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 
 use ApacheSolrForTypo3\Solr\Query;
@@ -38,107 +38,116 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class StatisticsWriter implements ResponseProcessor {
+class StatisticsWriter implements ResponseProcessor
+{
 
-	/**
-	 * Internal function to mask portions of the visitor IP address
-	 *
-	 * @param string $ip IP address in network address format
-	 * @param integer $maskLength Number of octets to reset
-	 * @return string
-	 */
-	protected function applyIpMask($ip, $maskLength) {
-		// IPv4 or mapped IPv4 in IPv6
-		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-			$i = strlen($ip);
-			if ($maskLength > $i) {
-				$maskLength = $i;
-			}
+    /**
+     * Processes a query and its response after searching for that query.
+     *
+     * @param Query $query The query that has been searched for.
+     * @param \Apache_Solr_Response $response The response for the last query.
+     */
+    public function processResponse(
+        Query $query,
+        \Apache_Solr_Response $response
+    ) {
+        $urlParameters = GeneralUtility::_GP('tx_solr');
+        $keywords = $query->getKeywords();
+        $filters = isset($urlParameters['filter']) ? $urlParameters['filter'] : array();
 
-			while ($maskLength-- > 0) {
-				$ip[--$i] = chr(0);
-			}
-		} else {
-			$masks = array(
-				'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff',
-				'ffff:ffff:ffff:ffff::',
-				'ffff:ffff:ffff:0000::',
-				'ffff:ff00:0000:0000::'
-			);
-			return $ip & pack('a16', inet_pton($masks[$maskLength]));
-		}
+        if (empty($keywords)) {
+            // do not track empty queries
+            return;
+        }
 
-		return $ip;
-	}
+        $keywords = $this->sanitizeString($keywords);
 
-	/**
-	 * Processes a query and its response after searching for that query.
-	 *
-	 * @param Query $query The query that has been searched for.
-	 * @param \Apache_Solr_Response $response The response for the last query.
-	 */
-	public function processResponse(Query $query, \Apache_Solr_Response $response) {
-		$urlParameters = GeneralUtility::_GP('tx_solr');
-		$keywords      = $query->getKeywords();
-		$filters       = isset($urlParameters['filter']) ? $urlParameters['filter'] : array();
+        $sorting = '';
+        if (!empty($urlParameters['sort'])) {
+            $sorting = $this->sanitizeString($urlParameters['sort']);
+        }
 
-		if (empty($keywords)) {
-			// do not track empty queries
-			return;
-		}
+        $configuration = Util::getSolrConfiguration();
+        if ($configuration['search.']['frequentSearches.']['useLowercaseKeywords']) {
+            $keywords = strtolower($keywords);
+        }
 
-		$keywords = $this->sanitizeString($keywords);
+        $ipMaskLength = (int)$configuration['statistics.']['anonymizeIP'];
 
-		$sorting = '';
-		if (!empty($urlParameters['sort'])) {
-			$sorting = $this->sanitizeString($urlParameters['sort']);
-		}
+        $insertFields = array(
+            'pid' => $GLOBALS['TSFE']->id,
+            'root_pid' => $GLOBALS['TSFE']->tmpl->rootLine[0]['uid'],
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'language' => $GLOBALS['TSFE']->sys_language_uid,
 
-		$configuration = Util::getSolrConfiguration();
-		if ($configuration['search.']['frequentSearches.']['useLowercaseKeywords']) {
-			$keywords = strtolower($keywords);
-		}
+            'num_found' => $response->response->numFound,
+            'suggestions_shown' => is_object($response->spellcheck->suggestions) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
+            'time_total' => $response->debug->timing->time,
+            'time_preparation' => $response->debug->timing->prepare->time,
+            'time_processing' => $response->debug->timing->process->time,
 
-		$ipMaskLength = (int)$configuration['statistics.']['anonymizeIP'];
+            'feuser_id' => (int)$GLOBALS['TSFE']->fe_user->user['uid'],
+            'cookie' => $GLOBALS['TSFE']->fe_user->id,
+            'ip' => $this->applyIpMask(GeneralUtility::getIndpEnv('REMOTE_ADDR'),
+                $ipMaskLength),
 
-		$insertFields = array(
-			'pid'               => $GLOBALS['TSFE']->id,
-			'root_pid'          => $GLOBALS['TSFE']->tmpl->rootLine[0]['uid'],
-			'tstamp'            => $GLOBALS['EXEC_TIME'],
-			'language'          => $GLOBALS['TSFE']->sys_language_uid,
+            'page' => (int)$urlParameters['page'],
+            'keywords' => $keywords,
+            'filters' => serialize($filters),
+            'sorting' => $sorting,
+            'parameters' => serialize($response->responseHeader->params)
+        );
 
-			'num_found'         => $response->response->numFound,
-			'suggestions_shown' => is_object($response->spellcheck->suggestions) ? (int) get_object_vars($response->spellcheck->suggestions) : 0,
-			'time_total'        => $response->debug->timing->time,
-			'time_preparation'  => $response->debug->timing->prepare->time,
-			'time_processing'   => $response->debug->timing->process->time,
+        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_statistics',
+            $insertFields);
+    }
 
-			'feuser_id'         => (int) $GLOBALS['TSFE']->fe_user->user['uid'],
-			'cookie'            => $GLOBALS['TSFE']->fe_user->id,
-			'ip'                => $this->applyIpMask(GeneralUtility::getIndpEnv('REMOTE_ADDR'),$ipMaskLength),
+    /**
+     * Sanitizes a string
+     *
+     * @param $string String to sanitize
+     * @return string Sanitized string
+     */
+    protected function sanitizeString($string)
+    {
+        $string = GeneralUtility::removeXSS($string);
+        $string = htmlentities($string, ENT_QUOTES,
+            $GLOBALS['TSFE']->metaCharset);
 
-			'page'              => (int) $urlParameters['page'],
-			'keywords'          => $keywords,
-			'filters'           => serialize($filters),
-			'sorting'           => $sorting,
-			'parameters'        => serialize($response->responseHeader->params)
-		);
+        return $string;
+    }
 
-		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_statistics', $insertFields);
-	}
+    /**
+     * Internal function to mask portions of the visitor IP address
+     *
+     * @param string $ip IP address in network address format
+     * @param integer $maskLength Number of octets to reset
+     * @return string
+     */
+    protected function applyIpMask($ip, $maskLength)
+    {
+        // IPv4 or mapped IPv4 in IPv6
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            $i = strlen($ip);
+            if ($maskLength > $i) {
+                $maskLength = $i;
+            }
 
-	/**
-	 * Sanitizes a string
-	 *
-	 * @param $string String to sanitize
-	 * @return string Sanitized string
-	 */
-	protected function sanitizeString($string) {
-		$string = GeneralUtility::removeXSS($string);
-		$string = htmlentities($string, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+            while ($maskLength-- > 0) {
+                $ip[--$i] = chr(0);
+            }
+        } else {
+            $masks = array(
+                'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff',
+                'ffff:ffff:ffff:ffff::',
+                'ffff:ffff:ffff:0000::',
+                'ffff:ff00:0000:0000::'
+            );
+            return $ip & pack('a16', inet_pton($masks[$maskLength]));
+        }
 
-		return $string;
-	}
+        return $ip;
+    }
 }
 
 

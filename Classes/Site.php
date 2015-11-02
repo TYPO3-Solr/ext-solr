@@ -2,27 +2,27 @@
 namespace ApacheSolrForTypo3\Solr;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -36,312 +36,329 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Site {
+class Site
+{
 
-	/**
-	 * Root page record.
-	 *
-	 * @var array
-	 */
-	protected $rootPage = array();
+    /**
+     * Cache for ApacheSolrForTypo3\Solr\Site objects
+     *
+     * @var array
+     */
+    protected static $sitesCache = array();
+    /**
+     * Small cache for the list of pages in a site, so that the results of this
+     * rather expensive operation can be used by all initializers without having
+     * each initializer do it again.
+     *
+     * TODO Move to caching framework once TYPO3 4.6 is the minimum required
+     * version.
+     *
+     * @var array
+     */
+    protected static $sitePagesCache = array();
+    /**
+     * Root page record.
+     *
+     * @var array
+     */
+    protected $rootPage = array();
+    /**
+     * The site's sys_language_mode
+     *
+     * @var string
+     */
+    protected $sysLanguageMode = null;
 
-	/**
-	 * The site's sys_language_mode
-	 *
-	 * @var string
-	 */
-	protected $sysLanguageMode = null;
+    /**
+     * Constructor.
+     *
+     * @param integer $rootPageId Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
+     */
+    public function __construct($rootPageId)
+    {
+        $page = BackendUtility::getRecord('pages', $rootPageId);
 
-	/**
-	 * Cache for ApacheSolrForTypo3\Solr\Site objects
-	 *
-	 * @var array
-	 */
-	protected static $sitesCache = array();
+        if (!$page['is_siteroot']) {
+            throw new \InvalidArgumentException(
+                'The page for the given page ID \'' . $rootPageId
+                . '\' is not marked as root page and can therefore not be used as site root page.',
+                1309272922
+            );
+        }
 
-	/**
-	 * Small cache for the list of pages in a site, so that the results of this
-	 * rather expensive operation can be used by all initializers without having
-	 * each initializer do it again.
-	 *
-	 * TODO Move to caching framework once TYPO3 4.6 is the minimum required
-	 * version.
-	 *
-	 * @var array
-	 */
-	protected static $sitePagesCache = array();
+        $this->rootPage = $page;
+    }
 
+    /**
+     * Gets the Site for a specific page Id.
+     *
+     * @param integer $pageId The page Id to get a Site object for.
+     * @return Site Site for the given page Id.
+     */
+    public static function getSiteByPageId($pageId)
+    {
+        $rootPageId = Util::getRootPageId($pageId);
 
-	/**
-	 * Constructor.
-	 *
-	 * @param integer $rootPageId Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
-	 */
-	public function __construct($rootPageId) {
-		$page = BackendUtility::getRecord('pages', $rootPageId);
+        if (!isset(self::$sitesCache[$rootPageId])) {
+            self::$sitesCache[$rootPageId] = GeneralUtility::makeInstance(__CLASS__,
+                $rootPageId);
+        }
 
-		if (!$page['is_siteroot']) {
-			throw new \InvalidArgumentException(
-				'The page for the given page ID \'' . $rootPageId
-				. '\' is not marked as root page and can therefore not be used as site root page.',
-				1309272922
-			);
-		}
+        return self::$sitesCache[$rootPageId];
+    }
 
-		$this->rootPage = $page;
-	}
+    /**
+     * Creates a dropdown selector of available TYPO3 sites with Solr
+     * configured.
+     *
+     * @param string $selectorName Name to be used in the select's name attribute
+     * @param Site $selectedSite Optional, currently selected site
+     * @return string Site selector HTML code
+     * @todo Extract into own class like indexing configuration selector
+     */
+    public static function getAvailableSitesSelector(
+        $selectorName,
+        Site $selectedSite = null
+    ) {
+        $sites = self::getAvailableSites();
+        $selector = '<select name="' . $selectorName . '">';
 
-	/**
-	 * Gets the Site for a specific page Id.
-	 *
-	 * @param integer $pageId The page Id to get a Site object for.
-	 * @return Site Site for the given page Id.
-	 */
-	public static function getSiteByPageId($pageId) {
-		$rootPageId = Util::getRootPageId($pageId);
+        foreach ($sites as $site) {
+            $selectedAttribute = '';
+            if ($site == $selectedSite) {
+                $selectedAttribute = ' selected="selected"';
+            }
 
-		if (!isset(self::$sitesCache[$rootPageId])) {
-			self::$sitesCache[$rootPageId] = GeneralUtility::makeInstance(__CLASS__, $rootPageId);
-		}
+            $selector .= '<option value="' . $site->getRootPageId() . '"' . $selectedAttribute . '>'
+                . $site->getLabel()
+                . '</option>';
+        }
 
-		return self::$sitesCache[$rootPageId];
-	}
+        $selector .= '</select>';
 
-	/**
-	 * Gets all available TYPO3 sites with Solr configured.
-	 *
-	 * @return Site[] An array of available sites
-	 */
-	public static function getAvailableSites() {
-		$sites = array();
+        return $selector;
+    }
 
-		$registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
-		$servers  = $registry->get('tx_solr', 'servers', array());
+    /**
+     * Gets all available TYPO3 sites with Solr configured.
+     *
+     * @return Site[] An array of available sites
+     */
+    public static function getAvailableSites()
+    {
+        $sites = array();
 
-		foreach ($servers as $server) {
-			if (!isset($sites[$server['rootPageUid']])) {
-				$sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__, $server['rootPageUid']);
-			}
-		}
+        $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
+        $servers = $registry->get('tx_solr', 'servers', array());
 
-		return $sites;
-	}
+        foreach ($servers as $server) {
+            if (!isset($sites[$server['rootPageUid']])) {
+                $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__,
+                    $server['rootPageUid']);
+            }
+        }
 
-	/**
-	 * Creates a dropdown selector of available TYPO3 sites with Solr
-	 * configured.
-	 *
-	 * @param string $selectorName Name to be used in the select's name attribute
-	 * @param Site $selectedSite Optional, currently selected site
-	 * @return string Site selector HTML code
-	 * @todo Extract into own class like indexing configuration selector
-	 */
-	public static function getAvailableSitesSelector($selectorName, Site $selectedSite = NULL) {
-		$sites = self::getAvailableSites();
-		$selector = '<select name="' . $selectorName . '">';
+        return $sites;
+    }
 
-		foreach ($sites as $site) {
-			$selectedAttribute = '';
-			if ($site == $selectedSite) {
-				$selectedAttribute = ' selected="selected"';
-			}
+    /**
+     * Gets the site's root page ID (uid).
+     *
+     * @return integer The site's root page ID.
+     */
+    public function getRootPageId()
+    {
+        return $this->rootPage['uid'];
+    }
 
-			$selector .= '<option value="' . $site->getRootPageId() . '"' . $selectedAttribute . '>'
-				. $site->getLabel()
-				. '</option>';
-		}
+    /**
+     * Gets the site's label. The label is build from the the site title and root
+     * page ID (uid).
+     *
+     * @return string The site's label.
+     */
+    public function getLabel()
+    {
+        return $this->rootPage['title'] . ', Root Page ID: ' . $this->rootPage['uid'];
+    }
 
-		$selector .= '</select>';
+    /**
+     * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
+     *
+     * @return array The Solr TypoScript configuration
+     */
+    public function getSolrConfiguration()
+    {
+        return Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
+    }
 
-		return $selector;
-	}
+    /**
+     * Gets the system languages (IDs) for which Solr connections have been
+     * configured.
+     *
+     * @return array Array of system language IDs for which connections have been configured on this site.
+     */
+    public function getLanguages()
+    {
+        $siteLanguages = array();
 
-	/**
-	 * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
-	 *
-	 * @return array The Solr TypoScript configuration
-	 */
-	public function getSolrConfiguration() {
-		return Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
-	}
+        $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
+        $solrConnections = $registry->get('tx_solr', 'servers');
 
-	/**
-	 * Gets the site's main domain. More specifically the first domain record in
-	 * the site tree.
-	 *
-	 * @return string The site's main domain.
-	 */
-	public function getDomain() {
-		$pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-		$rootLine   = $pageSelect->getRootLine($this->rootPage['uid']);
+        foreach ($solrConnections as $connectionKey => $solrConnection) {
+            list($siteRootPageId, $systemLanguageId) = explode('|',
+                $connectionKey);
 
-		return BackendUtility::firstDomainRecord($rootLine);
-	}
+            if ($siteRootPageId == $this->rootPage['uid']) {
+                $siteLanguages[] = $systemLanguageId;
+            }
+        }
 
-	/**
-	 * Gets the system languages (IDs) for which Solr connections have been
-	 * configured.
-	 *
-	 * @return array Array of system language IDs for which connections have been configured on this site.
-	 */
-	public function getLanguages() {
-		$siteLanguages = array();
+        return $siteLanguages;
+    }
 
-		$registry        = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
-		$solrConnections = $registry->get('tx_solr', 'servers');
+    /**
+     * Gets the site's default language as configured in
+     * config.sys_language_uid. If sys_language_uid is not set, 0 is assumed to
+     * be the default.
+     *
+     * @return integer The site's default language.
+     */
+    public function getDefaultLanguage()
+    {
+        $siteDefaultLanguage = 0;
 
-		foreach ($solrConnections as $connectionKey => $solrConnection) {
-			list($siteRootPageId, $systemLanguageId) = explode('|', $connectionKey);
+        $configuration = Util::getConfigurationFromPageId(
+            $this->rootPage['uid'],
+            'config',
+            false,
+            false
+        );
 
-			if ($siteRootPageId == $this->rootPage['uid']) {
-				$siteLanguages[] = $systemLanguageId;
-			}
-		}
+        if (isset($configuration['sys_language_uid'])) {
+            $siteDefaultLanguage = $configuration['sys_language_uid'];
+        }
 
-		return $siteLanguages;
-	}
+        // default language is set through default L GET parameter -> overruling config.sys_language_uid
+        if (isset($configuration['defaultGetVars.']['L'])) {
+            $siteDefaultLanguage = intval($configuration['defaultGetVars.']['L']);
+        }
 
-	/**
-	 * Gets the site's default language as configured in
-	 * config.sys_language_uid. If sys_language_uid is not set, 0 is assumed to
-	 * be the default.
-	 *
-	 * @return integer The site's default language.
-	 */
-	public function getDefaultLanguage() {
-		$siteDefaultLanguage = 0;
+        return $siteDefaultLanguage;
+    }
 
-		$configuration = Util::getConfigurationFromPageId(
-			$this->rootPage['uid'],
-			'config',
-			FALSE,
-			FALSE
-		);
+    /**
+     * Generates a list of page IDs in this site. Attention, this includes
+     * all page types! Deleted pages are not included.
+     *
+     * @param integer|string $rootPageId Page ID from where to start collection sub pages
+     * @param integer $maxDepth Maximum depth to decend into the site tree
+     * @return array Array of pages (IDs) in this site
+     */
+    public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999)
+    {
+        $pageIds = array();
+        $maxDepth = intval($maxDepth);
 
-		if (isset($configuration['sys_language_uid'])) {
-			$siteDefaultLanguage = $configuration['sys_language_uid'];
-		}
+        if (empty(self::$sitePagesCache[$rootPageId])) {
+            $recursionRootPageId = intval($rootPageId);
+            if ($rootPageId == 'SITE_ROOT') {
+                $recursionRootPageId = $this->rootPage['uid'];
+                $pageIds[] = $this->rootPage['uid'];
+            }
 
-		// default language is set through default L GET parameter -> overruling config.sys_language_uid
-		if (isset($configuration['defaultGetVars.']['L'])) {
-			$siteDefaultLanguage = intval($configuration['defaultGetVars.']['L']);
-		}
+            if ($maxDepth > 0) {
+                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+                    'uid',
+                    'pages',
+                    'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages')
+                );
 
-		return $siteDefaultLanguage;
-	}
+                while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+                    $pageIds[] = $page['uid'];
 
-	/**
-	 * Generates a list of page IDs in this site. Attention, this includes
-	 * all page types! Deleted pages are not included.
-	 *
-	 * @param integer|string $rootPageId Page ID from where to start collection sub pages
-	 * @param integer $maxDepth Maximum depth to decend into the site tree
-	 * @return array Array of pages (IDs) in this site
-	 */
-	public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999) {
-		$pageIds  = array();
-		$maxDepth = intval($maxDepth);
+                    if ($maxDepth > 1) {
+                        $pageIds = array_merge(
+                            $pageIds,
+                            $this->getPages($page['uid'], $maxDepth - 1)
+                        );
+                    }
+                }
+                $GLOBALS['TYPO3_DB']->sql_free_result($result);
+            }
+        } else {
+            $pageIds = self::$sitePagesCache[$rootPageId];
+        }
 
-		if (empty(self::$sitePagesCache[$rootPageId])) {
-			$recursionRootPageId = intval($rootPageId);
-			if ($rootPageId == 'SITE_ROOT') {
-				$recursionRootPageId = $this->rootPage['uid'];
-				$pageIds[]           = $this->rootPage['uid'];
-			}
+        if (empty(self::$sitePagesCache[$rootPageId])) {
+            // exiting the recursion loop, may write to cache now
+            self::$sitePagesCache[$rootPageId] = $pageIds;
+        }
 
-			if ($maxDepth > 0) {
-				$result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-					'uid',
-					'pages',
-					'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages')
-				);
+        return $pageIds;
+    }
 
-				while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-					$pageIds[] = $page['uid'];
+    /**
+     * Generates the site's unique Site Hash.
+     *
+     * The Site Hash is build from the site's main domain, the system encryption
+     * key, and the extension "tx_solr". These components are concatenated and
+     * sha1-hashed.
+     *
+     * @return string Site Hash.
+     */
+    public function getSiteHash()
+    {
+        return Util::getSiteHashForDomain($this->getDomain());
+    }
 
-					if ($maxDepth > 1) {
-						$pageIds = array_merge(
-							$pageIds,
-							$this->getPages($page['uid'], $maxDepth - 1)
-						);
-					}
-				}
-				$GLOBALS['TYPO3_DB']->sql_free_result($result);
-			}
-		} else {
-			$pageIds = self::$sitePagesCache[$rootPageId];
-		}
+    /**
+     * Gets the site's main domain. More specifically the first domain record in
+     * the site tree.
+     *
+     * @return string The site's main domain.
+     */
+    public function getDomain()
+    {
+        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $rootLine = $pageSelect->getRootLine($this->rootPage['uid']);
 
-		if (empty(self::$sitePagesCache[$rootPageId])) {
-			// exiting the recursion loop, may write to cache now
-			self::$sitePagesCache[$rootPageId] = $pageIds;
-		}
+        return BackendUtility::firstDomainRecord($rootLine);
+    }
 
-		return $pageIds;
-	}
+    /**
+     * Gets the site's root page.
+     *
+     * @return array The site's root page.
+     */
+    public function getRootPage()
+    {
+        return $this->rootPage;
+    }
 
-	/**
-	 * Generates the site's unique Site Hash.
-	 *
-	 * The Site Hash is build from the site's main domain, the system encryption
-	 * key, and the extension "tx_solr". These components are concatenated and
-	 * sha1-hashed.
-	 *
-	 * @return string Site Hash.
-	 */
-	public function getSiteHash() {
-		return Util::getSiteHashForDomain($this->getDomain());
-	}
+    /**
+     * Gets the site's root page's title.
+     *
+     * @return string The site's root page's title
+     */
+    public function getTitle()
+    {
+        return $this->rootPage['title'];
+    }
 
-	/**
-	 * Gets the site's root page.
-	 *
-	 * @return array The site's root page.
-	 */
-	public function getRootPage() {
-		return $this->rootPage;
-	}
+    /**
+     * Gets the site's config.sys_language_mode setting
+     *
+     * @return string The site's config.sys_language_mode
+     */
+    public function getSysLanguageMode()
+    {
+        if (is_null($this->sysLanguageMode)) {
+            Util::initializeTsfe($this->getRootPageId());
+            $this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
+        }
 
-	/**
-	 * Gets the site's root page ID (uid).
-	 *
-	 * @return integer The site's root page ID.
-	 */
-	public function getRootPageId() {
-		return $this->rootPage['uid'];
-	}
-
-	/**
-	 * Gets the site's root page's title.
-	 *
-	 * @return string The site's root page's title
-	 */
-	public function getTitle() {
-		return $this->rootPage['title'];
-	}
-
-	/**
-	 * Gets the site's label. The label is build from the the site title and root
-	 * page ID (uid).
-	 *
-	 * @return string The site's label.
-	 */
-	public function getLabel() {
-		return $this->rootPage['title'] . ', Root Page ID: ' . $this->rootPage['uid'];
-	}
-
-	/**
-	 * Gets the site's config.sys_language_mode setting
-	 *
-	 * @return string The site's config.sys_language_mode
-	 */
-	public function getSysLanguageMode() {
-		if (is_null($this->sysLanguageMode)) {
-			Util::initializeTsfe($this->getRootPageId());
-			$this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
-		}
-
-		return $this->sysLanguageMode;
-	}
+        return $this->sysLanguageMode;
+    }
 }
 

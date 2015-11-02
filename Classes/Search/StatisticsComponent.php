@@ -34,20 +34,22 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class StatisticsComponent extends AbstractComponent {
+class StatisticsComponent extends AbstractComponent
+{
 
-	/**
-	 * Initializes the search component.
-	 *
-	 */
-	public function initializeSearchComponent() {
-		$solrConfiguration = Util::getSolrConfiguration();
+    /**
+     * Initializes the search component.
+     *
+     */
+    public function initializeSearchComponent()
+    {
+        $solrConfiguration = Util::getSolrConfiguration();
 
-		if (!empty($solrConfiguration['statistics'])) {
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics']     = 'ApacheSolrForTypo3\\Solr\\Query\\Modifier\\Statistics';
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['statistics'] = 'ApacheSolrForTypo3\\Solr\\Response\\Processor\\StatisticsWriter';
-		}
-	}
+        if (!empty($solrConfiguration['statistics'])) {
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics'] = 'ApacheSolrForTypo3\\Solr\\Query\\Modifier\\Statistics';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['statistics'] = 'ApacheSolrForTypo3\\Solr\\Response\\Processor\\StatisticsWriter';
+        }
+    }
 
 }
 

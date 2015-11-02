@@ -32,77 +32,81 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Manage stop word resources
  *
  */
-class StopWordsModuleController extends AbstractModuleController {
+class StopWordsModuleController extends AbstractModuleController
+{
 
-	/**
-	 * Module name, used to identify a module f.e. in URL parameters.
-	 *
-	 * @var string
-	 */
-	protected $moduleName = 'StopWords';
+    /**
+     * Module name, used to identify a module f.e. in URL parameters.
+     *
+     * @var string
+     */
+    protected $moduleName = 'StopWords';
 
-	/**
-	 * Module title, shows up in the module menu.
-	 *
-	 * @var string
-	 */
-	protected $moduleTitle = 'Stop Words';
+    /**
+     * Module title, shows up in the module menu.
+     *
+     * @var string
+     */
+    protected $moduleTitle = 'Stop Words';
 
 
-	/**
-	 * Lists stop words for the currently selected core
-	 *
-	 * @return void
-	 */
-	public function indexAction() {
-		$solrConnection = $this->getSelectedCoreSolrConnection();
+    /**
+     * Lists stop words for the currently selected core
+     *
+     * @return void
+     */
+    public function indexAction()
+    {
+        $solrConnection = $this->getSelectedCoreSolrConnection();
 
-		$stopWords = $solrConnection->getStopWords();
-		$this->view->assign('stopWords', $stopWords);
-		$this->view->assign('stopWordsCount', count($stopWords));
-	}
+        $stopWords = $solrConnection->getStopWords();
+        $this->view->assign('stopWords', $stopWords);
+        $this->view->assign('stopWordsCount', count($stopWords));
+    }
 
-	/**
-	 * Saves the edited stop word list to Solr
-	 *
-	 * @return void
-	 */
-	public function saveStopWordsAction() {
-		$solrConnection = $this->getSelectedCoreSolrConnection();
+    /**
+     * Saves the edited stop word list to Solr
+     *
+     * @return void
+     */
+    public function saveStopWordsAction()
+    {
+        $solrConnection = $this->getSelectedCoreSolrConnection();
 
-		$postParameters = GeneralUtility::_POST('tx_solr_tools_solradministration');
-		$newStopWords   = GeneralUtility::trimExplode("\n", $postParameters['stopWords'], TRUE);
-		$oldStopWords   = $solrConnection->getStopWords();
+        $postParameters = GeneralUtility::_POST('tx_solr_tools_solradministration');
+        $newStopWords = GeneralUtility::trimExplode("\n",
+            $postParameters['stopWords'], true);
+        $oldStopWords = $solrConnection->getStopWords();
 
-		$wordsRemoved     = TRUE;
-		$removedStopWords = array_diff($oldStopWords, $newStopWords);
-		foreach ($removedStopWords as $word) {
-			$response = $solrConnection->deleteStopWord($word);
-			if ($response->getHttpStatus() != 200) {
-				$wordsRemoved = FALSE;
-				$this->addFlashMessage(
-					'Failed to remove stop word "' . $word . '".',
-					'An error occurred',
-					FlashMessage::ERROR
-				);
-				break;
-			}
-		}
+        $wordsRemoved = true;
+        $removedStopWords = array_diff($oldStopWords, $newStopWords);
+        foreach ($removedStopWords as $word) {
+            $response = $solrConnection->deleteStopWord($word);
+            if ($response->getHttpStatus() != 200) {
+                $wordsRemoved = false;
+                $this->addFlashMessage(
+                    'Failed to remove stop word "' . $word . '".',
+                    'An error occurred',
+                    FlashMessage::ERROR
+                );
+                break;
+            }
+        }
 
-		$wordsAdded     = TRUE;
-		$addedStopWords = array_diff($newStopWords, $oldStopWords);
-		if (!empty($addedStopWords)) {
-			$wordsAddedResponse = $solrConnection->addStopWords($addedStopWords);
-			$wordsAdded         = ($wordsAddedResponse->getHttpStatus() == 200);
-		}
+        $wordsAdded = true;
+        $addedStopWords = array_diff($newStopWords, $oldStopWords);
+        if (!empty($addedStopWords)) {
+            $wordsAddedResponse = $solrConnection->addStopWords($addedStopWords);
+            $wordsAdded = ($wordsAddedResponse->getHttpStatus() == 200);
+        }
 
-		$reloadResponse = $solrConnection->reloadCore();
-		if ($wordsRemoved && $wordsAdded && $reloadResponse->getHttpStatus() == 200) {
-			$this->addFlashMessage(
-				'Stop Words Updated.'
-			);
-		}
+        $reloadResponse = $solrConnection->reloadCore();
+        if ($wordsRemoved && $wordsAdded && $reloadResponse->getHttpStatus() == 200) {
+            $this->addFlashMessage(
+                'Stop Words Updated.'
+            );
+        }
 
-		$this->forwardToIndex();
-	}
+        $this->forwardToIndex();
+    }
 }

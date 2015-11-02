@@ -2,27 +2,27 @@
 namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2010-2015 Ingo Renner <ingo@typo3.org>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -43,188 +43,209 @@ use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
  */
 class UserGroupDetector
 
-	extends
-		AbstractFrontendHelper
+    extends
+    AbstractFrontendHelper
 
-	implements
-		SingletonInterface,
-		ContentObjectPostInitHookInterface,
-		PageRepositoryGetPageHookInterface,
-		PageRepositoryGetPageOverlayHookInterface {
-
-
-	/**
-	 * This frontend helper's executed action.
-	 */
-	protected $action = 'findUserGroups';
-
-	/**
-	 * Holds the original, unmodified TCA during user group detection
-	 *
-	 * @var array
-	 */
-	protected $originalTca = NULL;
-
-	/**
-	 * Collects the usergroups used on a page.
-	 *
-	 * @var array
-	 */
-	protected $frontendGroups = array();
+    implements
+    SingletonInterface,
+    ContentObjectPostInitHookInterface,
+    PageRepositoryGetPageHookInterface,
+    PageRepositoryGetPageOverlayHookInterface
+{
 
 
-	// activation
+    /**
+     * This frontend helper's executed action.
+     */
+    protected $action = 'findUserGroups';
+
+    /**
+     * Holds the original, unmodified TCA during user group detection
+     *
+     * @var array
+     */
+    protected $originalTca = null;
+
+    /**
+     * Collects the usergroups used on a page.
+     *
+     * @var array
+     */
+    protected $frontendGroups = array();
 
 
-	/**
-	 * Activates a frontend helper by registering for hooks and other
-	 * resources required by the frontend helper to work.
-	 */
-	public function activate() {
-		// register hooks
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__]           = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->disableFrontendOutput';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__]      = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->disableCaching';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__]    = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->deactivateTcaFrontendGroupEnableFields';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->checkEnableFields';
+    // activation
 
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__]              = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__]       = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
 
-		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__]          = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
-	}
+    /**
+     * Activates a frontend helper by registering for hooks and other
+     * resources required by the frontend helper to work.
+     */
+    public function activate()
+    {
+        // register hooks
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->disableFrontendOutput';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->disableCaching';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->deactivateTcaFrontendGroupEnableFields';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->checkEnableFields';
 
-	/**
-	 * Disables the group access check by resetting the fe_group field in the given page table row.
-	 * Will be called by the hook in the TypoScriptFrontendController in the checkEnableFields() method.
-	 *
-	 * @param array $parameters
-	 * @param TypoScriptFrontendController $tsfe
-	 * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
-	 */
-	public function checkEnableFields($parameters, $tsfe) {
-		$parameters['row']['fe_group'] = '';
-	}
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
 
-	/**
-	 * Deactivates the frontend user grroup fields in TCA so that no access
-	 * restrictions apply during page rendering.
-	 *
-	 * @param array $parameters Parameters from frontend
-	 * @param TypoScriptFrontendController $parentObject TSFE object
-	 */
-	public function deactivateTcaFrontendGroupEnableFields(&$parameters, $parentObject) {
-		$this->originalTca = $GLOBALS['TCA'];
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
+    }
 
-		foreach ($GLOBALS['TCA'] as $tableName => $tableConfiguration) {
-			if (isset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['fe_group'])) {
-				unset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['fe_group']);
-			}
-		}
-	}
+    /**
+     * Disables the group access check by resetting the fe_group field in the given page table row.
+     * Will be called by the hook in the TypoScriptFrontendController in the checkEnableFields() method.
+     *
+     * @param array $parameters
+     * @param TypoScriptFrontendController $tsfe
+     * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
+     */
+    public function checkEnableFields($parameters, $tsfe)
+    {
+        $parameters['row']['fe_group'] = '';
+    }
 
-	// manipulation
+    /**
+     * Deactivates the frontend user grroup fields in TCA so that no access
+     * restrictions apply during page rendering.
+     *
+     * @param array $parameters Parameters from frontend
+     * @param TypoScriptFrontendController $parentObject TSFE object
+     */
+    public function deactivateTcaFrontendGroupEnableFields(
+        &$parameters,
+        $parentObject
+    ) {
+        $this->originalTca = $GLOBALS['TCA'];
 
-	/**
-	 * Modifies the database query parameters so that access checks for pages
-	 * are not performed any longer.
-	 *
-	 * @param integer $uid The page ID
-	 * @param boolean $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
-	 * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject parent \TYPO3\CMS\Frontend\Page\PageRepository object
-	 */
-	public function getPage_preProcess(&$uid, &$disableGroupAccessCheck, \TYPO3\CMS\Frontend\Page\PageRepository $parentObject) {
-		$disableGroupAccessCheck = TRUE;
-		$parentObject->where_groupAccess = ''; // just to be on the safe side
-	}
+        foreach ($GLOBALS['TCA'] as $tableName => $tableConfiguration) {
+            if (isset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['fe_group'])) {
+                unset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns']['fe_group']);
+            }
+        }
+    }
 
-	/**
-	 * Modifies page records so that when checking for access through fe groups
-	 * no groups or extendToSubpages flag is found and thus access is granted.
-	 *
-	 * @param array $pageRecord Page record
-	 * @param integer $languageUid Overlay language ID
-	 * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject Parent \TYPO3\CMS\Frontend\Page\PageRepository object
-	 */
-	public function getPageOverlay_preProcess(&$pageRecord, &$languageUid, \TYPO3\CMS\Frontend\Page\PageRepository $parentObject) {
-		if (is_array($pageRecord)) {
-			$pageRecord['fe_group'] = '';
-			$pageRecord['extendToSubpages'] = '0';
-		}
-	}
+    // manipulation
 
-	// execution
+    /**
+     * Modifies the database query parameters so that access checks for pages
+     * are not performed any longer.
+     *
+     * @param integer $uid The page ID
+     * @param boolean $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
+     * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject parent \TYPO3\CMS\Frontend\Page\PageRepository object
+     */
+    public function getPage_preProcess(
+        &$uid,
+        &$disableGroupAccessCheck,
+        \TYPO3\CMS\Frontend\Page\PageRepository $parentObject
+    ) {
+        $disableGroupAccessCheck = true;
+        $parentObject->where_groupAccess = ''; // just to be on the safe side
+    }
 
-	/**
-	 * Hook for post processing the initialization of ContentObjectRenderer
-	 *
-	 * @param ContentObjectRenderer $parentObject parent content object
-	 */
-	public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject) {
-		if (!empty($parentObject->currentRecord)) {
-			list($table) = explode(':', $parentObject->currentRecord);
+    /**
+     * Modifies page records so that when checking for access through fe groups
+     * no groups or extendToSubpages flag is found and thus access is granted.
+     *
+     * @param array $pageRecord Page record
+     * @param integer $languageUid Overlay language ID
+     * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject Parent \TYPO3\CMS\Frontend\Page\PageRepository object
+     */
+    public function getPageOverlay_preProcess(
+        &$pageRecord,
+        &$languageUid,
+        \TYPO3\CMS\Frontend\Page\PageRepository $parentObject
+    ) {
+        if (is_array($pageRecord)) {
+            $pageRecord['fe_group'] = '';
+            $pageRecord['extendToSubpages'] = '0';
+        }
+    }
 
-			if (!empty($table) && $table != 'pages') {
-				$this->findFrontendGroups($parentObject->data, $table);
-			}
-		}
-	}
+    // execution
 
-	/**
-	 * Tracks user groups access restriction applied to records.
-	 *
-	 * @param array $record A record as an array of fieldname => fieldvalue mappings
-	 * @param string $table Table name the record belongs to
-	 */
-	protected function findFrontendGroups($record, $table) {
-		if ($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']) {
-			$frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']];
+    /**
+     * Hook for post processing the initialization of ContentObjectRenderer
+     *
+     * @param ContentObjectRenderer $parentObject parent content object
+     */
+    public function postProcessContentObjectInitialization(
+        ContentObjectRenderer &$parentObject
+    ) {
+        if (!empty($parentObject->currentRecord)) {
+            list($table) = explode(':', $parentObject->currentRecord);
 
-			if (empty($frontendGroups)) {
-				// default = public access
-				$frontendGroups = 0;
-			} else {
-				if ($this->request->getParameter('loggingEnabled')) {
-					GeneralUtility::devLog('Access restriction found', 'solr', 0, array(
-						'groups'      => $frontendGroups,
-						'record'      => $record,
-						'record type' => $table,
-					));
-				}
-			}
+            if (!empty($table) && $table != 'pages') {
+                $this->findFrontendGroups($parentObject->data, $table);
+            }
+        }
+    }
 
-			$this->frontendGroups[] = $frontendGroups;
-		}
-	}
+    /**
+     * Tracks user groups access restriction applied to records.
+     *
+     * @param array $record A record as an array of fieldname => fieldvalue mappings
+     * @param string $table Table name the record belongs to
+     */
+    protected function findFrontendGroups($record, $table)
+    {
+        if ($this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']) {
+            $frontendGroups = $record[$this->originalTca[$table]['ctrl']['enablecolumns']['fe_group']];
 
-	/**
-	 * Returns an array of user groups that have been tracked during page
-	 * rendering.
-	 *
-	 * @return array Array of user group IDs
-	 */
-	protected function getFrontendGroups() {
-		$frontendGroupsList = implode(',', $this->frontendGroups);
-		$frontendGroups     = GeneralUtility::trimExplode(',', $frontendGroupsList, TRUE);
+            if (empty($frontendGroups)) {
+                // default = public access
+                $frontendGroups = 0;
+            } else {
+                if ($this->request->getParameter('loggingEnabled')) {
+                    GeneralUtility::devLog('Access restriction found', 'solr',
+                        0, array(
+                            'groups' => $frontendGroups,
+                            'record' => $record,
+                            'record type' => $table,
+                        ));
+                }
+            }
 
-		// clean up: filter double groups
-		$frontendGroups = array_unique($frontendGroups);
-		$frontendGroups = array_values($frontendGroups);
+            $this->frontendGroups[] = $frontendGroups;
+        }
+    }
 
-		if (empty($frontendGroups)) {
-			// most likely an empty page with no content elements => public
-			$frontendGroups[] = '0';
-		}
+    /**
+     * Returns an array of user groups that have been tracked during page
+     * rendering.
+     *
+     * @return array Array of user group IDs
+     */
+    protected function getFrontendGroups()
+    {
+        $frontendGroupsList = implode(',', $this->frontendGroups);
+        $frontendGroups = GeneralUtility::trimExplode(',', $frontendGroupsList,
+            true);
 
-		return $frontendGroups;
-	}
+        // clean up: filter double groups
+        $frontendGroups = array_unique($frontendGroups);
+        $frontendGroups = array_values($frontendGroups);
 
-	/**
-	 * Returns the user groups found.
-	 *
-	 * @return array Array of user groups.
-	 */
-	public function getData() {
-		return $this->getFrontendGroups();
-	}
+        if (empty($frontendGroups)) {
+            // most likely an empty page with no content elements => public
+            $frontendGroups[] = '0';
+        }
+
+        return $frontendGroups;
+    }
+
+    /**
+     * Returns the user groups found.
+     *
+     * @return array Array of user groups.
+     */
+    public function getData()
+    {
+        return $this->getFrontendGroups();
+    }
 
 }

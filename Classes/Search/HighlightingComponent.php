@@ -34,44 +34,47 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-class HighlightingComponent extends AbstractComponent implements QueryAware {
+class HighlightingComponent extends AbstractComponent implements QueryAware
+{
 
-	/**
-	 * Solr query
-	 *
-	 * @var Query
-	 */
-	protected $query;
+    /**
+     * Solr query
+     *
+     * @var Query
+     */
+    protected $query;
 
 
-	/**
-	 * Initializes the search component.
-	 *
-	 *
-	 */
-	public function initializeSearchComponent() {
-		if ($this->searchConfiguration['results.']['siteHighlighting']) {
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\SiteHighlighter';
-		}
+    /**
+     * Initializes the search component.
+     *
+     *
+     */
+    public function initializeSearchComponent()
+    {
+        if ($this->searchConfiguration['results.']['siteHighlighting']) {
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\SiteHighlighter';
+        }
 
-		if ($this->searchConfiguration['results.']['resultsHighlighting']) {
-			$this->query->setHighlighting(
-				TRUE,
-				$this->searchConfiguration['results.']['resultsHighlighting.']['fragmentSize']
-			);
+        if ($this->searchConfiguration['results.']['resultsHighlighting']) {
+            $this->query->setHighlighting(
+                true,
+                $this->searchConfiguration['results.']['resultsHighlighting.']['fragmentSize']
+            );
 
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\DocumentHighlighter';
-		}
-	}
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\DocumentHighlighter';
+        }
+    }
 
-	/**
-	 * Provides the extension component with an instance of the current query.
-	 *
-	 * @param Query $query Current query
-	 */
-	public function setQuery(Query $query) {
-		$this->query = $query;
-	}
+    /**
+     * Provides the extension component with an instance of the current query.
+     *
+     * @param Query $query Current query
+     */
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
+    }
 
 }
 

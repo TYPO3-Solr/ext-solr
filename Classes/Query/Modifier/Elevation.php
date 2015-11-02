@@ -35,24 +35,26 @@ use ApacheSolrForTypo3\Solr\Util;
  * @package TYPO3
  * @subpackage solr
  */
-class Elevation implements Modifier {
+class Elevation implements Modifier
+{
 
-	/**
-	 * Enables the query's elevation mode.
-	 *
-	 * @param Query $query The query to modify
-	 * @return Query The modified query with enabled elevation mode
-	 */
-	public function modifyQuery(Query $query) {
-		$configuration = Util::getSolrConfiguration();
+    /**
+     * Enables the query's elevation mode.
+     *
+     * @param Query $query The query to modify
+     * @return Query The modified query with enabled elevation mode
+     */
+    public function modifyQuery(Query $query)
+    {
+        $configuration = Util::getSolrConfiguration();
 
-		$query->setQueryElevation(
-			$configuration['search.']['elevation'],
-			$configuration['search.']['elevation.']['forceElevation'],
-			$configuration['search.']['elevation.']['markElevatedResults']
-		);
+        $query->setQueryElevation(
+            $configuration['search.']['elevation'],
+            $configuration['search.']['elevation.']['forceElevation'],
+            $configuration['search.']['elevation.']['markElevatedResults']
+        );
 
-		return $query;
-	}
+        return $query;
+    }
 }
 

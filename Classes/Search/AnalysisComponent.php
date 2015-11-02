@@ -34,37 +34,40 @@ use ApacheSolrForTypo3\Solr\Query;
  * @package TYPO3
  * @subpackage solr
  */
-class AnalysisComponent extends AbstractComponent implements QueryAware {
+class AnalysisComponent extends AbstractComponent implements QueryAware
+{
 
-	/**
-	 * Solr query
-	 *
-	 * @var Query
-	 */
-	protected $query;
+    /**
+     * Solr query
+     *
+     * @var Query
+     */
+    protected $query;
 
 
-	/**
-	 * Initializes the search component.
-	 *
-	 *
-	 */
-	public function initializeSearchComponent() {
-		if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis']) {
-			$this->query->setDebugMode();
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['scoreAnalysis'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\ScoreAnalyzer';
-			$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm']['queryAnalysis']     = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\QueryAnalyzerFormModifier';
-		}
-	}
+    /**
+     * Initializes the search component.
+     *
+     *
+     */
+    public function initializeSearchComponent()
+    {
+        if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis']) {
+            $this->query->setDebugMode();
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['scoreAnalysis'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\ScoreAnalyzer';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm']['queryAnalysis'] = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\QueryAnalyzerFormModifier';
+        }
+    }
 
-	/**
-	 * Provides the extension component with an instance of the current query.
-	 *
-	 * @param Query $query Current query
-	 */
-	public function setQuery(Query $query) {
-		$this->query = $query;
-	}
+    /**
+     * Provides the extension component with an instance of the current query.
+     *
+     * @param Query $query Current query
+     */
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
+    }
 
 }
 
