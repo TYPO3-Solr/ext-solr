@@ -90,9 +90,9 @@ class Rootline
     public function __construct($accessRootline = null)
     {
         if (!is_null($accessRootline)) {
-            null$rawRootlineElements = explode(self::ELEMENT_DELIMITER,
+            $rawRootlineElements = explode(self::ELEMENT_DELIMITER,
                 $accessRootline);
-			foreach ($rawRootlineElements as $rawRootlineElement) {
+            foreach ($rawRootlineElements as $rawRootlineElement) {
                 try {
                     $this->push(GeneralUtility::makeInstance(
                         'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
@@ -102,7 +102,7 @@ class Rootline
                     // just ignore the faulty element for now, might log this later
                 }
             }
-		}
+        }
     }
 
     /**
