@@ -6,7 +6,7 @@
 .. include:: ../Includes.txt
 
 
-.. _conf-tx-solr:
+.. _conf-tx-solr-general:
 
 tx_solr.general
 ===============
