@@ -52,11 +52,12 @@ Apache Solr for TYPO3 - Enterprise Search
 	**Table of Contents**
 
 .. toctree::
-	:maxdepth: 5
+	:maxdepth: 3
 	:titlesonly:
 	:glob:
 
 	Setup/Index
+	Configuration/Index
 	Appendix/*
 
 
