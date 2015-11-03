@@ -24,7 +24,6 @@ Configuration Reference
 .. * Removed
 .. * See
 
-.. exclude Index from TOC
 
 .. toctree::
 	:maxdepth: 5
