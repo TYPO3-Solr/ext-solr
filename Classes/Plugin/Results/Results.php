@@ -158,12 +158,6 @@ class Results extends CommandPluginBase
             $GLOBALS['TSFE']->additionalHeaderData['tx_solr-resultsCss'] =
                 '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
         }
-
-        if ($this->conf['cssFiles.']['pagebrowser']) {
-            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['pagebrowser']));
-            $GLOBALS['TSFE']->additionalHeaderData['tx_solr-pageBrowserCss'] =
-                '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
-        }
     }
 
     /**
