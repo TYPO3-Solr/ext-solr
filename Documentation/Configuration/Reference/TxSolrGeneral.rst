@@ -21,7 +21,7 @@ dateFormat.date
 ---------------
 
 :Type: String
-:Default: d.m.Y H:i
+:Default: ``d.m.Y H:i``
 :Since: 1.0
 :See: http://www.php.net/manual/de/function.strftime.php
 

@@ -21,7 +21,7 @@ enabled
 -------
 
 :Type: Boolean
-:Default: 1
+:Default: ``1``
 :Options: 0, 1
 :Since: 1.2
 
@@ -40,7 +40,7 @@ addDefaultCss
 -------------
 
 :Type: Boolean
-:Default: 1
+:Default: ``1``
 :Options: 0, 1
 :Since: 1.0
 :Removed: 2.0, see tx_solr.cssFiles instead
@@ -52,7 +52,7 @@ addDefaultJs
 ------------
 
 :Type: Boolean
-:Default: 1
+:Default: ``1``
 :Options: 0, 1
 :Since: 1.0
 :Removed: 2.0, see tx_solr.javascriptFiles instead
@@ -65,7 +65,7 @@ enableDebugMode
 ---------------
 
 :Type: Boolean
-:Default: 0
+:Default: ``0``
 :Options: 0, 1
 :Since: 1.0
 :See: http://wiki.apache.org/solr/CommonQueryParameters#debugQuery

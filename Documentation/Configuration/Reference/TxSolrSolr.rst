@@ -24,7 +24,7 @@ scheme
 ------
 
 :Type: String
-:Default: http
+:Default: ``http``
 :Options: http, https
 :Since: 1.2 2.0
 
@@ -34,7 +34,7 @@ host
 ----
 
 :Type: String
-:Default: localhost
+:Default: ``localhost``
 :Since: 1.0
 
 Sets the host portion of the URL.
@@ -43,7 +43,7 @@ port
 ----
 
 :Type: Integer
-:Default: 8080
+:Default: ``8080``
 :Since: 1.0
 
 Sets the port portion of the URL.
@@ -52,7 +52,7 @@ path
 ----
 
 :Type: String
-:Default: /
+:Default: ``/``
 :Since: 1.0
 
 Sets the path portion of the URL. Make sure to have the path end with a slash (/).
