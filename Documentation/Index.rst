@@ -57,6 +57,7 @@ Apache Solr for TYPO3 - Enterprise Search
 	:glob:
 
 	Setup/Index
+	Appendix/*
 
 
 What does it do?
