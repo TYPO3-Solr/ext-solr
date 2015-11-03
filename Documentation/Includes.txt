@@ -20,3 +20,4 @@
 
 .. highlight:: php
 .. highlight:: bash
+.. highlight:: xml
