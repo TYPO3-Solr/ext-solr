@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Usage:
-#	sudo ./install-solr.sh
-#	sudo ./install-solr.sh english german french
+#	sudo ./install-solr-existing-tomcat.sh
+#	sudo ./install-solr-existing-tomcat.sh english german french
 
 
 
