@@ -136,16 +136,24 @@ cecho "Checking requirements." $green
 
 PASSALLCHECKS=1
 
-# test if release branch exists, if so we'll download from there
-wget --no-check-certificate -q --spider https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/$GITBRANCH_PATH/Resources/Solr/solr.xml
-BRANCH_TEST_RETURN=$?
-
 # Make sure only root can run this script
 if [[ $EUID -ne 0 ]]
 then
 	cecho "This script must be run as root." $red
 	exit 1
 fi
+
+wget --version > /dev/null 2>&1
+CHECK=$?
+if [ $CHECK -ne "0" ]
+then
+	cecho "ERROR couldn't find wget." $red
+	PASSALLCHECKS=0
+fi
+
+# test if release branch exists, if so we'll download from there
+wget --no-check-certificate -q --spider https://raw.githubusercontent.com/TYPO3-Solr/ext-solr/$GITBRANCH_PATH/Resources/Solr/solr.xml
+BRANCH_TEST_RETURN=$?
 
 java -version > /dev/null 2>&1
 CHECK=$?
@@ -163,14 +171,6 @@ if [ $JAVA_VERSION_INSTALLED -lt $JAVA_VERSION ]
 then
   cecho "You have installed Java version $JAVA_VERSION_INSTALLED. Please install Java $JAVA_VERSION or newer." $red
   PASSALLCHECKS=0
-fi
-
-wget --version > /dev/null 2>&1
-CHECK=$?
-if [ $CHECK -ne "0" ]
-then
-	cecho "ERROR couldn't find wget." $red
-	PASSALLCHECKS=0
 fi
 
 ping -c 1 mirror.dkd.de > /dev/null 2>&1
