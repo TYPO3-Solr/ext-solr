@@ -24,49 +24,34 @@ namespace ApacheSolrForTypo3\Solr\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-/ *
-*
-Provides the icon and entry for the content e
-
-men
- w zard
-*
- * @ utho  In o Ren er  ing @typo3 . rg >
- *  packag
- T
- O
- * @su pack ge sol
-*/
-class Conte
- E ementWiz rdIco
- r vider {
-
-    / *
-
-    Ad
-s the results plugin to the content el m
- wi
- d
+/**
+ * Provides the icon and entry for the content element wizard
  *
-     *  param a ray $w za dIt ms The  izard i ems
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
+ */
+class ContentElementWizardIconProvider
+{
 
- r
- r  array array with wizard  tem
-    */
-    publi
- u ction p oc($w zardI ems) {
-        $w zardI
- s[
-            lugins tx_solr_ esults'] = array(
+    /**
+     * Adds the results plugin to the content element wizard
+     *
+     * @param array $wizardItems The wizard items
+     * @return array array with wizard items
+     */
+    public function proc($wizardItems)
+    {
+        $wizardItems['plugins_tx_solr_results'] = array(
+            'icon' => ExtensionManagementUtility::extRelPath('solr') . 'Resources/Public/Images/ContentElement.gif',
+            'title' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/Backend.xml:plugin_results'),
+            'description' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/Backend.xml:plugin_results_description'),
+            'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=solr_pi_results'
+        );
 
-con'        => ExtensionManagementUtili y :extReh('sol es urces/Public/Images/ContentElement.gif',
-            't t e'       => $GLOBALS['LANG']->sL('LLL:EXT:sol sources e/ anguage/Backend.xml:plugin_results'),
-			'description' => $GLOBALS['LANG']->sL('LLL:EXT:sol sources/Priva e/ anguage/Backend.xml:plugin_results_description'),
-			'params'      => '&defVals[tt_content][CType]=list Vals[tt_ t] list_type]=solr_pi_results'
-		);
-
-		return $wizardItems;
-	}
+        return $wizardItems;
+    }
 
 }
