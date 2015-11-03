@@ -56,7 +56,7 @@ Apache Solr for TYPO3 - Enterprise Search
 	:titlesonly:
 	:glob:
 
-
+	Setup/Index
 
 
 What does it do?
