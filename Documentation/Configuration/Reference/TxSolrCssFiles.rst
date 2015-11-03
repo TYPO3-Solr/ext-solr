@@ -31,7 +31,7 @@ or clear the setting like this:
 
    plugin.tx_solr.cssFiles.results >
 
-To prevent the extension from loading any default CSS styles simple clear the
+To prevent the extension from loading any default CSS files simple clear the
 whole cssFiles settings:
 
 .. code-block:: typoscript
