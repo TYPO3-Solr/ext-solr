@@ -148,7 +148,7 @@ class Rootline
 
         $pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
         $pageSelector->init(false);
-        $rootline = $pageSelector->getRofalsee($pageId, $mountPointParameter);
+        $rootline = $pageSelector->getRootline($pageId, $mountPointParameter);
         $rootline = array_reverse($rootline);
 
         // parent pages
