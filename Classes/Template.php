@@ -219,12 +219,6 @@ class Template
             $viewHelperIncludePath = ExtensionManagementUtility::extPath($extensionKey)
                 . $viewHelperPath . $possibleFilename;
 
-            // @todo only dirty solution
-            if (!class_exists($possibleClassName)) {
-                $namespaceViewHelper = 'ApacheSolrForTypo3\\Solr\\ViewHelper\\' . Util::underscoredToUpperCamelCase($helperKey);
-                return $namespaceViewHelper;
-            }
-
             if (file_exists($viewHelperIncludePath)) {
                 include_once($viewHelperIncludePath);
                 $this->loadedHelperFiles[strtolower($helperKey)] = array(
