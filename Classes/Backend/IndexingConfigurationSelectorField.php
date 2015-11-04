@@ -169,7 +169,9 @@ class IndexingConfigurationSelectorField
                         $table = $solrConfiguration['index.']['queue.'][$name . '.']['table'];
                     }
 
-                    $indexingTableMap[$name] = $table;
+                    if (isset($GLOBALS['TCA'][$table])) {
+                        $indexingTableMap[$name] = $table;
+                    }
                 }
             }
         }
