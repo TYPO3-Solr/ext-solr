@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
@@ -47,6 +48,54 @@ class SolrStatus implements StatusProviderInterface
      * @var ConnectionManager
      */
     protected $connectionManager = null;
+
+    /**
+     * Holds the response status
+     *
+     * @var integer
+     */
+    protected $responseStatus = Status::OK;
+
+    /**
+     * Holds the response message build by the checks
+     * 
+     * @var string
+     */
+    protected $responseMessage = '';
+
+    /**
+     * @return string
+     */
+    protected function getMessageTemplate()
+    {
+        return
+        '<ul>'
+        .'   <li style="padding-bottom: 10px;">Site: ###SITE###</li>'
+        .'   <li>Scheme: ###SCHEME###</li>'
+        .'   <li>Host: ###HOST###</li>'
+        .'   <li>Port: ###PORT###</li>'
+        .'   <li style="padding-bottom: 10px;">Path: ###PATH###</li>'
+        .'   <li>Apache Solr: ###VERSION###</li>'
+        .'   <li>Ping Query Time: ###PING###</li>'
+        .'   <li>schema.xml: ###SOLR_SCHEMA###</li>'
+        .'   <li>solrconfig.xml: ###SOLR_CONFIG###</li>'
+        .'   <li>Access Filter Plugin: ###ACCESS_FILTER_PLUGIN###</li>'
+        .'</ul>';
+    }
+
+
+    /**
+     * Replaces a value in the template.
+     *
+     * @param string $response
+     * @param string $marker
+     * @param string $value
+     * @return string
+     */
+    protected function replaceMarkerInResponse($response, $marker, $value)
+    {
+        return str_replace('###'.$marker.'###', $value, $response);
+    }
 
     /**
      * Compiles a collection of status checks against each configured Solr server.
@@ -74,8 +123,8 @@ class SolrStatus implements StatusProviderInterface
      */
     protected function getConnectionStatus(array $solrConnection)
     {
-        $value = 'Your site was unable to contact the Apache Solr server.';
-        $severity = Status::ERROR;
+        $value = 'Your site has contacted the Apache Solr server.';
+        $this->responseStatus = Status::OK;
 
         $solr = $this->connectionManager->getConnection(
             $solrConnection['solrHost'],
@@ -84,41 +133,115 @@ class SolrStatus implements StatusProviderInterface
             $solrConnection['solrScheme']
         );
 
-        $message = '<ul>'
-            . '<li style="padding-bottom: 10px;">Site: ' . $solrConnection['label'] . '</li>'
+        $this->responseMessage = $this->getMessageTemplate();
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SITE', $solrConnection['label']);
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SCHEME', $solr->getScheme() );
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'HOST', $solr->getHost() );
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'PATH', $solr->getPath());
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'PORT', $solr->getPort());
+        $this->checkSolrVersion($solr);
+        $this->checkAccessFilter($solr);
+        $this->checkPingTime($solr);
+        $this->checkSolrConfigName($solr);
+        $this->checkSolrSchemaName($solr);
 
-            . '<li>Scheme: ' . $solr->getScheme() . '</li>'
-            . '<li>Host: ' . $solr->getHost() . '</li>'
-            . '<li>Port: ' . $solr->getPort() . '</li>'
-            . '<li style="padding-bottom: 10px;">Path: ' . $solr->getPath() . '</li>';
-
-        $pingQueryTime = $solr->ping();
-
-        if ($pingQueryTime !== false) {
-            $severity = Status::OK;
-            $value = 'Your site has contacted the Apache Solr server.';
-
-            $solrVersion = $this->formatSolrVersion($solr->getSolrServerVersion());
-
-            $message .= '<li>Apache Solr: ' . $solrVersion . '</li>';
-            $message .= '<li>Ping Query Time: ' . (int)($pingQueryTime * 1000) . 'ms</li>';
-            $message .= '<li>schema.xml: ' . $solr->getSchemaName() . '</li>';
-            $message .= '<li>solrconfig.xml: ' . $solr->getSolrconfigName() . '</li>';
-
-            $accessFilterPluginStatus = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Report\\AccessFilterPluginInstalledStatus');
-            $accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solr);
-
-            $message .= '<li>Access Filter Plugin: ' . $accessFilterPluginVersion . '</li>';
+        if($this->responseStatus !== Status::OK) {
+            $value = 'Error during solr connection.';
         }
-
-        $message .= '</ul>';
 
         return GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
             'Apache Solr',
             $value,
-            $message,
-            $severity
+            $this->responseMessage,
+            $this->responseStatus
         );
+    }
+
+    /**
+     * Checks the solr version and adds it to the report.
+     *
+     * @param SolrService $solr
+     */
+    protected function checkSolrVersion(SolrService $solr)
+    {
+        try {
+            $solrVersion = $this->formatSolrVersion($solr->getSolrServerVersion());
+        } catch (\Exception $e) {
+            $this->responseStatus = Status::ERROR;
+            $solrVersion = 'Error getting solr version: ' . $e->getMessage();
+        }
+
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'VERSION', $solrVersion);
+    }
+
+    /**
+     * Checks the access filter setup and adds it to the report.
+     *
+     * @param SolrService $solr
+     */
+    protected function checkAccessFilter(SolrService $solr)
+    {
+        try {
+            $accessFilterPluginStatus = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Report\\AccessFilterPluginInstalledStatus');
+            $accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solr);
+            $accessFilterMessage = $accessFilterPluginVersion;
+        } catch (\Exception $e) {
+            $this->responseStatus = Status::ERROR;
+            $accessFilterMessage = 'Error getting access filter: ' . $e->getMessage();
+        }
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'ACCESS_FILTER_PLUGIN', $accessFilterMessage);
+
+    }
+
+    /**
+     * Checks the ping time and adds it to the report.
+     *
+     * @param SolrService $solr
+     */
+    protected function checkPingTime(SolrService $solr)
+    {
+        try {
+            $pingQueryTime = $solr->getPingRoundTripRuntime();
+            $pingMessage = (int) $pingQueryTime . ' ms';
+        } catch (\ApacheSolrForTypo3\Solr\PingFailedException $e) {
+            $this->responseStatus = Status::ERROR;
+            $pingMessage = 'Ping error: ' . $e->getMessage();
+        }
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'PING', $pingMessage);
+    }
+
+    /**
+     * Checks the solr config name and adds it to the report.
+     *
+     * @param SolrService $solr
+     */
+    protected function checkSolrConfigName(SolrService $solr)
+    {
+        try {
+            $solrConfigMessage = $solr->getSolrconfigName();
+        } catch(\Exception $e) {
+            $this->responseStatus =  Status::ERROR;
+            $solrConfigMessage = 'Error determining solr config: '. $e->getMessage();
+        }
+
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SOLR_CONFIG', $solrConfigMessage);
+    }
+
+    /**
+     * Checks the solr schema name and adds it to the report.
+     *
+     * @param SolrService $solr
+     */
+    protected function checkSolrSchemaName(SolrService $solr)
+    {
+        try {
+            $solrSchemaMessage = $solr->getSchemaName();
+        } catch(\Exception $e) {
+            $this->responseStatus  = Status::ERROR;
+            $solrSchemaMessage = 'Error determining schema name: '. $e->getMessage();
+        }
+
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SOLR_SCHEMA', $solrSchemaMessage);
     }
 
     /**

@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
+use ApacheSolrForTypo3\Solr\PingFailedException;
 
 /**
  * Solr Service Access
@@ -126,6 +126,16 @@ class SolrService extends \Apache_Solr_Service
     }
 
     /**
+     * Returns the current time in milliseconds.
+     *
+     * @return integer
+     */
+    protected function getMilliseconds()
+    {
+        return GeneralUtility::milliseconds();
+    }
+
+    /**
      * Performs a search.
      *
      * @param string $query query string / search term
@@ -168,10 +178,42 @@ class SolrService extends \Apache_Solr_Service
      */
     public function ping($timeout = 2)
     {
-        $httpResponse = $this->getHttpTransport()->performGetRequest($this->_pingUrl,
-            $timeout);
-
+        $httpResponse = $this->performPingRequest($timeout);
         return ($httpResponse->getStatusCode() === 200);
+    }
+
+    /**
+     * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
+     *
+     * @param float|integer $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+     * @return integer runtime in milliseconds
+     */
+    public function getPingRoundTripRuntime($timeout = 2)
+    {
+        $start = $this->getMilliseconds();
+        $httpResponse = $this->performPingRequest($timeout);
+        $end = $this->getMilliseconds();
+
+        if ($httpResponse->getStatusCode() !== 200) {
+            $message = 'Solr ping failed with unexpected response code: ' . $httpResponse->getStatusCode();
+            /** @var $exception \ApacheSolrForTypo3\Solr\PingFailedException */
+            $exception = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\PingFailedException', $message);
+            $exception->setHttpResponse($httpResponse);
+            throw $exception;
+        }
+
+        return $end - $start;
+    }
+
+    /**
+     * Performs a ping request and returns the result.
+     *
+     * @param int $timeout
+     * @return \Apache_Solr_HttpTransport_Response
+     */
+    protected function performPingRequest ($timeout = 2)
+    {
+        return $this->getHttpTransport()->performGetRequest($this->_pingUrl, $timeout);
     }
 
     /**
@@ -496,6 +538,9 @@ class SolrService extends \Apache_Solr_Service
                 . $this->_path . 'admin/file/?file=solrconfig.xml';
 
             $solrconfigXml = simplexml_load_file($solrconfigXmlUrl);
+            if($solrconfigXml === FALSE) {
+                throw new \InvalidArgumentException('No valid xml response from schema file: '.$solrconfigXmlUrl);
+            }
             $this->solrconfigName = (string)$solrconfigXml->attributes()->name;
         }
 
