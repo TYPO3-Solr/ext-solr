@@ -165,7 +165,7 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
                 'facetConfiguration' => $this->facetConfiguration,
                 'facetText' => $facetText
             );
-            $procObj = &t3lib_div::getUserObj($classReference);
+            $procObj = GeneralUtility::getUserObj($classReference);
             $newText = $procObj->getUsedFacetText($params, $this);
 
             if (!empty($newText)) {
