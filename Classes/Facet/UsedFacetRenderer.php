@@ -159,14 +159,20 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
         }
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processUsedFacetText'] as $classReference) {
+            $usedFacetOptionsRenderer = GeneralUtility::getUserObj($classReference);
             $params = array(
                 'facetName' => $this->facetName,
                 'facetValue' => $this->filterValue,
                 'facetConfiguration' => $this->facetConfiguration,
                 'facetText' => $facetText
             );
-            $procObj = GeneralUtility::getUserObj($classReference);
-            $newText = $procObj->getUsedFacetText($params, $this);
+
+            if(!$usedFacetOptionsRenderer instanceof UsedFacetOptionsRenderer) {
+                $message = 'Invalid hook configured in processUsedFacetText. Hook needs to implement Interface UsedFacetOptionsRenderer!';
+                throw new \InvalidArgumentException($message);
+            }
+
+            $newText = $usedFacetOptionsRenderer->getUsedFacetText($params, $this);
 
             if (!empty($newText)) {
                 $facetText = $newText;
