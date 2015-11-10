@@ -114,6 +114,8 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
             $facetText = $facetOption->render();
         }
 
+        $facetText = $this->getModifiedFacetTextFromHook($facetText);
+
         $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
         $facetLabel = $contentObject->stdWrap(
             $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label'],
@@ -142,5 +144,41 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
         );
 
         return $facetToRemove;
+    }
+
+    /**
+     * Provides a hook to overwrite the facetText.
+     *
+     * @param string $facetText
+     * @return mixed
+     */
+    protected function getModifiedFacetTextFromHook($facetText)
+    {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processUsedFacetText'])) {
+            return $facetText;
+        }
+
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processUsedFacetText'] as $classReference) {
+            $usedFacetOptionsRenderer = GeneralUtility::getUserObj($classReference);
+            $params = array(
+                'facetName' => $this->facetName,
+                'facetValue' => $this->filterValue,
+                'facetConfiguration' => $this->facetConfiguration,
+                'facetText' => $facetText
+            );
+
+            if(!$usedFacetOptionsRenderer instanceof UsedFacetOptionsRenderer) {
+                $message = 'Invalid hook configured in processUsedFacetText. Hook needs to implement Interface UsedFacetOptionsRenderer!';
+                throw new \InvalidArgumentException($message);
+            }
+
+            $newText = $usedFacetOptionsRenderer->getUsedFacetText($params, $this);
+
+            if (!empty($newText)) {
+                $facetText = $newText;
+            }
+        }
+
+        return $facetText;
     }
 }
