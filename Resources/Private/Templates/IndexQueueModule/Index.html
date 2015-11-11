@@ -2,7 +2,6 @@
 
 <solr:backend.style file="{f:uri.resource(path:'StyleSheets/Backend/IndexQueueModule.css')}" />
 
-
 <div class="row-fluid section-divider">
 	<div class="well">
 		<f:translate key="solr.backend.index_queue_module.description" />
@@ -78,14 +77,9 @@
 								<td>{item.item_type}</td>
 								<td>{item.item_uid}</td>
 								<td>
-									<script type="text/plain">
-								{item.errors}
-							</script>
-									<a href="javascript:void(0);"
-									   class="show_error">
-										<f:translate
-												key="solr.backend.index_queue_module.errors.show_button"/>
-									</a>
+									<f:link.action arguments="{module: 'IndexQueue', moduleAction: 'showError', queueItemId: item.uid}" controller="Administration">
+										<f:translate key="solr.backend.index_queue_module.errors.show_button"/>
+									</f:link.action>
 								</td>
 							</tr>
 						</f:for>

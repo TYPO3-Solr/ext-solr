@@ -268,6 +268,49 @@ class IndexQueueModuleController extends AbstractModuleController
 
         $this->forward('index');
     }
+
+    /**
+     * Retrieves an queue item by uid.
+     *
+     * @param integer $uid
+     * @return array
+     */
+    protected function getQueueItemById($uid)
+    {
+        $item = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+            'uid, item_type, item_uid, errors',
+            'tx_solr_indexqueue_item',
+            'uid = ' . intval($uid)
+        );
+
+        return $item[0];
+    }
+
+    /**
+     * Shows the error message for one queue item.
+     *
+     * @return void
+     */
+    public function showErrorAction()
+    {
+       $queueItemId = $this->getRequestArgumentOrDefaultValue('queueItemId', NULL);
+        if(is_null($queueItemId)) {
+            // add a flash message and quit
+            $label = 'solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error';
+            $severity = FlashMessage::ERROR;
+            $this->addFlashMessage(
+                LocalizationUtility::translate($label, 'Solr'),
+                LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title',
+                    'Solr'),
+                $severity
+            );
+
+            return;
+        }
+
+        $item = $this->getQueueItemById($queueItemId);
+        $this->view->assign('queueItem', $item);
+    }
 }
 
 

@@ -166,6 +166,28 @@ abstract class AbstractModuleController extends ActionController implements Admi
 
 
     /**
+     * Checks if the request argument is present an returns it. If not it returns the default value.
+     *
+     * @param string $argumentKey
+     * @param mixed $default
+     * @return mixed
+     */
+    protected function getRequestArgumentOrDefaultValue($argumentKey, $default)
+    {
+        // no request -> return default
+        if (! isset($this->request)) {
+            return $default;
+        }
+
+        // argument not present -> return default value
+        if (! $this->request->hasArgument($argumentKey)) {
+            return $default;
+        }
+
+        return $this->request->getArgument($argumentKey);
+    }
+
+    /**
      * Forwards to the index action after resetting module and moduleAction
      * arguments to prevent execution of module actions.
      *
