@@ -63,11 +63,41 @@ class SynonymsModuleController extends AbstractModuleController
         $synonyms = array();
         $rawSynonyms = $solrConnection->getSynonyms();
 
+        $ignoreCaseState = $solrConnection->getIgnoreCaseForSynonyms();
+
         foreach ($rawSynonyms as $baseWord => $synonymList) {
             $synonyms[$baseWord] = implode(', ', $synonymList);
         }
 
         $this->view->assign('synonyms', $synonyms);
+        $this->view->assign('ignoreCaseState', $ignoreCaseState);
+    }
+
+    /**
+     * Switches the state of the ignoreCase configuration of the synonymlist.
+     *
+     * @return void
+     */
+    public function toggleIgnoreCaseAction()
+    {
+        try {
+            $result = $this->getSelectedCoreSolrConnection()->toggleIgnoreCaseStateForSynonyms();
+
+            if($result) {
+                $message = 'Saving the state of ignoreCase was successful';
+            } else {
+                $message = 'Saving the state of ignoreCase failed';
+            }
+        } catch (\Exception $e) {
+            $result = false;
+            $message = 'Saving the state of ignoreCase failed with message: '.$e->getMessage();
+        }
+
+        $state = $result ? FlashMessage::OK : FlashMessage::ERROR;
+        $title  = $result ? 'State changed' : 'Error during state change';
+        $this->addFlashMessage($message, $title, $state);
+
+        $this->forwardToIndex();
     }
 
     /**
