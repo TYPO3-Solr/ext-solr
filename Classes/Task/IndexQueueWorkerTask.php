@@ -140,6 +140,9 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
         } else {
             unset($_SERVER['HTTP_HOST']);
         }
+        if (version_compare(TYPO3_branch, '7.5', '>=')) {
+            GeneralUtility::flushInternalRuntimeCaches();
+        }
 
         return $itemIndexed;
     }
@@ -311,6 +314,9 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
             }
 
             $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
+            if (version_compare(TYPO3_branch, '7.5', '>=')) {
+                GeneralUtility::flushInternalRuntimeCaches();
+            }
         }
     }
 }
