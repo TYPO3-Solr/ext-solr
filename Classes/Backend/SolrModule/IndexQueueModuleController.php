@@ -277,13 +277,11 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     protected function getQueueItemById($uid)
     {
-        $item = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
             'uid, item_type, item_uid, errors',
             'tx_solr_indexqueue_item',
             'uid = ' . intval($uid)
         );
-
-        return $item[0];
     }
 
     /**
