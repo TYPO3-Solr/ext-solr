@@ -34,13 +34,21 @@
 	</f:else>
 </f:if>
 
-<h3>Add Synonyms</h3>
+<h3>
+	Add Synonyms
+	<f:if condition="{ignoreCaseState}">
+		<f:then> (casing is ignored)</f:then>
+		<f:else> (casing is needs to match)</f:else>
+	</f:if>
+</h3>
 <div class="section">
 	<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'addSynonyms'} )}" id="add-synonyms">
 		<div class="form-group">
 			<label for="baseWord">Base Word</label>
 			<f:form.textfield id="baseWord" name="baseWord" class="form-control" />
-			<span class="example">f.e. iPhone</span>
+			<span class="example">
+				f.e. iphone
+			</span>
 		</div>
 		<div class="form-group">
 			<label for="synonyms">Synonyms</label>
@@ -51,4 +59,16 @@
 			<f:form.submit value="Add Synonyms" />
 		</div>
 	</f:form>
+</div>
+
+<h3>Configuration</h3>
+
+
+<div class="section">
+	Ignore the casing of the synonyms:
+	<f:if condition="{ignoreCaseState}">
+		<f:then><f:link.action arguments="{module: '{module.name}', moduleAction:'toggleIgnoreCase'}" controller="Administration" title="Click to turn off">On</f:link.action></f:then>
+		<f:else><f:link.action arguments="{module: '{module.name}', moduleAction:'toggleIgnoreCase'}" controller="Administration" title="Click to turn on">Off</f:link.action></f:else>
+	</f:if>
+
 </div>

@@ -698,6 +698,81 @@ class SolrService extends \Apache_Solr_Service
     }
 
     /**
+     * Set the property ignoreCase for a synonyms list
+     *
+     * @param boolean $ignoreCase
+     * @return \Apache_Solr_Response
+     *
+     * @throws \Apache_Solr_InvalidArgumentException If $baseWord or $synonyms are empty
+     */
+    public function setIgnoreCaseForSynonyms($ignoreCase)
+    {
+        if (!is_bool($ignoreCase)) {
+            throw new \Apache_Solr_InvalidArgumentException('IgnoreCase setting must be a boolean value.');
+        }
+
+        $rawPut = json_encode(array('initArgs' => array('ignoreCase' => boolval($ignoreCase))));
+        return  $this->_sendRawPost($this->_synonymsUrl, $rawPut,
+            $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
+    }
+
+    /**
+     * Returns the current configured state of the ignoreCase option.
+     *
+     * @return boolean
+     */
+    public function getIgnoreCaseForSynonyms()
+    {
+        try {
+            $ignoreCase = $this->_getIgnoreCaseForSynonyms();
+        } catch (UnexpectedSolrResponseException $e) {
+            $ignoreCase = FALSE;
+        }
+
+        return $ignoreCase;
+    }
+
+    /**
+     * Toggles the state of the "ignoreCase" configuration of a synonyms list.
+     * Throws an exception when the response from solr was invalid.
+     *
+     * @throws UnexpectedSolrResponseException
+     * @return boolean
+     */
+    public function toggleIgnoreCaseStateForSynonyms()
+    {
+        $oldState = $this->_getIgnoreCaseForSynonyms();
+        $newStateToStore = !$oldState;
+
+        $this->setIgnoreCaseForSynonyms($newStateToStore);
+        $newStoredState = $this->getIgnoreCaseForSynonyms();
+
+            // is the new stored state the opposite of the old state?
+        return $newStoredState ===  !$oldState;
+    }
+
+    /**
+     * @throws UnexpectedSolrResponseException
+     * @return bool
+     */
+    protected function _getIgnoreCaseForSynonyms()
+    {
+        $synonymsUrl = $this->_synonymsUrl;
+
+        $response = $this->_sendRawGet($synonymsUrl);
+        $decodedResponse = json_decode($response->getRawResponse());
+
+        if (isset($decodedResponse->synonymMappings->initArgs->ignoreCase)) {
+            $ignoreCase = boolval($decodedResponse->synonymMappings->initArgs->ignoreCase);
+            return $ignoreCase;
+        } else {
+            $e = new UnexpectedSolrResponseException("Solr response did not contain ignoreCase part");
+            $e->setHttpResponse($response);
+            throw $e;
+        }
+    }
+
+    /**
      * Remove a synonym from the synonyms map
      *
      * @param $baseWord
