@@ -301,23 +301,19 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     {
         static $hosts = array();
 
-        // relevant for realURL environments, only
-        if (ExtensionManagementUtility::isLoaded('realurl')) {
-            $rootpageId = $item->getRootPageUid();
-            $hostFound = !empty($hosts[$rootpageId]);
+        $rootpageId = $item->getRootPageUid();
+        $hostFound = !empty($hosts[$rootpageId]);
 
-            if (!$hostFound) {
-                $rootline = BackendUtility::BEgetRootLine($rootpageId);
-                $host = BackendUtility::firstDomainRecord($rootline);
+        if (!$hostFound) {
+            $rootline = BackendUtility::BEgetRootLine($rootpageId);
+            $host = BackendUtility::firstDomainRecord($rootline);
 
-                $hosts[$rootpageId] = $host;
-            }
+            $hosts[$rootpageId] = $host;
+        }
 
-            $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
-            if (version_compare(TYPO3_branch, '7.5', '>=')) {
-                GeneralUtility::flushInternalRuntimeCaches();
-            }
+        $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
+        if (version_compare(TYPO3_branch, '7.5', '>=')) {
+            GeneralUtility::flushInternalRuntimeCaches();
         }
     }
 }
-
