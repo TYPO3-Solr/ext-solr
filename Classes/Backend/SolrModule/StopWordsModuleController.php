@@ -96,6 +96,9 @@ class StopWordsModuleController extends AbstractModuleController
         $wordsAdded = true;
         $addedStopWords = array_diff($newStopWords, $oldStopWords);
         if (!empty($addedStopWords)) {
+                // lowercase stopword before saving because terms get lowercased
+                // before stopword filtering
+            $addedStopWords = strtolower($addedStopWords);
             $wordsAddedResponse = $solrConnection->addStopWords($addedStopWords);
             $wordsAdded = ($wordsAddedResponse->getHttpStatus() == 200);
         }
