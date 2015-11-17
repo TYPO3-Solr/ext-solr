@@ -169,6 +169,9 @@ class JavascriptManager
         $filePathPrefix = '';
         if (!empty($GLOBALS['TSFE']->config['config']['absRefPrefix'])) {
             $filePathPrefix = $GLOBALS['TSFE']->config['config']['absRefPrefix'];
+            if ($filePathPrefix === 'auto') {
+                $filePathPrefix = GeneralUtility::getIndpEnv('TYPO3_SITE_PATH');
+            }
         }
 
         // add files
