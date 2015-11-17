@@ -227,10 +227,10 @@ class LinkBuilder
             'useCacheHash' => false,
             'no_cache' => false,
             'parameter' => $this->linkTargetPageId,
-            'additionalParams' => \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('',
+            'additionalParams' => $queryGetParameter
+                . \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('',
                     array($this->prefix => $queryParameters), '', true)
                 . $this->getUrlParameters()
-                . $queryGetParameter
         );
 
         // merge linkConfiguration with typolinkOptions
@@ -293,7 +293,6 @@ class LinkBuilder
     {
         $this->urlParameters = $urlParameters;
     }
-
 
 }
 
