@@ -334,33 +334,6 @@ class Template
     }
 
     /**
-     * Escapes a document's content field taking into account the wrap setting
-     * for highlighting keywords
-     *
-     * @param string $content content field value
-     * @return string escaped content
-     */
-    protected function escapeResultContent($content)
-    {
-        $content = htmlspecialchars($content, null, null, false);
-
-        $configuration = Util::getSolrConfiguration();
-        $highlightingWrap = $configuration['search.']['results.']['resultsHighlighting.']['wrap'];
-        $highlightingWrap = explode('|', $highlightingWrap);
-
-        $pattern = '/'
-            . htmlspecialchars($highlightingWrap[0], null, null, false)
-            . '(.+?)'
-            . str_replace('/', '\/', htmlspecialchars($highlightingWrap[1]))
-            . '/is';
-        $replacement = $highlightingWrap[0] . '$1' . $highlightingWrap[1];
-
-        $content = preg_replace($pattern, $replacement, $content);
-
-        return $content;
-    }
-
-    /**
      * cleans the template from non-replaced markers and subparts
      *
      * @return void
@@ -570,14 +543,6 @@ class Template
         if (count($foundMarkers)) {
             $iterationCount = 0;
             foreach ($loopVariables as $value) {
-                // escape content and title
-                if (isset($value['content'])) {
-                    $value['content'] = $this->escapeResultContent($value['content']);
-                }
-                if (isset($value['title'])) {
-                    $value['title'] = htmlspecialchars($value['title'], null,
-                        null, false);
-                }
 
                 $resolvedMarkers = $this->resolveVariableMarkers($foundMarkers,
                     $value);
