@@ -87,8 +87,8 @@ class SynonymsModuleController extends AbstractModuleController
                 FlashMessage::ERROR
             );
         } else {
-            $baseWord = $synonymMap['baseWord'];
-            $synonyms = $synonymMap['synonyms'];
+            $baseWord = $this->stringHelper->toLower($synonymMap['baseWord']);
+            $synonyms = $this->stringHelper->toLower($synonymMap['synonyms']);
 
             $solrConnection->addSynonym(
                 $baseWord,
