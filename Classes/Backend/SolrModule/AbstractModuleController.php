@@ -81,10 +81,8 @@ abstract class AbstractModuleController extends ActionController implements Admi
 
     /**
      * @var \ApacheSolrForTypo3\Solr\Util\StringHelper
-     * @inject
      */
     protected $stringHelper;
-
 
     /**
      * Gets the module name.
@@ -132,7 +130,7 @@ abstract class AbstractModuleController extends ActionController implements Admi
      *
      * @param \ApacheSolrForTypo3\Solr\Util\StringHelper $stringHelper
      */
-    public function setStringHelper(StringHelper $stringHelper)
+    public function injectStringHelper(StringHelper $stringHelper)
     {
         $this->stringHelper = $stringHelper;
     }

@@ -97,6 +97,8 @@
 
 			<filter class="solr.ThaiWordFilterFactory"/>
 
+			<filter class="solr.LowerCaseFilterFactory"/>
+
 			<filter class="solr.ManagedStopFilterFactory" managed="thai"/>
 
 			<filter class="solr.StandardFilterFactory" />

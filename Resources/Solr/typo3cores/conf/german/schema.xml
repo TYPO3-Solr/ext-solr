@@ -128,6 +128,7 @@
 	<fieldType name="textSpell" class="solr.TextField" positionIncrementGap="100" omitNorms="true">
 		<analyzer type="index">
 			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 
 			<filter class="solr.DictionaryCompoundWordTokenFilterFactory"
 				dictionary="german/german-common-nouns.txt"
