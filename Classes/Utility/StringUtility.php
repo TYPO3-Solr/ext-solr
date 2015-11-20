@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Util;
+namespace ApacheSolrForTypo3\Solr\Utility;
 
 /***************************************************************
  *  Copyright notice
@@ -30,9 +30,9 @@ namespace ApacheSolrForTypo3\Solr\Util;
  * Helper utility class used for string manipulation. Can be injected into your module
  * and mocked in the unit test context.
  *
- * @package ApacheSolrForTypo3\Solr\Util
+ * @package ApacheSolrForTypo3\Solr\Utility
  */
-class StringUtil {
+class StringUtility {
 
     /**
      * Lowercases a string with the TYPO3 Core functionality.
