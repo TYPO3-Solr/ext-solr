@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\Util\StringUtil;
+use ApacheSolrForTypo3\Solr\Utility\StringUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
@@ -80,9 +80,9 @@ abstract class AbstractModuleController extends ActionController implements Admi
     protected $site;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Util\StringUtil
+     * @var \ApacheSolrForTypo3\Solr\Utility\StringUtility
      */
-    protected $stringUtil;
+    protected $stringUtility;
 
     /**
      * Gets the module name.
@@ -128,11 +128,11 @@ abstract class AbstractModuleController extends ActionController implements Admi
      * Method to pass a StringUtil object.
      * Use to overwrite injected object in unit test context.
      *
-     * @param \ApacheSolrForTypo3\Solr\Util\StringUtil $stringUtil
+     * @param \ApacheSolrForTypo3\Solr\Utility\StringUtility $stringUtility
      */
-    public function injectStringHelper(StringUtil $stringUtil)
+    public function injectStringHelper(StringUtility $stringUtility)
     {
-        $this->stringUtil = $stringUtil;
+        $this->stringUtility = $stringUtility;
     }
 
     /**
