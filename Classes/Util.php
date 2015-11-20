@@ -314,6 +314,8 @@ class Util
                 $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
                 $rootLine = $pageSelect->getRootLine($pageId);
 
+                $initializedTsfe = false;
+                $initializedPageSelect = false;
                 if (empty($GLOBALS['TSFE']->sys_page)) {
                     if (empty($GLOBALS['TSFE'])) {
                         $GLOBALS['TSFE'] = new \stdClass();
@@ -321,9 +323,11 @@ class Util
                         $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
                         $GLOBALS['TSFE']->sys_page = $pageSelect;
                         $GLOBALS['TSFE']->id = $pageId;
+                        $initializedTsfe = true;
                     }
 
                     $GLOBALS['TSFE']->sys_page = $pageSelect;
+                    $initializedPageSelect = true;
                 }
 
                 $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
@@ -335,6 +339,13 @@ class Util
                 $configuration = $tmpl->ext_getSetup($tmpl->setup, $path);
 
                 $configurationCache[$cacheId] = $configuration[0];
+
+                if ($initializedPageSelect) {
+                    $GLOBALS['TSFE']->sys_page = null;
+                }
+                if ($initializedTsfe) {
+                    unset($GLOBALS['TSFE']);
+                }
             }
         }
 
