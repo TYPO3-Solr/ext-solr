@@ -127,7 +127,7 @@ class ResultsCommand implements PluginCommand
      */
     protected function getResultDocuments()
     {
-        $responseDocuments = $this->search->getResultDocuments();
+        $responseDocuments = $this->search->getResultDocumentsEscaped();
         $resultDocuments = array();
 
 
@@ -327,7 +327,7 @@ class ResultsCommand implements PluginCommand
         $label = '';
 
         $resultsFrom = $this->search->getResponseBody()->start + 1;
-        $resultsTo = $resultsFrom + count($this->search->getResultDocuments()) - 1;
+        $resultsTo = $resultsFrom + count($this->search->getResultDocumentsEscaped()) - 1;
         $resultsTotal = $this->search->getNumberOfResults();
 
         $label = strtr(
