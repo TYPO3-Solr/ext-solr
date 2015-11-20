@@ -106,8 +106,8 @@ plugin.tx_solr {
 	}
 
 	search {
-		// fields that are allowed to contain html and should be skipped during the escaping after retrieval from solr
-		// by default all fields get escaped and nothing will be skipped
+		// fields that are allowed to contain html and should be skipped during escaping after retrieval from Solr
+		// by default all fields will be escaped and none are considered trusted
 	 	trustedFields =
 
 		targetPage = {$plugin.tx_solr.search.targetPage}

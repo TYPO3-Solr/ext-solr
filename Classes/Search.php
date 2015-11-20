@@ -333,10 +333,9 @@ class Search implements SingletonInterface
     }
 
     /**
-     * Returns all results documents.
+     * Returns all results documents raw.
      *
-     * @deprecated since 3.1, use getResultEscapedDocuments now when possible, will be removed two version later
-     *
+     * @deprecated since 3.1, use getResultEscapedDocuments(), will be removed two version later
      * @return \Apache_Solr_Document[]
      */
     public function getResultDocuments()
@@ -361,24 +360,29 @@ class Search implements SingletonInterface
      * This method is used to apply htmlspecialchars on all document fields that
      * are not configured to be secure. Secure mean that we know where the content is comming from.
      *
-     * @param array $docs
-     * @return array
+     * @param array $documents
+     * @return \Apache_Solr_Document[]
      */
-    protected function applyHtmlSpecialCharsOnAllFields(array $docs)
+    protected function applyHtmlSpecialCharsOnAllFields(array $documents)
     {
         $trustedSolrFields = $this->getTrustedSolrFields();
-        foreach ($docs as $key => $doc) {
-            $fieldNames = $doc->getFieldNames();
+
+        foreach ($documents as $key => $document) {
+            $fieldNames = $document->getFieldNames();
+
             foreach ($fieldNames as $fieldName) {
                 if (in_array($fieldName, $trustedSolrFields)) {
                     // we skip this field, since it was marked as secure
                     continue;
                 }
-                $doc->{$fieldName} = $this->applyHtmlSpecialCharsOnSingleFieldValue($doc->{$fieldName});
+
+                $document->{$fieldName} = $this->applyHtmlSpecialCharsOnSingleFieldValue($document->{$fieldName});
             }
-            $docs[$key] = $doc;
+
+            $documents[$key] = $document;
         }
-        return $docs;
+
+        return $documents;
     }
 
     /**
@@ -396,6 +400,7 @@ class Search implements SingletonInterface
         } else {
             $fieldValue = htmlspecialchars($fieldValue, NULL, NULL, FALSE);
         }
+
         return $fieldValue;
     }
 
