@@ -335,19 +335,27 @@ class Search implements SingletonInterface
     /**
      * Returns all results documents raw.
      *
-     * @deprecated since 3.1, use getResultEscapedDocuments(), will be removed two version later
+     * @deprecated since 3.1, use getResultDocumentsRaw() instead, will be removed in v4.0
      * @return \Apache_Solr_Document[]
      */
     public function getResultDocuments()
+    {
+        return $this->getResultDocumentsRaw();
+    }
+
+    /**
+     * Returns all results documents raw. Use with caution!
+     *
+     * @return \Apache_Solr_Document[]
+     */
+    public function getResultDocumentsRaw()
     {
         return $this->getResponseBody()->docs;
     }
 
     /**
-     * Returns all result documents but applies htmlspecialchars on all fields retrieved
-     * from solr except the configured fields in
-     *
-     * plugin.tx_solr.search.trustedFields
+     * Returns all result documents but applies htmlspecialchars() on all fields retrieved
+     * from solr except the configured fields in plugin.tx_solr.search.trustedFields
      *
      * @return \Apache_Solr_Document[]
      */
