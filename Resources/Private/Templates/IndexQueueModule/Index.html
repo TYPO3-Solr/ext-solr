@@ -77,7 +77,7 @@
 								<td>{item.item_type}</td>
 								<td>{item.item_uid}</td>
 								<td>
-									<f:link.action arguments="{module: 'IndexQueue', moduleAction: 'showError', queueItemId: item.uid}" controller="Administration">
+									<f:link.action arguments="{module: 'IndexQueue', moduleAction: 'showError', indexQueueItemId: item.uid}" controller="Administration">
 										<f:translate key="solr.backend.index_queue_module.errors.show_button"/>
 									</f:link.action>
 								</td>
