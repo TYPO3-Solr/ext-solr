@@ -313,13 +313,95 @@ class Search implements SingletonInterface
     }
 
     /**
-     * Gets the result's documents
+     * Returns a list of solr fields that could be retrieved without applying htmlspecialchars
      *
+     * @return array
+     */
+    protected function getTrustedSolrFields()
+    {
+        $trustedFields = array();
+        if (!isset($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['trustedFields']) ||
+            !is_string($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['trustedFields'])
+        ) {
+            return $trustedFields;
+        }
+
+        $trustedFieldsSetting = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['trustedFields'];
+        $trustedFields = GeneralUtility::trimExplode(",", $trustedFieldsSetting);
+
+        return $trustedFields;
+    }
+
+    /**
+     * Returns all results documents raw.
+     *
+     * @deprecated since 3.1, use getResultEscapedDocuments(), will be removed two version later
      * @return \Apache_Solr_Document[]
      */
     public function getResultDocuments()
     {
         return $this->getResponseBody()->docs;
+    }
+
+    /**
+     * Returns all result documents but applies htmlspecialchars on all fields retrieved
+     * from solr except the configured fields in
+     *
+     * plugin.tx_solr.search.trustedFields
+     *
+     * @return \Apache_Solr_Document[]
+     */
+    public function getResultDocumentsEscaped()
+    {
+        return $this->applyHtmlSpecialCharsOnAllFields($this->getResponseBody()->docs);
+    }
+
+    /**
+     * This method is used to apply htmlspecialchars on all document fields that
+     * are not configured to be secure. Secure mean that we know where the content is comming from.
+     *
+     * @param array $documents
+     * @return \Apache_Solr_Document[]
+     */
+    protected function applyHtmlSpecialCharsOnAllFields(array $documents)
+    {
+        $trustedSolrFields = $this->getTrustedSolrFields();
+
+        foreach ($documents as $key => $document) {
+            $fieldNames = $document->getFieldNames();
+
+            foreach ($fieldNames as $fieldName) {
+                if (in_array($fieldName, $trustedSolrFields)) {
+                    // we skip this field, since it was marked as secure
+                    continue;
+                }
+
+                $document->{$fieldName} = $this->applyHtmlSpecialCharsOnSingleFieldValue($document->{$fieldName});
+            }
+
+            $documents[$key] = $document;
+        }
+
+        return $documents;
+    }
+
+    /**
+     * Applies htmlspecialchars on all items of an array of a single value.
+     *
+     * @param $fieldValue
+     * @return array|string
+     */
+    protected function applyHtmlSpecialCharsOnSingleFieldValue($fieldValue)
+    {
+        if (is_array($fieldValue)) {
+            foreach ($fieldValue as $key => $fieldValueItem) {
+                $fieldValue[$key] = htmlspecialchars($fieldValueItem, NULL, NULL, FALSE);
+            }
+        } else {
+            $fieldValue = htmlspecialchars($fieldValue, NULL, NULL, FALSE);
+        }
+
+        return $fieldValue;
     }
 
     /**

@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-3-1-0--20150614" version="1.5" >
+<schema name="tx_solr-3-1-0--20151117" version="1.5" >
 	<!-- attribute "name" is the name of this schema and is only used for display purposes.
 		Applications should change this to reflect the nature of the search collection.
 		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
@@ -52,8 +52,11 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
-			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
 			<filter class="solr.LowerCaseFilterFactory"/>
+
+			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
+
 			<filter class="solr.KeywordMarkerFilterFactory" protected="persian/protwords.txt"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
@@ -71,9 +74,11 @@
 				splitOnCaseChange="1"
 				preserveOriginal="1"
 			/>
+			<filter class="solr.LowerCaseFilterFactory"/>
+
 			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
-			<filter class="solr.LowerCaseFilterFactory"/>
+
 			<filter class="solr.KeywordMarkerFilterFactory" protected="persian/protwords.txt"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
@@ -87,6 +92,7 @@
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
 		<analyzer>
 			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+			<filter class="solr.LowerCaseFilterFactory"/>
 
 			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
@@ -98,7 +104,6 @@
 				catenateAll="0"
 				preserveOriginal="1"
 			/>
-			<filter class="solr.LowerCaseFilterFactory"/>
 			<filter class="solr.KeywordMarkerFilterFactory" protected="persian/protwords.txt"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
@@ -112,7 +117,9 @@
 			<tokenizer class="solr.StandardTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
+
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
+
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>
@@ -122,8 +129,10 @@
 			<tokenizer class="solr.StandardTokenizerFactory" />
 
 			<filter class="solr.LowerCaseFilterFactory"/>
+
 			<filter class="solr.ManagedSynonymFilterFactory" managed="persian"/>
 			<filter class="solr.ManagedStopFilterFactory" managed="persian"/>
+
 			<filter class="solr.StandardFilterFactory" />
 			<filter class="solr.ArabicNormalizationFilterFactory"/>
 			<filter class="solr.PersianNormalizationFilterFactory"/>

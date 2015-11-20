@@ -74,8 +74,10 @@ class StopWordsModuleController extends AbstractModuleController
         $solrConnection = $this->getSelectedCoreSolrConnection();
 
         $postParameters = GeneralUtility::_POST('tx_solr_tools_solradministration');
-        $newStopWords = GeneralUtility::trimExplode("\n",
-            $postParameters['stopWords'], true);
+
+        // lowercase stopword before saving because terms get lowercased before stopword filtering
+        $newStopWords = $this->stringUtil->toLower($postParameters['stopWords']);
+        $newStopWords = GeneralUtility::trimExplode("\n", $newStopWords, true);
         $oldStopWords = $solrConnection->getStopWords();
 
         $wordsRemoved = true;

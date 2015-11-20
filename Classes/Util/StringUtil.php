@@ -1,10 +1,11 @@
 <?php
-namespace ApacheSolrForTypo3\Solr;
+namespace ApacheSolrForTypo3\Solr\Util;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2011-2015 Timo Schmidt <timo.schmidt@dkd.de>
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,37 +27,22 @@ namespace ApacheSolrForTypo3\Solr;
 
 
 /**
- * Remote API related methods
+ * Helper utility class used for string manipulation. Can be injected into your module
+ * and mocked in the unit test context.
  *
- * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
+ * @package ApacheSolrForTypo3\Solr\Util
  */
-class Api
-{
+class StringUtil {
 
     /**
-     * Checks whether a string is a valid API key.
+     * Lowercases a string with the TYPO3 Core functionality.
      *
-     * @param string $apiKey API key to check for validity
-     * @return boolean TRUE if the API key is valid, FALSE otherwise
+     * @param string $input
+     * @param string $charset
+     * @return string
      */
-    public static function isValidApiKey($apiKey)
+    public function toLower($input, $charset = 'utf-8')
     {
-        return ($apiKey === self::getApiKey());
+        return $GLOBALS['LANG']->csConvObj->conv_case($charset, $input, 'toLower');
     }
-
-    /**
-     * Generates the API key for the REST API
-     *
-     * @return string API key for this installation
-     */
-    public static function getApiKey()
-    {
-        return sha1(
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
-            'tx_solr_api'
-        );
-    }
-
 }

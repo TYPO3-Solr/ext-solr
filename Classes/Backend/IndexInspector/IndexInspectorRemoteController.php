@@ -136,7 +136,7 @@ class IndexInspectorRemoteController
 
         $this->search->search($query, 0, 10000);
 
-        return $this->search->getResultDocuments();
+        return $this->search->getResultDocumentsEscaped();
     }
 
     /**
