@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr;
+namespace ApacheSolrForTypo3\Solr\Utility;
 
     /***************************************************************
      *  Copyright notice

@@ -283,7 +283,7 @@ class Tx_Solr_ContextMenuActionController extends ApacheSolrForTypo3\Solr\Contex
 /**
  * @deprecated
  */
-class Tx_Solr_DatabaseUtility extends ApacheSolrForTypo3\Solr\DatabaseUtility
+class Tx_Solr_DatabaseUtility extends ApacheSolrForTypo3\Solr\Utility\DatabaseUtility
 {
 }
 
