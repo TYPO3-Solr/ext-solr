@@ -435,7 +435,7 @@ class Search implements SingletonInterface
     /**
      * Gets all facets with their fields, options, and counts.
      *
-     * @return
+     * @return array
      */
     public function getFacetCounts()
     {
