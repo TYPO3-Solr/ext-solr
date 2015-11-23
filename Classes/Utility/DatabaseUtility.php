@@ -1,11 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Util;
+namespace ApacheSolrForTypo3\Solr\Utility;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011-2015 Timo Schmidt <timo.schmidt@dkd.de>
- *
+ *  (c) 2014-2015 Ingo Renner <ingo@typo3.org>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,22 +26,44 @@ namespace ApacheSolrForTypo3\Solr\Util;
 
 
 /**
- * Helper utility class used for string manipulation. Can be injected into your module
- * and mocked in the unit test context.
+ * Database utility class to do things the core currently does not support
  *
- * @package ApacheSolrForTypo3\Solr\Util
+ * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
+ * @subpackage solr
  */
-class StringUtil {
+class DatabaseUtility
+{
 
     /**
-     * Lowercases a string with the TYPO3 Core functionality.
+     * Start a transaction
      *
-     * @param string $input
-     * @param string $charset
-     * @return string
+     * @return void
      */
-    public function toLower($input, $charset = 'utf-8')
+    public static function transactionStart()
     {
-        return $GLOBALS['LANG']->csConvObj->conv_case($charset, $input, 'toLower');
+        $GLOBALS['TYPO3_DB']->sql_query('START TRANSACTION');
     }
+
+    /**
+     * Commit a transaction
+     *
+     * @return void
+     */
+    public static function transactionCommit()
+    {
+        $GLOBALS['TYPO3_DB']->sql_query('COMMIT');
+    }
+
+    /**
+     * Roll back a transaction
+     *
+     * @return void
+     */
+    public static function transactionRollback()
+    {
+        $GLOBALS['TYPO3_DB']->sql_query('ROLLBACK');
+    }
+
 }
+

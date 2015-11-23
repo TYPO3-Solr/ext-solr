@@ -7,7 +7,7 @@ return array(
     'Tx_Solr_CommandResolver' => 'ApacheSolrForTypo3\\Solr\\CommandResolver',
     'Tx_Solr_ConnectionManager' => 'ApacheSolrForTypo3\\Solr\\ConnectionManager',
     'Tx_Solr_ContextMenuActionController' => 'ApacheSolrForTypo3\\Solr\\ContextMenuActionController',
-    'Tx_Solr_DatabaseUtility' => 'ApacheSolrForTypo3\\Solr\\DatabaseUtility',
+    'Tx_Solr_DatabaseUtility' => 'ApacheSolrForTypo3\\Solr\\Utility\\DatabaseUtility',
     'Tx_Solr_GarbageCollector' => 'ApacheSolrForTypo3\\Solr\\GarbageCollector',
     'Tx_Solr_GarbageCollectorPostProcessor' => 'ApacheSolrForTypo3\\Solr\\GarbageCollectorPostProcessor',
     'Tx_Solr_HtmlContentExtractor' => 'ApacheSolrForTypo3\\Solr\\HtmlContentExtractor',
