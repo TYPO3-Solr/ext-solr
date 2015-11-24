@@ -212,6 +212,7 @@ class PageIndexerRequest
         $headers = $this->header;
         $headers[] = TYPO3_user_agent;
         $itemId = $this->indexQueueItem->getIndexQueueUid();
+        $pageId = $this->indexQueueItem->getRecordPageId();
 
         $indexerRequestData = array(
             'requestId' => $this->requestId,
