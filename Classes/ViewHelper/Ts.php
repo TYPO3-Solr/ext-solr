@@ -65,6 +65,7 @@ class Ts implements ViewHelper
     {
         $typoScriptPath = array_shift($arguments);
 
+
         // TODO add a feature to resolve content objects
         if (count($arguments)) {
             return $this->resolveTypoScriptPath($typoScriptPath, $arguments);
@@ -101,9 +102,9 @@ class Ts implements ViewHelper
                 for ($i = 0; $i < $numberOfArguments; $i++) {
                     $data['argument_' . $i] = $arguments[$i];
                 }
-
                 $cObj->start($data);
             }
+
 
             $value = $cObj->cObjGetSingle(
                 $pathBranch[$lastPathSegment],
@@ -113,6 +114,15 @@ class Ts implements ViewHelper
 
         return $value;
     }
+
+    /**
+     * @param ContentObjectRenderer $contentObject
+     */
+    public function setContentObject($contentObject)
+    {
+        $this->contentObject = $contentObject;
+    }
+
 
     /**
      * Returns the viewhelper's internal cObj. If it has not been used yet, a

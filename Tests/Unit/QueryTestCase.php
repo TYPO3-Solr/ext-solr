@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Tests\Unit;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -33,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_QueryTest extends Tx_Phpunit_TestCase
+class QueryTest extends SolrUnitTest
 {
 
     /**

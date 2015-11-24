@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,6 +24,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -32,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_IndexQueue_PageIndexerResponseTest extends Tx_Phpunit_TestCase
+class PageIndexerResponseTest extends SolrUnitTest
 {
 
     /**

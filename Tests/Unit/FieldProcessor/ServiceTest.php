@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,12 +24,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-// workaround
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
-
-if (!class_exists('Apache_Solr_Document')) {
-    require_once __DIR__ . '../../../Resources/Php/SolrPhpClient/Apache/Solr/Document.php';
-}
+use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
 
 /**
  * tests the processing Service class
@@ -36,24 +34,25 @@ if (!class_exists('Apache_Solr_Document')) {
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_ServiceTest extends Tx_Phpunit_TestCase
+class ServiceTest extends SolrUnitTest
 {
 
     /**
      * @var Apache_Solr_Document
      */
-    private $documentMock;
+    protected $documentMock;
 
     /**
      * the service
      *
      * @var Service
      */
-    private $service;
+    protected $service;
 
     public function setUp()
     {
-        $this->documentMock = new Apache_Solr_Document();
+        date_default_timezone_set('Europe/Berlin');
+        $this->documentMock = new \Apache_Solr_Document();
         $this->service = new Service();
     }
 
@@ -131,4 +130,3 @@ class Tx_Solr_FieldProcessor_ServiceTest extends Tx_Phpunit_TestCase
     }
 
 }
-
