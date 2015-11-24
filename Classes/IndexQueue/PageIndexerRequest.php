@@ -217,6 +217,7 @@ class PageIndexerRequest
         $indexerRequestData = array(
             'requestId' => $this->requestId,
             'item' => $itemId,
+            'page' => $pageId,
             'actions' => implode(',', $this->actions),
             'hash' => md5(
                 $itemId . '|' .
