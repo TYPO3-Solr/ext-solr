@@ -142,9 +142,11 @@ class Site
     /**
      * Gets all available TYPO3 sites with Solr configured.
      *
+     * @param boolean $stopOnInvalidSite
+     *
      * @return Site[] An array of available sites
      */
-    public static function getAvailableSites()
+    public static function getAvailableSites($stopOnInvalidSite = false)
     {
         $sites = array();
 
@@ -152,13 +154,32 @@ class Site
         $servers = $registry->get('tx_solr', 'servers', array());
 
         foreach ($servers as $server) {
-            if (!isset($sites[$server['rootPageUid']])) {
-                $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__,
-                    $server['rootPageUid']);
+            if (isset($sites[$server['rootPageUid']])) {
+                //get each site only once
+                continue;
+            }
+
+            try {
+                $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__, $server['rootPageUid']);
+            } catch (\InvalidArgumentException $e) {
+                if($stopOnInvalidSite) { throw $e; }
             }
         }
 
         return $sites;
+    }
+
+    /**
+     * Returns the first available Site.
+     *
+     * @param boolean $stopOnInvalidSite
+     *
+     * @return Site
+     */
+    public static function getFirstAvailableSite($stopOnInvalidSite = false)
+    {
+        $sites = self::getAvailableSites($stopOnInvalidSite);
+        return array_shift($sites);
     }
 
     /**

@@ -7,7 +7,19 @@
 		<div id="typo3-docheader">
 			<div class="typo3-docheader-functions">
 				<div class="left">
-					<solr:backend.menu.SiteSelectorMenu name="site" />
+
+					<solr:backend.sites>
+						<f:if condition="{hasSites}">
+							<f:then>
+								<solr:backend.menu.SiteSelectorMenu name="site" />
+							</f:then>
+							<f:else>
+								No solr connections initialized!
+							</f:else>
+						</f:if>
+
+					</solr:backend.sites>
+
 				</div>
 				<div class="right">
 				</div>
@@ -23,12 +35,32 @@
 		<div id="typo3-docbody">
 			<div id="typo3-inner-docbody" class="container-fluid">
 				<div class="row-fluid">
-					<div id="moduleMenu" class="span3">
-						<f:render partial="ModuleMenu" arguments="{modules: modules, activeModule: activeModule}" />
-					</div>
-					<div id="moduleContent" class="span9">
-						<f:render section="content" />
-					</div>
+					<solr:backend.sites>
+						<f:if condition="{hasSites}">
+							<f:then>
+
+								<div id="moduleMenu" class="span3">
+									<f:render partial="ModuleMenu" arguments="{modules: modules, activeModule: activeModule}" />
+								</div>
+								<div id="moduleContent" class="span9">
+									<f:render section="content" />
+								</div>
+							</f:then>
+							<f:else>
+								<p>There is no site configured for your solr extension. </p>
+								<p>Please check the following:</p>
+								<ul>
+									<li>Your page has a domain record.</li>
+									<li>Your site has a page, marked as root page.</li>
+									<li>Your page has included the solr typoscript configuration.</li>
+									<li>You've initialized the solr connections in the backend with the menu item "Initialize solr connections"</li>
+									<li>Afterwards please check if the reports module is showing any errors.</li>
+								</ul>
+
+								<p>When all of these steps are done check this module again.</p>
+							</f:else>
+						</f:if>
+					</solr:backend.sites>
 				</div>
 			</div>
 		</div>
