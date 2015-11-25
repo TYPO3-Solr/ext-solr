@@ -716,5 +716,21 @@ class Util
 
         return $allowedPageTypes;
     }
+
+    /**
+     * Method to check if a page exists.
+     *
+     * @param integer $pid
+     *
+     * @return bool
+     */
+    public static function hasPage($pid) {
+        $page = BackendUtility::getRecord('pages', (int) $pid, 'uid');
+        if(! is_array($page) || $page['uid'] != $pid) {
+            return false;
+        }
+
+        return true;
+    }
 }
 
