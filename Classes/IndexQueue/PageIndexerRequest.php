@@ -132,7 +132,7 @@ class PageIndexerRequest
     /**
      * Executes the request.
      *
-     * Uses headers to submit additonal data and avoiding to have these
+     * Uses headers to submit additional data and avoiding to have these
      * arguments integrated into the URL when created by RealURL.
      *
      * @param string $url The URL to request.
@@ -212,10 +212,12 @@ class PageIndexerRequest
         $headers = $this->header;
         $headers[] = TYPO3_user_agent;
         $itemId = $this->indexQueueItem->getIndexQueueUid();
+        $pageId = $this->indexQueueItem->getRecordPageId();
 
         $indexerRequestData = array(
             'requestId' => $this->requestId,
             'item' => $itemId,
+            'page' => $pageId,
             'actions' => implode(',', $this->actions),
             'hash' => md5(
                 $itemId . '|' .
