@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
@@ -105,7 +106,6 @@ class AdministrationController extends ActionController
         ResponseInterface $response
     ) {
         $this->moduleData = $this->moduleDataStorageService->loadModuleData();
-
         try {
             parent::processRequest($request, $response);
             $this->moduleDataStorageService->persistModuleData($this->moduleData);
@@ -122,8 +122,16 @@ class AdministrationController extends ActionController
      */
     protected function initializeAction()
     {
-        // TODO must check whether site exists, and adjust if necessary
         $this->site = $this->moduleData->getSite();
+
+        if (!$this->site instanceof Site) {
+            $this->resetStoredSiteToFirstAvailableSite();
+        }
+
+        $rootPageId = $this->site->getRootPageId();
+        if($rootPageId > 0 && !Util::hasPage($rootPageId)) {
+            $this->resetStoredSiteToFirstAvailableSite();
+        }
 
         try {
             $moduleName = $this->request->getArgument('module');
@@ -166,7 +174,11 @@ class AdministrationController extends ActionController
         $request->setControllerExtensionName(ucfirst($activeModuleDescription['extensionKey']));
         $request->setControllerName($activeModuleDescription['controller'] . 'Module');
         $request->setControllerActionName('index');
-        $request->setArgument('site', $this->site);
+
+        if( !is_null($this->site) ) {
+            $request->setArgument('site', $this->site);
+        }
+
         $request->setPluginName($this->request->getPluginName());
         if ($this->request->hasArgument('moduleAction')) {
             // TODO check whether action is registered/allowed
@@ -205,10 +217,7 @@ class AdministrationController extends ActionController
     public function setSiteAction($site)
     {
         $site = Site::getSiteByPageId((int)$site);
-        $this->moduleData->setSite($site);
-        // when switching the site, reset the core
-        $this->moduleData->setCore('');
-        $this->moduleDataStorageService->persistModuleData($this->moduleData);
+        $this->storeSiteAndResetCore($site);
 
         $this->forwardHome();
     }
@@ -264,6 +273,28 @@ class AdministrationController extends ActionController
         $this->request->setArguments($requestArguments);
 
         $this->forward('index');
+    }
+
+    /**
+     * @param $site
+     */
+    protected function storeSiteAndResetCore($site)
+    {
+        $this->moduleData->setSite($site);
+        // when switching the site, reset the core
+        $this->moduleData->setCore('');
+        $this->moduleDataStorageService->persistModuleData($this->moduleData);
+    }
+
+    /**
+     * Resets the stored site to the first available site.
+     *
+     * @return void‚
+     */
+    protected function resetStoredSiteToFirstAvailableSite()
+    {
+        $site = Site::getFirstAvailableSite();
+        $this->storeSiteAndResetCore($site);
     }
 }
 
