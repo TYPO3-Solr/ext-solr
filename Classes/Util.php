@@ -724,9 +724,10 @@ class Util
      *
      * @return bool
      */
-    public static function hasPage($pid) {
-        $page = BackendUtility::getRecord('pages', (int) $pid, 'uid');
-        if(! is_array($page) || $page['uid'] != $pid) {
+    public static function pageExists($pageId) {
+        $page = BackendUtility::getRecord('pages', (int) $pageId, 'uid');
+
+        if (! is_array($page) || $page['uid'] != $pageId) {
             return false;
         }
 

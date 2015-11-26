@@ -4,7 +4,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2015 Timo Schmidt <timo.schmidt@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is

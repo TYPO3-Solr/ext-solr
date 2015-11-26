@@ -106,6 +106,7 @@ class AdministrationController extends ActionController
         ResponseInterface $response
     ) {
         $this->moduleData = $this->moduleDataStorageService->loadModuleData();
+
         try {
             parent::processRequest($request, $response);
             $this->moduleDataStorageService->persistModuleData($this->moduleData);
@@ -129,7 +130,7 @@ class AdministrationController extends ActionController
         }
 
         $rootPageId = $this->site->getRootPageId();
-        if($rootPageId > 0 && !Util::hasPage($rootPageId)) {
+        if($rootPageId > 0 && !Util::pageExists($rootPageId)) {
             $this->resetStoredSiteToFirstAvailableSite();
         }
 
@@ -175,7 +176,7 @@ class AdministrationController extends ActionController
         $request->setControllerName($activeModuleDescription['controller'] . 'Module');
         $request->setControllerActionName('index');
 
-        if( !is_null($this->site) ) {
+        if ( !is_null($this->site) ) {
             $request->setArgument('site', $this->site);
         }
 
@@ -217,7 +218,7 @@ class AdministrationController extends ActionController
     public function setSiteAction($site)
     {
         $site = Site::getSiteByPageId((int)$site);
-        $this->storeSiteAndResetCore($site);
+        $this->setSiteAndResetCore($site);
 
         $this->forwardHome();
     }
@@ -278,7 +279,7 @@ class AdministrationController extends ActionController
     /**
      * @param $site
      */
-    protected function storeSiteAndResetCore($site)
+    protected function setSiteAndResetCore($site)
     {
         $this->moduleData->setSite($site);
         // when switching the site, reset the core
@@ -294,7 +295,7 @@ class AdministrationController extends ActionController
     protected function resetStoredSiteToFirstAvailableSite()
     {
         $site = Site::getFirstAvailableSite();
-        $this->storeSiteAndResetCore($site);
+        $this->setSiteAndResetCore($site);
     }
 }
 
