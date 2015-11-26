@@ -148,8 +148,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
             unset(
                 $facet['renderingInstruction'],
                 $facet['renderingInstruction.'],
-                $facet[$facet['type'] . '.'],
-                $facet['type']
+                $facet[$facet['type'] . '.']
             );
 
             $facetTemplate->addVariable('facet', $facet);
