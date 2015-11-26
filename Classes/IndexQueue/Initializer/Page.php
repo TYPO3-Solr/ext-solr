@@ -285,7 +285,7 @@ class Page extends AbstractInitializer
             . 'AND item_uid IN(' . implode(',', $mountedPages) . ') '
             . 'AND has_indexing_properties = 1 '
             . 'AND pages_mountidentifier=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($mountIdentifier,
-                tx_solr_indexqueue_item)
+                'tx_solr_indexqueue_item')
         );
 
         foreach ($mountPageItems as $mountPageItemRecord) {
