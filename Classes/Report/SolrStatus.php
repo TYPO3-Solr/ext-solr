@@ -68,19 +68,20 @@ class SolrStatus implements StatusProviderInterface
      */
     protected function getMessageTemplate()
     {
-        return
-        '<ul>'
-        .'   <li style="padding-bottom: 10px;">Site: ###SITE###</li>'
-        .'   <li>Scheme: ###SCHEME###</li>'
-        .'   <li>Host: ###HOST###</li>'
-        .'   <li>Port: ###PORT###</li>'
-        .'   <li style="padding-bottom: 10px;">Path: ###PATH###</li>'
-        .'   <li>Apache Solr: ###VERSION###</li>'
-        .'   <li>Ping Query Time: ###PING###</li>'
-        .'   <li>schema.xml: ###SOLR_SCHEMA###</li>'
-        .'   <li>solrconfig.xml: ###SOLR_CONFIG###</li>'
-        .'   <li>Access Filter Plugin: ###ACCESS_FILTER_PLUGIN###</li>'
-        .'</ul>';
+        return <<<'TEMPLATE'
+<ul>
+   <li style="padding-bottom: 10px;">Site: ###SITE###</li>
+   <li>Scheme: ###SCHEME###</li>
+   <l>Host: ###HOST###</li>
+   <li>Port: ###PORT###</li>
+   <li style="padding-bottom: 10px;">Path: ###PATH###</li>
+   <li>Apache Solr: ###VERSION###</li>
+   <li>Ping Query Time: ###PING###</li>
+   <li>schema.xml: ###SOLR_SCHEMA###</li>
+   <li>solrconfig.xml: ###SOLR_CONFIG###</li>
+   <li>Access Filter Plugin: ###ACCESS_FILTER_PLUGIN###</li>
+</ul>
+TEMPLATE;
     }
 
 
