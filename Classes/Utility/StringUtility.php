@@ -4,7 +4,7 @@ namespace ApacheSolrForTypo3\Solr\Utility;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011-2015 Timo Schmidt <timo.schmidt@dkd.de>
+ *  (c) 2015 Timo Schmidt <timo.schmidt@dkd.de>
  *
  *  All rights reserved
  *
