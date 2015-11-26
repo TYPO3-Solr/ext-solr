@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
@@ -63,6 +64,7 @@ class SolrStatus implements StatusProviderInterface
      */
     protected $responseMessage = '';
 
+
     /**
      * @return string
      */
@@ -83,7 +85,6 @@ class SolrStatus implements StatusProviderInterface
 </ul>
 TEMPLATE;
     }
-
 
     /**
      * Replaces a value in the template.
@@ -147,7 +148,7 @@ TEMPLATE;
         $this->checkSolrSchemaName($solr);
 
         if($this->responseStatus !== Status::OK) {
-            $value = 'Error during solr connection.';
+            $value = 'Failed contacting the Solr server.';
         }
 
         return GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
@@ -204,7 +205,7 @@ TEMPLATE;
         try {
             $pingQueryTime = $solr->getPingRoundTripRuntime();
             $pingMessage = (int) $pingQueryTime . ' ms';
-        } catch (\ApacheSolrForTypo3\Solr\PingFailedException $e) {
+        } catch (PingFailedException $e) {
             $this->responseStatus = Status::ERROR;
             $pingMessage = 'Ping error: ' . $e->getMessage();
         }
