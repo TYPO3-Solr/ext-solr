@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
 
@@ -36,7 +36,7 @@ use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
  * @package TYPO3
  * @subpackage solr
  */
-class TsTest extends SolrUnitTest
+class TsTest extends UnitTest
 {
 
     /**

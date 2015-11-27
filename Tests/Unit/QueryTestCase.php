@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class QueryTest extends SolrUnitTest
+class QueryTest extends UnitTest
 {
 
     /**

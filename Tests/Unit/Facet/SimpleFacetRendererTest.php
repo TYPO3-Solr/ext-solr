@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Charset\CharsetConverter;
 /**
  *
  */
-class SimpleFacetRendererTest extends SolrUnitTest
+class SimpleFacetRendererTest extends UnitTest
 {
 
     /**
