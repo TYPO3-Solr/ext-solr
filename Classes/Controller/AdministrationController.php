@@ -130,7 +130,7 @@ class AdministrationController extends ActionController
         }
 
         $rootPageId = $this->site->getRootPageId();
-        if($rootPageId > 0 && !Util::pageExists($rootPageId)) {
+        if ($rootPageId > 0 && !Util::pageExists($rootPageId)) {
             $this->resetStoredSiteToFirstAvailableSite();
         }
 
@@ -176,7 +176,7 @@ class AdministrationController extends ActionController
         $request->setControllerName($activeModuleDescription['controller'] . 'Module');
         $request->setControllerActionName('index');
 
-        if ( !is_null($this->site) ) {
+        if (!is_null($this->site)) {
             $request->setArgument('site', $this->site);
         }
 
