@@ -1,5 +1,7 @@
 # Apache Solr for TYPO3 CMS
 
+[![Build Status](https://travis-ci.org/TYPO3-Solr/ext-solr.svg?branch=master)](https://travis-ci.org/TYPO3-Solr/ext-solr)
+
 An extension that integrates the Apache Solr enterprise search server with TYPO3 CMS.
 
 The extension has initially been developed by dkd Internet Service GmbH and is now being continued as a community project. The version you find here is a version that does not contain all the features that have been implemented yet. These features can be obtained through add-ons for the Extension.
