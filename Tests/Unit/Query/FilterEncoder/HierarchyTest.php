@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
      *  This copyright notice MUST APPEAR in all copies of the script!
      ***************************************************************/
 
-// workaround
-use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
+
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase for query parser range
  * @author Markus Goldbach
  */
-class HierarchyTest extends SolrUnitTest
+class HierarchyTest extends UnitTest
 {
     /**
      * @var \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy

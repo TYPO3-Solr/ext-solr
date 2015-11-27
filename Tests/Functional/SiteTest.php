@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
+namespace ApacheSolrForTypo3\Solr\Tests\Functional;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2010-2015 Timo Schmidt <timo.schmidt@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,34 +24,24 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\Site;
 
 /**
- * Tests the TYPO3 page content extractor
+ * Base class for all functional tests in the solr project
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Schmidt
  * @package TYPO3
  * @subpackage solr
  */
-class Typo3PageContentExtractorTest extends UnitTest
-{
+
+class SiteTest extends FunctionalTest {
 
     /**
      * @test
      */
-    public function changesNbspToSpace()
-    {
-        $content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
-        $expectedResult = 'In Olten ist';
-
-        $contentExtractor = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
-            $content
-        );
-        $actualResult = $contentExtractor->getIndexableContent();
-
-        $this->assertEquals($expectedResult, $actualResult);
+    public function canGetAllSites() {
+        $this->importDataSetFromFixture('can_get_all_sites.xml');
+        $sites = Site::getAvailableSites();
+        $this->assertSame(1, count($sites), 'Expected to retrieve one site from fixture');
     }
-
 }
-

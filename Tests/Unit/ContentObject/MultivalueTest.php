@@ -23,7 +23,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
+
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
@@ -34,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class MultivalueTest extends SolrUnitTest
+class MultivalueTest extends UnitTest
 {
     /**
      * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer

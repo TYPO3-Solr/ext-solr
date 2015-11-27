@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
-use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * tests the processing Service class
@@ -34,7 +34,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
  * @package TYPO3
  * @subpackage solr
  */
-class ServiceTest extends SolrUnitTest
+class ServiceTest extends UnitTest
 {
 
     /**

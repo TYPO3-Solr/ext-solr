@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Core\Tests\UnitTestCase as TYPO3UnitTest;
+use TYPO3\CMS\Core\Tests\UnitTestCase as TYPO3UnitTest;
 
 /**
  * Base class for all unit tests in the solr project
@@ -33,7 +33,7 @@ use \TYPO3\CMS\Core\Tests\UnitTestCase as TYPO3UnitTest;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class SolrUnitTest extends TYPO3UnitTest {
+abstract class UnitTest extends TYPO3UnitTest {
 
     /**
      * Returns a mock class where every behaviour is mocked, just to full fill

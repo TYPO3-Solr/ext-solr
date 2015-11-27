@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
-use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * tests the path to hierarchy processing
@@ -34,7 +34,7 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
  * @package TYPO3
  * @subpackage solr
  */
-class PathToHierarchyTest extends SolrUnitTest
+class PathToHierarchyTest extends UnitTest
 {
 
     /** @var PathToHierarchy */

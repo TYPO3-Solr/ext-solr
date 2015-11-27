@@ -10,3 +10,11 @@ output=$(php  $SCRIPTPATH/.Build/bin/php-cs-fixer.phar fix -v --dry-run Classes)
 
 echo "Run unit tests"
 php $SCRIPTPATH/.Build/bin/phpunit.phar --debug --colors -c Tests/Build/UnitTests.xml
+
+echo "Run functional tests"
+export typo3DatabaseName="typo3";
+export typo3DatabaseHost="localhost";
+export typo3DatabaseUsername="root";
+export typo3DatabasePassword="";
+
+php $SCRIPTPATH/.Build/bin/phpunit.phar --debug --colors -c Tests/Build/FunctionalTests.xml
