@@ -720,14 +720,14 @@ class Util
     /**
      * Method to check if a page exists.
      *
-     * @param integer $pid
-     *
+     * @param integer $pageId
      * @return bool
      */
-    public static function pageExists($pageId) {
-        $page = BackendUtility::getRecord('pages', (int) $pageId, 'uid');
+    public static function pageExists($pageId)
+    {
+        $page = BackendUtility::getRecord('pages', (int)$pageId, 'uid');
 
-        if (! is_array($page) || $page['uid'] != $pageId) {
+        if (!is_array($page) || $page['uid'] != $pageId) {
             return false;
         }
 
