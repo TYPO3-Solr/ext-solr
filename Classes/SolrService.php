@@ -186,7 +186,8 @@ class SolrService extends \Apache_Solr_Service
      * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
      *
      * @param float|integer $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
-     * @return integer runtime in milliseconds
+     * @return int runtime in milliseconds
+     * @throws \ApacheSolrForTypo3\Solr\PingFailedException
      */
     public function getPingRoundTripRuntime($timeout = 2)
     {
