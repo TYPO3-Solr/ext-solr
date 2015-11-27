@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,6 +24,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
 
@@ -33,7 +36,7 @@ use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_ViewHelper_TsTest extends \Tx_Phpunit_TestCase
+class TsTest extends SolrUnitTest
 {
 
     /**
@@ -48,8 +51,14 @@ class Tx_Solr_ViewHelper_TsTest extends \Tx_Phpunit_TestCase
 
     public function setUp()
     {
-        Util::initializeTsfe('1');
+        $this->skipInVersionBelow('7.6');
+        $TSFE = $this->getDumbMock('\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
 
+
+        $GLOBALS['TSFE'] = $TSFE;
+        /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
+        $GLOBALS['TSFE']->tmpl = $this->getMock('\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService', array('linkData'));
+        $GLOBALS['TSFE']->tmpl->init();
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = '0';
         $GLOBALS['TSFE']->tmpl->setup['config.']['tx_realurl_enable'] = '0';
@@ -75,7 +84,18 @@ class Tx_Solr_ViewHelper_TsTest extends \Tx_Phpunit_TestCase
             'third argument content'
         );
 
+
+        $cObj = $this->getMock(
+            '\\TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer',
+            array('getResourceFactory', 'getEnvironmentVariable'),
+            array($TSFE)
+        );
+        $cObj->setContentObjectClassMap(array(
+            'TEXT' => 'TYPO3\\CMS\\Frontend\\ContentObject\\TextContentObject'
+        ));
+
         $this->viewHelper = new Ts();
+        $this->viewHelper->setContentObject($cObj);
     }
 
     /**

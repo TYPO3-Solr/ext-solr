@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,6 +24,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -29,10 +32,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase for query parser range
  * @author Markus Goldbach
  */
-class Tx_Solr_Query_FilterEncoder_RangeTest extends Tx_Phpunit_TestCase
+class RangeTest extends SolrUnitTest
 {
-
-    private $rangeParser;
+    /**
+     * @var \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range
+     */
+    protected $rangeParser;
 
     public function setUp()
     {

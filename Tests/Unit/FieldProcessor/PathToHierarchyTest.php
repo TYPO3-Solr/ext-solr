@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\FieldProcessor;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,24 +24,21 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-// workaround
 use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
-
-if (!class_exists('ApacheSolrForTypo3\Solr\FieldProcessor\FieldProcessor')) {
-    require_once __DIR__ . '../../../../Interfaces/interface.tx_solr_fieldprocessor.php';
-}
+use ApacheSolrForTypo3\Solr\Tests\Unit\SolrUnitTest;
 
 /**
  * tests the path to hierarchy processing
  *
- * @author    Daniel P�tzinger <poetzinger@aoemedia.de>
+ * @author    Daniel Pötzinger <poetzinger@aoemedia.de>
  * @package TYPO3
  * @subpackage solr
  */
-class Tx_Solr_FieldProcessor_PathToHierarchyTest extends Tx_Phpunit_TestCase
+class PathToHierarchyTest extends SolrUnitTest
 {
 
-    private $processor;
+    /** @var PathToHierarchy */
+    protected $processor;
 
     public function setUp()
     {
