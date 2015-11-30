@@ -106,6 +106,7 @@ Like always this release would not have been possible without the help from our 
 * Steffen Müller
 * Steffen Ritter
 * Thomas Heilmann
+* Thomas Janke
 * Timo Schmidt
 * Witali Rott
 * Thomas Heilmann
