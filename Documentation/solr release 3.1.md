@@ -16,7 +16,7 @@ You can now add stopwords in the backend module that should be excluded from the
 
 ### Introducing PHP Namespaces
 
-Our complete codebase is now namespaced and useses the namespace "ApacheSolrForTypo3\Solr\.." for all internal classes
+Our complete codebase is now namespaced and useses the namespace "ApacheSolrForTypo3\Solr\.." for all internal classes.
 
 ### Introducing Travis-CI
 
@@ -37,7 +37,7 @@ Synonyms are now handled at query and index time. The advantage is, that changes
 when they have been added. At the same time, synonyms get lowercased when they are stored in solr and before they get
 evaluated in the Solr schema.
 
-Note: To see the whole impact on the result set the re indexing needs to be finished
+Note: To see the whole impact on the result set the re indexing needs to be finished.
 
 ### Remove page browser
 
@@ -116,13 +116,11 @@ Thanks to everyone who helped in creating this release!
 
 There are many ways to get involved into ext_solr:
 
-* Submit bug reports, bug fixes and feature requests:
-    * Create an issue on github: https://github.com/TYPO3-Solr/ext-solr/issues
-	* https://typo3.slack.com/messages/ext-solr/
+* Submit bug reports, bug fixes and feature requests with an issue on github (https://github.com/TYPO3-Solr/ext-solr/issues)
 
-* Implement as task or create a pull request for features that you have created or review existing pull requests and comment them:
-    * https://github.com/TYPO3-Solr/ext-solr/pulls
+* Ask or Answer in our slack channel: https://typo3.slack.com/messages/ext-solr/
 
-* Become a sponsor:
-    * Go to http://www.typo3-solr.com/ or call DKD to sponsor the ongoing development of solr for TYPO3
+* Implement as task or create a pull request for features that you have created or review existing pull requests and comment them (https://github.com/TYPO3-Solr/ext-solr/pulls)
+
+* Go to http://www.typo3-solr.com/ or call DKD to sponsor the ongoing development of solr for TYPO3
 
