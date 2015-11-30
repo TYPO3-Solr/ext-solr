@@ -92,7 +92,6 @@ class AdministrationController extends ActionController
      */
     protected $site;
 
-
     /**
      * Loads and persists module data
      *
@@ -126,12 +125,12 @@ class AdministrationController extends ActionController
         $this->site = $this->moduleData->getSite();
 
         if (!$this->site instanceof Site) {
-            $this->resetStoredSiteToFirstAvailableSite();
+            $this->initializeSiteFromFirstAvailableAndStoreInModuleData();
         }
 
         $rootPageId = $this->site->getRootPageId();
         if ($rootPageId > 0 && !Util::pageExists($rootPageId)) {
-            $this->resetStoredSiteToFirstAvailableSite();
+            $this->initializeSiteFromFirstAvailableAndStoreInModuleData();
         }
 
         try {
@@ -292,10 +291,11 @@ class AdministrationController extends ActionController
      *
      * @return void‚
      */
-    protected function resetStoredSiteToFirstAvailableSite()
+    protected function initializeSiteFromFirstAvailableAndStoreInModuleData()
     {
         $site = Site::getFirstAvailableSite();
         $this->setSiteAndResetCore($site);
+        $this->site = $site;
     }
 }
 
