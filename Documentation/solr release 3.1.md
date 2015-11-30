@@ -2,13 +2,25 @@
 
 ## New in this Release
 
-* Support of TYPO3 7.6 LTS: This release support TYPO3 Version 6.2.15 LTS and 7.6.0 LTS this allows you a smooth migration from 6.2.15 to 7.6.
-* Solr 4.10: We now recommend and support the usage of version 4.10 of solr.
-* Maintain Stopword in the Backend: You can now add stopwords in the backend module that should be excluded from the search.
-* Introducing PHP Namespaces: Our complete codebase is now namespaced and useses the namespace "ApacheSolrForTypo3\Solr\.." for all internal classes
-* Introducing Travis-CI: The existing unit test suite is now on travis-ci (https://travis-ci.org/TYPO3-Solr/ext-solr) every commit and pull
-request is now tested against "6.2.15 / 7.6.0 and dev-master". We'll improve the test suite contin
+### Support of TYPO3 7.6 LTS:
 
+This release support TYPO3 Version 6.2.15 LTS and 7.6.0 LTS this allows you a smooth migration from 6.2.15 to 7.6.
+
+### Solr 4.10
+
+We now recommend and support the usage of version 4.10 of solr.
+
+### Maintain Stopword in the Backend
+
+You can now add stopwords in the backend module that should be excluded from the search.
+
+### Introducing PHP Namespaces
+
+Our complete codebase is now namespaced and useses the namespace "ApacheSolrForTypo3\Solr\.." for all internal classes
+
+### Introducing Travis-CI
+
+The existing unit test suite is now on travis-ci (https://travis-ci.org/TYPO3-Solr/ext-solr) every commit and pull request is now tested against "6.2.15 / 7.6.0 and dev-master". We'll improve the test suite contin
 
 ## General Changes
 
@@ -52,51 +64,51 @@ Like always this release would not have been possible without the help from our 
 
 (patches, comments, bug reports, review, ... in alphabetical order)
 
-Alexander Stehlik
-Andreas Allacher
-Andreas Fernandez
-Andreas Wolf
-Daniel Siepmann
-Dmitry Dulepov
-Frank Nägler
-Frans Saris
-Gordon Brüggemann
-Hans Höchtl
-Heiko Hardt
-Hendrik Nadler
-Ingo Renner
-Jan Wagner
-Jens Jacobsen
-Jigal van Hemert
-Joschi Kuphal
-Josef Florian Glatz
-Kevin von Spiczak
-Marc Bastian Heinrichs
-Markus Friedrich
-Markus Günther
-Markus Sommer
-Markus Kobligk
-Maxime Lafontaine
-Michael Knabe
-Michiel Roos
-M. Tillmann
-Olivier Dobberkau
-Peter Kraume
-Phuong Doan
-Romain Canon
-Sascha Affolter
-Sascha Egerer
-Sascha Nowak
-Sebastian Enders
-Soren Malling
-Stefan Galinski
-Stefan Neufeind
-Steffen Müller
-Steffen Ritter
-Thomas Heilmann
-Timo Schmidt
-Witali Rott
-Thomas Heilmann
+* Alexander Stehlik
+* Andreas Allacher
+* Andreas Fernandez
+* Andreas Wolf
+* Daniel Siepmann
+* Dmitry Dulepov
+* Frank Nägler
+* Frans Saris
+* Gordon Brüggemann
+* Hans Höchtl
+* Heiko Hardt
+* Hendrik Nadler
+* Ingo Renner
+* Javn Wagner
+* Jens Jacobsen
+* Jigal van Hemert
+* Joschi Kuphal
+* Josef Florian Glatz
+* Kevin von Spiczak
+* Marc Bastian Heinrichs
+* Markus Friedrich
+* Markus Günther
+* Markus Sommer
+* Markus Kobligk
+* Maxime Lafontaine
+* Michael Knabe
+* Michiel Roos
+* M. Tillmann
+* Olivier Dobberkau
+* Peter Kraume
+* Phuong Doan
+* Romain Canon
+* Sascha Affolter
+* Sascha Egerer
+* Sascha Nowak
+* Sebastian Enders
+* Soren Malling
+* Stefan Galinski
+* Stefan Neufeind
+* Steffen Müller
+* Steffen Ritter
+* Thomas Heilmann
+* Timo Schmidt
+* Witali Rott
+* Thomas Heilmann
 
 Thanks to everyone who helped in creating this release!
 
@@ -105,11 +117,12 @@ Thanks to everyone who helped in creating this release!
 There are many ways to get involved into ext_solr:
 
 * Submit bug reports, bug fixes and feature requests:
-	** Create an issue on github: https://github.com/TYPO3-Solr/ext-solr/issues
-	** https://typo3.slack.com/messages/ext-solr/
+    * Create an issue on github: https://github.com/TYPO3-Solr/ext-solr/issues
+	* https://typo3.slack.com/messages/ext-solr/
 
 * Implement as task or create a pull request for features that you have created or review existing pull requests and comment them:
-	** https://github.com/TYPO3-Solr/ext-solr/pulls
+    * https://github.com/TYPO3-Solr/ext-solr/pulls
 
 * Become a sponsor:
-	** Go to http://www.typo3-solr.com/ or call DKD to sponsor the ongoing development of solr for TYPO3
+    * Go to http://www.typo3-solr.com/ or call DKD to sponsor the ongoing development of solr for TYPO3
+
