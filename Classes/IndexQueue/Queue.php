@@ -458,7 +458,8 @@ class Queue
                 'root' => $rootPageId,
                 'item_type' => $itemType,
                 'item_uid' => $itemUid,
-                'changed' => $this->getItemChangedTime($itemType, $itemUid)
+                'changed' => $this->getItemChangedTime($itemType, $itemUid),
+                'errors' => ''
             );
 
             if (!empty($indexingConfiguration)) {
@@ -875,6 +876,23 @@ class Queue
         );
 
         return $itemCount;
+    }
+
+    /**
+     * Returns the number of items for all queues.
+     *
+     * @return integer
+     */
+    public function getAllItemsCount()
+    {
+        $db = $GLOBALS['TYPO3_DB'];
+        /**  @var $db \TYPO3\CMS\Core\Database\DatabaseConnection */
+        $itemCount = $db->exec_SELECTcountRows(
+            'uid',
+            'tx_solr_indexqueue_item'
+        );
+
+        return (int)$itemCount;
     }
 
     /**

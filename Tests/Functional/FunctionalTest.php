@@ -34,7 +34,8 @@ use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3FunctionalTest;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class FunctionalTest extends TYPO3FunctionalTest {
+abstract class FunctionalTest extends TYPO3FunctionalTest
+{
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface The object manager
@@ -49,25 +50,41 @@ abstract class FunctionalTest extends TYPO3FunctionalTest {
     /**
      * @return void
      */
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
     }
 
     /**
+     * Loads a Fixture from the Fixtures folder beside the current test case.
+     *
      * @param $fixtureName
      * @throws \TYPO3\CMS\Core\Tests\Exception
      */
-    protected function importDataSetFromFixture($fixtureName) {
-        $this->importDataSet(__DIR__ . '/Fixtures/' . $fixtureName);
+    protected function importDataSetFromFixture($fixtureName)
+    {
+        $this->importDataSet($this->getRuntimeDirectory() . '/Fixtures/' . $fixtureName);
+    }
+
+    /**
+     * Returns the directory on runtime.
+     *
+     * @return string
+     */
+    protected function getRuntimeDirectory()
+    {
+        $rc = new \ReflectionClass(get_class($this));
+        return dirname($rc->getFileName());
     }
 
     /**
      * @param string $version
      */
-    protected function skipInVersionBelow($version) {
+    protected function skipInVersionBelow($version)
+    {
         if (version_compare(TYPO3_branch, $version, '<')) {
-            $this->markTestSkipped('This test requires at least version '.$version);
+            $this->markTestSkipped('This test requires TYPO3 ' . $version . ' or greater.');
         }
     }
 }
