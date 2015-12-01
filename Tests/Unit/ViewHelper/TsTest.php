@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * PHP Unit test for view helper Tx_Solr_viewhelper_Ts
@@ -52,7 +53,6 @@ class TsTest extends UnitTest
     {
         $this->skipInVersionBelow('7.6');
         $TSFE = $this->getDumbMock('\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
-
 
         $GLOBALS['TSFE'] = $TSFE;
         /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
@@ -92,6 +92,9 @@ class TsTest extends UnitTest
         $cObj->setContentObjectClassMap(array(
             'TEXT' => 'TYPO3\\CMS\\Frontend\\ContentObject\\TextContentObject'
         ));
+        /** @var \ApacheSolrForTypo3\Solr\Configuration\ConfigurationManager $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\ConfigurationManager');
+        $configurationManager->reset();
 
         $this->viewHelper = new Ts();
         $this->viewHelper->setContentObject($cObj);

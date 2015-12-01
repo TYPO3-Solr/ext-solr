@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\LanguageFileUnavailableException;
-use TYPO3\CMS\Core\FormProtection\Exception;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -95,7 +95,7 @@ class Lll implements ViewHelper
      */
     protected function loadLL()
     {
-        $configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
+        $configuration = Util::getSolrConfiguration();
 
         $this->localLang[$this->languageFile] = $this->languageFactory->getParsedData(
             $this->languageFile,

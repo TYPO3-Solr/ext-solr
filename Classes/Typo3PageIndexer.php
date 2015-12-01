@@ -95,6 +95,10 @@ class Typo3PageIndexer
      */
     protected $documentsSentToSolr = array();
 
+    /**
+     * @var array
+     */
+    protected $configuration;
 
     /**
      * Constructor
@@ -105,6 +109,7 @@ class Typo3PageIndexer
     {
         $this->page = $page;
         $this->pageUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
+        $this->configuration = Util::getSolrConfiguration();
 
         try {
             $this->initializeSolrConnection();
@@ -112,7 +117,7 @@ class Typo3PageIndexer
             $this->log($e->getMessage() . ' Error code: ' . $e->getCode(), 3);
 
             // TODO extract to a class "ExceptionLogger"
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
+            if ($this->configuration['logging.']['exceptions']) {
                 GeneralUtility::devLog('Exception while trying to index a page',
                     'solr', 3, array(
                         $e->__toString()
@@ -169,7 +174,7 @@ class Typo3PageIndexer
             $GLOBALS['TT']->setTSlogMessage('tx_solr: ' . $message, $errorNum);
         }
 
-        if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing']) {
+        if ($this->configuration['logging.']['indexing']) {
             if (!empty($data)) {
                 $logData = array();
                 foreach ($data as $value) {
@@ -473,11 +478,11 @@ class Typo3PageIndexer
      */
     protected function processDocuments(array $documents)
     {
-        if (is_array($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.'])) {
+        if (is_array($this->configuration['index.']['fieldProcessingInstructions.'])) {
             $service = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\Service');
             $service->processDocuments(
                 $documents,
-                $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['fieldProcessingInstructions.']
+                $this->configuration['index.']['fieldProcessingInstructions.']
             );
         }
     }
@@ -516,7 +521,7 @@ class Typo3PageIndexer
         } catch (\Exception $e) {
             $this->log($e->getMessage() . ' Error code: ' . $e->getCode(), 2);
 
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
+            if ($this->configuration['logging.']['exceptions']) {
                 GeneralUtility::devLog('Exception while adding documents',
                     'solr', 3, array(
                         $e->__toString()

@@ -214,7 +214,7 @@ class Results extends CommandPluginBase
 
         // TODO check whether a search has been conducted already?
         if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])) {
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
+            if ($this->conf['logging.']['query.']['searchWords']) {
                 GeneralUtility::devLog('received search query', 'solr', 0,
                     array($rawUserQuery));
             }
@@ -328,6 +328,8 @@ class Results extends CommandPluginBase
      */
     protected function overrideTyposcriptWithFlexformSettings()
     {
+        $flexFormConfiguration = array();
+
         // initialize with empty query, useful when no search has been
         // conducted yet but needs to show facets already.
         $initializeWithEmptyQuery = $this->pi_getFFvalue(
@@ -336,7 +338,7 @@ class Results extends CommandPluginBase
             'sQuery'
         );
         if ($initializeWithEmptyQuery) {
-            $this->conf['search.']['initializeWithEmptyQuery'] = 1;
+            $flexFormConfiguration['search.']['initializeWithEmptyQuery'] = 1;
         }
 
         $showResultsOfInitialEmptyQuery = $this->pi_getFFvalue(
@@ -345,7 +347,7 @@ class Results extends CommandPluginBase
             'sQuery'
         );
         if ($showResultsOfInitialEmptyQuery) {
-            $this->conf['search.']['showResultsOfInitialEmptyQuery'] = 1;
+            $flexFormConfiguration['search.']['showResultsOfInitialEmptyQuery'] = 1;
         }
 
         // initialize with non-empty query
@@ -355,7 +357,7 @@ class Results extends CommandPluginBase
             'sQuery'
         );
         if ($initialQuery) {
-            $this->conf['search.']['initializeWithQuery'] = $initialQuery;
+            $flexFormConfiguration['search.']['initializeWithQuery'] = $initialQuery;
         }
 
         $showResultsOfInitialQuery = $this->pi_getFFvalue(
@@ -364,7 +366,7 @@ class Results extends CommandPluginBase
             'sQuery'
         );
         if ($showResultsOfInitialQuery) {
-            $this->conf['search.']['showResultsOfInitialQuery'] = 1;
+            $flexFormConfiguration['search.']['showResultsOfInitialQuery'] = 1;
         }
 
         // target page
@@ -375,38 +377,46 @@ class Results extends CommandPluginBase
             $targetPage = $flexformTargetPage;
         }
         if (!empty($targetPage)) {
-            $this->conf['search.']['targetPage'] = $targetPage;
+            $flexFormConfiguration['search.']['targetPage'] = $targetPage;
         } else {
-            $this->conf['search.']['targetPage'] = $GLOBALS['TSFE']->id;
+            $flexFormConfiguration['search.']['targetPage'] = $GLOBALS['TSFE']->id;
         }
 
         // boost function
         $boostFunction = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],
             'boostFunction', 'sQuery');
         if ($boostFunction) {
-            $this->conf['search.']['query.']['boostFunction'] = $boostFunction;
+            $flexFormConfiguration['search.']['query.']['boostFunction'] = $boostFunction;
         }
 
         // boost query
         $boostQuery = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],
             'boostQuery', 'sQuery');
         if ($boostQuery) {
-            $this->conf['search.']['query.']['boostQuery'] = $boostQuery;
+            $flexFormConfiguration['search.']['query.']['boostQuery'] = $boostQuery;
         }
 
         // sorting
         $flexformSorting = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],
             'sortBy', 'sQuery');
         if ($flexformSorting) {
-            $this->conf['search.']['query.']['sortBy'] = $flexformSorting;
+            $flexFormConfiguration['search.']['query.']['sortBy'] = $flexformSorting;
         }
 
         // results per page
         $resultsPerPage = $this->pi_getFFvalue($this->cObj->data['pi_flexform'],
             'resultsPerPage', 'sQuery');
         if ($resultsPerPage) {
-            $this->conf['search.']['results.']['resultsPerPage'] = $resultsPerPage;
+            $flexFormConfiguration['search.']['results.']['resultsPerPage'] = $resultsPerPage;
         }
+
+        /** @var $configurationManager \ApacheSolrForTypo3\Solr\Configuration\ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\ConfigurationManager');
+        $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
+        $typoScriptConfiguration->merge($flexFormConfiguration);
+        $configurationManager->setTypoScriptConfiguration($typoScriptConfiguration);
+
+        $this->conf = $typoScriptConfiguration;
     }
 
     /**

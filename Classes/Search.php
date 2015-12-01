@@ -70,6 +70,7 @@ class Search implements SingletonInterface
     protected $hasSearched = false;
 
 
+
     // TODO Override __clone to reset $response and $hasSearched
 
     /**
@@ -125,6 +126,8 @@ class Search implements SingletonInterface
      */
     public function search(Query $query, $offset = 0, $limit = 10)
     {
+        $configuration = Util::getSolrConfiguration();
+
         $query = $this->modifyQuery($query);
         $this->query = $query;
 
@@ -140,7 +143,7 @@ class Search implements SingletonInterface
                 $query->getQueryParameters()
             );
 
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['queryString']) {
+            if ($configuration['logging.']['query.']['queryString']) {
                 GeneralUtility::devLog('Querying Solr, getting result', 'solr',
                     0, array(
                         'query string' => $query->getQueryString(),
@@ -152,7 +155,7 @@ class Search implements SingletonInterface
         } catch (\RuntimeException $e) {
             $response = $this->solr->getResponse();
 
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
+            if ($configuration['logging.']['exceptions']) {
                 GeneralUtility::devLog('Exception while querying Solr', 'solr',
                     3, array(
                         'exception' => $e->__toString(),
@@ -254,7 +257,8 @@ class Search implements SingletonInterface
 
             $solrAvailable = true;
         } catch (\Exception $e) {
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
+            $configuration = Util::getSolrConfiguration();
+            if ($configuration['logging.']['exceptions']) {
                 GeneralUtility::devLog('exception while trying to ping the solr server',
                     'solr', 3, array(
                         $e->__toString()
@@ -318,13 +322,14 @@ class Search implements SingletonInterface
     protected function getTrustedSolrFields()
     {
         $trustedFields = array();
-        if (!isset($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['trustedFields']) ||
-            !is_string($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['trustedFields'])
+        $configuration = Util::getSolrConfiguration();
+        if (!isset($configuration['search.']['trustedFields']) ||
+            !is_string($configuration['search.']['trustedFields'])
         ) {
             return $trustedFields;
         }
 
-        $trustedFieldsSetting = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['trustedFields'];
+        $trustedFieldsSetting = $configuration['search.']['trustedFields'];
         $trustedFields = GeneralUtility::trimExplode(",", $trustedFieldsSetting);
 
         return $trustedFields;
