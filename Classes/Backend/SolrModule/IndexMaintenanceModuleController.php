@@ -63,25 +63,6 @@ class IndexMaintenanceModuleController extends AbstractModuleController
     }
 
     /**
-     * Cleans the index from expired documents.
-     *
-     * @return void
-     */
-    public function cleanUpIndexAction()
-    {
-        $garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\GarbageCollector');
-        $garbageCollector->cleanIndex($this->site);
-
-        $this->addFlashMessage(
-            'Index cleaned up.',
-            '',
-            FlashMessage::OK
-        );
-
-        $this->forward('index');
-    }
-
-    /**
      * Empties the site's indexes.
      *
      * @return void

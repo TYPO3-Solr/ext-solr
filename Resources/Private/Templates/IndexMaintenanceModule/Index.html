@@ -1,21 +1,4 @@
 
-<div class="row-fluid section-divider">
-	<div class="span3">
-		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'cleanUpIndex'} )}">
-			<f:form.submit value="Clean up Index" />
-		</f:form>
-	</div>
-	<div class="span9 action-description">
-		<h3>Clean Up Index</h3>
-		<p>
-		The Index Queue takes care of indexing your content to Solr. Whenever you delete or hide content,
-		the Garbage Collector will make sure to remove the related index documents from the index.
-		The Index Queue worker will automatically clean up those left over documents from the index
-		from time to time. Here you can trigger this clean up manually.
-		</p>
-	</div>
-</div>
-
 <div class="row-fluid">
 	<div class="span3">
 		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'reloadIndexConfiguration'} )}">
