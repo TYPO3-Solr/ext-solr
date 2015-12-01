@@ -68,7 +68,6 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
 
         $this->configuration = Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
         $this->indexItems();
-        $this->cleanIndex();
         $executionSucceeded = true;
 
         return $executionSucceeded;
@@ -145,20 +144,6 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
         }
 
         return $itemIndexed;
-    }
-
-    /**
-     * Executes some index maintenance tasks on the site's indexes.
-     *
-     * @return void
-     */
-    protected function cleanIndex()
-    {
-        if (rand(1, 100) == 50) {
-            // clean the index about once in every 100 executions
-            $garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\GarbageCollector');
-            $garbageCollector->cleanIndex($this->site, false);
-        }
     }
 
     /**
