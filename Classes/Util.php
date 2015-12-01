@@ -227,9 +227,9 @@ class Util
      */
     public static function getSolrConfiguration()
     {
-        // TODO if in BE, create a fake TSFE and retrieve the configuration
-        // TODO merge flexform configuration
-        return $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
+        /** @var \ApacheSolrForTypo3\Solr\TypoScriptConfiguration $configuration */
+        $configuration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\TypoScriptConfiguration');
+        return $configuration->get();
     }
 
     /**
@@ -491,30 +491,15 @@ class Util
      * @param string $path TypoScript path
      * @return array The TypoScript object defined by the given path
      * @throws InvalidArgumentException
+     *
+     * @deprecated since 3.2, use TypoScriptConfiguration::getObjectByPath() instead, will be removed in version 4.0
      */
     public static function getTypoScriptObject($path)
     {
-        if (!is_string($path)) {
-            throw new InvalidArgumentException('Parameter $path is not a string',
-                1325627243);
-        }
-
-        $pathExploded = explode('.', trim($path));
-        // remove last object
-        $lastPathSegment = array_pop($pathExploded);
-        $pathBranch = $GLOBALS['TSFE']->tmpl->setup;
-
-        foreach ($pathExploded as $segment) {
-            if (!array_key_exists($segment . '.', $pathBranch)) {
-                throw new InvalidArgumentException(
-                    'TypoScript object path "' . htmlspecialchars($path) . '" does not exist',
-                    1325627264
-                );
-            }
-            $pathBranch = $pathBranch[$segment . '.'];
-        }
-
-        return $pathBranch;
+        GeneralUtility::logDeprecatedFunction();
+        /** @var \ApacheSolrForTypo3\Solr\TypoScriptConfiguration $configuration */
+        $configuration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\TypoScriptConfiguration');
+        return $configuration->getObjectByPath($path);
     }
 
     /**
@@ -522,17 +507,15 @@ class Util
      *
      * @param string $path TypoScript path
      * @return boolean TRUE if the path resolves, FALSE otherwise
+     *
+     * @deprecated since 3.2, use TypoScriptConfiguration::isValidPath() instead, will be removed in version 4.0
      */
     public static function isValidTypoScriptPath($path)
     {
-        $isValidPath = false;
-
-        $pathValue = self::getTypoScriptValue($path);
-        if (!is_null($pathValue)) {
-            $isValidPath = true;
-        }
-
-        return $isValidPath;
+        GeneralUtility::logDeprecatedFunction();
+        /** @var \ApacheSolrForTypo3\Solr\TypoScriptConfiguration $configuration */
+        $configuration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\TypoScriptConfiguration');
+        return $configuration->isValidPath($path);
     }
 
     /**
@@ -544,29 +527,15 @@ class Util
      * @param string $path TypoScript path
      * @return array The TypoScript object defined by the given path
      * @throws InvalidArgumentException
+     *
+     * @deprecated since 3.2, use TypoScriptConfiguration::getValueByPath() instead, will be removed in version 4.0
      */
     public static function getTypoScriptValue($path)
     {
-        if (!is_string($path)) {
-            throw new InvalidArgumentException('Parameter $path is not a string',
-                1325623321);
-        }
-
-        $pathExploded = explode('.', trim($path));
-        $pathBranch = $GLOBALS['TSFE']->tmpl->setup;
-
-        $segmentCount = count($pathExploded);
-        for ($i = 0; $i < $segmentCount; $i++) {
-            $segment = $pathExploded[$i];
-
-            if ($i == ($segmentCount - 1)) {
-                $pathBranch = $pathBranch[$segment];
-            } else {
-                $pathBranch = $pathBranch[$segment . '.'];
-            }
-        }
-
-        return $pathBranch;
+        GeneralUtility::logDeprecatedFunction();
+        /** @var \ApacheSolrForTypo3\Solr\TypoScriptConfiguration $configuration */
+        $configuration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\TypoScriptConfiguration');
+        return $configuration->getValueByPath($path);
     }
 
     /**

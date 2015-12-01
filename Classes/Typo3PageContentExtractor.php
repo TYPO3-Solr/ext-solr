@@ -60,8 +60,8 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         $indexableContent = implode($indexableContents[0], '');
 
         $indexableContent = $this->excludeContentByClass($indexableContent);
-
-        if (empty($indexableContent) && $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['missingTypo3SearchMarkers']) {
+        $configuration = Util::getSolrConfiguration();
+        if (empty($indexableContent) && $configuration['logging.']['indexing.']['missingTypo3SearchMarkers']) {
             GeneralUtility::devLog('No TYPO3SEARCH markers found.', 'solr', 2);
         }
 

@@ -43,6 +43,7 @@ class Typo3Environment implements SingletonInterface
      */
     public function isFileIndexingEnabled()
     {
-        return (boolean)$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['files'];
+        $configuration = Util::getSolrConfiguration();
+        return (boolean)$configuration['index.']['files'];
     }
 }
