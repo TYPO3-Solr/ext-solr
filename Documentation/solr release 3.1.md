@@ -39,6 +39,17 @@ evaluated in the Solr schema.
 
 Note: To see the whole impact on the result set the re indexing needs to be finished.
 
+
+### TypoScript Paths changed
+
+During the migration to namespace we also decided to change the TypoScript pathes:
+
+   tx_solr_pi_results => tx_solr_PiResults_Results
+   tx_solr_pi_search => tx_solr_PiSearch_Search
+   tx_solr_pi_frequentsearches  => tx_solr_PiFrequentSearches_FrequentSearches
+
+You need to change this, when you update.
+
 ### Remove page browser
 
 @TODO
@@ -60,6 +71,7 @@ After updating from 3.0.x you need to:
 
 * Clear all caches
 * Re-initialize the solr connections
+* Check your custom TypoScript if and adopt it to the new pathes
 
 ## Contributors
 
