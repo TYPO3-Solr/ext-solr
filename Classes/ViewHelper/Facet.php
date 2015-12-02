@@ -57,6 +57,16 @@ class Facet extends AbstractSubpartViewHelper
     }
 
     /**
+     * Returns the configured targetPage and does a fallback on the current page if nothing was configured.
+     *
+     * @return integer
+     */
+    protected function getTargetPageId()
+    {
+        return (int) ($this->configuration['search.']['targetPage'] ? $this->configuration['search.']['targetPage'] : $GLOBALS['TSFE']->id);
+    }
+
+    /**
      * Renders a facet.
      *
      * @param array $arguments
@@ -91,7 +101,9 @@ class Facet extends AbstractSubpartViewHelper
 
             $facetRenderer = $facetRendererFactory->getFacetRendererByFacet($facet);
             $facetRenderer->setTemplate($this->template);
-            $facetRenderer->setLinkTargetPageId($this->configuration['search.']['targetPage']);
+
+            $targetPageId = $this->getTargetPageId();
+            $facetRenderer->setLinkTargetPageId($targetPageId);
 
             $facet = $facetRenderer->getFacetProperties();
             $template->addVariable('facet', $facet);
