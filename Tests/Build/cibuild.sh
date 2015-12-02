@@ -5,7 +5,7 @@ echo "PWD: $(pwd)"
 export TYPO3_PATH_WEB=$(pwd)/.Build/Web
 
 echo "Check PSR-2 compliance"
-.Build/bin/php-cs-fixer fix -v --level=psr2 --dry-run Classes
+php-cs-fixer fix -v --level=psr2 --dry-run Classes
 
 echo "Run unit tests"
 .Build/bin/phpunit --colors -c Tests/Build/UnitTests.xml

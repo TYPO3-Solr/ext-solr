@@ -27,6 +27,7 @@ matrix:
 before_install:
   - composer self-update
   - composer --version
+  - composer global require fabpot/php-cs-fixer
 
 install: Tests/Build/bootstrap.sh
 script: Tests/Build/cibuild.sh
