@@ -201,7 +201,15 @@ class Site
      */
     public function getLabel()
     {
-        return $this->rootPage['title'] . ', Root Page ID: ' . $this->rootPage['uid'];
+        $rootlineTitles = array();
+        $rootLine = BackendUtility::BEgetRootLine($this->rootPage['uid']);
+        // Remove last
+        array_pop($rootLine);
+        $rootLine = array_reverse($rootLine);
+        foreach ($rootLine as $rootLineItem) {
+            $rootlineTitles[] = $rootLineItem['title'];
+        }
+        return implode(' - ', $rootlineTitles) . ', Root Page ID: ' . $this->rootPage['uid'];
     }
 
     /**
