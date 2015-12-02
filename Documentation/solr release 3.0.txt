@@ -17,7 +17,7 @@ Apache Solr 4.8
 
 In the background we also updated Apache Solr to version 4.8 which brings new features and allows us to make things even easier for integrators.
 
-New features resulting from the Solr update include highlighting elevated search results (editorial or padi content). 
+New features resulting from the Solr update include highlighting elevated search results (editorial or paid content). 
 
 When indexing content before, you had to wait for Solr to commit newly added documents before seeing the changes show up in the search results. This is not necessary anymore as Solr 4.0 added near real time search and automatic soft commits, meaning that documents added to the Solr index now become searchable immediately.
 
