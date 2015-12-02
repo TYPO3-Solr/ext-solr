@@ -4,7 +4,10 @@ echo "PWD: $(pwd)"
 
 export TYPO3_PATH_WEB=$(pwd)/.Build/Web
 
-echo "PATH: $PATH"
+if [ $TRAVIS ]; then
+    export PATH="$PATH:$HOME/.composer/vendor/bin"
+    echo "PATH: $PATH"
+fi
 
 php-cs-fixer --version > /dev/null 2>&1
 if [ $? -eq "0" ]; then
