@@ -450,14 +450,14 @@ class RecordMonitor
     protected function getDestinationMountPropertiesByRootLine(array $rootLine)
     {
         $mountPages = array();
-        $subPageUids = array();
+        $rootLineParentPageIds = array();
 
         $currentPage = array_shift($rootLine);
         $currentPageUid = (int)$currentPage['uid'];
 
         if (!empty($rootLine)) {
             foreach ($rootLine as $pageRecord) {
-                $subPageUids[] = $pageRecord['uid'];
+                $rootLineParentPageIds[] = $pageRecord['uid'];
 
                 if ($pageRecord['is_siteroot']) {
                     break;
@@ -469,18 +469,20 @@ class RecordMonitor
             return $mountPages;
         }
 
-        $pageQuery = '';
-        if (!empty($subPageUids)) {
-            $pageQuery = 'mount_pid IN(' . implode(',', $subPageUids) . ')';
+        $pageQueryConditions = array();
+        if (!empty($rootLineParentPageIds)) {
+            $pageQueryConditions[] = '(mount_pid IN(' . implode(',', $rootLineParentPageIds) . '))';
         }
+
         if ($currentPageUid !== 0) {
-            $pageQuery .= ' OR (mount_pid=' . $currentPageUid . ' AND mount_pid_ol=1)';
+            $pageQueryConditions[] = '(mount_pid=' . $currentPageUid . ' AND mount_pid_ol=1)';
         }
+        $pageQueryCondition = implode(" OR ", $pageQueryConditions);
 
         $mountPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed',
             'pages',
-            '(' . $pageQuery . ') AND doktype = 7 AND no_search = 0'
+            '(' . $pageQueryCondition . ') AND doktype = 7 AND no_search = 0'
             . BackendUtility::deleteClause('pages')
         );
 

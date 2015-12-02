@@ -287,6 +287,10 @@ class Page extends AbstractInitializer
                 'tx_solr_indexqueue_item')
         );
 
+        if (!is_array($mountPageItems)) {
+            return;
+        }
+
         foreach ($mountPageItems as $mountPageItemRecord) {
             $mountPageItem = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Item',
                 $mountPageItemRecord);
