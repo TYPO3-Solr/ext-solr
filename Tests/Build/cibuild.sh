@@ -4,13 +4,8 @@ echo "PWD: $(pwd)"
 
 export TYPO3_PATH_WEB=$(pwd)/.Build/Web
 
-echo "Check psr-2 compliance"
-output=$(.Build/bin/php-cs-fixer fix -v --dry-run Classes);
-if [[ $output ]]; then
-    while read -r line; do
-        echo -e "\e[00;31m$line\e[00m";
-    done <<< "$output";
-fi
+echo "Check PSR-2 compliance"
+.Build/bin/php-cs-fixer fix -v --dry-run Classes
 
 echo "Run unit tests"
 .Build/bin/phpunit --colors -c Tests/Build/UnitTests.xml
