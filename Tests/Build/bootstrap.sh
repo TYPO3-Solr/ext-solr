@@ -2,6 +2,19 @@
 
 SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 
+if [ -z $TYPO3_VERSION ]; then
+	echo "Must set env var TYPO3_VERSION"
+	exit 1
+fi
+
+wget --version > /dev/null 2>&1
+if [ $? -ne "0" ]; then
+	echo "Couldn't find wget."
+	exit 1
+fi
+
+
+
 mkdir -p $SCRIPTPATH/.Build/bin
 wget http://cs.sensiolabs.org/get/php-cs-fixer.phar -O $SCRIPTPATH/.Build/bin/php-cs-fixer.phar
 wget https://phar.phpunit.de/phpunit-4.8.9.phar -O $SCRIPTPATH/.Build/bin/phpunit.phar
