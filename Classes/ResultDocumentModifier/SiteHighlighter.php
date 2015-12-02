@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Provides highlighting of the search words on the document's actual page by
  * adding parameters to a document's URL property.
@@ -82,6 +81,4 @@ class SiteHighlighter implements ResultDocumentModifier
 
         return $resultDocument;
     }
-
 }
-

@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * Multivalue viewhelper to output multivalue fields
  * Replaces viewhelpers ###MULTIVALUE:array|glue###
@@ -83,4 +82,3 @@ class Multivalue implements ViewHelper
         return $value;
     }
 }
-

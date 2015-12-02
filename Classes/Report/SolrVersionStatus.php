@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
-
 /**
  * Provides a status report about whether the installed Solr version matches
  * the required version.
@@ -136,4 +135,3 @@ class SolrVersionStatus implements StatusProviderInterface
         return $formattedSolrVersion;
     }
 }
-

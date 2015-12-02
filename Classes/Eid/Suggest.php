@@ -26,7 +26,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 
-
 # TSFE initialization
 
 $pageId = filter_var(GeneralUtility::_GET('id'), FILTER_SANITIZE_NUMBER_INT);

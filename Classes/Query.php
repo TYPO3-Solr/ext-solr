@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A Solr search query
  *
@@ -1241,5 +1240,3 @@ class Query
         }
     }
 }
-
-

@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
 
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 
-
 /**
  * ResultDocumentModifier interface, allows to modify search result documents
  *
@@ -51,6 +50,4 @@ interface ResultDocumentModifier
         ResultsCommand $resultCommand,
         array $resultDocument
     );
-
 }
-

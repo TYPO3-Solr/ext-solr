@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Site;
 
-
 /**
  * Interface to post process initialization of the Index Queue.
  *
@@ -52,6 +51,4 @@ interface InitializationPostProcessor
         array $indexingConfigurations,
         array $initializationStatus
     );
-
 }
-

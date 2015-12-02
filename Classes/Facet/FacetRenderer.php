@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 
 use ApacheSolrForTypo3\Solr\Template;
 
-
 /**
  * Facet Renderer Interface
  *
@@ -84,6 +83,4 @@ interface FacetRenderer
      * @return integer Number of facet options for the current facet.
      */
     public function getFacetOptionsCount();
-
 }
-

@@ -32,7 +32,6 @@ use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * facets view command
  *
@@ -197,14 +196,10 @@ class FacetingCommand implements PluginCommand
                 if (GeneralUtility::isFirstPartOfStr($addedUrlParameterKey,
                     'tx_solr')
                 ) {
-
                     $addedUrlParameterKey = substr($addedUrlParameterKey, 8,
                         -1);
                     $queryLinkBuilder->addUnwantedUrlParameter($addedUrlParameterKey);
-
                 }
-
-
             }
         }
 
@@ -278,5 +273,4 @@ class FacetingCommand implements PluginCommand
             $expansionLabels);
         $javascriptManager->loadFile('faceting.limitExpansion');
     }
-
 }

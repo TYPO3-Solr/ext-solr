@@ -45,4 +45,3 @@ interface ViewHelperProvider
      */
     public function getViewHelpers();
 }
-

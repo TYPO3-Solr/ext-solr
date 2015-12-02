@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Subpart viewhelper class to render facets
  *
@@ -105,4 +104,3 @@ class Facet extends AbstractSubpartViewHelper
         return $template->render();
     }
 }
-

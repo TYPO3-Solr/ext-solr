@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Api;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Overview Module
  *
@@ -117,6 +116,4 @@ class OverviewModuleController extends AbstractModuleController
         $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
         $this->connections = $connectionManager->getConnectionsBySite($this->site);
     }
-
 }
-

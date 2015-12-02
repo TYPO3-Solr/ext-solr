@@ -30,7 +30,6 @@ use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-
 /**
  * Additional field provider for the index queue worker task
  *
@@ -129,4 +128,3 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
     }
 }
-

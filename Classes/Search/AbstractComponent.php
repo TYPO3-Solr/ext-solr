@@ -52,6 +52,4 @@ abstract class AbstractComponent implements SearchComponent
     {
         $this->searchConfiguration = $configuration;
     }
-
 }
-

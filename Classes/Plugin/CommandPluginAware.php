@@ -47,4 +47,3 @@ interface CommandPluginAware
      */
     public function setParentPlugin(CommandPluginBase $parentPlugin);
 }
-

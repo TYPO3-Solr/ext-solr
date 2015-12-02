@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Template;
 
-
 /**
  * Last searches view command to display a user's last searches or the last
  * searches of all users.
@@ -173,4 +172,3 @@ class LastSearchesCommand implements PluginCommand
         return $lastSearches;
     }
 }
-

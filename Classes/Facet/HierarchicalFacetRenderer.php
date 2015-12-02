@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * Renderer for hierarchical facets.
  *
@@ -166,5 +165,4 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
 
         return $lastPathSegment;
     }
-
 }

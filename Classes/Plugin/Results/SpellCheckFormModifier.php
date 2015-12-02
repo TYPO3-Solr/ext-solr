@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Plugin\FormModifier;
 use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Spell check form modifier, suggests spell checked queries
  *
@@ -59,4 +58,3 @@ class SpellCheckFormModifier implements FormModifier
         return $markers;
     }
 }
-

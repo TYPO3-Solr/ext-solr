@@ -34,6 +34,4 @@ namespace ApacheSolrForTypo3\Solr;
  */
 class LanguageFileUnavailableException extends \Exception
 {
-
 }
-

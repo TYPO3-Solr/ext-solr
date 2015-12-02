@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Sorting search component
  *
@@ -85,6 +84,4 @@ class SortingComponent extends AbstractComponent implements QueryAware
     {
         $this->query = $query;
     }
-
 }
-

@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
 use TYPO3\CMS\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
-
 /**
  * Creates a form with a single button to call a backend module action.
  *
@@ -133,5 +132,4 @@ class ActionButtonViewHelper extends AbstractViewHelper
 
         return $submitButtonNode;
     }
-
 }

@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Creates a graphical representation of the current sorting direction by
  * expanding a ###SORT_INDICATOR:sortDirection### marker, where sortDirection is
@@ -47,7 +46,6 @@ class SortIndicator implements ViewHelper
      */
     public function __construct(array $arguments = array())
     {
-
     }
 
     /**
@@ -95,4 +93,3 @@ class SortIndicator implements ViewHelper
         return $content;
     }
 }
-

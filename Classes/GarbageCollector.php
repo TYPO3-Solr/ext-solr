@@ -28,7 +28,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Garbage Collector, removes related documents from the index when a record is
  * set to hidden, is deleted or is otherwise made invisible to website visitors.
@@ -251,7 +250,6 @@ class GarbageCollector
             && array_key_exists('fe_group',
                 $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
         ) {
-
             $record = BackendUtility::getRecord(
                 $table,
                 $uid,
@@ -309,7 +307,6 @@ class GarbageCollector
      */
     protected function normalizeFrontendGroupField($table, $record)
     {
-
         if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group'])) {
             $frontendGroupsField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group'];
 
@@ -489,7 +486,5 @@ class GarbageCollector
      */
     public function cleanIndex(Site $site, $commitAfterCleanUp = true)
     {
-
     }
 }
-

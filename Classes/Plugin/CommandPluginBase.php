@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\TemplateModifier;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * This abstract class should be used to implement commandBased templates.
  * Inheriting plugins should implement the methods getCommandResolver()
@@ -202,4 +201,3 @@ abstract class CommandPluginBase extends PluginBase
         return $subpartTemplate->render();
     }
 }
-

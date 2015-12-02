@@ -72,5 +72,4 @@ class Hierarchy implements FilterEncoder
 
         return $hierarchyFilter;
     }
-
 }

@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
-
 /**
  * There's a buggy PHP version in Ubuntu LTS 10.04 which causes filter_var to
  * produces incorrect results. This status checks for this issue.
@@ -70,4 +69,3 @@ class FilterVarStatus implements StatusProviderInterface
         return $reports;
     }
 }
-

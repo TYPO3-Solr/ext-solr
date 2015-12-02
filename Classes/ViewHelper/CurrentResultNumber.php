@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Viewhelper class to display the current result number in the results loop.
  * Replaces viewhelpers ###CURRENT_RESULT_NUMBER:xxx###
@@ -80,4 +79,3 @@ class CurrentResultNumber implements ViewHelper
         return ($currentPage * $resultsPerPage) + $currentIterationIndex;
     }
 }
-

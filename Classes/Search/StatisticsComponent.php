@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * Statistics search component
  *
@@ -50,6 +49,4 @@ class StatisticsComponent extends AbstractComponent
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['statistics'] = 'ApacheSolrForTypo3\\Solr\\Response\\Processor\\StatisticsWriter';
         }
     }
-
 }
-

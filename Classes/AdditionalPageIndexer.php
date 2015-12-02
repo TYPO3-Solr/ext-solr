@@ -51,4 +51,3 @@ interface AdditionalPageIndexer
         array $allDocuments
     );
 }
-

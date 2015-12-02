@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 
 use ApacheSolrForTypo3\Solr\Template;
 
-
 /**
  * Form modifier interface
  *
@@ -49,4 +48,3 @@ interface FormModifier
      */
     public function modifyForm(array $marker, Template $template);
 }
-

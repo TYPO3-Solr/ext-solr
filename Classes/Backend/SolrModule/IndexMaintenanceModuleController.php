@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Index Maintenance Module
  *
@@ -59,7 +58,6 @@ class IndexMaintenanceModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
-
     }
 
     /**
@@ -171,6 +169,4 @@ class IndexMaintenanceModuleController extends AbstractModuleController
 
         return $coreReloaded;
     }
-
 }
-

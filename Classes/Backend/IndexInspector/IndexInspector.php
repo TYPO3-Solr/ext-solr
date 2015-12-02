@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\IndexInspector;
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 
-
 /**
  * Index Inspector to see what documents have been indexed for a selected page.
  *
@@ -84,7 +83,7 @@ class IndexInspector extends AbstractFunctionModule
         }
 
         $this->initialize();
-        $content = $this->listIndexDocuments();;
+        $content = $this->listIndexDocuments();
 
         return $content;
     }
@@ -141,4 +140,3 @@ class IndexInspector extends AbstractFunctionModule
         return $content;
     }
 }
-

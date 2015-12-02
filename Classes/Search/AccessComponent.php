@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * Access search component
  *
@@ -71,6 +70,4 @@ class AccessComponent extends AbstractComponent implements QueryAware
     {
         $this->query = $query;
     }
-
 }
-

@@ -34,5 +34,4 @@ namespace ApacheSolrForTypo3\Solr\Access;
  */
 class RootlineElementFormatException extends \InvalidArgumentException
 {
-
 }

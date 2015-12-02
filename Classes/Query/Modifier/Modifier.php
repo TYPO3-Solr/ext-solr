@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Query;
 
-
 /**
  * QueryModifier interface, allows to modify search queries
  *
@@ -47,6 +46,4 @@ interface Modifier
      * @return Query The modified query
      */
     public function modifyQuery(Query $query);
-
 }
-

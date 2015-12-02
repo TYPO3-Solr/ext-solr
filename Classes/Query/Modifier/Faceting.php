@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Modifies a query to add faceting parameters
  *
@@ -236,4 +235,3 @@ class Faceting implements Modifier
         return $facets;
     }
 }
-

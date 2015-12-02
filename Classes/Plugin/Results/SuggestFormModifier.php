@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Suggest form modifier, suggests queries through auto completion / AJAX.
  *
@@ -163,4 +162,3 @@ class SuggestFormModifier implements FormModifier, CommandPluginAware
         return $suggestUrl;
     }
 }
-

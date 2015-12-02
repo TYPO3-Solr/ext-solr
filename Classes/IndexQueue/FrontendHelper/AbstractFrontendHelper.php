@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-
 /**
  * Index Queue page indexer frontend helper base class implementing common
  * functionality.
@@ -112,5 +111,4 @@ abstract class AbstractFrontendHelper implements FrontendHelper
     {
         $this->response->addActionResult($this->action, $this->getData());
     }
-
 }

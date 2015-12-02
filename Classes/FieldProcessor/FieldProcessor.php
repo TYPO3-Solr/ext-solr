@@ -46,4 +46,3 @@ interface FieldProcessor
      */
     public function process(array $values);
 }
-

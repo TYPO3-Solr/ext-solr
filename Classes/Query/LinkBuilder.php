@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * Link builder for queries.
  *
@@ -293,7 +292,4 @@ class LinkBuilder
     {
         $this->urlParameters = $urlParameters;
     }
-
 }
-
-

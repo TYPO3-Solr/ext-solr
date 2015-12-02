@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
-
 /**
  * View helper to return a help button
  *
@@ -50,6 +49,4 @@ class HelpButtonViewHelper extends AbstractViewHelper
             'description' => $content
         ));
     }
-
 }
-

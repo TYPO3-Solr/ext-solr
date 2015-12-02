@@ -48,4 +48,3 @@ interface SubstitutePageIndexer
     public function getPageDocument(\Apache_Solr_Document $originalPageDocument
     );
 }
-

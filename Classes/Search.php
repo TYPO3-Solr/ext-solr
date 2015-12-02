@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Class to handle solr search requests
  *
@@ -87,7 +86,6 @@ class Search implements SingletonInterface
                 $GLOBALS['TSFE']->id,
                 $GLOBALS['TSFE']->sys_language_uid
             );
-
         }
     }
 
@@ -403,10 +401,10 @@ class Search implements SingletonInterface
     {
         if (is_array($fieldValue)) {
             foreach ($fieldValue as $key => $fieldValueItem) {
-                $fieldValue[$key] = htmlspecialchars($fieldValueItem, NULL, NULL, FALSE);
+                $fieldValue[$key] = htmlspecialchars($fieldValueItem, null, null, false);
             }
         } else {
-            $fieldValue = htmlspecialchars($fieldValue, NULL, NULL, FALSE);
+            $fieldValue = htmlspecialchars($fieldValue, null, null, false);
         }
 
         return $fieldValue;
@@ -445,7 +443,6 @@ class Search implements SingletonInterface
         $unmodifiedFacetCounts = $this->response->facet_counts;
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'])) {
-
             if (!$facetCountsModified) {
                 $facetCounts = $unmodifiedFacetCounts;
 
@@ -463,7 +460,6 @@ class Search implements SingletonInterface
                     }
                 }
             }
-
         } else {
             $facetCounts = $unmodifiedFacetCounts;
         }
@@ -558,4 +554,3 @@ class Search implements SingletonInterface
         return $spellcheckingSuggestions;
     }
 }
-

@@ -35,7 +35,4 @@ interface AdministrationModuleInterface
     public function getName();
 
     public function getTitle();
-
 }
-
-

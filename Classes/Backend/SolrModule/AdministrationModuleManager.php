@@ -191,6 +191,4 @@ class AdministrationModuleManager
 
         return self::$modules[$moduleName];
     }
-
 }
-

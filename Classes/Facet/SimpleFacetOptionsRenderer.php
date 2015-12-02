@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Default facet renderer.
  *
@@ -226,5 +225,4 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
         // appending the remaining unsorted/regularly sorted options
         $this->facetOptions = $sortedOptions + $this->facetOptions;
     }
-
 }

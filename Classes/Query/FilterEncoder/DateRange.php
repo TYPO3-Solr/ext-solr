@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
 use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * Parser to build solr range queries from tx_solr[filter]
  *

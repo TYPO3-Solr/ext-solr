@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * form command class to render the "simple" search form
  *
@@ -117,6 +116,4 @@ class FormCommand implements PluginCommand
 
         return $marker;
     }
-
 }
-

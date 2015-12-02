@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
 use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * Filter encoder to build facet query parameters
  *
@@ -114,5 +113,4 @@ class QueryGroup implements FilterEncoder, FacetBuilder
 
         return $facetParameters;
     }
-
 }

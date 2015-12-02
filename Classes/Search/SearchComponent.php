@@ -50,6 +50,4 @@ interface SearchComponent
      *
      */
     public function initializeSearchComponent();
-
 }
-

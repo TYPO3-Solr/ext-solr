@@ -291,9 +291,9 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function showErrorAction()
     {
-        $queueItemId = $this->getRequestArgumentOrDefaultValue('indexQueueItemId', NULL);
+        $queueItemId = $this->getRequestArgumentOrDefaultValue('indexQueueItemId', null);
 
-        if(is_null($queueItemId)) {
+        if (is_null($queueItemId)) {
             // add a flash message and quit
             $label = 'solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error';
             $severity = FlashMessage::ERROR;
@@ -311,5 +311,3 @@ class IndexQueueModuleController extends AbstractModuleController
         $this->view->assign('indexQueueItem', $item);
     }
 }
-
-

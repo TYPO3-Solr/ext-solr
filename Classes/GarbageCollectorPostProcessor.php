@@ -47,4 +47,3 @@ interface GarbageCollectorPostProcessor
      */
     public function postProcessGarbageCollector($table, $uid);
 }
-

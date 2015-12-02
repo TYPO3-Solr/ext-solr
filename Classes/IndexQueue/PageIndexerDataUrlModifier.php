@@ -47,6 +47,4 @@ interface PageIndexerDataUrlModifier
      * @return string the final data url
      */
     public function modifyDataUrl($pageUrl, array $urlData);
-
 }
-

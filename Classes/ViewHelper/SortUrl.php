@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Creates a solr sorting URL by expanding a ###SOLR_URL:sortOption### marker.
  *
@@ -141,4 +140,3 @@ class SortUrl implements ViewHelper
         return $sortUrl;
     }
 }
-

@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Crop viewhelper to to shorten strings
  * Replaces viewhelpers ###CROP:string|length|cropIndicator|cropFullWords###
@@ -99,4 +98,3 @@ class Crop implements ViewHelper
         return $croppedString;
     }
 }
-

@@ -61,4 +61,3 @@ class RelevanceBar extends Relevance
         return $content;
     }
 }
-

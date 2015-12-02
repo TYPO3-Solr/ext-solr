@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 
 use ApacheSolrForTypo3\Solr\Template;
 
-
 /**
  * Abstract subpart viewhelper
  *
@@ -62,6 +61,4 @@ abstract class AbstractSubpartViewHelper implements SubpartViewHelper
     {
         $this->template = $template;
     }
-
 }
-

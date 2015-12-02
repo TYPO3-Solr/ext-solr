@@ -60,4 +60,3 @@ interface PluginCommand
      */
     public function execute();
 }
-

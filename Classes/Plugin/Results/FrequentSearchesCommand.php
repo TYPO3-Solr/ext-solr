@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Command to list frequent searched terms.
  *
@@ -157,7 +156,6 @@ class FrequentSearchesCommand implements PluginCommand
                     'pid' => $this->parentPlugin->getLinkTargetPageId()
                 );
             }
-
         }
 
         return $frequentSearches;
@@ -245,6 +243,4 @@ class FrequentSearchesCommand implements PluginCommand
 
         return $terms;
     }
-
 }
-

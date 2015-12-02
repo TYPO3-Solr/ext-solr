@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Model;
 
 use ApacheSolrForTypo3\Solr\Site;
 
-
 /**
  * Persistent module data.
  *
@@ -84,6 +83,4 @@ class ModuleData
     {
         $this->core = $core;
     }
-
 }
-

@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A content object (cObj) to clean a database field in a way so that it can be
  * used to fill a Solr document's content field.
@@ -86,5 +85,4 @@ class Content
 
         return $content;
     }
-
 }

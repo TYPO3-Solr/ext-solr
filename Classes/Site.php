@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A site is a branch in a TYPO3 installation. Each site's root page is marked
  * by the "Use as Root Page" flag.
@@ -162,7 +161,9 @@ class Site
             try {
                 $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__, $server['rootPageUid']);
             } catch (\InvalidArgumentException $e) {
-                if($stopOnInvalidSite) { throw $e; }
+                if ($stopOnInvalidSite) {
+                    throw $e;
+                }
             }
         }
 
@@ -382,4 +383,3 @@ class Site
         return $this->sysLanguageMode;
     }
 }
-

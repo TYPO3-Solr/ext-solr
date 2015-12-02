@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Query;
 
-
 /**
  * Enables tracking of detailed statistics
  *
@@ -50,4 +49,3 @@ class Statistics implements Modifier
         return $query;
     }
 }
-

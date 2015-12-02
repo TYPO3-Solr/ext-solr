@@ -25,16 +25,15 @@
 
 /*
 
-	Provides the sitehash for a given domain, valid for the current TYPO3
-	installation.
+    Provides the sitehash for a given domain, valid for the current TYPO3
+    installation.
 
-	Example: http://www.my-typo3-solr-installation.com/index.php?eID=tx_solr_api&api=siteHash&apiKey=<API key>&domain=www.domain-to-index.com
+    Example: http://www.my-typo3-solr-installation.com/index.php?eID=tx_solr_api&api=siteHash&apiKey=<API key>&domain=www.domain-to-index.com
 
 */
 
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\HttpUtility;
-
 
 $domain = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('domain');
 $returnData = '';
@@ -58,4 +57,3 @@ header('Content-Transfer-Encoding: 8bit');
 header('Content-Length: ' . strlen($returnData));
 
 echo $returnData;
-

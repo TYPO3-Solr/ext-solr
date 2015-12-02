@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Plugin 'Solr Search box' for the 'solr' extension. A cached plugin version of
  * just the search input field.
@@ -201,4 +200,3 @@ class Search extends CommandPluginBase
         return 'solr_search';
     }
 }
-

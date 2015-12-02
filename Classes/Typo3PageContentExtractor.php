@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Content extraction class for TYPO3 pages.
  *
@@ -121,6 +120,4 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
 
         return stristr($pageContent, '<body');
     }
-
 }
-

@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * Enables query elevation
  *
@@ -57,4 +56,3 @@ class Elevation implements Modifier
         return $query;
     }
 }
-

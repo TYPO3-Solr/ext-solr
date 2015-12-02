@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Service class that modifies fields in a Apache_Solr_Document, used for
  * common field processing during indexing or resolving
@@ -112,4 +111,3 @@ class Service
         }
     }
 }
-

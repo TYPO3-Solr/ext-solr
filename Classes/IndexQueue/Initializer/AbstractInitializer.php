@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Abstract Index Queue initializer with implementation  of methods for common
  * needs during Index Queue initialization.
@@ -348,7 +347,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer
                     }
                 }
         */
-
     }
 
     protected function logInitialization($initializationQuery)
@@ -378,6 +376,4 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             );
         }
     }
-
 }
-

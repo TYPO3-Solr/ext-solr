@@ -53,4 +53,3 @@ interface FilterEncoder
      */
     public function decodeFilter($filterValue, array $configuration = array());
 }
-

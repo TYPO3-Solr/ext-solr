@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Query;
 
-
 /**
  * Query awareness interface for extension components.
  *
@@ -46,6 +45,4 @@ interface QueryAware
      * @param Query $query Current query
      */
     public function setQuery(Query $query);
-
 }
-

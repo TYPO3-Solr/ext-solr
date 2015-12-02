@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Cli;
 use TYPO3\CMS\Core\Controller\CommandLineController;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A CLI command dispatcher
  *
@@ -77,5 +76,4 @@ class Dispatcher extends CommandLineController
 
         echo LF;
     }
-
 }

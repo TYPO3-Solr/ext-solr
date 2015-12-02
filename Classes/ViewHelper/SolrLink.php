@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * Viewhelper class to create links containing solr parameters
  * Replaces viewhelpers ###SOLR_LINK:linkText|linkTarget|additionalParameters|useCache|urlOnly###
@@ -154,4 +153,3 @@ class SolrLink implements ViewHelper
         return $pageId;
     }
 }
-

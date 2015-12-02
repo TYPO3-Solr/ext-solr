@@ -33,7 +33,6 @@ use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-
 /**
  * Adds an additional field to specify the Solr server to initialize the index queue for
  *
@@ -216,4 +215,3 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         return $this->pageRenderer;
     }
 }
-

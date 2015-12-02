@@ -128,6 +128,4 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
 
         return $fieldValue;
     }
-
 }
-

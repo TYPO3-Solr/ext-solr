@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
-
 /**
  * Provides an status report about whether a connection to the Solr server can
  * be established.
@@ -137,8 +136,8 @@ TEMPLATE;
 
         $this->responseMessage = $this->getMessageTemplate();
         $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SITE', $solrConnection['label']);
-        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SCHEME', $solr->getScheme() );
-        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'HOST', $solr->getHost() );
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SCHEME', $solr->getScheme());
+        $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'HOST', $solr->getHost());
         $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'PATH', $solr->getPath());
         $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'PORT', $solr->getPort());
         $this->checkSolrVersion($solr);
@@ -147,7 +146,7 @@ TEMPLATE;
         $this->checkSolrConfigName($solr);
         $this->checkSolrSchemaName($solr);
 
-        if($this->responseStatus !== Status::OK) {
+        if ($this->responseStatus !== Status::OK) {
             $value = 'Failed contacting the Solr server.';
         }
 
@@ -192,7 +191,6 @@ TEMPLATE;
             $accessFilterMessage = 'Error getting access filter: ' . $e->getMessage();
         }
         $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'ACCESS_FILTER_PLUGIN', $accessFilterMessage);
-
     }
 
     /**
@@ -221,7 +219,7 @@ TEMPLATE;
     {
         try {
             $solrConfigMessage = $solr->getSolrconfigName();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->responseStatus =  Status::ERROR;
             $solrConfigMessage = 'Error determining solr config: '. $e->getMessage();
         }
@@ -238,7 +236,7 @@ TEMPLATE;
     {
         try {
             $solrSchemaMessage = $solr->getSchemaName();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->responseStatus  = Status::ERROR;
             $solrSchemaMessage = 'Error determining schema name: '. $e->getMessage();
         }
@@ -272,4 +270,3 @@ TEMPLATE;
         return $formattedSolrVersion;
     }
 }
-

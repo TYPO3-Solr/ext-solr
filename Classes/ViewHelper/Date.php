@@ -83,4 +83,3 @@ class Date implements ViewHelper
         return $content;
     }
 }
-

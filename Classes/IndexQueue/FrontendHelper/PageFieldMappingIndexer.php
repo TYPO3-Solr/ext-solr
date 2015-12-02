@@ -149,5 +149,4 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
 
         return $fieldValue;
     }
-
 }

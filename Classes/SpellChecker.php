@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Spell checker / Did you mean
  *
@@ -128,7 +127,6 @@ class SpellChecker
         $suggestionsLink = '';
 
         if ($this->configuration['search.']['spellchecking'] && $this->search->hasSearched()) {
-
             $suggestions = $this->getSuggestions();
             if ($suggestions && !$suggestions['correctlySpelled'] && !empty($suggestions['collation'])) {
                 $suggestionsLink = $GLOBALS['TSFE']->cObj->noTrimWrap(
@@ -159,7 +157,4 @@ class SpellChecker
 
         return $queryLinkBuilder->getQueryLink(htmlspecialchars($query->getKeywordsRaw()));
     }
-
 }
-
-

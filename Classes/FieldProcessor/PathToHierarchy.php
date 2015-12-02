@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Processes a value that may appear as field value in documents
  *
@@ -78,4 +77,3 @@ class PathToHierarchy implements FieldProcessor
         return $hierarchy;
     }
 }
-

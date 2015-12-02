@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A special purpose indexer to index pages.
  *
@@ -458,5 +457,4 @@ class PageIndexer extends Indexer
 
         return $accessRootlineCache[$accessRootlineCacheEntryId];
     }
-
 }

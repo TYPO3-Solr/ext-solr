@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * The Indexing Queue. It allows us to decouple from frontend indexing and
  * reacting to changes faster.
@@ -333,7 +332,6 @@ class Queue
                     $possibleIndexingConfigurationNames[] = $indexingConfigurationName;
                 }
             }
-
         }
 
         return $possibleIndexingConfigurationNames;
@@ -993,4 +991,3 @@ class Queue
         );
     }
 }
-

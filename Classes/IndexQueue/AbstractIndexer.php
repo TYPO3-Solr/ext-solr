@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * An abstract indexer class to collect a few common methods shared with other
  * indexers.
@@ -133,7 +132,6 @@ abstract class AbstractIndexer
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
-
         } elseif (substr($indexingConfiguration[$solrFieldName], 0,
                 1) === '<'
         ) {
@@ -241,7 +239,6 @@ abstract class AbstractIndexer
      */
     protected function ensureFieldValueType($value, $fieldType)
     {
-
         switch ($fieldType) {
             case 'int':
             case 'tInt':
@@ -279,7 +276,4 @@ abstract class AbstractIndexer
 
         return $value;
     }
-
 }
-
-

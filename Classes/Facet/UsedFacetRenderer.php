@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Renderer for Used Facets.
  *
@@ -167,7 +166,7 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
                 'facetText' => $facetText
             );
 
-            if(!$usedFacetOptionsRenderer instanceof UsedFacetOptionsRenderer) {
+            if (!$usedFacetOptionsRenderer instanceof UsedFacetOptionsRenderer) {
                 $message = 'Invalid hook configured in processUsedFacetText. Hook needs to implement Interface UsedFacetOptionsRenderer!';
                 throw new \InvalidArgumentException($message);
             }

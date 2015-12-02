@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
 
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 
-
 /**
  * Logs the keywords from the query into the user's session or the database -
  * depending on configuration.
@@ -161,4 +160,3 @@ class LastSearches implements ResultSetModifier
         return $nextSequenceId;
     }
 }
-

@@ -30,7 +30,6 @@ namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
 
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 
-
 /**
  * ResultSetModifier interface, allows to modify search result set
  *
@@ -52,6 +51,4 @@ interface ResultSetModifier
         ResultsCommand $resultCommand,
         array $resultSet
     );
-
 }
-

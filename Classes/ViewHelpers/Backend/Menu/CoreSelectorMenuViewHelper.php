@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Menu;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
-
 /**
  * Core selector menu view helper
  *
@@ -93,6 +92,4 @@ class CoreSelectorMenuViewHelper extends AbstractTagBasedViewHelper
 
         return '<div class="coreSelector"><label>Select Core: </label>' . $this->tag->render() . '</div>';
     }
-
 }
-

@@ -46,7 +46,6 @@ class OddEven implements ViewHelper
      */
     public function __construct(array $arguments = array())
     {
-
     }
 
     /**
@@ -67,4 +66,3 @@ class OddEven implements ViewHelper
         return $oddEven;
     }
 }
-

@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 use ApacheSolrForTypo3\Solr\LanguageFileUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * view helper to replace label markers starting with "LLL:"
  * Replaces viewhelpers ###LLL:languageKey###
@@ -68,7 +67,6 @@ class Lll implements ViewHelper
      */
     public function __construct(array $arguments = array())
     {
-
         if (!isset($arguments['languageFile'])) {
             throw new LanguageFileUnavailableException(
                 'No Language File given',
@@ -200,4 +198,3 @@ class Lll implements ViewHelper
         return $label;
     }
 }
-

@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Query;
 
-
 /**
  * Spellchecking search component
  *
@@ -66,6 +65,4 @@ class SpellcheckingComponent extends AbstractComponent implements QueryAware
     {
         $this->query = $query;
     }
-
 }
-

@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
 use ApacheSolrForTypo3\Solr\Site;
 
-
 /**
  * Interface to initialize items in the Index Queue.
  *
@@ -75,6 +74,4 @@ interface IndexQueueInitializer
      * @return boolean TRUE if initialization was successful, FALSE on error.
      */
     public function initialize();
-
 }
-

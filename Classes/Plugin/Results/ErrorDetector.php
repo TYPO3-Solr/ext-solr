@@ -49,4 +49,3 @@ interface ErrorDetector
      */
     public function getErrors();
 }
-

@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A form modifier to carry over GET parameters from one request to another if
  * the option plugin.tx_solr.search.keepExistingParametersForNewSearches is
@@ -131,4 +130,3 @@ class ParameterKeepingFormModifier implements FormModifier, CommandPluginAware
         return urlencode($value);
     }
 }
-

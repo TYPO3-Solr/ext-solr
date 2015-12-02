@@ -79,6 +79,4 @@ class ModuleDataStorageService implements SingletonInterface
     {
         $GLOBALS['BE_USER']->pushModuleData(self::KEY, serialize($moduleData));
     }
-
 }
-

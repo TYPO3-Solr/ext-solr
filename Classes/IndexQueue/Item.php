@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Representation of an index queue item, carrying meta data and the record to be
  * indexed.
@@ -453,4 +452,3 @@ class Item
         return array_keys($this->indexingProperties);
     }
 }
-

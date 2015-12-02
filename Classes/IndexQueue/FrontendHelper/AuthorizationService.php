@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Sv\AbstractAuthenticationService;
 
-
 /**
  * Authentication service to authorize the Index Queue page indexer to access
  * protected pages.
@@ -104,7 +103,6 @@ class AuthorizationService extends AbstractAuthenticationService
         $accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 
         if ($user['username'] == self::SOLR_INDEXER_USERNAME && !empty($accessRootline)) {
-
             $accessRootline = GeneralUtility::makeInstance(
                 'ApacheSolrForTypo3\\Solr\\Access\\Rootline',
                 $accessRootline
@@ -125,5 +123,4 @@ class AuthorizationService extends AbstractAuthenticationService
 
         return $groupData;
     }
-
 }

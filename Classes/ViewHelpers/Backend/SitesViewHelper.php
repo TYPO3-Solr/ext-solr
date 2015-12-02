@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
 
 use ApacheSolrForTypo3\Solr\Site;
 
-
 /**
  * Make site information available in the rendering scope of this ViewHelper
  *
@@ -49,7 +48,8 @@ class SitesViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelpe
     /**
      * @return mixed
      */
-    public function render() {
+    public function render()
+    {
         $availableSites = Site::getAvailableSites();
         $currentSite = $this->moduleDataStorageService->loadModuleData()->getSite();
         $hasSites = is_array($availableSites) && count($availableSites) > 0;

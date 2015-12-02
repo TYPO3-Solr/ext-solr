@@ -79,4 +79,3 @@ class SuggestQuery extends Query
         return array_merge($suggestParameters, $this->queryParameters);
     }
 }
-

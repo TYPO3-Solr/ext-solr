@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * Helper for the hierarchical menu structure.
  *
@@ -153,6 +152,4 @@ class HierarchicalFacetHelper
         // return one level up
         return $menu;
     }
-
 }
-

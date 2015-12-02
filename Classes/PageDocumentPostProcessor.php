@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-
 /**
  * Page document post processor interface to handle page documents after they
  * have been put together, but not yet submitted to Solr.
@@ -53,5 +52,4 @@ interface PageDocumentPostProcessor
         \Apache_Solr_Document $pageDocument,
         TypoScriptFrontendController $page
     );
-
 }

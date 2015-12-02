@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A facet
  *
@@ -320,5 +319,4 @@ class Facet
     {
         return $this->type;
     }
-
 }

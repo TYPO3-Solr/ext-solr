@@ -117,6 +117,4 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
 
         return array_values($rootlineIds);
     }
-
 }
-

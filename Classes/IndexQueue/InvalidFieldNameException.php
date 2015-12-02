@@ -35,5 +35,4 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  */
 class InvalidFieldNameException extends \RuntimeException
 {
-
 }

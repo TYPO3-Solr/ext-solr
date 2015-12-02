@@ -34,7 +34,6 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
-
 /**
  * Abstract base class for all solr plugins.
  *
@@ -163,7 +162,7 @@ abstract class PluginBase extends AbstractPlugin
      *
      * @return string Action result
      */
-    protected abstract function performAction();
+    abstract protected function performAction();
 
 
     // Initialization
@@ -202,7 +201,7 @@ abstract class PluginBase extends AbstractPlugin
      * @author Ivan Kartolo <ivan.kartolo@dkd.de>
      * @return void
      */
-    function pi_setPiVarDefaults()
+    public function pi_setPiVarDefaults()
     {
         if (is_array($this->conf['_DEFAULT_PI_VARS.'])) {
             foreach ($this->conf['_DEFAULT_PI_VARS.'] as $key => $defaultValue) {
@@ -411,7 +410,7 @@ abstract class PluginBase extends AbstractPlugin
      * @param $actionResult
      * @return string Rendered plugin content
      */
-    protected abstract function render($actionResult);
+    abstract protected function render($actionResult);
 
     /**
      * Renders a solr error.
@@ -483,7 +482,7 @@ abstract class PluginBase extends AbstractPlugin
      * @see initializeTemplateEngine()
      * @return string The TSconfig key containing the template name
      */
-    protected abstract function getTemplateFileKey();
+    abstract protected function getTemplateFileKey();
 
     /**
      * Gets the plugin's template instance.
@@ -511,7 +510,7 @@ abstract class PluginBase extends AbstractPlugin
      * @see initializeTemplateEngine()
      * @return string The subpart of the template to be used
      */
-    protected abstract function getSubpart();
+    abstract protected function getSubpart();
 
     /**
      * This method should return the plugin key. Reads some configuration
@@ -520,7 +519,7 @@ abstract class PluginBase extends AbstractPlugin
      * @see initializeTemplateEngine()
      * @return string The plugin key
      */
-    protected abstract function getPluginKey();
+    abstract protected function getPluginKey();
 
     /**
      * Gets the target page Id for links. Might have been set through either
@@ -586,4 +585,3 @@ abstract class PluginBase extends AbstractPlugin
         return $this->rawUserQuery;
     }
 }
-

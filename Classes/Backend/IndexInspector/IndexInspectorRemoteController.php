@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Remote Controller to provide document data for the Index Inspector.
  *
@@ -207,4 +206,3 @@ class IndexInspectorRemoteController
         return $formattedData;
     }
 }
-

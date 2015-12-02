@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Index Fields Module
  *
@@ -152,6 +151,4 @@ class IndexFieldsModuleController extends AbstractModuleController
 
         return $coreMetrics;
     }
-
 }
-

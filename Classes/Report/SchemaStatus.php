@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
-
 /**
  * Provides an status report about which schema version is used and checks
  * whether it fits the recommended version shipping with the extension.
@@ -65,11 +64,9 @@ class SchemaStatus implements StatusProviderInterface
         $solrConnections = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-
             if ($solrConnection->ping()
                 && $solrConnection->getSchemaName() != self::RECOMMENDED_SCHEMA_VERSION
             ) {
-
                 $message = '<p style="margin-bottom: 10px;">A schema different
 					from the one provided with the extension was detected.</p>
 					<p style="margin-bottom: 10px;">It is recommended to use the
@@ -112,4 +109,3 @@ class SchemaStatus implements StatusProviderInterface
         return $reports;
     }
 }
-

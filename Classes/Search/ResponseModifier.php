@@ -45,6 +45,4 @@ interface ResponseModifier
      * @return \Apache_Solr_Response The modified response
      */
     public function modifyResponse(\Apache_Solr_Response $response);
-
 }
-

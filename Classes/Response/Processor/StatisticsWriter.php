@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Writes statistics after searches have been conducted.
  *
@@ -149,5 +148,3 @@ class StatisticsWriter implements ResponseProcessor
         return $ip;
     }
 }
-
-

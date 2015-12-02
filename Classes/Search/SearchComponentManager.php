@@ -100,6 +100,4 @@ class SearchComponentManager
 
         return $searchComponent;
     }
-
 }
-

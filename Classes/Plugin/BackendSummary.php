@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Summary to display flexform settings in the page layout backend module.
  *
@@ -191,6 +190,4 @@ class BackendSummary
 
         return $content;
     }
-
 }
-

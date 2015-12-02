@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Results per page switch view command
  *
@@ -129,4 +128,3 @@ class ResultsPerPageSwitchCommand implements PluginCommand
         return $resultsPerPageOptions;
     }
 }
-

@@ -34,7 +34,6 @@ use TYPO3\CMS\Extbase\Mvc\ResponseInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 
-
 /**
  * Administration module controller
  *
@@ -298,4 +297,3 @@ class AdministrationController extends ActionController
         $this->site = $site;
     }
 }
-

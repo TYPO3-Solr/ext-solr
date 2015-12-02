@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-
 /**
  * Scheduler task to empty the indexes of a site and re-initialize the
  * Solr Index Queue thus making the indexer re-index the site.

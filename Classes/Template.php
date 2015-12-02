@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * A template engine to simplify the work with marker based templates. The
  * engine supports easy management of markers, subparts, and even loops.
@@ -543,7 +542,6 @@ class Template
         if (count($foundMarkers)) {
             $iterationCount = 0;
             foreach ($loopVariables as $value) {
-
                 $resolvedMarkers = $this->resolveVariableMarkers($foundMarkers,
                     $value);
                 $resolvedMarkers['LOOP_CURRENT_ITERATION_COUNT'] = ++$iterationCount;
@@ -615,7 +613,6 @@ class Template
         array $markers,
         $currentIterationValue
     ) {
-
         foreach ($markers as $marker) {
             list($helperName, $helperArguments) = explode(':', $marker);
 
@@ -1171,4 +1168,3 @@ class Template
         $this->debugMode = (boolean)$mode;
     }
 }
-

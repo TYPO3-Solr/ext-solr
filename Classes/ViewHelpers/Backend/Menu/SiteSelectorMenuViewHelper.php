@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Menu;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
-
 /**
  * Site selector menu view helper
  *
@@ -83,6 +82,4 @@ class SiteSelectorMenuViewHelper extends AbstractTagBasedViewHelper
 
         return '<div class="docheader-funcmenu siteSelector"><label>Site: </label>' . $this->tag->render() . '</div>';
     }
-
 }
-

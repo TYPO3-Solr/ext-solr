@@ -40,4 +40,3 @@ interface TemplateModifier
 
     public function modifyTemplate(Template $template);
 }
-

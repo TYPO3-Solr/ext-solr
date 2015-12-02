@@ -46,6 +46,4 @@ interface FacetsModifier
      * @return array The facets with fields as array
      */
     public function modifyFacets($facets);
-
 }
-

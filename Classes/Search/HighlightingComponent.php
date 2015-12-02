@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Query;
 
-
 /**
  * Highlighting search component
  *
@@ -75,6 +74,4 @@ class HighlightingComponent extends AbstractComponent implements QueryAware
     {
         $this->query = $query;
     }
-
 }
-

@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
-
 /**
  * Plugin awareness interface for extension components.
  *
@@ -48,4 +47,3 @@ interface PluginAware
      */
     public function setParentPlugin(AbstractPlugin $parentPlugin);
 }
-

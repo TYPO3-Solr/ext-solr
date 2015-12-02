@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A controller for context menu actions
  *
@@ -50,6 +49,4 @@ class ContextMenuActionController
         $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
         $connectionManager->updateConnectionByRootPageId($node->getId());
     }
-
 }
-

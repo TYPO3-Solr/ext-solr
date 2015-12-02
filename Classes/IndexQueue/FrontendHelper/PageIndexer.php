@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-
 /**
  * Index Queue Page Indexer frontend helper to ask the frontend page indexer to
  * index the page.

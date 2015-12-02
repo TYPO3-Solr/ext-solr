@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * Viewhelper class to create links
  * Replaces viewhelpers ###LINK:linkText|linkTarget|additionalParameters|useCache|ATagParams###
@@ -116,4 +115,3 @@ class Link implements ViewHelper
         return $this->contentObject->typoLink($linkText, $linkConfiguration);
     }
 }
-

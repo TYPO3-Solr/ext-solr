@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Query group facet renderer.
  *
@@ -69,6 +68,4 @@ class QueryGroupFacetRenderer extends SimpleFacetRenderer
 
         return $facetOptions;
     }
-
-
 }

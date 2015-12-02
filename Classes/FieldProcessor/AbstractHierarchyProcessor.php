@@ -62,7 +62,4 @@ abstract class AbstractHierarchyProcessor
 
         return $hierarchy;
     }
-
 }
-
-

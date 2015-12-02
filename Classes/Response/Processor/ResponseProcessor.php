@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Response\Processor;
 
 use ApacheSolrForTypo3\Solr\Query;
 
-
 /**
  * ResponseProcessor interface, allows to process search responses.
  *
@@ -51,6 +50,4 @@ interface ResponseProcessor
         Query $query,
         \Apache_Solr_Response $response
     );
-
 }
-

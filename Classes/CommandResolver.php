@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * command resolver
  *
@@ -186,4 +185,3 @@ class CommandResolver
         return $command;
     }
 }
-

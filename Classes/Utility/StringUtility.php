@@ -32,7 +32,8 @@ namespace ApacheSolrForTypo3\Solr\Utility;
  *
  * @package ApacheSolrForTypo3\Solr\Utility
  */
-class StringUtility {
+class StringUtility
+{
 
     /**
      * Lowercases a string with the TYPO3 Core functionality.

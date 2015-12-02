@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Facet renderer.
  *
@@ -264,5 +263,4 @@ abstract class AbstractFacetRenderer implements FacetRenderer
 
         return $resetFacetUrl;
     }
-
 }

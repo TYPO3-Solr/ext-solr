@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Manage stop word resources
  *

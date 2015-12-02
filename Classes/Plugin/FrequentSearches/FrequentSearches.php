@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Plugin 'Frequent Searches' for the 'solr' extension.
  *
@@ -156,6 +155,4 @@ class FrequentSearches extends CommandPluginBase
                 '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
         }
     }
-
 }
-

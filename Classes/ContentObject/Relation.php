@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * A content object (cObj) to resolve relations between database records
  *
@@ -372,7 +371,6 @@ class Relation
         ContentObjectRenderer $parentContentObject,
         $foreignTableName = ''
     ) {
-
         if ($GLOBALS['TSFE']->sys_language_uid > 0 && !empty($foreignTableName)) {
             $relatedRecord = $this->getTranslationOverlay($foreignTableName,
                 $relatedRecord);
@@ -413,5 +411,4 @@ class Relation
 
         return $value;
     }
-
 }

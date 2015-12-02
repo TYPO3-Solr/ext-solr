@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\FilterEncoder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Facet renderer factory, creates facet renderers depending on the configured
  * type of a facet.
@@ -249,5 +248,4 @@ class FacetRendererFactory
             );
         }
     }
-
 }

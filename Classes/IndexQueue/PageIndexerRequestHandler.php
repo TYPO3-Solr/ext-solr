@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Checks for Index Queue page indexer requests and handles the actions
  * requested by them.

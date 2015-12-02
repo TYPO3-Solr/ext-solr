@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Core\SingletonInterface;
 
-
 /**
  * TYPO3 Environment Information
  *
@@ -47,4 +46,3 @@ class Typo3Environment implements SingletonInterface
         return (boolean)$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['files'];
     }
 }
-

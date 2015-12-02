@@ -212,7 +212,7 @@ class SolrService extends \Apache_Solr_Service
      * @param int $timeout
      * @return \Apache_Solr_HttpTransport_Response
      */
-    protected function performPingRequest ($timeout = 2)
+    protected function performPingRequest($timeout = 2)
     {
         return $this->getHttpTransport()->performGetRequest($this->_pingUrl, $timeout);
     }
@@ -478,7 +478,6 @@ class SolrService extends \Apache_Solr_Service
      */
     public function getPluginsInformation()
     {
-
         if (empty($this->pluginsData)) {
             $pluginsInformation = $this->_sendRawGet($this->_pluginsUrl);
 
@@ -513,7 +512,6 @@ class SolrService extends \Apache_Solr_Service
      */
     public function getSystemInformation()
     {
-
         if (empty($this->systemData)) {
             $systemInformation = $this->system();
 
@@ -539,7 +537,7 @@ class SolrService extends \Apache_Solr_Service
                 . $this->_path . 'admin/file/?file=solrconfig.xml';
 
             $solrconfigXml = simplexml_load_file($solrconfigXmlUrl);
-            if($solrconfigXml === FALSE) {
+            if ($solrconfigXml === false) {
                 throw new \InvalidArgumentException('No valid xml response from schema file: '.$solrconfigXmlUrl);
             }
             $this->solrconfigName = (string)$solrconfigXml->attributes()->name;

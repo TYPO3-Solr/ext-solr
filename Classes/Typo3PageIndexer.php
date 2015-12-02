@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-
 /**
  * Page Indexer to index TYPO3 pages used by the Index Queue.
  *
@@ -578,4 +577,3 @@ class Typo3PageIndexer
         return $this->documentsSentToSolr;
     }
 }
-

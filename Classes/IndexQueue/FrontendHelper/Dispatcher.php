@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Dispatches the actions requested to the matching frontend helpers.
  *

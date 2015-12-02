@@ -33,7 +33,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Results view command
  *
@@ -383,4 +382,3 @@ class ResultsCommand implements PluginCommand
         return ($userFiltered ? '1' : '0');
     }
 }
-

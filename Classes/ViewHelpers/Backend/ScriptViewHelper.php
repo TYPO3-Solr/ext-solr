@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
 
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
-
 /**
  * View helper to load a JavaScript file
  *
@@ -52,6 +51,4 @@ class ScriptViewHelper extends AbstractBackendViewHelper
 
         $pageRenderer->addJsFile($file);
     }
-
 }
-

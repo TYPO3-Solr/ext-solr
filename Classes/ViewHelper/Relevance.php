@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * View helper class to turn a result document's relevance score into a
  * percent value.
@@ -188,4 +187,3 @@ class Relevance implements ViewHelper
         return $content;
     }
 }
-

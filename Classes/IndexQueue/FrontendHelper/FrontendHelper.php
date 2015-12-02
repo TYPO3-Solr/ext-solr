@@ -30,7 +30,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 
-
 /**
  * Index Queue Frontend Helper interface.
  *
@@ -70,6 +69,4 @@ interface FrontendHelper
      * @return array Collected data.
      */
     public function getData();
-
 }
-

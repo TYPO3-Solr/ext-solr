@@ -28,7 +28,6 @@ use InvalidArgumentException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Utility class for tx_solr
  *
@@ -107,7 +106,6 @@ class Util
      */
     public static function getFileDocumentId(\Tx_Solr_FileIndexer_File $file)
     {
-
         try {
             $documentId = self::getDocumentId(
                 'tx_solr_file',
@@ -229,7 +227,8 @@ class Util
      */
     public static function lcfirst($string)
     {
-        $string{0} = strtolower($string{0});
+        $string{0}
+        = strtolower($string{0});
 
         return $string;
     }
@@ -734,4 +733,3 @@ class Util
         return true;
     }
 }
-

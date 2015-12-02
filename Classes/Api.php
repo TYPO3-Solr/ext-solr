@@ -58,5 +58,4 @@ class Api
             'tx_solr_api'
         );
     }
-
 }

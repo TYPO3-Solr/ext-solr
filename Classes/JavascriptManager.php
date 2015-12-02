@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Manger for the javascript files used throughout the extension's plugins.
  *
@@ -250,6 +249,4 @@ class JavascriptManager
         $this->javascriptInsertPosition = self::POSITION_FOOTER;
         $this->buildJavascriptTags();
     }
-
 }
-

@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Search;
 
 use ApacheSolrForTypo3\Solr\Search;
 
-
 /**
  * Search awareness interface for extension components.
  *
@@ -47,6 +46,4 @@ interface SearchAware
      * @param Search $search Currently active search instance
      */
     public function setSearch(Search $search);
-
 }
-

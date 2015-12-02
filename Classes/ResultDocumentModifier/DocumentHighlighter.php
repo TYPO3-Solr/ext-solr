@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Highlighting result document modifier, highlights query terms in result
  * documents.
@@ -82,6 +81,4 @@ class DocumentHighlighter implements ResultDocumentModifier
 
         return $resultDocument;
     }
-
 }
-

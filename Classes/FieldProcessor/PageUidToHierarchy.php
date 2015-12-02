@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * This Processor takes a PID, and resolves its rootline in solr notation.
  *
@@ -119,6 +118,4 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
 
         return $rootlinePageIds;
     }
-
 }
-

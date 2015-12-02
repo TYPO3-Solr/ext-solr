@@ -34,7 +34,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Index Queue initializer for pages which also covers resolution of mount
  * pages.
@@ -352,4 +351,3 @@ class Page extends AbstractInitializer
         return $mountedSite->getPages($mountPageSourceId);
     }
 }
-

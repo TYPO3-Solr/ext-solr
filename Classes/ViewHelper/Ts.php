@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-
 /**
  * A viewhelper to retrieve TS values and/or objects
  * Replaces viewhelpers ###TS:path.to.some.ts.property.or.content.object###
@@ -54,7 +53,6 @@ class Ts implements ViewHelper
      */
     public function __construct(array $arguments = array())
     {
-
     }
 
     /**
@@ -139,4 +137,3 @@ class Ts implements ViewHelper
         return $this->contentObject;
     }
 }
-

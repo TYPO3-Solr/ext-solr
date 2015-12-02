@@ -41,4 +41,3 @@ interface FacetBuilder
      */
     public function buildFacetParameters($facetName, array $facetConfiguration);
 }
-

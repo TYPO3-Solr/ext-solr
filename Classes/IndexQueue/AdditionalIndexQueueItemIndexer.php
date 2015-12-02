@@ -52,6 +52,4 @@ interface AdditionalIndexQueueItemIndexer
         $language,
         \Apache_Solr_Document $itemDocument
     );
-
 }
-

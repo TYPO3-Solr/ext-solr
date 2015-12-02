@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Link builder for facet options
  *
@@ -296,6 +295,4 @@ class LinkBuilder extends Query\LinkBuilder
 
         return $this->getQueryUrl(array('filter' => $filterParameters));
     }
-
 }
-

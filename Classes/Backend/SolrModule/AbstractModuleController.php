@@ -30,7 +30,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
-
 /**
  * Abstract Module
  *
@@ -256,4 +255,3 @@ abstract class AbstractModuleController extends ActionController implements Admi
         return $currentCoreConnection;
     }
 }
-

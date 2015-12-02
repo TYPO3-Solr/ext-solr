@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
 
 use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
 
-
 /**
  * Parser to build Solr range queries from tx_solr[filter]
  *
@@ -98,5 +97,4 @@ class Range implements FilterEncoder, FacetBuilder
 
         return $facetParameters;
     }
-
 }

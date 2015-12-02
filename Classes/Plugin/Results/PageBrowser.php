@@ -30,7 +30,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * The page browser used in search result listings
  *
@@ -214,5 +213,4 @@ class PageBrowser
 
         return htmlspecialchars($this->contentObject->typoLink_URL($conf));
     }
-
 }

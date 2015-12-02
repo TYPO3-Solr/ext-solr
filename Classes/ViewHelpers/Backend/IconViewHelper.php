@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
-
 /**
  * View helper which returns an icon
  *
@@ -57,4 +56,3 @@ class IconViewHelper extends AbstractBackendViewHelper
         return IconUtility::getSpriteIcon($icon);
     }
 }
-

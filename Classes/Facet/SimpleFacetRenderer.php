@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * The simple / default facet renderer.
  *
@@ -95,6 +94,4 @@ class SimpleFacetRenderer extends AbstractFacetRenderer
 
         return $facetContent;
     }
-
 }
-

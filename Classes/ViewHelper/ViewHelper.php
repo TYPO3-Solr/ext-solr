@@ -53,4 +53,3 @@ interface ViewHelper
      */
     public function execute(array $arguments = array());
 }
-

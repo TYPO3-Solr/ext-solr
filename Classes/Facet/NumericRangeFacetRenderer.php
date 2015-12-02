@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Numeric range facet renderer.
  *
@@ -180,5 +179,4 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
                 '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
         }
     }
-
 }

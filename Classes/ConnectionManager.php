@@ -30,7 +30,6 @@ use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A class to easily create a connection to a Solr server.
  *
@@ -392,7 +391,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 
         // find solr configurations and add them as function menu entries
         foreach ($rootPages as $rootPage) {
-
             foreach ($languages as $languageId) {
                 $connection = $this->getConfiguredSolrConnectionByRootPage($rootPage,
                     $languageId);
@@ -401,7 +399,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                     $configuredSolrConnections[$connection['connectionKey']] = $connection;
                 }
             }
-
         }
 
         return $configuredSolrConnections;
@@ -607,4 +604,3 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         return $siteRootPageId;
     }
 }
-

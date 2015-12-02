@@ -70,6 +70,4 @@ class NoSolrConnectionFoundException extends \Exception
     {
         $this->rootPageId = intval($rootPageId);
     }
-
 }
-

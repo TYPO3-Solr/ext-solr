@@ -26,18 +26,14 @@
 use ApacheSolrForTypo3\Solr\Api;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 
-
 $api = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('api');
 $apiKey = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('apiKey'));
 
 if (!Api::isValidApiKey($apiKey)) {
-
     header(HttpUtility::HTTP_STATUS_403);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode(array('errorMessage' => 'Invalid API key'));
-
 } else {
-
     switch ($api) {
 
         case 'siteHash':
@@ -50,7 +46,6 @@ if (!Api::isValidApiKey($apiKey)) {
             echo json_encode(array('errorMessage' => 'You must provide an available API method, e.g. siteHash.'));
             break;
     }
-
 }
 
 exit();

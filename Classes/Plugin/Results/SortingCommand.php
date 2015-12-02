@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * sorting view command
  *
@@ -194,4 +193,3 @@ class SortingCommand implements PluginCommand
         return $sortOptions;
     }
 }
-

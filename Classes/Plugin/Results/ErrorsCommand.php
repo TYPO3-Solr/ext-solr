@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Errors command class to render error messages for errors that may have
  * occurred during searching.

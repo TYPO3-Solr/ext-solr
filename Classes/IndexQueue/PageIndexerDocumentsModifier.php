@@ -48,6 +48,4 @@ interface PageIndexerDocumentsModifier
      * @return array An array of modified documents
      */
     public function modifyDocuments(Item $item, $language, array $documents);
-
 }
-

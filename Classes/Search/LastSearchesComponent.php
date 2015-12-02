@@ -45,6 +45,4 @@ class LastSearchesComponent extends AbstractComponent
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['lastSearches'] = 'ApacheSolrForTypo3\\Solr\\ResultsetModifier\\LastSearches';
         }
     }
-
 }
-

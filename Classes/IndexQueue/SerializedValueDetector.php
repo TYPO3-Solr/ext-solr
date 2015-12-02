@@ -52,4 +52,3 @@ interface SerializedValueDetector
         $solrFieldName
     );
 }
-

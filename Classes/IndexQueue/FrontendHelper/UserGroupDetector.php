@@ -32,7 +32,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
-
 /**
  * Index Queue Page Indexer frontend helper to track which user groups are used
  * on a page.
@@ -247,5 +246,4 @@ class UserGroupDetector
     {
         return $this->getFrontendGroups();
     }
-
 }

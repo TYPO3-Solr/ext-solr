@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * Provides an analysis of how the score of a document was calculated below
  * each result document.
@@ -150,4 +149,3 @@ class ScoreAnalyzer implements ResultDocumentModifier
         return $content;
     }
 }
-

@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A facet option
  *
@@ -196,5 +195,4 @@ class FacetOption
     {
         return $this->numberOfResults;
     }
-
 }

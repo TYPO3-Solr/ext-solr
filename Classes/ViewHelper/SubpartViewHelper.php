@@ -30,7 +30,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 
 use ApacheSolrForTypo3\Solr\Template;
 
-
 /**
  * Subpart View Helper marker interface
  *
@@ -54,6 +53,4 @@ interface SubpartViewHelper extends ViewHelper
      * @param Template $template view helper's subpart template
      */
     public function setTemplate(Template $template);
-
 }
-

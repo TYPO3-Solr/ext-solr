@@ -218,6 +218,4 @@ class HtmlContentExtractor
 
         return $result;
     }
-
 }
-

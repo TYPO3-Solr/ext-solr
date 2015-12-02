@@ -34,7 +34,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
  * records like tt_news, tt_address, and so on.
@@ -457,7 +456,6 @@ class Indexer extends AbstractIndexer
         $language,
         array $documents
     ) {
-
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
                 $documentsModifier = &GeneralUtility::getUserObj($classReference);
@@ -683,4 +681,3 @@ class Indexer extends AbstractIndexer
         GeneralUtility::devLog($message, 'solr', $severity, $logData);
     }
 }
-

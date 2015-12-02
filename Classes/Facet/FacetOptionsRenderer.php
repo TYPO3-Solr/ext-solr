@@ -39,4 +39,3 @@ interface FacetOptionsRenderer
      */
     public function renderFacetOptions();
 }
-

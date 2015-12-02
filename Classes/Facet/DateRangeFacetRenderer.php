@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Date range facet renderer.
  *
@@ -118,5 +117,4 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer
 
         return $facetLinkBuilder->getAddFacetOptionUrl();
     }
-
 }

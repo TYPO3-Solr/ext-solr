@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Plugin\FormModifier;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * QueryAnalyzer form modifier, outputs parsed lucene query
  *
@@ -90,4 +89,3 @@ class QueryAnalyzerFormModifier implements FormModifier, CommandPluginAware
         return $markers;
     }
 }
-

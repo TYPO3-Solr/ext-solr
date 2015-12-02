@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A content object (cObj) to turn comma separated strings into an array to be
  * used in a multi value field in a Solr document.
@@ -100,6 +99,4 @@ class Multivalue
 
         return serialize($listAsArray);
     }
-
-
 }

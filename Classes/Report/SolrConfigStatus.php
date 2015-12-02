@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
-
 /**
  * Provides a status report about which solrconfig version is used and checks
  * whether it fits the recommended version shipping with the extension.
@@ -65,7 +64,6 @@ class SolrConfigStatus implements StatusProviderInterface
         $solrConnections = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-
             if ($solrConnection->ping()
                 && $solrConnection->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION
             ) {
@@ -117,4 +115,3 @@ class SolrConfigStatus implements StatusProviderInterface
         return $reports;
     }
 }
-

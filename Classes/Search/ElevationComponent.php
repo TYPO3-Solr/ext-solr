@@ -43,6 +43,4 @@ class ElevationComponent extends AbstractComponent
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['elevation'] = 'ApacheSolrForTypo3\\Solr\\Query\\Modifier\\Elevation';
     }
-
 }
-

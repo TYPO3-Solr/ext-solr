@@ -35,7 +35,6 @@ use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Plugin 'Solr Search' for the 'solr' extension.
  *
@@ -215,7 +214,6 @@ class Results extends CommandPluginBase
 
         // TODO check whether a search has been conducted already?
         if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])) {
-
             if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
                 GeneralUtility::devLog('received search query', 'solr', 0,
                     array($rawUserQuery));
@@ -547,4 +545,3 @@ class Results extends CommandPluginBase
         return 'solr_search';
     }
 }
-

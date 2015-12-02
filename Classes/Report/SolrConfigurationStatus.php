@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
-
 /**
  * Provides an status report, which checks whether the configuration of the
  * extension is ok.
@@ -216,4 +215,3 @@ class SolrConfigurationStatus implements StatusProviderInterface
         return $rootPages;
     }
 }
-

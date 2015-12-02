@@ -30,7 +30,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * A class that monitors changes to records so that the changed record gets
  * passed to the index queue to update the according index document.
@@ -166,7 +165,6 @@ class RecordMonitor
                         }
                     }
             }
-
         }
 
         if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
@@ -579,6 +577,4 @@ class RecordMonitor
 
         return $name;
     }
-
 }
-

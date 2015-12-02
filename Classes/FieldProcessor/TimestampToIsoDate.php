@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
 
 use ApacheSolrForTypo3\Solr\Util;
 
-
 /**
  * A field processor that converts timestamps to ISO dates as needed by Solr
  *
@@ -57,4 +56,3 @@ class TimestampToIsoDate implements FieldProcessor
         return $results;
     }
 }
-

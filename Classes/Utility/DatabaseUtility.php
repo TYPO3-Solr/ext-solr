@@ -64,6 +64,4 @@ class DatabaseUtility
     {
         $GLOBALS['TYPO3_DB']->sql_query('ROLLBACK');
     }
-
 }
-
