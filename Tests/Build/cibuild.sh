@@ -5,8 +5,8 @@ echo "PWD: $(pwd)"
 export TYPO3_PATH_WEB=$(pwd)/.Build/Web
 
 if [ $TRAVIS ]; then
+    # Travis does not have composer's bin dir in $PATH
     export PATH="$PATH:$HOME/.composer/vendor/bin"
-    echo "PATH: $PATH"
 fi
 
 php-cs-fixer --version > /dev/null 2>&1
