@@ -4,6 +4,8 @@ echo "PWD: $(pwd)"
 
 export TYPO3_PATH_WEB=$(pwd)/.Build/Web
 
+echo "PATH: $PATH"
+
 php-cs-fixer --version > /dev/null 2>&1
 if [ $? -eq "0" ]; then
     echo "Check PSR-2 compliance"
