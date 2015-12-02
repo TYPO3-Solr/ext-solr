@@ -220,20 +220,6 @@ class Util
     }
 
     /**
-     * Lowercases the first letter of a string.
-     *
-     * @param string String to lowercase the first letter
-     * @return string Input string with lowercased first letter
-     */
-    public static function lcfirst($string)
-    {
-        $string{0}
-        = strtolower($string{0});
-
-        return $string;
-    }
-
-    /**
      * Shortcut to retrieve the TypoScript configuration for EXT:solr
      * (plugin.tx_solr) from TSFE.
      *
