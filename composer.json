@@ -1,7 +1,7 @@
 {
   "name": "apache-solr-for-typo3/solr",
   "type": "typo3-cms-extension",
-  "description": "Apache Solr integration for TYPO3",
+  "description": "Apache Solr for TYPO3",
   "minimum-stability": "alpha",
   "license": "GPL-2.0+",
   "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
