@@ -63,6 +63,10 @@
 			<label index="results_per_page">Ergebnisse pro Seite:</label>
 			<label index="error_errors">Es tut uns leid, es gab einige Fehler:</label>
 			<label index="error_emptyQuery">Bitte geben Sie ihr Suchwort in das Suchfeld ein.</label>
+			<label index="pagebrowser_first">Erste</label>
+			<label index="pagebrowser_prev">Vorherige</label>
+			<label index="pagebrowser_next">Nächste</label>
+			<label index="pagebrowser_last">Letzte</label>
 		</languageKey>
 		<languageKey index="nl" type="array">
 			<label index="searchUnavailable">Zoeken is op dit moment niet beschikbaar.</label>
@@ -86,6 +90,10 @@
 			<label index="results_per_page">Resultaten per pagina:</label>
 			<label index="file_mimetype">Bestandstype</label>
 			<label index="file_referenced">Geplaatst op</label>
+			<label index="pagebrowser_first">Eerste</label>
+			<label index="pagebrowser_prev">Vorige</label>
+			<label index="pagebrowser_next">Volgende</label>
+			<label index="pagebrowser_last">Laatste</label>
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="searchUnavailable">La recherche est actuellement indisponible.</label>
@@ -114,6 +122,10 @@
 			<label index="results_per_page">Résultats par page:</label>
 			<label index="error_errors">Veuillez nous excuser, des erreurs sont survenues :</label>
 			<label index="error_emptyQuery">Veuillez remplir les termes de recherche dans le champ ci-dessus.</label>
+			<label index="pagebrowser_first">Premier</label>
+			<label index="pagebrowser_prev">Précédent</label>
+			<label index="pagebrowser_next">Suivant</label>
+			<label index="pagebrowser_last">Dernier</label>
 		</languageKey>
 		<languageKey index="it" type="array">
 			<label index="searchUnavailable">La ricerca non è al momento disponibile.</label>
@@ -137,6 +149,10 @@
 			<label index="file_mimetype">Tipo di file</label>
 			<label index="file_referenced">Link a</label>
 			<label index="results_per_page">Risultati per pagina:</label>
+			<label index="pagebrowser_first">Pagina iniziale</label>
+			<label index="pagebrowser_prev">Indietro</label>
+			<label index="pagebrowser_next">Avanti</label>
+			<label index="pagebrowser_last">Ultima pagina</label>
 		</languageKey>
 		<languageKey index="jp" type="array">
 			<label index="searchUnavailable">検索は現在使用できません。</label>
@@ -246,6 +262,10 @@
 			<label index="results_per_page">Wyników na stronę:</label>
 			<label index="error_errors">Przykro nam, natknęliśmy się na błędy:</label>
 			<label index="error_emptyQuery">Wpisz słowa kluczowe w polu powyżej.</label>
+			<label index="pagebrowser_first">Pierwsza</label>
+			<label index="pagebrowser_prev">Poprzednia</label>
+			<label index="pagebrowser_next">Następna</label>
+			<label index="pagebrowser_last">Ostatnia</label>
 		</languageKey>
 	</data>
 </T3locallang>
