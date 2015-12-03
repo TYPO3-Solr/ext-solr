@@ -50,11 +50,11 @@
 	margin-left: 5px;
 }
 
-#tx-solr-pagination-page-browser {
+.tx-solr-pagination-page-browser {
 	float: right;
 }
 
-#tx-solr-pagination-page-browser ul {
+.tx-solr-pagination-page-browser ul {
 	padding-top: 2px;
 	margin-top: 10px;
 	text-align: center;
@@ -62,18 +62,18 @@
 	width: 100%;
 }
 
-#tx-solr-pagination-page-browser li {
+.tx-solr-pagination-page-browser li {
 	display: inline;
 	list-style: none;
 	margin: 0;
 	padding: 0 5px 0 0
 }
 
-#tx-solr-pagination-page-browser .pages {
+.tx-solr-pagination-page-browser .pages {
 	width: 80%
 }
 
-#tx-solr-pagination-page-browser .pages ol {
+.tx-solr-pagination-page-browser .pages ol {
 	display: inline;
 	margin: 0;
 	padding: 0 10px
