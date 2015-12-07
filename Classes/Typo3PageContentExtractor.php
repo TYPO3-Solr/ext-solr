@@ -60,15 +60,15 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         $indexableContent = implode($indexableContents[0], '');
 
         //exclude some html part with classname (.exclude-solr-part)
-        if(!empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeHtmlPartWithClassname'])){
+        if (!empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeHtmlPartWithClassname'])) {
             $doc = new \DOMDocument();
-            libxml_use_internal_errors(TRUE);
+            libxml_use_internal_errors(true);
             $doc->loadHTML($indexableContent);
             $xpath = new \DOMXPath($doc);
-            $excludeParts = GeneralUtility::trimExplode(',', $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeHtmlPartWithClassname'], TRUE);
-            foreach($excludeParts as $excludePart){
+            $excludeParts = GeneralUtility::trimExplode(',', $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeHtmlPartWithClassname'], true);
+            foreach ($excludeParts as $excludePart) {
                 $elements = $xpath->query("//*[contains(@class,'".$excludePart."')]");
-                if(count($elements) > 0){
+                if (count($elements) > 0) {
                     foreach ($elements as $element) {
                         $element->parentNode->removeChild($element);
                     }
