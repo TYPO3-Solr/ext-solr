@@ -16,22 +16,34 @@ if (TYPO3_MODE == 'BE') {
 }
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-$iconPath = $GLOBALS['PATHrel_solr'] . 'Resources/Public/Images/Icons/';
-\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
-    array(
-        'ModuleOverview' => $iconPath . 'Search.png',
-        'ModuleIndexQueue' => $iconPath . 'IndexQueue.png',
-        'ModuleIndexMaintenance' => $iconPath . 'IndexMaintenance.png',
-        'ModuleIndexFields' => $iconPath . 'IndexFields.png',
-        'ModuleStopWords' => $iconPath . 'StopWords.png',
-        'ModuleSynonyms' => $iconPath . 'Synonyms.png',
-        'InitSolrConnections' => $iconPath . 'InitSolrConnections.png'
-    ),
-    $_EXTKEY
-);
+$extIconPath = 'EXT:solr/Resources/Public/Images/Icons/';
+if (TYPO3_MODE === 'BE') {
+    $modulePrefix = 'extensions-solr-module';
+    $bitmapProvider = 'TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider';
+    $svgProvider = 'TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider';
+
+        // register all module icons with extensions-solr-module-modulename
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Imaging\IconRegistry');
+    $iconRegistry->registerIcon($modulePrefix . '-administration', $svgProvider,
+        array('source' => $extIconPath . 'ModuleAdministration.svg'));
+    $iconRegistry->registerIcon($modulePrefix . '-overview', $bitmapProvider,
+        array('source' => $extIconPath . 'Search.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-indexqueue', $bitmapProvider,
+        array('source' => $extIconPath . 'IndexQueue.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-indexmaintenance', $bitmapProvider,
+        array('source' => $extIconPath . 'IndexMaintenance.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-indexfields', $bitmapProvider,
+        array('source' => $extIconPath . 'IndexFields.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-stopwords', $bitmapProvider,
+        array('source' => $extIconPath . 'StopWords.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-synonyms', $bitmapProvider,
+        array('source' => $extIconPath . 'Synonyms.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $bitmapProvider,
+        array('source' => $extIconPath . 'InitSolrConnections.png'));
+}
 
 if (TYPO3_MODE == 'BE') {
-    $fileExtension = version_compare(TYPO3_branch, '7.0', '>=') ? 'svg' : 'png';
+    $fileExtension = 'svg';
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'tools',
@@ -43,7 +55,7 @@ if (TYPO3_MODE == 'BE') {
         ),
         array(
             'access' => 'admin',
-            'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Images/Icons/ModuleAdministration.' . $fileExtension,
+            'iconIdentifier' => 'extensions-solr-module-administration',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/ModuleAdministration.xlf',
         )
     );
@@ -138,7 +150,7 @@ options.contextMenu.table.pages.items.850 = ITEM
 options.contextMenu.table.pages.items.850 {
 	name = Tx_Solr_initializeSolrConnections
 	label = Initialize Solr Connections
-	icon = ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($iconPath . 'InitSolrConnections.png') . '
+	iconName = extensions-solr-module-initsolrconnections
 	displayCondition = getRecord|is_siteroot = 1
 	callbackAction = initializeSolrConnections
 }

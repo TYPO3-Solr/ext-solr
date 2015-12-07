@@ -64,7 +64,17 @@ abstract class FunctionalTest extends TYPO3FunctionalTest
      */
     protected function importDataSetFromFixture($fixtureName)
     {
-        $this->importDataSet($this->getRuntimeDirectory() . '/Fixtures/' . $fixtureName);
+        $this->importDataSet($this->getFixturePath() . $fixtureName);
+    }
+
+    /**
+     * Returns the absolute path to a fixture.
+     *
+     * @return string
+     */
+    protected function getFixturePath()
+    {
+        return $this->getRuntimeDirectory() . '/Fixtures/';
     }
 
     /**

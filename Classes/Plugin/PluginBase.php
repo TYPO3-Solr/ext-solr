@@ -85,6 +85,13 @@ abstract class PluginBase extends AbstractPlugin
     protected $javascriptManager;
 
     /**
+     * An instance of the localization factory
+     *
+     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory
+     */
+    protected $languageFactory;
+
+    /**
      * The user's raw query.
      *
      * Private to enforce API usage.
@@ -181,6 +188,7 @@ abstract class PluginBase extends AbstractPlugin
             $configuration
         );
 
+        $this->initializeLanguageFactory();
         $this->pi_setPiVarDefaults();
         $this->pi_loadLL();
         $this->pi_initPIflexForm();
@@ -238,12 +246,12 @@ abstract class PluginBase extends AbstractPlugin
             $basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/Plugin' . $languageFileName . '.xml';
 
             // Read the strings in the required charset (since TYPO3 4.2)
-            $this->LOCAL_LANG = GeneralUtility::readLLfile($basePath,
-                $this->LLkey, $GLOBALS['TSFE']->renderCharset);
+            $this->LOCAL_LANG = $this->languageFactory->getParsedData($basePath,
+                $this->LLkey, $GLOBALS['TSFE']->renderCharset, 3);
             $alternativeLanguageKeys = GeneralUtility::trimExplode(',',
                 $this->altLLkey, true);
             foreach ($alternativeLanguageKeys as $languageKey) {
-                $tempLL = GeneralUtility::readLLfile($basePath, $languageKey);
+                $tempLL = $this->languageFactory->getParsedData($basePath, $languageKey, $GLOBALS['TSFE']->renderCharset, 3);
                 if ($this->LLkey !== 'default' && isset($tempLL[$languageKey])) {
                     $this->LOCAL_LANG[$languageKey] = $tempLL[$languageKey];
                 }
@@ -376,6 +384,14 @@ abstract class PluginBase extends AbstractPlugin
     protected function initializeJavascriptManager()
     {
         $this->javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
+    }
+
+    /**
+     * Initializes the language factory;
+     */
+    protected function initializeLanguageFactory()
+    {
+        $this->languageFactory = GeneralUtility::makeInstance('TYPO3\CMS\Core\Localization\LocalizationFactory');
     }
 
     /**
