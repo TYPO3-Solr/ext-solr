@@ -16,7 +16,6 @@ $EM_CONF[$_EXTKEY] = array(
     'constraints' => array(
         'depends' => array(
             'scheduler' => '',
-            'php' => '5.3.7',
             'typo3' => '6.2.1-7.99.99',
         ),
         'conflicts' => array(),
