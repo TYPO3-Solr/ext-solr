@@ -59,28 +59,43 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
             $html, $indexableContents);
         $indexableContent = implode($indexableContents[0], '');
 
-        //exclude some html part with classname (.exclude-solr-part)
-        if (!empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeHtmlPartWithClassname'])) {
-            $doc = new \DOMDocument();
-            libxml_use_internal_errors(true);
-            $doc->loadHTML($indexableContent);
-            $xpath = new \DOMXPath($doc);
-            $excludeParts = GeneralUtility::trimExplode(',', $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeHtmlPartWithClassname'], true);
-            foreach ($excludeParts as $excludePart) {
-                $elements = $xpath->query("//*[contains(@class,'".$excludePart."')]");
-                if (count($elements) > 0) {
-                    foreach ($elements as $element) {
-                        $element->parentNode->removeChild($element);
-                    }
-                }
-            }
-            $indexableContent = $doc->saveHTML();
-        }
+        $indexableContent = $this->excludeContentByClass($indexableContent);
 
         if (empty($indexableContent) && $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['missingTypo3SearchMarkers']) {
             GeneralUtility::devLog('No TYPO3SEARCH markers found.', 'solr', 2);
         }
 
+        return $indexableContent;
+    }
+
+    /**
+     * Exclude some html parts by class inside content wrapped with TYPO3SEARCH_begin and TYPO3SEARCH_end
+     * markers.
+     *
+     * @param string $indexableContent HTML markup
+     * @return string HTML
+     */
+    public function excludeContentByClass($indexableContent)
+    {
+        if (empty($indexableContent) || empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeContentByClass'])) {
+            return $indexableContent;
+        }
+
+        $doc = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        $doc->loadHTML($indexableContent);
+        $xpath = new \DOMXPath($doc);
+        $excludeParts = GeneralUtility::trimExplode(',', $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeContentByClass'], true);
+        foreach ($excludeParts as $excludePart) {
+            $elements = $xpath->query("//*[contains(@class,'".$excludePart."')]");
+            if (count($elements) > 0) {
+                foreach ($elements as $element) {
+                    $element->parentNode->removeChild($element);
+                }
+            }
+        }
+        #from http://php.net/manual/en/domdocument.savehtml.php
+        $indexableContent = trim(preg_replace('/^<!DOCTYPE.+?>/', '', str_replace(array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), $doc->saveHTML())));
         return $indexableContent;
     }
 

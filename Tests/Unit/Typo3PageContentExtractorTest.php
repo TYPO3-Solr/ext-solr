@@ -36,6 +36,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Typo3PageContentExtractorTest extends UnitTest
 {
 
+    public function setUp()
+    {
+        $TSFE = $this->getDumbMock('\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
+
+        $GLOBALS['TSFE'] = $TSFE;
+        /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
+        $GLOBALS['TSFE']->tmpl = $this->getMock('\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService', array('linkData'));
+        $GLOBALS['TSFE']->tmpl->init();
+        $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
+        $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeContentByClass'] = 'typo3-search-exclude';
+    }
+
+
     /**
      * @test
      */
@@ -50,6 +63,23 @@ class Typo3PageContentExtractorTest extends UnitTest
         );
         $actualResult = $contentExtractor->getIndexableContent();
 
+        $this->assertEquals($expectedResult, $actualResult);
+    }
+
+    /**
+     * @test
+     */
+    public function canExcludeContentByClass()
+    {
+        $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Exclude content</div><p>Expected content</p><!-- TYPO3SEARCH_end -->';
+        $expectedResult = '<!-- TYPO3SEARCH_begin --><p>Expected content</p><!-- TYPO3SEARCH_end -->';
+
+        $contentExtractor = GeneralUtility::makeInstance(
+            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
+            $content
+        );
+
+        $actualResult = $contentExtractor->excludeContentByClass($content);
         $this->assertEquals($expectedResult, $actualResult);
     }
 
