@@ -1,15 +1,4 @@
 <?php
-
-########################################################################
-# Extension Manager/Repository config file for ext "solr".
-#
-# Auto generated 12-11-2012 16:14
-#
-# Manual updates:
-# Only the data in the array - everything else is removed by next
-# writing. "version" and "dependencies" must not be touched!
-########################################################################
-
 $EM_CONF[$_EXTKEY] = array(
     'title' => 'Apache Solr for TYPO3 - Enterprise Search',
     'description' => 'Apache Solr for TYPO3 is the enterprise search server you were looking for with special features such as Faceted Search or Synonym Support and incredibly fast response times of results within milliseconds.',
