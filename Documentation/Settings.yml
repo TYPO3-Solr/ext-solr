@@ -6,8 +6,8 @@
 conf.py:
   copyright: 2009-2015
   project: Apache Solr for TYPO3 - Enterprise Search
-  version: 3.1
-  release: 3.1.0-dev
+  version: 3.2
+  release: 3.2.0
   latex_documents:
   - - Index
     - solr.tex
