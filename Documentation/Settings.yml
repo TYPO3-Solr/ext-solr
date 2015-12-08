@@ -25,10 +25,4 @@ conf.py:
     t3tsref:
     - http://docs.typo3.org/typo3cms/TyposcriptReference/
     - null
-    t3start:
-    - http://docs.typo3.org/typo3cms/GettingStartedTutorial/
-    - null
-    t3editors:
-    - http://docs.typo3.org/typo3cms/EditorsTutorial/
-    - null
 ...
