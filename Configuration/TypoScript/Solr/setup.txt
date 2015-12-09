@@ -97,6 +97,9 @@ plugin.tx_solr {
 				// Only index standard pages and mount points that are not overlayed.
 				additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
 
+                //exclude some html parts inside TYPO3SEARCH markers by classname (comma list)
+                excludeContentByClass = typo3-search-exclude
+
 				fields {
 					sortSubTitle_stringS = subtitle
 				}
