@@ -46,7 +46,7 @@ Apache Solr for TYPO3 - Enterprise Search
 		|today|
 
 	The content of this document is related to TYPO3,
-	a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
+	a GNU/GPL CMS/Framework available from `typo3.org <http://www.typo3.org/>`_.
 
 
 	**Table of Contents**
