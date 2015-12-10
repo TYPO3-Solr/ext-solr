@@ -80,6 +80,6 @@ class TemplateTest extends FunctionalTest
         $template->addViewHelper('Crop');
         $result = $template->render(true);
 
-        $this->assertEquals('<div class="tx-solr">hallo.</div>', trim($result), 'Could not render simple template!');
+        $this->assertEquals('<div class="tx-solr">hello.</div>', trim($result), 'Could not render simple template!');
     }
 }
