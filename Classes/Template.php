@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\ViewHelper\SubpartViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Html\HtmlParser;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -77,6 +78,14 @@ class Template
 
         $this->loadHtmlFile($templateFile);
         $this->workOnSubpart($subpart);
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Service\MarkerBasedTemplateService
+     */
+    protected function getTemplateService()
+    {
+        return GeneralUtility::makeInstance('TYPO3\CMS\Core\Service\MarkerBasedTemplateService');
     }
 
     /**
@@ -277,7 +286,7 @@ class Template
                 $resolvedMarkers = $this->resolveVariableMarkers($variableMarkers,
                     $variable);
 
-                $this->workOnSubpart = HtmlParser::substituteMarkerArray(
+                $this->workOnSubpart = $this->getTemplateService()->substituteMarkerArray(
                     $this->workOnSubpart,
                     $resolvedMarkers,
                     '###|###'
@@ -286,14 +295,14 @@ class Template
         }
 
         // process markers
-        $this->workOnSubpart = HtmlParser::substituteMarkerArray(
+        $this->workOnSubpart = $this->getTemplateService()->substituteMarkerArray(
             $this->workOnSubpart,
             $this->markers
         );
 
         // process subparts
         foreach ($this->subparts as $subpart => $content) {
-            $this->workOnSubpart = HtmlParser::substituteSubpart(
+            $this->workOnSubpart = $this->getTemplateService()->substituteSubpart(
                 $this->workOnSubpart,
                 $subpart,
                 $content
@@ -368,7 +377,7 @@ class Template
         $unresolvedConditions = $this->findConditions($this->workOnSubpart);
         foreach ($unresolvedConditions as $unresolvedCondition) {
             // if condition evaluates to FALSE, remove the content from the template
-            $this->workOnSubpart = HtmlParser::substituteSubpart(
+            $this->workOnSubpart = $this->getTemplateService()->substituteSubpart(
                 $this->workOnSubpart,
                 $unresolvedCondition['marker'],
                 ''
@@ -441,7 +450,7 @@ class Template
 
             $viewHelperContent = $viewHelper->execute($viewHelperArguments);
 
-            $content = HtmlParser::substituteMarker(
+            $content = $this->getTemplateService()->substituteMarker(
                 $content,
                 '###' . $helperKey . ':' . $viewHelperArgumentList . '###',
                 $viewHelperContent
@@ -470,7 +479,7 @@ class Template
         foreach ($viewHelperArgumentLists as $viewHelperArgumentList) {
             $subpartMarker = '###' . $helperKey . ':' . $viewHelperArgumentList . '###';
 
-            $subpart = HtmlParser::getSubpart(
+            $subpart = $this->getTemplateService()->getSubpart(
                 $content,
                 $subpartMarker
             );
@@ -494,7 +503,7 @@ class Template
                 $viewHelperContent = '';
             }
 
-            $content = HtmlParser::substituteSubpart(
+            $content = $this->getTemplateService()->substituteSubpart(
                 $content,
                 $subpartMarker,
                 $viewHelperContent,
@@ -549,7 +558,7 @@ class Template
                 // pass the whole object / array / variable as is (serialized though)
                 $resolvedMarkers[$loopMarker] = serialize($value);
 
-                $currentIterationContent = HtmlParser::substituteMarkerArray(
+                $currentIterationContent = $this->getTemplateService()->substituteMarkerArray(
                     $loopSingleItem,
                     $resolvedMarkers,
                     '###|###'
@@ -576,19 +585,19 @@ class Template
             }
         }
 
-        $loopContent = HtmlParser::substituteSubpart(
+        $loopContent = $this->getTemplateService()->substituteSubpart(
             $loopTemplate,
             '###' . strtoupper($loopContentMarker) . '###',
             $loopContent
         );
 
-        $loopContent = HtmlParser::substituteMarkerArray(
+        $loopContent = $this->getTemplateService()->substituteMarkerArray(
             $loopContent,
             array('LOOP_ELEMENT_COUNT' => $loopCount),
             '###|###'
         );
 
-        $this->workOnSubpart = HtmlParser::substituteSubpart(
+        $this->workOnSubpart = $this->getTemplateService()->substituteSubpart(
             $this->workOnSubpart,
             '###LOOP:' . strtoupper($loopName) . '###',
             $loopContent
@@ -696,14 +705,14 @@ class Template
             if ($conditionResult) {
                 // if condition evaluates to TRUE, simply replace it with
                 // the original content to have the surrounding markers removed
-                $content = HtmlParser::substituteSubpart(
+                $content = $this->getTemplateService()->substituteSubpart(
                     $content,
                     $condition['marker'],
                     $condition['content']
                 );
             } else {
                 // if condition evaluates to FALSE, remove the content from the template
-                $content = HtmlParser::substituteSubpart(
+                $content = $this->getTemplateService()->substituteSubpart(
                     $content,
                     $condition['marker'],
                     ''
@@ -741,7 +750,7 @@ class Template
         foreach ($ifMarkers as $ifMarker) {
             list($comparand1, $operator, $comparand2) = explode('|', $ifMarker);
 
-            $ifContent = HtmlParser::getSubpart(
+            $ifContent = $this->getTemplateService()->getSubpart(
                 $content,
                 '###IF:' . $ifMarker . '###'
             );
@@ -928,7 +937,7 @@ class Template
             $template = $alternativeTemplate;
         }
 
-        $subpart = HtmlParser::getSubpart(
+        $subpart = $this->getTemplateService()->getSubpart(
             $template,
             '###' . strtoupper($subpartName) . '###'
         );

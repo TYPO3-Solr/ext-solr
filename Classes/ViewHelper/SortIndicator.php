@@ -70,14 +70,14 @@ class SortIndicator implements ViewHelper
                 if (!isset($imageConfiguration['file'])) {
                     $imageConfiguration['file'] = $defaultImagePrefix . 'Up.png';
                 }
-                $content = $contentObject->IMAGE($imageConfiguration);
+                $content = $contentObject->cObjGetSingle('IMAGE', $imageConfiguration);
                 break;
             case 'desc':
                 $imageConfiguration = $configuration['viewHelpers.']['sortIndicator.']['down.'];
                 if (!isset($imageConfiguration['file'])) {
                     $imageConfiguration['file'] = $defaultImagePrefix . 'Down.png';
                 }
-                $content = $contentObject->IMAGE($imageConfiguration);
+                $content = $contentObject->cObjGetSingle('IMAGE', $imageConfiguration);
                 break;
             case '###SORT.CURRENT_DIRECTION###':
             case '':

@@ -208,9 +208,9 @@ class JavascriptManager
     protected function addJsFile($file)
     {
         if ($this->javascriptInsertPosition == self::POSITION_HEADER) {
-            $GLOBALS['TSFE']->getPageRenderer()->addJsFile($file);
+            $this->getPageRenderer()->addJsFile($file);
         } else {
-            $GLOBALS['TSFE']->getPageRenderer()->addJsFooterFile($file);
+            $this->getPageRenderer()->addJsFooterFile($file);
         }
     }
 
@@ -222,12 +222,20 @@ class JavascriptManager
     protected function addJsInline($snippet)
     {
         if ($this->javascriptInsertPosition == self::POSITION_HEADER) {
-            $GLOBALS['TSFE']->getPageRenderer()->addJsInlineCode('tx_solr-javascript-inline',
+            $this->getPageRenderer()->addJsInlineCode('tx_solr-javascript-inline',
                 $snippet);
         } else {
-            $GLOBALS['TSFE']->getPageRenderer()->addJsFooterInlineCode('tx_solr-javascript-inline',
+            $this->getPageRenderer()->addJsFooterInlineCode('tx_solr-javascript-inline',
                 $snippet);
         }
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Page\PageRenderer
+     */
+    protected function getPageRenderer()
+    {
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Page\PageRenderer');
     }
 
     /**

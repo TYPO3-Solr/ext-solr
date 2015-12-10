@@ -29,6 +29,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 
 /**
  * A class to easily create a connection to a Solr server.
@@ -318,12 +319,13 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     {
         if ($GLOBALS['BE_USER']->isAdmin()) {
             $title = 'Initialize Solr connections';
+            $iconFactory = GeneralUtility::makeInstance('TYPO3\CMS\Core\Imaging\IconFactory');
 
             $cacheActions[] = array(
                 'id' => 'clearSolrConnectionCache',
                 'title' => $title,
                 'href' => BackendUtility::getAjaxUrl('solr::clearSolrConnectionCache'),
-                'icon' => IconUtility::getSpriteIcon('extensions-solr-InitSolrConnections')
+                'icon' => $iconFactory->getIcon('extensions-solr-module-initsolrconnections', Icon::SIZE_SMALL)
             );
             $optionValues[] = 'clearSolrConnectionCache';
         }

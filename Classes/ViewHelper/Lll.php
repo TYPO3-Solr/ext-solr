@@ -60,6 +60,13 @@ class Lll implements ViewHelper
     protected $localLang;
 
     /**
+     * An instance of the localization factory
+     *
+     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory
+     */
+    protected $languageFactory;
+
+    /**
      * Constructor
      *
      * @param array $arguments
@@ -73,7 +80,7 @@ class Lll implements ViewHelper
                 1234972358
             );
         }
-
+        $this->languageFactory = GeneralUtility::makeInstance('TYPO3\CMS\Core\Localization\LocalizationFactory');
         $this->languageFile = $arguments['languageFile'];
         $this->llKey = $arguments['llKey'];
 
@@ -89,10 +96,11 @@ class Lll implements ViewHelper
     {
         $configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
 
-        $this->localLang[$this->languageFile] = GeneralUtility::readLLfile(
+        $this->localLang[$this->languageFile] = $this->languageFactory->getParsedData(
             $this->languageFile,
             $this->llKey,
-            $GLOBALS['TSFE']->renderCharset
+            $GLOBALS['TSFE']->renderCharset,
+            3
         );
 
         // Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):

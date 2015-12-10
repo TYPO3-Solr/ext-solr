@@ -2,6 +2,11 @@
 @import "BootstrapTypo3.css";
 @import "Backend/IndexingConfigurationSelectorField.css";
 
+/* ----- icons ----- */
+
+[class^="icon-"], [class*=" icon-"] {
+	background-image: none!important;
+}
 
 /* ----- module menu ----- */
 
@@ -180,3 +185,5 @@ table.tx_solr_index_list {
 form input[type="text"] {
 	width: 250px;
 }
+
+
