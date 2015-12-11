@@ -107,6 +107,18 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
                 );
             }
         }
+        $this->emitAfterIndexItemsSignal($itemsToIndex);
+    }
+
+    /**
+     * Emits a signal after all items was indexed
+     *
+     * @param array $itemsToIndex
+     */
+    protected function emitAfterIndexItemsSignal($itemsToIndex)
+    {
+        $signalSlotDispatcher = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
+        $signalSlotDispatcher->dispatch(__CLASS__, 'afterIndexItems', array($itemsToIndex, $this));
     }
 
     /**
