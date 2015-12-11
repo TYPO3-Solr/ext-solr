@@ -266,8 +266,7 @@ class RecordMonitor
                 if ($this->isEnabledRecord($recordTable, $record)) {
                     $configurationName = null;
                     if ($recordTable !== 'pages') {
-                        $configurationName = $this->getIndexingConfigurationName($table,
-                            $uid);
+                        $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
                     }
 
                     $this->indexQueue->updateItem($recordTable, $recordUid,

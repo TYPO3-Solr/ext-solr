@@ -32,30 +32,13 @@
 
                     index {
                         queue {
-
-                            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
-
-                            pages = 1
-                            pages {
-                                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
-
-                                // allowed page types (doktype) when indexing records from table "pages"
-                                allowedPageTypes = 1,7
-
-                                indexingPriority = 0
-
-                                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
-                                indexer {
-                                    // add options for the indexer here
-                                }
-
-                                // Only index standard pages and mount points that are not overlayed.
-                                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+                            foo = 1
+                            foo {
+                                table = tx_fakeextension_domain_model_foo
 
                                 fields {
-                                    sortSubTitle_stringS = subtitle
+                                    title = title
                                 }
-                            }
 
                         }
                     }
@@ -69,5 +52,10 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
     </pages>
+    <tx_fakeextension_domain_model_foo>
+        <uid>8</uid>
+        <pid>1</pid>
+        <title>testnews</title>
+    </tx_fakeextension_domain_model_foo>
 
 </dataset>

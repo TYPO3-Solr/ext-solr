@@ -43,7 +43,7 @@ class TemplateTest extends FunctionalTest
         parent::setUp();
         chdir(PATH_site);
 
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['addAllowedPaths'] = $this->getFixturePath();
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['addAllowedPaths'] = $this->getFixtureRootPath();
 
         $TT = $this->getMock('\TYPO3\CMS\Core\TimeTracker\TimeTracker', array(), array(), '', false);
         $TT->expects($this->any())->method('setTSlogMessage')->will($this->returnCallback(function ($message) {

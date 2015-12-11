@@ -121,4 +121,46 @@ class RecordMonitorTest extends FunctionalTest
         $this->assertNotEmptyIndexQueue();
 
     }
+
+    /**
+     * Regression test for issue #48. Indexing of new records will crash if the name of the Indexing
+     * Queue Configuration is different from tablename
+     * @see https://github.com/TYPO3-Solr/ext-solr/issues/48
+     * @test
+     */
+    public function canUseCorrectIndexingConfigurationForANewNonPagesRecord()
+    {
+        // create fake extension database table and tca
+        $this->importDumpFromFixture('fake_extension_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+
+        // create faked tce main call data
+        $status = 'new';
+        $table = 'tx_fakeextension_domain_model_foo';
+        $uid = 'NEW566a9eac309d8193936351';
+        $fields = array(
+            'title' => 'testnews',
+            'pid' => 1,
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000
+        );
+        $this->dataHandler->substNEWwithIDs = array('NEW566a9eac309d8193936351' => 8);
+
+        $this->importDataSetFromFixture('new_non_pages_record_is_using_correct_configuration_name.xml');
+
+        // we expect that the index queue is empty before we start
+        $this->assertEmptyIndexQueue();
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        // we expect to have an index queue item now
+        $this->assertNotEmptyIndexQueue();
+
+        // and we check that the record in the queue has the expected configuration name
+        $items = $this->indexQueue->getItems('tx_fakeextension_domain_model_foo', 8);
+        $this->assertSame(1, count($items));
+        $this->assertSame('foo', $items[0]->getIndexingConfigurationName(),
+            'Item was queued with unexpected configuration');
+    }
 }
