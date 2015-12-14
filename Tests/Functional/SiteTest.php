@@ -33,13 +33,14 @@ use ApacheSolrForTypo3\Solr\Site;
  * @package TYPO3
  * @subpackage solr
  */
-
-class SiteTest extends FunctionalTest {
+class SiteTest extends FunctionalTest
+{
 
     /**
      * @test
      */
-    public function canGetAllSites() {
+    public function canGetAllSites()
+    {
         $this->importDataSetFromFixture('can_get_all_sites.xml');
         $sites = Site::getAvailableSites();
         $this->assertSame(1, count($sites), 'Expected to retrieve one site from fixture');

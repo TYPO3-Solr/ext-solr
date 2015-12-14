@@ -64,17 +64,56 @@ abstract class FunctionalTest extends TYPO3FunctionalTest
      */
     protected function importDataSetFromFixture($fixtureName)
     {
-        $this->importDataSet($this->getFixturePath() . $fixtureName);
+        $this->importDataSet($this->getFixtureRootPath() . $fixtureName);
     }
 
     /**
-     * Returns the absolute path to a fixture.
+     * Returns the absolute root path to the fixtures.
      *
      * @return string
      */
-    protected function getFixturePath()
+    protected function getFixtureRootPath()
     {
         return $this->getRuntimeDirectory() . '/Fixtures/';
+    }
+
+    /**
+     * Returns the absolute path to a fixture file.
+     *
+     * @return string
+     */
+    protected function getFixturePath($fixtureName)
+    {
+        return $this->getFixtureRootPath() . $fixtureName;
+    }
+
+    /**
+     * Returns the content of a fixture file.
+     *
+     * @param string $fixtureName
+     * @return string
+     */
+    protected function getFixtureContent($fixtureName)
+    {
+        return file_get_contents($this->getFixturePath($fixtureName));
+    }
+
+    /**
+     * @param string $fixtureName
+     */
+    protected function importDumpFromFixture($fixtureName)
+    {
+        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
+        $database = $GLOBALS['TYPO3_DB'];
+        $database->debugOutput = true;
+
+        $dumpContent = $this->getFixtureContent($fixtureName);
+        $dumpContent = str_replace(array("\r", "\n"), '', $dumpContent);
+
+        $queries = explode(";", $dumpContent);
+        foreach ($queries as $query) {
+            $database->sql_query($query);
+        }
     }
 
     /**
