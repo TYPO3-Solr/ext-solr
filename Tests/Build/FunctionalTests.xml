@@ -14,8 +14,8 @@
 	verbose="false">
 
 	<testsuites>
-		<testsuite name="ext-solr-functional-tests">
-			<directory>../Functional/</directory>
+		<testsuite name="ext-solr-integration-tests">
+			<directory>../Integration/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

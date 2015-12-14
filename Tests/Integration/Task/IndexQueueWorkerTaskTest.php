@@ -4,7 +4,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 /**
  * This function is used to overwrite uniqid in the IndexQueue context to provide a fake request id.
- * We use this since this is a functional test and the unique id could not be injected from outside.
+ * We use this since this is a integration test and the unique id could not be injected from outside.
  *
  * @return string
  */

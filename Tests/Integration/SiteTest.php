@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Site;
 
 /**
- * Base class for all functional tests in the solr project
+ * Site class tests
  *
  * @author Timo Schmidt
  * @package TYPO3

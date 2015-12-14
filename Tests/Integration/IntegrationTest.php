@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
 
 /**
- * Base class for all functional tests in the solr project
+ * Base class for all integration tests in the EXT:solr project
  *
  * @author Timo Schmidt
  * @package TYPO3

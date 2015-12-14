@@ -11,7 +11,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  *  * Returns the faked indexing Response on the second http call.
  *
  * Class IndexQueueDependecyFaker
- * @package ApacheSolrForTypo3\Solr\Tests\Functional\Task
+ * @package ApacheSolrForTypo3\Solr\Tests\Integration\Task
  */
 class IndexQueueDependecyFaker
 {
