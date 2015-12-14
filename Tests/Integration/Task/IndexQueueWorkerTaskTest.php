@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  */
 function uniqid()
 {
-    return \ApacheSolrForTypo3\Solr\Tests\Functional\Task\IndexQueueDependecyFaker::getRequestId();
+    return \ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependecyFaker::getRequestId();
 }
 
 /**
@@ -24,11 +24,11 @@ function uniqid()
  */
 function file_get_contents($url, $flags, $context)
 {
-    return \ApacheSolrForTypo3\Solr\Tests\Functional\Task\IndexQueueDependecyFaker::getHttpContent($url, $flags,
+    return \ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependecyFaker::getHttpContent($url, $flags,
         $context);
 }
 
-namespace ApacheSolrForTypo3\Solr\Tests\Functional\Task;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 
 /***************************************************************
  *  Copyright notice
@@ -55,7 +55,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Functional\Task;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\Tests\Functional\FunctionalTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -67,7 +67,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class IndexQueueWorkerTest extends FunctionalTest
+class IndexQueueWorkerTest extends IntegrationTest
 {
     /**
      * @var Queue

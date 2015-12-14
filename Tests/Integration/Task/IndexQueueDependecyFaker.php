@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Functional\Task;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 
 /**
  * This class is used to fake the dependencies of the IndexQueue, to simulate a sucessful frontend

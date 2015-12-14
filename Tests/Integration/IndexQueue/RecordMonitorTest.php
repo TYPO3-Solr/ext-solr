@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Functional\IndexQueue;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
 /***************************************************************
  *  Copyright notice
@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Functional\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Tests\Functional\FunctionalTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class RecordMonitorTest extends FunctionalTest
+class RecordMonitorTest extends IntegrationTest
 {
 
     /**

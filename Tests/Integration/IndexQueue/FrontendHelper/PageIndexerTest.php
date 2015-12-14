@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Functional\IndexQueue;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 
 /***************************************************************
  *  Copyright notice
@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Functional\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Tests\Functional\FunctionalTest;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -35,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Tests\Functional\FunctionalTest;
  * @package TYPO3
  * @subpackage solr
  */
-class PageIndexerTest extends FunctionalTest
+class PageIndexerTest extends IntegrationTest
 {
 
     /**

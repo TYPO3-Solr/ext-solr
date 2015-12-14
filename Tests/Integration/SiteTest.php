@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Functional;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 /***************************************************************
  *  Copyright notice
@@ -33,7 +33,7 @@ use ApacheSolrForTypo3\Solr\Site;
  * @package TYPO3
  * @subpackage solr
  */
-class SiteTest extends FunctionalTest
+class SiteTest extends IntegrationTest
 {
 
     /**
