@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
+EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 
 if [ -z $TYPO3_VERSION ]; then
 	echo "Must set env var TYPO3_VERSION"
@@ -29,3 +30,5 @@ export TYPO3_PATH_WEB=$SCRIPTPATH/.Build/Web
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
 
+# Setup Solr Using our install script
+sudo ${EXTENSION_ROOTPATH}Resources/Install/install-solr-tomcat.sh
