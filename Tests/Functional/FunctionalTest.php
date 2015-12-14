@@ -80,6 +80,7 @@ abstract class FunctionalTest extends TYPO3FunctionalTest
     /**
      * Returns the absolute path to a fixture file.
      *
+     * @param $fixtureName
      * @return string
      */
     protected function getFixturePath($fixtureName)
