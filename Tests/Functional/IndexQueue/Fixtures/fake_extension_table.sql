@@ -1,6 +1,6 @@
-drop table if exists tx_fakeextension_domain_model_foo;
+DROP TABLE if exists tx_fakeextension_domain_model_foo;
 
-create table tx_fakeextension_domain_model_foo (
+CREATE TABLE tx_fakeextension_domain_model_foo (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
 	tstamp int(11) DEFAULT '0' NOT NULL,

@@ -1,7 +1,7 @@
 <?php
 
-return [
-    'ctrl' => [
+return array(
+    'ctrl' => array(
         'title' => $ll . 'tx_fakeextension_domain_model_foo',
         'descriptionColumn' => 'tag',
         'label' => 'title',
@@ -21,142 +21,142 @@ return [
         'default_sortby' => 'ORDER BY datetime DESC',
         'sortby' => 'sorting',
         'delete' => 'deleted',
-        'enablecolumns' => [
+        'enablecolumns' => array(
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime'
-        ],
+        ),
         'searchFields' => 'uid,title',
-    ],
-    'interface' => [
+    ),
+    'interface' => array(
         'showRecordFieldList' => 'cruser_id,pid,sys_language_uid,l10n_parent,l10n_diffsource,hidden,starttime,endtime,title'
-    ],
-    'columns' => [
-        'sys_language_uid' => [
+    ),
+    'columns' => array(
+        'sys_language_uid' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
-            'config' => [
+            'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'special' => 'languages',
-                'items' => [
-                    [
+                'items' => array(
+                    array(
                         'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
                         -1,
                         'flags-multiple'
-                    ],
-                ],
+                    ),
+                ),
                 'default' => 0,
-            ]
-        ],
-        'l10n_parent' => [
+            )
+        ),
+        'l10n_parent' => array(
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
-            'config' => [
+            'config' => array(
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
+                'items' => array(
+                    array('', 0),
+                ),
                 'foreign_table' => 'tx_fakeextension_domain_model_foo',
                 'foreign_table_where' => 'AND tx_fakeextension_domain_model_foo.pid=###CURRENT_PID### AND tx_fakeextension_domain_model_foo.sys_language_uid IN (-1,0)',
                 'showIconTable' => false
-            ]
-        ],
-        'l10n_diffsource' => [
-            'config' => [
+            )
+        ),
+        'l10n_diffsource' => array(
+            'config' => array(
                 'type' => 'passthrough',
                 'default' => ''
-            ]
-        ],
-        'hidden' => [
+            )
+        ),
+        'hidden' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
-            'config' => [
+            'config' => array(
                 'type' => 'check',
                 'default' => 0
-            ]
-        ],
-        'cruser_id' => [
+            )
+        ),
+        'cruser_id' => array(
             'label' => 'cruser_id',
-            'config' => [
+            'config' => array(
                 'type' => 'passthrough'
-            ]
-        ],
-        'pid' => [
+            )
+        ),
+        'pid' => array(
             'label' => 'pid',
-            'config' => [
+            'config' => array(
                 'type' => 'passthrough'
-            ]
-        ],
-        'crdate' => [
+            )
+        ),
+        'crdate' => array(
             'label' => 'crdate',
-            'config' => [
+            'config' => array(
                 'type' => 'passthrough',
-            ]
-        ],
-        'tstamp' => [
+            )
+        ),
+        'tstamp' => array(
             'label' => 'tstamp',
-            'config' => [
+            'config' => array(
                 'type' => 'passthrough',
-            ]
-        ],
-        'sorting' => [
+            )
+        ),
+        'sorting' => array(
             'label' => 'sorting',
-            'config' => [
+            'config' => array(
                 'type' => 'passthrough',
-            ]
-        ],
-        'starttime' => [
+            )
+        ),
+        'starttime' => array(
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:cms/locallang_ttc.xlf:starttime_formlabel',
-            'config' => [
+            'config' => array(
                 'type' => 'input',
                 'size' => 8,
                 'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
-            ]
-        ],
-        'endtime' => [
+            )
+        ),
+        'endtime' => array(
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:cms/locallang_ttc.xlf:endtime_formlabel',
-            'config' => [
+            'config' => array(
                 'type' => 'input',
                 'size' => 8,
                 'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
-            ]
-        ],
-        'title' => [
+            )
+        ),
+        'title' => array(
             'exclude' => 0,
             'l10n_mode' => 'prefixLangTitle',
             'label' => 'LLL:EXT:cms/locallang_ttc.xlf:header_formlabel',
-            'config' => [
+            'config' => array(
                 'type' => 'input',
                 'size' => 60,
                 'eval' => 'required',
-            ]
-        ],
+            )
+        ),
 
 
-        'editlock' => [
+        'editlock' => array(
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:lang/locallang_tca.xlf:editlock',
-            'config' => [
+            'config' => array(
                 'type' => 'check'
-            ]
-        ]
+            )
+        )
 
-    ],
-    'types' => [
-        '0' => [
+    ),
+    'types' => array(
+        '0' => array(
             'showitem' => 'l10n_parent, l10n_diffsource,title'
-        ]
-    ]
-];
+        )
+    )
+);

@@ -130,7 +130,7 @@ class RecordMonitorTest extends FunctionalTest
      */
     public function canUseCorrectIndexingConfigurationForANewNonPagesRecord()
     {
-        // create fake extension database table and tca
+        // create fake extension database table and TCA
         $this->importDumpFromFixture('fake_extension_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
 
