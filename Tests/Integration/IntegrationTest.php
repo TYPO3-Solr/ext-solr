@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Functional;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 /***************************************************************
  *  Copyright notice
@@ -25,16 +25,16 @@ namespace ApacheSolrForTypo3\Solr\Tests\Functional;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3FunctionalTest;
+use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
 
 /**
- * Base class for all functional tests in the solr project
+ * Base class for all integration tests in the EXT:solr project
  *
  * @author Timo Schmidt
  * @package TYPO3
  * @subpackage solr
  */
-abstract class FunctionalTest extends TYPO3FunctionalTest
+abstract class IntegrationTest extends TYPO3IntegrationTest
 {
 
     /**

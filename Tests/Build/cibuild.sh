@@ -24,10 +24,10 @@ fi
 echo "Run unit tests"
 .Build/bin/phpunit --colors -c Tests/Build/UnitTests.xml
 
-echo "Run functional tests"
+echo "Run integration tests"
 export typo3DatabaseName="typo3";
 export typo3DatabaseHost="localhost";
 export typo3DatabaseUsername="root";
 export typo3DatabasePassword="";
 
-.Build/bin/phpunit --colors -c Tests/Build/FunctionalTests.xml
+.Build/bin/phpunit --colors -c Tests/Build/IntegrationTests.xml

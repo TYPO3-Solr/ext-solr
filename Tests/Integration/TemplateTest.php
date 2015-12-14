@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Functional;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 /***************************************************************
  *  Copyright notice
@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class TemplateTest extends FunctionalTest
+class TemplateTest extends IntegrationTest
 {
 
     public function setUp()
@@ -71,7 +71,7 @@ class TemplateTest extends FunctionalTest
     {
         /** @var $cObj \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer */
         $cObj = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
-        $testTemplatePath = 'EXT:solr/Tests/Functional/Fixtures/test_template.html';
+        $testTemplatePath = 'EXT:solr/Tests/Integration/Fixtures/test_template.html';
 
         /** @var $template \ApacheSolrForTypo3\Solr\Template */
         $template = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Template', $cObj, $testTemplatePath,
