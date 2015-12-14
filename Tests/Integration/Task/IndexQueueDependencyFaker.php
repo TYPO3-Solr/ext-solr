@@ -13,7 +13,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  * Class IndexQueueDependecyFaker
  * @package ApacheSolrForTypo3\Solr\Tests\Integration\Task
  */
-class IndexQueueDependecyFaker
+class IndexQueueDependencyFaker
 {
 
     /**

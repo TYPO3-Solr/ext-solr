@@ -10,7 +10,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  */
 function uniqid()
 {
-    return \ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependecyFaker::getRequestId();
+    return \ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependencyFaker::getRequestId();
 }
 
 /**
@@ -24,7 +24,7 @@ function uniqid()
  */
 function file_get_contents($url, $flags, $context)
 {
-    return \ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependecyFaker::getHttpContent($url, $flags,
+    return \ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependencyFaker::getHttpContent($url, $flags,
         $context);
 }
 
