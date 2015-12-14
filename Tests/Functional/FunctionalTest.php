@@ -80,6 +80,7 @@ abstract class FunctionalTest extends TYPO3FunctionalTest
     /**
      * Returns the absolute path to a fixture file.
      *
+     * @param $fixtureName
      * @return string
      */
     protected function getFixturePath($fixtureName)
@@ -110,7 +111,7 @@ abstract class FunctionalTest extends TYPO3FunctionalTest
         $dumpContent = $this->getFixtureContent($fixtureName);
         $dumpContent = str_replace(array("\r", "\n"), '', $dumpContent);
 
-        $queries = explode(";", $dumpContent);
+        $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
         foreach ($queries as $query) {
             $database->sql_query($query);
         }
