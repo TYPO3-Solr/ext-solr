@@ -111,7 +111,7 @@ abstract class FunctionalTest extends TYPO3FunctionalTest
         $dumpContent = $this->getFixtureContent($fixtureName);
         $dumpContent = str_replace(array("\r", "\n"), '', $dumpContent);
 
-        $queries = GeneralUtility::trimExplode(';', $dumpContent);
+        $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
         foreach ($queries as $query) {
             $database->sql_query($query);
         }
