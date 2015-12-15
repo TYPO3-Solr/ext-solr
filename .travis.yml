@@ -7,6 +7,12 @@ php:
 sudo: true
 
 env:
+  global:
+    - TYPO3_DATABASE_NAME="typo3_ci"
+    - TYPO3_DATABASE_HOST="localhost"
+    - TYPO3_DATABASE_USERNAME="root"
+    - TYPO3_DATABASE_PASSWORD=""
+
   matrix:
     - TYPO3_VERSION="~7.6.0"
     - TYPO3_VERSION="dev-master"

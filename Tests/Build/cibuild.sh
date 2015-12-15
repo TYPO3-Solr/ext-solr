@@ -25,9 +25,37 @@ echo "Run unit tests"
 .Build/bin/phpunit --colors -c Tests/Build/UnitTests.xml
 
 echo "Run integration tests"
-export typo3DatabaseName="typo3";
-export typo3DatabaseHost="localhost";
-export typo3DatabaseUsername="root";
-export typo3DatabasePassword="";
+
+#
+# Map the travis and shell variale names to the expected
+# casing of the TYPO3 core.
+#
+if [ -n $TYPO3_DATABASE_NAME ]; then
+	export typo3DatabaseName=$TYPO3_DATABASE_NAME
+else
+	echo "No environment variable TYPO3_DATABASE_NAME set. Please set it to run the integration tests."
+	exit 1
+fi
+
+if [ -n $TYPO3_DATABASE_HOST ]; then
+	export typo3DatabaseHost=$TYPO3_DATABASE_HOST
+else
+	echo "No environment variable TYPO3_DATABASE_HOST set. Please set it to run the integration tests."
+	exit 1
+fi
+
+if [ -n $TYPO3_DATABASE_USERNAME ]; then
+	export typo3DatabaseUsername=$TYPO3_DATABASE_USERNAME
+else
+	echo "No environment variable TYPO3_DATABASE_USERNAME set. Please set it to run the integration tests."
+	exit 1
+fi
+
+if [ -n $TYPO3_DATABASE_PASSWORD ]; then
+	export typo3DatabasePassword=$TYPO3_DATABASE_PASSWORD
+else
+	echo "No environment variable TYPO3_DATABASE_PASSWORD set. Please set it to run the integration tests."
+	exit 1
+fi
 
 .Build/bin/phpunit --colors -c Tests/Build/IntegrationTests.xml

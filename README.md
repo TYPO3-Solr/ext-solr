@@ -56,6 +56,31 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 
     http://lists.typo3.org/cgi-bin/mailman/listinfo/typo3-project-solr
 
+## Continous Integration
+
+We use travis ci for continues integration. To run the whole test suite locally for one TYPO3 Version do the following:
+
+First you need to set some environment variables and boostrap the system with the bootstrap script (you only need to do this once):
+
+```bash
+chmod u+x ./Resources/Install/*.sh
+chmod u+x ./Tests/Build/*.sh
+
+export TYPO3_VERSION="~7.6.0"
+export TYPO3_DATABASE_NAME="typo3_ci"
+export TYPO3_DATABASE_USERNAME="root"
+export TYPO3_DATABASE_PASSWORD=""
+export TYPO3_DATABASE_HOST="localhost"
+
+./Tests/Build/bootstrap.sh
+```
+
+Now you can run the complete test suite:
+
+```bash
+./Tests/Build/cibuild.sh
+```
+
 ## <a name="Contributions"></a>Contributions
 
 1. Fork the repository on Github
