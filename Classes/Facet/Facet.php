@@ -162,6 +162,7 @@ class Facet
         // facet options include '_empty_', if no options are given
         if ($optionsCount == 0
             || ($optionsCount == 1 && array_key_exists('_empty_', $options))
+            || (!empty($this->configuration['showWithMinimumOption']) && ($optionsCount < (int)$this->configuration['showWithMinimumOption']))
         ) {
             $isEmpty = true;
         }
