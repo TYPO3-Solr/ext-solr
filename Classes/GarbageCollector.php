@@ -35,8 +35,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Garbage collection will happen for online/LIVE workspaces only.
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class GarbageCollector
+class GarbageCollector extends AbstractDataHandlerListener
 {
 
     protected $trackedRecords = array();
@@ -67,6 +68,27 @@ class GarbageCollector
                 $indexQueue->deleteItem($table, $uid);
             }
         }
+    }
+
+    /**
+     * Holds the configuration when a recursive page queing should be triggered.
+     *
+     * @var array
+     */
+    protected function getUpdateSubPagesRecursiveTriggerConfiguration()
+    {
+        return array(
+            // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 1
+            'extendToSubpageEnabledAndHiddenFlagWasAdded' => array(
+                'currentState' =>  array('extendToSubpages' => 1),
+                'changeSet' => array('hidden' => 1)
+            ),
+            // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 1
+            'hiddenIsEnabledAndExtendToSubPagesWasAdded' => array(
+                'currentState' =>  array('hidden' => 1),
+                'changeSet' => array('extendToSubpages' => 1)
+            )
+        );
     }
 
     /**
@@ -137,9 +159,33 @@ class GarbageCollector
                 $indexQueue->updateItem($table, $uid);
                 break;
             case 'pages':
+
                 $this->deleteIndexDocuments($table, $uid);
                 $indexQueue->deleteItem($table, $uid);
+
                 break;
+        }
+    }
+
+    /**
+     * @param $table
+     * @param $uid
+     * @param $changedFields
+     * @param $indexQueue
+     */
+    protected function deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $changedFields)
+    {
+        if (!$this->isRecursiveUpdateRequired($uid, $changedFields)) {
+            return;
+        }
+
+        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
+        // get affected subpages when "extendToSubpages" flag was set
+        $pagesToDelete = $this->getSubPageIds($uid);
+        // we need to at least remove this page
+        foreach ($pagesToDelete as $pageToDelete) {
+            $this->deleteIndexDocuments($table, $pageToDelete);
+            $indexQueue->deleteItem($table, $pageToDelete);
         }
     }
 
@@ -156,7 +202,6 @@ class GarbageCollector
 
         // record can be indexed for multiple sites
         $indexQueueItems = $indexQueue->getItems($table, $uid);
-
         foreach ($indexQueueItems as $indexQueueItem) {
             $site = $indexQueueItem->getSite();
 
@@ -360,6 +405,10 @@ class GarbageCollector
             || ($table == 'pages' && !$this->isIndexablePageType($record))
         ) {
             $this->collectGarbage($table, $uid);
+
+            if ($table == 'pages') {
+                $this->deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $fields);
+            }
         }
     }
 
