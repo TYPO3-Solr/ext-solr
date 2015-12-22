@@ -80,13 +80,13 @@ class GarbageCollector extends AbstractDataHandlerListener
         return array(
             // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 1
             'extendToSubpageEnabledAndHiddenFlagWasAdded' => array(
-                'currentState' =>  array('extendToSubpages' => 1),
-                'changeSet' => array('hidden' => 1)
+                'currentState' =>  array('extendToSubpages' => "1"),
+                'changeSet' => array('hidden' => "1")
             ),
             // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 1
             'hiddenIsEnabledAndExtendToSubPagesWasAdded' => array(
-                'currentState' =>  array('hidden' => 1),
-                'changeSet' => array('extendToSubpages' => 1)
+                'currentState' =>  array('hidden' => "1"),
+                'changeSet' => array('extendToSubpages' => "1")
             )
         );
     }

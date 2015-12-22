@@ -44,7 +44,7 @@ abstract class AbstractDataHandlerListener
     /**
      * @return array
      */
-    private function getAllRelevantFieldsForCurrentState()
+    protected function getAllRelevantFieldsForCurrentState()
     {
         $allCurrentStateFieldnames = array();
 
@@ -94,10 +94,10 @@ abstract class AbstractDataHandlerListener
         $fieldsForCurrentState = $this->getAllRelevantFieldsForCurrentState();
         $fieldListToRetrieve = implode(",", $fieldsForCurrentState);
         $page = BackendUtility::getRecord('pages', $pageId, $fieldListToRetrieve, '', false);
-
-        foreach ($this->getUpdateSubPagesRecursiveTriggerConfiguration() as $triggerConfiguration) {
+        foreach ($this->getUpdateSubPagesRecursiveTriggerConfiguration() as $configurationName => $triggerConfiguration) {
             $allCurrentStateFieldsMatch = $this->getAllCurrentStateFieldsMatch($triggerConfiguration, $page);
             $allChangeSetValuesMatch = $this->getAllChangeSetValuesMatch($triggerConfiguration, $changedFields);
+
             $aMatchingTriggerHasBeenFound = $allCurrentStateFieldsMatch && $allChangeSetValuesMatch;
             if ($aMatchingTriggerHasBeenFound) {
                 return true;
@@ -112,16 +112,14 @@ abstract class AbstractDataHandlerListener
      * @param array $pageRecord
      * @return bool
      */
-    private function getAllCurrentStateFieldsMatch($triggerConfiguration, $pageRecord)
+    protected function getAllCurrentStateFieldsMatch($triggerConfiguration, $pageRecord)
     {
-        $allCurrentStateFieldsMatch = true;
-        foreach ($triggerConfiguration['currentState'] as $expectedCurrentFieldName => $expectedCurrentValue) {
-            if ($pageRecord[$expectedCurrentFieldName] != $expectedCurrentValue) {
-                $allCurrentStateFieldsMatch = false;
-                break;
-            }
+        $triggerConfigurationHasNoCurrentStateConfiguration = !array_key_exists('currentState', $triggerConfiguration);
+        if ($triggerConfigurationHasNoCurrentStateConfiguration) {
+            return true;
         }
-        return $allCurrentStateFieldsMatch;
+        $diff = array_diff_assoc($triggerConfiguration['currentState'], $pageRecord);
+        return empty($diff);
     }
 
     /**
@@ -129,16 +127,15 @@ abstract class AbstractDataHandlerListener
      * @param array $changedFields
      * @return bool
      */
-    private function getAllChangeSetValuesMatch($triggerConfiguration, $changedFields)
+    protected function getAllChangeSetValuesMatch($triggerConfiguration, $changedFields)
     {
-        $allChangeSetValuesMatch = true;
-        foreach ($triggerConfiguration['changeSet'] as $expectedChangeSetFieldName => $expectedChangeSetValue) {
-            if ($changedFields[$expectedChangeSetFieldName] != $expectedChangeSetValue) {
-                $allChangeSetValuesMatch = false;
-                break;
-            }
+        $triggerConfigurationHasNoChangeSetStateConfiguration = !array_key_exists('changeSet', $triggerConfiguration);
+        if ($triggerConfigurationHasNoChangeSetStateConfiguration) {
+            return true;
         }
-        return $allChangeSetValuesMatch;
+
+        $diff = array_diff_assoc($triggerConfiguration['changeSet'], $changedFields);
+        return empty($diff);
     }
 
     /**

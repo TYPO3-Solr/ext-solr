@@ -224,4 +224,29 @@ class RecordMonitorTest extends IntegrationTest
         // pages with uid 10 and 100 should be in index, but 11 not
         $this->assertIndexQueryContainsItemAmount(2);
     }
+
+    /**
+     * @test
+     */
+    public function queueIsNotFilledWhenItemIsSetToHidden()
+    {
+        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
+        $database = $GLOBALS['TYPO3_DB'];
+        $database->debugOutput = true;
+        $this->importDataSetFromFixture('reindex_subpages_when_hidden_set_and_extendToSubpage_removed.xml');
+
+        // we expect that the index queue is empty before we start
+        $this->assertEmptyIndexQueue();
+
+        // simulate the database change and build a faked changeset
+        $database->exec_UPDATEquery('pages','uid=1',array('hidden' => 1));
+        $changeSet = array('hidden' => 1);
+
+        $dataHandler = $this->dataHandler;
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+
+        // we assert that the index queue is still empty because the page was only set to hidden
+        $this->assertEmptyIndexQueue();
+
+    }
 }
