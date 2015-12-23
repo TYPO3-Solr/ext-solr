@@ -56,7 +56,7 @@ if (TYPO3_MODE == 'BE') {
         array(
             'access' => 'admin',
             'iconIdentifier' => 'extensions-solr-module-administration',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/ModuleAdministration.xlf',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/ModuleAdministration/locallang.xlf',
         )
     );
 

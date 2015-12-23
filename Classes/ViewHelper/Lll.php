@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\LanguageFileUnavailableException;
+use TYPO3\CMS\Core\FormProtection\Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -193,6 +194,7 @@ class Lll implements ViewHelper
         } else {
             $label = $this->localLang[$locallang]['default'][$labelKey];
         }
+
 
         // TYPO3 4.6 workaround until we support xliff
         if (is_array($label)) {
