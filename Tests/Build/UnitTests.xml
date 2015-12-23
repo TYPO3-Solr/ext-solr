@@ -19,5 +19,9 @@
 			<directory>../Unit/</directory>
 		</testsuite>
 	</testsuites>
-
+	<filter>
+		<whitelist processUncoveredFilesFromWhitelist="false">
+			<directory suffix=".php">../../Classes/</directory>
+		</whitelist>
+	</filter>
 </phpunit>

@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -77,7 +78,16 @@ class RecordMonitorTest extends IntegrationTest
     protected function assertNotEmptyIndexQueue()
     {
         $this->assertGreaterThan(0, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty');
+            'Index queue is empty and was expected to be not empty.');
+    }
+
+    /**
+     * @param $amount
+     */
+    protected function assertIndexQueryContainsItemAmount($amount)
+    {
+        $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
+            'Index queue is empty and was expected to contain '.(int) $amount.' items.');
     }
 
     /**
@@ -162,5 +172,81 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertSame(1, count($items));
         $this->assertSame('foo', $items[0]->getIndexingConfigurationName(),
             'Item was queued with unexpected configuration');
+    }
+
+    /**
+     * @test
+     */
+    public function canQueueSubPagesWhenExtendToSubPagesWasSetAndHiddenFlagWasRemoved()
+    {
+        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
+        $database = $GLOBALS['TYPO3_DB'];
+        $database->debugOutput = true;
+        $this->importDataSetFromFixture('reindex_subpages_when_extendToSubpages_set_and_hidden_removed.xml');
+
+        // we expect that the index queue is empty before we start
+        $this->assertEmptyIndexQueue();
+
+        // simulate the database change and build a faked changeset
+        $database->exec_UPDATEquery('pages','uid=1',array('hidden' => 0));
+        $changeSet = array('hidden' => 0);
+
+        $dataHandler = $this->dataHandler;
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+
+        // we expect that all subpages of 1 and 1 its selft have been requeued but not more
+        // pages with uid 1, 10 and 100 should be in index, but 11 not
+        $this->assertIndexQueryContainsItemAmount(3);
+    }
+
+
+    /**
+     * @test
+     */
+    public function canQueueSubPagesWhenHiddenFlagIsSetAndExtendToSubPagesFlagWasRemoved()
+    {
+        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
+        $database = $GLOBALS['TYPO3_DB'];
+        $database->debugOutput = true;
+        $this->importDataSetFromFixture('reindex_subpages_when_hidden_set_and_extendToSubpage_removed.xml');
+
+        // we expect that the index queue is empty before we start
+        $this->assertEmptyIndexQueue();
+
+        // simulate the database change and build a faked changeset
+        $database->exec_UPDATEquery('pages','uid=1',array('extendToSubpages' => 0));
+        $changeSet = array('extendToSubpages' => 0);
+
+        $dataHandler = $this->dataHandler;
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+
+        // we expect that all subpages of 1 have been requeued, but 1 not because it is still hidden
+        // pages with uid 10 and 100 should be in index, but 11 not
+        $this->assertIndexQueryContainsItemAmount(2);
+    }
+
+    /**
+     * @test
+     */
+    public function queueIsNotFilledWhenItemIsSetToHidden()
+    {
+        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
+        $database = $GLOBALS['TYPO3_DB'];
+        $database->debugOutput = true;
+        $this->importDataSetFromFixture('reindex_subpages_when_hidden_set_and_extendToSubpage_removed.xml');
+
+        // we expect that the index queue is empty before we start
+        $this->assertEmptyIndexQueue();
+
+        // simulate the database change and build a faked changeset
+        $database->exec_UPDATEquery('pages','uid=1',array('hidden' => 1));
+        $changeSet = array('hidden' => 1);
+
+        $dataHandler = $this->dataHandler;
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
+
+        // we assert that the index queue is still empty because the page was only set to hidden
+        $this->assertEmptyIndexQueue();
+
     }
 }
