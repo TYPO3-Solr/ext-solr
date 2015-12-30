@@ -21,7 +21,7 @@
     "source": "https://github.com/TYPO3-Solr/ext-solr"
   },
   "require": {
-    "php": ">=5.5.0 <=6.0",
+    "php": ">=5.5.0",
     "typo3/cms-core": ">=7.6.0"
   },
   "require-dev": {
