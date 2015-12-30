@@ -562,19 +562,30 @@ class Indexer extends AbstractIndexer
             );
         } else {
             // ! If no sys_language_mode is configured, all languages will be indexed !
-            $languages = BackendUtility::getSystemLanguages();
-            // remove default language (L = 0)
-            array_shift($languages);
+            $languages = $this->getSystemLanguages();
 
             foreach ($languages as $language) {
+                if ($language['uid'] <= 0) {
+                    continue;
+                }
                 $translationOverlays[] = array(
                     'pid' => $pageId,
-                    'sys_language_uid' => $language[1],
+                    'sys_language_uid' => $language['uid'],
                 );
             }
         }
 
         return $translationOverlays;
+    }
+
+    /**
+     * Returns an array of system languages.
+     *
+     * @return array
+     */
+    protected function getSystemLanguages()
+    {
+        return GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Configuration\\TranslationConfigurationProvider')->getSystemLanguages();
     }
 
     /**
