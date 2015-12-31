@@ -12,7 +12,8 @@ $pluginCode = 'solr_pi_results';
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginCode] = 'layout,select_key,pages,recursive';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginCode] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginCode,
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    $pluginCode,
     'FILE:EXT:solr/Configuration/FlexForms/Results.xml');
 
 
@@ -40,4 +41,3 @@ $pluginCode = 'solr_pi_frequentsearches';
     'solr'
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginCode] = 'layout,select_key,pages,recursive';
-
