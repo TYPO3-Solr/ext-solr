@@ -27,7 +27,7 @@ echo "Run unit tests"
 echo "Run integration tests"
 
 #
-# Map the travis and shell variale names to the expected
+# Map the travis and shell variable names to the expected
 # casing of the TYPO3 core.
 #
 if [ -n $TYPO3_DATABASE_NAME ]; then

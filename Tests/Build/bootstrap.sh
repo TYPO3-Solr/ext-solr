@@ -14,13 +14,7 @@ if [ $? -ne "0" ]; then
 	exit 1
 fi
 
-
-
-if [[ $TYPO3_VERSION == ~6.2.* ]]; then
-	composer require --dev typo3/cms="$TYPO3_VERSION" typo3/cms-composer-installers="1.2.2 as 1.1.4"
-else
-	composer require --dev typo3/cms="$TYPO3_VERSION"
-fi
+composer require --dev typo3/cms="$TYPO3_VERSION"
 
 # Restore composer.json
 git checkout composer.json
