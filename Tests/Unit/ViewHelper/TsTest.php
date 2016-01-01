@@ -25,9 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
-
 
 /**
  * PHP Unit test for view helper Tx_Solr_viewhelper_Ts
@@ -56,8 +54,11 @@ class TsTest extends UnitTest
 
 
         $GLOBALS['TSFE'] = $TSFE;
-        /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $GLOBALS['TSFE']->tmpl = $this->getMock('\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService', array('linkData'));
+        /** @var $GLOBALS ['TSFE']->tmpl \TYPO3\CMS\Core\TypoScript\TemplateService */
+        $GLOBALS['TSFE']->tmpl = $this->getMock(
+            '\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService',
+            array('linkData')
+        );
         $GLOBALS['TSFE']->tmpl->init();
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = '0';

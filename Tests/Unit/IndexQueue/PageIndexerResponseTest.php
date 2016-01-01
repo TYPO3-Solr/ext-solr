@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Index Queue Page Indexer response test.
  *
@@ -67,5 +66,3 @@ class PageIndexerResponseTest extends UnitTest
         ), $request->getActionResult());
     }
 }
-
-

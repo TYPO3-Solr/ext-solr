@@ -33,7 +33,8 @@ use TYPO3\CMS\Core\Tests\UnitTestCase as TYPO3UnitTest;
  * @package TYPO3
  * @subpackage solr
  */
-abstract class UnitTest extends TYPO3UnitTest {
+abstract class UnitTest extends TYPO3UnitTest
+{
 
     /**
      * Returns a mock class where every behaviour is mocked, just to full fill
@@ -42,16 +43,18 @@ abstract class UnitTest extends TYPO3UnitTest {
      * @param string $className
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getDumbMock($className) {
-        return $this->getMock($className, array(), array(), '', FALSE);
+    protected function getDumbMock($className)
+    {
+        return $this->getMock($className, array(), array(), '', false);
     }
 
     /**
      * @param string $version
      */
-    protected function skipInVersionBelow($version) {
+    protected function skipInVersionBelow($version)
+    {
         if (version_compare(TYPO3_branch, $version, '<')) {
-            $this->markTestSkipped('This test requires at least version '.$version);
+            $this->markTestSkipped('This test requires at least version ' . $version);
         }
     }
 }

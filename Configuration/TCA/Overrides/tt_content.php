@@ -40,4 +40,3 @@ $pluginCode = 'solr_pi_frequentsearches';
     'solr'
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginCode] = 'layout,select_key,pages,recursive';
-

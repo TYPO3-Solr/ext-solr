@@ -55,5 +55,4 @@ class RangeTest extends UnitTest
 
         $this->assertEquals($expected, $actual);
     }
-
 }

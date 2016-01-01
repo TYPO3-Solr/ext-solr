@@ -159,7 +159,10 @@ class Site
             }
 
             try {
-                $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__, $server['rootPageUid']);
+                $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(
+                    __CLASS__,
+                    $server['rootPageUid']
+                );
             } catch (\InvalidArgumentException $e) {
                 if ($stopOnInvalidSite) {
                     throw $e;

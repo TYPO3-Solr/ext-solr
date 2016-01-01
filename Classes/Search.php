@@ -325,7 +325,7 @@ class Search implements SingletonInterface
         }
 
         $trustedFieldsSetting = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['trustedFields'];
-        $trustedFields = GeneralUtility::trimExplode(",", $trustedFieldsSetting);
+        $trustedFields = GeneralUtility::trimExplode(',', $trustedFieldsSetting);
 
         return $trustedFields;
     }
@@ -366,7 +366,7 @@ class Search implements SingletonInterface
      * This method is used to apply htmlspecialchars on all document fields that
      * are not configured to be secure. Secure mean that we know where the content is comming from.
      *
-     * @param array $documents
+     * @param \Apache_Solr_Document[] $documents
      * @return \Apache_Solr_Document[]
      */
     protected function applyHtmlSpecialCharsOnAllFields(array $documents)

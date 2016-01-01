@@ -26,8 +26,7 @@ if (!function_exists('strptime')) {
      */
     function strptime($sDate, $sFormat)
     {
-        $aResult = array
-        (
+        $aResult = array(
             'tm_sec' => 0,
             'tm_min' => 0,
             'tm_hour' => 0,
@@ -146,7 +145,6 @@ if (!function_exists('strptime')) {
             $sDate = $sDateAfter;
 
             $aResult['unparsed'] = $sDate;
-
         } // END of while($sFormat != "")
 
         // ===== Create the other value of the result array =====
@@ -169,7 +167,4 @@ if (!function_exists('strptime')) {
 
         return $aResult;
     } // END of function
-
-
 }
-

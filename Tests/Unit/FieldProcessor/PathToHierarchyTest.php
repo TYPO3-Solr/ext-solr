@@ -68,4 +68,3 @@ class PathToHierarchyTest extends UnitTest
             ));
     }
 }
-

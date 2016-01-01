@@ -1,6 +1,6 @@
 <?php
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 $GLOBALS['PATH_solr'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
@@ -298,4 +298,3 @@ if (TYPO3_MODE == 'BE') {
         '_CLI_solr'
     );
 }
-

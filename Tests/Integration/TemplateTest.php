@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
-use TYPO3\CMS\Core\FormProtection\Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,15 +43,20 @@ class TemplateTest extends IntegrationTest
 
         $GLOBALS['TYPO3_CONF_VARS']['FE']['addAllowedPaths'] = $this->getFixtureRootPath();
 
-        $TT = $this->getMock('\TYPO3\CMS\Core\TimeTracker\TimeTracker', array(), array(), '', false);
-        $TT->expects($this->any())->method('setTSlogMessage')->will($this->returnCallback(function ($message) {
+        $TT = $this->getMock('\TYPO3\CMS\Core\TimeTracker\TimeTracker', array(),
+            array(), '', false);
+        $TT->expects($this->any())->method('setTSlogMessage')->will($this->returnCallback(function (
+            $message
+        ) {
             echo $message;
         }));
         $GLOBALS['TT'] = $TT;
 
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
-        $TSFE = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', array(), 1,
-            0);
+        $TSFE = GeneralUtility::makeInstance(
+            'TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController',
+            array(), 1, 0
+        );
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var $TMPL \TYPO3\CMS\Core\TypoScript\TemplateService */
@@ -74,12 +77,19 @@ class TemplateTest extends IntegrationTest
         $testTemplatePath = 'EXT:solr/Tests/Integration/Fixtures/test_template.html';
 
         /** @var $template \ApacheSolrForTypo3\Solr\Template */
-        $template = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Template', $cObj, $testTemplatePath,
-            'SOLR_TEST');
+        $template = GeneralUtility::makeInstance(
+            'ApacheSolrForTypo3\Solr\Template',
+            $cObj, $testTemplatePath,
+            'SOLR_TEST'
+        );
         $template->addViewHelperIncludePath('solr', 'Classes/ViewHelper/');
         $template->addViewHelper('Crop');
         $result = $template->render(true);
 
-        $this->assertEquals('<div class="tx-solr">hello.</div>', trim($result), 'Could not render simple template!');
+        $this->assertEquals(
+            '<div class="tx-solr">hello.</div>',
+            trim($result),
+            'Could not render simple template!'
+        );
     }
 }

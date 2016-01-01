@@ -177,7 +177,7 @@ class Apache_Solr_Service_Balancer
      * @param string $value
      * @return string
      */
-    static public function escape($value)
+    public static function escape($value)
     {
         return Apache_Solr_Service::escape($value);
     }
@@ -188,7 +188,7 @@ class Apache_Solr_Service_Balancer
      * @param string $value
      * @return string
      */
-    static public function escapePhrase($value)
+    public static function escapePhrase($value)
     {
         return Apache_Solr_Service::escapePhrase($value);
     }
@@ -199,7 +199,7 @@ class Apache_Solr_Service_Balancer
      * @param string $value
      * @return string
      */
-    static public function phrase($value)
+    public static function phrase($value)
     {
         return Apache_Solr_Service::phrase($value);
     }
@@ -339,8 +339,9 @@ class Apache_Solr_Service_Balancer
             try {
                 return $service->add($rawPost);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -435,7 +436,6 @@ class Apache_Solr_Service_Balancer
                     if ($backoff > $this->_backoffLimit) {
                         throw new Apache_Solr_NoServiceAvailableException('No write services were available.  All timeouts exceeded.');
                     }
-
                 } while ($this->_writeableServices[$this->_currentWriteService]->ping($backoff) === false);
             } else {
                 throw new Apache_Solr_NoServiceAvailableException('No write services were available');
@@ -503,8 +503,9 @@ class Apache_Solr_Service_Balancer
                 return $service->addDocument($document, $allowDups,
                     $overwritePending, $overwriteCommitted);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -539,8 +540,9 @@ class Apache_Solr_Service_Balancer
                 return $service->addDocuments($documents, $allowDups,
                     $overwritePending, $overwriteCommitted);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -576,8 +578,9 @@ class Apache_Solr_Service_Balancer
                 return $service->commit($optimize, $waitFlush, $waitSearcher,
                     $timeout);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -606,8 +609,9 @@ class Apache_Solr_Service_Balancer
             try {
                 return $service->delete($rawPost, $timeout);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -642,8 +646,9 @@ class Apache_Solr_Service_Balancer
                 return $service->deleteById($id, $fromPending, $fromCommitted,
                     $timeout);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -678,8 +683,9 @@ class Apache_Solr_Service_Balancer
                 return $service->deleteByMultipleId($ids, $fromPending,
                     $fromCommitted, $timeout);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -714,8 +720,9 @@ class Apache_Solr_Service_Balancer
                 return $service->deleteByQuery($rawQuery, $fromPending,
                     $fromCommitted, $timeout);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -756,8 +763,9 @@ class Apache_Solr_Service_Balancer
             try {
                 return $service->extract($file, $params, $document, $mimetype);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -801,8 +809,9 @@ class Apache_Solr_Service_Balancer
                 return $service->extractFromString($data, $params, $document,
                     $mimetype);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -835,8 +844,9 @@ class Apache_Solr_Service_Balancer
             try {
                 return $service->optimize($waitFlush, $waitSearcher, $timeout);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }
@@ -873,8 +883,9 @@ class Apache_Solr_Service_Balancer
                 return $service->search($query, $offset, $limit, $params,
                     $method);
             } catch (Apache_Solr_HttpTransportException $e) {
-                if ($e->getCode() != 0) //IF NOT COMMUNICATION ERROR
-                {
+                if ($e->getCode() != 0) {
+                    //IF NOT COMMUNICATION ERROR
+
                     throw $e;
                 }
             }

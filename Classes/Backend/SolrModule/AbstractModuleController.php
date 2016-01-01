@@ -190,12 +190,12 @@ abstract class AbstractModuleController extends ActionController implements Admi
     protected function getRequestArgumentOrDefaultValue($argumentKey, $default)
     {
         // no request -> return default
-        if (! isset($this->request)) {
+        if (!isset($this->request)) {
             return $default;
         }
 
         // argument not present -> return default value
-        if (! $this->request->hasArgument($argumentKey)) {
+        if (!$this->request->hasArgument($argumentKey)) {
             return $default;
         }
 

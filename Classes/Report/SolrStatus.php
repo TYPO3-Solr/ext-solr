@@ -58,7 +58,7 @@ class SolrStatus implements StatusProviderInterface
 
     /**
      * Holds the response message build by the checks
-     * 
+     *
      * @var string
      */
     protected $responseMessage = '';
@@ -95,7 +95,7 @@ TEMPLATE;
      */
     protected function replaceMarkerInResponse($response, $marker, $value)
     {
-        return str_replace('###'.$marker.'###', $value, $response);
+        return str_replace('###' . $marker . '###', $value, $response);
     }
 
     /**
@@ -202,7 +202,7 @@ TEMPLATE;
     {
         try {
             $pingQueryTime = $solr->getPingRoundTripRuntime();
-            $pingMessage = (int) $pingQueryTime . ' ms';
+            $pingMessage = (int)$pingQueryTime . ' ms';
         } catch (PingFailedException $e) {
             $this->responseStatus = Status::ERROR;
             $pingMessage = 'Ping error: ' . $e->getMessage();
@@ -220,8 +220,8 @@ TEMPLATE;
         try {
             $solrConfigMessage = $solr->getSolrconfigName();
         } catch (\Exception $e) {
-            $this->responseStatus =  Status::ERROR;
-            $solrConfigMessage = 'Error determining solr config: '. $e->getMessage();
+            $this->responseStatus = Status::ERROR;
+            $solrConfigMessage = 'Error determining solr config: ' . $e->getMessage();
         }
 
         $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SOLR_CONFIG', $solrConfigMessage);
@@ -237,8 +237,8 @@ TEMPLATE;
         try {
             $solrSchemaMessage = $solr->getSchemaName();
         } catch (\Exception $e) {
-            $this->responseStatus  = Status::ERROR;
-            $solrSchemaMessage = 'Error determining schema name: '. $e->getMessage();
+            $this->responseStatus = Status::ERROR;
+            $solrSchemaMessage = 'Error determining schema name: ' . $e->getMessage();
         }
 
         $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SOLR_SCHEMA', $solrSchemaMessage);

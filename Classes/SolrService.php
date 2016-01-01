@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\PingFailedException;
 
 /**
  * Solr Service Access
@@ -245,7 +244,6 @@ class SolrService extends \Apache_Solr_Service
                     'file' => $query->getFile(),
                     'headers' => $headers,
                     'query url' => self::EXTRACT_SERVLET,
-                    'response' => $response,
                     'exception' => $e->getMessage()
                 ));
         }

@@ -43,6 +43,10 @@ class SiteTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_get_all_sites.xml');
         $sites = Site::getAvailableSites();
-        $this->assertSame(1, count($sites), 'Expected to retrieve one site from fixture');
+        $this->assertSame(
+            1,
+            count($sites),
+            'Expected to retrieve one site from fixture'
+        );
     }
 }

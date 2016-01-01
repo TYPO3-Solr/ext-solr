@@ -54,7 +54,10 @@ class SitesViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelpe
         $currentSite = $this->moduleDataStorageService->loadModuleData()->getSite();
         $hasSites = is_array($availableSites) && count($availableSites) > 0;
 
-        $this->templateVariableContainer->add('availableSites', $availableSites);
+        $this->templateVariableContainer->add(
+            'availableSites',
+            $availableSites
+        );
         $this->templateVariableContainer->add('currentSite', $currentSite);
         $this->templateVariableContainer->add('hasSites', $hasSites);
 

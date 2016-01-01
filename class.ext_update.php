@@ -120,6 +120,4 @@ class ext_update
 			 WHERE include_static_file LIKE \'%EXT:solr/%\''
         );
     }
-
 }
-

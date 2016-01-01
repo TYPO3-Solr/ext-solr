@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Index Maintenance Module

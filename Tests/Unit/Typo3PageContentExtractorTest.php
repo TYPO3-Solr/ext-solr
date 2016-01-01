@@ -52,6 +52,4 @@ class Typo3PageContentExtractorTest extends UnitTest
 
         $this->assertEquals($expectedResult, $actualResult);
     }
-
 }
-

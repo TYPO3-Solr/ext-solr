@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -59,7 +59,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     /**
      * Loads a Fixture from the Fixtures folder beside the current test case.
      *
-     * @param $fixtureName
+     * @param string $fixtureName
      * @throws \TYPO3\CMS\Core\Tests\Exception
      */
     protected function importDataSetFromFixture($fixtureName)
@@ -78,25 +78,14 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     }
 
     /**
-     * Returns the absolute path to a fixture file.
+     * Returns the directory on runtime.
      *
-     * @param $fixtureName
      * @return string
      */
-    protected function getFixturePath($fixtureName)
+    protected function getRuntimeDirectory()
     {
-        return $this->getFixtureRootPath() . $fixtureName;
-    }
-
-    /**
-     * Returns the content of a fixture file.
-     *
-     * @param string $fixtureName
-     * @return string
-     */
-    protected function getFixtureContent($fixtureName)
-    {
-        return file_get_contents($this->getFixturePath($fixtureName));
+        $rc = new \ReflectionClass(get_class($this));
+        return dirname($rc->getFileName());
     }
 
     /**
@@ -118,14 +107,25 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     }
 
     /**
-     * Returns the directory on runtime.
+     * Returns the content of a fixture file.
      *
+     * @param string $fixtureName
      * @return string
      */
-    protected function getRuntimeDirectory()
+    protected function getFixtureContent($fixtureName)
     {
-        $rc = new \ReflectionClass(get_class($this));
-        return dirname($rc->getFileName());
+        return file_get_contents($this->getFixturePath($fixtureName));
+    }
+
+    /**
+     * Returns the absolute path to a fixture file.
+     *
+     * @param string $fixtureName
+     * @return string
+     */
+    protected function getFixturePath($fixtureName)
+    {
+        return $this->getFixtureRootPath() . $fixtureName;
     }
 
     /**

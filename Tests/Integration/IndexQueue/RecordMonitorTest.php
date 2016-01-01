@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -68,7 +68,11 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function assertEmptyIndexQueue()
     {
-        $this->assertEquals(0, $this->indexQueue->getAllItemsCount(), 'Index queue is not empty as expected');
+        $this->assertEquals(
+            0,
+            $this->indexQueue->getAllItemsCount(),
+            'Index queue is not empty as expected'
+        );
     }
 
     /**
@@ -76,8 +80,11 @@ class RecordMonitorTest extends IntegrationTest
      */
     protected function assertNotEmptyIndexQueue()
     {
-        $this->assertGreaterThan(0, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to be not empty');
+        $this->assertGreaterThan(
+            0,
+            $this->indexQueue->getAllItemsCount(),
+            'Index queue is empty and was expected to be not empty'
+        );
     }
 
     /**
@@ -114,12 +121,14 @@ class RecordMonitorTest extends IntegrationTest
         $output = trim(ob_get_contents());
         ob_end_clean();
 
-        $this->assertNotContains('You have an error in your SQL syntax', $output,
-            'We expect no sql error during the update of a regular page root record');
+        $this->assertNotContains(
+            'You have an error in your SQL syntax',
+            $output,
+            'We expect no sql error during the update of a regular page root record'
+        );
 
         // we expect to have an index queue item now
         $this->assertNotEmptyIndexQueue();
-
     }
 
     /**
@@ -151,16 +160,22 @@ class RecordMonitorTest extends IntegrationTest
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
-            $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status,
+            $table, $uid, $fields,
+            $this->dataHandler
+        );
 
         // we expect to have an index queue item now
         $this->assertNotEmptyIndexQueue();
 
         // and we check that the record in the queue has the expected configuration name
-        $items = $this->indexQueue->getItems('tx_fakeextension_domain_model_foo', 8);
+        $items = $this->indexQueue->getItems('tx_fakeextension_domain_model_foo',
+            8);
         $this->assertSame(1, count($items));
-        $this->assertSame('foo', $items[0]->getIndexingConfigurationName(),
-            'Item was queued with unexpected configuration');
+        $this->assertSame(
+            'foo',
+            $items[0]->getIndexingConfigurationName(),
+            'Item was queued with unexpected configuration'
+        );
     }
 }

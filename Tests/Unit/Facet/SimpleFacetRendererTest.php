@@ -26,10 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Facet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
-
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  *
@@ -46,17 +44,26 @@ class SimpleFacetRendererTest extends UnitTest
     {
         $this->markTestSkipped('fixme');
         chdir(PATH_site);
-        $GLOBALS['TYPO3_DB'] = $this->getMock('\TYPO3\CMS\Core\Database\DatabaseConnection', array());
+        $GLOBALS['TYPO3_DB'] = $this->getMock(
+            '\TYPO3\CMS\Core\Database\DatabaseConnection',
+            array()
+        );
 
         $TSFE = $this->getDumbMock('\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
 
         $GLOBALS['TSFE'] = $TSFE;
         $GLOBALS['TSFE']->config['config']['disablePrefixComment'] = true;
 
-        $GLOBALS['TT'] = $this->getMock('\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker', array(), array(), '', false);
+        $GLOBALS['TT'] = $this->getMock(
+            '\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker',
+            array(), array(), '', false
+        );
 
         /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $GLOBALS['TSFE']->tmpl = $this->getMock('\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService', array('linkData'));
+        $GLOBALS['TSFE']->tmpl = $this->getMock(
+            '\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService',
+            array('linkData')
+        );
         $GLOBALS['TSFE']->tmpl->init();
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
 
@@ -81,10 +88,16 @@ class SimpleFacetRendererTest extends UnitTest
         $parentPlugin->main('', array());
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
+        $query = GeneralUtility::makeInstance(
+            'ApacheSolrForTypo3\\Solr\\Query',
+            'test'
+        );
 
         /** @var $facet \ApacheSolrForTypo3\Solr\Facet\Facet */
-        $facet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', array($facetName));
+        $facet = GeneralUtility::makeInstance(
+            'ApacheSolrForTypo3\\Solr\\Facet\\Facet',
+            array($facetName)
+        );
         $this->facetRenderer = GeneralUtility::makeInstance(
             'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetRenderer',
             $facet
@@ -105,4 +118,3 @@ class SimpleFacetRendererTest extends UnitTest
         $this->assertEquals($expected, $actual);
     }
 }
-
