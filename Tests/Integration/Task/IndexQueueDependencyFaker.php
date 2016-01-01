@@ -19,12 +19,12 @@ class IndexQueueDependencyFaker
     /**
      * @var string
      */
-    static $requestId = '566b15f7b4931';
+    public static $requestId = '566b15f7b4931';
 
     /**
      * @var integer
      */
-    static $callCount = 0;
+    public static $callCount = 0;
 
     /**
      * @return string

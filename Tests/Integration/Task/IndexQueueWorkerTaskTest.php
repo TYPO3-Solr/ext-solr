@@ -112,4 +112,3 @@ class IndexQueueWorkerTest extends IntegrationTest
         $this->assertTrue($this->indexQueue->containsIndexedItem('pages', 1));
     }
 }
-

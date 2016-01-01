@@ -128,5 +128,4 @@ class ServiceTest extends UnitTest
             'field was not processed with timestampToIsoDate'
         );
     }
-
 }

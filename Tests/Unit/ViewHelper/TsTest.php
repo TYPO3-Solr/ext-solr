@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
 
-
 /**
  * PHP Unit test for view helper Tx_Solr_viewhelper_Ts
  *

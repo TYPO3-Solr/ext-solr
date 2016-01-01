@@ -1,6 +1,6 @@
 <?php
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 // TODO change to a constant, so that it can't get manipulated
@@ -137,7 +137,6 @@ if (TYPO3_MODE == 'BE') {
     // hooking into TCE Main to monitor record updates that may require reindexing by the index queue
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\RecordMonitor';
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\RecordMonitor';
-
 }
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -191,6 +190,3 @@ $TCA['tt_content']['types']['search']['showitem'] =
 		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.behaviour,
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended';
-
-
-

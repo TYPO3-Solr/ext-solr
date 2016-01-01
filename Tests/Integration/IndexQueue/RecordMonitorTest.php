@@ -129,7 +129,6 @@ class RecordMonitorTest extends IntegrationTest
 
         // we expect to have an index queue item now
         $this->assertNotEmptyIndexQueue();
-
     }
 
     /**
@@ -188,7 +187,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages','uid=1',array('hidden' => 0));
+        $database->exec_UPDATEquery('pages', 'uid=1', array('hidden' => 0));
         $changeSet = array('hidden' => 0);
 
         $dataHandler = $this->dataHandler;
@@ -214,7 +213,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages','uid=1',array('extendToSubpages' => 0));
+        $database->exec_UPDATEquery('pages', 'uid=1', array('extendToSubpages' => 0));
         $changeSet = array('extendToSubpages' => 0);
 
         $dataHandler = $this->dataHandler;
@@ -239,7 +238,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages','uid=1',array('hidden' => 1));
+        $database->exec_UPDATEquery('pages', 'uid=1', array('hidden' => 1));
         $changeSet = array('hidden' => 1);
 
         $dataHandler = $this->dataHandler;
@@ -247,6 +246,5 @@ class RecordMonitorTest extends IntegrationTest
 
         // we assert that the index queue is still empty because the page was only set to hidden
         $this->assertEmptyIndexQueue();
-
     }
 }

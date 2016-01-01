@@ -49,7 +49,7 @@ class Apache_Solr_HttpTransport_Response
      *
      * @var array
      */
-    static private $_defaultStatusMessages = array(
+    private static $_defaultStatusMessages = array(
         // Specific to PHP Solr Client
         0 => "Communication Error",
 

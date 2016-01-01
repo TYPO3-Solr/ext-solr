@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Tests for the SOLR_MULTIVALUE cObj.
  *
@@ -108,7 +107,4 @@ class MultivalueTest extends UnitTest
     {
         unset($GLOBALS['TSFE']);
     }
-
 }
-
-

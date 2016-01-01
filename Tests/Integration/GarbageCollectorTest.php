@@ -70,7 +70,6 @@ class GarbageCollectorTest extends IntegrationTest
         $this->dataHandler = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
         $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Queue');
         $this->garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\GarbageCollector');
-
     }
 
     /**
@@ -102,7 +101,8 @@ class GarbageCollectorTest extends IntegrationTest
     /**
      * @test
      */
-    public function canQueueAPageAndRemoveItWithTheGarbageCollector() {
+    public function canQueueAPageAndRemoveItWithTheGarbageCollector()
+    {
         /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
         $database = $GLOBALS['TYPO3_DB'];
         $database->debugOutput = true;
@@ -126,7 +126,8 @@ class GarbageCollectorTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSet() {
+    public function canCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSet()
+    {
         /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
         $database = $GLOBALS['TYPO3_DB'];
         $database->debugOutput = true;
@@ -143,7 +144,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(3);
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages','uid=1',array('hidden' => 1));
+        $database->exec_UPDATEquery('pages', 'uid=1', array('hidden' => 1));
         $changeSet = array('hidden' => 1);
 
         $dataHandler = $this->dataHandler;
@@ -158,7 +159,8 @@ class GarbageCollectorTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSetForMultipleSubpages() {
+    public function canCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSetForMultipleSubpages()
+    {
         /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
         $database = $GLOBALS['TYPO3_DB'];
         $database->debugOutput = true;
@@ -176,7 +178,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(4);
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages','uid=1',array('hidden' => 1));
+        $database->exec_UPDATEquery('pages', 'uid=1', array('hidden' => 1));
         $changeSet = array('hidden' => 1);
 
         $dataHandler = $this->dataHandler;
@@ -187,4 +189,3 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
     }
 }
-
