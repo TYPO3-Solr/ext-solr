@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 
-
 /**
  *
  */
@@ -105,4 +104,3 @@ class SimpleFacetRendererTest extends UnitTest
         $this->assertEquals($expected, $actual);
     }
 }
-

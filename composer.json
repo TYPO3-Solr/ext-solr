@@ -21,11 +21,11 @@
     "source": "https://github.com/TYPO3-Solr/ext-solr"
   },
   "require": {
-    "php": ">=5.5.0 <=6.0",
-    "typo3/cms-core": ">=7.6.0,<8.0"
+    "php": ">=5.5.0",
+    "typo3/cms-core": ">=7.6.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "~4.8.0"
+    "phpunit/phpunit": ">=4.8.0 <6.0.0"
   },
   "replace": {
     "solr": "self.version",

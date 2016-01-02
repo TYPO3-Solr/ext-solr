@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="pl" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
+		<header/>
+		<body>
+			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
+				<source>Search is currently not available.</source>
+				<target>Wyszukiwarka nie jest w tej chwili dostępna.</target>
+			</trans-unit>
+			<trans-unit id="searchFailed" xml:space="preserve" approved="yes">
+				<source>We're sorry. The request you tried to make could not be processed.</source>
+				<target>Przykro nam bardzo, ale Twoje wyszukiwanie nie może zostać zrealizowane.</target>
+			</trans-unit>
+			<trans-unit id="searchWord" xml:space="preserve" approved="yes">
+				<source>Search Term</source>
+				<target>Wyszukiwana treść</target>
+			</trans-unit>
+			<trans-unit id="didYouMean" xml:space="preserve" approved="yes">
+				<source>Did you mean</source>
+				<target>Czy masz na myśli</target>
+			</trans-unit>
+			<trans-unit id="submit" xml:space="preserve" approved="yes">
+				<source>Search</source>
+				<target>Szukaj</target>
+			</trans-unit>
+			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
+				<source>Sort by</source>
+				<target>Sortuj wg.</target>
+			</trans-unit>
+			<trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
+				<source>Narrow Search</source>
+				<target>Zawęź wyniki</target>
+			</trans-unit>
+			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
+				<source>Search narrowed by</source>
+				<target>Zawężone przez</target>
+			</trans-unit>
+			<trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
+				<source>Show more</source>
+				<target>Pokaż więcej</target>
+			</trans-unit>
+			<trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
+				<source>Show fewer</source>
+				<target>Pokaż mniej</target>
+			</trans-unit>
+			<trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
+				<source>Remove all filters</source>
+				<target>Usuń wszystkie filtry</target>
+			</trans-unit>
+			<trans-unit id="results_range" xml:space="preserve" approved="yes">
+				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
+				<target>Pokazuję wyniki od @resultsFrom do @resultsTo z @resultsTotal.</target>
+			</trans-unit>
+			<trans-unit id="results_found" xml:space="preserve" approved="yes">
+				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
+				<target>Rezultatów: @resultsTotal, czas wyszukiwania @resultsTime milisekund.</target>
+			</trans-unit>
+			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
+				<source>Searched for &quot;@searchWord&quot;.</source>
+				<target>Szukaliśmy &quot;@searchWord&quot;.</target>
+			</trans-unit>
+			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
+				<source>Nothing found for &quot;@searchWord&quot;.</source>
+				<target>Nie znaleziono &quot;@searchWord&quot;.</target>
+			</trans-unit>
+			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
+				<source>Showing results for &quot;@suggestedWord&quot;</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
+				<source>Search instead for &quot;@searchWord&quot;.</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
+				<source>Last searches</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
+				<source>Frequent searches</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="relevance" xml:space="preserve" approved="yes">
+				<source>Relevance</source>
+				<target>Waga</target>
+			</trans-unit>
+			<trans-unit id="sponsored" xml:space="preserve" approved="yes">
+				<source>Sponsored</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
+				<source>File type</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="file_referenced" xml:space="preserve" approved="yes">
+				<source>Referenced at</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="results_per_page" xml:space="preserve" approved="yes">
+				<source>Results per page:</source>
+				<target>Wyników na stronę:</target>
+			</trans-unit>
+			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
+				<source>We're sorry, there were some errors:</source>
+				<target>Przykro nam, natknęliśmy się na błędy:</target>
+			</trans-unit>
+			<trans-unit id="error_emptyQuery" xml:space="preserve" approved="yes">
+				<source>Please enter your search term in the box above.</source>
+				<target>Wpisz słowa kluczowe w polu powyżej.</target>
+			</trans-unit>
+			<trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
+				<source>First</source>
+				<target>Pierwsza</target>
+			</trans-unit>
+			<trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
+				<source>Previous</source>
+				<target>Poprzednia</target>
+			</trans-unit>
+			<trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
+				<source>Next</source>
+				<target>Następna</target>
+			</trans-unit>
+			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
+				<source>Last</source>
+				<target>Ostatnia</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

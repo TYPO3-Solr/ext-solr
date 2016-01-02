@@ -85,7 +85,6 @@ class PageIndexerTest extends IntegrationTest
 
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":0', $solrContent, 'Could not index document into solr');
-
     }
 
     /**

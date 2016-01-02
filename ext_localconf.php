@@ -1,6 +1,6 @@
 <?php
 if (!defined('TYPO3_MODE')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 $GLOBALS['PATH_solr'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
@@ -216,15 +216,15 @@ ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\ReIndexTask'] = array(
     'extension' => $_EXTKEY,
-    'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_title',
-    'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_description',
+    'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:reindex_title',
+    'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:reindex_description',
     'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\ReIndexTaskAdditionalFieldProvider'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask'] = array(
     'extension' => $_EXTKEY,
-    'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_title',
-    'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:indexqueueworker_description',
+    'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:indexqueueworker_title',
+    'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:indexqueueworker_description',
     'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 
@@ -298,4 +298,3 @@ if (TYPO3_MODE == 'BE') {
         '_CLI_solr'
     );
 }
-

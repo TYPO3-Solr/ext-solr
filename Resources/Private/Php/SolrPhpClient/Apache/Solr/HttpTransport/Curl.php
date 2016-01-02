@@ -85,7 +85,7 @@ class Apache_Solr_HttpTransport_Curl extends Apache_Solr_HttpTransport_Abstract
     /**
      * Closes a curl session
      */
-    function __destruct()
+    public function __destruct()
     {
         // close our curl session
         curl_close($this->_curl);

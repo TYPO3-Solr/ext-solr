@@ -307,7 +307,7 @@ class Apache_Solr_Service
      * @param string $value
      * @return string
      */
-    static public function escape($value)
+    public static function escape($value)
     {
         //list taken from http://lucene.apache.org/java/docs/queryparsersyntax.html#Escaping%20Special%20Characters
         $pattern = '/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|\*|\?|:|\\\)/';
@@ -322,7 +322,7 @@ class Apache_Solr_Service
      * @param string $value
      * @return string
      */
-    static public function phrase($value)
+    public static function phrase($value)
     {
         return '"' . self::escapePhrase($value) . '"';
     }
@@ -333,7 +333,7 @@ class Apache_Solr_Service
      * @param string $value
      * @return string
      */
-    static public function escapePhrase($value)
+    public static function escapePhrase($value)
     {
         $pattern = '/("|\\\)/';
         $replace = '\\\$1';
@@ -1215,5 +1215,4 @@ class Apache_Solr_Service
             }
         }
     }
-
 }

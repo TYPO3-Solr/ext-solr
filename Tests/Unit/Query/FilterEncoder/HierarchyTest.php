@@ -29,7 +29,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  *
  * Testcase for query parser range
@@ -79,6 +78,4 @@ class HierarchyTest extends UnitTest
 
         $this->assertEquals($expected, $actual);
     }
-
-
 }

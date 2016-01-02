@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query class
  *
@@ -35,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class QueryTest extends UnitTest
+class QueryTestCase extends UnitTest
 {
 
     /**
@@ -202,6 +201,4 @@ class QueryTest extends UnitTest
             );
         }
     }
-
 }
-

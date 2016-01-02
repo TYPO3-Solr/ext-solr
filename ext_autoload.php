@@ -19,4 +19,3 @@ return array(
     'apache_solr_service' => $extensionPath . 'Resources/Private/Php/SolrPhpClient/Apache/Solr/Service.php',
 
 );
-

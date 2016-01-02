@@ -82,6 +82,4 @@ class Typo3PageContentExtractorTest extends UnitTest
         $actualResult = $contentExtractor->excludeContentByClass($content);
         $this->assertEquals($expectedResult, $actualResult);
     }
-
 }
-

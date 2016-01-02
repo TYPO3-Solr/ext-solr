@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -38,7 +39,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class RecordMonitor
+class RecordMonitor extends AbstractDataHandlerListener
 {
 
     /**
@@ -57,7 +58,6 @@ class RecordMonitor
      */
     protected $indexQueue;
 
-
     /**
      * Constructor
      *
@@ -65,6 +65,27 @@ class RecordMonitor
     public function __construct()
     {
         $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
+    }
+
+    /**
+     * Holds the configuration when a recursive page queing should be triggered.
+     *
+     * @var array
+     */
+    protected function getUpdateSubPagesRecursiveTriggerConfiguration()
+    {
+        return array(
+            // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 0 => requeue subpages
+            'extendToSubpageEnabledAndHiddenFlagWasRemoved' => array(
+                'currentState' =>  array('extendToSubpages' => "1"),
+                'changeSet' => array('hidden' => "0")
+            ),
+            // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 0 => requeue subpages
+            'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => array(
+                'currentState' =>  array('hidden' => "1"),
+                'changeSet' => array('extendToSubpages' => "0")
+            )
+        );
     }
 
     /**
@@ -276,6 +297,13 @@ class RecordMonitor
                 if ($recordTable == 'pages') {
                     $this->updateCanonicalPages($recordUid);
                     $this->updateMountPages($recordUid);
+
+                    if ($this->isRecursiveUpdateRequired($recordUid, $fields)) {
+                        $treePageIds = $this->getSubPageIds($recordUid);
+                        foreach ($treePageIds as $treePageId) {
+                            $this->indexQueue->updateItem('pages', $treePageId);
+                        }
+                    }
                 }
             } else {
                 // TODO move this part to the garbage collector
