@@ -26,6 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Backend\IndexInspector;
 
 use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
+use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Index Inspector to see what documents have been indexed for a selected page.
@@ -98,7 +100,9 @@ class IndexInspector extends AbstractFunctionModule
 
     protected function initializeExtJs()
     {
-        $pageRenderer = $this->document->getPageRenderer();
+
+        /** @var PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
 
         $pageRenderer->loadExtJS();
         $pageRenderer->addInlineSettingArray(
