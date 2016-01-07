@@ -99,37 +99,6 @@ class Util
     }
 
     /**
-     * Returns the document id for a given file.
-     *
-     * @param \Tx_Solr_FileIndexer_File $file The file
-     * @return string The document id for that file
-     */
-    public static function getFileDocumentId(\Tx_Solr_FileIndexer_File $file)
-    {
-        try {
-            $documentId = self::getDocumentId(
-                'tx_solr_file',
-                $file->getReferencePageId(),
-                $file->getFileIndexQueueId(),
-                str_replace('/', ':', $file->getMimeType())
-            );
-        } catch (InvalidArgumentException $e) {
-            if ($e->getCode() == 1309272922) {
-                $documentId = self::getDocumentId(
-                    'tx_solr_file',
-                    $file->getReferenceRootPageId(),
-                    $file->getFileIndexQueueId(),
-                    str_replace('/', ':', $file->getMimeType())
-                );
-            } else {
-                throw $e;
-            }
-        }
-
-        return $documentId;
-    }
-
-    /**
      * Converts a date from unix timestamp to ISO 8601 format.
      *
      * @param integer $timestamp unix timestamp
