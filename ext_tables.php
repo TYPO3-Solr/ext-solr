@@ -118,7 +118,7 @@ if (TYPO3_MODE == 'BE') {
     );
 
     // register Clear Cache Menu hook
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = '&ApacheSolrForTypo3\\Solr\\ConnectionManager';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions']['clearSolrConnectionCache'] = \ApacheSolrForTypo3\Solr\ConnectionManager::class;
 
     // register Clear Cache Menu ajax call
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerAjaxHandler(
