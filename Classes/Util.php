@@ -37,7 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Util
 {
-
     const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
 
     /**
@@ -236,74 +235,100 @@ class Util
         $initializeTsfe = false,
         $language = 0
     ) {
-        static $configurationCache = array();
-        $configuration = array();
-
+        $cache = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache', 'tx_solr_configuration');
         // If we're on UID 0, we cannot retrieve a configuration currently.
         // getRootline() below throws an exception (since #typo3-60 )
         // as UID 0 cannot have any parent rootline by design.
         if ($pageId == 0) {
             return array();
         }
-
-        // TODO needs some caching -> caching framework?
-        $cacheId = $pageId . '|' . $path . '|' . $language;
+        $cacheId = md5($pageId . '|' . $path . '|' . $language);
+        $configurationToUse = $cache->get($cacheId);
 
         if ($initializeTsfe) {
             self::initializeTsfe($pageId, $language);
-
-            $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
-            $configuration = $tmpl->ext_getSetup(
-                $GLOBALS['TSFE']->tmpl->setup,
-                $path
-            );
-
-            $configurationCache[$cacheId] = $configuration[0];
-        } else {
-            if (!isset($configurationCache[$cacheId])) {
-                if (is_int($language)) {
-                    GeneralUtility::_GETset($language, 'L');
-                }
-
-                $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-                $rootLine = $pageSelect->getRootLine($pageId);
-
-                $initializedTsfe = false;
-                $initializedPageSelect = false;
-                if (empty($GLOBALS['TSFE']->sys_page)) {
-                    if (empty($GLOBALS['TSFE'])) {
-                        $GLOBALS['TSFE'] = new \stdClass();
-                        $GLOBALS['TSFE']->tmpl = new \stdClass();
-                        $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
-                        $GLOBALS['TSFE']->sys_page = $pageSelect;
-                        $GLOBALS['TSFE']->id = $pageId;
-                        $initializedTsfe = true;
-                    }
-
-                    $GLOBALS['TSFE']->sys_page = $pageSelect;
-                    $initializedPageSelect = true;
-                }
-
-                $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
-                $tmpl->tt_track = false; // Do not log time-performance information
-                $tmpl->init();
-                $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
-                $tmpl->generateConfig();
-
-                $configuration = $tmpl->ext_getSetup($tmpl->setup, $path);
-
-                $configurationCache[$cacheId] = $configuration[0];
-
-                if ($initializedPageSelect) {
-                    $GLOBALS['TSFE']->sys_page = null;
-                }
-                if ($initializedTsfe) {
-                    unset($GLOBALS['TSFE']);
-                }
+            if (!empty($configurationToUse)) {
+                return $configurationToUse;
             }
+
+            $configurationToUse = self::getConfigurationFromInitializedTSFE($path);
+            $cache->set($cacheId, $configurationToUse);
+        } else {
+            if (!empty($configurationToUse)) {
+                return $configurationToUse;
+            }
+
+            $configurationToUse = self::getConfigurationFromExistingTSFE($pageId, $path, $language);
+            $cache->set($cacheId, $configurationToUse);
         }
 
-        return $configurationCache[$cacheId];
+        return $configurationToUse;
+    }
+
+    /**
+     * This function is used to retrieve the configuration from a previous initialized TSFE
+     * (see: getConfigurationFromPageId)
+     *
+     * @param string $path
+     * @return mixed
+     */
+    private static function getConfigurationFromInitializedTSFE($path)
+    {
+        $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
+        $configuration = $tmpl->ext_getSetup($GLOBALS['TSFE']->tmpl->setup, $path);
+        $configurationToUse = $configuration[0];
+        return $configurationToUse;
+    }
+
+    /**
+     * This function is used to retrieve the configuration from an existing TSFE instance
+     * @param $pageId
+     * @param $path
+     * @param $language
+     * @return mixed
+     */
+    private static function getConfigurationFromExistingTSFE($pageId, $path, $language)
+    {
+        if (is_int($language)) {
+            GeneralUtility::_GETset($language, 'L');
+        }
+
+        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $rootLine = $pageSelect->getRootLine($pageId);
+
+        $initializedTsfe = false;
+        $initializedPageSelect = false;
+        if (empty($GLOBALS['TSFE']->sys_page)) {
+            if (empty($GLOBALS['TSFE'])) {
+                $GLOBALS['TSFE'] = new \stdClass();
+                $GLOBALS['TSFE']->tmpl = new \stdClass();
+                $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
+                $GLOBALS['TSFE']->sys_page = $pageSelect;
+                $GLOBALS['TSFE']->id = $pageId;
+                $GLOBALS['TSFE']->tx_solr_initTsfe = 1;
+                $initializedTsfe = true;
+            }
+
+            $GLOBALS['TSFE']->sys_page = $pageSelect;
+            $initializedPageSelect = true;
+        }
+
+        $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
+        $tmpl->tt_track = false; // Do not log time-performance information
+        $tmpl->init();
+        $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
+        $tmpl->generateConfig();
+
+        $getConfigurationFromInitializedTSFEAndWriteToCache = $tmpl->ext_getSetup($tmpl->setup, $path);
+        $configurationToUse = $getConfigurationFromInitializedTSFEAndWriteToCache[0];
+
+        if ($initializedPageSelect) {
+            $GLOBALS['TSFE']->sys_page = null;
+        }
+        if ($initializedTsfe) {
+            unset($GLOBALS['TSFE']);
+        }
+        return $configurationToUse;
     }
 
     /**
