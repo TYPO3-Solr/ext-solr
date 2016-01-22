@@ -104,8 +104,7 @@ class JavascriptManager
     public function loadFile($fileKey)
     {
         if (!array_key_exists($fileKey, self::$files)) {
-            $typoScriptPath = 'plugin.tx_solr.javascriptFiles.' . $fileKey;
-            $fileReference = Util::getTypoScriptValue($typoScriptPath);
+            $fileReference = $this->configuration['javascriptFiles.'][$fileKey];
 
             if (!empty($fileReference)) {
                 self::$files[$fileKey] = array(
@@ -125,7 +124,7 @@ class JavascriptManager
      */
     public function addJavascriptToPage()
     {
-        $position = Util::getTypoScriptValue('plugin.tx_solr.javascriptFiles.loadIn');
+        $position = $this->configuration['javascriptFiles.']['loadIn'];
 
         if (empty($position)) {
             $position = self::POSITION_NONE;

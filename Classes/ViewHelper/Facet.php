@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -52,7 +53,7 @@ class Facet extends AbstractSubpartViewHelper
     public function __construct(array $arguments = array())
     {
         if (is_null($this->configuration)) {
-            $this->configuration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
+            $this->configuration = Util::getSolrConfiguration();
         }
     }
 

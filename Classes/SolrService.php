@@ -94,6 +94,11 @@ class SolrService extends \Apache_Solr_Service
     protected $schemaName = null;
     protected $solrconfigName = null;
 
+    /**
+     * @var array
+     */
+    protected $configuration;
+
 
     /**
      * Constructor
@@ -110,6 +115,7 @@ class SolrService extends \Apache_Solr_Service
         $scheme = 'http'
     ) {
         $this->setScheme($scheme);
+        $this->configuration = Util::getSolrConfiguration();
 
         parent::__construct($host, $port, $path);
     }
@@ -420,7 +426,7 @@ class SolrService extends \Apache_Solr_Service
             $response = $e->getResponse();
         }
 
-        if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawGet'] || $response->getHttpStatus() != 200) {
+        if ($this->configuration['logging.']['query.']['rawGet'] || $response->getHttpStatus() != 200) {
             $logData = array(
                 'query url' => $url,
                 'response' => (array)$response
@@ -627,7 +633,7 @@ class SolrService extends \Apache_Solr_Service
             $response = $e->getResponse();
         }
 
-        if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawPost'] || $response->getHttpStatus() != 200) {
+        if ($this->configuration['logging.']['query.']['rawPost'] || $response->getHttpStatus() != 200) {
             $logData = array(
                 'query url' => $url,
                 'content' => $rawPost,
@@ -739,7 +745,7 @@ class SolrService extends \Apache_Solr_Service
             $solrResponse = $e->getResponse();
         }
 
-        if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['rawDelete'] || $solrResponse->getHttpStatus() != 200) {
+        if ($this->configuration['logging.']['query.']['rawDelete'] || $solrResponse->getHttpStatus() != 200) {
             $logData = array(
                 'query url' => $url,
                 'response' => (array)$solrResponse

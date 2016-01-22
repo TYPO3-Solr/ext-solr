@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -264,9 +265,10 @@ class PageIndexer extends AbstractFrontendHelper
     public function hook_indexContent(TypoScriptFrontendController $page)
     {
         $this->page = $page;
+        $configuration = Util::getSolrConfiguration();
 
         if (!$this->page->config['config']['index_enable']) {
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['pageIndexed']) {
+            if ($configuration['logging.']['indexing.']['pageIndexed']) {
                 GeneralUtility::devLog('Indexing is disabled. Set config.index_enable = 1 .',
                     'solr', 3);
             }
@@ -289,7 +291,7 @@ class PageIndexer extends AbstractFrontendHelper
                 $this->responseData['documentsSentToSolr'][] = (array)$document;
             }
         } catch (\Exception $e) {
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
+            if ($configuration['tx_solr.']['logging.']['exceptions']) {
                 GeneralUtility::devLog('Exception while trying to index page ' . $page->id,
                     'solr', 3, array(
                         $e->__toString()
@@ -297,7 +299,7 @@ class PageIndexer extends AbstractFrontendHelper
             }
         }
 
-        if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['indexing.']['pageIndexed']) {
+        if ($configuration['logging.']['indexing.']['pageIndexed']) {
             $success = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
             $severity = $this->responseData['pageIndexed'] ? -1 : 3;
 

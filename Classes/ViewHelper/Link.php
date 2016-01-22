@@ -85,9 +85,11 @@ class Link implements ViewHelper
         if (is_numeric($linkArgument)) {
             $linkTarget = intval($linkArgument);
         } elseif (!empty($linkArgument) && is_string($linkArgument)) {
-            if (Util::isValidTypoScriptPath($linkArgument)) {
+            /** @var \ApacheSolrForTypo3\Solr\TypoScriptConfiguration $configuration */
+            $configuration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\TypoScriptConfiguration');
+            if ($configuration->isValidPath($linkArgument)) {
                 try {
-                    $typoscript = Util::getTypoScriptObject($linkArgument);
+                    $typoscript = $configuration->getObjectByPath($linkArgument);
                     $pathExploded = explode('.', $linkArgument);
                     $lastPathSegment = array_pop($pathExploded);
 

@@ -188,7 +188,7 @@ class ResultsCommand implements PluginCommand
     protected function processDocumentFieldsToArray(
         \Apache_Solr_Document $document
     ) {
-        $processingInstructions = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['results.']['fieldProcessingInstructions.'];
+        $processingInstructions = $this->configuration['search.']['results.']['fieldProcessingInstructions.'];
         $availableFields = $document->getFieldNames();
         $result = array();
 

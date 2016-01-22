@@ -130,7 +130,7 @@ abstract class PluginBase extends AbstractPlugin
 
             $content = $this->postRender($content);
         } catch (\Exception $e) {
-            if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['exceptions']) {
+            if ($this->conf['logging.']['exceptions']) {
                 GeneralUtility::devLog(
                     $e->getCode() . ': ' . $e->__toString(),
                     'solr',
@@ -182,11 +182,11 @@ abstract class PluginBase extends AbstractPlugin
      */
     protected function initialize($configuration)
     {
-        $this->conf = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
-        ArrayUtility::mergeRecursiveWithOverrule(
-            $this->conf,
-            $configuration
-        );
+
+        /** @var \ApacheSolrForTypo3\Solr\TypoScriptConfiguration $typoScriptConfiguration */
+        $typoScriptConfiguration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\TypoScriptConfiguration');
+        // since TypoScriptConfiguration is a singleton the internal configuration has to be reinitialized for every plugin instance
+        $this->conf = $typoScriptConfiguration->initialize($configuration);
 
         $this->initializeLanguageFactory();
         $this->pi_setPiVarDefaults();
