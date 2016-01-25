@@ -14,7 +14,7 @@ env:
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
   matrix:
-    - TYPO3_VERSION="~7.6.0"
+    - TYPO3_VERSION="~7.6.2"
     - TYPO3_VERSION="dev-master"
 
 matrix:

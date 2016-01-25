@@ -22,7 +22,7 @@ Things we are working on or got working already include the following:
 - Crawling of External non-TYPO3 Websites
 - more ...
 
-We're open for [contributions](#Contributions) !
+We're open for [contributions](./CONTRIBUTING.md) !
 
 Please find further information regarding Apache Solr and its related projects at the following links:
 
@@ -56,43 +56,7 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 
     http://lists.typo3.org/cgi-bin/mailman/listinfo/typo3-project-solr
 
-## Continous Integration
-
-We use travis ci for continues integration. To run the whole test suite locally for one TYPO3 Version do the following:
-
-First you need to set some environment variables and boostrap the system with the bootstrap script (you only need to do this once):
-
-```bash
-chmod u+x ./Resources/Install/*.sh
-chmod u+x ./Tests/Build/*.sh
-
-export TYPO3_VERSION="~7.6.0"
-export TYPO3_DATABASE_NAME="typo3_ci"
-export TYPO3_DATABASE_USERNAME="root"
-export TYPO3_DATABASE_PASSWORD=""
-export TYPO3_DATABASE_HOST="localhost"
-
-./Tests/Build/bootstrap.sh
-```
-
-Now you can run the complete test suite:
-
-```bash
-./Tests/Build/cibuild.sh
-```
-
 ## <a name="Contributions"></a>Contributions
 
-1. Fork the repository on Github
-2. Clone repository
-3. Make your changes
-4. Commit your changes to your fork. In your commit message refer to the issue number if there is already one, e.g. `[BUGFIX] short description of fix (resolves #4711)`
-5. Submit a Pull Request using GitHub (here are some hints on [How to write the perfect pull request](https://github.com/blog/1943-how-to-write-the-perfect-pull-request))
+[You want to contribute and like to know how? Check our guidelines about how to contribute to EXT:solr](./CONTRIBUTING.md)
 
-### Keep your fork in sync with original repository
-
-1. git remote add upstream https://github.com/TYPO3-Solr/ext-solr.git
-2. git fetch upstream
-3. git checkout master
-4. git merge upstream/master
-5. git push origin master

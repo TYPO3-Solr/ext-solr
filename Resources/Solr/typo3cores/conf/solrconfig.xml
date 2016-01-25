@@ -28,7 +28,7 @@
 
 	<!-- Data Import Handler -->
 	<lib dir="../dist/" regex="solr-dataimporthandler-.*\.jar" />
-	<lib dir="../contrib/dataimporthandler/lib/" />
+	<lib dir="../contrib/dataimporthandler-extras/lib/" />
 
 	<!-- Language Analysis Extras -->
 	<lib dir="../dist/" regex="solr-analysis-extras-.*\.jar" />
