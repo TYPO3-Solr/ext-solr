@@ -132,9 +132,16 @@ abstract class AbstractFacetRenderer implements FacetRenderer
             $showEvenWhenEmpty = true;
         }
 
+        $showWithMinimumAvailableOptions = false;
+        if (!empty($this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['showWithMinimumAvailableOptions'])
+            && $this->facet->getOptionsCount() < $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['showWithMinimumAvailableOptions']
+        ) {
+            $showWithMinimumAvailableOptions = true;
+        }
+
         // if the facet doesn't provide any options, don't render it unless
         // it is configured to be rendered nevertheless
-        if (!$this->facet->isEmpty() || $showEmptyFacets || $showEvenWhenEmpty) {
+        if ((!$this->facet->isEmpty() && !$showWithMinimumAvailableOptions) || $showEmptyFacets || $showEvenWhenEmpty) {
             $facetTemplate = clone $this->template;
             $facetTemplate->workOnSubpart('single_facet');
 
