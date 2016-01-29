@@ -50,7 +50,7 @@ class SolrConfigStatus implements StatusProviderInterface
      *
      * @var string
      */
-    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-3-1-0--20160127';
+    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-4-0-0--20160127';
 
     /**
      * Compiles a collection of solrconfig version checks against each configured
