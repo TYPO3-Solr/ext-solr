@@ -223,7 +223,7 @@ class SolrService extends \Apache_Solr_Service
      * @param ExtractingQuery $query An extraction query
      * @return array An array containing the extracted content [0] and meta data [1]
      */
-    public function extract(ExtractingQuery $query)
+    public function extractByQuery(ExtractingQuery $query)
     {
         $headers = array(
             'Content-Type' => 'multipart/form-data; boundary=' . $query->getMultiPartPostDataBoundary()
@@ -245,7 +245,6 @@ class SolrService extends \Apache_Solr_Service
                     'file' => $query->getFile(),
                     'headers' => $headers,
                     'query url' => self::EXTRACT_SERVLET,
-                    'response' => $response,
                     'exception' => $e->getMessage()
                 ));
         }
