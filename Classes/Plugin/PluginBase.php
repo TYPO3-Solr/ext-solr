@@ -129,6 +129,7 @@ abstract class PluginBase extends AbstractPlugin
 
             $content = $this->postRender($content);
         } catch (\Exception $e) {
+            var_dump($e->getMessage());
             if ($this->conf['logging.']['exceptions']) {
                 GeneralUtility::devLog(
                     $e->getCode() . ': ' . $e->__toString(),
@@ -183,10 +184,7 @@ abstract class PluginBase extends AbstractPlugin
     {
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\Configuration\ConfigurationManager */
         $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\ConfigurationManager');
-        $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
-        $typoScriptConfiguration->merge($configuration);
-        $configurationManager->setTypoScriptConfiguration($typoScriptConfiguration);
-
+        $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($configuration);
         $this->conf = $typoScriptConfiguration;
 
         $this->initializeLanguageFactory();

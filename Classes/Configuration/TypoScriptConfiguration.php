@@ -97,7 +97,7 @@ class TypoScriptConfiguration implements \ArrayAccess
         }
 
         $pathExploded = explode('.', trim($path));
-        $pathBranch = $this->getPathBranch($pathExploded);
+        $pathBranch = $this->configuration;
 
         $segmentCount = count($pathExploded);
         for ($i = 0; $i < $segmentCount; $i++) {
@@ -139,7 +139,7 @@ class TypoScriptConfiguration implements \ArrayAccess
         $pathExploded = explode('.', trim($path));
         // remove last object
         $lastPathSegment = array_pop($pathExploded);
-        $pathBranch = $this->getPathBranch($pathExploded);
+        $pathBranch = $this->configuration;
 
         foreach ($pathExploded as $segment) {
             if (!array_key_exists($segment . '.', $pathBranch)) {
@@ -173,31 +173,19 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
-     * @param array $pathExploded
-     * @return array
-     */
-    protected function getPathBranch(array $pathExploded)
-    {
-        if ($pathExploded[0] === 'plugin' && $pathExploded[1] === 'tx_solr') {
-            $pathBranch = array('plugin.' => array('tx_solr.' => $this->configuration));
-        } else {
-            $pathBranch = $GLOBALS['TSFE']->tmpl->setup;
-        }
-        return $pathBranch;
-    }
-
-    /**
      * Merges a configuration with another configuration a
      *
-     * @param array $configuration
-     * @return array
+     * @param array $configurationToMerge
+     * @return TypoScriptConfiguration
      */
-    public function merge(array $configuration)
+    public function mergeSolrConfiguration(array $configurationToMerge)
     {
         ArrayUtility::mergeRecursiveWithOverrule(
-            $this->configuration,
-            $configuration
+            $this->configuration['plugin.']['tx_solr.'],
+            $configurationToMerge
         );
+
+        return $this;
     }
 
     /**
@@ -215,7 +203,7 @@ class TypoScriptConfiguration implements \ArrayAccess
     public function offsetExists($offset)
     {
         GeneralUtility::logDeprecatedFunction();
-        return array_key_exists($offset, $this->configuration);
+        return array_key_exists($offset, $this->configuration['plugin.']['tx_solr.']);
     }
 
     /**
@@ -237,7 +225,7 @@ class TypoScriptConfiguration implements \ArrayAccess
             return null;
         }
 
-        return $this->configuration[$offset];
+        return $this->configuration['plugin.']['tx_solr.'][$offset];
     }
 
     /**

@@ -63,14 +63,6 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
-     * @param \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration $typoScriptConfiguration
-     */
-    public function setTypoScriptConfiguration($typoScriptConfiguration)
-    {
-        $this->typoScriptConfiguration = $typoScriptConfiguration;
-    }
-
-    /**
      * @return \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration
      */
     public function getTypoScriptConfiguration()
@@ -79,16 +71,23 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
+     * @throws \InvalidArgumentException
      * @param array $configurationArray
      */
     private function initialize(array $configurationArray = null)
     {
         if ($configurationArray == null) {
-            if (!empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']) && is_array($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'])) {
-                $configurationArray = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.'];
-            } else {
-                $configurationArray = array();
+            if (!empty($GLOBALS['TSFE']->tmpl->setup) && is_array($GLOBALS['TSFE']->tmpl->setup)) {
+                $configurationArray = $GLOBALS['TSFE']->tmpl->setup;
             }
+        }
+
+        if (! is_array($configurationArray)) {
+            $configurationArray = array();
+        }
+
+        if (!isset($configurationArray['plugin.']['tx_solr.'])) {
+            $configurationArray['plugin.']['tx_solr.'] = array();
         }
 
         $this->typoScriptConfiguration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\TypoScriptConfiguration', $configurationArray);

@@ -49,8 +49,8 @@ class TypoScriptConfigurationTest extends UnitTest
     public function setUp()
     {
         $fakeConfigurationArray = array();
-        $fakeConfigurationArray['index.']['queue.']['tt_news.']['fields.']['content'] = 'SOLR_CONTENT';
-        $fakeConfigurationArray['index.']['queue.']['tt_news.']['fields.']['content.']['field'] = 'bodytext';
+        $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content'] = 'SOLR_CONTENT';
+        $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content.']['field'] = 'bodytext';
         $this->configuration = new TypoScriptConfiguration($fakeConfigurationArray);
     }
 

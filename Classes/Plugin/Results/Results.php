@@ -412,9 +412,7 @@ class Results extends CommandPluginBase
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\Configuration\ConfigurationManager */
         $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\ConfigurationManager');
-        $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration();
-        $typoScriptConfiguration->merge($flexFormConfiguration);
-        $configurationManager->setTypoScriptConfiguration($typoScriptConfiguration);
+        $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($flexFormConfiguration);
 
         $this->conf = $typoScriptConfiguration;
     }
