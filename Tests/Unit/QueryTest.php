@@ -267,4 +267,19 @@ class QueryTest extends UnitTest
         $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
         $this->assertNull($queryParameters["hl.useFastVectorHighlighter"], 'FastVectorHighlighter was disabled but still requested');
     }
+
+    /**
+     * @test
+     */
+    public function canThrowExceptionWhenFastVectorHighlighterIsUsedWithFragSizeEqualsZero()
+    {
+        $this->setExpectedException('\InvalidArgumentException');
+
+        $fakeConfiguration = array();
+        $fakeConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 1;
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query->setHighlighting(true, 0);
+    }
 }

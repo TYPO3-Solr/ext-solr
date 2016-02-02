@@ -1155,6 +1155,9 @@ class Query
 
             if (isset($this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter']) &&
                 $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] == 1) {
+                if ($fragmentSize <= 18) {
+                    throw new \InvalidArgumentException("The setting useFastVectorHighlighter can only be used with a fragementSize larger then 18");
+                }
                 $this->queryParameters['hl.useFastVectorHighlighter'] = 'true';
             }
 
