@@ -90,12 +90,16 @@ class Query
     private $rawQueryString = false;
 
     /**
-     * Constructor
-     *
+     * @param string $keywords
+     * @param null $solrConfiguration
      */
-    public function __construct($keywords)
+    public function __construct($keywords, $solrConfiguration = null)
     {
-        $this->solrConfiguration = Util::getSolrConfiguration();
+        if ($solrConfiguration == null) {
+            $this->solrConfiguration = Util::getSolrConfiguration();
+        } else {
+            $this->solrConfiguration = $solrConfiguration;
+        }
 
         $this->fieldList = array('*', 'score');
         $this->setKeywords($keywords);
@@ -1148,10 +1152,23 @@ class Query
                 $this->queryParameters['hl.fl'] = $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'];
             }
 
+
+            if (isset($this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter']) &&
+                $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] == 1) {
+                $this->queryParameters['hl.useFastVectorHighlighter'] = 'true';
+            }
+
             $wrap = explode('|',
                 $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['wrap']);
-            $this->queryParameters['hl.simple.pre'] = $wrap[0];
-            $this->queryParameters['hl.simple.post'] = $wrap[1];
+
+            if (isset($this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter']) &&
+                $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] == 1) {
+                $this->queryParameters['hl.tag.pre'] = $wrap[0];
+                $this->queryParameters['hl.tag.post'] = $wrap[1];
+            } else {
+                $this->queryParameters['hl.simple.pre'] = $wrap[0];
+                $this->queryParameters['hl.simple.post'] = $wrap[1];
+            }
         } else {
             // remove all hl.* settings
             foreach ($this->queryParameters as $key => $value) {

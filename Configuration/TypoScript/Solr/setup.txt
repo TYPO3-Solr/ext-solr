@@ -153,6 +153,9 @@ plugin.tx_solr {
 		results {
 			resultsHighlighting = 0
 			resultsHighlighting {
+				 // can be used to increase the highlighting performance
+				 // requires the field is termVectors=on, termPositions=on and termOffsets=on which is set for content.
+				useFastVectorHighlighter = 0
 				highlightFields = content
 				fragmentSize = 200
 				fragmentSeparator = [...]

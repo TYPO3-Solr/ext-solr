@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class QueryTestCase extends UnitTest
+class QueryTest extends UnitTest
 {
 
     /**
@@ -200,5 +200,71 @@ class QueryTestCase extends UnitTest
                 'Query contains grouping parameter "' . $queryParameter . '"'
             );
         }
+    }
+
+    /**
+     * @test
+     */
+    public function canEnableHighlighting()
+    {
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
+        $query->setHighlighting(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame(200, $queryParameters["hl.fragsize"], 'hl.fragsize was not set to the default value of 200');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canSetHighlightingFieldList()
+    {
+        $fakeConfiguration = array();
+        $fakeConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'] = 'title';
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query->setHighlighting(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame("title", $queryParameters["hl.fl"], 'Can set highlighting field list');
+    }
+
+    /**
+     * @test
+     */
+    public function canUseFastVectorHighlighting()
+    {
+        $fakeConfiguration = array();
+        $fakeConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 1;
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query->setHighlighting(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame("true", $queryParameters["hl.useFastVectorHighlighter"], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
+    }
+
+    /**
+     * @test
+     */
+    public function canDisableFastVectorHighlighting()
+    {
+        $fakeConfiguration = array();
+        $fakeConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 0;
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query->setHighlighting(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertNull($queryParameters["hl.useFastVectorHighlighter"], 'FastVectorHighlighter was disabled but still requested');
     }
 }
