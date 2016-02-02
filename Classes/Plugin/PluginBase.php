@@ -129,7 +129,6 @@ abstract class PluginBase extends AbstractPlugin
 
             $content = $this->postRender($content);
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
             if ($this->conf['logging.']['exceptions']) {
                 GeneralUtility::devLog(
                     $e->getCode() . ': ' . $e->__toString(),
