@@ -244,24 +244,21 @@ $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-// replace the built-in search content element
-
-$searchReplacementTypoScript = trim('
-tt_content.search = COA
-tt_content.search {
-	10 = < lib.stdheader
-	20 >
-	20 = < plugin.tx_solr_PiResults_Results
-	30 >
+$hasCompatibilityLayer = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('compatibility6');
+if($hasCompatibilityLayer) {
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
+        'solr',
+        'setup',
+        'tt_content.search = COA
+         tt_content.search {
+           10 = < lib.stdheader
+           20 >
+           20 = < plugin.tx_solr_PiResults_Results
+           30 >
+        }',
+        'defaultContentRendering'
+    );
 }
-');
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
-    $_EXTKEY,
-    'setup',
-    '# Setting ' . $_EXTKEY . ' plugin TypoScript' . $searchReplacementTypoScript,
-    43
-);
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
