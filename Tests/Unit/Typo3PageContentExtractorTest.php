@@ -55,14 +55,13 @@ class Typo3PageContentExtractorTest extends UnitTest
     public function changesNbspToSpace()
     {
         $content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
-        $expectedResult = 'In Olten ist';
+        $expectedResult = 'In Olten ist';
 
         $contentExtractor = GeneralUtility::makeInstance(
             'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
             $content
         );
         $actualResult = $contentExtractor->getIndexableContent();
-
         $this->assertEquals($expectedResult, $actualResult);
     }
 
@@ -81,5 +80,41 @@ class Typo3PageContentExtractorTest extends UnitTest
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
         $this->assertEquals($expectedResult, $actualResult);
+    }
+
+    /**
+     * @test
+     */
+    public function excludeContentKeepsEncodingForUmlaut()
+    {
+        $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>Was ein schöner Tag</p><!-- TYPO3SEARCH_end -->';
+
+        $contentExtractor = GeneralUtility::makeInstance(
+            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
+            $content
+        );
+
+        $actualResult = $contentExtractor->excludeContentByClass($content);
+
+        $this->assertContains('Was ein schöner Tag', $actualResult);
+        $this->assertNotContains('Remove me', $actualResult);
+    }
+
+    /**
+     * @test
+     */
+    public function excludeContentKeepsEncodingForEuroSign()
+    {
+        $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>100€</p><!-- TYPO3SEARCH_end -->';
+
+        $contentExtractor = GeneralUtility::makeInstance(
+            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
+            $content
+        );
+
+        $actualResult = $contentExtractor->excludeContentByClass($content);
+
+        $this->assertContains('100€', $actualResult);
+        $this->assertNotContains('Remove me', $actualResult);
     }
 }
