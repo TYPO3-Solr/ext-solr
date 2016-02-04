@@ -81,9 +81,9 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
             return $indexableContent;
         }
 
-        $doc = new \DOMDocument();
+        $doc = new \DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
-        $doc->loadHTML($indexableContent);
+        $doc->loadHTML('<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . $indexableContent);
         $xpath = new \DOMXPath($doc);
         $excludeParts = GeneralUtility::trimExplode(',', $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeContentByClass'], true);
         foreach ($excludeParts as $excludePart) {
@@ -94,9 +94,12 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
                 }
             }
         }
-        #from http://php.net/manual/en/domdocument.savehtml.php
-        $indexableContent = trim(preg_replace('/^<!DOCTYPE.+?>/', '', str_replace(array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), $doc->saveHTML())));
-        return $indexableContent;
+        $html = $doc->saveHTML($doc->documentElement->parentNode);
+        // remove XML-Preamble, newlines and doctype
+        $html = preg_replace('/(<\?xml[^>]+\?>|\r?\n|<!DOCTYPE.+?>)/imS', '', $html);
+        $html = str_replace(array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), $html);
+
+        return $html;
     }
 
     /**
