@@ -426,7 +426,7 @@ class SolrService extends \Apache_Solr_Service
             $response = $e->getResponse();
         }
 
-        if ($this->configuration['logging.']['query.']['rawGet'] || $response->getHttpStatus() != 200) {
+        if ($this->configuration->getLoggingQueryRawGet() || $response->getHttpStatus() != 200) {
             $logData = array(
                 'query url' => $url,
                 'response' => (array)$response
@@ -633,7 +633,7 @@ class SolrService extends \Apache_Solr_Service
             $response = $e->getResponse();
         }
 
-        if ($this->configuration['logging.']['query.']['rawPost'] || $response->getHttpStatus() != 200) {
+        if ($this->configuration->getLoggingQueryRawPost() || $response->getHttpStatus() != 200) {
             $logData = array(
                 'query url' => $url,
                 'content' => $rawPost,

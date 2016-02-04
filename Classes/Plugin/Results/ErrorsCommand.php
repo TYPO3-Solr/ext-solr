@@ -62,7 +62,7 @@ class ErrorsCommand implements PluginCommand
     public function __construct(CommandPluginBase $parentPlugin)
     {
         $this->parentPlugin = $parentPlugin;
-        $this->configuration = $parentPlugin->conf;
+        $this->configuration = $parentPlugin->typoScriptConfiguration;
     }
 
     /**
@@ -97,7 +97,7 @@ class ErrorsCommand implements PluginCommand
         $userQuery = $this->parentPlugin->getRawUserQuery();
 
         if (!is_null($userQuery)
-            && !$this->configuration['search.']['query.']['allowEmptyQuery']
+            && !$this->configuration->getSearchQueryAllowEmptyQuery()
             && empty($userQuery)
         ) {
             $errors[] = array(

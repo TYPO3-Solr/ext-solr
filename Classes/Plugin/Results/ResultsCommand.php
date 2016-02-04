@@ -71,7 +71,7 @@ class ResultsCommand implements PluginCommand
     public function __construct(CommandPluginBase $parentPlugin)
     {
         $this->parentPlugin = $parentPlugin;
-        $this->configuration = $parentPlugin->conf;
+        $this->configuration = $parentPlugin->typoScriptConfiguration;
         $this->search = $parentPlugin->getSearch();
     }
 
@@ -188,7 +188,7 @@ class ResultsCommand implements PluginCommand
     protected function processDocumentFieldsToArray(
         \Apache_Solr_Document $document
     ) {
-        $processingInstructions = $this->configuration['search.']['results.']['fieldProcessingInstructions.'];
+        $processingInstructions = $this->configuration->getSearchResultsFieldProcessingInstructionsConfiguration();
         $availableFields = $document->getFieldNames();
         $result = array();
 
@@ -230,7 +230,7 @@ class ResultsCommand implements PluginCommand
      */
     protected function renderDocumentFields(array $document)
     {
-        $renderingInstructions = $this->configuration['search.']['results.']['fieldRenderingInstructions.'];
+        $renderingInstructions = $this->configuration->getSearchResultsFieldRenderingInstructionsConfiguration();
         $cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
         $cObj->start($document);
 
@@ -255,11 +255,7 @@ class ResultsCommand implements PluginCommand
     protected function getPageBrowser($numberOfResults)
     {
         $pageBrowserMarkup = '';
-
-        $solrPageBrowserConfiguration = array();
-        if (isset($this->configuration['search.']['results.']['pagebrowser.'])) {
-            $solrPageBrowserConfiguration = $this->configuration['search.']['results.']['pagebrowser.'];
-        }
+        $solrPageBrowserConfiguration = $this->configuration->getSearchResultsPageBrowserConfiguration();
 
         if ($solrPageBrowserConfiguration['enabled']) {
             $resultsPerPage = $this->parentPlugin->getNumberOfResultsPerPage();
@@ -280,7 +276,7 @@ class ResultsCommand implements PluginCommand
                     'currentPage' => $currentPage,
                     'extraQueryString' => GeneralUtility::implodeArrayForUrl('tx_solr',
                         $solrGetParameters),
-                    'templateFile' => $this->configuration['templateFiles.']['pagebrowser']
+                    'templateFile' => $this->configuration->getTemplateByFileKey('pagebrowser')
                 )
             );
 

@@ -104,7 +104,7 @@ class JavascriptManager
     public function loadFile($fileKey)
     {
         if (!array_key_exists($fileKey, self::$files)) {
-            $fileReference = $this->configuration['javascriptFiles.'][$fileKey];
+            $fileReference = $this->configuration->getJavaScriptFileByFileKey($fileKey);
 
             if (!empty($fileReference)) {
                 self::$files[$fileKey] = array(
@@ -124,7 +124,7 @@ class JavascriptManager
      */
     public function addJavascriptToPage()
     {
-        $position = $this->configuration['javascriptFiles.']['loadIn'];
+        $position = $this->configuration->getJavaScriptLoadIn();
 
         if (empty($position)) {
             $position = self::POSITION_NONE;

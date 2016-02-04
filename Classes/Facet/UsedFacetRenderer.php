@@ -116,13 +116,11 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
         $facetText = $this->getModifiedFacetTextFromHook($facetText);
 
         $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-        $facetLabel = $contentObject->stdWrap(
-            $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label'],
-            $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['label.']
-        );
+        $facetConfiguration = $solrConfiguration->getSearchFacetingFacetByName($this->facetName);
+        $facetLabel = $contentObject->stdWrap($facetConfiguration['label'], $facetConfiguration['label.']);
 
         $removeFacetText = strtr(
-            $solrConfiguration['search.']['faceting.']['removeFacetLinkText'],
+            $solrConfiguration->getSearchFacetingRemoveFacetLinkText(),
             array(
                 '@facetValue' => $this->filterValue,
                 '@facetName' => $this->facetName,

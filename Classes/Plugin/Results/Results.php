@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 use ApacheSolrForTypo3\Solr\Search\QueryAware;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -89,10 +90,10 @@ class Results extends CommandPluginBase
     {
         if (!is_null($this->query)
             && ($this->query->getQueryString()
-                || $this->conf['search.']['initializeWithEmptyQuery']
-                || $this->conf['search.']['showResultsOfInitialEmptyQuery']
-                || $this->conf['search.']['initializeWithQuery']
-                || $this->conf['search.']['showResultsOfInitialQuery']
+                || $this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery()
+                || $this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery()
+                || $this->typoScriptConfiguration->getSearchInitializeWithQuery()
+                || $this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery()
             )
         ) {
             $currentPage = max(0, intval($this->piVars['page']));
@@ -124,9 +125,10 @@ class Results extends CommandPluginBase
     ) {
         $rawUserQuery = $this->getRawUserQuery();
 
-        if (($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])
-            && !$this->conf['search.']['showResultsOfInitialEmptyQuery']
-            && !$this->conf['search.']['showResultsOfInitialQuery']
+        if (($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery()
+                || $this->typoScriptConfiguration->getSearchInitializeWithQuery())
+            && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery()
+            && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery()
             && empty($rawUserQuery)
         ) {
             // explicitly set number of results to 0 as we just wanted
@@ -152,8 +154,9 @@ class Results extends CommandPluginBase
      */
     protected function preRender()
     {
-        if ($this->conf['cssFiles.']['results']) {
-            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['results']));
+        $resultsCss = $this->typoScriptConfiguration->getCssFileByFileKey('results');
+        if ($resultsCss !== '') {
+            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($resultsCss));
             $GLOBALS['TSFE']->additionalHeaderData['tx_solr-resultsCss'] =
                 '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
         }
@@ -213,8 +216,10 @@ class Results extends CommandPluginBase
         $this->initializeAdditionalFilters($query);
 
         // TODO check whether a search has been conducted already?
-        if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])) {
-            if ($this->conf['logging.']['query.']['searchWords']) {
+        if ($this->solrAvailable && (isset($rawUserQuery) ||
+                $this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() ||
+                $this->typoScriptConfiguration->getSearchInitializeWithQuery())) {
+            if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
                 GeneralUtility::devLog('received search query', 'solr', 0,
                     array($rawUserQuery));
             }
@@ -224,7 +229,7 @@ class Results extends CommandPluginBase
 
             $searchComponents = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search\\SearchComponentManager')->getSearchComponents();
             foreach ($searchComponents as $searchComponent) {
-                $searchComponent->setSearchConfiguration($this->conf['search.']);
+                $searchComponent->setSearchConfiguration($this->typoScriptConfiguration->getSearchConfiguration());
 
                 if ($searchComponent instanceof QueryAware) {
                     $searchComponent->setQuery($query);
@@ -237,14 +242,14 @@ class Results extends CommandPluginBase
                 $searchComponent->initializeSearchComponent();
             }
 
-            if ($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['query.']['allowEmptyQuery']) {
+            if ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchQueryAllowEmptyQuery()) {
                 // empty main query, but using a "return everything"
                 // alternative query in q.alt
                 $query->setAlternativeQuery('*:*');
             }
 
-            if ($this->conf['search.']['initializeWithQuery']) {
-                $query->setAlternativeQuery($this->conf['search.']['initializeWithQuery']);
+            if ($this->typoScriptConfiguration->getSearchInitializeWithQuery()) {
+                $query->setAlternativeQuery($this->typoScriptConfiguration->getSearchInitializeWithQuery());
             }
 
             foreach ($this->additionalFilters as $additionalFilter) {
@@ -266,21 +271,21 @@ class Results extends CommandPluginBase
     {
         $additionalFilters = array();
 
-        if (!empty($this->conf['search.']['query.']['filter.'])) {
+        $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
+        if (count($searchQueryFilters) > 0) {
             // special filter to limit search to specific page tree branches
-            if (array_key_exists('__pageSections',
-                $this->conf['search.']['query.']['filter.'])) {
-                $query->setRootlineFilter($this->conf['search.']['query.']['filter.']['__pageSections']);
-                unset($this->conf['search.']['query.']['filter.']['__pageSections']);
+            if (array_key_exists('__pageSections', $searchQueryFilters)) {
+                $query->setRootlineFilter($searchQueryFilters['__pageSections']);
+                $this->typoScriptConfiguration->removeSearchQueryFilterForPageSections();
             }
 
             // all other regular filters
-            foreach ($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
-                if (!is_array($this->conf['search.']['query.']['filter.'][$filterKey])) {
-                    if (is_array($this->conf['search.']['query.']['filter.'][$filterKey . '.'])) {
+            foreach ($searchQueryFilters as $filterKey => $filter) {
+                if (!is_array($searchQueryFilters[$filterKey])) {
+                    if (is_array($searchQueryFilters[$filterKey . '.'])) {
                         $filter = $this->cObj->stdWrap(
-                            $this->conf['search.']['query.']['filter.'][$filterKey],
-                            $this->conf['search.']['query.']['filter.'][$filterKey . '.']
+                            $searchQueryFilters[$filterKey],
+                            $searchQueryFilters[$filterKey . '.']
                         );
                     }
 
@@ -370,16 +375,9 @@ class Results extends CommandPluginBase
         }
 
         // target page
-        $targetPage = (int)$this->conf['search.']['targetPage'];
-        $flexformTargetPage = (int)$this->pi_getFFvalue($this->cObj->data['pi_flexform'],
-            'targetPage');
-        if ($flexformTargetPage) {
-            $targetPage = $flexformTargetPage;
-        }
-        if (!empty($targetPage)) {
-            $flexFormConfiguration['search.']['targetPage'] = $targetPage;
-        } else {
-            $flexFormConfiguration['search.']['targetPage'] = $GLOBALS['TSFE']->id;
+        $flexformTargetPage = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'targetPage');
+        if (!empty($flexformTargetPage)) {
+            $flexFormConfiguration['search.']['targetPage'] = (int) $flexformTargetPage;
         }
 
         // boost function
@@ -410,11 +408,7 @@ class Results extends CommandPluginBase
             $flexFormConfiguration['search.']['results.']['resultsPerPage'] = $resultsPerPage;
         }
 
-        /** @var $configurationManager \ApacheSolrForTypo3\Solr\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\ConfigurationManager');
-        $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($flexFormConfiguration);
-
-        $this->conf = $typoScriptConfiguration;
+        $this->typoScriptConfiguration->mergeSolrConfiguration($flexFormConfiguration);
     }
 
     /**
@@ -464,8 +458,7 @@ class Results extends CommandPluginBase
     public function getNumberOfResultsPerPage()
     {
         $configuration = Util::getSolrConfiguration();
-        $resultsPerPageSwitchOptions = GeneralUtility::intExplode(',',
-            $configuration['search.']['results.']['resultsPerPageSwitchOptions']);
+        $resultsPerPageSwitchOptions = $configuration->getSearchResultsPerPageSwitchOptionsAsArray();
 
         $solrParameters = array();
         $solrPostParameters = GeneralUtility::_POST('tx_solr');
@@ -482,14 +475,12 @@ class Results extends CommandPluginBase
         if (isset($solrParameters['resultsPerPage']) && in_array($solrParameters['resultsPerPage'],
                 $resultsPerPageSwitchOptions)
         ) {
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_solr_resultsPerPage',
-                intval($solrParameters['resultsPerPage']));
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_solr_resultsPerPage', intval($solrParameters['resultsPerPage']));
             $this->resultsPerPageChanged = true;
         }
 
-        $defaultNumberOfResultsShown = $this->conf['search.']['results.']['resultsPerPage'];
-        $userSetNumberOfResultsShown = $GLOBALS['TSFE']->fe_user->getKey('ses',
-            'tx_solr_resultsPerPage');
+        $defaultNumberOfResultsShown = $this->typoScriptConfiguration->getSearchResultsPerPage();
+        $userSetNumberOfResultsShown = $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_solr_resultsPerPage');
 
         $currentNumberOfResultsShown = $defaultNumberOfResultsShown;
         if (!is_null($userSetNumberOfResultsShown) && in_array($userSetNumberOfResultsShown,
@@ -500,9 +491,9 @@ class Results extends CommandPluginBase
 
         $rawUserQuery = $this->getRawUserQuery();
 
-        if (($this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])
-            && !$this->conf['search.']['showResultsOfInitialEmptyQuery']
-            && !$this->conf['search.']['showResultsOfInitialQuery']
+        if (($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchInitializeWithQuery())
+            && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery()
+            && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery()
             && empty($rawUserQuery)
         ) {
             // initialize search with an empty query, which would by default return all documents
@@ -517,11 +508,11 @@ class Results extends CommandPluginBase
     /**
      * Gets the plugin's configuration.
      *
-     * @return array Configuration
+     * @return TypoScriptConfiguration Configuration
      */
     public function getConfiguration()
     {
-        return $this->conf;
+        return $this->typoScriptConfiguration;
     }
 
     /**

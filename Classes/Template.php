@@ -186,7 +186,7 @@ class Template
                         $helperInstance);
                 } catch (\Exception $e) {
                     $configuration = Util::getSolrConfiguration();
-                    if ($configuration['tx_solr.']['logging.']['exceptions']) {
+                    if ($configuration->getLoggingExceptions()) {
                         GeneralUtility::devLog('exception while adding a viewhelper',
                             'solr', 3, array(
                                 $e->__toString()
@@ -495,7 +495,7 @@ class Template
                 $viewHelperContent = $viewHelper->execute($viewHelperArguments);
             } catch (\UnexpectedValueException $e) {
                 $configuration = Util::getSolrConfiguration();
-                if ($configuration['tx_solr.']['logging.']['exceptions']) {
+                if ($configuration->getLoggingExceptions()) {
                     GeneralUtility::devLog('Exception while rendering a viewhelper',
                         'solr', 3, array(
                             $e->__toString()

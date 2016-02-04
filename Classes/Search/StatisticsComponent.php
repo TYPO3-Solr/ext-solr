@@ -44,7 +44,7 @@ class StatisticsComponent extends AbstractComponent
     {
         $solrConfiguration = Util::getSolrConfiguration();
 
-        if (!empty($solrConfiguration['statistics'])) {
+        if ($solrConfiguration->getStatistics()) {
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics'] = 'ApacheSolrForTypo3\\Solr\\Query\\Modifier\\Statistics';
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['statistics'] = 'ApacheSolrForTypo3\\Solr\\Response\\Processor\\StatisticsWriter';
         }

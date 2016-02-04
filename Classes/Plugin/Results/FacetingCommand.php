@@ -80,7 +80,7 @@ class FacetingCommand implements PluginCommand
         $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
         $this->parentPlugin = $parentPlugin;
-        $this->configuration = $parentPlugin->conf;
+        $this->configuration = $parentPlugin->typoScriptConfiguration;
     }
 
     /**
@@ -93,8 +93,8 @@ class FacetingCommand implements PluginCommand
     {
         $marker = array();
 
-        if ($this->configuration['search.']['faceting']
-            && ($this->search->getNumberOfResults() || $this->configuration['search.']['initializeWithEmptyQuery'] || $this->configuration['search.']['initializeWithQuery'])
+        if ($this->configuration->getSearchFaceting()
+            && ($this->search->getNumberOfResults() || $this->configuration->getSearchInitializeWithEmptyQuery() || $this->configuration->getSearchInitializeWithQuery())
         ) {
             $marker['subpart_available_facets'] = $this->renderAvailableFacets();
             $marker['subpart_used_facets'] = $this->renderUsedFacets();
@@ -126,7 +126,7 @@ class FacetingCommand implements PluginCommand
         $template = clone $this->parentPlugin->getTemplate();
         $template->workOnSubpart('available_facets');
 
-        $configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
+        $configuredFacets = $this->configuration->getSearchFacetingFacets();
 
         $facetRendererFactory = GeneralUtility::makeInstance(
             'ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory',
@@ -185,19 +185,15 @@ class FacetingCommand implements PluginCommand
         $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
         // URL parameters added to facet URLs may not need to be added to the facets reset URL
-        if (!empty($this->configuration['search.']['faceting.']['facetLinkUrlParameters'])
-            && isset($this->configuration['search.']['faceting.']['facetLinkUrlParameters.']['useForFacetResetLinkUrl'])
-            && $this->configuration['search.']['faceting.']['facetLinkUrlParameters.']['useForFacetResetLinkUrl'] === '0'
-        ) {
-            $addedUrlParameters = GeneralUtility::explodeUrl2Array($this->configuration['search.']['faceting.']['facetLinkUrlParameters']);
-            $addedUrlParameterKeys = array_keys($addedUrlParameters);
+        $facetLinkUrlParameters = $this->configuration->getSearchFacetingFacetLinkUrlParametersAsArray();
+        $useForFacetResetLink = $this->configuration->getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl();
+
+        if (count($facetLinkUrlParameters) > 0 && $useForFacetResetLink) {
+            $addedUrlParameterKeys = array_keys($facetLinkUrlParameters);
 
             foreach ($addedUrlParameterKeys as $addedUrlParameterKey) {
-                if (GeneralUtility::isFirstPartOfStr($addedUrlParameterKey,
-                    'tx_solr')
-                ) {
-                    $addedUrlParameterKey = substr($addedUrlParameterKey, 8,
-                        -1);
+                if (GeneralUtility::isFirstPartOfStr($addedUrlParameterKey, 'tx_solr')) {
+                    $addedUrlParameterKey = substr($addedUrlParameterKey, 8, -1);
                     $queryLinkBuilder->addUnwantedUrlParameter($addedUrlParameterKey);
                 }
             }
@@ -215,7 +211,7 @@ class FacetingCommand implements PluginCommand
             // only split by the first ":" to allow the use of colons in the filter value
             list($filterName, $filterValue) = explode(':', $filter, 2);
 
-            $facetConfiguration = $this->configuration['search.']['faceting.']['facets.'][$filterName . '.'];
+            $facetConfiguration = $this->configuration->getSearchFacetingFacetByName($filterName);
 
             // don't render facets that should not be included in used facets
             if (isset($facetConfiguration['includeInUsedFacets']) && $facetConfiguration['includeInUsedFacets'] == '0') {

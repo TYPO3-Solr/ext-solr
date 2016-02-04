@@ -90,7 +90,7 @@ class FacetOption
         $this->numberOfResults = intval($facetOptionNumberOfResults);
 
         $solrConfiguration = Util::getSolrConfiguration();
-        $this->facetConfiguration = $solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
+        $this->facetConfiguration = $solrConfiguration->getSearchFacetingFacetByName($this->facetName);
     }
 
     /**

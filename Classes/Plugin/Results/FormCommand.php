@@ -71,7 +71,7 @@ class FormCommand implements PluginCommand
         $this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
         $this->parentPlugin = $parentPlugin;
-        $this->configuration = $parentPlugin->conf;
+        $this->configuration = $parentPlugin->typoScriptConfiguration;
     }
 
     /**
@@ -82,11 +82,11 @@ class FormCommand implements PluginCommand
      */
     public function execute()
     {
-        $url = $this->cObj->getTypoLink_URL($this->parentPlugin->conf['search.']['targetPage']);
+        $url = $this->cObj->getTypoLink_URL($this->parentPlugin->typoScriptConfiguration->getSearchTargetPage());
 
         $marker = array(
             'action' => htmlspecialchars($url),
-            'action_id' => intval($this->parentPlugin->conf['search.']['targetPage']),
+            'action_id' => intval($this->parentPlugin->typoScriptConfiguration->getSearchTargetPage()),
             'action_language' => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
             'action_language_parameter' => 'L',
             'accept-charset' => $GLOBALS['TSFE']->metaCharset,

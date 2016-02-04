@@ -56,7 +56,7 @@ class DebugComponent extends AbstractComponent implements QueryAware
     {
         $solrConfiguration = Util::getSolrConfiguration();
 
-        if ($solrConfiguration['enableDebugMode']) {
+        if ($solrConfiguration->getEnabledDebugMode()) {
             $this->query->setDebugMode();
         }
     }

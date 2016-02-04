@@ -55,6 +55,9 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 
         parent::setUp();
+
+        //this is needed by the TYPO3 core.
+        chdir(PATH_site);
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Configuration;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 /***************************************************************
  *  Copyright notice
@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -84,5 +84,84 @@ class TypoScriptConfigurationTest extends UnitTest
     {
         $value = $this->configuration['index.']['queue.']['tt_news.']['fields.']['content'];
         $this->assertSame($value, 'SOLR_CONTENT', 'Can not use the configuration object with array access as backwards compatible implementation');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetFacetLinkOptionsByFacetName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'search.' => array(
+                'faceting.' => array(
+                    'facetLinkATagParams' => 'class="all-facets"',
+                    'facets.' => array(
+                        'color.' => array(),
+                        'type.' => array(
+                            'facetLinkATagParams' => 'class="type-facets"'
+                        )
+                    )
+                )
+            )
+        );
+
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $typeATagParams = $configuration->getSearchFacetingFacetLinkATagParamsByName('type');
+        $this->assertSame('class="type-facets"', $typeATagParams, 'can not get concrete a tag param for type');
+
+        $typeATagParams = $configuration->getSearchFacetingFacetLinkATagParamsByName('color');
+        $this->assertSame('class="all-facets"', $typeATagParams, 'can not get concrete a tag param for color');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canShowEvenIfEmptyFallBackToGlobalSetting()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'search.' => array(
+                'faceting.' => array(
+                    'showEmptyFacets' => true,
+                    'facets.' => array(
+                        'color.' => array(),
+                        'type.' => array(
+                            'showEvenWhenEmpty' => true
+                        )
+                    )
+                )
+            )
+        );
+
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $showEmptyType = $configuration->getSearchFacetingShowEmptyFacetsByName('type');
+        $this->assertTrue($showEmptyType);
+
+        $showEmptyColor = $configuration->getSearchFacetingShowEmptyFacetsByName('color');
+        $this->assertTrue($showEmptyColor);
+
+
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'search.' => array(
+                'faceting.' => array(
+                    'facets.' => array(
+                        'color.' => array(),
+                        'type.' => array(
+                            'showEvenWhenEmpty' => true
+                        )
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $showEmptyType = $configuration->getSearchFacetingShowEmptyFacetsByName('type');
+        $this->assertTrue($showEmptyType);
+
+        $showEmptyColor = $configuration->getSearchFacetingShowEmptyFacetsByName('color');
+        $this->assertFalse($showEmptyColor);
     }
 }

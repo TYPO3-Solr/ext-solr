@@ -70,7 +70,7 @@ class SortingCommand implements PluginCommand
         $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
 
         $this->parentPlugin = $parentPlugin;
-        $this->configuration = $parentPlugin->conf;
+        $this->configuration = $parentPlugin->typoScriptConfiguration;
     }
 
     /**
@@ -80,7 +80,7 @@ class SortingCommand implements PluginCommand
     {
         $marker = array();
 
-        if ($this->configuration['search.']['sorting'] != 0 && $this->search->getNumberOfResults()) {
+        if ($this->configuration->getSearchSorting() && $this->search->getNumberOfResults()) {
             $marker['loop_sort|sort'] = $this->getSortingLinks();
         }
 
@@ -97,7 +97,7 @@ class SortingCommand implements PluginCommand
     protected function getSortingLinks()
     {
         $sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Sorting',
-            $this->configuration['search.']['sorting.']['options.']);
+            $this->configuration->getSearchSortingOptionsConfiguration());
 
         $query = $this->search->getQuery();
 
@@ -114,11 +114,7 @@ class SortingCommand implements PluginCommand
         $configuredSortOptions = $sortHelper->getSortOptions();
 
         foreach ($configuredSortOptions as $sortOptionName => $sortOption) {
-            $sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
-            if (!empty($this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['defaultOrder'])) {
-                $sortDirection = $this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['defaultOrder'];
-            }
-
+            $sortDirection = $this->configuration->getSearchSortingDefaultOrderBySortOptionName($sortOptionName);
             $sortIndicator = $sortDirection;
             $currentSortOption = '';
             $currentSortDirection = '';
@@ -144,8 +140,9 @@ class SortingCommand implements PluginCommand
                 }
             }
 
-            if (!empty($this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['fixedOrder'])) {
-                $sortDirection = $this->configuration['search.']['sorting.']['options.'][$sortOptionName . '.']['fixedOrder'];
+            $fixedOrder = $this->configuration->getSearchSortingFixedOrderBySortOptionName($sortOptionName);
+            if (trim($fixedOrder) !== '') {
+                $sortDirection = $fixedOrder;
             }
 
             $sortParameter = $sortOptionName . ' ' . $sortDirection;

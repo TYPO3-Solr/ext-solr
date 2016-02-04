@@ -42,7 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class PageFieldMappingIndexer implements SubstitutePageIndexer
 {
     /**
-     * @var \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration
+     * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
      */
     protected $configuration;
 

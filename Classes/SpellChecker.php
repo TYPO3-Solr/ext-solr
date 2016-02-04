@@ -126,12 +126,12 @@ class SpellChecker
     {
         $suggestionsLink = '';
 
-        if ($this->configuration['search.']['spellchecking'] && $this->search->hasSearched()) {
+        if ($this->configuration->getSearchSpellchecking() && $this->search->hasSearched()) {
             $suggestions = $this->getSuggestions();
             if ($suggestions && !$suggestions['correctlySpelled'] && !empty($suggestions['collation'])) {
                 $suggestionsLink = $GLOBALS['TSFE']->cObj->noTrimWrap(
                     $this->getSuggestionQueryLink(),
-                    $this->configuration['search.']['spellchecking.']['wrap']
+                    $this->configuration->getSearchSpellcheckingWrap()
                 );
             }
         }

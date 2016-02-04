@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -39,7 +40,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Faceting implements Modifier
 {
-
+    /**
+     * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration|array
+     */
     protected $configuration;
 
     protected $facetParameters = array();
@@ -48,16 +51,25 @@ class Faceting implements Modifier
 
     protected $facetRendererFactory = null;
 
+    /**
+     * @var array
+     */
+    protected $allConfiguredFacets = array();
 
     /**
-     * Constructor
-     *
+     * @param TypoScriptConfiguration $solrConfiguration
      */
-    public function __construct()
+    public function __construct($solrConfiguration = null)
     {
-        $this->configuration = Util::getSolrConfiguration();
+        if (!is_null($solrConfiguration)) {
+            $this->configuration = $solrConfiguration;
+        } else {
+            $this->configuration = Util::getSolrConfiguration();
+        }
+
+        $this->allConfiguredFacets = $this->configuration->getSearchFacetingFacets();
         $this->facetRendererFactory = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory',
-            $this->configuration['search.']['faceting.']['facets.']);
+            $this->allConfiguredFacets);
     }
 
     /**
@@ -92,9 +104,7 @@ class Faceting implements Modifier
     protected function buildFacetingParameters()
     {
         $facetParameters = array();
-        $configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
-
-        foreach ($configuredFacets as $facetName => $facetConfiguration) {
+        foreach ($this->allConfiguredFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
 
             $facetParameterBuilder = $this->facetRendererFactory->getQueryFacetBuilderByFacetName($facetName);
@@ -121,10 +131,9 @@ class Faceting implements Modifier
         $facetParameters = array();
 
         // simple for now, may add overrides f.<field_name>.facet.* later
-
-        if ($this->configuration['search.']['faceting.']['keepAllFacetsOnSelection'] == 1) {
+        if ($this->configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
             $facets = array();
-            foreach ($this->configuration['search.']['faceting.']['facets.'] as $facet) {
+            foreach ($this->allConfiguredFacets as $facet) {
                 $facets[] = $facet['field'];
             }
 
@@ -154,6 +163,7 @@ class Faceting implements Modifier
      */
     protected function addFacetQueryFilters()
     {
+        // todo refactor to use a request object
         $resultParameters = GeneralUtility::_GET('tx_solr');
 
         // format for filter URL parameter:
@@ -162,7 +172,6 @@ class Faceting implements Modifier
             $filters = array_map('urldecode', $resultParameters['filter']);
             // $filters look like array('name:value1','name:value2','fieldname2:foo')
             $configuredFacets = $this->getConfiguredFacets();
-
             // first group the filters by facetName - so that we can
             // decide later whether we need to do AND or OR for multiple
             // filters for a certain facet/field
@@ -177,13 +186,12 @@ class Faceting implements Modifier
             }
 
             foreach ($filtersByFacetName as $facetName => $filterValues) {
-                $facetConfiguration = $this->configuration['search.']['faceting.']['facets.'][$facetName . '.'];
-
+                $facetConfiguration = $this->allConfiguredFacets[$facetName . '.'];
                 $filterEncoder = $this->facetRendererFactory->getFacetFilterEncoderByFacetName($facetName);
 
                 $tag = '';
                 if ($facetConfiguration['keepAllOptionsOnSelection'] == 1
-                    || $this->configuration['search.']['faceting.']['keepAllFacetsOnSelection'] == 1
+                   || $this->configuration->getSearchFacetingKeepAllFacetsOnSelection()
                 ) {
                     $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
                 }
@@ -218,10 +226,9 @@ class Faceting implements Modifier
      */
     protected function getConfiguredFacets()
     {
-        $configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
         $facets = array();
 
-        foreach ($configuredFacets as $facetName => $facetConfiguration) {
+        foreach ($this->allConfiguredFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
 
             if (empty($facetConfiguration['field'])) {

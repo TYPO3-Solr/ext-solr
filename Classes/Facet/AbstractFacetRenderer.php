@@ -104,7 +104,8 @@ abstract class AbstractFacetRenderer implements FacetRenderer
         $this->facetName = $facet->getName();
 
         $this->solrConfiguration = Util::getSolrConfiguration();
-        $this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
+        $this->facetConfiguration = $this->solrConfiguration->getSearchFacetingFacetByName($this->facetName);
+
         $this->linkTargetPageId = $GLOBALS['TSFE']->id;
 
         $this->queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
@@ -122,19 +123,11 @@ abstract class AbstractFacetRenderer implements FacetRenderer
 
         $facetContent = '';
 
-        $showEmptyFacets = false;
-        if (!empty($this->solrConfiguration['search.']['faceting.']['showEmptyFacets'])) {
-            $showEmptyFacets = true;
-        }
-
-        $showEvenWhenEmpty = false;
-        if (!empty($this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.']['showEvenWhenEmpty'])) {
-            $showEvenWhenEmpty = true;
-        }
+        $showEmptyFacets = $this->solrConfiguration->getSearchFacetingShowEmptyFacetsByName($this->facetName);
 
         // if the facet doesn't provide any options, don't render it unless
         // it is configured to be rendered nevertheless
-        if (!$this->facet->isEmpty() || $showEmptyFacets || $showEvenWhenEmpty) {
+        if (!$this->facet->isEmpty() || $showEmptyFacets) {
             $facetTemplate = clone $this->template;
             $facetTemplate->workOnSubpart('single_facet');
 

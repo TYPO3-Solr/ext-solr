@@ -97,7 +97,7 @@ class Facet
     protected function initializeConfiguration()
     {
         $solrConfiguration = Util::getSolrConfiguration();
-        $this->configuration = $solrConfiguration['search.']['faceting.']['facets.'][$this->name . '.'];
+        $this->configuration = $solrConfiguration->getSearchFacetingFacetByName($this->name);
 
         $this->field = $this->configuration['field'];
     }

@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
@@ -102,6 +103,10 @@ abstract class PluginBase extends AbstractPlugin
 
     // Main
 
+    /**
+     * @var TypoScriptConfiguration
+     */
+    public $typoScriptConfiguration;
 
     /**
      * The main method of the plugin
@@ -129,7 +134,7 @@ abstract class PluginBase extends AbstractPlugin
 
             $content = $this->postRender($content);
         } catch (\Exception $e) {
-            if ($this->conf['logging.']['exceptions']) {
+            if ($this->typoScriptConfiguration->getLoggingExceptions()) {
                 GeneralUtility::devLog(
                     $e->getCode() . ': ' . $e->__toString(),
                     'solr',
@@ -181,15 +186,17 @@ abstract class PluginBase extends AbstractPlugin
      */
     protected function initialize($configuration)
     {
-        /** @var $configurationManager \ApacheSolrForTypo3\Solr\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\ConfigurationManager');
+        /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
         $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($configuration);
-        $this->conf = $typoScriptConfiguration;
+        $this->typoScriptConfiguration = $typoScriptConfiguration;
 
         $this->initializeLanguageFactory();
         $this->pi_setPiVarDefaults();
         $this->pi_loadLL();
         $this->pi_initPIflexForm();
+
+
         $this->overrideTyposcriptWithFlexformSettings();
 
         $this->initializeQuery();
@@ -487,7 +494,7 @@ abstract class PluginBase extends AbstractPlugin
      */
     protected function getTemplateFile()
     {
-        return $this->conf['templateFiles.'][$this->getTemplateFileKey()];
+        return $this->typoScriptConfiguration->getTemplateByFileKey($this->getTemplateFileKey());
     }
 
     /**
@@ -544,7 +551,7 @@ abstract class PluginBase extends AbstractPlugin
      */
     public function getLinkTargetPageId()
     {
-        return $this->conf['search.']['targetPage'];
+        return $this->typoScriptConfiguration->getSearchTargetPage();
     }
 
     /**

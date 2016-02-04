@@ -137,7 +137,7 @@ class SolrLink implements ViewHelper
         } elseif (is_string($linkArgument) && !empty($linkArgument)) {
             // interpret a TypoScript path
             try {
-                /** @var \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration $configuration */
+                /** @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration $configuration */
                 $configuration = Util::getSolrConfiguration();
                 $typoscript = $configuration->getObjectByPath($linkArgument);
                 $pathExploded = explode('.', $linkArgument);

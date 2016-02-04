@@ -149,8 +149,9 @@ class FrequentSearches extends CommandPluginBase
      */
     protected function preRender()
     {
-        if ($this->conf['cssFiles.']['results']) {
-            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->conf['cssFiles.']['results']));
+        $cssFile = $this->typoScriptConfiguration->getCssFileByFileKey('results');
+        if ($cssFile !== '') {
+            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($cssFile));
             $GLOBALS['TSFE']->additionalHeaderData['tx_solr-resultsCss'] =
                 '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" />';
         }
