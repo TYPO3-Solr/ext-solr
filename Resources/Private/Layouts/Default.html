@@ -3,6 +3,14 @@
 <f:be.container
 	includeCssFiles="{solrAdmin: '{f:uri.resource(path:\'StyleSheets/ModuleAdministration.css\')}'}"
 >
+
+<f:be.pageRenderer
+    loadJQuery="true"
+    includeRequireJsModules="{
+    0:'TYPO3/CMS/Solr/FormModal'
+}"
+/>
+
 	<div class="typo3-fullDoc" id="ext-solr-mod-administration-php">
 		<div id="typo3-docheader">
 			<div class="typo3-docheader-functions">

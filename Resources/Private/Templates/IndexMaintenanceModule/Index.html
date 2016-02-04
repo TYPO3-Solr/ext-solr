@@ -25,8 +25,10 @@
 
 <div class="row-fluid">
 	<div class="span3">
-		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'emptyIndex'} )}">
-			<f:form.submit value="Empty Index" class="btn-sm btn-danger"/>
+		<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'emptyIndex'}" method="POST">
+			<f:form.submit class="btn btn-sm btn-danger t3js-modal-formsubmit-trigger"
+						   data="{title: 'Please confirm', content: 'Do you really want to clear the index? All solr documents will be removed', severity: 'warning'}"
+						   value="Empty Index"/>
 		</f:form>
 	</div>
 	<div class="span9 action-description">

@@ -85,11 +85,10 @@
 						</f:for>
 					</table>
 
-					<solr:backend.button.ActionButton
-							action="resetLogErrors"
-							label="{f:translate(key:'solr.backend.index_queue_module.errors.reset_button')}"
-							class="btn-sm btn-default"
-					/>
+					<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'resetLogErrors'}" method="POST">
+						<f:form.submit class="btn btn-sm btn-default"
+									   value="{f:translate(key:'solr.backend.index_queue_module.errors.reset_button')}"/>
+					</f:form>
 
 				</div>
 			</div>
@@ -123,11 +122,11 @@
 
 <div class="row-fluid">
 	<div class="span3">
-		<solr:backend.button.ActionButton
-			action="clearIndexQueue"
-			label="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"
-			class="btn-sm btn-danger"
-		/>
+		<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'clearIndexQueue'}" method="POST">
+			<f:form.submit class="btn btn-sm btn-danger t3js-modal-formsubmit-trigger"
+						   data="{title: 'Please confirm', content: 'Do you really want to clear the index queue?', severity: 'warning'}"
+						   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>
+		</f:form>
 	</div>
 	<div class="span9 action-description">
 		<h3>
