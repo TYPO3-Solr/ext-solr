@@ -41,6 +41,16 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
 {
 
     /**
+     * @var array
+     */
+    protected $configuration;
+
+    public function __construct()
+    {
+        $this->configuration = Util::getSolrConfiguration();
+    }
+
+    /**
      * Returns a substitute document for the currently being indexed page.
      *
      * Uses the original document and adds fields as defined in
@@ -89,7 +99,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
     protected function getAdditionalFieldNames()
     {
         $additionalFieldNames = array();
-        $additionalFields = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['additionalFields.'];
+        $additionalFields = $this->configuration['index.']['additionalFields.'];
 
         if (is_array($additionalFields)) {
             foreach ($additionalFields as $fieldName => $fieldValue) {
@@ -114,7 +124,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
     protected function getFieldValue($fieldName)
     {
         $fieldValue = '';
-        $additionalFields = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['additionalFields.'];
+        $additionalFields = $this->configuration['index.']['additionalFields.'];
 
         // support for cObject if the value is a configuration
         if (is_array($additionalFields[$fieldName . '.'])) {

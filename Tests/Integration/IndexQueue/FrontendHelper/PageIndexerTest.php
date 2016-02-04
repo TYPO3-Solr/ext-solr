@@ -70,43 +70,6 @@ class PageIndexerTest extends IntegrationTest
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"hello solr"', $solrContent, 'Could not index document into solr');
-
-        // cleanup the solr server
-        /** @var  $connectionManager \ApacheSolrForTypo3\Solr\ConnectionManager */
-        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\ConnectionManager');
-        $solrServices = $connectionManager->getAllConnections();
-        foreach ($solrServices as $solrService) {
-            $solrService->deleteByQuery('*:*');
-            $solrService->commit();
-        }
-
-        // we wait to make sure the document will be deleted in solr
-        sleep(3);
-
-        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":0', $solrContent, 'Could not index document into solr');
-    }
-
-    /**
-     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-     */
-    protected function getConfiguredTSFE($TYPO3_CONF_VARS = array(), $id = 1, $type = 0)
-    {
-        /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
-        $TSFE = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController',
-            $TYPO3_CONF_VARS, $id, $type);
-
-        \TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
-        $TSFE->initFEuser();
-        $TSFE->set_no_cache();
-        $TSFE->checkAlternativeIdMethods();
-        $TSFE->determineId();
-        $TSFE->initTemplate();
-        $TSFE->getConfigArray();
-        \TYPO3\CMS\Core\Core\Bootstrap::getInstance();
-        $TSFE->settingLanguage();
-        $TSFE->settingLocale();
-
-        return $TSFE;
+        $this->cleanUpSolrServerAndAssertEmpty();
     }
 }

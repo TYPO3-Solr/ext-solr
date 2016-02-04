@@ -83,7 +83,9 @@ class Ts implements ViewHelper
         $value = '';
         $pathExploded = explode('.', trim($path));
         $lastPathSegment = array_pop($pathExploded);
-        $pathBranch = Util::getTypoScriptObject($path);
+        /** @var \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration $configuration */
+        $configuration = Util::getSolrConfiguration();
+        $pathBranch = $configuration->getObjectByPath($path);
 
         // generate ts content
         $cObj = $this->getContentObject();

@@ -80,7 +80,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 2
             );
 
-            $solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
+            $configuration = Util::getSolrConfiguration();
+            $solrConfiguration = $configuration['solr.'];
 
             $host = $solrConfiguration['host'];
             $port = $solrConfiguration['port'];

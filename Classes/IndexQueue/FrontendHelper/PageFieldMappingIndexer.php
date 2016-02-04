@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 // TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\SubstitutePageIndexer;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -40,6 +41,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageFieldMappingIndexer implements SubstitutePageIndexer
 {
+    /**
+     * @var \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration
+     */
+    protected $configuration;
+
+    public function __construct()
+    {
+        $this->configuration = Util::getSolrConfiguration();
+    }
 
     /**
      * Returns a substitute document for the currently being indexed page.
@@ -97,7 +107,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     protected function getMappedFieldNames()
     {
         $mappedFieldNames = array();
-        $mappedFields = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['fields.'];
+        $mappedFields = $this->configuration['index.']['queue.']['pages.']['fields.'];
 
         foreach ($mappedFields as $indexFieldName => $recordFieldName) {
             if (is_array($recordFieldName)) {
@@ -124,7 +134,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     {
         $fieldValue = '';
 
-        $indexingConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['fields.'];
+        $indexingConfiguration = $this->configuration['index.']['queue.']['pages.']['fields.'];
         $pageRecord = $GLOBALS['TSFE']->page;
 
 
