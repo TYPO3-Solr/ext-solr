@@ -245,7 +245,7 @@ $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 $hasCompatibilityLayer = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('compatibility6');
-if($hasCompatibilityLayer) {
+if ($hasCompatibilityLayer) {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
         'solr',
         'setup',
