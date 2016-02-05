@@ -223,7 +223,7 @@ class Tx_Solr_IndexQueue_RecordMonitor {
 				if ($this->isEnabledRecord($recordTable, $record)) {
 					$configurationName = NULL;
 					if ($recordTable !== 'pages') {
-						$configurationName = $this->getIndexingConfigurationName($table, $uid);
+						$configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
 					}
 
 					$this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
