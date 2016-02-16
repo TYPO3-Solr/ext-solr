@@ -172,6 +172,8 @@ plugin.tx_solr {
 
 				enableMorePages = 1
 				enableLessPages = 1
+
+                enableHeaderLinkPrevNext = 1
 			}
 
 			// fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)

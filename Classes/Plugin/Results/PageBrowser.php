@@ -107,6 +107,9 @@ class PageBrowser
             } else {
                 $markers['###PREV_LINK###'] = $this->getPageLink($this->currentPage - 1);
                 $subPartMarkers['###INACTIVE_PREV###'] = '';
+                if ((int) $this->configuration['enableHeaderLinkPrevNext']) {
+                    $GLOBALS['TSFE']->additionalHeaderData['tx_solr'] .= '<link rel="prev" href="'.$markers['###PREV_LINK###'].'" />'. "\n";
+                }
             }
 
             // Next link
@@ -115,6 +118,9 @@ class PageBrowser
             } else {
                 $markers['###NEXT_LINK###'] = $this->getPageLink($this->currentPage + 1);
                 $subPartMarkers['###INACTIVE_NEXT###'] = '';
+                if ((int) $this->configuration['enableHeaderLinkPrevNext']) {
+                    $GLOBALS['TSFE']->additionalHeaderData['tx_solr'] .= '<link rel="next" href="'.$markers['###NEXT_LINK###'].'" />'. "\n";
+                }
             }
 
             // Last link
