@@ -141,7 +141,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
 
         // if the facet doesn't provide any options, don't render it unless
         // it is configured to be rendered nevertheless
-        if ((!$this->facet->isEmpty() && !$showWithMinimumAvailableOptions) || $showEmptyFacets || $showEvenWhenEmpty) {
+        if (!$this->facet->isEmpty() || $showEmptyFacets || $showEvenWhenEmpty) {
             $facetTemplate = clone $this->template;
             $facetTemplate->workOnSubpart('single_facet');
 
