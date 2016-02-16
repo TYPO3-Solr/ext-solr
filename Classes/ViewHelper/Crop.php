@@ -49,17 +49,18 @@ class Crop implements ViewHelper
     public function __construct(array $arguments = array())
     {
         $configuration = Util::getSolrConfiguration();
+        $cropConfiguration = $configuration->getViewHelpersCropConfiguration();
 
-        if (!empty($configuration['viewHelpers.']['crop.']['maxLength'])) {
-            $this->maxLength = $configuration['viewHelpers.']['crop.']['maxLength'];
+        if (!empty($cropConfiguration['maxLength'])) {
+            $this->maxLength = $cropConfiguration['maxLength'];
         }
 
-        if (!empty($configuration['viewHelpers.']['crop.']['cropIndicator'])) {
-            $this->cropIndicator = $configuration['viewHelpers.']['crop.']['cropIndicator'];
+        if (!empty($cropConfiguration['cropIndicator'])) {
+            $this->cropIndicator = $cropConfiguration['cropIndicator'];
         }
 
-        if (isset($configuration['viewHelpers.']['crop.']['cropFullWords'])) {
-            $this->cropFullWords = (boolean)$configuration['viewHelpers.']['crop.']['cropFullWords'];
+        if (isset($cropConfiguration['cropFullWords'])) {
+            $this->cropFullWords = (boolean) $cropConfiguration ['cropFullWords'];
         }
     }
 

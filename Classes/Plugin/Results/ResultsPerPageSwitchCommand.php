@@ -61,7 +61,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
     public function __construct(CommandPluginBase $parentPlugin)
     {
         $this->parentPlugin = $parentPlugin;
-        $this->configuration = $parentPlugin->conf;
+        $this->configuration = $parentPlugin->typoScriptConfiguration;
     }
 
     /**
@@ -98,9 +98,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
     {
         $resultsPerPageOptions = array();
 
-        $resultsPerPageSwitchOptions = GeneralUtility::intExplode(',',
-            $this->configuration['search.']['results.']['resultsPerPageSwitchOptions'],
-            true);
+        $resultsPerPageSwitchOptions = $this->configuration->getSearchResultsPerPageSwitchOptionsAsArray();
         $currentNumberOfResultsShown = $this->parentPlugin->getNumberOfResultsPerPage();
 
         $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',

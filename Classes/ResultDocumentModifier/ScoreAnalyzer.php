@@ -60,7 +60,6 @@ class ScoreAnalyzer implements ResultDocumentModifier
         array $resultDocument
     ) {
         $this->search = $resultCommand->getParentPlugin()->getSearch();
-        $configuration = Util::getSolrConfiguration();
 
         // only check whether a BE user is logged in, don't need to check
         // for enabled score analysis as we wouldn't be here if it was disabled
@@ -128,7 +127,7 @@ class ScoreAnalyzer implements ResultDocumentModifier
             $pattern = '/' . $highScore['field'] . '\^([\d.]*)/';
             $matches = array();
             preg_match_all($pattern,
-                $configuration['search.']['query.']['queryFields'], $matches);
+                $configuration->getSearchQueryQueryFields(), $matches);
 
             $scores[] = '
 				<td>+ ' . $highScore['score'] . '</td>

@@ -58,6 +58,10 @@ class LinkBuilder extends Query\LinkBuilder
 
 
     /**
+     * @var string
+     */
+    protected $facetTypoLinkATagParameter = '';
+    /**
      * Constructor.
      *
      * @param Query $query Solr query
@@ -72,11 +76,15 @@ class LinkBuilder extends Query\LinkBuilder
         parent::__construct($query);
 
         $this->facetName = $facetName;
-        $this->facetConfiguration = $this->solrConfiguration['search.']['faceting.']['facets.'][$this->facetName . '.'];
+        $this->facetConfiguration = $this->solrConfiguration->getSearchFacetingFacetByName($this->facetName);
         $this->facetOption = $facetOption;
+        $this->facetTypoLinkATagParameter = $this->solrConfiguration->getSearchFacetingFacetLinkATagParamsByName($this->facetName);
 
-        if ($this->solrConfiguration['search.']['faceting.']['facetLinkUrlParameters']) {
-            $this->addUrlParameters($this->solrConfiguration['search.']['faceting.']['facetLinkUrlParameters']);
+        $facetLinkUrlParameters = $this->solrConfiguration->getSearchFacetingFacetLinkUrlParameters();
+
+
+        if ($facetLinkUrlParameters) {
+            $this->addUrlParameters($facetLinkUrlParameters);
         }
     }
 
@@ -107,17 +115,7 @@ class LinkBuilder extends Query\LinkBuilder
      */
     protected function getTypolinkOptions()
     {
-        $typolinkOptions = array();
-
-        if (!empty($this->solrConfiguration['search.']['faceting.']['facetLinkATagParams'])) {
-            $typolinkOptions['ATagParams'] = $this->solrConfiguration['search.']['faceting.']['facetLinkATagParams'];
-        }
-
-        if (!empty($this->facetConfiguration['facetLinkATagParams'])) {
-            $typolinkOptions['ATagParams'] = $this->facetConfiguration['facetLinkATagParams'];
-        }
-
-        return $typolinkOptions;
+        return $this->facetTypoLinkATagParameter !== '' ? array('ATagParams' => $this->facetTypoLinkATagParameter) : array();
     }
 
     /**
@@ -133,7 +131,7 @@ class LinkBuilder extends Query\LinkBuilder
         $filterParameters = array();
 
         if (isset($resultParameters['filter'])
-            && !$this->solrConfiguration['search.']['faceting.']['singleFacetMode']
+            && !$this->solrConfiguration->getSearchFacetingSingleFacetMode()
         ) {
             $filterParameters = array_map('urldecode',
                 $resultParameters['filter']);

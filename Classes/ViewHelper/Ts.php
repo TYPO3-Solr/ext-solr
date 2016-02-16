@@ -83,7 +83,7 @@ class Ts implements ViewHelper
         $value = '';
         $pathExploded = explode('.', trim($path));
         $lastPathSegment = array_pop($pathExploded);
-        /** @var \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration $configuration */
+        /** @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration $configuration */
         $configuration = Util::getSolrConfiguration();
         $pathBranch = $configuration->getObjectByPath($path);
 

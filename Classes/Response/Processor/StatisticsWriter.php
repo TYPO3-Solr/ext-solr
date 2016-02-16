@@ -67,11 +67,11 @@ class StatisticsWriter implements ResponseProcessor
         }
 
         $configuration = Util::getSolrConfiguration();
-        if ($configuration['search.']['frequentSearches.']['useLowercaseKeywords']) {
+        if ($configuration->getSearchFrequentSearchesUseLowercaseKeywords()) {
             $keywords = strtolower($keywords);
         }
 
-        $ipMaskLength = (int)$configuration['statistics.']['anonymizeIP'];
+        $ipMaskLength = $configuration->getStatisticsAnonymizeIP();
 
         $insertFields = array(
             'pid' => $GLOBALS['TSFE']->id,

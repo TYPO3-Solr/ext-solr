@@ -99,14 +99,10 @@ class LinkBuilder
         $this->query = $query;
 
         $targetPageUid = $this->contentObject->stdWrap(
-            $this->solrConfiguration['search.']['targetPage'],
-            $this->solrConfiguration['search.']['targetPage.']
+            $this->solrConfiguration->getSearchTargetPage(),
+            $this->solrConfiguration->getSearchTargetPageConfiguration()
         );
         $this->linkTargetPageId = $targetPageUid;
-
-        if (empty($this->linkTargetPageId)) {
-            $this->linkTargetPageId = $GLOBALS['TSFE']->id;
-        }
     }
 
     /**
@@ -189,7 +185,6 @@ class LinkBuilder
             $additionalQueryParameters,
             array_merge($typolinkOptions, $linkConfigurationOverwrite)
         );
-
         return htmlspecialchars($link);
     }
 
@@ -221,6 +216,7 @@ class LinkBuilder
         if (!empty($keywords)) {
             $queryGetParameter = '&q=' . $keywords;
         }
+
 
         $linkConfiguration = array(
             'useCacheHash' => false,

@@ -97,27 +97,20 @@ class Lll implements ViewHelper
     {
         $configuration = Util::getSolrConfiguration();
 
-        $this->localLang[$this->languageFile] = $this->languageFactory->getParsedData(
-            $this->languageFile,
-            $this->llKey,
-            $GLOBALS['TSFE']->renderCharset,
-            3
-        );
+        $this->localLang[$this->languageFile] = $this->languageFactory->getParsedData($this->languageFile, $this->llKey, $GLOBALS['TSFE']->renderCharset, 3);
+
+        $localLangConfiguration = $configuration->getLocalLangConfiguration();
+        if (count($localLangConfiguration) == 0) {
+            return;
+        }
 
         // Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
-        if (is_array($configuration['_LOCAL_LANG.'])) {
-            foreach ($configuration['_LOCAL_LANG.'] as $language => $overrideLabels) {
-                $language = substr($language, 0, -1);
-
-                if (is_array($overrideLabels)) {
-                    foreach ($overrideLabels as $labelKey => $overrideLabel) {
-                        if (!is_array($overrideLabel)) {
-                            $this->localLang[$this->languageFile][$language][$labelKey] = array(
-                                array(
-                                    'source' => $overrideLabel
-                                )
-                            );
-                        }
+        foreach ($localLangConfiguration as $language => $overrideLabels) {
+            $language = substr($language, 0, -1);
+            if (is_array($overrideLabels)) {
+                foreach ($overrideLabels as $labelKey => $overrideLabel) {
+                    if (!is_array($overrideLabel)) {
+                        $this->localLang[$this->languageFile][$language][$labelKey] = array(array('source' => $overrideLabel));
                     }
                 }
             }

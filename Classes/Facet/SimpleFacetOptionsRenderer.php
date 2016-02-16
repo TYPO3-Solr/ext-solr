@@ -103,7 +103,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
         $this->query = $query;
 
         $solrConfiguration = Util::getSolrConfiguration();
-        $this->facetConfiguration = $solrConfiguration['search.']['faceting.']['facets.'][$facetName . '.'];
+        $this->facetConfiguration = $solrConfiguration->getSearchFacetingFacetByName($facetName);
     }
 
     /**
@@ -164,7 +164,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
             $optionLinkUrl = $facetLinkBuilder->getAddFacetOptionUrl();
 
             $optionHidden = '';
-            if (++$i > $solrConfiguration['search.']['faceting.']['limit']) {
+            if (++$i > $solrConfiguration->getSearchFacetingLimit()) {
                 $optionHidden = 'tx-solr-facet-hidden';
             }
 

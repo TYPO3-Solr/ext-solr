@@ -85,7 +85,7 @@ class Link implements ViewHelper
         if (is_numeric($linkArgument)) {
             $linkTarget = intval($linkArgument);
         } elseif (!empty($linkArgument) && is_string($linkArgument)) {
-            /** @var \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration $configuration */
+            /** @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration $configuration */
             $configuration = Util::getSolrConfiguration();
             if ($configuration->isValidPath($linkArgument)) {
                 try {

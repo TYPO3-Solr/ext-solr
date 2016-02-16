@@ -46,11 +46,10 @@ class Elevation implements Modifier
     public function modifyQuery(Query $query)
     {
         $configuration = Util::getSolrConfiguration();
-
         $query->setQueryElevation(
-            $configuration['search.']['elevation'],
-            $configuration['search.']['elevation.']['forceElevation'],
-            $configuration['search.']['elevation.']['markElevatedResults']
+            $configuration->getSearchElevation(),
+            $configuration->getSearchElevationForceElevation(),
+            $configuration->getSearchElevationMarkElevatedResults()
         );
 
         return $query;

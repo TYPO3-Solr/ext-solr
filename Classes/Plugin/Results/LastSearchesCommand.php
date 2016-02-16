@@ -63,7 +63,7 @@ class LastSearchesCommand implements PluginCommand
     public function __construct(CommandPluginBase $parentPlugin)
     {
         $this->parentPlugin = $parentPlugin;
-        $this->configuration = $parentPlugin->conf;
+        $this->configuration = $parentPlugin->typoScriptConfiguration;
     }
 
     /**
@@ -73,7 +73,7 @@ class LastSearchesCommand implements PluginCommand
      */
     public function execute()
     {
-        if ($this->configuration['search.']['lastSearches'] == 0) {
+        if (!$this->configuration->getSearchLastSearches()) {
             // command is not activated, intended early return
             return null;
         }
@@ -98,19 +98,21 @@ class LastSearchesCommand implements PluginCommand
     protected function getLastSearches()
     {
         $lastSearchesKeywords = array();
-        switch ($this->configuration['search.']['lastSearches.']['mode']) {
+        $mode   = $this->configuration->getSearchLastSearchesMode();
+        $limit  = $this->configuration->getSearchLastSearchesLimit();
+        switch ($mode) {
             case 'user':
                 $lastSearchesKeywords = $this->getLastSearchesFromSession();
                 break;
             case 'global':
-                $lastSearchesKeywords = $this->getLastSearchesFromDatabase($this->configuration['search.']['lastSearches.']['limit']);
+                $lastSearchesKeywords = $this->getLastSearchesFromDatabase($limit);
                 break;
         }
         // fill array for output
         $i = 0;
         $lastSearches = array();
         foreach ($lastSearchesKeywords as $keywords) {
-            if (++$i > $this->configuration['search.']['lastSearches.']['limit']) {
+            if (++$i > $limit) {
                 break;
             }
 

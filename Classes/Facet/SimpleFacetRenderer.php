@@ -58,10 +58,10 @@ class SimpleFacetRenderer extends AbstractFacetRenderer
     {
         $facet = parent::getFacetProperties();
 
-        if ($facet['count'] > $this->solrConfiguration['search.']['faceting.']['limit']) {
+        if ($facet['count'] > $this->solrConfiguration->getSearchFacetingLimit()) {
             $showAllLink = '<a href="#" class="tx-solr-facet-show-all">###LLL:faceting_showMore###</a>';
             $showAllLink = $GLOBALS['TSFE']->cObj->wrap($showAllLink,
-                $this->solrConfiguration['search.']['faceting.']['showAllLink.']['wrap']);
+                $this->solrConfiguration->getSearchFacetingShowAllLinkWrap());
             $facet['show_all_link'] = $showAllLink;
         }
 

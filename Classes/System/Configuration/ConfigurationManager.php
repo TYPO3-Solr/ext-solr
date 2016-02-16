@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Configuration;
+namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 /***************************************************************
  *  Copyright notice
@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -46,10 +45,11 @@ class ConfigurationManager implements SingletonInterface
 
     /**
      * @param array $configurationArray
+     * @param integer $contextPageId
      */
-    public function __construct(array $configurationArray = null)
+    public function __construct(array $configurationArray = null, $contextPageId = null)
     {
-        $this->initialize($configurationArray);
+        $this->initialize($configurationArray, $contextPageId);
     }
 
     /**
@@ -63,7 +63,7 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
-     * @return \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration
+     * @return \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
      */
     public function getTypoScriptConfiguration()
     {
@@ -73,8 +73,9 @@ class ConfigurationManager implements SingletonInterface
     /**
      * @throws \InvalidArgumentException
      * @param array $configurationArray
+     * @param integer $contextPageId
      */
-    private function initialize(array $configurationArray = null)
+    private function initialize(array $configurationArray = null, $contextPageId = null)
     {
         if ($configurationArray == null) {
             if (!empty($GLOBALS['TSFE']->tmpl->setup) && is_array($GLOBALS['TSFE']->tmpl->setup)) {
@@ -90,6 +91,10 @@ class ConfigurationManager implements SingletonInterface
             $configurationArray['plugin.']['tx_solr.'] = array();
         }
 
-        $this->typoScriptConfiguration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\TypoScriptConfiguration', $configurationArray);
+
+        if ($contextPageId == null && !empty($GLOBALS['TSFE']->id)) {
+            $contextPageId = $GLOBALS['TSFE']->id;
+        }
+        $this->typoScriptConfiguration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\TypoScriptConfiguration', $configurationArray, $contextPageId);
     }
 }

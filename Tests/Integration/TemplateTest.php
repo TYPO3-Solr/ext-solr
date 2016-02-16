@@ -41,7 +41,7 @@ class TemplateTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        chdir(PATH_site);
+
 
         $GLOBALS['TYPO3_CONF_VARS']['FE']['addAllowedPaths'] = $this->getFixtureRootPath();
 

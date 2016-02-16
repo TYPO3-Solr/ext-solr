@@ -84,7 +84,7 @@ class SuggestFormModifier implements FormModifier, CommandPluginAware
      */
     public function modifyForm(array $markers, Template $template)
     {
-        $suggestionsEnabled = $this->configuration['suggest'];
+        $suggestionsEnabled = $this->configuration->getSuggest();
 
         if ($suggestionsEnabled) {
             $this->addSuggestStylesheets();
@@ -108,8 +108,9 @@ class SuggestFormModifier implements FormModifier, CommandPluginAware
      */
     protected function addSuggestStylesheets()
     {
-        if ($this->configuration['cssFiles.']['ui'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
-            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->configuration['cssFiles.']['ui']));
+        $uiCss = $this->configuration->getCssFileByFileKey('ui');
+        if (trim($uiCss) !== '' && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
+            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($uiCss));
             $GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss'] =
                 '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
         }
@@ -139,7 +140,7 @@ class SuggestFormModifier implements FormModifier, CommandPluginAware
     {
         $suggestUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 
-        if ($this->configuration['suggest.']['forceHttps']) {
+        if ($this->configuration->getSuggestForceHttps()) {
             $suggestUrl = str_replace('http://', 'https://', $suggestUrl);
         }
 

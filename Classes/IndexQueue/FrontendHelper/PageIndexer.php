@@ -267,8 +267,9 @@ class PageIndexer extends AbstractFrontendHelper
         $this->page = $page;
         $configuration = Util::getSolrConfiguration();
 
+        $logPageIndexed = $configuration->getLoggingPageIndexed();
         if (!$this->page->config['config']['index_enable']) {
-            if ($configuration['logging.']['indexing.']['pageIndexed']) {
+            if ($logPageIndexed) {
                 GeneralUtility::devLog('Indexing is disabled. Set config.index_enable = 1 .',
                     'solr', 3);
             }
@@ -291,7 +292,7 @@ class PageIndexer extends AbstractFrontendHelper
                 $this->responseData['documentsSentToSolr'][] = (array)$document;
             }
         } catch (\Exception $e) {
-            if ($configuration['tx_solr.']['logging.']['exceptions']) {
+            if ($configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('Exception while trying to index page ' . $page->id,
                     'solr', 3, array(
                         $e->__toString()
@@ -299,7 +300,7 @@ class PageIndexer extends AbstractFrontendHelper
             }
         }
 
-        if ($configuration['logging.']['indexing.']['pageIndexed']) {
+        if ($logPageIndexed) {
             $success = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
             $severity = $this->responseData['pageIndexed'] ? -1 : 3;
 

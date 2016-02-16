@@ -100,7 +100,7 @@ class QueryGroup implements FilterEncoder, FacetBuilder
                 // Eventually the "exclude fields" should get passed to this method beforehand instead
                 // of generating them in each different "buildFacetParameters" implementation
                 $facets = array();
-                foreach ($this->configuration['search.']['faceting.']['facets.'] as $facet) {
+                foreach ($this->configuration->getSearchFacetingFacets() as $facet) {
                     $facets[] = $facet['field'];
                 }
                 $tag = '{!ex=' . implode(',', $facets) . '}';

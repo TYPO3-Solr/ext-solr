@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
 use ApacheSolrForTypo3\Solr\Search\SearchAware;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -70,6 +71,11 @@ class Search implements SingletonInterface
     protected $hasSearched = false;
 
 
+    /**
+     * @var TypoScriptConfiguration
+     */
+    protected $configuration;
+
 
     // TODO Override __clone to reset $response and $hasSearched
 
@@ -88,6 +94,8 @@ class Search implements SingletonInterface
                 $GLOBALS['TSFE']->sys_language_uid
             );
         }
+
+        $this->configuration = Util::getSolrConfiguration();
     }
 
     /**
@@ -126,8 +134,6 @@ class Search implements SingletonInterface
      */
     public function search(Query $query, $offset = 0, $limit = 10)
     {
-        $configuration = Util::getSolrConfiguration();
-
         $query = $this->modifyQuery($query);
         $this->query = $query;
 
@@ -143,7 +149,7 @@ class Search implements SingletonInterface
                 $query->getQueryParameters()
             );
 
-            if ($configuration['logging.']['query.']['queryString']) {
+            if ($this->configuration->getLoggingQueryQueryString()) {
                 GeneralUtility::devLog('Querying Solr, getting result', 'solr',
                     0, array(
                         'query string' => $query->getQueryString(),
@@ -155,7 +161,7 @@ class Search implements SingletonInterface
         } catch (\RuntimeException $e) {
             $response = $this->solr->getResponse();
 
-            if ($configuration['logging.']['exceptions']) {
+            if ($this->configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('Exception while querying Solr', 'solr',
                     3, array(
                         'exception' => $e->__toString(),
@@ -257,8 +263,7 @@ class Search implements SingletonInterface
 
             $solrAvailable = true;
         } catch (\Exception $e) {
-            $configuration = Util::getSolrConfiguration();
-            if ($configuration['logging.']['exceptions']) {
+            if ($this->configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('exception while trying to ping the solr server',
                     'solr', 3, array(
                         $e->__toString()
@@ -315,27 +320,6 @@ class Search implements SingletonInterface
     }
 
     /**
-     * Returns a list of solr fields that could be retrieved without applying htmlspecialchars
-     *
-     * @return array
-     */
-    protected function getTrustedSolrFields()
-    {
-        $trustedFields = array();
-        $configuration = Util::getSolrConfiguration();
-        if (!isset($configuration['search.']['trustedFields']) ||
-            !is_string($configuration['search.']['trustedFields'])
-        ) {
-            return $trustedFields;
-        }
-
-        $trustedFieldsSetting = $configuration['search.']['trustedFields'];
-        $trustedFields = GeneralUtility::trimExplode(",", $trustedFieldsSetting);
-
-        return $trustedFields;
-    }
-
-    /**
      * Returns all results documents raw.
      *
      * @deprecated since 3.1, use getResultDocumentsRaw() instead, will be removed in v4.0
@@ -376,7 +360,7 @@ class Search implements SingletonInterface
      */
     protected function applyHtmlSpecialCharsOnAllFields(array $documents)
     {
-        $trustedSolrFields = $this->getTrustedSolrFields();
+        $trustedSolrFields = $this->configuration->getSearchTrustedFieldsArray();
 
         foreach ($documents as $key => $document) {
             $fieldNames = $document->getFieldNames();

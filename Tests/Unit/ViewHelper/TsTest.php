@@ -92,8 +92,8 @@ class TsTest extends UnitTest
         $cObj->setContentObjectClassMap(array(
             'TEXT' => 'TYPO3\\CMS\\Frontend\\ContentObject\\TextContentObject'
         ));
-        /** @var \ApacheSolrForTypo3\Solr\Configuration\ConfigurationManager $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\ConfigurationManager');
+        /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
         $configurationManager->reset();
 
         $this->viewHelper = new Ts();

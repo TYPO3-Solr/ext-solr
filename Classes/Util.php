@@ -191,7 +191,7 @@ class Util
      * Shortcut to retrieve the TypoScript configuration for EXT:solr
      * (plugin.tx_solr) from TSFE.
      *
-     * @return \ApacheSolrForTypo3\Solr\Configuration\TypoScriptConfiguration
+     * @return \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
      */
     public static function getSolrConfiguration()
     {
@@ -201,12 +201,12 @@ class Util
     }
 
     /**
-     * @return Configuration\ConfigurationManager
+     * @return System\Configuration\ConfigurationManager
      */
     private static function getConfigurationManager()
     {
-        /** @var \ApacheSolrForTypo3\Solr\Configuration\ConfigurationManager $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Configuration\\ConfigurationManager');
+        /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
         return $configurationManager;
     }
 

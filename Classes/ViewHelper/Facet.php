@@ -64,7 +64,7 @@ class Facet extends AbstractSubpartViewHelper
      */
     protected function getTargetPageId()
     {
-        return (int) ($this->configuration['search.']['targetPage'] ? $this->configuration['search.']['targetPage'] : $GLOBALS['TSFE']->id);
+        return $this->configuration->getSearchTargetPage();
     }
 
     /**
@@ -76,7 +76,7 @@ class Facet extends AbstractSubpartViewHelper
     public function execute(array $arguments = array())
     {
         $facetName = trim($arguments[0]);
-        $configuredFacets = $this->configuration['search.']['faceting.']['facets.'];
+        $configuredFacets = $this->configuration->getSearchFacetingFacets();
         $facetContent = '';
         $template = clone $this->template;
         $search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');

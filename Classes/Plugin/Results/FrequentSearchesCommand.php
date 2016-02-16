@@ -60,7 +60,12 @@ class FrequentSearchesCommand implements PluginCommand
      *
      * @var array
      */
-    protected $configuration;
+    protected $frequentSearchConfiguration;
+
+    /**
+     * @var bool
+     */
+    protected $isEnabled;
 
     /**
      * @var \TYPO3\CMS\Core\Cache\CacheFactory
@@ -80,10 +85,17 @@ class FrequentSearchesCommand implements PluginCommand
     public function __construct(CommandPluginBase $parentPlugin)
     {
         $this->parentPlugin = $parentPlugin;
-        $this->configuration = $parentPlugin->conf;
+
+        $this->isEnabled = $this->parentPlugin->typoScriptConfiguration->getSearchFrequentSearches();
+
+            // if not enabled we can skip here
+        if (!$this->isEnabled) {
+            return null;
+        }
+
+        $this->frequentSearchConfiguration = $this->parentPlugin->typoScriptConfiguration->getSearchFrequentSearchesConfiguration();
         $this->cacheFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheFactory');
         $this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
-
         $this->initializeCache();
     }
 
@@ -113,7 +125,7 @@ class FrequentSearchesCommand implements PluginCommand
      */
     public function execute()
     {
-        if ($this->configuration['search.']['frequentSearches'] == 0) {
+        if (!$this->isEnabled) {
             // command is not activated, intended early return
             return null;
         }
@@ -135,9 +147,8 @@ class FrequentSearchesCommand implements PluginCommand
     {
         $frequentSearches = array();
 
-        $minimumSize = $this->configuration['search.']['frequentSearches.']['minSize'];
-        $maximumSize = $this->configuration['search.']['frequentSearches.']['maxSize'];
-
+        $minimumSize = $this->frequentSearchConfiguration['minSize'];
+        $maximumSize = $this->frequentSearchConfiguration['maxSize'];
         if (count($frequentSearchTerms)) {
             $maximumHits = max(array_values($frequentSearchTerms));
             $minimumHits = min(array_values($frequentSearchTerms));
@@ -173,29 +184,29 @@ class FrequentSearchesCommand implements PluginCommand
         // Use configuration as cache identifier
         $identifier = 'frequentSearchesTags';
 
-        if ($this->configuration['search.']['frequentSearches.']['select.']['checkRootPageId']) {
+        if ($this->frequentSearchConfiguration['select.']['checkRootPageId']) {
             $identifier .= '_RP' . (int)$GLOBALS['TSFE']->tmpl->rootLine[0]['uid'];
         }
-        if ($this->configuration['search.']['frequentSearches.']['select.']['checkLanguage']) {
+        if ($this->frequentSearchConfiguration['select.']['checkLanguage']) {
             $identifier .= '_L' . (int)$GLOBALS['TSFE']->sys_language_uid;
         }
 
-        $identifier .= '_' . md5(serialize($this->configuration['search.']['frequentSearches.']));
+        $identifier .= '_' . md5(serialize($this->frequentSearchConfiguration));
 
         if ($this->cacheInstance->has($identifier)) {
             $terms = $this->cacheInstance->get($identifier);
         } else {
             $terms = $this->getFrequentSearchTermsFromStatistics();
 
-            if ($this->configuration['search.']['frequentSearches.']['sortBy'] == 'hits') {
+            if ($this->frequentSearchConfiguration['sortBy'] == 'hits') {
                 arsort($terms);
             } else {
                 ksort($terms);
             }
 
             $lifetime = null;
-            if (isset($this->configuration['search.']['frequentSearches.']['cacheLifetime'])) {
-                $lifetime = intval($this->configuration['search.']['frequentSearches.']['cacheLifetime']);
+            if (isset($this->frequentSearchConfiguration['cacheLifetime'])) {
+                $lifetime = intval($this->frequentSearchConfiguration['cacheLifetime']);
             }
 
             $this->cacheInstance->set($identifier, $terms, array(), $lifetime);
@@ -213,18 +224,18 @@ class FrequentSearchesCommand implements PluginCommand
     {
         $terms = array();
 
-        if ($this->configuration['search.']['frequentSearches.']['select.']['checkRootPageId']) {
+        if ($this->frequentSearchConfiguration['select.']['checkRootPageId']) {
             $checkRootPidWhere = 'root_pid = ' . $GLOBALS['TSFE']->tmpl->rootLine[0]['uid'];
         } else {
             $checkRootPidWhere = '1';
         }
-        if ($this->configuration['search.']['frequentSearches.']['select.']['checkLanguage']) {
+        if ($this->frequentSearchConfiguration['select.']['checkLanguage']) {
             $checkLanguageWhere = ' AND language =' . $GLOBALS['TSFE']->sys_language_uid;
         } else {
             $checkLanguageWhere = '';
         }
 
-        $sql = $this->configuration['search.']['frequentSearches.'];
+        $sql = $this->frequentSearchConfiguration;
         $sql['select.']['ADD_WHERE'] = $checkRootPidWhere . $checkLanguageWhere . ' ' . $sql['select.']['ADD_WHERE'];
 
         /** @noinspection PhpUndefinedMethodInspection */

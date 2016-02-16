@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -52,6 +53,9 @@ class Query
     protected static $idCount = 0;
     protected $id;
 
+    /**
+     * @var TypoScriptConfiguration
+     */
     protected $solrConfiguration;
 
     protected $keywords;
@@ -91,7 +95,7 @@ class Query
 
     /**
      * @param string $keywords
-     * @param null $solrConfiguration
+     * @param TypoScriptConfiguration $solrConfiguration
      */
     public function __construct($keywords, $solrConfiguration = null)
     {
@@ -101,27 +105,32 @@ class Query
             $this->solrConfiguration = $solrConfiguration;
         }
 
-        $this->fieldList = array('*', 'score');
         $this->setKeywords($keywords);
         $this->sorting = '';
 
         // What fields to search
-        if (!empty($this->solrConfiguration['search.']['query.']['queryFields'])) {
-            $this->setQueryFieldsFromString($this->solrConfiguration['search.']['query.']['queryFields']);
+        $queryFields = $this->solrConfiguration->getSearchQueryQueryFields();
+        if ($queryFields != '') {
+            $this->setQueryFieldsFromString($queryFields);
         }
 
         // What fields to return from Solr
-        if (!empty($this->solrConfiguration['search.']['query.']['returnFields'])) {
-            $this->fieldList = GeneralUtility::trimExplode(',',
-                $this->solrConfiguration['search.']['query.']['returnFields']);
-        }
-
-        $this->linkTargetPageId = $this->solrConfiguration['search.']['targetPage'];
-        if (empty($this->linkTargetPageId)) {
-            $this->linkTargetPageId = $GLOBALS['TSFE']->id;
-        }
+        $this->fieldList = $this->solrConfiguration->getSearchQueryReturnFieldsAsArray(array('*', 'score'));
+        $this->linkTargetPageId = $this->solrConfiguration->getSearchTargetPage();
 
         $this->id = ++self::$idCount;
+    }
+
+    /**
+     * Writes a message to the devLog.
+     *
+     * @param string $msg
+     * @param int $severity
+     * @param bool $dataVar
+     */
+    protected function writeDevLog($msg, $severity = 0, $dataVar = false)
+    {
+        GeneralUtility::devLog($msg, 'solr', $severity, $dataVar);
     }
 
     /**
@@ -623,13 +632,10 @@ class Query
     {
         if ($faceting) {
             $this->queryParameters['facet'] = 'true';
-            $this->queryParameters['facet.mincount'] = $this->solrConfiguration['search.']['faceting.']['minimumCount'];
+            $this->queryParameters['facet.mincount'] = $this->solrConfiguration->getSearchFacetingMinimumCount();
 
-            if (GeneralUtility::inList('count,index,alpha,lex,1,0,true,false',
-                $this->solrConfiguration['search.']['faceting.']['sortBy'])
-            ) {
-                $sorting = $this->solrConfiguration['search.']['faceting.']['sortBy'];
-
+            $sorting = $this->solrConfiguration->getSearchFacetingSortBy();
+            if (GeneralUtility::inList('count,index,alpha,lex,1,0,true,false', $sorting)) {
                 // alpha and lex alias for index
                 if ($sorting == 'alpha' || $sorting == 'lex') {
                     $sorting = 'index';
@@ -750,15 +756,12 @@ class Query
     public function addFilter($filterString)
     {
         // TODO refactor to split filter field and filter value, @see Drupal
-        $configuration = Util::getSolrConfiguration();
-        if ($configuration['logging.']['query.']['filters']) {
-            GeneralUtility::devLog('adding filter', 'solr', 0,
-                array($filterString));
+        if ($this->solrConfiguration->getLoggingQueryFilters()) {
+            $this->writeDevLog('adding filter', 0, array($filterString));
         }
 
         $this->filters[] = $filterString;
     }
-
 
     // query parameters
 
@@ -1125,8 +1128,7 @@ class Query
             $queryFieldString .= $fieldName;
 
             if ($fieldBoost != 1.0) {
-                $queryFieldString .= '^' . number_format($fieldBoost, 1, '.',
-                        '');
+                $queryFieldString .= '^' . number_format($fieldBoost, 1, '.', '');
             }
 
             $queryFieldString .= ' ';
@@ -1149,24 +1151,21 @@ class Query
             $this->queryParameters['hl'] = 'true';
             $this->queryParameters['hl.fragsize'] = (int)$fragmentSize;
 
-            if (isset($this->solrConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'])) {
-                $this->queryParameters['hl.fl'] = $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'];
+            $highlightingFields = $this->solrConfiguration->getSearchResultsHighlightingFields();
+            if ($highlightingFields != '') {
+                $this->queryParameters['hl.fl'] = $highlightingFields;
             }
 
-
-            if (isset($this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter']) &&
-                $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] == 1) {
+            $useFastVectorHighlighter = $this->solrConfiguration->getSearchResultsHighlightingUseFastVectorHighlighter();
+            if ($useFastVectorHighlighter) {
                 if ($fragmentSize <= 18) {
                     throw new \InvalidArgumentException("The setting useFastVectorHighlighter can only be used with a fragementSize larger then 18");
                 }
                 $this->queryParameters['hl.useFastVectorHighlighter'] = 'true';
             }
 
-            $wrap = explode('|',
-                $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['wrap']);
-
-            if (isset($this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter']) &&
-                $this->solrConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] == 1) {
+            $wrap = explode('|', $this->solrConfiguration->getSearchResultsHighlightingWrap());
+            if ($useFastVectorHighlighter) {
                 $this->queryParameters['hl.tag.pre'] = $wrap[0];
                 $this->queryParameters['hl.tag.post'] = $wrap[1];
             } else {
@@ -1196,8 +1195,8 @@ class Query
         if ($spellchecking) {
             $this->queryParameters['spellcheck'] = 'true';
             $this->queryParameters['spellcheck.collate'] = 'true';
-            $this->addQueryParameter('spellcheck.maxCollationTries',
-                $this->solrConfiguration['search.']['spellchecking.']['numberOfSuggestionsToTry']);
+            $maxCollationTries = $this->solrConfiguration->getSearchSpellcheckingNumberOfSuggestionsToTry();
+            $this->addQueryParameter('spellcheck.maxCollationTries', $maxCollationTries);
         } else {
             unset($this->queryParameters['spellcheck']);
             unset($this->queryParameters['spellcheck.collate']);
@@ -1259,5 +1258,15 @@ class Query
             unset($this->queryParameters['debugQuery']);
             unset($this->queryParameters['echoParams']);
         }
+    }
+
+    /**
+     * Returns the link target page id.
+     *
+     * @return integer
+     */
+    public function getLinkTargetPageId()
+    {
+        return $this->linkTargetPageId;
     }
 }

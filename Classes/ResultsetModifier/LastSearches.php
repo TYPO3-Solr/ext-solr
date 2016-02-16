@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * Logs the keywords from the query into the user's session or the database -
@@ -38,6 +39,10 @@ class LastSearches implements ResultSetModifier
 {
 
     protected $prefix = 'tx_solr';
+
+    /**
+     * @var TypoScriptConfiguration
+     */
     protected $configuration;
 
 
@@ -62,7 +67,7 @@ class LastSearches implements ResultSetModifier
             return $resultSet;
         }
 
-        switch ($this->configuration['search.']['lastSearches.']['mode']) {
+        switch ($this->configuration->getSearchLastSearchesMode()) {
             case 'user':
                 $this->storeKeywordsToSession($keywords);
                 break;
@@ -99,7 +104,7 @@ class LastSearches implements ResultSetModifier
         $lastSearches = $currentLastSearches;
         $newLastSearchesCount = array_push($lastSearches, $keywords);
 
-        while ($newLastSearchesCount > $this->configuration['search.']['lastSearches.']['limit']) {
+        while ($newLastSearchesCount > $this->configuration->getSearchLastSearchesLimit()) {
             array_shift($lastSearches);
             $newLastSearchesCount = count($lastSearches);
         }

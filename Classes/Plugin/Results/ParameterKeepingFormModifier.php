@@ -89,7 +89,7 @@ class ParameterKeepingFormModifier implements FormModifier, CommandPluginAware
     {
         $hiddenFields = array();
 
-        if ($this->parentPlugin instanceof Results && $this->configuration['search.']['keepExistingParametersForNewSearches']) {
+        if ($this->parentPlugin instanceof Results && $this->configuration->getSearchKeepExistingParametersForNewSearches()) {
             foreach ($this->parentPlugin->piVars as $key => $value) {
                 if ($key == 'page') {
                     // must reset page

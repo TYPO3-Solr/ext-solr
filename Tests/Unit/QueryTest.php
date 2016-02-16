@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -216,14 +217,14 @@ class QueryTest extends UnitTest
         $this->assertSame(200, $queryParameters["hl.fragsize"], 'hl.fragsize was not set to the default value of 200');
     }
 
-
     /**
      * @test
      */
     public function canSetHighlightingFieldList()
     {
-        $fakeConfiguration = array();
-        $fakeConfiguration['search.']['results.']['resultsHighlighting.']['highlightFields'] = 'title';
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['highlightFields'] = 'title';
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
@@ -237,10 +238,29 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
+    public function canPassCustomWrapForHighlighting()
+    {
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query->setHighlighting(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame("[A]", $queryParameters["hl.simple.pre"], 'Can set highlighting field list');
+        $this->assertSame("[B]", $queryParameters["hl.simple.post"], 'Can set highlighting field list');
+    }
+
+    /**
+     * @test
+     */
     public function canUseFastVectorHighlighting()
     {
-        $fakeConfiguration = array();
-        $fakeConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 1;
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 1;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
@@ -256,8 +276,9 @@ class QueryTest extends UnitTest
      */
     public function canDisableFastVectorHighlighting()
     {
-        $fakeConfiguration = array();
-        $fakeConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 0;
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 0;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
@@ -275,11 +296,204 @@ class QueryTest extends UnitTest
     {
         $this->setExpectedException('\InvalidArgumentException');
 
-        $fakeConfiguration = array();
-        $fakeConfiguration['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 1;
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 1;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
         $query->setHighlighting(true, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetQueryFieldsAsStringWhenPassedFromConfiguration()
+    {
+        $input = 'content^10, title^5';
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['queryFields'] = $input;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+
+        $output = $query->getQueryFieldsAsString();
+        $expectedOutput = 'content^10.0 title^5.0';
+
+        $this->assertSame($output, $expectedOutput, 'Passed and retrieved query fields are not the same');
+    }
+
+    /**
+     * @test
+     */
+    public function canReturnEmptyStringAsQueryFieldStringWhenNothingWasPassed()
+    {
+        $fakeConfigurationArray = array();
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+
+        $output = $query->getQueryFieldsAsString();
+        $expectedOutput = '';
+
+        $this->assertSame($output, $expectedOutput, 'Unexpected output from getQueryFieldsAsString when no configuration was passed');
+    }
+
+    /**
+     * @test
+     */
+    public function canReturnFieldListWhenConfigurationWithReturnFieldsWasPassed()
+    {
+        $input = 'abstract, price';
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['returnFields'] = $input;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+
+        $output = $query->getFieldList();
+        $expectedOutput = array('abstract', 'price');
+        $this->assertSame($output, $expectedOutput, 'Did not parse returnsFields as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function canReturnDefaultFieldListWhenNoConfigurationWasPassed()
+    {
+        $fakeConfigurationArray = array();
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+
+        $output = $query->getFieldList();
+        $expectedOutput = array('*', 'score');
+        $this->assertSame($output, $expectedOutput, 'Did not parse returnsFields as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetTargetPageFromConfiguration()
+    {
+        $input = 4711;
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['targetPage'] = $input;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $this->assertEquals($input, $query->getLinkTargetPageId());
+    }
+
+    /**
+     * @test
+     */
+    public function canFallbackToTSFEIdWhenNoTargetPageConfigured()
+    {
+        $fakeConfigurationArray = array();
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray, 8000);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $this->assertEquals(8000, $query->getLinkTargetPageId());
+    }
+
+    /**
+     * @test
+     */
+    public function canEnableFaceting()
+    {
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
+        $query->setFaceting(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame("true", $queryParameters["facet"], 'Enable faceting did not set the "facet" query parameter');
+    }
+
+    /**
+     * @test
+     */
+    public function canUseFacetMinCountFromConfiguration()
+    {
+        $input = 10;
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['minimumCount'] = $input;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query->setFaceting(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame(10, $queryParameters["facet.mincount"], 'Can not use facet.minimumCount from configuration');
+    }
+
+    /**
+     * @test
+     */
+    public function canUseFacetSortByFromConfiguration()
+    {
+        $input = 'alpha';
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['sortBy'] = $input;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query->setFaceting(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame('index', $queryParameters["facet.sort"], 'Can not use facet.sort from configuration');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetSpellChecking()
+    {
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
+        $query->setSpellchecking(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame("true", $queryParameters["spellcheck"], 'Enable spellchecking did not set the "spellcheck" query parameter');
+    }
+
+    /**
+     * @test
+     */
+    public function canTestNumberOfSuggestionsToTryFromConfiguration()
+    {
+        $input = 9;
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['spellchecking.']['numberOfSuggestionsToTry'] = $input;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query->setSpellchecking(true);
+        $queryParameters = $query->getQueryParameters();
+
+        $this->assertSame($input, $queryParameters['spellcheck.maxCollationTries'], 'Could not set spellcheck.maxCollationTries as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function canWriteALogForAFilterWhenLoggingIsEnabled()
+    {
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['logging.']['query.']['filters'] = true;
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = $this->getMock('ApacheSolrForTypo3\Solr\Query', array('writeDevLog'), array('test', $fakeConfiguration));
+
+        $query->expects($this->once())->method('writeDevLog');
+        $query->addFilter('foo');
     }
 }

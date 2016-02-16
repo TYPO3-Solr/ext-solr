@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\ResultDocumentModifier;
 
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,6 +47,30 @@ class DocumentHighlighter implements ResultDocumentModifier
      */
     protected $search;
 
+    /**
+     * @var TypoScriptConfiguration
+     */
+    protected $configuration;
+
+    /**
+     * @var array
+     */
+    protected $highlightFields;
+
+    /**
+     * @var string
+     */
+    protected $fragmentSeparator;
+
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this->configuration = Util::getSolrConfiguration();
+        $this->highlightFields = $this->configuration->getSearchResultsHighlightingFieldsAsArray();
+        $this->fragmentSeparator = $this->configuration->getSearchResultsHighlightingFragmentSeparator();
+    }
 
     /**
      * Modifies the given document and returns the modified document as result.
@@ -59,21 +84,16 @@ class DocumentHighlighter implements ResultDocumentModifier
         array $resultDocument
     ) {
         $this->search = $resultCommand->getParentPlugin()->getSearch();
-        $configuration = Util::getSolrConfiguration();
 
         $highlightedContent = $this->search->getHighlightedContent();
-
-        $highlightFields = GeneralUtility::trimExplode(',',
-            $configuration['search.']['results.']['resultsHighlighting.']['highlightFields'],
-            true);
-        foreach ($highlightFields as $highlightField) {
+        foreach ($this->highlightFields as $highlightField) {
             if (!empty($highlightedContent->{$resultDocument['id']}->{$highlightField}[0])) {
                 $fragments = array();
                 foreach ($highlightedContent->{$resultDocument['id']}->{$highlightField} as $fragment) {
                     $fragments[] = Template::escapeMarkers($fragment);
                 }
                 $resultDocument[$highlightField] = implode(
-                    ' ' . $configuration['search.']['results.']['resultsHighlighting.']['fragmentSeparator'] . ' ',
+                    ' ' . $this->fragmentSeparator . ' ',
                     $fragments
                 );
             }

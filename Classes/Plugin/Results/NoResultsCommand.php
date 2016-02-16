@@ -63,7 +63,7 @@ class NoResultsCommand implements PluginCommand
 
         $markers = $this->getLabelMarkers();
 
-        if ($this->parentPlugin->conf['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion']) {
+        if ($this->parentPlugin->typoScriptConfiguration->getSearchSpellcheckingSearchUsingSpellCheckerSuggestion()) {
             $markers['suggestion_results'] = $this->getSuggestionResults();
         }
 
