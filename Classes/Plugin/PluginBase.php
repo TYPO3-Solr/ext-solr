@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query;
@@ -55,6 +56,7 @@ abstract class PluginBase extends AbstractPlugin
     /**
      * an instance of ApacheSolrForTypo3\Solr\Search
      *
+     * @deprecated use $this->searchResultsSetService()->getSearch() instead, will be removed in version 5.0
      * @var Search
      */
     protected $search;
@@ -62,12 +64,15 @@ abstract class PluginBase extends AbstractPlugin
     /**
      * The plugin's query
      *
+     * @deprecated use $this->searchResultSet->getUsedQuery() instead, will be removed in version 5.0
      * @var Query
      */
     protected $query = null;
 
     /**
      * Determines whether the solr server is available or not.
+     *
+     * @deprecated use $this->searchResultsSetService()->getIsSolrAvailable() instead, will be removed in version 5.0
      */
     protected $solrAvailable;
 
@@ -109,6 +114,11 @@ abstract class PluginBase extends AbstractPlugin
     public $typoScriptConfiguration;
 
     /**
+     * @var SearchResultSetService
+     */
+    private $searchResultsSetService;
+
+    /**
      * The main method of the plugin
      *
      * @param string $content The plugin content
@@ -126,7 +136,7 @@ abstract class PluginBase extends AbstractPlugin
 
             $actionResult = $this->performAction();
 
-            if ($this->solrAvailable) {
+            if ($this->getSearchResultSetService()->getIsSolrAvailable()) {
                 $content = $this->render($actionResult);
             } else {
                 $content = $this->renderError();
@@ -316,9 +326,19 @@ abstract class PluginBase extends AbstractPlugin
             $GLOBALS['TSFE']->MP
         );
 
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search',
-            $solrConnection);
-        $this->solrAvailable = $this->search->ping();
+        $search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
+        /** @var $this->searchService ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService */
+        $this->searchResultsSetService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService', $this->typoScriptConfiguration, $search);
+        $this->solrAvailable = $this->searchResultsSetService->getIsSolrAvailable();
+        $this->search = $this->searchResultsSetService->getSearch();
+    }
+
+    /**
+     * @return SearchResultSetService
+     */
+    protected function getSearchResultSetService()
+    {
+        return $this->searchResultsSetService;
     }
 
     /**
@@ -558,10 +578,12 @@ abstract class PluginBase extends AbstractPlugin
      * Gets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
      * helper function for result document modifiers.
      *
+     * @deprecated use $this->getSearchResultSetService()->getSearch() instead, will be removed in version 5.0
      * @return Search
      */
     public function getSearch()
     {
+        GeneralUtility::logDeprecatedFunction();
         return $this->search;
     }
 
@@ -569,10 +591,12 @@ abstract class PluginBase extends AbstractPlugin
      * Sets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
      * helper function for result document modifiers.
      *
+     * @deprecated should not be set able from outside, will be removed in version 5.0
      * @param Search $search Search instance
      */
     public function setSearch(Search $search)
     {
+        GeneralUtility::logDeprecatedFunction();
         $this->search = $search;
     }
 
@@ -605,5 +629,20 @@ abstract class PluginBase extends AbstractPlugin
     public function getRawUserQuery()
     {
         return $this->rawUserQuery;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCurrentUrlWithQueryLinkBuilder()
+    {
+        $currentUrl = $this->pi_linkTP_keepPIvars_url();
+
+        if ($this->getSearchResultSetService()->getIsSolrAvailable() && $this->getSearchResultSetService()->getHasSearched()) {
+            $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $this->getSearchResultSetService()->getSearch()->getQuery());
+            $currentUrl = $queryLinkBuilder->getQueryUrl();
+            return $currentUrl;
+        }
+        return $currentUrl;
     }
 }

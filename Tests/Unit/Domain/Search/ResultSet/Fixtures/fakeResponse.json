@@ -1,0 +1,264 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 9,
+        "params": {
+            "hl.fragsize": "20",
+            "spellcheck": "true",
+            "enableElevation": "true",
+            "facet": "true",
+            "facet.mincount": "1",
+            "spellcheck.maxCollationTries": "0",
+            "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline",
+            "hl.simple.pre": "<span class=\"results-highlight\">",
+            "q.alt": "*:*",
+            "json.nl": "map",
+            "hl.fl": "content",
+            "wt": "json",
+            "spellcheck.collate": "true",
+            "hl": "true",
+            "rows": "5",
+            "echoParams": "all",
+            "debugQuery": "true",
+            "fl": "*,score,isElevated:[elevated]",
+            "start": "5",
+            "facet.sort": "count",
+            "q": "*",
+            "forceElevation": "true",
+            "hl.simple.post": "</span>",
+            "facet.field": ["type",
+                "{!ex=subTitle}subTitle",
+                "rootline"],
+            "fq": ["siteHash:\"b8c8d04e66c58f01283ef81a4ded197f26ab402a\"",
+                "{!typo3access}-1,0"],
+            "hl.requireFieldMatch": "true",
+            "mm": "2<-35%",
+            "indent": "true",
+            "spellcheck.extendedResults": "false",
+            "hl.mergeContiguous": "true",
+            "f.content.hl.maxAlternateFieldLength": "200",
+            "spellcheck.onlyMorePopular": "false",
+            "defType": "edismax",
+            "pf": "content^2.0",
+            "df": "content",
+            "hl.snippets": "3",
+            "f.content.hl.alternateField": "content",
+            "spellcheck.dictionary": ["default",
+                "wordbreak"],
+            "q.op": "OR",
+            "spellcheck.count": "1",
+            "ps": "15"
+        }
+    },
+    "response": {
+        "numFound": 8,
+        "start": 5,
+        "maxScore": 1.0,
+        "docs": [
+            {
+                "id": "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/6/0/0/0",
+                "site": "",
+                "siteHash": "b8c8d04e66c58f01283ef81a4ded197f26ab402a",
+                "type": "pages",
+                "uid": 6,
+                "pid": 1,
+                "typeNum": 0,
+                "created": "1970-01-01T01:00:00Z",
+                "changed": "1970-01-01T01:00:00Z",
+                "rootline": ["0-1",
+                    "1-1/6"],
+                "access": "c:0",
+                "title": "T-Shirts",
+                "subTitle": "Men",
+                "navTitle": "",
+                "author": "",
+                "description": "",
+                "abstract": "",
+                "content": "",
+                "teaser": "",
+                "url": "http:///.Build/bin/phpunit",
+                "_version_": 1527228677005246464,
+                "indexed": "2016-02-26T09:26:04Z",
+                "score": 1.0,
+                "isElevated": false
+            },
+            {
+                "id": "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/7/0/0/0",
+                "site": "",
+                "siteHash": "b8c8d04e66c58f01283ef81a4ded197f26ab402a",
+                "type": "pages",
+                "uid": 7,
+                "pid": 1,
+                "typeNum": 0,
+                "created": "1970-01-01T01:00:00Z",
+                "changed": "1970-01-01T01:00:00Z",
+                "rootline": ["0-1",
+                    "1-1/7"],
+                "access": "c:0",
+                "title": "Sweatshirts",
+                "subTitle": "Men",
+                "navTitle": "",
+                "author": "",
+                "description": "",
+                "abstract": "",
+                "content": "",
+                "teaser": "",
+                "url": "http:///.Build/bin/phpunit",
+                "_version_": 1527228677102764032,
+                "indexed": "2016-02-26T09:26:04Z",
+                "score": 1.0,
+                "isElevated": false
+            },
+            {
+                "id": "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/8/0/0/0",
+                "site": "",
+                "siteHash": "b8c8d04e66c58f01283ef81a4ded197f26ab402a",
+                "type": "pages",
+                "uid": 8,
+                "pid": 1,
+                "typeNum": 0,
+                "created": "1970-01-01T01:00:00Z",
+                "changed": "1970-01-01T01:00:00Z",
+                "rootline": ["0-1",
+                    "1-1/8"],
+                "access": "c:0",
+                "title": "Sweatshirts",
+                "subTitle": "Woman",
+                "navTitle": "",
+                "author": "",
+                "description": "",
+                "abstract": "",
+                "content": "",
+                "teaser": "",
+                "url": "http:///.Build/bin/phpunit",
+                "_version_": 1527228677204475904,
+                "indexed": "2016-02-26T09:26:04Z",
+                "score": 1.0,
+                "isElevated": false
+            }
+        ]
+    },
+    "facet_counts": {
+        "facet_queries": {},
+        "facet_fields": {
+            "type": {
+                "pages": 8
+            },
+            "subTitle": {
+                "men": 4,
+                "woman": 3
+            },
+            "rootline": {
+                "0-1": 8,
+                "1-1/2": 1,
+                "1-1/3": 1,
+                "1-1/4": 1,
+                "1-1/5": 1,
+                "1-1/6": 1,
+                "1-1/7": 1,
+                "1-1/8": 1
+            }
+        },
+        "facet_dates": {},
+        "facet_ranges": {},
+        "facet_intervals": {}
+    },
+    "highlighting": {
+        "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/6/0/0/0": {
+            "content": [""]
+        },
+        "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/7/0/0/0": {
+            "content": [""]
+        },
+        "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/8/0/0/0": {
+            "content": [""]
+        }
+    },
+    "debug": {
+        "queryBoosting": {
+            "q": "*",
+            "match": null
+        },
+        "rawquerystring": "*",
+        "querystring": "*",
+        "parsedquery": "(+MatchAllDocsQuery(*:*) ())/no_coord",
+        "parsedquery_toString": "+*:* ()",
+        "explain": {
+            "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/6/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n",
+            "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/7/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n",
+            "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/8/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n"
+        },
+        "QParser": "ExtendedDismaxQParser",
+        "altquerystring": null,
+        "boost_queries": null,
+        "parsed_boost_queries": [],
+        "boostfuncs": null,
+        "filter_queries": ["siteHash:\"b8c8d04e66c58f01283ef81a4ded197f26ab402a\"",
+            "{!typo3access}-1,0"],
+        "parsed_filter_queries": ["siteHash:b8c8d04e66c58f01283ef81a4ded197f26ab402a",
+            "ConstantScore(org.typo3.solr.search.AccessFilter@7b7c4a74)"],
+        "timing": {
+            "time": 9.0,
+            "prepare": {
+                "time": 1.0,
+                "query": {
+                    "time": 1.0
+                },
+                "facet": {
+                    "time": 0.0
+                },
+                "mlt": {
+                    "time": 0.0
+                },
+                "highlight": {
+                    "time": 0.0
+                },
+                "stats": {
+                    "time": 0.0
+                },
+                "expand": {
+                    "time": 0.0
+                },
+                "spellcheck": {
+                    "time": 0.0
+                },
+                "elevator": {
+                    "time": 0.0
+                },
+                "debug": {
+                    "time": 0.0
+                }
+            },
+            "process": {
+                "time": 8.0,
+                "query": {
+                    "time": 2.0
+                },
+                "facet": {
+                    "time": 3.0
+                },
+                "mlt": {
+                    "time": 0.0
+                },
+                "highlight": {
+                    "time": 3.0
+                },
+                "stats": {
+                    "time": 0.0
+                },
+                "expand": {
+                    "time": 0.0
+                },
+                "spellcheck": {
+                    "time": 0.0
+                },
+                "elevator": {
+                    "time": 0.0
+                },
+                "debug": {
+                    "time": 0.0
+                }
+            }
+        }
+    }
+}

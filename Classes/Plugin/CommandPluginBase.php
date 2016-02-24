@@ -200,4 +200,20 @@ abstract class CommandPluginBase extends PluginBase
 
         return $subpartTemplate->render();
     }
+
+    /**
+     * Retrieves a flexform value from the context plugin.
+     *
+     * (Wrapper for $this->pi_getFFvalue($this->cObj->data['pi_flexform'],...) )
+     *
+     * @param string $fieldName
+     * @param string $sheet
+     * @param string $lang
+     * @param string $value
+     * @return string|null
+     */
+    protected function getFlexFormValue($fieldName, $sheet = 'sDEF', $lang = 'lDEF', $value = 'vDEF')
+    {
+        return $this->pi_getFFvalue($this->cObj->data['pi_flexform'], $fieldName, $sheet, $lang, $value);
+    }
 }
