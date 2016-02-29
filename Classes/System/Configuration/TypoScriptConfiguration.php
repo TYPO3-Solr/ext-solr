@@ -901,6 +901,18 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
+     * Can be used to overwrite the filterConfiguration.
+     *
+     * plugin.tx_solr.search.query.filter.
+     *
+     * @param array $configuration
+     */
+    public function setSearchQueryFilterConfiguration(array $configuration)
+    {
+        $this->configuration['plugin.']['tx_solr.']['search.']['query.']['filter.'] = $configuration;
+    }
+
+    /**
      * Removes the pageSections filter setting.
      *
      * @return void

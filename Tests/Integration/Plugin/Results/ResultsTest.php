@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
 
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use DOMDocument;
+use ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\AbstractPluginTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
@@ -38,7 +38,7 @@ use TYPO3\CMS\Frontend\Page\PageGenerator;
  * @package TYPO3
  * @subpackage solr
  */
-class ResultsTest extends IntegrationTest
+class ResultsTest extends AbstractPluginTest
 {
 
     /**
@@ -55,7 +55,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canDoAFacetedAndSortedSearch()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4), 'can_render_results_plugin.xml');
 
         $_GET['q'] = 'prices';
         $_GET['tx_solr']['filter'][0] = rawurlencode('subtitle:men');
@@ -83,11 +83,8 @@ class ResultsTest extends IntegrationTest
         $this->assertTrue($resultPositionDocument3 < $resultPositionDocument2, 'Could not find document 3 before 2, sorting not working?');
 
         $this->assertContains('<span class="results-highlight">prices</span>', $result, 'Could not find highlighting in response');
-
         $this->assertContains('class="facet"', $result, 'Facet links do not contain facet class from TypoScript setup');
-
         $this->assertContains('10€', $result, 'Search response did not contain price of product');
-
         $this->assertPaginationNotVisible($result);
     }
 
@@ -96,7 +93,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canDoAPaginatedSearch()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
         $_GET['q'] = '*';
         $resultPage1 = $searchResults->main('', array());
@@ -110,7 +107,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canOpenSecondPageOfPaginatedSearch()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
         //now we jump to the second page
         $_GET['q'] = '*';
@@ -126,7 +123,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canDoASearchThatDoesNotReturnAnyResults()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
         //now we jump to the second page
         $_GET['q'] = 'nothingwillbefound';
@@ -139,7 +136,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canGetADidYouMeanProposalForATypo()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoo';
@@ -154,7 +151,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canShowLastSearchesFromSessionInResponse()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoe';
         $resultPage1 = $searchResults->main('', array());
@@ -168,7 +165,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canShowLastSearchesFromDatabaseInResponse()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = array();
         $overwriteConfiguration['search.']['lastSearches.']['mode'] = 'global';
@@ -190,7 +187,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canShowFrequentSearchesInResponse()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoe';
         $resultPage1 = $searchResults->main('', array());
@@ -204,7 +201,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canKeepPiVarsInForm()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
         //now we jump to the second page
         $_GET['q'] = 'prices';
         $searchResults->piVars['tx_solr']['sort'] = 'title asc';
@@ -217,7 +214,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canRenderPageHierarchyFacet()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
         $_GET['q'] = 'prices';
         $resultPage = $searchResults->main('', array());
 
@@ -231,7 +228,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canDoAnInitialSearchWithCustomQueryString()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = array();
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
@@ -251,7 +248,7 @@ class ResultsTest extends IntegrationTest
      */
     public function canApplyCustomTypoScriptFilters()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedResultPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = array();
         $overwriteConfiguration['search.']['query.']['filter.']['subtitle:men'] = 'subTitle:men';
@@ -268,57 +265,6 @@ class ResultsTest extends IntegrationTest
         $this->assertContains('pages/6/0/0/0', $resultPage, 'Could not find page 6 in result set');
         $this->assertContains('pages/7/0/0/0', $resultPage, 'Could not find page 7 in result set');
     }
-
-    /**
-     * @param array $importPageIds
-     * @param string $fixtureName
-     * @return \ApacheSolrForTypo3\Solr\Plugin\Results\Results
-     */
-    private function importTestDataSetAndGetInitializedResultPlugin($importPageIds, $fixture)
-    {
-        $this->importDataSetFromFixture($fixture);
-
-        foreach ($importPageIds as $importPageId) {
-            $GLOBALS['TT'] = $this->getMock('\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker', array(), array(), '', false);
-            $fakeTSFE = $this->getConfiguredTSFE(array(), $importPageId);
-            $fakeTSFE->newCObj();
-
-            $GLOBALS['TSFE'] = $fakeTSFE;
-            PageGenerator::pagegenInit();
-            PageGenerator::renderContent();
-
-            /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
-            $pageIndexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Typo3PageIndexer', $fakeTSFE);
-            $pageIndexer->indexPage();
-        }
-
-        sleep(3);
-
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
-        $beUser = GeneralUtility::makeInstance('TYPO3\CMS\Core\Authentication\BackendUserAuthentication');
-        $GLOBALS['BE_USER'] = $beUser;
-
-        /** @var $searchResults \ApacheSolrForTypo3\Solr\Plugin\Results\Results */
-        $searchResults =  GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Plugin\Results\Results');
-        $fakeTSFE->newCObj();
-        $fakeTSFE->fe_user->id = 'dsds';
-        $searchResults->cObj = $fakeTSFE->cObj;
-        return $searchResults;
-    }
-
-    /**
-     * @param string $content
-     * @param string $id
-     * @return string
-     */
-    protected function getIdContent($content, $id)
-    {
-        $dom = new \DOMDocument('1.0', 'UTF-8');
-        $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . $content);
-
-        return $dom->saveXML($dom->getElementById($id));
-    }
-
 
     /**
      * Assertion to check if the pagination markup is present in the response.
@@ -350,18 +296,5 @@ class ResultsTest extends IntegrationTest
     protected function assertNothingWasFound($content)
     {
         $this->assertContains('Nothing found', $content, 'Asserted that nothing was found but the text, that nothing was found was not present in the response');
-    }
-
-    /**
-     * Assert that a docContainer with a specific id contains an expected content snipped.
-     *
-     * @param string $expectedToContain
-     * @param string $content
-     * @param $id
-     */
-    protected function assertContainerByIdContains($expectedToContain, $content, $id)
-    {
-        $containerContent = $this->getIdContent($content, $id);
-        $this->assertContains($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id .' contains ' . $expectedToContain);
     }
 }

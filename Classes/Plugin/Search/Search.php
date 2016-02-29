@@ -46,20 +46,13 @@ class Search extends CommandPluginBase
     public $scriptRelPath = 'Classes/Plugin/Search/Search.php';
 
     /**
-     * Additional filters, which will be added to suggest queries.
-     *
-     * @var  array
-     */
-    protected $additionalFilters = array();
-
-    /**
      * Gets additional filters configured through TypoScript.
      *
      * @return array An array of additional filters to use for queries.
      */
     public function getAdditionalFilters()
     {
-        return $this->additionalFilters;
+        return $this->getSearchResultSetService()->getAdditionalFilters();
     }
 
     /**
@@ -89,43 +82,6 @@ class Search extends CommandPluginBase
     }
 
     /**
-     * Performs special search initialization for the result plugin.
-     *
-     */
-    protected function initializeSearch()
-    {
-        parent::initializeSearch();
-        $this->initializeAdditionalFilters();
-    }
-
-    /**
-     * Initializes additional filters configured through TypoScript for use in
-     * suggest queries.
-     *
-     */
-    protected function initializeAdditionalFilters()
-    {
-        $additionalFilters = array();
-
-        if (!empty($this->conf['search.']['query.']['filter.'])) {
-            foreach ($this->conf['search.']['query.']['filter.'] as $filterKey => $filter) {
-                if (!is_array($this->conf['search.']['query.']['filter.'][$filterKey])) {
-                    if (is_array($this->conf['search.']['query.']['filter.'][$filterKey . '.'])) {
-                        $filter = $this->cObj->stdWrap(
-                            $this->conf['search.']['query.']['filter.'][$filterKey],
-                            $this->conf['search.']['query.']['filter.'][$filterKey . '.']
-                        );
-                    }
-
-                    $additionalFilters[$filterKey] = $filter;
-                }
-            }
-        }
-
-        $this->additionalFilters = $additionalFilters;
-    }
-
-    /**
      * Perform the action for the plugin. In this case it doesn't do anything
      * as the plugin simply renders the search form.
      *
@@ -149,19 +105,11 @@ class Search extends CommandPluginBase
     /**
      * Gets a list of EXT:solr variables like the prefix ID.
      *
-     * @todo refactor into base class
      * @return array array of EXT:solr variables
      */
     protected function getSolrVariables()
     {
-        $currentUrl = $this->pi_linkTP_keepPIvars_url();
-
-        if ($this->solrAvailable && $this->search->hasSearched()) {
-            $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-                $this->search->getQuery());
-            $currentUrl = $queryLinkBuilder->getQueryUrl();
-        }
-
+        $currentUrl = $this->getCurrentUrlWithQueryLinkBuilder();
         return array(
             'prefix' => $this->prefixId,
             'query_parameter' => 'q',

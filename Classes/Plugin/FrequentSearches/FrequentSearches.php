@@ -93,18 +93,11 @@ class FrequentSearches extends CommandPluginBase
     /**
      * Gets a list of EXT:solr variables like the prefix ID.
      *
-     * @todo refactor into base class
      * @return array array of EXT:solr variables
      */
     protected function getSolrVariables()
     {
-        $currentUrl = $this->pi_linkTP_keepPIvars_url();
-
-        if ($this->solrAvailable && $this->search->hasSearched()) {
-            $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-                $this->search->getQuery());
-            $currentUrl = $queryLinkBuilder->getQueryUrl();
-        }
+        $currentUrl = $this->getCurrentUrlWithQueryLinkBuilder();
 
         return array(
             'prefix' => $this->prefixId,

@@ -39,6 +39,15 @@ class PageIndexerTest extends IntegrationTest
 {
 
     /**
+     * Executed after each test. Emptys solr and checks if the index is empty
+     */
+    public function tearDown()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        parent::tearDown();
+    }
+
+    /**
      * @test
      */
     public function canIndexPageIntoSolr()
@@ -70,6 +79,5 @@ class PageIndexerTest extends IntegrationTest
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"hello solr"', $solrContent, 'Could not index document into solr');
-        $this->cleanUpSolrServerAndAssertEmpty();
     }
 }
