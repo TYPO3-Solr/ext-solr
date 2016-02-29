@@ -25,9 +25,11 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Template;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Last searches view command to display a user's last searches or the last
@@ -54,6 +56,11 @@ class LastSearchesCommand implements PluginCommand
      * @var array
      */
     protected $configuration;
+
+    /**
+     * @var LastSearchesService
+     */
+    protected $lastSearchesService;
 
     /**
      * Constructor.
@@ -97,25 +104,16 @@ class LastSearchesCommand implements PluginCommand
      */
     protected function getLastSearches()
     {
-        $lastSearchesKeywords = array();
-        $mode   = $this->configuration->getSearchLastSearchesMode();
-        $limit  = $this->configuration->getSearchLastSearchesLimit();
-        switch ($mode) {
-            case 'user':
-                $lastSearchesKeywords = $this->getLastSearchesFromSession();
-                break;
-            case 'global':
-                $lastSearchesKeywords = $this->getLastSearchesFromDatabase($limit);
-                break;
-        }
-        // fill array for output
-        $i = 0;
-        $lastSearches = array();
-        foreach ($lastSearchesKeywords as $keywords) {
-            if (++$i > $limit) {
-                break;
-            }
+        /** @var $lastSearchesService \ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService */
+        $lastSearchesService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService',
+            $this->configuration,
+            $GLOBALS['TSFE'],
+            $GLOBALS['TYPO3_DB']);
 
+            // fill array for output
+        $lastSearches = array();
+        $lastSearchesKeywords = $lastSearchesService->getLastSearches();
+        foreach ($lastSearchesKeywords as $keywords) {
             $keywords = stripslashes($keywords);
             $lastSearches[] = array(
                 'q' => Template::escapeMarkers($keywords),
@@ -123,52 +121,6 @@ class LastSearchesCommand implements PluginCommand
                         ENT_NOQUOTES, 'UTF-8'),
                 'pid' => $this->parentPlugin->getLinkTargetPageId()
             );
-        }
-
-        return $lastSearches;
-    }
-
-    /**
-     * Gets the last searched keywords from the user's session
-     *
-     * @return array An array containing the last searches of the current user
-     */
-    protected function getLastSearchesFromSession()
-    {
-        $lastSearches = $GLOBALS['TSFE']->fe_user->getKey(
-            'ses',
-            $this->parentPlugin->prefixId . '_lastSearches'
-        );
-
-        if (!is_array($lastSearches)) {
-            $lastSearches = array();
-        }
-
-        $lastSearches = array_reverse(array_unique($lastSearches));
-
-        return $lastSearches;
-    }
-
-    /**
-     * Gets the last searched keywords from the database
-     *
-     * @return array An array containing the last searches of the current user
-     */
-    protected function getLastSearchesFromDatabase($limit = false)
-    {
-        $limit = $limit ? intval($limit) : false;
-        $lastSearchesRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'DISTINCT keywords',
-            'tx_solr_last_searches',
-            '',
-            '',
-            'tstamp DESC',
-            $limit
-        );
-
-        $lastSearches = array();
-        foreach ($lastSearchesRows as $row) {
-            $lastSearches[] = $row['keywords'];
         }
 
         return $lastSearches;

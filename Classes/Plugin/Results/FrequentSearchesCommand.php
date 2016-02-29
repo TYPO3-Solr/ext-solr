@@ -42,13 +42,6 @@ class FrequentSearchesCommand implements PluginCommand
 {
 
     /**
-     * Instance of the caching frontend used to cache this command's output.
-     *
-     * @var \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend
-     */
-    protected $cacheInstance;
-
-    /**
      * Parent plugin
      *
      * @var Results
@@ -93,10 +86,19 @@ class FrequentSearchesCommand implements PluginCommand
             return null;
         }
 
-        $this->frequentSearchConfiguration = $this->parentPlugin->typoScriptConfiguration->getSearchFrequentSearchesConfiguration();
+        $configuration = $this->parentPlugin->typoScriptConfiguration;
+        $this->frequentSearchConfiguration = $configuration->getSearchFrequentSearchesConfiguration();
         $this->cacheFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheFactory');
         $this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
         $this->initializeCache();
+
+        $this->frequentSearchesService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Search\\FrequentSearches\\FrequentSearchesService',
+            $configuration,
+            $this->cacheInstance,
+            $GLOBALS['TSFE'],
+            $GLOBALS['TYPO3_DB']
+
+        );
     }
 
     /**
@@ -131,7 +133,7 @@ class FrequentSearchesCommand implements PluginCommand
         }
 
         $marker = array(
-            'loop_frequentsearches|term' => $this->getSearchTermMarkerProperties($this->getFrequentSearchTerms())
+            'loop_frequentsearches|term' => $this->getSearchTermMarkerProperties($this->frequentSearchesService->getFrequentSearchTerms())
         );
 
         return $marker;
@@ -170,88 +172,5 @@ class FrequentSearchesCommand implements PluginCommand
         }
 
         return $frequentSearches;
-    }
-
-    /**
-     * Generates an array with terms and hits
-     *
-     * @return array Tags as array with terms and hits
-     */
-    protected function getFrequentSearchTerms()
-    {
-        $terms = array();
-
-        // Use configuration as cache identifier
-        $identifier = 'frequentSearchesTags';
-
-        if ($this->frequentSearchConfiguration['select.']['checkRootPageId']) {
-            $identifier .= '_RP' . (int)$GLOBALS['TSFE']->tmpl->rootLine[0]['uid'];
-        }
-        if ($this->frequentSearchConfiguration['select.']['checkLanguage']) {
-            $identifier .= '_L' . (int)$GLOBALS['TSFE']->sys_language_uid;
-        }
-
-        $identifier .= '_' . md5(serialize($this->frequentSearchConfiguration));
-
-        if ($this->cacheInstance->has($identifier)) {
-            $terms = $this->cacheInstance->get($identifier);
-        } else {
-            $terms = $this->getFrequentSearchTermsFromStatistics();
-
-            if ($this->frequentSearchConfiguration['sortBy'] == 'hits') {
-                arsort($terms);
-            } else {
-                ksort($terms);
-            }
-
-            $lifetime = null;
-            if (isset($this->frequentSearchConfiguration['cacheLifetime'])) {
-                $lifetime = intval($this->frequentSearchConfiguration['cacheLifetime']);
-            }
-
-            $this->cacheInstance->set($identifier, $terms, array(), $lifetime);
-        }
-
-        return $terms;
-    }
-
-    /**
-     * Gets frequent search terms from the statistics tracking table.
-     *
-     * @return array Array of frequent search terms, keys are the terms, values are hits
-     */
-    protected function getFrequentSearchTermsFromStatistics()
-    {
-        $terms = array();
-
-        if ($this->frequentSearchConfiguration['select.']['checkRootPageId']) {
-            $checkRootPidWhere = 'root_pid = ' . $GLOBALS['TSFE']->tmpl->rootLine[0]['uid'];
-        } else {
-            $checkRootPidWhere = '1';
-        }
-        if ($this->frequentSearchConfiguration['select.']['checkLanguage']) {
-            $checkLanguageWhere = ' AND language =' . $GLOBALS['TSFE']->sys_language_uid;
-        } else {
-            $checkLanguageWhere = '';
-        }
-
-        $sql = $this->frequentSearchConfiguration;
-        $sql['select.']['ADD_WHERE'] = $checkRootPidWhere . $checkLanguageWhere . ' ' . $sql['select.']['ADD_WHERE'];
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        $frequentSearchTerms = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            $sql['select.']['SELECT'],
-            $sql['select.']['FROM'],
-            $sql['select.']['ADD_WHERE'],
-            $sql['select.']['GROUP_BY'],
-            $sql['select.']['ORDER_BY'],
-            $sql['limit']
-        );
-
-        foreach ($frequentSearchTerms as $term) {
-            $terms[$term['search_term']] = $term['hits'];
-        }
-
-        return $terms;
     }
 }
