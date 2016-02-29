@@ -164,4 +164,19 @@ class TypoScriptConfigurationTest extends UnitTest
         $showEmptyColor = $configuration->getSearchFacetingShowEmptyFacetsByName('color');
         $this->assertFalse($showEmptyColor);
     }
+
+    /**
+     * @test
+     */
+    public function canGetJavaScriptFileByName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'javascriptFiles.' => array(
+                'ui' => 'ui.js'
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertSame('ui.js', $configuration->getJavaScriptFileByFileKey('ui'), 'Could get configured javascript file');
+    }
 }

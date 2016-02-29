@@ -343,7 +343,7 @@ class TypoScriptConfiguration implements \ArrayAccess
      */
     public function getJavaScriptFileByFileKey($fileKey, $defaultIfEmpty = '')
     {
-        $javaScriptFileName =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.javascriptFiles' . $fileKey, $defaultIfEmpty);
+        $javaScriptFileName =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.javascriptFiles.' . $fileKey, $defaultIfEmpty);
         return (string) $javaScriptFileName;
     }
 
