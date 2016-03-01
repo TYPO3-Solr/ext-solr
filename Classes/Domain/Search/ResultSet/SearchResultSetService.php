@@ -280,6 +280,8 @@ class SearchResultSetService
             $response->response->numFound = 0;
         }
 
+        $this->wrapResultDocumentInResultObject($response);
+
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
                 $responseProcessor = GeneralUtility::getUserObj($classReference);
@@ -288,6 +290,45 @@ class SearchResultSetService
                 }
             }
         }
+    }
+
+    /**
+     * Wrap all results document it a custom EXT:solr SearchResult object.
+     *
+     * Can be overwritten:
+     *
+     * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = ''
+     *
+     * to use a custom result object.
+     *
+     * @param \Apache_Solr_Response $response
+     * @throws \InvalidArgumentException
+     */
+    protected function wrapResultDocumentInResultObject(\Apache_Solr_Response &$response)
+    {
+        if (!is_array($response->response->docs)) {
+            return;
+        }
+
+        $searchResultClassName = $this->getResultClassName();
+        foreach ($response->response->docs as $key => $originalDocument) {
+            $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
+            if (!$result instanceof SearchResult) {
+                throw new \InvalidArgumentException("Could not create result object with class: ".(string) $searchResultClassName);
+            }
+
+            $response->response->docs[$key] = $result;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getResultClassName()
+    {
+        return isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName ']) ?
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] :
+            'ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResult';
     }
 
     /**
