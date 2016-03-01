@@ -108,9 +108,14 @@ class IndexInspector extends AbstractFunctionModule
             )
         );
 
-        $extJsExtensionCorePath = $this->document->backPath . '../t3lib/js/extjs/ux/';
-        $pageRenderer->addJsFile($extJsExtensionCorePath . 'Ext.grid.RowExpander.js');
+        $pageRenderer->addExtDirectCode(array('TYPO3.tx_solr.IndexInspector.Remote'));
 
+        if (version_compare(TYPO3_branch, '7.0', '>=')) {
+            $uxPath = 'sysext/backend/Resources/Public/JavaScript/extjs/ux/';
+        } else {
+            $uxPath = $this->document->backpath . 'js/extjs/ux/';
+        }
+        $pageRenderer->addJsFile($uxPath . 'Ext.grid.RowExpander.js');
 
         $pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'Resources/JavaScript/ExtJs/override/gridpanel.js');
         $pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'Resources/JavaScript/ModIndex/index_inspector.js');
