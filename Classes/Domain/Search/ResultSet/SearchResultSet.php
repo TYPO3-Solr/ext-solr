@@ -1,5 +1,7 @@
 <?php
 
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -22,8 +24,6 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Query;
