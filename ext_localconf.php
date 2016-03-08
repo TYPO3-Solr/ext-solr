@@ -314,3 +314,9 @@ if (TYPO3_MODE == 'BE') {
         '_CLI_solr'
     );
 }
+
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = 'ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResult';
+}
