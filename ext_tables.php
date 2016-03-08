@@ -114,7 +114,7 @@ if (TYPO3_MODE == 'BE') {
         'web_info',
         'ApacheSolrForTypo3\\Solr\\Backend\\IndexInspector\\IndexInspector',
         null,
-        'LLL:EXT:solr/Resources/Private/Language/Backend.xml:module_indexinspector'
+        'LLL:EXT:solr/Resources/Private/Language/Backend/locallang.xml:module_indexinspector'
     );
 
     // register Clear Cache Menu hook
