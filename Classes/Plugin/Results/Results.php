@@ -264,7 +264,7 @@ class Results extends CommandPluginBase
      * @param Template $template The template object as initialized thus far.
      * @return Template The modified template instance with additional variables available for rendering.
      */
-    protected function postInitializeTemplateEngine($template)
+    protected function postInitializeTemplateEngine(Template $template)
     {
         $template->addVariable('tx_solr', $this->getSolrVariables());
 
