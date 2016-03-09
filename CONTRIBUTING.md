@@ -218,9 +218,8 @@ All classes are using the psr-2 coding standard (http://www.php-fig.org/psr/psr-
 If you want to check the codestyle locally before you commit or just automatically want to fix it there is a great tool (when you remove --dry-run the php-cs-fixer also fixes all violations):
 
 ```bash
-wget http://get.sensiolabs.org/php-cs-fixer.phar -O php-cs-fixer
-chmod u+x php-cs-fixer
-./php-cs-fixer fix -v --level=psr2 --dry-run Classes
+composer install
+./.Build/bin/php-cs-fixer fix -v --level=psr2 --dry-run Classes
 ```
 
 ### Namespacing and Package Structure

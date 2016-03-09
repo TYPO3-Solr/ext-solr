@@ -9,10 +9,10 @@ if [ $TRAVIS ]; then
     export PATH="$PATH:$HOME/.composer/vendor/bin"
 fi
 
-php-cs-fixer --version > /dev/null 2>&1
+.Build/bin/php-cs-fixer --version > /dev/null 2>&1
 if [ $? -eq "0" ]; then
     echo "Check PSR-2 compliance"
-    php-cs-fixer fix -v --level=psr2 --dry-run Classes
+    .Build/bin/php-cs-fixer fix -v --level=psr2 --dry-run Classes
 
     if [ $? -ne "0" ]; then
         echo "Some files are not PSR-2 compliant"
