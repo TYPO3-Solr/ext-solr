@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Search;
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -93,9 +94,9 @@ class Search extends CommandPluginBase
 
     /**
      * Post initialization of the template engine.
-     *
+     * @param Template $template
      */
-    protected function postInitializeTemplateEngine($template)
+    protected function postInitializeTemplateEngine(Template $template)
     {
         $template->addVariable('tx_solr', $this->getSolrVariables());
 
