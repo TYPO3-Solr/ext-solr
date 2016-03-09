@@ -249,10 +249,11 @@ abstract class PluginBase extends AbstractPlugin
      * Also locallang values set in the TypoScript property "_LOCAL_LANG" are
      * merged onto the values found in the "locallang" file.
      * Supported file extensions xlf, xml, php
-     *
+     * 
+     * @param string $languageFilePath path to the plugin language file in format EXT:....
      * @return void
      */
-    public function pi_loadLL()
+    public function pi_loadLL($languageFilePath = '')
     {
         if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
             $pathElements = pathinfo($this->scriptRelPath);
