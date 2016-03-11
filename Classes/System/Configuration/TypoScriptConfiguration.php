@@ -215,13 +215,19 @@ class TypoScriptConfiguration implements \ArrayAccess
      * Merges a configuration with another configuration a
      *
      * @param array $configurationToMerge
+     * @param bool $addKeys If set to FALSE, keys that are NOT found in $original will not be set. Thus only existing value can/will be overruled from overrule array.
+     * @param bool $includeEmptyValues If set, values from $overrule will overrule if they are empty or zero.
+     * @param bool $enableUnsetFeature If set, special values "__UNSET" can be used in the overrule array in order to unset array keys in the original array.
      * @return TypoScriptConfiguration
      */
-    public function mergeSolrConfiguration(array $configurationToMerge)
+    public function mergeSolrConfiguration(array $configurationToMerge, $addKeys = true, $includeEmptyValues = true, $enableUnsetFeature = true)
     {
         ArrayUtility::mergeRecursiveWithOverrule(
             $this->configuration['plugin.']['tx_solr.'],
-            $configurationToMerge
+            $configurationToMerge,
+            $addKeys,
+            $includeEmptyValues,
+            $enableUnsetFeature
         );
 
         return $this;
