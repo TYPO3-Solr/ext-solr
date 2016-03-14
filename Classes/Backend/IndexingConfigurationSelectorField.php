@@ -120,28 +120,16 @@ class IndexingConfigurationSelectorField
     public function render()
     {
         // transform selected values into the format used by TCEforms
-        $selectedValues = array();
-        if (version_compare(TYPO3_branch, '7.5', '>=')) {
-            $selectedValues = $this->selectedValues;
-        } else {
-            foreach ($this->selectedValues as $selectedValue) {
-                $selectedValues[] = $selectedValue . '|1';
-            }
-            $selectedValues = implode(',', $selectedValues);
-        }
-
+        $selectedValues = $this->selectedValues;
         $tablesToIndex = $this->getIndexQueueConfigurationTableMap();
 
-        $formField = $this->renderSelectCheckbox($this->buildSelectorItems($tablesToIndex),
-            $selectedValues);
+        $formField = $this->renderSelectCheckbox($this->buildSelectorItems($tablesToIndex), $selectedValues);
 
         // need to wrap the field in a TCEforms table to make the CSS apply
         $form = '
-		<table class="typo3-TCEforms tx_solr-TCEforms">
-			<tr>
-				<td>' . "\n" . $formField . "\n" . '</td>
-			</tr>
-		</table>
+		<div class="typo3-TCEforms tx_solr-TCEforms">
+            ' . "\n" . $formField . "\n" . '
+		</div>
 		';
 
         return $form;
@@ -197,11 +185,7 @@ class IndexingConfigurationSelectorField
                 $labelTableName = ' (' . $tableName . ')';
             }
 
-            $selectorItems[] = array(
-                $configurationName . $labelTableName,
-                $configurationName,
-                $icon
-            );
+            $selectorItems[] = array($configurationName . $labelTableName, $configurationName, $icon);
         }
 
         return $selectorItems;
@@ -219,49 +203,16 @@ class IndexingConfigurationSelectorField
             'fieldChangeFunc' => array(),
             'itemFormElName' => $this->formElementName,
             'itemFormElValue' => $selectedValues,
-            'fieldConf' => array(
-                'config' => array(
-                    'items' => $items
-                )
-            ),
-            'fieldTSConfig' => array(
-                'noMatchingValue_label' => ''
-            )
+            'fieldConf' => array('config' => array('items' => $items)), 'fieldTSConfig' => array('noMatchingValue_label' => '')
         );
 
-        $selectFieldRenderer = $formEngine = null;
-        if (version_compare(TYPO3_branch, '7.3', '>=')) {
-            /** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
-            $nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
-            $options = array(
-                'renderType' => 'selectCheckBox',
-                'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
-                'fieldName' => 'additionalFields',
-                'databaseRow' => array(),
-                'parameterArray' => $parameterArray
-            );
-            $options['parameterArray']['fieldConf']['config']['items'] = $items;
-            $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
-            $selectCheckboxResult = $nodeFactory->create($options)->render();
+        /** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
+        $nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
+        $options = array('renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector', 'fieldName' => 'additionalFields', 'databaseRow' => array(), 'parameterArray' => $parameterArray);
+        $options['parameterArray']['fieldConf']['config']['items'] = $items;
+        $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
+        $selectCheckboxResult = $nodeFactory->create($options)->render();
 
-            return $selectCheckboxResult['html'];
-        } elseif (class_exists('TYPO3\\CMS\\Backend\\Form\\FormEngine')) {
-            $formEngine = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\FormEngine');
-            if (method_exists($formEngine,
-                'getSingleField_typeSelect_checkbox')) {
-                return $formEngine->getSingleField_typeSelect_checkbox(
-                    '', // table
-                    '', // field
-                    '', // row
-                    $parameterArray,
-                    // array with additional configuration options
-                    array(), // config,
-                    $items, // items
-                    '' // Label for no-matching-value
-                );
-            }
-        }
-
-        return '';
+        return $selectCheckboxResult['html'];
     }
 }

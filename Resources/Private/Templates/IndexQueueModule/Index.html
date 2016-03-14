@@ -90,6 +90,7 @@
 									   value="{f:translate(key:'solr.backend.index_queue_module.errors.reset_button')}"/>
 					</f:form>
 
+
 				</div>
 			</div>
 		</f:if>
@@ -104,8 +105,10 @@
 
 	<f:form name="editform" actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'initializeIndexQueue'} )}">
 
-		<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
-		<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" />
+		<div class="t3js-formengine-palette-field">
+			<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
+		</div>
+		<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" class="btn btn-sm btn-default"/>
 		<solr:backend.button.HelpButton title="Index Queue Initialization">
 			<f:translate key="solr.backend.index_queue_module.help" />
 		</solr:backend.button.HelpButton>
@@ -123,7 +126,7 @@
 <div class="row-fluid">
 	<div class="span3">
 		<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'clearIndexQueue'}" method="POST">
-			<f:form.submit class="btn btn-sm btn-danger t3js-modal-formsubmit-trigger"
+			<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
 						   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
 						   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>
 		</f:form>

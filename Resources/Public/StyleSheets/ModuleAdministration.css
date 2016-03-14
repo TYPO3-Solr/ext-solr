@@ -41,7 +41,7 @@ h2.module-title {
 	font-size: 11px;
 	margin: auto;
 	padding: 0;
-	border: 1px solid;
+	border: 1px solid #cdcdcd;
 	border-radius: 5px;
 	cursor: default;
 	background-color: #ffffff;
@@ -52,9 +52,12 @@ h2.module-title {
 .coreSelector label,
 .siteSelector label {
 	width: auto;
-	line-height: normal;
+	line-height: 25px;
 }
 
+.siteSelector label {
+	width: 50px;
+}
 
 /* ----- UI elements ----- */
 
