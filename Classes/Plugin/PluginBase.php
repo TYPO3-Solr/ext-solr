@@ -273,22 +273,26 @@ abstract class PluginBase extends AbstractPlugin
                 }
             }
             // Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
-            if (isset($this->conf['_LOCAL_LANG.'])) {
-                // Clear the "unset memory"
-                $this->LOCAL_LANG_UNSET = array();
-                foreach ($this->conf['_LOCAL_LANG.'] as $languageKey => $languageArray) {
-                    // Remove the dot after the language key
-                    $languageKey = substr($languageKey, 0, -1);
-                    // Don't process label if the language is not loaded
-                    if (is_array($languageArray) && isset($this->LOCAL_LANG[$languageKey])) {
-                        foreach ($languageArray as $labelKey => $labelValue) {
-                            if (!is_array($labelValue)) {
-                                $this->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
-                                $this->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
+            $translationInTypoScript = $this->typoScriptConfiguration->getLocalLangConfiguration();
 
-                                if ($labelValue === '') {
-                                    $this->LOCAL_LANG_UNSET[$languageKey][$labelKey] = '';
-                                }
+            if (count($translationInTypoScript) == 0) {
+                return;
+            }
+
+            // Clear the "unset memory"
+            $this->LOCAL_LANG_UNSET = array();
+            foreach ($translationInTypoScript as $languageKey => $languageArray) {
+                // Remove the dot after the language key
+                $languageKey = substr($languageKey, 0, -1);
+                // Don't process label if the language is not loaded
+                if (is_array($languageArray) && isset($this->LOCAL_LANG[$languageKey])) {
+                    foreach ($languageArray as $labelKey => $labelValue) {
+                        if (!is_array($labelValue)) {
+                            $this->LOCAL_LANG[$languageKey][$labelKey][0]['target'] = $labelValue;
+                            $this->LOCAL_LANG_charset[$languageKey][$labelKey] = 'utf-8';
+
+                            if ($labelValue === '') {
+                                $this->LOCAL_LANG_UNSET[$languageKey][$labelKey] = '';
                             }
                         }
                     }
