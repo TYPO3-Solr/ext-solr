@@ -267,6 +267,25 @@ class ResultsTest extends AbstractPluginTest
     }
 
     /**
+     * @test
+     */
+    public function canAddCustomTranslationsInTYPOScript()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml');
+        $overwriteConfiguration = array();
+        $overwriteConfiguration['_LOCAL_LANG.']['default.']['results_range'] = 'My own label';
+
+        /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $_GET['q'] = '*';
+
+        $resultPage = $searchResults->main('', array());
+        $this->assertContains('My own label', $resultPage, 'Could not find custom TypoScript label');
+    }
+
+    /**
      * Assertion to check if the pagination markup is present in the response.
      *
      * @param string $content
