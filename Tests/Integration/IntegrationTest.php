@@ -171,16 +171,13 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     protected function cleanUpSolrServerAndAssertEmpty()
     {
         // cleanup the solr server
-        /** @var  $connectionManager \ApacheSolrForTypo3\Solr\ConnectionManager */
-        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\ConnectionManager');
-        $solrServices = $connectionManager->getAllConnections();
-        foreach ($solrServices as $solrService) {
-            $solrService->deleteByQuery('*:*');
-            $solrService->commit();
+        $result = file_get_contents("http://localhost:8080/solr/core_en/update?stream.body=<delete><query>*:*</query></delete>&commit=true");
+        if (strpos($result, '<int name="QTime">') == false) {
+            $this->fail('Could not empty solr test index');
         }
 
         // we wait to make sure the document will be deleted in solr
-        sleep(3);
+        sleep(1);
 
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":0', $solrContent, 'Could not index document into solr');
