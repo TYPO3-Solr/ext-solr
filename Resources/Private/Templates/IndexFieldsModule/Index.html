@@ -1,6 +1,6 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
 
-<solr:backend.menu.CoreSelectorMenu/>
+<f:render partial="CoreSelector" />
 
 <f:if condition="{coreMetrics.numberOfDocuments}">
 	<f:then>

@@ -4,6 +4,7 @@ define([
 ], function($, Modal) {
     $(document).ready(function() {
 
+
         $('.t3js-modal-formsubmit-trigger').click(function(){
 
             var element = $(this);

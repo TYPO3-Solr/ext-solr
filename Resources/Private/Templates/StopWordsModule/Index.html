@@ -7,7 +7,7 @@
 	The format is one word per line.
 </div>
 
-<solr:backend.menu.CoreSelectorMenu/>
+<f:render partial="CoreSelector" />
 
 <h3 style="margin-top: -20px;">Stop Word List (one per line, lowercase)</h3>
 <div class="row-fluid section section-with-header">
@@ -26,7 +26,7 @@
 </f:for></textarea>
 
 		<div class="submit">
-			<f:form.submit value="Save Stop Word List"/>
+			<f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>
 		</div>
 	</f:form>
 </div>

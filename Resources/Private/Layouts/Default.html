@@ -7,27 +7,32 @@
 <f:be.pageRenderer
     loadJQuery="true"
     includeRequireJsModules="{
-    0:'TYPO3/CMS/Solr/FormModal'
+    0:'TYPO3/CMS/Solr/FormModal',
+    1:'TYPO3/CMS/Solr/SelectToggle'
 }"
 />
+	<div class="module" id="ext-solr-mod-administration-php">
 
-	<div class="typo3-fullDoc" id="ext-solr-mod-administration-php">
 		<div id="typo3-docheader">
-			<div class="typo3-docheader-functions">
-				<div class="left">
+			<div class="module-docheader t3js-module-docheader">
+				<div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons">
 
-					<solr:backend.sites>
-						<f:if condition="{hasSites}">
-							<f:then>
-								<solr:backend.menu.SiteSelectorMenu name="site" />
-							</f:then>
-							<f:else>
-								No Solr connections initialized!
-							</f:else>
-						</f:if>
-
-					</solr:backend.sites>
-
+					<div class="module-docheader-bar-column-left">
+						<div class="form-inline">
+							<div class="form-group form-group-sm">
+								<solr:backend.sites>
+									<f:if condition="{hasSites}">
+										<f:then>
+											<label>Site:</label> <solr:backend.menu.SiteSelectorMenu name="site" class="form-control t3-js-jumpMenuBox"/>
+										</f:then>
+										<f:else>
+											No Solr connections initialized!
+										</f:else>
+									</f:if>
+								</solr:backend.sites>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="right">
 				</div>
@@ -40,7 +45,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="typo3-docbody">
+		<div class="module-body t3js-module-body">
 			<div id="typo3-inner-docbody" class="container-fluid">
 				<div class="row-fluid">
 					<solr:backend.sites>

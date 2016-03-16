@@ -1,6 +1,6 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
 
-<solr:backend.menu.CoreSelectorMenu />
+<f:render partial="CoreSelector" />
 
 <f:if condition="{synonyms}">
 	<f:then>
@@ -48,7 +48,7 @@
 			<span class="example">comma-separated; f.e. smartphone, cellphone</span>
 		</div>
 		<div class="submit indented">
-			<f:form.submit value="Add Synonyms" />
+			<f:form.submit value="Add Synonyms" class="btn btn-sm btn-default"/>
 		</div>
 	</f:form>
 </div>

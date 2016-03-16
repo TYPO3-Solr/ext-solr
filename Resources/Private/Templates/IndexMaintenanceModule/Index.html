@@ -2,7 +2,7 @@
 <div class="row-fluid">
 	<div class="span3">
 		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'reloadIndexConfiguration'} )}">
-			<f:form.submit value="Reload Configuration" />
+			<f:form.submit value="Reload Configuration" class="btn btn-sm btn-default" />
 		</f:form>
 	</div>
 	<div class="span9 action-description">
@@ -26,9 +26,10 @@
 <div class="row-fluid">
 	<div class="span3">
 		<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'emptyIndex'}" method="POST">
-			<f:form.submit class="btn btn-sm btn-danger t3js-modal-formsubmit-trigger"
+			<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
 						   data="{title: 'Please confirm', content: 'Are you sure you want to clear the index? All Solr documents will be removed.', severity: 'warning'}"
 						   value="Empty Index"/>
+
 		</f:form>
 	</div>
 	<div class="span9 action-description">
