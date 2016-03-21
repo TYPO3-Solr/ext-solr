@@ -201,12 +201,14 @@ class Util
     }
 
     /**
+     * @param array $configurationArray
+     * @param null $contextPageId
      * @return System\Configuration\ConfigurationManager
      */
-    private static function getConfigurationManager()
+    private static function getConfigurationManager(array $configurationArray = null, $contextPageId = null)
     {
         /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager', $configurationArray, $contextPageId);
         return $configurationManager;
     }
 
@@ -217,15 +219,18 @@ class Util
      * @param integer $pageId Id of the (root) page to get the Solr configuration from.
      * @param boolean $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
      * @param integer $language System language uid, optional, defaults to 0
-     * @return array The Solr configuration for the requested tree.
+     * @return \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration The Solr configuration for the requested tree.
      */
     public static function getSolrConfigurationFromPageId(
         $pageId,
         $initializeTsfe = false,
         $language = 0
     ) {
-        return self::getConfigurationFromPageId($pageId, 'plugin.tx_solr',
-            $initializeTsfe, $language);
+        $configurationArray = self::getConfigurationFromPageId($pageId, 'plugin.tx_solr', $initializeTsfe, $language);
+        $configurationToUse['plugin.']['tx_solr.'] = $configurationArray;
+        $configurationManager = self::getConfigurationManager($configurationToUse, $pageId);
+
+        return $configurationManager->getTypoScriptConfiguration();
     }
 
     /**

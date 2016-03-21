@@ -147,7 +147,7 @@ class SuggestFormModifier implements FormModifier, CommandPluginAware
         $suggestUrl .= '?eID=tx_solr_suggest&id=' . $GLOBALS['TSFE']->id;
 
         // add filters
-        $additionalFilters = $this->parentPlugin->getAdditionalFilters();
+        $additionalFilters = $this->parentPlugin->getSearchResultSetService()->getAdditionalFilters();
         if (!empty($additionalFilters)) {
             $additionalFilters = json_encode($additionalFilters);
             $additionalFilters = rawurlencode($additionalFilters);

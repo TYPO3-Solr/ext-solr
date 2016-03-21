@@ -128,8 +128,8 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     {
         $initialized = false;
 
-        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed) '
-            . $this->buildSelectStatement() . ' '
+        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, errors) '
+            . $this->buildSelectStatement() . ',"" '
             . 'FROM ' . $this->type . ' '
             . 'WHERE '
             . $this->buildPagesClause()
@@ -137,7 +137,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             . $this->buildUserWhereClause();
 
         $GLOBALS['TYPO3_DB']->sql_query($initializationQuery);
-
         if (!$GLOBALS['TYPO3_DB']->sql_error()) {
             $initialized = true;
         }
@@ -214,7 +213,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     protected function getPages()
     {
         $pages = $this->site->getPages();
-
         $additionalPageIds = array();
         if (!empty($this->indexingConfiguration['additionalPageIds'])) {
             $additionalPageIds = GeneralUtility::intExplode(
@@ -367,7 +365,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             $logData['error'] = $GLOBALS['TYPO3_DB']->sql_errno() . ': ' . $GLOBALS['TYPO3_DB']->sql_error();
         }
 
-        if ($solrConfiguration['logging.']['indexing.']['indexQueueInitialization']) {
+        if ($solrConfiguration->getLoggingIndexingIndexQueueInitialization()) {
             GeneralUtility::devLog(
                 'Index Queue initialized for indexing configuration ' . $this->indexingConfigurationName,
                 'solr',

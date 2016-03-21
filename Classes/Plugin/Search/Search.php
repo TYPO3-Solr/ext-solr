@@ -50,9 +50,11 @@ class Search extends CommandPluginBase
      * Gets additional filters configured through TypoScript.
      *
      * @return array An array of additional filters to use for queries.
+     * @deprecated use $this->getSearchResultSetService()->getAdditionalFilters() instead , will be removed in version 5.0
      */
     public function getAdditionalFilters()
     {
+        GeneralUtility::logDeprecatedFunction();
         return $this->getSearchResultSetService()->getAdditionalFilters();
     }
 

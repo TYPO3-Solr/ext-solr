@@ -215,7 +215,7 @@ class Site
     /**
      * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
      *
-     * @return array The Solr TypoScript configuration
+     * @return  \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration The Solr TypoScript configuration
      */
     public function getSolrConfiguration()
     {

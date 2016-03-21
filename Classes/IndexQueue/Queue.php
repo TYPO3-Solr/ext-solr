@@ -116,7 +116,7 @@ class Queue
 
         if (empty($indexingConfigurationName)) {
             $solrConfiguration = $site->getSolrConfiguration();
-            $indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
+            $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         } else {
             $indexingConfigurations[] = $indexingConfigurationName;
         }
@@ -168,17 +168,17 @@ class Queue
 
         $solrConfiguration = $site->getSolrConfiguration();
 
-        $tableToIndex = $this->getTableToIndexByIndexingConfigurationName($solrConfiguration,
-            $indexingConfigurationName);
-        $initializerClass = $this->resolveInitializerClass($solrConfiguration,
-            $indexingConfigurationName);
+        $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+        $initializerClass = $solrConfiguration->getIndexQueueInitializerClassByConfigurationName($indexingConfigurationName);
 
         $initializer = GeneralUtility::makeInstance($initializerClass);
         /** @var $initializer \ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer */
         $initializer->setSite($site);
         $initializer->setType($tableToIndex);
         $initializer->setIndexingConfigurationName($indexingConfigurationName);
-        $initializer->setIndexingConfiguration($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']);
+
+        $indexConfiguration = $solrConfiguration->getIndexQueueConfigurationByName($indexingConfigurationName);
+        $initializer->setIndexingConfiguration($indexConfiguration);
 
         return $initializer->initialize();
     }
@@ -195,11 +195,15 @@ class Queue
      * @param array $solrConfiguration Solr TypoScript configuration
      * @param string $indexingConfigurationName Indexing configuration name
      * @return string Name of the table to index
+     *
+     * @deprecated since 4.0, use TypoScriptConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName instead, will be removed in v5.0
      */
     public static function getTableToIndexByIndexingConfigurationName(
         array $solrConfiguration,
         $indexingConfigurationName
     ) {
+        GeneralUtility::logDeprecatedFunction();
+
         $tableToIndex = $indexingConfigurationName;
 
         if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
@@ -212,40 +216,16 @@ class Queue
     }
 
     /**
-     * Gets the class name of the initializer class.
-     *
-     * For most cases the default initializer
-     * "\ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Record" will be enough. For special cases
-     * like pages we need to do some more work though. In the case of pages we
-     * also need to take care of resolving mount pages and their mounted sub
-     * trees for example. For these cases it is possible to define a initializer
-     * class using the indexing configuration's "initialization" property.
-     *
-     * @param array $solrConfiguration Solr TypoScript configuration
-     * @param string $indexingConfigurationName Indexing configuration name
-     * @return string Name of the initializer class
-     */
-    protected function resolveInitializerClass(
-        $solrConfiguration,
-        $indexingConfigurationName
-    ) {
-        $initializerClass = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\Initializer\\Record';
-
-        if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['initialization'])) {
-            $initializerClass = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['initialization'];
-        }
-
-        return $initializerClass;
-    }
-
-    /**
      * Determines which tables to index according to the given configuration.
      *
      * @param array $solrConfiguration Solr configuration array.
      * @return array An array of table names to index.
+     *
+     * @deprecated since 4.0, use TypoScriptConfiguration->getEnabledIndexQueueConfigurationNames instead, will be removed in v5.0
      */
     public function getTableIndexingConfigurations(array $solrConfiguration)
     {
+        GeneralUtility::logDeprecatedFunction();
         $tablesToIndex = array();
 
         if (is_array($solrConfiguration['index.']['queue.'])) {
@@ -317,21 +297,7 @@ class Queue
         if (!is_null($rootPageId)) {
             // get configuration for the root's branch
             $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
-            // which configurations are there?
-            $indexingConfigurations = $this->getTableIndexingConfigurations($solrConfiguration);
-
-            foreach ($indexingConfigurations as $indexingConfigurationName) {
-                if ($indexingConfigurationName == $itemType
-                    ||
-                    (
-                        !empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])
-                        &&
-                        $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'] == $itemType
-                    )
-                ) {
-                    $possibleIndexingConfigurationNames[] = $indexingConfigurationName;
-                }
-            }
+            $possibleIndexingConfigurationNames = $solrConfiguration->getIndexQueueConfigurationNamesByTableName($itemType);
         }
 
         return $possibleIndexingConfigurationNames;
@@ -478,12 +444,13 @@ class Queue
 
                 $addItemToQueue = true;
                 // Ensure additionalWhereClause is applied.
-                if (!empty($solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause'])) {
+                $additionalWhere = $solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($item['indexing_configuration']);
+                if ($additionalWhere !== '') {
                     $indexingConfigurationCheckRecord = BackendUtility::getRecord(
                         $itemType,
                         $itemUid,
                         'pid' . $additionalRecordFields,
-                        ' AND ' . $solrConfiguration['index.']['queue.'][$item['indexing_configuration'] . '.']['additionalWhereClause']
+                        $additionalWhere
                     );
 
                     if (empty($indexingConfigurationCheckRecord)) {
@@ -916,7 +883,6 @@ class Queue
             'indexing_priority DESC, changed DESC, uid DESC',
             intval($limit)
         );
-
         if (!empty($indexQueueItemRecords)) {
             // convert queued records to index queue item objects
             $itemsToIndex = $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);

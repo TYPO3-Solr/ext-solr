@@ -72,7 +72,7 @@ class ResultsCommand implements PluginCommand
     {
         $this->parentPlugin = $parentPlugin;
         $this->configuration = $parentPlugin->typoScriptConfiguration;
-        $this->search = $parentPlugin->getSearch();
+        $this->search = $parentPlugin->getSearchResultSetService()->getSearch();
     }
 
     /**
@@ -258,7 +258,7 @@ class ResultsCommand implements PluginCommand
         $solrPageBrowserConfiguration = $this->configuration->getSearchResultsPageBrowserConfiguration();
 
         if ($solrPageBrowserConfiguration['enabled']) {
-            $resultsPerPage = $this->parentPlugin->getNumberOfResultsPerPage();
+            $resultsPerPage = $this->parentPlugin->getSearchResultSetService()->getLastResultSet()->getResultsPerPage();
             $numberOfPages = intval($numberOfResults / $resultsPerPage)
                 + (($numberOfResults % $resultsPerPage) == 0 ? 0 : 1);
 

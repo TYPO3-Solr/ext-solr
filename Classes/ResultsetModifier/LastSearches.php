@@ -60,7 +60,7 @@ class LastSearches implements ResultSetModifier
         array $resultSet
     ) {
         $this->configuration = $resultCommand->getParentPlugin()->getConfiguration();
-        $keywords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
+        $keywords = $resultCommand->getParentPlugin()->getSearchResultSetService()->getSearch()->getQuery()->getKeywordsCleaned();
 
         $keywords = trim($keywords);
         if (empty($keywords)) {

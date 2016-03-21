@@ -74,7 +74,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
         $selectOptions = $this->getResultsPerPageOptions();
         if ($selectOptions) {
             $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-                $this->parentPlugin->getSearch()->getQuery());
+                $this->parentPlugin->getSearchResultSetService()->getSearch()->getQuery());
             $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
             $form = array(
                 'action' => $queryLinkBuilder->getQueryUrl()
@@ -99,10 +99,10 @@ class ResultsPerPageSwitchCommand implements PluginCommand
         $resultsPerPageOptions = array();
 
         $resultsPerPageSwitchOptions = $this->configuration->getSearchResultsPerPageSwitchOptionsAsArray();
-        $currentNumberOfResultsShown = $this->parentPlugin->getNumberOfResultsPerPage();
+        $currentNumberOfResultsShown = $this->parentPlugin->getSearchResultSetService()->getLastResultSet()->getResultsPerPage();
 
         $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-            $this->parentPlugin->getSearch()->getQuery());
+            $this->parentPlugin->getSearchResultSetService()->getSearch()->getQuery());
         $queryLinkBuilder->removeUnwantedUrlParameter('resultsPerPage');
         $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 

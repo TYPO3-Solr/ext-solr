@@ -141,7 +141,7 @@ class NoResultsCommand implements PluginCommand
 
         if (!empty($suggestedKeywords)) {
             $plugin = $this->parentPlugin;
-            $search = $this->parentPlugin->getSearch();
+            $search = $this->parentPlugin->getSearchResultSetService()->getSearch();
             $query = clone $search->getQuery();
 
             $query->setKeywords($suggestedKeywords);

@@ -53,7 +53,7 @@ class SiteHighlighter implements ResultDocumentModifier
         ResultsCommand $resultCommand,
         array $resultDocument
     ) {
-        $searchWords = $resultCommand->getParentPlugin()->getSearch()->getQuery()->getKeywordsCleaned();
+        $searchWords = $resultCommand->getParentPlugin()->getSearchResultSetService()->getSearch()->getQuery()->getKeywordsCleaned();
 
         // remove quotes from phrase searches - they've been escaped by getCleanUserQuery()
         $searchWords = str_replace('&quot;', '', $searchWords);

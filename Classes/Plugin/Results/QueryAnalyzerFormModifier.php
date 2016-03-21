@@ -84,7 +84,7 @@ class QueryAnalyzerFormModifier implements FormModifier, CommandPluginAware
     public function modifyForm(array $markers, Template $template)
     {
         $markers['debug_query'] = '<br><strong>Parsed Query:</strong><br>' .
-            $this->parentPlugin->getSearch()->getDebugResponse()->parsedquery;
+            $this->parentPlugin->getSearchResultSetService()->getSearch()->getDebugResponse()->parsedquery;
 
         return $markers;
     }

@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -47,7 +48,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      *
      * TODO check whether we need this or whether it's better to retrieve each time as in getMonitoredTables()
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $solrConfiguration;
 
@@ -340,20 +341,13 @@ class RecordMonitor extends AbstractDataHandlerListener
     {
         $record = array();
 
-        $indexingConfigurations = $this->indexQueue->getTableIndexingConfigurations($this->solrConfiguration);
-
+        $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $tableToIndex = $indexingConfigurationName;
-            if (!empty($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-                // table has been set explicitly. Allows to index the same table with different configurations
-                $tableToIndex = $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
-            }
+            $tableToIndex = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
             if ($tableToIndex === $recordTable) {
-                $recordWhereClause = $this->buildUserWhereClause($indexingConfigurationName);
-                $record = BackendUtility::getRecord($recordTable, $recordUid,
-                    '*', $recordWhereClause);
-
+                $recordWhereClause = $this->solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
+                $record = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
                 if (!empty($record)) {
                     // if we found a record which matches the conditions, we can continue
                     break;
@@ -362,24 +356,6 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         return $record;
-    }
-
-    /**
-     * Build additional where clause from index queue configuration
-     *
-     * @param string $indexingConfigurationName Indexing configuration name
-     * @return string Optional extra where clause
-     */
-    protected function buildUserWhereClause($indexingConfigurationName)
-    {
-        $condition = '';
-
-        // FIXME replace this with the mechanism described in ApacheSolrForTypo3\Solr\IndexQueue\Initializer\AbstractInitializer::buildUserWhereClause()
-        if (isset($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'])) {
-            $condition = ' AND ' . $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['additionalWhereClause'];
-        }
-
-        return $condition;
     }
 
     /**
@@ -396,17 +372,9 @@ class RecordMonitor extends AbstractDataHandlerListener
         // FIXME!! $pageId might be outside of a site root and thus might not know about solr configuration
         // -> leads to record not being queued for reindexing
         $solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
-        $indexingConfigurations = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue')
-            ->getTableIndexingConfigurations($solrConfiguration);
-
+        $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $monitoredTable = $indexingConfigurationName;
-
-            if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-                // table has been set explicitly. Allows to index the same table with different configurations
-                $monitoredTable = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
-            }
-
+            $monitoredTable = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
             $monitoredTables[] = $monitoredTable;
             if ($monitoredTable == 'pages') {
                 // when monitoring pages, also monitor creation of translations
@@ -453,7 +421,6 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function updateMountPages($pageId)
     {
-
         // get the root line of the page, every parent page could be a Mount Page source
         $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
         $rootLine = $pageSelect->getRootLine($pageId);
@@ -574,26 +541,18 @@ class RecordMonitor extends AbstractDataHandlerListener
     protected function getIndexingConfigurationName($recordTable, $recordUid)
     {
         $name = $recordTable;
-
-        $indexingConfigurations = $this->indexQueue->getTableIndexingConfigurations($this->solrConfiguration);
-
+        $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $tableToIndex = $indexingConfigurationName;
-
-            if (!$this->solrConfiguration['index.']['queue.'][$indexingConfigurationName]) {
+            if (!$this->solrConfiguration->getIndexQueueConfigurationIsEnabled($indexingConfigurationName)) {
                 // ignore disabled indexing configurations
                 continue;
             }
 
-            if (!empty($this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-                // table has been set explicitly. Allows to index the same table with different configurations
-                $tableToIndex = $this->solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
-            }
+            $tableToIndex = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
             if ($tableToIndex === $recordTable) {
-                $recordWhereClause = $this->buildUserWhereClause($indexingConfigurationName);
-                $record = BackendUtility::getRecord($recordTable, $recordUid,
-                    '*', $recordWhereClause);
+                $recordWhereClause = $this->solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
+                $record = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
 
                 if (!empty($record)) {
                     // we found a record which matches the conditions

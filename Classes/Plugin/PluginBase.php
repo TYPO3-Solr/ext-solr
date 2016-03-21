@@ -341,7 +341,7 @@ abstract class PluginBase extends AbstractPlugin
     /**
      * @return SearchResultSetService
      */
-    protected function getSearchResultSetService()
+    public function getSearchResultSetService()
     {
         return $this->searchResultsSetService;
     }
