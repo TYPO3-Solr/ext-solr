@@ -109,7 +109,7 @@ class JavascriptManager
             if (!empty($fileReference)) {
                 self::$files[$fileKey] = array(
                     'addedToPage' => false,
-                    'file' => GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($fileReference))
+                    'file' => $GLOBALS['TSFE']->tmpl->getFileName($fileReference)
                 );
             }
         }
