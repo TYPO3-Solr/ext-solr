@@ -304,46 +304,6 @@ class Queue
     }
 
     /**
-     * Generates a list of page IDs from a starting page ID. The list does not
-     * include the start page ID itself. The only pages excluded from the list
-     * are deleted pages.
-     *
-     * Should be used for Index Queue initialization only, thus private
-     *
-     * @param integer $startPageId Start page id
-     * @param integer $maxDepth Maximum depth to decent into the tree
-     * @return string Returns the list ending with comma (if any pages selected!)
-     */
-    private function getListOfPagesFromRoot($startPageId, $maxDepth = 999)
-    {
-        $pageList = array();
-        $startPageId = intval($startPageId);
-        $maxDepth = intval($maxDepth);
-
-        if ($maxDepth > 0) {
-            $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                'uid',
-                'pages',
-                'pid = ' . $startPageId . ' ' . BackendUtility::deleteClause('pages')
-            );
-
-            while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
-                $pageList[] = $page['uid'];
-
-                if ($maxDepth > 1) {
-                    $pageList = array_merge(
-                        $pageList,
-                        $this->getListOfPagesFromRoot($page['uid'],
-                            $maxDepth - 1)
-                    );
-                }
-            }
-        }
-
-        return $pageList;
-    }
-
-    /**
      * Marks an item as needing (re)indexing.
      *
      * Like with Solr itself, there's no add method, just a simple update method
