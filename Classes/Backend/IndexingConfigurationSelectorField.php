@@ -144,21 +144,10 @@ class IndexingConfigurationSelectorField
     {
         $indexingTableMap = array();
 
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($this->site->getRootPageId());
-
-        foreach ($solrConfiguration['index.']['queue.'] as $name => $configuration) {
-            if (is_array($configuration)) {
-                $name = substr($name, 0, -1);
-
-                if ($solrConfiguration['index.']['queue.'][$name]) {
-                    $table = $name;
-                    if ($solrConfiguration['index.']['queue.'][$name . '.']['table']) {
-                        $table = $solrConfiguration['index.']['queue.'][$name . '.']['table'];
-                    }
-
-                    $indexingTableMap[$name] = $table;
-                }
-            }
+        $solrConfiguration      = $this->site->getSolrConfiguration();
+        $configurationNames     = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
+        foreach ($configurationNames as $configurationName) {
+            $indexingTableMap[$configurationName] = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($configurationName);
         }
 
         return $indexingTableMap;

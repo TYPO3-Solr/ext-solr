@@ -67,6 +67,12 @@ class SearchResultSetService
      */
     protected $search;
 
+
+    /**
+     * @var SearchResultSet
+     */
+    protected $lastResultSet = null;
+
     /**
      * @var AbstractPlugin
      */
@@ -444,7 +450,16 @@ class SearchResultSetService
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
         $resultSet->setUsedSearch($this->search);
 
+        $this->lastResultSet = $resultSet;
         return $resultSet;
+    }
+
+    /**
+     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
+     */
+    public function getLastResultSet()
+    {
+        return $this->lastResultSet;
     }
 
     /**

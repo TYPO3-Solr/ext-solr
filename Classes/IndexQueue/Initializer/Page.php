@@ -248,9 +248,9 @@ class Page extends AbstractInitializer
         array $mountProperties
     ) {
         $mountIdentifier = $this->getMountPointIdentifier($mountProperties);
-        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier) '
+        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
             . $this->buildSelectStatement() . ', 1, ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($mountIdentifier,
-                'tx_solr_indexqueue_item')
+                'tx_solr_indexqueue_item') . ',""'
             . 'FROM pages '
             . 'WHERE '
             . 'uid IN(' . implode(',', $mountedPages) . ') '

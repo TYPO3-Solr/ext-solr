@@ -179,4 +179,164 @@ class TypoScriptConfigurationTest extends UnitTest
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $this->assertSame('ui.js', $configuration->getJavaScriptFileByFileKey('ui'), 'Could get configured javascript file');
     }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueTableOrFallbackToConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages.' => array(
+                    ),
+                    'custom.' => array(
+                        'table' => 'tx_model_custom'
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $customTableExpected = $configuration->getIndexQueueTableNameOrFallbackToConfigurationName('pages');
+        $this->assertSame($customTableExpected, 'pages', 'Can not fallback to configurationName');
+
+        $customTableExpected = $configuration->getIndexQueueTableNameOrFallbackToConfigurationName('custom');
+        $this->assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueConfigurationNames()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages' => 1,
+                    'pages.' => array(
+                    ),
+                    'custom.' => array(
+                        'table' => 'tx_model_custom'
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $enabledIndexQueueNames = $configuration->getEnabledIndexQueueConfigurationNames();
+
+        $this->assertCount(1, $enabledIndexQueueNames, 'Retrieved unexpected amount of index queue configurations');
+        $this->assertContains('pages', $enabledIndexQueueNames, 'Pages was no enabled index queue configuration');
+
+
+        $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['custom'] = 1;
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $enabledIndexQueueNames = $configuration->getEnabledIndexQueueConfigurationNames();
+
+        $this->assertCount(2, $enabledIndexQueueNames, 'Retrieved unexpected amount of index queue configurations');
+        $this->assertContains('custom', $enabledIndexQueueNames, 'Pages was no enabled index queue configuration');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canGetAdditionalWhereClause()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages' => 1,
+                    'pages.' => array(
+                    ),
+                    'custom.' => array(
+                        'additionalWhereClause' => '1=1'
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $this->assertEquals('', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('pages'));
+        $this->assertEquals(' AND 1=1', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('custom'));
+        $this->assertEquals('', $configuration->getIndexQueueAdditionalWhereClauseByConfigurationName('notconfigured'));
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueConfigurationNamesByTableName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'tx_model_news' => 1,
+                    'tx_model_news.' => array(
+                    ),
+                    'custom_one' => 1,
+                    'custom_one.' => array(
+                        'table' => 'tx_model_bar'
+                    ),
+
+                    'custom_two' => 1,
+                    'custom_two.' => array(
+                        'table' => 'tx_model_news'
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals(array('tx_model_news', 'custom_two'), $configuration->getIndexQueueConfigurationNamesByTableName('tx_model_news'));
+    }
+
+    /**
+     * @test
+     */
+    public function canGetLoggingEnableStateForIndexQueueByConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'logging.' => array(
+                'indexing.' => array(
+                    'queue.' => array(
+                        'pages' => 1
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertTrue($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
+            'Wrong logging state for pages index queue');
+        $this->assertFalse($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
+            'Wrong logging state for tt_content index queue');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canGetLoggingEnableStateForIndexQueueByConfigurationNameByFallingBack()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'logging.' => array(
+                'indexing' => 1,
+                'indexing.' => array(
+                    'queue.' => array(
+                        'pages' => 0
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertTrue($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('pages'),
+            'Wrong logging state for pages index queue');
+        $this->assertTrue($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
+            'Wrong logging state for tt_content index queue');
+    }
 }

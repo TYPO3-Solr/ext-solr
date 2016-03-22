@@ -59,7 +59,7 @@ class ScoreAnalyzer implements ResultDocumentModifier
         ResultsCommand $resultCommand,
         array $resultDocument
     ) {
-        $this->search = $resultCommand->getParentPlugin()->getSearch();
+        $this->search = $resultCommand->getParentPlugin()->getSearchResultSetService()->getSearch();
 
         // only check whether a BE user is logged in, don't need to check
         // for enabled score analysis as we wouldn't be here if it was disabled

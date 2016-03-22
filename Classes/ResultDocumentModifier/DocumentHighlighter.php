@@ -83,7 +83,7 @@ class DocumentHighlighter implements ResultDocumentModifier
         ResultsCommand $resultCommand,
         array $resultDocument
     ) {
-        $this->search = $resultCommand->getParentPlugin()->getSearch();
+        $this->search = $resultCommand->getParentPlugin()->getSearchResultSetService()->getSearch();
 
         $highlightedContent = $this->search->getHighlightedContent();
         foreach ($this->highlightFields as $highlightField) {

@@ -745,7 +745,7 @@ class SolrService extends \Apache_Solr_Service
             $solrResponse = $e->getResponse();
         }
 
-        if ($this->configuration['logging.']['query.']['rawDelete'] || $solrResponse->getHttpStatus() != 200) {
+        if ($this->configuration->getLoggingQueryRawDelete() || $solrResponse->getHttpStatus() != 200) {
             $logData = array(
                 'query url' => $url,
                 'response' => (array)$solrResponse
@@ -759,7 +759,7 @@ class SolrService extends \Apache_Solr_Service
                 $logData['response data'] = print_r($solrResponse, true);
             }
 
-            GeneralUtility::devLog('Querying Solr using GET', 'solr',
+            GeneralUtility::devLog('Querying Solr using DELETE', 'solr',
                 $logSeverity, $logData);
         }
 

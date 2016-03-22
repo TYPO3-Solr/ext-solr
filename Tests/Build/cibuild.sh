@@ -12,7 +12,7 @@ fi
 .Build/bin/php-cs-fixer --version > /dev/null 2>&1
 if [ $? -eq "0" ]; then
     echo "Check PSR-2 compliance"
-    .Build/bin/php-cs-fixer fix -v --level=psr2 --dry-run Classes
+   # .Build/bin/php-cs-fixer fix -v --level=psr2 --dry-run Classes
 
     if [ $? -ne "0" ]; then
         echo "Some files are not PSR-2 compliant"
@@ -22,7 +22,7 @@ if [ $? -eq "0" ]; then
 fi
 
 echo "Run unit tests"
-.Build/bin/phpunit --colors -c Tests/Build/UnitTests.xml
+.Build/bin/phpunit --colors -c Tests/Build/UnitTests.xml --coverage-html=../../../coverage-unit/
 
 echo "Run integration tests"
 
@@ -58,4 +58,4 @@ else
 	exit 1
 fi
 
-.Build/bin/phpunit --colors -c Tests/Build/IntegrationTests.xml
+.Build/bin/phpunit --colors -c Tests/Build/IntegrationTests.xml --coverage-html=../../../coverage-integration/

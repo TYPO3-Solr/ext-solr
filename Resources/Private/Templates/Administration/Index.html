@@ -8,6 +8,8 @@
 		<core:icon identifier="extensions-{activeModule.extensionKey}-module-{f:format.case(value: activeModule.name, mode: 'lower')}" />{activeModule.title}
 	</h2>
 
-	<f:flashMessages renderMode="div" />
+
+	<f:render partial="FlashMessages" />
+
 	<f:format.raw>{moduleContent}</f:format.raw>
 </f:section>

@@ -307,7 +307,6 @@ class TypoScriptConfiguration implements \ArrayAccess
         throw new \Exception('The configuration is readonly');
     }
 
-
     /**
      * Returns the configured css file for a specific fileKey.
      *
@@ -323,7 +322,6 @@ class TypoScriptConfiguration implements \ArrayAccess
         return (string) $cssFileName;
     }
 
-
     /**
      * Returns the fieldProcessingInstructions configuration array
      *
@@ -336,6 +334,150 @@ class TypoScriptConfiguration implements \ArrayAccess
     {
         $result = $this->getObjectByPathOrDefault('plugin.tx_solr.index.fieldProcessingInstructions.', $defaultIfEmpty);
         return $result;
+    }
+
+    /**
+     * Retrieves the indexing configuration array for an indexing queue by configuration name.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.
+     *
+     * @param string $configurationName
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueueConfigurationByName($configurationName, array $defaultIfEmpty = array())
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.';
+        $result = $this->getObjectByPathOrDefault($path, $defaultIfEmpty);
+        return $result;
+    }
+
+    /**
+     * Returns the configured database table for an indexing queue configuration or
+     * the configurationName itself that is used by convention as tableName when no
+     * other tablename is present.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.table or configurationName
+     *
+     * @param string $configurationName
+     * @return string
+     */
+    public function getIndexQueueTableNameOrFallbackToConfigurationName($configurationName = '')
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.table';
+        $result = $this->getValueByPathOrDefaultValue($path, $configurationName);
+        return $result;
+    }
+
+    /**
+     * This method is used to check if an index queue configuration is enabled or not
+     *
+     * plugin.tx_solr.index.queue.<configurationName> = 1
+     *
+     * @param string $configurationName
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getIndexQueueConfigurationIsEnabled($configurationName, $defaultIfEmpty = false)
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName;
+        $result = $this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * Retrieves an array of enabled index queue configurations.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getEnabledIndexQueueConfigurationNames($defaultIfEmpty = array())
+    {
+        $tablesToIndex = array();
+        $path = 'plugin.tx_solr.index.queue.';
+        $indexQueueConfiguration = $this->getObjectByPathOrDefault($path, array());
+        foreach ($indexQueueConfiguration as $configurationName => $indexingEnabled) {
+            if (substr($configurationName, -1) != '.' && $indexingEnabled) {
+                $tablesToIndex[] = $configurationName;
+            }
+        }
+
+        return count($tablesToIndex) == 0 ? $defaultIfEmpty : $tablesToIndex;
+    }
+
+    /**
+     * Retrieves and additional where clause when configured or an empty string.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.additionalWhereClause
+     *
+     * @param string $configurationName
+     * @return string
+     */
+    public function getIndexQueueAdditionalWhereClauseByConfigurationName($configurationName)
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.additionalWhereClause';
+        $additionalWhere = $this->getValueByPathOrDefaultValue($path, '');
+
+        if (trim($additionalWhere) == '') {
+            return '';
+        }
+
+        return ' AND ' . $additionalWhere;
+    }
+
+    /**
+     * This method can be used to retrieve all index queue configuration names, where
+     * a certain table is used. It can be configured with the property "table" or is using the configuration
+     * key a fallback for the table name.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.
+     *
+     * @param string $tableName
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueueConfigurationNamesByTableName($tableName, $defaultIfEmpty = array())
+    {
+        $path = 'plugin.tx_solr.index.queue.';
+        $configuration = $this->getObjectByPathOrDefault($path, array());
+        $possibleConfigurations = array();
+
+        foreach ($configuration as $configurationName => $indexingEnabled) {
+            $isObject = substr($configurationName, -1) == '.';
+            if ($isObject || !$indexingEnabled) {
+                continue;
+            }
+
+            // when the configuration name equals the tableName we have a fallback
+            $hasTableNameAsConfigurationName = $configurationName == $tableName;
+            $hasTableAssignedInQueueConfiguration = isset($configuration[$configurationName . '.']['table']) &&
+                                                    $configuration[$configurationName . '.']['table'] == $tableName;
+            if ($hasTableNameAsConfigurationName || $hasTableAssignedInQueueConfiguration) {
+                $possibleConfigurations[] = $configurationName;
+            }
+        }
+
+        return count($possibleConfigurations) > 0 ? $possibleConfigurations : $defaultIfEmpty;
+    }
+
+    /**
+     * This method is used to retrieve the className of a queue initializer for a certain indexing configuration
+     * of returns the default initializer class, when noting is configured.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.initialization
+     *
+     * @param string $configurationName
+     * @param string $defaultIfEmpty
+     * @return mixed
+     */
+    public function getIndexQueueInitializerClassByConfigurationName($configurationName, $defaultIfEmpty = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\Initializer\\Record')
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.initialization';
+        $className = $this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+
+        return $className;
     }
 
     /**
@@ -452,6 +594,20 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
+     * Returns if the rawDelete requests should be logged or not.
+     *
+     * plugin.tx_solr.logging.query.rawDelete
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getLoggingQueryRawDelete($defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.logging.query.rawDelete', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
      * Returns if exceptions should be logged or not.
      *
      * plugin.tx_solr.logging.exceptions
@@ -480,6 +636,48 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
+     * Returns if indexing queue operations should be logged or not.
+     *
+     * plugin.tx_solr.logging.indexing.queue
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getLoggingIndexingQueue($defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.logging.indexing.queue', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * This method can be used to check if the logging during indexing should be done.
+     * It takes the specific configuration by indexQueueConfiguration into account or is using the
+     * fallback when the logging is enabled on queue or indexing level.
+     *
+     * plugin.tx_solr.logging.indexing.queue.<indexQueueConfiguration>
+     *
+     * @param string $indexQueueConfiguration
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack($indexQueueConfiguration, $defaultIfEmpty = false)
+    {
+        // when logging is globally enabled we do not need to check the specific configuration
+        if ($this->getLoggingIndexing()) {
+            return true;
+        }
+
+        // when the logging for indexing is enabled on queue level we also do not need to check the specific configuration
+        if ($this->getLoggingIndexingQueue()) {
+            return true;
+        }
+
+        $path = 'plugin.tx_solr.logging.indexing.queue.' . $indexQueueConfiguration;
+        $result = $this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
      * Returns if a log message should be written when a page was indexed.
      *
      * plugin.tx_solr.logging.indexing.pageIndexed
@@ -487,7 +685,7 @@ class TypoScriptConfiguration implements \ArrayAccess
      * @param bool $defaultIfEmpty
      * @return bool
      */
-    public function getLoggingPageIndexed($defaultIfEmpty = false)
+    public function getLoggingIndexingPageIndexed($defaultIfEmpty = false)
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.logging.indexing.pageIndexed', $defaultIfEmpty);
         return $this->getBool($result);
@@ -501,9 +699,23 @@ class TypoScriptConfiguration implements \ArrayAccess
      * @param bool $defaultIfEmpty
      * @return bool
      */
-    public function getLoggingMissingTypo3SearchMarkers($defaultIfEmpty = true)
+    public function getLoggingIndexingMissingTypo3SearchMarkers($defaultIfEmpty = true)
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.logging.indexing.missingTypo3SearchMarkers', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * Returns if the initialization of an indexqueue should be logged.
+     *
+     * plugin.tx_solr.logging.indexing.indexQueueInitialization
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getLoggingIndexingIndexQueueInitialization($defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.logging.indexing.indexQueueInitialization', $defaultIfEmpty);
         return $this->getBool($result);
     }
 

@@ -632,19 +632,11 @@ class Indexer extends AbstractIndexer
      */
     protected function setLogging(Item $item)
     {
-        // reset
-        $this->loggingEnabled = false;
-
         $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid());
-
-        if (!empty($solrConfiguration['logging.']['indexing'])
-            || !empty($solrConfiguration['logging.']['indexing.']['queue'])
-            || !empty($solrConfiguration['logging.']['indexing.']['queue.'][$item->getIndexingConfigurationName()])
-        ) {
-            $this->loggingEnabled = true;
-        }
+        $this->loggingEnabled = $solrConfiguration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack(
+            $item->getIndexingConfigurationName()
+        );
     }
-
 
     /**
      * Logs the item and what document was created from it

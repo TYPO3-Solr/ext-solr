@@ -267,7 +267,7 @@ class PageIndexer extends AbstractFrontendHelper
         $this->page = $page;
         $configuration = Util::getSolrConfiguration();
 
-        $logPageIndexed = $configuration->getLoggingPageIndexed();
+        $logPageIndexed = $configuration->getLoggingIndexingPageIndexed();
         if (!$this->page->config['config']['index_enable']) {
             if ($logPageIndexed) {
                 GeneralUtility::devLog('Indexing is disabled. Set config.index_enable = 1 .',
