@@ -43,9 +43,15 @@
 								key="solr.backend.index_queue_module.status.errors"/>
 					</div>
 				</f:if>
+
 			</div>
+			<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'doIndexingRun'}" method="POST">
+				<f:form.submit class="btn btn-sm btn-default"
+							   value="{f:translate(key:'solr.backend.index_queue_module.index_now')}"/>
+			</f:form>
 		</div>
 
+		<hr />
 		<f:if condition="{indexqueue_errors}">
 			<div class="row-fluid">
 				<div class="span12 well">
@@ -89,7 +95,6 @@
 						<f:form.submit class="btn btn-sm btn-default"
 									   value="{f:translate(key:'solr.backend.index_queue_module.errors.reset_button')}"/>
 					</f:form>
-
 
 				</div>
 			</div>

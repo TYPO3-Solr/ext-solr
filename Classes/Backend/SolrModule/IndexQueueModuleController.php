@@ -310,4 +310,17 @@ class IndexQueueModuleController extends AbstractModuleController
         $item = $this->getIndexQueueItemById($queueItemId);
         $this->view->assign('indexQueueItem', $item);
     }
+
+    /**
+     * Indexes a few documents with the index service.
+     * @return void
+     */
+    public function doIndexingRunAction()
+    {
+        /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
+        $indexService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Index\\IndexService', $this->site);
+        $indexService->indexItems(10);
+
+        $this->forward('index');
+    }
 }
