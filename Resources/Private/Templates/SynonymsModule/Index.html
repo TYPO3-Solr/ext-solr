@@ -1,4 +1,5 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
 
 <f:render partial="CoreSelector" />
 
@@ -16,11 +17,9 @@
 					<td>{baseWord}</td>
 					<td>{synonymList}</td>
 					<td>
-						<f:be.buttons.icon
-							uri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'deleteSynonyms', baseWord: '{baseWord}'})}"
-							icon="actions-edit-delete"
-							title="Remove Synonym Mapping"
-						/>
+						<a href="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'deleteSynonyms', baseWord: '{baseWord}'})}" title="Remove Synonym Mapping">
+							<core:icon identifier="actions-edit-delete" />
+						</a>
 					</td>
 				</tr>
 				</f:for>

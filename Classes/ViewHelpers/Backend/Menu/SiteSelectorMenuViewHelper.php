@@ -25,13 +25,13 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Menu;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\AbstractSolrTagBasedViewHelper;
 
 /**
  * Site selector menu view helper
  *
  */
-class SiteSelectorMenuViewHelper extends AbstractTagBasedViewHelper
+class SiteSelectorMenuViewHelper extends AbstractSolrTagBasedViewHelper
 {
 
     /**
@@ -45,7 +45,6 @@ class SiteSelectorMenuViewHelper extends AbstractTagBasedViewHelper
      */
     protected $moduleDataStorageService;
 
-
     /**
      * Initialize the arguments.
      *
@@ -53,6 +52,8 @@ class SiteSelectorMenuViewHelper extends AbstractTagBasedViewHelper
      */
     public function initializeArguments()
     {
+        parent::initializeArguments();
+
         $this->registerTagAttribute('name', 'string',
             'Name of the select field');
         $this->registerUniversalTagAttributes();

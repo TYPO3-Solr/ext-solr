@@ -43,7 +43,6 @@ if (TYPO3_MODE === 'BE') {
 }
 
 if (TYPO3_MODE == 'BE') {
-    $fileExtension = 'svg';
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'tools',
@@ -55,7 +54,7 @@ if (TYPO3_MODE == 'BE') {
         ),
         array(
             'access' => 'admin',
-            'iconIdentifier' => 'extensions-solr-module-administration',
+            'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleAdministration.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/ModuleAdministration/locallang.xlf',
         )
     );
