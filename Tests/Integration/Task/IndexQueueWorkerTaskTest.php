@@ -106,9 +106,32 @@ class IndexQueueWorkerTest extends IntegrationTest
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask');
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
         $indexQueueQueueWorkerTask->setSite($site);
+
+        $progressBefore = $indexQueueQueueWorkerTask->getProgress();
         $indexQueueQueueWorkerTask->execute();
+        $progressAfter = $indexQueueQueueWorkerTask->getProgress();
 
         // we expect that the index queue is empty before we start
         $this->assertTrue($this->indexQueue->containsIndexedItem('pages', 1));
+        $this->assertEquals(0.0, $progressBefore, 'Wrong progress before');
+        $this->assertEquals(100.0, $progressAfter, 'Wrong progress after');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetAdditionalInformationFromTask()
+    {
+        $this->importDataSetFromFixture('can_trigger_frontend_calls_for_page_index.xml');
+        $site = Site::getFirstAvailableSite();
+        /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
+        $indexQueueQueueWorkerTask = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask');
+        $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
+        $indexQueueQueueWorkerTask->setSite($site);
+
+        $additionalInformation = $indexQueueQueueWorkerTask->getAdditionalInformation();
+
+        $this->assertContains('Root Page ID: 1', $additionalInformation);
+        $this->assertContains('Site: page for testing', $additionalInformation);
     }
 }

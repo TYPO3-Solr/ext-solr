@@ -84,7 +84,7 @@ class RecordMonitorTest extends IntegrationTest
     /**
      * @param $amount
      */
-    protected function assertIndexQueryContainsItemAmount($amount)
+    protected function assertIndexQueueContainsItemAmount($amount)
     {
         $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
             'Index queue is empty and was expected to contain '.(int) $amount.' items.');
@@ -195,7 +195,7 @@ class RecordMonitorTest extends IntegrationTest
 
         // we expect that all subpages of 1 and 1 its selft have been requeued but not more
         // pages with uid 1, 10 and 100 should be in index, but 11 not
-        $this->assertIndexQueryContainsItemAmount(3);
+        $this->assertIndexQueueContainsItemAmount(3);
     }
 
 
@@ -221,7 +221,7 @@ class RecordMonitorTest extends IntegrationTest
 
         // we expect that all subpages of 1 have been requeued, but 1 not because it is still hidden
         // pages with uid 10 and 100 should be in index, but 11 not
-        $this->assertIndexQueryContainsItemAmount(2);
+        $this->assertIndexQueueContainsItemAmount(2);
     }
 
     /**
