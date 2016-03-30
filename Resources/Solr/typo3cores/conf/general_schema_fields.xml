@@ -202,6 +202,8 @@
 	<dynamicField name="*_textWstM"  type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_textPath"  type="textPath"  indexed="true" stored="true" multiValued="false" />
 
+	<dynamicField name="*_textSpellS" type="textSpell" indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textSpellM" type="textSpell" indexed="true" stored="true" multiValued="true" />
 
 	<dynamicField name="*_phoneticS" type="phonetic"  indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_phoneticM" type="phonetic"  indexed="true" stored="true" multiValued="true" />
