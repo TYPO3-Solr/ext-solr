@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 // TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\SubstitutePageIndexer;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -46,9 +47,24 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      */
     protected $configuration;
 
-    public function __construct()
+    /**
+     * @var array
+     */
+    protected $pageIndexingConfiguration = array();
+
+    /**
+     * @var array
+     */
+    protected $mappedFieldNames = array();
+
+    /**
+     * @param TypoScriptConfiguration $configuration
+     */
+    public function __construct(TypoScriptConfiguration $configuration = null)
     {
-        $this->configuration = Util::getSolrConfiguration();
+        $this->configuration = $configuration == null ? Util::getSolrConfiguration() : $configuration;
+        $this->pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName('pages');
+        $this->mappedFieldNames = $this->configuration->getIndexQueueMappedFieldsByConfigurationName('pages');
     }
 
     /**
@@ -64,7 +80,6 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     {
         $substitutePageDocument = clone $pageDocument;
         $mappedFields = $this->getMappedFields();
-
         foreach ($mappedFields as $fieldName => $fieldValue) {
             if (isset($substitutePageDocument->{$fieldName})) {
                 // reset = overwrite, especially important to not make fields
@@ -89,36 +104,12 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     protected function getMappedFields()
     {
         $fields = array();
-        $mappedFieldNames = $this->getMappedFieldNames();
 
-        foreach ($mappedFieldNames as $mappedFieldName) {
+        foreach ($this->mappedFieldNames as $mappedFieldName) {
             $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName);
         }
 
         return $fields;
-    }
-
-    /**
-     * Gets a list of fields to index in addition to the default fields or
-     * overwriting exisitng fields.
-     *
-     * @return array An array of configured field names.
-     */
-    protected function getMappedFieldNames()
-    {
-        $mappedFieldNames = array();
-        $mappedFields = $this->configuration['index.']['queue.']['pages.']['fields.'];
-
-        foreach ($mappedFields as $indexFieldName => $recordFieldName) {
-            if (is_array($recordFieldName)) {
-                // configuration for a content object, skipping
-                continue;
-            }
-
-            $mappedFieldNames[] = $indexFieldName;
-        }
-
-        return $mappedFieldNames;
     }
 
     /**
@@ -133,28 +124,25 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     protected function resolveFieldValue($solrFieldName)
     {
         $fieldValue = '';
-
-        $indexingConfiguration = $this->configuration['index.']['queue.']['pages.']['fields.'];
         $pageRecord = $GLOBALS['TSFE']->page;
 
-
-        if (isset($indexingConfiguration[$solrFieldName . '.'])) {
+        if (isset($this->pageIndexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
             $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
             $contentObject->start($pageRecord, 'pages');
 
             $fieldValue = $contentObject->cObjGetSingle(
-                $indexingConfiguration[$solrFieldName],
-                $indexingConfiguration[$solrFieldName . '.']
+                $this->pageIndexingConfiguration[$solrFieldName],
+                $this->pageIndexingConfiguration[$solrFieldName . '.']
             );
 
-            if (AbstractIndexer::isSerializedValue($indexingConfiguration,
+            if (AbstractIndexer::isSerializedValue($this->pageIndexingConfiguration,
                 $solrFieldName)
             ) {
                 $fieldValue = unserialize($fieldValue);
             }
         } else {
-            $fieldValue = $pageRecord[$indexingConfiguration[$solrFieldName]];
+            $fieldValue = $pageRecord[$this->pageIndexingConfiguration[$solrFieldName]];
         }
 
         return $fieldValue;

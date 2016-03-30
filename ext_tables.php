@@ -130,8 +130,8 @@ if (TYPO3_MODE == 'BE') {
     // for certain scenarios items must be removed by GC first, and then be re-added to to Index Queue
 
     // hooking into TCE Main to monitor record updates that may require deleting documents from the index
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = '&ApacheSolrForTypo3\\Solr\\GarbageCollector';
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = '&ApacheSolrForTypo3\\Solr\\GarbageCollector';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'ApacheSolrForTypo3\\Solr\\GarbageCollector';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'ApacheSolrForTypo3\\Solr\\GarbageCollector';
 
     // hooking into TCE Main to monitor record updates that may require reindexing by the index queue
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\RecordMonitor';

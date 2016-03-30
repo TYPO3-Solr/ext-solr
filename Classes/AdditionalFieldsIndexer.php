@@ -23,7 +23,7 @@ namespace ApacheSolrForTypo3\Solr;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * Additional fields indexer.
@@ -45,9 +45,24 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
      */
     protected $configuration;
 
-    public function __construct()
+    /**
+     * @var array
+     */
+    protected $additionalIndexingFields = array();
+
+    /**
+     * @var array
+     */
+    protected $additionalFieldNames = array();
+
+    /**
+     * @param TypoScriptConfiguration $configuration
+     */
+    public function __construct(TypoScriptConfiguration $configuration = null)
     {
-        $this->configuration = Util::getSolrConfiguration();
+        $this->configuration = $configuration === null ? Util::getSolrConfiguration() : $configuration;
+        $this->additionalIndexingFields = $this->configuration->getIndexAdditionalFieldsConfiguration();
+        $this->additionalFieldNames = $this->configuration->getIndexMappedAdditionalFieldNames();
     }
 
     /**
@@ -82,37 +97,12 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
     protected function getAdditionalFields()
     {
         $additionalFields = array();
-        $additionalFieldNames = $this->getAdditionalFieldNames();
 
-        foreach ($additionalFieldNames as $additionalFieldName) {
+        foreach ($this->additionalFieldNames as $additionalFieldName) {
             $additionalFields[$additionalFieldName] = $this->getFieldValue($additionalFieldName);
         }
 
         return $additionalFields;
-    }
-
-    /**
-     * Gets a list of fields to index in addition to the default fields.
-     *
-     * @return array An array of additionally configured field names.
-     */
-    protected function getAdditionalFieldNames()
-    {
-        $additionalFieldNames = array();
-        $additionalFields = $this->configuration['index.']['additionalFields.'];
-
-        if (is_array($additionalFields)) {
-            foreach ($additionalFields as $fieldName => $fieldValue) {
-                if (is_array($fieldValue)) {
-                    // if its just the configuration array skip this field
-                    continue;
-                }
-
-                $additionalFieldNames[] = $fieldName;
-            }
-        }
-
-        return $additionalFieldNames;
     }
 
     /**
@@ -123,17 +113,14 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
      */
     protected function getFieldValue($fieldName)
     {
-        $fieldValue = '';
-        $additionalFields = $this->configuration['index.']['additionalFields.'];
-
         // support for cObject if the value is a configuration
-        if (is_array($additionalFields[$fieldName . '.'])) {
+        if (is_array($this->additionalIndexingFields[$fieldName . '.'])) {
             $fieldValue = $GLOBALS['TSFE']->cObj->cObjGetSingle(
-                $additionalFields[$fieldName],
-                $additionalFields[$fieldName . '.']
+                $this->additionalIndexingFields[$fieldName],
+                $this->additionalIndexingFields[$fieldName . '.']
             );
         } else {
-            $fieldValue = $additionalFields[$fieldName];
+            $fieldValue = $this->additionalIndexingFields[$fieldName];
         }
 
         return $fieldValue;

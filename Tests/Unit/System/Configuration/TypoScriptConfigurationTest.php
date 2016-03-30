@@ -339,4 +339,150 @@ class TypoScriptConfigurationTest extends UnitTest
         $this->assertTrue($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
             'Wrong logging state for tt_content index queue');
     }
+
+    /**
+     * @test
+     */
+    public function canGetIndexFieldsConfigurationByConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages.' => array(
+                        'fields.' => array(
+                            'sortSubTitle_stringS' => 'subtitle'
+                        )
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $retrievedConfiguration = $configuration->getIndexQueueFieldsConfigurationByConfigurationName('pages');
+        $this->assertEquals(array('sortSubTitle_stringS' => 'subtitle'), $retrievedConfiguration);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueMappedFieldNamesByConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages.' => array(
+                        'fields.' => array(
+                            'sortSubTitle_stringS' => 'subtitle',
+                            'subTitle_stringM' => 'subtitle',
+                            'fooShouldBeSkipped.' => array()
+                        )
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $mappedFieldNames = $configuration->getIndexQueueMappedFieldsByConfigurationName('pages');
+        $this->assertEquals(array('sortSubTitle_stringS', 'subTitle_stringM'), $mappedFieldNames);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexAdditionalFieldsConfiguration()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'additionalFields.' => array(
+                    'additional_sortSubTitle_stringS' => 'subtitle'
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $retrievedConfiguration = $configuration->getIndexAdditionalFieldsConfiguration();
+        $this->assertEquals(array('additional_sortSubTitle_stringS' => 'subtitle'), $retrievedConfiguration);
+    }
+
+
+
+    /**
+     * @test
+     */
+    public function canGetIndexMappedAdditionalFieldNames()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'additionalFields.' => array(
+                    'additional_sortSubTitle_stringS' => 'subtitle'
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $retrievedConfiguration = $configuration->getIndexMappedAdditionalFieldNames();
+        $this->assertEquals(array('additional_sortSubTitle_stringS'), $retrievedConfiguration);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueIndexerByConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages.' => array(
+                        'indexer' => 'Foobar'
+                    )
+                )
+            )
+        );
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $configuredIndexer = $configuration->getIndexQueueIndexerByConfigurationName('pages');
+        $this->assertSame('Foobar', $configuredIndexer, 'Retrieved unexpected indexer from typoscript configuration');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueIndexerConfigurationByConfigurationName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages.' => array(
+                        'indexer' => 'Foobar',
+                        'indexer.' => array('configuration' => 'test')
+                    )
+                )
+            )
+        );
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $configuredIndexer = $configuration->getIndexQueueIndexerConfigurationByConfigurationName('pages');
+        $this->assertSame(array('configuration' => 'test'), $configuredIndexer, 'Retrieved unexpected indexer configuration from typoscript configuration');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueuePagesAllowedPageTypesArray()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages.' => array(
+                        'allowedPageTypes' => '1,2, 7'
+                    )
+                )
+            )
+        );
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $allowedPageTypes = $configuration->getIndexQueuePagesAllowedPageTypesArray();
+        $this->assertEquals(array(1, 2, 7), $allowedPageTypes, 'Can not get allowed pagestype from configuration');
+    }
 }

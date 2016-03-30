@@ -187,22 +187,10 @@ class IndexService
      */
     protected function getIndexerByItem($indexingConfigurationName)
     {
-        $indexerClass = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\Indexer';
-        $indexerOptions = array();
+        $indexerClass = $this->configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
+        $indexerConfiguration = $this->configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
 
-        // allow to overwrite indexers per indexing configuration
-        if (isset($this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer'])) {
-            $indexerClass = $this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer'];
-        }
-
-        // get indexer options
-        if (isset($this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer.'])
-            && !empty($this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer.'])
-        ) {
-            $indexerOptions = $this->configuration['index.']['queue.'][$indexingConfigurationName . '.']['indexer.'];
-        }
-
-        $indexer = GeneralUtility::makeInstance($indexerClass, $indexerOptions);
+        $indexer = GeneralUtility::makeInstance($indexerClass, $indexerConfiguration);
         if (!($indexer instanceof Indexer)) {
             throw new \RuntimeException(
                 'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',

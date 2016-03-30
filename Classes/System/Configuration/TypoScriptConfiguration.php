@@ -72,6 +72,31 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
+     * This method can be used to only retrieve array keys where the value is not an array.
+     *
+     * This can be very handy in the configuration when only keys should ne taken into account
+     * where the value is not a subconfiguration (typically an typoscript object path).
+     *
+     * @param $inputArray
+     * @return array
+     */
+    protected function getOnlyArrayKeysWhereValueIsNotAnArray($inputArray)
+    {
+        $keysWithNonArrayValue = array();
+
+        foreach ($inputArray as $key => $value) {
+            if (is_array($value)) {
+                // configuration for a content object, skipping
+                continue;
+            }
+
+            $keysWithNonArrayValue[] = $key;
+        }
+
+        return $keysWithNonArrayValue;
+    }
+
+    /**
      * Gets the value from a given TypoScript path.
      *
      * In the context of an frontend content element the path plugin.tx_solr is
@@ -323,6 +348,36 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
+     * Returns the configured additionalFields configured for the indexing.
+     *
+     * plugin.tx_solr.index.additionalFields.
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexAdditionalFieldsConfiguration($defaultIfEmpty = array())
+    {
+        $result = $this->getObjectByPathOrDefault('plugin.tx_solr.index.additionalFields.', $defaultIfEmpty);
+        return $result;
+    }
+
+    /**
+     * Returns all solr fields names where a mapping is configured in index.additionalFields
+     *
+     * Returns all keys from
+     * plugin.tx_solr.index.additionalFields.
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexMappedAdditionalFieldNames($defaultIfEmpty = array())
+    {
+        $mappingConfiguration = $this->getIndexAdditionalFieldsConfiguration();
+        $mappedFieldNames = $this->getOnlyArrayKeysWhereValueIsNotAnArray($mappingConfiguration);
+        return count($mappedFieldNames) == 0 ? $defaultIfEmpty : $mappedFieldNames;
+    }
+
+    /**
      * Returns the fieldProcessingInstructions configuration array
      *
      * plugin.tx_solr.index.fieldProcessingInstructions.
@@ -353,6 +408,26 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
+     * Returns an array of all allowedPageTypes.
+     *
+     * plugin.tx_solr.index.queue.pages.allowedPageTypes
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueuePagesAllowedPageTypesArray($defaultIfEmpty = array())
+    {
+        $path = 'plugin.tx_solr.index.queue.pages.allowedPageTypes';
+        $result = $this->getValueByPathOrDefaultValue($path, '');
+
+        if (trim($result) == '') {
+            return $defaultIfEmpty;
+        }
+
+        return GeneralUtility::trimExplode(',', $result);
+    }
+
+    /**
      * Returns the configured database table for an indexing queue configuration or
      * the configurationName itself that is used by convention as tableName when no
      * other tablename is present.
@@ -367,6 +442,73 @@ class TypoScriptConfiguration implements \ArrayAccess
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.table';
         $result = $this->getValueByPathOrDefaultValue($path, $configurationName);
         return $result;
+    }
+
+    /**
+     * Returns the field configuration for a specific index queue.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.fields.
+     *
+     * @param string $configurationName
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueueFieldsConfigurationByConfigurationName($configurationName = '', $defaultIfEmpty = array())
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.fields.';
+        $result = $this->getObjectByPathOrDefault($path, $defaultIfEmpty);
+        return $result;
+    }
+
+    /**
+     * Returns the configured indexer class that should be used for a certain indexingConfiguration.
+     * By default "ApacheSolrForTypo3\\Solr\\IndexQueue\\Indexer" will be returned.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.indexer
+     *
+     * @param string $configurationName
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getIndexQueueIndexerByConfigurationName($configurationName, $defaultIfEmpty = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\Indexer')
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexer';
+        $result = $this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+        return $result;
+    }
+
+    /**
+     * Returns the configuration of an indexer for a special indexingConfiguration. By default an empty
+     * array is returned.
+     *
+     * plugin.tx_solr.index.queue.<configurationName>.indexer.
+     *
+     * @param string $configurationName
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueueIndexerConfigurationByConfigurationName($configurationName, $defaultIfEmpty = array())
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.indexer.';
+        $result = $this->getObjectByPathOrDefault($path, $defaultIfEmpty);
+        return $result;
+    }
+
+    /**
+     * Returns all solr fields names where a mapping configuration is set for a certain index configuration
+     *
+     * Returns all keys from
+     * plugin.tx_solr.index.queue.<configurationName>.fields.
+     *
+     * @param string $configurationName
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueueMappedFieldsByConfigurationName($configurationName = '', $defaultIfEmpty = array())
+    {
+        $mappingConfiguration = $this->getIndexQueueFieldsConfigurationByConfigurationName($configurationName);
+        $mappedFieldNames = $this->getOnlyArrayKeysWhereValueIsNotAnArray($mappingConfiguration);
+        return count($mappedFieldNames) == 0 ? $defaultIfEmpty : $mappedFieldNames;
     }
 
     /**
