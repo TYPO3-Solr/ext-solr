@@ -93,11 +93,7 @@ class ReIndexTask extends AbstractTask
         $typesToCleanUp = array();
 
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
-            $type = Queue::getTableToIndexByIndexingConfigurationName(
-                $solrConfiguration,
-                $indexingConfigurationName
-            );
-
+            $type = $solrConfiguration->getIndexQueueConfigurationByName($indexingConfigurationName);
             $typesToCleanUp[] = $type;
         }
 
