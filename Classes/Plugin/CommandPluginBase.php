@@ -60,6 +60,24 @@ abstract class CommandPluginBase extends PluginBase
     abstract protected function getCommandList();
 
     /**
+     * Since TYPO3 8.0 TYPO3\CMS\Core\TimeTracker\TimeTracker is a singleton
+     * and no longer available in $GLOBALS['TT']. We 7.6 compatibility
+     * we return the $GLOBALS['TT'] otherwise we get an instance of the TimeTracker
+     *
+     * @return \TYPO3\CMS\Core\TimeTracker\TimeTracker
+     */
+    protected function getTimeTracker()
+    {
+        // TYPO3 7.6 and below
+        if (isset($GLOBALS['TT'])) {
+            return $GLOBALS['TT'];
+        } else {
+            // Since 8.0
+            return GeneralUtility::makeInstance('TYPO3\CMS\Core\TimeTracker\TimeTracker');
+        }
+    }
+
+    /**
      * This method executes the requested commands and applies the changes to
      * the template.
      *
@@ -74,7 +92,7 @@ abstract class CommandPluginBase extends PluginBase
 
         // render commands matching the plugin's requirements
         foreach ($commandList as $commandName) {
-            $GLOBALS['TT']->push('solr-' . $commandName);
+            $this->getTimeTracker()->push('solr-' . $commandName);
 
             $commandContent = '';
             $commandVariables = $this->executeCommand($commandName);
@@ -86,7 +104,7 @@ abstract class CommandPluginBase extends PluginBase
             $this->template->addSubpart('solr_search_' . $commandName,
                 $commandContent);
             unset($subpartTemplate);
-            $GLOBALS['TT']->pull($commandContent);
+            $this->getTimeTracker()->pull($commandContent);
         }
 
         // remove subparts for commands that are registered but not matching the requirements

@@ -24,14 +24,14 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Menu;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\AbstractSolrTagBasedViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
  * Core selector menu view helper
  *
  */
-class CoreSelectorMenuViewHelper extends AbstractTagBasedViewHelper
+class CoreSelectorMenuViewHelper extends AbstractSolrTagBasedViewHelper
 {
 
     /**
@@ -45,7 +45,6 @@ class CoreSelectorMenuViewHelper extends AbstractTagBasedViewHelper
      */
     protected $moduleDataStorageService;
 
-
     /**
      * Initialize the arguments.
      *
@@ -53,6 +52,8 @@ class CoreSelectorMenuViewHelper extends AbstractTagBasedViewHelper
      */
     public function initializeArguments()
     {
+        parent::initializeArguments();
+
         $this->registerUniversalTagAttributes();
     }
 

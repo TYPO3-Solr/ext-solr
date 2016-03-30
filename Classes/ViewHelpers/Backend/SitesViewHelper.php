@@ -37,13 +37,23 @@ use ApacheSolrForTypo3\Solr\Site;
  *      </f:if>
  * </solr:backend.sites>
  */
-class SitesViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class SitesViewHelper extends AbstractSolrViewHelper
 {
     /**
      * @var \ApacheSolrForTypo3\Solr\Service\ModuleDataStorageService
      * @inject
      */
     protected $moduleDataStorageService;
+
+    /**
+     * @var bool
+     */
+    protected $escapeChildren = false;
+
+    /**
+     * @var bool
+     */
+    protected $escapeOutput = false;
 
     /**
      * @return mixed

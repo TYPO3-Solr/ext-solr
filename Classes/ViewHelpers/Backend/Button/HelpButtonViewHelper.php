@@ -24,15 +24,20 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\AbstractSolrViewHelper;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper to return a help button
  *
  */
-class HelpButtonViewHelper extends AbstractViewHelper
+class HelpButtonViewHelper extends AbstractSolrViewHelper
 {
+
+    /**
+     * @var bool
+     */
+    protected $escapeOutput = false;
 
     /**
      * Render a help button wit the given title and content
