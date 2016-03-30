@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Ingo Renner <ingo@typo3.org>
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class GarbageCollector extends AbstractDataHandlerListener
+class GarbageCollector extends AbstractDataHandlerListener implements SingletonInterface
 {
 
     protected $trackedRecords = array();

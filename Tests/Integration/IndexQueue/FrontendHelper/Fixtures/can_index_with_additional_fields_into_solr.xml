@@ -38,8 +38,13 @@
                             rootline = pageUidToHierarchy
                         }
 
-                        queue {
+                        additionalFields {
+                            additional_sortSubTitle_stringS = subtitle
+                            additional_custom_stringS = TEXT
+                            additional_custom_stringS.value = my text
+                        }
 
+                        queue {
                             // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
 
                             pages = 1
@@ -61,8 +66,6 @@
 
                                 fields {
                                     sortSubTitle_stringS = subtitle
-                                    custom_stringS = TEXT
-                                    custom_stringS.value = my text
                                 }
                             }
 
