@@ -8,6 +8,12 @@ plugin.tx_solr.index.queue {
 			author = author
 			description = short
 			title = title
+			
+			datetime_stringS = TEXT
+			datetime_stringS {
+				value.field = datetime
+				value.date = d.m.Y H:i
+			}
 
 			content = SOLR_CONTENT
 			content {
@@ -52,7 +58,7 @@ plugin.tx_solr.index.queue {
 		}
 
 		attachments {
-			fields = news_files
+			fields = bodytext,news_files
 		}
 	}
 
