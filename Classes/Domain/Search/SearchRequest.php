@@ -98,6 +98,16 @@ class SearchRequest implements SingletonInterface
     }
 
     /**
+     * Method to overwrite the query string.
+     *
+     * @param string $rawQueryString
+     */
+    public function setRawQueryString($rawQueryString)
+    {
+        $this->arguments['q'] = $rawQueryString;
+    }
+
+    /**
      * Returns the passed resultsPerPage value
      * @return integer|null
      */

@@ -275,7 +275,7 @@
                         spellchecking = 1
                         spellchecking {
                             wrap = |<div class="spelling-suggestions">###LLL:didYouMean### |</div>|
-                            searchUsingSpellCheckerSuggestion = 1
+                            searchUsingSpellCheckerSuggestion = 0
                             numberOfSuggestionsToTry = 0
                         }
 

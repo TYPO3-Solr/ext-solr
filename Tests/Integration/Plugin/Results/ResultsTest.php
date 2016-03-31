@@ -149,6 +149,30 @@ class ResultsTest extends AbstractPluginTest
     /**
      * @test
      */
+    public function canGetAnAutoCorrectedResultSetForATypo()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+
+
+        $overwriteConfiguration = array();
+        $overwriteConfiguration['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion'] = 1;
+
+        /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        //not in the content but we expect to get auto corrected results for shoes
+        $_GET['q'] = 'shoo';
+        $resultPage1 = $searchResults->main('', array());
+
+        $this->assertContains('Nothing found for "shoo"', $resultPage1, 'Could not find nothing found hint');
+        $this->assertContains("shoes", $resultPage1, 'Could not find auto corrected term shoes in response');
+        $this->assertContains('pages/4/0/0/0', $resultPage1, 'Could not find page 4 in result set');
+    }
+
+    /**
+     * @test
+     */
     public function canShowLastSearchesFromSessionInResponse()
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');

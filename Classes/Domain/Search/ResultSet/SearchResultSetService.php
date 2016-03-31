@@ -447,6 +447,7 @@ class SearchResultSetService
 
         $resultSet->setResponse($response);
         $resultSet->setUsedPage($currentPage);
+        $resultSet->setUsedResultsPerPage($resultsPerPage);
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
         $resultSet->setUsedSearch($this->search);
 
