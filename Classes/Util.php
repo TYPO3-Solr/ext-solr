@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use InvalidArgumentException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Utility class for tx_solr
@@ -420,7 +421,7 @@ class Util
             }
 
             $GLOBALS['TSFE']->newCObj();
-            $GLOBALS['TSFE']->absRefPrefix = ($GLOBALS['TSFE']->config['config']['absRefPrefix'] ? trim($GLOBALS['TSFE']->config['config']['absRefPrefix']) : '');
+            $GLOBALS['TSFE']->absRefPrefix = self::getAbsRefPrefixFromTSFE($GLOBALS['TSFE']);
             $GLOBALS['TSFE']->calculateLinkVars();
 
             if ($useCache) {
@@ -699,5 +700,27 @@ class Util
         }
 
         return true;
+    }
+
+    /**
+     * Resolves the configured absRefPrefix to a valid value and resolved if absRefPrefix
+     * is set to "auto".
+     *
+     * @param TypoScriptFrontendController $TSFE
+     * @return string
+     */
+    public static function getAbsRefPrefixFromTSFE(TypoScriptFrontendController $TSFE)
+    {
+        $absRefPrefix = '';
+        if (empty($TSFE->config['config']['absRefPrefix'])) {
+            return $absRefPrefix;
+        }
+
+        $absRefPrefix = trim($TSFE->config['config']['absRefPrefix']);
+        if ($absRefPrefix === 'auto') {
+            $absRefPrefix = GeneralUtility::getIndpEnv('TYPO3_SITE_PATH');
+        }
+
+        return $absRefPrefix;
     }
 }

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <sys_registry>
+        <uid>4711</uid>
+        <entry_namespace>tx_solr</entry_namespace>
+        <entry_key>servers</entry_key>
+        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8080";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8080/solr/core_en/";}}</entry_value>
+    </sys_registry>
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                config.absRefPrefix = auto
+
+                # very simple rendering
+                page.10 = CONTENT
+                page.10 {
+                    table = tt_content
+                    select.orderBy = sorting
+                    select.where = colPos=0
+                    renderObj = COA
+                    renderObj {
+                        10 = TEXT
+                        10.field = bodytext
+                    }
+                }
+
+                plugin.tx_solr {
+
+                    enabled = 1
+
+                    solr {
+                        scheme = http
+                        host   = localhost
+                        port   = 8081
+                        path   = /solr/core_en/
+                    }
+
+                    index {
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                            pageHierarchy_stringM = pathToHierarchy
+                        }
+
+                        queue {
+                            foo = 1
+                            foo {
+                                table = tx_fakeextension_domain_model_bar
+
+                                fields {
+                                    title = title
+                                    url = TEXT
+                                    url {
+                                        typolink.parameter = 1
+                                        typolink.additionalParams = &tx_ttnews[tt_news]={field:uid}&L={field:__solr_index_language}
+                                        typolink.additionalParams.insertData = 1
+                                        typolink.returnLast = url
+                                        typolink.useCacheHash = 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+    </pages>
+    <tx_fakeextension_domain_model_bar>
+        <uid>111</uid>
+        <pid>1</pid>
+        <title>testnews</title>
+        <category>4711</category>
+    </tx_fakeextension_domain_model_bar>
+
+    <tx_fakeextension_domain_model_directrelated>
+        <uid>4711</uid>
+        <pid>1</pid>
+        <category>the category</category>
+    </tx_fakeextension_domain_model_directrelated>
+</dataset>
