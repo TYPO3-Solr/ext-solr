@@ -54,6 +54,8 @@
 
 	<!-- ###SOLR_SEARCH_RESULTS### begin -->
 
+
+
 	###RESULTS.SEARCHED_FOR###
 	###RESULTS.FOUND###
 	###RESULTS.RANGE###
@@ -115,13 +117,20 @@
 
 	<!-- ###SOLR_SEARCH_RESULTS### end -->
 
-
-
 	<!-- ###SOLR_SEARCH_NO_RESULTS### begin -->
 	<div class="tx-solr-search-no-results">
 		###NO_RESULTS.NOTHING_FOUND###
+		<!-- ###IF:###NO_RESULTS.HAS_SUGGESTION_RESULTS###|!=|1### begin -->
 		###NO_RESULTS.SUGGESTION###
+		<!-- ###IF:###NO_RESULTS.HAS_SUGGESTION_RESULTS###|!=|1### end -->
 	</div>
+
+	<div class="tx-solr-search-suggestion_results">
+		<!-- ###IF:###NO_RESULTS.HAS_SUGGESTION_RESULTS###|==|1### begin -->
+		###NO_RESULTS.SUGGESTION_RESULTS###
+		<!-- ###IF:###NO_RESULTS.HAS_SUGGESTION_RESULTS###|==|1### end -->
+	</div>
+
 	<!-- ###SOLR_SEARCH_NO_RESULTS### end -->
 </div>
 

@@ -66,6 +66,11 @@ class SearchResultSet
     protected $usedPage = 0;
 
     /**
+     * @var integer
+     */
+    protected $usedResultsPerPage = 0;
+
+    /**
      * @var array
      */
     protected $usedAdditionalFilters = array();
@@ -178,5 +183,21 @@ class SearchResultSet
     public function getUsedSearch()
     {
         return $this->usedSearch;
+    }
+
+    /**
+     * @param int $usedResultsPerPage
+     */
+    public function setUsedResultsPerPage($usedResultsPerPage)
+    {
+        $this->usedResultsPerPage = $usedResultsPerPage;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUsedResultsPerPage()
+    {
+        return $this->usedResultsPerPage;
     }
 }

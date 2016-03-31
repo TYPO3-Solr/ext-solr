@@ -64,7 +64,9 @@ class NoResultsCommand implements PluginCommand
         $markers = $this->getLabelMarkers();
 
         if ($this->parentPlugin->typoScriptConfiguration->getSearchSpellcheckingSearchUsingSpellCheckerSuggestion()) {
-            $markers['suggestion_results'] = $this->getSuggestionResults();
+            $suggestionResults =  $this->getSuggestionResults();
+            $markers['suggestion_results'] = $suggestionResults;
+            $markers['has_suggestion_results'] = trim($suggestionResults) !== '';
         }
 
         // TODO change to if $spellChecker->hasSuggestions()
@@ -139,23 +141,22 @@ class NoResultsCommand implements PluginCommand
         $suggestedKeywords = $spellChecker->getCollatedSuggestion();
         $suggestionResults = '';
 
-        if (!empty($suggestedKeywords)) {
-            $plugin = $this->parentPlugin;
-            $search = $this->parentPlugin->getSearchResultSetService()->getSearch();
-            $query = clone $search->getQuery();
-
-            $query->setKeywords($suggestedKeywords);
-            $search->search($query);
-
-            $resultsCommand = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ResultsCommand',
-                $plugin
-            );
-            $commandVariables = $resultsCommand->execute();
-
-            $suggestionResults = $plugin->renderCommand('results',
-                $commandVariables);
+        if (empty($suggestedKeywords)) {
+            return $suggestionResults;
         }
+
+        $plugin = $this->parentPlugin;
+        $searchResultSetService = $this->parentPlugin->getSearchResultSetService();
+        // repeat the last search with suggestion as query string
+        $usedRequest = $searchResultSetService->getLastResultSet()->getUsedSearchRequest();
+        $usedRequest->setRawQueryString($suggestedKeywords);
+        $searchResultSetService->search($usedRequest);
+
+        $resultsCommand = GeneralUtility::makeInstance(
+            'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\ResultsCommand', $plugin
+        );
+        $commandVariables = $resultsCommand->execute();
+        $suggestionResults = $plugin->renderCommand('results', $commandVariables);
 
         return $suggestionResults;
     }

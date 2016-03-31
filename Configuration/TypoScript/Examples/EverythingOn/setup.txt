@@ -14,6 +14,9 @@ plugin.tx_solr {
 		}
 
 		spellchecking = 1
+		spellchecking {
+			searchUsingSpellCheckerSuggestion = 1
+		}
 		lastSearches = 1
 		frequentSearches = 1
 		sorting = 1
