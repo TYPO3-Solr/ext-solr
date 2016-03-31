@@ -165,9 +165,8 @@ class IndexService
             unset($_SERVER['HTTP_HOST']);
         }
 
-        if (version_compare(TYPO3_branch, '7.5', '>=')) {
-            GeneralUtility::flushInternalRuntimeCaches();
-        }
+        // needed since TYPO3 7.5
+        GeneralUtility::flushInternalRuntimeCaches();
 
         return $itemIndexed;
     }
@@ -257,8 +256,8 @@ class IndexService
         }
 
         $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
-        if (version_compare(TYPO3_branch, '7.5', '>=')) {
-            GeneralUtility::flushInternalRuntimeCaches();
-        }
+
+        // needed since TYPO3 7.5
+        GeneralUtility::flushInternalRuntimeCaches();
     }
 }
