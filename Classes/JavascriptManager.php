@@ -164,13 +164,7 @@ class JavascriptManager
      */
     public function buildJavascriptTags()
     {
-        $filePathPrefix = '';
-        if (!empty($GLOBALS['TSFE']->config['config']['absRefPrefix'])) {
-            $filePathPrefix = $GLOBALS['TSFE']->config['config']['absRefPrefix'];
-            if ($filePathPrefix === 'auto') {
-                $filePathPrefix = GeneralUtility::getIndpEnv('TYPO3_SITE_PATH');
-            }
-        }
+        $filePathPrefix = Util::getAbsRefPrefixFromTSFE($GLOBALS['TSFE']);
 
         // add files
         foreach (self::$files as $identifier => $file) {
