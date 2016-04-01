@@ -286,7 +286,7 @@ class Util
      * @param int $pageId
      * @return TypoScriptConfiguration
      */
-    protected function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId)
+    protected static function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId)
     {
         $configurationArray = array();
         $configurationArray['plugin.']['tx_solr.'] = $configurationToUse;
