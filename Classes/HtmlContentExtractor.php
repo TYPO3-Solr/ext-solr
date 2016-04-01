@@ -23,7 +23,7 @@ namespace ApacheSolrForTypo3\Solr;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * A content extractor to get clean, indexable content from HTML markup.
@@ -85,6 +85,11 @@ class HtmlContentExtractor
     );
 
     /**
+     * @var TypoScriptConfiguration
+     */
+    private $configuration;
+
+    /**
      * Constructor.
      *
      * @param string $content Content HTML markup
@@ -92,6 +97,26 @@ class HtmlContentExtractor
     public function __construct($content)
     {
         $this->content = $content;
+    }
+
+    /**
+     * @return TypoScriptConfiguration|array
+     */
+    protected function getConfiguration()
+    {
+        if ($this->configuration == null) {
+            $this->configuration = Util::getSolrConfiguration();
+        }
+
+        return $this->configuration;
+    }
+
+    /**
+     * @param TypoScriptConfiguration $configuration
+     */
+    public function setConfiguration(TypoScriptConfiguration $configuration)
+    {
+        $this->configuration = $configuration;
     }
 
     /**

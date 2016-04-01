@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -60,8 +61,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         $indexableContent = implode($indexableContents[0], '');
 
         $indexableContent = $this->excludeContentByClass($indexableContent);
-        $configuration = Util::getSolrConfiguration();
-        if (empty($indexableContent) && $configuration->getLoggingIndexingMissingTypo3SearchMarkers()) {
+        if (empty($indexableContent) && $this->getConfiguration()->getLoggingIndexingMissingTypo3SearchMarkers()) {
             GeneralUtility::devLog('No TYPO3SEARCH markers found.', 'solr', 2);
         }
 
@@ -77,21 +77,32 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
      */
     public function excludeContentByClass($indexableContent)
     {
-        if (empty($indexableContent) || empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeContentByClass'])) {
-            return $indexableContent;
+        if (empty(trim($indexableContent))) {
+            return html_entity_decode($indexableContent);
+        }
+
+        $excludeClasses = $this->getConfiguration()->getIndexQueuePagesExcludeContentByClassArray();
+        if (count($excludeClasses) === 0) {
+            return html_entity_decode($indexableContent);
+        }
+
+        $isInContent = Util::containsOneOfTheStrings($indexableContent, $excludeClasses);
+        if (!$isInContent) {
+            return html_entity_decode($indexableContent);
         }
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
         $doc->loadHTML('<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . $indexableContent);
         $xpath = new \DOMXPath($doc);
-        $excludeParts = GeneralUtility::trimExplode(',', $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeContentByClass'], true);
-        foreach ($excludeParts as $excludePart) {
+        foreach ($excludeClasses as $excludePart) {
             $elements = $xpath->query("//*[contains(@class,'".$excludePart."')]");
-            if (count($elements) > 0) {
-                foreach ($elements as $element) {
-                    $element->parentNode->removeChild($element);
-                }
+            if (count($elements) == 0) {
+                continue;
+            }
+
+            foreach ($elements as $element) {
+                $element->parentNode->removeChild($element);
             }
         }
         $html = $doc->saveHTML($doc->documentElement->parentNode);

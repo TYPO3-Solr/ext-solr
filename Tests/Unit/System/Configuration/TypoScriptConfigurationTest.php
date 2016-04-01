@@ -485,4 +485,24 @@ class TypoScriptConfigurationTest extends UnitTest
         $allowedPageTypes = $configuration->getIndexQueuePagesAllowedPageTypesArray();
         $this->assertEquals(array(1, 2, 7), $allowedPageTypes, 'Can not get allowed pagestype from configuration');
     }
+
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueuePagesExcludeContentByClassArray()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'pages.' => array(
+                        'excludeContentByClass' => 'excludeClass'
+                    )
+                )
+            )
+        );
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $excludeClasses = $configuration->getIndexQueuePagesExcludeContentByClassArray();
+        $this->assertEquals(array('excludeClass'), $excludeClasses, 'Can not get exclude patterns from configuration');
+    }
 }
