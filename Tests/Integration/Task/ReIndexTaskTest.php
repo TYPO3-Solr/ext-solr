@@ -58,6 +58,15 @@ class ReIndexTaskTest extends IntegrationTest
         parent::setUp();
         $this->task = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Task\ReIndexTask');
         $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Queue');
+
+        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
+        $beUser = GeneralUtility::makeInstance('TYPO3\CMS\Core\Authentication\BackendUserAuthentication');
+        $GLOBALS['BE_USER'] = $beUser;
+
+        /** @var $languageService  \TYPO3\CMS\Lang\LanguageService */
+        $languageService = GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
+        $languageService->csConvObj = GeneralUtility::makeInstance('TYPO3\CMS\Core\Charset\CharsetConverter');
+        $GLOBALS['LANG'] = $languageService;
     }
 
     /**
@@ -115,5 +124,35 @@ class ReIndexTaskTest extends IntegrationTest
 
         $this->assertContains('Indexing Configurations: pages', $additionalInformation);
         $this->assertContains('Root Page ID: 1', $additionalInformation);
+    }
+
+    /**
+     * @test
+     */
+    public function solrIsEmptyAfterCleanup()
+    {
+        $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
+
+        // fill the solr
+        $site = Site::getFirstAvailableSite();
+        $this->indexQueue->updateItem('pages', 1);
+        $items = $this->indexQueue->getItems('pages', 1);
+        /** @var $indexer \ApacheSolrForTypo3\Solr\IndexQueue\Indexer */
+        $indexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Indexer');
+        $indexer->index($items[0]);
+        sleep(2);
+
+        $this->assertSolrContainsDocumentCount(1);
+        $this->task->setSite($site);
+        $this->task->setIndexingConfigurationsToReIndex(array('pages'));
+        $this->task->execute();
+
+        sleep(2);
+
+        // after the task was running the solr server should be empty
+        $this->assertSolrIsEmpty();
+
+        // if not we cleanup now
+        $this->cleanUpSolrServerAndAssertEmpty();
     }
 }

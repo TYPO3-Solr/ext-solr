@@ -179,7 +179,27 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         // we wait to make sure the document will be deleted in solr
         sleep(1);
 
+        $this->assertSolrIsEmpty();
+    }
+
+    /**
+     * Assertion to check if the solr server is empty.
+     *
+     * @return void
+     */
+    protected function assertSolrIsEmpty()
+    {
+        $this->assertSolrContainsDocumentCount(0);
+    }
+
+    /**
+     * Assertion to check if the solr server contains an expected count of documents.
+     *
+     * @param int $documentCount
+     */
+    protected function assertSolrContainsDocumentCount($documentCount)
+    {
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
-        $this->assertContains('"numFound":0', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
     }
 }
