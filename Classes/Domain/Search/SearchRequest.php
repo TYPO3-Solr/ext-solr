@@ -108,6 +108,40 @@ class SearchRequest implements SingletonInterface
     }
 
     /**
+     * Method to check if the query string is an empty string
+     * (also empty string or whitespaces only are handled as empty).
+     *
+     * When no query string is set (null) the method returns false.
+     * @return bool
+     */
+    public function getRawUserQueryIsEmptyString()
+    {
+        $query = $this->getArgumentByKey('q', null);
+
+        if ($query === null) {
+            return false;
+        }
+
+        if (trim($query) === '') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * This method returns true when no querystring is present at all.
+     * Which means no search by the user was triggered
+     *
+     * @return boolean
+     */
+    public function getRawUserQueryIsNull()
+    {
+        $query = $this->getArgumentByKey('q', null);
+        return $query === null;
+    }
+
+    /**
      * Returns the passed resultsPerPage value
      * @return integer|null
      */
