@@ -723,4 +723,35 @@ class Util
 
         return $absRefPrefix;
     }
+
+    /**
+     * This function can be used to check if one of the strings in needles is
+     * contained in the haystack.
+     *
+     *
+     * Example:
+     *
+     * haystack: the brown fox
+     * needles: ['hello', 'world']
+     * result: false
+     *
+     * haystack: the brown fox
+     * needles: ['is', 'fox']
+     * result: true
+     *
+     * @param string $haystack
+     * @param array $needles
+     * @return bool
+     */
+    public static function containsOneOfTheStrings($haystack, array $needles)
+    {
+        foreach ($needles as $needle) {
+            $position = strpos($haystack, $needle);
+            if ($position !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

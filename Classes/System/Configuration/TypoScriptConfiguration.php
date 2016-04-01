@@ -428,6 +428,26 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
+     * Returns the configured excludeContentByClass patterns as array.
+     *
+     * plugin.tx_solr.index.queue.pages.excludeContentByClass
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueuePagesExcludeContentByClassArray($defaultIfEmpty = array())
+    {
+        $path = 'plugin.tx_solr.index.queue.pages.excludeContentByClass';
+        $result = $this->getValueByPathOrDefaultValue($path, '');
+
+        if (trim($result) == '') {
+            return $defaultIfEmpty;
+        }
+
+        return GeneralUtility::trimExplode(',', $result);
+    }
+
+    /**
      * Returns the configured database table for an indexing queue configuration or
      * the configurationName itself that is used by convention as tableName when no
      * other tablename is present.

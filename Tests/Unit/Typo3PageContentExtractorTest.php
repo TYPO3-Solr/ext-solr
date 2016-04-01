@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -36,16 +37,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Typo3PageContentExtractorTest extends UnitTest
 {
 
+    /**
+     * @var TypoScriptConfiguration
+     */
+    protected $typoScripConfigurationMock;
+
     public function setUp()
     {
-        $TSFE = $this->getDumbMock('\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
-
-        $GLOBALS['TSFE'] = $TSFE;
-        /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $GLOBALS['TSFE']->tmpl = $this->getMock('\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService', array('linkData'));
-        $GLOBALS['TSFE']->tmpl->init();
-        $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
-        $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['pages.']['excludeContentByClass'] = 'typo3-search-exclude';
+        $this->typoScripConfigurationMock = $this->getDumbMock('ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration');
+        $this->typoScripConfigurationMock->expects($this->once())->method(
+            'getIndexQueuePagesExcludeContentByClassArray'
+        )->will($this->returnValue(array('typo3-search-exclude')));
     }
 
 
@@ -61,6 +63,7 @@ class Typo3PageContentExtractorTest extends UnitTest
             'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
             $content
         );
+        $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
         $actualResult = $contentExtractor->getIndexableContent();
         $this->assertEquals($expectedResult, $actualResult);
     }
@@ -77,6 +80,7 @@ class Typo3PageContentExtractorTest extends UnitTest
             'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
             $content
         );
+        $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
         $this->assertEquals($expectedResult, $actualResult);
@@ -93,6 +97,7 @@ class Typo3PageContentExtractorTest extends UnitTest
             'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
             $content
         );
+        $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
 
@@ -111,6 +116,7 @@ class Typo3PageContentExtractorTest extends UnitTest
             'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
             $content
         );
+        $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
 
