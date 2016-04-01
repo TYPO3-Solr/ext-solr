@@ -270,6 +270,93 @@ class ResultsTest extends AbstractPluginTest
     /**
      * @test
      */
+    public function canDoAnInitialSearchWhenAnEmptyQueryStringWasPassed()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+
+        $overwriteConfiguration = array();
+        $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
+        $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
+
+        /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $_GET['q'] = '';
+        $resultPage = $searchResults->main('', array());
+
+        $this->assertContains('Found 2 results', $resultPage, 'Unexpected response for initial search');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canDoAnInitialSearchWhenAnQueryStringWithWhitespacesOnlyWasPassed()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+
+        $overwriteConfiguration = array();
+        $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
+        $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
+
+        /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $_GET['q'] = ' ';
+        $resultPage = $searchResults->main('', array());
+
+        $this->assertContains('Found 2 results', $resultPage, 'Initialsearch was not triggered when whitspace query was passed');
+    }
+
+    /**
+     * @test
+     */
+    public function canNotDoInitialSearchWhenEmptyQueryStringWasPassedAndAllowEmptyQueryIsDisabled()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+
+        $overwriteConfiguration = array();
+        $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
+        $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
+        $overwriteConfiguration['search.']['query.']['allowEmptyQuery'] = 0;
+
+        /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $_GET['q'] = '';
+        $resultPage = $searchResults->main('', array());
+
+        $this->assertContains('Please enter your search', $resultPage, 'Did not render hierarchy facet in the response');
+    }
+
+    /**
+     * @test
+     */
+    public function canNotDoInitialSearchWhenAQueryStringWithWhitespacesOnlyWasPassedAndAllowEmptyQueryIsDisabled()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+
+        $overwriteConfiguration = array();
+        $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
+        $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
+        $overwriteConfiguration['search.']['query.']['allowEmptyQuery'] = 0;
+
+        /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $_GET['q'] = ' ';
+        $resultPage = $searchResults->main('', array());
+
+        $this->assertContains('Please enter your search', $resultPage, 'Did not render hierarchy facet in the response');
+    }
+
+    /**
+     * @test
+     */
     public function canApplyCustomTypoScriptFilters()
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');

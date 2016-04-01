@@ -421,17 +421,23 @@ class SearchResultSetService
     {
         /** @var $resultSet SearchResultSet */
         $resultSet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResultSet');
-        $rawQuery = $searchRequest->getRawUserQuery();
+        $resultSet->setUsedSearchRequest($searchRequest);
+        $this->lastResultSet = $resultSet;
 
-        if ($rawQuery == null && !$this->getInitialSearchIsConfigured()) {
+        if ($searchRequest->getRawUserQueryIsNull() && !$this->getInitialSearchIsConfigured()) {
             // when no rawQuery was passed or no initialSearch is configured, we pass an empty result set
             return $resultSet;
         }
 
+        if ($searchRequest->getRawUserQueryIsEmptyString() && !$this->typoScriptConfiguration->getSearchQueryAllowEmptyQuery()) {
+            // the user entered an empty query string "" or "  " and empty querystring is not allowed
+            return $resultSet;
+        }
+
+        $rawQuery = $searchRequest->getRawUserQuery();
         $resultsPerPage = $this->getNumberOfResultsPerPage($rawQuery, $searchRequest->getResultsPerPage());
         $query = $this->getPreparedQuery($rawQuery, $resultsPerPage);
 
-        $resultSet->setUsedSearchRequest($searchRequest);
         $resultSet->setUsedQuery($query);
 
         $currentPage = max(0, $searchRequest->getPage());
@@ -451,7 +457,6 @@ class SearchResultSetService
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
         $resultSet->setUsedSearch($this->search);
 
-        $this->lastResultSet = $resultSet;
         return $resultSet;
     }
 
@@ -461,6 +466,22 @@ class SearchResultSetService
     public function getLastResultSet()
     {
         return $this->lastResultSet;
+    }
+
+    /**
+     * This method returns true when the last search was exectued with an empty query
+     * string or whitspaces only. When no search was triggered it will return false.
+     *
+     * @return bool
+     */
+    public function getLastSearchWasExecutedWithEmptyQueryString()
+    {
+        $wasEmptyQueryString = false;
+        if ($this->lastResultSet != null) {
+            $wasEmptyQueryString = $this->lastResultSet->getUsedSearchRequest()->getRawUserQueryIsEmptyString();
+        }
+
+        return $wasEmptyQueryString;
     }
 
     /**
