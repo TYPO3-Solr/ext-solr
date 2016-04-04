@@ -108,7 +108,10 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
             // skip workspaces: index only LIVE workspace
             $this->indexQueue->updateItem('pages',
-                $tceMain->getPID($table, $uid));
+                $tceMain->getPID($table, $uid),
+                NULL,
+                TRUE
+            );
         }
     }
 

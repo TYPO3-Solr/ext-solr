@@ -314,18 +314,23 @@ class Queue
      *      different value for non-database-record types.
      * @param string $indexingConfiguration The item's indexing configuration to use.
      *      Optional, overwrites existing / determined configuration.
+     * @param boolean $reindexPageAfterContentDeletion TRUE if the item needs to be updated due to deletion of content elements, FALSE otherwise
+     *      This is only relevant for itemType pages, after deleting content from a page.
      */
     public function updateItem(
         $itemType,
         $itemUid,
-        $indexingConfiguration = null
+        $indexingConfiguration = null,
+        $reindexPageAfterContentDeletion = FALSE
     ) {
         $itemInQueue = $this->containsItem($itemType, $itemUid);
 
         if ($itemInQueue) {
             // update if that item is in the queue already
             $changes = array(
-                'changed' => $this->getItemChangedTime($itemType, $itemUid)
+                'changed' => ($reindexPageAfterContentDeletion === TRUE)
+                                ? time()
+                                : $this->getItemChangedTime($itemType, $itemUid)
             );
 
             if (!empty($indexingConfiguration)) {
