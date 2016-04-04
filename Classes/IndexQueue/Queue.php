@@ -388,18 +388,23 @@ class Queue
      *      different value for non-database-record types.
      * @param string $indexingConfiguration The item's indexing configuration to use.
      *      Optional, overwrites existing / determined configuration.
+     * @param int $forcedChangeTime The change time for the item if set, otherwise
+     *          value from getItemChangedTime() is used.
      */
     public function updateItem(
         $itemType,
         $itemUid,
-        $indexingConfiguration = null
+        $indexingConfiguration = null,
+        $forcedChangeTime = 0
     ) {
         $itemInQueue = $this->containsItem($itemType, $itemUid);
 
         if ($itemInQueue) {
             // update if that item is in the queue already
             $changes = array(
-                'changed' => $this->getItemChangedTime($itemType, $itemUid)
+                'changed' => ($forcedChangeTime > 0)
+                                ? $forcedChangeTime
+                                : $this->getItemChangedTime($itemType, $itemUid)
             );
 
             if (!empty($indexingConfiguration)) {
