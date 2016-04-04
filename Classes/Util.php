@@ -204,14 +204,12 @@ class Util
     }
 
     /**
-     * @param array $configurationArray
-     * @param null $contextPageId
      * @return ConfigurationManager
      */
-    private static function getConfigurationManager(array $configurationArray = null, $contextPageId = null)
+    private static function getConfigurationManager()
     {
         /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager', $configurationArray, $contextPageId);
+        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
         return $configurationManager;
     }
 
@@ -262,21 +260,21 @@ class Util
         if ($initializeTsfe) {
             self::initializeTsfe($pageId, $language);
             if (!empty($configurationToUse)) {
-                return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId);
+                return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
             }
 
             $configurationToUse = self::getConfigurationFromInitializedTSFE($path);
             $cache->set($cacheId, $configurationToUse);
         } else {
             if (!empty($configurationToUse)) {
-                return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId);
+                return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
             }
 
             $configurationToUse = self::getConfigurationFromExistingTSFE($pageId, $path, $language);
             $cache->set($cacheId, $configurationToUse);
         }
 
-        return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId);
+        return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
     }
 
     /**
@@ -284,15 +282,17 @@ class Util
      *
      * @param array $configurationToUse
      * @param int $pageId
+     * @param int $languageId
+     * @param string $typoScriptPath
      * @return TypoScriptConfiguration
      */
-    protected static function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId)
+    protected static function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
     {
         $configurationArray = array();
         $configurationArray['plugin.']['tx_solr.'] = $configurationToUse;
-        $configurationManager = self::getConfigurationManager($configurationArray, $pageId);
+        $configurationManager = self::getConfigurationManager();
 
-        return $configurationManager->getTypoScriptConfiguration();
+        return $configurationManager->getTypoScriptConfiguration($configurationArray, $pageId, $languageId, $typoScriptPath);
     }
 
     /**
