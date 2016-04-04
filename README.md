@@ -34,7 +34,7 @@ Please find further information regarding Apache Solr and its related projects a
 - http://tomcat.apache.org
 - http://www.eclipse.org/jetty/
 
-To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've indexed TYPO3 mailing lists as a showcase. Another showcase can be found here: [search.dkd.de](http://search.dkd.de/solr.html)
+To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration. Another showcase can be found here: [search.dkd.de](http://search.dkd.de/solr)
 
 ![dkd Internet Service GmbH](http://www.dkd.de/typo3conf/ext/dkd_standard/res/dkd.de/assets/images/logo-top.png)
 
@@ -48,7 +48,7 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 -   **Slack Channel:**
 
     https://typo3.slack.com/messages/ext-solr/
-    
+
     (request your invite for Slack here: https://forger.typo3.org/slack)
 
 
