@@ -63,10 +63,10 @@ class ResultsTest extends AbstractPluginTest
 
         $result = $searchResults->main('', array());
 
-        $sortingLink = '<a href="index.php?id=1&amp;q=prices&amp;tx_solr%5Bfilter%5D%5B0%5D=subtitle%253Amen&amp;tx_solr%5Bsort%5D=title%20desc">Title</a>';
+        $sortingLink = 'q=prices&amp;tx_solr%5Bfilter%5D%5B0%5D=subtitle%253Amen&amp;tx_solr%5Bsort%5D=title%20desc">Title</a>';
         $this->assertContains($sortingLink, $result, 'Could not find sorting link in search result');
 
-        $subTitleFacetingLink = 'index.php?id=1&amp;q=prices&amp;tx_solr%5Bfilter%5D%5B0%5D=subtitle%253Amen&amp;tx_solr%5Bsort%5D=title%20asc&amp;foo=bar';
+        $subTitleFacetingLink = 'q=prices&amp;tx_solr%5Bfilter%5D%5B0%5D=subtitle%253Amen&amp;tx_solr%5Bsort%5D=title%20asc&amp;foo=bar';
         $this->assertContains($subTitleFacetingLink, $result, 'Could not find faceting link in results');
 
         $productDescription = 'jeans products';
@@ -244,7 +244,7 @@ class ResultsTest extends AbstractPluginTest
 
         $this->assertContains('facet-type-hierarchy', $resultPage, 'Did not render hierarchy facet in the response');
         $this->assertContains('class="rootlinefacet-item"', $resultPage, 'Hierarchy facet items did not contain expected class from TypoScript');
-        $this->assertContains('index.php?id=1&amp;q=prices&amp;tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%253A%252F1%252F2&amp;', $resultPage, 'Result page did not contain hierarchical facet link');
+        $this->assertContains('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%253A%252F1%252F2&amp;', $resultPage, 'Result page did not contain hierarchical facet link');
     }
 
     /**

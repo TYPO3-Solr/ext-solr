@@ -41,16 +41,7 @@ class ConfigurationManager implements SingletonInterface
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfiguration = null;
-
-    /**
-     * @param array $configurationArray
-     * @param integer $contextPageId
-     */
-    public function __construct(array $configurationArray = null, $contextPageId = null)
-    {
-        $this->initialize($configurationArray, $contextPageId);
-    }
+    protected $typoScriptConfigurations = array();
 
     /**
      * Resets the state of the configuration manager.
@@ -59,23 +50,20 @@ class ConfigurationManager implements SingletonInterface
      */
     public function reset()
     {
-        $this->initialize();
+        $this->typoScriptConfigurations = array();
     }
 
     /**
-     * @return \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
-     */
-    public function getTypoScriptConfiguration()
-    {
-        return $this->typoScriptConfiguration;
-    }
-
-    /**
-     * @throws \InvalidArgumentException
+     * Retrieves the TypoScriptConfiguration object from an configuration array, pageId, languageId and TypoScript
+     * path that is used in in the current context.
+     *
      * @param array $configurationArray
-     * @param integer $contextPageId
+     * @param null $contextPageId
+     * @param int $contextLanguageId
+     * @param string $contextTypoScriptPath
+     * @return TypoScriptConfiguration
      */
-    private function initialize(array $configurationArray = null, $contextPageId = null)
+    public function getTypoScriptConfiguration(array $configurationArray = null, $contextPageId = null, $contextLanguageId = 0, $contextTypoScriptPath = '')
     {
         if ($configurationArray == null) {
             if (!empty($GLOBALS['TSFE']->tmpl->setup) && is_array($GLOBALS['TSFE']->tmpl->setup)) {
@@ -91,10 +79,28 @@ class ConfigurationManager implements SingletonInterface
             $configurationArray['plugin.']['tx_solr.'] = array();
         }
 
-
         if ($contextPageId == null && !empty($GLOBALS['TSFE']->id)) {
             $contextPageId = $GLOBALS['TSFE']->id;
         }
-        $this->typoScriptConfiguration = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\TypoScriptConfiguration', $configurationArray, $contextPageId);
+
+        $hash = md5(serialize($configurationArray)) . '-' . $contextPageId . '-' . $contextLanguageId . '-' . $contextTypoScriptPath;
+        if (isset($this->typoScriptConfigurations[$hash])) {
+            return $this->typoScriptConfigurations[$hash];
+        }
+
+        $this->typoScriptConfigurations[$hash] = $this->getTypoScriptConfigurationInstance($configurationArray, $contextPageId);
+        return $this->typoScriptConfigurations[$hash];
+    }
+
+    /**
+     * This method is used to build the TypoScriptConfiguration.
+     *
+     * @param array $configurationArray
+     * @param null $contextPageId
+     * @return object
+     */
+    protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = null)
+    {
+        return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\TypoScriptConfiguration', $configurationArray, $contextPageId);
     }
 }
