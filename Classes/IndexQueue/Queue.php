@@ -314,22 +314,22 @@ class Queue
      *      different value for non-database-record types.
      * @param string $indexingConfiguration The item's indexing configuration to use.
      *      Optional, overwrites existing / determined configuration.
-     * @param boolean $reindexPageAfterContentDeletion TRUE if the item needs to be updated due to deletion of content elements, FALSE otherwise
-     *      This is only relevant for itemType pages, after deleting content from a page.
+     * @param int $forcedChangeTime The change time for the item if set, otherwise
+     *          value from getItemChangedTime() is used.
      */
     public function updateItem(
         $itemType,
         $itemUid,
         $indexingConfiguration = null,
-        $reindexPageAfterContentDeletion = FALSE
+        $forcedChangeTime = 0
     ) {
         $itemInQueue = $this->containsItem($itemType, $itemUid);
 
         if ($itemInQueue) {
             // update if that item is in the queue already
             $changes = array(
-                'changed' => ($reindexPageAfterContentDeletion === TRUE)
-                                ? time()
+                'changed' => ($forcedChangeTime > 0)
+                                ? $forcedChangeTime
                                 : $this->getItemChangedTime($itemType, $itemUid)
             );
 

@@ -110,7 +110,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             $this->indexQueue->updateItem('pages',
                 $tceMain->getPID($table, $uid),
                 NULL,
-                TRUE
+                time()
             );
         }
     }
