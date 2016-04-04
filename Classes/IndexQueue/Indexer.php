@@ -82,8 +82,7 @@ class Indexer extends AbstractIndexer
      *
      * @var array
      */
-    protected $sysLanguageOverlay = array();
-
+    protected static $sysLanguageOverlay = array();
 
     /**
      * Constructor
@@ -192,9 +191,9 @@ class Indexer extends AbstractIndexer
     {
         $rootPageUid = $item->getRootPageUid();
         $overlayIdentifier = $rootPageUid . '|' . $language;
-        if (!isset($this->sysLanguageOverlay[$overlayIdentifier])) {
+        if (!isset(self::$sysLanguageOverlay[$overlayIdentifier])) {
             Util::initializeTsfe($rootPageUid, $language);
-            $this->sysLanguageOverlay[$overlayIdentifier] = $GLOBALS['TSFE']->sys_language_contentOL;
+            self::$sysLanguageOverlay[$overlayIdentifier] = $GLOBALS['TSFE']->sys_language_contentOL;
         }
 
         $itemRecord = $item->getRecord();
@@ -207,7 +206,7 @@ class Indexer extends AbstractIndexer
                 $item->getType(),
                 $itemRecord,
                 $language,
-                $this->sysLanguageOverlay[$rootPageUid . '|' . $language]
+                self::$sysLanguageOverlay[$overlayIdentifier]
             );
         }
 
@@ -243,7 +242,7 @@ class Indexer extends AbstractIndexer
 
         $languageField = $GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'];
         if ($itemRecord[$translationOriginalPointerField] == 0
-            && $this->sysLanguageOverlay[$overlayIdentifier] != 1
+            && self::$sysLanguageOverlay[$overlayIdentifier] != 1
             && !empty($languageField)
             && $itemRecord[$languageField] != $language
             && $itemRecord[$languageField] != '-1'
