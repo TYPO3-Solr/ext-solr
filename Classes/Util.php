@@ -245,32 +245,36 @@ class Util
         $pageId,
         $path,
         $initializeTsfe = false,
-        $language = 0
+        $language = 0,
+        $useCache = true
     ) {
-        $cache = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache', 'tx_solr_configuration');
         // If we're on UID 0, we cannot retrieve a configuration currently.
         // getRootline() below throws an exception (since #typo3-60 )
         // as UID 0 cannot have any parent rootline by design.
         if ($pageId == 0) {
-            return array();
+            return self::buildTypoScriptConfigurationFromArray(array(), $pageId, $language, $path);
         }
-        $cacheId = md5($pageId . '|' . $path . '|' . $language);
-        $configurationToUse = $cache->get($cacheId);
+
+        if ($useCache) {
+            $cacheId = md5($pageId . '|' . $path . '|' . $language);
+            $cache = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache', 'tx_solr_configuration');
+            $configurationToUse = $cache->get($cacheId);
+        }
 
         if ($initializeTsfe) {
             self::initializeTsfe($pageId, $language);
             if (!empty($configurationToUse)) {
                 return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
             }
-
             $configurationToUse = self::getConfigurationFromInitializedTSFE($path);
-            $cache->set($cacheId, $configurationToUse);
         } else {
             if (!empty($configurationToUse)) {
                 return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
             }
-
             $configurationToUse = self::getConfigurationFromExistingTSFE($pageId, $path, $language);
+        }
+
+        if ($useCache) {
             $cache->set($cacheId, $configurationToUse);
         }
 

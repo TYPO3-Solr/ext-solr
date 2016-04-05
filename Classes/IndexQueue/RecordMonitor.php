@@ -109,7 +109,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             // skip workspaces: index only LIVE workspace
             $this->indexQueue->updateItem('pages',
                 $tceMain->getPID($table, $uid),
-                NULL,
+                null,
                 time()
             );
         }
