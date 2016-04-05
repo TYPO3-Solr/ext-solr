@@ -264,26 +264,63 @@ class Query
      */
     public function escape($string)
     {
-        if (!is_numeric($string)) {
-            if (preg_match('/\W/', $string) == 1) {
-                // multiple words
-
-                $stringLength = strlen($string);
-                if ($string{0} == '"' && $string{$stringLength - 1} == '"') {
-                    // phrase
-                    $string = trim($string, '"');
-                    $string = $this->escapePhrase($string);
-                } else {
-                    $string = $this->escapeSpecialCharacters($string);
-                }
-            } else {
-                $string = $this->escapeSpecialCharacters($string);
-            }
+        // when we have a numeric string only, nothing needs to be done
+        if (is_numeric($string)) {
+            return $string;
         }
 
-        return $string;
+        // when no whitespaces are in the query we can also just escape the special characters
+        if (preg_match('/\W/', $string) != 1) {
+            return $this->escapeSpecialCharacters($string);
+        }
+
+        // when there are no quotes inside the query string we can also just escape the whole string
+        $hasQuotes = strrpos($string, '"') !== false;
+        if (!$hasQuotes) {
+            return $this->escapeSpecialCharacters($string);
+        }
+
+        $result = $this->tokenizeByQuotesAndEscapeDependingOnContext($string);
+
+        return $result;
     }
 
+    /**
+     * This method is used to escape the content in the query string surrounded by quotes
+     * different then when it is not in a quoted context.
+     *
+     * @param string $string
+     * @return string
+     */
+    protected function tokenizeByQuotesAndEscapeDependingOnContext($string)
+    {
+        $result = '';
+        $quotesCount = substr_count($string, '"');
+        $isEvenAmountOfQuotes = $quotesCount % 2 === 0;
+
+        // go over all quote segments and apply escapePhrase inside a quoted
+        // context and escapeSpecialCharacters outside the quoted context.
+        $segments = explode('"', $string);
+        $segmentsIndex = 0;
+        foreach ($segments as $segment) {
+            $isInQuote = $segmentsIndex % 2 !== 0;
+            $isLastQuote = $segmentsIndex === $quotesCount;
+
+            if ($isLastQuote && !$isEvenAmountOfQuotes) {
+                $result .= '\"';
+            }
+
+            if ($isInQuote && !$isLastQuote) {
+                $result .= $this->escapePhrase($segment);
+            } else {
+                $result .= $this->escapeSpecialCharacters($segment);
+            }
+
+            $segmentsIndex++;
+        }
+
+        return $result;
+    }
 
     // pagination
 
