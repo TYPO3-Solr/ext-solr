@@ -496,4 +496,48 @@ class QueryTest extends UnitTest
         $query->expects($this->once())->method('writeDevLog');
         $query->addFilter('foo');
     }
+
+    /**
+     * @return array
+     */
+    public function escapeQueryDataProvider()
+    {
+        return array(
+            'empty' => array('input' => '', 'expectedOutput' => ''),
+            'simple' => array('input' => 'foo', 'expectedOutput' => 'foo'),
+            'single quoted word' => array('input' => '"world"', 'expectedOutput' => '"world"'),
+            'simple quoted phrase' => array('input' => '"hello world"', 'expectedOutput' => '"hello world"'),
+            'simple quoted phrase with ~' => array('input' => '"hello world~"', 'expectedOutput' => '"hello world~"'),
+            'simple phrase with ~' => array('input' => 'hello world~', 'expectedOutput' => 'hello world\~'),
+            'single quote' =>  array('input' => '20" monitor', 'expectedOutput' => '20\" monitor'),
+            'rounded brackets many words' => array('input' => 'hello (world)', 'expectedOutput' => 'hello \(world\)'),
+            'rounded brackets one word' => array('input' => '(world)', 'expectedOutput' => '\(world\)'),
+            'plus character is kept' => array('input' => 'foo +bar -world', 'expectedOutput' => 'foo +bar -world'),
+            '&& character is kept' => array('input' => 'hello && world', 'expectedOutput' => 'hello && world'),
+            '! character is kept' => array('input' => 'hello !world', 'expectedOutput' => 'hello !world'),
+            '* character is kept' => array('input' => 'hello *world', 'expectedOutput' => 'hello *world'),
+            '? character is kept' => array('input' => 'hello ?world', 'expectedOutput' => 'hello ?world'),
+            'ö character is kept' => array('input' => 'schöner tag', 'expectedOutput' => 'schöner tag'),
+            'numeric is kept' => array('input' => 42, 'expectedOutput' => 42),
+            'combined quoted phrase' => array('input' => '"hello world" or planet', 'expectedOutput' => '"hello world" or planet'),
+            'two combined quoted phrases' => array('input' => '"hello world" or "hello planet"', 'expectedOutput' => '"hello world" or "hello planet"'),
+            'combined quoted phrase mixed with escape character' => array('input' => '"hello world" or (planet)', 'expectedOutput' => '"hello world" or \(planet\)')
+        );
+    }
+
+    /**
+     * @dataProvider escapeQueryDataProvider
+     * @test
+     */
+    public function canEscapeAsExpected($input, $expectedOutput)
+    {
+        $fakeConfigurationArray = array();
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+
+        $output = $query->escape($input);
+        $this->assertSame($expectedOutput, $output, 'Query was not escaped as expected');
+    }
 }
