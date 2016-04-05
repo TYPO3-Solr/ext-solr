@@ -1,6 +1,6 @@
 # Contributing to EXT:solr
 
-You want to invest your time into EXT:solr? That's awesome, because there are allways thinks that you can do to improve
+You want to invest your time into EXT:solr? That's awesome, because there are always things that you can do to improve
 ApacheSolrForTypo3:
 
 * Bug reports
@@ -9,21 +9,21 @@ ApacheSolrForTypo3:
 * Documentation
 * Support
 * Translation
-* Addons
+* Add-ons
 
 in this guid we want to describe how you can contribute to EXT:solr, what are the guidlines and where you can get further
 information.
 
 ## HowTo Develop
 
-The sourcecode of EXT:solr is hosted on github (https://github.com/TYPO3-Solr/ext-solr). The code is organized in branches
+The source-code of EXT:solr is hosted on github (https://github.com/TYPO3-Solr/ext-solr). The code is organized in branches
 
 * dev-master: The dev-master branch is the branch where the development for the latest TYPO3 version and the newest features
-is happening. It is our goal to keep this branch allways working, but nevertheless it is a development branch. It is not recommended
+is happening. It is our goal to keep this branch always working, but nevertheless it is a development branch. It is not recommended
 to use code from this branch directly in production.
 
 * release-X.X.x: Whenever a release from dev-master is created, we create a release branch. This is needed to have the possibility
-to provide bugfixes for an older release branch.
+to provide bug-fixes for an older release branch.
 
 When you want to develop you should have the following things running locally:
 
@@ -37,7 +37,7 @@ The following version combinations are recommended:
     * TYPO3: 7.6.x (LTS) / dev-master
     * Solr: 4.10.4
     * Solr Plugins: solr-typo3-plugin-1.3.0.jar
-    * Addons:
+    * Add-ons:
         * tika: dev-master
         * solrgrouping: dev-master
         * solrfal: dev-master
@@ -46,7 +46,7 @@ The following version combinations are recommended:
     * TYPO3: 6.2.x (LTS) / 7.6.x (LTS)
     * Solr: 4.10.4
     * Solr Plugins: solr-typo3-plugin-1.3.0.jar
-    * Addons:
+    * Add-ons:
         * tika: 2.0.0
         * solrgrouping: 1.1.0
         * solrfal: 2.1.1
@@ -83,7 +83,7 @@ and properly. The following information is useful:
 * TYPO3 Version:
 * Solr Version:
 * PHP Version:
-* Error Messages / Stacktraces:
+* Error Messages / stack-traces:
 * Steps how to reproduce:
 
 In the ideal case you come up with a pull request and in the perfect case your pull request allready contains a regression test
@@ -215,7 +215,7 @@ Therefore we decided that:
 
 All classes are using the psr-2 coding standard (http://www.php-fig.org/psr/psr-2/). The coding style is also automatically checked in all pull requests with our continuous integration scripts.
 
-If you want to check the codestyle locally before you commit or just automatically want to fix it there is a great tool (when you remove --dry-run the php-cs-fixer also fixes all violations):
+If you want to check the code-style locally before you commit or just automatically want to fix it there is a great tool (when you remove --dry-run the php-cs-fixer also fixes all violations):
 
 ```bash
 composer install
@@ -273,7 +273,7 @@ Each time you want to run the test suite:
 ./Tests/Build/cibuild.sh
 ```
 
-Make sure that the testsuite is runnig, before you do a pull request.
+Make sure that the testsuite is running, before you do a pull request.
 
 ## Documentation
 
@@ -292,12 +292,12 @@ http://translation.typo3.org
 We've migrated the translation files to the new Xliff format. They can be found in "Resources/Private/Language".
 We appreciate any help here and it would be nice, when you could share your translations to complete the defaults here.
 
-## Addons
+## Add-ons
 
 EXT:solr provides a setup of hooks to extend it or you can use objects from EXT:solr in your extension and build
-your custom functionality. On https://github.com/TYPO3-Solr/ we provide a few addons for the EXT:solr TYPO3 extension.
+your custom functionality. On https://github.com/TYPO3-Solr/ we provide a few add-ons for the EXT:solr TYPO3 extension.
 
-If you want to share your own addon and what to get it available on (https://github.com/TYPO3-Solr/) contact us!
+If you want to share your own add-on and what to get it available on (https://github.com/TYPO3-Solr/) contact us!
 
 ## Support
 
