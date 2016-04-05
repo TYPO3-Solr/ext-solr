@@ -6,7 +6,7 @@ We're happy to announce the release of Apache Solr for TYPO3 (EXT:solr) version 
 
 ### Support of TYPO3 7.6 LTS and TYPO3 8.0 (Dropping Support of 6.2 LTS)
 
-To stay uptodate with the TYPO3 core we decided to drop the support of 6.2 LTS and support 7.6 LTS only. At the same time we made sure that EXT:solr is usable with TYPO3 8.0 and that we keep the deprecation log clean.
+To stay up-to-date with the TYPO3 core we decided to drop the support of 6.2 LTS and support 7.6 LTS only. At the same time we made sure that EXT:solr is usable with TYPO3 8.0 and that we keep the deprecation log clean.
 
 ### Improve the Test Coverage for Fluid Integration and Refactoring
 
@@ -29,12 +29,11 @@ to this object and make the code that is using it more readble
 coverage of integration tests for all parts
 5. By reading the annotations later it could be used to generate a TypoScript reference
 
-During the preparation of the current release we implemented this TypoScriptConfiguration and
-replace all parts in the scope of EXT:solr
+During the preparation of the current release we implemented this TypoScriptConfiguration and replaced all parts in the scope of EXT:solr
 
 Migration:
 
-The TypoScriptConfiguration can be used with array access operators, for backwards compatibility. If you want to read the configuration you can use the speaking methode for the pathes or "getValueByPath" or "getObjectByPath".
+The TypoScriptConfiguration can be used with array access operators, for backwards compatibility. If you want to read the configuration you can use the speaking method for the pathes or "getValueByPath" or "getObjectByPath".
 
 ### PHP 7.0 ready
 
@@ -82,7 +81,7 @@ For spellchecking we had no dynamic field type before. Since 4.0.0 we now ship t
 
 ### Usage of Styles and Modals from TYPO3 7 LTS
 
-To keep the styling of the backend uptodate and use the new JavaScript modals we updated the backend module to use these new features.
+To keep the styling of the backend up-to-date and use the new JavaScript modals we updated the backend module to use these new features.
 
 ### Add Support of FastVectorHighlighter
 
@@ -141,18 +140,18 @@ Like always this release would not have been possible without the help from our 
 (patches, comments, bug reports, review, ... in alphabetical order)
 
 * Dmitry Dulepov
+* Florian Seirer
 * Frank Nägler
 * Frans Saris
 * Ingo Pfennigstorf
 * Ingo Renner
-* Olivier Dobberkau
 * Marc Bastian Heinrichs
 * Markus Friedrich
 * Markus Kobligk
 * Mickael Vanclooster
+* Olivier Dobberkau
 * Sascha Egerer
 * Timo Schmidt
-* Florian Seirer
 
 Thanks to everyone who helped in creating this release!
 
