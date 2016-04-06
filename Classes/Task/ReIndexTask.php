@@ -95,6 +95,9 @@ class ReIndexTask extends AbstractTask
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $type = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
             $typesToCleanUp[] = $type;
+            if ($type === 'sys_file_storage') {
+                $typesToCleanUp[] = 'tx_solr_file';
+            }
         }
 
         foreach ($solrServers as $solrServer) {
