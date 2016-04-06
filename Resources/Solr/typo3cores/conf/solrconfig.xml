@@ -10,7 +10,7 @@
 	status report - \ApacheSolrForTypo3\Solr\Report\SolrConfigStatus - checking
 	against this name property, that status check must be updated as well.
 -->
-<config name="tx_solr-4-0-0--20160330">
+<config name="tx_solr-4-0-0--20160406">
 
 	<luceneMatchVersion>4.10.4</luceneMatchVersion>
 

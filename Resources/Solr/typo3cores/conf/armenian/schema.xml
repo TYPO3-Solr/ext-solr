@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-4-0-0--20160330" version="1.5" >
+<schema name="tx_solr-4-0-0--20160406" version="1.5" >
 	<!-- attribute "name" is the name of this schema and is only used for display purposes.
 		Applications should change this to reflect the nature of the search collection.
 		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
@@ -51,6 +51,7 @@
 				catenateAll="0"
 				splitOnCaseChange="1"
 				preserveOriginal="1"
+				protected="armenian/protwords.txt"
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
@@ -71,6 +72,7 @@
 				catenateAll="0"
 				splitOnCaseChange="1"
 				preserveOriginal="1"
+				protected="armenian/protwords.txt"
 			/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
@@ -97,6 +99,7 @@
 				catenateNumbers="1"
 				catenateAll="0"
 				preserveOriginal="1"
+				protected="armenian/protwords.txt"
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 

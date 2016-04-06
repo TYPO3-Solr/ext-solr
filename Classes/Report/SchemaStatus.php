@@ -50,7 +50,7 @@ class SchemaStatus implements StatusProviderInterface
      *
      * @var string
      */
-    const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-4-0-0--20160330';
+    const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-4-0-0--20160406';
 
     /**
      * Compiles a collection of schema version checks against each configured
