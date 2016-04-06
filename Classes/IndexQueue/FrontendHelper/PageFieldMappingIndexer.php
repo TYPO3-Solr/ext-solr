@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 // TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\InvalidFieldNameException;
 use ApacheSolrForTypo3\Solr\SubstitutePageIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
@@ -99,6 +100,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     /**
      * Gets the mapped fields as an array mapping field names to values.
      *
+     * @throws InvalidFieldNameException
      * @return array An array mapping field names to their values.
      */
     protected function getMappedFields()
@@ -106,6 +108,12 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
         $fields = array();
 
         foreach ($this->mappedFieldNames as $mappedFieldName) {
+            if (!AbstractIndexer::isAllowedToOverrideField($mappedFieldName)) {
+                throw new InvalidFieldNameException(
+                    'Must not overwrite field "type".',
+                    1435441863
+                );
+            }
             $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName);
         }
 

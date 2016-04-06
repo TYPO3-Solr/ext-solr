@@ -46,6 +46,22 @@ abstract class AbstractIndexer
 
 
     /**
+     * Holds field names that are denied to overwrite in thy indexing configuration.
+     *
+     * @var array
+     */
+    protected static $unAllowedOverrideFields = array('type');
+
+    /**
+     * @param string $solrFieldName
+     * @return bool
+     */
+    public static function isAllowedToOverrideField($solrFieldName)
+    {
+        return !in_array($solrFieldName, self::$unAllowedOverrideFields);
+    }
+
+    /**
      * Adds fields to the document as defined in $indexingConfiguration
      *
      * @param \Apache_Solr_Document $document base document to add fields to
@@ -66,9 +82,9 @@ abstract class AbstractIndexer
                 continue;
             }
 
-            if ($solrFieldName == 'type') {
+            if (!self::isAllowedToOverrideField($solrFieldName)) {
                 throw new InvalidFieldNameException(
-                    'Must not overwrite field "type".',
+                    'Must not overwrite field .' . $solrFieldName,
                     1435441863
                 );
             }
