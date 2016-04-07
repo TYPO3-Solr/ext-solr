@@ -500,14 +500,15 @@ class Indexer extends AbstractIndexer
         }
 
         // Solr configurations possible for this item
-        $solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($item->getSite());
+        $site = $item->getSite();
+        $solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($site);
 
         $siteLanguages = array();
         foreach ($solrConfigurationsBySite as $solrConfiguration) {
             $siteLanguages[] = $solrConfiguration['language'];
         }
 
-        $translationOverlays = $this->getTranslationOverlaysForPage($pageId);
+        $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode());
         foreach ($translationOverlays as $key => $translationOverlay) {
             if (!in_array($translationOverlay['sys_language_uid'],
                 $siteLanguages)
@@ -538,18 +539,18 @@ class Indexer extends AbstractIndexer
      * 4) unknown mode or blank --> all languages
      *
      * @param integer $pageId Page ID.
+     * @param string $languageMode
      * @return array An array of translation overlays (or fake overlays) found for the given page.
      */
-    protected function getTranslationOverlaysForPage($pageId)
+    protected function getTranslationOverlaysForPage($pageId, $languageMode)
     {
         $translationOverlays = array();
         $pageId = intval($pageId);
-        $site = Site::getSiteByPageId($pageId);
 
         $languageModes = array('content_fallback', 'strict', 'ignore');
-        $hasOverlayMode = in_array($site->getSysLanguageMode(), $languageModes,
+        $hasOverlayMode = in_array($languageMode, $languageModes,
             true);
-        $isContentFallbackMode = ($site->getSysLanguageMode() === 'content_fallback');
+        $isContentFallbackMode = ($languageMode === 'content_fallback');
 
         if ($hasOverlayMode && !$isContentFallbackMode) {
             $translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
