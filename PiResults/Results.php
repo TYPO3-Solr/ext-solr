@@ -197,8 +197,16 @@ class Tx_Solr_PiResults_Results extends Tx_Solr_PluginBase_CommandPluginBase {
 
 		$this->initializeAdditionalFilters($query);
 
-			// TODO check whether a search has been conducted already?
-		if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])) {
+		if (!$this->conf['search.']['query.']['allowEmptyQuery'] && $this->getRawUserQueryIsEmptyString()) {
+			// If empty query is not allowed, but query is an empty string, don't perform a search
+			return FALSE;
+		}
+
+		// TODO check whether a search has been conducted already?
+		if ($this->solrAvailable
+			&& !$this->getRawUserQueryIsNull()
+			|| $this->conf['search.']['initializeWithEmptyQuery']
+			|| $this->conf['search.']['initializeWithQuery']) {
 
 			if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
 				t3lib_div::devLog('received search query', 'solr', 0, array($rawUserQuery));
