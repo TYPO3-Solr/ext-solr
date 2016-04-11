@@ -111,3 +111,9 @@ CREATE TABLE tx_solr_cache_tags (
 	KEY cache_tag (tag)
 ) ENGINE=InnoDB;
 
+#
+# Update size of entry_value for table 'sys_registry'
+#
+CREATE TABLE sys_registry (
+  entry_value longblob
+) ENGINE=InnoDB;
