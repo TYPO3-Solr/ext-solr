@@ -545,6 +545,39 @@ abstract class Tx_Solr_PluginBase_PluginBase extends tslib_pibase {
 	public function getRawUserQuery() {
 		return $this->rawUserQuery;
 	}
+
+	/**
+	 * Method to check if the query string is an empty string
+	 * (also empty string or whitespaces only are handled as empty).
+	 *
+	 * When no query string is set (null) the method returns false.
+	 * @return bool
+	 */
+	public function getRawUserQueryIsEmptyString() {
+		$query = $this->getRawUserQuery();
+
+		if ($query === NULL) {
+			return FALSE;
+		}
+
+		if (trim($query) === '') {
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * This method returns true when no query string is present at all.
+	 * Which means no search by the user was triggered
+	 *
+	 * @return boolean
+	 */
+	public function getRawUserQueryIsNull() {
+		$query = $this->getRawUserQuery();
+		return $query === NULL;
+	}
+
 }
 
 
