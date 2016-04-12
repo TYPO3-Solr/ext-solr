@@ -338,6 +338,16 @@ class SearchResultSetService
     }
 
     /**
+     * @return string
+     */
+    protected function getResultSetClassName()
+    {
+        return isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName ']) ?
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] :
+            'ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResultSet';
+    }
+
+    /**
      * Checks it the results should be hidden in the response.
      *
      * @param $rawQuery
@@ -420,9 +430,12 @@ class SearchResultSetService
     public function search(SearchRequest $searchRequest)
     {
         /** @var $resultSet SearchResultSet */
-        $resultSet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResultSet');
+        $resultSetClass = $this->getResultSetClassName();
+        $resultSet = GeneralUtility::makeInstance($resultSetClass);
         $resultSet->setUsedSearchRequest($searchRequest);
         $this->lastResultSet = $resultSet;
+
+        $resultSet = $this->handleSearchHook('beforeSearch', $resultSet);
 
         if ($searchRequest->getRawUserQueryIsNull() && !$this->getInitialSearchIsConfigured()) {
             // when no rawQuery was passed or no initialSearch is configured, we pass an empty result set
@@ -456,6 +469,29 @@ class SearchResultSetService
         $resultSet->setUsedResultsPerPage($resultsPerPage);
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
         $resultSet->setUsedSearch($this->search);
+
+        return $this->handleSearchHook('afterSearch', $resultSet);
+    }
+
+    /**
+     * This method is used to call the registered hooks during the search execution.
+     *
+     * @param string $eventName
+     * @param SearchResultSet $resultSet
+     * @return SearchResultSet
+     */
+    private function handleSearchHook($eventName, SearchResultSet $resultSet)
+    {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$eventName])) {
+            return $resultSet;
+        }
+
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$eventName] as $classReference) {
+            $afterSearchProcessor = GeneralUtility::getUserObj($classReference);
+            if ($afterSearchProcessor instanceof SearchResultSetProcessor) {
+                $afterSearchProcessor->process($resultSet);
+            }
+        }
 
         return $resultSet;
     }

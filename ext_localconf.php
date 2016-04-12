@@ -320,3 +320,7 @@ if (TYPO3_MODE == 'BE') {
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = 'ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResult';
 }
+
+if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '])) {
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] = 'ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResultSet';
+}
