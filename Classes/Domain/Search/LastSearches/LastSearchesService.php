@@ -68,6 +68,8 @@ class LastSearchesService
     }
 
     /**
+     * Retrieves the last searches from the session or database depending on the configuration.
+     *
      * @return array
      */
     public function getLastSearches()
@@ -86,6 +88,30 @@ class LastSearchesService
         }
 
         return $lastSearchesKeywords;
+    }
+
+    /**
+     * Saves the keywords to the last searches in the database or session depending on the configuration.
+     *
+     * @param string $keywords
+     * @throws \UnexpectedValueException
+     */
+    public function addToLastSearches($keywords)
+    {
+        $mode   = $this->configuration->getSearchLastSearchesMode();
+        switch ($mode) {
+            case 'user':
+                $this->storeKeywordsToSession($keywords);
+                break;
+            case 'global':
+                $this->storeKeywordsToDatabase($keywords);
+                break;
+            default:
+                throw new \UnexpectedValueException(
+                    'Unknown mode for plugin.tx_solr.search.lastSearches.mode, valid modes are "user" or "global".',
+                    1342456570
+                );
+        }
     }
 
     /**
@@ -139,5 +165,83 @@ class LastSearchesService
     protected function getLastSearchesFromFrontendSession()
     {
         return $this->tsfe->fe_user->getKey('ses', 'tx_solr_lastSearches');
+    }
+
+    /**
+     * Stores the keywords from the current query to the user's session.
+     *
+     * @param string $keywords The current query's keywords
+     * @return void
+     */
+    protected function storeKeywordsToSession($keywords)
+    {
+        $currentLastSearches = $this->tsfe->fe_user->getKey('ses', 'tx_solr_lastSearches');
+
+        if (!is_array($currentLastSearches)) {
+            $currentLastSearches = array();
+        }
+
+        $lastSearches = $currentLastSearches;
+        $newLastSearchesCount = array_push($lastSearches, $keywords);
+
+        while ($newLastSearchesCount > $this->configuration->getSearchLastSearchesLimit()) {
+            array_shift($lastSearches);
+            $newLastSearchesCount = count($lastSearches);
+        }
+
+        $this->tsfe->fe_user->setKey(
+            'ses',
+            'tx_solr_lastSearches',
+            $lastSearches
+        );
+    }
+
+    /**
+     * Stores the keywords from the current query to the database.
+     *
+     * @param string $keywords The current query's keywords
+     * @return void
+     */
+    protected function storeKeywordsToDatabase($keywords)
+    {
+        $nextSequenceId = $this->getNextSequenceId();
+
+        $this->database->sql_query(
+            'INSERT INTO tx_solr_last_searches (sequence_id, tstamp, keywords)
+			VALUES ('
+            . $nextSequenceId . ', '
+            . time() . ', '
+            . $this->database->fullQuoteStr($keywords,
+                'tx_solr_last_searches')
+            . ')
+			ON DUPLICATE KEY UPDATE tstamp = ' . time() . ', keywords = ' . $this->database->fullQuoteStr($keywords,
+                'tx_solr_last_searches')
+        );
+    }
+
+    /**
+     * Gets the sequence id for the next search entry.
+     *
+     * @return integer The id to be used as the next sequence id for storing the last search keywords.
+     */
+    protected function getNextSequenceId()
+    {
+        $nextSequenceId = 0;
+        $numberOfLastSearchesToLog = (int) $this->configuration->getSearchLastSearchesLimit();
+
+        $row = $this->database->exec_SELECTgetRows(
+            '(sequence_id + 1) % ' . $numberOfLastSearchesToLog . ' as next_sequence_id',
+            'tx_solr_last_searches',
+            '',
+            '',
+            'tstamp DESC',
+            1
+        );
+
+        if (!empty($row)) {
+            $nextSequenceId = $row[0]['next_sequence_id'];
+        }
+
+        return $nextSequenceId;
     }
 }
