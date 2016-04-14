@@ -96,9 +96,9 @@ class ErrorsCommand implements PluginCommand
         // detect empty user queries
         $userQuery = $this->parentPlugin->getRawUserQuery();
 
-        if (!is_null($userQuery)
+        if (!$this->parentPlugin->getRawUserQueryIsNull()
             && !$this->configuration['search.']['query.']['allowEmptyQuery']
-            && empty($userQuery)
+            && $this->parentPlugin->getRawUserQueryIsEmptyString()
         ) {
             $errors[] = array(
                 'message' => '###LLL:error_emptyQuery###',
