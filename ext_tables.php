@@ -50,7 +50,7 @@ if (TYPO3_MODE == 'BE') {
         '',
         array(
             // An array holding the controller-action-combinations that are accessible
-            'Administration' => 'index,setSite,setCore'
+            'Administration' => 'index,setSite,setCore,noSiteAvailable'
         ),
         array(
             'access' => 'admin',

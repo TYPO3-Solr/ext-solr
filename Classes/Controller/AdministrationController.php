@@ -121,15 +121,15 @@ class AdministrationController extends ActionController
      */
     protected function initializeAction()
     {
-        $this->site = $this->moduleData->getSite();
-
-        if (!$this->site instanceof Site) {
-            $this->initializeSiteFromFirstAvailableAndStoreInModuleData();
+        if ($this->request->getControllerActionName() == 'noSiteAvailable') {
+            return;
         }
 
-        $rootPageId = $this->site->getRootPageId();
-        if ($rootPageId > 0 && !Util::pageExists($rootPageId)) {
-            $this->initializeSiteFromFirstAvailableAndStoreInModuleData();
+        $this->resolveSite();
+
+        if ($this->site === null) {
+            // we could not set the site
+            $this->forwardToNonModuleAction('noSiteAvailable');
         }
 
         try {
@@ -161,6 +161,15 @@ class AdministrationController extends ActionController
     }
 
     /**
+     * No site available
+     *
+     * @return void
+     */
+    public function noSiteAvailableAction()
+    {
+    }
+
+     /**
      * Call a sub-module's controller
      *
      */
@@ -244,11 +253,21 @@ class AdministrationController extends ActionController
      */
     protected function forwardHome()
     {
+        $this->forwardToNonModuleAction('index');
+    }
+
+    /**
+     * Forwards to an action of the AdministrationController.
+     *
+     * @param string $actionName
+     */
+    protected function forwardToNonModuleAction($actionName)
+    {
         $requestArguments = $this->request->getArguments();
         unset($requestArguments['module'], $requestArguments['moduleAction']);
-        $this->request->setArguments($requestArguments);
 
-        $this->forward('index');
+        $this->request->setArguments($requestArguments);
+        $this->forward($actionName);
     }
 
     /**
@@ -293,7 +312,26 @@ class AdministrationController extends ActionController
     protected function initializeSiteFromFirstAvailableAndStoreInModuleData()
     {
         $site = Site::getFirstAvailableSite();
+        if (!$site instanceof Site) {
+            return;
+        }
         $this->setSiteAndResetCore($site);
         $this->site = $site;
+    }
+
+    /**
+     * @return void
+     */
+    protected function resolveSite()
+    {
+        $this->site = $this->moduleData->getSite();
+        if (!$this->site instanceof Site) {
+            $this->initializeSiteFromFirstAvailableAndStoreInModuleData();
+        }
+
+        $rootPageId = ($this->site instanceof Site) ? $this->site->getRootPageId() : 0;
+        if ($rootPageId > 0 && !Util::pageExists($rootPageId)) {
+            $this->initializeSiteFromFirstAvailableAndStoreInModuleData();
+        }
     }
 }
