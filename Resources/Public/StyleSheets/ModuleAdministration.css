@@ -1,5 +1,3 @@
-@import "../../External/bootstrap/css/bootstrap.css";
-@import "BootstrapTypo3.css";
 @import "Backend/IndexingConfigurationSelectorField.css";
 
 /* ----- icons ----- */
@@ -82,7 +80,7 @@ hr.double {
 }
 
 
-.row-fluid.danger-zone {
+.row.danger-zone {
 	margin-bottom: 10px;
 	margin-top: 50px;
 }
@@ -188,5 +186,3 @@ table.tx_solr_index_list {
 form input[type="text"] {
 	width: 250px;
 }
-
-

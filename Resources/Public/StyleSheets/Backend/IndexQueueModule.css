@@ -22,9 +22,14 @@
     height: 30px !important;
 }
 
-.progress .bar {
+.progress .progress-bar {
     text-align: left !important;
     padding-left: 5px;
     vertical-align: middle;
     line-height: 30px;
+}
+
+.index-queue-init-form .panel {
+    box-shadow: none;
+    border: none;
 }

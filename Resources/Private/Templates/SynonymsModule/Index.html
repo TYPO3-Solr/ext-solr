@@ -27,9 +27,9 @@
 		</table>
 	</f:then>
 	<f:else>
-		<div class="well">
-			<p>No synonyms configured yet.</p>
-		</div>
+		<f:be.infobox state="-1">
+			No synonyms configured yet.
+		</f:be.infobox>
 	</f:else>
 </f:if>
 
@@ -46,7 +46,7 @@
 			<f:form.textfield id="synonyms" name="synonyms" class="form-control" />
 			<span class="example">comma-separated; f.e. smartphone, cellphone</span>
 		</div>
-		<div class="submit indented">
+		<div class="submit">
 			<f:form.submit value="Add Synonyms" class="btn btn-sm btn-default"/>
 		</div>
 	</f:form>

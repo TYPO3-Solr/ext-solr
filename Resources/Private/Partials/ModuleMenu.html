@@ -6,8 +6,7 @@
 		<li {f:if(condition: '{activeModule.name} == {module.name}', then: 'class="active"')}>
 			<f:link.action
 				arguments="{module: module.name}"
-			><core:icon identifier="extensions-{module.extensionKey}-module-{f:format.case(value: module.name, mode: 'lower')}" />{module.title}</f:link.action>
+			><core:icon identifier="extensions-{module.extensionKey}-module-{f:format.case(value: module.name, mode: 'lower')}" /> {module.title}</f:link.action>
 		</li>
 	</f:for>
 </ul>
-

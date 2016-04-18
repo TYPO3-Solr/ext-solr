@@ -1,33 +1,36 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+<div class="row">
+	<div class="col-md-12">
+		<f:be.infobox title="Stop Words">
+			Stop words allow you to specify a list of words that will be discarded during indexing.
+			Usually they are very small and very common words (such as "the" and "and") that
+			often have little bearing on whether a document is a good match or not.<br/>
+			The format is one word per line.
+		</f:be.infobox>
 
-<div class="well">
-	Stop words allow you to specify a list of words that will be discarded during indexing.
-	Usually they are very small and very common words (such as "the" and "and") that
-	often have little bearing on whether a document is a good match or not.<br/>
-	The format is one word per line.
+		<f:render partial="CoreSelector" />
+	</div>
 </div>
-
-<f:render partial="CoreSelector" />
 
 <h3 style="margin-top: -20px;">Stop Word List (one per line, lowercase)</h3>
-<div class="row-fluid section section-with-header">
+<div class="row section section-with-header">
 
-	<f:if condition="{stopWordsCount} == 0">
-		<p>
-			<f:image src="EXT:solr/Resources/Public/Images/Icons/Information.png" />
-			The stop word list is empty.
-		</p>
-	</f:if>
+	<div class="col-md-12">
+		<f:if condition="{stopWordsCount} == 0">
+			<f:be.infobox state="-1">
+				The stop word list is empty.
+			</f:be.infobox>
+		</f:if>
 
-	<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'saveStopWords'} )}"
-			id="edit-stopwords">
-		<textarea name="tx_solr_tools_solradministration[stopWords]"
-			rows="20" cols="50" style="width: auto;"><f:for each="{stopWords}" as="stopWord">{stopWord}
-</f:for></textarea>
+		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'saveStopWords'} )}"
+				id="edit-stopwords">
+			<textarea name="tx_solr_tools_solradministration[stopWords]"
+				rows="20" cols="50" style="width: auto;"><f:for each="{stopWords}" as="stopWord">{stopWord}
+	</f:for></textarea>
 
-		<div class="submit">
-			<f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>
-		</div>
-	</f:form>
+			<div class="submit">
+				<f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>
+			</div>
+		</f:form>
+	</div>
 </div>
-

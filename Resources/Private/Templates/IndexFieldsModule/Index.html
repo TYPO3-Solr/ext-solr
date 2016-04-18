@@ -4,19 +4,25 @@
 
 <f:if condition="{coreMetrics.numberOfDocuments}">
 	<f:then>
-		<div class="row-fluid core-metrics">
-			<div class="span4 well text-center">
-				<p>{coreMetrics.numberOfDocuments}</p>
-				<h3>Documents</h3>
+		<div class="row core-metrics">
+			<div class="col-md-4">
+				<div class="well text-center">
+					<p>{coreMetrics.numberOfDocuments}</p>
+					<h3>Documents</h3>
+				</div>
 			</div>
-			<div class="span4 well text-center">
-				<p>{coreMetrics.numberOfDeletedDocuments}</p>
+			<div class="col-md-4">
+				<div class="well text-center">
+					<p>{coreMetrics.numberOfDeletedDocuments}</p>
 
-				<h3>Deleted Documents</h3>
+					<h3>Deleted Documents</h3>
+				</div>
 			</div>
-			<div class="span4 well text-center">
-				<p>{coreMetrics.numberOfFields}</p>
-				<h3>Fields</h3>
+			<div class="col-md-4">
+				<div class="well text-center">
+					<p>{coreMetrics.numberOfFields}</p>
+					<h3>Fields</h3>
+				</div>
 			</div>
 		</div>
 
@@ -43,4 +49,3 @@
 		</div>
   </f:else>
 </f:if>
-

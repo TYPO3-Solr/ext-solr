@@ -13,49 +13,51 @@
 />
 	<div class="module" id="ext-solr-mod-administration-php">
 
-		<div id="typo3-docheader">
-			<div class="module-docheader t3js-module-docheader">
-				<div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons">
 
-					<div class="module-docheader-bar-column-left">
-						<div class="form-inline">
-							<div class="form-group form-group-sm">
-								<solr:backend.sites>
-									<f:if condition="{hasSites}">
-										<f:then>
-											<label>Site:</label> <solr:backend.menu.SiteSelectorMenu name="site" class="form-control t3-js-jumpMenuBox"/>
-										</f:then>
-										<f:else>
-											No Solr connections initialized!
-										</f:else>
-									</f:if>
-								</solr:backend.sites>
-							</div>
-						</div>
-					</div>
+		<div class="module-docheader t3js-module-docheader" style="height: auto;">
+			<div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation" style="height: auto;">
+				<div class="module-docheader-bar-column-left">
+					<solr:backend.sites>
+						<f:if condition="{hasSites}">
+							<f:then>
+								<solr:backend.menu.SiteSelectorMenu name="site" class="form-control input-sm t3-js-jumpMenuBox"/>
+							</f:then>
+							<f:else>
+								No Solr connections initialized!
+							</f:else>
+						</f:if>
+					</solr:backend.sites>
 				</div>
-				<div class="right">
+				<div class="module-docheader-bar-column-right">
 				</div>
 			</div>
-			<div class="typo3-docheader-buttons">
-				<div class="left">
+			<div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons" style="height: auto;">
+				<div class="module-docheader-bar-column-left">
+					<div class="btn-toolbar" role="toolbar" aria-label="">
+
+
+					</div>
 				</div>
-				<div class="right">
-					<f:be.buttons.shortcut />
+				<div class="module-docheader-bar-column-right">
+					<div class="btn-toolbar" role="toolbar" aria-label="">
+						<f:be.buttons.shortcut />
+					</div>
 				</div>
 			</div>
 		</div>
+
+
 		<div class="module-body t3js-module-body">
 			<div id="typo3-inner-docbody" class="container-fluid">
-				<div class="row-fluid">
+				<div class="row">
 					<solr:backend.sites>
 						<f:if condition="{hasSites}">
 							<f:then>
 
-								<div id="moduleMenu" class="span3">
+								<div id="moduleMenu" class="col-md-3">
 									<f:render partial="ModuleMenu" arguments="{modules: modules, activeModule: activeModule}" />
 								</div>
-								<div id="moduleContent" class="span9">
+								<div id="moduleContent" class="col-md-9">
 									<f:render section="content" />
 								</div>
 							</f:then>
