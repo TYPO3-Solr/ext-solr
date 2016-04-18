@@ -1,16 +1,19 @@
 # Apache Solr for TYPO3 version 4.0 released
 
 We're happy to announce the release of Apache Solr for TYPO3 (EXT:solr)
-version 4.0.0. With this release we now support TYPO3 CMS versions 7.6LTS and
-8.0 together with Apache Solr version 4.10.
+version 4.0.0. With this release we now support TYPO3 CMS versions 7.6LTS
+together with Apache Solr version 4.10.
+At the same time we also started making the extension work with TYPO3 8.
 
 ## New in this Release
 
 ### Support of TYPO3 7.6 LTS and TYPO3 8.0 (Dropping Support of 6.2 LTS)
 
 To stay up-to-date with the TYPO3 core we decided to drop the support of 6.2 LTS
-and support 7.6 LTS only. At the same time we made sure that EXT:solr is usable
-with TYPO3 8.0 and that we keep the deprecation log clean.
+and support 7.6 LTS only. We also made sure that EXT:solr works
+with TYPO3 8.0, this will be an ongoing effort until the LTS release of TYPO3 8.
+Until then you may experience occasional bugs as we try to keep up with the
+core's development.
 
 ### Improve the Test Coverage for Fluid Integration and Refactoring
 
