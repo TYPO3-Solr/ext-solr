@@ -102,7 +102,16 @@ How to use it?
 
     plugin.tx_solr.search.spellchecking.searchUsingSpellCheckerSuggestion = 1
 
-Use the shipped default templates or add the following snippet to your template:
+Use the shipped default templates or add the following snippet to your template (between
+<!-- ###SOLR_SEARCH_NO_RESULTS### begin --> and <!-- ###SOLR_SEARCH_NO_RESULTS### end -->:
+
+```html
+	<div class="tx-solr-search-suggestion_results">
+		<!-- ###IF:###NO_RESULTS.HAS_SUGGESTION_RESULTS###|==|1### begin -->
+		###NO_RESULTS.SUGGESTION_RESULTS###
+		<!-- ###IF:###NO_RESULTS.HAS_SUGGESTION_RESULTS###|==|1### end -->
+	</div>
+```
 
 ### Dynamic Field Type for Spellchecking
 
