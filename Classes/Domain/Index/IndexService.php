@@ -125,7 +125,7 @@ class IndexService
         }
         $this->emitAfterIndexItemsSignal($itemsToIndex);
 
-        return $errors === 0;
+        return ($errors === 0);
     }
 
     /**
