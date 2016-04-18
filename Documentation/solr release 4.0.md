@@ -103,7 +103,7 @@ How to use it?
     plugin.tx_solr.search.spellchecking.searchUsingSpellCheckerSuggestion = 1
 
 Use the shipped default templates or add the following snippet to your template (between
-<!-- ###SOLR_SEARCH_NO_RESULTS### begin --> and <!-- ###SOLR_SEARCH_NO_RESULTS### end -->:
+`<!-- ###SOLR_SEARCH_NO_RESULTS### begin -->` and `<!-- ###SOLR_SEARCH_NO_RESULTS### end -->`:
 
 ```html
 	<div class="tx-solr-search-suggestion_results">
@@ -116,7 +116,7 @@ Use the shipped default templates or add the following snippet to your template 
 ### Dynamic Field Type for Spellchecking
 
 For spellchecking we had no dynamic field type before. Since 4.0.0 we now ship
-the dynamic field types "\*_textSpellS" and "\*_textSpellM" to allow you to
+the dynamic field types `*_textSpellS` and `*_textSpellM` to allow you to
 easily define fields for spell checking.
 
 ### Usage of Styles and Modals from TYPO3 7 LTS
@@ -222,4 +222,3 @@ There are many ways to get involved with Apache Solr for TYPO3:
 * Ask or help answering questions in our [Slack channel](https://typo3.slack.com/messages/ext-solr/)
 * Provide patches through Pull Request or review and comment on existing [Pull Requests](https://github.com/TYPO3-Solr/ext-solr/pulls)
 * Go to [www.typo3-solr.com](http://www.typo3-solr.com) or call [dkd](http://www.dkd.de) to sponsor the ongoing development of Apache Solr for TYPO3
-
