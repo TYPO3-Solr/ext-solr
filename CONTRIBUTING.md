@@ -262,15 +262,15 @@ One time preparation:
 
 ```bash
 cd <solrroot>
-chmod u+x ./Tests/Build/*.sh
-./Tests/Build/cleanup.sh
-source ./Tests/Build/bootstrap.sh --local
+chmod u+x ./Build/Test/*.sh
+./Build/Test/cleanup.sh
+source ./Build/Test/bootstrap.sh --local
 ```
 
 Each time you want to run the test suite:
 
 ```bash
-./Tests/Build/cibuild.sh
+./Build/Test/cibuild.sh
 ```
 
 Make sure that the testsuite is running, before you do a pull request.

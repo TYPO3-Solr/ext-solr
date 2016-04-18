@@ -1,13 +1,12 @@
 <phpunit
 	backupGlobals="false"
 	backupStaticAttributes="false"
-	bootstrap="../../.Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTestsBootstrap.php"
-
+	bootstrap="../../.Build/vendor/typo3/cms/typo3/sysext/core/Build/FunctionalTestsBootstrap.php"
 	colors="true"
-	convertErrorsToExceptions="false"
-	convertWarningsToExceptions="false"
+	convertErrorsToExceptions="true"
+	convertWarningsToExceptions="true"
 	forceCoversAnnotation="false"
-	processIsolation="false"
+	processIsolation="true"
 	stopOnError="false"
 	stopOnFailure="false"
 	stopOnIncomplete="false"
@@ -15,8 +14,8 @@
 	verbose="false">
 
 	<testsuites>
-		<testsuite name="ext-solr-unit-tests">
-			<directory>../Unit/</directory>
+		<testsuite name="ext-solr-integration-tests">
+			<directory>../../Tests/Integration/</directory>
 		</testsuite>
 	</testsuites>
 	<filter>
