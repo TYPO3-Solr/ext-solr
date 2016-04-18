@@ -1,1 +1,21 @@
-<f:flashMessages renderMode="div" />
+<!-- The following part as="flashMessages" .. and the inner content can be remove in versions above 8 since this markup is default then -->
+<f:flashMessages as="flashMessages">
+    <f:for each="{flashMessages}" as="flashMessage">
+        <div class="alert {flashMessage.class}">
+            <div class="media">
+                <div class="media-left">
+					<span class="fa-stack fa-lg">
+						<i class="fa fa-circle fa-stack-2x"></i>
+						<i class="fa fa-{flashMessage.iconName} fa-stack-1x"></i>
+					</span>
+                </div>
+                <div class="media-body">
+                    <f:if condition="{flashMessage.title}">
+                        <h4 class="alert-title">{flashMessage.title}</h4>
+                    </f:if>
+                    <div class="alert-message">{flashMessage.message -> f:format.nl2br()}</div>
+                </div>
+            </div>
+        </div>
+    </f:for>
+</f:flashMessages>
