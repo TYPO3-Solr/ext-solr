@@ -197,9 +197,53 @@ class IndexInspectorRemoteController
 
         $formattedData = array();
         foreach ($sortedData as $fieldName => $fieldValue) {
+            if (is_array($fieldValue)) {
+                $formattedData[] = array(
+                    'fieldName' => $fieldName,
+                    'fieldValue' => '- array(' . count($fieldValue) . ') -'
+                );
+                $formattedData = $this->formatMultiValueFields($fieldValue, $formattedData);
+            } else {
+                $formattedData[] = array(
+                    'fieldName' => $fieldName,
+                    'fieldValue' => htmlspecialchars($fieldValue)
+                );
+            }
+        }
+
+        return $formattedData;
+    }
+
+    /**
+     * Formats multi value fields
+     *
+     * @param array $multipleFieldValues
+     * @param array $formattedData
+     * @return array
+     */
+    protected function formatMultiValueFields(array $multipleFieldValues, array $formattedData)
+    {
+        // restrict to 10 elements
+        $valueCount = count($multipleFieldValues);
+        $multipleFieldValues = array_slice($multipleFieldValues, 0, 10);
+
+        foreach ($multipleFieldValues as $index => $singleFieldValue) {
+            if (is_array($singleFieldValue)) {
+                $fieldValue = '- array(' . count($singleFieldValue) . ') -';
+            } else {
+                $fieldValue = htmlspecialchars($singleFieldValue);
+            }
+
             $formattedData[] = array(
-                'fieldName' => $fieldName,
-                'fieldValue' => htmlspecialchars($fieldValue)
+                'fieldName' => '',
+                'fieldValue' => $fieldValue
+            );
+        }
+
+        if ($valueCount > 10) {
+            $formattedData[] = array(
+                'fieldName' => '',
+                'fieldValue' => '...'
             );
         }
 
