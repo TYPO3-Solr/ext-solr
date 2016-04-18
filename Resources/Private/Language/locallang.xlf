@@ -84,7 +84,7 @@
         	<source>Error details for queue item</source>
         </trans-unit>
         <trans-unit id="solr.backend.index_queue_module.index_now" xml:space="preserve">
-        	<source>Index now!</source>
+        	<source>Index now</source>
         </trans-unit>
 
 		</body>
