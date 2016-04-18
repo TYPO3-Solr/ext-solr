@@ -90,12 +90,12 @@ class IndexService
      * Indexes items from the Index Queue.
      *
      * @param integer $limit
-     * @return void
+     * @return boolean
      */
     public function indexItems($limit)
     {
         $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-
+        $errors     = 0;
         // get items to index
         $itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);
         foreach ($itemsToIndex as $itemToIndex) {
@@ -103,6 +103,8 @@ class IndexService
                 // try indexing
                 $itemIndexed = $this->indexItem($itemToIndex);
             } catch (\Exception $e) {
+                $errors++;
+
                 $indexQueue->markItemAsFailed(
                     $itemToIndex,
                     $e->getCode() . ': ' . $e->__toString()
@@ -122,6 +124,8 @@ class IndexService
             }
         }
         $this->emitAfterIndexItemsSignal($itemsToIndex);
+
+        return $errors === 0;
     }
 
     /**

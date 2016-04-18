@@ -26,6 +26,9 @@
 		<trans-unit id="solr.backend.index_queue_module.errors.show_button" xml:space="preserve">
 			<source>Show error</source>
 		</trans-unit>
+    	<trans-unit id="solr.backend.index_queue_module.flashmessage.error.index_manual" xml:space="preserve">
+    		<source>An error occurred while indexing manual from the backend.</source>
+    	</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.flashmessage.error.reset_errors" xml:space="preserve">
 			<source>An error occurred while resetting the error log in the index queue.</source>
 		</trans-unit>
@@ -44,9 +47,15 @@
 		<trans-unit id="solr.backend.index_queue_module.flashmessage.success.reset_errors" xml:space="preserve">
 			<source>All errors have been reset.</source>
 		</trans-unit>
+    	<trans-unit id="solr.backend.index_queue_module.flashmessage.success.index_manual" xml:space="preserve">
+    		<source>Indexing from the backend was finished successful.</source>
+    	</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
 			<source>Index Queue</source>
 		</trans-unit>
+		<trans-unit id="solr.backend.index_queue_module.flashmessage.index_manual" xml:space="preserve">
+   			<source>Manual Indexing</source>
+   		</trans-unit>
 		<trans-unit id="solr.backend.index_queue_module.help" xml:space="preserve">
 			<source>Initializing the Index Queue is the most complete way to force re-indexing, or to build the Index Queue for the first time. The Index Queue Worker scheduler task will then index the items listed in the Index Queue.</source>
 		</trans-unit>

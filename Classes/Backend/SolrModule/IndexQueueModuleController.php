@@ -319,7 +319,20 @@ class IndexQueueModuleController extends AbstractModuleController
     {
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
         $indexService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Index\\IndexService', $this->site);
-        $indexService->indexItems(10);
+        $indexWithoutErrors = $indexService->indexItems(10);
+
+        $label = 'solr.backend.index_queue_module.flashmessage.success.index_manual';
+        $severity = FlashMessage::OK;
+        if (!$indexWithoutErrors) {
+            $label = 'solr.backend.index_queue_module.flashmessage.error.index_manual';
+            $severity = FlashMessage::ERROR;
+        }
+
+        $this->addFlashMessage(
+            LocalizationUtility::translate($label, 'Solr'),
+            LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.index_manual', 'Solr'),
+            $severity
+        );
 
         $this->forward('index');
     }
