@@ -196,10 +196,6 @@
                         results {
                             resultsHighlighting = 1
                             resultsHighlighting {
-                                 // can be used to increase the highlighting performance requires the field is termVectors=on,
-                                 // termPositions=on and termOffsets=on which is set for content. NOTE: fragmentSize needs to be larger
-                                 // then 18
-                                useFastVectorHighlighter = 0
                                 highlightFields = content
                                 fragmentSize = 20
                                 fragmentSeparator = [...]

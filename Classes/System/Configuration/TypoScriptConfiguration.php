@@ -1459,20 +1459,6 @@ class TypoScriptConfiguration implements \ArrayAccess
     }
 
     /**
-     * Return if the fastVectorHighlighter should be used or not.
-     *
-     * plugin.tx_solr.search.results.resultsHighlighting.useFastVectorHighlighter
-     *
-     * @param bool $defaultIfEmpty
-     * @return bool
-     */
-    public function getSearchResultsHighlightingUseFastVectorHighlighter($defaultIfEmpty = false)
-    {
-        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting.useFastVectorHighlighter', $defaultIfEmpty);
-        return $this->getBool($result);
-    }
-
-    /**
      * Returns the configured wrap for the resultHighlighting.
      *
      * plugin.tx_solr.search.results.resultsHighlighting.wrap

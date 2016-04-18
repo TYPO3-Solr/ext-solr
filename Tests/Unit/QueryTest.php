@@ -249,6 +249,26 @@ class QueryTest extends UnitTest
         $query->setHighlighting(true);
         $queryParameters = $query->getQueryParameters();
 
+        $this->assertSame("[A]", $queryParameters["hl.tag.pre"], 'Can set highlighting field list');
+        $this->assertSame("[B]", $queryParameters["hl.tag.post"], 'Can set highlighting field list');
+    }
+
+    /**
+     * @test
+     */
+    public function simplePreAndPostIsUsedWhenFastVectorHighlighterCouldNotBeUsed()
+    {
+        $fakeConfigurationArray = array();
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        
+        // fragSize 10 is to small for FastVectorHighlighter
+        $query->setHighlighting(true, 17);
+        $queryParameters = $query->getQueryParameters();
+
         $this->assertSame("[A]", $queryParameters["hl.simple.pre"], 'Can set highlighting field list');
         $this->assertSame("[B]", $queryParameters["hl.simple.post"], 'Can set highlighting field list');
     }
@@ -259,12 +279,11 @@ class QueryTest extends UnitTest
     public function canUseFastVectorHighlighting()
     {
         $fakeConfigurationArray = array();
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 1;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
-        $query->setHighlighting(true);
+        $query->setHighlighting(true, 200);
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
@@ -274,36 +293,20 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
-    public function canDisableFastVectorHighlighting()
+    public function fastVectorHighlighterIsDisabledWhenFragSizeIsLessThen18()
     {
         $fakeConfigurationArray = array();
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 0;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
-        $query->setHighlighting(true);
+        $query->setHighlighting(true, 0);
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
         $this->assertNull($queryParameters["hl.useFastVectorHighlighter"], 'FastVectorHighlighter was disabled but still requested');
     }
 
-    /**
-     * @test
-     */
-    public function canThrowExceptionWhenFastVectorHighlighterIsUsedWithFragSizeEqualsZero()
-    {
-        $this->setExpectedException('\InvalidArgumentException');
-
-        $fakeConfigurationArray = array();
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['useFastVectorHighlighter'] = 1;
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
-        $query->setHighlighting(true, 0);
-    }
 
     /**
      * @test

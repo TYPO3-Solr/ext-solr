@@ -1193,16 +1193,13 @@ class Query
                 $this->queryParameters['hl.fl'] = $highlightingFields;
             }
 
-            $useFastVectorHighlighter = $this->solrConfiguration->getSearchResultsHighlightingUseFastVectorHighlighter();
-            if ($useFastVectorHighlighter) {
-                if ($fragmentSize <= 18) {
-                    throw new \InvalidArgumentException("The setting useFastVectorHighlighter can only be used with a fragementSize larger then 18");
-                }
-                $this->queryParameters['hl.useFastVectorHighlighter'] = 'true';
-            }
-
+            // the fast vector highlighter can only be used, when the fragmentSize is
+            // higher then 17 otherwise solr throws an exception
+            $useFastVectorHighlighter = ($fragmentSize >= 18);
             $wrap = explode('|', $this->solrConfiguration->getSearchResultsHighlightingWrap());
+
             if ($useFastVectorHighlighter) {
+                $this->queryParameters['hl.useFastVectorHighlighter'] = 'true';
                 $this->queryParameters['hl.tag.pre'] = $wrap[0];
                 $this->queryParameters['hl.tag.post'] = $wrap[1];
             } else {
