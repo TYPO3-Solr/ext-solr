@@ -97,8 +97,8 @@ plugin.tx_solr {
 				// Only index standard pages and mount points that are not overlayed.
 				additionalWhereClause = (doktype = 1 OR doktype=4 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
 
-                //exclude some html parts inside TYPO3SEARCH markers by classname (comma list)
-                excludeContentByClass = typo3-search-exclude
+				//exclude some html parts inside TYPO3SEARCH markers by classname (comma list)
+				excludeContentByClass = typo3-search-exclude
 
 				fields {
 					sortSubTitle_stringS = subtitle
@@ -110,7 +110,7 @@ plugin.tx_solr {
 
 	search {
 		// fields that are allowed to contain html and should be skipped during escaping after retrieval from Solr
-		// by default all fields expect url get escaped, you might need to add other url fields here as well because of &
+		// by default all fields except url get escaped, you might need to add other url fields here as well because of &
 		// characters in the url.
 		trustedFields = url
 
@@ -381,4 +381,3 @@ plugin.tx_solr {
 		}
 	}
 }
-
