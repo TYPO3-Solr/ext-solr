@@ -642,8 +642,13 @@ abstract class PluginBase extends AbstractPlugin
     protected function getCurrentUrlWithQueryLinkBuilder()
     {
         $currentUrl = $this->pi_linkTP_keepPIvars_url();
+        $resultService = $this->getSearchResultSetService();
 
-        if ($this->getSearchResultSetService()->getIsSolrAvailable() && $this->getSearchResultSetService()->getHasSearched()) {
+        if (!$resultService instanceof SearchResultSetService) {
+            return $currentUrl;
+        }
+
+        if ($resultService->getIsSolrAvailable() && $this->getSearchResultSetService()->getHasSearched()) {
             $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $this->getSearchResultSetService()->getSearch()->getQuery());
             $currentUrl = $queryLinkBuilder->getQueryUrl();
             return $currentUrl;
