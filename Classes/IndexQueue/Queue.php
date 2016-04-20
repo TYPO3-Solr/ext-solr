@@ -184,62 +184,6 @@ class Queue
     }
 
     /**
-     * Gets the the name of the table to index.
-     *
-     * Usually the indexing configuration's name implicitly reflects the name of
-     * the table to index. However, this way it would not be possible to index
-     * the same table with different indexing configurations. Therefore it is
-     * possible to explicitly define the actual table name using the indexing
-     * configuration's "table" property.
-     *
-     * @param array $solrConfiguration Solr TypoScript configuration
-     * @param string $indexingConfigurationName Indexing configuration name
-     * @return string Name of the table to index
-     *
-     * @deprecated since 4.0, use TypoScriptConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName instead, will be removed in v5.0
-     */
-    public static function getTableToIndexByIndexingConfigurationName(
-        array $solrConfiguration,
-        $indexingConfigurationName
-    ) {
-        GeneralUtility::logDeprecatedFunction();
-
-        $tableToIndex = $indexingConfigurationName;
-
-        if (!empty($solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'])) {
-            // table has been set explicitly.
-            // Allows to index the same table with different configurations
-            $tableToIndex = $solrConfiguration['index.']['queue.'][$indexingConfigurationName . '.']['table'];
-        }
-
-        return $tableToIndex;
-    }
-
-    /**
-     * Determines which tables to index according to the given configuration.
-     *
-     * @param array $solrConfiguration Solr configuration array.
-     * @return array An array of table names to index.
-     *
-     * @deprecated since 4.0, use TypoScriptConfiguration->getEnabledIndexQueueConfigurationNames instead, will be removed in v5.0
-     */
-    public function getTableIndexingConfigurations(array $solrConfiguration)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $tablesToIndex = array();
-
-        if (is_array($solrConfiguration['index.']['queue.'])) {
-            foreach ($solrConfiguration['index.']['queue.'] as $tableName => $enableIndexing) {
-                if (substr($tableName, -1) != '.' && $enableIndexing) {
-                    $tablesToIndex[] = $tableName;
-                }
-            }
-        }
-
-        return $tablesToIndex;
-    }
-
-    /**
      * Gets the indexing configuration to use for an item.
      * Sometimes, when there are multiple configurations for a certain item type
      * (table) it can be hard or even impossible to find which one to use

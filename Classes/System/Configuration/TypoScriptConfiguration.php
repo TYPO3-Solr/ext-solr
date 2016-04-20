@@ -35,7 +35,7 @@ use TYPO3\CMS\Fluid\Exception;
  * @package TYPO3
  * @subpackage solr
  */
-class TypoScriptConfiguration implements \ArrayAccess
+class TypoScriptConfiguration
 {
 
     /**
@@ -256,80 +256,6 @@ class TypoScriptConfiguration implements \ArrayAccess
         );
 
         return $this;
-    }
-
-    /**
-     * This method is used to allow the usage of the new configuration object with the array_key,
-     * same to the previous configuration.
-     *
-     * isset($config['tx_solr']['configPath']);
-     *
-     *
-     * @deprecated since 4.0, use TypoScriptConfiguration::isValidPath() instead, will be removed in version 5.0
-     * introduced to track the old array style usage
-     * @param  string $offset
-     * @return boolean
-     */
-    public function offsetExists($offset)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        if (!isset($this->configuration['plugin.']['tx_solr.'])) {
-            return false;
-        }
-
-        if (!is_array($this->configuration['plugin.']['tx_solr.'])) {
-            return false;
-        }
-
-        return array_key_exists($offset, $this->configuration['plugin.']['tx_solr.']);
-    }
-
-    /**
-     * This method is used to allow the usage of the new configuration object with the array_key,
-     * same to the previous configuration.
-     *
-     * $config['tx_solr']['configPath'];
-     *
-     * @deprecated since 4.0, use TypoScriptConfiguration::getValueByPath() instead, will be removed in version 5.0
-     * introduced to track the old array style usage
-     * @param string $offset
-     * @return mixed
-     */
-    public function offsetGet($offset)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        if (!$this->offsetExists($offset)) {
-            return null;
-        }
-
-        return $this->configuration['plugin.']['tx_solr.'][$offset];
-    }
-
-    /**
-     * Throws an exception because the configuration should not be changed from outside.
-
-     * @deprecated since 4.0 will be removed in version 5.0 introduced to track the old array style usage
-     * @throws \Exception
-     */
-    public function offsetSet($offset, $value)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        throw new \Exception('The configuration is readonly');
-    }
-
-    /**
-     * Throws an exception because the configuration options should not be unsetted from outside.
-     *
-     * @deprecated since 4.0 will be removed in version 5.0 introduced to track the old array style usage
-     * @throws \Exception
-     */
-    public function offsetUnset($offset)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        throw new \Exception('The configuration is readonly');
     }
 
     /**
