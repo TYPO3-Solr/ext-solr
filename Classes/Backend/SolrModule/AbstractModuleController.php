@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Utility\StringUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract Module
@@ -253,5 +254,20 @@ abstract class AbstractModuleController extends ActionController implements Admi
         }
 
         return $currentCoreConnection;
+    }
+
+    /**
+     * Adds flash massages from another flash message queue, e.g. solr.queue.initializer
+     *
+     * @param string $identifier
+     * @return void
+     */
+    protected function addFlashMessagesByQueueIdentifier($identifier)
+    {
+        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $flashMessages = $flashMessageService->getMessageQueueByIdentifier($identifier)->getAllMessages();
+        foreach ($flashMessages as $message) {
+            $this->addFlashMessage($message->getMessage(), $message->getTitle, $message->getSeverity());
+        }
     }
 }
