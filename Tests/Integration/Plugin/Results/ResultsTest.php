@@ -427,4 +427,21 @@ class ResultsTest extends AbstractPluginTest
     {
         $this->assertContains('Nothing found', $content, 'Asserted that nothing was found but the text, that nothing was found was not present in the response');
     }
+
+
+    /**
+     * We expected that the parent plugin is correctly set when the pi plugin was rendered
+     * @test
+     */
+    public function parentPluginIsPassedToSearchResultService()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1), 'can_render_results_plugin.xml');
+
+        $_GET['q'] = '*';
+
+        $searchResults->main('', array());
+        $parentPlugin = $searchResults->getSearchResultSetService()->getParentPlugin();
+
+        $this->assertInstanceOf('TYPO3\CMS\Frontend\Plugin\AbstractPlugin', $parentPlugin);
+    }
 }
