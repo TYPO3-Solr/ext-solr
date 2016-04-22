@@ -51,6 +51,7 @@ class Page extends AbstractInitializer
      */
     public function __construct()
     {
+        $this->flashMessageQueue = new FlashMessageQueue("solr_queue");
         $this->type = 'pages';
         $this->indexingConfigurationName = 'pages';
     }
@@ -193,7 +194,7 @@ class Page extends AbstractInitializer
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
             );
-            FlashMessageQueue::addMessage($flashMessage);
+            $this->flashMessageQueue->addMessage($flashMessage);
         }
 
         if (!$this->mountedPageExists($mountPage['mountPageSource'])) {
@@ -209,7 +210,7 @@ class Page extends AbstractInitializer
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
             );
-            FlashMessageQueue::addMessage($flashMessage);
+            $this->flashMessageQueue->addMessage($flashMessage);
         }
 
         return $isValidMountPage;
