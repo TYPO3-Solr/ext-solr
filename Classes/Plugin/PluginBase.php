@@ -333,7 +333,7 @@ abstract class PluginBase extends AbstractPlugin
 
         $search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
         /** @var $this->searchService ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService */
-        $this->searchResultsSetService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService', $this->typoScriptConfiguration, $search);
+        $this->searchResultsSetService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService', $this->typoScriptConfiguration, $search, $this);
         $this->solrAvailable = $this->searchResultsSetService->getIsSolrAvailable();
         $this->search = $this->searchResultsSetService->getSearch();
     }

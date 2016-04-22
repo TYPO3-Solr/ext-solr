@@ -106,6 +106,14 @@ class SearchResultSetService
     }
 
     /**
+     * @return AbstractPlugin
+     */
+    public function getParentPlugin()
+    {
+        return $this->parentPlugin;
+    }
+
+    /**
      * @param bool $useCache
      * @return bool
      */
