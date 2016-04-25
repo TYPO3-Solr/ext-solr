@@ -379,7 +379,7 @@ class Queue
         if ($itemType == 'pages') {
             $rootPageId = Util::getRootPageId($itemUid);
         } else {
-            $rootPageId = Util::getRootPageId($record['pid']);
+            $rootPageId = Util::getRootPageId($record['pid'], true);
         }
 
         if (Util::isRootPage($rootPageId)) {

@@ -443,9 +443,10 @@ class Util
      * Determines the rootpage ID for a given page.
      *
      * @param integer $pageId A page ID somewhere in a tree.
+     * @param bool $forceFallback Force the explicit detection and do not use the current frontend root line
      * @return integer The page's tree branch's root page ID
      */
-    public static function getRootPageId($pageId = 0)
+    public static function getRootPageId($pageId = 0, $forceFallback = false)
     {
         $rootLine = array();
         $rootPageId = intval($pageId) ? intval($pageId) : $GLOBALS['TSFE']->id;
@@ -456,7 +457,7 @@ class Util
         }
 
         // fallback, backend
-        if ($pageId != 0 && (empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
+        if ($pageId != 0 && ($forceFallback || empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
             $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
             $rootLine = $pageSelect->getRootLine($pageId, '', true);
         }
