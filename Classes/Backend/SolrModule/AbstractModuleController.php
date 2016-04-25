@@ -254,4 +254,18 @@ abstract class AbstractModuleController extends ActionController implements Admi
 
         return $currentCoreConnection;
     }
+
+    /**
+     * Adds flash massages from another flash message queue, e.g. solr.queue.initializer
+     *
+     * @param string $identifier
+     * @return void
+     */
+    protected function addFlashMessagesByQueueIdentifier($identifier)
+    {
+        $flashMessages = $this->controllerContext->getFlashMessageQueue($identifier)->getAllMessages();
+        foreach ($flashMessages as $message) {
+            $this->addFlashMessage($message->getMessage(), $message->getTitle, $message->getSeverity());
+        }
+    }
 }

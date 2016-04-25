@@ -51,7 +51,8 @@ class Page extends AbstractInitializer
      */
     public function __construct()
     {
-        $this->flashMessageQueue = new FlashMessageQueue("solr_queue");
+        parent::__construct();
+
         $this->type = 'pages';
         $this->indexingConfigurationName = 'pages';
     }
