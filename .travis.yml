@@ -37,14 +37,15 @@ before_install:
   - composer self-update
   - composer --version
   - composer global require fabpot/php-cs-fixer
+  - composer global require namelesscoder/typo3-repository-client
 
 install:
   - Build/Test/bootstrap.sh
 script:
   - Build/Test/cibuild.sh
 after_script:
-  - Build/Release/ter_tag_uploader.sh
   - Build/Test/cleanup.sh
+  - Build/Release/ter_tag_uploader.sh
 
 cache:
   directories:
