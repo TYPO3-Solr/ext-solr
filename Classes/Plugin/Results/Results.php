@@ -101,18 +101,6 @@ class Results extends CommandPluginBase
     }
 
     /**
-     * Gets additional filters configured through TypoScript.
-     *
-     * @deprecated use $this->getSearchResultSetService()->getAdditionalFilters() instead , will be removed in version 5.0
-     * @return array An array of additional filters to use for queries.
-     */
-    public function getAdditionalFilters()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getSearchResultSetService()->getAdditionalFilters();
-    }
-
-    /**
      * Returns the number of results per page.
      *
      * @deprecated use $this->searchResultSet->getResultsPerPage() instead , will be removed in version 5.0

@@ -511,57 +511,6 @@ class Util
     }
 
     /**
-     * Gets the parent TypoScript Object from a given TypoScript path.
-     *
-     * Example: plugin.tx_solr.index.queue.tt_news.fields.content
-     * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content.']
-     * which is a SOLR_CONTENT cObj.
-     *
-     * @param string $path TypoScript path
-     * @return array The TypoScript object defined by the given path
-     * @throws InvalidArgumentException
-     *
-     * @deprecated since 4.0, use TypoScriptConfiguration::getObjectByPath() instead, will be removed in version 5.0
-     */
-    public static function getTypoScriptObject($path)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return self::getConfigurationManager()->getTypoScriptConfiguration()->getObjectByPath($path);
-    }
-
-    /**
-     * Checks whether a given TypoScript path is valid.
-     *
-     * @param string $path TypoScript path
-     * @return boolean TRUE if the path resolves, FALSE otherwise
-     *
-     * @deprecated since 4.0, use TypoScriptConfiguration::isValidPath() instead, will be removed in version 5.0
-     */
-    public static function isValidTypoScriptPath($path)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return self::getConfigurationManager()->getTypoScriptConfiguration()->isValidPath($path);
-    }
-
-    /**
-     * Gets the value from a given TypoScript path.
-     *
-     * Example: plugin.tx_solr.search.targetPage
-     * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage']
-     *
-     * @param string $path TypoScript path
-     * @return array The TypoScript object defined by the given path
-     * @throws InvalidArgumentException
-     *
-     * @deprecated since 4.0, use TypoScriptConfiguration::getValueByPath() instead, will be removed in version 5.0
-     */
-    public static function getTypoScriptValue($path)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return self::getConfigurationManager()->getTypoScriptConfiguration()->getValueByPath($path);
-    }
-
-    /**
      * Gets the site hash for a domain
      *
      * @param string $domain Domain to calculate the site hash for.

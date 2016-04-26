@@ -80,15 +80,6 @@ class TypoScriptConfigurationTest extends UnitTest
     /**
      * @test
      */
-    public function canUseAsArrayForBackwardsCompatibility()
-    {
-        $value = $this->configuration['index.']['queue.']['tt_news.']['fields.']['content'];
-        $this->assertSame($value, 'SOLR_CONTENT', 'Can not use the configuration object with array access as backwards compatible implementation');
-    }
-
-    /**
-     * @test
-     */
     public function canGetFacetLinkOptionsByFacetName()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = array(

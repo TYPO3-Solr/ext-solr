@@ -54,27 +54,12 @@ abstract class PluginBase extends AbstractPlugin
     public $extKey = 'solr';
 
     /**
-     * an instance of ApacheSolrForTypo3\Solr\Search
-     *
-     * @deprecated use $this->searchResultsSetService()->getSearch() instead, will be removed in version 5.0
-     * @var Search
-     */
-    protected $search;
-
-    /**
      * The plugin's query
      *
      * @deprecated use $this->searchResultSet->getUsedQuery() instead, will be removed in version 5.0
      * @var Query
      */
     protected $query = null;
-
-    /**
-     * Determines whether the solr server is available or not.
-     *
-     * @deprecated use $this->searchResultsSetService()->getIsSolrAvailable() instead, will be removed in version 5.0
-     */
-    protected $solrAvailable;
 
     /**
      * An instance of ApacheSolrForTypo3\Solr\Template
@@ -577,32 +562,6 @@ abstract class PluginBase extends AbstractPlugin
     public function getLinkTargetPageId()
     {
         return $this->typoScriptConfiguration->getSearchTargetPage();
-    }
-
-    /**
-     * Gets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
-     * helper function for result document modifiers.
-     *
-     * @deprecated use $this->getSearchResultSetService()->getSearch() instead, will be removed in version 5.0
-     * @return Search
-     */
-    public function getSearch()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->search;
-    }
-
-    /**
-     * Sets the ApacheSolrForTypo3\Solr\Search instance used for the query. Mainly used as a
-     * helper function for result document modifiers.
-     *
-     * @deprecated should not be set able from outside, will be removed in version 5.0
-     * @param Search $search Search instance
-     */
-    public function setSearch(Search $search)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->search = $search;
     }
 
     /**

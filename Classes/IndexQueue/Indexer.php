@@ -262,6 +262,7 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @param integer $language Language ID
+     * @throws \RuntimeException
      * @return array Configuration array from TypoScript
      */
     protected function getItemTypeConfiguration(Item $item, $language = 0)
@@ -269,7 +270,16 @@ class Indexer extends AbstractIndexer
         $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(),
             true, $language);
 
-        return $solrConfiguration['index.']['queue.'][$item->getIndexingConfigurationName() . '.']['fields.'];
+        $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName(
+            $item->getIndexingConfigurationName(), array()
+        );
+
+        if (count($fields) === 0) {
+            throw new \RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
+                '" on root page uid ' . $item->getRootPageUid() . ' could not be found!', 1455530112);
+        }
+
+        return $fields;
     }
 
     /**
@@ -387,7 +397,7 @@ class Indexer extends AbstractIndexer
     {
         // needs to respect the TS settings for the page the item is on, conditions may apply
         $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid());
-        $fieldProcessingInstructions = $solrConfiguration['index.']['fieldProcessingInstructions.'];
+        $fieldProcessingInstructions = $solrConfiguration->getIndexFieldProcessingInstructionsConfiguration();
 
         // same as in the FE indexer
         if (is_array($fieldProcessingInstructions)) {
