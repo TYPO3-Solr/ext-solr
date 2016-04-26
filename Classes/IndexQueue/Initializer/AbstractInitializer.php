@@ -70,9 +70,24 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     protected $indexingConfigurationName;
 
+    /**
+     * Flash message queue
+     *
+     * @var \TYPO3\CMS\Core\Messaging\FlashMessageQueue
+     */
+    protected $flashMessageQueue;
 
     // Object initialization
 
+    /**
+     * Constructor, prepares the flash message queue
+     *
+     */
+    public function __construct()
+    {
+        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $this->flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
+    }
 
     /**
      * Sets the site for the initializer.

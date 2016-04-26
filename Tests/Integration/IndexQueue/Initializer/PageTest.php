@@ -60,6 +60,7 @@ class PageTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
+        $this->setUpBackendUserFromFixture(1);
         $this->pageInitializer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page');
         $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Queue');
     }
@@ -85,6 +86,19 @@ class PageTest extends IntegrationTest
     }
 
     /**
+     * Initialize page index queue
+     *
+     * @return void
+     */
+    protected function initializePageIndexQueue()
+    {
+        $this->pageInitializer->setIndexingConfigurationName('pages');
+        $this->pageInitializer->setSite(Site::getFirstAvailableSite());
+        $this->pageInitializer->setType('pages');
+        $this->pageInitializer->initialize();
+    }
+
+    /**
      * In this testcase we check if the pages queue will be initialized as expected
      * when we have a page with mounted pages
      *
@@ -102,13 +116,9 @@ class PageTest extends IntegrationTest
         $this->importDataSetFromFixture('can_add_mount_pages.xml');
 
         $this->assertEmptyQueue();
-        $this->pageInitializer->setIndexingConfigurationName('pages');
-        $this->pageInitializer->setSite(Site::getFirstAvailableSite());
-        $this->pageInitializer->setType('pages');
+        $this->initializePageIndexQueue();
 
-        $this->pageInitializer->initialize();
-
-        $this->assertItemsInQueue(3);
+        $this->assertItemsInQueue(4);
 
             // @todo: verify, is this really as expected? since mount_pid_ol is not set
             // in the case when mount_pid_ol is set 4 pages get added
@@ -117,5 +127,25 @@ class PageTest extends IntegrationTest
         $this->assertTrue($this->indexQueue->containsItem('pages', 20));
 
         $this->assertFalse($this->indexQueue->containsItem('pages', 2));
+    }
+
+    /**
+     * Check if invalid mount page is ignored and messages were added to the flash
+     * message queue
+     *
+     * @test
+     */
+    public function initializerAddsInfoMessagesAboutInvalidMountPages()
+    {
+        $this->importDataSetFromFixture('can_add_mount_pages.xml');
+
+        $this->assertEmptyQueue();
+        $this->initializePageIndexQueue();
+
+        $this->assertItemsInQueue(4);
+
+        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
+        $this->assertEquals(2, count($flashMessageQueue->getAllMessages()));
     }
 }
