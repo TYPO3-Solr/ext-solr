@@ -19,6 +19,7 @@ if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASS
          echo "Symlinking current folder to extension folder."
          ln -s $(pwd) ../${EXTENSION_KEY}
          cd ../${EXTENSION_KEY}/
+         echo "Extension dir is now: $(pwd)"
 
          git reset --hard HEAD && git clean -fx
          echo "Files in this package"
