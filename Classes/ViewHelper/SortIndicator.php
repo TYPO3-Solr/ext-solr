@@ -62,7 +62,7 @@ class SortIndicator implements ViewHelper
         $sortDirection = trim($arguments[0]);
         $configuration = Util::getSolrConfiguration();
         $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-        $defaultImagePrefix = 'EXT:solr/Resources/Images/Indicator';
+        $defaultImagePrefix = 'EXT:solr/Resources/Public/Images/Indicator';
 
         $sortViewHelperConfiguration = $configuration->getViewHelpersSortIndicatorConfiguration();
         switch ($sortDirection) {
