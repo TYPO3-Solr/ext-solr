@@ -51,7 +51,7 @@
 				catenateAll="0"
 				splitOnCaseChange="1"
 				preserveOriginal="1"
-				rotected="basque/protwords.txt"
+				protected="basque/protwords.txt"
 			/>
 			<filter class="solr.LowerCaseFilterFactory"/>
 
