@@ -77,6 +77,11 @@ class HierarchicalFacetHelper
                 $subMenu = $this->getSubMenu($facetOptions, $mainMenuName, 1);
                 if (!empty($subMenu)) {
                     $topLevelMenu['_SUB_MENU'] = $subMenu;
+                    if ($topLevelMenu['ITEM_STATE'] == 'ACT') {
+                        $topLevelMenu['ITEM_STATE'] = 'ACTIFSUB';
+                    } else {
+                        $topLevelMenu['ITEM_STATE'] = 'IFSUB';
+                    }
                 }
 
                 $menuStructure[] = $topLevelMenu;
@@ -143,6 +148,11 @@ class HierarchicalFacetHelper
                 );
                 if (!empty($subMenu)) {
                     $currentMenu['_SUB_MENU'] = $subMenu;
+                    if ($currentMenu['ITEM_STATE'] == 'ACT') {
+                        $currentMenu['ITEM_STATE'] = 'ACTIFSUB';
+                    } else {
+                        $currentMenu['ITEM_STATE'] = 'IFSUB';
+                    }
                 }
 
                 $menu[] = $currentMenu;
