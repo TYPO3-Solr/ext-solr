@@ -118,7 +118,7 @@ class SearchResultSetTest extends UnitTest
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 2. search', 50, $fakeResponse);
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPage')->will($this->returnValue(25));
 
-        $fakeRequest = new SearchRequest(array('q' => 'my 2. search', 'page' => 2));
+        $fakeRequest = new SearchRequest(array('q' => 'my 2. search','tx_solr' => array('page' => 2)));
 
         $this->assertPerPageInSessionWillNotBeChanged();
         $resultSet = $this->searchResultSetService->search($fakeRequest);
@@ -191,7 +191,12 @@ class SearchResultSetTest extends UnitTest
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
                                 ->will($this->returnValue(array(10, 25)));
 
-        $fakeRequest = new SearchRequest(array('q' => 'test', 'page' => 5, 'resultsPerPage' => 25));
+        $fakeRequest = new SearchRequest(
+            array(
+                'q' => 'test',
+                'tx_solr' => array('page' => 5, 'resultsPerPage' => 25)
+            )
+        );
 
             // we expect that still an offset of 0 is passed because page was 5 AND perPageWas passed which means
             // that the perPage value has changed.

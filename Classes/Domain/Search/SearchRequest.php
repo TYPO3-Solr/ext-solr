@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 
@@ -39,16 +40,35 @@ class SearchRequest implements SingletonInterface
 {
 
     /**
-     * @var array
+     * @var string
      */
-    protected $arguments = array();
+    protected $argumentNameSpace = 'tx_solr';
 
     /**
-     * @param array $arguments
+     * Arguments that should be kept for sub requests.
+     *
+     * @var array
      */
-    public function __construct($arguments = array())
+    protected $persistentArgumentsPaths = array('q', 'tx_solr:filter');
+
+    /**
+     * @var boolean
+     */
+    protected $stateChanged = false;
+
+    /**
+     * @var ArrayAccessor
+     */
+    protected $arrayAccessor;
+
+    /**
+     * @param array $argumentsArray
+     */
+    public function __construct(array $argumentsArray = array())
     {
-        $this->arguments = $arguments;
+        $this->stateChanged = true;
+        $this->persistedArguments = $argumentsArray;
+        $this->reset();
     }
 
     /**
@@ -60,22 +80,115 @@ class SearchRequest implements SingletonInterface
     public function mergeArguments(array $argumentsToMerge)
     {
         ArrayUtility::mergeRecursiveWithOverrule(
-            $this->arguments,
+            $this->persistedArguments,
             $argumentsToMerge
         );
+
+        $this->reset();
 
         return $this;
     }
 
     /**
-     * @param $key
-     * @param null $defaultValue
-     * @return null
+     * Helper method to prefix an accessor with the arguments namespace.
+     *
+     * @param $path
+     * @return string
      */
-    protected function getArgumentByKey($key, $defaultValue = null)
+    protected function prefixWithNamespace($path)
     {
-        return isset($this->arguments[$key]) ? $this->arguments[$key] : $defaultValue;
+        return $this->argumentNameSpace . ':'.$path;
     }
+
+    /**
+     * @return array
+     */
+    public function getActiveFacetNames()
+    {
+        $activeFacets = $this->getActiveFacets();
+        $facetNames = array();
+        foreach ($activeFacets as $activeFacet) {
+            $facetName = explode(':', $activeFacet, 2);
+            $facetNames[] = $facetName[0];
+        }
+
+        return $facetNames;
+    }
+
+    /**
+     * @return array|null
+     */
+    protected function getActiveFacets()
+    {
+        $path = $this->prefixWithNamespace('filter');
+        return $this->arrayAccessor->get($path, array());
+    }
+
+    /**
+     * @param $activeFacets
+     * @return array|null
+     *
+     * @return SearchRequest
+     */
+    protected function setActiveFacets($activeFacets = array())
+    {
+        $path = $this->prefixWithNamespace('filter');
+        $this->arrayAccessor->set($path, $activeFacets);
+
+        return $this;
+    }
+
+    /**
+     * @param string $facetName
+     * @param mixed $facetValue
+     *
+     * @return SearchRequest
+     */
+    public function addFacetValue($facetName, $facetValue)
+    {
+        $this->stateChanged = true;
+        if ($this->hasFacetValue($facetName, $facetValue)) {
+            return $this;
+        }
+
+        $facetValues = $this->getActiveFacets();
+        $facetValues[] = $facetName.':'.$facetValue;
+        $this->setActiveFacets($facetValues);
+
+        return $this;
+    }
+
+    /**
+     * @param string $facetName
+     * @param mixed $facetValue
+     * @return boolean
+     */
+    public function hasFacetValue($facetName, $facetValue)
+    {
+        $facetNameAndValueToCheck = $facetName.':'.$facetValue;
+        foreach ($this->getActiveFacets() as $activeFacet) {
+            if ($activeFacet == $facetNameAndValueToCheck) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Method to set the paginated page of the search
+     *
+     * @param integer $page
+     * @return SearchRequest
+     */
+    public function setPage($page)
+    {
+        $this->stateChanged = true;
+        $path = $this->prefixWithNamespace('page');
+        $this->arrayAccessor->set($path, $page);
+        return $this;
+    }
+
 
     /**
      * Returns the passed page.
@@ -84,7 +197,21 @@ class SearchRequest implements SingletonInterface
      */
     public function getPage()
     {
-        return $this->getArgumentByKey('page');
+        $path = $this->prefixWithNamespace('page');
+        return $this->arrayAccessor->get($path);
+    }
+
+    /**
+     * Method to overwrite the query string.
+     *
+     * @param string $rawQueryString
+     * @return SearchRequest
+     */
+    public function setRawQueryString($rawQueryString)
+    {
+        $this->stateChanged = true;
+        $this->arrayAccessor->set('q', $rawQueryString);
+        return $this;
     }
 
     /**
@@ -94,17 +221,7 @@ class SearchRequest implements SingletonInterface
      */
     public function getRawUserQuery()
     {
-        return $this->getArgumentByKey('q');
-    }
-
-    /**
-     * Method to overwrite the query string.
-     *
-     * @param string $rawQueryString
-     */
-    public function setRawQueryString($rawQueryString)
-    {
-        $this->arguments['q'] = $rawQueryString;
+        return $this->arrayAccessor->get('q');
     }
 
     /**
@@ -116,7 +233,7 @@ class SearchRequest implements SingletonInterface
      */
     public function getRawUserQueryIsEmptyString()
     {
-        $query = $this->getArgumentByKey('q', null);
+        $query = $this->arrayAccessor->get('q', null);
 
         if ($query === null) {
             return false;
@@ -137,8 +254,22 @@ class SearchRequest implements SingletonInterface
      */
     public function getRawUserQueryIsNull()
     {
-        $query = $this->getArgumentByKey('q', null);
+        $query = $this->arrayAccessor->get('q', null);
         return $query === null;
+    }
+
+    /**
+     * Sets the results per page that are used during search.
+     *
+     * @param integer $resultsPerPage
+     * @return SearchRequest
+     */
+    public function setResultsPerPage($resultsPerPage)
+    {
+        $path = $this->prefixWithNamespace('resultsPerPage');
+        $this->arrayAccessor->set($path, $resultsPerPage);
+
+        return $this;
     }
 
     /**
@@ -147,6 +278,49 @@ class SearchRequest implements SingletonInterface
      */
     public function getResultsPerPage()
     {
-        return $this->getArgumentByKey('resultsPerPage');
+        $path = $this->prefixWithNamespace('resultsPerPage');
+        return $this->arrayAccessor->get($path);
+    }
+
+    /**
+     * Assigns the last known persistedArguments and restores their state.
+     *
+     * @return SearchRequest
+     */
+    public function reset()
+    {
+        $this->arrayAccessor = new ArrayAccessor($this->persistedArguments);
+        return $this;
+    }
+
+    /**
+     * This can be used to start a new sub request, e.g. for a faceted search.
+     *
+     * @param bool $onlyPersistentArguments
+     * @return SearchRequest
+     */
+    public function getCopyForSubRequest($onlyPersistentArguments = true)
+    {
+        $argumentsArray = $this->arrayAccessor->getData();
+        if ($onlyPersistentArguments) {
+            $arguments = new ArrayAccessor();
+            foreach ($this->persistentArgumentsPaths as $persistentArgumentPath) {
+                if ($this->arrayAccessor->has($persistentArgumentPath)) {
+                    $arguments->set($persistentArgumentPath, $this->arrayAccessor->get($persistentArgumentPath));
+                }
+            }
+
+            $argumentsArray = $arguments->getData();
+        }
+
+        return new SearchRequest($argumentsArray);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAsArray()
+    {
+        return $this->arrayAccessor->getData();
     }
 }
