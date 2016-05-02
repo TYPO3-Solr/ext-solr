@@ -59,15 +59,38 @@ class SearchRequest implements SingletonInterface
     /**
      * @var ArrayAccessor
      */
-    protected $arrayAccessor;
+    protected $argumentsAccessor;
+
+    /**
+     * The sys_language_uid that was used in the context where the request was build.
+     * This could be different from the "L" parameter and and not relevant for urls,
+     * because typolink itself will handle it.
+     *
+     * @var integer
+     */
+    protected $contextSystemLanguageUid;
+
+    /**
+     * The page_uid that was used in the context where the request was build.
+     *
+     * The pageUid is not relevant for the typolink additionalArguments and therefore
+     * a separate property.
+     *
+     * @var integer
+     */
+    protected $contextPageUid;
 
     /**
      * @param array $argumentsArray
+     * @param int $pageUid
+     * @param int $sysLanguageUid
      */
-    public function __construct(array $argumentsArray = array())
+    public function __construct(array $argumentsArray = array(), $pageUid = 0, $sysLanguageUid = 0)
     {
         $this->stateChanged = true;
         $this->persistedArguments = $argumentsArray;
+        $this->contextPageUid = $pageUid;
+        $this->contextSystemLanguageUid = $sysLanguageUid;
         $this->reset();
     }
 
@@ -121,7 +144,7 @@ class SearchRequest implements SingletonInterface
     protected function getActiveFacets()
     {
         $path = $this->prefixWithNamespace('filter');
-        return $this->arrayAccessor->get($path, array());
+        return $this->argumentsAccessor->get($path, array());
     }
 
     /**
@@ -133,7 +156,7 @@ class SearchRequest implements SingletonInterface
     protected function setActiveFacets($activeFacets = array())
     {
         $path = $this->prefixWithNamespace('filter');
-        $this->arrayAccessor->set($path, $activeFacets);
+        $this->argumentsAccessor->set($path, $activeFacets);
 
         return $this;
     }
@@ -185,7 +208,7 @@ class SearchRequest implements SingletonInterface
     {
         $this->stateChanged = true;
         $path = $this->prefixWithNamespace('page');
-        $this->arrayAccessor->set($path, $page);
+        $this->argumentsAccessor->set($path, $page);
         return $this;
     }
 
@@ -198,7 +221,7 @@ class SearchRequest implements SingletonInterface
     public function getPage()
     {
         $path = $this->prefixWithNamespace('page');
-        return $this->arrayAccessor->get($path);
+        return $this->argumentsAccessor->get($path);
     }
 
     /**
@@ -210,7 +233,7 @@ class SearchRequest implements SingletonInterface
     public function setRawQueryString($rawQueryString)
     {
         $this->stateChanged = true;
-        $this->arrayAccessor->set('q', $rawQueryString);
+        $this->argumentsAccessor->set('q', $rawQueryString);
         return $this;
     }
 
@@ -221,7 +244,7 @@ class SearchRequest implements SingletonInterface
      */
     public function getRawUserQuery()
     {
-        return $this->arrayAccessor->get('q');
+        return $this->argumentsAccessor->get('q');
     }
 
     /**
@@ -233,7 +256,7 @@ class SearchRequest implements SingletonInterface
      */
     public function getRawUserQueryIsEmptyString()
     {
-        $query = $this->arrayAccessor->get('q', null);
+        $query = $this->argumentsAccessor->get('q', null);
 
         if ($query === null) {
             return false;
@@ -254,7 +277,7 @@ class SearchRequest implements SingletonInterface
      */
     public function getRawUserQueryIsNull()
     {
-        $query = $this->arrayAccessor->get('q', null);
+        $query = $this->argumentsAccessor->get('q', null);
         return $query === null;
     }
 
@@ -267,7 +290,7 @@ class SearchRequest implements SingletonInterface
     public function setResultsPerPage($resultsPerPage)
     {
         $path = $this->prefixWithNamespace('resultsPerPage');
-        $this->arrayAccessor->set($path, $resultsPerPage);
+        $this->argumentsAccessor->set($path, $resultsPerPage);
 
         return $this;
     }
@@ -279,7 +302,23 @@ class SearchRequest implements SingletonInterface
     public function getResultsPerPage()
     {
         $path = $this->prefixWithNamespace('resultsPerPage');
-        return $this->arrayAccessor->get($path);
+        return $this->argumentsAccessor->get($path);
+    }
+
+    /**
+     * @return int
+     */
+    public function getContextSystemLanguageUid()
+    {
+        return $this->contextSystemLanguageUid;
+    }
+
+    /**
+     * @return int
+     */
+    public function getContextPageUid()
+    {
+        return $this->contextPageUid;
     }
 
     /**
@@ -289,7 +328,7 @@ class SearchRequest implements SingletonInterface
      */
     public function reset()
     {
-        $this->arrayAccessor = new ArrayAccessor($this->persistedArguments);
+        $this->argumentsAccessor = new ArrayAccessor($this->persistedArguments);
         return $this;
     }
 
@@ -301,12 +340,12 @@ class SearchRequest implements SingletonInterface
      */
     public function getCopyForSubRequest($onlyPersistentArguments = true)
     {
-        $argumentsArray = $this->arrayAccessor->getData();
+        $argumentsArray = $this->argumentsAccessor->getData();
         if ($onlyPersistentArguments) {
             $arguments = new ArrayAccessor();
             foreach ($this->persistentArgumentsPaths as $persistentArgumentPath) {
-                if ($this->arrayAccessor->has($persistentArgumentPath)) {
-                    $arguments->set($persistentArgumentPath, $this->arrayAccessor->get($persistentArgumentPath));
+                if ($this->argumentsAccessor->has($persistentArgumentPath)) {
+                    $arguments->set($persistentArgumentPath, $this->argumentsAccessor->get($persistentArgumentPath));
                 }
             }
 
@@ -321,6 +360,6 @@ class SearchRequest implements SingletonInterface
      */
     public function getAsArray()
     {
-        return $this->arrayAccessor->getData();
+        return $this->argumentsAccessor->getData();
     }
 }

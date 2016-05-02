@@ -191,6 +191,24 @@ class SearchRequestTest extends UnitTest
     }
 
     /**
+     * @test
+     */
+    public function canGetContextSystemLanguageUidPassedOnCreation()
+    {
+        $request = new SearchRequest(array(), 111, 4711);
+        $this->assertSame($request->getContextSystemLanguageUid(), 4711, 'Can get initial passed sys_language_uid');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetContextPageUidPassedOnCreation()
+    {
+        $request = new SearchRequest(array(), 111, 4711);
+        $this->assertSame($request->getContextPageUid(), 111, 'Can get initial passed page_uid');
+    }
+
+    /**
      * @param $query
      * @return SearchRequest
      */

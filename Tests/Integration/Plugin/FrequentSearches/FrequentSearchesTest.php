@@ -61,7 +61,7 @@ class FrequentSearchesTest extends AbstractPluginTest
         $searchResults->main('', array());
 
             // and now render the frequent Results Plugin
-        $frequentSearches = $this->getPluginInstance('frequent_search', $GLOBALS['TSFE']);
+        $frequentSearches = $this->getPluginInstance('frequent_search');
         $frequentSearchesOutput = $frequentSearches->main('', array());
         $this->assertContainerByIdContains('rel="nofollow">prices</a>', $frequentSearchesOutput, 'tx-solr-frequent-searches');
     }

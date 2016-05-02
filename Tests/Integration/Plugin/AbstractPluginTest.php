@@ -42,11 +42,12 @@ abstract class AbstractPluginTest extends IntegrationTest
 
     /**
      * @param array $importPageIds
-     * @param string $fixtureName
+     * @param string $fixture
      * @param string $plugin
+     * @param integer $pluginPageUid
      * @return \ApacheSolrForTypo3\Solr\Plugin\Results\Results
      */
-    protected function importTestDataSetAndGetInitializedPlugin($importPageIds, $fixture, $plugin = 'results')
+    protected function importTestDataSetAndGetInitializedPlugin($importPageIds, $fixture, $plugin = 'results', $pluginPageUid = 1)
     {
         $this->importDataSetFromFixture($fixture);
 
@@ -56,6 +57,7 @@ abstract class AbstractPluginTest extends IntegrationTest
             $fakeTSFE->newCObj();
 
             $GLOBALS['TSFE'] = $fakeTSFE;
+
             PageGenerator::pagegenInit();
             PageGenerator::renderContent();
 
@@ -69,17 +71,17 @@ abstract class AbstractPluginTest extends IntegrationTest
 
         sleep(2);
 
-        $plugin = $this->getPluginInstance($plugin, $fakeTSFE);
+        $plugin = $this->getPluginInstance($plugin, $pluginPageUid);
         return $plugin;
     }
 
     /**
      * @param $plugin
-     * @param $fakeTSFE
+     * @param $pluginPageId
      * @return \ApacheSolrForTypo3\Solr\Plugin\Results\Results
      * @throws \InvalidArgumentException
      */
-    protected function getPluginInstance($plugin, $fakeTSFE)
+    protected function getPluginInstance($plugin, $pluginPageId = 1)
     {
         switch ($plugin) {
             case 'results':
@@ -96,10 +98,19 @@ abstract class AbstractPluginTest extends IntegrationTest
 
         }
 
-        /** @var $plugin \ApacheSolrForTypo3\Solr\Plugin\Results\Results */
-        $plugin = GeneralUtility::makeInstance($pluginClassName);
+
+        $fakeTSFE = $this->getConfiguredTSFE(array(), $pluginPageId);
+        $fakeTSFE->newCObj();
+        $GLOBALS['TSFE'] = $fakeTSFE;
+
+        PageGenerator::pagegenInit();
+        PageGenerator::renderContent();
+
         $fakeTSFE->newCObj();
         $fakeTSFE->fe_user->id = 'id';
+
+        /** @var $plugin \ApacheSolrForTypo3\Solr\Plugin\Results\Results */
+        $plugin = GeneralUtility::makeInstance($pluginClassName);
         $plugin->cObj = $fakeTSFE->cObj;
         return $plugin;
     }
