@@ -265,14 +265,9 @@ class Site
             false
         );
 
-        if (isset($configuration['sys_language_uid'])) {
-            $siteDefaultLanguage = $configuration['sys_language_uid'];
-        }
-
+        $siteDefaultLanguage = $configuration->getValueByPathOrDefaultValue('sys_language_uid', $siteDefaultLanguage);
         // default language is set through default L GET parameter -> overruling config.sys_language_uid
-        if (isset($configuration['defaultGetVars.']['L'])) {
-            $siteDefaultLanguage = intval($configuration['defaultGetVars.']['L']);
-        }
+        $siteDefaultLanguage = $configuration->getValueByPathOrDefaultValue('defaultGetVars.L', $siteDefaultLanguage);
 
         return $siteDefaultLanguage;
     }
