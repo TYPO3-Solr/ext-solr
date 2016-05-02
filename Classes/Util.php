@@ -227,7 +227,8 @@ class Util
         $initializeTsfe = false,
         $language = 0
     ) {
-        return self::getConfigurationFromPageId($pageId, 'plugin.tx_solr', $initializeTsfe, $language);
+        $rootPath = '';
+        return self::getConfigurationFromPageId($pageId, $rootPath, $initializeTsfe, $language);
     }
 
     /**
@@ -292,11 +293,8 @@ class Util
      */
     protected static function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
     {
-        $configurationArray = array();
-        $configurationArray['plugin.']['tx_solr.'] = $configurationToUse;
         $configurationManager = self::getConfigurationManager();
-
-        return $configurationManager->getTypoScriptConfiguration($configurationArray, $pageId, $languageId, $typoScriptPath);
+        return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
     }
 
     /**
@@ -635,7 +633,8 @@ class Util
      */
     public static function getAllowedPageTypes($pageId)
     {
-        $configuration = self::getConfigurationFromPageId($pageId, 'plugin.tx_solr');
+        $rootPath = '';
+        $configuration = self::getConfigurationFromPageId($pageId, $rootPath);
         return $configuration->getIndexQueuePagesAllowedPageTypesArray();
     }
 

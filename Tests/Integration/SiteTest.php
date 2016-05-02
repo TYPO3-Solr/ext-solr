@@ -45,4 +45,14 @@ class SiteTest extends IntegrationTest
         $sites = Site::getAvailableSites();
         $this->assertSame(1, count($sites), 'Expected to retrieve one site from fixture');
     }
+
+    /**
+     * @test
+     */
+    public function canGetDefaultLanguage()
+    {
+        $this->importDataSetFromFixture('can_get_default_language.xml');
+        $site = Site::getFirstAvailableSite();
+        $this->assertEquals(888, $site->getDefaultLanguage(), 'Could not get default language from site');
+    }
 }

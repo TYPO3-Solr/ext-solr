@@ -118,7 +118,7 @@ class SearchResultSetTest extends UnitTest
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 2. search', 50, $fakeResponse);
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPage')->will($this->returnValue(25));
 
-        $fakeRequest = new SearchRequest(array('q' => 'my 2. search','tx_solr' => array('page' => 2)));
+        $fakeRequest = new SearchRequest(array('q' => 'my 2. search', 'tx_solr' => array('page' => 2)));
 
         $this->assertPerPageInSessionWillNotBeChanged();
         $resultSet = $this->searchResultSetService->search($fakeRequest);

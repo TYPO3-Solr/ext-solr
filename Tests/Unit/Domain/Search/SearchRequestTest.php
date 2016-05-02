@@ -104,7 +104,7 @@ class SearchRequestTest extends UnitTest
     public function canAddOneFacet()
     {
         $request = $this->getSearchRequestFromQueryString('');
-        $arguments  = $request->addFacetValue('foo','bar')->getAsArray();
+        $arguments  = $request->addFacetValue('foo', 'bar')->getAsArray();
         $expectedArguments = array();
         $expectedArguments['tx_solr']['filter'][0] = 'foo:bar';
         $this->assertSame($arguments, $expectedArguments, 'Adding a facet did not product the expected structure');
@@ -116,7 +116,7 @@ class SearchRequestTest extends UnitTest
     public function canAddManyFacets()
     {
         $request = $this->getSearchRequestFromQueryString('');
-        $arguments  = $request->addFacetValue('type','pages')->addFacetValue('type','tt_content')->getAsArray();
+        $arguments  = $request->addFacetValue('type', 'pages')->addFacetValue('type', 'tt_content')->getAsArray();
         $expectedArguments = array();
         $expectedArguments['tx_solr']['filter'][0] = 'type:pages';
         $expectedArguments['tx_solr']['filter'][1] = 'type:tt_content';
@@ -130,7 +130,7 @@ class SearchRequestTest extends UnitTest
     public function canAddFacetsAndQuery()
     {
         $request = $this->getSearchRequestFromQueryString('');
-        $arguments  = $request->setRawQueryString('mysearch')->addFacetValue('type','tt_content')->getAsArray();
+        $arguments  = $request->setRawQueryString('mysearch')->addFacetValue('type', 'tt_content')->getAsArray();
 
         $expectedArguments = array();
         $expectedArguments['q'] = 'mysearch';
@@ -145,7 +145,7 @@ class SearchRequestTest extends UnitTest
     public function canReset()
     {
         $request = $this->getSearchRequestFromQueryString('');
-        $arguments  = $request->setRawQueryString('mysearch')->addFacetValue('type','tt_content')->reset()->getAsArray();
+        $arguments  = $request->setRawQueryString('mysearch')->addFacetValue('type', 'tt_content')->reset()->getAsArray();
         $expectedArguments = array();
         $this->assertSame($arguments, $expectedArguments, 'Could not reset arguments');
     }
@@ -159,7 +159,7 @@ class SearchRequestTest extends UnitTest
 
         // we persist before we reset the arguments therefore the arguments should be kept
         $arguments  = $request->setRawQueryString('mysearch')
-                            ->addFacetValue('type','tt_content')
+                            ->addFacetValue('type', 'tt_content')
                             ->getCopyForSubRequest()
                             ->getAsArray();
 
@@ -179,7 +179,7 @@ class SearchRequestTest extends UnitTest
 
         // we persist before we reset the arguments therefore the arguments should be kept
         $arguments  = $request->setRawQueryString('mysearch')
-                                ->addFacetValue('type','tt_content')
+                                ->addFacetValue('type', 'tt_content')
                                 ->setPage(2)
                                 ->getCopyForSubRequest()->getAsArray();
 
