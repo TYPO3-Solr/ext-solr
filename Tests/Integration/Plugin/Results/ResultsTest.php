@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\AbstractPluginTest;
@@ -394,6 +395,21 @@ class ResultsTest extends AbstractPluginTest
 
         $resultPage = $searchResults->main('', array());
         $this->assertContains('My own label', $resultPage, 'Could not find custom TypoScript label');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetPageIdFromSearchRequestAfterRendering()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml', 'results', 5);
+        $_GET['q'] = '*';
+        $searchResults->main('', array());
+
+        // after executing a search the SearchRequest singleton should have the ContextPageUid where the search was executed
+        /** @var $searchRequest SearchRequest */
+        $searchRequest = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest');
+        $this->assertEquals(5, $searchRequest->getContextPageUid(), 'Could not get uid of page of the context where search was executed');
     }
 
     /**

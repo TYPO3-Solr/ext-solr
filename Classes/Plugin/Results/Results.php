@@ -94,7 +94,7 @@ class Results extends CommandPluginBase
 
             /** @var $searchRequest \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest */
         $searchRequest = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest',
-            array('tx_solr' => $solrParameters)
+            array('tx_solr' => $solrParameters), $GLOBALS['TSFE']->id, $GLOBALS['TSFE']->sys_language_uid
         );
         $searchRequest->mergeArguments(array('tx_solr' => $this->piVars));
         $searchRequest->mergeArguments(array('q' => $this->getRawUserQuery()));
