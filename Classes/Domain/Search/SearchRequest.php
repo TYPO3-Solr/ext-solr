@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 /**
@@ -36,7 +35,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class SearchRequest implements SingletonInterface
+class SearchRequest
 {
 
     /**

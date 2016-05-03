@@ -406,9 +406,8 @@ class ResultsTest extends AbstractPluginTest
         $_GET['q'] = '*';
         $searchResults->main('', array());
 
-        // after executing a search the SearchRequest singleton should have the ContextPageUid where the search was executed
-        /** @var $searchRequest SearchRequest */
-        $searchRequest = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest');
+        // after executing a search the SearchRequest of the last search should have the ContextPageUid where the search was executed
+        $searchRequest = $searchResults->getSearchResultSetService()->getLastResultSet()->getUsedSearchRequest();
         $this->assertEquals(5, $searchRequest->getContextPageUid(), 'Could not get uid of page of the context where search was executed');
     }
 

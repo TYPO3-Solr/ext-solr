@@ -34,6 +34,7 @@ use ApacheSolrForTypo3\Solr\Search\QueryAware;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
@@ -45,7 +46,7 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  * @package TYPO3
  * @subpackage solr
  */
-class SearchResultSetService
+class SearchResultSetService implements SingletonInterface
 {
     /**
      * Additional filters, which will be added to the query, as well as to
