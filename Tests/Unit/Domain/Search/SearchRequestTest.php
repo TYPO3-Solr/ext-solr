@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
@@ -218,5 +219,16 @@ class SearchRequestTest extends UnitTest
         parse_str(urldecode($query), $FAKE_GET);
         $request = new SearchRequest($FAKE_GET);
         return $request;
+    }
+
+    /**
+     * @test
+     */
+    public function canGetContextTypoScriptConfigurationPassedOnCreation()
+    {
+        $typoScriptConfiguration = $this->getMock(TypoScriptConfiguration::class, [], [[]]);
+        $request = new SearchRequest(array(), 111, 4711, $typoScriptConfiguration);
+
+        $this->assertSame($request->getContextTypoScriptConfiguration(), $typoScriptConfiguration, 'Can get initial passed TypoScriptConfiguration');
     }
 }
