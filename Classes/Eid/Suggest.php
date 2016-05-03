@@ -34,15 +34,18 @@ $languageId = filter_var(
     FILTER_VALIDATE_INT,
     array('options' => array('default' => 0, 'min_range' => 0))
 );
-$GLOBALS['TSFE'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',
-    $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0, true);
+$GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+    'TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',
+    $GLOBALS['TYPO3_CONF_VARS'],
+    $pageId,
+    0,
+    true);
 $GLOBALS['TSFE']->initFEuser();
 $GLOBALS['TSFE']->initUserGroups();
 // load TCA
 EidUtility::initTCA();
 $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-$GLOBALS['TSFE']->rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($pageId,
-    '');
+$GLOBALS['TSFE']->rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($pageId, '');
 $GLOBALS['TSFE']->initTemplate();
 $GLOBALS['TSFE']->getConfigArray();
 
@@ -61,14 +64,13 @@ if ('OpenSearch' == GeneralUtility::_GET('format')) {
     $isOpenSearchRequest = true;
     $q = GeneralUtility::_GET('q');
 }
-
+$allowedSitesConfig = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.search.query.', []);
 $allowedSites = Util::resolveSiteHashAllowedSites(
     $pageId,
-    $solrConfiguration['search.']['query.']['allowedSites']
+    $allowedSitesConfig['allowedSites']
 );
 
-$suggestQuery = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SuggestQuery',
-    $q);
+$suggestQuery = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SuggestQuery', $q);
 $suggestQuery->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 $suggestQuery->setSiteHashFilter($allowedSites);
 $suggestQuery->setOmitHeader();
@@ -92,9 +94,9 @@ $search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search',
     $solr);
 
 if ($search->ping()) {
-    $results = json_decode($search->search($suggestQuery, 0,
-        0)->getRawResponse());
-    $facetSuggestions = $results->facet_counts->facet_fields->{$solrConfiguration['suggest.']['suggestField']};
+    $results = json_decode($search->search($suggestQuery, 0, 0)->getRawResponse());
+    $suggestConfig = $solrConfiguration->getObjectByPath('plugin.tx_solr.suggest.');
+    $facetSuggestions = $results->facet_counts->facet_fields->{$suggestConfig['suggestField']};
     $facetSuggestions = get_object_vars($facetSuggestions);
 
     $suggestions = array();
