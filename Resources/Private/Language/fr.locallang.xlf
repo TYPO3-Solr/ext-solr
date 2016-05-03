@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" target-language="fr" datatype="plaintext" original="messages" date="2015-12-23T10:34:18Z" product-name="solr">
+		<header/>
+		<body>
+			<!-- From Backend/locallang.xlf //-->
+			<trans-unit id="module_indexinspector" xml:space="preserve" approved="yes">
+				<source>Search Index Inspector</source>
+				<target>Inspecteur de l'index de recherche</target>
+			</trans-unit>
+			<trans-unit id="plugin_results" xml:space="preserve" approved="yes">
+				<source>Search</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="plugin_results_description" xml:space="preserve" approved="yes">
+				<source>A search form and results list.</source>
+				<target></target>
+			</trans-unit>
+
+			<!-- From ModuleReports/locallang.xlf //-->
+			<trans-unit id="index_title" xml:space="preserve" approved="yes">
+				<source>Apache Solr Index</source>
+				<target>Index d'Apache Solr</target>
+			</trans-unit>
+			<trans-unit id="index_description" xml:space="preserve" approved="yes">
+				<source>View the number of documents and fields in your index</source>
+				<target>Visualisez le nombre de documents et de champs de votre index</target>
+			</trans-unit>
+			<trans-unit id="statistics_title" xml:space="preserve" approved="yes">
+				<source>Apache Solr Statistics</source>
+				<target>Statistiques d'Apache Solr</target>
+			</trans-unit>
+			<trans-unit id="statistics_description" xml:space="preserve" approved="yes">
+				<source>Provides several Solr usage statistics</source>
+				<target>Fourni plusieurs statistiques d'usage de Solr</target>
+			</trans-unit>
+
+			<!-- From ModuleScheduler/locallang.xlf //-->
+			<trans-unit id="reindex_title" xml:space="preserve" approved="yes">
+				<source>Force Re-Indexing of a site</source>
+				<target>Force la réindexation d'un site</target>
+			</trans-unit>
+			<trans-unit id="reindex_description" xml:space="preserve" approved="yes">
+				<source>Purges the Solr Index and initializes the Index Queue of a site.</source>
+				<target>Purge l'index de Solr et initialise la file d'attente d'indexation d'un site.</target>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_title" xml:space="preserve" approved="yes">
+				<source>Index Queue Worker</source>
+				<target>Tâche de traitement de la file d'indexation.</target>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_description" xml:space="preserve" approved="yes">
+				<source>Processes the items in the Index Queue and sends them to Solr.</source>
+				<target>Traite les élément de la file d'attente et les envoie à Solr.</target>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve" approved="yes">
+				<source>Number of documents to index</source>
+				<target>Nombre de documents à indexer</target>
+			</trans-unit>
+			<trans-unit id="field_host" xml:space="preserve" approved="yes">
+				<source>Solr Host</source>
+				<target>Hôte Solr</target>
+			</trans-unit>
+			<trans-unit id="field_port" xml:space="preserve" approved="yes">
+				<source>Solr Port</source>
+				<target>Port Solr</target>
+			</trans-unit>
+			<trans-unit id="field_path" xml:space="preserve" approved="yes">
+				<source>Solr Path</source>
+				<target>URI Solr</target>
+			</trans-unit>
+			<trans-unit id="field_server" xml:space="preserve" approved="yes">
+				<source>Solr Server</source>
+				<target>Serveur Solr</target>
+			</trans-unit>
+			<trans-unit id="field_site" xml:space="preserve" approved="yes">
+				<source>Site</source>
+				<target>Site</target>
+			</trans-unit>
+
+	 		<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
+			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
+				<source>Search is currently not available.</source>
+				<target>La recherche est actuellement indisponible.</target>
+			</trans-unit>
+			<trans-unit id="searchFailed" xml:space="preserve" approved="yes">
+				<source>We're sorry. The request you tried to make could not be processed.</source>
+				<target>Désolé. Votre demande n'a pas pu être traitée.</target>
+			</trans-unit>
+			<trans-unit id="searchWord" xml:space="preserve" approved="yes">
+				<source>Search Term</source>
+				<target>Critère de recherche</target>
+			</trans-unit>
+			<trans-unit id="didYouMean" xml:space="preserve" approved="yes">
+				<source>Did you mean</source>
+				<target>Pensiez-vous à</target>
+			</trans-unit>
+			<trans-unit id="submit" xml:space="preserve" approved="yes">
+				<source>Search</source>
+				<target>Recherche</target>
+			</trans-unit>
+			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
+				<source>Sort by</source>
+				<target>Trier par</target>
+			</trans-unit>
+			<trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
+				<source>Narrow Search</source>
+				<target>Filtre de résultats</target>
+			</trans-unit>
+			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
+				<source>Search narrowed by</source>
+				<target>Filtres actifs</target>
+			</trans-unit>
+			<trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
+				<source>Show more</source>
+				<target>Afficher plus</target>
+			</trans-unit>
+			<trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
+				<source>Show fewer</source>
+				<target>Afficher moins</target>
+			</trans-unit>
+			<trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
+				<source>Remove all filters</source>
+				<target>Retirer tous les filtres</target>
+			</trans-unit>
+			<trans-unit id="results_range" xml:space="preserve" approved="yes">
+				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
+				<target>Affiche les résultats de @resultsFrom à @resultsTo sur @resultsTotal.</target>
+			</trans-unit>
+			<trans-unit id="results_found" xml:space="preserve" approved="yes">
+				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
+				<target>@resultsTotal résultats ont été trouvés en @resultsTime millisecondes.</target>
+			</trans-unit>
+			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
+				<source>Searched for &quot;@searchWord&quot;.</source>
+				<target>Recherche de &quot;@searchWord&quot;.</target>
+			</trans-unit>
+			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
+				<source>Nothing found for &quot;@searchWord&quot;.</source>
+				<target>Rien trouvé pour &quot;@searchWord&quot;.</target>
+			</trans-unit>
+			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
+				<source>Showing results for &quot;@suggestedWord&quot;</source>
+				<target>Affichage des résultats pour &quot;@suggestedWord&quot;</target>
+			</trans-unit>
+			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
+				<source>Search instead for &quot;@searchWord&quot;.</source>
+				<target>Chercher &quot;@searchWord&quot; à la place.</target>
+			</trans-unit>
+			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
+				<source>Last searches</source>
+				<target>Dernières recherches</target>
+			</trans-unit>
+			<trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
+				<source>Frequent searches</source>
+				<target>Recherches fréquentes</target>
+			</trans-unit>
+			<trans-unit id="relevance" xml:space="preserve" approved="yes">
+				<source>Relevance</source>
+				<target>Pertinence</target>
+			</trans-unit>
+			<trans-unit id="sponsored" xml:space="preserve" approved="yes">
+				<source>Sponsored</source>
+				<target>Sponsorisé</target>
+			</trans-unit>
+			<trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
+				<source>File type</source>
+				<target>Type de fichier</target>
+			</trans-unit>
+			<trans-unit id="file_referenced" xml:space="preserve" approved="yes">
+				<source>Referenced at</source>
+				<target>Référencé par</target>
+			</trans-unit>
+			<trans-unit id="results_per_page" xml:space="preserve" approved="yes">
+				<source>Results per page:</source>
+				<target>Résultats par page:</target>
+			</trans-unit>
+			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
+				<source>We're sorry, there were some errors:</source>
+				<target>Veuillez nous excuser, des erreurs sont survenues :</target>
+			</trans-unit>
+			<trans-unit id="error_emptyQuery" xml:space="preserve" approved="yes">
+				<source>Please enter your search term in the box above.</source>
+				<target>Veuillez remplir les termes de recherche dans le champ ci-dessus.</target>
+			</trans-unit>
+			<trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
+				<source>First</source>
+				<target>Premier</target>
+			</trans-unit>
+			<trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
+				<source>Previous</source>
+				<target>Précédent</target>
+			</trans-unit>
+			<trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
+				<source>Next</source>
+				<target>Suivant</target>
+			</trans-unit>
+			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
+				<source>Last</source>
+				<target>Dernier</target>
+			</trans-unit>
+
+			<!-- From locallang_db.xlf -->
+			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve" approved="yes">
+				<source>Search: Frequent Searches</source>
+				<target>Rechercher: Recherches fréquentes</target>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_results" xml:space="preserve" approved="yes">
+				<source>Search: Form, Result, Additional Components</source>
+				<target>Rechercher: Formulaire, Résultats, Composants additionnels</target>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_search" xml:space="preserve" approved="yes">
+				<source>Search: Form only</source>
+				<target>Rechercher: Formulaire seul</target>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

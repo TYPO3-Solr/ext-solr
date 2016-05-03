@@ -4,7 +4,7 @@
 $pluginCode = 'solr_pi_results';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
     array(
-        'LLL:EXT:solr/Resources/Private/Language/locallang_db.xlf:tt_content.list_type_pi_results',
+        'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:tt_content.list_type_pi_results',
         $pluginCode
     ),
     'list_type',
@@ -21,7 +21,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginCode] 
 $pluginCode = 'solr_pi_search';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
     array(
-        'LLL:EXT:solr/Resources/Private/Language/locallang_db.xlf:tt_content.list_type_pi_search',
+        'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:tt_content.list_type_pi_search',
         $pluginCode
     ),
     'list_type',
@@ -34,7 +34,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginCo
 $pluginCode = 'solr_pi_frequentsearches';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
     array(
-        'LLL:EXT:solr/Resources/Private/Language/locallang_db.xlf:tt_content.list_type_pi_frequentsearches',
+        'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:tt_content.list_type_pi_frequentsearches',
         $pluginCode
     ),
     'list_type',

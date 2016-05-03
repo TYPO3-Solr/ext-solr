@@ -1,67 +1,68 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="dk" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
+	<file source-language="en" target-language="kr" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
 		<header/>
 		<body>
+	 		<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
 			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
 				<source>Search is currently not available.</source>
-				<target>Søgning er ikke tilgængelig på nuværende tidspunkt.</target>
+				<target>지금 검색할 수 없습니다.</target>
 			</trans-unit>
 			<trans-unit id="searchFailed" xml:space="preserve" approved="yes">
 				<source>We're sorry. The request you tried to make could not be processed.</source>
-				<target>Vi beklager. Forespørgslen kunne ikke udføres.</target>
+				<target>죄송합니다. 요청한 것을 처리할 수 없습니다.</target>
 			</trans-unit>
 			<trans-unit id="searchWord" xml:space="preserve" approved="yes">
 				<source>Search Term</source>
-				<target>Søgeord</target>
+				<target>검색어</target>
 			</trans-unit>
 			<trans-unit id="didYouMean" xml:space="preserve" approved="yes">
 				<source>Did you mean</source>
-				<target>Mente du</target>
+				<target>로 검색하겠습니까?</target>
 			</trans-unit>
 			<trans-unit id="submit" xml:space="preserve" approved="yes">
 				<source>Search</source>
-				<target>Søg</target>
+				<target>검색</target>
 			</trans-unit>
 			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
 				<source>Sort by</source>
-				<target>Sortér efter</target>
+				<target>분류</target>
 			</trans-unit>
 			<trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
 				<source>Narrow Search</source>
-				<target>Begræns søgning</target>
+				<target>상세 검색</target>
 			</trans-unit>
 			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
 				<source>Search narrowed by</source>
-				<target>Valgte begrænsninger</target>
+				<target>상세 검색 결과</target>
 			</trans-unit>
 			<trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
 				<source>Show more</source>
-				<target>Vis flere</target>
+				<target>더 많이 보이기</target>
 			</trans-unit>
 			<trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
 				<source>Show fewer</source>
-				<target>Vis færre</target>
+				<target>더 적게 보이기</target>
 			</trans-unit>
 			<trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
 				<source>Remove all filters</source>
-				<target>Fjern alle begrænsninger</target>
+				<target>모든 필터 제거</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Viser resultat @resultsFrom til @resultsTo af ialt @resultsTotal.</target>
+				<target>@resultsTotal의 @resultsFrom에서 @resultsTo까지의 결과.</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>Fandt @resultsTotal resultater på @resultsTime milisekunder.</target>
+				<target>@resultsTime 1,000분의 1초 동안에 @resultsTotal 검색 결과</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
 				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Søgte efter &quot;@searchWord&quot;.</target>
+				<target>&quot;@searchWord&quot;에 대한 검색내용.</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
 				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>Intet fundet for søgeord &quot;@searchWord&quot;.</target>
+				<target>&quot;@searchWord&quot;에 대한 검색내용 없음.</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
 				<source>Showing results for &quot;@suggestedWord&quot;</source>
@@ -73,15 +74,15 @@
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
 				<source>Last searches</source>
-				<target></target>
+				<target>이전 검색</target>
 			</trans-unit>
 			<trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
 				<source>Frequent searches</source>
-				<target></target>
+				<target>일반 검색</target>
 			</trans-unit>
 			<trans-unit id="relevance" xml:space="preserve" approved="yes">
 				<source>Relevance</source>
-				<target>Relevans</target>
+				<target>적합성</target>
 			</trans-unit>
 			<trans-unit id="sponsored" xml:space="preserve" approved="yes">
 				<source>Sponsored</source>
@@ -89,15 +90,15 @@
 			</trans-unit>
 			<trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
 				<source>File type</source>
-				<target></target>
+				<target>파일 유형</target>
 			</trans-unit>
 			<trans-unit id="file_referenced" xml:space="preserve" approved="yes">
 				<source>Referenced at</source>
-				<target></target>
+				<target>에서 참조</target>
 			</trans-unit>
 			<trans-unit id="results_per_page" xml:space="preserve" approved="yes">
 				<source>Results per page:</source>
-				<target>Resultater per side:</target>
+				<target>페이지 당 결과:</target>
 			</trans-unit>
 			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
 				<source>We're sorry, there were some errors:</source>

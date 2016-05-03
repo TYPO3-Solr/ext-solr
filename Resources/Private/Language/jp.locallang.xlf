@@ -1,67 +1,68 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="pl" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
+	<file source-language="en" target-language="jp" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
 		<header/>
 		<body>
+	 		<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
 			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
 				<source>Search is currently not available.</source>
-				<target>Wyszukiwarka nie jest w tej chwili dostępna.</target>
+				<target>検索は現在使用できません。</target>
 			</trans-unit>
 			<trans-unit id="searchFailed" xml:space="preserve" approved="yes">
 				<source>We're sorry. The request you tried to make could not be processed.</source>
-				<target>Przykro nam bardzo, ale Twoje wyszukiwanie nie może zostać zrealizowane.</target>
+				<target>申し訳ありません。実行しようとした要求は処理できません。</target>
 			</trans-unit>
 			<trans-unit id="searchWord" xml:space="preserve" approved="yes">
 				<source>Search Term</source>
-				<target>Wyszukiwana treść</target>
+				<target>検索語句</target>
 			</trans-unit>
 			<trans-unit id="didYouMean" xml:space="preserve" approved="yes">
 				<source>Did you mean</source>
-				<target>Czy masz na myśli</target>
+				<target>検索語句の候補</target>
 			</trans-unit>
 			<trans-unit id="submit" xml:space="preserve" approved="yes">
 				<source>Search</source>
-				<target>Szukaj</target>
+				<target>検索</target>
 			</trans-unit>
 			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
 				<source>Sort by</source>
-				<target>Sortuj wg.</target>
+				<target>並び替え項目</target>
 			</trans-unit>
 			<trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
 				<source>Narrow Search</source>
-				<target>Zawęź wyniki</target>
+				<target>絞り込み検索</target>
 			</trans-unit>
 			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
 				<source>Search narrowed by</source>
-				<target>Zawężone przez</target>
+				<target>絞り込み結果</target>
 			</trans-unit>
 			<trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
 				<source>Show more</source>
-				<target>Pokaż więcej</target>
+				<target>表示数を増やす</target>
 			</trans-unit>
 			<trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
 				<source>Show fewer</source>
-				<target>Pokaż mniej</target>
+				<target>表示数を減らす</target>
 			</trans-unit>
 			<trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
 				<source>Remove all filters</source>
-				<target>Usuń wszystkie filtry</target>
+				<target>フィルタをすべて削除</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Pokazuję wyniki od @resultsFrom do @resultsTo z @resultsTotal.</target>
+				<target>@resultsTotal の結果のうち、 @resultsFrom から @resultsTo までを表示します。</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>Rezultatów: @resultsTotal, czas wyszukiwania @resultsTime milisekund.</target>
+				<target>@resultsTime ミリ秒で @resultsTotal の結果が見つかりました。</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
 				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Szukaliśmy &quot;@searchWord&quot;.</target>
+				<target>&quot;@searchWord&quot; を検索しました。</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
 				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>Nie znaleziono &quot;@searchWord&quot;.</target>
+				<target>&quot;@searchWord&quot; が見つかりません。</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
 				<source>Showing results for &quot;@suggestedWord&quot;</source>
@@ -73,15 +74,15 @@
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
 				<source>Last searches</source>
-				<target></target>
+				<target>前の検索</target>
 			</trans-unit>
 			<trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
 				<source>Frequent searches</source>
-				<target></target>
+				<target>共通検索</target>
 			</trans-unit>
 			<trans-unit id="relevance" xml:space="preserve" approved="yes">
 				<source>Relevance</source>
-				<target>Waga</target>
+				<target>関連</target>
 			</trans-unit>
 			<trans-unit id="sponsored" xml:space="preserve" approved="yes">
 				<source>Sponsored</source>
@@ -89,39 +90,39 @@
 			</trans-unit>
 			<trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
 				<source>File type</source>
-				<target></target>
+				<target>ファイルの種類</target>
 			</trans-unit>
 			<trans-unit id="file_referenced" xml:space="preserve" approved="yes">
 				<source>Referenced at</source>
-				<target></target>
+				<target>参照元</target>
 			</trans-unit>
 			<trans-unit id="results_per_page" xml:space="preserve" approved="yes">
 				<source>Results per page:</source>
-				<target>Wyników na stronę:</target>
+				<target>ページ毎の結果:</target>
 			</trans-unit>
 			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
 				<source>We're sorry, there were some errors:</source>
-				<target>Przykro nam, natknęliśmy się na błędy:</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="error_emptyQuery" xml:space="preserve" approved="yes">
 				<source>Please enter your search term in the box above.</source>
-				<target>Wpisz słowa kluczowe w polu powyżej.</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
 				<source>First</source>
-				<target>Pierwsza</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
 				<source>Previous</source>
-				<target>Poprzednia</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
 				<source>Next</source>
-				<target>Następna</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
 				<source>Last</source>
-				<target>Ostatnia</target>
+				<target></target>
 			</trans-unit>
 		</body>
 	</file>

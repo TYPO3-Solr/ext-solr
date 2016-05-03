@@ -244,7 +244,7 @@ abstract class PluginBase extends AbstractPlugin
             $pathElements = pathinfo($this->scriptRelPath);
             $languageFileName = $pathElements['filename'];
 
-            $basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/Plugin' . $languageFileName . '/locallang.xlf';
+            $basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf';
             // Read the strings in the required charset (since TYPO3 4.2)
             $this->LOCAL_LANG = $this->languageFactory->getParsedData($basePath,
                 $this->LLkey, $GLOBALS['TSFE']->renderCharset, 3);
@@ -361,8 +361,7 @@ abstract class PluginBase extends AbstractPlugin
         $template->addViewHelperIncludePath($this->extKey,
             'Classes/ViewHelper/');
         $template->addViewHelper('LLL', array(
-            'languageFile' => 'EXT:solr/Resources/Private/Language/' . str_replace('Pi',
-                    'Plugin', $this->getPluginKey()) . '/locallang.xlf',
+            'languageFile' => 'EXT:solr/Resources/Private/Language/locallang.xlf',
             'llKey' => $this->LLkey
         ));
 

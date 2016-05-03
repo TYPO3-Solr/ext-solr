@@ -1,8 +1,82 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
+	<file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2015-12-23T10:36:54Z" product-name="solr">
 		<header/>
 		<body>
+			<!-- From ModuleAdministration/locallang.xlf //-->
+			<trans-unit id="mlang_labels_tablabel" xml:space="preserve">
+				<source>Apache Solr Search Administration</source>
+				<target>Apache Solr Such Verwaltung</target>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr" xml:space="preserve">
+				<source>Allows you to manage Apache Solr from TYPO3.&lt;br /&gt;&lt;em&gt;Access for 'admin' users only!&lt;/em&gt;</source>
+				<target>Stellt die Verwaltung des Apache Solr Servers für TYPO3 zur Verfügung.&lt;br /&gt;&lt;em&gt;Zugriff nur für 'admin' Benutzer!&lt;/em&gt;</target>
+			</trans-unit>
+			<trans-unit id="mlang_tabs_tab" xml:space="preserve">
+				<source>Search</source>
+				<target>Suche</target>
+			</trans-unit>
+
+			<!-- From ModuleScheduler/locallang.xlf //-->
+			<trans-unit id="reindex_title" xml:space="preserve" approved="yes">
+				<source>Force Re-Indexing of a site</source>
+				<target>Re-Indexierung der Seite erzwingen</target>
+			</trans-unit>
+			<trans-unit id="reindex_description" xml:space="preserve" approved="yes">
+				<source>Purges the Solr Index and initializes the Index Queue of a site.</source>
+				<target>Leert den solr index und initialisiert die Index Queue einer Seite.</target>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_title" xml:space="preserve" approved="yes">
+				<source>Index Queue Worker</source>
+				<target>Index Queue Worker</target>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_description" xml:space="preserve" approved="yes">
+				<source>Processes the items in the Index Queue and sends them to Solr.</source>
+				<target>Verarbeitet einen Item in der Index Queue und sendet ihn an den Solr Server.</target>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve" approved="yes">
+				<source>Number of documents to index</source>
+				<target>Anzahl der zu indexierenden Dokumente</target>
+			</trans-unit>
+			<trans-unit id="field_host" xml:space="preserve" approved="yes">
+				<source>Solr Host</source>
+				<target>Solr host</target>
+			</trans-unit>
+			<trans-unit id="field_port" xml:space="preserve" approved="yes">
+				<source>Solr Port</source>
+				<target>Solr Port</target>
+			</trans-unit>
+			<trans-unit id="field_path" xml:space="preserve" approved="yes">
+				<source>Solr Path</source>
+				<target>Solr Pfad</target>
+			</trans-unit>
+			<trans-unit id="field_server" xml:space="preserve" approved="yes">
+				<source>Solr Server</source>
+				<target>Solr Server</target>
+			</trans-unit>
+			<trans-unit id="field_site" xml:space="preserve" approved="yes">
+				<source>Site</source>
+				<target>Webseite</target>
+			</trans-unit>
+			<trans-unit id="optimizer_title" xml:space="preserve" approved="yes">
+				<source></source>
+				<target>Optimieren</target>
+			</trans-unit>
+			<trans-unit id="optimizer_description" xml:space="preserve" approved="yes">
+				<source></source>
+				<target>Optimiert den Solr Index</target>
+			</trans-unit>
+			<trans-unit id="commit_title" xml:space="preserve" approved="yes">
+				<source></source>
+				<target>Commit Solr index</target>
+			</trans-unit>
+			<trans-unit id="commit_description" xml:space="preserve" approved="yes">
+				<source></source>
+				<target>Macht Änderungen am Solr Index sichtbar</target>
+			</trans-unit>
+
+			<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
+
 			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
 				<source>Search is currently not available.</source>
 				<target>Die Suche steht im Moment nicht zur Verfügung.</target>
@@ -122,6 +196,21 @@
 			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
 				<source>Last</source>
 				<target>Letzte</target>
+			</trans-unit>
+
+
+			<!-- From locallang_db.xlf -->
+			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve" approved="yes">
+				<source>Search: Frequent Searches</source>
+				<target>Suche: Häufige Suchen</target>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_results" xml:space="preserve" approved="yes">
+				<source>Search: Form, Result, Additional Components</source>
+				<target>Suche: Formular, Ergebnisse, weitere Komponenten</target>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_search" xml:space="preserve" approved="yes">
+				<source>Search: Form only</source>
+				<target>Suche: Nur Suchformular</target>
 			</trans-unit>
 		</body>
 	</file>

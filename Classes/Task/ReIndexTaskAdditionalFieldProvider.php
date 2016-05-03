@@ -120,7 +120,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         $additionalFields['site'] = array(
             'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
                 $this->site),
-            'label' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:field_site',
+            'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
             'cshLabel' => ''
         );

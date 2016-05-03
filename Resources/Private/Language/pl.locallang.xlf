@@ -1,127 +1,128 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="fr" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
+	<file source-language="en" target-language="pl" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
 		<header/>
 		<body>
+	 		<!-- From PluginResults|PluginSearch|PluginFrequentSearches/pl.locallang.xlf -->
 			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
 				<source>Search is currently not available.</source>
-				<target>La recherche est actuellement indisponible.</target>
+				<target>Wyszukiwarka nie jest w tej chwili dostępna.</target>
 			</trans-unit>
 			<trans-unit id="searchFailed" xml:space="preserve" approved="yes">
 				<source>We're sorry. The request you tried to make could not be processed.</source>
-				<target>Désolé. Votre demande n'a pas pu être traitée.</target>
+				<target>Przykro nam bardzo, ale Twoje wyszukiwanie nie może zostać zrealizowane.</target>
 			</trans-unit>
 			<trans-unit id="searchWord" xml:space="preserve" approved="yes">
 				<source>Search Term</source>
-				<target>Critère de recherche</target>
+				<target>Wyszukiwana treść</target>
 			</trans-unit>
 			<trans-unit id="didYouMean" xml:space="preserve" approved="yes">
 				<source>Did you mean</source>
-				<target>Pensiez-vous à</target>
+				<target>Czy masz na myśli</target>
 			</trans-unit>
 			<trans-unit id="submit" xml:space="preserve" approved="yes">
 				<source>Search</source>
-				<target>Recherche</target>
+				<target>Szukaj</target>
 			</trans-unit>
 			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
 				<source>Sort by</source>
-				<target>Trier par</target>
+				<target>Sortuj wg.</target>
 			</trans-unit>
 			<trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
 				<source>Narrow Search</source>
-				<target>Filtre de résultats</target>
+				<target>Zawęź wyniki</target>
 			</trans-unit>
 			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
 				<source>Search narrowed by</source>
-				<target>Filtres actifs</target>
+				<target>Zawężone przez</target>
 			</trans-unit>
 			<trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
 				<source>Show more</source>
-				<target>Afficher plus</target>
+				<target>Pokaż więcej</target>
 			</trans-unit>
 			<trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
 				<source>Show fewer</source>
-				<target>Afficher moins</target>
+				<target>Pokaż mniej</target>
 			</trans-unit>
 			<trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
 				<source>Remove all filters</source>
-				<target>Retirer tous les filtres</target>
+				<target>Usuń wszystkie filtry</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Affiche les résultats de @resultsFrom à @resultsTo sur @resultsTotal.</target>
+				<target>Pokazuję wyniki od @resultsFrom do @resultsTo z @resultsTotal.</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>@resultsTotal résultats ont été trouvés en @resultsTime millisecondes.</target>
+				<target>Rezultatów: @resultsTotal, czas wyszukiwania @resultsTime milisekund.</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
 				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Recherche de &quot;@searchWord&quot;.</target>
+				<target>Szukaliśmy &quot;@searchWord&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
 				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>Rien trouvé pour &quot;@searchWord&quot;.</target>
+				<target>Nie znaleziono &quot;@searchWord&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
 				<source>Showing results for &quot;@suggestedWord&quot;</source>
-				<target>Affichage des résultats pour &quot;@suggestedWord&quot;</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="no_results_search_for_original" xml:space="preserve" approved="yes">
 				<source>Search instead for &quot;@searchWord&quot;.</source>
-				<target>Chercher &quot;@searchWord&quot; à la place.</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
 				<source>Last searches</source>
-				<target>Dernières recherches</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
 				<source>Frequent searches</source>
-				<target>Recherches fréquentes</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="relevance" xml:space="preserve" approved="yes">
 				<source>Relevance</source>
-				<target>Pertinence</target>
+				<target>Waga</target>
 			</trans-unit>
 			<trans-unit id="sponsored" xml:space="preserve" approved="yes">
 				<source>Sponsored</source>
-				<target>Sponsorisé</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
 				<source>File type</source>
-				<target>Type de fichier</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="file_referenced" xml:space="preserve" approved="yes">
 				<source>Referenced at</source>
-				<target>Référencé par</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="results_per_page" xml:space="preserve" approved="yes">
 				<source>Results per page:</source>
-				<target>Résultats par page:</target>
+				<target>Wyników na stronę:</target>
 			</trans-unit>
 			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
 				<source>We're sorry, there were some errors:</source>
-				<target>Veuillez nous excuser, des erreurs sont survenues :</target>
+				<target>Przykro nam, natknęliśmy się na błędy:</target>
 			</trans-unit>
 			<trans-unit id="error_emptyQuery" xml:space="preserve" approved="yes">
 				<source>Please enter your search term in the box above.</source>
-				<target>Veuillez remplir les termes de recherche dans le champ ci-dessus.</target>
+				<target>Wpisz słowa kluczowe w polu powyżej.</target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
 				<source>First</source>
-				<target>Premier</target>
+				<target>Pierwsza</target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
 				<source>Previous</source>
-				<target>Précédent</target>
+				<target>Poprzednia</target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
 				<source>Next</source>
-				<target>Suivant</target>
+				<target>Następna</target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
 				<source>Last</source>
-				<target>Dernier</target>
+				<target>Ostatnia</target>
 			</trans-unit>
 		</body>
 	</file>

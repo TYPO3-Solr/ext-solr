@@ -1,67 +1,86 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" target-language="it" datatype="plaintext" original="messages" date="2015-12-23T10:35:41Z" product-name="solr">
+	<file source-language="en" target-language="dk" datatype="plaintext" original="messages" date="2015-12-23T10:36:54Z" product-name="solr">
 		<header/>
 		<body>
+			<!-- From ModuleReports/locallang.xlf //-->
+			<trans-unit id="index_title" xml:space="preserve" approved="yes">
+				<source>Apache Solr Index</source>
+				<target>Apache Solr Index</target>
+			</trans-unit>
+			<trans-unit id="index_description" xml:space="preserve" approved="yes">
+				<source>View the number of documents and fields in your index</source>
+				<target>Se antallet af dokumenter og felter i dit index</target>
+			</trans-unit>
+			<trans-unit id="statistics_title" xml:space="preserve" approved="yes">
+				<source>Apache Solr Statistics</source>
+				<target>Apache Solr Statistik</target>
+			</trans-unit>
+			<trans-unit id="statistics_description" xml:space="preserve" approved="yes">
+				<source>Provides several Solr usage statistics</source>
+				<target>Viser adskillige Solr-anvendelsesstatistikker</target>
+			</trans-unit>
+
+			<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
 			<trans-unit id="searchUnavailable" xml:space="preserve" approved="yes">
 				<source>Search is currently not available.</source>
-				<target>La ricerca non è al momento disponibile.</target>
+				<target>Søgning er ikke tilgængelig på nuværende tidspunkt.</target>
 			</trans-unit>
 			<trans-unit id="searchFailed" xml:space="preserve" approved="yes">
 				<source>We're sorry. The request you tried to make could not be processed.</source>
-				<target>Errore. Impossibile elaborare la query di ricerca.</target>
+				<target>Vi beklager. Forespørgslen kunne ikke udføres.</target>
 			</trans-unit>
 			<trans-unit id="searchWord" xml:space="preserve" approved="yes">
 				<source>Search Term</source>
-				<target>Termine di ricerca</target>
+				<target>Søgeord</target>
 			</trans-unit>
 			<trans-unit id="didYouMean" xml:space="preserve" approved="yes">
 				<source>Did you mean</source>
-				<target>Forse cercavi:</target>
+				<target>Mente du</target>
 			</trans-unit>
 			<trans-unit id="submit" xml:space="preserve" approved="yes">
 				<source>Search</source>
-				<target>Ricerca</target>
+				<target>Søg</target>
 			</trans-unit>
 			<trans-unit id="sorting_sortBy" xml:space="preserve" approved="yes">
 				<source>Sort by</source>
-				<target>Ordina</target>
+				<target>Sortér efter</target>
 			</trans-unit>
 			<trans-unit id="faceting_narrowSearch" xml:space="preserve" approved="yes">
 				<source>Narrow Search</source>
-				<target>Filtro di ricerca</target>
+				<target>Begræns søgning</target>
 			</trans-unit>
 			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve" approved="yes">
 				<source>Search narrowed by</source>
-				<target>Filtro attivo</target>
+				<target>Valgte begrænsninger</target>
 			</trans-unit>
 			<trans-unit id="faceting_showMore" xml:space="preserve" approved="yes">
 				<source>Show more</source>
-				<target>Espandi</target>
+				<target>Vis flere</target>
 			</trans-unit>
 			<trans-unit id="faceting_showFewer" xml:space="preserve" approved="yes">
 				<source>Show fewer</source>
-				<target>Riduci</target>
+				<target>Vis færre</target>
 			</trans-unit>
 			<trans-unit id="faceting_removeAllFilters" xml:space="preserve" approved="yes">
 				<source>Remove all filters</source>
-				<target>Rimuovi tutti i filtri</target>
+				<target>Fjern alle begrænsninger</target>
 			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
-				<target>Mostra risultati @resultsFrom a @resultsTo di @resultsTotal.</target>
+				<target>Viser resultat @resultsFrom til @resultsTo af ialt @resultsTotal.</target>
 			</trans-unit>
 			<trans-unit id="results_found" xml:space="preserve" approved="yes">
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
-				<target>@resultsTotal risultati trovati in @resultsTime millisecondi.</target>
+				<target>Fandt @resultsTotal resultater på @resultsTime milisekunder.</target>
 			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
 				<source>Searched for &quot;@searchWord&quot;.</source>
-				<target>Eseguita ricerca di &quot;@searchWord&quot;.</target>
+				<target>Søgte efter &quot;@searchWord&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_nothing_found" xml:space="preserve" approved="yes">
 				<source>Nothing found for &quot;@searchWord&quot;.</source>
-				<target>La ricerca di &quot;@searchWord&quot; non ha prodotto risultati in nessun documento.</target>
+				<target>Intet fundet for søgeord &quot;@searchWord&quot;.</target>
 			</trans-unit>
 			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve" approved="yes">
 				<source>Showing results for &quot;@suggestedWord&quot;</source>
@@ -73,15 +92,15 @@
 			</trans-unit>
 			<trans-unit id="lastSearches" xml:space="preserve" approved="yes">
 				<source>Last searches</source>
-				<target>Ultime ricerche</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="frequentSearches" xml:space="preserve" approved="yes">
 				<source>Frequent searches</source>
-				<target>Ricerche più frequenti</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="relevance" xml:space="preserve" approved="yes">
 				<source>Relevance</source>
-				<target>Rilevanza</target>
+				<target>Relevans</target>
 			</trans-unit>
 			<trans-unit id="sponsored" xml:space="preserve" approved="yes">
 				<source>Sponsored</source>
@@ -89,15 +108,15 @@
 			</trans-unit>
 			<trans-unit id="file_mimetype" xml:space="preserve" approved="yes">
 				<source>File type</source>
-				<target>Tipo di file</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="file_referenced" xml:space="preserve" approved="yes">
 				<source>Referenced at</source>
-				<target>Link a</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="results_per_page" xml:space="preserve" approved="yes">
 				<source>Results per page:</source>
-				<target>Risultati per pagina:</target>
+				<target>Resultater per side:</target>
 			</trans-unit>
 			<trans-unit id="error_errors" xml:space="preserve" approved="yes">
 				<source>We're sorry, there were some errors:</source>
@@ -109,19 +128,33 @@
 			</trans-unit>
 			<trans-unit id="pagebrowser_first" xml:space="preserve" approved="yes">
 				<source>First</source>
-				<target>Pagina iniziale</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_prev" xml:space="preserve" approved="yes">
 				<source>Previous</source>
-				<target>Indietro</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_next" xml:space="preserve" approved="yes">
 				<source>Next</source>
-				<target>Avanti</target>
+				<target></target>
 			</trans-unit>
 			<trans-unit id="pagebrowser_last" xml:space="preserve" approved="yes">
 				<source>Last</source>
-				<target>Ultima pagina</target>
+				<target></target>
+			</trans-unit>
+
+			<!-- From locallang_db.xlf -->
+			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve" approved="yes">
+				<source>Search: Frequent Searches</source>
+				<target></target>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_results" xml:space="preserve" approved="yes">
+				<source>Search: Form, Result, Additional Components</source>
+				<target>Søg: Søgeformular, Resultater, Yderligere komponenter</target>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_search" xml:space="preserve" approved="yes">
+				<source>Search: Form only</source>
+				<target></target>
 			</trans-unit>
 		</body>
 	</file>
