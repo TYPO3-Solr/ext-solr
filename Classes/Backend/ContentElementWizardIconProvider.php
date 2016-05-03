@@ -46,8 +46,8 @@ class ContentElementWizardIconProvider
     {
         $wizardItems['plugins_tx_solr_results'] = array(
             'icon' => ExtensionManagementUtility::extRelPath('solr') . 'Resources/Public/Images/ContentElement.gif',
-            'title' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/Backend/locallang.xlf:plugin_results'),
-            'description' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/Backend/locallang.xlf:plugin_results_description'),
+            'title' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results'),
+            'description' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results_description'),
             'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=solr_pi_results'
         );
 

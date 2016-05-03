@@ -216,15 +216,15 @@ ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\ReIndexTask'] = array(
     'extension' => $_EXTKEY,
-    'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:reindex_title',
-    'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:reindex_description',
+    'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_title',
+    'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:reindex_description',
     'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\ReIndexTaskAdditionalFieldProvider'
 );
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask'] = array(
     'extension' => $_EXTKEY,
-    'title' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:indexqueueworker_title',
-    'description' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:indexqueueworker_description',
+    'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_title',
+    'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_description',
     'additionalFields' => 'ApacheSolrForTypo3\\Solr\\Task\\IndexQueueWorkerTaskAdditionalFieldProvider'
 );
 

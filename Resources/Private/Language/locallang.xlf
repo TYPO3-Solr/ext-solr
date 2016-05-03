@@ -5,97 +5,268 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
-		<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">
-			<source>The Index Queue manages content indexing. Content enters the Index Queue by initialization below or when new content is created based on configuration. Items in the Index Queue are indexed newest changes first until all items in the queue have been indexed.</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.errors.reset_button" xml:space="preserve">
-			<source>Reset errors</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.errors.headline" xml:space="preserve">
-			<source>Indexing Errors</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.errors.id" xml:space="preserve">
-			<source>ID</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.errors.item_type" xml:space="preserve">
-			<source>Item Type</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.errors.item_uid" xml:space="preserve">
-			<source>Item UID</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.errors.show_button" xml:space="preserve">
-			<source>Show error</source>
-		</trans-unit>
-    	<trans-unit id="solr.backend.index_queue_module.flashmessage.error.index_manual" xml:space="preserve">
-    		<source>An error occurred while indexing manual from the backend.</source>
-    	</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.error.reset_errors" xml:space="preserve">
-			<source>An error occurred while resetting the error log in the index queue.</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.no_selection" xml:space="preserve">
-			<source>No indexing configurations selected.</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.success" xml:space="preserve">
-			<source>Initialized indexing configurations: %s</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.title" xml:space="preserve">
-			<source>Index Queue initialized</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.not_initialized.title" xml:space="preserve">
-			<source>Index Queue not initialized</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.success.reset_errors" xml:space="preserve">
-			<source>All errors have been reset.</source>
-		</trans-unit>
-    	<trans-unit id="solr.backend.index_queue_module.flashmessage.success.index_manual" xml:space="preserve">
-    		<source>Indexing from the backend was finished successful.</source>
-    	</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
-			<source>Index Queue</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.flashmessage.index_manual" xml:space="preserve">
-   			<source>Manual Indexing</source>
-   		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.help" xml:space="preserve">
-			<source>Initializing the Index Queue is the most complete way to force re-indexing, or to build the Index Queue for the first time. The Index Queue Worker scheduler task will then index the items listed in the Index Queue.</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.status.errors" xml:space="preserve">
-			<source> Errors</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.status.header" xml:space="preserve">
-			<source>Indexing Progress</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.status.indexed" xml:space="preserve">
-			<source> Indexed</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.status.pending" xml:space="preserve">
-			<source> Pending</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.header_init" xml:space="preserve">
-			<source>Index Queue Initialization</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.header_status" xml:space="preserve">
-			<source>Index Queue Status</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.button.clear_index_queue" xml:space="preserve">
-			<source>Clear Index Queue</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.danger_zone" xml:space="preserve">
-			<source>Danger Zone</source>
-		</trans-unit>
-		<trans-unit id="solr.backend.index_queue_module.back" xml:space="preserve">
-        	<source>&lt; Go back</source>
-        </trans-unit>
-        <trans-unit id="solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error" xml:space="preserve">
-        	<source>No valid queue item passed to show the error information!</source>
-        </trans-unit>
-        <trans-unit id="solr.backend.index_queue_module.error_details" xml:space="preserve">
-        	<source>Error details for queue item</source>
-        </trans-unit>
-        <trans-unit id="solr.backend.index_queue_module.index_now" xml:space="preserve">
-        	<source>Index now</source>
-        </trans-unit>
+			<!-- From Backend/locallang.xlf //-->
+			<trans-unit id="module_indexinspector" xml:space="preserve">
+				<source>Search Index Inspector</source>
+			</trans-unit>
+			<trans-unit id="plugin_results" xml:space="preserve">
+				<source>Search</source>
+			</trans-unit>
+			<trans-unit id="plugin_results_description" xml:space="preserve">
+				<source>A search form and results list.</source>
+			</trans-unit>
 
+			<!-- From ModuleAdministration/locallang.xlf //-->
+			<trans-unit id="mlang_labels_tablabel" xml:space="preserve">
+				<source>Apache Solr Search Administration</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr" xml:space="preserve">
+				<source>Allows you to manage Apache Solr from TYPO3.&lt;br /&gt;&lt;em&gt;Access for 'admin' users only!&lt;/em&gt;</source>
+			</trans-unit>
+			<trans-unit id="mlang_tabs_tab" xml:space="preserve">
+				<source>Search</source>
+			</trans-unit>
+
+			<!-- From ModuleReports/locallang.xlf //-->
+			<trans-unit id="index_title" xml:space="preserve">
+				<source>Apache Solr Index</source>
+			</trans-unit>
+			<trans-unit id="index_description" xml:space="preserve">
+				<source>View the number of documents and fields in your index</source>
+			</trans-unit>
+			<trans-unit id="statistics_title" xml:space="preserve">
+				<source>Apache Solr Statistics</source>
+			</trans-unit>
+			<trans-unit id="statistics_description" xml:space="preserve">
+				<source>Provides several Solr usage statistics</source>
+			</trans-unit>
+
+			<!-- From ModuleScheduler/locallang.xlf //-->
+			<trans-unit id="reindex_title" xml:space="preserve">
+				<source>Force Re-Indexing of a site</source>
+			</trans-unit>
+			<trans-unit id="reindex_description" xml:space="preserve">
+				<source>Purges the Solr Index and initializes the Index Queue of a site.</source>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_title" xml:space="preserve">
+				<source>Index Queue Worker</source>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_description" xml:space="preserve">
+				<source>Processes the items in the Index Queue and sends them to Solr.</source>
+			</trans-unit>
+			<trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve">
+				<source>Number of documents to index</source>
+			</trans-unit>
+			<trans-unit id="field_host" xml:space="preserve">
+				<source>Solr Host</source>
+			</trans-unit>
+			<trans-unit id="field_port" xml:space="preserve">
+				<source>Solr Port</source>
+			</trans-unit>
+			<trans-unit id="field_path" xml:space="preserve">
+				<source>Solr Path</source>
+			</trans-unit>
+			<trans-unit id="field_server" xml:space="preserve">
+				<source>Solr Server</source>
+			</trans-unit>
+			<trans-unit id="field_site" xml:space="preserve">
+				<source>Site</source>
+			</trans-unit>
+
+			<!-- From PluginResults|PluginSearch|PluginFrequentSearches/locallang.xlf -->
+			<trans-unit id="searchUnavailable" xml:space="preserve">
+				<source>Search is currently not available.</source>
+			</trans-unit>
+			<trans-unit id="searchFailed" xml:space="preserve">
+				<source>We're sorry. The request you tried to make could not be processed.</source>
+			</trans-unit>
+			<trans-unit id="searchWord" xml:space="preserve">
+				<source>Search Term</source>
+			</trans-unit>
+			<trans-unit id="didYouMean" xml:space="preserve">
+				<source>Did you mean</source>
+			</trans-unit>
+			<trans-unit id="submit" xml:space="preserve">
+				<source>Search</source>
+			</trans-unit>
+			<trans-unit id="sorting_sortBy" xml:space="preserve">
+				<source>Sort by</source>
+			</trans-unit>
+			<trans-unit id="faceting_narrowSearch" xml:space="preserve">
+				<source>Narrow Search</source>
+			</trans-unit>
+			<trans-unit id="faceting_resultsNarrowedBy" xml:space="preserve">
+				<source>Search narrowed by</source>
+			</trans-unit>
+			<trans-unit id="faceting_showMore" xml:space="preserve">
+				<source>Show more</source>
+			</trans-unit>
+			<trans-unit id="faceting_showFewer" xml:space="preserve">
+				<source>Show fewer</source>
+			</trans-unit>
+			<trans-unit id="faceting_removeAllFilters" xml:space="preserve">
+				<source>Remove all filters</source>
+			</trans-unit>
+			<trans-unit id="results_range" xml:space="preserve">
+				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
+			</trans-unit>
+			<trans-unit id="results_found" xml:space="preserve">
+				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
+			</trans-unit>
+			<trans-unit id="results_searched_for" xml:space="preserve">
+				<source>Searched for &quot;@searchWord&quot;.</source>
+			</trans-unit>
+			<trans-unit id="no_results_nothing_found" xml:space="preserve">
+				<source>Nothing found for &quot;@searchWord&quot;.</source>
+			</trans-unit>
+			<trans-unit id="no_results_showing_results_suggestion" xml:space="preserve">
+				<source>Showing results for &quot;@suggestedWord&quot;</source>
+			</trans-unit>
+			<trans-unit id="no_results_search_for_original" xml:space="preserve">
+				<source>Search instead for &quot;@searchWord&quot;.</source>
+			</trans-unit>
+			<trans-unit id="lastSearches" xml:space="preserve">
+				<source>Last searches</source>
+			</trans-unit>
+			<trans-unit id="frequentSearches" xml:space="preserve">
+				<source>Frequent searches</source>
+			</trans-unit>
+			<trans-unit id="relevance" xml:space="preserve">
+				<source>Relevance</source>
+			</trans-unit>
+			<trans-unit id="sponsored" xml:space="preserve">
+				<source>Sponsored</source>
+			</trans-unit>
+			<trans-unit id="file_mimetype" xml:space="preserve">
+				<source>File type</source>
+			</trans-unit>
+			<trans-unit id="file_referenced" xml:space="preserve">
+				<source>Referenced at</source>
+			</trans-unit>
+			<trans-unit id="results_per_page" xml:space="preserve">
+				<source>Results per page:</source>
+			</trans-unit>
+			<trans-unit id="error_errors" xml:space="preserve">
+				<source>We're sorry, there were some errors:</source>
+			</trans-unit>
+			<trans-unit id="error_emptyQuery" xml:space="preserve">
+				<source>Please enter your search term in the box above.</source>
+			</trans-unit>
+			<trans-unit id="pagebrowser_first" xml:space="preserve">
+				<source>First</source>
+			</trans-unit>
+			<trans-unit id="pagebrowser_prev" xml:space="preserve">
+				<source>Previous</source>
+			</trans-unit>
+			<trans-unit id="pagebrowser_next" xml:space="preserve">
+				<source>Next</source>
+			</trans-unit>
+			<trans-unit id="pagebrowser_last" xml:space="preserve">
+				<source>Last</source>
+			</trans-unit>
+
+			<!-- From locallang.xlf -->
+			<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">
+				<source>The Index Queue manages content indexing. Content enters the Index Queue by initialization below or when new content is created based on configuration. Items in the Index Queue are indexed newest changes first until all items in the queue have been indexed.</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.errors.reset_button" xml:space="preserve">
+				<source>Reset errors</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.errors.headline" xml:space="preserve">
+				<source>Indexing Errors</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.errors.id" xml:space="preserve">
+				<source>ID</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.errors.item_type" xml:space="preserve">
+				<source>Item Type</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.errors.item_uid" xml:space="preserve">
+				<source>Item UID</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.errors.show_button" xml:space="preserve">
+				<source>Show error</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.index_manual" xml:space="preserve">
+				<source>An error occurred while indexing manual from the backend.</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.reset_errors" xml:space="preserve">
+				<source>An error occurred while resetting the error log in the index queue.</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.no_selection" xml:space="preserve">
+				<source>No indexing configurations selected.</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.success" xml:space="preserve">
+				<source>Initialized indexing configurations: %s</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.title" xml:space="preserve">
+				<source>Index Queue initialized</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.not_initialized.title" xml:space="preserve">
+				<source>Index Queue not initialized</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.success.reset_errors" xml:space="preserve">
+				<source>All errors have been reset.</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.success.index_manual" xml:space="preserve">
+				<source>Indexing from the backend was finished successful.</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
+				<source>Index Queue</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.index_manual" xml:space="preserve">
+				<source>Manual Indexing</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.help" xml:space="preserve">
+				<source>Initializing the Index Queue is the most complete way to force re-indexing, or to build the Index Queue for the first time. The Index Queue Worker scheduler task will then index the items listed in the Index Queue.</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.status.errors" xml:space="preserve">
+				<source> Errors</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.status.header" xml:space="preserve">
+				<source>Indexing Progress</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.status.indexed" xml:space="preserve">
+				<source> Indexed</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.status.pending" xml:space="preserve">
+				<source> Pending</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.header_init" xml:space="preserve">
+				<source>Index Queue Initialization</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.header_status" xml:space="preserve">
+				<source>Index Queue Status</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.button.clear_index_queue" xml:space="preserve">
+				<source>Clear Index Queue</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.danger_zone" xml:space="preserve">
+				<source>Danger Zone</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.back" xml:space="preserve">
+				<source>&lt; Go back</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error" xml:space="preserve">
+				<source>No valid queue item passed to show the error information!</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.error_details" xml:space="preserve">
+				<source>Error details for queue item</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.index_now" xml:space="preserve">
+				<source>Index now</source>
+			</trans-unit>
+
+			<!-- From locallang_db.xlf -->
+			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve">
+				<source>Search: Frequent Searches</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_results" xml:space="preserve">
+				<source>Search: Form, Result, Additional Components</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi_search" xml:space="preserve">
+				<source>Search: Form only</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
