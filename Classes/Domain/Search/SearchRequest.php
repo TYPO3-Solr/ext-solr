@@ -24,8 +24,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The searchRequest is used to act as an api to the arguments that have been passed
@@ -80,16 +84,24 @@ class SearchRequest
     protected $contextPageUid;
 
     /**
+     * @var TypoScriptConfiguration
+     */
+    protected $contextTypoScriptConfiguration;
+
+    /**
      * @param array $argumentsArray
      * @param int $pageUid
      * @param int $sysLanguageUid
+     * @param TypoScriptConfiguration $typoScriptConfiguration
      */
-    public function __construct(array $argumentsArray = array(), $pageUid = 0, $sysLanguageUid = 0)
+    public function __construct(array $argumentsArray = array(), $pageUid = 0, $sysLanguageUid = 0, TypoScriptConfiguration $typoScriptConfiguration = null)
     {
         $this->stateChanged = true;
         $this->persistedArguments = $argumentsArray;
         $this->contextPageUid = $pageUid;
         $this->contextSystemLanguageUid = $sysLanguageUid;
+        $this->contextTypoScriptConfiguration = $typoScriptConfiguration;
+
         $this->reset();
     }
 
@@ -318,6 +330,16 @@ class SearchRequest
     public function getContextPageUid()
     {
         return $this->contextPageUid;
+    }
+
+    /**
+     * Get contextTypoScriptConfiguration
+     *
+     * @return TypoScriptConfiguration
+     */
+    public function getContextTypoScriptConfiguration()
+    {
+        return $this->contextTypoScriptConfiguration;
     }
 
     /**

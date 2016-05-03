@@ -92,9 +92,13 @@ class Results extends CommandPluginBase
             $solrParameters = $solrPostParameters;
         }
 
-            /** @var $searchRequest \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest */
-        $searchRequest = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest',
-            array('tx_solr' => $solrParameters), $GLOBALS['TSFE']->id, $GLOBALS['TSFE']->sys_language_uid
+        /** @var $searchRequest \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest */
+        $searchRequest = GeneralUtility::makeInstance(
+            \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest::class,
+            array('tx_solr' => $solrParameters),
+            $GLOBALS['TSFE']->id,
+            $GLOBALS['TSFE']->sys_language_uid,
+            $this->typoScriptConfiguration
         );
         $searchRequest->mergeArguments(array('tx_solr' => $this->piVars));
         $searchRequest->mergeArguments(array('q' => $this->getRawUserQuery()));

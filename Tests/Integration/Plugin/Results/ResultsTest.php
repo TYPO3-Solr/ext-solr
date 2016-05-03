@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\AbstractPluginTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -458,5 +459,18 @@ class ResultsTest extends AbstractPluginTest
         $parentPlugin = $searchResults->getSearchResultSetService()->getParentPlugin();
 
         $this->assertInstanceOf('TYPO3\CMS\Frontend\Plugin\AbstractPlugin', $parentPlugin);
+    }
+
+    /**
+     * @test
+     */
+    public function canAccessTypoScriptConfigurationThroughSearchRequest()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml', 'results', 5);
+        $searchResults->main('', array());
+
+        // after initiating the searchResults plugin we should be able to access the TypoScriptConfiguration through the search request
+        $searchRequest = $searchResults->getSearchResultSetService()->getLastResultSet()->getUsedSearchRequest();
+        $this->assertInstanceOf(TypoScriptConfiguration::class, $searchRequest->getContextTypoScriptConfiguration(), 'Could not get TypoScriptConfiguration of the context from searchResults plugin');
     }
 }
