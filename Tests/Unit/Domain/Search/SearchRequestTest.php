@@ -210,6 +210,19 @@ class SearchRequestTest extends UnitTest
     }
 
     /**
+     * @test
+     */
+    public function canRemoveFacetValue()
+    {
+        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
+        $request = $this->getSearchRequestFromQueryString($query);
+
+        $this->assertTrue($request->hasFacetValue('type','pages'), 'Facet was not present');
+        $request->removeFacetValue('type', 'pages');
+        $this->assertFalse($request->hasFacetValue('type', 'pages'), 'Could not remove facet value');
+    }
+
+    /**
      * @param $query
      * @return SearchRequest
      */

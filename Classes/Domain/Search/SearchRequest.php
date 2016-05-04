@@ -173,6 +173,8 @@ class SearchRequest
     }
 
     /**
+     * Adds a facet value to the request.
+     *
      * @param string $facetName
      * @param mixed $facetValue
      *
@@ -180,7 +182,6 @@ class SearchRequest
      */
     public function addFacetValue($facetName, $facetValue)
     {
-        $this->stateChanged = true;
         if ($this->hasFacetValue($facetName, $facetValue)) {
             return $this;
         }
@@ -189,6 +190,35 @@ class SearchRequest
         $facetValues[] = $facetName.':'.$facetValue;
         $this->setActiveFacets($facetValues);
 
+        $this->stateChanged = true;
+        return $this;
+    }
+
+    /**
+     * Removes a facet value from the request.
+     *
+     * @param string $facetName
+     * @param mixed $facetValue
+     *
+     * @return SearchRequest
+     */
+    public function removeFacetValue($facetName, $facetValue)
+    {
+        if (!$this->hasFacetValue($facetName, $facetValue)) {
+            return $this;
+        }
+        $facetValues = $this->getActiveFacets();
+        $facetValueToLookFor = $facetName.':'.$facetValue;
+
+        foreach ($facetValues as $index => $facetValue) {
+            if ($facetValue === $facetValueToLookFor) {
+                unset($facetValues[$index]);
+                break;
+            }
+        }
+
+        $this->setActiveFacets($facetValues);
+        $this->stateChanged = true;
         return $this;
     }
 
