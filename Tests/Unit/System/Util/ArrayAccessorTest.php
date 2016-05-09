@@ -69,4 +69,21 @@ class ArrayAccessorTest extends UnitTest
         $arrayAccessor->set('one:two:three', array('four' => 'test2'));
         $this->assertSame('test2', $arrayAccessor->get('one:two:three:four'));
     }
+
+    /**
+     * @test
+     */
+    public function canReset()
+    {
+        $data = ['one' => ['two' => ['a' => 111, 'b' => 222]]];
+        // can set and get a simple value
+        $arrayAccessor = new ArrayAccessor($data);
+        $this->assertSame(111, $arrayAccessor->get('one:two:a'));
+        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+
+        $arrayAccessor->reset('one:two:a');
+
+        $this->assertSame(null, $arrayAccessor->get('one:two:a'));
+        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+    }
 }

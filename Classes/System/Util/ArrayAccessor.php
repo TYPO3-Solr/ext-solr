@@ -155,6 +155,7 @@ class ArrayAccessor
     }
 
 
+
     /**
      * @param $pathArray
      * @param mixed $value
@@ -172,6 +173,48 @@ class ArrayAccessor
             if (count($pathArray) === 0) {
                 $currentElement[$pathSegment] = $value;
                 return;
+            }
+
+            $currentElement = &$currentElement[$pathSegment];
+        }
+    }
+
+    /**
+     * @param string $path
+     */
+    public function reset($path)
+    {
+        $pathArray = $this->getPathAsArray($path);
+        $pathSegmentCount = count($pathArray);
+
+        switch ($pathSegmentCount) {
+            // direct access for small paths
+            case 1:
+                unset($this->data[$pathArray[0]]);
+                return;
+            case 2:
+                unset($this->data[$pathArray[0]][$pathArray[1]]);
+                return;
+            default:
+                $this->resetDeepElementWithLoop($pathArray);
+        }
+    }
+
+    /**
+     * @param array $pathArray
+     */
+    protected function resetDeepElementWithLoop($pathArray)
+    {
+        $currentElement = &$this->data;
+        foreach ($pathArray as $key => $pathSegment) {
+            if (!isset($currentElement[$pathSegment])) {
+                $currentElement[$pathSegment] = array();
+            }
+
+            unset($pathArray[$key]);
+            // if segments are left the item does not exist
+            if (count($pathArray) === 0) {
+                unset($currentElement[$pathSegment]);
             }
 
             $currentElement = &$currentElement[$pathSegment];

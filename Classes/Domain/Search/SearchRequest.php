@@ -52,7 +52,7 @@ class SearchRequest
      *
      * @var array
      */
-    protected $persistentArgumentsPaths = array('q', 'tx_solr:filter');
+    protected $persistentArgumentsPaths = array('q', 'tx_solr:filter', 'tx_solr:sort');
 
     /**
      * @var boolean
@@ -159,6 +159,14 @@ class SearchRequest
     }
 
     /**
+     * @return integer
+     */
+    public function getActiveFacetCount()
+    {
+        return count($this->getActiveFacets());
+    }
+
+    /**
      * @param $activeFacets
      * @return array|null
      *
@@ -182,7 +190,7 @@ class SearchRequest
      */
     public function addFacetValue($facetName, $facetValue)
     {
-        if ($this->hasFacetValue($facetName, $facetValue)) {
+        if ($this->getHasFacetValue($facetName, $facetValue)) {
             return $this;
         }
 
@@ -204,7 +212,7 @@ class SearchRequest
      */
     public function removeFacetValue($facetName, $facetValue)
     {
-        if (!$this->hasFacetValue($facetName, $facetValue)) {
+        if (!$this->getHasFacetValue($facetName, $facetValue)) {
             return $this;
         }
         $facetValues = $this->getActiveFacets();
@@ -223,11 +231,24 @@ class SearchRequest
     }
 
     /**
+     * Removes all active facets from the request.
+     *
+     * @return SearchRequest
+     */
+    public function removeAllFacets()
+    {
+        $path = $this->prefixWithNamespace('filter');
+        $this->argumentsAccessor->reset($path);
+        $this->stateChanged = true;
+        return $this;
+    }
+
+    /**
      * @param string $facetName
      * @param mixed $facetValue
      * @return boolean
      */
-    public function hasFacetValue($facetName, $facetValue)
+    public function getHasFacetValue($facetName, $facetValue)
     {
         $facetNameAndValueToCheck = $facetName.':'.$facetValue;
         foreach ($this->getActiveFacets() as $activeFacet) {
@@ -237,6 +258,89 @@ class SearchRequest
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHasSorting()
+    {
+        $path = $this->prefixWithNamespace('sort');
+        return $this->argumentsAccessor->has($path);
+    }
+
+    /**
+     * Returns the sorting string in the url e.g. title asc.
+     *
+     * @return string|null
+     */
+    protected function getSorting()
+    {
+        $path = $this->prefixWithNamespace('sort');
+        return $this->argumentsAccessor->get($path);
+    }
+
+    /**
+     * Helper function to get the sorting field or direction.
+     *
+     * @param $index
+     * @return null
+     */
+    protected function getSortingPart($index)
+    {
+        $sorting = $this->getSorting();
+        if ($sorting === null) {
+            return null;
+        }
+
+        $parts = explode(" ", $sorting);
+        return isset($parts[$index]) ? $parts[$index] : null;
+    }
+
+    /**
+     * Returns the sorting field name that is currently used.
+     *
+     * @return string
+     */
+    public function getSortingField()
+    {
+        return $this->getSortingPart(0);
+    }
+
+    /**
+     * Returns the sorting direction that is currently used.
+     *
+     * @return string
+     */
+    public function getSortingDirection()
+    {
+        return strtolower($this->getSortingPart(1));
+    }
+
+    /**
+     * @return SearchRequest
+     */
+    public function removeSorting()
+    {
+        $path = $this->prefixWithNamespace('sort');
+        $this->argumentsAccessor->reset($path, null);
+        $this->stateChanged = true;
+        return $this;
+    }
+
+    /**
+     * @param string $fieldName
+     * @param string $direction (asc or desc)
+     *
+     * @return SearchRequest
+     */
+    public function setSorting($fieldName, $direction = 'asc')
+    {
+        $value = $fieldName.' '.$direction;
+        $path = $this->prefixWithNamespace('sort');
+        $this->argumentsAccessor->set($path, $value);
+        $this->stateChanged = true;
+        return $this;
     }
 
     /**
