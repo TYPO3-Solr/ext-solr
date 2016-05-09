@@ -217,9 +217,65 @@ class SearchRequestTest extends UnitTest
         $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
         $request = $this->getSearchRequestFromQueryString($query);
 
-        $this->assertTrue($request->hasFacetValue('type','pages'), 'Facet was not present');
+        $this->assertTrue($request->getHasFacetValue('type', 'pages'), 'Facet was not present');
         $request->removeFacetValue('type', 'pages');
-        $this->assertFalse($request->hasFacetValue('type', 'pages'), 'Could not remove facet value');
+        $this->assertFalse($request->getHasFacetValue('type', 'pages'), 'Could not remove facet value');
+    }
+
+    /**
+     * @test
+     */
+    public function canRemoveAllFacets()
+    {
+        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Aevents';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $this->assertSame(2, $request->getActiveFacetCount(), 'Expected to have two active facets');
+        $request->removeAllFacets();
+        $this->assertSame(0, $request->getActiveFacetCount(), 'Expected to have no active facets');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSortingField()
+    {
+        $query = 'q=typo3&tx_solr%5Bsort%5D=title asc';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $this->assertTrue($request->getHasSorting(), 'Passed query has no sorting');
+        $this->assertSame('title', $request->getSortingField(), 'Expected sorting fields was title');
+        $this->assertSame('asc', $request->getSortingDirection(), 'Expected sorting direction was asc');
+    }
+
+    /**
+     * @test
+     */
+    public function canRemoveSorting()
+    {
+        $query = 'q=typo3&tx_solr%5Bsort%5D=title asc';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $this->assertTrue($request->getHasSorting(), 'Passed query has no sorting');
+        $this->assertSame('title', $request->getSortingField(), 'Expected sorting fields was title');
+        $requestAsArray = $request->getAsArray();
+        $this->assertTrue(isset($requestAsArray['tx_solr']['sort']), 'Sorting was not set but was expected to be set');
+
+        $request->removeSorting();
+        $this->assertFalse($request->getHasSorting(), 'Expected that sorting was removed, but is still present');
+
+        $requestAsArray = $request->getAsArray();
+        $this->assertFalse(isset($requestAsArray['tx_solr']['sort']), 'Sorting was set but was not expected to be set');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetSorting()
+    {
+        $query = 'q=typo3';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $this->assertFalse($request->getHasSorting(), 'Passed query has no sorting');
+
+        $request->setSorting('auther', 'desc');
+        $this->assertTrue($request->getHasSorting(), 'Passed query has no sorting');
     }
 
     /**
