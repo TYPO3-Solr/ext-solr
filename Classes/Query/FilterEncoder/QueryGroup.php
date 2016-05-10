@@ -95,7 +95,7 @@ class QueryGroup implements FilterEncoder, FacetBuilder
 
         foreach ($facetConfiguration['queryGroup.'] as $queryName => $queryConfiguration) {
             $tag = '';
-            if ($this->configuration['search.']['faceting.']['keepAllFacetsOnSelection'] == 1) {
+            if ($this->configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
                 // TODO This code is duplicated from "Query/Modifier/Faceting.php"
                 // Eventually the "exclude fields" should get passed to this method beforehand instead
                 // of generating them in each different "buildFacetParameters" implementation
