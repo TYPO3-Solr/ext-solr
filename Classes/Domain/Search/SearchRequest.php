@@ -281,7 +281,7 @@ class SearchRequest
     }
 
     /**
-     * Helper function to get the sorting field or direction.
+     * Helper function to get the sorting configuration name or direction.
      *
      * @param $index
      * @return null
@@ -298,11 +298,11 @@ class SearchRequest
     }
 
     /**
-     * Returns the sorting field name that is currently used.
+     * Returns the sorting configuration name that is currently used.
      *
      * @return string
      */
-    public function getSortingField()
+    public function getSortingName()
     {
         return $this->getSortingPart(0);
     }
@@ -329,14 +329,14 @@ class SearchRequest
     }
 
     /**
-     * @param string $fieldName
+     * @param string $sortingName
      * @param string $direction (asc or desc)
      *
      * @return SearchRequest
      */
-    public function setSorting($fieldName, $direction = 'asc')
+    public function setSorting($sortingName, $direction = 'asc')
     {
-        $value = $fieldName.' '.$direction;
+        $value = $sortingName.' '.$direction;
         $path = $this->prefixWithNamespace('sort');
         $this->argumentsAccessor->set($path, $value);
         $this->stateChanged = true;
