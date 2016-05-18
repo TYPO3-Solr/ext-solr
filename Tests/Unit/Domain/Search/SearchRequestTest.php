@@ -242,7 +242,7 @@ class SearchRequestTest extends UnitTest
         $query = 'q=typo3&tx_solr%5Bsort%5D=title asc';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertTrue($request->getHasSorting(), 'Passed query has no sorting');
-        $this->assertSame('title', $request->getSortingField(), 'Expected sorting fields was title');
+        $this->assertSame('title', $request->getSortingName(), 'Expected sorting name was title');
         $this->assertSame('asc', $request->getSortingDirection(), 'Expected sorting direction was asc');
     }
 
@@ -254,7 +254,7 @@ class SearchRequestTest extends UnitTest
         $query = 'q=typo3&tx_solr%5Bsort%5D=title asc';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertTrue($request->getHasSorting(), 'Passed query has no sorting');
-        $this->assertSame('title', $request->getSortingField(), 'Expected sorting fields was title');
+        $this->assertSame('title', $request->getSortingName(), 'Expected sorting name was title');
         $requestAsArray = $request->getAsArray();
         $this->assertTrue(isset($requestAsArray['tx_solr']['sort']), 'Sorting was not set but was expected to be set');
 
