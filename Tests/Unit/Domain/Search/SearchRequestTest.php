@@ -279,6 +279,25 @@ class SearchRequestTest extends UnitTest
     }
 
     /**
+     * @test
+     */
+    public function twoDifferentRequestsHaveADifferentId()
+    {
+        $newSearchRequest = new SearchRequest();
+        $this->assertNotEquals($newSearchRequest->getId(), $this->searchRequest->getId(), 'Two different requests seem to have the same id');
+    }
+
+    /**
+     * @test
+     */
+    public function setPerPageWillMarkedTheRequestAsChanged()
+    {
+        $this->assertFalse($this->searchRequest->getStateChanged());
+        $this->searchRequest->setResultsPerPage(10);
+        $this->assertTrue($this->searchRequest->getStateChanged());
+    }
+
+    /**
      * @param $query
      * @return SearchRequest
      */

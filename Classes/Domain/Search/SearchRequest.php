@@ -41,6 +41,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SearchRequest
 {
+    /**
+     * @var string
+     */
+    protected $id;
 
     /**
      * @var string
@@ -101,8 +105,16 @@ class SearchRequest
         $this->contextPageUid = $pageUid;
         $this->contextSystemLanguageUid = $sysLanguageUid;
         $this->contextTypoScriptConfiguration = $typoScriptConfiguration;
-
+        $this->id = spl_object_hash($this);
         $this->reset();
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -436,8 +448,17 @@ class SearchRequest
     {
         $path = $this->prefixWithNamespace('resultsPerPage');
         $this->argumentsAccessor->set($path, $resultsPerPage);
+        $this->stateChanged = true;
 
         return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getStateChanged()
+    {
+        return $this->stateChanged;
     }
 
     /**
@@ -484,6 +505,7 @@ class SearchRequest
     public function reset()
     {
         $this->argumentsAccessor = new ArrayAccessor($this->persistedArguments);
+        $this->stateChanged = false;
         return $this;
     }
 
