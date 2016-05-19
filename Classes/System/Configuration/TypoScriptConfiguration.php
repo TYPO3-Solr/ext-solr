@@ -2,6 +2,7 @@
 
 namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
+use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use InvalidArgumentException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -41,9 +42,15 @@ class TypoScriptConfiguration
     /**
      * Holds the solr configuration
      *
+     * @deprecated will be removed in 6.0
      * @var array
      */
     protected $configuration = array();
+
+    /**
+     * @var \ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor|null
+     */
+    protected $configurationAccess = null;
 
     /**
      * Holds the pageId in which context the configuration was parsed
@@ -58,6 +65,7 @@ class TypoScriptConfiguration
     public function __construct(array $configuration, $contextPageId = 0)
     {
         $this->configuration = $configuration;
+        $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId;
     }
 
@@ -118,21 +126,7 @@ class TypoScriptConfiguration
                 1325623321);
         }
 
-        $pathExploded = explode('.', trim($path));
-        $pathBranch = $this->configuration;
-
-        $segmentCount = count($pathExploded);
-        for ($i = 0; $i < $segmentCount; $i++) {
-            $segment = $pathExploded[$i];
-
-            if ($i == ($segmentCount - 1)) {
-                $pathBranch = $pathBranch[$segment];
-            } else {
-                $pathBranch = $pathBranch[$segment . '.'];
-            }
-        }
-
-        return $pathBranch;
+        return $this->configurationAccess->get($path);
     }
 
     /**
@@ -171,27 +165,16 @@ class TypoScriptConfiguration
      */
     public function getObjectByPath($path)
     {
+        if (substr($path, -1) !== '.') {
+            $path = rtrim($path, '.');
+            $path = substr($path, 0, strrpos($path, '.') + 1);
+        }
+
         if (!is_string($path)) {
-            throw new InvalidArgumentException('Parameter $path is not a string',
-                1325627243);
+            throw new InvalidArgumentException('Parameter $path is not a string', 1325627243);
         }
 
-        $pathExploded = explode('.', trim($path));
-        // remove last object
-        $lastPathSegment = array_pop($pathExploded);
-        $pathBranch = $this->configuration;
-
-        foreach ($pathExploded as $segment) {
-            if (!array_key_exists($segment . '.', $pathBranch)) {
-                throw new InvalidArgumentException(
-                    'TypoScript object path "' . htmlspecialchars($path) . '" does not exist',
-                    1325627264
-                );
-            }
-            $pathBranch = $pathBranch[$segment . '.'];
-        }
-
-        return $pathBranch;
+        return $this->configurationAccess->get($path);
     }
 
     /**
@@ -247,13 +230,16 @@ class TypoScriptConfiguration
      */
     public function mergeSolrConfiguration(array $configurationToMerge, $addKeys = true, $includeEmptyValues = true, $enableUnsetFeature = true)
     {
+        $data = $this->configurationAccess->getData();
         ArrayUtility::mergeRecursiveWithOverrule(
-            $this->configuration['plugin.']['tx_solr.'],
+            $data['plugin.']['tx_solr.'],
             $configurationToMerge,
             $addKeys,
             $includeEmptyValues,
             $enableUnsetFeature
         );
+
+        $this->configurationAccess->setData($data);
 
         return $this;
     }
