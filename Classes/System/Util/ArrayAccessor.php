@@ -58,9 +58,26 @@ class ArrayAccessor
     protected $pathSeparator = ':';
 
     /**
-     * @param array $data
+     * @var bool
      */
-    public function __construct(array $data = array())
+    protected $includePathSeparatorInKeys = false;
+
+    /**
+     * @param array $data
+     * @param string $pathSeparator
+     * @param boolean $includePathSeparatorInKeys
+     */
+    public function __construct(array $data = array(), $pathSeparator = ':', $includePathSeparatorInKeys = false)
+    {
+        $this->data = $data;
+        $this->pathSeparator = $pathSeparator;
+        $this->includePathSeparatorInKeys = $includePathSeparatorInKeys;
+    }
+
+    /**
+     * @param mixed $data
+     */
+    public function setData($data)
     {
         $this->data = $data;
     }
@@ -91,6 +108,9 @@ class ArrayAccessor
             case 2:
                 return isset($this->data[$pathArray[0]][$pathArray[1]]) ?
                     $this->data[$pathArray[0]][$pathArray[1]] : $defaultIfEmpty;
+            case 3:
+                return isset($this->data[$pathArray[0]][$pathArray[1]][$pathArray[2]]) ?
+                    $this->data[$pathArray[0]][$pathArray[1]][$pathArray[2]] : $defaultIfEmpty;
             default:
                 // when we have a longer path we use a loop to get the element
                 $loopResult = $this->getDeepElementWithLoop($pathArray);
@@ -153,8 +173,6 @@ class ArrayAccessor
                $this->setDeepElementWithLoop($pathArray, $value);
         }
     }
-
-
 
     /**
      * @param $pathArray
@@ -227,6 +245,13 @@ class ArrayAccessor
      */
     protected function getPathAsArray($path)
     {
-        return explode($this->pathSeparator, $path);
+        if (!$this->includePathSeparatorInKeys) {
+            $pathArray =  explode($this->pathSeparator, $path);
+            return $pathArray;
+        }
+
+        $substitutedPath = str_replace($this->pathSeparator, $this->pathSeparator . '@@@', trim($path));
+        $pathArray =  array_filter(explode('@@@', $substitutedPath));
+        return $pathArray;
     }
 }
