@@ -225,6 +225,16 @@ class SearchRequestTest extends UnitTest
     /**
      * @test
      */
+    public function canGetFacetValues()
+    {
+        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Anews';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $this->assertEquals(['pages', 'news'], $request->getActiveFacetValuesByName('type'));
+    }
+
+    /**
+     * @test
+     */
     public function canRemoveAllFacets()
     {
         $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Aevents';
