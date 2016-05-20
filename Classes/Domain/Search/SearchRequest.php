@@ -162,6 +162,26 @@ class SearchRequest
     }
 
     /**
+     * Returns all facet values for a certain facetName
+     * @param string $facetName
+     * @return array
+     */
+    public function getActiveFacetValuesByName($facetName)
+    {
+        $values = [];
+        $activeFacets = $this->getActiveFacets();
+        foreach ($activeFacets as $activeFacet) {
+            $parts = explode(':', $activeFacet, 2);
+            if ($parts[0] !== $facetName) {
+                continue;
+            }
+            $values[] = $parts[1];
+        }
+
+        return $values;
+    }
+
+    /**
      * @return array|null
      */
     protected function getActiveFacets()
