@@ -1,0 +1,64 @@
+
+0.7992293 = (MATCH) sum of:
+  0.76521987 = (MATCH) sum of:
+    0.38260993 = (MATCH) max of:
+      0.1781365 = (MATCH) weight(content:open^40.0 in 60) [DefaultSimilarity], result of:
+        0.1781365 = score(doc=60,freq=2.0), product of:
+          0.721729 = queryWeight, product of:
+            40.0 = boost
+            3.1913595 = idf(docFreq=18, maxDocs=170)
+            0.005653774 = queryNorm
+          0.24681911 = fieldWeight in 60, product of:
+            1.4142135 = tf(freq=2.0), with freq of:
+              2.0 = termFreq=2.0
+            3.1913595 = idf(docFreq=18, maxDocs=170)
+            0.0546875 = fieldNorm(doc=60)
+      0.38260993 = (MATCH) weight(tagsH2H3:open^3.0 in 60) [DefaultSimilarity], result of:
+        0.38260993 = score(doc=60,freq=1.0), product of:
+          0.08055787 = queryWeight, product of:
+            3.0 = boost
+            4.749504 = idf(docFreq=3, maxDocs=170)
+            0.005653774 = queryNorm
+          4.749504 = fieldWeight in 60, product of:
+            1.0 = tf(freq=1.0), with freq of:
+              1.0 = termFreq=1.0
+            4.749504 = idf(docFreq=3, maxDocs=170)
+            1.0 = fieldNorm(doc=60)
+    0.38260993 = (MATCH) max of:
+      0.16214608 = (MATCH) weight(content:sourc^40.0 in 60) [DefaultSimilarity], result of:
+        0.16214608 = score(doc=60,freq=2.0), product of:
+          0.6885745 = queryWeight, product of:
+            40.0 = boost
+            3.044756 = idf(docFreq=21, maxDocs=170)
+            0.005653774 = queryNorm
+          0.23548082 = fieldWeight in 60, product of:
+            1.4142135 = tf(freq=2.0), with freq of:
+              2.0 = termFreq=2.0
+            3.044756 = idf(docFreq=21, maxDocs=170)
+            0.0546875 = fieldNorm(doc=60)
+      0.38260993 = (MATCH) weight(tagsH2H3:sourc^3.0 in 60) [DefaultSimilarity], result of:
+        0.38260993 = score(doc=60,freq=1.0), product of:
+          0.08055787 = queryWeight, product of:
+            3.0 = boost
+            4.749504 = idf(docFreq=3, maxDocs=170)
+            0.005653774 = queryNorm
+          4.749504 = fieldWeight in 60, product of:
+            1.0 = tf(freq=1.0), with freq of:
+              1.0 = termFreq=1.0
+            4.749504 = idf(docFreq=3, maxDocs=170)
+            1.0 = fieldNorm(doc=60)
+  0.03400946 = (MATCH) weight(content:"open sourc"~15^2.0 in 60) [DefaultSimilarity], result of:
+    0.03400946 = score(doc=60,freq=2.0), product of:
+      0.07051517 = queryWeight, product of:
+        2.0 = boost
+        6.2361155 = idf(), sum of:
+          3.1913595 = idf(docFreq=18, maxDocs=170)
+          3.044756 = idf(docFreq=21, maxDocs=170)
+        0.005653774 = queryNorm
+      0.48229992 = fieldWeight in 60, product of:
+        1.4142135 = tf(freq=2.0), with freq of:
+          2.0 = phraseFreq=2.0
+        6.2361155 = idf(), sum of:
+          3.1913595 = idf(docFreq=18, maxDocs=170)
+          3.044756 = idf(docFreq=21, maxDocs=170)
+        0.0546875 = fieldNorm(doc=60)
