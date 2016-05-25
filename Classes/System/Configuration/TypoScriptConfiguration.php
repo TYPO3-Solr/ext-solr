@@ -1201,7 +1201,7 @@ class TypoScriptConfiguration
      */
     public function setSearchQueryFilterConfiguration(array $configuration)
     {
-        $this->configuration['plugin.']['tx_solr.']['search.']['query.']['filter.'] = $configuration;
+        $this->configurationAccess->set('plugin.tx_solr.search.query.filter.', $configuration);
     }
 
     /**
@@ -1211,7 +1211,7 @@ class TypoScriptConfiguration
      */
     public function removeSearchQueryFilterForPageSections()
     {
-        unset($this->configuration['plugin.']['tx_solr.']['search.']['query.']['filter.']['__pageSections']);
+        $this->configurationAccess->reset('plugin.tx_solr.search.query.filter.__pageSections');
     }
 
     /**
@@ -1226,7 +1226,6 @@ class TypoScriptConfiguration
     {
         return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.queryFields', $defaultIfEmpty);
     }
-
 
     /**
      * Returns the configured returnFields as array.

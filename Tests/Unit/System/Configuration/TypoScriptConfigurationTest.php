@@ -496,4 +496,59 @@ class TypoScriptConfigurationTest extends UnitTest
         $excludeClasses = $configuration->getIndexQueuePagesExcludeContentByClassArray();
         $this->assertEquals(array('excludeClass'), $excludeClasses, 'Can not get exclude patterns from configuration');
     }
+
+    /**
+     * @test
+     */
+    public function canSetSearchQueryFilterConfiguration()
+    {
+        $configuration = new TypoScriptConfiguration([]);
+        $this->assertEquals([], $configuration->getSearchQueryFilterConfiguration());
+        $configuration->setSearchQueryFilterConfiguration(['foo']);
+        $this->assertEquals(['foo'], $configuration->getSearchQueryFilterConfiguration());
+    }
+
+    /**
+     * @test
+     */
+    public function canRemovePageSectionFilter()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'search.' => array(
+                'query.' => array(
+                    'filter.' => array(
+                        '__pageSections' => '1,2,3'
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals(['__pageSections' => '1,2,3'], $configuration->getSearchQueryFilterConfiguration());
+
+        $configuration->removeSearchQueryFilterForPageSections();
+        $this->assertEquals([], $configuration->getSearchQueryFilterConfiguration());
+    }
+
+    /**
+     * @test
+     */
+    public function removePageSectionFilterIsKeepingOtherFilters()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'search.' => array(
+                'query.' => array(
+                    'filter.' => array(
+                        'type:pages', '__pageSections' => '1,2,3'
+                    )
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals(['type:pages','__pageSections' => '1,2,3'], $configuration->getSearchQueryFilterConfiguration());
+
+        $configuration->removeSearchQueryFilterForPageSections();
+        $this->assertEquals(['type:pages'], $configuration->getSearchQueryFilterConfiguration());
+    }
 }

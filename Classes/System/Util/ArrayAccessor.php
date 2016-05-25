@@ -224,18 +224,19 @@ class ArrayAccessor
     protected function resetDeepElementWithLoop($pathArray)
     {
         $currentElement = &$this->data;
-        foreach ($pathArray as $key => $pathSegment) {
-            if (!isset($currentElement[$pathSegment])) {
-                $currentElement[$pathSegment] = array();
-            }
 
+        foreach ($pathArray as $key => $pathSegment) {
             unset($pathArray[$key]);
             // if segments are left the item does not exist
             if (count($pathArray) === 0) {
                 unset($currentElement[$pathSegment]);
+                // when the element is empty after unsetting the path segment, we can remove it completely
+                if (empty($currentElement)) {
+                    unset($currentElement);
+                }
+            } else {
+                $currentElement = &$currentElement[$pathSegment];
             }
-
-            $currentElement = &$currentElement[$pathSegment];
         }
     }
 
