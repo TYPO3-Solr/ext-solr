@@ -86,4 +86,48 @@ class ArrayAccessorTest extends UnitTest
         $this->assertSame(null, $arrayAccessor->get('one:two:a'));
         $this->assertSame(222, $arrayAccessor->get('one:two:b'));
     }
+
+
+    /**
+     * @test
+     */
+    public function resetIsRemovingEmptyNodes()
+    {
+        $data = ['one' => ['two' => ['a' => 111, 'b' => 222]]];
+        // can set and get a simple value
+        $arrayAccessor = new ArrayAccessor($data);
+        $this->assertSame(111, $arrayAccessor->get('one:two:a'));
+        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+
+        $arrayAccessor->reset('one:two:a');
+
+        $this->assertSame(null, $arrayAccessor->get('one:two:a'));
+        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+        $this->assertSame(['b' => 222], $arrayAccessor->get('one:two'));
+    }
+
+    /**
+     * @test
+     */
+    public function resetIsRemovingSubNodesAndEmptyNodes()
+    {
+        $data = [
+            'one' => [
+                'two' => ['a' => 111, 'b' => 222],
+                'three' => 333
+            ]
+        ];
+        // can set and get a simple value
+        $arrayAccessor = new ArrayAccessor($data);
+        $this->assertSame(111, $arrayAccessor->get('one:two:a'));
+        $this->assertSame(222, $arrayAccessor->get('one:two:b'));
+
+        $arrayAccessor->reset('one:two');
+
+        $this->assertSame(null, $arrayAccessor->get('one:two:a'));
+        $this->assertSame(null, $arrayAccessor->get('one:two:b'));
+        $this->assertSame(null, $arrayAccessor->get('one:two'));
+
+        $this->assertSame(333, $arrayAccessor->get('one:three'));
+    }
 }
