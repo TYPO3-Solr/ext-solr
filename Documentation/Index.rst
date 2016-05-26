@@ -56,6 +56,7 @@ Apache Solr for TYPO3 - Enterprise Search
 	:titlesonly:
 	:glob:
 
+	GettingStarted/Index
 	Setup/Index
 	Configuration/Index
 	Appendix/*
@@ -73,10 +74,10 @@ Indexed Search. With the initial public release at T3CON09 in Frankfurt, Germany
 that goal was reached and even passed by adding features which Indexed Search
 does not support.
 
-The extension is developed in a way so that public versions are released to TER
-from time to time. Early access to the development version with more features
-can be gained through a paid development partnership. You may check
-http://www.typo3-solr.com for more details.
+The extension is developed in a way so that public versions are released to TER from time to time.
+Early access to the development version with more features can be gained through a paid development
+partnership. That's necessary to make development possible. You may check http://www.typo3-solr.com
+for more details.
 
 This manual covers all features available in the development version, some of
 them may not be available in the versions released to TER. Features which are
