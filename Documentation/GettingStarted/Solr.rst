@@ -35,4 +35,4 @@ the web interface of Solr to run queries:
 .. image:: /Images/GettingStarted/solr-query-webinterface.png
 
 You now have a fully working, pre configured Solr running to start with
-:ref:`started-typo3-extension`.
+:ref:`started-install-extension`.

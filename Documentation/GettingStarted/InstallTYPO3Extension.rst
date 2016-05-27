@@ -1,6 +1,6 @@
 .. highlight:: bash
 
-.. _started-typo3-extension:
+.. _started-install-extension:
 
 Install TYPO3 Extension
 =======================
