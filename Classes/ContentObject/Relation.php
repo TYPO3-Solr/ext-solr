@@ -95,6 +95,10 @@ class Relation
 
         $relatedItems = $this->getRelatedItems($parentContentObject);
 
+        if (!empty($this->configuration['removeDuplicateValues'])) {
+            $relatedItems = array_unique($relatedItems);
+        }
+
         if (empty($configuration['multiValue'])) {
             // single value, need to concatenate related items
             $singleValueGlue = ', ';
@@ -225,9 +229,6 @@ class Relation
                 }
             }
 
-            if (!empty($this->configuration['removeDuplicateValues'])) {
-                $relatedItems = array_unique($relatedItems);
-            }
         }
 
         return $relatedItems;
@@ -345,10 +346,6 @@ class Relation
             if (!empty($resolveRelatedValue) || !$this->configuration['removeEmptyValues']) {
                 $relatedItems[] = $resolveRelatedValue;
             }
-        }
-
-        if (!empty($this->configuration['removeDuplicateValues'])) {
-            $relatedItems = array_unique($relatedItems);
         }
 
         return $relatedItems;
