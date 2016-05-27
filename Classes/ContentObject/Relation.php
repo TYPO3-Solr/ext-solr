@@ -404,13 +404,18 @@ class Relation
     /**
      * Return records via relation.
      *
-     * TODO: Finish method, refactor to contain code from both methods.
-     * Split if code get's huge.
+     * @param string $foreignTable The table to fetch records from.
+     * @param array $uids The uids to fetch from table.
+     * @param string $whereClause The where clause to append.
      *
      * @return array
      */
-    protected function getRelatedRecords($foreignTable, $uids, $whereClause)
+    protected function getRelatedRecords($foreignTable, array $uids, $whereClause)
     {
+        if (isset($this->configuration['additionalWhere'])) {
+            $whereClause .= ' AND ' . $this->configuration['additionalWhere'];
+        }
+
         return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             '*',
             $foreignTable,
