@@ -141,7 +141,7 @@ class Relation
                 $relatedItems = $this->getRelatedItemsFromMMTable($localTableName,
                     $localRecordUid, $localFieldTca);
             } else {
-                $relatedItems = $this->getRelatedItemsFromForeignTable($localFieldName,
+                $relatedItems = $this->getRelatedItemsFromMMTable($localTableName,
                     $localRecordUid, $localFieldTca, $parentContentObject);
             }
         }
@@ -163,17 +163,15 @@ class Relation
         array $localFieldTca
     ) {
         $relatedItems = array();
+        $foreignTableName = $localFieldTca['config']['foreign_table'];
+        $foreignTableTca = $GLOBALS['TCA'][$foreignTableName];
+        $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
         $mmTableName = $localFieldTca['config']['MM'];
         $mmTableSortingField = '';
         if (isset($this->configuration['relationTableSortingField'])) {
             $mmTableSortingField = $mmTableName . '.' . $this->configuration['relationTableSortingField'];
         }
-
-        $foreignTableName = $localFieldTca['config']['foreign_table'];
-        $foreignTableTca = $GLOBALS['TCA'][$foreignTableName];
-
-        $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
         // Remove the first option of foreignLabelField for recursion
         if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
@@ -183,10 +181,9 @@ class Relation
             $this->configuration['foreignLabelField'] = implode('.',
                 $foreignTableLabelFieldArr);
         }
-        $relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
-        $relationHandler->start('', $foreignTableName, $mmTableName,
-            $localRecordUid, $localTableName, $localFieldTca['config']);
 
+        $relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
+        $relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
         $selectUids = $relationHandler->tableArray[$foreignTableName];
         if (!is_array($selectUids) || count($selectUids) <= 0) {
             return $relatedItems;
@@ -273,31 +270,24 @@ class Relation
     /**
      * Gets the related items from a table using a 1:n relation.
      *
-     * @param string $localFieldName Local table field name
+     * @param string $localTableName Local table name
      * @param integer $localRecordUid Local record uid
      * @param array $localFieldTca The local table's TCA
      * @param ContentObjectRenderer $parentContentObject parent content object
      * @return array Array of related items, values already resolved from related records
      */
     protected function getRelatedItemsFromForeignTable(
-        $localFieldName,
+        $localTableName,
         $localRecordUid,
         array $localFieldTca,
         ContentObjectRenderer $parentContentObject
     ) {
         $relatedItems = array();
-
         $foreignTableName = $localFieldTca['config']['foreign_table'];
         $foreignTableTca = $GLOBALS['TCA'][$foreignTableName];
-
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-        // Use also relationhandler as with mm table to have one single way to do it.
-        // Move that to a new function to enable building of where clause
-        // this can be hooked by subclasses to extend
-
         $relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
-        // TODO: Provide localTableName
         $relationHandler->start('', $foreignTableName, '', $localRecordUid, $localTableName, $localFieldTca['config']);
         $selectUids = $relationHandler->tableArray[$foreignTableName];
         if (!is_array($selectUids) || count($selectUids) <= 0) {
