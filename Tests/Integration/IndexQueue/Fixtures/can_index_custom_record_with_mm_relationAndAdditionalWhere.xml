@@ -5,7 +5,7 @@
         <uid>4711</uid>
         <entry_namespace>tx_solr</entry_namespace>
         <entry_key>servers</entry_key>
-        <entry_value>a:2:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8080";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:1;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8080/solr/core_en/";}s:3:"1|1";a:9:{s:13:"connectionKey";s:3:"1|1";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8080";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:1;s:5:"label";s:73:"Congratulations (pid: 1, language: german) - localhost:8080/solr/core_en/";}}</entry_value>
+        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8080";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8080/solr/core_en/";}}</entry_value>
     </sys_registry>
 
     <sys_template>
@@ -15,9 +15,6 @@
         <clear>3</clear>
         <config>
             <![CDATA[
-
-                config.sys_language_mode = ignore
-                config.sys_language_uid = 1
                 page = PAGE
                 page.typeNum = 0
                 page.bodyTag = <body>
@@ -66,6 +63,7 @@
                                     category_stringM {
                                         localField = tags
                                         multiValue = 1
+                                        additionalWhere = pid=2
                                     }
                                 }
                             }
@@ -81,29 +79,28 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
     </pages>
-    <pages_language_overlay>
+    <pages>
         <uid>2</uid>
-        <pid>1</pid>
-        <sys_language_uid>1</sys_language_uid>
+        <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-    </pages_language_overlay>
+        <pid>1</pid>
+    </pages>
     <tx_fakeextension_domain_model_bar>
         <uid>88</uid>
         <pid>1</pid>
-        <title>orignal</title>
-    </tx_fakeextension_domain_model_bar>
-
-    <tx_fakeextension_domain_model_bar>
-        <uid>99</uid>
-        <pid>1</pid>
-        <title>translation</title>
-        <sys_language_uid>1</sys_language_uid>
-        <l10n_parent>88</l10n_parent>
+        <title>testnews</title>
     </tx_fakeextension_domain_model_bar>
 
     <tx_fakeextension_domain_model_related_mm>
-        <uid_local>99</uid_local>
-        <uid_foreign>12</uid_foreign>
+        <uid_local>88</uid_local>
+        <uid_foreign>8</uid_foreign>
+        <tablenames>tx_fakeextension_domain_model_mmrelated</tablenames>
+    </tx_fakeextension_domain_model_related_mm>
+
+
+    <tx_fakeextension_domain_model_related_mm>
+        <uid_local>88</uid_local>
+        <uid_foreign>18</uid_foreign>
         <tablenames>tx_fakeextension_domain_model_mmrelated</tablenames>
     </tx_fakeextension_domain_model_related_mm>
 
@@ -114,8 +111,9 @@
     </tx_fakeextension_domain_model_mmrelated>
 
     <tx_fakeextension_domain_model_mmrelated>
-        <uid>12</uid>
-        <pid>1</pid>
-        <tag>translated tag</tag>
+        <uid>18</uid>
+        <pid>2</pid>
+        <tag>another tag</tag>
     </tx_fakeextension_domain_model_mmrelated>
+
 </dataset>

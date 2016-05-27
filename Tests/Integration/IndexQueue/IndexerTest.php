@@ -123,9 +123,37 @@ class IndexerTest extends IntegrationTest
         sleep(3);
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
 
-        $this->assertContains('"category_stringM":["another tag"]', $solrContent, 'Did not find MM related tag');
+        $this->assertContains('"category_stringM":["translated tag"]', $solrContent, 'Did not find MM related tag');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"translation"', $solrContent, 'Could not index document into solr');
+        $this->cleanUpSolrServerAndAssertEmpty();
+    }
+
+    /**
+     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     *
+     * @test
+     */
+    public function canIndexItemWithMMRelationAndAdditionalWhere()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+
+        // create fake extension database table and TCA
+        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePath('fake_extension2_bar_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePath('fake_extension2_mmrelated_tca.php'));
+        $this->importDataSetFromFixture('can_index_custom_record_with_mm_relationAndAdditionalWhere.xml');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the value from the mm relation?
+        sleep(3);
+        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
+
+        $this->assertContains('"category_stringM":["another tag"]', $solrContent, 'Did not find MM related tag');
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"testnews"', $solrContent, 'Could not index document into solr');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
@@ -152,6 +180,35 @@ class IndexerTest extends IntegrationTest
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
 
         $this->assertContains('"category_stringM":["the category"]', $solrContent, 'Did not find direct related category');
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        $this->cleanUpSolrServerAndAssertEmpty();
+    }
+
+    /**
+     * This testcase is used to check if direct relations can be resolved with the RELATION configuration
+     * and could be limited with an additionalWhere clause at the same time
+     *
+     * @test
+     */
+    public function canIndexItemWithDirectRelationAndAdditionalWhere()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+
+        // create fake extension database table and TCA
+        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePath('fake_extension2_bar_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePath('fake_extension2_directrelated_tca.php'));
+        $this->importDataSetFromFixture('can_index_custom_record_with_direct_relationAndAdditionalWhere.xml');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the value from the mm relation?
+        sleep(3);
+        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
+
+        $this->assertContains('"category_stringM":["another category"]', $solrContent, 'Did not find direct related category');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"testnews"', $solrContent, 'Could not index document into solr');
         $this->cleanUpSolrServerAndAssertEmpty();
