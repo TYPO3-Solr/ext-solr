@@ -165,7 +165,6 @@ class Relation
         $relatedItems = array();
 
         $mmTableName = $localFieldTca['config']['MM'];
-
         $mmTableSortingField = '';
         if (isset($this->configuration['relationTableSortingField'])) {
             $mmTableSortingField = $mmTableName . '.' . $this->configuration['relationTableSortingField'];
@@ -184,51 +183,45 @@ class Relation
             $this->configuration['foreignLabelField'] = implode('.',
                 $foreignTableLabelFieldArr);
         }
-
         $relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
         $relationHandler->start('', $foreignTableName, $mmTableName,
             $localRecordUid, $localTableName, $localFieldTca['config']);
 
         $selectUids = $relationHandler->tableArray[$foreignTableName];
-        if (is_array($selectUids) && count($selectUids) > 0) {
-            $pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-            $whereClause = $pageSelector->enableFields($foreignTableName);
-            $relatedRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                'uid, pid, ' . $foreignTableLabelField,
-                $foreignTableName,
-                'uid IN (' . implode(',', $selectUids) . ')'
-                . $whereClause
-            );
+        if (!is_array($selectUids) || count($selectUids) <= 0) {
+            return $relatedItems;
+        }
 
-            foreach ($relatedRecords as $record) {
-                if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
-                    && $this->configuration['enableRecursiveValueResolution']
+        $pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $whereClause = $pageSelector->enableFields($foreignTableName);
+        $relatedRecords = $this->getRelatedRecords($foreignTableName, $selectUids, $whereClause);
+        foreach ($relatedRecords as $record) {
+            if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
+                && $this->configuration['enableRecursiveValueResolution']
+            ) {
+                if (strpos($this->configuration['foreignLabelField'],
+                        '.') !== false
                 ) {
-                    if (strpos($this->configuration['foreignLabelField'],
-                            '.') !== false
-                    ) {
-                        $foreignLabelFieldArr = explode('.',
-                            $this->configuration['foreignLabelField']);
-                        unset($foreignLabelFieldArr[0]);
-                        $this->configuration['foreignLabelField'] = implode('.',
-                            $foreignLabelFieldArr);
-                    }
-
-                    $this->configuration['localField'] = $foreignTableLabelField;
-
-                    $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-                    $contentObject->start($record, $foreignTableName);
-
-                    return $this->getRelatedItems($contentObject);
-                } else {
-                    if ($GLOBALS['TSFE']->sys_language_uid > 0) {
-                        $record = $this->getTranslationOverlay($foreignTableName,
-                            $record);
-                    }
-                    $relatedItems[] = $record[$foreignTableLabelField];
+                    $foreignLabelFieldArr = explode('.',
+                        $this->configuration['foreignLabelField']);
+                    unset($foreignLabelFieldArr[0]);
+                    $this->configuration['foreignLabelField'] = implode('.',
+                        $foreignLabelFieldArr);
                 }
-            }
 
+                $this->configuration['localField'] = $foreignTableLabelField;
+
+                $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+                $contentObject->start($record, $foreignTableName);
+
+                return $this->getRelatedItems($contentObject);
+            } else {
+                if ($GLOBALS['TSFE']->sys_language_uid > 0) {
+                    $record = $this->getTranslationOverlay($foreignTableName,
+                        $record);
+                }
+                $relatedItems[] = $record[$foreignTableLabelField];
+            }
         }
 
         return $relatedItems;
@@ -299,43 +292,22 @@ class Relation
 
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-        $whereClause = '';
-        if (!empty($localFieldTca['config']['foreign_field'])) {
-            $foreignTableField = $localFieldTca['config']['foreign_field'];
+        // Use also relationhandler as with mm table to have one single way to do it.
+        // Move that to a new function to enable building of where clause
+        // this can be hooked by subclasses to extend
 
-            $whereClause = $foreignTableName . '.' . $foreignTableField . ' = ' . (int)$localRecordUid;
-        } else {
-            $foreignTableUids = GeneralUtility::intExplode(',',
-                $parentContentObject->data[$localFieldName]);
-
-            if (count($foreignTableUids) > 1) {
-                $whereClause = $foreignTableName . '.uid IN (' . implode(',',
-                        $foreignTableUids) . ')';
-            } else {
-                $whereClause = $foreignTableName . '.uid = ' . (int)array_shift($foreignTableUids);
-            }
-        }
-
-        if (!empty($localFieldTca['config']['foreign_match_fields']) && is_array($localFieldTca['config']['foreign_match_fields'])) {
-            $matchFieldQueryParts = array();
-            foreach ($localFieldTca['config']['foreign_match_fields'] as $fieldName => $value) {
-                $matchFieldQueryParts[] = $foreignTableName . '.' . $fieldName . '=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($value,
-                        $foreignTableName);
-            }
-            $whereClause .= ' AND (' . implode('AND ',
-                    $matchFieldQueryParts) . ')';
+        $relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
+        // TODO: Provide localTableName
+        $relationHandler->start('', $foreignTableName, '', $localRecordUid, $localTableName, $localFieldTca['config']);
+        $selectUids = $relationHandler->tableArray[$foreignTableName];
+        if (!is_array($selectUids) || count($selectUids) <= 0) {
+            return $relatedItems;
         }
 
         $pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
         $whereClause .= $pageSelector->enableFields($foreignTableName);
-
-        $relatedRecordsResource = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            $foreignTableName . '.*',
-            $foreignTableName,
-            $whereClause
-        );
-
-        foreach ($relatedRecordsResource as $relatedRecord) {
+        $relatedRecords = $this->getRelatedRecords($foreignTableName, $selectUids, $whereClause);
+        foreach ($relatedRecords as $relatedRecord) {
             $resolveRelatedValue = $this->resolveRelatedValue(
                 $relatedRecord,
                 $foreignTableTca,
@@ -437,5 +409,23 @@ class Relation
         // when we
         $localRecordUid = $record['_LOCALIZED_UID'] ? $record['_LOCALIZED_UID'] : $localRecordUid;
         return $localRecordUid;
+    }
+
+    /**
+     * Return records via relation.
+     *
+     * TODO: Finish method, refactor to contain code from both methods.
+     * Split if code get's huge.
+     *
+     * @return array
+     */
+    protected function getRelatedRecords($foreignTable, $uids, $whereClause)
+    {
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+            '*',
+            $foreignTable,
+            'uid IN (' . implode(',', $uids) . ')'
+            . $whereClause
+        );
     }
 }
