@@ -546,7 +546,7 @@ class TypoScriptConfigurationTest extends UnitTest
         );
 
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertEquals(['type:pages','__pageSections' => '1,2,3'], $configuration->getSearchQueryFilterConfiguration());
+        $this->assertEquals(['type:pages', '__pageSections' => '1,2,3'], $configuration->getSearchQueryFilterConfiguration());
 
         $configuration->removeSearchQueryFilterForPageSections();
         $this->assertEquals(['type:pages'], $configuration->getSearchQueryFilterConfiguration());
