@@ -173,10 +173,11 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
      */
     protected function loadStylesheets()
     {
-        if ($this->solrConfiguration['cssFiles.']['ui'] && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
-            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($this->solrConfiguration['cssFiles.']['ui']));
-            $GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss'] =
-                '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
+        $rangeFile = $this->solrConfiguration->getCssFileByFileKey('ui');
+        if ($rangeFile !== '' && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
+            $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($rangeFile));
+            $GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss'] = $rangeFile;
+            '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
         }
     }
 }
