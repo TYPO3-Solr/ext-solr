@@ -263,6 +263,30 @@ class SearchRequest
     }
 
     /**
+     * Removes all facet values from the request by a certain facet name
+     *
+     * @param string $facetName
+     *
+     * @return SearchRequest
+     */
+    public function removeAllFacetValuesByName($facetName)
+    {
+        $facetValues = $this->getActiveFacets();
+
+        foreach ($facetValues as $index => $facetValue) {
+            $parts = explode(":", $facetValue, 2);
+            if ($parts[0] === $facetName) {
+                // a facet for the request facet name was found, so we unset it.
+                unset($facetValues[$index]);
+            }
+        }
+
+        $this->setActiveFacets($facetValues);
+        $this->stateChanged = true;
+        return $this;
+    }
+
+    /**
      * Removes all active facets from the request.
      *
      * @return SearchRequest
