@@ -247,6 +247,18 @@ class SearchRequestTest extends UnitTest
     /**
      * @test
      */
+    public function canRemoveFacetsByName()
+    {
+        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Aevents&tx_solr%5Bfilter%5D%5B2%5D=created%253A1-4';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $this->assertSame(3, $request->getActiveFacetCount(), 'Expected to have two active facets');
+        $request->removeAllFacetValuesByName('type');
+        $this->assertSame(1, $request->getActiveFacetCount(), 'Only 1 facet should remain active');
+    }
+
+    /**
+     * @test
+     */
     public function canGetSortingField()
     {
         $query = 'q=typo3&tx_solr%5Bsort%5D=title asc';
