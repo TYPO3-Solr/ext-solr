@@ -1202,7 +1202,9 @@ class Query
                 $this->queryParameters['hl.useFastVectorHighlighter'] = 'true';
                 $this->queryParameters['hl.tag.pre'] = $wrap[0];
                 $this->queryParameters['hl.tag.post'] = $wrap[1];
-            } else {
+            }
+
+            if (isset($wrap[0]) && isset($wrap[1])) {
                 $this->queryParameters['hl.simple.pre'] = $wrap[0];
                 $this->queryParameters['hl.simple.post'] = $wrap[1];
             }

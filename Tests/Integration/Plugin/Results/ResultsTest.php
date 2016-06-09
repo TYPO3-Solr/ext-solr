@@ -84,10 +84,24 @@ class ResultsTest extends AbstractPluginTest
         $resultPositionDocument2 = strpos($result, 'pages/2/0/0/0');
         $this->assertTrue($resultPositionDocument3 < $resultPositionDocument2, 'Could not find document 3 before 2, sorting not working?');
 
-        $this->assertContains('<span class="results-highlight">prices</span>', $result, 'Could not find highlighting in response');
         $this->assertContains('class="facet"', $result, 'Facet links do not contain facet class from TypoScript setup');
         $this->assertContains('10€', $result, 'Search response did not contain price of product');
         $this->assertPaginationNotVisible($result);
+    }
+
+    /**
+     * @test
+     */
+    public function canHighlightContentAndTitleField()
+    {
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4), 'can_render_results_plugin.xml');
+
+        $_GET['q'] = 'jeans';
+
+        $result = $searchResults->main('', array());
+
+        $this->assertContains('<h5 class="results-topic"><a href="http:///.Build/bin/phpunit"><span class="results-highlight">Jeans</span></a></h5>', $result, 'Could not find expected highlighting snipped in title');
+        $this->assertContains('<span class="results-highlight">jeans</span>', $result, 'Could not find highlighting in response');
     }
 
     /**
