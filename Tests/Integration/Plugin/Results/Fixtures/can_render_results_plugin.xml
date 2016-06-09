@@ -196,7 +196,7 @@
                         results {
                             resultsHighlighting = 1
                             resultsHighlighting {
-                                highlightFields = content
+                                highlightFields = content, title
                                 fragmentSize = 200
                                 fragmentSeparator = [...]
 
@@ -531,6 +531,14 @@
         <pid>3</pid>
         <CType>text</CType>
         <bodytext>Our awesome men jeans products prices starting at 50€</bodytext>
+        <colPos>0</colPos>
+    </tt_content>
+
+    <tt_content>
+        <uid>3</uid>
+        <pid>3</pid>
+        <CType>text</CType>
+        <bodytext>Men jeans with best prices</bodytext>
         <colPos>0</colPos>
     </tt_content>
 </dataset>

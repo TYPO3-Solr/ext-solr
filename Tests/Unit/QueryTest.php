@@ -249,8 +249,10 @@ class QueryTest extends UnitTest
         $query->setHighlighting(true);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame("[A]", $queryParameters["hl.tag.pre"], 'Can set highlighting field list');
-        $this->assertSame("[B]", $queryParameters["hl.tag.post"], 'Can set highlighting field list');
+        $this->assertSame("[A]", $queryParameters["hl.tag.pre"], 'Can set highlighting hl.tag.pre');
+        $this->assertSame("[B]", $queryParameters["hl.tag.post"], 'Can set highlighting hl.tag.post');
+        $this->assertSame("[A]", $queryParameters["hl.simple.pre"], 'Can set highlighting hl.tag.pre');
+        $this->assertSame("[B]", $queryParameters["hl.simple.post"], 'Can set highlighting hl.tag.post');
     }
 
     /**
@@ -268,9 +270,10 @@ class QueryTest extends UnitTest
         // fragSize 10 is to small for FastVectorHighlighter
         $query->setHighlighting(true, 17);
         $queryParameters = $query->getQueryParameters();
-
         $this->assertSame("[A]", $queryParameters["hl.simple.pre"], 'Can set highlighting field list');
         $this->assertSame("[B]", $queryParameters["hl.simple.post"], 'Can set highlighting field list');
+        $this->assertEmpty($queryParameters["hl.tag.pre"], 'When the highlighting fragment size is to small hl.tag.pre should not be used because FastVectoreHighlighter will not be used');
+        $this->assertEmpty($queryParameters["hl.tag.post"], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
     }
 
     /**
