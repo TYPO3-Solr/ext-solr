@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <sys_registry>
+        <uid>4711</uid>
+        <entry_namespace>tx_solr</entry_namespace>
+        <entry_key>servers</entry_key>
+        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8080";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8080/solr/core_en/";}}</entry_value>
+    </sys_registry>
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                config.disableAllHeaderCode = 1
+
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                # very simple rendering
+                page.10 = CONTENT
+                page.10 {
+                    table = tt_content
+                    select.orderBy = sorting
+                    select.where = colPos=0
+                    renderObj = COA
+                    renderObj {
+                        10 = TEXT
+                        10.field = bodytext
+                    }
+                }
+
+                page.10.wrap = <!--TYPO3SEARCH_begin--><html><body>|</body></html><!--TYPO3SEARCH_end-->
+
+                plugin.tx_solr_PiResults_Results = USER_INT
+                plugin.tx_solr_PiResults_Results.userFunc = ApacheSolrForTypo3\Solr\Plugin\Results\Results->main
+                tt_content.list.20.solr_pi_results =< plugin.tx_solr_PiResults_Results
+
+                plugin.tx_solr_PiSearch_Search = USER
+                plugin.tx_solr_PiSearch_Search.userFunc = ApacheSolrForTypo3\Solr\Plugin\Search\Search->main
+                tt_content.list.20.solr_pi_search =< plugin.tx_solr_PiSearch_Search
+
+                plugin.tx_solr_PiFrequentSearches_FrequentSearches = USER
+                plugin.tx_solr_PiFrequentSearches_FrequentSearches.userFunc = ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches->main
+                tt_content.list.20.solr_pi_frequentsearches =< plugin.tx_solr_PiFrequentSearches_FrequentSearches
+
+
+                plugin.tx_solr {
+
+                    enabled = 1
+
+                    enableDebugMode = 0
+
+                    general {
+                        dateFormat.date = d.m.Y H:i
+                        baseWrap {
+                            value = <div class="baseWrap">|</div>
+                        }
+                    }
+
+                    solr {
+                        scheme = http
+                        host   = localhost
+                        port   = 8080
+                        path   = /solr/core_en/
+                    }
+
+                    templateFiles {
+                        frequentSearches = EXT:solr/Resources/Templates/PiFrequentSearches/frequentsearches.htm
+                        pagebrowser      = EXT:solr/Resources/Templates/PiResults/pagebrowser.htm
+                        results          = EXT:solr/Resources/Templates/PiResults/results.htm
+                        search           = EXT:solr/Resources/Templates/PiSearch/search.htm
+                    }
+
+                    cssFiles {
+                        results = EXT:solr/Resources/Css/PiResults/results.css
+                        ui      = EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css
+                    }
+
+                    javascriptFiles {
+                        loadIn = footer
+
+                        library = EXT:solr/Resources/JavaScript/JQuery/jquery.min.js
+
+                        ui = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.core.min.js
+
+                        ui.autocomplete = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.autocomplete.min.js
+
+                        ui.datepicker    = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.datepicker.min.js
+                        ui.datepicker.de = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-de.js
+                        ui.datepicker.fr = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-fr.js
+                        ui.datepicker.nl = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-nl.js
+
+                        ui.slider = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.slider.min.js
+
+                        suggest = EXT:solr/Resources/JavaScript/EidSuggest/suggest.js
+
+                        faceting.limitExpansion     = EXT:solr/Resources/JavaScript/PiResults/results.js
+                        faceting.dateRangeHelper    = EXT:solr/Resources/JavaScript/PiResults/date_range_facet.js
+                        faceting.numericRangeHelper = EXT:solr/Resources/JavaScript/PiResults/numeric_range_facet.js
+                    }
+
+                    index {
+                        additionalFields {
+
+                        }
+
+                        // assigns processing instructions to Solr fields during indexing, Solr field = processing instruction
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                            pageHierarchy_stringM = pathToHierarchy
+                        }
+
+                        queue {
+
+                            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+                            pages = 1
+                            pages {
+                                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                                // allowed page types (doktype) when indexing records from table "pages"
+                                allowedPageTypes = 1,7,4
+
+                                indexingPriority = 0
+
+                                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                                indexer {
+                                    // add options for the indexer here
+                                }
+
+                                // Only index standard pages and mount points that are not overlayed.
+                                additionalWhereClause = (doktype = 1 OR doktype=4 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                                //exclude some html parts inside TYPO3SEARCH markers by classname (comma list)
+                                excludeContentByClass = typo3-search-exclude
+
+                                fields {
+                                    sortSubTitle_stringS = subtitle
+                                }
+                            }
+
+                        }
+                    }
+
+                    search {
+                        // fields that are allowed to contain html and should be skipped during escaping after retrieval from Solr
+                        // by default all fields expect url get escaped, you might need to add other url fields here as well because of &
+                        // characters in the url.
+                        trustedFields = url
+
+                        targetPage = {$plugin.tx_solr.search.targetPage}
+
+                        initializeWithEmptyQuery = 0
+                        showResultsOfInitialEmptyQuery = 0
+
+                        initializeWithQuery =
+                        showResultsOfInitialQuery = 0
+
+                        keepExistingParametersForNewSearches = 1
+
+                        query {
+                            allowEmptyQuery = 1
+
+                            allowedSites = __solr_current_site
+
+                            // qf parameter http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
+                            queryFields = content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0
+
+                            // fl parameter http://wiki.apache.org/solr/CommonQueryParameters#fl
+                            returnFields = *, score
+
+                            // see http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
+                            minimumMatch =
+
+                            // see http://wiki.apache.org/solr/DisMaxRequestHandler#bf_.28Boost_Functions.29
+                            boostFunction =
+
+                            // see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
+                            boostQuery =
+
+                            filter {
+
+                            }
+
+                            sortBy =
+                        }
+
+                        results {
+                            resultsHighlighting = 1
+                            resultsHighlighting {
+                                highlightFields = content, title
+                                fragmentSize = 200
+                                fragmentSeparator = [...]
+
+                                wrap = <span class="results-highlight">|</span>
+                            }
+                            siteHighlighting = 0
+
+                            resultsPerPage = 5
+                            resultsPerPageSwitchOptions = 5, 10, 25, 50
+
+                            pagebrowser {
+                                enabled = 1
+
+                                pagesBefore = 3
+                                pagesAfter = 3
+
+                                enableMorePages = 1
+                                enableLessPages = 1
+                            }
+
+                            // fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)
+                            fieldProcessingInstructions {
+                                changed = timestamp
+                                created = timestamp
+                                indexed = timestamp
+                                # TODO rename the skip instruction to remove?!
+                                spell = skip
+                            }
+
+                            fieldRenderingInstructions {
+
+                                url = CASE
+                                url {
+                                    key.field = type
+
+                                    default = TEXT
+                                    default {
+                                        field = url
+                                        htmlSpecialChars = 1
+                                        htmlSpecialChars.preserveEntities = 1
+                                    }
+                                }
+
+                                link = CASE
+                                link {
+                                    key.field = type
+
+                                    pages  = TEXT
+                                    pages {
+                                        field = title
+
+                                        typolink {
+                                            parameter.field = uid
+                                        }
+                                    }
+
+                                    default  = TEXT
+                                    default {
+                                        field = title
+
+                                        typolink {
+                                            parameter.field = url
+                                            extTarget =
+                                        }
+                                    }
+                                }
+                            }
+                            showDocumentScoreAnalysis = 0
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+        <static_file_mode>0</static_file_mode>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <title>Products</title>
+    </pages>
+    <pages>
+        <uid>2</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Socks</title>
+        <subtitle>Men</subtitle>
+    </pages>
+    <pages>
+        <uid>3</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Jeans</title>
+        <subtitle>Men</subtitle>
+    </pages>
+    <pages>
+        <uid>4</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Shoes</title>
+        <subtitle>Woman</subtitle>
+    </pages>
+    <pages>
+        <uid>5</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>T-Shirts</title>
+        <subtitle>Woman</subtitle>
+    </pages>
+    <pages>
+        <uid>6</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>T-Shirts</title>
+        <subtitle>Men</subtitle>
+    </pages>
+    <pages>
+        <uid>7</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Sweatshirts</title>
+        <subtitle>Men</subtitle>
+    </pages>
+    <pages>
+        <uid>8</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Sweatshirts</title>
+        <subtitle>Woman</subtitle>
+    </pages>
+
+    <tt_content>
+        <uid>1</uid>
+        <pid>2</pid>
+        <CType>text</CType>
+        <bodytext>Our awesome new sock products prices starting at 10€</bodytext>
+        <colPos>0</colPos>
+    </tt_content>
+
+    <tt_content>
+        <uid>2</uid>
+        <pid>3</pid>
+        <CType>text</CType>
+        <bodytext>Our awesome men jeans products prices starting at 50€</bodytext>
+        <colPos>0</colPos>
+    </tt_content>
+
+    <tt_content>
+        <uid>3</uid>
+        <pid>3</pid>
+        <CType>text</CType>
+        <bodytext>Men jeans with best prices</bodytext>
+        <colPos>0</colPos>
+    </tt_content>
+</dataset>
