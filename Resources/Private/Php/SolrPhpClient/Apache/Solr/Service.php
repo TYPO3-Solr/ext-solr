@@ -689,7 +689,7 @@ class Apache_Solr_Service
                         // only set the boost for the first field in the set
                         $fieldBoost = false;
                     }
-					
+
                     $xml .= '><![CDATA[' . $multivalue . ']]></field>';
                 }
             } else {
@@ -698,7 +698,7 @@ class Apache_Solr_Service
                 if ($fieldBoost !== false) {
                     $xml .= ' boost="' . $fieldBoost . '"';
                 }
-				
+
                 $xml .= '><![CDATA[' . $value . ']]></field>';
             }
         }
