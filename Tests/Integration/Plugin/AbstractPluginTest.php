@@ -49,28 +49,8 @@ abstract class AbstractPluginTest extends IntegrationTest
      */
     protected function importTestDataSetAndGetInitializedPlugin($importPageIds, $fixture, $plugin = 'results', $pluginPageUid = 1)
     {
-        $this->importDataSetFromFixture($fixture);
-
-        foreach ($importPageIds as $importPageId) {
-            $GLOBALS['TT'] = $this->getMock('\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker', array(), array(), '', false);
-            $fakeTSFE = $this->getConfiguredTSFE(array(), $importPageId);
-            $fakeTSFE->newCObj();
-
-            $GLOBALS['TSFE'] = $fakeTSFE;
-
-            PageGenerator::pagegenInit();
-            PageGenerator::renderContent();
-
-            /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
-            $pageIndexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Typo3PageIndexer', $fakeTSFE);
-            $pageIndexer->indexPage();
-        }
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
-        $beUser = GeneralUtility::makeInstance('TYPO3\CMS\Core\Authentication\BackendUserAuthentication');
-        $GLOBALS['BE_USER'] = $beUser;
-
+        $this->indexPageIdsFromFixture($fixture, $importPageIds);
         sleep(2);
-
         $plugin = $this->getPluginInstance($plugin, $pluginPageUid);
         return $plugin;
     }

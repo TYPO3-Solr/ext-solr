@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
+use TYPO3\CMS\Frontend\Page\PageGenerator;
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -201,5 +202,33 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     {
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
+    }
+
+
+    /**
+     * @param string $fixture
+     * @param array $importPageIds
+     */
+    protected function indexPageIdsFromFixture($fixture, $importPageIds)
+    {
+        $this->importDataSetFromFixture($fixture);
+
+        foreach ($importPageIds as $importPageId) {
+            $GLOBALS['TT'] = $this->getMock('\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker', array(), array(), '', false);
+            $fakeTSFE = $this->getConfiguredTSFE(array(), $importPageId);
+            $fakeTSFE->newCObj();
+
+            $GLOBALS['TSFE'] = $fakeTSFE;
+
+            PageGenerator::pagegenInit();
+            PageGenerator::renderContent();
+
+            /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
+            $pageIndexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Typo3PageIndexer', $fakeTSFE);
+            $pageIndexer->indexPage();
+        }
+        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
+        $beUser = GeneralUtility::makeInstance('TYPO3\CMS\Core\Authentication\BackendUserAuthentication');
+        $GLOBALS['BE_USER'] = $beUser;
     }
 }

@@ -483,6 +483,25 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
+     * Retrieves a single document from solr by document id.
+     *
+     * @param string $documentId
+     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult
+     */
+    public function getDocumentById($documentId)
+    {
+        /* @var $query Query */
+        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', $documentId);
+        $query->setQueryFieldsFromString('id');
+
+        $response = $this->search->search($query, 0, 1);
+        $this->processResponse($documentId, $query, $response);
+
+        $resultDocument = isset($response->response->docs[0]) ?  $response->response->docs[0] : null;
+        return $resultDocument;
+    }
+
+    /**
      * This method is used to call the registered hooks during the search execution.
      *
      * @param string $eventName
