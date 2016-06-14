@@ -689,11 +689,8 @@ class Apache_Solr_Service
                         // only set the boost for the first field in the set
                         $fieldBoost = false;
                     }
-
-                    $multivalue = htmlspecialchars($multivalue, ENT_NOQUOTES,
-                        'UTF-8');
-
-                    $xml .= '>' . $multivalue . '</field>';
+					
+                    $xml .= '><![CDATA[' . $multivalue . ']]></field>';
                 }
             } else {
                 $xml .= '<field name="' . $key . '"';
@@ -701,10 +698,8 @@ class Apache_Solr_Service
                 if ($fieldBoost !== false) {
                     $xml .= ' boost="' . $fieldBoost . '"';
                 }
-
-                $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
-
-                $xml .= '>' . $value . '</field>';
+				
+                $xml .= '><![CDATA[' . $value . ']]></field>';
             }
         }
 
