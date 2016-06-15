@@ -53,10 +53,7 @@ class Multivalue implements ViewHelper
     public function __construct(array $arguments = array())
     {
         $configuration = Util::getSolrConfiguration();
-
-        if (!empty($configuration['viewhelpers.']['multivalue.']['glue'])) {
-            $this->glue = $configuration['viewhelpers.']['multivalue.']['glue'];
-        }
+        $this->glue = $configuration->getValueByPathOrDefaultValue('plugin.tx_solr.viewHelpers.multivalue.glue', $this->glue);
     }
 
     /**

@@ -41,9 +41,9 @@ class SortUrl implements ViewHelper
     /**
      * Holds the solr configuration
      *
-     * @var array
+     * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
      */
-    protected $configuration = array();
+    protected $configuration;
 
     /**
      * An instance of a Solr Search
@@ -91,15 +91,17 @@ class SortUrl implements ViewHelper
 
         $sortHelper = GeneralUtility::makeInstance(
             'ApacheSolrForTypo3\\Solr\\Sorting',
-            $this->configuration['search.']['sorting.']['options.']
+            $this->configuration->getValueByPathOrDefaultValue('plugin.tx_solr.search.sorting.options.', array())
         );
         $configuredSortOptions = $sortHelper->getSortOptions();
 
         $sortParameters = array();
         foreach ($sortOptions as $sortOption) {
             if (isset($configuredSortOptions[$sortOption])) {
-                $sortDirection = $this->configuration['search.']['sorting.']['defaultOrder'];
-                if (isset($configuredSortOptions[$sortOption]['defaultOrder'])) {
+                $sortDirection = $this->configuration->getValueByPathOrDefaultValue('plugin.tx_solr.search.sorting.defaultOrder', 'asc');
+                if (isset($configuredSortOptions[$sortOption]['fixedOrder'])) {
+                    $sortDirection = $configuredSortOptions[$sortOption]['fixedOrder'];
+                } elseif (isset($configuredSortOptions[$sortOption]['defaultOrder'])) {
                     $sortDirection = $configuredSortOptions[$sortOption]['defaultOrder'];
                 }
                 $sortParameter = $sortOption . ' ' . $sortDirection;
@@ -123,8 +125,9 @@ class SortUrl implements ViewHelper
                             break;
                     }
 
-                    if (!empty($this->configuration['search.']['sorting.']['options.'][$sortOption . '.']['fixedOrder'])) {
-                        $sortDirection = $this->configuration['search.']['sorting.']['options.'][$sortOption . '.']['fixedOrder'];
+                    $fixedOrder = $this->configuration->getValueByPath('plugin.tx_solr.search.sorting.options.' . $sortOption . '.fixedOrder');
+                    if (!is_null($fixedOrder)) {
+                        $sortDirection = $fixedOrder;
                     }
 
                     $sortParameter = $sortOption . ' ' . $sortDirection;
@@ -133,6 +136,7 @@ class SortUrl implements ViewHelper
                 $sortParameters[] = $sortParameter;
             }
         }
+
         $sortUrl = $this->queryLinkBuilder->getQueryUrl(array(
             'sort' => implode(', ', $sortParameters)
         ));

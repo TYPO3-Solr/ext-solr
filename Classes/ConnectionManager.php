@@ -73,16 +73,15 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         if (empty($host)) {
             GeneralUtility::devLog(
                 'ApacheSolrForTypo3\Solr\ConnectionManager::getConnection() called with empty
-				host parameter. Using configuration from TSFE, might be
-				inaccurate. Always provide a host or use the getConnectionBy*
-				methods.',
+                host parameter. Using configuration from TSFE, might be
+                inaccurate. Always provide a host or use the getConnectionBy*
+                methods.',
                 'solr',
                 2
             );
 
             $configuration = Util::getSolrConfiguration();
-            $solrConfiguration = $configuration['solr.'];
-
+            $solrConfiguration = $configuration->getValueByPathOrDefaultValue('plugin.tx_solr.solr.', array());
             $host = $solrConfiguration['host'];
             $port = $solrConfiguration['port'];
             $path = $solrConfiguration['path'];
