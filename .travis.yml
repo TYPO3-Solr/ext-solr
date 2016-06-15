@@ -7,6 +7,10 @@ php:
 
 sudo: true
 
+addons:
+  apt:
+    packages:
+      - parallel
 env:
   global:
     - TYPO3_DATABASE_NAME="typo3_ci"
