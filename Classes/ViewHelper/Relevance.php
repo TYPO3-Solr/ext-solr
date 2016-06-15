@@ -128,7 +128,7 @@ class Relevance implements ViewHelper
                 // -> ignore
             } else {
                 $solrConfiguration = Util::getSolrConfiguration();
-                if ($solrConfiguration['logging.']['exceptions']) {
+                if ($solrConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.logging.exceptions', false)) {
                     GeneralUtility::devLog('Could not resolve document score for relevance calculation',
                         'solr', 3, array(
                             'rawDocument' => $rawDocument,
