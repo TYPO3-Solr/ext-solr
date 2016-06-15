@@ -7,6 +7,10 @@ php:
 
 sudo: true
 
+addons:
+  apt:
+    packages:
+      - parallel
 env:
   global:
     - TYPO3_DATABASE_NAME="typo3_ci"
@@ -14,15 +18,23 @@ env:
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
   matrix:
-    - TYPO3_VERSION="~7.6.4"
+    - TYPO3_VERSION="~7.6.9"
     - TYPO3_VERSION="~8.0.0"
+    - TYPO3_VERSION="~8.1.2"
     - TYPO3_VERSION="dev-master"
 
 matrix:
   fast_finish: true
   allow_failures:
     - env: TYPO3_VERSION="dev-master"
-    - php: 7.0
+      php: 7.0
+    - env: TYPO3_VERSION="~8.1.2"
+      php: 5.5
+    - env: TYPO3_VERSION="~8.1.2"
+      php: 5.6
+    - env: TYPO3_VERSION="~8.1.2"
+      php: 7.0
+
   exclude:
     - php: 5.5
       env: TYPO3_VERSION="dev-master"
@@ -32,7 +44,10 @@ matrix:
       env: TYPO3_VERSION="~8.0.0"
     - php: 5.6
       env: TYPO3_VERSION="~8.0.0"
-
+    - php: 5.5
+      env: TYPO3_VERSION="~8.1.2"
+    - php: 5.6
+      env: TYPO3_VERSION="~8.1.2"
 before_install:
   - composer self-update
   - composer --version

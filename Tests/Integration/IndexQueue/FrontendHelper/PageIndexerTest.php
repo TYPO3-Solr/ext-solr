@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 
@@ -98,7 +99,7 @@ class PageIndexerTest extends IntegrationTest
      */
     protected function executePageIndexer()
     {
-        $GLOBALS['TT'] = $this->getMock('\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker', array(), array(), '', false);
+        $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
         $TSFE = $this->getConfiguredTSFE();
         $TSFE->config['config']['index_enable'] = 1;

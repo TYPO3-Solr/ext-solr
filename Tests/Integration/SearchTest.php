@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -43,7 +44,7 @@ class SearchTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('can_search.xml');
 
-        $GLOBALS['TT'] = $this->getMock('\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker', array(), array(), '', false);
+        $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
         $fakeTSFE = $this->getConfiguredTSFE();
         $GLOBALS['TSFE'] = $fakeTSFE;
 

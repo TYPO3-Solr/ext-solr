@@ -68,13 +68,10 @@ class SearchResultSetTest extends UnitTest
         $this->searchMock = $this->getDumbMock('ApacheSolrForTypo3\Solr\Search');
         $this->pluginMock = $this->getDumbMock('TYPO3\CMS\Frontend\Plugin\AbstractPlugin');
 
-        $this->searchResultSetService = $this->getMock('ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService',
-            array('setPerPageInSession', 'getPerPageFromSession', 'getRegisteredSearchComponents'),
-            array(
-                $this->configurationMock,
-                $this->searchMock,
-                $this->pluginMock)
-        );
+        $this->searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
+            ->setMethods(['setPerPageInSession', 'getPerPageFromSession', 'getRegisteredSearchComponents'])
+            ->setConstructorArgs([$this->configurationMock, $this->searchMock, $this->pluginMock])
+            ->getMock();
     }
 
     /**

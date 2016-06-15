@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\FormProtection\Exception;
+use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,7 +46,7 @@ class TemplateTest extends IntegrationTest
 
         $GLOBALS['TYPO3_CONF_VARS']['FE']['addAllowedPaths'] = $this->getFixtureRootPath();
 
-        $TT = $this->getMock('\TYPO3\CMS\Core\TimeTracker\TimeTracker', array(), array(), '', false);
+        $TT = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
         $TT->expects($this->any())->method('setTSlogMessage')->will($this->returnCallback(function ($message) {
             echo $message;
         }));
