@@ -214,16 +214,12 @@ class Template
                 $viewHelperRealPath = substr($viewHelperRealPath, 0, -1);
             }
 
-            $classNamePrefix = ExtensionManagementUtility::getCN($extensionKey);
 
-            //FIXME for PHP 5.4.32, 5.5.16: $classNamePrefix = ucwords($classNamePrefix, '_');
-            $classNamePrefix = explode('_', $classNamePrefix);
-            $classNamePrefix = array_map('ucfirst', $classNamePrefix);
-            $classNamePrefix = implode('_', $classNamePrefix);
-
-            $possibleFilename = Util::underscoredToUpperCamelCase($helperKey) . '.php';
-            $possibleClassName = $classNamePrefix . '_' . str_replace('/', '_',
-                    $viewHelperRealPath) . '_' . Util::underscoredToUpperCamelCase($helperKey);
+            $ucHelperKey = Util::underscoredToUpperCamelCase($helperKey);
+            $vendorNameSpace = 'ApacheSolrForTypo3\\Solr\\';
+            $possibleFilename = $ucHelperKey . '.php';
+            $possibleClassName =  $vendorNameSpace . str_replace('/', '\\',
+                    $viewHelperRealPath) . '\\' . $ucHelperKey;
 
             $viewHelperIncludePath = ExtensionManagementUtility::extPath($extensionKey)
                 . $viewHelperPath . $possibleFilename;
