@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
@@ -214,7 +215,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         $this->importDataSetFromFixture($fixture);
 
         foreach ($importPageIds as $importPageId) {
-            $GLOBALS['TT'] = $this->getMock('\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker', array(), array(), '', false);
+            $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
             $fakeTSFE = $this->getConfiguredTSFE(array(), $importPageId);
             $fakeTSFE->newCObj();
 

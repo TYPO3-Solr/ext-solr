@@ -27,7 +27,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * PHP Unit test for view helper Tx_Solr_viewhelper_Ts
@@ -56,7 +58,9 @@ class TsTest extends UnitTest
 
         $GLOBALS['TSFE'] = $TSFE;
         /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $GLOBALS['TSFE']->tmpl = $this->getMock('\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService', array('linkData'));
+        $GLOBALS['TSFE']->tmpl = $this->getMockBuilder(TemplateService::class)
+            ->setMethods(['linkData'])
+            ->getMock();
         $GLOBALS['TSFE']->tmpl->init();
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = '0';
@@ -84,11 +88,11 @@ class TsTest extends UnitTest
         );
 
 
-        $cObj = $this->getMock(
-            '\\TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer',
-            array('getResourceFactory', 'getEnvironmentVariable'),
-            array($TSFE)
-        );
+        $cObj = $this->getMockBuilder(ContentObjectRenderer::class)
+            ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
+            ->setConstructorArgs([$TSFE])
+            ->getMock();
+
         $cObj->setContentObjectClassMap(array(
             'TEXT' => 'TYPO3\\CMS\\Frontend\\ContentObject\\TextContentObject'
         ));

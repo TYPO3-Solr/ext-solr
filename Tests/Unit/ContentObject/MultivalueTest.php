@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Tests for the SOLR_MULTIVALUE cObj.
@@ -37,7 +38,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class MultivalueTest extends UnitTest
 {
     /**
-     * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+     * @var ContentObjectRenderer
      */
     protected $contentObject;
 
@@ -96,11 +97,9 @@ class MultivalueTest extends UnitTest
 
         $GLOBALS['TSFE'] = $this->getDumbMock('\\TYPO3\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
 
-        $this->contentObject = $this->getMock(
-            '\\TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer',
-            array('getResourceFactory', 'getEnvironmentVariable'),
-            array($GLOBALS['TSFE'])
-        );
+        $this->contentObject = $this->getMockBuilder(ContentObjectRenderer::class)
+            ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
+            ->setConstructorArgs([$GLOBALS['TSFE']])->getMock();
     }
 
     protected function tearDown()

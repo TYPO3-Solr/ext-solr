@@ -27,8 +27,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Facet;
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\TimeTracker\TimeTracker;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  *
@@ -45,17 +49,17 @@ class SimpleFacetRendererTest extends UnitTest
     {
         $this->markTestSkipped('fixme');
         chdir(PATH_site);
-        $GLOBALS['TYPO3_DB'] = $this->getMock('\TYPO3\CMS\Core\Database\DatabaseConnection', array());
+        $GLOBALS['TYPO3_DB'] = $this->getMockBuilder(DatabaseConnection::class);
 
         $TSFE = $this->getDumbMock('\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
 
         $GLOBALS['TSFE'] = $TSFE;
         $GLOBALS['TSFE']->config['config']['disablePrefixComment'] = true;
 
-        $GLOBALS['TT'] = $this->getMock('\\TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker', array(), array(), '', false);
+        $GLOBALS['TT'] = $this->getDumbMock(TimeTracker::class);
 
         /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $GLOBALS['TSFE']->tmpl = $this->getMock('\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService', array('linkData'));
+        $GLOBALS['TSFE']->tmpl = $this->getMockBuilder(TemplateService::class)->setMethods(['linkData'])->getMock();
         $GLOBALS['TSFE']->tmpl->init();
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
 
@@ -71,11 +75,9 @@ class SimpleFacetRendererTest extends UnitTest
             'renderingInstruction'
         );
         $parentPlugin = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Plugin\\Results\\Results');
-        $parentPlugin->cObj = $this->getMock(
-            '\\TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer',
-            array('getResourceFactory', 'getEnvironmentVariable'),
-            array($TSFE)
-        );
+        $parentPlugin->cObj = $this->getMockBuilder(ContentObjectRenderer::class)
+            ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
+            ->setConstructorArgs($TSFE)->getMock();
 
         $parentPlugin->main('', array());
 

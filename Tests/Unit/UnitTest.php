@@ -45,7 +45,7 @@ abstract class UnitTest extends TYPO3UnitTest
      */
     protected function getDumbMock($className)
     {
-        return $this->getMock($className, array(), array(), '', false);
+        return $this->getMockBuilder($className)->setMethods([])->disableOriginalConstructor()->getMock();
     }
 
     /**

@@ -47,7 +47,7 @@ class SearchResultSetServiceTest extends IntegrationTest
     public function canGetDocumentById()
     {
         // trigger a search
-        $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', array(1,2,3,4,5));
+        $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', array(1, 2, 3, 4, 5));
 
         sleep(1);
 
