@@ -61,18 +61,9 @@
     "branch-alias": {
       "dev-master": "5.0.x-dev"
     },
-    "class-alias-maps": [
-      "Migrations/Code/ClassAliasMap.php"
-    ],
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
-    },
-    "typo3/class-alias-loader": {
-      "always-add-alias-loader": true,
-      "class-alias-maps": [
-        "Migrations/Code/ClassAliasMap.php"
-      ]
     }
   }
 }
