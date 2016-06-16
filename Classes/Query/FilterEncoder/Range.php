@@ -6,6 +6,7 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
  *
  *  (c) 2010-2011 Markus Goldbach <markus.goldbach@dkd.de>
  *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2016 Markus Friedrich <markus.friedrich@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -32,6 +33,7 @@ use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
+ * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
 class Range implements FilterEncoder, FacetBuilder
 {
@@ -42,7 +44,6 @@ class Range implements FilterEncoder, FacetBuilder
      * @var string
      */
     const DELIMITER = '-';
-
 
     /**
      * Takes a filter value and encodes it to a human readable format to be
@@ -64,12 +65,19 @@ class Range implements FilterEncoder, FacetBuilder
      * @param string $range The range filter from the URL.
      * @param array $configuration Facet configuration
      * @return string Lucene query language filter to be used for querying Solr
+     * @throws \InvalidArgumentException
      */
     public function decodeFilter($range, array $configuration = array())
     {
-        $range = explode(self::DELIMITER, $range);
+        preg_match('/(-?\d*?)' . self::DELIMITER . '(-?\d*)/', $range, $filterParts);
+        if ($filterParts[1] == '' || $filterParts[2] == '') {
+            throw new \InvalidArgumentException(
+                'Invalid numeric range given',
+                1466062730
+            );
+        }
 
-        return '[' . $range[0] . ' TO ' . $range[1] . ']';
+        return '[' . (int) $filterParts[1] . ' TO ' . (int)  $filterParts[2] . ']';
     }
 
     /**
