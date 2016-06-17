@@ -4,7 +4,7 @@
 
 <f:if condition="{indexQueueItem.errors}">
     <p><f:translate key="solr.backend.index_queue_module.error_details"/> (uid: {indexQueueItem.uid}, type: {indexQueueItem.item_type}):</p>
-    <div class="alert alert-error">
+    <div class="alert alert-danger">
         {indexQueueItem.errors}
     </div>
 
