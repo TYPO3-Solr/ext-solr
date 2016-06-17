@@ -32,6 +32,7 @@ use TYPO3\CMS\Core\SingletonInterface;
  * @author Ingo Renner <ingo@typo3.org>
  * @package TYPO3
  * @subpackage solr
+ * @deprecated Class was used by EXT:solrfile only, which can't be used since EXT:solr 3.1.0, whole class will be removed in version 6.0
  */
 class Typo3Environment implements SingletonInterface
 {
@@ -39,10 +40,13 @@ class Typo3Environment implements SingletonInterface
     /**
      * Checks whether file indexing is enabled.
      *
+     * @deprecated Setting plugin.tx_solr.index.files was used by EXT:solrfile only, which can't be used since EXT:solr 3.1.0, will be removed in version 6.0
      * @return boolean TRUE if file indexing is enabled, FALSE otherwise.
      */
     public function isFileIndexingEnabled()
     {
+        GeneralUtility::logDeprecatedFunction();
+
         $configuration = Util::getSolrConfiguration();
         return (boolean) $configuration->getValueByPathOrDefaultValue('plugin.tx_solr.index.files', 0);
     }
