@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -76,7 +77,7 @@ class MultivalueTest extends UnitTest
         $this->contentObject->start(array());
 
         $actual = $this->contentObject->cObjGetSingle(
-            \Tx_Solr_contentobject_Multivalue::CONTENT_OBJECT_NAME,
+            Multivalue::CONTENT_OBJECT_NAME,
             array(
                 'value' => $list,
                 'separator' => ','
