@@ -26,6 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Backend;
 
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Backend\Form\FormResultCompiler;
+use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -196,12 +199,18 @@ class IndexingConfigurationSelectorField
         );
 
         /** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
-        $nodeFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Form\\NodeFactory');
+        $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = array('renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector', 'fieldName' => 'additionalFields', 'databaseRow' => array(), 'parameterArray' => $parameterArray);
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
-        $selectCheckboxResult = $nodeFactory->create($options)->render();
 
-        return $selectCheckboxResult['html'];
+        $selectCheckboxResult = $nodeFactory->create($options)->render();
+        $formResultCompiler = GeneralUtility::makeInstance(FormResultCompiler::class);
+        $formResultCompiler->mergeResult($selectCheckboxResult);
+
+        $formHtml = isset($selectCheckboxResult['html']) ? $selectCheckboxResult['html'] : '';
+        $content = $formResultCompiler->JStop() . $formHtml . $formResultCompiler->printNeededJSFunctions();
+
+        return $content;
     }
 }
