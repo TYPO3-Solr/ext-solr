@@ -13,3 +13,4 @@ uploads
 vendor
 composer.lock
 .Build
+Documentation/_make
