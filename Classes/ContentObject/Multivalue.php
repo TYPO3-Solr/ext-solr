@@ -59,7 +59,7 @@ class Multivalue
      * @param string $name content object name 'SOLR_MULTIVALUE'
      * @param array $configuration for the content object, expects keys 'separator' and 'field'
      * @param string $TyposcriptKey not used
-     * @param TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject parent cObj
+     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject parent cObj
      * @return string serialized array representation of the given list
      */
     public function cObjGetSingleExt(

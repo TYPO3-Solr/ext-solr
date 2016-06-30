@@ -418,8 +418,8 @@ class Relation
      */
     protected function getRelatedRecords($foreignTable, array $uids, $whereClause)
     {
-        if (isset($this->configuration['additionalWhere'])) {
-            $whereClause .= ' AND ' . $this->configuration['additionalWhere'];
+        if (isset($this->configuration['additionalWhereClause'])) {
+            $whereClause .= ' AND ' . $this->configuration['additionalWhereClause'];
         }
 
         return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(

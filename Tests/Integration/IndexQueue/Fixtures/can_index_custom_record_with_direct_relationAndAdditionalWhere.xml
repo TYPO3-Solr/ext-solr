@@ -63,7 +63,7 @@
                                     category_stringM {
                                         localField = category
                                         multiValue = 1
-                                        additionalWhere = pid=2
+                                        additionalWhereClause = pid=2
                                     }
                                 }
                             }
