@@ -8,6 +8,15 @@
 
 .. _conf-tx-solr:
 
+.. raw:: latex
+
+    \newpage
+
+.. raw:: pdf
+
+   PageBreak
+
+
 tx_solr
 =======
 
@@ -36,8 +45,8 @@ conditions where you do not want EXT:solr.
    This also influences the connection manager; connections will be registered /
    detected only for enabled = 1.
 
-addDefaultCss
--------------
+addDefaultCss (removed)
+-----------------------
 
 :Type: Boolean
 :Default: ``1``
@@ -48,8 +57,8 @@ addDefaultCss
 If enabled, default stylesheets for page browser, results, and suggestions will
 be included. Otherwise, no stylesheets will be included by EXT:solr.
 
-addDefaultJs
-------------
+addDefaultJs (removed)
+----------------------
 
 :Type: Boolean
 :Default: ``1``

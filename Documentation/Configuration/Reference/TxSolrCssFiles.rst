@@ -8,6 +8,15 @@
 
 .. _conf-tx-solr-cssFiles:
 
+.. raw:: latex
+
+    \newpage
+
+.. raw:: pdf
+
+   PageBreak
+
+
 tx_solr.cssFiles
 ================
 
@@ -48,8 +57,8 @@ results
 
 Defines the stylesheet to be used for styling the search results page.
 
-pagebrowser
------------
+pagebrowser (removed)
+---------------------
 
 :Type: String
 :Default: ``EXT:pagebrowse/res/styles_min.css``

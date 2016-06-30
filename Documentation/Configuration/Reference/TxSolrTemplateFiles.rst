@@ -8,6 +8,14 @@
 
 .. _conf-tx-solr-templateFiles:
 
+.. raw:: latex
+
+    \newpage
+
+.. raw:: pdf
+
+   PageBreak
+
 tx_solr.templateFiles
 =====================
 

@@ -8,6 +8,15 @@
 
 .. _conf-tx-solr-general:
 
+.. raw:: latex
+
+    \newpage
+
+.. raw:: pdf
+
+   PageBreak
+
+
 tx_solr.general
 ===============
 

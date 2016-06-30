@@ -8,6 +8,15 @@
 
 .. _conf-index:
 
+
+.. raw:: latex
+
+    \newpage
+
+.. raw:: pdf
+
+   PageBreak
+
 Configuration Reference
 =======================
 
@@ -29,4 +38,17 @@ Configuration Reference
 	:maxdepth: 5
 	:glob:
 
-	Reference/*
+	Reference/TxSolr
+	Reference/TxSolrGeneral
+	Reference/TxSolrSolr
+ 	Reference/TxSolrTemplateFiles
+	Reference/TxSolrCssFiles
+	Reference/TxSolrJavaScriptFiles
+	Reference/TxSolrIndex
+	Reference/TxSolrSearch
+ 	Reference/TxSolrSuggest
+	Reference/TxSolrMoreLikeThis
+	Reference/TxSolrStatistics
+	Reference/TxSolrViewHelpers
+	Reference/TxSolrLogging
+
