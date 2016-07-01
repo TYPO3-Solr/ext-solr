@@ -30,6 +30,7 @@ enabled
 -------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.enabled
 :Default: ``1``
 :Options: 0, 1
 :Since: 1.2
@@ -49,6 +50,7 @@ addDefaultCss (removed)
 -----------------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.addDefaultCss
 :Default: ``1``
 :Options: 0, 1
 :Since: 1.0
@@ -61,6 +63,7 @@ addDefaultJs (removed)
 ----------------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.addDefaultJs
 :Default: ``1``
 :Options: 0, 1
 :Since: 1.0
@@ -74,6 +77,7 @@ enableDebugMode
 ---------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.enableDebugMode
 :Default: ``0``
 :Options: 0, 1
 :Since: 1.0

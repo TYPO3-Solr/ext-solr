@@ -55,6 +55,7 @@ loadIn
 ------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.loadIn
 :Default: ``footer``
 :Options: header, footer, none
 :Since: 2.2
@@ -66,6 +67,7 @@ library
 -------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.library
 :Default: ``EXT:solr/Resources/JavaScript/JQuery/jquery.min.js``
 :Since: 2.0
 
@@ -75,6 +77,7 @@ ui
 --
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.ui
 :Default: ``EXT:solr/Resources/JavaScript/JQuery/jquery-ui.core.min.js``
 :Since: 2.0
 
@@ -84,6 +87,7 @@ ui.autocomplete
 ---------------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.ui.autocomplete
 :Default: ``EXT:solr/Resources/JavaScript/JQuery/jquery-ui.autocomplete.min.js``
 :Since: 2.0
 
@@ -93,6 +97,7 @@ ui.datepicker
 -------------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.ui.datepicker
 :Default: ``EXT:solr/Resources/JavaScript/JQuery/jquery-ui.datepicker.min.js``
 :Since: 2.0
 
@@ -114,6 +119,7 @@ ui.slider
 ---------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.ui.slider
 :Default: ``EXT:solr/Resources/JavaScript/JQuery/jquery-ui.slider.min.js``
 :Since: 2.0
 
@@ -123,6 +129,7 @@ suggest
 -------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.suggest
 :Default: ``EXT:solr/Resources/JavaScript/EidSuggest/suggest.js``
 :Since: 2.0
 
@@ -133,6 +140,7 @@ faceting.limitExpansion
 -----------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.faceting.limitExpansion
 :Default: ``EXT:solr/Resources/JavaScript/PiResults/results.js``
 :Since: 2.0
 
@@ -142,6 +150,7 @@ faceting.dateRangeHelper
 ------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.faceting.dateRangeHelper
 :Default: ``EXT:solr/Resources/JavaScript/PiResults/date_range_facet.js``
 :Since: 2.0
 
@@ -151,6 +160,7 @@ faceting.numericRangeHelper
 ---------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.javascriptFiles.faceting.numericRangeHelper
 :Default: ``EXT:solr/Resources/JavaScript/PiResults/numeric_range_facet.js``
 :Since: 2.0
 

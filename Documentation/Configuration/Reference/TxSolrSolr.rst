@@ -32,6 +32,7 @@ scheme
 ------
 
 :Type: String
+:TS Path: plugin.tx_solr.solr.scheme
 :Default: ``http``
 :Options: http, https
 :Since: 1.2 2.0
@@ -42,6 +43,7 @@ host
 ----
 
 :Type: String
+:TS Path: plugin.tx_solr.solr.host
 :Default: ``localhost``
 :Since: 1.0
 
@@ -51,6 +53,7 @@ port
 ----
 
 :Type: Integer
+:TS Path: plugin.tx_solr.solr.port
 :Default: ``8080``
 :Since: 1.0
 
@@ -60,6 +63,7 @@ path
 ----
 
 :Type: String
+:TS Path: plugin.tx_solr.solr.path
 :Default: ``/``
 :Since: 1.0
 

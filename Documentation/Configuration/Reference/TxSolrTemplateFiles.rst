@@ -6,7 +6,7 @@
 .. include:: ../../Includes.txt
 
 
-.. _conf-tx-solr-templateFiles:
+.. _conf-tx-solr-templatefiles:
 
 .. raw:: latex
 
@@ -30,6 +30,7 @@ frequentSearches
 ----------------
 
 :Type: String
+:TS Path: plugin.tx_solr.templateFiles.frequentSearches
 :Default: ``EXT:solr/Resources/Templates/PiFrequentSearches/frequentsearches.htm``
 :Since: 2.0
 
@@ -39,6 +40,7 @@ pagebrowser
 -----------
 
 :Type: String
+:TS Path: plugin.tx_solr.templateFiles.pagebrowser
 :Default: ``EXT:solr/Resources/Templates/PiResults/pagebrowser.htm``
 :Since: 2.0
 
@@ -48,6 +50,7 @@ results
 -------
 
 :Type: String
+:TS Path: plugin.tx_solr.templateFiles.results
 :Default: ``EXT:solr/Resources/Templates/PiResults/results.htm``
 :Since: 1.0
 
@@ -57,6 +60,7 @@ search
 ------
 
 :Type: String
+:TS Path: plugin.tx_solr.templateFiles.search
 :Default: ``EXT:solr/Resources/Templates/PiSearch/search.htm``
 :Since: 2.0
 

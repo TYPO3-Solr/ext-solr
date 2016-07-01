@@ -58,7 +58,6 @@ Apache Solr for TYPO3 - Enterprise Search
 
 	Introduction/Index
 	GettingStarted/Index
-	Setup/Index
 	Configuration/Index
 	Appendix/*
 

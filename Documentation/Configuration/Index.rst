@@ -47,7 +47,6 @@ Configuration Reference
 	Reference/TxSolrIndex
 	Reference/TxSolrSearch
  	Reference/TxSolrSuggest
-	Reference/TxSolrMoreLikeThis
 	Reference/TxSolrStatistics
 	Reference/TxSolrViewHelpers
 	Reference/TxSolrLogging

@@ -30,6 +30,7 @@ exceptions
 ----------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.exceptions
 :Default: 1
 :Options: 0,1
 :Since: 1.0
@@ -40,6 +41,7 @@ indexing
 --------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.indexing
 :Default: 1
 :Options: 0,1
 :Since: 1.0
@@ -50,6 +52,7 @@ indexing.indexQueueInitialization
 ---------------------------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.indexing.indexQueueInitialization
 :Default: 1
 :Options: 0,1
 :Since: 2.0
@@ -60,6 +63,7 @@ indexing.indexQueuePageIndexerGetData
 -------------------------------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.indexing.indexQueuePageIndexerGetData
 :Default: 1
 :Options: 0,1
 :Since: 2.0
@@ -70,6 +74,7 @@ query.filters
 -------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.query.filters
 :Default: 1
 :Options: 0,1
 :Since: 1.0
@@ -80,6 +85,7 @@ query.searchWords
 -----------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.query.searchWords
 :Default: 1
 :Options: 0,1
 :Since: 1.0
@@ -90,6 +96,7 @@ query.queryString
 -----------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.query.queryString
 :Default: 1
 :Options: 0,1
 :Since: 1.0
@@ -100,6 +107,7 @@ query.rawPost
 -------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.query.rawPost
 :Default: 1
 :Options: 0,1
 :Since: 1.0
@@ -110,6 +118,7 @@ query.rawGet
 ------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.logging.query.rawGet
 :Default: 1
 :Options: 0,1
 :Since: 1.0

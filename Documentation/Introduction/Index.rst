@@ -44,4 +44,4 @@ Feature List
 Screenshots
 -----------
 
-.. image:: Images/solr_screenshot.png
+.. image:: ../Images/solr_screenshot.png

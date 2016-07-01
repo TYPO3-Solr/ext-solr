@@ -30,6 +30,7 @@ dateFormat.date
 ---------------
 
 :Type: String
+:TS Path: plugin.tx_solr.general.dateFormat.date
 :Default: ``d.m.Y H:i``
 :Since: 1.0
 :See: http://www.php.net/manual/de/function.strftime.php

@@ -7,7 +7,7 @@ Configure Extension
 
 After :ref:`started-install-extension` you need to configure the extension. The extension already
 comes with basic configuration that will work for small pages out of the box. For further
-configuration options head over to :ref:`conf-index` once everything is setup.
+configuration options head over to :ref:`started-index` once everything is setup.
 
 Static TypoScript
 -----------------

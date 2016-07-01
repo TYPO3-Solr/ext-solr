@@ -20,5 +20,5 @@ Open the page and search for ``*``, you should see all currently indexed records
 That's it. You now have a working TYPO3 Installation with Solr integration. You are able to queue
 items for indexing, index them and provide an interface for visitors to search the indexed records.
 
-You can now start to adjust the templates according to :ref:`conf-tx-solr-templateFiles`, configure
+You can now start to adjust the templates according to :ref:`tx_solr.templateFiles`, configure
 indexing or searching and facets.

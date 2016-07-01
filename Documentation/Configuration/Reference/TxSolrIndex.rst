@@ -6,7 +6,7 @@
 .. include:: ../../Includes.txt
 
 
-.. _conf-tx-solr-logging:
+.. _conf-tx-solr-index:
 
 .. raw:: latex
 
@@ -30,6 +30,7 @@ enablePageIndexing (removed)
 ---------------------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.index.enablePageIndexing
 :Default: 1
 :Options: 0, 1
 :Since: 1.0
@@ -41,6 +42,7 @@ enableIndexingWhileBeUserLoggedIn (removed)
 -------------------------------------------
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.index.enableIndexingWhileBeUserLoggedIn
 :Default: 1
 :Options: 0, 1
 :Since: 1.0
@@ -52,6 +54,7 @@ additionalFields (deprecated)
 -----------------------------
 
 :Type: String, cObject (since 1.1)
+:TS Path: plugin.tx_solr.index.additionalFields
 :Since: 1.0
 :Deprecated: 2.0
 
@@ -81,6 +84,7 @@ fieldProcessingInstructions
 ---------------------------
 
 :Type: cObject
+:TS Path: plugin.tx_solr.index.fieldProcessingInstructions
 :Since: 1.2 2.0
 :Options: timestampToIsoDate, uppercase, pathToHierarchy (2.5-dkd), pageUidToHierarchy (2.5-dkd)
 
@@ -106,6 +110,7 @@ The Index Queue is a powerful feature introduced with version 2.0. It allows you
 The Index Queue comes preconfigured to index pages (enabled by default) and an example configuration for tt_news (provided as a separate TypoScript template).
 
 :Type: Array
+:TS Path: plugin.tx_solr.index.queue
 :Since: 2.0
 :Default: pages
 
@@ -157,24 +162,26 @@ Example:
     }
 
 
-queue.[indexingConfiguration]
+queue.[indexConfig]
 -----------------------------
 
 :Type: Boolean, Array
+:TS Path: plugin.tx_solr.index.queue.[indexConfig]
 :Since: 2.0
 :Default: pages
 
 An indexing configuration defines several parameters about how to index records of a table. By default the name of the indexing configuration is also the name of the table to index.
 
-By setting ``plugin.tx_solr.index.queue.[indexingConfiguration] = 1 or 0`` you can en- / disable an indexing configuration.
+By setting ``plugin.tx_solr.index.queue.[indexConfig] = 1 or 0`` you can en- / disable an indexing configuration.
 
 **Note**: you could add `L={field:__solr_index_language}```in the additionalParams of the typolink to link to the correct language version (this was removed from the example above to simplify the example)
 
 
-queue.[indexingConfiguration].additionalWhereClause
+queue.[indexConfig].additionalWhereClause
 ---------------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].additionalWhereClause
 :Since: 2.0
 
 A WHERE clause that is used when initializing the Index Queue, limiting what goes into the Queue. Use this to limit records by page ID or the like.
@@ -185,10 +192,11 @@ A WHERE clause that is used when initializing the Index Queue, limiting what goe
     plugin.tx_solr.index.queue.pages.additionalWhereClause = doktype IN(1, 7)
 
 
-queue.[indexingConfiguration].additionalPageIds
+queue.[indexConfig].additionalPageIds
 -----------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].additionalPageIds
 :Since: 2.0
 
 Defines additional pages to take into account when indexing records for example. Especially useful for indexing DAM records or if you have your news outside your site root in a shared folder to use for multiple sites.
@@ -196,10 +204,11 @@ Defines additional pages to take into account when indexing records for example.
 Additional page IDs can be provided as comma-separated list.
 
 
-queue.[indexingConfiguration].table
+queue.[indexConfig].table
 -----------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].table
 :Since: 2.0
 
 Sometimes you may want to index records from a table with different configurations, f.e., to generate different single view URLs for tt_news records depending on their category or storage page ID. In these cases you can use a distinct name for the configuration and define the table explicitly.
@@ -228,10 +237,11 @@ Sometimes you may want to index records from a table with different configuratio
 
 
 
-queue.[indexingConfiguration].initialization
+queue.[indexConfig].initialization
 --------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].initialization
 :Since: 2.0
 
 When initializing the Index Queue through the search backend module the queue tries to determine what records need to be indexed. Usually the default initializer will be enough for this purpose, but this option allows to define a class that will be used to initialize and add records to the Index Queue in special ways.
@@ -239,10 +249,11 @@ When initializing the Index Queue through the search backend module the queue tr
 The extension uses this option for initializing the pages and more specifically to resolve Mount Page trees so they can be indexd too, although only being virtual pages.
 
 
-queue.[indexingConfiguration].indexer
+queue.[indexConfig].indexer
 -------------------------------------
 
 :Type: String, Array
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].indexer
 :Since: 2.0
 
 When configuring tables to index a default indexer is used that comes with the extensions. The default indexer resolves the Solr field to database table field mapping as configured. However, in some cases you may reach the limits of TypoScript, when this happens you can configure a specialized indexer using this setting.
@@ -295,20 +306,22 @@ PHP:
     }
 
 
-queue.[indexingConfiguration].indexingPriority
+queue.[indexConfig].indexingPriority
 ----------------------------------------------
 
 :Type: Integer
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].indexingPriority
 :Since: 2.2
 :Default: 0
 
 Allows to define the order in which Index Queue items of different kinds are indexed. Items with higher priority are indexed first.
 
 
-queue.[indexingConfiguration].fields
+queue.[indexConfig].fields
 ------------------------------------
 
 :Type: Array
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields
 :Since: 2.0
 
 Mapping of Solr field names on the left side to database table field names or content objects on the right side. You must at least provide the title, content, and url fields. TYPO3 system fields like uid, pid, crdate, tstamp and so on are added automatically by the indexer depending on the TCA information of a table.
@@ -317,7 +330,7 @@ Example:
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.index.queue.[indexingConfiguration].fields {
+    plugin.tx_solr.index.queue.[indexConfig].fields {
       content = bodytext
       title = title
       url = TEXT
@@ -329,10 +342,11 @@ Example:
       }
     }
 
-queue.[indexingConfiguration].attachments.fields
+queue.[indexConfig].attachments.fields
 ------------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].attachments.fields
 :Since: 2.5-dkd
 
 Comma-separated list of fields that hold files. Using this setting allows to tell the file indexer in which fields to look for files to index from records.
@@ -348,6 +362,7 @@ queue.pages.excludeContentByClass
 ---------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.pages.excludeContentByClass
 :Since: 4.0
 
 Can be used for page indexing to exclude a certain css class to be indexed.
@@ -366,6 +381,7 @@ queue.pages.allowedPageTypes
 ----------------------------
 
 :Type: List of Integers
+:TS Path: plugin.tx_solr.index.queue.pages.allowedPageTypes
 :Since: 3.0
 :Default: 1,7
 
@@ -375,6 +391,7 @@ queue.pages.indexer.authorization.username
 ------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.pages.indexer.authorization.username
 :Since: 2.0
 
 Specifies the username to use when indexing pages protected by htaccess.
@@ -383,6 +400,7 @@ queue.pages.indexer.authorization.password
 ------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.pages.indexer.authorization.password
 :Since: 2.0
 
 Specifies the password to use when indexing pages protected by htaccess.
@@ -391,6 +409,7 @@ queue.pages.indexer.frontendDataHelper.scheme
 ---------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.pages.frontendDataHelper.scheme
 :Since: 2.0
 
 Specifies the scheme to use when indexing pages.
@@ -399,6 +418,7 @@ queue.pages.indexer.frontendDataHelper.host
 -------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.pages.frontendDataHelper.host
 :Since: 2.0
 
 Specifies the host to use when indexing pages.
@@ -407,19 +427,20 @@ queue.pages.indexer.frontendDataHelper.path
 -------------------------------------------
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.pages.frontendDataHelper.path
 :Since: 2.0
 
 Specifies the path to use when indexing pages.
 
 
 Indexing Helpers
-================
+----------------
 
 To make life even easier the Index Queue provides some indexing helpers. These helpers are content objects that perform cleanup tasks or content transformations.
 
 
 SOLR_CONTENT
-------------
+~~~~~~~~~~~~
 
 :Since: 2.0
 
@@ -439,16 +460,18 @@ Example:
 
 **Parameters:**
 
-*value*:
+**value**
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].value
 :Since: 2.0
 
 Defines the content to clean up. In this case the value would be hard-coded.
 
 
 SOLR_MULTIVALUE
----------------
+~~~~~~~~~~~~~~~
+
 
 :Since: 2.0
 
@@ -470,33 +493,37 @@ Example:
 
 **Parameters:**
 
-*value*
+**value**
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].value
 :Since: 2.0
 
 Defines the content to clean up. In this case the value would be hard-coded.
 
-*separator*
+**separator**
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].separator
 :Since: 2.0
 :Default: ,
 
 The separator by which to split the content.
 
-*removeEmptyValues*
+**removeEmptyValues**
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].removeEmptyValues
 :Since: 2.0
 :Options: 0,1
 :Default: 1
 
 The helper will clean the resulting array from empty values by default. If, for some reason, you want to keep empty values just set this to 0.
 
-*removeDuplicateValues*
+**removeDuplicateValues**
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].removeDuplicateValues
 :Since: 2.9
 :Options: 0,1
 :Default: 0
@@ -505,7 +532,7 @@ Cleans the result from duplicate values.
 
 
 SOLR_RELATION
--------------
+~~~~~~~~~~~~~
 
 :Since: 2.0
 
@@ -525,75 +552,84 @@ Example:
 
 **Parameters:**
 
-*localField*
+**localField**
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].localField
 :Since: 2.0
 :Required: yes
 
 The current record's field name to use to resolve the relation to the foreign table.
 
-*foreignLabelField*
+**foreignLabelField**
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].foreignLabelField
 :Since: 2.0
 
 Usually the label field to retrieve from the related records is determined automatically using TCA, using this option the desired field can be specified explicitly. To specify the label field for recursive relations, the field names can be separated by a dot, e.g. for a category hierarchy to get the name of the parent category one could use "parent.name" (since version:2.9).
 
-*multiValue*
+**multiValue**
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].multiValue
 :Since: 2.0
 :Options: 0,1
 :Default: 0
 
 Whether to return related records suitable for a multi value field. If this is disabled the related values will be concatenated using the following singleValueGlue.
 
-*singleValueGlue*
+**singleValueGlue**
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].singleValueGlue
 :Since: 2.0
 :Default: |, |
 
 When not using multiValue, the related records need to be concatened using a glue string, by default this is ", " (comma followed by space). Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters to be able to have leading or trailing spaces.
 
-*relationTableSortingField*
+**relationTableSortingField**
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].relationTableSortingField
 :Since: 2.2
 
 Field in an mm relation table to sort by, usually "sorting".
 
-*enableRecursiveValueResolution*
+**enableRecursiveValueResolution**
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].enableRecursiveValueResolution
 :Since: 2.9
 :Options: 0,1
 :Default: 1
 
 If the specified remote table's label field is a relation to another table, the value will be resolve by following the relation recursively.
 
-*removeEmptyValues*
+**removeEmptyValues**
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].removeEmptyValues
 :Since: 2.9
 :Options: 0,1
 :Default: 1
 
 Removes empty values when resolving relations.
 
-*removeDuplicateValues*
+**removeDuplicateValues**
 
 :Type: Boolean
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].removeDuplicateValues
 :Since: 2.9
 :Options: 0,1
 :Default: 0
 
 Removes duplicate values
 
-*additionalWhereClause*
+**additionalWhereClause**
 
 :Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].additionalWhereClause
 :Since: 5.0
 
 Where clause that could be used to limit the related items to a subset that matches this where clause
