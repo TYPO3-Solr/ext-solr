@@ -8,17 +8,13 @@
 
 .. _start:
 
-=========================================
-Apache Solr for TYPO3 - Enterprise Search
-=========================================
-
 .. only:: html
 
 	:Classification:
 		solr
 
 	:Version:
-		|release|
+		5.0.0
 
 	:Language:
 		en

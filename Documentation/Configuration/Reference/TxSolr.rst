@@ -6,17 +6,6 @@
 .. include:: ../../Includes.txt
 
 
-.. _conf-tx-solr:
-
-.. raw:: latex
-
-    \newpage
-
-.. raw:: pdf
-
-   PageBreak
-
-
 tx_solr
 =======
 

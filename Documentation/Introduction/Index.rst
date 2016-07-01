@@ -6,22 +6,13 @@ What does it do?
 ----------------
 
 Apache Solr for TYPO3 is the search engine you were looking for with special
-features such as Facetted Search or Synonym Support and an incredibly fast
+features such as **Facetted Search** or **Synonym Support** and an incredibly fast
 response times of results within milliseconds.
 
 When development started, the primary goal was to create a replacement for
 Indexed Search. With the initial public release at T3CON09 in Frankfurt, Germany
 that goal was reached and even passed by adding features which Indexed Search
 does not support.
-
-The extension is developed in a way so that public versions are released to TER from time to time.
-Early access to the development version with more features can be gained through a paid development
-partnership. That's necessary to make development possible. You may check http://www.typo3-solr.com
-for more details.
-
-This manual covers all features available in the development version, some of
-them may not be available in the versions released to TER. Features which are
-only available in the development version are marked.
 
 Feature List
 ------------
@@ -39,9 +30,23 @@ Feature List
 * Content Elevation / **Paid Search Results** / Editorial Content
 * Sorting of Results
 * Content indexing through a near instant backend **Index Queue**
+* Auto correction (search for the first suggestion)
 * and more...
 
-Screenshots
------------
+Development and Partnership
+---------------------------
 
-.. image:: ../Images/solr_screenshot.png
+The extension is developed in an open source way and the source code is completely available on github. Releases to the TYPO3 TER are done in regular time frames.
+
+To make the development possible you can join a partner ship with dkd. By joining the partner program you have the following benefits:
+
+* You support the further development on EXT:solr
+* You get access to addon's that are not public available
+    - Indexing of files from FAL (TYPO3 File Abstraction Layer)
+    - Fluid templating (Result rendering with Fluid Template engine)
+* You can be mentioned as a sponsor on http://www.typo3-solr.com
+* You can included support based on your subscription
+
+|
+
+If you are interested to become a partner visit  http://www.typo3-solr.com or call dkd +49 (0)69 - 247 52 18-0.

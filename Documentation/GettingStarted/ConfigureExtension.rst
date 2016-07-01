@@ -17,7 +17,11 @@ provided static TypoScript:
 
 .. image:: /Images/GettingStarted/typo3-include-static-typoscript.png
 
-Update the constants to match the current setup::
+Update the constants to match the current setup:
+
+|
+
+.. code-block:: typoscript
 
     plugin {
         tx_solr {
@@ -34,7 +38,11 @@ Domain Records and Indexing
 ---------------------------
 
 To enable Solr connections, the extension needs a Domain Record and indexing has to be enabled.
-Therefore enable indexing by setting the following TypoScript::
+Therefore enable indexing by setting the following TypoScript:
+
+|
+
+.. code-block:: typoscript
 
     config {
         index_enable = 1

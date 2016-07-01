@@ -33,23 +33,34 @@ configuration you are free to use any other framework you like.
 
 To prevent loading of a file just set it empty like this:
 
+|
+
 .. code-block:: typoscript
 
    plugin.tx_solr.javascriptFiles.library =
 
+|
+
 or clear the setting like this:
+
+|
 
 .. code-block:: typoscript
 
    plugin.tx_solr.javascriptFiles.library >
 
+|
+
 To prevent the extension from loading any default Javascript files simple clear
 the whole javascriptFiles settings:
+
+|
 
 .. code-block:: typoscript
 
    plugin.tx_solr.javascriptFiles >
 
+|
 
 loadIn
 ------
@@ -107,12 +118,14 @@ The date picker in jQuery UI is localizable, the localization labels are defined
 in separate files which are loaded depending on the current page's language.
 The localization label files are defined as followes:
 
+|
+
 .. code-block:: typoscript
 
-   plugin.tx_solr.javascriptFiles {
-     ui.datepicker.de = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-de.js
-     ui.datepicker.fr = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-fr.js
-     ui.datepicker.nl = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-nl.js
+   plugin.tx_solr.javascriptFiles.ui.datepicker {
+     de = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-de.js
+     fr = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-fr.js
+     nl = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-nl.js
    }
 
 ui.slider

@@ -2,6 +2,14 @@
 
 .. _started-install-extension:
 
+.. raw:: latex
+
+    \newpage
+
+.. raw:: pdf
+
+   PageBreak
+
 
 Install EXT:solr
 ----------------
@@ -19,10 +27,14 @@ from the TYPO3 backend.
    for running the indexing tasks
 #. While developing we recommend installing devlog for easier error detection, too.
 
+|
+
 Install from git
 ^^^^^^^^^^^^^^^^
 
 Alternatively, you can also get the latest development version from GitHub:
+
+|
 
 .. code-block:: bash
 
@@ -33,11 +45,15 @@ Install with composer
 ^^^^^^^^^^^^^^^^^^^^^
 
 Install this TYPO3 Extension ``solr`` via TYPO3 Extension Manager as usual, or via ``composer`` by
-running::
+running:
+
+|
 
 .. code-block:: bash
 
     composer require apache-solr-for-typo3/solr
+
+|
 
 Head over to the Extension Manager module and activate the Extension.
 

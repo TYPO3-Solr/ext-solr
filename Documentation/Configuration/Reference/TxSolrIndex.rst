@@ -62,6 +62,8 @@ A mapping of Solr field names to additional string values to be indexed with pag
 
 Example:
 
+|
+
 .. code-block:: typoscript
 
     plugin.tx_solr.index.additionalFields {
@@ -74,6 +76,8 @@ Example:
         // more processing here as needed
       }
     }
+
+|
 
 Since version 1.1 you can use cObjects to generate the value for the field. The only thing to observe is that you generate strings. Other values may work, but haven't been tested yet.
 
@@ -93,6 +97,8 @@ Before documents are sent to the Solr server they are processed by the field pro
 
 Example:
 
+|
+
 .. code-block:: typoscript
 
     fieldProcessingInstructions {
@@ -101,6 +107,7 @@ Example:
         endtime = timestampToIsoDate
     }
 
+|
 
 queue
 -----
@@ -117,6 +124,8 @@ The Index Queue comes preconfigured to index pages (enabled by default) and an e
 Defines a set of table indexing configurations. By convention the name of the indexing configuration also represents the table name. You can name the indexing configuration differently though by explicitly defining the table as a parameter within the indexing configuration. That's useful when indexing records from one table with different configuration - different single view pages / URLs for example.
 
 Example:
+
+|
 
 .. code-block:: typoscript
 
@@ -161,6 +170,7 @@ Example:
         sortTitle_stringS  = title
     }
 
+|
 
 queue.[indexConfig]
 -----------------------------
@@ -186,10 +196,14 @@ queue.[indexConfig].additionalWhereClause
 
 A WHERE clause that is used when initializing the Index Queue, limiting what goes into the Queue. Use this to limit records by page ID or the like.
 
+|
+
 .. code-block:: typoscript
 
     // only index standard and mount pages, enabled for search
     plugin.tx_solr.index.queue.pages.additionalWhereClause = doktype IN(1, 7)
+
+|
 
 
 queue.[indexConfig].additionalPageIds
@@ -213,6 +227,7 @@ queue.[indexConfig].table
 
 Sometimes you may want to index records from a table with different configurations, f.e., to generate different single view URLs for tt_news records depending on their category or storage page ID. In these cases you can use a distinct name for the configuration and define the table explicitly.
 
+|
 
 .. code-block:: typoscript
 
@@ -262,6 +277,7 @@ The indexer class is loaded using TYPO3's auto loading mechanism, so make sure y
 
 Example, pages use a specialized indexer:
 
+|
 
 .. code-block:: typoscript
 
@@ -276,8 +292,9 @@ Within the indexer configuration you can also define options for the specialized
 
 Example, the TypoScript settings are available in PHP:
 
-
 TypoScript:
+
+|
 
 .. code-block:: typoscript
 
@@ -292,7 +309,10 @@ TypoScript:
 
 PHP:
 
+|
+
 .. code-block:: php
+
     namespace MyVendor\Namespace;
 
     use \ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
@@ -305,6 +325,7 @@ PHP:
       }
     }
 
+|
 
 queue.[indexConfig].indexingPriority
 ----------------------------------------------
@@ -327,6 +348,8 @@ queue.[indexConfig].fields
 Mapping of Solr field names on the left side to database table field names or content objects on the right side. You must at least provide the title, content, and url fields. TYPO3 system fields like uid, pid, crdate, tstamp and so on are added automatically by the indexer depending on the TCA information of a table.
 
 Example:
+
+|
 
 .. code-block:: typoscript
 
@@ -353,6 +376,8 @@ Comma-separated list of fields that hold files. Using this setting allows to tel
 
 Example:
 
+|
+
 .. code-block:: typoscript
 
     plugin.tx_solr.index.queue.tt_news.attachments.fields = news_files
@@ -368,6 +393,8 @@ queue.pages.excludeContentByClass
 Can be used for page indexing to exclude a certain css class to be indexed.
 
 Example:
+
+|
 
 .. code-block:: typoscript
 
@@ -450,6 +477,8 @@ The helper supports stdWrap on its configuration root.
 
 Example:
 
+|
+
 .. code-block:: typoscript
 
     content = SOLR_CONTENT
@@ -480,6 +509,8 @@ Turns comma separated strings into an array to be used in a multi value field of
 The helper supports stdWrap on its configuration root.
 
 Example:
+
+|
 
 .. code-block:: typoscript
 
@@ -540,6 +571,7 @@ Resolves relations between tables.
 
 Example:
 
+|
 
 .. code-block:: typoscript
 
@@ -635,6 +667,8 @@ Removes duplicate values
 Where clause that could be used to limit the related items to a subset that matches this where clause
 
 Example:
+
+|
 
 .. code-block:: typoscript
 

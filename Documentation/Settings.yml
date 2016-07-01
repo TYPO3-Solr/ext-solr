@@ -4,25 +4,15 @@
 
 ---
 conf.py:
-  copyright: 2009-2015
-  project: Apache Solr for TYPO3 - Enterprise Search
-  version: 3.2
-  release: 3.2.0
-  latex_documents:
-  - - Index
-    - solr.tex
-    - Apache Solr for TYPO3 - Enterprise Search
-    - Ingo Renner, Daniel Siepmann, Timo Hund
-    - manual
-  html_theme_options:
-      github_repository: TYPO3-Solr/ext-solr
-      github_branch: master
-    latex_elements:
-    papersize: a4paper
-    pointsize: 10pt
-    preamble: \usepackage{typo3}
+  copyright: 2016
+  project: Documentation for EXT:solr the Apache Solr integration for TYPO3
+  version: 5.0.0
+  release: 5.0.0
   intersphinx_mapping:
     t3tsref:
-    - http://docs.typo3.org/typo3cms/TyposcriptReference/
+    - https://docs.typo3.org/typo3cms/TyposcriptReference/
+    - null
+    t3api:
+    - https://docs.typo3.org/typo3cms/CoreApiReference/
     - null
 ...

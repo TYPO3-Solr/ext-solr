@@ -93,15 +93,15 @@ query.allowedSites
 
 When indexing documents (pages, records, files, ...) into the Solr index, the solr extension adds a "siteHash". The siteHash is used to allow indexing multiple sites into one index and still have each site only find its own documents. This is achieved by adding a filter on the siteHash.
 
-Sometimes though, you want to search across multiple domains, then the siteHash is a blocker. Using the allowedSites setting you can set a comma-separated list of domains who's documents are allowed to be included in the current domain's search results. The default value is __solr_current_site which is a magic string/variable that is replaced with the current site's domain when querying the Solr server.
+Sometimes though, you want to search across multiple domains, then the siteHash is a blocker. Using the allowedSites setting you can set a comma-separated list of domains who's documents are allowed to be included in the current domain's search results. The default value is **__solr_current_site** which is a magic string/variable that is replaced with the current site's domain when querying the Solr server.
 
 :Since: 3.0
 
 Version 3.0 introduced a couple more magic keywords that get replaced:
 
-    __current_site same as __solr_current_site
-    __all Adds all domains as allowed sites
-    * (asterisk character) Same as __all
+- **__current_site** same as **__solr_current_site**
+- **__all** Adds all domains as allowed sites
+- \* (asterisk character) Same as **__all**
 
 query.getParameter
 ~~~~~~~~~~~~~~~~~~
@@ -116,6 +116,8 @@ The GET query parameter name used in URLs. Useful for cases f.e. when a website 
 The option expects a string, you can also define an array in the form of arrayName|arrayKey.
 
 Example:
+
+|
 
 .. code-block:: typoscript
 
@@ -154,7 +156,7 @@ query.minimumMatch
 :TS Path: plugin.tx_solr.search.query.minimumMatch
 :Since: 1.2, 2.0
 :Default: (empty)
-:See: http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29
+:See: `Apache Solr Wiki mm / Minimum Should Match <http://wiki.apache.org/solr/DisMaxRequestHandler#mm_.28Minimum_.27Should.27_Match.29>`_
 
 Sets the minimum match mm query parameter.
 By default the mm query parameter is set in solrconfig.xml as 2<-35%. This means that for queries with less than three words they all must match the searched fields of a document. For queries with three or more words at least 65% of them must match rounded up.
@@ -168,8 +170,8 @@ query.boostFunction
 :TS Path: plugin.tx_solr.search.query.boostFunction
 :Since: 1.2, 2.0
 :Default: (empty)
-:See: https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebf%28BoostFunctions%29Parameter
-:See: https://cwiki.apache.org/confluence/display/solr/Function+Queries
+:See: `Apache Solr Wiki / TheDisMaxQueryParser BoostFunction <https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebf%28BoostFunctions%29Parameter>`_
+:See: `Apache Solr Wiki / Function Queries <https://cwiki.apache.org/confluence/display/solr/Function+Queries>`_
 :Example: recip(ms(NOW,created),3.16e-11,1,1)
 
 A boost function can be useful to influence the relevance calculation and boost some documents to appear more at the beginning of the result list.
@@ -212,7 +214,7 @@ query.boostQuery
 :TS Path: plugin.tx_solr.search.query.boostQuery
 :Since: 2.0
 :Default: (empty)
-:See: https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter
+:See: `Apache Solr Wiki / TheDisMaxQueryParser BoostQuery <https://cwiki.apache.org/confluence/display/solr/The+DisMax+Query+Parser#TheDisMaxQueryParser-Thebq%28BoostQuery%29Parameter>`_
 
 Sets the boost function **bq** query parameter.
 
@@ -221,6 +223,8 @@ Allows to further manipulate the score of a document by using Lucene syntax quer
 Please consult the link to the Solr wiki for a more detailed description of boost functions.
 
 Example (boosts tt_news documents by factor 10):
+
+|
 
 .. code-block:: typoscript
 
@@ -233,11 +237,13 @@ query.filter
 :Type: Array
 :TS Path: plugin.tx_solr.search.query.filter
 :Since: 1.0
-:See: http://lucene.apache.org/core/old_versioned_docs/versions/3_0_0/queryparsersyntax.html
+:See: `Lucene Documentation / Query Parser Syntax <http://lucene.apache.org/core/old_versioned_docs/versions/3_0_0/queryparsersyntax.html>`_
 
 Allows to predefine filters to apply to a search query. You can add multiple filters through a name to Lucene filter mapping. The filters support stdWrap.
 
 Example:
+
+|
 
 .. code-block:: typoscript
 
@@ -273,6 +279,8 @@ Needs a Solr field name followed by asc for ascending order or desc for descendi
 
 Example:
 
+|
+
 .. code-block:: typoscript
 
     plugin.tx_solr.search.query.sortBy = title asc
@@ -288,13 +296,11 @@ results.resultsHighlighting
 :TS Path: plugin.tx_solr.search.results.resultsHighlighting
 :Since: 1.0
 :Default: 0
+:See: `Apache Solr Wiki / FastVectorHighlighter <https://cwiki.apache.org/confluence/display/solr/FastVector+Highlighter>`_
 
 En-/disables search term highlighting on the results page.
 
 Note:  The FastVectorHighlighter is used by default (Since 4.0) if fragmentSize is set to at least 18 (this is required by the FastVectorHighlighter to work).
-
-See: https://cwiki.apache.org/confluence/display/solr/FastVector+Highlighter
-
 
 results.resultsHighlighting.highlightFields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -438,6 +444,8 @@ Example:
 
 A result set with documents of types tt_news, pages, and tt_address:
 
+|
+
 .. code-block:: text
 
     1 pages      -> typeBegin = pages_begin
@@ -451,6 +459,8 @@ A result set with documents of types tt_news, pages, and tt_address:
     9 tt_news    -> typeEnd   = tt_news_end
 
 Example template snippet:
+
+|
 
 .. code-block:: html
 
@@ -633,6 +643,7 @@ This is a list of sorting options. Each option has a field and label to be used.
 
 Example:
 
+|
 
 .. code-block:: typoscript
 
@@ -651,6 +662,8 @@ Example:
             }
         }
     }
+
+|
 
 Note: As mentioned before **relevance** is a virtual field that is used to **reset** the sorting. Sorting by relevance means to have the order provided by the scoring from solr. That the reason why sorting **descending** on relevance is not possible.
 
@@ -715,7 +728,7 @@ faceting.minimumCount
 :TS Path: plugin.tx_solr.search.faceting.minimumCount
 :Since: 1.0
 :Default: 1
-:See: https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.mincountParameter
+:See: `Apache Solr Wiki / Faceting mincount Parameter <https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.mincountParameter>`_
 
 This indicates the minimum counts for facet fields should be included in the response.
 
@@ -727,7 +740,7 @@ faceting.sortBy
 :Since: 1.0
 :Default: count
 :Options: count, index, 1, 0, true, false, alpha (1.2, 2.0), lex (1.2, 2.0)
-:See: https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.sortParameter
+:See: `Apache Solr Wiki / Faceting sortParameter Parameter <https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.sortParameter>`_
 
 Defines how facet options are sorted, by default they are sorted by count of results, highest on top. count, 1, true are aliases for each other.
 
@@ -808,6 +821,8 @@ faceting.facetLinkATagParams
 
 With this option you can add A-Tag attributes for links of all facet-options.
 
+|
+
 .. code-block:: typoscript
 
     plugin.tx_solr.search.faceting.facetLinkATagParams = class="green"
@@ -838,7 +853,7 @@ faceting.facets
 :TS Path: plugin.tx_solr.search.faceting.facets
 :Since: 1.0
 :Default: type
-:See: http://wiki.apache.org/solr/SolrFacetingOverview
+:See: `Apache Solr Wiki / Faceting Overview <http://wiki.apache.org/solr/SolrFacetingOverview>`_
 
 Defines which fields you want to use for faceting. It's a list of facet configurations.
 
@@ -959,6 +974,8 @@ By default facet options are sorted by the amount of results they will return wh
 
 Example - We have a category facet like this:
 
+|
+
 .. code-block:: bash
 
     News Category
@@ -971,6 +988,8 @@ Example - We have a category facet like this:
     + Travel (51)
 
 Using ``faceting.facets.[facetName].manualSortOrder = Travel, Health`` will result in the following order of options:
+
+|
 
 .. code-block:: bash
 
@@ -1051,6 +1070,8 @@ When setting a special type for a facet you can set further options for this typ
 
 Example (numericRange facet displayed as a slider):
 
+|
+
 .. code-block:: typoscript
 
     plugin.tx_solr.search.faceting.facets.size {
@@ -1083,6 +1104,8 @@ There are two magic values for the requirement's values definition:
 
 
 Example of a category facet showing only when the user selects the news type facet option:
+
+|
 
 .. code-block:: typoscript
 
@@ -1126,6 +1149,7 @@ Overwrites how single facet options are rendered using TypoScript cObjects.
 
 Example: (taken from issue #5920)
 
+|
 
 .. code-block:: typoscript
 

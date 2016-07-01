@@ -30,11 +30,15 @@ for styling it.
 
 To prevent loading of a file just set it empty like this:
 
+|
+
 .. code-block:: typoscript
 
    plugin.tx_solr.cssFiles.results =
 
 or clear the setting like this:
+
+|
 
 .. code-block:: typoscript
 
@@ -42,6 +46,8 @@ or clear the setting like this:
 
 To prevent the extension from loading any default CSS files simple clear the
 whole cssFiles settings:
+
+|
 
 .. code-block:: typoscript
 
