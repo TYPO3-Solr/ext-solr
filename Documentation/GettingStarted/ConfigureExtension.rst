@@ -15,7 +15,7 @@ Static TypoScript
 For now create, or edit an existing, TypoScript Template record in your page tree and add the
 provided static TypoScript:
 
-.. image:: /Images/GettingStarted/typo3-include-static-typoscript.png
+.. image:: ../Images/GettingStarted/typo3-include-static-typoscript.png
 
 Update the constants to match the current setup:
 
