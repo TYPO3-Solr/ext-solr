@@ -512,7 +512,7 @@ spellchecking.wrap
 :Type: String
 :TS Path: plugin.tx_solr.search.spellchecking.wrap
 :Since: 1.0
-:Default: |<div class="spelling-suggestions">###LLL:didYouMean### |</div>|
+:Default: \|<div class="spelling-suggestions">###LLL:didYouMean### \|</div>\|
 
 This can be used to configure a custom wrap for your did you mean rendering.
 
@@ -857,6 +857,8 @@ faceting.facets
 
 Defines which fields you want to use for faceting. It's a list of facet configurations.
 
+|
+
 .. code-block:: typoscript
 
     plugin.tx_solr.search.faceting.facets {
@@ -1056,8 +1058,6 @@ faceting.facets.[facetName].type
 :Since: 2.0
 
 Defines the type of the facet. By default all facets will render their facet options as a list. PHP Classes can be regsitered to add new types. Using this setting will allow you to use such a type and then have the facet's options rendered and processed by the registered PHP class.
-
-@todo add link to detailed documentation of types
 
 faceting.facets.[facetName].[type]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

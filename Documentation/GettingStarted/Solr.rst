@@ -7,6 +7,12 @@ Solr
 
 First you need to install Solr itself. There are several ways to do so:
 
+
+Using Hosted-solr.com
+---------------------
+
+If you want to start simple and just create a solr core with a click. You can use hosted-solr.com. For a small fee you get your own solr core in seconds, configured to be used with EXT:solr.
+
 Shipped install script
 ----------------------
 

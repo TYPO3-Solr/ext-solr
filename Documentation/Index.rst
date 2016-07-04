@@ -54,7 +54,9 @@
 
 	Introduction/Index
 	GettingStarted/Index
+	Backend/Index
 	Configuration/Index
+  	FAQ/*
 	Appendix/*
 
 

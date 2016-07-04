@@ -466,6 +466,8 @@ Indexing Helpers
 To make life even easier the Index Queue provides some indexing helpers. These helpers are content objects that perform cleanup tasks or content transformations.
 
 
+.. _index-helper-solr-content:
+
 SOLR_CONTENT
 ~~~~~~~~~~~~
 
@@ -497,6 +499,8 @@ Example:
 
 Defines the content to clean up. In this case the value would be hard-coded.
 
+
+.. _index-helper-solr-multivalue:
 
 SOLR_MULTIVALUE
 ~~~~~~~~~~~~~~~
@@ -561,6 +565,7 @@ The helper will clean the resulting array from empty values by default. If, for 
 
 Cleans the result from duplicate values.
 
+.. _index-helper-solr-relation:
 
 SOLR_RELATION
 ~~~~~~~~~~~~~
