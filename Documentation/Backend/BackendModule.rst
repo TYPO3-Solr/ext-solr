@@ -72,5 +72,12 @@ Synonyms
 
 With the synonyms module you can allow to find documents by words that do not occure in the document but have the same meaning:
 
-* E.g. cellphone, mobile, mobilephone
+* E.g. smartphone, cellphone, mobile, mobilephone
+
+**Note:** The word that you want replace with a synonym needs to appear on **both** sides when you want to find it with the term itself later
+
+Example
+
+smartphone => smartphone, cellphone, mobile, mobilephone will match "smartphone, cellphone, mobile, mobilephone", when smartphone is missing on the right side, you will not find the document for smartphone anymore!
+
 

@@ -31,11 +31,11 @@ dateFormat.date
 
 :Type: String
 :TS Path: plugin.tx_solr.general.dateFormat.date
-:Default: ``d.m.Y H:i``
+:Default: d.m.Y H:i
 :Since: 1.0
 :See: http://www.php.net/manual/de/function.strftime.php
 
 Defines the format that is used for dates throughout the extension like in
-view helpers for example. The format uses the ``strftime()`` php function syntax,
+view helpers for example. The format uses the `strftime()` php function syntax,
 please consult the php documentation for available options.
 

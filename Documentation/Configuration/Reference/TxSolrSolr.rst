@@ -33,7 +33,7 @@ scheme
 
 :Type: String
 :TS Path: plugin.tx_solr.solr.scheme
-:Default: ``http``
+:Default: http
 :Options: http, https
 :Since: 1.2 2.0
 
@@ -44,7 +44,7 @@ host
 
 :Type: String
 :TS Path: plugin.tx_solr.solr.host
-:Default: ``localhost``
+:Default: localhost
 :Since: 1.0
 
 Sets the host portion of the URL.
@@ -54,7 +54,7 @@ port
 
 :Type: Integer
 :TS Path: plugin.tx_solr.solr.port
-:Default: ``8080``
+:Default: 8080
 :Since: 1.0
 
 Sets the port portion of the URL.
@@ -64,7 +64,7 @@ path
 
 :Type: String
 :TS Path: plugin.tx_solr.solr.path
-:Default: ``/``
+:Default: /
 :Since: 1.0
 
 Sets the path portion of the URL. Make sure to have the path end with a slash (/).

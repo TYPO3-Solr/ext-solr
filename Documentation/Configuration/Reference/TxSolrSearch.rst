@@ -163,6 +163,8 @@ By default the mm query parameter is set in solrconfig.xml as 2<-35%. This means
 
 Please consult the link to the Solr wiki for a more detailed description of the mm syntax.
 
+.. _conf-tx-solr-search-boostFunction:
+
 query.boostFunction
 ~~~~~~~~~~~~~~~~~~~
 
@@ -206,6 +208,7 @@ Use cases for example could be:
 
 |
 
+.. _conf-tx-solr-search-boostQuery:
 
 query.boostQuery
 ~~~~~~~~~~~~~~~~
@@ -504,7 +507,7 @@ spellchecking
 :Since: 1.0
 :Default: 0
 
-Set ``plugin.tx_solr.search.spellchecking = 1`` to enable spellchecking / did you mean.
+Set `plugin.tx_solr.search.spellchecking = 1` to enable spellchecking / did you mean.
 
 spellchecking.wrap
 ~~~~~~~~~~~~~~~~~~
@@ -527,7 +530,7 @@ lastSearches
 :Since: 1.3-dkd
 :Default: 0
 
-Set ``plugin.tx_solr.lastSearches = 1`` to display a list of the last searches.
+Set `plugin.tx_solr.lastSearches = 1` to display a list of the last searches.
 
 lastSearches.limit
 ~~~~~~~~~~~~~~~~~~
@@ -561,7 +564,7 @@ frequentSearches
 :Since: 1.3-dkd, 2.8
 :Default: 0
 
-Set ``plugin.tx_solr.search.frequentSearches = 1`` to display a list of the frequent / common searches.
+Set  `plugin.tx_solr.search.frequentSearches = 1` to display a list of the frequent / common searches.
 
 frequentSearches.useLowercaseKeywords
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -623,7 +626,7 @@ sorting
 :Since: 1.0
 :Default: 0
 
-Set ``plugin.tx_solr.search.sorting = 1`` to allow sorting of results.
+Set `plugin.tx_solr.search.sorting = 1`  to allow sorting of results.
 
 sorting.defaultOrder
 ~~~~~~~~~~~~~~~~~~~~
@@ -719,7 +722,7 @@ faceting
 :Since: 1.0
 :Default: 0
 
-Set ``plugin.tx_solr.search.faceting = 1`` to enable faceting.
+Set `plugin.tx_solr.search.faceting = 1` to enable faceting.
 
 faceting.minimumCount
 ~~~~~~~~~~~~~~~~~~~~~
@@ -989,7 +992,7 @@ Example - We have a category facet like this:
     + Automobile (99)
     + Travel (51)
 
-Using ``faceting.facets.[facetName].manualSortOrder = Travel, Health`` will result in the following order of options:
+Using `faceting.facets.[facetName].manualSortOrder = Travel, Health` will result in the following order of options:
 
 |
 
@@ -1024,7 +1027,7 @@ faceting.facets.[facetName].showEvenWhenEmpty
 :Default: 0
 :Options: 0, 1
 
-Allows you to display a facet even if it does not offer any options (is empty) and although you have set ``plugin.tx_solr.search.faceting.showEmptyFacets = 0``.
+Allows you to display a facet even if it does not offer any options (is empty) and although you have set `plugin.tx_solr.search.faceting.showEmptyFacets = 0`.
 
 faceting.facets.[facetName].includeInAvailableFacets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
