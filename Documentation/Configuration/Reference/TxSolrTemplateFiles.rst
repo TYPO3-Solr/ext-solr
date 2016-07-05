@@ -31,7 +31,7 @@ frequentSearches
 
 :Type: String
 :TS Path: plugin.tx_solr.templateFiles.frequentSearches
-:Default: ``EXT:solr/Resources/Templates/PiFrequentSearches/frequentsearches.htm``
+:Default: EXT:solr/Resources/Templates/PiFrequentSearches/frequentsearches.htm
 :Since: 2.0
 
 The template used for the frequent searches plugin.
@@ -41,7 +41,7 @@ pagebrowser
 
 :Type: String
 :TS Path: plugin.tx_solr.templateFiles.pagebrowser
-:Default: ``EXT:solr/Resources/Templates/PiResults/pagebrowser.htm``
+:Default: EXT:solr/Resources/Templates/PiResults/pagebrowser.htm
 :Since: 2.0
 
 Template for the page browser.
@@ -51,7 +51,7 @@ results
 
 :Type: String
 :TS Path: plugin.tx_solr.templateFiles.results
-:Default: ``EXT:solr/Resources/Templates/PiResults/results.htm``
+:Default: EXT:solr/Resources/Templates/PiResults/results.htm
 :Since: 1.0
 
 Template for rendering the results plugin with its different components.
@@ -61,7 +61,7 @@ search
 
 :Type: String
 :TS Path: plugin.tx_solr.templateFiles.search
-:Default: ``EXT:solr/Resources/Templates/PiSearch/search.htm``
+:Default: EXT:solr/Resources/Templates/PiSearch/search.htm
 :Since: 2.0
 
 Template for the search plugin that you can use to put a search field on every

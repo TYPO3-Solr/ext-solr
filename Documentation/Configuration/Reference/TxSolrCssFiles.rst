@@ -59,7 +59,7 @@ results
 
 :Type: String
 :TS Path: plugin.tx_solr.cssFiles.results
-:Default: ``EXT:solr/Resources/Css/PiResults/results.css``
+:Default: EXT:solr/Resources/Css/PiResults/results.css
 :Since: 2.0
 
 Defines the stylesheet to be used for styling the search results page.
@@ -69,7 +69,7 @@ pagebrowser (removed)
 
 :Type: String
 :TS Path: plugin.tx_solr.cssFiles.pagebrowser
-:Default: ``EXT:pagebrowse/res/styles_min.css``
+:Default: EXT:pagebrowse/res/styles_min.css
 :Since: 2.0
 :Removed: 3.1
 
@@ -80,7 +80,7 @@ ui
 
 :Type: String
 :TS Path: plugin.tx_solr.cssFiles.ui
-:Default: ``EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css``
+:Default: EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css
 :Since: 2.0
 
 Defines the stylesheet to be used for styling the auto suggestions.

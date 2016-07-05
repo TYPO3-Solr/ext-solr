@@ -182,9 +182,9 @@ queue.[indexConfig]
 
 An indexing configuration defines several parameters about how to index records of a table. By default the name of the indexing configuration is also the name of the table to index.
 
-By setting ``plugin.tx_solr.index.queue.[indexConfig] = 1 or 0`` you can en- / disable an indexing configuration.
+By setting `plugin.tx_solr.index.queue.[indexConfig] = 1 or 0` you can en- / disable an indexing configuration.
 
-**Note**: you could add `L={field:__solr_index_language}```in the additionalParams of the typolink to link to the correct language version (this was removed from the example above to simplify the example)
+**Note**: you could add `L={field:__solr_index_language}` in the additionalParams of the typolink to link to the correct language version (this was removed from the example above to simplify the example)
 
 
 queue.[indexConfig].additionalWhereClause

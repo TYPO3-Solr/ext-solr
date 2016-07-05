@@ -27,12 +27,31 @@ Update the constants to match the current setup:
         tx_solr {
             solr {
                 host = 192.168.99.100
-                port = 8282
+                port = 8080
             }
         }
     }
 
 Adjust the host according to where your Solr is reachable, see :ref:`started-solr`.
+
+Search Markers
+--------------
+
+EXT:solr is indexing everything on a page between `<!-- TYPO3SEARCH_begin -->` and `<!-- TYPO3SEARCH_end -->` to ensure this is the case, check the output of you website and add the markers to your template.
+
+If the markers are missing, you should add them to your template. To increase the quality of the search results the markes should only wrap the relevant content of a page and exclude e.g. menus, because they are same on each page.
+
+The most simple configuration for my page was:
+
+|
+
+.. code-block:: typoscript
+
+    page.10 {
+        stdWrap.dataWrap = <!--TYPO3SEARCH_begin-->|<!--TYPO3SEARCH_end-->
+    }
+
+
 
 Domain Records and Indexing
 ---------------------------

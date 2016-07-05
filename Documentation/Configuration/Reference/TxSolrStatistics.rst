@@ -32,7 +32,7 @@ statistics
 :Since: 2.0
 :Default: 0
 
-Set ``plugin.tx_solr.statistics = 1`` to log statistics.
+Set `plugin.tx_solr.statistics = 1` to log statistics.
 
 
 statistics.anonymizeIP
