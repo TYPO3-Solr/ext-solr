@@ -5,9 +5,6 @@
 
 .. include:: ../../Includes.txt
 
-
-.. _conf-tx-solr-templatefiles:
-
 .. raw:: latex
 
     \newpage
@@ -15,6 +12,8 @@
 .. raw:: pdf
 
    PageBreak
+
+.. _conf-tx-solr-templatefiles:
 
 tx_solr.templateFiles
 =====================

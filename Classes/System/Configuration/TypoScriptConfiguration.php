@@ -598,6 +598,18 @@ class TypoScriptConfiguration
     }
 
     /**
+     * When this is enabled the output of the devlog, will be printed as debug output.
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getLoggingDebugOutputDevlog($defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.logging.debugDevlogOutput', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
      * Returns if query filters should be written to the log.
      *
      * plugin.tx_solr.logging.query.filters

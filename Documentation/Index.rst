@@ -26,7 +26,7 @@
 		search, full text, index, solr, lucene, fast, query, results
 
 	:Copyright:
-		2009-2015
+		2009-2016
 
 	:Author:
 		Ingo Renner, Daniel Siepmann, Timo Hund
@@ -55,6 +55,7 @@
 	Introduction/Index
 	GettingStarted/Index
 	Backend/Index
+  	Logging/Index
 	Configuration/Index
   	FAQ/*
 	Appendix/*
