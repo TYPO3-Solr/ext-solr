@@ -16,13 +16,17 @@ if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASS
       echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n"
       curl -sSL https://raw.githubusercontent.com/alrra/travis-after-all/1.4.4/lib/travis-after-all.js | node
       if [ $? -eq 0 ]; then
+         # Link the git checkout directory to a directory called like the extension key, because the uploader requires that.
          echo "Symlinking current folder to extension folder."
-         ln -s $(pwd) ../${EXTENSION_KEY}
-         cd ../${EXTENSION_KEY}/
+         EXTENSION_DIR=$(pwd)
+         PARENT_DIR="$EXTENSION_DIR/../"
+         cd $PARENT_DIR
+         ln -s $EXTENSION_DIR $EXTENSION_KEY
+         cd $EXTENSION_KEY
+         pwd
 
          git reset --hard HEAD && git clean -fx
          echo "Files in this package"
-
          ls -l
 
          TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
