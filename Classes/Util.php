@@ -516,13 +516,18 @@ class Util
      */
     public static function getSiteHashForDomain($domain)
     {
-        $siteHash = sha1(
+        static $siteHashes = [];
+        if (isset($siteHashes[$domain])) {
+            return $siteHashes[$domain];
+        }
+
+        $siteHashes[$domain] = sha1(
             $domain .
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
             'tx_solr'
         );
 
-        return $siteHash;
+        return $siteHashes[$domain];
     }
 
     /**
