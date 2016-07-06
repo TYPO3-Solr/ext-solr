@@ -5,9 +5,6 @@
 
 .. include:: ../../Includes.txt
 
-
-.. _conf-tx-solr-statistics:
-
 .. raw:: latex
 
     \newpage
@@ -16,6 +13,7 @@
 
    PageBreak
 
+.. _conf-tx-solr-statistics:
 
 tx_solr.statistics
 ===================

@@ -5,9 +5,6 @@
 
 .. include:: ../../Includes.txt
 
-
-.. _conf-tx-solr-logging:
-
 .. raw:: latex
 
     \newpage
@@ -16,6 +13,7 @@
 
    PageBreak
 
+.. _conf-tx-solr-logging:
 
 tx_solr.logging
 ===============
@@ -25,6 +23,16 @@ This section defines logging options. All loggings will be available in the devl
 .. contents::
    :local:
 
+debugDevlogOutput
+-----------------
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.logging.debugDevlogOutput
+:Default: 0
+:Options: 0,1
+:Since: 1.0
+
+If enabled the written log entries will be printed out as debug message in the frontend or to the TYPO3 debug console in the backend.
 
 exceptions
 ----------

@@ -29,6 +29,7 @@ plugin.tx_solr {
 
 	logging {
 		exceptions = 1
+		debugDevlogOutput = 1
 
 		indexing {
 			indexQueueInitialization = 1

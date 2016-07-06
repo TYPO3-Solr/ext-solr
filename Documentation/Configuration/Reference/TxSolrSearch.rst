@@ -6,8 +6,6 @@
 .. include:: ../../Includes.txt
 
 
-.. _conf-tx-solr-search:
-
 .. raw:: latex
 
     \newpage
@@ -16,6 +14,7 @@
 
    PageBreak
 
+.. _conf-tx-solr-search:
 
 tx_solr.search
 ===============
