@@ -30,7 +30,7 @@ debugDevlogOutput
 :TS Path: plugin.tx_solr.logging.debugDevlogOutput
 :Default: 0
 :Options: 0,1
-:Since: 1.0
+:Since: 5.0
 
 If enabled the written log entries will be printed out as debug message in the frontend or to the TYPO3 debug console in the backend.
 
