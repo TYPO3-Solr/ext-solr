@@ -111,6 +111,31 @@ awesome community. These are the contributors for this release.
 * Peter Kraume
 * Sascha Löffler
 
+Also a big thanks to our partners that have joined the EB2016 program:
+
+* Bank CIC AG
+* CS2 AG
+* Cosmoblone GmbH
+* Daniz online markting
+* datenwerk innovationsagentur gmbh
+* die_schnittsteller GmbH
+* E-magineurs
+* Fernando Hernáez Lopez
+* Future Connection AG
+* Hirsch & Wölfl GmbH
+* hs-digital GmbH
+* L.N. Schaffrath DigitalMedien GmbH
+* pixolith GmbH & Co. KG
+* Q3i GmbH & Co. KG
+* RUAG Corporate Services AG
+* ST3 Elkartea
+* Star Finanz-Software Entwicklung und Vertriebs GmbH
+* Stefan Galinski Interndienstleistungen
+* Systime A/S
+* websedit AG - Internetagentur
+* Webstobe GmbH
+* web-vision GmbH
+
 Thanks to everyone who helped in creating this release!
 
 ## How to get involved
