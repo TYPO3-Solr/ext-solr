@@ -64,14 +64,33 @@ Example:
 
 See: https://github.com/TYPO3-Solr/ext-solr/issues/426
 
+### Show devLog entries as debug message or in the TYPO3 console
+
+You can now show the written log messages as output of the debug console in the backend or debug messages in the frontent, when you enable the following setting:
+
+    plugin.tx_solr.logging.debugDevlogOutput = 1
+
+NOTE: $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'] needs to be configured and match.
+
+### RST Documentation
+
+We've ported the typoscript reference from the forge wiki into an rst format. At the same time we've enhanced the documentation with chapters about:
+
+- Getting Started
+- The Backend
+- Logging
+- FAQ section
+
+If you want to contribute and bring the documentation one step further feel free to proof-read or provide additional parts as a pull request.
+
 ## Deprecations
 
 * Typo3Environment: The usage of ApacheSolrForTypo3\Solr\Typo3Environment is deprecated and should be removed
 
 ## Outlook
 
-The next release (6.0) will integrate the fluid rendering into EXT:solr. Beside that we will focus on cleanup and documentation
-and investigation on the upcoming update to the latest Apache Solr version, that will happen in 7.0.
+In the next release (6.0) we will focus on our codesprint (11. to 13. august in frankfurt). Beside that we will focus
+on issues in the issue tracker and general improvements of the codebase and documentation.
 
 ## Contributors
 
@@ -90,6 +109,7 @@ awesome community. These are the contributors for this release.
 * Olivier Dobberkau
 * Patrick Oberdorf
 * Peter Kraume
+* Sascha Löffler
 
 Thanks to everyone who helped in creating this release!
 
