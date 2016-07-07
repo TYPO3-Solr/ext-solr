@@ -110,6 +110,7 @@ awesome community. These are the contributors for this release.
 * Patrick Oberdorf
 * Peter Kraume
 * Sascha Löffler
+* Timo Hund
 
 Also a big thanks to our partners that have joined the EB2016 program:
 
