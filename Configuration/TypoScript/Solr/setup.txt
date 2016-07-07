@@ -360,7 +360,7 @@ plugin.tx_solr {
 
 	logging {
 		exceptions = 1
-        debugDevlogOutput = 0
+		debugDevlogOutput = 0
 
 		indexing {
 			indexQueueInitialization = 0
