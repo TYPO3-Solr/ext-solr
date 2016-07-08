@@ -6,8 +6,8 @@
 conf.py:
   copyright: 2016
   project: Documentation for EXT:solr the Apache Solr integration for TYPO3
-  version: 5.0.0
-  release: 5.0.0
+  version: 6.0.0
+  release: 6.0.0
   intersphinx_mapping:
     t3tsref:
     - https://docs.typo3.org/typo3cms/TyposcriptReference/

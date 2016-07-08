@@ -1,4 +1,4 @@
-# Apache Solr for TYPO3 version 4.0 released
+# Apache Solr for TYPO3 version 5.0 released
 
 We're happy to announce the release of Apache Solr for TYPO3 (EXT:solr) version 5.0.0. With this release we ship the requirements to use our new addon EXT:solrfluid, that allows you to render your search results with the fluid templating engine.
 
@@ -110,6 +110,32 @@ awesome community. These are the contributors for this release.
 * Patrick Oberdorf
 * Peter Kraume
 * Sascha Löffler
+* Timo Hund
+
+Also a big thanks to our partners that have joined the EB2016 program:
+
+* Bank CIC AG
+* CS2 AG
+* Cosmoblone GmbH
+* Daniz online markting
+* datenwerk innovationsagentur gmbh
+* die_schnittsteller GmbH
+* E-magineurs
+* Fernando Hernáez Lopez
+* Future Connection AG
+* Hirsch & Wölfl GmbH
+* hs-digital GmbH
+* L.N. Schaffrath DigitalMedien GmbH
+* pixolith GmbH & Co. KG
+* Q3i GmbH & Co. KG
+* RUAG Corporate Services AG
+* ST3 Elkartea
+* Star Finanz-Software Entwicklung und Vertriebs GmbH
+* Stefan Galinski Interndienstleistungen
+* Systime A/S
+* websedit AG - Internetagentur
+* Webstobe GmbH
+* web-vision GmbH
 
 Thanks to everyone who helped in creating this release!
 
