@@ -214,30 +214,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-    /**
-     * @test
-     */
-    public function canResolveAbsRefPrefixAuto()
-    {
-        $this->cleanUpSolrServerAndAssertEmpty();
 
-        // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePath('fake_extension2_bar_tca.php'));
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePath('fake_extension2_directrelated_tca.php'));
-        $this->importDataSetFromFixture('can_index_custom_record_with_absRefPrefix_url.xml');
-
-        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
-        $this->assertTrue($result, 'Indexing was not indicated to be successful');
-
-        // do we have the record in the index with the value from the mm relation?
-        sleep(3);
-        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
-
-        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertNotContains('auto', $solrContent, 'absRefPrefix=auto was not resolved');
-        $this->cleanUpSolrServerAndAssertEmpty();
-    }
 
     /**
      * @param string $table
