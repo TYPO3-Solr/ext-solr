@@ -23,6 +23,10 @@
 				<source>Number of documents to index</source>
 				<target>Anzahl der zu indexierenden Dokumente</target>
 			</trans-unit>
+			<trans-unit id="indexqueueworker_field_forcedWebRoot" xml:space="preserve">
+				<source>Forced webroot (only needed when webroot in not PATH_site)</source>
+				<target>Forced webroot (Nur notwendig wenn webroot von PATH_site abweicht)</target>
+			</trans-unit>
 			<trans-unit id="field_host" xml:space="preserve" approved="yes">
 				<source>Solr Host</source>
 				<target>Solr host</target>

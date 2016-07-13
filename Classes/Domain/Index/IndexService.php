@@ -35,6 +35,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 
 /**
  * Service to perform indexing operations
@@ -59,6 +60,16 @@ class IndexService
      * @var IndexQueueWorkerTask
      */
     protected $contextTask;
+
+    /**
+     * @var array
+     */
+    protected $serverVariableBackup = [];
+
+    /**
+     * @var string
+     */
+    protected $contextForcedWebRoot = '';
 
     /**
      * @param Site $site
@@ -87,6 +98,22 @@ class IndexService
     }
 
     /**
+     * @param null $contextForcedWebRoot
+     */
+    public function setContextForcedWebRoot($contextForcedWebRoot)
+    {
+        $this->contextForcedWebRoot = $contextForcedWebRoot;
+    }
+
+    /**
+     * @return null
+     */
+    public function getContextForcedWebRoot()
+    {
+        return $this->contextForcedWebRoot;
+    }
+
+    /**
      * Indexes items from the Index Queue.
      *
      * @param integer $limit
@@ -94,10 +121,12 @@ class IndexService
      */
     public function indexItems($limit)
     {
+        /** @var $indexQueue Queue */
         $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-        $errors     = 0;
+        $errors = 0;
         // get items to index
         $itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);
+
         foreach ($itemsToIndex as $itemToIndex) {
             try {
                 // try indexing
@@ -105,22 +134,14 @@ class IndexService
             } catch (\Exception $e) {
                 $errors++;
 
-                $indexQueue->markItemAsFailed(
-                    $itemToIndex,
-                    $e->getCode() . ': ' . $e->__toString()
-                );
+                $indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
 
-                GeneralUtility::devLog(
-                    'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid(),
-                    'solr',
-                    3,
-                    array(
+                GeneralUtility::devLog('Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid(), 'solr', 3, array(
                         'code' => $e->getCode(),
                         'message' => $e->getMessage(),
                         'trace' => $e->getTrace(),
                         'item' => (array)$itemToIndex
-                    )
-                );
+                    ));
             }
         }
         $this->emitAfterIndexItemsSignal($itemsToIndex);
@@ -150,11 +171,9 @@ class IndexService
         $itemIndexed = false;
         $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
-        // Remember original http host value
-        $originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
-        // Overwrite http host
-        $this->initializeHttpHost($item);
+        $this->backupServerEnvironment();
 
+        $this->initializeHttpServerEnvironment($item);
         $itemIndexed = $indexer->index($item);
 
         // update IQ item so that the IQ can determine what's been indexed already
@@ -162,12 +181,7 @@ class IndexService
             $item->updateIndexedTime();
         }
 
-        // restore http host
-        if (!is_null($originalHttpHost)) {
-            $_SERVER['HTTP_HOST'] = $originalHttpHost;
-        } else {
-            unset($_SERVER['HTTP_HOST']);
-        }
+        $this->restoreServerEnvironment();
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
@@ -191,14 +205,14 @@ class IndexService
     protected function getIndexerByItem($indexingConfigurationName)
     {
         $indexerClass = $this->configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
-        $indexerConfiguration = $this->configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
+        $indexerConfiguration =
+            $this->configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
 
         $indexer = GeneralUtility::makeInstance($indexerClass, $indexerConfiguration);
         if (!($indexer instanceof Indexer)) {
-            throw new \RuntimeException(
-                'The indexer class "' . $indexerClass . '" for indexing configuration "' . $indexingConfigurationName . '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.',
-                1260463206
-            );
+            throw new \RuntimeException('The indexer class "' . $indexerClass . '" for indexing configuration "' .
+                $indexingConfigurationName .
+                '" is not a valid indexer. Must be a subclass of ApacheSolrForTypo3\Solr\IndexQueue\Indexer.', 1260463206);
         }
 
         return $indexer;
@@ -213,16 +227,10 @@ class IndexService
     {
         $itemsIndexedPercentage = 0.0;
 
-        $totalItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-            'uid',
-            'tx_solr_indexqueue_item',
-            'root = ' . $this->site->getRootPageId()
-        );
-        $remainingItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-            'uid',
-            'tx_solr_indexqueue_item',
-            'changed > indexed AND root = ' . $this->site->getRootPageId()
-        );
+        $totalItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows('uid', 'tx_solr_indexqueue_item',
+            'root = ' . $this->site->getRootPageId());
+        $remainingItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows('uid', 'tx_solr_indexqueue_item',
+            'changed > indexed AND root = ' . $this->site->getRootPageId());
         $itemsIndexedCount = $totalItemsCount - $remainingItemsCount;
 
         if ($totalItemsCount > 0) {
@@ -245,7 +253,7 @@ class IndexService
      *
      * @param Item $item Index Queue item to use to determine the host.
      */
-    protected function initializeHttpHost(Item $item)
+    protected function initializeHttpServerEnvironment(Item $item)
     {
         static $hosts = array();
 
@@ -260,8 +268,31 @@ class IndexService
         }
 
         $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
+        $_SERVER["PHP_SELF"] = "/index.php";
+        $_SERVER["SCRIPT_NAME"] = "/index.php";
+        $_SERVER["SCRIPT_FILENAME"] = PATH_site;
+
+        if ($this->contextForcedWebRoot !== '') {
+            define("TYPO3_PATH_WEB", $this->contextForcedWebRoot);
+        }
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
+    }
+
+    /**
+     * @return void
+     */
+    protected function backupServerEnvironment()
+    {
+        $this->serverVariableBackup = $_SERVER;
+    }
+
+    /**
+     * @return void
+     */
+    protected function restoreServerEnvironment()
+    {
+        $_SERVER = $this->serverVariableBackup;
     }
 }

@@ -59,6 +59,11 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     protected $documentsToIndexLimit;
 
     /**
+     * @var string
+    */
+    protected $forcedWebRoot = '';
+
+    /**
      * Works through the indexing queue and indexes the queued items into Solr.
      *
      * @return boolean Returns TRUE on success, FALSE if no items were indexed or none were found.
@@ -70,10 +75,47 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
         $indexService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Index\\IndexService', $this->site);
         $indexService->setContextTask($this);
+        $indexService->setContextForcedWebRoot($this->getWebRoot());
         $indexService->indexItems($this->documentsToIndexLimit);
         $executionSucceeded = true;
 
         return $executionSucceeded;
+    }
+
+    /**
+     * In the cli context TYPO3 has chance to determine the webroot.
+     * Since we need it for the TSFE related things we allow to set it
+     * in the scheduler task and use the ###PATH_typo3### marker in the
+     * setting to be able to define relative pathes.
+     *
+     * @return string
+    */
+    public function getWebRoot()
+    {
+        if ($this->forcedWebRoot !== '') {
+            return $this->replaceWebRootMarkers($this->forcedWebRoot);
+        }
+
+        // when nothing is configured, we use the constant PATH_site
+        // which should fit in the most cases
+        return PATH_site;
+    }
+
+    /**
+     * @param string $webRoot
+     * @return string
+     */
+    protected function replaceWebRootMarkers($webRoot)
+    {
+        if (strpos($webRoot, '###PATH_typo3###') !== false) {
+            $webRoot = str_replace('###PATH_typo3###', PATH_typo3, $webRoot);
+        }
+
+        if (strpos($webRoot, '###PATH_site###') !== false) {
+            $webRoot = str_replace('###PATH_site###', PATH_site, $webRoot);
+        }
+
+        return $webRoot;
     }
 
     /**
@@ -94,7 +136,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
         if ($failedItemsCount) {
             $message .= ' Failures: ' . $failedItemsCount;
         }
-
+        $message .=  ' / Using webroot: ' . htmlspecialchars($this->getWebRoot());
         return $message;
     }
 
@@ -147,5 +189,21 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     public function setDocumentsToIndexLimit($limit)
     {
         $this->documentsToIndexLimit = $limit;
+    }
+
+    /**
+     * @param string $forcedWebRoot
+     */
+    public function setForcedWebRoot($forcedWebRoot)
+    {
+        $this->forcedWebRoot = $forcedWebRoot;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForcedWebRoot()
+    {
+        return $this->forcedWebRoot;
     }
 }

@@ -18,6 +18,9 @@
 			<trans-unit id="indexqueueworker_field_documentsToIndexLimit" xml:space="preserve">
 				<source>Number of documents to index</source>
 			</trans-unit>
+			<trans-unit id="indexqueueworker_field_forcedWebRoot" xml:space="preserve">
+				<source>Forced webroot (only needed when webroot in not PATH_site)</source>
+			</trans-unit>
 			<trans-unit id="field_host" xml:space="preserve">
 				<source>Solr Host</source>
 			</trans-unit>
