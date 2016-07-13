@@ -61,11 +61,13 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         if ($schedulerModule->CMD == 'add') {
             $taskInfo['site'] = null;
             $taskInfo['documentsToIndexLimit'] = 50;
+            $taskInfo['forcedWebRoot'] = '';
         }
 
         if ($schedulerModule->CMD == 'edit') {
             $taskInfo['site'] = $task->getSite();
             $taskInfo['documentsToIndexLimit'] = $task->getDocumentsToIndexLimit();
+            $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();
         }
 
         $additionalFields['site'] = array(
@@ -79,6 +81,13 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $additionalFields['documentsToIndexLimit'] = array(
             'code' => '<input type="text" name="tx_scheduler[documentsToIndexLimit]" value="' . htmlspecialchars($taskInfo['documentsToIndexLimit']) . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler/locallang.xlf:indexqueueworker_field_documentsToIndexLimit',
+            'cshKey' => '',
+            'cshLabel' => ''
+        );
+
+        $additionalFields['forcedWebRoot'] = array(
+            'code' => '<input type="text" name="tx_scheduler[forcedWebRoot]" value="' . htmlspecialchars($taskInfo['forcedWebRoot']) . '" />',
+            'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_forcedWebRoot',
             'cshKey' => '',
             'cshLabel' => ''
         );
@@ -126,5 +135,6 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $task->setSite(GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site',
             $submittedData['site']));
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
+        $task->setForcedWebRoot($submittedData['forcedWebRoot']);
     }
 }
