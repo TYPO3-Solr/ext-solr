@@ -18,7 +18,6 @@
                 page = PAGE
                 page.typeNum = 0
                 page.bodyTag = <body>
-
                 config.absRefPrefix = auto
 
                 # very simple rendering
@@ -88,6 +87,7 @@
         <pid>1</pid>
         <title>testnews</title>
         <category>4711</category>
+        <tstamp>111111</tstamp>
     </tx_fakeextension_domain_model_bar>
 
     <tx_fakeextension_domain_model_directrelated>

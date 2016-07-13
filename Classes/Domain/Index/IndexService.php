@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
@@ -61,6 +62,16 @@ class IndexService
     protected $contextTask;
 
     /**
+     * @var array
+     */
+    protected $serverVariableBackup = [];
+
+    /**
+     * @var string
+     */
+    protected $contextForcedWebRoot = '';
+
+    /**
      * @param Site $site
      * @internal param \ApacheSolrForTypo3\Solr\Site $configuration
      */
@@ -87,6 +98,22 @@ class IndexService
     }
 
     /**
+     * @param null $contextForcedWebRoot
+     */
+    public function setContextForcedWebRoot($contextForcedWebRoot)
+    {
+        $this->contextForcedWebRoot = $contextForcedWebRoot;
+    }
+
+    /**
+     * @return null
+     */
+    public function getContextForcedWebRoot()
+    {
+        return $this->contextForcedWebRoot;
+    }
+
+    /**
      * Indexes items from the Index Queue.
      *
      * @param integer $limit
@@ -94,10 +121,12 @@ class IndexService
      */
     public function indexItems($limit)
     {
+        /** @var $indexQueue Queue */
         $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
         $errors     = 0;
         // get items to index
         $itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);
+
         foreach ($itemsToIndex as $itemToIndex) {
             try {
                 // try indexing
@@ -150,11 +179,9 @@ class IndexService
         $itemIndexed = false;
         $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
-        // Remember original http host value
-        $originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
-        // Overwrite http host
-        $this->initializeHttpHost($item);
+        $this->backupServerEnvironment();
 
+        $this->initializeHttpServerEnvironment($item);
         $itemIndexed = $indexer->index($item);
 
         // update IQ item so that the IQ can determine what's been indexed already
@@ -162,12 +189,7 @@ class IndexService
             $item->updateIndexedTime();
         }
 
-        // restore http host
-        if (!is_null($originalHttpHost)) {
-            $_SERVER['HTTP_HOST'] = $originalHttpHost;
-        } else {
-            unset($_SERVER['HTTP_HOST']);
-        }
+        $this->restoreServerEnvironment();
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
@@ -244,24 +266,46 @@ class IndexService
      * in a CLI environment.
      *
      * @param Item $item Index Queue item to use to determine the host.
+     * @param
      */
-    protected function initializeHttpHost(Item $item)
+    protected function initializeHttpServerEnvironment(Item $item)
     {
         static $hosts = array();
-
         $rootpageId = $item->getRootPageUid();
         $hostFound = !empty($hosts[$rootpageId]);
 
         if (!$hostFound) {
             $rootline = BackendUtility::BEgetRootLine($rootpageId);
             $host = BackendUtility::firstDomainRecord($rootline);
-
             $hosts[$rootpageId] = $host;
         }
 
         $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
+        $_SERVER["PHP_SELF"] = "/index.php";
+        $_SERVER["SCRIPT_NAME"] = "/index.php";
+        $_SERVER["SCRIPT_FILENAME"] = PATH_site;
+
+        if ($this->contextForcedWebRoot !== '') {
+            define("TYPO3_PATH_WEB", $this->contextForcedWebRoot);
+        }
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
+    }
+
+    /**
+     * @return void
+     */
+    protected function backupServerEnvironment()
+    {
+        $this->serverVariableBackup = $_SERVER;
+    }
+
+    /**
+     * @return void
+     */
+    protected function restoreServerEnvironment()
+    {
+        $_SERVER = $this->serverVariableBackup;
     }
 }
