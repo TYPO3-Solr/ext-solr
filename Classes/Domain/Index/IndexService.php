@@ -30,7 +30,9 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -62,16 +64,6 @@ class IndexService
     protected $contextTask;
 
     /**
-     * @var array
-     */
-    protected $serverVariableBackup = [];
-
-    /**
-     * @var string
-     */
-    protected $contextForcedWebRoot = '';
-
-    /**
      * @param Site $site
      * @internal param \ApacheSolrForTypo3\Solr\Site $configuration
      */
@@ -95,22 +87,6 @@ class IndexService
     public function getContextTask()
     {
         return $this->contextTask;
-    }
-
-    /**
-     * @param null $contextForcedWebRoot
-     */
-    public function setContextForcedWebRoot($contextForcedWebRoot)
-    {
-        $this->contextForcedWebRoot = $contextForcedWebRoot;
-    }
-
-    /**
-     * @return null
-     */
-    public function getContextForcedWebRoot()
-    {
-        return $this->contextForcedWebRoot;
     }
 
     /**
@@ -179,7 +155,8 @@ class IndexService
         $itemIndexed = false;
         $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
-        $this->backupServerEnvironment();
+        // Remember original http host value
+        $originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
 
         $this->initializeHttpServerEnvironment($item);
         $itemIndexed = $indexer->index($item);
@@ -189,7 +166,11 @@ class IndexService
             $item->updateIndexedTime();
         }
 
-        $this->restoreServerEnvironment();
+        if (!is_null($originalHttpHost)) {
+            $_SERVER['HTTP_HOST'] = $originalHttpHost;
+        } else {
+            unset($_SERVER['HTTP_HOST']);
+        }
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
@@ -281,31 +262,8 @@ class IndexService
         }
 
         $_SERVER['HTTP_HOST'] = $hosts[$rootpageId];
-        $_SERVER["PHP_SELF"] = "/index.php";
-        $_SERVER["SCRIPT_NAME"] = "/index.php";
-        $_SERVER["SCRIPT_FILENAME"] = PATH_site;
-
-        if ($this->contextForcedWebRoot !== '') {
-            define("TYPO3_PATH_WEB", $this->contextForcedWebRoot);
-        }
 
         // needed since TYPO3 7.5
         GeneralUtility::flushInternalRuntimeCaches();
-    }
-
-    /**
-     * @return void
-     */
-    protected function backupServerEnvironment()
-    {
-        $this->serverVariableBackup = $_SERVER;
-    }
-
-    /**
-     * @return void
-     */
-    protected function restoreServerEnvironment()
-    {
-        $_SERVER = $this->serverVariableBackup;
     }
 }

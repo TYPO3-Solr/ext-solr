@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -72,11 +73,17 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     {
         $executionSucceeded = false;
 
+            /** @var $cliEnvironment CliEnvironment */
+        $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
+        $cliEnvironment->backup();
+        $cliEnvironment->initialize($this->getWebRoot());
+
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
         $indexService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Index\\IndexService', $this->site);
         $indexService->setContextTask($this);
-        $indexService->setContextForcedWebRoot($this->getWebRoot());
         $indexService->indexItems($this->documentsToIndexLimit);
+
+        $cliEnvironment->restore();
 
         $executionSucceeded = true;
 

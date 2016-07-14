@@ -43,8 +43,9 @@ class IndexQueueWorkerTaskTest extends UnitTest
     /**
      * @test
      */
-    public function canGetWebRoot() {
-            /** @var $indexQueuerWorker IndexQueueWorkerTask */
+    public function canGetWebRoot()
+    {
+        /** @var $indexQueuerWorker IndexQueueWorkerTask */
         $indexQueuerWorker = $this->getMockBuilder(IndexQueueWorkerTask::class)
             ->disableOriginalConstructor()
             ->setMethods(['execute'])
@@ -62,4 +63,3 @@ class IndexQueueWorkerTaskTest extends UnitTest
         $this->assertSame(PATH_site . '../test/', $indexQueuerWorker->getWebRoot(), 'Could not use a marker in forced webroot');
     }
 }
-
