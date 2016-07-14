@@ -25,7 +25,7 @@
 				<target>Aantal te indexeren documenten</target>
 			</trans-unit>
 			<trans-unit id="indexqueueworker_field_forcedWebRoot" xml:space="preserve">
-				<source>Forced webroot (only needed when webroot in not PATH_site)</source>
+				<source>Forced webroot (only needed when webroot is not PATH_site)</source>
 				<target>Geforceerde webroot (alleen nodig als de webroot anders is dan PATH_site)</target>
 			</trans-unit>
 			<trans-unit id="field_host" xml:space="preserve" approved="yes">
