@@ -29,11 +29,11 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 
 /**
  * Testcase for the record indexer
@@ -42,7 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package TYPO3
  * @subpackage solr
  */
-class IndexerServiceTest extends IntegrationTest
+class IndexServiceTest extends IntegrationTest
 {
 
     /**
@@ -80,7 +80,8 @@ class IndexerServiceTest extends IntegrationTest
     }
 
 
-    public function canResolveAbsRefPrefixDataProvider() {
+    public function canResolveAbsRefPrefixDataProvider()
+    {
         return [
             'absRefPrefixIsAuto' => [
                 'absRefPrefix' => 'auto',
@@ -119,15 +120,20 @@ class IndexerServiceTest extends IntegrationTest
         $this->importDataSetFromFixture('can_index_custom_record_absRefPrefix_'.$absRefPrefix.'.xml');
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
-        // overwrite the absRefPrefix from the imported fixture in the created TSFE right before indexing
+
+            /** @var  $cliEnvironment CliEnvironment */
+        $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
+        $cliEnvironment->backup();
+        $cliEnvironment->initialize(PATH_site);
 
         /** @var $indexService IndexService */
         $site = Site::getFirstAvailableSite();
         $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
-        $indexService->setContextForcedWebRoot(PATH_site);
 
         // run the indexer
         $indexService->indexItems(1);
+
+        $cliEnvironment->restore();
 
         // do we have the record in the index with the value from the mm relation?
         sleep(2);
