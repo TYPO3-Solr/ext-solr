@@ -28,7 +28,8 @@ In this chapter we want to go deeper and learn how to write more complex indexin
 	:maxdepth: 5
 	:glob:
 
-    	IndexQueue
-    	BackendModule
-    	IndexInspector
-    	Scheduler
+    ConnectionManager
+    IndexQueue
+    BackendModule
+    IndexInspector
+    Scheduler
