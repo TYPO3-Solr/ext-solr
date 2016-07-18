@@ -83,6 +83,13 @@ Example:
 
 |
 
+
+**The extension is indexing into the wrong core for multi-language sites. What's wrong?**
+
+When indexing pages the page indexer retrieves the core from the TypoScript configuration. That configuration is determined by the language (GET L parameter). However, when the indexer tries to index a page that has not been translated TYPO3 will by default still render the page but falling back to the default language page. By that TYPO3 will also use the TypoScript configuration for the default language which usually points to a different Solr core.
+
+Solution: Make sure you have configured config.sys_language_mode to use content_fallback. This way TYPO3 will fall back to the configured language's content, but will use the TypoScript configuration for the requested language.
+
 **When i change a record, no update is detected. What's wrong?**
 
 Are your records inside of your site root? EXT:solr record monitor processes records that belong to your site, which means they need to be below your site root.
@@ -148,3 +155,65 @@ You can use the backend module synonyms (:ref:`Synonyms`) to maintain synonyms a
 *Ask DKD support*
 
 Beside that, there are more options to tune. The DKD support can help you, to analyze and tune your search results. Call +49 (0)69 - 247 52 18-0.
+
+**Non ASCII characters like german umlauts do not work when i search, how do I fix that?**
+
+To allow search with umlauts Tomcat needs to be configured to use UTF-8 encoded urls. Go to apache-tomcat/conf/server.xml and change the URIEncoding parameter:
+
+
+|
+
+.. code-block:: xml
+
+    <Connector port="8080" protocol="HTTP/1.1"
+        connectionTimeout="20000" redirectPort="8443"
+        URIEncoding="UTF-8" />
+
+**How can I change Solr's schema and add custom fields?**
+
+Please do not change the shipped solr schema. There are a lot of dynamic fields (:ref:`appendix-dynamic-fields`) that can be used to index any kind of datatype.
+
+**I am using varnish before my site. How can i index pages properly?**
+
+SOLR Indexer might have some issues, when the page to index is behind a Varnish Proxy. We have collected two ways of solving this issue
+
+*Bypassing varnish:*
+
+Bypass when X-Tx-Solr-Iq is present
+
+The SOLR indexer request send the header X-Tx-Solr-Iq.
+
+To have bypass the Varnish caching, put this into your sub vcl_recv part of the configuration
+
+
+|
+
+::
+
+    if (req.http.X-Tx-Solr-Iq) {
+        return(pipe);
+    }
+
+
+*Using Cache-Control:*
+
+Put this into your sub vcl_fetch part of the configuration
+
+|
+
+::
+
+    if (req.http.Cache-Control ~ "no-cache") {
+        set beresp.ttl = 0s;
+        #Make sure ESI includes are processed!
+        esi;
+        set beresp.http.X-Cacheable = "NO:force-reload";
+        #Make sure that We remove alle cache headers, so the Browser does not cache it for us!
+        remove beresp.http.Cache-Control;
+        remove beresp.http.Expires;
+        remove beresp.http.Last-Modified;
+        remove beresp.http.ETag;
+        remove beresp.http.Pragma;
+
+          return (deliver);
+    }

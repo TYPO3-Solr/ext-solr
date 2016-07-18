@@ -55,9 +55,11 @@
 	Introduction/Index
 	GettingStarted/Index
 	Backend/Index
-  	Logging/Index
+	Frontend/Index
+	Logging/Index
+	Solr/Index
 	Configuration/Index
-  	FAQ/*
+	FAQ/*
 	Appendix/*
 
 
