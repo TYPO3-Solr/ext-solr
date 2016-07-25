@@ -338,6 +338,9 @@ class Indexer extends AbstractIndexer
         $document->setField('uid', $itemRecord['uid']);
         $document->setField('pid', $itemRecord['pid']);
 
+        // variantId
+        $document->setField('variantId', $item->getType() . '/' . $itemRecord['uid']);
+
         // created, changed
         if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['crdate'])) {
             $document->setField('created',

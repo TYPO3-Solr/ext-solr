@@ -94,6 +94,12 @@ class Query
     private $rawQueryString = false;
 
     /**
+     * The field by which the result will be collapsed
+     * @var string
+     */
+    protected $variantField = 'variantId';
+
+    /**
      * @param string $keywords
      * @param TypoScriptConfiguration $solrConfiguration
      */
@@ -117,6 +123,8 @@ class Query
         // What fields to return from Solr
         $this->fieldList = $this->solrConfiguration->getSearchQueryReturnFieldsAsArray(array('*', 'score'));
         $this->linkTargetPageId = $this->solrConfiguration->getSearchTargetPage();
+        $this->initializeCollapsingFromConfiguration();
+
 
         $this->id = ++self::$idCount;
     }
@@ -435,6 +443,51 @@ class Query
         }
     }
 
+    // collapsing
+
+    /**
+     * Check whether collapsing is active
+     *
+     * @return boolean
+     */
+    public function getIsCollapsing()
+    {
+        return array_key_exists('collapsing', $this->filters);
+    }
+
+    /**
+     * @param string $fieldName
+     */
+    public function setVariantField($fieldName)
+    {
+        $this->variantField = $fieldName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVariantField()
+    {
+        return $this->variantField;
+    }
+
+    /**
+     * @param bool $collapsing
+     */
+    public function setCollapsing($collapsing = true)
+    {
+        if ($collapsing) {
+            $this->filters['collapsing'] = '{!collapse field=' . $this->variantField . '}';
+            if ($this->solrConfiguration->getSearchVariantsExpand()) {
+                $this->queryParameters['expand'] = 'true';
+                $this->queryParameters['expand.rows'] = $this->solrConfiguration->getSearchVariantsLimit();
+            }
+        } else {
+            unset($this->filters['collapsing']);
+            unset($this->queryParameters['expand']);
+            unset($this->queryParameters['expand.rows']);
+        }
+    }
 
     // grouping
 
@@ -1136,7 +1189,7 @@ class Query
         $queryParameters = array_merge(
             array(
                 'fl' => implode(',', $this->fieldList),
-                'fq' => $this->filters
+                'fq' => array_values($this->filters)
             ),
             $this->queryParameters
         );
@@ -1304,5 +1357,24 @@ class Query
     public function getLinkTargetPageId()
     {
         return $this->linkTargetPageId;
+    }
+
+    /**
+     * Activates the collapsing on the configured field, if collapsing was enabled.
+     *
+     * @return bool
+     */
+    protected function initializeCollapsingFromConfiguration()
+    {
+        // check collapsing
+        if ($this->solrConfiguration->getSearchVariants()) {
+            $collapseField = $this->solrConfiguration->getSearchVariantsField();
+            $this->setVariantField($collapseField);
+            $this->setCollapsing(true);
+
+            return true;
+        }
+
+        return false;
     }
 }

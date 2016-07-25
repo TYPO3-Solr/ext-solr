@@ -326,6 +326,12 @@ plugin.tx_solr {
 			forceElevation = 1
 		}
 
+		variants = 0
+		variants {
+			expand = 1
+			variantField = variantId
+			maxExpandedResults = 10
+		}
 	}
 
 	suggest = 0

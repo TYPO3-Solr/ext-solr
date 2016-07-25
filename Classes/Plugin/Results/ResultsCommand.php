@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
@@ -147,6 +148,7 @@ class ResultsCommand implements PluginCommand
         }
 
         foreach ($responseDocuments as $resultDocument) {
+            /** @var  $resultDocument SearchResult */
             $temporaryResultDocument = array();
             $temporaryResultDocument = $this->processDocumentFieldsToArray($resultDocument);
 
@@ -166,11 +168,37 @@ class ResultsCommand implements PluginCommand
                 }
             }
 
-            $resultDocuments[] = $this->renderDocumentFields($temporaryResultDocument);
+            $renderedResultDocument = $this->renderDocumentFields($temporaryResultDocument);
+            $renderedResultDocument = $this->renderVariants($resultDocument, $renderedResultDocument);
+
+            $resultDocuments[] = $renderedResultDocument;
             unset($temporaryResultDocument);
         }
 
         return $resultDocuments;
+    }
+
+    /**
+     * Renders the collapsedDocuments/variants of a document and adds them into the virtual field "variants".
+     *
+     * @param SearchResult $resultDocument
+     * @param array $renderedResultDocument
+     * @return mixed
+     */
+    protected function renderVariants(SearchResult $resultDocument, $renderedResultDocument)
+    {
+        $availableVariants = $resultDocument->getVariants();
+
+        if (!is_array($availableVariants)) {
+            return $renderedResultDocument;
+        }
+
+        foreach ($availableVariants as $expandedResult) {
+            $expandedDocumentArray = $this->processDocumentFieldsToArray($expandedResult);
+            $renderedResultDocument['variants'][] = $expandedDocumentArray;
+        }
+
+        return $renderedResultDocument;
     }
 
     /**

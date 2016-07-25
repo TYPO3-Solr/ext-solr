@@ -876,6 +876,61 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Indicates if collapsing on a certain field should be used to build variants or not.
+     *
+     * plugin.tx_solr.search.variants
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getSearchVariants($defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.variants', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * Indicates if collapsing on a certain field should be used or not
+     *
+     * plugin.tx_solr.search.variants.variantField
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSearchVariantsField($defaultIfEmpty = 'variantId')
+    {
+        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.variants.variantField', $defaultIfEmpty);
+    }
+
+    /**
+     * Indicates if expanding of collapsed items it activated.
+     *
+     * plugin.tx_solr.search.variants.expand
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getSearchVariantsExpand($defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.variants.expand', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * Retrieves the number of elements that should be expanded.
+     *
+     * plugin.tx_solr.search.variants.limit
+     *
+     * @param integer $defaultIfEmpty
+     * @return integer
+     */
+    public function getSearchVariantsLimit($defaultIfEmpty = 10)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.variants.limit', $defaultIfEmpty);
+        return (int) $result;
+    }
+
+    /**
      * Indicates if frequent searches should be show or not.
      *
      * plugin.tx_solr.search.frequentSearches

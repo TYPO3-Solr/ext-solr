@@ -42,6 +42,14 @@
 	<field name="id" type="string" indexed="true" stored="true" required="true" />
 
 	<!--
+		An additional ID used for record collapsing
+		typically will be $type/$record['uid']
+		When indexing files the id field is not generated after that schema
+		so we need an additional field for collapsing results
+	-->
+	<field name="variantId" type="string" indexed="true" stored="true" required="false" />
+
+	<!--
 		Using these fields we can "connect" the indexed documents to
 		specific sites.
 	-->

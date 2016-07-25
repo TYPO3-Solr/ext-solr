@@ -21,6 +21,7 @@ env:
     - TYPO3_VERSION="~7.6.9"
     - TYPO3_VERSION="~8.0.0"
     - TYPO3_VERSION="~8.1.2"
+    - TYPO3_VERSION="7.x-dev"
     - TYPO3_VERSION="dev-master"
 
 matrix:

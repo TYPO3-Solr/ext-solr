@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
@@ -227,6 +228,35 @@ class SearchResultSetTest extends UnitTest
 
         $this->assertSame($resultSet->getResponse(), $fakeResponse, 'Did not get the expected fakeResponse');
         $this->assertSame(count($resultSet->getUsedQuery()->getFilters()), 1, 'There should be one registered filter in the query');
+    }
+
+    /**
+     * @test
+     */
+    public function testExpandedDocumentsGetAddedWhenVariantsAreConfigured()
+    {
+            // we fake that collapsing is enabled
+        $this->configurationMock->expects($this->atLeastOnce())->method('getSearchVariants')->will($this->returnValue(true));
+
+            // in this case we collapse on the type field
+        $this->configurationMock->expects($this->atLeastOnce())->method('getSearchVariantsField')->will($this->returnValue('type'));
+
+        $this->fakeRegisteredSearchComponents(array());
+        $fakedSolrResponse = $this->getFixtureContent("fakeCollapsedResponse.json");
+        $fakeHttpResponse = $this->getDumbMock('\Apache_Solr_HttpTransport_Response');
+        $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
+
+        $fakeResponse =new \Apache_Solr_Response($fakeHttpResponse);
+        $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('variantsSearch', 0, $fakeResponse);
+
+        $fakeRequest = new SearchRequest(array('q' => 'variantsSearch'));
+
+        $resultSet = $this->searchResultSetService->search($fakeRequest);
+        $this->assertSame(1, count($resultSet->getResponse()->response->docs), 'Unexpected amount of document');
+
+            /** @var  $fistResult SearchResult */
+        $fistResult = $resultSet->getResponse()->response->docs[0];
+        $this->assertSame(5, count($fistResult->getVariants()), 'Unexpected amount of expanded result');
     }
 
     /**

@@ -102,7 +102,15 @@
 				<!-- ###IF:###RESULT_DOCUMENT.TYPE###|==|tx_solr_file### begin -->
 				<p>
 					###LLL:file_mimetype###: ###RESULT_DOCUMENT.fileMimeType###<br />
-					###LLL:file_referenced###: ###LINK:###RESULT_DOCUMENT.fileReferenceTitle###|###RESULT_DOCUMENT.fileReferenceUrl######
+					###LLL:file_referenced###:
+					<ul class="references">
+						<!-- ###IF:###RESULT_DOCUMENT.fileReferenceUrl###|!=|### begin -->
+						<li><a href="###RESULT_DOCUMENT.fileReferenceUrl###">###RESULT_DOCUMENT.fileReferenceTitle###</a></li>
+						<!-- ###IF:###RESULT_DOCUMENT.fileReferenceUrl###|!=|### end -->
+						<!-- ###SPLIT:###RESULT_DOCUMENT.VARIANTS###|item### begin -->
+							<li><a href="###item.fileReferenceUrl###">###item.fileReferenceTitle###</a></li>
+						<!-- ###SPLIT:###RESULT_DOCUMENT.VARIANTS###|item### end -->
+					</ul>
 				</p>
 				<!-- ###IF:###RESULT_DOCUMENT.TYPE###|==|tx_solr_file### end -->
 

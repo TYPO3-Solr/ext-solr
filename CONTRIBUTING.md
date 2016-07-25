@@ -48,6 +48,26 @@ The following version combinations are recommended:
         * EXT:solrgrouping: master
         * EXT:solrfal: master
 
+* EXT:solr 6.0.x
+    * TYPO3: 7.6.x (LTS)
+    * Apache Solr: 4.10.4 (Tomcat 8)
+    * Solr plugins:
+        * solr-typo3-plugin-1.3.0.jar (https://github.com/TYPO3-Solr/solr-typo3-plugin/releases/download/release-1_3_0/solr-typo3-plugin-1.3.0.jar)
+    * Add-ons:
+        * EXT:tika: 2.1.0 (TER)
+        * EXT:solrgrouping: 1.2.0 (TER)
+        * EXT:solrfal: 3.1.x (Partners only)
+
+* EXT:solr 5.0.x
+    * TYPO3: 7.6.x (LTS)
+    * Apache Solr: 4.10.4 (Tomcat 8)
+    * Solr plugins:
+        * solr-typo3-plugin-1.3.0.jar (https://github.com/TYPO3-Solr/solr-typo3-plugin/releases/download/release-1_3_0/solr-typo3-plugin-1.3.0.jar)
+    * Add-ons:
+        * EXT:tika: 2.1.0 (TER)
+        * EXT:solrgrouping: 1.2.0 (TER)
+        * EXT:solrfal: 3.1.x (Partners only)
+
 * EXT:solr 4.0.x
     * TYPO3: 7.6.x (LTS)
     * Apache Solr: 4.10.4 (Tomcat 8)

@@ -548,4 +548,35 @@ class QueryTest extends UnitTest
         $output = $query->escape($input);
         $this->assertSame($expectedOutput, $output, 'Query was not escaped as expected');
     }
+
+    /**
+     * @test
+     */
+    public function canUseConfiguredVariantsFieldWhenVariantsAreActive()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
+            'variantField' => 'myField'
+        ];
+
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance(Query::class, 'test', $fakeConfiguration);
+
+        $configuredField = $query->getVariantField();
+        $this->assertTrue($query->getIsCollapsing(), 'Collapsing was enabled but not indicated to be enabled');
+        $this->assertSame('myField', $configuredField, 'Did not use the configured collapseField');
+    }
+
+    /**
+     * @test
+     */
+    public function variantsAreDisabledWhenNothingWasConfigured()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = GeneralUtility::makeInstance(Query::class, 'test', $fakeConfiguration);
+        $this->assertFalse($query->getIsCollapsing(), 'Collapsing was not disabled by default');
+    }
 }
