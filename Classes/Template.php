@@ -398,6 +398,7 @@ class Template
             if (array_key_exists(strtolower($helperKey), $this->helpers)) {
                 $helper = $this->helpers[strtolower($helperKey)];
 
+
                 if ($helper instanceof SubpartViewHelper) {
                     $content = $this->renderSubpartViewHelper($helper,
                         $helperKey, $content);
@@ -482,6 +483,7 @@ class Template
             );
 
             $viewHelperArguments = explode('|', $viewHelperArgumentList);
+
 
             $subpartTemplate = clone $this;
             $subpartTemplate->setWorkingTemplateContent($subpart);
@@ -1058,28 +1060,37 @@ class Template
      * @param boolean $removeDuplicates Optionally determines whether duplicate view helpers are removed. Defaults to TRUE.
      * @return array Array of markers
      */
-    protected function getViewHelperArgumentLists(
-        $helperMarker,
-        $subpart,
-        $removeDuplicates = true
-    ) {
-        // already tried (and failed) variants:
-        // '!###' . $helperMarker . ':([A-Z0-9_-|.]*)\###!is'
-        // '!###' . $helperMarker . ':(.*?)\###!is',
-        // '!###' . $helperMarker . ':((.*?)+?(\###(.*?)\###(|.*?)?)?)?\###!is'
-        // '!###' . $helperMarker . ':((?:###(?:.+?)###)(?:\|.+?)*|(?:.+?)+)###!is'
-        preg_match_all(
-            '/###' . $helperMarker . ':((?:###.+?###(?:\|.+?)*)|(?:.+?)?)###/si',
-            $subpart,
-            $match,
-            PREG_PATTERN_ORDER
-        );
-        $markers = $match[1];
+    protected function getViewHelperArgumentLists($helperMarker, $subpart, $removeDuplicates = true)
+    {
+        $markers = self::extractViewHelperArguments($helperMarker, $subpart);
 
         if ($removeDuplicates) {
             $markers = array_unique($markers);
         }
 
+        return $markers;
+    }
+
+    /**
+     * This helper function is used to extract all ViewHelper arguments by a name of the ViewHelper.
+     *
+     * Arguments can be: strings or even other markers.
+     *
+     * @param string $helperMarker
+     * @param string $subpart
+     * @return array
+     */
+    public static function extractViewHelperArguments($helperMarker, $subpart)
+    {
+        // already tried (and failed) variants:
+        // '!###' . $helperMarker . ':([A-Z0-9_-|.]*)\###!is'
+        // '!###' . $helperMarker . ':(.*?)\###!is',
+        // '!###' . $helperMarker . ':((.*?)+?(\###(.*?)\###(|.*?)?)?)?\###!is'
+        // '!###' . $helperMarker . ':((?:###(?:.+?)###)(?:\|.+?)*|(?:.+?)+)###!is'
+        // '/###' . $helperMarker . ':((?:###.+?###(?:\|.+?)*)|(?:.+?)?)###/si'
+
+        preg_match_all('/###' . $helperMarker . ':(((###.+?(?=###)###)|(.+?(?=###))|([\w]+|))(?:\|((###.+?(?=###)###)|(.+?(?=###))|([\w]+|)))*)###/si', $subpart, $match, PREG_PATTERN_ORDER);
+        $markers = $match[1];
         return $markers;
     }
 

@@ -228,6 +228,7 @@ class SearchResultSetService implements SingletonInterface
     protected function initializeRegisteredSearchComponents(Query $query)
     {
         $searchComponents = $this->getRegisteredSearchComponents();
+
         foreach ($searchComponents as $searchComponent) {
             $searchComponent->setSearchConfiguration($this->typoScriptConfiguration->getSearchConfiguration());
 
@@ -296,6 +297,7 @@ class SearchResultSetService implements SingletonInterface
         }
 
         $this->wrapResultDocumentInResultObject($response);
+        $this->addExpandedDocumentsFromVariants($query, $response);
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
@@ -303,6 +305,52 @@ class SearchResultSetService implements SingletonInterface
                 if ($responseProcessor instanceof ResponseProcessor) {
                     $responseProcessor->processResponse($query, $response);
                 }
+            }
+        }
+    }
+
+    /**
+     * This method is used to add documents to the expanded documents of the SearchResult
+     * when collapsing is configured.
+     *
+     * @param Query $query
+     * @param \Apache_Solr_Response $response
+     */
+    protected function addExpandedDocumentsFromVariants(Query $query, \Apache_Solr_Response &$response)
+    {
+        if (!is_array($response->response->docs)) {
+            return;
+        }
+
+        if (!$this->typoScriptConfiguration->getSearchVariants()) {
+            return;
+        }
+
+        $variantsField = $this->typoScriptConfiguration->getSearchVariantsField();
+
+        foreach ($response->response->docs as $key => $resultDocument) {
+            /** @var $resultDocument SearchResult */
+            $variantField = $resultDocument->getField($variantsField);
+            $variantId = isset($variantField['value']) ? $variantField['value'] : null;
+
+                // when there is no value in the collapsing field, we can return
+            if ($variantId === null) {
+                continue;
+            }
+
+            if (!isset($response->{'expanded'}) && !isset($response->{'expanded'}->{$variantId})) {
+                continue;
+            }
+
+            foreach ($response->{'expanded'}->{$variantId}->{'docs'} as $variantDocumentArray) {
+                $variantDocument = new \Apache_Solr_Document();
+                foreach (get_object_vars($variantDocumentArray) as $propertyName => $propertyValue) {
+                    $variantDocument->{$propertyName} = $propertyValue;
+                }
+                $variantSearchResult = $this->wrapApacheSolrDocumentInResultObject($variantDocument);
+                $variantSearchResult->setIsVariant(true);
+                $variantSearchResult->setVariantParent($resultDocument);
+                $resultDocument->addVariant($variantSearchResult);
             }
         }
     }
@@ -325,15 +373,28 @@ class SearchResultSetService implements SingletonInterface
             return;
         }
 
-        $searchResultClassName = $this->getResultClassName();
         foreach ($response->response->docs as $key => $originalDocument) {
-            $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
-            if (!$result instanceof SearchResult) {
-                throw new \InvalidArgumentException("Could not create result object with class: ".(string) $searchResultClassName);
-            }
-
+            $result = $this->wrapApacheSolrDocumentInResultObject($originalDocument);
             $response->response->docs[$key] = $result;
         }
+    }
+
+    /**
+     * This method is used to wrap the \Apache_Solr_Document instance in an instance of the configured SearchResult
+     * class.
+     *
+     * @param \Apache_Solr_Document $originalDocument
+     * @return SearchResult
+     */
+    protected function wrapApacheSolrDocumentInResultObject(\Apache_Solr_Document $originalDocument)
+    {
+        $searchResultClassName = $this->getResultClassName();
+        $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
+        if (!$result instanceof SearchResult) {
+            throw new \InvalidArgumentException("Could not create result object with class: " . (string) $searchResultClassName);
+        }
+
+        return $result;
     }
 
     /**

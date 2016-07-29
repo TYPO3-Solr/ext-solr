@@ -301,6 +301,10 @@ class Typo3PageIndexer
         // system fields
         $document->setField('uid', $this->page->id);
         $document->setField('pid', $pageRecord['pid']);
+
+        // variantId
+        $document->setField('variantId', 'pages/' . $this->page->id);
+
         $document->setField('typeNum', $this->page->type);
         $document->setField('created', $pageRecord['crdate']);
         $document->setField('changed', $pageRecord['SYS_LASTCHANGED']);

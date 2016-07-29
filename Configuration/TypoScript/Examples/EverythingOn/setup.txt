@@ -21,6 +21,7 @@ plugin.tx_solr {
 		frequentSearches = 1
 		sorting = 1
 		faceting = 1
+		variants = 1
 	}
 
 	statistics = 1

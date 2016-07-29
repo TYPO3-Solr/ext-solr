@@ -1238,3 +1238,53 @@ elevation.markElevatedResults
 :Default: 1
 
 If enabled, elevated results are marked with CSS class "results-elevated".
+
+variants
+--------
+
+By using variants you can shrink down multiple documents with the same value in one field into one document and make similar documents available in the variants property.
+By default the field variantId is used as solr collapsing criteria. This can be used e.g. as one approach of deduplication to group similar documents into on "root" SearchResult.
+
+To use the different variants of the documents you can access "document.variants" to access the expanded documents.
+
+This can be used for example for de-duplication to list variants of the same document below a certain document.
+
+Note: Internally this is implemented with solr field collapsing
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.variants
+:Since: 6.0
+:Default: 0
+
+Set plugin.tx_solr.search.variants = 1 to enable the variants in search results.
+
+
+variants.expand
+~~~~~~~~~~~~~~~
+
+Used to expand the document variants to the document.variants property.
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.variants.expand
+:Since: 6.0
+:Default: 1
+
+variants.variantField
+~~~~~~~~~~~~~~~~~~~~~
+
+Used to expand the document variants to the document.variants property.
+
+:Type: String
+:TS Path: plugin.tx_solr.search.variants.variantField
+:Since: 6.0
+:Default: variantId
+
+variants.limit
+~~~~~~~~~~~~~~
+
+Limit of expanded documents.
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.variants.limit
+:Since: 6.0
+:Default: 10

@@ -196,6 +196,10 @@
 	background: #fdee53;
 }
 
+#tx-solr-search ul.references li {
+	list-style-type: disc;
+}
+
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 /* relevance */
 

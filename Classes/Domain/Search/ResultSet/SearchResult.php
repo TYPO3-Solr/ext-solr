@@ -48,6 +48,26 @@ class SearchResult extends \Apache_Solr_Document
      */
     protected $throwExceptions = false;
 
+
+    /**
+     * @var SearchResult[]
+     */
+    protected $variants = [];
+
+    /**
+     * Indicates if an instance of this document is a variant (a sub document of another).
+     *
+     * @var bool
+     */
+    protected $isVariant = false;
+
+    /**
+     * References the parent document of the document is a variant.
+     *
+     * @var null
+     */
+    protected $variantParent = null;
+
     /**
      * @param \Apache_Solr_Document $document
      * @param bool $throwExceptions
@@ -76,5 +96,53 @@ class SearchResult extends \Apache_Solr_Document
                 throw $e;
             }
         }
+    }
+
+    /**
+     * @return SearchResult[]
+     */
+    public function getVariants()
+    {
+        return $this->variants;
+    }
+
+    /**
+     * @param SearchResult $expandedResult
+     */
+    public function addVariant(SearchResult $expandedResult)
+    {
+        $this->variants[] = $expandedResult;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsVariant()
+    {
+        return $this->isVariant;
+    }
+
+    /**
+     * @param boolean $isVariant
+     */
+    public function setIsVariant($isVariant)
+    {
+        $this->isVariant = $isVariant;
+    }
+
+    /**
+     * @return null
+     */
+    public function getVariantParent()
+    {
+        return $this->variantParent;
+    }
+
+    /**
+     * @param null $variantParent
+     */
+    public function setVariantParent($variantParent)
+    {
+        $this->variantParent = $variantParent;
     }
 }

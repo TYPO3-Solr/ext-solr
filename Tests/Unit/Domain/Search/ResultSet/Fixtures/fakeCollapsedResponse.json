@@ -1,0 +1,289 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 21,
+    "params": {
+      "hl": "true",
+      "echoParams": "all",
+      "fl": "*,score",
+      "hl.fragsize": "200",
+      "fq": [
+        "{!collapse field=type}",
+        "siteHash:\"b9fd924a7b2b75ebf12f15175ea451ada3de1121\"",
+        "{!typo3access}-1,0"
+      ],
+      "spellcheck.maxCollationTries": "0",
+      "hl.simple.pre": "<span class=\"results-highlight\">",
+      "hl.useFastVectorHighlighter": "true",
+      "expand.rows": "10",
+      "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline",
+      "hl.fl": "content",
+      "wt": "json",
+      "hl.tag.pre": "<span class=\"results-highlight\">",
+      "facet.field": "type",
+      "json.nl": "map",
+      "start": "0",
+      "hl.tag.post": "</span>",
+      "rows": "10",
+      "q": "typo3",
+      "expand": "true",
+      "enableElevation": "false",
+      "hl.simple.post": "</span>",
+      "spellcheck": "true",
+      "facet.mincount": "1",
+      "facet": "true",
+      "debugQuery": "true",
+      "facet.sort": "count",
+      "spellcheck.collate": "true",
+      "mm": "2<-35%",
+      "df": "content",
+      "ps": "15",
+      "spellcheck.dictionary": [
+        "default",
+        "wordbreak"
+      ],
+      "indent": "true",
+      "hl.requireFieldMatch": "true",
+      "f.content.hl.maxAlternateFieldLength": "200",
+      "spellcheck.extendedResults": "false",
+      "hl.snippets": "3",
+      "defType": "edismax",
+      "hl.mergeContiguous": "true",
+      "pf": "content^2.0",
+      "spellcheck.onlyMorePopular": "false",
+      "spellcheck.count": "1",
+      "f.content.hl.alternateField": "content"
+    }
+  },
+  "response": {
+    "numFound": 1,
+    "start": 0,
+    "maxScore": 1.0659045,
+    "docs": [
+      {
+        "id": "b9fd924a7b2b75ebf12f15175ea451ada3de1121/pages/18/0/0/0",
+        "site": "7.6.local.typo3.org",
+        "siteHash": "b9fd924a7b2b75ebf12f15175ea451ada3de1121",
+        "type": "pages",
+        "uid": 18,
+        "pid": 16,
+        "variantId": "pages/18",
+        "typeNum": 0,
+        "created": "2016-07-26T00:38:57Z",
+        "changed": "2016-07-26T00:38:57Z",
+        "rootline": [
+          "0-1",
+          "1-1/14",
+          "2-1/14/16",
+          "3-1/14/16/18"
+        ],
+        "access": "c:0",
+        "title": "T3UXW09 - The first TYPO3 User eXperience Week",
+        "subTitle": "",
+        "navTitle": "",
+        "author": "",
+        "description": "",
+        "abstract": "30 attendants for the T3UXW09 have arrived in rural Behringen (Germany) to work on TYPO3's usability for one whole week.",
+        "content": "Overview                                                                                       Languages and characters                                                                                       Text                                                                                       Headers                                                                                       Text and images                                                                                       Images with links                                                                                       Image groups                                                                                       Image effects                                                                                       Tables                                                                                       Frames                                                                                       Lists                                                                                       File downloads                                                                                       Site map                                                                                                                                                                                                                                                                                         T3UXW09 - The first TYPO3 User eXperience Week                                                     30 attendants for the T3UXW09 have arrived in rural Behringen (Germany) to work on TYPO3's usability for one whole week.              It is saturday the 14th of november. Almost everyone has arrived at the castle in Behringen at around 2-3 o'clock in the afternoon. The castle is barrierfree, which means it is all adopted for disabled people. Although we are not working on accessibility I can safely assume most of the attendants support that. The castle itself is situated in a really nice rural environment. The air is really fresh. A welcome change for city dwellers. The whole castle belongs to the team this week. The network team, that rapidly volunteered, set up the whole wireless environment in a few hours. Punkt.de provided the switches they also use for the TYPO3 conferences. Joey brought a monster PC where he virtualised five servers. One for every team. Supportive tools like SVN, IRC and alike where all set up on this machine with the help of various people. Jens Hoffmann welcomed the attendants a little later in the afternoon and split up the available rooms among the attendants. After that the composition of the different teams was announced.                                                                                                                                                                                             30 hand-picked specializists participating in the T3UXW09",
+        "teaser": "Overview                                                                                       Languages and characters                                                                                       Text                                                                                       Hea",
+        "url": "/content-examples/news/t3uxw09-the-first-typo3-user-experience-week/",
+        "_version_": 1541021149081632768,
+        "indexed": "2016-07-27T15:11:30Z",
+        "score": 1.0659045
+      }
+    ]
+  },
+  "facet_counts": {
+    "facet_queries": {},
+    "facet_fields": {
+      "type": {
+        "pages": 1
+      }
+    },
+    "facet_dates": {},
+    "facet_ranges": {},
+    "facet_intervals": {}
+  },
+  "highlighting": {
+    "b9fd924a7b2b75ebf12f15175ea451ada3de1121/pages/18/0/0/0": {
+      "content": [
+        "     T<span class=\"results-highlight\">3</span>UXW09 - The first <span class=\"results-highlight\">TYPO3</span> User eXperience Week                                                     30 attendants for the T<span class=\"results-highlight\">3</span>UXW09 have arrived in rural Behringen (Germany) to work on <span class=\"results-highlight\">TYPO3's</span> usability",
+        "is saturday the 14th of november. Almost everyone has arrived at the castle in Behringen at around 2-<span class=\"results-highlight\">3</span> o'clock in the afternoon. The castle is barrierfree, which means it is all adopted for disabled people",
+        "the whole wireless environment in a few hours. Punkt.de provided the switches they also use for the <span class=\"results-highlight\">TYPO3</span> conferences. Joey brought a monster PC where he virtualised five servers. One for every team. Supportive"
+      ]
+    }
+  },
+  "expanded": {
+    "pages": {
+      "numFound": 18,
+      "start": 0,
+      "maxScore": 0.68273723,
+      "docs": [
+        {
+          "id": "b9fd924a7b2b75ebf12f15175ea451ada3de1121/pages/13/0/0/0",
+          "site": "7.6.local.typo3.org",
+          "siteHash": "b9fd924a7b2b75ebf12f15175ea451ada3de1121",
+          "type": "pages",
+          "uid": 13,
+          "pid": 10,
+          "variantId": "pages/13",
+          "typeNum": 0,
+          "created": "2016-07-26T00:38:57Z",
+          "changed": "2016-07-26T00:38:57Z",
+          "rootline": [
+            "0-1",
+            "1-1/10",
+            "2-1/10/13"
+          ],
+          "access": "c:0",
+          "title": "TYPO3",
+          "subTitle": "",
+          "navTitle": "",
+          "author": "",
+          "description": "This website is a default website setup for TYPO3. You can use it to demonstrate the basic features of the TYPO3 Content Management System, but you are also welcome to use it as a basis for your own website projects. Please have a look at how it works and how it is structured. In building this package, we have tried to combine a lot of best practices. Feel free to use these structures and use elements of it for your own way of working.",
+          "abstract": "Homepage for the Introduction Package of TYPO3",
+          "content": "TYPO3                                                                                       History                                                                                       Community                                                                                                                                                                                                                                                                                         TYPO3 History                                                   TYPO3 was conceived by Danish developer Kasper Skårhøj in 1997. The idea was to solve what had emerged as a problem for the young internet—as websites grew, the need to separate the management of design and content became apparent.    By August 2000, the core components were distributed to a development community that extended the concept and functionality of TYPO3 into the robust, and richly featured CMS that it is today.    TYPO3 now runs more than 500,000 websites worldwide and powers sites for many esteemed institutions, including Cisco Systems, General Electric, Mercedes-Benz, and Harvard University.                                                                                                                                                                                                                                                                                                                                                                                                                                                           TYPO3 - The Enterprise CMS                                                                                                TYPO3 is a free, open source content management framework designed to simplify the creation of feature-rich websites that can be updated by nontechnical editors. It is written in PHP and is compatible with a number of popular databases, including MySQL.       Feature-rich and Extensible Core     TYPO3 stands out among other content management systems because of the impressive array of functionality that is incorporated into its core. This extensive core functionality allows users to quickly develop sophisticated sites with out-of-the-box TYPO3 installations. Moreover, TYPO3's well-documented extension-based architecture makes it possible for the system to grow to meet the unique needs of each individual or organization. During the course of the last ten years, tens of thousands of TYPO3 service providers and enthusiasts have created over 500,000 sites, including      global, multi-language enterprise solutions    corporate web portals    community and government web portals     enterprise web applications    full-featured eCommerce sites    online brochure and catalog sites    small business sites    nonprofit web sites    personal and corporate weblogs      Dedicated to Open Source     TYPO3 is maintained by a nonprofit core development team and an active worldwide community of users. TYPO3 operates under the   GPL license  .",
+          "teaser": "TYPO3                                                                                       History                                                                                       Community                                                                                                         ",
+          "url": "/about/typo3/",
+          "keywords": [
+            "typo3",
+            "introduction package",
+            "install",
+            "example setup"
+          ],
+          "_version_": 1541021221111463936,
+          "indexed": "2016-07-27T15:12:39Z",
+          "score": 0.68273723
+        },
+        {
+          "id": "b9fd924a7b2b75ebf12f15175ea451ada3de1121/pages/1/0/0/0",
+          "site": "7.6.local.typo3.org",
+          "siteHash": "b9fd924a7b2b75ebf12f15175ea451ada3de1121",
+          "type": "pages",
+          "uid": 1,
+          "pid": 0,
+          "variantId": "pages/1",
+          "typeNum": 0,
+          "created": "2016-07-26T00:38:57Z",
+          "changed": "2016-07-26T00:38:57Z",
+          "rootline": [
+            "0-1"
+          ],
+          "access": "c:0",
+          "title": "Congratulations",
+          "subTitle": "you have succesfully installed TYPO3",
+          "navTitle": "",
+          "author": "",
+          "description": "This website is a default website setup for TYPO3. You can use it to demonstrate the basic features of the TYPO3 Content Management System, but you are also welcome to use it as a basis for your own website projects. Please have a look at how it works and how it is structured. In building this package, we have tried to combine a lot of best practices. Feel free to use these structures and use elements of it for your own way of working.",
+          "abstract": "Homepage for the Introduction Package of TYPO3",
+          "content": "Start browsing                                                                                                Grab a cup of coffee and start browsing to learn why TYPO3 CMS is the most powerful open source content management system.       Features     Customizing                                                                                                                                                                                                                                                                           Example Pages                                                                                                To help get you started with TYPO3 CMS, we’ve included usage examples of the standard content elements that have made TYPO3 CMS so popular.       Examples                                                                                                                                                                                                                                                                           Test the CMS                                                                                                Explore TYPO3 CMS backend and the limitless possibilities of TYPO3 CMS by using one of the predefined users with different levels of access.       Log into TYPO3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Make it your own                                                                                                This distribution is developed to help you getting an easy entry into TYPO3 CMS. It can be used as an example to play around or to kickstart your own projects.       Included features of the Introduction Package          TYPO3 CMS custom theme for Twitter Bootstrap      Customize the theme via LESS editor backend module      All Content Elements mapped to fit Twitter Bootstrap      Example additional content elements for carousel and accordion      All settings editable via the TypoScript constant editor      Responsive images enabled",
+          "teaser": "Start browsing                                                                                                Grab a cup of coffee and start browsing to learn why TYPO3 CMS is the most powerful open source content management system.       Features     Customizing                                     ",
+          "url": "/",
+          "keywords": [
+            "typo3",
+            "introduction package",
+            "install",
+            "example setup"
+          ],
+          "sortSubTitle_stringS": "you have succesfully installed TYPO3",
+          "_version_": 1541020923363065856,
+          "indexed": "2016-07-27T15:07:55Z",
+          "score": 0.66356677
+        },
+        {
+          "id": "b9fd924a7b2b75ebf12f15175ea451ada3de1121/pages/9/0/0/0",
+          "site": "7.6.local.typo3.org",
+          "siteHash": "b9fd924a7b2b75ebf12f15175ea451ada3de1121",
+          "type": "pages",
+          "uid": 9,
+          "pid": 5,
+          "variantId": "pages/9",
+          "typeNum": 0,
+          "created": "2016-07-26T00:38:57Z",
+          "changed": "2016-07-26T00:38:57Z",
+          "rootline": [
+            "0-1",
+            "1-1/5",
+            "2-1/5/9"
+          ],
+          "access": "c:0",
+          "title": "Open Source",
+          "subTitle": "",
+          "navTitle": "",
+          "author": "",
+          "description": "",
+          "abstract": "",
+          "content": "Open Source                                                                                       Consultancies                                                                                       Documentation                                                                                       TYPO3 Association                                                                                                                                                                                                                                                                                         TYPO3: A True Open Source Community                                                   A widespread, international community of users and developers contributes to the ongoing evolution and success of TYPO3. Get acquainted with the latest enhancements, view tutorials, screen shots, and sample sites at the hub of the TYPO3 community—  typo3.org  . Follow some of the links below to connect with like-minded users and developers.                                                                                                Core Team & Active Contributors     Development and maintenance of TYPO3—and all of its built-in modules and features—is led by a handful of people, called the CMS team. A group of 40 volunteers and developers actively contribute to the TYPO3 core code base and develop the next versions of TYPO3.      Extension Developers     The   6,000+ extensions   of TYPO3 are created by savvy, enthusiastic users (like you!), and can be found in the vast   TYPO3 Extension Repository   (TER). Here you will find everything from simple site templates to advanced plug-ins as well as user-generated documentation and tutorials.      Finding Help       Active mailing lists   are the heart of the TYPO3 open source community. Here you can ask questions, and seek out users who are engaged in similar projects or interests. There are hundreds of subscribers to the user list and most questions generate a helpful, timely response. Subscribe today and start meeting other members of the TYPO3 community.      Help is also available through Internet Relay Chat on the   TYPO3 IRC Channel  . If you want to join, log in to your  favorite IRC client and direct it to irc.freenode.net, channel #typo3.      For more help in developing your project with TYPO3, consider also the services of one of many   approved consultancies   that offer professional help with TYPO3 projects.",
+          "teaser": "Open Source                                                                                       Consultancies                                                                                       Documentation                                                                                       TY",
+          "url": "/resources/open-source/",
+          "_version_": 1541021233310597120,
+          "indexed": "2016-07-27T15:12:51Z",
+          "score": 0.40316212
+        },
+        {
+          "id": "b9fd924a7b2b75ebf12f15175ea451ada3de1121/pages/7/0/0/0",
+          "site": "7.6.local.typo3.org",
+          "siteHash": "b9fd924a7b2b75ebf12f15175ea451ada3de1121",
+          "type": "pages",
+          "uid": 7,
+          "pid": 5,
+          "variantId": "pages/7",
+          "typeNum": 0,
+          "created": "2016-07-26T00:38:57Z",
+          "changed": "2016-07-26T00:38:57Z",
+          "rootline": [
+            "0-1",
+            "1-1/5",
+            "2-1/5/7"
+          ],
+          "access": "c:0",
+          "title": "Documentation",
+          "subTitle": "",
+          "navTitle": "",
+          "author": "",
+          "description": "",
+          "abstract": "",
+          "content": "Open Source                                                                                       Consultancies                                                                                       Documentation                                                                                       TYPO3 Association                                                                                                                                                                                                                                                                                         Extensive Documentation                                                   As a global, user-supported project, documentation for TYPO3 exists in many locations (and, thankfully, in many different languages). For the answer to most questions look first to the central   TYPO3 Document Library   where you will find several useful tutorials, and guides to installation, configuration, and getting started with TYPO3.      The Getting Started tutorial is based on the Introduction Package and is the number one resource to get you on your way with TYPO3.  The Getting Started tutorial's permanent URL is:   http://typo3.org/documentation/document-library/tutorials/doc_tut_quickstart/current/                                                                                                  TYPO3 Wiki     Find additional documentation in the   TYPO3 Wiki  , which provides how-to guides conveniently classified for different types of TYPO3 users.        Editors   can find documents on how to handle and manage their content.      Administrators   can find documents on how to manage security, users, and fine-tune performance.      Developers   can find how-to guides to get started in creating their own TYPO3 extensions.      TYPO3 API Documentation     The TYPO3 source code contains abundant internal documentation, which will allow developers to understand many functions and features just by browsing through the various classes and methods. Because TYPO3 uses JavaDoc style documentation, it is possible to automatically create a complete documentation of the TYPO3 core.    Additionally, the   TYPO3 Core APIs   manual from the Documentation Library describes important components of the API, and gives many examples how to use it.",
+          "teaser": "Open Source                                                                                       Consultancies                                                                                       Documentation                                                                                       TY",
+          "url": "/resources/documentation/",
+          "_version_": 1541021257555771392,
+          "indexed": "2016-07-27T15:13:14Z",
+          "score": 0.3911652
+        },
+        {
+          "id": "b9fd924a7b2b75ebf12f15175ea451ada3de1121/pages/8/0/0/0",
+          "site": "7.6.local.typo3.org",
+          "siteHash": "b9fd924a7b2b75ebf12f15175ea451ada3de1121",
+          "type": "pages",
+          "uid": 8,
+          "pid": 5,
+          "variantId": "pages/8",
+          "typeNum": 0,
+          "created": "2016-07-26T00:38:57Z",
+          "changed": "2016-07-26T00:38:57Z",
+          "rootline": [
+            "0-1",
+            "1-1/5",
+            "2-1/5/8"
+          ],
+          "access": "c:0",
+          "title": "Consultancies",
+          "subTitle": "",
+          "navTitle": "",
+          "author": "",
+          "description": "",
+          "abstract": "",
+          "content": "Open Source                                                                                       Consultancies                                                                                       Documentation                                                                                       TYPO3 Association                                                                                                                                                                                                                                                                                         Need Help? Tap into the TYPO3 Consultancy Network                                                   Many of TYPO3's most knowledgeable contributors are the web developers and consultants around the world who use it everyday. These   certified consultants   are among the most active members of the TYPO3 community and offer proven professional services—whether you simply need help with hosting or a complete development strategy for building a new website.",
+          "teaser": "Open Source                                                                                       Consultancies                                                                                       Documentation                                                                                       TY",
+          "url": "/resources/consultancies/",
+          "_version_": 1541021244094152704,
+          "indexed": "2016-07-27T15:13:01Z",
+          "score": 0.3662294
+        }
+      ]
+    }
+  },
+  "spellcheck": {
+    "suggestions": {}
+  }
+}
