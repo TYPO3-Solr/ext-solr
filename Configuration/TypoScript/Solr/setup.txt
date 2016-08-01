@@ -330,7 +330,7 @@ plugin.tx_solr {
 		variants {
 			expand = 1
 			variantField = variantId
-			maxExpandedResults = 10
+			limit = 10
 		}
 	}
 

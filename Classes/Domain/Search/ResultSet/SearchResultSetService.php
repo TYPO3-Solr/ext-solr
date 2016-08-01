@@ -297,7 +297,7 @@ class SearchResultSetService implements SingletonInterface
         }
 
         $this->wrapResultDocumentInResultObject($response);
-        $this->addExpandedDocumentsFromVariants($query, $response);
+        $this->addExpandedDocumentsFromVariants($response);
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
@@ -313,10 +313,9 @@ class SearchResultSetService implements SingletonInterface
      * This method is used to add documents to the expanded documents of the SearchResult
      * when collapsing is configured.
      *
-     * @param Query $query
      * @param \Apache_Solr_Response $response
      */
-    protected function addExpandedDocumentsFromVariants(Query $query, \Apache_Solr_Response &$response)
+    protected function addExpandedDocumentsFromVariants(\Apache_Solr_Response &$response)
     {
         if (!is_array($response->response->docs)) {
             return;
@@ -327,7 +326,6 @@ class SearchResultSetService implements SingletonInterface
         }
 
         $variantsField = $this->typoScriptConfiguration->getSearchVariantsField();
-
         foreach ($response->response->docs as $key => $resultDocument) {
             /** @var $resultDocument SearchResult */
             $variantField = $resultDocument->getField($variantsField);
@@ -338,11 +336,12 @@ class SearchResultSetService implements SingletonInterface
                 continue;
             }
 
-            if (!isset($response->{'expanded'}) && !isset($response->{'expanded'}->{$variantId})) {
+            $variantAccessKey = strtolower($variantId);
+            if (!isset($response->{'expanded'}) || !isset($response->{'expanded'}->{$variantAccessKey})) {
                 continue;
             }
 
-            foreach ($response->{'expanded'}->{$variantId}->{'docs'} as $variantDocumentArray) {
+            foreach ($response->{'expanded'}->{$variantAccessKey}->{'docs'} as $variantDocumentArray) {
                 $variantDocument = new \Apache_Solr_Document();
                 foreach (get_object_vars($variantDocumentArray) as $propertyName => $propertyValue) {
                     $variantDocument->{$propertyName} = $propertyValue;
@@ -350,6 +349,7 @@ class SearchResultSetService implements SingletonInterface
                 $variantSearchResult = $this->wrapApacheSolrDocumentInResultObject($variantDocument);
                 $variantSearchResult->setIsVariant(true);
                 $variantSearchResult->setVariantParent($resultDocument);
+
                 $resultDocument->addVariant($variantSearchResult);
             }
         }
@@ -384,6 +384,7 @@ class SearchResultSetService implements SingletonInterface
      * class.
      *
      * @param \Apache_Solr_Document $originalDocument
+     * @throws \InvalidArgumentException
      * @return SearchResult
      */
     protected function wrapApacheSolrDocumentInResultObject(\Apache_Solr_Document $originalDocument)
@@ -391,7 +392,7 @@ class SearchResultSetService implements SingletonInterface
         $searchResultClassName = $this->getResultClassName();
         $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
         if (!$result instanceof SearchResult) {
-            throw new \InvalidArgumentException("Could not create result object with class: " . (string) $searchResultClassName);
+            throw new \InvalidArgumentException("Could not create result object with class: " . (string) $searchResultClassName, 1470037679);
         }
 
         return $result;
@@ -532,7 +533,9 @@ class SearchResultSetService implements SingletonInterface
         $offSet = $currentPage * $resultsPerPage;
         // performing the actual search, sending the query to the Solr server
         $response = $this->search->search($query, $offSet, null);
+
         $this->processResponse($rawQuery, $query, $response);
+        $this->addSearchResultsToResultSet($response, $resultSet);
 
         $resultSet->setResponse($response);
         $resultSet->setUsedPage($currentPage);
@@ -639,5 +642,22 @@ class SearchResultSetService implements SingletonInterface
     protected function getRegisteredSearchComponents()
     {
         return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search\\SearchComponentManager')->getSearchComponents();
+    }
+
+    /**
+     * This method is used to reference the SearchResult object from the response in the SearchResultSet object.
+     *
+     * @param \Apache_Solr_Response $response
+     * @param SearchResultSet $resultSet
+     */
+    protected function addSearchResultsToResultSet($response, $resultSet)
+    {
+        if (!is_array($response->response->docs)) {
+            return;
+        }
+
+        foreach ($response->response->docs as $searchResult) {
+            $resultSet->addSearchResult($searchResult);
+        }
     }
 }

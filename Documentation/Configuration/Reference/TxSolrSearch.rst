@@ -1243,13 +1243,13 @@ variants
 --------
 
 By using variants you can shrink down multiple documents with the same value in one field into one document and make similar documents available in the variants property.
-By default the field variantId is used as solr collapsing criteria. This can be used e.g. as one approach of deduplication to group similar documents into on "root" SearchResult.
+By default the field variantId is used as Solr collapsing criteria. This can be used e.g. as one approach of deduplication to group similar documents into on "root" SearchResult.
 
 To use the different variants of the documents you can access "document.variants" to access the expanded documents.
 
 This can be used for example for de-duplication to list variants of the same document below a certain document.
 
-Note: Internally this is implemented with solr field collapsing
+Note: Internally this is implemented with Solr field collapsing
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.search.variants

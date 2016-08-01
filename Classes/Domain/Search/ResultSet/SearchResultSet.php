@@ -73,7 +73,12 @@ class SearchResultSet
     /**
      * @var array
      */
-    protected $usedAdditionalFilters = array();
+    protected $usedAdditionalFilters = [];
+
+    /**
+     * @var array
+     */
+    protected $searchResults = [];
 
     /**
      * @param \Apache_Solr_Response $response
@@ -199,5 +204,29 @@ class SearchResultSet
     public function getUsedResultsPerPage()
     {
         return $this->usedResultsPerPage;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSearchResults()
+    {
+        return $this->searchResults;
+    }
+
+    /**
+     * @param array $searchResults
+     */
+    public function setSearchResults($searchResults)
+    {
+        $this->searchResults = $searchResults;
+    }
+
+    /**
+     * @param SearchResult $searchResult
+     */
+    public function addSearchResult(SearchResult $searchResult)
+    {
+        $this->searchResults[] = $searchResult;
     }
 }
