@@ -124,7 +124,7 @@ class Site
 
         foreach ($sites as $site) {
             $selectedAttribute = '';
-            if ($site == $selectedSite) {
+            if ($site->getRootPageId() == $selectedSite->getRootPageId()) {
                 $selectedAttribute = ' selected="selected"';
             }
 
