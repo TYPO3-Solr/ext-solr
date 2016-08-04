@@ -37,7 +37,7 @@ if [ $? -ne "0" ]; then
 	exit 1
 fi
 
-composer require --dev typo3/cms="$TYPO3_VERSION"
+composer require --dev --prefer-source typo3/cms="$TYPO3_VERSION"
 
 # Restore composer.json
 git checkout composer.json
