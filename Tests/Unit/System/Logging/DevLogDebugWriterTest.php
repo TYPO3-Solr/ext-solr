@@ -40,9 +40,10 @@ class DevLogDebugWriterTest extends UnitTest
     /**
      * @test
      */
-    public function testDebugMessageIsWrittenForMessageFromSolr() {
+    public function testDebugMessageIsWrittenForMessageFromSolr()
+    {
         /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask','getIsDevLogDebugOutputEnabled','writeDebugMessage'])->getMock();
+        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsDevLogDebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
         $logWriter->expects($this->any())->method('getIsDevLogDebugOutputEnabled')->will($this->returnValue(true));
 
@@ -54,9 +55,10 @@ class DevLogDebugWriterTest extends UnitTest
     /**
      * @test
      */
-    public function testDebugMessageIsNotWrittenForOtherExtensions() {
+    public function testDebugMessageIsNotWrittenForOtherExtensions()
+    {
         /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask','getIsDevLogDebugOutputEnabled','writeDebugMessage'])->getMock();
+        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsDevLogDebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
         $logWriter->expects($this->any())->method('getIsDevLogDebugOutputEnabled')->will($this->returnValue(true));
 
@@ -68,9 +70,10 @@ class DevLogDebugWriterTest extends UnitTest
     /**
      * @test
      */
-    public function testDebugMessageIsNotWrittenWhenDevIpMaskIsNotMatching() {
+    public function testDebugMessageIsNotWrittenWhenDevIpMaskIsNotMatching()
+    {
         /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask','getIsDevLogDebugOutputEnabled','writeDebugMessage'])->getMock();
+        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsDevLogDebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(false));
         $logWriter->expects($this->any())->method('getIsDevLogDebugOutputEnabled')->will($this->returnValue(true));
 
@@ -82,9 +85,10 @@ class DevLogDebugWriterTest extends UnitTest
     /**
      * @test
      */
-    public function testDebugMessageIsNotWrittenWhenDebugOutputIsDisabled() {
+    public function testDebugMessageIsNotWrittenWhenDebugOutputIsDisabled()
+    {
         /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask','getIsDevLogDebugOutputEnabled','writeDebugMessage'])->getMock();
+        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsDevLogDebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
         $logWriter->expects($this->any())->method('getIsDevLogDebugOutputEnabled')->will($this->returnValue(false));
 
