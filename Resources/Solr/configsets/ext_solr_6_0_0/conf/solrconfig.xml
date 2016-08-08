@@ -1,19 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!--
-	The config name property is constructed as follows
-
-	tx_solr		- The extension key
-	x-y-z		- The extension version this config is meant to work with
-	YYYYMMDD	- The date the config file was changed the last time
-
-	When changing the config, the name property must be updated. There is a
-	status report - \ApacheSolrForTypo3\Solr\Report\SolrConfigStatus - checking
-	against this name property, that status check must be updated as well.
--->
 <config name="tx_solr-4-0-0--20160406">
 
-	<luceneMatchVersion>4.10.4</luceneMatchVersion>
-
+	<luceneMatchVersion>6.1.0</luceneMatchVersion>
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 
@@ -316,10 +303,6 @@
 		</arr>
 	</requestHandler>
 
-
-	<requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
-
-
 	<requestHandler name="/admin/ping" class="PingRequestHandler">
 		<lst name="invariants">
 			<str name="q">solrpingquery</str>
@@ -539,7 +522,7 @@
 	</transformer>
 
 	<!-- TYPO3 specific plugins, request handlers -->
-	<queryParser name="typo3access" class="org.typo3.solr.search.AccessFilterQParserPlugin"/>
+	<!-- <queryParser name="typo3access" class="org.typo3.solr.search.AccessFilterQParserPlugin"/> -->
 
 
 	<admin>
