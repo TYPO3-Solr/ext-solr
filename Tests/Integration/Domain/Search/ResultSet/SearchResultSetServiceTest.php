@@ -113,7 +113,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $this->assertSame(3, count($firstResult->getVariants()));
 
         // And every variant is indicated to be a variant.
-        foreach($firstResult->getVariants() as $variant) {
+        foreach ($firstResult->getVariants() as $variant) {
             $this->assertTrue($variant->getIsVariant(), 'Document should be a variant');
         }
     }

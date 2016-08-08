@@ -39,7 +39,8 @@ class RootlineElementTest extends UnitTest
     /**
      * @return array
      */
-    public function validRootLineRePresentations() {
+    public function validRootLineRePresentations()
+    {
         return [
             'empty' => [
                 'stringRepresentation' => "",
@@ -124,7 +125,8 @@ class RootlineElementTest extends UnitTest
      *
      * @test
      */
-    public function canParse($stringRepresentation, $expectedType, $expectedGroups, $expectedPageId, $expectedToString) {
+    public function canParse($stringRepresentation, $expectedType, $expectedGroups, $expectedPageId, $expectedToString)
+    {
         $rootLine = new RootlineElement($stringRepresentation);
 
         $this->assertSame($expectedType, $rootLine->getType(), 'Unexpected type after parsing the RootlineElement');

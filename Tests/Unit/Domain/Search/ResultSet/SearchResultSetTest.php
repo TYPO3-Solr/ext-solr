@@ -235,7 +235,7 @@ class SearchResultSetTest extends UnitTest
      */
     public function testExpandedDocumentsGetAddedWhenVariantsAreConfigured()
     {
-            // we fake that collapsing is enabled
+        // we fake that collapsing is enabled
         $this->configurationMock->expects($this->atLeastOnce())->method('getSearchVariants')->will($this->returnValue(true));
 
             // in this case we collapse on the type field

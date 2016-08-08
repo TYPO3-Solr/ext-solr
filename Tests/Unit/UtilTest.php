@@ -30,6 +30,5 @@ class UtilTest extends UnitTest
         $this->assertEquals('b17ca8164881e80e96a96529c16b19cc405c9bd0', $hash1);
         $this->assertEquals('b17ca8164881e80e96a96529c16b19cc405c9bd0', $hash2);
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = $oldKey;
-
     }
 }
