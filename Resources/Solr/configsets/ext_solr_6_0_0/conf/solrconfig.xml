@@ -30,7 +30,7 @@
 	<lib dir="${solr.install.dir}/contrib/velocity/lib" regex=".*\.jar" />
 
 	<!-- TYPO3 Plugins -->
-	<lib dir="../typo3lib/" />
+	<lib dir="typo3lib" regex=".*\.jar" />
 
 	<directoryFactory name="DirectoryFactory"
 		class="solr.NRTCachingDirectoryFactory"/>
