@@ -38,8 +38,8 @@ if (TYPO3_MODE === 'BE') {
         array('source' => $extIconPath . 'StopWords.png'));
     $iconRegistry->registerIcon($modulePrefix . '-synonyms', $bitmapProvider,
         array('source' => $extIconPath . 'Synonyms.png'));
-    $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $bitmapProvider,
-        array('source' => $extIconPath . 'InitSolrConnections.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $svgProvider,
+        array('source' => $extIconPath . 'InitSolrConnections.svg'));
 }
 
 if (TYPO3_MODE == 'BE') {
