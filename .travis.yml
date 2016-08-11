@@ -62,11 +62,18 @@ before_install:
 
 before_install:
   - sudo update-java-alternatives -s java-8-oracle
+  - gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+  - curl -sSL https://get.rvm.io | bash -s stable --ruby
+  - rvm install 2.1
+  - gem install serverspec
+  - gem install docker-api
+  - docker build -t test .
 
 install:
   - Build/Test/bootstrap.sh
 script:
   - Build/Test/cibuild.sh
+  - IMAGEID=$(docker images -q test) rspec Dockerfile_spec.rb
 after_script:
   - Build/Test/cleanup.sh
   - Build/Release/ter_tag_uploader.sh
