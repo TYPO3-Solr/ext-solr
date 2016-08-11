@@ -229,7 +229,7 @@ abstract class PluginBase extends AbstractPlugin
      *
      * @return void
      */
-    public function pi_loadLL()
+    public function pi_loadLL($languageFilePath = '')
     {
         if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
             $pathElements = pathinfo($this->scriptRelPath);

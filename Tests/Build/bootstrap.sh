@@ -16,9 +16,9 @@ fi
 
 
 if [[ $TYPO3_VERSION == ~6.2.* ]]; then
-	composer require --dev typo3/cms="$TYPO3_VERSION" typo3/cms-composer-installers="1.2.2 as 1.1.4"
+	composer require --prefer-source --dev typo3/cms="$TYPO3_VERSION" typo3/cms-composer-installers="1.2.2 as 1.1.4"
 else
-	composer require --dev typo3/cms="$TYPO3_VERSION"
+	composer require --prefer-source --dev typo3/cms="$TYPO3_VERSION"
 fi
 
 # Restore composer.json
