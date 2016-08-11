@@ -16,7 +16,7 @@
 		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
 		not normally be changed by applications.
 		1.0: multiValued attribute did not exist, all fields are multiValued by nature
-		1.1: multiValued attribute introduced, false by default 
+		1.1: multiValued attribute introduced, false by default
 		1.2: omitTermFreqAndPositions attribute introduced, true by default except for text fields.
 		1.3: removed optional field compress feature
 		1.4: default auto-phrase (QueryParser feature) to off
@@ -41,9 +41,7 @@
 	-->
 	<fieldType name="text" class="solr.TextField" positionIncrementGap="100">
 		<analyzer type="index">
-			<tokenizer class="solr.StandardTokenizerFactory"/>
-
-			<filter class="solr.ThaiWordFilterFactory"/>
+			<tokenizer class="solr.ThaiTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
@@ -55,9 +53,7 @@
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
-			<tokenizer class="solr.StandardTokenizerFactory"/>
-
-			<filter class="solr.ThaiWordFilterFactory"/>
+			<tokenizer class="solr.ThaiTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
@@ -75,9 +71,7 @@
 		but may be good for SKUs.	Can insert dashes in the wrong place and still match. -->
 	<fieldType name="textTight" class="solr.TextField" positionIncrementGap="100" >
 		<analyzer>
-			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
-
-			<filter class="solr.ThaiWordFilterFactory"/>
+			<tokenizer class="solr.ThaiTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
@@ -93,9 +87,7 @@
 	<!-- Setup simple analysis for spell checking -->
 	<fieldType name="textSpell" class="solr.TextField" positionIncrementGap="100" omitNorms="true">
 		<analyzer type="index">
-			<tokenizer class="solr.StandardTokenizerFactory"/>
-
-			<filter class="solr.ThaiWordFilterFactory"/>
+			<tokenizer class="solr.ThaiTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
@@ -105,9 +97,7 @@
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 		<analyzer type="query">
-			<tokenizer class="solr.StandardTokenizerFactory"/>
-
-			<filter class="solr.ThaiWordFilterFactory"/>
+			<tokenizer class="solr.ThaiTokenizerFactory"/>
 
 			<filter class="solr.LowerCaseFilterFactory"/>
 
