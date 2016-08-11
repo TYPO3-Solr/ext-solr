@@ -4,34 +4,33 @@
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 
-
 	<!-- Tika / Solr Cell -->
-	<lib dir="../dist/" regex="solr-cell-\d.*\.jar" />
-	<lib dir="../contrib/extraction/lib" />
+	<lib dir="${solr.install.dir}/dist/" regex="solr-cell-\d.*\.jar" />
+	<lib dir="${solr.install.dir}/contrib/extraction/lib" />
 
 	<!-- Clustering -->
-	<lib dir="../dist/" regex="solr-clustering-\d.*\.jar" />
-	<lib dir="../contrib/clustering/lib/" />
+	<lib dir="${solr.install.dir}/dist/" regex="solr-clustering-\d.*\.jar" />
+	<lib dir="${solr.install.dir}/contrib/clustering/lib/" />
 
 	<!-- Data Import Handler -->
-	<lib dir="../dist/" regex="solr-dataimporthandler-.*\.jar" />
-	<lib dir="../contrib/dataimporthandler-extras/lib/" />
+	<lib dir="${solr.install.dir}/dist/" regex="solr-dataimporthandler-.*\.jar" />
+	<lib dir="${solr.install.dir}/contrib/dataimporthandler-extras/lib/" />
 
 	<!-- Language Analysis Extras -->
-	<lib dir="../dist/" regex="solr-analysis-extras-.*\.jar" />
-	<lib dir="../contrib/analysis-extras/lib/" />
-	<lib dir="../contrib/analysis-extras/lucene-libs/" />
+	<lib dir="${solr.install.dir}/dist/" regex="solr-analysis-extras-.*\.jar" />
+	<lib dir="${solr.install.dir}/contrib/analysis-extras/lib/" />
+	<lib dir="${solr.install.dir}/contrib/analysis-extras/lucene-libs/" />
 
 	<!-- Language Identification -->
-	<lib dir="../dist/" regex="solr-langid-\d.*\.jar" />
-	<lib dir="../contrib/langid/lib/" regex=".*\.jar" />
+	<lib dir="${solr.install.dir}/dist/" regex="solr-langid-\d.*\.jar" />
+	<lib dir="${solr.install.dir}/contrib/langid/lib/" regex=".*\.jar" />
 
 	<!-- Velocity Template Engine -->
-	<lib dir="../dist/" regex="solr-velocity-\d.*\.jar" />
-	<lib dir="../contrib/velocity/lib" regex=".*\.jar" />
+	<lib dir="${solr.install.dir}/dist/" regex="solr-velocity-\d.*\.jar" />
+	<lib dir="${solr.install.dir}/contrib/velocity/lib" regex=".*\.jar" />
 
 	<!-- TYPO3 Plugins -->
-	<lib dir="../typo3lib/" />
+	<lib dir="typo3lib" regex=".*\.jar" />
 
 	<directoryFactory name="DirectoryFactory"
 		class="solr.NRTCachingDirectoryFactory"/>
