@@ -74,7 +74,8 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function canGetVariants()
     {
-        $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5, 6, 7, 8]);
+
+        $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
         sleep(1);
         $solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')
@@ -85,7 +86,7 @@ class SearchResultSetServiceTest extends IntegrationTest
            'search.' =>[
                'variants' => 1,
                'variants.' => [
-                   'variantField' => 'subTitle',
+                   'variantField' => 'pid',
                    'expand' => 1,
                    'limit' => 11
                ]
@@ -93,7 +94,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         ]);
 
         $this->assertTrue($typoScriptConfiguration->getSearchVariants(), 'Variants are not enabled');
-        $this->assertEquals('subTitle', $typoScriptConfiguration->getSearchVariantsField());
+        $this->assertEquals('pid', $typoScriptConfiguration->getSearchVariantsField());
         $this->assertEquals(11, $typoScriptConfiguration->getSearchVariantsLimit());
 
         $search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
@@ -107,10 +108,16 @@ class SearchResultSetServiceTest extends IntegrationTest
         $searchResultSet = $searchResultsSetService->search($searchRequest);
 
         $searchResults = $searchResultSet->getSearchResults();
-        $firstResult = $searchResults[0];
+        $this->assertSame(3, count($searchResults), 'There should be three results at all');
 
-        // We assume that the first result has three variants.
-        $this->assertSame(3, count($firstResult->getVariants()));
+        // We assume that the first result has one variants.
+        $firstResult = $searchResults[0];
+        $this->assertSame(1, count($firstResult->getVariants()));
+
+        $secondResult = $searchResults[1];
+        $this->assertSame(3, count($secondResult->getVariants()));
+        $this->assertSame('Men Socks', $secondResult->getTitle());
+
 
         // And every variant is indicated to be a variant.
         foreach ($firstResult->getVariants() as $variant) {
