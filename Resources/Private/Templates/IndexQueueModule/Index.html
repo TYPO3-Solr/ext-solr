@@ -2,128 +2,138 @@
 
 <solr:backend.style file="{f:uri.resource(path:'StyleSheets/Backend/IndexQueueModule.css')}" />
 
-<div class="row section-divider">
-	<f:be.infobox title="Index Queue">
-		<f:translate key="solr.backend.index_queue_module.description" />
-	</f:be.infobox>
+<div class="row">
+	<div class="col-md-12">
+		<f:be.infobox title="Index Queue">
+			<f:translate key="solr.backend.index_queue_module.description" />
+		</f:be.infobox>
+	</div>
 </div>
 
+<hr class="section-divider" />
 
 <f:if condition="{indexqueue_statistics_counts.total} > 0">
-	<div class="row section-divider section-with-header">
-		<h2>
-			<f:translate key="solr.backend.index_queue_module.header_status"/>
-		</h2>
+	<div class="row section-with-header">
+		<div class="col-md-12">
+			<h2>
+				<f:translate key="solr.backend.index_queue_module.header_status"/>
+			</h2>
 
-		<div class="row">
-			<div class="col-md-12">
-				<div class="progress">
-					<f:if condition="{indexqueue_statistics_counts.indexed} > 0">
-						<div class="progress-bar progress-bar-success"
-							 style="width: {indexqueue_statistics_percentages.indexed}%"
-							 title="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}: {indexqueue_statistics_counts.indexed}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.indexed}%)">
-							<f:translate
-									key="solr.backend.index_queue_module.status.indexed"/>
-						</div>
-					</f:if>
-
-					<f:if condition="{indexqueue_statistics_counts.pending} > 0">
-						<div class="progress-bar progress-bar-warning"
-							 style="width: {indexqueue_statistics_percentages.pending}%"
-							 title="{f:translate(key:'solr.backend.index_queue_module.status.pending')}: {indexqueue_statistics_counts.pending}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.pending}%)">
-							<f:translate
-									key="solr.backend.index_queue_module.status.pending"/>
-						</div>
-					</f:if>
-
-					<f:if condition="{indexqueue_statistics_counts.errors} > 0">
-						<div class="progress-bar progress-bar-danger"
-							 style="width: {indexqueue_statistics_percentages.errors}%"
-							 title="{f:translate(key:'solr.backend.index_queue_module.status.errors')}: {indexqueue_statistics_counts.errors}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.errors}%)">
-							<f:translate
-									key="solr.backend.index_queue_module.status.errors"/>
-						</div>
-					</f:if>
-
-				</div>
-				<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'doIndexingRun'}" method="POST">
-					<f:form.submit class="btn btn-sm btn-default"
-								   value="{f:translate(key:'solr.backend.index_queue_module.index_now')}"/>
-				</f:form>
-			</div>
-		</div>
-
-		<hr />
-		<f:if condition="{indexqueue_errors}">
 			<div class="row">
-				<div class="col-md-12 well">
-					<h2>
-						<f:translate key="solr.backend.index_queue_module.errors.headline"/>
-					</h2>
+				<div class="col-md-12">
+					<div class="progress">
+						<f:if condition="{indexqueue_statistics_counts.indexed} > 0">
+							<div class="progress-bar progress-bar-success"
+								 style="width: {indexqueue_statistics_percentages.indexed}%"
+								 title="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}: {indexqueue_statistics_counts.indexed}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.indexed}%)">
+								<f:translate
+										key="solr.backend.index_queue_module.status.indexed"/>
+							</div>
+						</f:if>
 
-					<table class="table">
-						<tr>
-							<th>
-								<f:translate key="solr.backend.index_queue_module.errors.id"/>
-							</th>
-							<th>
-								<f:translate key="solr.backend.index_queue_module.errors.item_type"/>
-							</th>
-							<th>
-								<f:translate key="solr.backend.index_queue_module.errors.item_uid"/>
-							</th>
-							<th></th>
-						</tr>
+						<f:if condition="{indexqueue_statistics_counts.pending} > 0">
+							<div class="progress-bar progress-bar-warning"
+								 style="width: {indexqueue_statistics_percentages.pending}%"
+								 title="{f:translate(key:'solr.backend.index_queue_module.status.pending')}: {indexqueue_statistics_counts.pending}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.pending}%)">
+								<f:translate
+										key="solr.backend.index_queue_module.status.pending"/>
+							</div>
+						</f:if>
 
-						<f:for each="{indexqueue_errors}" as="item">
-							<tr>
-								<td>{item.uid}</td>
-								<td>{item.item_type}</td>
-								<td>{item.item_uid}</td>
-								<td>
-									<f:link.action arguments="{module: 'IndexQueue', moduleAction: 'showError', indexQueueItemId: item.uid}" controller="Administration">
-										<f:translate key="solr.backend.index_queue_module.errors.show_button"/>
-									</f:link.action>
-								</td>
-							</tr>
-						</f:for>
-					</table>
+						<f:if condition="{indexqueue_statistics_counts.errors} > 0">
+							<div class="progress-bar progress-bar-danger"
+								 style="width: {indexqueue_statistics_percentages.errors}%"
+								 title="{f:translate(key:'solr.backend.index_queue_module.status.errors')}: {indexqueue_statistics_counts.errors}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.errors}%)">
+								<f:translate
+										key="solr.backend.index_queue_module.status.errors"/>
+							</div>
+						</f:if>
 
-					<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'resetLogErrors'}" method="POST">
+					</div>
+					<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'doIndexingRun'}" method="POST">
 						<f:form.submit class="btn btn-sm btn-default"
-									   value="{f:translate(key:'solr.backend.index_queue_module.errors.reset_button')}"/>
+									   value="{f:translate(key:'solr.backend.index_queue_module.index_now')}"/>
 					</f:form>
-
 				</div>
 			</div>
-		</f:if>
+
+			<hr />
+			<f:if condition="{indexqueue_errors}">
+				<div class="row">
+					<div class="col-md-12 well">
+						<h2>
+							<f:translate key="solr.backend.index_queue_module.errors.headline"/>
+						</h2>
+
+						<table class="table">
+							<tr>
+								<th>
+									<f:translate key="solr.backend.index_queue_module.errors.id"/>
+								</th>
+								<th>
+									<f:translate key="solr.backend.index_queue_module.errors.item_type"/>
+								</th>
+								<th>
+									<f:translate key="solr.backend.index_queue_module.errors.item_uid"/>
+								</th>
+								<th></th>
+							</tr>
+
+							<f:for each="{indexqueue_errors}" as="item">
+								<tr>
+									<td>{item.uid}</td>
+									<td>{item.item_type}</td>
+									<td>{item.item_uid}</td>
+									<td>
+										<f:link.action arguments="{module: 'IndexQueue', moduleAction: 'showError', indexQueueItemId: item.uid}" controller="Administration">
+											<f:translate key="solr.backend.index_queue_module.errors.show_button"/>
+										</f:link.action>
+									</td>
+								</tr>
+							</f:for>
+						</table>
+
+						<f:form controller="Administration" arguments="{module:'{module.name}', moduleAction:'resetLogErrors'}" method="POST">
+							<f:form.submit class="btn btn-sm btn-default"
+										   value="{f:translate(key:'solr.backend.index_queue_module.errors.reset_button')}"/>
+						</f:form>
+
+					</div>
+				</div>
+			</f:if>
+		</div>
 	</div>
 </f:if>
 
+<hr class="section-divider" />
 
 <div class="row section-with-header">
-	<h2>
-		<f:translate key="solr.backend.index_queue_module.header_init" />
-	</h2>
+	<div class="col-md-12">
+		<h2>
+			<f:translate key="solr.backend.index_queue_module.header_init" />
+		</h2>
 
-	<f:form name="editform" actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'initializeIndexQueue'} )}">
+		<f:form name="editform" actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'initializeIndexQueue'} )}">
 
-		<div class="t3js-formengine-palette-field index-queue-init-form">
-			<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
-		</div>
-		<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" class="btn btn-sm btn-default"/>
-		<solr:backend.button.HelpButton title="Index Queue Initialization">
-			<f:translate key="solr.backend.index_queue_module.help" />
-		</solr:backend.button.HelpButton>
+			<div class="t3js-formengine-palette-field index-queue-init-form">
+				<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
+			</div>
+			<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" class="btn btn-sm btn-default"/>
+			<solr:backend.button.HelpButton title="Index Queue Initialization">
+				<f:translate key="solr.backend.index_queue_module.help" />
+			</solr:backend.button.HelpButton>
 
-	</f:form>
+		</f:form>
+	</div>
 </div>
 
 
 <div class="row section-with-header danger-zone">
-	<h2>
-		<f:translate key="solr.backend.danger_zone"/>
-	</h2>
+	<div class="col-md-12">
+		<h2>
+			<f:translate key="solr.backend.danger_zone"/>
+		</h2>
+	</div>
 </div>
 
 <div class="row">

@@ -13,24 +13,25 @@
 </div>
 
 <h3 style="margin-top: -20px;">Stop Word List (one per line, lowercase)</h3>
-<div class="row section section-with-header">
+<div class="section section-with-header">
+	<div class="row">
+		<div class="col-md-12">
+			<f:if condition="{stopWordsCount} == 0">
+				<f:be.infobox state="-1">
+					The stop word list is empty.
+				</f:be.infobox>
+			</f:if>
 
-	<div class="col-md-12">
-		<f:if condition="{stopWordsCount} == 0">
-			<f:be.infobox state="-1">
-				The stop word list is empty.
-			</f:be.infobox>
-		</f:if>
+			<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'saveStopWords'} )}"
+					id="edit-stopwords">
+				<textarea name="tx_solr_tools_solradministration[stopWords]"
+					rows="20" cols="50" style="width: auto;"><f:for each="{stopWords}" as="stopWord">{stopWord}
+		</f:for></textarea>
 
-		<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'saveStopWords'} )}"
-				id="edit-stopwords">
-			<textarea name="tx_solr_tools_solradministration[stopWords]"
-				rows="20" cols="50" style="width: auto;"><f:for each="{stopWords}" as="stopWord">{stopWord}
-	</f:for></textarea>
-
-			<div class="submit">
-				<f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>
-			</div>
-		</f:form>
+				<div class="submit">
+					<f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>
+				</div>
+			</f:form>
+		</div>
 	</div>
 </div>

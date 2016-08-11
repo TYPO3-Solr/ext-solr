@@ -121,6 +121,10 @@ form span.example {
 	padding-bottom: 10px;
 }
 
+hr.section-divider {
+	margin-top: 0;
+}
+
 .action:last-child {
 	border-bottom: none;
 }
