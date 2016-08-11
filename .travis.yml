@@ -74,10 +74,10 @@ before_install:
   - docker build -t test .
 
 install:
+  - IMAGEID=$(docker images -q test) rspec Dockerfile_spec.rb
   - Build/Test/bootstrap.sh
 script:
   - Build/Test/cibuild.sh
-  - IMAGEID=$(docker images -q test) rspec Dockerfile_spec.rb
 after_script:
   - Build/Test/cleanup.sh
   - Build/Release/ter_tag_uploader.sh
