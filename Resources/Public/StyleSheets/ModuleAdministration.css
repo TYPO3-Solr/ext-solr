@@ -1,27 +1,35 @@
 @import "Backend/IndexingConfigurationSelectorField.css";
 
+/* ----- core overwrites ----- */
+
+#typo3-inner-docbody {
+	padding-left: 0;
+}
+
+
 /* ----- icons ----- */
 
 [class^="icon-"], [class*=" icon-"] {
-	background-image: none!important;
+	background-image: none !important;
 }
 
-/* ----- module menu ----- */
 
-#moduleMenu {
-	max-width: 200px;
-}
+/* ----- module layout ----- */
 
 #moduleMenu .nav-list > .active > a {
 	font-weight: bold;
 }
 
 
-/* ----- module menu ----- */
-
 h2.module-title {
 	margin-top: 0;
 }
+
+
+#moduleContent.col-md-9 {
+	padding: 0;
+}
+
 
 /* ----- site selector, core selector ----- */
 
@@ -57,6 +65,7 @@ h2.module-title {
 	width: 50px;
 }
 
+
 /* ----- UI elements ----- */
 
 hr.double {
@@ -89,6 +98,7 @@ hr.double {
 	border-bottom: 1px solid #dddddd;
 	padding-bottom: 20px;
 }
+
 
 /* ----- Forms ----- */
 
