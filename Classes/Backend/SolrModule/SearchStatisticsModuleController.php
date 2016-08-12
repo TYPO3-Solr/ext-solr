@@ -54,7 +54,7 @@ class SearchStatisticsModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
-        $stats = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Statistics\\SearchStatistics');
+        $stats = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Search\\Statistics\\Statistics');
 
         // @TODO: Do we want Typoscript constants to restrict the results?
         $this->view->assign('top_search_phrases', $stats->getTopKeyWordsWithHits($this->site->getRootPageId(), 5));

@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Statistics;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 /***************************************************************
  *  Copyright notice
@@ -32,7 +32,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Statistics;
  * @package TYPO3
  * @subpackage solr
  */
-class SearchStatistics
+class Statistics
 {
     /**
      * Fetches must popular search keys words from the table tx_solr_statistics
@@ -91,8 +91,7 @@ class SearchStatistics
      *
      * @return string
      */
-
-    private function getTopKeyWordsWithOrWithoutHits($rootPageId, $limit, $withoutHits)
+    protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $limit, $withoutHits)
     {
         // Check if we want without or with hits
         if ($withoutHits === true) {
