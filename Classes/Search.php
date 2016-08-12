@@ -529,7 +529,7 @@ class Search implements SingletonInterface
         if (!empty($suggestions)) {
             $spellcheckingSuggestions = $suggestions;
 
-            if(isset($this->response->spellcheck->collations)) {
+            if (isset($this->response->spellcheck->collations)) {
                 $collactions = (array) $this->response->spellcheck->collations;
                 $spellcheckingSuggestions['collation'] = $collactions['collation'];
             }
