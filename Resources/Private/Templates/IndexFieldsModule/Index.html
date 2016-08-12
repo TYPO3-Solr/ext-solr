@@ -1,51 +1,57 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
 
-<f:render partial="CoreSelector" />
+<f:if condition="{noError}">
+    <f:render partial="CoreSelector"/>
+    <f:if condition="{coreMetrics.numberOfDocuments}">
+        <f:then>
+            <div class="row core-metrics">
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        <p>{coreMetrics.numberOfDocuments}</p>
+                        <h3>Documents</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        <p>{coreMetrics.numberOfDeletedDocuments}</p>
 
-<f:if condition="{coreMetrics.numberOfDocuments}">
-	<f:then>
-		<div class="row core-metrics">
-			<div class="col-md-4">
-				<div class="well text-center">
-					<p>{coreMetrics.numberOfDocuments}</p>
-					<h3>Documents</h3>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="well text-center">
-					<p>{coreMetrics.numberOfDeletedDocuments}</p>
+                        <h3>Deleted Documents</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        <p>{coreMetrics.numberOfFields}</p>
+                        <h3>Fields</h3>
+                    </div>
+                </div>
+            </div>
 
-					<h3>Deleted Documents</h3>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="well text-center">
-					<p>{coreMetrics.numberOfFields}</p>
-					<h3>Fields</h3>
-				</div>
-			</div>
-		</div>
+            <table class="table table-striped">
+                <thead>
+                <tr class="t3-row-header">
+                    <th>Field Name</th>
+                    <th>Index Field Type</th>
+                    <th># Documents</th>
+                    <th>Distinct Terms</th>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{fields}" as="field">
+                    <tr>
+                        <td>{field.name}</td>
+                        <td>{field.type}</td>
+                        <td>{field.docs}</td>
+                        <td>{field.terms}</td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </f:then>
 
-		<table class="table table-striped">
-			<thead>
-				<tr class="t3-row-header">
-					<th>Field Name</th><th>Index Field Type</th><th># Documents</th><th>Distinct Terms</th>
-				</tr>
-			</thead>
-			<tbody>
-				<f:for each="{fields}" as="field">
-				<tr>
-					<td>{field.name}</td><td>{field.type}</td><td>{field.docs}</td><td>{field.terms}</td>
-				</tr>
-				</f:for>
-			</tbody>
-		</table>
-	</f:then>
-
-
-	<f:else>
-		<div class="well">
-		<p>Your index is empty.</p>
-		</div>
-  </f:else>
+        <f:else>
+            <div class="well">
+                <p>Your index is empty.</p>
+            </div>
+        </f:else>
+    </f:if>
 </f:if>

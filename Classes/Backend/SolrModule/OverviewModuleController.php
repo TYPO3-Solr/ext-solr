@@ -97,7 +97,7 @@ class OverviewModuleController extends AbstractModuleController
 
         if (!empty($missingHosts)) {
             $this->addFlashMessage(
-                'Hosts missing:<br />' . implode(PHP_EOL, $missingHosts),
+                'Hosts missing:' . PHP_EOL . implode(PHP_EOL, $missingHosts),
                 'Unable to contact your Apache Solr server.',
                 FlashMessage::ERROR
             );

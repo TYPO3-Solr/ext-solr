@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 
 /**
  * Index Fields Module
@@ -58,25 +59,38 @@ class IndexFieldsModuleController extends AbstractModuleController
     public function indexAction()
     {
         $solrConnection = $this->getSelectedCoreSolrConnection();
-        $lukeData = $solrConnection->getLukeMetaData();
 
-        $registry = GeneralUtility::makeInstance('TYPO3\CMS\Core\Registry');
-        $limit = $registry->get('tx_solr', 'luke.limit', 20000);
+        if ($solrConnection->ping()) {
+            $lukeData = $solrConnection->getLukeMetaData();
 
-        if (isset($lukeData->index->numDocs) && $lukeData->index->numDocs > $limit) {
-            $limitNote = '<em>Too many terms</em>';
-        } elseif (isset($lukeData->index->numDocs)) {
-            $limitNote = 'Nothing indexed';
-            // below limit, so we can get more data
-            // Note: we use 2 since 1 fails on Ubuntu Hardy.
-            $lukeData = $solrConnection->getLukeMetaData(2);
+            $registry = GeneralUtility::makeInstance('TYPO3\CMS\Core\Registry');
+            $limit = $registry->get('tx_solr', 'luke.limit', 20000);
+
+            if (isset($lukeData->index->numDocs) && $lukeData->index->numDocs > $limit) {
+                $limitNote = '<em>Too many terms</em>';
+            } elseif (isset($lukeData->index->numDocs)) {
+                $limitNote = 'Nothing indexed';
+                // below limit, so we can get more data
+                // Note: we use 2 since 1 fails on Ubuntu Hardy.
+                $lukeData = $solrConnection->getLukeMetaData(2);
+            }
+
+            $fields = $this->getFields($lukeData, $limitNote);
+            $coreMetrics = $this->getCoreMetrics($lukeData, $fields);
+
+            $this->view->assign('noError', false);
+            $this->view->assign('fields', $fields);
+            $this->view->assign('coreMetrics', $coreMetrics);
+        } else {
+            $this->view->assign('noError', null);
+            $url = $solrConnection->getScheme() . '://' . $solrConnection->getHost() . ':' . $solrConnection->getPort();
+
+            $this->addFlashMessage(
+                '',
+                'Unable to contact your Apache Solr server.',
+                FlashMessage::ERROR
+            );
         }
-
-        $fields = $this->getFields($lukeData, $limitNote);
-        $coreMetrics = $this->getCoreMetrics($lukeData, $fields);
-
-        $this->view->assign('fields', $fields);
-        $this->view->assign('coreMetrics', $coreMetrics);
     }
 
     /**
@@ -111,6 +125,7 @@ class IndexFieldsModuleController extends AbstractModuleController
      *
      * @param \Apache_Solr_Response $lukeData Luke index data
      * @param string $limitNote Note to display if there are too many documents in the index to show number of terms for a field
+     *
      * @return array An array of field metrics
      */
     protected function getFields(\Apache_Solr_Response $lukeData, $limitNote)
@@ -136,12 +151,11 @@ class IndexFieldsModuleController extends AbstractModuleController
      *
      * @param \Apache_Solr_Response $lukeData Luke index data
      * @param array $fields Fields metrics
+     *
      * @return array An array of core metrics
      */
-    protected function getCoreMetrics(
-        \Apache_Solr_Response $lukeData,
-        array $fields
-    ) {
+    protected function getCoreMetrics(\Apache_Solr_Response $lukeData, array $fields)
+    {
         $coreMetrics = array(
             'numberOfDocuments' => $lukeData->index->numDocs,
             'numberOfDeletedDocuments' => $lukeData->index->deletedDocs,
