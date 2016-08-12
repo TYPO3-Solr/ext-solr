@@ -270,6 +270,29 @@
 			<trans-unit id="tt_content.list_type_pi_search" xml:space="preserve">
 				<source>Search: Form only</source>
 			</trans-unit>
+
+			<trans-unit id="solr.backend.search_statistics_module.item_keyword" xml:space="preserve">
+				<source>Keyword</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.item_count" xml:space="preserve">
+				<source>Number of queries</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.hits" xml:space="preserve">
+				<source>Number of hits</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.no_records_found" xml:space="preserve">
+				<source>No records found</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases" xml:space="preserve">
+				<source>Top search Phrases</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases_without_hits" xml:space="preserve">
+				<source>Top search Phrases without hits</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
+				<source>Search Phrase Statistics</source>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

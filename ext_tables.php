@@ -40,6 +40,8 @@ if (TYPO3_MODE === 'BE') {
         array('source' => $extIconPath . 'Synonyms.png'));
     $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $bitmapProvider,
         array('source' => $extIconPath . 'InitSolrConnections.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-searchstatistics', $bitmapProvider,
+        array('source' => $extIconPath . 'SearchStatistics.png'));
 }
 
 if (TYPO3_MODE == 'BE') {
@@ -85,6 +87,12 @@ if (TYPO3_MODE == 'BE') {
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
+        'SearchStatistics',
+        array('index')
+    );
+
+    ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
+        'ApacheSolrForTypo3.' . $_EXTKEY,
         'StopWords',
         array('index,saveStopWords')
     );
@@ -94,7 +102,6 @@ if (TYPO3_MODE == 'BE') {
         'Synonyms',
         array('index,addSynonyms,deleteSynonyms')
     );
-
 
     // registering reports
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(

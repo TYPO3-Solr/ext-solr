@@ -1,0 +1,60 @@
+<f:if condition="{top_search_phrases}">
+    <div class="row section-divider section-with-header">
+        <h2>
+            <f:translate key="solr.backend.search_statistics_module.top_search_phrases"/>
+        </h2>
+        {top_search_phrases}
+    </div>
+</f:if>
+
+<f:if condition="{top_search_phrases_without_hits}">
+    <div class="row section-divider section-with-header">
+        <h2>
+            <f:translate key="solr.backend.search_statistics_module.top_search_phrases_without_hits"/>
+        </h2>
+        {top_search_phrases_without_hits}
+    </div>
+</f:if>
+
+<div class="row section-divider section-with-header">
+    <h2>
+        <f:translate key="solr.backend.search_statistics_module.search_phrases_header"/>
+    </h2>
+</div>
+<f:if condition="{search_phrases_statistics}">
+
+    <f:then>
+        <div class="row">
+            <div class="col-md-12 well">
+                <table class="table">
+                    <tr>
+                        <th>
+                            <f:translate key="solr.backend.search_statistics_module.item_keyword"/>
+                        </th>
+                        <th>
+                            <f:translate key="solr.backend.search_statistics_module.item_count"/>
+                        </th>
+                        <th>
+                            <f:translate key="solr.backend.search_statistics_module.hits"/>
+                        </th>
+                    </tr>
+
+                    <f:for each="{search_phrases_statistics}" as="item">
+                        <tr>
+                            <td>{item.keywords}</td>
+                            <td>{item.count}</td>
+                            <td>{item.hits}</td>
+                        </tr>
+                    </f:for>
+                </table>
+            </div>
+        </div>
+    </f:then>
+    <f:else>
+        <f:be.infobox state="2">
+            <f:translate key="solr.backend.search_statistics_module.no_records_found"/>
+        </f:be.infobox>
+    </f:else>
+</f:if>
+
+

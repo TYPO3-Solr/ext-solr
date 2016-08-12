@@ -52,6 +52,15 @@ Index Fields
 
 The **Index Fields** module allows you to see, how many documents you have in which solr core and which fields those documents have.
 
+Search Statistics
+------------
+
+.. image:: ../Images/Backend/solr-backend-searchstatistics.png
+
+
+The **Search Statistics** module allows you to see Top Search Phrases with and without results. In addition it possible to see a
+complete listing with hits etc. ranked by Top search keywords.
+
 Stop Words
 ----------
 
