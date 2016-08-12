@@ -38,6 +38,9 @@ if (TYPO3_MODE === 'BE') {
         array('source' => $extIconPath . 'StopWords.png'));
     $iconRegistry->registerIcon($modulePrefix . '-synonyms', $bitmapProvider,
         array('source' => $extIconPath . 'Synonyms.png'));
+    $iconRegistry->registerIcon($modulePrefix . '-searchstatistics', $bitmapProvider,
+        array('source' => $extIconPath . 'SearchStatistics.png'));
+
     $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $svgProvider,
         array('source' => $extIconPath . 'InitSolrConnections.svg'));
 }
@@ -85,6 +88,12 @@ if (TYPO3_MODE == 'BE') {
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
+        'SearchStatistics',
+        array('index')
+    );
+
+    ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
+        'ApacheSolrForTypo3.' . $_EXTKEY,
         'StopWords',
         array('index,saveStopWords')
     );
@@ -94,7 +103,6 @@ if (TYPO3_MODE == 'BE') {
         'Synonyms',
         array('index,addSynonyms,deleteSynonyms')
     );
-
 
     // registering reports
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
