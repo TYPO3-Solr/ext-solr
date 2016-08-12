@@ -11,3 +11,5 @@ USER root
 RUN chown -R solr:solr /opt/solr/server/solr/
 
 USER solr
+
+VOLUME ["/opt/solr/server/solr/data"]
