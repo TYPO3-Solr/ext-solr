@@ -78,12 +78,11 @@ class IndexFieldsModuleController extends AbstractModuleController
             $fields = $this->getFields($lukeData, $limitNote);
             $coreMetrics = $this->getCoreMetrics($lukeData, $fields);
 
-            $this->view->assign('noError', false);
+            $this->view->assign('noError', 'OK');
             $this->view->assign('fields', $fields);
             $this->view->assign('coreMetrics', $coreMetrics);
         } else {
             $this->view->assign('noError', null);
-            $url = $solrConnection->getScheme() . '://' . $solrConnection->getHost() . ':' . $solrConnection->getPort();
 
             $this->addFlashMessage(
                 '',
