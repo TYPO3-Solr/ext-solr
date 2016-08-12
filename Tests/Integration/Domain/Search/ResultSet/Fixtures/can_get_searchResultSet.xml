@@ -284,61 +284,68 @@
         <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Socks</title>
-        <subtitle>Men</subtitle>
+        <title>Woman Products</title>
     </pages>
     <pages>
         <uid>3</uid>
         <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Jeans</title>
-        <subtitle>Men</subtitle>
+        <title>Men Products</title>
     </pages>
     <pages>
         <uid>4</uid>
-        <pid>1</pid>
+        <pid>3</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Shoes</title>
-        <subtitle>Woman</subtitle>
+        <title>Men Socks</title>
     </pages>
     <pages>
         <uid>5</uid>
-        <pid>1</pid>
+        <pid>3</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>T-Shirts</title>
-        <subtitle>Woman</subtitle>
+        <title>Men Jeans</title>
     </pages>
     <pages>
         <uid>6</uid>
-        <pid>1</pid>
+        <pid>2</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>T-Shirts</title>
-        <subtitle>Men</subtitle>
+        <title>Woman Shoes</title>
     </pages>
     <pages>
         <uid>7</uid>
-        <pid>1</pid>
+        <pid>2</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Sweatshirts</title>
-        <subtitle>Men</subtitle>
+        <title>Woman T-Shirts</title>
     </pages>
     <pages>
         <uid>8</uid>
-        <pid>1</pid>
+        <pid>3</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Sweatshirts</title>
-        <subtitle>Woman</subtitle>
+        <title>Men T-Shirts</title>
+    </pages>
+    <pages>
+        <uid>9</uid>
+        <pid>3</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Men Sweatshirts</title>
+    </pages>
+    <pages>
+        <uid>10</uid>
+        <pid>2</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>1</doktype>
+        <title>Woman Sweatshirts</title>
     </pages>
 
     <tt_content>
         <uid>1</uid>
-        <pid>2</pid>
+        <pid>4</pid>
         <CType>text</CType>
         <bodytext>Our awesome new sock products prices starting at 10€</bodytext>
         <colPos>0</colPos>
@@ -346,7 +353,7 @@
 
     <tt_content>
         <uid>2</uid>
-        <pid>3</pid>
+        <pid>5</pid>
         <CType>text</CType>
         <bodytext>Our awesome men jeans products prices starting at 50€</bodytext>
         <colPos>0</colPos>
@@ -354,7 +361,7 @@
 
     <tt_content>
         <uid>3</uid>
-        <pid>3</pid>
+        <pid>5</pid>
         <CType>text</CType>
         <bodytext>Men jeans with best prices</bodytext>
         <colPos>0</colPos>

@@ -1274,6 +1274,8 @@ variants.variantField
 
 Used to expand the document variants to the document.variants property.
 
+**Note:**: The field must be a numeric field or a string field! Not a text field!
+
 :Type: String
 :TS Path: plugin.tx_solr.search.variants.variantField
 :Since: 6.0
