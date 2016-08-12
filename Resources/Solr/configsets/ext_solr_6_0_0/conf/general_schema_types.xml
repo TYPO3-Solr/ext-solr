@@ -15,7 +15,7 @@
 		limits compression (if enabled in the derived fields) to values which
 		exceed a certain size (in characters).
 	-->
-	<fieldType name="string"  class="solr.StrField"  sortMissingLast="true" omitNorms="true"/>
+	<fieldType name="string"  class="solr.StrField"  sortMissingLast="true" omitNorms="true" useDocValuesAsStored="false" />
 
 	<!-- boolean type: "true" or "false" -->
 	<fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
@@ -39,10 +39,10 @@
 	<!--
 		Default numeric field types. For faster range queries, consider the tint/tfloat/tlong/tdouble types.
 	-->
-	<fieldType name="integer" class="solr.TrieIntField"    precisionStep="0" positionIncrementGap="0" omitNorms="true" />
-	<fieldType name="float"   class="solr.TrieFloatField"  precisionStep="0" positionIncrementGap="0" omitNorms="true" />
-	<fieldType name="long"    class="solr.TrieLongField"   precisionStep="0" positionIncrementGap="0" omitNorms="true" />
-	<fieldType name="double"  class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0" omitNorms="true" />
+	<fieldType name="integer" class="solr.TrieIntField"    precisionStep="0" positionIncrementGap="0" omitNorms="true" useDocValuesAsStored="false" />
+	<fieldType name="float"   class="solr.TrieFloatField"  precisionStep="0" positionIncrementGap="0" omitNorms="true" useDocValuesAsStored="false" />
+	<fieldType name="long"    class="solr.TrieLongField"   precisionStep="0" positionIncrementGap="0" omitNorms="true" useDocValuesAsStored="false" />
+	<fieldType name="double"  class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0" omitNorms="true" useDocValuesAsStored="false" />
 
 	<!--
 		Numeric field types that index each value at various levels of precision
@@ -54,12 +54,12 @@
 		indexed per value, slightly larger index size, and faster range queries.
 		A precisionStep of 0 disables indexing at different precision levels.
 	-->
-	<fieldType name="tint"     class="solr.TrieIntField"    precisionStep="8" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" />
-	<fieldType name="tfloat"   class="solr.TrieFloatField"  precisionStep="8" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" />
-	<fieldType name="tlong"    class="solr.TrieLongField"   precisionStep="8" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" />
-	<fieldType name="tdouble"  class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" />
+	<fieldType name="tint"     class="solr.TrieIntField"    precisionStep="8" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" useDocValuesAsStored="false" />
+	<fieldType name="tfloat"   class="solr.TrieFloatField"  precisionStep="8" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" useDocValuesAsStored="false" />
+	<fieldType name="tlong"    class="solr.TrieLongField"   precisionStep="8" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" useDocValuesAsStored="false" />
+	<fieldType name="tdouble"  class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" useDocValuesAsStored="false" />
 
-	<fieldType name="tdouble4" class="solr.TrieDoubleField" precisionStep="4" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" />
+	<fieldType name="tdouble4" class="solr.TrieDoubleField" precisionStep="4" positionIncrementGap="0" omitNorms="true" indexed="true" stored="false" useDocValuesAsStored="false" />
 
 	<!--
 		The format for this date field is of the form 1995-12-31T23:59:59Z, and
@@ -84,7 +84,7 @@
 
 		Note: For faster range queries, consider the tdate type
 	-->
-	<fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0" sortMissingLast="true" omitNorms="true" />
+	<fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0" sortMissingLast="true" omitNorms="true" useDocValuesAsStored="false" />
 
 	<!-- A Trie based date field for faster date range queries and date faceting. -->
 	<fieldType name="tdate" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="0" omitNorms="true" />
