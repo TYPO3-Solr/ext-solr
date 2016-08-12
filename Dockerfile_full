@@ -4,8 +4,7 @@ ENV TERM linux
 
 RUN rm -fR /opt/solr/server/solr/*
 
-COPY Resources/Solr/configsets /opt/solr/server/solr/configsets
-COPY Resources/Solr/solr.xml /opt/solr/server/solr/solr.xml
+COPY Resources/Solr/ /opt/solr/server/solr
 
 USER root
 
