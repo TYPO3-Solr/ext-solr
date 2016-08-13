@@ -3,7 +3,7 @@
 clear
 
 SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
-EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
+EXTENSION_ROOTPATH="$SCRIPTPATH/../../../"
 
 SOLR_VERSION=6.1.0
 EXT_SOLR_VERSION=6.0
@@ -208,13 +208,13 @@ cecho "Remove default configsets" $green
 rm -fR ${SOLR_INSTALL_DIR}/server/solr/configsets
 
 cecho "Copy configsets" $green
-cp -r ${EXTENSION_ROOTPATH}/Resources/Solr/configsets ${SOLR_INSTALL_DIR}/server/solr
+cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/configsets ${SOLR_INSTALL_DIR}/server/solr
 
 cecho "Copy copy solr.xml" $green
-cp ${EXTENSION_ROOTPATH}/Resources/Solr/solr.xml ${SOLR_INSTALL_DIR}/server/solr/solr.xml
+cp ${EXTENSION_ROOTPATH}/Resources/Private/Solr/solr.xml ${SOLR_INSTALL_DIR}/server/solr/solr.xml
 
 cecho "Create default cores" $green
-cp -r ${EXTENSION_ROOTPATH}/Resources/Solr/cores ${SOLR_INSTALL_DIR}/server/solr
+cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/cores ${SOLR_INSTALL_DIR}/server/solr
 
 cecho "Setting environment" $green
 source $SOLR_INSTALL_DIR/bin/solr.in.sh

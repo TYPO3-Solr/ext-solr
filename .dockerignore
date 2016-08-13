@@ -21,8 +21,12 @@ ext_emconf.php
 ext_tables.php
 Ressources/Css
 Ressources/Images
-Ressources/Install
 Ressources/JavaScript
-Ressources/Private
+Ressources/Private/Install
+Ressources/Private/Language
+Ressources/Private/Layouts
+Ressources/Private/Partials
+Ressources/Private/Php
+Ressources/Private/Templates
 Ressources/Public
 Ressources/Templates
