@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 
+clear
+
 SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
-
-clear
 
 SOLR_VERSION=6.1.0
 EXT_SOLR_VERSION=6.0
 JAVA_VERSION=8
-
+SOLR_INSTALL_DIR="/opt/solr"
+SOLR_PORT=8983
 
 APACHE_MIRROR="http://mirror.dkd.de/apache/"
 APACHE_ARCHIVE="http://archive.apache.org/dist/"
@@ -91,15 +92,41 @@ cecho ()
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
+while getopts :p:d: FLAG; do
+  case $FLAG in
+    d)
+      SOLR_INSTALL_DIR=$OPTARG
+      ;;
+    \?) #unrecognized option - show help
+      exit 2
+      ;;
+  esac
+done
+
+cecho "####################################################################" $red
+cecho "# This script should be used for development only!                 #" $red
+cecho "#                                                                  #" $red
+cecho "# It contains no:                                                  #" $red
+cecho "# - Security Updates                                               #" $red
+cecho "# - Init Scripts                                                   #" $red
+cecho "# - Upgrade possibilities                                          #" $red
+cecho "#                                                                  #" $red
+cecho "####################################################################" $red
+
+cecho "Starting installation of Apache Solr with the following settings:" $green
+cecho "Solr Version: ${SOLR_VERSION}                                    " $green
+cecho "Installation Path: ${SOLR_INSTALL_DIR}                           " $green
+
+# ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
 cecho "Checking requirements." $green
 
 PASSALLCHECKS=1
 
-# Make sure only root can run this script
-if [[ $EUID -ne 0 ]]
+if [ ! -w "$(dirname $SOLR_INSTALL_DIR)" ]
 then
-	cecho "This script must be run as root." $red
-	exit 1
+	cecho "ERROR parent directory: ($(dirname $SOLR_INSTALL_DIR)) of install path ($SOLR_INSTALL_DIR) is not writeable." $red
+	PASSALLCHECKS=0
 fi
 
 wget --version > /dev/null 2>&1
@@ -121,11 +148,12 @@ fi
 JAVA_VERSION_INSTALLED=$(java -version 2>&1 | grep -Eom1 "[._0-9]{5,}")
 # extract the main Java version from 1.7.0_11 => 7
 JAVA_VERSION_INSTALLED=${JAVA_VERSION_INSTALLED:2:1}
-# check if java version is 7 or newer
+
+# check if java version is equal or higher then required
 if [ $JAVA_VERSION_INSTALLED -lt $JAVA_VERSION ]
 then
-  cecho "You have installed Java version $JAVA_VERSION_INSTALLED. Please install Java $JAVA_VERSION or newer." $red
-  PASSALLCHECKS=0
+	cecho "You have installed Java version $JAVA_VERSION_INSTALLED. Please install Java $JAVA_VERSION or newer." $red
+	PASSALLCHECKS=0
 fi
 
 ping -c 1 mirror.dkd.de > /dev/null 2>&1
@@ -141,11 +169,11 @@ then
 	fi
 fi
 
-unzip -v > /dev/null 2>&1
+tar --version > /dev/null 2>&1
 CHECK=$?
 if [ $CHECK -ne "0" ]
 then
-	cecho "ERROR: couldn't find unzip." $red
+	cecho "ERROR: couldn't find tar." $red
 	PASSALLCHECKS=0
 fi
 
@@ -160,27 +188,42 @@ fi
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-cd /tmp/
+mkdir $SOLR_INSTALL_DIR
+cd $SOLR_INSTALL_DIR
 
 cecho "Downloading Apache Solr $SOLR_VERSION" $green
 
-if [ ! -f solr-$SOLR_VERSION.zip ]; then
-    apachedownload lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.zip
+if [ ! -f solr-$SOLR_VERSION.tgz ]; then
+    apachedownload lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz
 fi
 
-mkdir -p /tmp/solr/
-cd /tmp/solr/
+cecho "Extracting downloaded solr $SOLR_VERSION" $green
+tar -C $SOLR_INSTALL_DIR --extract --file "$SOLR_INSTALL_DIR/solr-$SOLR_VERSION.tgz" --strip-components=1
 
-cp /tmp/solr-$SOLR_VERSION.zip .
-unzip -q solr-$SOLR_VERSION.zip
+cecho "Adjusting solr configuration" $green
+sed -i -e "s/#SOLR_PORT=8983/SOLR_PORT=$SOLR_PORT/" "$SOLR_INSTALL_DIR/bin/solr.in.sh"
+sed -i -e '/-Dsolr.clustering.enabled=true/ a SOLR_OPTS="$SOLR_OPTS -Dsun.net.inetaddr.ttl=60 -Dsun.net.inetaddr.negative.ttl=60"' "$SOLR_INSTALL_DIR/bin/solr.in.sh"
 
-./solr-$SOLR_VERSION/bin/install_solr_service.sh solr-$SOLR_VERSION.zip -p 8080
+cecho "Remove default configsets" $green
+rm -fR ${SOLR_INSTALL_DIR}/server/solr/configsets
 
-# copy the schema & config to the installed solr server
-rm -fR /opt/solr/server/solr/*
-mkdir -p /opt/solr/server/solr/
-cp -r ${EXTENSION_ROOTPATH}/Resources/Solr/* /opt/solr/server/solr/
+cecho "Copy configsets" $green
+cp -r ${EXTENSION_ROOTPATH}/Resources/Solr/configsets ${SOLR_INSTALL_DIR}/server/solr
 
-# todo set the memory limit before from outside
-/opt/solr/bin/solr start -p 8080 -m 256m
+cecho "Copy copy solr.xml" $green
+cp ${EXTENSION_ROOTPATH}/Resources/Solr/solr.xml ${SOLR_INSTALL_DIR}/server/solr/solr.xml
 
+cecho "Create default cores" $green
+cp -r ${EXTENSION_ROOTPATH}/Resources/Solr/cores ${SOLR_INSTALL_DIR}/server/solr
+
+cecho "Setting environment" $green
+source $SOLR_INSTALL_DIR/bin/solr.in.sh
+
+cecho "Changing owner" $green
+#chown -R $SOLR_USER:$SOLR_USER "$SOLR_INSTALL_DIR/solr"
+
+cecho "Starting solr" $green
+$SOLR_INSTALL_DIR/bin/solr start
+
+cecho "Cleanup download" $green
+rm $SOLR_INSTALL_DIR/solr-$SOLR_VERSION.tgz

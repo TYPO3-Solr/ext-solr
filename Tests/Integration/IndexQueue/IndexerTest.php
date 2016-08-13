@@ -93,7 +93,7 @@ class IndexerTest extends IntegrationTest
 
         // do we have the record in the index with the value from the mm relation?
         sleep(3);
-        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
 
         $this->assertContains('"category_stringM":["the tag"]', $solrContent, 'Did not find MM related tag');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -121,7 +121,7 @@ class IndexerTest extends IntegrationTest
 
         // do we have the record in the index with the value from the mm relation?
         sleep(3);
-        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
 
         $this->assertContains('"category_stringM":["translated tag"]', $solrContent, 'Did not find MM related tag');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -149,7 +149,7 @@ class IndexerTest extends IntegrationTest
 
         // do we have the record in the index with the value from the mm relation?
         sleep(3);
-        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
 
         $this->assertContains('"category_stringM":["another tag"]', $solrContent, 'Did not find MM related tag');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -177,7 +177,7 @@ class IndexerTest extends IntegrationTest
 
         // do we have the record in the index with the value from the mm relation?
         sleep(3);
-        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
 
         $this->assertContains('"category_stringM":["the category"]', $solrContent, 'Did not find direct related category');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -206,7 +206,7 @@ class IndexerTest extends IntegrationTest
 
         // do we have the record in the index with the value from the mm relation?
         sleep(3);
-        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
 
         $this->assertContains('"category_stringM":["another category"]', $solrContent, 'Did not find direct related category');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');

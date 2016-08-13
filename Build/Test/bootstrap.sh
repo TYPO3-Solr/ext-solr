@@ -46,6 +46,6 @@ export TYPO3_PATH_WEB=$SCRIPTPATH/.Build/Web
 
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
-
 # Setup Solr Using our install script
-sudo ${EXTENSION_ROOTPATH}Resources/Install/install-solr.sh
+chmod 700 ${EXTENSION_ROOTPATH}Resources/Install/install-solr.sh
+${EXTENSION_ROOTPATH}Resources/Install/install-solr.sh -d "$HOME/solr"

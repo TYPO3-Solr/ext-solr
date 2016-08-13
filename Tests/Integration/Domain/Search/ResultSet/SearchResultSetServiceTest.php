@@ -52,7 +52,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
         sleep(1);
 
-        $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
         $this->assertContains('b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/1/0/0/0', $solrContent);
 
         $solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')
