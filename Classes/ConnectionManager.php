@@ -64,7 +64,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getConnection(
         $host = '',
-        $port = 8080,
+        $port = 8983,
         $path = '/solr/',
         $scheme = 'http'
     ) {

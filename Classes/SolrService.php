@@ -110,7 +110,7 @@ class SolrService extends \Apache_Solr_Service
      */
     public function __construct(
         $host = '',
-        $port = '8080',
+        $port = '8983',
         $path = '/solr/',
         $scheme = 'http'
     ) {
