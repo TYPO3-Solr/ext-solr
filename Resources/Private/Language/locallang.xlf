@@ -277,8 +277,8 @@
 			<trans-unit id="solr.backend.search_statistics_module.item_count" xml:space="preserve">
 				<source>Number of Queries</source>
 			</trans-unit>
-			<trans-unit id="solr.backend.search_statistics_module.hits" xml:space="preserve">
-				<source>Number of Hits</source>
+			<trans-unit id="solr.backend.search_statistics_module.results" xml:space="preserve">
+				<source>Number of Results</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.percentage" xml:space="preserve">
 				<source>Percentage</source>
