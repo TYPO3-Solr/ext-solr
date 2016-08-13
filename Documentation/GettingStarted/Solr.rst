@@ -7,7 +7,6 @@ Solr
 
 First you need to install Solr itself. There are several ways to do so:
 
-
 Using Hosted-solr.com
 ---------------------
 
@@ -16,47 +15,30 @@ If you want to start simple and just create a solr core with a click. You can us
 Shipped install script
 ----------------------
 
-Please make sure to use a current Java SDK (JDK). We recommend using Oracle JDK.
+With the extension we ship and install script that can be used for a **development** context. It creates a solr server with a core for all languages.
+This script is located in "Resources/Private/Install" an it installs a configured solr server that is useable with EXT:solr.
 
-We have included an install script to automatically set up Tomcat and Solr. You
-can find it in EXT:solr/Resources/Install/install-solr-tomcat.sh.
+By default this script is not executable and you need to add the execute permissions to your user to run it.
 
-That shell script will do a full setup, downloading a recent version of Apache
-Tomcat and Apache Solr in a version as required by EXT:solr. The script installs
-Tomcat and Solr into ``/opt/solr-tomcat/`` and when done starts Tomcat.
-
-Install Solr with an english core:
+The example below shows how to install a solr server to /home/developer
 
 |
 
 .. code-block:: bash
-
-    $ sudo ./install-solr-tomcat.sh
-
-Install Solr with additional languages - simply list them separated with space
+    chmod u+x ./Resources/Private/Install/install-solr.sh
+    ./Resources/Private/Install/install-solr.sh -p /home/developer
 
 |
 
-.. code-block:: bash
-
-    $ sudo ./install-solr-tomcat.sh english german french
-
-This will download schema configuration files for english, german, and french.
-You still need to add the cores in ``/opt/solr-tomcat/solr/solr.xml``. An
-english core is already configured, you can simply copy the configuration and
-adapt the paths for the ``schema`` and ``dataDir`` attributes.
-
-.. figure:: ../Images/GettingStarted/install-script.png
-
-    Install script output (shortened).
+After running the script you are able to open a solr server with over the loopback address. Which means, when you want to access it from outside, you need to create an ssh tunnel.
 
 Docker
----------------------------------
+------
 
 We provide 2 Dockerfiles for this extension. You can find them in the root directory of the extensions source.
 For minimal installation you can use `Dockerfile` and for a complete and ready to use docker image you can use `Dockerfile_full`.
 
-The minimal installation copy all settings, but doesn't create the solr cores. 
+The minimal installation copy all settings, but doesn't create the solr cores, the full image contains an example core for all languages.
 
 To build the images, simply type one of the following:
 
