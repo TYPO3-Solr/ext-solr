@@ -78,14 +78,13 @@ To check whether Solr is up and running head over to:
 
 ``http://localhost:8282/solr/#/core_en/query``.
 
-If you are using Mac OS X you need the IP of docker-machine, do so by running:
+If you are using Mac OS X and Docker Toolbox you need the IP of docker-machine, do so by running:
 
 |
 
 .. code-block:: bash
 
-    docker-machine url | sed 's/tcp/http/' | sed 's/:[[:digit:]].*/:8282/'
-        | sed 's:$:/solr/#/core_en/query:'
+    docker-machine ip
 
 And open the displayed URL, like ``http://192.168.99.100:8282/solr/#/core_en/query``.
 
