@@ -90,7 +90,7 @@ class SolrConfigStatus implements StatusProviderInterface
 					recommended schema is called <strong>'
                     . self::RECOMMENDED_SOLRCONFIG_VERSION . '</strong>. You can
 					find the recommended solrconfig.xml file in the extension\'s
-					resources folder: EXT:solr/Resources/Solr/.
+					resources folder: EXT:solr/Resources/Private/Solr/.
 					While you\'re at it, please check whether you\'re using the
 					current schema.xml file, too.</p>';
 
