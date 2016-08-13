@@ -271,14 +271,14 @@
 				<source>Search: Form only</source>
 			</trans-unit>
 
-			<trans-unit id="solr.backend.search_statistics_module.item_keyword" xml:space="preserve">
-				<source>Keyword</source>
+			<trans-unit id="solr.backend.search_statistics_module.item_phrase" xml:space="preserve">
+				<source>Phrase</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.item_count" xml:space="preserve">
-				<source>Number of queries</source>
+				<source>Number of Queries</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.hits" xml:space="preserve">
-				<source>Number of hits</source>
+				<source>Number of Hits</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.no_records_found" xml:space="preserve">
 				<source>No records found. Did you enabled 'plugin.tx_solr.statistics = 1' in the typoscript configuration of your site?</source>
