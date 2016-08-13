@@ -50,6 +50,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr class="t3-row-header">
+                    <th class="nowrap">&nbsp;</th>
                     <th>
                         <f:translate key="solr.backend.search_statistics_module.item_phrase"/>
                     </th>
@@ -62,8 +63,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                <f:for each="{search_phrases_statistics}" as="item">
+                <f:for each="{search_phrases_statistics}" as="item" iteration="i">
                     <tr>
+                        <td class="nowrap"><strong>{i.cycle}.</strong></td>
                         <td>{item.keywords}</td>
                         <td>{item.count}</td>
                         <td>{item.hits}</td>
