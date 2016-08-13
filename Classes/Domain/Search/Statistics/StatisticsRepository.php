@@ -57,6 +57,13 @@ class StatisticsRepository
             $limit
         );
 
+        $numRows = count($statisticsRows);
+        $statisticsRows = array_map(function($row) use ($numRows) {
+            $row['percent'] = $row['count'] * 100 / $numRows;
+
+            return $row;
+        }, $statisticsRows);
+
         return $statisticsRows;
     }
 

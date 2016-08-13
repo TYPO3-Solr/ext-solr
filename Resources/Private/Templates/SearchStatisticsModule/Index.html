@@ -60,6 +60,9 @@
                     <th>
                         <f:translate key="solr.backend.search_statistics_module.hits"/>
                     </th>
+                    <th>
+                        <f:translate key="solr.backend.search_statistics_module.percentage"/>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -69,6 +72,7 @@
                         <td>{item.keywords}</td>
                         <td>{item.count}</td>
                         <td>{item.hits}</td>
+                        <td><f:format.number decimals="1">{item.percent}</f:format.number>%</td>
                     </tr>
                 </f:for>
                 </tbody>

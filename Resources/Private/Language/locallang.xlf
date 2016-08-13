@@ -280,6 +280,9 @@
 			<trans-unit id="solr.backend.search_statistics_module.hits" xml:space="preserve">
 				<source>Number of Hits</source>
 			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.percentage" xml:space="preserve">
+				<source>Percentage</source>
+			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.no_records_found" xml:space="preserve">
 				<source>No records found. Did you enabled 'plugin.tx_solr.statistics = 1' in the typoscript configuration of your site?</source>
 			</trans-unit>
