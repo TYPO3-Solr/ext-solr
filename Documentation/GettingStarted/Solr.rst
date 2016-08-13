@@ -50,44 +50,37 @@ adapt the paths for the ``schema`` and ``dataDir`` attributes.
 
     Install script output (shortened).
 
-
-Docker (not officially supported)
+Docker
 ---------------------------------
 
-Install a docker image providing ready to use Solr for TYPO3.  To do so install the docker image `writl/solr-typo3 <https://hub.docker.com/r/writl/solr-typo3/>`_ e.g. by running the following in
-your shell:
+We provide 2 Dockerfiles for this extension. You can find them in the root directory of the extensions source.
+For minimal installation you can use `Dockerfile` and for a complete and ready to use docker image you can use `Dockerfile_full`.
+
+The minimal installation copy all settings, but doesn't create the solr cores. 
+
+To build the images, simply type one of the following:
 
 |
 
 .. code-block:: bash
 
-    docker pull writl/solr-typo3
-    docker run -it -p 8282:8080 -v
-        $(pwd):/opt/solr-tomcat/solr/typo3cores/data writl/solr-typo3
-
-Wait until Solr did start which is indicated by output like:
+    docker build -t solr .
+    docker build -t solr-full -f Dockerfile_full .
+	
+To run the container (only run one of the following):
 
 |
 
-.. code-block:: text
+.. code-block:: bash
 
-    26-May-2016 ... INFO [main] ...start Starting ProtocolHandler ["http-nio-0.0.0.0-8080"]
-    26-May-2016 ... INFO [main] ...start Server startup in 69500 ms
+    docker run -d -p 8983:8983 solr
+    docker run -d -p 8983:8983 solr-full
+
+If you want to keep the solr core data after a recreate of the container, you have to share `/opt/solr/server/solr/data` (please note: the directory on the host should have UID and GID 8983) to the host.
 
 To check whether Solr is up and running head over to:
 
-``http://localhost:8282/solr/#/core_en/query``.
-
-If you are using Mac OS X you need the IP of docker-machine, do so by running:
-
-|
-
-.. code-block:: bash
-
-    docker-machine url | sed 's/tcp/http/' | sed 's/:[[:digit:]].*/:8282/'
-        | sed 's:$:/solr/#/core_en/query:'
-
-And open the displayed URL, like ``http://192.168.99.100:8282/solr/#/core_en/query``.
+``http://<ip>:8983/solr/#/core_en/query``.
 
 You should see the web interface of Solr to run queries:
 
