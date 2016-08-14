@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Calculates the SearchQueryStatistics
@@ -32,7 +34,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
  * @package TYPO3
  * @subpackage solr
  */
-class Statistics
+class StatisticsRepository
 {
     /**
      * Fetches must popular search keys words from the table tx_solr_statistics
@@ -42,8 +44,10 @@ class Statistics
      *
      * @return mixed
      */
-    public function getSearchStatistics($rootPageId, $limit)
+    public function getSearchStatistics($rootPageId, $limit = 10)
     {
+        $rootPageId = (int) $rootPageId;
+        $limit = (int) $limit;
         $statisticsRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
             'tx_solr_statistics',
@@ -64,7 +68,7 @@ class Statistics
      *
      * @return string
      */
-    public function getTopKeyWordsWithHits($rootPageId, $limit)
+    public function getTopKeyWordsWithHits($rootPageId, $limit = 10)
     {
         return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $limit, false);
     }
@@ -77,7 +81,7 @@ class Statistics
      *
      * @return string
      */
-    public function getTopKeyWordsWithoutHits($rootPageId, $limit)
+    public function getTopKeyWordsWithoutHits($rootPageId, $limit = 10)
     {
         return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $limit, true);
     }
@@ -93,6 +97,10 @@ class Statistics
      */
     protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $limit, $withoutHits)
     {
+        $rootPageId = (int) $rootPageId;
+        $limit = (int) $limit;
+        $withoutHits = (bool) $withoutHits;
+
         // Check if we want without or with hits
         if ($withoutHits === true) {
             $comparisonOperator = '=';
@@ -101,11 +109,11 @@ class Statistics
         }
 
         // Query database
-        $statisticsRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+        $statisticsRows = $this->getDatabase()->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
             'tx_solr_statistics',
             'root_pid = ' . $rootPageId . ' and num_found ' . $comparisonOperator . ' 0',
-            'keywords',
+            'keywords, num_found',
             'count DESC, hits DESC, keywords ASC',
             $limit
         );
@@ -116,11 +124,34 @@ class Statistics
         }
 
         // Process result
-        $result = '';
-        foreach ($statisticsRows as $row) {
-            $result .= $row['keywords'] . ', ';
+        return $this->getConcatenatedKeywords($statisticsRows);
+    }
+
+    /**
+     * This method is used to group and sort the keyword by occurence and return a
+     * concatenated string.
+     *
+     * @param array $statisticsRows
+     * @return string
+     */
+    protected function getConcatenatedKeywords(array $statisticsRows)
+    {
+        $keywords = [];
+        foreach ($statisticsRows as $statisticsRow) {
+            $keyword =trim($statisticsRow['keywords']);
+            // when the keyword occures multiple times we increment the count
+            $keywords[$keyword] = isset($keywords[$keyword]) ? $keywords[$keyword] + 1 : 1;
         }
 
-        return trim($result, ", ");
+        arsort($keywords, SORT_NUMERIC);
+        return implode(', ', array_keys($keywords));
+    }
+
+    /**
+     * @return DatabaseConnection
+     */
+    protected function getDatabase()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }
