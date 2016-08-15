@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -54,12 +55,12 @@ class SearchStatisticsModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
-        $stats = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Search\\Statistics\\Statistics');
+        $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
         // @TODO: Do we want Typoscript constants to restrict the results?
-        $this->view->assign('top_search_phrases', $stats->getTopKeyWordsWithHits($this->site->getRootPageId(), 5));
+        $this->view->assign('top_search_phrases', $statisticsRepository->getTopKeyWordsWithHits($this->site->getRootPageId(), 5));
         $this->view->assign('top_search_phrases_without_hits',
-            $stats->getTopKeyWordsWithoutHits($this->site->getRootPageId(), 5));
-        $this->view->assign('search_phrases_statistics', $stats->getSearchStatistics($this->site->getRootPageId(), 100));
+            $statisticsRepository->getTopKeyWordsWithoutHits($this->site->getRootPageId(), 5));
+        $this->view->assign('search_phrases_statistics', $statisticsRepository->getSearchStatistics($this->site->getRootPageId(), 100));
     }
 }
