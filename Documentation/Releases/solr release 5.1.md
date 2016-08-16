@@ -62,7 +62,6 @@ Details: https://github.com/TYPO3-Solr/ext-solr/pull/566
 * Makes sure everything is aligned properly
 * Removes some whitespace, giving the module content more room
 
-
 Details: https://github.com/TYPO3-Solr/ext-solr/pull/575
 
 ### Bugfix: absRefPrefix auto in cli mode with webroot different from PATH_site
