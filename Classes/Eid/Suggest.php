@@ -77,7 +77,7 @@ $suggestQuery->setOmitHeader();
 
 $additionalFilters = GeneralUtility::_GET('filters');
 if (!empty($additionalFilters)) {
-    $additionalFilters = json_decode($additionalFilters);
+    $additionalFilters = json_decode(rawurldecode($additionalFilters));
     foreach ($additionalFilters as $additionalFilter) {
         $suggestQuery->addFilter($additionalFilter);
     }
