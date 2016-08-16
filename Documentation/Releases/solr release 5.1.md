@@ -6,7 +6,6 @@ We're happy to announce the release of Apache Solr for TYPO3 (EXT:solr) version 
 
 The focus of this release was to provide the new features from the codesprint and bugfixes from the issue tracker. Beside that, we've added a variants feature that could be used together with the upcomming solrfal release 3.2 as one approach to avoid duplicated files in the search frontend.
 
-
 ### Document Variants
 
 This feature adds a new optional field variantId that is filled with type/uid and can be used for collapsing by default.
