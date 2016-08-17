@@ -36,7 +36,7 @@ matrix:
 before_install:
   - composer self-update
   - composer --version
-  - composer global require fabpot/php-cs-fixer
+  - composer global require friendsofphp/php-cs-fixer:v1.11.7
   - composer global require namelesscoder/typo3-repository-client
 
 install:
