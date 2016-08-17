@@ -14,10 +14,11 @@ ls -l .Build/bin/
 echo "Run PHP Lint"
 find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
 
-.Build/bin/php-cs-fixer --version > /dev/null 2>&1
+# use from vendor dir
+php-cs-fixer --version > /dev/null 2>&1
 if [ $? -eq "0" ]; then
     echo "Check PSR-2 compliance"
-    .Build/bin/php-cs-fixer fix -v --level=psr2 --dry-run Classes
+    php-cs-fixer fix -v --level=psr2 --dry-run Classes
 
     if [ $? -ne "0" ]; then
         echo "Some files are not PSR-2 compliant"
