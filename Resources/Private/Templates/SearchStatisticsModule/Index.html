@@ -1,3 +1,24 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<!-- TODO add buttons to select time frame [last 24h] [last 30 days] [all] -->
+
+<f:be.pageRenderer
+    loadJQuery="true"
+    includeJsFiles="{
+        0: '{f:uri.resource(path:\'JavaScript/SearchStatistics.js\')}'
+    }"
+/>
+
+<div class="row">
+    <div class="col-md-12">
+        <script type="application/javascript">
+            var queryLabels = <f:format.raw>{queriesChartLabels}</f:format.raw>;
+            var queryData = {queriesChartData};
+        </script>
+        <canvas id="queriesOverTime"></canvas>
+    </div>
+</div>
+
 
 <f:if condition="{top_search_phrases}">
     <div class="row">

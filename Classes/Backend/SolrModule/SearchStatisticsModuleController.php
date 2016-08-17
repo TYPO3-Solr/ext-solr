@@ -55,12 +55,18 @@ class SearchStatisticsModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
+        $siteRootPageId = $this->site->getRootPageId();
         $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
         // @TODO: Do we want Typoscript constants to restrict the results?
-        $this->view->assign('top_search_phrases', $statisticsRepository->getTopKeyWordsWithHits($this->site->getRootPageId(), 5));
+        $this->view->assign('top_search_phrases', $statisticsRepository->getTopKeyWordsWithHits($siteRootPageId, 5));
         $this->view->assign('top_search_phrases_without_hits',
-            $statisticsRepository->getTopKeyWordsWithoutHits($this->site->getRootPageId(), 5));
-        $this->view->assign('search_phrases_statistics', $statisticsRepository->getSearchStatistics($this->site->getRootPageId(), 100));
+            $statisticsRepository->getTopKeyWordsWithoutHits($siteRootPageId, 5));
+        $this->view->assign('search_phrases_statistics', $statisticsRepository->getSearchStatistics($siteRootPageId, 100));
+
+        $labels = ["January", "February", "March", "April", "May", "June", "July"];
+        $data = [65, 59, 70, 81, 56, 55, 40];
+        $this->view->assign('queriesChartLabels', json_encode($labels));
+        $this->view->assign('queriesChartData', json_encode($data));
     }
 }
