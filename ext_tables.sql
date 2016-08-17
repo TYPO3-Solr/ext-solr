@@ -38,7 +38,8 @@ CREATE TABLE tx_solr_statistics (
 
 	PRIMARY KEY (uid),
 	KEY keywords (keywords),
-	KEY rootpid_keywords (root_pid,keywords)
+	KEY rootpid_keywords (root_pid,keywords),
+	KEY rootpid_tstamp (root_pid,tstamp)
 ) ENGINE=InnoDB;
 
 
