@@ -58,7 +58,7 @@ class PageIndexerTest extends IntegrationTest
         $this->executePageIndexer();
 
         // we wait to make sure the document will be available in solr
-        sleep(3);
+        $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
@@ -80,7 +80,7 @@ class PageIndexerTest extends IntegrationTest
         $this->executePageIndexer();
 
         // we wait to make sure the document will be available in solr
-        sleep(3);
+        $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
 

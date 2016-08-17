@@ -136,7 +136,7 @@ class IndexServiceTest extends IntegrationTest
         $cliEnvironment->restore();
 
         // do we have the record in the index with the value from the mm relation?
-        sleep(2);
+        $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"url":"'.$expectedUrl.'"', $solrContent, 'Generated unexpected url with absRefPrefix = auto');

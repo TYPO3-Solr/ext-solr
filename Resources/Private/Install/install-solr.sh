@@ -10,6 +10,7 @@ EXT_SOLR_VERSION=6.0
 JAVA_VERSION=8
 SOLR_INSTALL_DIR="/opt/solr"
 SOLR_PORT=8983
+TESTING=0
 
 APACHE_MIRROR="http://mirror.dkd.de/apache/"
 APACHE_ARCHIVE="http://archive.apache.org/dist/"
@@ -92,16 +93,24 @@ cecho ()
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-while getopts :p:d: FLAG; do
+while getopts :d:t FLAG; do
   case $FLAG in
     d)
       SOLR_INSTALL_DIR=$OPTARG
+      ;;
+    t)
+      TESTING=1
       ;;
     \?) #unrecognized option - show help
       exit 2
       ;;
   esac
 done
+
+if [ $TESTING -eq "1" ]
+then
+    cecho "Installing for CI"
+fi
 
 cecho "####################################################################" $red
 cecho "# This script should be used for development only!                 #" $red
@@ -193,12 +202,21 @@ cd $SOLR_INSTALL_DIR
 
 cecho "Downloading Apache Solr $SOLR_VERSION" $green
 
-if [ ! -f solr-$SOLR_VERSION.tgz ]; then
+# download to downloads folder to be able to cache the file there
+if [ ! -f downloads/solr-$SOLR_VERSION.tgz ]; then
+    mkdir downloads
+    cd downloads
     apachedownload lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz
+    cd ..
+else
+    cecho "Dowload file allready in place from cache"
 fi
 
+
+ls -lRA
+
 cecho "Extracting downloaded solr $SOLR_VERSION" $green
-tar -C $SOLR_INSTALL_DIR --extract --file "$SOLR_INSTALL_DIR/solr-$SOLR_VERSION.tgz" --strip-components=1
+tar -C $SOLR_INSTALL_DIR --extract --file "$SOLR_INSTALL_DIR/downloads/solr-$SOLR_VERSION.tgz" --strip-components=1
 
 cecho "Adjusting solr configuration" $green
 sed -i -e "s/#SOLR_PORT=8983/SOLR_PORT=$SOLR_PORT/" "$SOLR_INSTALL_DIR/bin/solr.in.sh"
@@ -227,3 +245,10 @@ $SOLR_INSTALL_DIR/bin/solr start
 
 cecho "Cleanup download" $green
 rm $SOLR_INSTALL_DIR/solr-$SOLR_VERSION.tgz
+
+if [ $TESTING -eq "1" ]; then
+    cecho "Keeping dowload to cache it for next build" $green
+else
+    cecho "Cleanup download" green
+    rm $SOLR_INSTALL_DIR/downloads/solr-$SOLR_VERSION.tgz
+fi
