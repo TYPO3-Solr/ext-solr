@@ -830,6 +830,14 @@ class Queue
                 'uid'
             );
             $tableRecords[$table] = $records;
+
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'])) {
+                $params = ['table' => $table, 'uids' => $uids, 'tableRecords' => &$tableRecords];
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'] as $reference) {
+                    GeneralUtility::callUserFunction($reference, $params, $this);
+                }
+                unset($params);
+            }
         }
 
         // creating index queue item objects and assigning / mapping
