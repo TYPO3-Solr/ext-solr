@@ -41,7 +41,6 @@ class StatisticsRepository
      * @param int $rootPageId
      * @param int $days number of days of history to query
      * @param int $limit
-     *
      * @return mixed
      */
     public function getSearchStatistics($rootPageId, $days = 30, $limit = 10)
@@ -76,7 +75,6 @@ class StatisticsRepository
      * @param int $rootPageId
      * @param int $days number of days of history to query
      * @param int $limit
-     *
      * @return string
      */
     public function getTopKeyWordsWithHits($rootPageId, $days = 30, $limit = 10)
@@ -90,7 +88,6 @@ class StatisticsRepository
      * @param int $rootPageId
      * @param int $days number of days of history to query
      * @param int $limit
-     *
      * @return string
      */
     public function getTopKeyWordsWithoutHits($rootPageId, $days = 30, $limit = 10)
@@ -99,13 +96,12 @@ class StatisticsRepository
     }
 
     /**
-     * Find Top search keywords with results
+     * Find Top search keywords with or without results
      *
      * @param int $rootPageId
      * @param int $days number of days of history to query
      * @param int $limit
      * @param bool $withoutHits
-     *
      * @return string
      */
     protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $days = 30, $limit, $withoutHits)
