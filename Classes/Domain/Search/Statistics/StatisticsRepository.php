@@ -24,8 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Calculates the SearchQueryStatistics
@@ -40,22 +39,32 @@ class StatisticsRepository
      * Fetches must popular search keys words from the table tx_solr_statistics
      *
      * @param int $rootPageId
+     * @param int $days number of days of history to query
      * @param int $limit
-     *
      * @return mixed
      */
-    public function getSearchStatistics($rootPageId, $limit = 10)
+    public function getSearchStatistics($rootPageId, $days = 30, $limit = 10)
     {
+        $now = time();
+        $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
+
         $rootPageId = (int) $rootPageId;
         $limit = (int) $limit;
-        $statisticsRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+        $statisticsRows = $this->getDatabase()->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
             'tx_solr_statistics',
-            'root_pid = ' . $rootPageId,
+            'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
             'keywords',
             'count DESC, hits DESC, keywords ASC',
             $limit
         );
+
+        $numRows = count($statisticsRows);
+        $statisticsRows = array_map(function ($row) use ($numRows) {
+            $row['percent'] = $row['count'] * 100 / $numRows;
+
+            return $row;
+        }, $statisticsRows);
 
         return $statisticsRows;
     }
@@ -64,42 +73,45 @@ class StatisticsRepository
      * Find Top search keywords with results
      *
      * @param int $rootPageId
+     * @param int $days number of days of history to query
      * @param int $limit
-     *
      * @return string
      */
-    public function getTopKeyWordsWithHits($rootPageId, $limit = 10)
+    public function getTopKeyWordsWithHits($rootPageId, $days = 30, $limit = 10)
     {
-        return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $limit, false);
+        return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, false);
     }
 
     /**
      * Find Top search keywords without results
      *
      * @param int $rootPageId
+     * @param int $days number of days of history to query
      * @param int $limit
-     *
      * @return string
      */
-    public function getTopKeyWordsWithoutHits($rootPageId, $limit = 10)
+    public function getTopKeyWordsWithoutHits($rootPageId, $days = 30, $limit = 10)
     {
-        return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $limit, true);
+        return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, true);
     }
 
     /**
-     * Find Top search keywords with results
+     * Find Top search keywords with or without results
      *
      * @param int $rootPageId
+     * @param int $days number of days of history to query
      * @param int $limit
      * @param bool $withoutHits
-     *
      * @return string
      */
-    protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $limit, $withoutHits)
+    protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $days = 30, $limit, $withoutHits)
     {
         $rootPageId = (int) $rootPageId;
         $limit = (int) $limit;
         $withoutHits = (bool) $withoutHits;
+
+        $now = time();
+        $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
 
         // Check if we want without or with hits
         if ($withoutHits === true) {
@@ -108,47 +120,44 @@ class StatisticsRepository
             $comparisonOperator = '>';
         }
 
-        // Query database
         $statisticsRows = $this->getDatabase()->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
             'tx_solr_statistics',
-            'root_pid = ' . $rootPageId . ' and num_found ' . $comparisonOperator . ' 0',
+            'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId . ' AND num_found ' . $comparisonOperator . ' 0',
             'keywords, num_found',
             'count DESC, hits DESC, keywords ASC',
             $limit
         );
 
-        // If no records could be found => return
-        if (!is_array($statisticsRows)) {
-            return '';
-        }
-
-        // Process result
-        return $this->getConcatenatedKeywords($statisticsRows);
+        return $statisticsRows;
     }
 
     /**
-     * This method is used to group and sort the keyword by occurence and return a
-     * concatenated string.
+     * Get number of queries over time
      *
-     * @param array $statisticsRows
-     * @return string
+     * @param int $rootPageId
+     * @param int $days number of days of history to query
+     * @param int $bucketSeconds Seconds per bucket
+     * @return array [labels, data]
      */
-    protected function getConcatenatedKeywords(array $statisticsRows)
+    public function getQueriesOverTime($rootPageId, $days = 30, $bucketSeconds = 3600)
     {
-        $keywords = [];
-        foreach ($statisticsRows as $statisticsRow) {
-            $keyword =trim($statisticsRow['keywords']);
-            // when the keyword occures multiple times we increment the count
-            $keywords[$keyword] = isset($keywords[$keyword]) ? $keywords[$keyword] + 1 : 1;
-        }
+        $now = time();
+        $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
 
-        arsort($keywords, SORT_NUMERIC);
-        return implode(', ', array_keys($keywords));
+        $queries = $this->getDatabase()->exec_SELECTgetRows(
+            'FLOOR(tstamp/' . $bucketSeconds . ') AS bucket, tstamp, COUNT(*) AS numQueries',
+            'tx_solr_statistics',
+            'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
+            'bucket',
+            'bucket ASC'
+        );
+
+        return $queries;
     }
 
     /**
-     * @return DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
     protected function getDatabase()
     {

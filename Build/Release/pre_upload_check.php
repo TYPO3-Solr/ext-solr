@@ -7,7 +7,7 @@ $version = $EM_CONF['solr']['version'];
 $validVersionPattern = '/^(\d+\.)?(\d+\.)?(\*|\d+)$/';
 $match = preg_match($validVersionPattern, $version);
 
-if($match > 0) {
+if ($match > 0) {
     echo "Version was a valid release version: " . $version . PHP_EOL;
     exit(0);
 } else {

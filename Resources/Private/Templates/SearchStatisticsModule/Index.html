@@ -1,3 +1,24 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<!-- TODO add buttons to select time frame [last 24h] [last 30 days] [all] -->
+
+<f:be.pageRenderer
+    loadJQuery="true"
+    includeJsFiles="{
+        0: '{f:uri.resource(path:\'JavaScript/SearchStatistics.js\')}'
+    }"
+/>
+
+<div class="row">
+    <div class="col-md-12">
+        <script type="application/javascript">
+            var queryLabels = <f:format.raw>{queriesChartLabels}</f:format.raw>;
+            var queryData = {queriesChartData};
+        </script>
+        <canvas id="queriesOverTime"></canvas>
+    </div>
+</div>
+
 
 <f:if condition="{top_search_phrases}">
     <div class="row">
@@ -6,7 +27,13 @@
                 <f:translate key="solr.backend.search_statistics_module.top_search_phrases"/>
             </h2>
 
-            {top_search_phrases}
+            <ul>
+            <f:for each="{top_search_phrases}" as="phrase">
+                <li>
+                    {phrase.keywords} ({phrase.count})
+                </li>
+            </f:for>
+            </ul>
         </div>
     </div>
 
@@ -20,7 +47,13 @@
                 <f:translate key="solr.backend.search_statistics_module.top_search_phrases_without_hits"/>
             </h2>
 
-            {top_search_phrases_without_hits}
+            <ul>
+                <f:for each="{top_search_phrases_without_hits}" as="phrase">
+                    <li>
+                        {phrase.keywords} ({phrase.count})
+                    </li>
+                </f:for>
+            </ul>
         </div>
     </div>
 
@@ -38,23 +71,29 @@
             <table class="table table-striped">
                 <thead>
                 <tr class="t3-row-header">
+                    <th class="nowrap">&nbsp;</th>
                     <th>
-                        <f:translate key="solr.backend.search_statistics_module.item_keyword"/>
+                        <f:translate key="solr.backend.search_statistics_module.item_phrase"/>
                     </th>
                     <th>
                         <f:translate key="solr.backend.search_statistics_module.item_count"/>
                     </th>
                     <th>
-                        <f:translate key="solr.backend.search_statistics_module.hits"/>
+                        <f:translate key="solr.backend.search_statistics_module.results"/>
+                    </th>
+                    <th>
+                        <f:translate key="solr.backend.search_statistics_module.percentage"/>
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                <f:for each="{search_phrases_statistics}" as="item">
+                <f:for each="{search_phrases_statistics}" as="item" iteration="i">
                     <tr>
+                        <td class="nowrap"><strong>{i.cycle}.</strong></td>
                         <td>{item.keywords}</td>
                         <td>{item.count}</td>
                         <td>{item.hits}</td>
+                        <td><f:format.number decimals="1">{item.percent}</f:format.number>%</td>
                     </tr>
                 </f:for>
                 </tbody>
