@@ -61,15 +61,15 @@ class SearchStatisticsModuleController extends AbstractModuleController
         // @TODO: Do we want Typoscript constants to restrict the results?
         $this->view->assign(
             'top_search_phrases',
-            $statisticsRepository->getTopKeyWordsWithHits($siteRootPageId, 5)
+            $statisticsRepository->getTopKeyWordsWithHits($siteRootPageId, 30, 5)
         );
         $this->view->assign(
             'top_search_phrases_without_hits',
-            $statisticsRepository->getTopKeyWordsWithoutHits($siteRootPageId, 5)
+            $statisticsRepository->getTopKeyWordsWithoutHits($siteRootPageId, 30, 5)
         );
         $this->view->assign(
             'search_phrases_statistics',
-            $statisticsRepository->getSearchStatistics($siteRootPageId, 100)
+            $statisticsRepository->getSearchStatistics($siteRootPageId, 30, 100)
         );
 
         $labels = ["January", "February", "March", "April", "May", "June", "July"];
