@@ -3,6 +3,7 @@ filter:
         - 'Documentation/*'
         - 'Tests/*'
         - 'Resources/JavaScript/*'
+        - 'Resources/Solr/*'
     paths:
         - 'Classes/*'
 tools:
