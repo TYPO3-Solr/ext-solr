@@ -42,7 +42,11 @@ class StatisticsRepositoryTest extends IntegrationTest
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithHits(1);
 
-        $this->assertSame('content, typo3', $topHits);
+        $expectedResult = [
+            ['mergedrows' => 2, 'count' => 2, 'hits' => 5, 'keywords' => 'content'],
+            ['mergedrows' => 1, 'count' => 1, 'hits' => 6, 'keywords' => 'typo3']
+        ];
+        $this->assertSame($expectedResult, $topHits);
     }
 
     /**
@@ -56,6 +60,10 @@ class StatisticsRepositoryTest extends IntegrationTest
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithoutHits(1);
 
-        $this->assertSame('cms', $topHits);
+        $expectedResult = [
+            ['mergedrows' => 1, 'count' => 1, 'hits' => 0, 'keywords' => 'cms'],
+        ];
+
+        $this->assertSame($expectedResult, $topHits);
     }
 }

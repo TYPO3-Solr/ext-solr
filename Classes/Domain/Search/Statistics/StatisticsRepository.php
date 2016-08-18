@@ -46,22 +46,28 @@ class StatisticsRepository
     public function getSearchStatistics($rootPageId, $days = 30, $limit = 10)
     {
         $now = time();
-        $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
-
+        $timeStart = (int) ($now - 86400 * intval($days)); // 86400 seconds/day
         $rootPageId = (int) $rootPageId;
         $limit = (int) $limit;
+
         $statisticsRows = $this->getDatabase()->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
             'tx_solr_statistics',
             'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
-            'keywords',
+            'keywords, num_found',
             'count DESC, hits DESC, keywords ASC',
             $limit
         );
 
-        $numRows = count($statisticsRows);
-        $statisticsRows = array_map(function ($row) use ($numRows) {
-            $row['percent'] = $row['count'] * 100 / $numRows;
+        $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
+
+        $sumCount = $statisticsRows['sumCount'];
+        foreach ($statisticsRows as $statisticsRow) {
+            $sumCount += $statisticsRow['count'];
+        }
+
+        $statisticsRows = array_map(function ($row) use ($sumCount) {
+            $row['percent'] = $row['count'] * 100 / $sumCount;
 
             return $row;
         }, $statisticsRows);
@@ -75,7 +81,7 @@ class StatisticsRepository
      * @param int $rootPageId
      * @param int $days number of days of history to query
      * @param int $limit
-     * @return string
+     * @return array
      */
     public function getTopKeyWordsWithHits($rootPageId, $days = 30, $limit = 10)
     {
@@ -88,7 +94,7 @@ class StatisticsRepository
      * @param int $rootPageId
      * @param int $days number of days of history to query
      * @param int $limit
-     * @return string
+     * @return array
      */
     public function getTopKeyWordsWithoutHits($rootPageId, $days = 30, $limit = 10)
     {
@@ -102,7 +108,7 @@ class StatisticsRepository
      * @param int $days number of days of history to query
      * @param int $limit
      * @param bool $withoutHits
-     * @return string
+     * @return array
      */
     protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $days = 30, $limit, $withoutHits)
     {
@@ -129,7 +135,40 @@ class StatisticsRepository
             $limit
         );
 
+        $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
+
         return $statisticsRows;
+    }
+
+
+    /**
+     * This method groups rows with the same term and different cound and hits
+     * and calculates the average.
+     *
+     * @param array $statisticsRows
+     * @return array
+     */
+    protected function mergeRowsWithSameKeyword(array $statisticsRows)
+    {
+        $result = [];
+        foreach ($statisticsRows as $statisticsRow) {
+            $term = $statisticsRow['keywords'];
+
+            $mergedRow = isset($result[$term]) ? $result[$term] : ['mergedrows' => 0, 'count' => 0];
+            $mergedRow['mergedrows']++;
+
+                // for the hits we need to take the average
+            $avgHits = $this->getAverageFromField($mergedRow, $statisticsRow, 'hits');
+            $mergedRow['hits'] = (int) $avgHits;
+
+                // for the count we need to take the sum, because it's the sum of searches
+            $mergedRow['count'] = $mergedRow['count'] + $statisticsRow['count'];
+
+            $mergedRow['keywords'] = $statisticsRow['keywords'];
+            $result[$term] = $mergedRow;
+        }
+
+        return array_values($result);
     }
 
     /**
@@ -154,6 +193,29 @@ class StatisticsRepository
         );
 
         return $queries;
+    }
+
+
+    /**
+     * This method is used to get an average value from merged statistic rows.
+     *
+     * @param array $mergedRow
+     * @param array $statisticsRow
+     * @return float|int
+     */
+    protected function getAverageFromField(array &$mergedRow, array $statisticsRow,  $fieldName)
+    {
+        // when this is the first row we can take it.
+        if ($mergedRow['mergedrows'] === 1) {
+            $avgCount = $statisticsRow[$fieldName];
+            return $avgCount;
+        }
+
+        $oldAverage = $mergedRow[$fieldName];
+        $oldMergeRows = $mergedRow['mergedrows'] - 1;
+        $oldCount = $oldAverage * $oldMergeRows;
+        $avgCount = (($oldCount + $statisticsRow[$fieldName]) / $mergedRow['mergedrows']);
+        return $avgCount;
     }
 
     /**
