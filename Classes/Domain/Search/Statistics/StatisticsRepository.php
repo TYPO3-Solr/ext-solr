@@ -50,7 +50,7 @@ class StatisticsRepository
 
         $rootPageId = (int) $rootPageId;
         $limit = (int) $limit;
-        $statisticsRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+        $statisticsRows = $this->getDatabase()->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
             'tx_solr_statistics',
             'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
