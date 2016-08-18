@@ -179,9 +179,18 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         }
 
         // we wait to make sure the document will be deleted in solr
-        sleep(1);
+        $this->waitToBeVisibleInSolr();
 
         $this->assertSolrIsEmpty();
+    }
+
+    /**
+     * @return void
+     */
+    protected function waitToBeVisibleInSolr()
+    {
+        $url = "http://localhost:8983/solr/core_en/update?softCommit=true";
+        get_headers($url);
     }
 
     /**

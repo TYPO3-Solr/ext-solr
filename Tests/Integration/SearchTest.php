@@ -52,7 +52,7 @@ class SearchTest extends IntegrationTest
         $pageIndexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Typo3PageIndexer', $fakeTSFE);
         $pageIndexer->indexPage();
 
-        sleep(3);
+        $this->waitToBeVisibleInSolr();
 
             /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
         $searchInstance = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Search');

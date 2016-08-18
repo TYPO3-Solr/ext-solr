@@ -50,7 +50,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         // trigger a search
         $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5]);
 
-        sleep(1);
+        $this->waitToBeVisibleInSolr();
 
         $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
         $this->assertContains('b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/1/0/0/0', $solrContent);
@@ -77,7 +77,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
         $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
-        sleep(1);
+        $this->waitToBeVisibleInSolr();
         $solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')
             ->getConnectionByPageId(1, 0, 0);
 

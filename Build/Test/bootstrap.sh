@@ -48,4 +48,4 @@ mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
 # Setup Solr Using our install script
 chmod 500 ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh
-${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr"
+${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr" -t
