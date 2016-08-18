@@ -107,9 +107,10 @@ while getopts :d:t FLAG; do
   esac
 done
 
-if [ $TESTING -eq "1" ]
-then
-    cecho "Installing for CI"
+if [ $TESTING -eq "1" ]; then
+    INSTALL_MODE="CI Testing"
+else
+    INSTALL_MODE="Development"
 fi
 
 cecho "####################################################################" $red
@@ -123,8 +124,10 @@ cecho "#                                                                  #" $re
 cecho "####################################################################" $red
 
 cecho "Starting installation of Apache Solr with the following settings:" $green
+cecho "Install Mode: ${INSTALL_MODE}                                    " $green
 cecho "Solr Version: ${SOLR_VERSION}                                    " $green
 cecho "Installation Path: ${SOLR_INSTALL_DIR}                           " $green
+
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -200,20 +203,20 @@ fi
 mkdir $SOLR_INSTALL_DIR
 cd $SOLR_INSTALL_DIR
 
-cecho "Downloading Apache Solr $SOLR_VERSION" $green
+cecho "Getting Apache Solr $SOLR_VERSION" $green
 
 # download to downloads folder to be able to cache the file there
 if [ ! -f downloads/solr-$SOLR_VERSION.tgz ]; then
+    cecho "Starting download" $green
+
     mkdir downloads
     cd downloads
     apachedownload lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz
     cd ..
 else
-    cecho "Dowload file allready in place from cache"
+    cecho "Restore from cache" $green
 fi
 
-
-ls -lRA
 
 cecho "Extracting downloaded solr $SOLR_VERSION" $green
 tar -C $SOLR_INSTALL_DIR --extract --file "$SOLR_INSTALL_DIR/downloads/solr-$SOLR_VERSION.tgz" --strip-components=1
@@ -247,7 +250,7 @@ cecho "Cleanup download" $green
 rm $SOLR_INSTALL_DIR/solr-$SOLR_VERSION.tgz
 
 if [ $TESTING -eq "1" ]; then
-    cecho "Keeping dowload to cache it for next build" $green
+    cecho "Keeping download to cache it for next build" $green
 else
     cecho "Cleanup download" green
     rm $SOLR_INSTALL_DIR/downloads/solr-$SOLR_VERSION.tgz
