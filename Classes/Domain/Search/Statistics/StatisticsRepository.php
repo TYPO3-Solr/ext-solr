@@ -125,33 +125,7 @@ class StatisticsRepository
             $limit
         );
 
-        // If no records could be found => return
-        if (!is_array($statisticsRows)) {
-            return '';
-        }
-
-        // Process result
-        return $this->getConcatenatedKeywords($statisticsRows);
-    }
-
-    /**
-     * This method is used to group and sort the keyword by occurence and return a
-     * concatenated string.
-     *
-     * @param array $statisticsRows
-     * @return string
-     */
-    protected function getConcatenatedKeywords(array $statisticsRows)
-    {
-        $keywords = [];
-        foreach ($statisticsRows as $statisticsRow) {
-            $keyword =trim($statisticsRow['keywords']);
-            // when the keyword occures multiple times we increment the count
-            $keywords[$keyword] = isset($keywords[$keyword]) ? $keywords[$keyword] + 1 : 1;
-        }
-
-        arsort($keywords, SORT_NUMERIC);
-        return implode(', ', array_keys($keywords));
+        return $statisticsRows;
     }
 
     /**
