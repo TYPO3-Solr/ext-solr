@@ -55,6 +55,8 @@ class SearchStatisticsModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
+        // TODO make time frame user adjustable, for now it's last 30 days
+
         $siteRootPageId = $this->site->getRootPageId();
         $statisticsRepository = GeneralUtility::makeInstance(StatisticsRepository::class);
 
