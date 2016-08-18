@@ -129,7 +129,7 @@ class StatisticsRepository
     }
 
     /**
-     * @return DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
     protected function getDatabase()
     {
