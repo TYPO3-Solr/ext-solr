@@ -271,23 +271,26 @@
 				<source>Search: Form only</source>
 			</trans-unit>
 
-			<trans-unit id="solr.backend.search_statistics_module.item_keyword" xml:space="preserve">
-				<source>Keyword</source>
+			<trans-unit id="solr.backend.search_statistics_module.item_phrase" xml:space="preserve">
+				<source>Phrase</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.item_count" xml:space="preserve">
-				<source>Number of queries</source>
+				<source>Number of Queries</source>
 			</trans-unit>
-			<trans-unit id="solr.backend.search_statistics_module.hits" xml:space="preserve">
-				<source>Number of hits</source>
+			<trans-unit id="solr.backend.search_statistics_module.results" xml:space="preserve">
+				<source>Number of Results (Average)</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.search_statistics_module.percentage" xml:space="preserve">
+				<source>Percentage</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.no_records_found" xml:space="preserve">
 				<source>No records found. Did you enabled 'plugin.tx_solr.statistics = 1' in the typoscript configuration of your site?</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases" xml:space="preserve">
-				<source>Top search Phrases</source>
+				<source>Top 5 Search Phrases</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.top_search_phrases_without_hits" xml:space="preserve">
-				<source>Top search Phrases without hits</source>
+				<source>Top 5 Search Phrases Without Hits</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.search_statistics_module.search_phrases_header" xml:space="preserve">
 				<source>Search Phrase Statistics</source>
