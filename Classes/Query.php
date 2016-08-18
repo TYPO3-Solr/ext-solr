@@ -51,6 +51,10 @@ class Query
      * @var integer
      */
     protected static $idCount = 0;
+
+    /**
+     * @var int
+     */
     protected $id;
 
     /**
@@ -58,17 +62,52 @@ class Query
      */
     protected $solrConfiguration;
 
+    /**
+     * @var string
+     */
     protected $keywords;
+
+    /**
+     * @var string
+     */
     protected $keywordsRaw;
-    protected $filters = array();
+
+    /**
+     * @var array
+     */
+    protected $filters = [];
+
+    /**
+     * @var string
+     */
     protected $sorting;
 
     // TODO check usage of these two variants, especially the check for $rawQueryString in getQueryString()
+    /**
+     * @var
+     */
     protected $queryString;
-    protected $queryParameters = array();
+
+    /**
+     * @var array
+     */
+    protected $queryParameters = [];
+
+    /**
+     * @var int
+     */
     protected $resultsPerPage;
+
+    /**
+     * @var int
+     */
     protected $page;
+
+    /**
+     * @var int
+     */
     protected $linkTargetPageId;
+
     /**
      * Holds the query fields with their associated boosts. The key represents
      * the field name, value represents the field's boost. These are the fields
@@ -79,7 +118,8 @@ class Query
      * @var array
      * @see http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
      */
-    protected $queryFields = array();
+    protected $queryFields = [];
+
     /**
      * List of fields that will be returned in the result documents.
      *
@@ -88,9 +128,21 @@ class Query
      * @var array
      * @see http://wiki.apache.org/solr/CommonQueryParameters#fl
      */
-    protected $fieldList = array();
+    protected $fieldList = [];
+
+    /**
+     * @var array
+     */
     protected $filterFields;
+
+    /**
+     * @var array
+     */
     protected $sortingFields;
+
+    /**
+     * @var bool
+     */
     private $rawQueryString = false;
 
     /**
@@ -105,6 +157,7 @@ class Query
      */
     public function __construct($keywords, $solrConfiguration = null)
     {
+        $keywords = (string) $keywords;
         if ($solrConfiguration == null) {
             $this->solrConfiguration = Util::getSolrConfiguration();
         } else {
@@ -123,10 +176,18 @@ class Query
         // What fields to return from Solr
         $this->fieldList = $this->solrConfiguration->getSearchQueryReturnFieldsAsArray(array('*', 'score'));
         $this->linkTargetPageId = $this->solrConfiguration->getSearchTargetPage();
-        $this->initializeCollapsingFromConfiguration();
 
+        $this->initializeQuery();
 
         $this->id = ++self::$idCount;
+    }
+
+    /**
+     * @return void
+     */
+    protected function initializeQuery()
+    {
+        $this->initializeCollapsingFromConfiguration();
     }
 
     /**
