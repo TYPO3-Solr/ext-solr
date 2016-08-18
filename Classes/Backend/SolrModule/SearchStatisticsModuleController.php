@@ -74,8 +74,14 @@ class SearchStatisticsModuleController extends AbstractModuleController
             $statisticsRepository->getSearchStatistics($siteRootPageId, 30, 100)
         );
 
-        $labels = ["January", "February", "March", "April", "May", "June", "July"];
-        $data = [65, 59, 70, 81, 56, 55, 40];
+        $labels = [];
+        $data = [];
+        $chartData = $statisticsRepository->getQueriesOverTime($siteRootPageId, 30, 86400);
+        foreach ($chartData as $bucket) {
+            $labels[] = strftime('%x', $bucket['tstamp']);
+            $data[] = (int)$bucket['numQueries'];
+        }
+
         $this->view->assign('queriesChartLabels', json_encode($labels));
         $this->view->assign('queriesChartData', json_encode($data));
     }

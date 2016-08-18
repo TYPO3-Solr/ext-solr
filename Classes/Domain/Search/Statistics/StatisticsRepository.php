@@ -133,6 +133,30 @@ class StatisticsRepository
     }
 
     /**
+     * Get number of queries over time
+     *
+     * @param int $rootPageId
+     * @param int $days number of days of history to query
+     * @param int $bucketSeconds Seconds per bucket
+     * @return array [labels, data]
+     */
+    public function getQueriesOverTime($rootPageId, $days = 30, $bucketSeconds = 3600)
+    {
+        $now = time();
+        $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
+
+        $queries = $this->getDatabase()->exec_SELECTgetRows(
+            'FLOOR(tstamp/' . $bucketSeconds . ') AS bucket, tstamp, COUNT(*) AS numQueries',
+            'tx_solr_statistics',
+            'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
+            'bucket',
+            'bucket ASC'
+        );
+
+        return $queries;
+    }
+
+    /**
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
     protected function getDatabase()
