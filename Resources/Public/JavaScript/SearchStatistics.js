@@ -14,7 +14,7 @@ require([
           data: queryData,
           label: "# of Queries",
 
-          lineTension: 0.2,
+          lineTension: 0.1,
           fill: false,
           backgroundColor: 'rgba(206, 43, 23, 0.4)',
 
