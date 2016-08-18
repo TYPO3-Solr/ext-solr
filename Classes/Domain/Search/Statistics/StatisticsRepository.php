@@ -24,8 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 
 /**
  * Calculates the SearchQueryStatistics
