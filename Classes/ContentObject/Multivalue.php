@@ -46,7 +46,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Multivalue
 {
-
     const CONTENT_OBJECT_NAME = 'SOLR_MULTIVALUE';
 
     /**

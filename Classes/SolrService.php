@@ -36,7 +36,6 @@ use ApacheSolrForTypo3\Solr\PingFailedException;
  */
 class SolrService extends \Apache_Solr_Service
 {
-
     const LUKE_SERVLET = 'admin/luke';
     const SYSTEM_SERVLET = 'admin/system';
     const PLUGINS_SERVLET = 'admin/plugins';

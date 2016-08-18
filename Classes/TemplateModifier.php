@@ -37,6 +37,5 @@ namespace ApacheSolrForTypo3\Solr;
  */
 interface TemplateModifier
 {
-
     public function modifyTemplate(Template $template);
 }

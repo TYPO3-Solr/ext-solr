@@ -38,7 +38,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class Date implements ViewHelper
 {
-
     protected $dateFormat = null;
 
     /**

@@ -58,7 +58,7 @@ class SolrStatus implements StatusProviderInterface
 
     /**
      * Holds the response message build by the checks
-     * 
+     *
      * @var string
      */
     protected $responseMessage = '';

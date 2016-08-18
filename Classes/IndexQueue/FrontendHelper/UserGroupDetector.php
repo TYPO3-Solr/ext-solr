@@ -40,12 +40,7 @@ use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
  * @package TYPO3
  * @subpackage solr
  */
-class UserGroupDetector
-
-    extends
-    AbstractFrontendHelper
-
-    implements
+class UserGroupDetector extends AbstractFrontendHelper implements
     SingletonInterface,
     ContentObjectPostInitHookInterface,
     PageRepositoryGetPageHookInterface,

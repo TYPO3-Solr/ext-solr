@@ -34,7 +34,6 @@ namespace ApacheSolrForTypo3\Solr;
  */
 class NoSolrConnectionFoundException extends \Exception
 {
-
     protected $pageId;
 
     protected $languageId;

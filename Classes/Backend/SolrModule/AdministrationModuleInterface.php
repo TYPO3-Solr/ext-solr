@@ -31,7 +31,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  */
 interface AdministrationModuleInterface
 {
-
     public function getName();
 
     public function getTitle();

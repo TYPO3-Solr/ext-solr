@@ -38,7 +38,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TemplateTest extends IntegrationTest
 {
-
     public function setUp()
     {
         parent::setUp();

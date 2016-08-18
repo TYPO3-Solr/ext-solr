@@ -31,7 +31,6 @@ namespace ApacheSolrForTypo3\Solr;
  */
 class ExtractingQuery extends Query
 {
-
     protected $file;
     protected $multiPartPostDataBoundary;
 

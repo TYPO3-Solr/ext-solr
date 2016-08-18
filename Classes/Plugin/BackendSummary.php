@@ -36,7 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackendSummary
 {
-
     protected $pluginContentElement = array();
     protected $flexformData = array();
     protected $settings = array();

@@ -36,7 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Content
 {
-
     const CONTENT_OBJECT_NAME = 'SOLR_CONTENT';
 
     /**

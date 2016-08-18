@@ -35,7 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Facet
 {
-
     const TYPE_FIELD = 'field';
     const TYPE_QUERY = 'query';
     const TYPE_RANGE = 'range';

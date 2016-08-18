@@ -48,7 +48,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class Relation
 {
-
     const CONTENT_OBJECT_NAME = 'SOLR_RELATION';
 
     /**

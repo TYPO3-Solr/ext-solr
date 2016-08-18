@@ -35,7 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class JavascriptManager
 {
-
     const POSITION_HEADER = 'header';
     const POSITION_FOOTER = 'footer';
     const POSITION_NONE = 'none';

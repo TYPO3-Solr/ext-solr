@@ -49,7 +49,6 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  */
 abstract class PluginBase extends AbstractPlugin
 {
-
     public $prefixId = 'tx_solr';
     public $extKey = 'solr';
 
@@ -234,7 +233,7 @@ abstract class PluginBase extends AbstractPlugin
      * Also locallang values set in the TypoScript property "_LOCAL_LANG" are
      * merged onto the values found in the "locallang" file.
      * Supported file extensions xlf, xml, php
-     * 
+     *
      * @param string $languageFilePath path to the plugin language file in format EXT:....
      * @return void
      */

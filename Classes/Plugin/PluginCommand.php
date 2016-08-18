@@ -37,7 +37,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
  */
 interface PluginCommand
 {
-
     const REQUIREMENTS_NUM_BITS = 4;
 
     const REQUIREMENT_NONE = 1; // 0001

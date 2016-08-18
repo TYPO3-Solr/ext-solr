@@ -42,7 +42,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class Template
 {
-
     const CLEAN_TEMPLATE_YES = true;
     const CLEAN_TEMPLATE_NO = false;
 
@@ -786,22 +785,22 @@ class Template
             case '==':
                 $conditionResult = ($comparand1 == $comparand2);
                 break;
-            case '!=';
+            case '!=':
                 $conditionResult = ($comparand1 != $comparand2);
                 break;
-            case '<';
+            case '<':
                 $conditionResult = ($comparand1 < $comparand2);
                 break;
-            case '<=';
+            case '<=':
                 $conditionResult = ($comparand1 <= $comparand2);
                 break;
-            case '>';
+            case '>':
                 $conditionResult = ($comparand1 > $comparand2);
                 break;
-            case '>=';
+            case '>=':
                 $conditionResult = ($comparand1 >= $comparand2);
                 break;
-            case '%';
+            case '%':
                 $conditionResult = ($comparand1 % $comparand2);
                 break;
             default:

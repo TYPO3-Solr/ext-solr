@@ -34,7 +34,6 @@ namespace ApacheSolrForTypo3\Solr;
  */
 class SuggestQuery extends Query
 {
-
     protected $configuration;
     protected $prefix;
 
