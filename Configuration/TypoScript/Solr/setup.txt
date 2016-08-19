@@ -329,6 +329,7 @@ plugin.tx_solr {
 		variants = 0
 		variants {
 			expand = 1
+			// variantField needs to be a string or a numeric field
 			variantField = variantId
 			limit = 10
 		}

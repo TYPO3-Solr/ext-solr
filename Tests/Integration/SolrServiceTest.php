@@ -46,7 +46,7 @@ class SolrServiceTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->solrService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\SolrService', 'localhost', 8080, '/solr/core_en/');
+        $this->solrService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\SolrService', 'localhost', 8983, '/solr/core_en/');
     }
 
     /**

@@ -54,7 +54,7 @@ port
 
 :Type: Integer
 :TS Path: plugin.tx_solr.solr.port
-:Default: 8080
+:Default: 8983
 :Since: 1.0
 
 Sets the port portion of the URL.

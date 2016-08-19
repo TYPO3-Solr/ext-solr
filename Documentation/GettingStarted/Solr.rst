@@ -7,7 +7,6 @@ Solr
 
 First you need to install Solr itself. There are several ways to do so:
 
-
 Using Hosted-solr.com
 ---------------------
 
@@ -16,78 +15,55 @@ If you want to start simple and just create a solr core with a click. You can us
 Shipped install script
 ----------------------
 
-Please make sure to use a current Java SDK (JDK). We recommend using Oracle JDK.
+With the extension we ship and install script that can be used for a **development** context. It creates a solr server with a core for all languages.
+This script is located in "Resources/Private/Install" an it installs a configured solr server that is useable with EXT:solr.
 
-We have included an install script to automatically set up Tomcat and Solr. You
-can find it in EXT:solr/Resources/Install/install-solr-tomcat.sh.
+By default this script is not executable and you need to add the execute permissions to your user to run it.
 
-That shell script will do a full setup, downloading a recent version of Apache
-Tomcat and Apache Solr in a version as required by EXT:solr. The script installs
-Tomcat and Solr into ``/opt/solr-tomcat/`` and when done starts Tomcat.
-
-Install Solr with an english core:
+The example below shows how to install a solr server to /home/developer
 
 |
 
 .. code-block:: bash
 
-    $ sudo ./install-solr-tomcat.sh
+    chmod u+x ./Resources/Private/Install/install-solr.sh
+    ./Resources/Private/Install/install-solr.sh -p /home/developer
 
-Install Solr with additional languages - simply list them separated with space
+|
+
+After running the script you are able to open a solr server with over the loopback address. Which means, when you want to access it from outside, you need to create an ssh tunnel.
+
+Docker
+------
+
+We provide 2 Dockerfiles for this extension. You can find them in the root directory of the extensions source.
+For minimal installation you can use `Dockerfile` and for a complete and ready to use docker image you can use `Dockerfile_full`.
+
+The minimal installation copy all settings, but doesn't create the solr cores, the full image contains an example core for all languages.
+
+To build the images, simply type one of the following:
 
 |
 
 .. code-block:: bash
 
-    $ sudo ./install-solr-tomcat.sh english german french
-
-This will download schema configuration files for english, german, and french.
-You still need to add the cores in ``/opt/solr-tomcat/solr/solr.xml``. An
-english core is already configured, you can simply copy the configuration and
-adapt the paths for the ``schema`` and ``dataDir`` attributes.
-
-.. figure:: ../Images/GettingStarted/install-script.png
-
-    Install script output (shortened).
-
-
-Docker (not officially supported)
----------------------------------
-
-Install a docker image providing ready to use Solr for TYPO3.  To do so install the docker image `writl/solr-typo3 <https://hub.docker.com/r/writl/solr-typo3/>`_ e.g. by running the following in
-your shell:
+    docker build -t solr .
+    docker build -t solr-full -f Dockerfile_full .
+	
+To run the container (only run one of the following):
 
 |
 
 .. code-block:: bash
 
-    docker pull writl/solr-typo3
-    docker run -it -p 8282:8080 -v
-        $(pwd):/opt/solr-tomcat/solr/typo3cores/data writl/solr-typo3
+    docker run -d -p 8983:8983 solr
+    docker run -d -p 8983:8983 solr-full
 
-Wait until Solr did start which is indicated by output like:
-
-|
-
-.. code-block:: text
-
-    26-May-2016 ... INFO [main] ...start Starting ProtocolHandler ["http-nio-0.0.0.0-8080"]
-    26-May-2016 ... INFO [main] ...start Server startup in 69500 ms
+If you want to keep the solr core data after a recreate of the container, you have to share `/opt/solr/server/solr/data` (please note: the directory on the host should have UID and GID 8983) to the host.
 
 To check whether Solr is up and running head over to:
 
-``http://localhost:8282/solr/#/core_en/query``.
-
-If you are using Mac OS X you need the IP of docker-machine, do so by running:
-
-|
-
-.. code-block:: bash
-
-    docker-machine url | sed 's/tcp/http/' | sed 's/:[[:digit:]].*/:8282/'
-        | sed 's:$:/solr/#/core_en/query:'
-
-And open the displayed URL, like ``http://192.168.99.100:8282/solr/#/core_en/query``.
+``http://<ip>:8983/solr/#/core_en/query``.
 
 You should see the web interface of Solr to run queries:
 

@@ -26,6 +26,7 @@ The other chapters focused on the frontend or backend part of the extension. In 
 	:maxdepth: 5
 	:glob:
 
+        ConfigurationStructure
         IndexMaintenance
 
 

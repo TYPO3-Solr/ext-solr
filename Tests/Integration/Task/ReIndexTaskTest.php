@@ -140,14 +140,14 @@ class ReIndexTaskTest extends IntegrationTest
         /** @var $indexer \ApacheSolrForTypo3\Solr\IndexQueue\Indexer */
         $indexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Indexer');
         $indexer->index($items[0]);
-        sleep(2);
+        $this->waitToBeVisibleInSolr();
 
         $this->assertSolrContainsDocumentCount(1);
         $this->task->setSite($site);
         $this->task->setIndexingConfigurationsToReIndex(array('pages'));
         $this->task->execute();
 
-        sleep(2);
+        $this->waitToBeVisibleInSolr();
 
         // after the task was running the solr server should be empty
         $this->assertSolrIsEmpty();

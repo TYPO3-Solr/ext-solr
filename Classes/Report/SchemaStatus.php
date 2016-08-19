@@ -50,7 +50,7 @@ class SchemaStatus implements StatusProviderInterface
      *
      * @var string
      */
-    const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-5-1-0--20160725';
+    const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-6-0-0--20160812';
 
     /**
      * Compiles a collection of schema version checks against each configured
@@ -84,7 +84,7 @@ class SchemaStatus implements StatusProviderInterface
 					recommended schema version is <strong>'
                     . self::RECOMMENDED_SCHEMA_VERSION . '</strong>. You can
 					find the recommended schema.xml file in the extension\'s
-					resources folder: EXT:solr/Resources/Solr/. While
+					resources folder: EXT:solr/Resources/Private/Solr/. While
 					you\'re at it, please make sure you\'re using the
 					current solrconfig.xml file, too.</p>';
 

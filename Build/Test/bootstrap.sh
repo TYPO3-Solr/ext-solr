@@ -46,19 +46,6 @@ export TYPO3_PATH_WEB=$SCRIPTPATH/.Build/Web
 
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
-
 # Setup Solr Using our install script
-sudo ${EXTENSION_ROOTPATH}Resources/Install/install-solr-tomcat.sh
-
-echo "copying schema from current branch into test solr server"
-
-# Make sure we use the schema from the current version and now from the master branch
-sudo cp -R ${EXTENSION_ROOTPATH}Resources/Solr/* ${SOLR_INSTALL_PATH}solr/
-
-# And restart solr
-cd ${SOLR_INSTALL_PATH}
-sleep 5
-sudo ./tomcat/bin/shutdown.sh
-sleep 5
-sudo ./tomcat/bin/startup.sh
-cd ${EXTENSION_ROOTPATH}
+chmod 500 ${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh
+${EXTENSION_ROOTPATH}Resources/Private/Install/install-solr.sh -d "$HOME/solr" -t
