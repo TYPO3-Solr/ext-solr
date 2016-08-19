@@ -25,6 +25,7 @@ The example below shows how to install a solr server to /home/developer
 |
 
 .. code-block:: bash
+
     chmod u+x ./Resources/Private/Install/install-solr.sh
     ./Resources/Private/Install/install-solr.sh -p /home/developer
 
