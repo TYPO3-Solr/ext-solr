@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+REPRONAME="ext-solr"
 EXTENSION_KEY="solr"
 
 # This script is triggered by travis when a build has been triggered and was tagged
@@ -17,11 +19,11 @@ if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASS
       curl -sSL https://raw.githubusercontent.com/alrra/travis-after-all/1.4.4/lib/travis-after-all.js | node
       if [ $? -eq 0 ]; then
          # Link the git checkout directory to a directory called like the extension key, because the uploader requires that.
-         echo "Symlinking current folder to extension folder."
+         echo "Moving checkout to expected folder structure."
          EXTENSION_DIR=$(pwd)
          PARENT_DIR="$EXTENSION_DIR/../"
          cd $PARENT_DIR
-         ln -s $EXTENSION_DIR $EXTENSION_KEY
+         mv $REPRONAME $EXTENSION_KEY
          cd $EXTENSION_KEY
          pwd
 
