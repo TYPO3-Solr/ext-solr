@@ -51,6 +51,14 @@ class ReIndexTaskTest extends IntegrationTest
     protected $indexQueue;
 
     /**
+     * @var array
+     */
+    protected $coreExtensionsToLoad = [
+        'extensionmanager',
+        'scheduler'
+    ];
+
+    /**
      * @return void
      */
     public function setUp()
