@@ -47,7 +47,9 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     /**
      * @var array
      */
-    protected $testExtensionsToLoad = array('typo3conf/ext/solr');
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/solr'
+    ];
 
     /**
      * @return void
