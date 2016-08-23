@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -63,16 +62,6 @@ class FrequentSearchesCommand implements PluginCommand
     protected $isEnabled;
 
     /**
-     * @var \TYPO3\CMS\Core\Cache\CacheFactory
-     */
-    protected $cacheFactory;
-
-    /**
-     * @var \TYPO3\CMS\Core\Cache\CacheManager
-     */
-    protected $cacheManager;
-
-    /**
      * Constructor.
      *
      * @param CommandPluginBase $parentPlugin Parent plugin object.
@@ -91,11 +80,11 @@ class FrequentSearchesCommand implements PluginCommand
         $configuration = $this->parentPlugin->typoScriptConfiguration;
         $this->frequentSearchConfiguration = $configuration->getSearchFrequentSearchesConfiguration();
 
-        $this->cacheInstance = $this->getInitializeCache();
+        $cacheInstance = $this->getInitializeCache();
 
         $this->frequentSearchesService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Search\\FrequentSearches\\FrequentSearchesService',
             $configuration,
-            $this->cacheInstance,
+            $cacheInstance,
             $GLOBALS['TSFE'],
             $GLOBALS['TYPO3_DB']
 
