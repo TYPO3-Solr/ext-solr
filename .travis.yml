@@ -60,9 +60,12 @@ install:
 script:
   - Build/Test/cibuild.sh
 after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.unit.clover
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.integration.clover
+
   - Build/Test/cleanup.sh
   - Build/Release/ter_tag_uploader.sh
-
 cache:
   directories:
     - $HOME/.composer/cache
