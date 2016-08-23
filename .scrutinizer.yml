@@ -8,6 +8,10 @@ filter:
         - 'Classes/*'
 tools:
 
+    external_code_coverage:
+        timeout: 1500
+        runs: 3
+
     php_cpd:
         enabled: true
 
