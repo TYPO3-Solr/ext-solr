@@ -74,6 +74,14 @@ class IndexQueueWorkerTest extends IntegrationTest
      */
     protected $indexQueue;
 
+    /**
+     * @var array
+     */
+    protected $coreExtensionsToLoad = [
+        'extensionmanager',
+        'scheduler'
+    ];
+
     public function setUp()
     {
         parent::setUp();
