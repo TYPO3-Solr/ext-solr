@@ -28,7 +28,9 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Template;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -88,9 +90,8 @@ class FrequentSearchesCommand implements PluginCommand
 
         $configuration = $this->parentPlugin->typoScriptConfiguration;
         $this->frequentSearchConfiguration = $configuration->getSearchFrequentSearchesConfiguration();
-        $this->cacheFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheFactory');
-        $this->cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
-        $this->initializeCache();
+
+        $this->cacheInstance = $this->getInitializeCache();
 
         $this->frequentSearchesService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Search\\FrequentSearches\\FrequentSearchesService',
             $configuration,
@@ -104,20 +105,13 @@ class FrequentSearchesCommand implements PluginCommand
     /**
      * Initializes the cache for this command.
      *
-     * @return void
+     * @return FrontendInterface
      */
-    protected function initializeCache()
+    protected function getInitializeCache()
     {
-        try {
-            $this->cacheInstance = $this->cacheManager->getCache('tx_solr');
-        } catch (NoSuchCacheException  $e) {
-            $this->cacheInstance = $this->cacheFactory->create(
-                'tx_solr',
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['frontend'],
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['backend'],
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr']['options']
-            );
-        }
+        /** @var $cacheManager CacheManager */
+        $cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
+        return $cacheManager->getCache('tx_solr');
     }
 
     /**
