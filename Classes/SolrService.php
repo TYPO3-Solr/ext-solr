@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Solr Service Access
  *
