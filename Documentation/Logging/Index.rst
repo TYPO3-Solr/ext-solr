@@ -20,7 +20,7 @@
 Logging
 =======
 
-When you need to debug somthing in EXT:solr the extension allows you to write several information to the TYPO3 devLog.
+When you need to debug something in EXT:solr the extension allows you to write several information to the TYPO3 devLog.
 This can be helpful to analyze e.g.:
 
 - What is happening during the indexing?

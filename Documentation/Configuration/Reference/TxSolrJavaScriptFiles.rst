@@ -115,7 +115,7 @@ Defines the date picker Javascript library component to use for date range facet
 
 The date picker in jQuery UI is localizable, the localization labels are defined
 in separate files which are loaded depending on the current page's language.
-The localization label files are defined as followes:
+The localization label files are defined as followed:
 
 |
 

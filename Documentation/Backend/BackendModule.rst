@@ -70,7 +70,7 @@ With the stopwords module you can define a list of words that should be excluded
 
 Common usecases are:
 
-* Very often occuring words like "the", "and" ... are excluded are filtered out because they are more or less "noize words".
+* Very often occurring words like "the", "and" ... are excluded are filtered out because they are more or less "noize words".
 * You can add words that you want to avoid from indexing.
 
 
@@ -79,7 +79,7 @@ Synonyms
 
 .. image:: ../Images/Backend/solr-backend-synonyms.png
 
-With the synonyms module you can allow to find documents by words that do not occure in the document but have the same meaning:
+With the synonyms module you can allow to find documents by words that do not occurre in the document but have the same meaning:
 
 * E.g. smartphone, cellphone, mobile, mobilephone
 

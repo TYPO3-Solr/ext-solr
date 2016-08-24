@@ -17,11 +17,11 @@ just by adding a few lines of configuration.
 Facet Types
 ===========
 
-A solr field can contain different type of data, where different facets make sence. The simplest facet is an option "facet".
+A solr field can contain different type of data, where different facets make sense. The simplest facet is an option "facet".
 The "options facet" just contains a list of values and the user can choose one or many of them. A more complex type
 could be a "range facet" on a price field. A facet like this needs to allow to filter on a range of a minimum and a maximum value.
 
-The "type" of a facet can be controlled with the "type" property. When nothing is configured there, the facet will be threated
+The "type" of a facet can be controlled with the "type" property. When nothing is configured there, the facet will be treated
 as option facet.
 
 |
@@ -71,7 +71,7 @@ indexed into solr. Shown in the frontend it will look like this:
 Query Group
 -----------
 
-The query group facet renders an option list, compareable to the options facet, but the single options are not created from
+The query group facet renders an option list, comparable to the options facet, but the single options are not created from
 plain solr field values. They are created from dynamic queries.
 
 A typical usecase could be, when you want to offer the possiblity to filter on the creation date and want to offer options like "yesterday", "last year" or "more then five years".
@@ -208,7 +208,7 @@ When you include this template a date range facet will be shown in the frontend 
 Numeric Range
 -------------
 
-Beside dates ranges are also usefull for numeric values. A typical usecase could be a price slider for a products page.
+Beside dates ranges are also useful for numeric values. A typical usecase could be a price slider for a products page.
 With the user interface you should be able to filter the documents for a certain price range.
 
 In the default partial, we also ship a partial with data attributes here to support any custom implementation.

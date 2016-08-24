@@ -89,5 +89,5 @@ You only need to do this once. Once the spell checker index is initialized it ge
 
 |
 
-Alternatively, since version version:1.2 the spell checker index is built automatically when you run an optimize command on your index. The extension comes with an Optimze Index Task for the scheduler. We recommend to set it up to run once a day.
+Alternatively, since version version:1.2 the spell checker index is built automatically when you run an optimize command on your index. The extension comes with an Optimize Index Task for the scheduler. We recommend to set it up to run once a day.
 
