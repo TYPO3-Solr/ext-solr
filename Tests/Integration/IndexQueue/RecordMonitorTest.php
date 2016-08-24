@@ -25,9 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -35,8 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase for the record monitor
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class RecordMonitorTest extends IntegrationTest
 {
@@ -87,7 +84,7 @@ class RecordMonitorTest extends IntegrationTest
     protected function assertIndexQueueContainsItemAmount($amount)
     {
         $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to contain '.(int) $amount.' items.');
+            'Index queue is empty and was expected to contain ' . (int) $amount . ' items.');
     }
 
     /**
@@ -197,7 +194,6 @@ class RecordMonitorTest extends IntegrationTest
         // pages with uid 1, 10 and 100 should be in index, but 11 not
         $this->assertIndexQueueContainsItemAmount(3);
     }
-
 
     /**
      * @test

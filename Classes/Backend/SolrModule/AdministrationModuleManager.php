@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Administration Module Manager
  *
@@ -45,7 +44,6 @@ class AdministrationModuleManager
      * @inject
      */
     protected $objectManager;
-
 
     /**
      * Registers a Solr administration module

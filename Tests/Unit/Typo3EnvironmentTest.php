@@ -24,15 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\Typo3Environment;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * PHP Unit test for TYPO3 environment information
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class Typo3EnvironmentTest extends UnitTest
 {

@@ -25,15 +25,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
-use ApacheSolrForTypo3\Solr\Query;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for AbstractIndexer
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class AbstractIndexerTest extends UnitTest
 {

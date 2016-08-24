@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,8 +34,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * PHP Unit test for view helper Tx_Solr_viewhelper_Ts
  *
  * @author Timo Webler <timo.webler@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class TsTest extends UnitTest
 {
@@ -66,7 +63,6 @@ class TsTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = '0';
         $GLOBALS['TSFE']->tmpl->setup['config.']['tx_realurl_enable'] = '0';
 
-
         // setup up ts objects
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['detailPage'] = 5050;
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['renderObjects.'] = array(
@@ -86,7 +82,6 @@ class TsTest extends UnitTest
             '<span>argument content with html</span>',
             'third argument content'
         );
-
 
         $cObj = $this->getMockBuilder(ContentObjectRenderer::class)
             ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])

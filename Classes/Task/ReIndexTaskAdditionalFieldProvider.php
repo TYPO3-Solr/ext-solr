@@ -37,8 +37,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * Adds an additional field to specify the Solr server to initialize the index queue for
  *
  * @author Christoph Moeller <support@network-publishing.de>
- * @package TYPO3
- * @subpackage solr
  */
 class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
@@ -75,7 +73,6 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * @var PageRenderer
      */
     protected $pageRenderer = null;
-
 
     /**
      *
@@ -163,7 +160,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      *
      * @param array $submittedData reference to the array containing the data submitted by the user
      * @param SchedulerModuleController $schedulerModule reference to the calling object (Scheduler's BE module)
-     * @return boolean True if validation was ok (or selected class is not relevant), FALSE otherwise
+     * @return bool True if validation was ok (or selected class is not relevant), FALSE otherwise
      */
     public function validateAdditionalFields(
         array &$submittedData,

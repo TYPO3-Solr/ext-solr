@@ -24,13 +24,10 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Remote API related methods
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Api
 {
@@ -39,7 +36,7 @@ class Api
      * Checks whether a string is a valid API key.
      *
      * @param string $apiKey API key to check for validity
-     * @return boolean TRUE if the API key is valid, FALSE otherwise
+     * @return bool TRUE if the API key is valid, FALSE otherwise
      */
     public static function isValidApiKey($apiKey)
     {

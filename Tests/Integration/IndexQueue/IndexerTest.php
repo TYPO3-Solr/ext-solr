@@ -27,18 +27,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the record indexer
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class IndexerTest extends IntegrationTest
 {
@@ -214,11 +208,9 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 
-
-
     /**
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return \Apache_Solr_Response
      */
     protected function addToQueueAndIndexRecord($table, $uid)

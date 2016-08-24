@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Error detector interface
  *
@@ -36,8 +35,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
  * that they get shown on the search results page.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface ErrorDetector
 {

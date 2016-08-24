@@ -25,13 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Calculates the SearchQueryStatistics
  *
  * @author Thomas Hohn <tho@systime.dk>
- * @package TYPO3
- * @subpackage solr
  */
 class StatisticsRepository
 {
@@ -140,7 +137,6 @@ class StatisticsRepository
         return $statisticsRows;
     }
 
-
     /**
      * This method groups rows with the same term and different cound and hits
      * and calculates the average.
@@ -194,7 +190,6 @@ class StatisticsRepository
 
         return $queries;
     }
-
 
     /**
      * This method is used to get an average value from merged statistic rows.

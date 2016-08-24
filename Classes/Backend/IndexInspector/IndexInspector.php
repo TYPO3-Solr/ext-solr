@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Index Inspector to see what documents have been indexed for a selected page.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class IndexInspector extends AbstractFunctionModule
 {
@@ -66,7 +64,7 @@ class IndexInspector extends AbstractFunctionModule
     /**
      * The current page ID.
      *
-     * @var integer
+     * @var int
      */
     private $pageId;
 

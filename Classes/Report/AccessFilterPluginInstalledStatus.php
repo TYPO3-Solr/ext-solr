@@ -34,8 +34,6 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * is installed on the Solr server.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class AccessFilterPluginInstalledStatus implements StatusProviderInterface
 {
@@ -55,7 +53,6 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      * @var string
      */
     const PLUGIN_CLASS_NAME = 'org.typo3.solr.search.AccessFilterQParserPlugin';
-
 
     /**
      * Compiles a collection of solrconfig.xml checks against each configured
@@ -171,7 +168,7 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      * the given Solr server instance.
      *
      * @param SolrService $solrConnection Solr connection to check for the plugin.
-     * @return boolean True if the plugin is installed, FALSE otherwise.
+     * @return bool True if the plugin is installed, FALSE otherwise.
      */
     protected function isPluginInstalled(SolrService $solrConnection)
     {
@@ -190,7 +187,7 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      * Checks whether the installed plugin is current.
      *
      * @param SolrService $solrConnection Solr connection to check for the plugin.
-     * @return boolean True if the plugin is outdated, FALSE if it meets the current version recommendation.
+     * @return bool True if the plugin is outdated, FALSE if it meets the current version recommendation.
      */
     protected function isPluginOutdated(SolrService $solrConnection)
     {

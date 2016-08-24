@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -135,7 +134,6 @@ class SearchResultSetTest extends UnitTest
         $fakeQueryAwareSpellChecker->expects($this->once())->method('initializeSearchComponent');
         $fakeQueryAwareSpellChecker->expects($this->once())->method('setQuery');
 
-
         $this->fakeRegisteredSearchComponents(array($fakeQueryAwareSpellChecker));
         $fakeResponse = $this->getDumbMock('\Apache_Solr_Response');
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 3. search', 0, $fakeResponse);
@@ -158,7 +156,7 @@ class SearchResultSetTest extends UnitTest
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['testProcessor'] = $testProcessor;
         $this->fakeRegisteredSearchComponents(array());
 
-        $fakedSolrResponse = $this->getFixtureContent("fakeResponse.json");
+        $fakedSolrResponse = $this->getFixtureContent('fakeResponse.json');
         $fakeHttpResponse = $this->getDumbMock('\Apache_Solr_HttpTransport_Response');
         $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
 
@@ -174,11 +172,10 @@ class SearchResultSetTest extends UnitTest
 
         $this->assertSame(3, count($documents), 'Did not get 3 documents from fake response');
         $firstResult = $documents[0];
-        $this->assertSame("PAGES", $firstResult->type, 'Could not get modified type from result');
+        $this->assertSame('PAGES', $firstResult->type, 'Could not get modified type from result');
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] = $processSearchResponseBackup;
     }
-
 
     /**
      * @test
@@ -242,7 +239,7 @@ class SearchResultSetTest extends UnitTest
         $this->configurationMock->expects($this->atLeastOnce())->method('getSearchVariantsField')->will($this->returnValue('type'));
 
         $this->fakeRegisteredSearchComponents(array());
-        $fakedSolrResponse = $this->getFixtureContent("fakeCollapsedResponse.json");
+        $fakedSolrResponse = $this->getFixtureContent('fakeCollapsedResponse.json');
         $fakeHttpResponse = $this->getDumbMock('\Apache_Solr_HttpTransport_Response');
         $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
 
@@ -261,7 +258,7 @@ class SearchResultSetTest extends UnitTest
 
     /**
      * @param string $expextedQueryString
-     * @param integer $expectedOffset
+     * @param int $expectedOffset
      * @param \Apache_Solr_Response $fakeResponse
      */
     public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse($expextedQueryString, $expectedOffset, \Apache_Solr_Response $fakeResponse)

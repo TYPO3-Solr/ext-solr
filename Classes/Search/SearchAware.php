@@ -33,8 +33,6 @@ use ApacheSolrForTypo3\Solr\Search;
  * Search awareness interface for extension components.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface SearchAware
 {

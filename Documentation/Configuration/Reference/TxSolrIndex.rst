@@ -127,7 +127,7 @@ Example:
 
 .. code-block:: typoscript
 
-    // enables indexing of tt_news reocrds
+    // enables indexing of tt_news records
     plugin.tx_solr.index.queue.news = 1
     plugin.tx_solr.index.queue.news.fields {
         abstract = short
@@ -259,7 +259,7 @@ queue.[indexConfig].initialization
 
 When initializing the Index Queue through the search backend module the queue tries to determine what records need to be indexed. Usually the default initializer will be enough for this purpose, but this option allows to define a class that will be used to initialize and add records to the Index Queue in special ways.
 
-The extension uses this option for initializing the pages and more specifically to resolve Mount Page trees so they can be indexd too, although only being virtual pages.
+The extension uses this option for initializing the pages and more specifically to resolve Mount Page trees so they can be indexed too, although only being virtual pages.
 
 
 queue.[indexConfig].indexer
@@ -621,7 +621,7 @@ Whether to return related records suitable for a multi value field. If this is d
 :Since: 2.0
 :Default: |, |
 
-When not using multiValue, the related records need to be concatened using a glue string, by default this is ", " (comma followed by space). Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters to be able to have leading or trailing spaces.
+When not using multiValue, the related records need to be concatenated using a glue string, by default this is ", " (comma followed by space). Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters to be able to have leading or trailing spaces.
 
 **relationTableSortingField**
 

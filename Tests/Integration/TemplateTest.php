@@ -24,8 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
-use TYPO3\CMS\Core\FormProtection\Exception;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -33,15 +31,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * TestCase to check if the template parsing works as expected
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class TemplateTest extends IntegrationTest
 {
     public function setUp()
     {
         parent::setUp();
-
 
         $GLOBALS['TYPO3_CONF_VARS']['FE']['addAllowedPaths'] = $this->getFixtureRootPath();
 

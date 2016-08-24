@@ -45,7 +45,7 @@ class FacetOption
     /**
      * Facet option value
      *
-     * @var integer|string
+     * @var int|string
      */
     protected $value;
 
@@ -61,7 +61,7 @@ class FacetOption
      * Number of results that will be returned when applying this facet
      * option's filter to the query.
      *
-     * @var integer
+     * @var int
      */
     protected $numberOfResults;
 
@@ -72,13 +72,12 @@ class FacetOption
      */
     protected $facetConfiguration;
 
-
     /**
      * Constructor.
      *
      * @param string $facetName Facet Name
-     * @param integer|string $facetOptionValue Facet option value
-     * @param integer $facetOptionNumberOfResults number of results to be returned when applying this option's filter
+     * @param int|string $facetOptionValue Facet option value
+     * @param int $facetOptionNumberOfResults number of results to be returned when applying this option's filter
      */
     public function __construct(
         $facetName,
@@ -125,7 +124,7 @@ class FacetOption
      * by checking the GET values in the URL.
      *
      * @param string $facetName Facet name to check against.
-     * @return boolean TRUE if the option is selected, FALSE otherwise
+     * @return bool TRUE if the option is selected, FALSE otherwise
      */
     public function isSelectedInFacet($facetName)
     {
@@ -179,7 +178,7 @@ class FacetOption
     /**
      * Gets the option's value.
      *
-     * @return integer|string The option's value.
+     * @return int|string The option's value.
      */
     public function getValue()
     {
@@ -189,7 +188,7 @@ class FacetOption
     /**
      * Gets the number of results this option yields when applied to the query.
      *
-     * @return integer Number of results
+     * @return int Number of results
      */
     public function getNumberOfResults()
     {

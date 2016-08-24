@@ -36,8 +36,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * Solr Index Queue thus making the indexer re-index the site.
  *
  * @author Christoph Moeller <support@network-publishing.de>
- * @package TYPO3
- * @subpackage solr
  */
 class ReIndexTask extends AbstractTask
 {
@@ -56,12 +54,11 @@ class ReIndexTask extends AbstractTask
      */
     protected $indexingConfigurationsToReIndex = array();
 
-
     /**
      * Purges/commits all Solr indexes, initializes the Index Queue
      * and returns TRUE if the execution was successful
      *
-     * @return boolean Returns TRUE on success, FALSE on failure.
+     * @return bool Returns TRUE on success, FALSE on failure.
      */
     public function execute()
     {

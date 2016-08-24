@@ -24,13 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Search components manager, registration and stuff...
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class SearchComponentManager
 {
@@ -41,7 +38,6 @@ class SearchComponentManager
      * @var array
      */
     protected static $searchComponents = array();
-
 
     /**
      * Registers a search component.

@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * just the search input field.
  *
  * @author Timo Schmidt <timo.schmidt@aoemedia.de>
- * @package TYPO3
- * @subpackage solr
  */
 class Search extends CommandPluginBase
 {

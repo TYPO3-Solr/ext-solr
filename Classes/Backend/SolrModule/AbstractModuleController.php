@@ -179,7 +179,6 @@ abstract class AbstractModuleController extends ActionController implements Admi
         $view->assign('module', $this);
     }
 
-
     /**
      * Checks if the request argument is present an returns it. If not it returns the default value.
      *

@@ -26,10 +26,9 @@ namespace ApacheSolrForTypo3\Solr;
 
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Imaging\Icon;
 
 /**
  * A class to easily create a connection to a Solr server.
@@ -38,8 +37,6 @@ use TYPO3\CMS\Core\Imaging\Icon;
  * duplicate connections are created.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInterface
 {
@@ -57,7 +54,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * connection already exists, it's reused.
      *
      * @param string $host Solr host (optional)
-     * @param integer $port Solr port (optional)
+     * @param int $port Solr port (optional)
      * @param string $path Solr path (optional)
      * @param string $scheme Solr scheme, defaults to http, can be https (optional)
      * @return SolrService A solr connection.
@@ -108,8 +105,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * Gets a Solr configuration for a page ID.
      *
-     * @param integer $pageId A page ID.
-     * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+     * @param int $pageId A page ID.
+     * @param int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
      * @param string $mount Comma list of MountPoint parameters
      * @return array A solr configuration.
      * @throws NoSolrConnectionFoundException
@@ -147,8 +144,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * Gets a Solr connection for a page ID.
      *
-     * @param integer $pageId A page ID.
-     * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+     * @param int $pageId A page ID.
+     * @param int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
      * @param string $mount Comma list of MountPoint parameters
      * @return SolrService A solr connection.
      * @throws NoSolrConnectionFoundException
@@ -172,8 +169,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * Gets a Solr configuration for a root page ID.
      *
-     * @param integer $pageId A root page ID.
-     * @param integer $language The language ID to get the configuration for as the path may differ. Optional, defaults to 0.
+     * @param int $pageId A root page ID.
+     * @param int $language The language ID to get the configuration for as the path may differ. Optional, defaults to 0.
      * @return array A solr configuration.
      * @throws NoSolrConnectionFoundException
      */
@@ -207,8 +204,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * Gets a Solr connection for a root page ID.
      *
-     * @param integer $pageId A root page ID.
-     * @param integer $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
+     * @param int $pageId A root page ID.
+     * @param int $language The language ID to get the connection for as the path may differ. Optional, defaults to 0.
      * @return SolrService A solr connection.
      * @throws NoSolrConnectionFoundException
      */
@@ -305,9 +302,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         return $connections;
     }
 
-
     // updates
-
 
     /**
      * Adds a menu entry to the clear cache menu to detect Solr connections.
@@ -349,7 +344,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * Updates the Solr connections for a specific root page ID / site.
      *
-     * @param integer $rootPageId A site root page id
+     * @param int $rootPageId A site root page id
      */
     public function updateConnectionByRootPageId($rootPageId)
     {
@@ -410,7 +405,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * Gets the configured Solr connection for a specific root page and language ID.
      *
      * @param array $rootPage A root page record with at least title and uid
-     * @param integer $languageId ID of a system language
+     * @param int $languageId ID of a system language
      * @return array A solr connection configuration.
      */
     protected function getConfiguredSolrConnectionByRootPage(
@@ -473,7 +468,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * Gets the language name for a given language ID.
      *
-     * @param integer $languageId language ID
+     * @param int $languageId language ID
      * @return string Language name
      */
     protected function getLanguageName($languageId)
@@ -590,7 +585,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * on the root level (pid = 0).
      *
      * @param array $rootLine A root line as generated by \TYPO3\CMS\Frontend\Page\PageRepository::getRootLine()
-     * @return integer The site root's page Id
+     * @return int The site root's page Id
      */
     protected function getSiteRootPageIdFromRootLine(array $rootLine)
     {

@@ -26,12 +26,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Facet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -66,7 +65,6 @@ class SimpleFacetRendererTest extends UnitTest
         $GLOBALS['TSFE']->csConvObj = new CharsetConverter();
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = '0';
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['templateFiles.']['results'] = 'EXT:solr/Resources/Templates/PiResults/results.htm';
-
 
         $facetName = 'TestFacet';
         $facetOptions = array('testoption' => 1);

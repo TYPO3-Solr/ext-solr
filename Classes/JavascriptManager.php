@@ -24,14 +24,10 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Manger for the javascript files used throughout the extension's plugins.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class JavascriptManager
 {
@@ -68,7 +64,6 @@ class JavascriptManager
      * @var array
      */
     protected $javaScriptTags = array();
-
 
     /**
      * Constructor.

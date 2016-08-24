@@ -24,17 +24,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 
 /**
  * Base class for all integration tests in the EXT:solr project
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 abstract class IntegrationTest extends TYPO3IntegrationTest
 {
@@ -175,7 +173,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     protected function cleanUpSolrServerAndAssertEmpty()
     {
         // cleanup the solr server
-        $result = file_get_contents("http://localhost:8080/solr/core_en/update?stream.body=<delete><query>*:*</query></delete>&commit=true");
+        $result = file_get_contents('http://localhost:8080/solr/core_en/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
         if (strpos($result, '<int name="QTime">') == false) {
             $this->fail('Could not empty solr test index');
         }
@@ -206,7 +204,6 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         $solrContent = file_get_contents('http://localhost:8080/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
     }
-
 
     /**
      * @param string $fixture

@@ -24,18 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for IndexQueueWorkerTaskTest
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class IndexQueueWorkerTaskTest extends UnitTest
 {

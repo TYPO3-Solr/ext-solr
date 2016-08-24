@@ -24,13 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Access;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Signals a wrong format for the access definition of a page or the content.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class RootlineElementFormatException extends \InvalidArgumentException
 {

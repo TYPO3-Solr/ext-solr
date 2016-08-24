@@ -24,17 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class PageIndexerTest extends IntegrationTest
 {
@@ -105,7 +102,6 @@ class PageIndexerTest extends IntegrationTest
         $TSFE->config['config']['index_enable'] = 1;
         $TSFE->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
         $GLOBALS['TSFE'] = $TSFE;
-
 
         /** @var $request \ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest */
         $request = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest');

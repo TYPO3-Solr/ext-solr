@@ -25,11 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Query;
-use ApacheSolrForTypo3\Solr\Search;
-use IteratorAggregate;
-use Traversable;
-
 /**
  * Proxy class for \Apache_Solr_Document to customize \Apache_Solr_Document without
  * changing the library code.
@@ -37,8 +32,6 @@ use Traversable;
  * Implements
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class SearchResult extends \Apache_Solr_Document
 {
@@ -47,7 +40,6 @@ class SearchResult extends \Apache_Solr_Document
      * @var bool
      */
     protected $throwExceptions = false;
-
 
     /**
      * @var SearchResult[]
@@ -115,7 +107,7 @@ class SearchResult extends \Apache_Solr_Document
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsVariant()
     {
@@ -123,7 +115,7 @@ class SearchResult extends \Apache_Solr_Document
     }
 
     /**
-     * @param boolean $isVariant
+     * @param bool $isVariant
      */
     public function setIsVariant($isVariant)
     {

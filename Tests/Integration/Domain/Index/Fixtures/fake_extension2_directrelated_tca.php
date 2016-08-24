@@ -143,7 +143,6 @@ return array(
             )
         ),
 
-
         'editlock' => array(
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',

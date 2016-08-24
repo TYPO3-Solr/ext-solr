@@ -40,13 +40,13 @@ In case a Pull Request is rejected by Travis CI you can follow the link to the b
 
 ### HTML escaping after retrieval from solr
 
-The data ist now esapced right after the retrieval from Solr. In rare cases when you need to store HTML in Solr documents you can use the following configuration to mark these fields as trusted fields and skip the escaping:
+The data ist now escaped right after the retrieval from Solr. In rare cases when you need to store HTML in Solr documents you can use the following configuration to mark these fields as trusted fields and skip the escaping:
 
 plugin.tx_solr.search.trustedFields = my_first_html_field,my_second_html_field
 
 ### Synonym handling (Lowercasing and Evaluation at Index- and Querytime)
 
-Synonyms are now handled at query and index time. The advantage is, that when editing synonyms from the backend module those changes become effective immediatly.
+Synonyms are now handled at query and index time. The advantage is, that when editing synonyms from the backend module those changes become effective immediately.
 
 ### Removed page browser dependency
 

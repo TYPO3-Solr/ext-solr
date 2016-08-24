@@ -31,8 +31,6 @@ use ApacheSolrForTypo3\Solr\Template;
  * Abstract subpart viewhelper
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractSubpartViewHelper implements SubpartViewHelper
 {

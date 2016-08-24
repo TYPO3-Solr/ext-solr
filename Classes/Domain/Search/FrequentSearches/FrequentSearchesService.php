@@ -35,8 +35,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  *
  * @author Dimitri Ebert <dimitri.ebert@dkd.de>
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class FrequentSearchesService
 {

@@ -27,14 +27,11 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Substitute page indexer interface, describes the method an indexer must
  * implement to provide a substitute page document
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface SubstitutePageIndexer
 {

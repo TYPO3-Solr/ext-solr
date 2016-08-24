@@ -24,23 +24,16 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to test the page queue initializer
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class PageTest extends IntegrationTest
 {
@@ -68,12 +61,12 @@ class PageTest extends IntegrationTest
     /**
      * Custom assertion to expect a specific amount of items in the queue.
      *
-     * @param integer $expectedAmount
+     * @param int $expectedAmount
      */
     protected function assertItemsInQueue($expectedAmount)
     {
         $itemCount = $this->indexQueue->getAllItemsCount();
-        $this->assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: '.$expectedAmount);
+        $this->assertSame($itemCount, $expectedAmount, 'Indexqueue contains unexpected amount of items. Expected amount: ' . $expectedAmount);
     }
 
     /**

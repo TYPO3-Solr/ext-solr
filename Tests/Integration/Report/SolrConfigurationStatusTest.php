@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Integration testcase to test the results plugin.
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class SolrConfigurationStatusTest extends IntegrationTest
 {

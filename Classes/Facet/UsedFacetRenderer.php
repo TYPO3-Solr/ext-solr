@@ -55,7 +55,6 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
      */
     protected $filterValue;
 
-
     /**
      * Constructor
      *

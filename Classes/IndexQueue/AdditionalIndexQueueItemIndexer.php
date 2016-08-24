@@ -27,14 +27,11 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Interface that defines the method an indexer must implement to provide
  * additional documents to index for an item being indexed by the Index Queue.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface AdditionalIndexQueueItemIndexer
 {
@@ -43,7 +40,7 @@ interface AdditionalIndexQueueItemIndexer
      * Provides additional documents that should be indexed together with an Index Queue item.
      *
      * @param Item $item The item currently being indexed.
-     * @param integer $language The language uid of the documents
+     * @param int $language The language uid of the documents
      * @param \Apache_Solr_Document $itemDocument The original item document.
      * @return array An array of additional Apache_Solr_Document objects
      */

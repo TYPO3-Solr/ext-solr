@@ -219,7 +219,7 @@ class AdministrationController extends ActionController
     /**
      * Sets the site to work with
      *
-     * @param integer $site Site root page id
+     * @param int $site Site root page id
      * @return void
      */
     public function setSiteAction($site)

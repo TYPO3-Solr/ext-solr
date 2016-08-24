@@ -36,7 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class OverviewModuleController extends AbstractModuleController
 {
 
-
     /**
      * Module name, used to identify a module f.e. in URL parameters.
      *

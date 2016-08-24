@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\Site;
  * Site class tests
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class SiteTest extends IntegrationTest
 {

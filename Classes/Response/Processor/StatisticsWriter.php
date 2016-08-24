@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Response\Processor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @author Dimitri Ebert <dimitri.ebert@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class StatisticsWriter implements ResponseProcessor
 {
@@ -120,7 +117,7 @@ class StatisticsWriter implements ResponseProcessor
      * Internal function to mask portions of the visitor IP address
      *
      * @param string $ip IP address in network address format
-     * @param integer $maskLength Number of octets to reset
+     * @param int $maskLength Number of octets to reset
      * @return string
      */
     protected function applyIpMask($ip, $maskLength)

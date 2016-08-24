@@ -31,8 +31,6 @@ use ApacheSolrForTypo3\Solr\Util;
  * Replaces viewhelpers ###MULTIVALUE:array|glue###
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Multivalue implements ViewHelper
 {
@@ -43,7 +41,6 @@ class Multivalue implements ViewHelper
      * @var string
      */
     protected $glue = ', ';
-
 
     /**
      * Constructor

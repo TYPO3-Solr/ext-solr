@@ -33,8 +33,6 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * is activated or not.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class AllowUrlFOpenStatus implements StatusProviderInterface
 {

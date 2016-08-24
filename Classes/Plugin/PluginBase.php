@@ -26,10 +26,10 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -44,8 +44,6 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @author Timo Schmidt <timo.schmidt@aoemedia.de>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class PluginBase extends AbstractPlugin
 {
@@ -169,9 +167,7 @@ abstract class PluginBase extends AbstractPlugin
      */
     abstract protected function performAction();
 
-
     // Initialization
-
 
     /**
      * Initializes the plugin - configuration, language, caching, search...
@@ -189,7 +185,6 @@ abstract class PluginBase extends AbstractPlugin
         $this->pi_setPiVarDefaults();
         $this->pi_loadLL();
         $this->pi_initPIflexForm();
-
 
         $this->overrideTyposcriptWithFlexformSettings();
 
@@ -364,7 +359,6 @@ abstract class PluginBase extends AbstractPlugin
             'llKey' => $this->LLkey
         ));
 
-
         // can be used for view helpers that need configuration during initialization
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'] as $classReference) {
@@ -429,9 +423,7 @@ abstract class PluginBase extends AbstractPlugin
         return $template;
     }
 
-
     // Rendering
-
 
     /**
      * This method executes the requested commands and applies the changes to
@@ -489,9 +481,7 @@ abstract class PluginBase extends AbstractPlugin
         return $content;
     }
 
-
     // Helper methods
-
 
     /**
      * Determines the template file from the configuration.
@@ -555,7 +545,7 @@ abstract class PluginBase extends AbstractPlugin
      * Gets the target page Id for links. Might have been set through either
      * flexform or TypoScript. If none is set, TSFE->id is used.
      *
-     * @return integer The page Id to be used for links
+     * @return int The page Id to be used for links
      */
     public function getLinkTargetPageId()
     {

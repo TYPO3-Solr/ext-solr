@@ -35,8 +35,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * form command class to render the "simple" search form
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class FormCommand implements PluginCommand
 {

@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * by the "Use as Root Page" flag.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Site
 {
@@ -71,7 +69,7 @@ class Site
     /**
      * Constructor.
      *
-     * @param integer $rootPageId Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
+     * @param int $rootPageId Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
      */
     public function __construct($rootPageId)
     {
@@ -91,7 +89,7 @@ class Site
     /**
      * Gets the Site for a specific page Id.
      *
-     * @param integer $pageId The page Id to get a Site object for.
+     * @param int $pageId The page Id to get a Site object for.
      * @return Site Site for the given page Id.
      */
     public static function getSiteByPageId($pageId)
@@ -141,7 +139,7 @@ class Site
     /**
      * Gets all available TYPO3 sites with Solr configured.
      *
-     * @param boolean $stopOnInvalidSite
+     * @param bool $stopOnInvalidSite
      *
      * @return Site[] An array of available sites
      */
@@ -173,7 +171,7 @@ class Site
     /**
      * Returns the first available Site.
      *
-     * @param boolean $stopOnInvalidSite
+     * @param bool $stopOnInvalidSite
      *
      * @return Site
      */
@@ -186,7 +184,7 @@ class Site
     /**
      * Gets the site's root page ID (uid).
      *
-     * @return integer The site's root page ID.
+     * @return int The site's root page ID.
      */
     public function getRootPageId()
     {
@@ -252,7 +250,7 @@ class Site
      * config.sys_language_uid. If sys_language_uid is not set, 0 is assumed to
      * be the default.
      *
-     * @return integer The site's default language.
+     * @return int The site's default language.
      */
     public function getDefaultLanguage()
     {
@@ -276,8 +274,8 @@ class Site
      * Generates a list of page IDs in this site. Attention, this includes
      * all page types! Deleted pages are not included.
      *
-     * @param integer|string $rootPageId Page ID from where to start collection sub pages
-     * @param integer $maxDepth Maximum depth to decend into the site tree
+     * @param int|string $rootPageId Page ID from where to start collection sub pages
+     * @param int $maxDepth Maximum depth to decend into the site tree
      * @return array Array of pages (IDs) in this site
      */
     public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999)

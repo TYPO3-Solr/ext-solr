@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\Util;
  * A field processor that converts timestamps to ISO dates as needed by Solr
  *
  * @author Andreas Allacher <andreas.allacher@cyberhouse.at>
- * @package TYPO3
- * @subpackage solr
  */
 class TimestampToUtcIsoDate implements FieldProcessor
 {

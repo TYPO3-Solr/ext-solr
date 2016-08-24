@@ -3,7 +3,7 @@
 IndexQueue Configuration
 ========================
 
-As you allready learned you can index pages very easy with EXT:solr and setup a search for pages in seconds. Beside pages, there might be other records in your TYPO3 CMS that you want to have available in your search results.
+As you already learned you can index pages very easy with EXT:solr and setup a search for pages in seconds. Beside pages, there might be other records in your TYPO3 CMS that you want to have available in your search results.
 
 Indexing custom records
 -----------------------

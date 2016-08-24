@@ -24,19 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\FrequentSearches;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\AbstractPluginTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Page\PageGenerator;
 
 /**
  * Integration testcase to test the search plugin.
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class SearchTest extends AbstractPluginTest
 {

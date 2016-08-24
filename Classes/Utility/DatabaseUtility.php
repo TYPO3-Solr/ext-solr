@@ -24,13 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Database utility class to do things the core currently does not support
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class DatabaseUtility
 {

@@ -34,8 +34,6 @@ use ApacheSolrForTypo3\Solr\Util;
  * QueryAnalyzer form modifier, outputs parsed lucene query
  *
  * @author Hans Höchtl <hans.hoechtl@typovision.de>
- * @package TYPO3
- * @subpackage solr
  */
 class QueryAnalyzerFormModifier implements FormModifier, CommandPluginAware
 {

@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use InvalidArgumentException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -35,8 +34,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * Utility class for tx_solr
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Util
 {
@@ -45,9 +42,9 @@ class Util
     /**
      * Generates a document id for documents representing page records.
      *
-     * @param integer $uid The page's uid
-     * @param integer $typeNum The page's typeNum
-     * @param integer $language the language id, defaults to 0
+     * @param int $uid The page's uid
+     * @param int $typeNum The page's typeNum
+     * @param int $language the language id, defaults to 0
      * @param string $accessGroups comma separated list of uids of groups that have access to that page
      * @param string $mountPointParameter The mount point parameter that is used to access the page.
      * @return string The document id for that page
@@ -79,8 +76,8 @@ class Util
      * Generates a document id in the form $siteHash/$type/$uid.
      *
      * @param string $table The records table name
-     * @param integer $pid The record's pid
-     * @param integer $uid The record's uid
+     * @param int $pid The record's pid
+     * @param int $uid The record's uid
      * @param string $additionalIdParameters Additional ID parameters
      * @return string A document id
      */
@@ -103,7 +100,7 @@ class Util
     /**
      * Converts a date from unix timestamp to ISO 8601 format.
      *
-     * @param integer $timestamp unix timestamp
+     * @param int $timestamp unix timestamp
      * @return string the date in ISO 8601 format
      */
     public static function timestampToIso($timestamp)
@@ -115,7 +112,7 @@ class Util
      * Converts a date from ISO 8601 format to unix timestamp.
      *
      * @param string $isoTime date in ISO 8601 format
-     * @return integer unix timestamp
+     * @return int unix timestamp
      */
     public static function isoToTimestamp($isoTime)
     {
@@ -127,7 +124,7 @@ class Util
     /**
      * Converts a date from unix timestamp to ISO 8601 format in UTC timezone.
      *
-     * @param integer $timestamp unix timestamp
+     * @param int $timestamp unix timestamp
      * @return string the date in ISO 8601 format
      */
     public static function timestampToUtcIso($timestamp)
@@ -139,7 +136,7 @@ class Util
      * Converts a date from ISO 8601 format in UTC timezone to unix timestamp.
      *
      * @param string $isoTime date in ISO 8601 format
-     * @return integer unix timestamp
+     * @return int unix timestamp
      */
     public static function utcIsoToTimestamp($isoTime)
     {
@@ -217,9 +214,9 @@ class Util
      * Gets the Solr configuration for a specific root page id.
      * To be used from the backend.
      *
-     * @param integer $pageId Id of the (root) page to get the Solr configuration from.
-     * @param boolean $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
-     * @param integer $language System language uid, optional, defaults to 0
+     * @param int $pageId Id of the (root) page to get the Solr configuration from.
+     * @param bool $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+     * @param int $language System language uid, optional, defaults to 0
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
     public static function getSolrConfigurationFromPageId(
@@ -236,10 +233,10 @@ class Util
      * Language usage may be disabled to get the default TypoScript
      * configuration.
      *
-     * @param integer $pageId Id of the (root) page to get the Solr configuration from.
+     * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
-     * @param boolean $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
-     * @param integer|boolean $language System language uid or FALSE to disable language usage, optional, defaults to 0
+     * @param bool $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
+     * @param int|bool $language System language uid or FALSE to disable language usage, optional, defaults to 0
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
     public static function getConfigurationFromPageId(
@@ -366,9 +363,9 @@ class Util
     /**
      * Initializes the TSFE for a given page ID and language.
      *
-     * @param integer $pageId The page id to initialize the TSFE for
-     * @param integer $language System language uid, optional, defaults to 0
-     * @param boolean $useCache Use cache to reuse TSFE
+     * @param int $pageId The page id to initialize the TSFE for
+     * @param int $language System language uid, optional, defaults to 0
+     * @param bool $useCache Use cache to reuse TSFE
      * @return void
      */
     public static function initializeTsfe(
@@ -440,9 +437,9 @@ class Util
     /**
      * Determines the rootpage ID for a given page.
      *
-     * @param integer $pageId A page ID somewhere in a tree.
+     * @param int $pageId A page ID somewhere in a tree.
      * @param bool $forceFallback Force the explicit detection and do not use the current frontend root line
-     * @return integer The page's tree branch's root page ID
+     * @return int The page's tree branch's root page ID
      */
     public static function getRootPageId($pageId = 0, $forceFallback = false)
     {
@@ -474,7 +471,7 @@ class Util
      * Checks whether a given root line contains a page marked as root page.
      *
      * @param array $rootLine A root line array of page records
-     * @return boolean TRUE if the root line contains a root page record, FALSE otherwise
+     * @return bool TRUE if the root line contains a root page record, FALSE otherwise
      */
     protected static function rootlineContainsRootPage(array $rootLine)
     {
@@ -493,8 +490,8 @@ class Util
     /**
      * Takes a page Id and checks whether the page is marked as root page.
      *
-     * @param integer $pageId Page ID
-     * @return boolean TRUE if the page is marked as root page, FALSE otherwise
+     * @param int $pageId Page ID
+     * @return bool TRUE if the page is marked as root page, FALSE otherwise
      */
     public static function isRootPage($pageId)
     {
@@ -538,7 +535,7 @@ class Util
      *   __all - Adds all domains as allowed sites
      *   * - Same as __all
      *
-     * @param integer $pageId A page ID that is then resolved to the site it belongs to
+     * @param int $pageId A page ID that is then resolved to the site it belongs to
      * @param string $allowedSitesConfiguration TypoScript setting for allowed sites
      * @return string List of allowed sites/domains, magic keywords resolved
      */
@@ -569,8 +566,8 @@ class Util
      * Check if record ($table, $uid) is a workspace record
      *
      * @param string $table The table the record belongs to
-     * @param integer $uid The record's uid
-     * @return boolean TRUE if the record is in a draft workspace, FALSE if it's a LIVE record
+     * @param int $uid The record's uid
+     * @return bool TRUE if the record is in a draft workspace, FALSE if it's a LIVE record
      */
     public static function isDraftRecord($table, $uid)
     {
@@ -592,7 +589,7 @@ class Util
      *
      * @param string $tableName The record's table name
      * @param array $record The record to check
-     * @return boolean TRUE if the record is a language overlay, FALSE otherwise
+     * @return bool TRUE if the record is a language overlay, FALSE otherwise
      */
     public static function isLocalizedRecord($tableName, array $record)
     {
@@ -615,7 +612,7 @@ class Util
      *
      * @param array $pageRecord The pages database row
      *
-     * @return boolean TRUE if the page type is allowed, otherwise FALSE
+     * @return bool TRUE if the page type is allowed, otherwise FALSE
      */
     public static function isAllowedPageType(array $pageRecord)
     {
@@ -632,7 +629,7 @@ class Util
     /**
      * Get allowed page types
      *
-     * @param integer $pageId Page ID
+     * @param int $pageId Page ID
      *
      * @return array Allowed page types to compare to a doktype of a page record
      */
@@ -646,7 +643,7 @@ class Util
     /**
      * Method to check if a page exists.
      *
-     * @param integer $pageId
+     * @param int $pageId
      * @return bool
      */
     public static function pageExists($pageId)

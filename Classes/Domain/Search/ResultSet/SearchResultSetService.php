@@ -25,14 +25,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Plugin\PluginAware;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
-use ApacheSolrForTypo3\Solr\Search\QueryAware;
 use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\Search\QueryAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -43,8 +41,6 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  * It encapsulates the logic to trigger a search in order to be able to reuse it in multiple places.
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class SearchResultSetService implements SingletonInterface
 {
@@ -59,7 +55,7 @@ class SearchResultSetService implements SingletonInterface
     /**
      * Track, if the number of results per page has been changed by the current request
      *
-     * @var boolean
+     * @var bool
      */
     protected $resultsPerPageChanged = false;
 
@@ -67,7 +63,6 @@ class SearchResultSetService implements SingletonInterface
      * @var \ApacheSolrForTypo3\Solr\Search
      */
     protected $search;
-
 
     /**
      * @var SearchResultSet
@@ -151,7 +146,7 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
-     * @param boolean $usePluginAwareComponents
+     * @param bool $usePluginAwareComponents
      */
     public function setUsePluginAwareComponents($usePluginAwareComponents)
     {
@@ -159,7 +154,7 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getUsePluginAwareComponents()
     {
@@ -167,7 +162,7 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
-     * @param boolean $useQueryAwareComponents
+     * @param bool $useQueryAwareComponents
      */
     public function setUseQueryAwareComponents($useQueryAwareComponents)
     {
@@ -175,7 +170,7 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getUseQueryAwareComponents()
     {
@@ -187,7 +182,7 @@ class SearchResultSetService implements SingletonInterface
      * the initialized query object, when a search should be executed.
      *
      * @param string $rawQuery
-     * @param integer $resultsPerPage
+     * @param int $resultsPerPage
      * @return Query
      */
     protected function getPreparedQuery($rawQuery, $resultsPerPage)
@@ -251,7 +246,7 @@ class SearchResultSetService implements SingletonInterface
      * server as the return value is used in the Solr "rows" GET parameter.
      *
      * @param string $rawQuery
-     * @param integer|null $requestedPerPage
+     * @param int|null $requestedPerPage
      * @return int number of results to show per page
      */
     protected function getNumberOfResultsPerPage($rawQuery, $requestedPerPage = null)
@@ -392,7 +387,7 @@ class SearchResultSetService implements SingletonInterface
         $searchResultClassName = $this->getResultClassName();
         $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
         if (!$result instanceof SearchResult) {
-            throw new \InvalidArgumentException("Could not create result object with class: " . (string) $searchResultClassName, 1470037679);
+            throw new \InvalidArgumentException('Could not create result object with class: ' . (string) $searchResultClassName, 1470037679);
         }
 
         return $result;

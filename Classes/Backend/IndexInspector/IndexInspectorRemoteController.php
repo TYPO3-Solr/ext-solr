@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Remote Controller to provide document data for the Index Inspector.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class IndexInspectorRemoteController
 {
@@ -42,7 +40,7 @@ class IndexInspectorRemoteController
     /**
      * The current page ID.
      *
-     * @var integer
+     * @var int
      */
     protected $pageId = 0;
 
@@ -57,7 +55,7 @@ class IndexInspectorRemoteController
      * Initialization method to be executed when receiving an ExtDirect call is
      * received.
      *
-     * @param integer $pageId ID of the current page, the pages' table uid column
+     * @param int $pageId ID of the current page, the pages' table uid column
      * @throws \InvalidArgumentException if page ID is 0 or not an integer
      */
     protected function initialize($pageId)
@@ -87,7 +85,7 @@ class IndexInspectorRemoteController
     /**
      * Index Action, provides an array of documents indexed for a given page.
      *
-     * @param integer $pageId The current page's uid.
+     * @param int $pageId The current page's uid.
      * @return \stdClass
      */
     public function indexAction($pageId)

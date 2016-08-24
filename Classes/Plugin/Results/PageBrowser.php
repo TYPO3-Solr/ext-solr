@@ -48,7 +48,6 @@ class PageBrowser
     protected $labels = array();
     protected $contentObject = null;
 
-
     /**
      * PageBrowser constructor.
      *

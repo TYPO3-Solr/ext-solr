@@ -22,13 +22,10 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Update class for the extension manager.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class ext_update
 {
@@ -36,7 +33,7 @@ class ext_update
     /**
      * Determines whether the update menu entry should by shown.
      *
-     * @return boolean TRUE if we need ti run an update, FALSE otherwise
+     * @return bool TRUE if we need ti run an update, FALSE otherwise
      */
     public function access()
     {
@@ -46,7 +43,7 @@ class ext_update
     /**
      * Checks for old static includes.
      *
-     * @return boolean TRUE if old static includes are found, FALSE if everything's ok
+     * @return bool TRUE if old static includes are found, FALSE if everything's ok
      */
     protected function needsStaticIncludeUpdate()
     {

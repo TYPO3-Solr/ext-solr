@@ -25,18 +25,14 @@ namespace ApacheSolrForTypo3\Solr\Backend;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Form\FormResultCompiler;
 use TYPO3\CMS\Backend\Form\NodeFactory;
-use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Index Queue indexing configuration selector form field.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class IndexingConfigurationSelectorField
 {
@@ -61,7 +57,6 @@ class IndexingConfigurationSelectorField
      * @var array
      */
     protected $selectedValues = array();
-
 
     /**
      * Constructor

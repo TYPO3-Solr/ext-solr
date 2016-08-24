@@ -34,8 +34,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
  * Index Queue Frontend Helper interface.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface FrontendHelper
 {

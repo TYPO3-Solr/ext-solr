@@ -42,7 +42,6 @@ namespace ApacheSolrForTypo3\Solr\System\Util;
  *
  * the example above will output "bla"
  *
- * @package ApacheSolrForTypo3\Solr\System\Util
  */
 class ArrayAccessor
 {
@@ -65,7 +64,7 @@ class ArrayAccessor
     /**
      * @param array $data
      * @param string $pathSeparator
-     * @param boolean $includePathSeparatorInKeys
+     * @param bool $includePathSeparatorInKeys
      */
     public function __construct(array $data = array(), $pathSeparator = ':', $includePathSeparatorInKeys = false)
     {
@@ -145,7 +144,7 @@ class ArrayAccessor
 
     /**
      * @param $path
-     * @return boolean
+     * @return bool
      */
     public function has($path)
     {

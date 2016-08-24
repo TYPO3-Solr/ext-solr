@@ -32,8 +32,6 @@ use TYPO3\CMS\Reports\Status;
  * Integration test for the schema status report
  *
  * @author Timo Hund
- * @package TYPO3
- * @subpackage solr
  */
 class SchemaStatusTest extends IntegrationTest
 {

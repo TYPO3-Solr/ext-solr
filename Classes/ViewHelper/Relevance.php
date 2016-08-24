@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Replaces view helpers ###RELEVANCE:###RESULT_DOCUMENT######
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Relevance implements ViewHelper
 {
@@ -54,7 +52,6 @@ class Relevance implements ViewHelper
      * @var float
      */
     protected $maxScore = 0.0;
-
 
     /**
      * Constructor

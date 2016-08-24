@@ -67,7 +67,7 @@ class LinkBuilder
     /**
      * Link target page ID.
      *
-     * @var integer
+     * @var int
      */
     protected $linkTargetPageId;
 
@@ -85,7 +85,6 @@ class LinkBuilder
      * @var array
      */
     protected $unwantedUrlParameters = array('resultsPerPage', 'page');
-
 
     /**
      * Constructor.
@@ -108,7 +107,7 @@ class LinkBuilder
     /**
      * Gets the target page Id for links.
      *
-     * @return integer Page Id links are going to point to.
+     * @return int Page Id links are going to point to.
      */
     public function getLinkTargetPageId()
     {
@@ -118,7 +117,7 @@ class LinkBuilder
     /**
      * Sets the target page Id for links
      *
-     * @param integer $pageId Page Id links shall point to.
+     * @param int $pageId Page Id links shall point to.
      */
     public function setLinkTargetPageId($pageId)
     {
@@ -216,7 +215,6 @@ class LinkBuilder
         if (!empty($keywords)) {
             $queryGetParameter = '&q=' . $keywords;
         }
-
 
         $linkConfiguration = array(
             'useCacheHash' => false,

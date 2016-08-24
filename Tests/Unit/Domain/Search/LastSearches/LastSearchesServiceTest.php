@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -119,7 +118,7 @@ class LastSearchesServiceTest extends UnitTest
     }
 
     /**
-     * @param integer $limit
+     * @param int $limit
      */
     protected function fakeLastSearchLimit($limit)
     {

@@ -34,8 +34,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * depending on the configuration.
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class LastSearchesService
 {
@@ -136,7 +134,7 @@ class LastSearchesService
     /**
      * Gets the last searched keywords from the database
      *
-     * @param integer|bool $limit
+     * @param int|bool $limit
      * @return array An array containing the last searches of the current user
      */
     protected function getLastSearchesFromDatabase($limit = false)
@@ -222,7 +220,7 @@ class LastSearchesService
     /**
      * Gets the sequence id for the next search entry.
      *
-     * @return integer The id to be used as the next sequence id for storing the last search keywords.
+     * @return int The id to be used as the next sequence id for storing the last search keywords.
      */
     protected function getNextSequenceId()
     {

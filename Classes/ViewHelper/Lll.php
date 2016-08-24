@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Replaces viewhelpers ###LLL:languageKey###
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Lll implements ViewHelper
 {
@@ -187,7 +185,6 @@ class Lll implements ViewHelper
         } else {
             $label = $this->localLang[$locallang]['default'][$labelKey];
         }
-
 
         // TYPO3 4.6 workaround until we support xliff
         if (is_array($label)) {

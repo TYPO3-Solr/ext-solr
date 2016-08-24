@@ -24,15 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * PHP Unit test for connection manager
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class ConnectionManagerTest extends UnitTest
 {
@@ -94,7 +92,7 @@ class ConnectionManagerTest extends UnitTest
      * @param string $port
      * @param string $path
      * @param string $scheme
-     * @param boolean $expectsException
+     * @param bool $expectsException
      * @param string $expectedConnectionString
      * @return void
      */
