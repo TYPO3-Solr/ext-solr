@@ -24,13 +24,10 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Provides common methods for field processors creating a hierarchy.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractHierarchyProcessor
 {

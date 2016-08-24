@@ -61,8 +61,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * instead of using AND as it would be the case with content elements.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Rootline
 {
@@ -136,7 +134,7 @@ class Rootline
     /**
      * Gets the Access Rootline for a specific page Id.
      *
-     * @param integer $pageId The page Id to generate the Access Rootline for.
+     * @param int $pageId The page Id to generate the Access Rootline for.
      * @param string $mountPointParameter The mount point parameter for generating the rootline.
      * @return \ApacheSolrForTypo3\Solr\Access\Rootline Access Rootline for the given page Id.
      */

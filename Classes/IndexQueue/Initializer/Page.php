@@ -27,8 +27,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
@@ -39,8 +39,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * pages.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Page extends AbstractInitializer
 {
@@ -82,7 +80,7 @@ class Page extends AbstractInitializer
      * Initializes Index Queue page items for a site. Includes regular pages
      * and mounted pages - no nested mount page structures though.
      *
-     * @return boolean TRUE if initialization was successful, FALSE on error.
+     * @return bool TRUE if initialization was successful, FALSE on error.
      */
     public function initialize()
     {
@@ -96,7 +94,7 @@ class Page extends AbstractInitializer
      * Initialize a single page that is part of a mounted tree.
      *
      * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
-     * @param integer $mountPageId The ID of the mounted page
+     * @param int $mountPageId The ID of the mounted page
      */
     public function initializeMountedPage(array $mountProperties, $mountPageId)
     {
@@ -113,7 +111,7 @@ class Page extends AbstractInitializer
      * and added to the Index Queue as if they were actually present below the
      * Mount Page.
      *
-     * @return boolean TRUE if initialization of the Mount Pages was successful, FALSE otherwise
+     * @return bool TRUE if initialization of the Mount Pages was successful, FALSE otherwise
      */
     protected function initializeMountPages()
     {
@@ -180,7 +178,7 @@ class Page extends AbstractInitializer
      * Checks whether a Mount Page is properly configured.
      *
      * @param array $mountPage A mount page
-     * @return boolean TRUE if the Mount Page is OK, FALSE otherwise
+     * @return bool TRUE if the Mount Page is OK, FALSE otherwise
      */
     protected function validateMountPage(array $mountPage)
     {
@@ -222,8 +220,8 @@ class Page extends AbstractInitializer
      * whether it accessible in the frontend. So the record must exist
      * (deleted = 0) and must not be hidden (hidden = 0).
      *
-     * @param integer $mountedPageId Mounted page ID
-     * @return boolean TRUE if the page is accessible in the frontend, FALSE otherwise.
+     * @param int $mountedPageId Mounted page ID
+     * @return bool TRUE if the page is accessible in the frontend, FALSE otherwise.
      */
     protected function mountedPageExists($mountedPageId)
     {
@@ -320,9 +318,7 @@ class Page extends AbstractInitializer
         . '-' . $mountProperties['mountPageOverlayed'];
     }
 
-
     // Mount Page resolution
-
 
     /**
      * Finds the mount pages in the current site.
@@ -347,7 +343,7 @@ class Page extends AbstractInitializer
     /**
      * Gets all the pages from a mounted page tree.
      *
-     * @param integer $mountPageSourceId
+     * @param int $mountPageSourceId
      * @return array An array of page IDs in the mounted page tree
      */
     protected function resolveMountPageTree($mountPageSourceId)

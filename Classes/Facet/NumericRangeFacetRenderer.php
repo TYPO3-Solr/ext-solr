@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Michiel Roos <michiel@maxserv.nl>
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class NumericRangeFacetRenderer extends AbstractFacetRenderer
 {
@@ -136,8 +134,8 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
     /**
      * Adds the javascript required to activate the range sliders on the page.
      *
-     * @param integer $handle1Position Position of the left handle
-     * @param integer $handle2Position Position of the right handle
+     * @param int $handle1Position Position of the left handle
+     * @param int $handle2Position Position of the right handle
      * @return string generated JavaScript to render the jQuery slider
      */
     protected function getRangeSliderJavaScript(

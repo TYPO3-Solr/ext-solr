@@ -36,8 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Command to list frequent searched terms.
  *
  * @author Dimitri Ebert <dimitri.ebert@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class FrequentSearchesCommand implements PluginCommand
 {

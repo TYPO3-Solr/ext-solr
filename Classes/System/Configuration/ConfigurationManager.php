@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Singleton
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class ConfigurationManager implements SingletonInterface
 {

@@ -33,8 +33,6 @@ use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
  * ResultDocumentModifier interface, allows to modify search result documents
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface ResultDocumentModifier
 {

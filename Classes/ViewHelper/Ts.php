@@ -33,8 +33,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  * Replaces viewhelpers ###TS:path.to.some.ts.property.or.content.object###
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Ts implements ViewHelper
 {
@@ -62,7 +60,6 @@ class Ts implements ViewHelper
     public function execute(array $arguments = array())
     {
         $typoScriptPath = array_shift($arguments);
-
 
         // TODO add a feature to resolve content objects
         if (count($arguments)) {
@@ -105,7 +102,6 @@ class Ts implements ViewHelper
                 $cObj->start($data);
             }
 
-
             $value = $cObj->cObjGetSingle(
                 $pathBranch[$lastPathSegment],
                 $pathBranch[$lastPathSegment . '.']
@@ -122,7 +118,6 @@ class Ts implements ViewHelper
     {
         $this->contentObject = $contentObject;
     }
-
 
     /**
      * Returns the viewhelper's internal cObj. If it has not been used yet, a

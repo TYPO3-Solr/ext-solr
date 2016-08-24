@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Filter encoder to build Solr hierarchy queries from tx_solr[filter]
  *
@@ -39,7 +38,6 @@ class Hierarchy implements FilterEncoder
      * @var string
      */
     const DELIMITER = '/';
-
 
     /**
      * Takes a filter value and encodes it to a human readable format to be

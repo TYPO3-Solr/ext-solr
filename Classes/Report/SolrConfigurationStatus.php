@@ -35,8 +35,6 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * extension is ok.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class SolrConfigurationStatus implements StatusProviderInterface
 {

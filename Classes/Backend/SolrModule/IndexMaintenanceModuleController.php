@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Index Maintenance Module
@@ -49,7 +48,6 @@ class IndexMaintenanceModuleController extends AbstractModuleController
      * @var string
      */
     protected $moduleTitle = 'Index Maintenance';
-
 
     /**
      * Index action, shows an overview of available index maintenance operations.

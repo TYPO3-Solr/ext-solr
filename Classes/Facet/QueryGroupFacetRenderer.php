@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Query group facet renderer.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class QueryGroupFacetRenderer extends SimpleFacetRenderer
 {

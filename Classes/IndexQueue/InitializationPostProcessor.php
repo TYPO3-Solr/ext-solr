@@ -33,8 +33,6 @@ use ApacheSolrForTypo3\Solr\Site;
  * Interface to post process initialization of the Index Queue.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface InitializationPostProcessor
 {

@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * indexers.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractIndexer
 {
@@ -43,7 +41,6 @@ abstract class AbstractIndexer
      * @var string
      */
     protected $type = '';
-
 
     /**
      * Holds field names that are denied to overwrite in thy indexing configuration.
@@ -194,7 +191,6 @@ abstract class AbstractIndexer
         return $fieldValue;
     }
 
-
     // Utility methods
 
     /**
@@ -204,7 +200,7 @@ abstract class AbstractIndexer
      *
      * @param array $indexingConfiguration Current item's indexing configuration
      * @param string $solrFieldName Current field being indexed
-     * @return boolean TRUE if the value is expected to be serialized, FALSE otherwise
+     * @return bool TRUE if the value is expected to be serialized, FALSE otherwise
      */
     public static function isSerializedValue(
         array $indexingConfiguration,

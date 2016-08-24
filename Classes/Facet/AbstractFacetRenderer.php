@@ -34,8 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Facet renderer.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractFacetRenderer implements FacetRenderer
 {
@@ -79,7 +77,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
     /**
      * Link target page id.
      *
-     * @var integer
+     * @var int
      */
     protected $linkTargetPageId = 0;
 
@@ -89,7 +87,6 @@ abstract class AbstractFacetRenderer implements FacetRenderer
      * @var LinkBuilder
      */
     protected $queryLinkBuilder;
-
 
     /**
      * Constructor.

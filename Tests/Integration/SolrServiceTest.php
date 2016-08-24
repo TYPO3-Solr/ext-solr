@@ -29,8 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase to check if the solr service is working as expected.
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class SolrServiceTest extends IntegrationTest
 {

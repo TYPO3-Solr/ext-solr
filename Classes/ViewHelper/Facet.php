@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Facet extends AbstractSubpartViewHelper
 {
@@ -60,7 +58,7 @@ class Facet extends AbstractSubpartViewHelper
     /**
      * Returns the configured targetPage and does a fallback on the current page if nothing was configured.
      *
-     * @return integer
+     * @return int
      */
     protected function getTargetPageId()
     {

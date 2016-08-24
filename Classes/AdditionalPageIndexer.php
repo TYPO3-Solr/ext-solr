@@ -27,14 +27,11 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Interface that defines the method an indexer must implement to provide
  * additional documents to index for a page being indexed.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface AdditionalPageIndexer
 {

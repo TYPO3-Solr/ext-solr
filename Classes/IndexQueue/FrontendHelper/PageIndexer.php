@@ -35,8 +35,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * index the page.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class PageIndexer extends AbstractFrontendHelper
 {
@@ -61,7 +59,6 @@ class PageIndexer extends AbstractFrontendHelper
      * @var array
      */
     protected $responseData = array();
-
 
     /**
      * Activates a frontend helper by registering for hooks and other
@@ -103,11 +100,9 @@ class PageIndexer extends AbstractFrontendHelper
         return $this->responseData;
     }
 
-
     #
     # Indexer authorisation for access restricted pages / content
     #
-
 
     /**
      * Fakes a logged in user to retrieve access restricted content.
@@ -198,7 +193,7 @@ class PageIndexer extends AbstractFrontendHelper
      * Determines the highest priority of all registered authentication
      * services.
      *
-     * @return integer Highest priority of all registered authentication service
+     * @return int Highest priority of all registered authentication service
      */
     protected function getHighestAuthenticationServicePriority()
     {
@@ -215,11 +210,9 @@ class PageIndexer extends AbstractFrontendHelper
         return $highestPriority;
     }
 
-
     #
     # Indexing
     #
-
 
     /**
      * Generates the current page's URL.

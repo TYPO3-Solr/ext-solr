@@ -24,15 +24,12 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Content extraction class for TYPO3 pages.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Typo3PageContentExtractor extends HtmlContentExtractor
 {
@@ -96,7 +93,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         $doc->loadHTML('<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . $indexableContent);
         $xpath = new \DOMXPath($doc);
         foreach ($excludeClasses as $excludePart) {
-            $elements = $xpath->query("//*[contains(@class,'".$excludePart."')]");
+            $elements = $xpath->query("//*[contains(@class,'" . $excludePart . "')]");
             if (count($elements) == 0) {
                 continue;
             }

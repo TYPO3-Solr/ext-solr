@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * PHP Unit test for relevance view helper (ApacheSolrForTypo3\Solr\ViewHelper\Relevance)
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class RelevanceTest extends AbstractViewHelperTest
 {
@@ -91,7 +89,7 @@ class RelevanceTest extends AbstractViewHelperTest
      * @test
      *
      * @param string $document the current document
-     * @param boolean $expectsException
+     * @param bool $expectsException
      * @param mixed $expectedResult
      * @return void
      */
@@ -129,8 +127,8 @@ class RelevanceTest extends AbstractViewHelperTest
      * @test
      *
      * @param string $document the current document
-     * @param integer globalMaximumScore
-     * @param integer $expectedResult
+     * @param int globalMaximumScore
+     * @param int $expectedResult
      * @return void
      */
     public function canReadMaximumScore($document, $globalMaximumScore, $expectedResult)
@@ -160,8 +158,8 @@ class RelevanceTest extends AbstractViewHelperTest
      * @dataProvider relevanceCalculationDataProvider
      * @test
      *
-     * @param integer $documentScore
-     * @param integer $maximumScore
+     * @param int $documentScore
+     * @param int $maximumScore
      * @param float $expectedResult
      * @return void
      */

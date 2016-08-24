@@ -41,15 +41,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * category resolution in tt_news or file indexing.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Indexer extends AbstractIndexer
 {
 
-
     # TODO change to singular $document instead of plural $documents
-
 
     /**
      * A Solr service instance to interact with the Solr server
@@ -73,7 +69,7 @@ class Indexer extends AbstractIndexer
     /**
      * To log or not to log... #Shakespeare
      *
-     * @var boolean
+     * @var bool
      */
     protected $loggingEnabled = false;
 
@@ -133,8 +129,8 @@ class Indexer extends AbstractIndexer
      * Creates a single Solr Document for an item in a specific language.
      *
      * @param Item $item An index queue item to index.
-     * @param integer $language The language to use.
-     * @return boolean TRUE if item was indexed successfully, FALSE on failure
+     * @param int $language The language to use.
+     * @return bool TRUE if item was indexed successfully, FALSE on failure
      */
     protected function indexItem(Item $item, $language = 0)
     {
@@ -184,7 +180,7 @@ class Indexer extends AbstractIndexer
      * types.
      *
      * @param Item $item The item to be indexed
-     * @param integer $language Language Id (sys_language.uid)
+     * @param int $language Language Id (sys_language.uid)
      * @return array|NULL The full record with fields of data to be used for indexing or NULL to prevent an item from being indexed
      */
     protected function getFullItemRecord(Item $item, $language = 0)
@@ -261,7 +257,7 @@ class Indexer extends AbstractIndexer
      * Gets the configuration how to process an item's fields for indexing.
      *
      * @param Item $item An index queue item
-     * @param integer $language Language ID
+     * @param int $language Language ID
      * @throws \RuntimeException
      * @return array Configuration array from TypoScript
      */
@@ -287,7 +283,7 @@ class Indexer extends AbstractIndexer
      * record's fields onto Solr document fields as configured in TypoScript.
      *
      * @param Item $item An index queue item
-     * @param integer $language Language Id
+     * @param int $language Language Id
      * @return Apache_Solr_Document The Solr document converted from the record
      */
     protected function itemToDocument(Item $item, $language = 0)
@@ -419,7 +415,7 @@ class Indexer extends AbstractIndexer
      * should be indexed for the current item.
      *
      * @param Item $item The item currently being indexed.
-     * @param integer $language The language uid currently being indexed.
+     * @param int $language The language uid currently being indexed.
      * @param Apache_Solr_Document $itemDocument The document representing the item for the given language.
      * @return array An array of additional Apache_Solr_Document objects to index.
      */
@@ -459,7 +455,7 @@ class Indexer extends AbstractIndexer
      * the Solr index.
      *
      * @param Item $item The item currently being indexed.
-     * @param integer $language The language uid of the documents
+     * @param int $language The language uid of the documents
      * @param array $documents An array of documents to be indexed
      * @return array An array of modified documents
      */
@@ -490,9 +486,7 @@ class Indexer extends AbstractIndexer
         return $documents;
     }
 
-
     // Initialization
-
 
     /**
      * Gets the Solr connections applicaple for an item.
@@ -551,7 +545,7 @@ class Indexer extends AbstractIndexer
      * 3) ignore --> available languages with page overlay
      * 4) unknown mode or blank --> all languages
      *
-     * @param integer $pageId Page ID.
+     * @param int $pageId Page ID.
      * @param string $languageMode
      * @return array An array of translation overlays (or fake overlays) found for the given page.
      */
@@ -630,9 +624,7 @@ class Indexer extends AbstractIndexer
         return $connections;
     }
 
-
     // Utility methods
-
 
     // FIXME extract log() and setLogging() to ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
     // FIXME extract an interface Tx_Solr_IndexQueue_ItemInterface

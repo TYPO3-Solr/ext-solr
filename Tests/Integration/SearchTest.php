@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Test class to perform a search on a real solr server
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class SearchTest extends IntegrationTest
 {

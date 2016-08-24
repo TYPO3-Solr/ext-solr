@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -33,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * depending on configuration.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class LastSearches implements ResultSetModifier
 {

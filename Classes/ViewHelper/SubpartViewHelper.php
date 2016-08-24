@@ -34,8 +34,6 @@ use ApacheSolrForTypo3\Solr\Template;
  * Subpart View Helper marker interface
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 interface SubpartViewHelper extends ViewHelper
 {

@@ -25,14 +25,10 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\PingFailedException;
-
 /**
  * Solr Service Access
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class SolrService extends \Apache_Solr_Service
 {
@@ -98,7 +94,6 @@ class SolrService extends \Apache_Solr_Service
      */
     protected $configuration;
 
-
     /**
      * Constructor
      *
@@ -133,7 +128,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Returns the current time in milliseconds.
      *
-     * @return integer
+     * @return int
      */
     protected function getMilliseconds()
     {
@@ -144,8 +139,8 @@ class SolrService extends \Apache_Solr_Service
      * Performs a search.
      *
      * @param string $query query string / search term
-     * @param integer $offset result offset for pagination
-     * @param integer $limit number of results to retrieve
+     * @param int $offset result offset for pagination
+     * @param int $limit number of results to retrieve
      * @param array $params additional HTTP GET parameters
      * @param string $method The HTTP method (Apache_Solr_Service::METHOD_GET or Apache_Solr_Service::METHOD::POST)
      * @return \Apache_Solr_Response Solr response
@@ -179,7 +174,7 @@ class SolrService extends \Apache_Solr_Service
      *
      * Also does not report the time, see https://forge.typo3.org/issues/64551
      *
-     * @param float|integer $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+     * @param float|int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
      * @return bool TRUE if Solr can be reached, FALSE if not
      */
     public function ping($timeout = 2)
@@ -191,7 +186,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
      *
-     * @param float|integer $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+     * @param float|int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
      * @return int runtime in milliseconds
      * @throws \ApacheSolrForTypo3\Solr\PingFailedException
      */
@@ -269,7 +264,7 @@ class SolrService extends \Apache_Solr_Service
      * @param string $method HTTP method to use, defaults to GET.
      * @param array $requestHeaders Key value pairs of header names and values. Should include 'Content-Type' for POST and PUT.
      * @param string $rawPost Must be an empty string unless method is POST or PUT.
-     * @param float|boolean $timeout Read timeout in seconds, defaults to FALSE.
+     * @param float|bool $timeout Read timeout in seconds, defaults to FALSE.
      * @return \Apache_Solr_Response Response object
      * @throws \Apache_Solr_HttpTransportException if returned HTTP status is other than 200
      */
@@ -375,7 +370,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * get field meta data for the index
      *
-     * @param integer $numberOfTerms Number of top terms to fetch for each field
+     * @param int $numberOfTerms Number of top terms to fetch for each field
      * @return array
      */
     public function getFieldsMetaData($numberOfTerms = 0)
@@ -386,7 +381,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Retrieves meta data about the index from the luke request handler
      *
-     * @param integer $numberOfTerms Number of top terms to fetch for each field
+     * @param int $numberOfTerms Number of top terms to fetch for each field
      * @return \Apache_Solr_Response Index meta data
      */
     public function getLukeMetaData($numberOfTerms = 0)
@@ -411,7 +406,7 @@ class SolrService extends \Apache_Solr_Service
      * Central method for making a get operation against this Solr Server
      *
      * @param string $url
-     * @param float|boolean $timeout Read timeout in seconds
+     * @param float|bool $timeout Read timeout in seconds
      * @return \Apache_Solr_Response
      */
     protected function _sendRawGet($url, $timeout = false)
@@ -469,7 +464,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Enable/Disable debug mode
      *
-     * @param boolean $debug TRUE to enable debug mode, FALSE to turn off, off by default
+     * @param bool $debug TRUE to enable debug mode, FALSE to turn off, off by default
      */
     public function setDebug($debug)
     {
@@ -543,7 +538,7 @@ class SolrService extends \Apache_Solr_Service
 
             $solrconfigXml = simplexml_load_file($solrconfigXmlUrl);
             if ($solrconfigXml === false) {
-                throw new \InvalidArgumentException('No valid xml response from schema file: '.$solrconfigXmlUrl);
+                throw new \InvalidArgumentException('No valid xml response from schema file: ' . $solrconfigXmlUrl);
             }
             $this->solrconfigName = (string)$solrconfigXml->attributes()->name;
         }
@@ -570,7 +565,7 @@ class SolrService extends \Apache_Solr_Service
      * afterwards.
      *
      * @param string $type The type of documents to delete, usually a table name.
-     * @param boolean $commit Will commit immediately after deleting the documents if set, defaults to TRUE
+     * @param bool $commit Will commit immediately after deleting the documents if set, defaults to TRUE
      */
     public function deleteByType($type, $commit = true)
     {
@@ -586,7 +581,7 @@ class SolrService extends \Apache_Solr_Service
      * a complete and well formed "delete" xml document
      *
      * @param string $rawPost Expected to be utf-8 encoded xml document
-     * @param float|integer $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
+     * @param float|int $timeout Maximum expected duration of the delete operation on the server (otherwise, will throw a communication exception)
      * @return \Apache_Solr_Response
      */
     public function delete($rawPost, $timeout = 3600)
@@ -612,7 +607,7 @@ class SolrService extends \Apache_Solr_Service
      *
      * @param string $url
      * @param string $rawPost
-     * @param float|boolean $timeout Read timeout in seconds
+     * @param float|bool $timeout Read timeout in seconds
      * @param string $contentType
      * @return \Apache_Solr_Response
      */

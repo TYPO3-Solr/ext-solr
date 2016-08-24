@@ -24,9 +24,9 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * reacting to changes faster.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Queue
 {
@@ -44,13 +42,12 @@ class Queue
     // FIXME some of the methods should be renamed to plural forms
     // FIXME singular form methods should deal with exactly one item only
 
-
     /**
      * Returns the timestamp of the last indexing run.
      *
-     * @param integer $rootPageId The root page uid for which to get
+     * @param int $rootPageId The root page uid for which to get
      *      the last indexed item id
-     * @return integer Timestamp of last index run.
+     * @return int Timestamp of last index run.
      */
     public function getLastIndexTime($rootPageId)
     {
@@ -75,9 +72,9 @@ class Queue
     /**
      * Returns the uid of the last indexed item in the queue
      *
-     * @param integer $rootPageId The root page uid for which to get
+     * @param int $rootPageId The root page uid for which to get
      *      the last indexed item id
-     * @return integer The last indexed item's ID.
+     * @return int The last indexed item's ID.
      */
     public function getLastIndexedItemId($rootPageId)
     {
@@ -157,7 +154,7 @@ class Queue
      * @param Site $site The site to initialize
      * @param string $indexingConfigurationName name of a specific
      *      indexing configuration
-     * @return boolean TRUE if the initialization was successful, FALSE otherwise
+     * @return bool TRUE if the initialization was successful, FALSE otherwise
      */
     protected function initializeIndexingConfiguration(
         Site $site,
@@ -198,7 +195,7 @@ class Queue
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @param integer $rootPageId The configuration's page tree's root page id.
+     * @param int $rootPageId The configuration's page tree's root page id.
      *      Optional, not needed for all types.
      * @return string The indexing configuration's name to use when indexing
      * @deprecated Use getIndexingConfigurationsByItem() now, which behaves
@@ -227,7 +224,7 @@ class Queue
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @param integer $rootPageId The configuration's page tree's root page id.
+     * @param int $rootPageId The configuration's page tree's root page id.
      *      Optional, not needed for all types.
      * @return array<string> The indexing configurations names to use when indexing
      */
@@ -390,7 +387,7 @@ class Queue
      * @param string $itemType The item's table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @return integer Timestamp of the item's changed time or future start time
+     * @return int Timestamp of the item's changed time or future start time
      */
     protected function getItemChangedTime($itemType, $itemUid)
     {
@@ -444,7 +441,7 @@ class Queue
      * Gets the most recent changed time of a page's content elements
      *
      * @param array $page Partial page record
-     * @return integer Timestamp of the most recent content element change
+     * @return int Timestamp of the most recent content element change
      */
     protected function getPageItemChangedTime(array $page)
     {
@@ -470,7 +467,7 @@ class Queue
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @return integer Timestamp of the most recent content element change
+     * @return int Timestamp of the most recent content element change
      */
     protected function getLocalizableItemChangedTime($itemType, $itemUid)
     {
@@ -498,7 +495,7 @@ class Queue
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @return boolean TRUE if the item is found in the queue, FALSE otherwise
+     * @return bool TRUE if the item is found in the queue, FALSE otherwise
      */
     public function containsItem($itemType, $itemUid)
     {
@@ -520,7 +517,7 @@ class Queue
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @return boolean TRUE if the item is found in the queue and marked as
+     * @return bool TRUE if the item is found in the queue and marked as
      *      indexed, FALSE otherwise
      */
     public function containsIndexedItem($itemType, $itemUid)
@@ -541,7 +538,7 @@ class Queue
      * Removes an item from the Index Queue.
      *
      * @param string $itemType The type of the item to remove, usually a table name.
-     * @param integer $itemUid The uid of the item to remove
+     * @param int $itemUid The uid of the item to remove
      */
     public function deleteItem($itemType, $itemUid)
     {
@@ -678,7 +675,7 @@ class Queue
     /**
      * Gets a single Index Queue item by its uid.
      *
-     * @param integer $itemId Index Queue item uid
+     * @param int $itemId Index Queue item uid
      * @return Item The request Index Queue item or NULL
      *      if no item with $itemId was found
      */
@@ -708,7 +705,7 @@ class Queue
      * Gets Index Queue items by type and uid.
      *
      * @param string $itemType item type, ususally  the table name
-     * @param integer $itemUid item uid
+     * @param int $itemUid item uid
      * @return array An array of items matching $itemType and $itemUid
      */
     public function getItems($itemType, $itemUid)
@@ -755,7 +752,7 @@ class Queue
     /**
      * Returns the number of items for all queues.
      *
-     * @return integer
+     * @return int
      */
     public function getAllItemsCount()
     {
@@ -773,7 +770,7 @@ class Queue
      * Gets $limit number of items to index for a particular $site.
      *
      * @param Site $site TYPO3 site
-     * @param integer $limit Number of items to get from the queue
+     * @param int $limit Number of items to get from the queue
      * @return Item[] Items to index to the given solr server
      */
     public function getItemsToIndex(Site $site, $limit = 50)

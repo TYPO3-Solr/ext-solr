@@ -35,7 +35,6 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
  * backend to provide a simple and lightweigt debugging possibility.
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\System\Logging
  */
 class DevLogDebugWriter
 {

@@ -31,8 +31,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  * tests the path to hierarchy processing
  *
  * @author    Daniel Pötzinger <poetzinger@aoemedia.de>
- * @package TYPO3
- * @subpackage solr
  */
 class PathToHierarchyTest extends UnitTest
 {

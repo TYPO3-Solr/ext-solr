@@ -29,15 +29,12 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Highlighting result document modifier, highlights query terms in result
  * documents.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class DocumentHighlighter implements ResultDocumentModifier
 {

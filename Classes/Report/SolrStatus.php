@@ -36,8 +36,6 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * be established.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class SolrStatus implements StatusProviderInterface
 {
@@ -52,7 +50,7 @@ class SolrStatus implements StatusProviderInterface
     /**
      * Holds the response status
      *
-     * @var integer
+     * @var int
      */
     protected $responseStatus = Status::OK;
 
@@ -62,7 +60,6 @@ class SolrStatus implements StatusProviderInterface
      * @var string
      */
     protected $responseMessage = '';
-
 
     /**
      * @return string
@@ -95,7 +92,7 @@ TEMPLATE;
      */
     protected function replaceMarkerInResponse($response, $marker, $value)
     {
-        return str_replace('###'.$marker.'###', $value, $response);
+        return str_replace('###' . $marker . '###', $value, $response);
     }
 
     /**
@@ -221,7 +218,7 @@ TEMPLATE;
             $solrConfigMessage = $solr->getSolrconfigName();
         } catch (\Exception $e) {
             $this->responseStatus =  Status::ERROR;
-            $solrConfigMessage = 'Error determining solr config: '. $e->getMessage();
+            $solrConfigMessage = 'Error determining solr config: ' . $e->getMessage();
         }
 
         $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SOLR_CONFIG', $solrConfigMessage);
@@ -238,7 +235,7 @@ TEMPLATE;
             $solrSchemaMessage = $solr->getSchemaName();
         } catch (\Exception $e) {
             $this->responseStatus  = Status::ERROR;
-            $solrSchemaMessage = 'Error determining schema name: '. $e->getMessage();
+            $solrSchemaMessage = 'Error determining schema name: ' . $e->getMessage();
         }
 
         $this->responseMessage = $this->replaceMarkerInResponse($this->responseMessage, 'SOLR_SCHEMA', $solrSchemaMessage);

@@ -27,13 +27,10 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Serialized value detector interface
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface SerializedValueDetector
 {
@@ -45,7 +42,7 @@ interface SerializedValueDetector
      *
      * @param array $indexingConfiguration Current item's indexing configuration
      * @param string $solrFieldName Current field being indexed
-     * @return boolean TRUE if the value is expected to be serialized, FALSE otherwise
+     * @return bool TRUE if the value is expected to be serialized, FALSE otherwise
      */
     public function isSerializedValue(
         array $indexingConfiguration,

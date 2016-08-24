@@ -31,13 +31,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Utility class for sorting.
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class Sorting
 {
     protected $configuration;
-
 
     /**
      * Constructor

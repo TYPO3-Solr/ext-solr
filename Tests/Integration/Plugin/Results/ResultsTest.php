@@ -25,20 +25,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\AbstractPluginTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Page\PageGenerator;
 
 /**
  * Integration testcase to test the results plugin.
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class ResultsTest extends AbstractPluginTest
 {
@@ -158,8 +152,8 @@ class ResultsTest extends AbstractPluginTest
         $_GET['q'] = 'shoo';
         $resultPage1 = $searchResults->main('', array());
 
-        $this->assertContains("Did you mean", $resultPage1, 'Could not find did you mean in response');
-        $this->assertContains("shoes", $resultPage1, 'Could not find shoes in response');
+        $this->assertContains('Did you mean', $resultPage1, 'Could not find did you mean in response');
+        $this->assertContains('shoes', $resultPage1, 'Could not find shoes in response');
     }
 
     /**
@@ -168,7 +162,6 @@ class ResultsTest extends AbstractPluginTest
     public function canGetAnAutoCorrectedResultSetForATypo()
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
-
 
         $overwriteConfiguration = array();
         $overwriteConfiguration['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion'] = 1;
@@ -182,7 +175,7 @@ class ResultsTest extends AbstractPluginTest
         $resultPage1 = $searchResults->main('', array());
 
         $this->assertContains('Nothing found for "shoo"', $resultPage1, 'Could not find nothing found hint');
-        $this->assertContains("shoes", $resultPage1, 'Could not find auto corrected term shoes in response');
+        $this->assertContains('shoes', $resultPage1, 'Could not find auto corrected term shoes in response');
         $this->assertContains('pages/4/0/0/0', $resultPage1, 'Could not find page 4 in result set');
     }
 
@@ -303,7 +296,6 @@ class ResultsTest extends AbstractPluginTest
 
         $this->assertContains('Found 2 results', $resultPage, 'Unexpected response for initial search');
     }
-
 
     /**
      * @test
@@ -457,7 +449,6 @@ class ResultsTest extends AbstractPluginTest
     {
         $this->assertContains('Nothing found', $content, 'Asserted that nothing was found but the text, that nothing was found was not present in the response');
     }
-
 
     /**
      * We expected that the parent plugin is correctly set when the pi plugin was rendered

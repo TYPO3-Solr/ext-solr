@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Test\System\Util;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Testcase for the ArrayAccessor helper class.
@@ -86,7 +86,6 @@ class ArrayAccessorTest extends UnitTest
         $this->assertSame(null, $arrayAccessor->get('one:two:a'));
         $this->assertSame(222, $arrayAccessor->get('one:two:b'));
     }
-
 
     /**
      * @test

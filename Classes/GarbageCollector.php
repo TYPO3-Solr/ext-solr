@@ -47,7 +47,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      *
      * @param string $command The command.
      * @param string $table The table the record belongs to
-     * @param integer $uid The record's uid
+     * @param int $uid The record's uid
      * @param string $value Not used
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
      * @return void
@@ -80,13 +80,13 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         return array(
             // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 1
             'extendToSubpageEnabledAndHiddenFlagWasAdded' => array(
-                'currentState' =>  array('extendToSubpages' => "1"),
-                'changeSet' => array('hidden' => "1")
+                'currentState' =>  array('extendToSubpages' => '1'),
+                'changeSet' => array('hidden' => '1')
             ),
             // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 1
             'hiddenIsEnabledAndExtendToSubPagesWasAdded' => array(
-                'currentState' =>  array('hidden' => "1"),
-                'changeSet' => array('extendToSubpages' => "1")
+                'currentState' =>  array('hidden' => '1'),
+                'changeSet' => array('extendToSubpages' => '1')
             )
         );
     }
@@ -96,7 +96,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * removes them from the index and the Index Queue.
      *
      * @param string $table The record's table name.
-     * @param integer $uid The record's uid.
+     * @param int $uid The record's uid.
      * @throws \UnexpectedValueException if a hook object does not implement interface \ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor
      */
     public function collectGarbage($table, $uid)
@@ -129,7 +129,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * removes them from the index and the Index Queue.
      *
      * @param string $table The record's table name.
-     * @param integer $uid The record's uid.
+     * @param int $uid The record's uid.
      */
     protected function collectPageGarbage($table, $uid)
     {
@@ -193,7 +193,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * Deletes index documents for a given record identification.
      *
      * @param string $table The record's table name.
-     * @param integer $uid The record's uid.
+     * @param int $uid The record's uid.
      */
     protected function deleteIndexDocuments($table, $uid)
     {
@@ -219,7 +219,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * removes them from the index and the Index Queue.
      *
      * @param string $table The record's table name.
-     * @param integer $uid The record's uid.
+     * @param int $uid The record's uid.
      */
     protected function collectRecordGarbage($table, $uid)
     {
@@ -229,7 +229,6 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         $indexQueue->deleteItem($table, $uid);
     }
 
-
     // methods checking whether to trigger garbage collection
 
     /**
@@ -237,7 +236,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      *
      * @param string $command The command.
      * @param string $table The table the record belongs to
-     * @param integer $uid The record's uid
+     * @param int $uid The record's uid
      * @param string $value Not used
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
      */
@@ -347,7 +346,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * Makes sure that "empty" frontend group fields are always the same value.
      *
      * @param string $table The record's table name.
-     * @param integer $record The record's uid.
+     * @param int $record The record's uid.
      * @return array The cleaned record
      */
     protected function normalizeFrontendGroupField($table, $record)
@@ -418,7 +417,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      *
      * @param string $table The table name.
      * @param array $record An array with record fields that may affect visibility.
-     * @return boolean True if the record is hidden, FALSE otherwise.
+     * @return bool True if the record is hidden, FALSE otherwise.
      */
     protected function isHidden($table, $record)
     {
@@ -439,7 +438,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      *
      * @param string $table The table name.
      * @param array $record An array with record fields that may affect visibility.
-     * @return boolean True if the record's start time is in the future, FALSE otherwise.
+     * @return bool True if the record's start time is in the future, FALSE otherwise.
      */
     protected function isStartTimeInFuture($table, $record)
     {
@@ -459,7 +458,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      *
      * @param string $table The table name.
      * @param array $record An array with record fields that may affect visibility.
-     * @return boolean True if the record is marked as being indexed
+     * @return bool True if the record is marked as being indexed
      */
     protected function isMarkedAsIndexed($table, $record)
     {
@@ -474,7 +473,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      *
      * @param string $table The table name.
      * @param array $record An array with record fields that may affect visibility.
-     * @return boolean TRUE if frontend groups have been removed from access to the record, FALSE otherwise.
+     * @return bool TRUE if frontend groups have been removed from access to the record, FALSE otherwise.
      */
     protected function hasFrontendGroupsRemoved($table, $record)
     {
@@ -501,7 +500,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * Checks whether the page has been excluded from searching.
      *
      * @param array $record An array with record fields that may affect visibility.
-     * @return boolean True if the page has been excluded from searching, FALSE otherwise
+     * @return bool True if the page has been excluded from searching, FALSE otherwise
      */
     protected function isPageExcludedFromSearch($record)
     {
@@ -513,7 +512,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * Currently standard pages and mount pages can be indexed.
      *
      * @param array $record A page record
-     * @return boolean TRUE if the page can be indexed according to its page type, FALSE otherwise
+     * @return bool TRUE if the page can be indexed according to its page type, FALSE otherwise
      */
     protected function isIndexablePageType(array $record)
     {
@@ -530,7 +529,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * things from breaking if others were using it.
      *
      * @param Site $site The site to clean indexes on
-     * @param boolean $commitAfterCleanUp Whether to commit right after the clean up, defaults to TRUE
+     * @param bool $commitAfterCleanUp Whether to commit right after the clean up, defaults to TRUE
      * @return void
      */
     public function cleanIndex(Site $site, $commitAfterCleanUp = true)

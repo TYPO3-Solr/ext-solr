@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * TestCase to check if the index queue can be initialized by the ReIndex Task
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class ReIndexTaskTest extends IntegrationTest
 {
@@ -100,7 +98,7 @@ class ReIndexTaskTest extends IntegrationTest
     protected function assertIndexQueryContainsItemAmount($amount)
     {
         $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to contain '.(int) $amount.' items.');
+            'Index queue is empty and was expected to contain ' . (int) $amount . ' items.');
     }
 
     /**

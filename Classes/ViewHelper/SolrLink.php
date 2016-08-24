@@ -35,8 +35,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class SolrLink implements ViewHelper
 {
@@ -54,7 +52,6 @@ class SolrLink implements ViewHelper
      * @var ContentObjectRenderer
      */
     protected $contentObject = null;
-
 
     /**
      * Constructor
@@ -124,7 +121,7 @@ class SolrLink implements ViewHelper
      * Take the link target ID viewhelper argument and try to find a page ID from it.
      *
      * @param string $linkArgument The viewhelper's link target argument
-     * @return integer Page ID
+     * @return int Page ID
      * @throws \InvalidArgumentException if an invalid TypoScript path was given
      */
     protected function determinePageId($linkArgument)

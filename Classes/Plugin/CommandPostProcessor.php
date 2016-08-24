@@ -27,14 +27,11 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Plugin command post processor - allows to manipulate command template
  * variables.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface CommandPostProcessor
 {

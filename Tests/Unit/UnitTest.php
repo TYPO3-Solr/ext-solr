@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Tests\UnitTestCase as TYPO3UnitTest;
  * Base class for all unit tests in the solr project
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 abstract class UnitTest extends TYPO3UnitTest
 {
@@ -97,7 +95,7 @@ abstract class UnitTest extends TYPO3UnitTest
     protected function skipInVersionBelow($version)
     {
         if (version_compare(TYPO3_branch, $version, '<')) {
-            $this->markTestSkipped('This test requires at least version '.$version);
+            $this->markTestSkipped('This test requires at least version ' . $version);
         }
     }
 }

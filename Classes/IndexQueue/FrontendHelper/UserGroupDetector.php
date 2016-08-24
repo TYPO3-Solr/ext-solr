@@ -37,8 +37,6 @@ use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
  * on a page.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class UserGroupDetector extends AbstractFrontendHelper implements
     SingletonInterface,
@@ -46,7 +44,6 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     PageRepositoryGetPageHookInterface,
     PageRepositoryGetPageOverlayHookInterface
 {
-
 
     /**
      * This frontend helper's executed action.
@@ -67,9 +64,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      */
     protected $frontendGroups = array();
 
-
     // activation
-
 
     /**
      * Activates a frontend helper by registering for hooks and other
@@ -128,8 +123,8 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * Modifies the database query parameters so that access checks for pages
      * are not performed any longer.
      *
-     * @param integer $uid The page ID
-     * @param boolean $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
+     * @param int $uid The page ID
+     * @param bool $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
      * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject parent \TYPO3\CMS\Frontend\Page\PageRepository object
      */
     public function getPage_preProcess(
@@ -146,7 +141,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * no groups or extendToSubpages flag is found and thus access is granted.
      *
      * @param array $pageRecord Page record
-     * @param integer $languageUid Overlay language ID
+     * @param int $languageUid Overlay language ID
      * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject Parent \TYPO3\CMS\Frontend\Page\PageRepository object
      */
     public function getPageOverlay_preProcess(

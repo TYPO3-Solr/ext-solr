@@ -24,13 +24,10 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Index Queue Page Indexer response to provide data for requested actions.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class PageIndexerResponse
 {
@@ -53,7 +50,7 @@ class PageIndexerResponse
      * Turns a JSON encoded result string back into its PHP representation.
      *
      * @param string $jsonEncodedResults JSON encoded result string
-     * @return array|boolean An array of action => result pairs or FALSE if the response could not be decoded
+     * @return array|bool An array of action => result pairs or FALSE if the response could not be decoded
      */
     public static function getResultsFromJson($jsonEncodedResponse)
     {

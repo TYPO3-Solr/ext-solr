@@ -33,8 +33,6 @@ use ApacheSolrForTypo3\Solr\Query;
  * ResponseProcessor interface, allows to process search responses.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface ResponseProcessor
 {

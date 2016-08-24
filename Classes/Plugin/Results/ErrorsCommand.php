@@ -34,8 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * occurred during searching.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class ErrorsCommand implements PluginCommand
 {

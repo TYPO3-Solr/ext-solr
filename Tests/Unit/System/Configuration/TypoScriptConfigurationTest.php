@@ -26,14 +26,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase to check if the configuration object can be used as expected
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class TypoScriptConfigurationTest extends UnitTest
 {
@@ -96,7 +93,6 @@ class TypoScriptConfigurationTest extends UnitTest
             )
         );
 
-
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $typeATagParams = $configuration->getSearchFacetingFacetLinkATagParamsByName('type');
         $this->assertSame('class="type-facets"', $typeATagParams, 'can not get concrete a tag param for type');
@@ -104,7 +100,6 @@ class TypoScriptConfigurationTest extends UnitTest
         $typeATagParams = $configuration->getSearchFacetingFacetLinkATagParamsByName('color');
         $this->assertSame('class="all-facets"', $typeATagParams, 'can not get concrete a tag param for color');
     }
-
 
     /**
      * @test
@@ -125,14 +120,12 @@ class TypoScriptConfigurationTest extends UnitTest
             )
         );
 
-
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $showEmptyType = $configuration->getSearchFacetingShowEmptyFacetsByName('type');
         $this->assertTrue($showEmptyType);
 
         $showEmptyColor = $configuration->getSearchFacetingShowEmptyFacetsByName('color');
         $this->assertTrue($showEmptyColor);
-
 
         $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
             'search.' => array(
@@ -197,7 +190,6 @@ class TypoScriptConfigurationTest extends UnitTest
         $this->assertSame($customTableExpected, 'tx_model_custom', 'Usage of custom table tx_model_custom was expected');
     }
 
-
     /**
      * @test
      */
@@ -222,7 +214,6 @@ class TypoScriptConfigurationTest extends UnitTest
         $this->assertCount(1, $enabledIndexQueueNames, 'Retrieved unexpected amount of index queue configurations');
         $this->assertContains('pages', $enabledIndexQueueNames, 'Pages was no enabled index queue configuration');
 
-
         $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['custom'] = 1;
         $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
         $enabledIndexQueueNames = $configuration->getEnabledIndexQueueConfigurationNames();
@@ -230,7 +221,6 @@ class TypoScriptConfigurationTest extends UnitTest
         $this->assertCount(2, $enabledIndexQueueNames, 'Retrieved unexpected amount of index queue configurations');
         $this->assertContains('custom', $enabledIndexQueueNames, 'Pages was no enabled index queue configuration');
     }
-
 
     /**
      * @test
@@ -306,7 +296,6 @@ class TypoScriptConfigurationTest extends UnitTest
         $this->assertFalse($configuration->getLoggingIndexingQueueOperationsByConfigurationNameWithFallBack('tt_content'),
             'Wrong logging state for tt_content index queue');
     }
-
 
     /**
      * @test
@@ -398,8 +387,6 @@ class TypoScriptConfigurationTest extends UnitTest
         $this->assertEquals(array('additional_sortSubTitle_stringS' => 'subtitle'), $retrievedConfiguration);
     }
 
-
-
     /**
      * @test
      */
@@ -476,7 +463,6 @@ class TypoScriptConfigurationTest extends UnitTest
         $allowedPageTypes = $configuration->getIndexQueuePagesAllowedPageTypesArray();
         $this->assertEquals(array(1, 2, 7), $allowedPageTypes, 'Can not get allowed pagestype from configuration');
     }
-
 
     /**
      * @test

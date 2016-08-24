@@ -45,7 +45,6 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
      */
     public $cObj;
 
-
     /**
      * Provides the internal type of facets the renderer handles.
      * The type is one of field, range, or query.

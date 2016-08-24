@@ -4,10 +4,8 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use InvalidArgumentException;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\Exception;
 
 /**
  * TypoScript configuration object, used to read all TypoScript configuration.
@@ -33,8 +31,6 @@ use TYPO3\CMS\Fluid\Exception;
  *
  * @author Marc Bastian Heinrichs <mbh@mbh-software.de>
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class TypoScriptConfiguration
 {
@@ -60,7 +56,7 @@ class TypoScriptConfiguration
 
     /**
      * @param array $configuration
-     * @param integer $contextPageId
+     * @param int $contextPageId
      */
     public function __construct(array $configuration, $contextPageId = 0)
     {
@@ -72,7 +68,7 @@ class TypoScriptConfiguration
     /**
      * Checks if a value is 1, '1', 'true'
      * @param mixed $value
-     * @return boolean
+     * @return bool
      */
     protected function getBool($value)
     {
@@ -205,7 +201,7 @@ class TypoScriptConfiguration
      * Checks whether a given TypoScript path is valid.
      *
      * @param string $path TypoScript path
-     * @return boolean TRUE if the path resolves, FALSE otherwise
+     * @return bool TRUE if the path resolves, FALSE otherwise
      */
     public function isValidPath($path)
     {
@@ -614,8 +610,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.logging.query.filters
      *
-     * @param boolean $defaultIfEmpty
-     * @return boolean
+     * @param bool $defaultIfEmpty
+     * @return bool
      */
     public function getLoggingQueryFilters($defaultIfEmpty = false)
     {
@@ -921,8 +917,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.variants.limit
      *
-     * @param integer $defaultIfEmpty
-     * @return integer
+     * @param int $defaultIfEmpty
+     * @return int
      */
     public function getSearchVariantsLimit($defaultIfEmpty = 10)
     {
@@ -963,8 +959,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.frequentSearches.minSize
      *
-     * @param integer $defaultIfEmpty
-     * @return integer
+     * @param int $defaultIfEmpty
+     * @return int
      */
     public function getSearchFrequentSearchesMinSize($defaultIfEmpty = 14)
     {
@@ -977,8 +973,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.frequentSearches.minSize
      *
-     * @param integer $defaultIfEmpty
-     * @return integer
+     * @param int $defaultIfEmpty
+     * @return int
      */
     public function getSearchFrequentSearchesMaxSize($defaultIfEmpty = 32)
     {
@@ -1184,7 +1180,6 @@ class TypoScriptConfiguration
         return $commonATagParamOrDefaultValue;
     }
 
-
     /**
      * Returns the configured fixedOrder, if nothing configured defaultIfEmpty will be returned.
      *
@@ -1214,7 +1209,7 @@ class TypoScriptConfiguration
             return $defaultIfEmpty;
         }
 
-        return GeneralUtility::trimExplode(",", $result);
+        return GeneralUtility::trimExplode(',', $result);
     }
 
     /**
@@ -1317,7 +1312,7 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.targetPage
      *
-     * @return integer
+     * @return int
      */
     public function getSearchTargetPage()
     {
@@ -1326,7 +1321,6 @@ class TypoScriptConfiguration
             // when no specific page was configured we use the contextPageId (which is usual $GLOBALS['TSFE']->id)
             $targetPage = $this->contextPageId;
         }
-
 
         return $targetPage;
     }
@@ -1481,8 +1475,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.spellchecking.numberOfSuggestionsToTry
      *
-     * @param integer $defaultIfEmpty
-     * @return integer
+     * @param int $defaultIfEmpty
+     * @return int
      */
     public function getSearchSpellcheckingNumberOfSuggestionsToTry($defaultIfEmpty = 0)
     {
@@ -1494,8 +1488,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.spellchecking.searchUsingSpellCheckerSuggestion
      *
-     * @param boolean $defaultIfEmpty
-     * @return boolean
+     * @param bool $defaultIfEmpty
+     * @return bool
      */
     public function getSearchSpellcheckingSearchUsingSpellCheckerSuggestion($defaultIfEmpty = false)
     {
@@ -1516,7 +1510,6 @@ class TypoScriptConfiguration
         $isFacetingEnabled =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting', $defaultIfEmpty);
         return $this->getBool($isFacetingEnabled);
     }
-
 
     /**
      * Retrieves the facetLinkATagParams for a facet by facet name. If nothing specific is configured
@@ -1574,8 +1567,8 @@ class TypoScriptConfiguration
      *
      *
      * @param string $facetName
-     * @param boolean $defaultIfEmpty
-     * @return boolean
+     * @param bool $defaultIfEmpty
+     * @return bool
      */
     public function getSearchFacetingShowEmptyFacetsByName($facetName = '', $defaultIfEmpty = false)
     {
@@ -1658,8 +1651,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.faceting.minimumCount
      *
-     * @param integer $defaultIfEmpty
-     * @return integer
+     * @param int $defaultIfEmpty
+     * @return int
      */
     public function getSearchFacetingMinimumCount($defaultIfEmpty = 1)
     {
@@ -1671,8 +1664,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.search.faceting.limit
      *
-     * @param integer $defaultIfEmpty
-     * @return integer
+     * @param int $defaultIfEmpty
+     * @return int
      */
     public function getSearchFacetingLimit($defaultIfEmpty = 10)
     {
@@ -1706,7 +1699,6 @@ class TypoScriptConfiguration
         return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.sortBy', $defaultIfEmpty);
     }
 
-
     /**
      * Returns if a facets should be kept on selection. Global faceting setting
      * can also be configured on facet level by using
@@ -1722,7 +1714,6 @@ class TypoScriptConfiguration
         $keepAllOptionsOnSelection =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.keepAllFacetsOnSelection', $defaultIfEmpty);
         return $this->getBool($keepAllOptionsOnSelection);
     }
-
 
     /**
      * Returns the configured faceting configuration.
@@ -1765,15 +1756,13 @@ class TypoScriptConfiguration
         return $this->getBool($isFacetingEnabled);
     }
 
-
-
     /**
      * Indicates to which length an ip should be anonymized in the statistics
      *
      * plugin.tx_solr.statistics.anonymizeIP
      *
-     * @param integer $defaultIfEmpty
-     * @return integer
+     * @param int $defaultIfEmpty
+     * @return int
      */
     public function getStatisticsAnonymizeIP($defaultIfEmpty = 0)
     {
@@ -1808,7 +1797,6 @@ class TypoScriptConfiguration
         $isHttpsForced =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest.forceHttps', $defaultIfEmpty);
         return $this->getBool($isHttpsForced);
     }
-
 
     /**
      * Returns the configured template for a specific template fileKey.

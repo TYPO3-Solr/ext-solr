@@ -33,8 +33,6 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * produces incorrect results. This status checks for this issue.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class FilterVarStatus implements StatusProviderInterface
 {

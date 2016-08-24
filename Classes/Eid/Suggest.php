@@ -49,7 +49,6 @@ $GLOBALS['TSFE']->rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($pageId, ''
 $GLOBALS['TSFE']->initTemplate();
 $GLOBALS['TSFE']->getConfigArray();
 
-
 $GLOBALS['TSFE']->sys_language_uid = $languageId;
 
 $solrConfiguration = Util::getSolrConfiguration();

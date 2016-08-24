@@ -24,14 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
-use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -41,8 +35,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * task per root page.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInterface
 {
@@ -55,7 +47,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     protected $site;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $documentsToIndexLimit;
 
@@ -67,7 +59,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     /**
      * Works through the indexing queue and indexes the queued items into Solr.
      *
-     * @return boolean Returns TRUE on success, FALSE if no items were indexed or none were found.
+     * @return bool Returns TRUE on success, FALSE if no items were indexed or none were found.
      */
     public function execute()
     {
@@ -194,7 +186,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     }
 
     /**
-     * @param integer $limit
+     * @param int $limit
      */
     public function setDocumentsToIndexLimit($limit)
     {

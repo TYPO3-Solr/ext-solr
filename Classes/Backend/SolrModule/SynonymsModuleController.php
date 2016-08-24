@@ -49,7 +49,6 @@ class SynonymsModuleController extends AbstractModuleController
      */
     protected $moduleTitle = 'Synonyms';
 
-
     /**
      * Gets synonyms for the currently selected core
      *

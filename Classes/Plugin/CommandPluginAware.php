@@ -27,14 +27,11 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Plugin awareness interface for extension components used in
  * \ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase plugins.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface CommandPluginAware
 {

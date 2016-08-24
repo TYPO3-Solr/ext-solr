@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use DOMDocument;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 
@@ -34,8 +33,6 @@ use TYPO3\CMS\Frontend\Page\PageGenerator;
  * Abstract base class for plugin integration tests.
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractPluginTest extends IntegrationTest
 {
@@ -44,7 +41,7 @@ abstract class AbstractPluginTest extends IntegrationTest
      * @param array $importPageIds
      * @param string $fixture
      * @param string $plugin
-     * @param integer $pluginPageUid
+     * @param int $pluginPageUid
      * @return \ApacheSolrForTypo3\Solr\Plugin\Results\Results
      */
     protected function importTestDataSetAndGetInitializedPlugin($importPageIds, $fixture, $plugin = 'results', $pluginPageUid = 1)
@@ -74,10 +71,9 @@ abstract class AbstractPluginTest extends IntegrationTest
                 $pluginClassName = 'ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches';
                 break;
             default:
-                throw new \InvalidArgumentException("Invalid plugin " . $plugin);
+                throw new \InvalidArgumentException('Invalid plugin ' . $plugin);
 
         }
-
 
         $fakeTSFE = $this->getConfiguredTSFE(array(), $pluginPageId);
         $fakeTSFE->newCObj();
@@ -94,7 +90,6 @@ abstract class AbstractPluginTest extends IntegrationTest
         $plugin->cObj = $fakeTSFE->cObj;
         return $plugin;
     }
-
 
     /**
      * @param string $content
@@ -119,6 +114,6 @@ abstract class AbstractPluginTest extends IntegrationTest
     protected function assertContainerByIdContains($expectedToContain, $content, $id)
     {
         $containerContent = $this->getIdContent($content, $id);
-        $this->assertContains($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id .' contains ' . $expectedToContain);
+        $this->assertContains($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id . ' contains ' . $expectedToContain);
     }
 }

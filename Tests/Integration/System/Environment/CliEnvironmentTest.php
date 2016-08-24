@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase to test the functionality of the CliEnvironment. Needs to be an integration test because
  * the constants stay defined in the unit test.
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class CliEnvironmentTest extends IntegrationTest
 {

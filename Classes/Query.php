@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * A Solr search query
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Query
 {
@@ -48,7 +46,7 @@ class Query
     /**
      * Used to identify the queries.
      *
-     * @var integer
+     * @var int
      */
     protected static $idCount = 0;
 
@@ -308,7 +306,7 @@ class Query
      * Sets whether a raw query sting should be used, that is, whether the query
      * string should be escaped or not.
      *
-     * @param boolean $useRawQueryString TRUE to use raw queries (like Lucene Query Language) or FALSE for regular, escaped queries
+     * @param bool $useRawQueryString TRUE to use raw queries (like Lucene Query Language) or FALSE for regular, escaped queries
      */
     public function useRawQueryString($useRawQueryString)
     {
@@ -318,7 +316,7 @@ class Query
     /**
      * Returns the query's ID.
      *
-     * @return integer The query's ID.
+     * @return int The query's ID.
      */
     public function getId()
     {
@@ -429,7 +427,7 @@ class Query
     /**
      * Gets the currently showing page's number
      *
-     * @return integer page number currently showing
+     * @return int page number currently showing
      */
     public function getPage()
     {
@@ -439,7 +437,7 @@ class Query
     /**
      * Sets the page that should be shown
      *
-     * @param integer $page page number to show
+     * @param int $page page number to show
      * @return void
      */
     public function setPage($page)
@@ -450,7 +448,7 @@ class Query
     /**
      * Gets the index of the first result document we're showing
      *
-     * @return integer index of the currently first document showing
+     * @return int index of the currently first document showing
      */
     public function getStartIndex()
     {
@@ -460,23 +458,21 @@ class Query
     /**
      * Gets the index of the last result document we're showing
      *
-     * @return integer index of the currently last document showing
+     * @return int index of the currently last document showing
      */
     public function getEndIndex()
     {
         return $this->page * $this->resultsPerPage;
     }
 
-
     // query elevation
-
 
     /**
      * Activates and deactivates query elevation for the current query.
      *
-     * @param boolean $elevation True to enable query elevation (default), FALSE to disable query elevation.
-     * @param boolean $forceElevation Optionally force elevation so that the elevated documents are always on top regardless of sorting, default to TRUE.
-     * @param boolean $markElevatedResults Mark elevated results
+     * @param bool $elevation True to enable query elevation (default), FALSE to disable query elevation.
+     * @param bool $forceElevation Optionally force elevation so that the elevated documents are always on top regardless of sorting, default to TRUE.
+     * @param bool $markElevatedResults Mark elevated results
      * @return void
      */
     public function setQueryElevation(
@@ -509,7 +505,7 @@ class Query
     /**
      * Check whether collapsing is active
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsCollapsing()
     {
@@ -587,7 +583,7 @@ class Query
     /**
      * Activates and deactivates grouping for the current query.
      *
-     * @param boolean $grouping TRUE to enable grouping, FALSE to disable grouping
+     * @param bool $grouping TRUE to enable grouping, FALSE to disable grouping
      * @return void
      */
     public function setGrouping($grouping = true)
@@ -611,7 +607,7 @@ class Query
      *
      * Internally uses the rows parameter.
      *
-     * @param integer $numberOfGroups Number of groups per group.field or group.query
+     * @param int $numberOfGroups Number of groups per group.field or group.query
      */
     public function setNumberOfGroups($numberOfGroups)
     {
@@ -623,7 +619,7 @@ class Query
      *
      * Internally uses the rows parameter.
      *
-     * @return integer Number of groups per group.field or group.query
+     * @return int Number of groups per group.field or group.query
      */
     public function getNumberOfGroups()
     {
@@ -633,7 +629,7 @@ class Query
     /**
      * Returns the number of results that should be shown per page
      *
-     * @return integer number of results to show per page
+     * @return int number of results to show per page
      */
     public function getResultsPerPage()
     {
@@ -643,7 +639,7 @@ class Query
     /**
      * Sets the number of results that should be shown per page
      *
-     * @param integer $resultsPerPage Number of results to show per page
+     * @param int $resultsPerPage Number of results to show per page
      * @return void
      */
     public function setResultsPerPage($resultsPerPage)
@@ -708,7 +704,6 @@ class Query
         return $groupSortings;
     }
 
-
     // faceting
 
     /**
@@ -744,7 +739,7 @@ class Query
     /**
      * Sets the maximum number of results to be returned per group.
      *
-     * @param integer $numberOfResults Maximum number of results per group to return
+     * @param int $numberOfResults Maximum number of results per group to return
      */
     public function setNumberOfResultsPerGroup($numberOfResults)
     {
@@ -753,13 +748,12 @@ class Query
         $this->queryParameters['group.limit'] = $numberOfResults;
     }
 
-
     // filter
 
     /**
      * Gets the maximum number of results to be returned per group.
      *
-     * @return integer Maximum number of results per group to return
+     * @return int Maximum number of results per group to return
      */
     public function getNumberOfResultsPerGroup()
     {
@@ -776,7 +770,7 @@ class Query
     /**
      * Activates and deactivates faceting for the current query.
      *
-     * @param boolean $faceting TRUE to enable faceting, FALSE to disable faceting
+     * @param bool $faceting TRUE to enable faceting, FALSE to disable faceting
      * @return void
      */
     public function setFaceting($faceting = true)
@@ -871,7 +865,6 @@ class Query
     {
         return $this->filters;
     }
-
 
     // sorting
 
@@ -1034,7 +1027,7 @@ class Query
     /**
      * Sets the query type, Solr's qt parameter.
      *
-     * @param string|boolean $queryType String query type or boolean FALSE to disable / reset the qt parameter.
+     * @param string|bool $queryType String query type or boolean FALSE to disable / reset the qt parameter.
      * @see http://wiki.apache.org/solr/CoreQueryParameters#qt
      */
     public function setQueryType($queryType)
@@ -1050,7 +1043,7 @@ class Query
      * Sets the query operator to AND or OR. Unsets the query operator (actually
      * sets it back to default) for FALSE.
      *
-     * @param string|boolean $operator AND or OR, FALSE to unset
+     * @param string|bool $operator AND or OR, FALSE to unset
      */
     public function setOperator($operator)
     {
@@ -1089,7 +1082,6 @@ class Query
             unset($this->queryParameters['q.alt']);
         }
     }
-
 
     // keywords
 
@@ -1158,7 +1150,6 @@ class Query
         return $keywords;
     }
 
-
     // relevance, matching
 
     /**
@@ -1202,7 +1193,6 @@ class Query
             unset($this->queryParameters['bf']);
         }
     }
-
 
     // query fields
     // TODO move up to field list methods
@@ -1263,7 +1253,6 @@ class Query
         return $queryParameters;
     }
 
-
     // general query parameters
 
     /**
@@ -1291,8 +1280,8 @@ class Query
     /**
      * Enables or disables highlighting of search terms in result teasers.
      *
-     * @param boolean $highlighting Enables highlighting when set to TRUE, deactivates highlighting when set to FALSE, defaults to TRUE.
-     * @param integer $fragmentSize Size, in characters, of fragments to consider for highlighting.
+     * @param bool $highlighting Enables highlighting when set to TRUE, deactivates highlighting when set to FALSE, defaults to TRUE.
+     * @param int $fragmentSize Size, in characters, of fragments to consider for highlighting.
      * @see http://wiki.apache.org/solr/HighlightingParameters
      * @return void
      */
@@ -1332,13 +1321,12 @@ class Query
         }
     }
 
-
     // misc
 
     /**
      * Enables or disables spellchecking for the query.
      *
-     * @param boolean $spellchecking Enables spellchecking when set to TRUE, deactivates spellchecking when set to FALSE, defaults to TRUE.
+     * @param bool $spellchecking Enables spellchecking when set to TRUE, deactivates spellchecking when set to FALSE, defaults to TRUE.
      */
     public function setSpellchecking($spellchecking = true)
     {
@@ -1375,7 +1363,7 @@ class Query
      * Multiple fallback sortings can be separated by comma,
      * ie: <field name> <direction>[,<field name> <direction>]...
      *
-     * @param string|boolean $sorting Either a comma-separated list of sort fields and directions or FALSE to reset sorting to the default behavior (sort by score / relevance)
+     * @param string|bool $sorting Either a comma-separated list of sort fields and directions or FALSE to reset sorting to the default behavior (sort by score / relevance)
      * @see http://wiki.apache.org/solr/CommonQueryParameters#sort
      */
     public function setSorting($sorting)
@@ -1397,7 +1385,7 @@ class Query
     /**
      * Enables or disables the debug parameter for the query.
      *
-     * @param boolean $debugMode Enables debugging when set to TRUE, deactivates debugging when set to FALSE, defaults to TRUE.
+     * @param bool $debugMode Enables debugging when set to TRUE, deactivates debugging when set to FALSE, defaults to TRUE.
      */
     public function setDebugMode($debugMode = true)
     {
@@ -1413,7 +1401,7 @@ class Query
     /**
      * Returns the link target page id.
      *
-     * @return integer
+     * @return int
      */
     public function getLinkTargetPageId()
     {

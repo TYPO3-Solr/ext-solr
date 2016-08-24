@@ -24,15 +24,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\DevLogDebugWriter;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class DevLogDebugWriterTest extends UnitTest
 {

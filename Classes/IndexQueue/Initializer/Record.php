@@ -27,18 +27,14 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Simple Index Queue initializer for records as found in tables configured
  * through TCA.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Record extends AbstractInitializer
 {
-
 
     // just the default behavior as in the abstract class
 }

@@ -11,7 +11,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  *  * Returns the faked indexing Response on the second http call.
  *
  * Class IndexQueueDependecyFaker
- * @package ApacheSolrForTypo3\Solr\Tests\Integration\Task
  */
 class IndexQueueDependencyFaker
 {
@@ -22,7 +21,7 @@ class IndexQueueDependencyFaker
     public static $requestId = '566b15f7b4931';
 
     /**
-     * @var integer
+     * @var int
      */
     public static $callCount = 0;
 
@@ -36,7 +35,7 @@ class IndexQueueDependencyFaker
 
     /**
      * @param string $url
-     * @param boolean $flags
+     * @param bool $flags
      * @param resource $context
      * @return string
      */

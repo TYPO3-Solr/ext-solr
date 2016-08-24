@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\SingletonInterface;
  * that are required in the cli context to allow frontend related operations in the cli context.
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class CliEnvironment implements SingletonInterface
 {
@@ -43,7 +41,7 @@ class CliEnvironment implements SingletonInterface
     protected $backupServerVariables = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isInitialized = false;
 
@@ -63,7 +61,7 @@ class CliEnvironment implements SingletonInterface
      * @param string $phpSelf
      * @param string $scriptName
      * @throws WebRootAllReadyDefinedException
-     * @return boolean
+     * @return bool
      */
     public function initialize($webRoot, $scriptFileName = PATH_site, $phpSelf = '/index.php', $scriptName = '/index.php')
     {
@@ -72,21 +70,21 @@ class CliEnvironment implements SingletonInterface
             return false;
         }
 
-        if (defined("TYPO3_PATH_WEB")) {
-            throw new WebRootAllReadyDefinedException("TYPO3_PATH_WEB is allready defined");
+        if (defined('TYPO3_PATH_WEB')) {
+            throw new WebRootAllReadyDefinedException('TYPO3_PATH_WEB is allready defined');
         }
 
-        define("TYPO3_PATH_WEB", $webRoot);
-        $_SERVER["SCRIPT_FILENAME"] = $scriptFileName;
-        $_SERVER["PHP_SELF"] = $phpSelf;
-        $_SERVER["SCRIPT_NAME"] = $scriptName;
+        define('TYPO3_PATH_WEB', $webRoot);
+        $_SERVER['SCRIPT_FILENAME'] = $scriptFileName;
+        $_SERVER['PHP_SELF'] = $phpSelf;
+        $_SERVER['SCRIPT_NAME'] = $scriptName;
 
         $this->isInitialized = true;
         return true;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsInitialized()
     {

@@ -36,8 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * facets view command
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class FacetingCommand implements PluginCommand
 {
@@ -66,7 +64,7 @@ class FacetingCommand implements PluginCommand
     /**
      * Facets active: TRUE if any option of any facet has been selected.
      *
-     * @var boolean
+     * @var bool
      */
     protected $facetsActive = false;
 
@@ -133,7 +131,6 @@ class FacetingCommand implements PluginCommand
             $configuredFacets
         );
         /** @var $facetRendererFactory FacetRendererFactory */
-
         foreach ($configuredFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
             $facet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet',
@@ -141,7 +138,6 @@ class FacetingCommand implements PluginCommand
                 $facetRendererFactory->getFacetInternalType($facetName)
             );
             /** @var $facet Facet */
-
             if (
                 (isset($facetConfiguration['includeInAvailableFacets']) && $facetConfiguration['includeInAvailableFacets'] == '0')
                 || !$facet->isRenderingAllowed()

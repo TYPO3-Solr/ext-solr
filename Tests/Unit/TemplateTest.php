@@ -29,12 +29,9 @@ use ApacheSolrForTypo3\Solr\Template;
  * Tests the ApacheSolrForTypo3\Solr\Template class
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class TemplateTest extends UnitTest
 {
-
 
     /**
      * @return array

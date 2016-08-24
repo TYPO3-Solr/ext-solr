@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Specialized query for content extraction using Solr Cell
  *
@@ -122,7 +121,7 @@ class ExtractingQuery extends Query
     /**
      * En / Disables extraction only
      *
-     * @param boolean $extractOnly If TRUE, only extracts content from the given file without indexing
+     * @param bool $extractOnly If TRUE, only extracts content from the given file without indexing
      */
     public function setExtractOnly($extractOnly = true)
     {

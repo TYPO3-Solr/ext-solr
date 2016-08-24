@@ -25,12 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Helper utility class used for string manipulation. Can be injected into your module
  * and mocked in the unit test context.
  *
- * @package ApacheSolrForTypo3\Solr\Utility
  */
 class StringUtility
 {

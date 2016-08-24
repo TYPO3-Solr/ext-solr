@@ -133,7 +133,6 @@ if (TYPO3_MODE == 'BE') {
         'ApacheSolrForTypo3\\Solr\\ConnectionManager->updateConnections'
     );
 
-
     // the order of registering the garbage collector and the record monitor is important!
     // for certain scenarios items must be removed by GC first, and then be re-added to to Index Queue
 
@@ -174,7 +173,6 @@ options.contextMenu.table.pages.items.851 = DIVIDER
 
 // include JS in backend
 $GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = $GLOBALS['PATH_solr'] . 'Classes/BackendItem/ContextMenuActionJavascriptRegistration.php';
-
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
