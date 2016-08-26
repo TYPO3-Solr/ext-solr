@@ -99,18 +99,18 @@ class Facet extends AbstractSubpartViewHelper
             );
 
             if ($facet->isRenderingAllowed()) {
-		        // don't render facets that do not meet their requirements to be rendered
-		        $facetRenderer = $facetRendererFactory->getFacetRendererByFacet($facet);
-		        $facetRenderer->setTemplate($this->template);
+                // don't render facets that do not meet their requirements to be rendered
+                $facetRenderer = $facetRendererFactory->getFacetRendererByFacet($facet);
+                $facetRenderer->setTemplate($this->template);
 
-		        $targetPageId = $this->getTargetPageId();
-		        $facetRenderer->setLinkTargetPageId($targetPageId);
+                $targetPageId = $this->getTargetPageId();
+                $facetRenderer->setLinkTargetPageId($targetPageId);
 
-		        $facet = $facetRenderer->getFacetProperties();
-		        $template->addVariable('facet', $facet);
+                $facet = $facetRenderer->getFacetProperties();
+                $template->addVariable('facet', $facet);
 
-		        $facetContent = $facetRenderer->renderFacet();
-	        }
+                $facetContent = $facetRenderer->renderFacet();
+            }
         }
 
         $template->addSubpart('single_facet', $facetContent);
