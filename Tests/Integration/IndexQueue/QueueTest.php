@@ -166,7 +166,8 @@ class QueueTest extends IntegrationTest
         $queueItem = $this->indexQueue->getItem(1);
         $this->assertEquals(
             'custom_page_type',
-            $queueItem->getIndexingConfigurationName()
+            $queueItem->getIndexingConfigurationName(),
+            'Item was queued with unexpected configuration'
         );
     }
 }

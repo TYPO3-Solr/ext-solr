@@ -287,10 +287,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                 }
 
                 if ($this->isEnabledRecord($recordTable, $record)) {
-                    $configurationName = null;
-                    if ($recordTable !== 'pages') {
-                        $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
-                    }
+                    $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
 
                     $this->indexQueue->updateItem($recordTable, $recordUid,
                         $configurationName);

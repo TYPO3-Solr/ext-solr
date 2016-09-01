@@ -412,6 +412,10 @@ queue.pages.allowedPageTypes
 
 Allows to set the pages types allowed to be indexed.
 
+Even if you have multiple queues for pages, e.g. via different ``additionalWhereClause``'s, you have
+to set this value to allow further ``doktype``'s. Restrict the pages to be indexed by each queue via
+``additionalWhereClause``.
+
 queue.pages.indexer.authorization.username
 ------------------------------------------
 
