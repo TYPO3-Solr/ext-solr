@@ -132,7 +132,8 @@ if (TYPO3_MODE == 'BE') {
         'solr::clearSolrConnectionCache',
         'ApacheSolrForTypo3\\Solr\\ConnectionManager->updateConnections'
     );
-
+}
+if ((TYPO3_MODE == 'BE') || ((TYPO3_MODE == 'FE') && isset($_POST['TSFE_EDIT']))) {
     // the order of registering the garbage collector and the record monitor is important!
     // for certain scenarios items must be removed by GC first, and then be re-added to to Index Queue
 
