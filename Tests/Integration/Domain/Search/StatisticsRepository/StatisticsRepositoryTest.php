@@ -37,11 +37,12 @@ class StatisticsRepositoryTest extends IntegrationTest
     public function canGetTopKeywordsWithHits()
     {
         $this->importDataSetFromFixture('can_get_statistics.xml');
+        $fixtureTimestamp = 1471203378;
+        $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
         /** @var $repository StatisticsRepository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
-        $topHits = $repository->getTopKeyWordsWithHits(1);
-
+        $topHits = $repository->getTopKeyWordsWithHits(1, $daysSinceFixture);
         $expectedResult = [
             ['mergedrows' => 2, 'count' => 2, 'hits' => 5, 'keywords' => 'content'],
             ['mergedrows' => 1, 'count' => 1, 'hits' => 6, 'keywords' => 'typo3']
@@ -55,15 +56,29 @@ class StatisticsRepositoryTest extends IntegrationTest
     public function canGetTopKeywordsWithoutHits()
     {
         $this->importDataSetFromFixture('can_get_statistics.xml');
+        $fixtureTimestamp = 1471203378;
+        $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
 
-        /** @var $repository StatisticsRepository */
+            /** @var $repository StatisticsRepository */
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
-        $topHits = $repository->getTopKeyWordsWithoutHits(1);
+        $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
 
         $expectedResult = [
             ['mergedrows' => 1, 'count' => 1, 'hits' => 0, 'keywords' => 'cms'],
         ];
 
         $this->assertSame($expectedResult, $topHits);
+    }
+
+    /**
+     * Helper method to calculate the number of days from now to a specific timestamp.
+     *
+     * @param $timestamp
+     * @return float
+     */
+    protected static function getDaysSinceTimestamp($timestamp) {
+        $secondsUntilNow = time() - $timestamp;
+        $days = floor($secondsUntilNow / (60*60*24));
+        return $days;
     }
 }

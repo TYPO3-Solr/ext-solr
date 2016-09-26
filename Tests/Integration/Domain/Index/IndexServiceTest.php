@@ -80,19 +80,19 @@ class IndexServiceTest extends IntegrationTest
         return [
             'absRefPrefixIsAuto' => [
                 'absRefPrefix' => 'auto',
-                'expectedUrl' => '/index.php?id=1&tx_ttnews%5Btt_news%5D=111&L=0&cHash=0c0f0e52711b08554a6658230061fb1a',
+                'expectedUrl' => '/index.php?id=1&tx_ttnews%5Btt_news%5D=111&L=0',
             ],
             'absRefPrefixIsSlash' => [
                 'absRefPrefix' => 'slash',
-                'expectedUrl' => '/index.php?id=1&tx_ttnews%5Btt_news%5D=111&L=0&cHash=0c0f0e52711b08554a6658230061fb1a',
+                'expectedUrl' => '/index.php?id=1&tx_ttnews%5Btt_news%5D=111&L=0',
             ],
             'absRefPrefixIsFoo' => [
                 'absRefPrefix' => 'foo',
-                'expectedUrl' => '/foo/index.php?id=1&tx_ttnews%5Btt_news%5D=111&L=0&cHash=0c0f0e52711b08554a6658230061fb1a',
+                'expectedUrl' => '/foo/index.php?id=1&tx_ttnews%5Btt_news%5D=111&L=0',
             ],
             'absRefPrefixIsNone' => [
                 'absRefPrefix' => 'none',
-                'expectedUrl' => 'index.php?id=1&tx_ttnews%5Btt_news%5D=111&L=0&cHash=0c0f0e52711b08554a6658230061fb1a',
+                'expectedUrl' => 'index.php?id=1&tx_ttnews%5Btt_news%5D=111&L=0',
             ]
         ];
     }
@@ -134,7 +134,7 @@ class IndexServiceTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertContains('"url":"' . $expectedUrl . '"', $solrContent, 'Generated unexpected url with absRefPrefix = auto');
+        $this->assertContains('"url":"' . $expectedUrl, $solrContent, 'Generated unexpected url with absRefPrefix = auto');
         $this->assertNotContains('auto', $solrContent, 'absRefPrefix=auto was not resolved');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
