@@ -42,7 +42,7 @@ To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-sol
 
 -   **Main Documentation:**
 
-    https://forge.typo3.org/projects/extension-solr/wiki
+    https://docs.typo3.org/typo3cms/extensions/solr/
 
 
 -   **Slack Channel:**
