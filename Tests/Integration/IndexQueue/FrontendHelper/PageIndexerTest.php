@@ -57,7 +57,7 @@ class PageIndexerTest extends IntegrationTest
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"hello solr"', $solrContent, 'Could not index document into solr');
         $this->assertContains('"sortSubTitle_stringS":"the subtitle"', $solrContent, 'Document does not contain subtitle');
@@ -79,7 +79,7 @@ class PageIndexerTest extends IntegrationTest
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
 
-        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
 
             // field values from index.queue.pages.fields.
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');

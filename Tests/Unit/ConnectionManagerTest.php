@@ -57,7 +57,7 @@ class ConnectionManagerTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
         $GLOBALS['TSFE']->tmpl->setup['config.']['typolinkEnableLinksAcrossDomains'] = 0;
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['host'] = 'localhost';
-        $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['port'] = '8983';
+        $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['port'] = '8999';
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['path'] = '/solr/core_en/';
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['scheme'] = 'http';
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = 25;
@@ -77,7 +77,7 @@ class ConnectionManagerTest extends UnitTest
     {
         return array(
             array('host' => 'localhost', 'port' => '', 'path' => '', 'scheme' => '', 'expectsException' => true, 'expectedConnectionString' => null),
-            array('host' => '', 'port' => '', 'path' => '', 'scheme' => '', 'expectsException' => false, 'expectedConnectionString' => 'http://localhost:8983/solr/core_en/'),
+            array('host' => '', 'port' => '', 'path' => '', 'scheme' => '', 'expectsException' => false, 'expectedConnectionString' => 'http://localhost:8999/solr/core_en/'),
             array('host' => '127.0.0.1', 'port' => '8181', 'path' => '/solr/core_de/', 'scheme' => 'https', 'expectsException' => false, 'expectedConnectionString' => 'https://127.0.0.1:8181/solr/core_de/')
         );
     }

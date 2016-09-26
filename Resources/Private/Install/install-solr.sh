@@ -109,6 +109,8 @@ done
 
 if [ $TESTING -eq "1" ]; then
     INSTALL_MODE="CI Testing"
+    # during testing we use an own custom port
+    SOLR_PORT=8999
 else
     INSTALL_MODE="Development"
 fi
@@ -127,7 +129,7 @@ cecho "Starting installation of Apache Solr with the following settings:" $green
 cecho "Install Mode: ${INSTALL_MODE}                                    " $green
 cecho "Solr Version: ${SOLR_VERSION}                                    " $green
 cecho "Installation Path: ${SOLR_INSTALL_DIR}                           " $green
-
+cecho "Port: ${SOLR_PORT}                                               " $green
 
 # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 

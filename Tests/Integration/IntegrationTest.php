@@ -173,7 +173,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     protected function cleanUpSolrServerAndAssertEmpty()
     {
         // cleanup the solr server
-        $result = file_get_contents("http://localhost:8983/solr/core_en/update?stream.body=<delete><query>*:*</query></delete>&commit=true");
+        $result = file_get_contents("http://localhost:8999/solr/core_en/update?stream.body=<delete><query>*:*</query></delete>&commit=true");
 
         if (strpos($result, '<int name="QTime">') == false) {
             $this->fail('Could not empty solr test index');
@@ -190,7 +190,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
      */
     protected function waitToBeVisibleInSolr()
     {
-        $url = "http://localhost:8983/solr/core_en/update?softCommit=true";
+        $url = "http://localhost:8999/solr/core_en/update?softCommit=true";
         get_headers($url);
     }
 
@@ -211,7 +211,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
      */
     protected function assertSolrContainsDocumentCount($documentCount)
     {
-        $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":' . intval($documentCount), $solrContent, 'Solr contains unexpected amount of documents');
     }
 
