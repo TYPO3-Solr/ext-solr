@@ -38,8 +38,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *          of the analysis yet. Feel free to contribute better analysis.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class ScoreAnalyzer implements ResultDocumentModifier
 {
@@ -48,7 +46,6 @@ class ScoreAnalyzer implements ResultDocumentModifier
      * @var Search
      */
     protected $search;
-
 
     /**
      * Modifies the given query and returns the modified query as result

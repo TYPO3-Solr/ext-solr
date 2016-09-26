@@ -16,7 +16,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginCode] 
     $pluginCode,
     'FILE:EXT:solr/Configuration/FlexForms/Results.xml');
 
-
 // adding the Search Form plugin
 $pluginCode = 'solr_pi_search';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
@@ -28,7 +27,6 @@ $pluginCode = 'solr_pi_search';
     'solr'
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginCode] = 'layout,select_key,pages,recursive';
-
 
 // adding the Frequent Search plugin
 $pluginCode = 'solr_pi_frequentsearches';

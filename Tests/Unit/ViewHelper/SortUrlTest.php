@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * PHP Unit test for sort url view helper (ApacheSolrForTypo3\Solr\ViewHelper\SortUrl)
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class SortUrlTest extends AbstractViewHelperTest
 {

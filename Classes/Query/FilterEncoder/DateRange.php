@@ -43,7 +43,6 @@ class DateRange implements FilterEncoder, FacetBuilder
      */
     const DELIMITER = '-';
 
-
     /**
      * Parses the given date range from a GET parameter and returns a Solr
      * date range filter.

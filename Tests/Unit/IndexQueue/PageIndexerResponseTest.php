@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Index Queue Page Indexer response test.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class PageIndexerResponseTest extends UnitTest
 {

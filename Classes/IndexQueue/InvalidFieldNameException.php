@@ -24,14 +24,11 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Exception that is thrown when trying to add a field to a Solr document using
  * a reserved name.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class InvalidFieldNameException extends \RuntimeException
 {

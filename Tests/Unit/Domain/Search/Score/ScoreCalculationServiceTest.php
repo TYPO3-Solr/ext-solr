@@ -26,10 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Score;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
  * @author Timo Schmidt <timo.schmidt@dkd.de>

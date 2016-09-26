@@ -38,8 +38,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @author Timo Schmidt <timo.schmidt@aoemedia.de
- * @package TYPO3
- * @subpackage solr
  */
 abstract class CommandPluginBase extends PluginBase
 {

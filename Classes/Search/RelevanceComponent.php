@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\Query;
  * Boosting search component
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class RelevanceComponent extends AbstractComponent implements QueryAware
 {
@@ -42,7 +40,6 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
      * @var Query
      */
     protected $query;
-
 
     /**
      * Initializes the search component.

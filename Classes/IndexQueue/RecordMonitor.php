@@ -37,8 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * passed to the index queue to update the according index document.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class RecordMonitor extends AbstractDataHandlerListener
 {
@@ -78,13 +76,13 @@ class RecordMonitor extends AbstractDataHandlerListener
         return array(
             // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 0 => requeue subpages
             'extendToSubpageEnabledAndHiddenFlagWasRemoved' => array(
-                'currentState' =>  array('extendToSubpages' => "1"),
-                'changeSet' => array('hidden' => "0")
+                'currentState' =>  array('extendToSubpages' => '1'),
+                'changeSet' => array('hidden' => '0')
             ),
             // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 0 => requeue subpages
             'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => array(
-                'currentState' =>  array('hidden' => "1"),
-                'changeSet' => array('extendToSubpages' => "0")
+                'currentState' =>  array('hidden' => '1'),
+                'changeSet' => array('extendToSubpages' => '0')
             )
         );
     }
@@ -94,7 +92,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      *
      * @param string $command The command.
      * @param string $table The table the record belongs to
-     * @param integer $uid The record's uid
+     * @param int $uid The record's uid
      * @param string $value
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
      */
@@ -121,7 +119,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      *
      * @param string $command The command.
      * @param string $table The table the record belongs to
-     * @param integer $uid The record's uid
+     * @param int $uid The record's uid
      * @param string $value
      * @param DataHandler $tceMain TYPO3 Core Engine parent object
      */
@@ -365,7 +363,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * Gets an array of tables configured for indexing by the Index Queue. The
      * record monitor must watch these tables for manipulation.
      *
-     * @param integer $pageId The page id for which we need to retrieve the configuration for
+     * @param int $pageId The page id for which we need to retrieve the configuration for
      * @return array Array of table names to be watched by the record monitor.
      */
     protected function getMonitoredTables($pageId)
@@ -388,15 +386,13 @@ class RecordMonitor extends AbstractDataHandlerListener
         return array_unique($monitoredTables);
     }
 
-
     // Handle pages showing content from another page
-
 
     /**
      * Triggers Index Queue updates for other pages showing content from the
      * page currently being updated.
      *
-     * @param integer $pageId UID of the page currently being updated
+     * @param int $pageId UID of the page currently being updated
      */
     protected function updateCanonicalPages($pageId)
     {
@@ -412,15 +408,13 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
     }
 
-
     // Mount Page Handling
-
 
     /**
      * Handles updates of the Index Queue in case a newly created or changed
      * page is part of a tree that is mounted into a another site.
      *
-     * @param integer $pageId Page Id (uid).
+     * @param int $pageId Page Id (uid).
      */
     protected function updateMountPages($pageId)
     {
@@ -474,7 +468,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($currentPageUid !== 0) {
             $pageQueryConditions[] = '(mount_pid=' . $currentPageUid . ' AND mount_pid_ol=1)';
         }
-        $pageQueryCondition = implode(" OR ", $pageQueryConditions);
+        $pageQueryCondition = implode(' OR ', $pageQueryConditions);
 
         $mountPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed',
@@ -489,7 +483,7 @@ class RecordMonitor extends AbstractDataHandlerListener
     /**
      * Adds a page to the Index Queue of a site mounting the page.
      *
-     * @param integer $mountedPageId ID (uid) of the mounted page.
+     * @param int $mountedPageId ID (uid) of the mounted page.
      * @param array $mountProperties Array of mount point properties mountPageSource, mountPageDestination, and mountPageOverlayed
      */
     protected function addPageToMountingSiteIndexQueue(
@@ -515,7 +509,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      *
      * @param string $table The record's table name
      * @param array $record The record to check
-     * @return boolean TRUE if the record is enabled, FALSE otherwise
+     * @return bool TRUE if the record is enabled, FALSE otherwise
      */
     protected function isEnabledRecord($table, $record)
     {

@@ -33,8 +33,6 @@ use ApacheSolrForTypo3\Solr\Query;
  * QueryModifier interface, allows to modify search queries
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface Modifier
 {

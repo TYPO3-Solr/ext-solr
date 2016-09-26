@@ -30,8 +30,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  * created and processed in the SearchResultSetService.
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 interface SearchResultSetProcessor
 {

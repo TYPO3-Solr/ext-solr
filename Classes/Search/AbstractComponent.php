@@ -24,13 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Abstract search component
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractComponent implements SearchComponent
 {
@@ -41,7 +38,6 @@ abstract class AbstractComponent implements SearchComponent
      * @var array
      */
     protected $searchConfiguration = array();
-
 
     /**
      * Sets the plugin's search configuration.

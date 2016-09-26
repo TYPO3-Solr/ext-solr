@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Facet Options Renderer Interface
  *

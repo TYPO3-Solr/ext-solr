@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  * Provides the icon and entry for the content element wizard
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class ContentElementWizardIconProvider
 {

@@ -17,7 +17,7 @@ function uniqid()
  * This function fakes the file_get_contents calls to provied a faked frontend indexing response.
  *
  * @param string $url
- * @param boolean $flags
+ * @param bool $flags
  * @param resource $context
  *
  * @return string
@@ -56,16 +56,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * TestCase to check if we can indexer from a index queue worker task into a solr server
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class IndexQueueWorkerTest extends IntegrationTest
 {
@@ -73,6 +69,14 @@ class IndexQueueWorkerTest extends IntegrationTest
      * @var Queue
      */
     protected $indexQueue;
+
+    /**
+     * @var array
+     */
+    protected $coreExtensionsToLoad = [
+        'extensionmanager',
+        'scheduler'
+    ];
 
     public function setUp()
     {

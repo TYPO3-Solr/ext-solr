@@ -36,8 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * needs during Index Queue initialization.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractInitializer implements IndexQueueInitializer
 {
@@ -129,15 +127,13 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $this->indexingConfigurationName = (string)$indexingConfigurationName;
     }
 
-
     // Index Queue initialization
-
 
     /**
      * Initializes Index Queue items for a certain site and indexing
      * configuration.
      *
-     * @return boolean TRUE if initialization was successful, FALSE on error.
+     * @return bool TRUE if initialization was successful, FALSE on error.
      */
     public function initialize()
     {
@@ -182,13 +178,12 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         return $select;
     }
 
-
     // initialization query building
 
     /**
      * Reads the indexing priority for an indexing configuration.
      *
-     * @return integer Indexing priority
+     * @return int Indexing priority
      */
     protected function getIndexingPriority()
     {

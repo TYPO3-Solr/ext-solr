@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * indexed.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Item
 {
@@ -42,14 +40,14 @@ class Item
     /**
      * The item's uid in the index queue (tx_solr_indexqueue_item.uid)
      *
-     * @var integer
+     * @var int
      */
     protected $indexQueueUid;
 
     /**
      * The root page uid of the tree the item is located in (tx_solr_indexqueue_item.root)
      *
-     * @var integer
+     * @var int
      */
     protected $rootPageUid;
 
@@ -71,7 +69,7 @@ class Item
     /**
      * The unix timestamp when the record was last changed (tx_solr_indexqueue_item.changed)
      *
-     * @var integer
+     * @var int
      */
     protected $changed;
 
@@ -86,21 +84,21 @@ class Item
     /**
      * Flag for lazy loading indexing properties.
      *
-     * @var boolean
+     * @var bool
      */
     protected $indexingPropertiesLoaded = false;
 
     /**
      * Flag, whether indexing properties exits for this item.
      *
-     * @var boolean
+     * @var bool
      */
     protected $hasIndexingProperties = false;
 
     /**
      * The record's uid.
      *
-     * @var integer
+     * @var int
      */
     protected $recordUid = 0;
 
@@ -110,7 +108,6 @@ class Item
      * @var array
      */
     protected $record;
-
 
     /**
      * Constructor, takes item meta data information and resolves that to the full record.
@@ -144,7 +141,7 @@ class Item
     /**
      * Gets the item's root page ID (uid)
      *
-     * @return integer root page ID
+     * @return int root page ID
      */
     public function getRootPageUid()
     {

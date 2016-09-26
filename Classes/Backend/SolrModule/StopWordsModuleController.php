@@ -48,7 +48,6 @@ class StopWordsModuleController extends AbstractModuleController
      */
     protected $moduleTitle = 'Stop Words';
 
-
     /**
      * Lists stop words for the currently selected core
      *

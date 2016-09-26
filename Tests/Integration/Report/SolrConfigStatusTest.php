@@ -23,7 +23,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\Report\SchemaStatus;
 use ApacheSolrForTypo3\Solr\Report\SolrConfigStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -33,8 +32,6 @@ use TYPO3\CMS\Reports\Status;
  * Integration test for the config status report
  *
  * @author Timo Hund
- * @package TYPO3
- * @subpackage solr
  */
 class SolrConfigStatusTest extends IntegrationTest
 {

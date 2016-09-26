@@ -52,7 +52,7 @@ interface FacetRenderer
     /**
      * Sets the target page ID for all links generated
      *
-     * @param integer $linkTargetPageId Target page ID for links
+     * @param int $linkTargetPageId Target page ID for links
      */
     public function setLinkTargetPageId($linkTargetPageId);
 
@@ -80,7 +80,7 @@ interface FacetRenderer
     /**
      * Gets the number of options for a facet.
      *
-     * @return integer Number of facet options for the current facet.
+     * @return int Number of facet options for the current facet.
      */
     public function getFacetOptionsCount();
 }

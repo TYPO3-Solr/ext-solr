@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * command resolver
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class CommandResolver
 {
@@ -50,7 +48,7 @@ class CommandResolver
      * @param string $plugins comma separated list of plugin names (without pi_ prefix)
      * @param string $commandName command name
      * @param string $commandClass name of the class implementing the command
-     * @param integer $requirements Bitmask of which requirements need to be met for a command to be executed
+     * @param int $requirements Bitmask of which requirements need to be met for a command to be executed
      */
     public static function registerPluginCommand(
         $plugins,
@@ -76,7 +74,7 @@ class CommandResolver
      * This can for example be helpful to override core-modules shipped and automatically loaded with EXT:solr
      *
      * @param string $commandName command name
-     * @return boolean Result if command was found (and successfully unregistered)
+     * @return bool Result if command was found (and successfully unregistered)
      */
     public static function unregisterPluginCommand($commandName)
     {
@@ -94,7 +92,7 @@ class CommandResolver
      * Gets the commands registered for a specific plugin.
      *
      * @param string $pluginName Plugin name to get the registered commands for.
-     * @param integer $pluginStatus Bitmask required by commands to be registered for.
+     * @param int $pluginStatus Bitmask required by commands to be registered for.
      * @return array An array of plugin command names registered
      */
     public static function getPluginCommands(
@@ -132,7 +130,7 @@ class CommandResolver
      * Determines which bits are set as a requirement for the plugin commands
      * to be registered for.
      *
-     * @param integer $bitmask Bitmask
+     * @param int $bitmask Bitmask
      * @return array An array of integers - the bit positions set to 1
      */
     protected static function getRequiredBits($bitmask)

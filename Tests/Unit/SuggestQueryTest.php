@@ -31,15 +31,14 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * Tests the ApacheSolrForTypo3\Solr\SuggestQuery class
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class SuggestQueryTest extends UnitTest
 {
     /**
      * @test
      */
-    public function testSuggestQueryDoesNotUseFieldCollapsing() {
+    public function testSuggestQueryDoesNotUseFieldCollapsing()
+    {
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['variants.'] = [
             'variantField' => 'myField'

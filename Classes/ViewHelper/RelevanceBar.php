@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * View helper class to turn a result document's relevance score into a nicer
  * visual bar
@@ -32,8 +31,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  * Replaces view helpers ###RELEVANCE_BAR:###RESULT_DOCUMENT######
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class RelevanceBar extends Relevance
 {

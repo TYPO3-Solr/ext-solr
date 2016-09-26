@@ -33,8 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * TODO maybe merge ApacheSolrForTypo3\Solr\Sorting into ApacheSolrForTypo3\Solr\Search\SortingComponent
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class SortingComponent extends AbstractComponent implements QueryAware
 {
@@ -45,7 +43,6 @@ class SortingComponent extends AbstractComponent implements QueryAware
      * @var Query
      */
     protected $query;
-
 
     /**
      * Initializes the search component.

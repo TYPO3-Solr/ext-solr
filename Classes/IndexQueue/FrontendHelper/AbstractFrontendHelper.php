@@ -34,8 +34,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * functionality.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractFrontendHelper implements FrontendHelper
 {
@@ -58,7 +56,6 @@ abstract class AbstractFrontendHelper implements FrontendHelper
      * The action a frontend helper executes.
      */
     protected $action = null;
-
 
     /**
      * Disables the frontend output for index queue requests.

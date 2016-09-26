@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Index Fields Module
@@ -48,7 +48,6 @@ class IndexFieldsModuleController extends AbstractModuleController
      * @var string
      */
     protected $moduleTitle = 'Index Fields';
-
 
     /**
      * Gets Luke meta data for the currently selected core and provides a list

@@ -34,8 +34,6 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * the required version.
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class SolrVersionStatus implements StatusProviderInterface
 {

@@ -33,8 +33,6 @@ use ApacheSolrForTypo3\Solr\Template;
  * Form modifier interface
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface FormModifier
 {

@@ -31,8 +31,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  * Testcase to verify the functionality of the Rootline
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class RootlineTest extends UnitTest
 {

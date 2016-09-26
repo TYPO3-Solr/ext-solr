@@ -24,16 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query class
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class QueryTest extends UnitTest
 {
@@ -141,9 +139,7 @@ class QueryTest extends UnitTest
 
     // TODO if user is in group -2 (logged in), disallow access to group -1
 
-
     // grouping
-
 
     /**
      * @test
@@ -213,8 +209,8 @@ class QueryTest extends UnitTest
         $query->setHighlighting(true);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame(200, $queryParameters["hl.fragsize"], 'hl.fragsize was not set to the default value of 200');
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame(200, $queryParameters['hl.fragsize'], 'hl.fragsize was not set to the default value of 200');
     }
 
     /**
@@ -231,8 +227,8 @@ class QueryTest extends UnitTest
         $query->setHighlighting(true);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame("title", $queryParameters["hl.fl"], 'Can set highlighting field list');
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame('title', $queryParameters['hl.fl'], 'Can set highlighting field list');
     }
 
     /**
@@ -249,10 +245,10 @@ class QueryTest extends UnitTest
         $query->setHighlighting(true);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame("[A]", $queryParameters["hl.tag.pre"], 'Can set highlighting hl.tag.pre');
-        $this->assertSame("[B]", $queryParameters["hl.tag.post"], 'Can set highlighting hl.tag.post');
-        $this->assertSame("[A]", $queryParameters["hl.simple.pre"], 'Can set highlighting hl.tag.pre');
-        $this->assertSame("[B]", $queryParameters["hl.simple.post"], 'Can set highlighting hl.tag.post');
+        $this->assertSame('[A]', $queryParameters['hl.tag.pre'], 'Can set highlighting hl.tag.pre');
+        $this->assertSame('[B]', $queryParameters['hl.tag.post'], 'Can set highlighting hl.tag.post');
+        $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting hl.tag.pre');
+        $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting hl.tag.post');
     }
 
     /**
@@ -266,14 +262,14 @@ class QueryTest extends UnitTest
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
-        
+
         // fragSize 10 is to small for FastVectorHighlighter
         $query->setHighlighting(true, 17);
         $queryParameters = $query->getQueryParameters();
-        $this->assertSame("[A]", $queryParameters["hl.simple.pre"], 'Can set highlighting field list');
-        $this->assertSame("[B]", $queryParameters["hl.simple.post"], 'Can set highlighting field list');
-        $this->assertEmpty($queryParameters["hl.tag.pre"], 'When the highlighting fragment size is to small hl.tag.pre should not be used because FastVectoreHighlighter will not be used');
-        $this->assertEmpty($queryParameters["hl.tag.post"], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
+        $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting field list');
+        $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting field list');
+        $this->assertEmpty($queryParameters['hl.tag.pre'], 'When the highlighting fragment size is to small hl.tag.pre should not be used because FastVectoreHighlighter will not be used');
+        $this->assertEmpty($queryParameters['hl.tag.post'], 'When the highlighting fragment size is to small hl.tag.post should not be used because FastVectoreHighlighter will not be used');
     }
 
     /**
@@ -289,8 +285,8 @@ class QueryTest extends UnitTest
         $query->setHighlighting(true, 200);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertSame("true", $queryParameters["hl.useFastVectorHighlighter"], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertSame('true', $queryParameters['hl.useFastVectorHighlighter'], 'Enable highlighting did not set the "hl.useFastVectorHighlighter" query parameter');
     }
 
     /**
@@ -306,10 +302,9 @@ class QueryTest extends UnitTest
         $query->setHighlighting(true, 0);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame("true", $queryParameters["hl"], 'Enable highlighting did not set the "hl" query parameter');
-        $this->assertNull($queryParameters["hl.useFastVectorHighlighter"], 'FastVectorHighlighter was disabled but still requested');
+        $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
+        $this->assertNull($queryParameters['hl.useFastVectorHighlighter'], 'FastVectorHighlighter was disabled but still requested');
     }
-
 
     /**
      * @test
@@ -417,7 +412,7 @@ class QueryTest extends UnitTest
         $query->setFaceting(true);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame("true", $queryParameters["facet"], 'Enable faceting did not set the "facet" query parameter');
+        $this->assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
     }
 
     /**
@@ -435,7 +430,7 @@ class QueryTest extends UnitTest
         $query->setFaceting(true);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame(10, $queryParameters["facet.mincount"], 'Can not use facet.minimumCount from configuration');
+        $this->assertSame(10, $queryParameters['facet.mincount'], 'Can not use facet.minimumCount from configuration');
     }
 
     /**
@@ -453,7 +448,7 @@ class QueryTest extends UnitTest
         $query->setFaceting(true);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame('index', $queryParameters["facet.sort"], 'Can not use facet.sort from configuration');
+        $this->assertSame('index', $queryParameters['facet.sort'], 'Can not use facet.sort from configuration');
     }
 
     /**
@@ -466,7 +461,7 @@ class QueryTest extends UnitTest
         $query->setSpellchecking(true);
         $queryParameters = $query->getQueryParameters();
 
-        $this->assertSame("true", $queryParameters["spellcheck"], 'Enable spellchecking did not set the "spellcheck" query parameter');
+        $this->assertSame('true', $queryParameters['spellcheck'], 'Enable spellchecking did not set the "spellcheck" query parameter');
     }
 
     /**

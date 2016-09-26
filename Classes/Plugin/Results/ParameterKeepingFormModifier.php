@@ -38,8 +38,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Michel Tremblay <mictre@gmail.com>
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class ParameterKeepingFormModifier implements FormModifier, CommandPluginAware
 {

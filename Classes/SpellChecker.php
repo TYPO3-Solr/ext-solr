@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Spell checker / Did you mean
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class SpellChecker
 {
@@ -49,7 +47,6 @@ class SpellChecker
      * @var array
      */
     protected $configuration;
-
 
     /**
      * Constructor
@@ -76,7 +73,7 @@ class SpellChecker
     /**
      * Checks whether the user's query was correctly spelled.
      *
-     * @return boolean TRUE if the query terms were correctly spelled, FALSE otherwise
+     * @return bool TRUE if the query terms were correctly spelled, FALSE otherwise
      */
     public function isIncorrectlySpelled()
     {

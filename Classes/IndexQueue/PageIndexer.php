@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * plugins may be included on a page and thus may need to be executed.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class PageIndexer extends Indexer
 {
@@ -79,7 +77,7 @@ class PageIndexer extends Indexer
      * Checks whether we can index this page.
      *
      * @param Item $item The page we want to index encapsulated in an index queue item
-     * @return boolean True if we can index this page, FALSE otherwise
+     * @return bool True if we can index this page, FALSE otherwise
      */
     protected function isPageIndexable(Item $item)
     {
@@ -150,7 +148,7 @@ class PageIndexer extends Indexer
      * pushed through ContentObjectRenderer during rendering.
      *
      * @param Item $item Index queue item representing the current page to get the user groups from
-     * @param integer $language The sys_language_uid language ID
+     * @param int $language The sys_language_uid language ID
      * @return array Array of user group IDs
      */
     protected function getAccessGroupsFromContent(Item $item, $language = 0)
@@ -185,7 +183,6 @@ class PageIndexer extends Indexer
 
         return $accessGroupsCache[$accessGroupsCacheEntryId];
     }
-
 
     // Utility methods
 
@@ -227,7 +224,7 @@ class PageIndexer extends Indexer
      * and then actually build and return the page URL.
      *
      * @param Item $item Item to index
-     * @param integer $language The language id
+     * @param int $language The language id
      * @return string URL to send the index request to
      * @throws \RuntimeException
      */
@@ -335,7 +332,6 @@ class PageIndexer extends Indexer
         return $mountPageUrlParameter;
     }
 
-
     #
     # Frontend User Groups Access
     #
@@ -345,8 +341,8 @@ class PageIndexer extends Indexer
      * a specific frontend user group.
      *
      * @param Item $item The index queue item representing the page.
-     * @param integer $language The language to use.
-     * @param integer $userGroup The frontend user group to use.
+     * @param int $language The language to use.
+     * @param int $userGroup The frontend user group to use.
      * @return PageIndexerResponse Page indexer response
      * @throws \RuntimeException if indexing an item failed
      */
@@ -414,8 +410,8 @@ class PageIndexer extends Indexer
      * the ID by a lower case C.
      *
      * @param Item $item Index queue item representing the current page
-     * @param integer $language The sys_language_uid language ID
-     * @param integer $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
+     * @param int $language The sys_language_uid language ID
+     * @param int $contentAccessGroup The user group to use for the content access rootline element. Optional, will be determined automatically if not set.
      * @return string An Access Rootline.
      */
     protected function getAccessRootline(

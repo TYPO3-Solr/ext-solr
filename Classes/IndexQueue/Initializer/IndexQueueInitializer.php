@@ -33,8 +33,6 @@ use ApacheSolrForTypo3\Solr\Site;
  * Interface to initialize items in the Index Queue.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface IndexQueueInitializer
 {
@@ -71,7 +69,7 @@ interface IndexQueueInitializer
      * Initializes Index Queue items for a certain site and indexing
      * configuration.
      *
-     * @return boolean TRUE if initialization was successful, FALSE on error.
+     * @return bool TRUE if initialization was successful, FALSE on error.
      */
     public function initialize();
 }

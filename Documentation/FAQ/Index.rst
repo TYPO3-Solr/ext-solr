@@ -146,7 +146,7 @@ Example:
 
 *Use boostFunctions or boostQueries*
 
-For use cases like "*news* are allways more important then *pages*" or "Newer documents should be at the beginning" you can use boostFunctions (:ref:`conf-tx-solr-search-boostFunction`) or boostQueries (:ref:`conf-tx-solr-search-boostQuery`)
+For use cases like "*news* are always more important then *pages*" or "Newer documents should be at the beginning" you can use boostFunctions (:ref:`conf-tx-solr-search-boostFunction`) or boostQueries (:ref:`conf-tx-solr-search-boostQuery`)
 
 *The search term only exists as a synonym*
 
@@ -205,10 +205,10 @@ Put this into your sub vcl_fetch part of the configuration
 
     if (req.http.Cache-Control ~ "no-cache") {
         set beresp.ttl = 0s;
-        #Make sure ESI includes are processed!
+        # Make sure ESI includes are processed!
         esi;
         set beresp.http.X-Cacheable = "NO:force-reload";
-        #Make sure that We remove alle cache headers, so the Browser does not cache it for us!
+        # Make sure that We remove all cache headers, so the Browser does not cache it for us!
         remove beresp.http.Cache-Control;
         remove beresp.http.Expires;
         remove beresp.http.Last-Modified;

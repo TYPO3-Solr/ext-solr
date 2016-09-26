@@ -31,16 +31,12 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Testcase for the record indexer
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class IndexServiceTest extends IntegrationTest
 {
@@ -70,7 +66,7 @@ class IndexServiceTest extends IntegrationTest
 
     /**
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return \Apache_Solr_Response
      */
     protected function addToIndexQueue($table, $uid)
@@ -78,7 +74,6 @@ class IndexServiceTest extends IntegrationTest
         // write an index queue item
         $this->indexQueue->updateItem($table, $uid, null, time());
     }
-
 
     public function canResolveAbsRefPrefixDataProvider()
     {
@@ -117,7 +112,7 @@ class IndexServiceTest extends IntegrationTest
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePath('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePath('fake_extension2_directrelated_tca.php'));
 
-        $this->importDataSetFromFixture('can_index_custom_record_absRefPrefix_'.$absRefPrefix.'.xml');
+        $this->importDataSetFromFixture('can_index_custom_record_absRefPrefix_' . $absRefPrefix . '.xml');
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
 
@@ -139,7 +134,7 @@ class IndexServiceTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
         $solrContent = file_get_contents('http://localhost:8983/solr/core_en/select?q=*:*');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
-        $this->assertContains('"url":"'.$expectedUrl.'"', $solrContent, 'Generated unexpected url with absRefPrefix = auto');
+        $this->assertContains('"url":"' . $expectedUrl . '"', $solrContent, 'Generated unexpected url with absRefPrefix = auto');
         $this->assertNotContains('auto', $solrContent, 'absRefPrefix=auto was not resolved');
         $this->cleanUpSolrServerAndAssertEmpty();
     }

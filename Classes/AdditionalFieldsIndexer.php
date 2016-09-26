@@ -34,8 +34,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * plugin.tx_solr.index.additionalFields.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class AdditionalFieldsIndexer implements SubstitutePageIndexer
 {

@@ -42,7 +42,6 @@ class HierarchicalFacetHelper
      */
     public $cObj;
 
-
     /**
      * Builds a menu structure usable with HMENU and returns it.
      *
@@ -95,7 +94,7 @@ class HierarchicalFacetHelper
      * Generates a facet option label from the given facet option.
      *
      * @param string $facetOptionKey A hierachical facet option path
-     * @param integer $facetOptionResultCount
+     * @param int $facetOptionResultCount
      * @return string The label for the facet option consisting of the last part of the path and the options result count
      */
     protected function getFacetOptionLabel(
@@ -114,7 +113,7 @@ class HierarchicalFacetHelper
      *
      * @param array $facetOptions Array of facet options
      * @param string $menuName Name of the top level menu to build the sub menu structure for
-     * @param integer $level The sub level depth
+     * @param int $level The sub level depth
      * @return array Returns an array sub menu structure if a sub menu exists, an empty array otherwise
      */
     protected function getSubMenu(array $facetOptions, $menuName, $level)

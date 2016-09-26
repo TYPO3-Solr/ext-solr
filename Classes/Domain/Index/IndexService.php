@@ -30,21 +30,14 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 /**
  * Service to perform indexing operations
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class IndexService
 {
@@ -92,8 +85,8 @@ class IndexService
     /**
      * Indexes items from the Index Queue.
      *
-     * @param integer $limit
-     * @return boolean
+     * @param int $limit
+     * @return bool
      */
     public function indexItems($limit)
     {
@@ -148,7 +141,7 @@ class IndexService
      * Indexes an item from the Index Queue.
      *
      * @param Item $item An index queue item to index
-     * @return boolean TRUE if the item was successfully indexed, FALSE otherwise
+     * @return bool TRUE if the item was successfully indexed, FALSE otherwise
      */
     protected function indexItem(Item $item)
     {

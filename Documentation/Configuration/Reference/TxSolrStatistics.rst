@@ -20,7 +20,7 @@ tx_solr.statistics
 
 This section allows you to configure the logging for statistics.
 
-**Note**: The statistics are logged into a mysql table. This might not make sence for high frequently used searches. In this case you should think about to connect a dedicated tracking tool.
+**Note**: The statistics are logged into a mysql table. This might not make sense for high frequently used searches. In this case you should think about to connect a dedicated tracking tool.
 
 statistics
 ----------

@@ -28,13 +28,10 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * FacetsModifier interface, allows to modify facet fields and their counts.
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 interface FacetsModifier
 {

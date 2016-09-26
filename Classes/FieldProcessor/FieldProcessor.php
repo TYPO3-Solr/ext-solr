@@ -27,13 +27,10 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Field Processor interface
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface FieldProcessor
 {

@@ -26,10 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solrfal\Queue\Queue;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\FormProtection\Exception;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * solr server as expected
  *
  * @author Timo Schmidt
- * @package TYPO3
- * @subpackage solr
  */
 class GarbageCollectorTest extends IntegrationTest
 {
@@ -95,7 +91,7 @@ class GarbageCollectorTest extends IntegrationTest
     protected function assertIndexQueryContainsItemAmount($amount)
     {
         $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to contain '.(int) $amount.' items.');
+            'Index queue is empty and was expected to contain ' . (int) $amount . ' items.');
     }
 
     /**
@@ -154,7 +150,6 @@ class GarbageCollectorTest extends IntegrationTest
         // hidden = 1
         $this->assertEmptyIndexQueue();
     }
-
 
     /**
      * @test

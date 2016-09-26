@@ -29,8 +29,6 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  * ViewHelper to split a collection and make each part available in the passed argument name.
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class Split extends AbstractSubpartViewHelper
 {

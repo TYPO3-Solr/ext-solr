@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * A controller for context menu actions
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class ContextMenuActionController
 {

@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * This Processor takes a UID of sys_category, and resolves its rootline in solr notation.
  *
@@ -49,8 +48,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  * which is finally saved in a multi-value field.
  *
  * @author Steffen Ritter <steffen.ritter@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor
 {
@@ -77,7 +74,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
     /**
      * Returns a Solr hierarchy notation string for rootline of given category uid.
      *
-     * @param integer $categoryId Category ID to get a rootline as Solr hierarchy for
+     * @param int $categoryId Category ID to get a rootline as Solr hierarchy for
      * @return string Rootline as Solr hierarchy
      */
     protected function getSolrRootlineForCategoryId($categoryId)
@@ -91,7 +88,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
     /**
      * Builds a category's rootline of parent category Ids
      *
-     * @param integer $uid The category ID to build the rootline for
+     * @param int $uid The category ID to build the rootline for
      * @return array Category ID rootline as array
      */
     protected function buildCategoryIdRootline($uid)

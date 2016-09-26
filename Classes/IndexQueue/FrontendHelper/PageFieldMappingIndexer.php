@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 // TODO use/extend ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer
 use ApacheSolrForTypo3\Solr\IndexQueue\AbstractIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\InvalidFieldNameException;
@@ -38,8 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * plugin.tx_solr.index.queue.pages.fields.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class PageFieldMappingIndexer implements SubstitutePageIndexer
 {

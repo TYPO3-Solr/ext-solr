@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * PHP Unit test for date format view helper (ApacheSolrForTypo3\Solr\ViewHelper\Date)
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class DateTest extends AbstractViewHelperTest
 {
@@ -97,7 +95,7 @@ class DateTest extends AbstractViewHelperTest
      * @test
      *
      * @param string $defaultFormat the default format provided via TypoScript
-     * @param integer $timestamp the timestamp to format
+     * @param int $timestamp the timestamp to format
      * @param mixed $format the requested format
      * @param string $expectedResult
      * @return void

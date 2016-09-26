@@ -27,14 +27,11 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * IndexQueuePageIndexerDocumentsModifier interface, allows to modify documents
  * before adding them to the Solr index in the index queue page indexer.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface PageIndexerDocumentsModifier
 {
@@ -43,7 +40,7 @@ interface PageIndexerDocumentsModifier
      * Modifies the given documents
      *
      * @param Item $item The currently being indexed item.
-     * @param integer $language The language uid of the documents
+     * @param int $language The language uid of the documents
      * @param array $documents An array of documents to be indexed
      * @return array An array of modified documents
      */

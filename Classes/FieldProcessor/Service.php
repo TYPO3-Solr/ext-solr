@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * common field processing during indexing or resolving
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
- * @package TYPO3
- * @subpackage solr
  */
 class Service
 {

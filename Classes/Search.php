@@ -36,8 +36,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Class to handle solr search requests
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Search implements SingletonInterface
 {
@@ -66,16 +64,14 @@ class Search implements SingletonInterface
     /**
      * Flag for marking a search
      *
-     * @var boolean
+     * @var bool
      */
     protected $hasSearched = false;
-
 
     /**
      * @var TypoScriptConfiguration
      */
     protected $configuration;
-
 
     // TODO Override __clone to reset $response and $hasSearched
 
@@ -128,8 +124,8 @@ class Search implements SingletonInterface
      * 3) Checks debug settings
      *
      * @param Query $query The query with keywords, filters, and so on.
-     * @param integer $offset Result offset for pagination.
-     * @param integer $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
+     * @param int $offset Result offset for pagination.
+     * @param int $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
      * @return \Apache_Solr_Response Solr response
      */
     public function search(Query $query, $offset = 0, $limit = 10)
@@ -249,7 +245,7 @@ class Search implements SingletonInterface
     /**
      * Sends a ping to the solr server to see whether it is available.
      *
-     * @return boolean Returns TRUE on successful ping.
+     * @return bool Returns TRUE on successful ping.
      * @throws \Exception Throws an exception in case ping was not successful.
      */
     public function ping()
@@ -277,7 +273,7 @@ class Search implements SingletonInterface
     /**
      * checks whether a search has been executed
      *
-     * @return boolean    TRUE if there was a search, FALSE otherwise (if the user just visited the search page f.e.)
+     * @return bool    TRUE if there was a search, FALSE otherwise (if the user just visited the search page f.e.)
      */
     public function hasSearched()
     {
@@ -391,7 +387,7 @@ class Search implements SingletonInterface
     /**
      * Gets the time Solr took to execute the query and return the result.
      *
-     * @return integer Query time in milliseconds
+     * @return int Query time in milliseconds
      */
     public function getQueryTime()
     {
@@ -401,7 +397,7 @@ class Search implements SingletonInterface
     /**
      * Gets the number of results per page.
      *
-     * @return integer Number of results per page
+     * @return int Number of results per page
      */
     public function getResultsPerPage()
     {
@@ -492,7 +488,7 @@ class Search implements SingletonInterface
     /**
      * Gets the result offset.
      *
-     * @return integer Result offset
+     * @return int Result offset
      */
     public function getResultOffset()
     {

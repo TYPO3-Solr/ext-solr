@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * access restrictions for a page, a page's content, or a generic record.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class RootlineElement
 {
@@ -40,21 +38,21 @@ class RootlineElement
     /**
      * Page access rootline element.
      *
-     * @var integer
+     * @var int
      */
     const ELEMENT_TYPE_PAGE = 1;
 
     /**
      * Content access rootline element.
      *
-     * @var integer
+     * @var int
      */
     const ELEMENT_TYPE_CONTENT = 2;
 
     /**
      * Record access rootline element.
      *
-     * @var integer
+     * @var int
      */
     const ELEMENT_TYPE_RECORD = 3;
 
@@ -70,14 +68,14 @@ class RootlineElement
      * access is granted differently. For pages the user must meet at least one
      * group requirement, for content all group requirements must be met.
      *
-     * @var integer
+     * @var int
      */
     protected $type = self::ELEMENT_TYPE_PAGE;
 
     /**
      * Page Id for the element. NULL for the content type.
      *
-     * @var integer
+     * @var int
      */
     protected $pageId = null;
 
@@ -161,7 +159,7 @@ class RootlineElement
     /**
      * Gets the access rootline element's type.
      *
-     * @return integer ELEMENT_TYPE_PAGE for page, ELEMENT_TYPE_CONTENT for content access rootline elements
+     * @return int ELEMENT_TYPE_PAGE for page, ELEMENT_TYPE_CONTENT for content access rootline elements
      */
     public function getType()
     {
@@ -171,7 +169,7 @@ class RootlineElement
     /**
      * Gets the page Id for page type elements.
      *
-     * @return integer Page Id.
+     * @return int Page Id.
      */
     public function getPageId()
     {

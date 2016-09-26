@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * PHP Unit test for multi value view helper (ApacheSolrForTypo3\Solr\ViewHelper\Multivalue)
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class MultivalueTest extends AbstractViewHelperTest
 {

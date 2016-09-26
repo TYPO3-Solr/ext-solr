@@ -25,13 +25,10 @@ namespace ApacheSolrForTypo3\Solr\System\Environment;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Exception that is thrown when a language file is needed, but not available.
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class WebRootAllReadyDefinedException extends \Exception
 {

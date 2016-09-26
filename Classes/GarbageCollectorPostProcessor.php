@@ -27,13 +27,10 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Garbage Collector Post Processor interface
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface GarbageCollectorPostProcessor
 {
@@ -42,7 +39,7 @@ interface GarbageCollectorPostProcessor
      * Post processing of garbage collector
      *
      * @param string $table The record's table name.
-     * @param integer $uid The record's uid.
+     * @param int $uid The record's uid.
      * @see \ApacheSolrForTypo3\Solr\GarbageCollector->collectGarbage()
      */
     public function postProcessGarbageCollector($table, $uid);

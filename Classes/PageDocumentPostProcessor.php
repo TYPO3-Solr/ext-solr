@@ -34,8 +34,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * have been put together, but not yet submitted to Solr.
  *
  * @author Steffen Ritter <steffen.ritter@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface PageDocumentPostProcessor
 {

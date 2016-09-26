@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

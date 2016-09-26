@@ -30,8 +30,6 @@ use ApacheSolrForTypo3\Solr\Query;
  * Enables tracking of detailed statistics
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Statistics implements Modifier
 {

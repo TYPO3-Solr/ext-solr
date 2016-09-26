@@ -34,8 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class SiteHighlighter implements ResultDocumentModifier
 {

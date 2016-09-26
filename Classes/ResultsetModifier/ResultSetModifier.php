@@ -34,8 +34,6 @@ use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
  * ResultSetModifier interface, allows to modify search result set
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 interface ResultSetModifier
 {

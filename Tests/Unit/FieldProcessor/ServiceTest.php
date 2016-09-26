@@ -31,8 +31,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  * tests the processing Service class
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
- * @package TYPO3
- * @subpackage solr
  */
 class ServiceTest extends UnitTest
 {

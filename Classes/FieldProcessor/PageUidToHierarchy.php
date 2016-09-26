@@ -50,8 +50,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * which is finally saved in a multi-value field.
  *
  * @author Michael Knoll <knoll@punkt.de>
- * @package TYPO3
- * @subpackage solr
  */
 class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor
 {
@@ -80,7 +78,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
     /**
      * Returns a Solr hierarchy notation string for rootline of given PID.
      *
-     * @param integer $pageId Page ID to get a rootline as Solr hierarchy for
+     * @param int $pageId Page ID to get a rootline as Solr hierarchy for
      * @param string $mountPoint The mount point parameter that will be used for building the rootline.
      * @return string Rootline as Solr hierarchy
      */
@@ -95,7 +93,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
     /**
      * Builds a page's rootline of parent page Ids
      *
-     * @param integer $pageId The page Id to build the rootline for
+     * @param int $pageId The page Id to build the rootline for
      * @param string $mountPoint The mount point parameter that will be passed to getRootline().
      * @return array Page Id rootline as array
      */

@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Dispatches the actions requested to the matching frontend helpers.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Dispatcher
 {
@@ -44,7 +42,6 @@ class Dispatcher
      * @var Manager
      */
     protected $frontendHelperManager;
-
 
     /**
      * Constructor

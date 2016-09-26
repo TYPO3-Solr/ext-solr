@@ -24,17 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Faceting class
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class FacetingTest extends UnitTest
 {
@@ -77,10 +74,9 @@ class FacetingTest extends UnitTest
             )
         );
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
-        $this->assertContains("true",  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertContains("type",  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+        $this->assertContains('type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
     }
-
 
     /**
      * Checks if the faceting modifier can add a simple facet with a sortBy property with the value index.
@@ -105,8 +101,8 @@ class FacetingTest extends UnitTest
             )
         );
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
-        $this->assertContains("true",  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertContains("lex",  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+        $this->assertContains('lex',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
     }
 
     /**
@@ -142,9 +138,9 @@ class FacetingTest extends UnitTest
         );
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
 
-        $this->assertContains("true",  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertEquals("{!ex=type,color}type",  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
-        $this->assertEquals("{!ex=type,color}color",  $queryParameter['facet.field'][1], 'Query string did not contain expected snipped');
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+        $this->assertEquals('{!ex=type,color}type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
+        $this->assertEquals('{!ex=type,color}color',  $queryParameter['facet.field'][1], 'Query string did not contain expected snipped');
     }
 
     /**
@@ -180,9 +176,9 @@ class FacetingTest extends UnitTest
         );
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
-        $this->assertContains("true",  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertEquals("{!ex=type}type",  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
-        $this->assertEquals("color",  $queryParameter['facet.field'][1], 'Query string did not contain expected snipped');
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+        $this->assertEquals('{!ex=type}type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
+        $this->assertEquals('color',  $queryParameter['facet.field'][1], 'Query string did not contain expected snipped');
     }
 
     /**
@@ -208,7 +204,7 @@ class FacetingTest extends UnitTest
             )
         );
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
-        $this->assertContains("true",  $queryParameter['facet'], 'Query string did not contain expected snipped');
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?
         $this->assertEquals('(color:"red")', $queryParameter['fq'][0], 'Did not build filter query from color');
@@ -238,7 +234,7 @@ class FacetingTest extends UnitTest
             )
         );
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
-        $this->assertContains("true",  $queryParameter['facet'], 'Query string did not contain expected snipped');
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?
         $this->assertEquals('(color:"red")', $queryParameter['fq'][0], 'Did not build filter query from color');
@@ -268,7 +264,7 @@ class FacetingTest extends UnitTest
             )
         );
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
-        $this->assertContains("true",  $queryParameter['facet'], 'Query string did not contain expected snipped');
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?
         $this->assertEquals('{!tag=color}(color:"red")', $queryParameter['fq'][0], 'Did not build filter query from color');

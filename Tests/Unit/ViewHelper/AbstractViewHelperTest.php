@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Abstract PHP Unit test for view helpers
  *
  * @author Markus Friedrich <markus.friedrich@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 abstract class AbstractViewHelperTest extends UnitTest
 {

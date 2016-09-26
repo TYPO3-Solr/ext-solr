@@ -31,8 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Tests the TYPO3 page content extractor
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Typo3PageContentExtractorTest extends UnitTest
 {
@@ -49,7 +47,6 @@ class Typo3PageContentExtractorTest extends UnitTest
             'getIndexQueuePagesExcludeContentByClassArray'
         )->will($this->returnValue(array('typo3-search-exclude')));
     }
-
 
     /**
      * @test

@@ -28,13 +28,10 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Allows to modify the data url before call the frontend form the index queue
  *
  * @author Markus Goldbach <markus.goldbach@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 interface PageIndexerDataUrlModifier
 {

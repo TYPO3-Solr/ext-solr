@@ -27,13 +27,10 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * View Helper interface.
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 interface ViewHelper
 {

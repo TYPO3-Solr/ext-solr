@@ -2,7 +2,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
-use \ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
+use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 
 /**
  * Class TestSearchResponseProcessor

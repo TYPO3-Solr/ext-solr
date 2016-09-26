@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -35,8 +35,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Ingo Renner <ingo@typo3.org>
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
  * @author Sebastian Kurfuerst <sebastian@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class Faceting implements Modifier
 {

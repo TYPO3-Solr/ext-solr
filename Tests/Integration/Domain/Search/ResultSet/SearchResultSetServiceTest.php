@@ -68,7 +68,6 @@ class SearchResultSetServiceTest extends IntegrationTest
         $this->assertSame($document->getTitle(), 'Products', 'Could not get document from solr by id');
     }
 
-
     /**
      * @test
      */

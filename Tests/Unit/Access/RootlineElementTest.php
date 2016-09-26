@@ -31,8 +31,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  * Testcase to verify the functionality of the RootlineElement
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class RootlineElementTest extends UnitTest
 {
@@ -43,70 +41,70 @@ class RootlineElementTest extends UnitTest
     {
         return [
             'empty' => [
-                'stringRepresentation' => "",
+                'stringRepresentation' => '',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [0],
                 'expectedPageId' => null,
                 'expectedToString' => 'c:0'
             ],
             'no_prefix' => [
-                'stringRepresentation' => "0",
+                'stringRepresentation' => '0',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [0],
                 'expectedPageId' => null,
                 'expectedToString' => 'c:0'
             ],
             'no_prefix_restricted' => [
-                'stringRepresentation' => "1",
+                'stringRepresentation' => '1',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [1],
                 'expectedPageId' => null,
                 'expectedToString' => 'c:1'
             ],
             'no_prefix_multiple' => [
-                'stringRepresentation' => "0,1,2",
+                'stringRepresentation' => '0,1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [0,1,2],
                 'expectedPageId' => null,
                 'expectedToString' => 'c:0,1,2'
             ],
             'simpleContent' => [
-                'stringRepresentation' => "c:0",
+                'stringRepresentation' => 'c:0',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [0],
                 'expectedPageId' => null,
                 'expectedToString' => 'c:0'
             ],
             'contentWithPermissionContent' => [
-                'stringRepresentation' => "c:1,2",
+                'stringRepresentation' => 'c:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [1,2],
                 'expectedPageId' => null,
                 'expectedToString' => 'c:1,2'
             ],
             'record' => [
-                'stringRepresentation' => "r:1,2",
+                'stringRepresentation' => 'r:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_RECORD,
                 'expectedGroups' => [1,2],
                 'expectedPageId' => null,
                 'expectedToString' => 'r:1,2'
             ],
             'page' => [
-                'stringRepresentation' => "4711:0",
+                'stringRepresentation' => '4711:0',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
                 'expectedGroups' => [0],
                 'expectedPageId' => 4711,
                 'expectedToString' => '4711:0'
             ],
             'pageList' => [
-                'stringRepresentation' => "4711:1,2",
+                'stringRepresentation' => '4711:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
                 'expectedGroups' => [1,2],
                 'expectedPageId' => 4711,
                 'expectedToString' => '4711:1,2'
             ],
             'minusTwo' => [
-                'stringRepresentation' => "c:-2",
+                'stringRepresentation' => 'c:-2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
                 'expectedGroups' => [-2],
                 'expectedPageId' => null,
@@ -117,7 +115,7 @@ class RootlineElementTest extends UnitTest
 
     /**
      * @param string $stringRepresentation
-     * @param integer $expectedType
+     * @param int $expectedType
      * @param array $expectedGroups
      * @param int|null $expectedPageId
      * @param string $expectedToString

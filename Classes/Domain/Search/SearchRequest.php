@@ -24,20 +24,15 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The searchRequest is used to act as an api to the arguments that have been passed
  * with GET and POST.
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class SearchRequest
 {
@@ -59,7 +54,7 @@ class SearchRequest
     protected $persistentArgumentsPaths = array('q', 'tx_solr:filter', 'tx_solr:sort');
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $stateChanged = false;
 
@@ -73,7 +68,7 @@ class SearchRequest
      * This could be different from the "L" parameter and and not relevant for urls,
      * because typolink itself will handle it.
      *
-     * @var integer
+     * @var int
      */
     protected $contextSystemLanguageUid;
 
@@ -83,7 +78,7 @@ class SearchRequest
      * The pageUid is not relevant for the typolink additionalArguments and therefore
      * a separate property.
      *
-     * @var integer
+     * @var int
      */
     protected $contextPageUid;
 
@@ -143,7 +138,7 @@ class SearchRequest
      */
     protected function prefixWithNamespace($path)
     {
-        return $this->argumentNameSpace . ':'.$path;
+        return $this->argumentNameSpace . ':' . $path;
     }
 
     /**
@@ -191,7 +186,7 @@ class SearchRequest
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getActiveFacetCount()
     {
@@ -227,7 +222,7 @@ class SearchRequest
         }
 
         $facetValues = $this->getActiveFacets();
-        $facetValues[] = $facetName.':'.$facetValue;
+        $facetValues[] = $facetName . ':' . $facetValue;
         $this->setActiveFacets($facetValues);
 
         $this->stateChanged = true;
@@ -248,7 +243,7 @@ class SearchRequest
             return $this;
         }
         $facetValues = $this->getActiveFacets();
-        $facetValueToLookFor = $facetName.':'.$facetValue;
+        $facetValueToLookFor = $facetName . ':' . $facetValue;
 
         foreach ($facetValues as $index => $facetValue) {
             if ($facetValue === $facetValueToLookFor) {
@@ -274,7 +269,7 @@ class SearchRequest
         $facetValues = $this->getActiveFacets();
 
         foreach ($facetValues as $index => $facetValue) {
-            $parts = explode(":", $facetValue, 2);
+            $parts = explode(':', $facetValue, 2);
             if ($parts[0] === $facetName) {
                 // a facet for the request facet name was found, so we unset it.
                 unset($facetValues[$index]);
@@ -302,11 +297,11 @@ class SearchRequest
     /**
      * @param string $facetName
      * @param mixed $facetValue
-     * @return boolean
+     * @return bool
      */
     public function getHasFacetValue($facetName, $facetValue)
     {
-        $facetNameAndValueToCheck = $facetName.':'.$facetValue;
+        $facetNameAndValueToCheck = $facetName . ':' . $facetValue;
         foreach ($this->getActiveFacets() as $activeFacet) {
             if ($activeFacet == $facetNameAndValueToCheck) {
                 return true;
@@ -349,7 +344,7 @@ class SearchRequest
             return null;
         }
 
-        $parts = explode(" ", $sorting);
+        $parts = explode(' ', $sorting);
         return isset($parts[$index]) ? $parts[$index] : null;
     }
 
@@ -392,7 +387,7 @@ class SearchRequest
      */
     public function setSorting($sortingName, $direction = 'asc')
     {
-        $value = $sortingName.' '.$direction;
+        $value = $sortingName . ' ' . $direction;
         $path = $this->prefixWithNamespace('sort');
         $this->argumentsAccessor->set($path, $value);
         $this->stateChanged = true;
@@ -402,7 +397,7 @@ class SearchRequest
     /**
      * Method to set the paginated page of the search
      *
-     * @param integer $page
+     * @param int $page
      * @return SearchRequest
      */
     public function setPage($page)
@@ -413,11 +408,10 @@ class SearchRequest
         return $this;
     }
 
-
     /**
      * Returns the passed page.
      *
-     * @return integer|null
+     * @return int|null
      */
     public function getPage()
     {
@@ -441,7 +435,7 @@ class SearchRequest
     /**
      * Returns the passed rawQueryString.
      *
-     * @return integer|string
+     * @return int|string
      */
     public function getRawUserQuery()
     {
@@ -474,7 +468,7 @@ class SearchRequest
      * This method returns true when no querystring is present at all.
      * Which means no search by the user was triggered
      *
-     * @return boolean
+     * @return bool
      */
     public function getRawUserQueryIsNull()
     {
@@ -485,7 +479,7 @@ class SearchRequest
     /**
      * Sets the results per page that are used during search.
      *
-     * @param integer $resultsPerPage
+     * @param int $resultsPerPage
      * @return SearchRequest
      */
     public function setResultsPerPage($resultsPerPage)
@@ -498,7 +492,7 @@ class SearchRequest
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getStateChanged()
     {
@@ -507,7 +501,7 @@ class SearchRequest
 
     /**
      * Returns the passed resultsPerPage value
-     * @return integer|null
+     * @return int|null
      */
     public function getResultsPerPage()
     {

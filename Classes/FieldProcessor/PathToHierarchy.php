@@ -30,8 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Processes a value that may appear as field value in documents
  *
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
- * @package TYPO3
- * @subpackage solr
  */
 class PathToHierarchy implements FieldProcessor
 {

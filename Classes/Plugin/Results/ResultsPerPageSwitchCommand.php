@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Results per page switch view command
  *
  * @author Ingo Renner <ingo@typo3.org>
- * @package TYPO3
- * @subpackage solr
  */
 class ResultsPerPageSwitchCommand implements PluginCommand
 {
@@ -51,7 +49,6 @@ class ResultsPerPageSwitchCommand implements PluginCommand
      * @var array
      */
     protected $configuration;
-
 
     /**
      * Constructor.

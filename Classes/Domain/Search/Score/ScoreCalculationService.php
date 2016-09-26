@@ -30,8 +30,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Score;
  *
  * @author Ingo Renner <ingo.renner@gmail.com>
  * @author Timo Schmidt <timo.schmidt@dkd.de>
- * @package TYPO3
- * @subpackage solr
  */
 class ScoreCalculationService
 {

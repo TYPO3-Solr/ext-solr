@@ -51,7 +51,6 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     protected $moduleTitle = 'Index Queue';
 
-
     /**
      * Lists the available indexing configurations
      *
@@ -274,7 +273,7 @@ class IndexQueueModuleController extends AbstractModuleController
     /**
      * Retrieves an queue item by uid.
      *
-     * @param integer $uid
+     * @param int $uid
      * @return array
      */
     protected function getIndexQueueItemById($uid)
