@@ -62,6 +62,7 @@
                                     category_stringM = SOLR_RELATION
                                     category_stringM {
                                         localField = category
+                                        foreignLabelField = category_label
                                         multiValue = 1
                                         additionalWhereClause = pid=2
                                     }
@@ -94,13 +95,13 @@
     <tx_fakeextension_domain_model_directrelated>
         <uid>4711</uid>
         <pid>1</pid>
-        <category>the category</category>
+        <category_label>the category</category_label>
     </tx_fakeextension_domain_model_directrelated>
 
     <tx_fakeextension_domain_model_directrelated>
         <uid>8888</uid>
         <pid>2</pid>
-        <category>another category</category>
+        <category_label>another category</category_label>
     </tx_fakeextension_domain_model_directrelated>
 
 </dataset>
