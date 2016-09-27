@@ -4,7 +4,7 @@ return array(
     'ctrl' => array(
         'title' => $ll . 'tx_fakeextension_domain_model_directrelated',
         'descriptionColumn' => 'category',
-        'label' => 'category',
+        'label' => 'category_label',
         'hideAtCopy' => true,
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
@@ -132,7 +132,7 @@ return array(
                 'default' => 0,
             )
         ),
-        'category' => array(
+        'category_label' => array(
             'exclude' => 0,
             'l10n_mode' => 'prefixLangTitle',
             'label' => 'LLL:EXT:cms/locallang_ttc.xlf:header_formlabel',
