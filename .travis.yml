@@ -58,7 +58,7 @@ matrix:
 before_install:
   - composer self-update
   - composer --version
-  - composer global require friendsofphp/php-cs-fixer:v1.11.7
+  - composer global require friendsofphp/php-cs-fixer
   - composer global require namelesscoder/typo3-repository-client
   - sudo update-java-alternatives -s java-8-oracle
 
