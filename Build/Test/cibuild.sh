@@ -28,7 +28,7 @@ if [ $? -eq "0" ]; then
 fi
 
 echo "Run unit tests"
-.Build/bin/phpunit --colors -c Build/Test/UnitTests.xml
+.Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --coverage-clover=coverage.unit.clover
 
 echo "Run integration tests"
 
@@ -64,4 +64,4 @@ else
 	exit 1
 fi
 
-.Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml
+.Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --coverage-clover=coverage.integration.clover
