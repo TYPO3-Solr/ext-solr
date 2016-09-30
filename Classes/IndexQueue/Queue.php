@@ -313,7 +313,7 @@ class Queue
         $record = BackendUtility::getRecord($itemType, $itemUid,
             'pid' . $additionalRecordFields);
 
-        if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record))) {
+        if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
             return;
         }
 
@@ -641,11 +641,11 @@ class Queue
 
             // reset Index Queue Properties
             $indexQueuePropertyResetQuery = '
-				DELETE tx_solr_indexqueue_indexing_property.*
-				FROM tx_solr_indexqueue_indexing_property
-				INNER JOIN tx_solr_indexqueue_item
-					ON tx_solr_indexqueue_item.uid = tx_solr_indexqueue_indexing_property.item_id
-					AND ' .
+                DELETE tx_solr_indexqueue_indexing_property.*
+                FROM tx_solr_indexqueue_indexing_property
+                INNER JOIN tx_solr_indexqueue_item
+                    ON tx_solr_indexqueue_item.uid = tx_solr_indexqueue_indexing_property.item_id
+                    AND ' .
                 $rootPageConstraint .
                 $indexingConfigurationConstraint;
 
