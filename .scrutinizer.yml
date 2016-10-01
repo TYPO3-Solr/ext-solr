@@ -3,7 +3,7 @@ filter:
         - 'Documentation/*'
         - 'Tests/*'
         - 'Resources/JavaScript/*'
-        - 'Resources/Solr/*'
+        - 'Resources/Private/Solr/*'
     paths:
         - 'Classes/*'
 tools:
@@ -36,3 +36,7 @@ tools:
 
     php_analyzer:
         enabled: true
+
+    external_code_coverage:
+        runs: 2
+        timeout: 600

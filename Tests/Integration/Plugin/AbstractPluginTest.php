@@ -47,7 +47,7 @@ abstract class AbstractPluginTest extends IntegrationTest
     protected function importTestDataSetAndGetInitializedPlugin($importPageIds, $fixture, $plugin = 'results', $pluginPageUid = 1)
     {
         $this->indexPageIdsFromFixture($fixture, $importPageIds);
-        sleep(2);
+        $this->waitToBeVisibleInSolr();
         $plugin = $this->getPluginInstance($plugin, $pluginPageUid);
         return $plugin;
     }

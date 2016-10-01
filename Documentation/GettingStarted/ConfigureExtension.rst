@@ -27,7 +27,7 @@ Update the constants to match the current setup:
         tx_solr {
             solr {
                 host = 192.168.99.100
-                port = 8080
+                port = 8983
             }
         }
     }

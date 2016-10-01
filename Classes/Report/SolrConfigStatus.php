@@ -48,7 +48,7 @@ class SolrConfigStatus implements StatusProviderInterface
      *
      * @var string
      */
-    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-4-0-0--20160406';
+    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-6-0-0--20160811';
 
     /**
      * Compiles a collection of solrconfig version checks against each configured
@@ -88,7 +88,7 @@ class SolrConfigStatus implements StatusProviderInterface
 					recommended schema is called <strong>'
                     . self::RECOMMENDED_SOLRCONFIG_VERSION . '</strong>. You can
 					find the recommended solrconfig.xml file in the extension\'s
-					resources folder: EXT:solr/Resources/Solr/.
+					resources folder: EXT:solr/Resources/Private/Solr/.
 					While you\'re at it, please check whether you\'re using the
 					current schema.xml file, too.</p>';
 

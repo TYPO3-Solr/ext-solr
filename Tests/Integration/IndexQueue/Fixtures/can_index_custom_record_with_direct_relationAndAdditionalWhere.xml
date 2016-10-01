@@ -5,7 +5,7 @@
         <uid>4711</uid>
         <entry_namespace>tx_solr</entry_namespace>
         <entry_key>servers</entry_key>
-        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8080";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8080/solr/core_en/";}}</entry_value>
+        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8999";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8999/solr/core_en/";}}</entry_value>
     </sys_registry>
 
     <sys_template>
@@ -62,6 +62,7 @@
                                     category_stringM = SOLR_RELATION
                                     category_stringM {
                                         localField = category
+                                        foreignLabelField = category_label
                                         multiValue = 1
                                         additionalWhereClause = pid=2
                                     }
@@ -94,13 +95,13 @@
     <tx_fakeextension_domain_model_directrelated>
         <uid>4711</uid>
         <pid>1</pid>
-        <category>the category</category>
+        <category_label>the category</category_label>
     </tx_fakeextension_domain_model_directrelated>
 
     <tx_fakeextension_domain_model_directrelated>
         <uid>8888</uid>
         <pid>2</pid>
-        <category>another category</category>
+        <category_label>another category</category_label>
     </tx_fakeextension_domain_model_directrelated>
 
 </dataset>

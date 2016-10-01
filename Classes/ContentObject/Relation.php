@@ -285,8 +285,8 @@ class Relation
             /** @var $relationHandler \TYPO3\CMS\Core\Database\RelationHandler */
         $relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
 
-        $itemList = isset($parentContentObject->data[$foreignTableLabelField]) ?
-                        $parentContentObject->data[$foreignTableLabelField] : '';
+        $itemList = isset($parentContentObject->data[$this->configuration['localField']]) ?
+                        $parentContentObject->data[$this->configuration['localField']] : '';
 
         $relationHandler->start($itemList, $foreignTableName, '', $localRecordUid, $localTableName, $localFieldTca['config']);
         $selectUids = $relationHandler->tableArray[$foreignTableName];
