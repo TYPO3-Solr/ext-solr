@@ -36,6 +36,7 @@
 <h3>Add Synonyms (lowercase)</h3>
 <div class="section">
 	<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'addSynonyms'} )}" id="add-synonyms">
+		<h4>Add individual Synonyms</h4>
 		<div class="form-group">
 			<label for="baseWord">Base Word</label>
 			<f:form.textfield id="baseWord" name="baseWord" class="form-control" />
@@ -46,6 +47,15 @@
 			<f:form.textfield id="synonyms" name="synonyms" class="form-control" />
 			<span class="example">comma-separated; f.e. smartphone, cellphone</span>
 		</div>
+
+		<h4>Add multiple Synonyms</h4>
+		<div class="form-group">
+			<label for="synonymsMulti">Synonyms (multiple lines)</label>
+			<f:form.textarea id="synonymsMulti" name="synonymsMulti" class="form-control" additionalAttributes="{placeholder : 'baseword1,synonym-1a,synonym-1b
+baseword2,synonym-2a,synonym-2b'}"/>
+			<span class="example">comma-separated; f.e. smartphone, cellphone; fisrt word will be used as base word</span>
+		</div>
+
 		<div class="submit">
 			<f:form.submit value="Add Synonyms" class="btn btn-sm btn-default"/>
 		</div>
