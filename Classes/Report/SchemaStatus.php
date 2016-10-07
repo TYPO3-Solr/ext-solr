@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
@@ -58,13 +60,21 @@ class SchemaStatus implements StatusProviderInterface
      */
     public function getStatus()
     {
-        $reports = array();
-        $solrConnections = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getAllConnections();
+        $reports = [];
+        $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-            if ($solrConnection->ping()
-                && $solrConnection->getSchemaName() != self::RECOMMENDED_SCHEMA_VERSION
-            ) {
+            /** @var $solrConnection SolrService */
+            if (!$solrConnection->ping()) {
+                $url = $solrConnection->__toString();
+                $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string) $url;
+                $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Not accessable', $pingFailedMsg, Status::ERROR);
+                $reports[] = $status;
+                continue;
+            }
+
+            $isWrongSchema = $solrConnection->getSchemaName() != self::RECOMMENDED_SCHEMA_VERSION;
+            if ($isWrongSchema) {
                 $message = '<p style="margin-bottom: 10px;">A schema different
 					from the one provided with the extension was detected.</p>
 					<p style="margin-bottom: 10px;">It is recommended to use the
@@ -93,7 +103,7 @@ class SchemaStatus implements StatusProviderInterface
                     . '<li>Path: ' . $solrConnection->getPath() . '</li>
 					</ul>';
 
-                $status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+                $status = GeneralUtility::makeInstance(Status::class,
                     'Schema Version',
                     'Unsupported Schema',
                     $message,

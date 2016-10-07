@@ -1,0 +1,51 @@
+<?php
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
+
+/***************************************************************
+ *  Copyright notice
+ *
+ *  (c) 2010-2015 Timo Schmidt <timo.schmidt@dkd.de>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+use ApacheSolrForTypo3\Solr\Report\SolrConfigStatus;
+use ApacheSolrForTypo3\Solr\Report\SolrVersionStatus;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Reports\Status;
+
+/**
+ * Integration test for the solr version test
+ *
+ * @author Timo Hund
+ */
+class SolrVersionStatusTest extends IntegrationTest
+{
+    /**
+     * @test
+     */
+    public function canGetAGreenSolrConfigStatusAgainstTestServer()
+    {
+        $this->importDataSetFromFixture('can_check_solr_version_status.xml');
+
+        /** @var $solrVersionStatus  SolrVersionStatus */
+        $solrVersionStatus = GeneralUtility::makeInstance(SolrVersionStatus::class);
+        $violations = $solrVersionStatus->getStatus();
+        $this->assertEmpty($violations, 'We expect to get no violations against the test solr server');
+    }
+}

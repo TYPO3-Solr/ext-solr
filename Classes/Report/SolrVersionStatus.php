@@ -25,6 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
@@ -40,11 +42,11 @@ class SolrVersionStatus implements StatusProviderInterface
 
     /**
      * Required Solr version. The version that gets installed when using the
-     * provided install script EXT:solr/Resources/Shell/install-solr.sh
+     * provided install script EXT:solr/Resources/Private/Install/install-solr.sh
      *
      * @var string
      */
-    const REQUIRED_SOLR_VERSION = '4.10.4';
+    const REQUIRED_SOLR_VERSION = '6.2.1';
 
     /**
      * Compiles a version check against each configured Solr server.
@@ -52,42 +54,34 @@ class SolrVersionStatus implements StatusProviderInterface
      */
     public function getStatus()
     {
-        $reports = array();
-        $solrConnections = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getAllConnections();
+        $reports = [];
+        $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-            if ($solrConnection->ping()) {
-                $solrVersion = $solrConnection->getSolrServerVersion();
+            /** @var $solrConnection SolrService */
+            if (!$solrConnection->ping()) {
+                $url = $solrConnection->__toString();
+                $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string) $url;
+                $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Not accessable', $pingFailedMsg, Status::ERROR);
+                $reports[] = $status;
+                continue;
+            }
 
-                $isOutdatedVersion = version_compare(
-                    $this->getCleanSolrVersion($solrVersion),
-                    self::REQUIRED_SOLR_VERSION,
-                    '<'
-                );
+            $solrVersion = $solrConnection->getSolrServerVersion();
+            $isOutdatedVersion = version_compare($this->getCleanSolrVersion($solrVersion), self::REQUIRED_SOLR_VERSION, '<');
 
-                if ($isOutdatedVersion) {
-                    $message = '<p style="margin-bottom: 10px;">Found an
+            if ($isOutdatedVersion) {
+                $message = '<p style="margin-bottom: 10px;">Found an
 						outdated Apache Solr server version. <br />The <strong>minimum
-						required version is '
-                        . self::REQUIRED_SOLR_VERSION . '</strong>, you have
+						required version is ' . self::REQUIRED_SOLR_VERSION . '</strong>, you have
 						' . $this->formatSolrVersion($solrVersion) . '.</p>
 						<p>Affected Solr server:</p>
-						<ul>'
-                        . '<li>Host: ' . $solrConnection->getHost() . '</li>'
-                        . '<li>Port: ' . $solrConnection->getPort() . '</li>'
-                        . '<li>Path: ' . $solrConnection->getPath() . '</li>'
-                        . '<li><strong>Version: ' . $this->formatSolrVersion($solrVersion) . '</strong></li>
+						<ul>' . '<li>Host: ' . $solrConnection->getHost() . '</li>' . '<li>Port: ' . $solrConnection->getPort() . '</li>' . '<li>Path: ' . $solrConnection->getPath() . '</li>' . '<li><strong>Version: ' . $this->formatSolrVersion($solrVersion) . '</strong></li>
 						</ul>';
 
-                    $status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
-                        'Apache Solr Version',
-                        'Outdated, Unsupported',
-                        $message,
-                        Status::ERROR
-                    );
+                $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Outdated, Unsupported', $message, Status::ERROR);
 
-                    $reports[] = $status;
-                }
+                $reports[] = $status;
             }
         }
 
