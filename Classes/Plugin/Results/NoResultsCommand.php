@@ -56,7 +56,7 @@ class NoResultsCommand implements PluginCommand
     public function execute()
     {
         $spellChecker = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SpellChecker');
-        $suggestionsLink = $spellChecker->getSpellcheckingSuggestions();
+        $suggestionsLink = $spellChecker->getSpellCheckingSuggestions();
 
         $markers = $this->getLabelMarkers();
 
