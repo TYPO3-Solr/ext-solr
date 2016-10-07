@@ -61,7 +61,7 @@ class SolrVersionStatus implements StatusProviderInterface
             /** @var $solrConnection SolrService */
             if (!$solrConnection->ping()) {
                 $url = $solrConnection->__toString();
-                $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string) $url;
+                $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string)$url;
                 $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Not accessable', $pingFailedMsg, Status::ERROR);
                 $reports[] = $status;
                 continue;
