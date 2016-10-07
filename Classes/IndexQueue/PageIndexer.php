@@ -133,7 +133,9 @@ class PageIndexer extends Indexer
 
             foreach ($translationOverlays as $overlay) {
                 $languageId = $overlay['sys_language_uid'];
-                $accessibleSolrConnections[$languageId] = $solrConnections[$languageId];
+                if (array_key_exists($languageId, $solrConnections)) {
+                    $accessibleSolrConnections[$languageId] = $solrConnections[$languageId];
+                }
             }
 
             $solrConnections = $accessibleSolrConnections;
