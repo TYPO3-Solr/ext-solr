@@ -137,7 +137,7 @@ class SearchResultSet
     }
 
     /**
-     * Retrieve the page argument that has beed used to build this SearchResultSet.
+     * Retrieve the page argument that has been used to build this SearchResultSet.
      *
      * @return int
      */

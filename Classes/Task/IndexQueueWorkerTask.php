@@ -86,7 +86,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
      * In the cli context TYPO3 has chance to determine the webroot.
      * Since we need it for the TSFE related things we allow to set it
      * in the scheduler task and use the ###PATH_typo3### marker in the
-     * setting to be able to define relative pathes.
+     * setting to be able to define relative paths.
      *
      * @return string
      */

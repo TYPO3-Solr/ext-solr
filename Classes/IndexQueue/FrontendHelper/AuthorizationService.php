@@ -60,7 +60,7 @@ class AuthorizationService extends AbstractAuthenticationService
     }
 
     /**
-     * Authenticates the page indexer frontend user to gratn it access to
+     * Authenticates the page indexer frontend user to grant it access to
      * protected pages and page content.
      *
      * Returns 200 which automatically grants access for the current fake page

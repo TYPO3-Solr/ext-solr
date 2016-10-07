@@ -489,7 +489,7 @@ class Indexer extends AbstractIndexer
     // Initialization
 
     /**
-     * Gets the Solr connections applicaple for an item.
+     * Gets the Solr connections applicable for an item.
      *
      * The connections include the default connection and connections to be used
      * for translations of an item.

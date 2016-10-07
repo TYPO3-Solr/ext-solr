@@ -275,7 +275,7 @@ class Site
      * all page types! Deleted pages are not included.
      *
      * @param int|string $rootPageId Page ID from where to start collection sub pages
-     * @param int $maxDepth Maximum depth to decend into the site tree
+     * @param int $maxDepth Maximum depth to descend into the site tree
      * @return array Array of pages (IDs) in this site
      */
     public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999)

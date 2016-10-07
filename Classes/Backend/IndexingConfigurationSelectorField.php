@@ -69,7 +69,7 @@ class IndexingConfigurationSelectorField
     }
 
     /**
-     * nullts the form element name.
+     * Sets the form element name.
      *
      * @param string $formElementName Form element name
      */

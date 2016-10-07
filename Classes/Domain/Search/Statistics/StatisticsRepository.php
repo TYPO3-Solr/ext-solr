@@ -138,7 +138,7 @@ class StatisticsRepository
     }
 
     /**
-     * This method groups rows with the same term and different cound and hits
+     * This method groups rows with the same term and different count and hits
      * and calculates the average.
      *
      * @param array $statisticsRows

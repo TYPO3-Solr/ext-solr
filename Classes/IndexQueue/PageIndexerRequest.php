@@ -170,7 +170,7 @@ class PageIndexerRequest
                     'request url' => $url,
                     'request headers' => $headers,
                     'response headers' => $http_response_header,
-                    // automagically defined by file_get_contents()
+                    // automatically defined by file_get_contents()
                     'raw response body' => $rawResponse,
                 )
             );

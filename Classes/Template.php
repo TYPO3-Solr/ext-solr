@@ -811,7 +811,7 @@ class Template
 
     /**
      * Resolves variables to marker. Markers can be simple markers like
-     * ###MY_MARKER## or "nested" markers which devide their sub values by a
+     * ###MY_MARKER## or "nested" markers which divide their sub values by a
      * dot: ###MY_MARKER.MY_VALUE### ###MY_MARKER.MY_OTHER_VALUE###.
      *
      * @param array $markers array with markers to resolve

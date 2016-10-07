@@ -122,7 +122,7 @@ class PageIndexerResponse
      * Compiles the response's content so that it can be sent back to the
      * Index Queue page indexer.
      *
-     * @return string The respnse content
+     * @return string The response content
      */
     public function getContent()
     {

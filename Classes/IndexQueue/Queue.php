@@ -704,7 +704,7 @@ class Queue
     /**
      * Gets Index Queue items by type and uid.
      *
-     * @param string $itemType item type, ususally  the table name
+     * @param string $itemType item type, usually  the table name
      * @param int $itemUid item uid
      * @return array An array of items matching $itemType and $itemUid
      */
