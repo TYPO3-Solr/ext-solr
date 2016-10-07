@@ -98,7 +98,7 @@ class PageIndexer extends Indexer
     }
 
     /**
-     * Gets the Solr connections applicaple for a page.
+     * Gets the Solr connections applicable for a page.
      *
      * The connections include the default connection and connections to be used
      * for translations of a page.
@@ -395,7 +395,7 @@ class PageIndexer extends Indexer
     /**
      * Generates a page document's "Access Rootline".
      *
-     * The Access Rootline collects frontend user group access restrcitions set
+     * The Access Rootline collects frontend user group access restrictions set
      * for pages up in a page's rootline extended to sub-pages.
      *
      * The format is like this:

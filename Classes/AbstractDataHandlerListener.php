@@ -28,10 +28,10 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Changes in TYPO3 have an impact on the solr content and are catched
+ * Changes in TYPO3 have an impact on the solr content and are caught
  * by the GarbageCollector and RecordMonitor. Both act as a TCE Main Hook.
  *
- * This base class is used to share functionallity that are needed for both
+ * This base class is used to share functionality that are needed for both
  * to perform the changes in the data handler on the solr index.
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
@@ -76,7 +76,7 @@ abstract class AbstractDataHandlerListener
         $treePageIdList = $queryGenerator->getTreeList($pageId, 20, 0, $permissionClause);
         $treePageIds = array_map('intval', explode(',', $treePageIdList));
 
-            // the first one can be ignored because this is the page isself
+            // the first one can be ignored because this is the page itself
         array_shift($treePageIds);
 
         return $treePageIds;

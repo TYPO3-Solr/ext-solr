@@ -71,7 +71,7 @@ class CliEnvironment implements SingletonInterface
         }
 
         if (defined('TYPO3_PATH_WEB')) {
-            throw new WebRootAllReadyDefinedException('TYPO3_PATH_WEB is allready defined');
+            throw new WebRootAllReadyDefinedException('TYPO3_PATH_WEB is already defined');
         }
 
         define('TYPO3_PATH_WEB', $webRoot);

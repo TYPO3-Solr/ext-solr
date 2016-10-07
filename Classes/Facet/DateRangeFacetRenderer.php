@@ -48,7 +48,7 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer
     }
 
     /**
-     * Renders a date renage facet by providing two input fields, enhanced with
+     * Renders a date range facet by providing two input fields, enhanced with
      * date pickers.
      *
      */

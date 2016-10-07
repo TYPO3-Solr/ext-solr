@@ -115,7 +115,7 @@ class LinkBuilder extends Query\LinkBuilder
     }
 
     /**
-     * Retrieves the filter parmeters from the url and adds an additional facet
+     * Retrieves the filter parameters from the url and adds an additional facet
      * option to create a link to apply additional facet options to a
      * search result.
      *

@@ -502,7 +502,7 @@ class RecordMonitor extends AbstractDataHandlerListener
     /**
      * Checks if a record is "enabled"
      *
-     * A record is considered "enabeled" if
+     * A record is considered "enabled" if
      *  - it is not hidden
      *  - it is not deleted
      *  - as a page it is not set to be excluded from search

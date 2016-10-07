@@ -592,8 +592,8 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
-     * This method returns true when the last search was exectued with an empty query
-     * string or whitspaces only. When no search was triggered it will return false.
+     * This method returns true when the last search was executed with an empty query
+     * string or whitespaces only. When no search was triggered it will return false.
      *
      * @return bool
      */

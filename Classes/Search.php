@@ -338,7 +338,7 @@ class Search implements SingletonInterface
 
     /**
      * This method is used to apply htmlspecialchars on all document fields that
-     * are not configured to be secure. Secure mean that we know where the content is comming from.
+     * are not configured to be secure. Secure mean that we know where the content is coming from.
      *
      * @param array $documents
      * @return \Apache_Solr_Document[]
@@ -526,8 +526,8 @@ class Search implements SingletonInterface
             $spellcheckingSuggestions = $suggestions;
 
             if (isset($this->response->spellcheck->collations)) {
-                $collactions = (array) $this->response->spellcheck->collations;
-                $spellcheckingSuggestions['collation'] = $collactions['collation'];
+                $collections = (array) $this->response->spellcheck->collations;
+                $spellcheckingSuggestions['collation'] = $collections['collation'];
             }
         }
 

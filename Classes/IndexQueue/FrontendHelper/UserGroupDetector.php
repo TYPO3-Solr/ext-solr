@@ -98,7 +98,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     }
 
     /**
-     * Deactivates the frontend user grroup fields in TCA so that no access
+     * Deactivates the frontend user group fields in TCA so that no access
      * restrictions apply during page rendering.
      *
      * @param array $parameters Parameters from frontend

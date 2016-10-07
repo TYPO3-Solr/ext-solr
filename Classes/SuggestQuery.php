@@ -82,7 +82,7 @@ class SuggestQuery extends Query
     }
 
     /**
-     * Returns the query paramters that should be used.
+     * Returns the query parameters that should be used.
      *
      * @return array
      */

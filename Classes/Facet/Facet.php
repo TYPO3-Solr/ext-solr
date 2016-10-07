@@ -167,7 +167,7 @@ class Facet
     }
 
     /**
-     * Checks whether requirements are fullfilled
+     * Checks whether requirements are fulfilled
      *
      * @return bool TRUE if conditions required to render this facet are met, FALSE otherwise
      */
