@@ -118,7 +118,7 @@ class Site
         Site $selectedSite = null
     ) {
         $sites = self::getAvailableSites();
-        $selector = '<select name="' . $selectorName . '">';
+        $selector = '<select name="' . $selectorName . '" class="form-control">';
 
         foreach ($sites as $site) {
             $selectedAttribute = '';
