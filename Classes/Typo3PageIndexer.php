@@ -315,7 +315,10 @@ class Typo3PageIndexer
         $document->setField('rootline', $rootline);
 
         // access
-        $document->setField('access', (string)$this->pageAccessRootline);
+        $access = (string)$this->pageAccessRootline;
+        if (trim($access) !== "") {
+            $document->setField('access', $access);
+        }
         if ($this->page->page['endtime']) {
             $document->setField('endtime', $pageRecord['endtime']);
         }

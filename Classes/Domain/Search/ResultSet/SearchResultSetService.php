@@ -31,9 +31,11 @@ use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\QueryAware;
+use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 /**
@@ -188,7 +190,7 @@ class SearchResultSetService implements SingletonInterface
     protected function getPreparedQuery($rawQuery, $resultsPerPage)
     {
         /* @var $query Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', $rawQuery);
+        $query = GeneralUtility::makeInstance(Query::class, $rawQuery);
 
         $this->applyPageSectionsRootLineFilter($query);
 
@@ -462,7 +464,7 @@ class SearchResultSetService implements SingletonInterface
             return array();
         }
 
-        $cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         // all other regular filters
         foreach ($searchQueryFilters as $filterKey => $filter) {
@@ -550,7 +552,7 @@ class SearchResultSetService implements SingletonInterface
     public function getDocumentById($documentId)
     {
         /* @var $query Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', $documentId);
+        $query = GeneralUtility::makeInstance(Query::class, $documentId);
         $query->setQueryFieldsFromString('id');
 
         $response = $this->search->search($query, 0, 1);
@@ -636,7 +638,7 @@ class SearchResultSetService implements SingletonInterface
      */
     protected function getRegisteredSearchComponents()
     {
-        return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search\\SearchComponentManager')->getSearchComponents();
+        return GeneralUtility::makeInstance(SearchComponentManager::class)->getSearchComponents();
     }
 
     /**
