@@ -73,7 +73,7 @@ class Results extends CommandPluginBase
      */
     private function buildSearchRequest()
     {
-        $solrParameters = array();
+        $solrParameters = [];
         $solrPostParameters = GeneralUtility::_POST('tx_solr');
         $solrGetParameters = GeneralUtility::_GET('tx_solr');
 
@@ -141,7 +141,6 @@ class Results extends CommandPluginBase
     protected function getCommandList()
     {
         $requirements = PluginCommand::REQUIREMENT_NONE;
-        $commandList = array();
 
         if ($this->getSearchResultSetService()->getHasSearched()) {
             $requirements = PluginCommand::REQUIREMENT_HAS_SEARCHED;
@@ -153,8 +152,7 @@ class Results extends CommandPluginBase
             }
         }
 
-        $commandList = CommandResolver::getPluginCommands('results', $requirements);
-        return $commandList;
+        return CommandResolver::getPluginCommands('results', $requirements);
     }
 
     /**
@@ -174,7 +172,7 @@ class Results extends CommandPluginBase
      */
     protected function overrideTyposcriptWithFlexformSettings()
     {
-        $flexFormConfiguration = array();
+        $flexFormConfiguration = [];
 
         // initialize with empty query, useful when no search has been
         // conducted yet but needs to show facets already.
