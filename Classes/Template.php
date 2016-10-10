@@ -101,8 +101,10 @@ class Template
      */
     public function loadHtmlFile($htmlFile)
     {
-        $this->template = $this->cObj->fileResource($htmlFile);
-
+        $path = $GLOBALS['TSFE']->tmpl->getFileName($htmlFile);
+        if ($path !== null && file_exists($path)) {
+            $this->template = file_get_contents($path);
+        }
         if (empty($this->template)) {
             throw new \RuntimeException(
                 'Could not load template file "' . htmlspecialchars($htmlFile) . '"',

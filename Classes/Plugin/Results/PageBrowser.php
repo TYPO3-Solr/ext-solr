@@ -67,7 +67,10 @@ class PageBrowser
         $this->pagesBefore = (int)$configuration['pagesBefore'];
         $this->pagesAfter = (int)$configuration['pagesAfter'];
 
-        $this->template = $this->contentObject->fileResource($configuration['templateFile']);
+        $path = $GLOBALS['TSFE']->tmpl->getFileName($configuration['templateFile']);
+        if ($path !== null && file_exists($path)) {
+            $this->template = file_get_contents($path);
+        }
     }
 
     /**
