@@ -47,7 +47,14 @@ use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
  */
 abstract class PluginBase extends AbstractPlugin
 {
+    /**
+     * @var string
+     */
     public $prefixId = 'tx_solr';
+
+    /**
+     * @var string
+     */
     public $extKey = 'solr';
 
     /**
