@@ -44,8 +44,6 @@ class AccessComponent extends AbstractComponent implements QueryAware
 
     /**
      * Initializes the search component.
-     *
-     *
      */
     public function initializeSearchComponent()
     {

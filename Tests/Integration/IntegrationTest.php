@@ -24,9 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 
 /**
@@ -54,7 +59,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
      */
     public function setUp()
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
         parent::setUp();
 
@@ -150,7 +155,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     protected function getConfiguredTSFE($TYPO3_CONF_VARS = array(), $id = 1, $type = 0)
     {
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
-        $TSFE = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController',
+        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
             $TYPO3_CONF_VARS, $id, $type);
 
         \TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
@@ -218,8 +223,9 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     /**
      * @param string $fixture
      * @param array $importPageIds
+     * @param array $feUserGroupArray
      */
-    protected function indexPageIdsFromFixture($fixture, $importPageIds)
+    protected function indexPageIdsFromFixture($fixture, $importPageIds, $feUserGroupArray = [0])
     {
         $this->importDataSetFromFixture($fixture);
 
@@ -229,16 +235,26 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
             $fakeTSFE->newCObj();
 
             $GLOBALS['TSFE'] = $fakeTSFE;
+            $this->simulateFrontedUserGroups($feUserGroupArray);
 
             PageGenerator::pagegenInit();
             PageGenerator::renderContent();
 
             /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
-            $pageIndexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Typo3PageIndexer', $fakeTSFE);
+            $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
+            $pageIndexer->setPageAccessRootline(Rootline::getAccessRootlineByPageId($importPageId));
             $pageIndexer->indexPage();
         }
-        /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
-        $beUser = GeneralUtility::makeInstance('TYPO3\CMS\Core\Authentication\BackendUserAuthentication');
+        /** @var $beUser  BackendUserAuthentication */
+        $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
+    }
+
+    /**
+     * @param array $feUserGroupArray
+     */
+    protected function simulateFrontedUserGroups(array $feUserGroupArray)
+    {
+        $GLOBALS['TSFE']->gr_list = implode(",", $feUserGroupArray);
     }
 }

@@ -24,7 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Access;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * "Access Rootline", represents all pages and specifically those setting
@@ -77,7 +79,7 @@ class Rootline
      *
      * @var array
      */
-    protected $rootlineElements = array();
+    protected $rootlineElements = [];
 
     /**
      * Constructor, turns a string representation of an access rootline into an
@@ -92,10 +94,7 @@ class Rootline
                 $accessRootline);
             foreach ($rawRootlineElements as $rawRootlineElement) {
                 try {
-                    $this->push(GeneralUtility::makeInstance(
-                        'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
-                        $rawRootlineElement
-                    ));
+                    $this->push(GeneralUtility::makeInstance(RootlineElement::class, $rawRootlineElement));
                 } catch (RootlineElementFormatException $e) {
                     // just ignore the faulty element for now, might log this later
                 }
@@ -142,13 +141,12 @@ class Rootline
         $pageId,
         $mountPointParameter = ''
     ) {
-        $accessRootline = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Access\\Rootline');
+        $accessRootline = GeneralUtility::makeInstance(Rootline::class);
 
-        $pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
         $pageSelector->init(false);
         $rootline = $pageSelector->getRootLine($pageId, $mountPointParameter);
         $rootline = array_reverse($rootline);
-
         // parent pages
         foreach ($rootline as $pageRecord) {
             if ($pageRecord['fe_group']
@@ -156,7 +154,7 @@ class Rootline
                 && $pageRecord['uid'] != $pageId
             ) {
                 $accessRootline->push(GeneralUtility::makeInstance(
-                    'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
+                    RootlineElement::class,
                     $pageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $pageRecord['fe_group']
                 ));
             }
@@ -166,7 +164,7 @@ class Rootline
         $currentPageRecord = $pageSelector->getPage($pageId);
         if ($currentPageRecord['fe_group']) {
             $accessRootline->push(GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\Solr\Access\RootlineElement',
+                RootlineElement::class,
                 $currentPageRecord['uid'] . RootlineElement::PAGE_ID_GROUP_DELIMITER . $currentPageRecord['fe_group']
             ));
         }
@@ -181,7 +179,7 @@ class Rootline
      */
     public function __toString()
     {
-        $stringElements = array();
+        $stringElements = [];
 
         foreach ($this->rootlineElements as $rootlineElement) {
             $stringElements[] = (string)$rootlineElement;
@@ -197,7 +195,7 @@ class Rootline
      */
     public function getGroups()
     {
-        $groups = array();
+        $groups = [];
 
         foreach ($this->rootlineElements as $rootlineElement) {
             $rootlineElementGroups = $rootlineElement->getGroups();
