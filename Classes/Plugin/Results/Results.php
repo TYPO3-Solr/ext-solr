@@ -177,23 +177,24 @@ class Results extends CommandPluginBase
         // initialize with empty query, useful when no search has been
         // conducted yet but needs to show facets already.
         $initializeWithEmptyQuery = $this->getFlexFormValue('initializeWithEmptyQuery', 'sQuery');
-        if ($initializeWithEmptyQuery) {
+
+        if (boolval($initializeWithEmptyQuery)) {
             $flexFormConfiguration['search.']['initializeWithEmptyQuery'] = 1;
         }
 
         $showResultsOfInitialEmptyQuery = $this->getFlexFormValue('showResultsOfInitialEmptyQuery', 'sQuery');
-        if ($showResultsOfInitialEmptyQuery) {
+        if (boolval($showResultsOfInitialEmptyQuery)) {
             $flexFormConfiguration['search.']['showResultsOfInitialEmptyQuery'] = 1;
         }
 
         // initialize with non-empty query
-        $initialQuery = $this->getFlexFormValue('initializeWithQuery', 'sQuery');
-        if ($initialQuery) {
+        $initialQuery = trim((string)$this->getFlexFormValue('initializeWithQuery', 'sQuery'));
+        if ($initialQuery !== '') {
             $flexFormConfiguration['search.']['initializeWithQuery'] = $initialQuery;
         }
 
         $showResultsOfInitialQuery = $this->getFlexFormValue('showResultsOfInitialQuery', 'sQuery');
-        if ($showResultsOfInitialQuery) {
+        if (boolval($showResultsOfInitialQuery)) {
             $flexFormConfiguration['search.']['showResultsOfInitialQuery'] = 1;
         }
 
@@ -204,27 +205,27 @@ class Results extends CommandPluginBase
         }
 
         // boost function
-        $boostFunction = $this->getFlexFormValue('boostFunction', 'sQuery');
-        if ($boostFunction) {
+        $boostFunction = trim((string)$this->getFlexFormValue('boostFunction', 'sQuery'));
+        if ($boostFunction !== '') {
             $flexFormConfiguration['search.']['query.']['boostFunction'] = $boostFunction;
         }
 
         // boost query
-        $boostQuery = $this->getFlexFormValue('boostQuery', 'sQuery');
-        if ($boostQuery) {
+        $boostQuery = trim((string)$this->getFlexFormValue('boostQuery', 'sQuery'));
+        if ($boostQuery !== '') {
             $flexFormConfiguration['search.']['query.']['boostQuery'] = $boostQuery;
         }
 
         // sorting
-        $flexformSorting = $this->getFlexFormValue('sortBy', 'sQuery');
-        if ($flexformSorting) {
+        $flexformSorting = trim((string)$this->getFlexFormValue('sortBy', 'sQuery'));
+        if ($flexformSorting !== '') {
             $flexFormConfiguration['search.']['query.']['sortBy'] = $flexformSorting;
         }
 
         // results per page
-        $resultsPerPage = $this->getFlexFormValue('resultsPerPage', 'sQuery');
-        if ($resultsPerPage) {
-            $flexFormConfiguration['search.']['results.']['resultsPerPage'] = $resultsPerPage;
+        $resultsPerPage = trim((string)$this->getFlexFormValue('resultsPerPage', 'sQuery'));
+        if ($resultsPerPage !== '') {
+            $flexFormConfiguration['search.']['results.']['resultsPerPage'] = intval($resultsPerPage);
         }
 
         // flexform overwrites _all_ filters set through TypoScript
