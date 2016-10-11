@@ -169,7 +169,7 @@ class AdministrationController extends ActionController
     {
     }
 
-     /**
+    /**
      * Call a sub-module's controller
      *
      */
@@ -294,7 +294,7 @@ class AdministrationController extends ActionController
     }
 
     /**
-     * @param $site
+     * @param Site $site
      */
     protected function setSiteAndResetCore($site)
     {

@@ -56,7 +56,7 @@ class ConfigurationManager implements SingletonInterface
      * path that is used in in the current context.
      *
      * @param array $configurationArray
-     * @param null $contextPageId
+     * @param integer $contextPageId
      * @param int $contextLanguageId
      * @param string $contextTypoScriptPath
      * @return TypoScriptConfiguration
@@ -69,7 +69,7 @@ class ConfigurationManager implements SingletonInterface
             }
         }
 
-        if (! is_array($configurationArray)) {
+        if (!is_array($configurationArray)) {
             $configurationArray = array();
         }
 
@@ -77,7 +77,7 @@ class ConfigurationManager implements SingletonInterface
             $configurationArray['plugin.']['tx_solr.'] = array();
         }
 
-        if ($contextPageId == null && !empty($GLOBALS['TSFE']->id)) {
+        if ($contextPageId === null && !empty($GLOBALS['TSFE']->id)) {
             $contextPageId = $GLOBALS['TSFE']->id;
         }
 

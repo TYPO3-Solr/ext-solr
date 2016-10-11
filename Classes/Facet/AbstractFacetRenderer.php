@@ -150,6 +150,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
     /**
      * Renders a numeric range facet by providing a slider
      *
+     * @return string
      */
     abstract protected function renderFacetOptions();
 

@@ -114,7 +114,6 @@ class Relation
     /**
      * Gets the related items of the current record's configured field.
      *
-     * @param array $configuration for the content object
      * @param ContentObjectRenderer $parentContentObject parent content object
      * @return array Array of related items, values already resolved from related records
      */
