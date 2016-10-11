@@ -182,6 +182,15 @@ class Site
     }
 
     /**
+     * Clears the $sitePagesCache
+     *
+     */
+    public static function clearSitePagesCache()
+    {
+        self::$sitePagesCache = array();
+    }
+
+    /**
      * Gets the site's root page ID (uid).
      *
      * @return int The site's root page ID.
