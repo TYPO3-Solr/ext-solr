@@ -92,7 +92,7 @@
 	<field name="rootline" type="string"  indexed="true" stored="true" docValues="true" multiValued="true" />
 
 	<!-- access fields -->
-	<field name="access"  type="string"  indexed="true" stored="true" docValues="true" default="c:0" />
+	<field name="access"  type="string"  indexed="true" stored="true" docValues="true" default="c:0" multiValued="true"/>
 	<!-- we only need endtime as records with a starttime > indexing time will not get indexed -->
 	<field name="endtime" type="date"    indexed="true" stored="true" docValues="true" />
 
