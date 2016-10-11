@@ -140,7 +140,7 @@ class HtmlContentExtractor
      * Strips html tags, and tab, new-line, carriage-return, &nbsp; whitespace
      * characters.
      *
-     * @param string String to clean
+     * @param string $content String to clean
      * @return string String cleaned from tags and special whitespace characters
      */
     public static function cleanContent($content)

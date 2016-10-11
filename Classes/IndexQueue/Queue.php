@@ -867,8 +867,6 @@ class Queue
      */
     public function markItemAsFailed($item, $errorMessage = '')
     {
-        $itemUid = 0;
-
         if ($item instanceof Item) {
             $itemUid = $item->getIndexQueueUid();
         } else {

@@ -25,6 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Plugin\PluginAware;
 use ApacheSolrForTypo3\Solr\Query;
@@ -389,7 +391,7 @@ class SearchResultSetService implements SingletonInterface
         $searchResultClassName = $this->getResultClassName();
         $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
         if (!$result instanceof SearchResult) {
-            throw new \InvalidArgumentException('Could not create result object with class: ' . (string) $searchResultClassName, 1470037679);
+            throw new \InvalidArgumentException('Could not create result object with class: ' . (string)$searchResultClassName, 1470037679);
         }
 
         return $result;
@@ -401,8 +403,7 @@ class SearchResultSetService implements SingletonInterface
     protected function getResultClassName()
     {
         return isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName ']) ?
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] :
-            'ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResult';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] : SearchResult::class;
     }
 
     /**
@@ -411,14 +412,13 @@ class SearchResultSetService implements SingletonInterface
     protected function getResultSetClassName()
     {
         return isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName ']) ?
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] :
-            'ApacheSolrForTypo3\\Solr\\Domain\\Search\\ResultSet\\SearchResultSet';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] : SearchResultSet::class;
     }
 
     /**
      * Checks it the results should be hidden in the response.
      *
-     * @param $rawQuery
+     * @param string $rawQuery
      * @return bool
      */
     protected function shouldHideResultsFromInitialSearch($rawQuery)
@@ -547,7 +547,7 @@ class SearchResultSetService implements SingletonInterface
      * Retrieves a single document from solr by document id.
      *
      * @param string $documentId
-     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult
+     * @return SearchResult
      */
     public function getDocumentById($documentId)
     {
@@ -558,7 +558,7 @@ class SearchResultSetService implements SingletonInterface
         $response = $this->search->search($query, 0, 1);
         $this->processResponse($documentId, $query, $response);
 
-        $resultDocument = isset($response->response->docs[0]) ?  $response->response->docs[0] : null;
+        $resultDocument = isset($response->response->docs[0]) ? $response->response->docs[0] : null;
         return $resultDocument;
     }
 
@@ -586,7 +586,7 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
-     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
+     * @return SearchResultSet
      */
     public function getLastResultSet()
     {
@@ -610,7 +610,7 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
-     * @param $requestedPerPage
+     * @param integer $requestedPerPage
      */
     protected function setPerPageInSession($requestedPerPage)
     {

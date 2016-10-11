@@ -129,7 +129,7 @@ class IndexService
     /**
      * Emits a signal after all items was indexed
      *
-     * @param array $itemsToIndex
+     * @param Item[] $itemsToIndex
      */
     protected function emitAfterIndexItemsSignal($itemsToIndex)
     {

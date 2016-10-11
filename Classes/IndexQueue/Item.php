@@ -347,6 +347,10 @@ class Item
         }
     }
 
+    /**
+     * @param string $key
+     * @return bool
+     */
     public function hasIndexingProperty($key)
     {
         $this->loadIndexingProperties();

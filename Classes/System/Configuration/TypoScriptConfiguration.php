@@ -251,8 +251,8 @@ class TypoScriptConfiguration
      */
     public function getCssFileByFileKey($fileKey, $defaultIfEmpty = '')
     {
-        $cssFileName =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.cssFiles.' . $fileKey, $defaultIfEmpty);
-        return (string) $cssFileName;
+        $cssFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.cssFiles.' . $fileKey, $defaultIfEmpty);
+        return (string)$cssFileName;
     }
 
     /**
@@ -561,8 +561,8 @@ class TypoScriptConfiguration
      */
     public function getJavaScriptFileByFileKey($fileKey, $defaultIfEmpty = '')
     {
-        $javaScriptFileName =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.javascriptFiles.' . $fileKey, $defaultIfEmpty);
-        return (string) $javaScriptFileName;
+        $javaScriptFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.javascriptFiles.' . $fileKey, $defaultIfEmpty);
+        return (string)$javaScriptFileName;
     }
 
     /**
@@ -575,8 +575,8 @@ class TypoScriptConfiguration
      */
     public function getJavaScriptLoadIn($defaultIfEmpty = 'footer')
     {
-        $loadIn =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.javascriptFiles.loadIn', $defaultIfEmpty);
-        return (string) $loadIn;
+        $loadIn = $this->getValueByPathOrDefaultValue('plugin.tx_solr.javascriptFiles.loadIn', $defaultIfEmpty);
+        return (string)$loadIn;
     }
 
     /**
@@ -923,7 +923,7 @@ class TypoScriptConfiguration
     public function getSearchVariantsLimit($defaultIfEmpty = 10)
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.variants.limit', $defaultIfEmpty);
-        return (int) $result;
+        return (int)$result;
     }
 
     /**
@@ -965,7 +965,7 @@ class TypoScriptConfiguration
     public function getSearchFrequentSearchesMinSize($defaultIfEmpty = 14)
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.frequentSearches.minSize', $defaultIfEmpty);
-        return (int) $result;
+        return (int)$result;
     }
 
     /**
@@ -979,7 +979,7 @@ class TypoScriptConfiguration
     public function getSearchFrequentSearchesMaxSize($defaultIfEmpty = 32)
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.frequentSearches.maxSize', $defaultIfEmpty);
-        return (int) $result;
+        return (int)$result;
     }
 
     /**
@@ -1021,7 +1021,7 @@ class TypoScriptConfiguration
     public function getSearchInitializeWithQuery($defaultIfEmpty = '')
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.initializeWithQuery', $defaultIfEmpty);
-        return (string) $result;
+        return (string)$result;
     }
 
     /**
@@ -1049,7 +1049,7 @@ class TypoScriptConfiguration
     public function getSearchLastSearchesMode($defaultIfEmpty = 'user')
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.lastSearches.mode', $defaultIfEmpty);
-        return (string) $result;
+        return (string)$result;
     }
 
     /**
@@ -1063,7 +1063,7 @@ class TypoScriptConfiguration
     public function getSearchLastSearchesLimit($defaultIfEmpty = 10)
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.lastSearches.limit', $defaultIfEmpty);
-        return (int) $result;
+        return (int)$result;
     }
 
     /**
@@ -1316,7 +1316,7 @@ class TypoScriptConfiguration
      */
     public function getSearchTargetPage()
     {
-        $targetPage = (int) $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.targetPage', 0);
+        $targetPage = (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.targetPage', 0);
         if ($targetPage === 0) {
             // when no specific page was configured we use the contextPageId (which is usual $GLOBALS['TSFE']->id)
             $targetPage = $this->contextPageId;
@@ -1408,7 +1408,7 @@ class TypoScriptConfiguration
      */
     public function getSearchResultsPerPage($defaultIfEmpty = 10)
     {
-        return (int) $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsPerPage', $defaultIfEmpty);
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsPerPage', $defaultIfEmpty);
     }
 
     /**
@@ -1453,7 +1453,7 @@ class TypoScriptConfiguration
      */
     public function getSearchSpellchecking($defaultIfEmpty = false)
     {
-        $isFacetingEnabled =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking', $defaultIfEmpty);
+        $isFacetingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking', $defaultIfEmpty);
         return $this->getBool($isFacetingEnabled);
     }
 
@@ -1467,7 +1467,7 @@ class TypoScriptConfiguration
      */
     public function getSearchSpellcheckingWrap($defaultIfEmpty = '')
     {
-        return (string) $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking.wrap', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking.wrap', $defaultIfEmpty);
     }
 
     /**
@@ -1480,7 +1480,7 @@ class TypoScriptConfiguration
      */
     public function getSearchSpellcheckingNumberOfSuggestionsToTry($defaultIfEmpty = 0)
     {
-        return (int) $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking.numberOfSuggestionsToTry', $defaultIfEmpty);
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking.numberOfSuggestionsToTry', $defaultIfEmpty);
     }
 
     /**
@@ -1507,7 +1507,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFaceting($defaultIfEmpty = false)
     {
-        $isFacetingEnabled =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting', $defaultIfEmpty);
+        $isFacetingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting', $defaultIfEmpty);
         return $this->getBool($isFacetingEnabled);
     }
 
@@ -1552,7 +1552,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFacetingRemoveFacetLinkText($defaultIfEmpty = '@facetLabel: @facetText')
     {
-        return (string) $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.removeFacetLinkText', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.removeFacetLinkText', $defaultIfEmpty);
     }
 
     /**
@@ -1596,7 +1596,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFacetingShowAllLinkWrap($defaultIfEmpty = '')
     {
-        return (string) $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.showAllLink.wrap', $defaultIfEmpty);
+        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.showAllLink.wrap', $defaultIfEmpty);
     }
 
     /**
@@ -1624,7 +1624,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFacetingFacetLinkUrlParametersUseForFacetResetLinkUrl($defaultIfEmpty = true)
     {
-        $useForFacetResetLinkUrl =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.facetLinkUrlParameters.useForFacetResetLinkUrl', $defaultIfEmpty);
+        $useForFacetResetLinkUrl = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.facetLinkUrlParameters.useForFacetResetLinkUrl', $defaultIfEmpty);
         return $this->getBool($useForFacetResetLinkUrl);
     }
 
@@ -1656,7 +1656,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFacetingMinimumCount($defaultIfEmpty = 1)
     {
-        return (int) $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.minimumCount', $defaultIfEmpty);
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.minimumCount', $defaultIfEmpty);
     }
 
     /**
@@ -1669,7 +1669,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFacetingLimit($defaultIfEmpty = 10)
     {
-        return (int) $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.limit', $defaultIfEmpty);
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.limit', $defaultIfEmpty);
     }
 
     /**
@@ -1682,7 +1682,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFacetingSingleFacetMode($defaultIfEmpty = false)
     {
-        $singleFacetMode =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.singleFacetMode', $defaultIfEmpty);
+        $singleFacetMode = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.singleFacetMode', $defaultIfEmpty);
         return $this->getBool($singleFacetMode);
     }
 
@@ -1711,7 +1711,7 @@ class TypoScriptConfiguration
      */
     public function getSearchFacetingKeepAllFacetsOnSelection($defaultIfEmpty = false)
     {
-        $keepAllOptionsOnSelection =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.keepAllFacetsOnSelection', $defaultIfEmpty);
+        $keepAllOptionsOnSelection = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.keepAllFacetsOnSelection', $defaultIfEmpty);
         return $this->getBool($keepAllOptionsOnSelection);
     }
 
@@ -1752,7 +1752,7 @@ class TypoScriptConfiguration
      */
     public function getStatistics($defaultIfEmpty = false)
     {
-        $isFacetingEnabled =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics', $defaultIfEmpty);
+        $isFacetingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics', $defaultIfEmpty);
         return $this->getBool($isFacetingEnabled);
     }
 
@@ -1766,8 +1766,8 @@ class TypoScriptConfiguration
      */
     public function getStatisticsAnonymizeIP($defaultIfEmpty = 0)
     {
-        $anomizeToLength =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.anonymizeIP', $defaultIfEmpty);
-        return (int) $anomizeToLength;
+        $anomizeToLength = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.anonymizeIP', $defaultIfEmpty);
+        return (int)$anomizeToLength;
     }
 
     /**
@@ -1780,7 +1780,7 @@ class TypoScriptConfiguration
      */
     public function getSuggest($defaultIfEmpty = false)
     {
-        $isSuggestionEnabled =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest', $defaultIfEmpty);
+        $isSuggestionEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest', $defaultIfEmpty);
         return $this->getBool($isSuggestionEnabled);
     }
 
@@ -1794,7 +1794,7 @@ class TypoScriptConfiguration
      */
     public function getSuggestForceHttps($defaultIfEmpty = false)
     {
-        $isHttpsForced =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest.forceHttps', $defaultIfEmpty);
+        $isHttpsForced = $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest.forceHttps', $defaultIfEmpty);
         return $this->getBool($isHttpsForced);
     }
 
@@ -1809,8 +1809,8 @@ class TypoScriptConfiguration
      */
     public function getTemplateByFileKey($fileKey, $defaultIfEmpty = '')
     {
-        $templateFileName =  $this->getValueByPathOrDefaultValue('plugin.tx_solr.templateFiles.' . $fileKey, $defaultIfEmpty);
-        return (string) $templateFileName;
+        $templateFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.templateFiles.' . $fileKey, $defaultIfEmpty);
+        return (string)$templateFileName;
     }
 
     /**
@@ -1823,7 +1823,7 @@ class TypoScriptConfiguration
      */
     public function getViewHelpersCropConfiguration(array $defaultIfEmpty = array())
     {
-        $cropViewHelperConfiguration =  $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.crop.', $defaultIfEmpty);
+        $cropViewHelperConfiguration = $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.crop.', $defaultIfEmpty);
         return $cropViewHelperConfiguration;
     }
 
@@ -1837,7 +1837,7 @@ class TypoScriptConfiguration
      */
     public function getViewHelpersSortIndicatorConfiguration(array $defaultIfEmpty = array())
     {
-        $sortingViewHelperConfiguration =  $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.sortIndicator.', $defaultIfEmpty);
+        $sortingViewHelperConfiguration = $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.sortIndicator.', $defaultIfEmpty);
         return $sortingViewHelperConfiguration;
     }
 }

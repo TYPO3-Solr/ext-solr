@@ -95,7 +95,7 @@ class Indexer extends AbstractIndexer
      * Indexes an item from the indexing queue.
      *
      * @param Item $item An index queue item
-     * @return Apache_Solr_Response The Apache Solr response
+     * @return boolean returns true when indexed, false when not
      */
     public function index(Item $item)
     {
