@@ -88,12 +88,17 @@ class SearchRequest
     protected $contextTypoScriptConfiguration;
 
     /**
+     * @var array
+     */
+    protected $persistedArguments = [];
+
+    /**
      * @param array $argumentsArray
      * @param int $pageUid
      * @param int $sysLanguageUid
      * @param TypoScriptConfiguration $typoScriptConfiguration
      */
-    public function __construct(array $argumentsArray = array(), $pageUid = 0, $sysLanguageUid = 0, TypoScriptConfiguration $typoScriptConfiguration = null)
+    public function __construct(array $argumentsArray = [], $pageUid = 0, $sysLanguageUid = 0, TypoScriptConfiguration $typoScriptConfiguration = null)
     {
         $this->stateChanged = true;
         $this->persistedArguments = $argumentsArray;
@@ -133,7 +138,7 @@ class SearchRequest
     /**
      * Helper method to prefix an accessor with the arguments namespace.
      *
-     * @param $path
+     * @param string $path
      * @return string
      */
     protected function prefixWithNamespace($path)
@@ -147,11 +152,11 @@ class SearchRequest
     public function getActiveFacetNames()
     {
         $activeFacets = $this->getActiveFacets();
-        $facetNames = array();
-        foreach ($activeFacets as $activeFacet) {
-            $facetName = explode(':', $activeFacet, 2);
-            $facetNames[] = $facetName[0];
-        }
+        $facetNames = [];
+
+        array_map(function ($activeFacet) use (&$facetNames) {
+            $facetNames[] = substr($activeFacet, 0, strpos($activeFacet, ':'));
+        }, $activeFacets);
 
         return $facetNames;
     }
@@ -165,24 +170,26 @@ class SearchRequest
     {
         $values = [];
         $activeFacets = $this->getActiveFacets();
-        foreach ($activeFacets as $activeFacet) {
+
+        array_map(function ($activeFacet) use (&$values, $facetName) {
             $parts = explode(':', $activeFacet, 2);
-            if ($parts[0] !== $facetName) {
-                continue;
+            if ($parts[0] === $facetName) {
+                $values[] = $parts[1];
             }
-            $values[] = $parts[1];
-        }
+        }, $activeFacets);
 
         return $values;
     }
 
     /**
-     * @return array|null
+     * @return array
      */
     protected function getActiveFacets()
     {
         $path = $this->prefixWithNamespace('filter');
-        return $this->argumentsAccessor->get($path, array());
+        $pathValue = $this->argumentsAccessor->get($path, []);
+
+        return is_array($pathValue) ? $pathValue : [];
     }
 
     /**
@@ -195,11 +202,10 @@ class SearchRequest
 
     /**
      * @param $activeFacets
-     * @return array|null
      *
      * @return SearchRequest
      */
-    protected function setActiveFacets($activeFacets = array())
+    protected function setActiveFacets($activeFacets = [])
     {
         $path = $this->prefixWithNamespace('filter');
         $this->argumentsAccessor->set($path, $activeFacets);
@@ -267,14 +273,10 @@ class SearchRequest
     public function removeAllFacetValuesByName($facetName)
     {
         $facetValues = $this->getActiveFacets();
-
-        foreach ($facetValues as $index => $facetValue) {
+        $facetValues = array_filter($facetValues, function ($facetValue) use ($facetName) {
             $parts = explode(':', $facetValue, 2);
-            if ($parts[0] === $facetName) {
-                // a facet for the request facet name was found, so we unset it.
-                unset($facetValues[$index]);
-            }
-        }
+            return $parts[0] !== $facetName;
+        });
 
         $this->setActiveFacets($facetValues);
         $this->stateChanged = true;
@@ -302,13 +304,7 @@ class SearchRequest
     public function getHasFacetValue($facetName, $facetValue)
     {
         $facetNameAndValueToCheck = $facetName . ':' . $facetValue;
-        foreach ($this->getActiveFacets() as $activeFacet) {
-            if ($activeFacet == $facetNameAndValueToCheck) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($facetNameAndValueToCheck, $this->getActiveFacets());
     }
 
     /**
@@ -323,7 +319,7 @@ class SearchRequest
     /**
      * Returns the sorting string in the url e.g. title asc.
      *
-     * @return string|null
+     * @return string
      */
     protected function getSorting()
     {
@@ -334,8 +330,8 @@ class SearchRequest
     /**
      * Helper function to get the sorting configuration name or direction.
      *
-     * @param $index
-     * @return null
+     * @param integer $index
+     * @return string
      */
     protected function getSortingPart($index)
     {
@@ -555,19 +551,20 @@ class SearchRequest
      */
     public function getCopyForSubRequest($onlyPersistentArguments = true)
     {
-        $argumentsArray = $this->argumentsAccessor->getData();
-        if ($onlyPersistentArguments) {
-            $arguments = new ArrayAccessor();
-            foreach ($this->persistentArgumentsPaths as $persistentArgumentPath) {
-                if ($this->argumentsAccessor->has($persistentArgumentPath)) {
-                    $arguments->set($persistentArgumentPath, $this->argumentsAccessor->get($persistentArgumentPath));
-                }
-            }
-
-            $argumentsArray = $arguments->getData();
+        if (!$onlyPersistentArguments) {
+            // create a new request with all data
+            $argumentsArray = $this->argumentsAccessor->getData();
+            return new SearchRequest($argumentsArray);
         }
 
-        return new SearchRequest($argumentsArray);
+        $arguments = new ArrayAccessor();
+        foreach ($this->persistentArgumentsPaths as $persistentArgumentPath) {
+            if ($this->argumentsAccessor->has($persistentArgumentPath)) {
+                $arguments->set($persistentArgumentPath, $this->argumentsAccessor->get($persistentArgumentPath));
+            }
+        }
+
+        return new SearchRequest($arguments->getData());
     }
 
     /**
