@@ -779,15 +779,7 @@ class Query
             $this->queryParameters['facet'] = 'true';
             $this->queryParameters['facet.mincount'] = $this->solrConfiguration->getSearchFacetingMinimumCount();
 
-            $sorting = $this->solrConfiguration->getSearchFacetingSortBy();
-            if (GeneralUtility::inList('count,index,alpha,lex,1,0,true,false', $sorting)) {
-                // alpha and lex alias for index
-                if ($sorting == 'alpha' || $sorting == 'lex') {
-                    $sorting = 'index';
-                }
-
-                $this->queryParameters['facet.sort'] = $sorting;
-            }
+            $this->applyConfiguredFacetSorting();
         } else {
             foreach ($this->queryParameters as $key => $value) {
                 // remove all facet.* settings
@@ -803,6 +795,27 @@ class Query
                 }
             }
         }
+    }
+
+    /**
+     * Reads the facet sorting configuration and applies it to the queryParameters.
+     *
+     * @return void
+     */
+    protected function applyConfiguredFacetSorting()
+    {
+        $sorting = $this->solrConfiguration->getSearchFacetingSortBy();
+        if (!GeneralUtility::inList('count,index,alpha,lex,1,0,true,false', $sorting)) {
+            // when the sorting is not in the list of valid values we do not apply it.
+            return;
+        }
+
+        // alpha and lex alias for index
+        if ($sorting == 'alpha' || $sorting == 'lex') {
+            $sorting = 'index';
+        }
+
+        $this->queryParameters['facet.sort'] = $sorting;
     }
 
     /**
