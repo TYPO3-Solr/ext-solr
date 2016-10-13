@@ -41,8 +41,7 @@ class QueryTest extends UnitTest
      */
     public function noFiltersAreSetAfterInitialization()
     {
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            'test');
+        $query = $this->getInitializedTestQuery();
         $filters = $query->getFilters();
 
         $this->assertTrue(
@@ -56,8 +55,7 @@ class QueryTest extends UnitTest
      */
     public function addsCorrectAccessFilterForAnonymousUser()
     {
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            'test');
+        $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups(array(-1, 0));
         $filters = $query->getFilters();
 
@@ -73,8 +71,7 @@ class QueryTest extends UnitTest
      */
     public function grantsAccessToGroupZeroIfNoGroupsProvided()
     {
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            'test');
+        $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups(array());
         $filters = $query->getFilters();
 
@@ -90,8 +87,7 @@ class QueryTest extends UnitTest
      */
     public function grantsAccessToGroupZeroIfZeroNotProvided()
     {
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            'test');
+        $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups(array(5));
         $filters = $query->getFilters();
 
@@ -107,8 +103,7 @@ class QueryTest extends UnitTest
      */
     public function filtersDuplicateAccessGroups()
     {
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            'test');
+        $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups(array(1, 1));
         $filters = $query->getFilters();
 
@@ -124,8 +119,7 @@ class QueryTest extends UnitTest
      */
     public function allowsOnlyOneAccessFilter()
     {
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            'test');
+        $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups(array(1));
         $query->setUserAccessGroups(array(2));
         $filters = $query->getFilters();
@@ -146,8 +140,7 @@ class QueryTest extends UnitTest
      */
     public function groupingIsNotActiveAfterInitialization()
     {
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            'test');
+        $query = $this->getInitializedTestQuery();
 
         $queryParameters = $query->getQueryParameters();
         foreach ($queryParameters as $queryParameter => $value) {
@@ -163,8 +156,7 @@ class QueryTest extends UnitTest
      */
     public function settingGroupingTrueActivatesGrouping()
     {
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            'test');
+        $query = $this->getInitializedTestQuery();
 
         $query->setGrouping(true);
 
@@ -205,7 +197,7 @@ class QueryTest extends UnitTest
     public function canEnableHighlighting()
     {
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
+        $query = $this->getInitializedTestQuery();
         $query->setHighlighting(true);
         $queryParameters = $query->getQueryParameters();
 
@@ -408,7 +400,7 @@ class QueryTest extends UnitTest
     public function canEnableFaceting()
     {
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
+        $query = $this->getInitializedTestQuery();
         $query->setFaceting(true);
         $queryParameters = $query->getQueryParameters();
 
@@ -457,7 +449,7 @@ class QueryTest extends UnitTest
     public function canSetSpellChecking()
     {
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
+        $query = $this->getInitializedTestQuery();
         $query->setSpellchecking(true);
         $queryParameters = $query->getQueryParameters();
 
@@ -474,8 +466,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['spellchecking.']['numberOfSuggestionsToTry'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query = $this->getInitializedTestQuery($fakeConfiguration);
         $query->setSpellchecking(true);
         $queryParameters = $query->getQueryParameters();
 
@@ -537,8 +528,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray = array();
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query = $this->getInitializedTestQuery($fakeConfiguration);
 
         $output = $query->escape($input);
         $this->assertSame($expectedOutput, $output, 'Query was not escaped as expected');
@@ -556,8 +546,7 @@ class QueryTest extends UnitTest
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance(Query::class, 'test', $fakeConfiguration);
+        $query = $this->getInitializedTestQuery($fakeConfiguration);
 
         $configuredField = $query->getVariantField();
         $this->assertTrue($query->getIsCollapsing(), 'Collapsing was enabled but not indicated to be enabled');
@@ -573,5 +562,15 @@ class QueryTest extends UnitTest
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance(Query::class, 'test', $fakeConfiguration);
         $this->assertFalse($query->getIsCollapsing(), 'Collapsing was not disabled by default');
+    }
+
+    /**
+     * @param null $solrConfiguration
+     * @return object
+     */
+    protected function getInitializedTestQuery($solrConfiguration = null)
+    {
+        $query = GeneralUtility::makeInstance(Query::class, 'test', $solrConfiguration);
+        return $query;
     }
 }
