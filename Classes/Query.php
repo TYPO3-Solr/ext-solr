@@ -136,7 +136,7 @@ class Query
     /**
      * @var array
      */
-    protected $sortingFields;
+    protected $sortingFields = [];
 
     /**
      * @var bool
@@ -483,6 +483,7 @@ class Query
         if ($elevation) {
             $this->queryParameters['enableElevation'] = 'true';
 
+            // @todo can be extracted to an own method
             if ($forceElevation) {
                 $this->queryParameters['forceElevation'] = 'true';
             } else {
@@ -781,6 +782,7 @@ class Query
 
             $this->applyConfiguredFacetSorting();
         } else {
+            // @todo can be moved to method removeFacetingArgumentsFromQueryParameters
             foreach ($this->queryParameters as $key => $value) {
                 // remove all facet.* settings
                 if (GeneralUtility::isFirstPartOfStr($key, 'facet')) {
@@ -972,6 +974,7 @@ class Query
      */
     public function addSortField($fieldName, $direction)
     {
+        // @todo can be refactored with a guard clause
         switch ($direction) {
             case self::SORT_ASC:
             case self::SORT_DESC:
@@ -1382,8 +1385,8 @@ class Query
     public function setSorting($sorting)
     {
         if ($sorting) {
+            // @todo can be extracted to method "removeRelevanceSortField"
             $sortParameter = $sorting;
-
             list($sortField) = explode(' ', $sorting);
             if ($sortField == 'relevance') {
                 $sortParameter = '';
