@@ -103,5 +103,6 @@ CREATE TABLE tx_fakeextension_domain_model_directrelated (
 	endtime int(11) DEFAULT '0' NOT NULL,
 	sorting int(11) DEFAULT '0' NOT NULL,
 	category varchar(128) DEFAULT '' NOT NULL,
+	sys_category int(11) DEFAULT '0' NOT NULL,
 	PRIMARY KEY (uid)
 );
