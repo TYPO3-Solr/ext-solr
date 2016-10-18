@@ -669,6 +669,7 @@ class Query
      */
     public function getGroupFields()
     {
+        // @todo use trinary return
         $groupFields = array();
 
         if (isset($this->queryParameters['group.field'])) {
@@ -698,6 +699,7 @@ class Query
      */
     public function getGroupSortings()
     {
+        // @todo use trinary return
         $groupSortings = array();
         if (isset($this->queryParameters['group.sort'])) {
             $groupSortings = $this->queryParameters['group.sort'];
@@ -714,6 +716,7 @@ class Query
      */
     public function addGroupQuery($query)
     {
+        // @todo use trinary return
         if (!isset($this->queryParameters['group.query'])) {
             $this->queryParameters['group.query'] = array();
         }
@@ -730,6 +733,7 @@ class Query
     {
         $groupQueries = array();
 
+        // @todo use trinary return
         if (isset($this->queryParameters['group.query'])) {
             $groupQueries = $this->queryParameters['group.query'];
         }
