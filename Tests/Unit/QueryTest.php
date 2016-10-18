@@ -39,6 +39,48 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
+    public function canSetQueryString()
+    {
+        $query = $this->getInitializedTestQuery('i like solr');
+        $this->assertSame('i like solr', $query->getQueryString(), 'Can not set and get query string');
+    }
+
+    /**
+     * @test
+     */
+    public function queryStringCanBeOverwrittenWhenUseQueryStringWasSet()
+    {
+        $query = $this->getInitializedTestQuery('i like solr');
+        $query->useRawQueryString(true);
+        $query->setQueryString('i like SOLR!');
+        $this->assertSame('i like SOLR!', $query->getQueryString(), 'Can not set and get query string');
+    }
+
+    /**
+     * @test
+     */
+    public function queryStringCanNotBeOverwrittenWhenUseQueryStringWasSetToFalse()
+    {
+        $query = $this->getInitializedTestQuery('i like solr');
+        $query->useRawQueryString(false);
+        $query->setQueryString('i like SOLR!');
+        $this->assertSame('i like solr', $query->getQueryString(), 'Can not set and get query string');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetPage()
+    {
+        $query = $this->getInitializedTestQuery('i like solr');
+        $query->setPage(10);
+
+        $this->assertSame(10, $query->getPage(), 'Can not set and get page');
+    }
+
+    /**
+     * @test
+     */
     public function noFiltersAreSetAfterInitialization()
     {
         $query = $this->getInitializedTestQuery();
@@ -189,6 +231,67 @@ class QueryTest extends UnitTest
                 'Query contains grouping parameter "' . $queryParameter . '"'
             );
         }
+    }
+
+    /**
+     * @test
+     */
+    public function canSetNumberOfGroups()
+    {
+        $query = $this->getInitializedTestQuery('test');
+        $query->setNumberOfGroups(2);
+        $this->assertSame(2, $query->getNumberOfGroups(), 'Could not set and get number of groups');
+    }
+
+    /**
+     * @test
+     */
+    public function canAddGroupField()
+    {
+        $query = $this->getInitializedTestQuery('test');
+        $this->assertSame([], $query->getGroupFields(), 'Unexpected default state of groupFields');
+        $query->addGroupField('category_s');
+        $this->assertSame(['category_s'], $query->getGroupFields(), 'groupFields has unexpected state after adding a group field');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetGroupSorting()
+    {
+        $query = $this->getInitializedTestQuery('test');
+        $this->assertSame([], $query->getGroupSortings(), 'By default getGroupSortings should return an empty array');
+
+        $query->addGroupSorting('price_f');
+        $query->addGroupSorting('author_s');
+
+        $this->assertSame(['price_f', 'author_s'], $query->getGroupSortings(), 'Can not get groupSortings after adding');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetNumberOfResultsByGroup()
+    {
+        $query = $this->getInitializedTestQuery('group test');
+        $initialValue = $query->getNumberOfResultsPerGroup();
+        $this->assertSame(1, $initialValue);
+
+        $query->setNumberOfResultsPerGroup(22);
+        $this->assertSame(22, $query->getNumberOfResultsPerGroup(), 'Can not set number of results per group');
+    }
+
+    /**
+     * @test
+     */
+    public function canAddGroupQuery()
+    {
+        $query = $this->getInitializedTestQuery('group test');
+        $initialGroupQueries = $query->getGroupQueries();
+        $this->assertSame([], $initialGroupQueries, 'Group queries should be an empty array at the beginning');
+        $query->addGroupQuery('price:[* TO 500]');
+
+        $this->assertSame(['price:[* TO 500]'], $query->getGroupQueries(), 'Could not retrieve group queries after adding one');
     }
 
     // highlighting
@@ -522,6 +625,40 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
+    public function canAddFacetField()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+
+        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $facetFields = $query->getQueryParameter('facet.field');
+        $this->assertNull($facetFields, 'facet.field query parameter was expected to be null after init.');
+
+        // after adding a few facet fields we should be able to retrieve them
+        $query->addFacetField('color_s');
+        $query->addFacetField('price_f');
+
+        $facetFields = $query->getQueryParameter('facet.field');
+        $this->assertSame(['color_s', 'price_f'], $facetFields, 'facet.field should not be empty after adding a few fields.');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetFacetFields()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+
+        $fakeFields = ['lastname_s', 'role_s'];
+        $query->setFacetFields($fakeFields);
+        $retrievedFields = $query->getQueryParameter('facet.field');
+
+        $this->assertSame(['lastname_s', 'role_s'], $retrievedFields, 'Could not use setFacetFields to pass facet fields');
+    }
+
+    /**
+     * @test
+     */
     public function canUseFacetMinCountFromConfiguration()
     {
         $input = 10;
@@ -688,6 +825,27 @@ class QueryTest extends UnitTest
 
         $queryToString = (string) $query;
         $this->assertSame('test', $queryToString, 'Could not convert query to string');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetCollapsing()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+        $filters = $query->getFilters();
+        $this->assertNull($filters['collapsing'], 'No collapsing filter should be set without collpasing');
+
+        // can we enable collapsing
+        $query->setCollapsing(true);
+        $filters = $query->getFilters();
+        $this->assertSame($filters['collapsing'], '{!collapse field=variantId}', 'No filter should be set without collpasing');
+
+        // can we disable it again
+        $query->setCollapsing(false);
+        $filters = $query->getFilters();
+        $this->assertNull($filters['collapsing'], 'No collapsing filter should be set after disables collpasing');
     }
 
     /**
@@ -904,6 +1062,21 @@ class QueryTest extends UnitTest
         $this->assertSame('false', $query->getQueryParameter('enableElevation'));
         $this->assertNull($query->getQueryParameter('forceElevation'));
         $this->assertNotContains('isElevated:[elevated]', $query->getFieldList());
+    }
+
+    /**
+     * @test
+     */
+    public function forceElevationIsFalseWhenForcingToFalse()
+    {
+        $query = $this->getInitializedTestQuery('test');
+        $this->assertNull($query->getQueryParameter('enableElevation'));
+        $this->assertNull($query->getQueryParameter('forceElevation'));
+
+        $query->setQueryElevation(true, false);
+
+        $this->assertSame('true', $query->getQueryParameter('enableElevation'), 'enabledElevation was not set after enabling elevation');
+        $this->assertSame('false', $query->getQueryParameter('forceElevation'), 'forceElevation was not false after forcing');
     }
 
     /**
