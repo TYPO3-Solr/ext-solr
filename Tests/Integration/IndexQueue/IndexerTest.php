@@ -176,6 +176,9 @@ class IndexerTest extends IntegrationTest
         $this->assertContains('"category_stringM":["the category"]', $solrContent, 'Did not find direct related category');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"testnews"', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"sysCategoryId_stringM":["1"]', $solrContent, 'Uid of related sys_category couldn\'t be resolved by using "foreignLabelField"');
+        $this->assertContains('"sysCategory_stringM":["sys_category"]', $solrContent, 'Label of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
+        $this->assertContains('"sysCategoryDescription_stringM":["sys_category description"]', $solrContent, 'Description of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 

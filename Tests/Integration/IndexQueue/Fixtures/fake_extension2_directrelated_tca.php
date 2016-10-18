@@ -29,7 +29,7 @@ return array(
         'searchFields' => 'uid,category',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'cruser_id,pid,sys_language_uid,l10n_parent,l10n_diffsource,hidden,starttime,endtime,category'
+        'showRecordFieldList' => 'cruser_id,pid,sys_language_uid,l10n_parent,l10n_diffsource,hidden,starttime,endtime,category,sys_category'
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -142,6 +142,20 @@ return array(
                 'eval' => 'required',
             )
         ),
+        'sys_category' => array(
+            'exclude' => 0,
+            'l10n_mode' => 'mergeIfNotBlank',
+            'label' => 'sorting',
+            'config' => array(
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'sys_category',
+                'foreign_table_where' => ' AND (sys_category.sys_language_uid = 0 OR sys_category.l10n_parent = 0)',
+                'size' => 1,
+                'minitems' => 0,
+                'maxitems' => 1,
+            )
+        ),
 
         'editlock' => array(
             'exclude' => 1,
@@ -155,7 +169,7 @@ return array(
     ),
     'types' => array(
         '0' => array(
-            'showitem' => 'l10n_parent, l10n_diffsource,category'
+            'showitem' => 'l10n_parent, l10n_diffsource,category,sys_category'
         )
     )
 );
