@@ -65,6 +65,30 @@
                                         foreignLabelField = category_label
                                         multiValue = 1
                                     }
+
+                                    sysCategoryId_stringM = SOLR_RELATION
+                                    sysCategoryId_stringM {
+                                        localField = category
+                                        foreignLabelField = sys_category
+                                        enableRecursiveValueResolution = 0
+                                        multiValue = 1
+                                    }
+
+                                    sysCategory_stringM = SOLR_RELATION
+                                    sysCategory_stringM {
+                                        localField = category
+                                        foreignLabelField = sys_category
+                                        enableRecursiveValueResolution = 1
+                                        multiValue = 1
+                                    }
+
+                                    sysCategoryDescription_stringM = SOLR_RELATION
+                                    sysCategoryDescription_stringM {
+                                        localField = category
+                                        foreignLabelField = sys_category.description
+                                        enableRecursiveValueResolution = 1
+                                        multiValue = 1
+                                    }
                                 }
                             }
                         }
@@ -79,6 +103,13 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
     </pages>
+    <sys_category>
+        <uid>1</uid>
+        <pid>0</pid>
+        <l10n_diffsource></l10n_diffsource>
+        <title>sys_category</title>
+        <description>sys_category description</description>
+    </sys_category>
     <tx_fakeextension_domain_model_bar>
         <uid>111</uid>
         <pid>1</pid>
@@ -90,5 +121,6 @@
         <uid>4711</uid>
         <pid>1</pid>
         <category_label>the category</category_label>
+        <sys_category>1</sys_category>
     </tx_fakeextension_domain_model_directrelated>
 </dataset>
