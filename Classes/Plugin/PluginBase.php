@@ -158,9 +158,10 @@ abstract class PluginBase extends AbstractPlugin
      */
     protected function baseWrap($content)
     {
-        if (isset($this->conf['general.']['baseWrap.'])) {
+        $baseWrap = $this->typoScriptConfiguration->getObjectByPath('plugin.tx_solr.general.baseWrap.');
+        if (isset($baseWrap)) {
             return $this->cObj->stdWrap($content,
-                $this->conf['general.']['baseWrap.']);
+                $baseWrap);
         } else {
             return $this->pi_wrapInBaseClass($content);
         }
