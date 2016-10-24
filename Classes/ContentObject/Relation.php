@@ -347,7 +347,7 @@ class Relation
         ) {
             // backup
             $backupRecord = $parentContentObject->data;
-            $backupConfiguration = $this->configuration['foreignLabelField'];
+            $backupConfiguration = $this->configuration;
 
             // adjust configuration for next level
             $this->configuration['localField'] = $foreignTableLabelField;
