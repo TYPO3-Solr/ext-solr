@@ -193,7 +193,7 @@ class Query
      *
      * @param string $msg
      * @param int $severity
-     * @param bool $dataVar
+     * @param mixed $dataVar
      */
     protected function writeDevLog($msg, $severity = 0, $dataVar = false)
     {
@@ -482,14 +482,7 @@ class Query
     ) {
         if ($elevation) {
             $this->queryParameters['enableElevation'] = 'true';
-
-            // @todo can be extracted to an own method
-            if ($forceElevation) {
-                $this->queryParameters['forceElevation'] = 'true';
-            } else {
-                $this->queryParameters['forceElevation'] = 'false';
-            }
-
+            $this->setForceElevation($forceElevation);
             if ($markElevatedResults) {
                 $this->addReturnField('isElevated:[elevated]');
             }
@@ -498,6 +491,20 @@ class Query
             unset($this->queryParameters['forceElevation']);
             $this->removeReturnField('isElevated:[elevated]');
             $this->removeReturnField('[elevated]'); // fallback
+        }
+    }
+
+    /**
+     * Enables or disables the forceElevation query parameter.
+     *
+     * @param boolean $forceElevation
+     */
+    protected function setForceElevation($forceElevation)
+    {
+        if ($forceElevation) {
+            $this->queryParameters['forceElevation'] = 'true';
+        } else {
+            $this->queryParameters['forceElevation'] = 'false';
         }
     }
 
@@ -669,14 +676,7 @@ class Query
      */
     public function getGroupFields()
     {
-        // @todo use trinary return
-        $groupFields = array();
-
-        if (isset($this->queryParameters['group.field'])) {
-            $groupFields = $this->queryParameters['group.field'];
-        }
-
-        return $groupFields;
+        return (array) $this->getQueryParameter('group.field', []);
     }
 
     /**
@@ -699,12 +699,7 @@ class Query
      */
     public function getGroupSortings()
     {
-        // @todo use trinary return
-        $groupSortings = array();
-        if (isset($this->queryParameters['group.sort'])) {
-            $groupSortings = $this->queryParameters['group.sort'];
-        }
-        return $groupSortings;
+        return (array) $this->getQueryParameter('group.sort', []);
     }
 
     // faceting
@@ -716,7 +711,6 @@ class Query
      */
     public function addGroupQuery($query)
     {
-        // @todo use trinary return
         if (!isset($this->queryParameters['group.query'])) {
             $this->queryParameters['group.query'] = array();
         }
@@ -731,14 +725,7 @@ class Query
      */
     public function getGroupQueries()
     {
-        $groupQueries = array();
-
-        // @todo use trinary return
-        if (isset($this->queryParameters['group.query'])) {
-            $groupQueries = $this->queryParameters['group.query'];
-        }
-
-        return $groupQueries;
+        return (array) $this->getQueryParameter('group.query', []);
     }
 
     /**
@@ -786,19 +773,26 @@ class Query
 
             $this->applyConfiguredFacetSorting();
         } else {
-            // @todo can be moved to method removeFacetingArgumentsFromQueryParameters
-            foreach ($this->queryParameters as $key => $value) {
-                // remove all facet.* settings
-                if (GeneralUtility::isFirstPartOfStr($key, 'facet')) {
-                    unset($this->queryParameters[$key]);
-                }
+            $this->removeFacetingParametersFromQuery();
+        }
+    }
 
-                // remove all f.*.facet.* settings (overrides for individual fields)
-                if (GeneralUtility::isFirstPartOfStr($key, 'f.') && strpos($key,
-                        '.facet.') !== false
-                ) {
-                    unset($this->queryParameters[$key]);
-                }
+    /**
+     * Removes all facet.* or f.*.facet.* parameters from the query.
+     *
+     * @return void
+     */
+    protected function removeFacetingParametersFromQuery()
+    {
+        foreach ($this->queryParameters as $key => $value) {
+            // remove all facet.* settings
+            if (GeneralUtility::isFirstPartOfStr($key, 'facet')) {
+                unset($this->queryParameters[$key]);
+            }
+
+            // remove all f.*.facet.* settings (overrides for individual fields)
+            if (GeneralUtility::isFirstPartOfStr($key, 'f.') && strpos($key, '.facet.') !== false) {
+                unset($this->queryParameters[$key]);
             }
         }
     }
@@ -978,18 +972,12 @@ class Query
      */
     public function addSortField($fieldName, $direction)
     {
-        // @todo can be refactored with a guard clause
-        switch ($direction) {
-            case self::SORT_ASC:
-            case self::SORT_DESC:
-                $this->sortingFields[$fieldName] = $direction;
-                break;
-            default:
-                throw new \InvalidArgumentException(
-                    'Invalid sort direction "' . $direction . '"',
-                    1235051723
-                );
+        $isValidSorting = $direction === self::SORT_DESC || $direction === self::SORT_ASC;
+        if (!$isValidSorting) {
+            throw new \InvalidArgumentException('Invalid sort direction "' . $direction . '"', 1235051723);
         }
+
+        $this->sortingFields[$fieldName] = $direction;
     }
 
     /**
@@ -1236,18 +1224,13 @@ class Query
      * Gets a specific query parameter by its name.
      *
      * @param string $parameterName The parameter to return
-     * @return string The parameter's value or NULL if not set
+     * @param mixed $defaultIfEmpty
+     * @return mixed The parameter's value or $defaultIfEmpty if not set
      */
-    public function getQueryParameter($parameterName)
+    public function getQueryParameter($parameterName, $defaultIfEmpty = null)
     {
-        $requestedParameter = null;
         $parameters = $this->getQueryParameters();
-
-        if (isset($parameters[$parameterName])) {
-            $requestedParameter = $parameters[$parameterName];
-        }
-
-        return $requestedParameter;
+        return isset($parameters[$parameterName]) ? $parameters[$parameterName] : $defaultIfEmpty;
     }
 
     /**
@@ -1389,17 +1372,32 @@ class Query
     public function setSorting($sorting)
     {
         if ($sorting) {
-            // @todo can be extracted to method "removeRelevanceSortField"
-            $sortParameter = $sorting;
-            list($sortField) = explode(' ', $sorting);
-            if ($sortField == 'relevance') {
-                $sortParameter = '';
+            if (!is_string($sorting)) {
+                throw new \InvalidArgumentException("Sorting needs to be a string!");
             }
-
+            $sortParameter = $this->removeRelevanceSortField($sorting);
             $this->queryParameters['sort'] = $sortParameter;
         } else {
             unset($this->queryParameters['sort']);
         }
+    }
+
+    /**
+     * Removes the relevance sort field if present in the sorting field definition.
+     *
+     * @param string $sorting
+     * @return string
+     */
+    protected function removeRelevanceSortField($sorting)
+    {
+        $sortParameter = $sorting;
+        list($sortField) = explode(' ', $sorting);
+        if ($sortField == 'relevance') {
+            $sortParameter = '';
+            return $sortParameter;
+        }
+
+        return $sortParameter;
     }
 
     /**
