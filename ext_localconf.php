@@ -313,8 +313,6 @@ if (TYPO3_MODE == 'BE') {
     );
 }
 
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \ApacheSolrForTypo3\Solr\Command\SolrCommandController::class;
-
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
