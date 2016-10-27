@@ -306,13 +306,6 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-if (TYPO3_MODE == 'BE') {
-    $TYPO3_CONF_VARS['SC_OPTIONS']['GLOBAL']['cliKeys'][$_EXTKEY] = array(
-        'EXT:' . $_EXTKEY . '/Classes/Cli/Api.php',
-        '_CLI_solr'
-    );
-}
-
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \ApacheSolrForTypo3\Solr\Command\SolrCommandController::class;
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
