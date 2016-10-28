@@ -24,8 +24,10 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * A content object (cObj) to resolve relations between database records
@@ -83,8 +85,7 @@ class Relation
         $TyposcriptKey,
         $parentContentObject
     ) {
-        $this->configuration = array_merge($this->configuration,
-            $configuration);
+        $this->configuration = array_merge($this->configuration, $configuration);
 
         $relatedItems = $this->getRelatedItems($parentContentObject);
 
@@ -154,60 +155,48 @@ class Relation
         $localRecordUid,
         array $localFieldTca
     ) {
-        $relatedItems = array();
+        $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
         $foreignTableTca = $GLOBALS['TCA'][$foreignTableName];
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
-
         $mmTableName = $localFieldTca['config']['MM'];
-        $mmTableSortingField = '';
-        if (isset($this->configuration['relationTableSortingField'])) {
-            $mmTableSortingField = $mmTableName . '.' . $this->configuration['relationTableSortingField'];
-        }
 
         // Remove the first option of foreignLabelField for recursion
         if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
-            $foreignTableLabelFieldArr = explode('.',
-                $this->configuration['foreignLabelField']);
+            $foreignTableLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
             unset($foreignTableLabelFieldArr[0]);
-            $this->configuration['foreignLabelField'] = implode('.',
-                $foreignTableLabelFieldArr);
+            $this->configuration['foreignLabelField'] = implode('.', $foreignTableLabelFieldArr);
         }
 
-        $relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
+        $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
         $relationHandler->start('', $foreignTableName, $mmTableName, $localRecordUid, $localTableName, $localFieldTca['config']);
         $selectUids = $relationHandler->tableArray[$foreignTableName];
         if (!is_array($selectUids) || count($selectUids) <= 0) {
             return $relatedItems;
         }
 
-        $pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
         $whereClause = $pageSelector->enableFields($foreignTableName);
         $relatedRecords = $this->getRelatedRecords($foreignTableName, $selectUids, $whereClause);
         foreach ($relatedRecords as $record) {
             if (isset($foreignTableTca['columns'][$foreignTableLabelField]['config']['foreign_table'])
                 && $this->configuration['enableRecursiveValueResolution']
             ) {
-                if (strpos($this->configuration['foreignLabelField'],
-                        '.') !== false
-                ) {
-                    $foreignLabelFieldArr = explode('.',
-                        $this->configuration['foreignLabelField']);
+                if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+                    $foreignLabelFieldArr = explode('.', $this->configuration['foreignLabelField']);
                     unset($foreignLabelFieldArr[0]);
-                    $this->configuration['foreignLabelField'] = implode('.',
-                        $foreignLabelFieldArr);
+                    $this->configuration['foreignLabelField'] = implode('.', $foreignLabelFieldArr);
                 }
 
                 $this->configuration['localField'] = $foreignTableLabelField;
 
-                $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+                $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
                 $contentObject->start($record, $foreignTableName);
 
                 return $this->getRelatedItems($contentObject);
             } else {
                 if ($GLOBALS['TSFE']->sys_language_uid > 0) {
-                    $record = $this->getTranslationOverlay($foreignTableName,
-                        $record);
+                    $record = $this->getTranslationOverlay($foreignTableName, $record);
                 }
                 $relatedItems[] = $record[$foreignTableLabelField];
             }
@@ -227,15 +216,15 @@ class Relation
     {
         $foreignTableLabelField = $foreignTableTca['ctrl']['label'];
 
-        if (!empty($this->configuration['foreignLabelField'])) {
-            if (strpos($this->configuration['foreignLabelField'],
-                    '.') !== false
-            ) {
-                list($foreignTableLabelField) = explode('.',
-                    $this->configuration['foreignLabelField'], 2);
-            } else {
-                $foreignTableLabelField = $this->configuration['foreignLabelField'];
-            }
+        // when foreignLabelField is not enabled we can return directly
+        if (empty($this->configuration['foreignLabelField'])) {
+            return $foreignTableLabelField;
+        }
+
+        if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
+            list($foreignTableLabelField) = explode('.', $this->configuration['foreignLabelField'], 2);
+        } else {
+            $foreignTableLabelField = $this->configuration['foreignLabelField'];
         }
 
         return $foreignTableLabelField;
@@ -251,12 +240,10 @@ class Relation
     protected function getTranslationOverlay($tableName, $record)
     {
         if ($tableName == 'pages') {
-            return $GLOBALS['TSFE']->sys_page->getPageOverlay($record,
-                $GLOBALS['TSFE']->sys_language_uid);
-        } else {
-            return $GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName,
-                $record, $GLOBALS['TSFE']->sys_language_uid);
+            return $GLOBALS['TSFE']->sys_page->getPageOverlay($record, $GLOBALS['TSFE']->sys_language_uid);
         }
+
+        return $GLOBALS['TSFE']->sys_page->getRecordOverlay($tableName, $record, $GLOBALS['TSFE']->sys_language_uid);
     }
 
     /**
@@ -274,13 +261,13 @@ class Relation
         array $localFieldTca,
         ContentObjectRenderer $parentContentObject
     ) {
-        $relatedItems = array();
+        $relatedItems = [];
         $foreignTableName = $localFieldTca['config']['foreign_table'];
         $foreignTableTca = $GLOBALS['TCA'][$foreignTableName];
         $foreignTableLabelField = $this->resolveForeignTableLabelField($foreignTableTca);
 
-            /** @var $relationHandler \TYPO3\CMS\Core\Database\RelationHandler */
-        $relationHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\RelationHandler');
+            /** @var $relationHandler RelationHandler */
+        $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
 
         $itemList = isset($parentContentObject->data[$this->configuration['localField']]) ?
                         $parentContentObject->data[$this->configuration['localField']] : '';
@@ -292,7 +279,7 @@ class Relation
             return $relatedItems;
         }
 
-        $pageSelector = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageSelector = GeneralUtility::makeInstance(PageRepository::class);
         $whereClause  = $pageSelector->enableFields($foreignTableName);
         $relatedRecords = $this->getRelatedRecords($foreignTableName, $selectUids, $whereClause);
 
@@ -332,8 +319,7 @@ class Relation
         $foreignTableName = ''
     ) {
         if ($GLOBALS['TSFE']->sys_language_uid > 0 && !empty($foreignTableName)) {
-            $relatedRecord = $this->getTranslationOverlay($foreignTableName,
-                $relatedRecord);
+            $relatedRecord = $this->getTranslationOverlay($foreignTableName, $relatedRecord);
         }
 
         $value = $relatedRecord[$foreignTableLabelField];
@@ -350,9 +336,7 @@ class Relation
             // adjust configuration for next level
             $this->configuration['localField'] = $foreignTableLabelField;
             $parentContentObject->data = $relatedRecord;
-            if (strpos($this->configuration['foreignLabelField'],
-                    '.') !== false
-            ) {
+            if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
                 list($unusedDummy, $this->configuration['foreignLabelField']) = explode('.',
                     $this->configuration['foreignLabelField'], 2);
             } else {
@@ -372,9 +356,7 @@ class Relation
             $parentContentObject->data = $backupRecord;
         }
 
-        $value = $parentContentObject->stdWrap($value, $this->configuration);
-
-        return $value;
+        return $parentContentObject->stdWrap($value, $this->configuration);
     }
 
     /**
@@ -398,8 +380,14 @@ class Relation
         /** @var  $db  \TYPO3\CMS\Core\Database\DatabaseConnection */
         $db = $GLOBALS['TYPO3_DB'];
         $record = $db->exec_SELECTgetSingleRow('*', $localTableName, 'uid = ' . $localRecordUid);
+
+        // when the overlay is not an array, we return the localRecordUid
+        if (!is_array($record)) {
+            return $localRecordUid;
+        }
+
         $record = $this->getTranslationOverlay($localTableName, $record);
-        // when we
+        // when there is a _LOCALIZED_UID in the overlay, we return it
         $localRecordUid = $record['_LOCALIZED_UID'] ? $record['_LOCALIZED_UID'] : $localRecordUid;
         return $localRecordUid;
     }
