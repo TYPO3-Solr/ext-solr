@@ -1,4 +1,4 @@
-<config name="tx_solr-6-0-0--20160811">
+<config name="tx_solr-6-0-0--20161025">
 
 	<luceneMatchVersion>6.2.0</luceneMatchVersion>
 
@@ -81,6 +81,7 @@
 	<indexConfig>
 		<lockType>native</lockType>
 		<infoStream>true</infoStream>
+		<useCompoundFile>true</useCompoundFile>
 	</indexConfig>
 
 
