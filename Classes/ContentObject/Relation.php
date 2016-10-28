@@ -83,8 +83,6 @@ class Relation
         $TyposcriptKey,
         $parentContentObject
     ) {
-        $result = '';
-
         $this->configuration = array_merge($this->configuration,
             $configuration);
 

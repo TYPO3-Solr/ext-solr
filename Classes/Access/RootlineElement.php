@@ -95,7 +95,6 @@ class RootlineElement
     public function __construct($element)
     {
         $elementAccess = explode(self::PAGE_ID_GROUP_DELIMITER, $element);
-        $elementGroups = '';
 
         if (count($elementAccess) === 1 || $elementAccess[0] == 'c') {
             // the content access groups part of the access rootline
