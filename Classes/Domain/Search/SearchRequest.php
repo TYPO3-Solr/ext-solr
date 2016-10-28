@@ -431,7 +431,7 @@ class SearchRequest
     /**
      * Returns the passed rawQueryString.
      *
-     * @return int|string
+     * @return string
      */
     public function getRawUserQuery()
     {

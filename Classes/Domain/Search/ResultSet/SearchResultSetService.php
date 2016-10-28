@@ -94,6 +94,11 @@ class SearchResultSetService implements SingletonInterface
     protected $isSolrAvailable = false;
 
     /**
+     * @var TypoScriptConfiguration
+     */
+    protected $typoScriptConfiguration;
+
+    /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
      * @param AbstractPlugin $parentPlugin (optional parent plugin, needed for plugin aware components)
