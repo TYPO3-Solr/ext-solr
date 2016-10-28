@@ -39,7 +39,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
 {
 
     /**
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
 

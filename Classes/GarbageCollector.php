@@ -346,7 +346,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * Makes sure that "empty" frontend group fields are always the same value.
      *
      * @param string $table The record's table name.
-     * @param int $record The record's uid.
+     * @param array $record the record array.
      * @return array The cleaned record
      */
     protected function normalizeFrontendGroupField($table, $record)
@@ -481,7 +481,6 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
 
         if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group'])) {
             $frontendGroupsField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group'];
-            $previousGroups = $this->trackedRecords[$table][$record['uid']][$frontendGroupsField];
 
             $previousGroups = explode(',',
                 (string)$this->trackedRecords[$table][$record['uid']][$frontendGroupsField]);

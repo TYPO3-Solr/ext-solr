@@ -116,8 +116,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $language = 0,
         $mount = ''
     ) {
-        $solrConfiguration = array();
-
         // find the root page
         $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
         $rootLine = $pageSelect->getRootLine($pageId, $mount);
