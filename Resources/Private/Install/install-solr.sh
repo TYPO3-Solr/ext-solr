@@ -9,6 +9,7 @@ SOLR_VERSION=6.2.1
 EXT_SOLR_VERSION=6.0
 JAVA_VERSION=8
 SOLR_INSTALL_DIR="/opt/solr"
+SOLR_HOST="127.0.0.1"
 SOLR_PORT=8983
 TESTING=0
 
@@ -224,7 +225,8 @@ tar -C $SOLR_INSTALL_DIR --extract --file "$SOLR_INSTALL_DIR/downloads/solr-$SOL
 
 cecho "Adjusting solr configuration" $green
 sed -i -e "s/#SOLR_PORT=8983/SOLR_PORT=$SOLR_PORT/" "$SOLR_INSTALL_DIR/bin/solr.in.sh"
-sed -i -e '/-Dsolr.clustering.enabled=true/ a SOLR_OPTS="$SOLR_OPTS -Dsun.net.inetaddr.ttl=60 -Dsun.net.inetaddr.negative.ttl=60"' "$SOLR_INSTALL_DIR/bin/solr.in.sh"
+sed -i -e "s/#SOLR_HOST=\"192.168.1.1\"/SOLR_HOST=\"$SOLR_HOST\"/" "$SOLR_INSTALL_DIR/bin/solr.in.sh"
+sed -i -e '/-Dsolr.clustering.enabled=true/ a SOLR_OPTS="$SOLR_OPTS -Dsun.net.inetaddr.ttl=60 -Dsun.net.inetaddr.negative.ttl=60 -Djetty.host=$SOLR_HOST"' "$SOLR_INSTALL_DIR/bin/solr.in.sh"
 
 cecho "Remove default configsets" $green
 rm -fR ${SOLR_INSTALL_DIR}/server/solr/configsets
