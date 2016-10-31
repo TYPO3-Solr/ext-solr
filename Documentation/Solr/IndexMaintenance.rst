@@ -91,3 +91,18 @@ You only need to do this once. Once the spell checker index is initialized it ge
 
 Alternatively, since version version:1.2 the spell checker index is built automatically when you run an optimize command on your index. The extension comes with an Optimize Index Task for the scheduler. We recommend to set it up to run once a day.
 
+Create cores with the core admin api
+====================================
+
+The CoreAdmin API (https://cwiki.apache.org/confluence/display/solr/CoreAdmin+API) allows you, manipulate the cores in your solr server.
+
+Since we support configSets a core could be generated with the following http call:
+
+|
+
+.. code-block:: bash
+
+    curl 'http://host:port/path-to-solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_6_0_0&schema=german/schema.xml&dataDir=dataDir=../../data/german'
+
+|
+

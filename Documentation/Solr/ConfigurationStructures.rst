@@ -19,16 +19,45 @@ By example a "core.properties" file looks like this:
 
 |
 
-.. code-block::
+.. code-block:: bash
 
-configSet=ext_solr_6_0_0
-schema=german/schema.xml
-name=core_de
-dataDir=../../data/german
+    configSet=ext_solr_6_0_0
+    schema=german/schema.xml
+    name=core_de
+    dataDir=../../data/german
 
 |
 
 * The solr.xml file: This file configures solr as required for the used Apache Solr version.
+
+
+The EXT:solr configSet
+======================
+
+As mentioned before the configSet is one single package, that contains all to customize a plain Apache Solr Server, to an Apache Solr Server, ready
+for EXT:solr & TYPO3.
+
+The configset of the current release it located in "Resources/Private/Solr/configsets/ext_solr_<release>".
+
+Inside the configSet you find the following folders:
+
+* conf: This folder contains the solr configuration and all schemata files. There is one directory for each language which ships the schema.xml file for this language.
+The schema.xml file contains the language specific adaptions and includes all general schema fields and types with an XInclude statement.
+
+|
+
+.. code-block:: xml
+
+    <!-- xinclude fields -->
+    <xi:include href="../general_schema_types.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+    <!--  xinclude fields-->
+    <xi:include href="../general_schema_fields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+
+|
+
+* typo3lib: This folder ships the compiled access filter jar file, that should be used with this EXT:solr version.
+The solrconfig (conf/solrconfig.xml) is configured to load all jar files from typo3lib.
 
 ===========
 Setup steps

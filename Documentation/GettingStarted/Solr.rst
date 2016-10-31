@@ -71,5 +71,67 @@ You should see the web interface of Solr to run queries:
 
 |
 
+Other Setup
+-----------
+
+Beside the install script and Docker there are various possibilities to setup solr. All of these possibilities are not
+officially supported, but the simplify the setup i want to mention them shortly here and summarize the needed steps.
+
+Known Installers
+^^^^^^^^^^^^^^^^
+
+All of these installers can be used to setup a plain, reboot save solr server:
+
+* Use the installer shipped with solr itself (bin/install_solr_service.sh):
+
+Allows to install solr on many distributions including init scripts (At the time of development ubuntu 16.04 was not supported and therefore it was no option for us to use it).
+
+* Use chef / ansible / whatever dev ops tool:
+
+Allows you to setup a solr server with your DevOps tool.
+
+e.g. https://galaxy.ansible.com/geerlingguy/solr/ (ansible) or https://supermarket.chef.io/cookbooks/solr (chef)
+
+Deployment of EXT:solr configuration into Apache Solr
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Since EXT:solr 6.0.0 the configuration and all jar files are shipped in one "configSet". The goal of this approach is to make the deloyment much easier.
+
+All you need to do is, you need to copy the configSet directory into your prepared solr installation and replace the solr.xml file. In the installer we do it like this:
+
+|
+
+.. code-block:: bash
+
+    cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/configsets ${SOLR_INSTALL_DIR}/server/solr
+    cp ${EXTENSION_ROOTPATH}/Resources/Private/Solr/solr.xml ${SOLR_INSTALL_DIR}/server/solr/solr.xml
+
+|
+
+After this, you can decide if you want to create the default cores by copying the default core.properties files or if you want to create a core with the solr rest api.
+
+Copy the default cores:
+
+|
+
+.. code-block:: bash
+
+    cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/cores ${SOLR_INSTALL_DIR}/server/solr
+
+|
+
+Create a core with the rest api:
+
+|
+
+.. code-block:: bash
+
+    curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_6_0_0&schema=german/schema.xml&dataDir=dataDir=../../data/german"
+
+|
+
+After installing the solr server and deploying all schemata, the TYPO3 reports module helps you to verify if your setup fits to the requirements of EXT:solr
+
 You now have a fully working, pre configured Solr running to start with
+
 :ref:`started-install-extension`.
