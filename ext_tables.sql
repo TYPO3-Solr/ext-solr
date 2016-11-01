@@ -27,7 +27,7 @@ CREATE TABLE tx_solr_statistics (
 	time_processing int(11) DEFAULT '0' NOT NULL,
 
 	feuser_id int(11) unsigned DEFAULT '0' NOT NULL,
-	cookie varchar(10) DEFAULT '' NOT NULL,
+	cookie varchar(32) DEFAULT '' NOT NULL,
 	ip varchar(255) DEFAULT '' NOT NULL,
 
 	keywords varchar(128) DEFAULT '' NOT NULL,
