@@ -243,4 +243,83 @@ class RecordMonitorTest extends IntegrationTest
         // we assert that the index queue is still empty because the page was only set to hidden
         $this->assertEmptyIndexQueue();
     }
+
+    /**
+     * @see https://github.com/TYPO3-Solr/ext-solr/issues/639
+     * @test
+     */
+    public function canUseCorrectIndexingConfigurationForANewCustomPageTypeRecord()
+    {
+        $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
+
+        // create faked tce main call data
+        $status = 'new';
+        $table = 'pages';
+        $uid = 'NEW566a9eac309d8193936351';
+        $fields = array(
+            'title' => 'test custom page type',
+            'pid' => 1,
+            'doktype' => 130,
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000
+        );
+        $this->dataHandler->substNEWwithIDs = array('NEW566a9eac309d8193936351' => 8);
+        // $this->importDataSetFromFixture('new_pages_record_is_using_correct_configuration_name_for_custom_page_type.xml');
+
+        // we expect that the index queue is empty before we start
+        $this->assertEmptyIndexQueue();
+        $this->recordMonitor->processDatamap_afterDatabaseOperations(
+            $status,
+            $table,
+            $uid,
+            $fields,
+            $this->dataHandler
+        );
+
+        // we expect to have an index queue item now
+        $this->assertNotEmptyIndexQueue();
+
+        // and we check that the record in the queue has the expected configuration name
+        $items = $this->indexQueue->getItems('pages', 8);
+        $this->assertSame(1, count($items));
+        $this->assertSame(
+            'custom_page_type',
+            $items[0]->getIndexingConfigurationName(),
+            'Item was queued with unexpected configuration'
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function canQueueUpdatePagesWithCustomPageType()
+    {
+        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
+        $database = $GLOBALS['TYPO3_DB'];
+        $database->debugOutput = true;
+        $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
+
+        // we expect that the index queue is empty before we start
+        $this->assertEmptyIndexQueue();
+
+        // simulate the database change and build a faked changeset
+        $database->exec_UPDATEquery('pages', 'uid=8', array('hidden' => 0));
+        $changeSet = array('hidden' => 0);
+
+        $dataHandler = $this->dataHandler;
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 8, $changeSet, $dataHandler);
+
+        // we expect to have an index queue item now
+        $this->assertNotEmptyIndexQueue();
+
+        // and we check that the record in the queue has the expected configuration name
+        $items = $this->indexQueue->getItems('pages', 8);
+        $this->assertSame(1, count($items));
+        $this->assertSame(
+            'custom_page_type',
+            $items[0]->getIndexingConfigurationName(),
+            'Item was queued with unexpected configuration'
+        );
+    }
 }

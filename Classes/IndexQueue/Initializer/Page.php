@@ -66,17 +66,6 @@ class Page extends AbstractInitializer
     }
 
     /**
-     * Overrides the general setIndexingConfigurationName() implementation,
-     * forcing indexingConfigurationName to "pages".
-     *
-     * @param string $indexingConfigurationName Indexing configuration name (ignored)
-     */
-    public function setIndexingConfigurationName($indexingConfigurationName)
-    {
-        $this->indexingConfigurationName = 'pages';
-    }
-
-    /**
      * Initializes Index Queue page items for a site. Includes regular pages
      * and mounted pages - no nested mount page structures though.
      *
