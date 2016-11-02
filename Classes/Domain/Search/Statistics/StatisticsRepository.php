@@ -181,10 +181,10 @@ class StatisticsRepository
         $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
 
         $queries = $this->getDatabase()->exec_SELECTgetRows(
-            'FLOOR(tstamp/' . $bucketSeconds . ') AS bucket, tstamp, COUNT(*) AS numQueries',
+            'FLOOR(tstamp/' . $bucketSeconds . ') AS bucket, unix_timestamp(from_unixtime(tstamp, "%y-%m-%d")) as timestamp, COUNT(*) AS numQueries',
             'tx_solr_statistics',
             'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
-            'bucket',
+            'bucket, timestamp',
             'bucket ASC'
         );
 

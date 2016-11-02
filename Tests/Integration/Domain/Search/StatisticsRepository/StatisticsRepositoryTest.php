@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\StatisticsRepository;
 
 /***************************************************************
  *  Copyright notice
