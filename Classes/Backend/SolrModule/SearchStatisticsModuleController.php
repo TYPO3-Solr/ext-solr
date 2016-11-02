@@ -78,7 +78,7 @@ class SearchStatisticsModuleController extends AbstractModuleController
         $data = [];
         $chartData = $statisticsRepository->getQueriesOverTime($siteRootPageId, 30, 86400);
         foreach ($chartData as $bucket) {
-            $labels[] = strftime('%x', $bucket['tstamp']);
+            $labels[] = strftime('%x', $bucket['timestamp']);
             $data[] = (int)$bucket['numQueries'];
         }
 
