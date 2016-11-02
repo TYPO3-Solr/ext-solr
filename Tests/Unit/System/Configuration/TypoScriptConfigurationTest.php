@@ -278,6 +278,73 @@ class TypoScriptConfigurationTest extends UnitTest
     /**
      * @test
      */
+    public function canGetIndexQueueMonitoredTables()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'tx_model_news' => 1,
+                    'tx_model_news.' => array(
+                    ),
+                    'custom_one' => 1,
+                    'custom_one.' => array(
+                        'table' => 'tx_model_bar'
+                    ),
+
+                    'custom_two' => 1,
+                    'custom_two.' => array(
+                        'table' => 'tx_model_news'
+                    ),
+                    'pages' => 1,
+                    'pages.' => array()
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $monitoredTables =  $configuration->getIndexQueueMonitoredTables();
+        $this->assertEquals(array('tx_model_news', 'tx_model_bar', 'pages', 'pages_language_overlay'), $monitoredTables);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetIndexQueueIsMonitoredTable()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
+            'index.' => array(
+                'queue.' => array(
+                    'tx_model_news' => 1,
+                    'tx_model_news.' => array(
+                    ),
+                    'custom_one' => 1,
+                    'custom_one.' => array(
+                        'table' => 'tx_model_bar'
+                    ),
+
+                    'custom_two' => 1,
+                    'custom_two.' => array(
+                        'table' => 'tx_model_news'
+                    ),
+                    'pages' => 1,
+                    'pages.' => array()
+                )
+            )
+        );
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $this->assertFalse($configuration->getIndexQueueIsMonitoredTable('tx_mycustom_table2'), 'tx_mycustom_table2 was not expected to be monitored');
+
+        $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('pages'), 'pages was expected to be monitored');
+        $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('pages_language_overlay'), 'pages_language_overlay was expected to be monitored');
+        $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('tx_model_bar'), 'tx_model_bar was expected to be monitored');
+        $this->assertTrue($configuration->getIndexQueueIsMonitoredTable('tx_model_news'), 'tx_model_news was expected to be monitored');
+    }
+
+    /**
+     * @test
+     */
     public function canGetLoggingEnableStateForIndexQueueByConfigurationName()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = array(
