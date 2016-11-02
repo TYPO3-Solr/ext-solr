@@ -161,9 +161,9 @@ class RecordMonitor extends AbstractDataHandlerListener
                 default:
                     $recordPageId = $tceMain->getPID($table, $uid);
                     $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-                    $monitoredTables = $this->solrConfiguration->getMonitoredTables();
+                    $isMonitoredTable = $this->solrConfiguration->getIndexQueueIsMonitoredTable($table);
 
-                    if (in_array($table, $monitoredTables)) {
+                    if ($isMonitoredTable) {
                         $record = $this->getRecord($table, $uid);
 
                         if (!empty($record) && $this->isEnabledRecord($table,
@@ -251,66 +251,68 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-        $monitoredTables = $this->solrConfiguration->getMonitoredTables();
+        $isMonitoredRecord = $this->solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
 
-        if (in_array($recordTable, $monitoredTables, true)) {
-            $record = $this->getRecord($recordTable, $recordUid);
+        if (!$isMonitoredRecord) {
+            // when it is a non monitored record, we can skip it.
+            return;
+        }
 
-            if (!empty($record)) {
-                // only update/insert the item if we actually found a record
+        $record = $this->getRecord($recordTable, $recordUid);
+        if (!empty($record)) {
+            // only update/insert the item if we actually found a record
 
-                if (Util::isLocalizedRecord($recordTable, $record)) {
-                    // if it's a localization overlay, update the original record instead
-                    $recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
+            if (Util::isLocalizedRecord($recordTable, $record)) {
+                // if it's a localization overlay, update the original record instead
+                $recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
 
-                    if ($recordTable == 'pages_language_overlay') {
-                        $recordTable = 'pages';
+                if ($recordTable == 'pages_language_overlay') {
+                    $recordTable = 'pages';
+                }
+
+                $tableEnableFields = implode(', ',
+                    $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
+                $l10nParentRecord = BackendUtility::getRecord($recordTable,
+                    $recordUid, $tableEnableFields, '', false);
+                if (!$this->isEnabledRecord($recordTable,
+                    $l10nParentRecord)
+                ) {
+                    // the l10n parent record must be visible to have it's translation indexed
+                    return;
+                }
+            }
+
+            // Clear existing index queue items to prevent mount point duplicates.
+            if ($recordTable == 'pages') {
+                $this->indexQueue->deleteItem('pages', $recordUid);
+            }
+
+            if ($this->isEnabledRecord($recordTable, $record)) {
+                $configurationName = null;
+                if ($recordTable !== 'pages') {
+                    $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
+                }
+
+                $this->indexQueue->updateItem($recordTable, $recordUid,
+                    $configurationName);
+            }
+
+            if ($recordTable == 'pages') {
+                $this->updateCanonicalPages($recordUid);
+                $this->updateMountPages($recordUid);
+
+                if ($this->isRecursiveUpdateRequired($recordUid, $fields)) {
+                    $treePageIds = $this->getSubPageIds($recordUid);
+                    foreach ($treePageIds as $treePageId) {
+                        $this->indexQueue->updateItem('pages', $treePageId);
                     }
-
-                    $tableEnableFields = implode(', ',
-                        $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
-                    $l10nParentRecord = BackendUtility::getRecord($recordTable,
-                        $recordUid, $tableEnableFields, '', false);
-                    if (!$this->isEnabledRecord($recordTable,
-                        $l10nParentRecord)
-                    ) {
-                        // the l10n parent record must be visible to have it's translation indexed
-                        return;
-                    }
                 }
-
-                // Clear existing index queue items to prevent mount point duplicates.
-                if ($recordTable == 'pages') {
-                    $this->indexQueue->deleteItem('pages', $recordUid);
-                }
-
-                if ($this->isEnabledRecord($recordTable, $record)) {
-                    $configurationName = null;
-                    if ($recordTable !== 'pages') {
-                        $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
-                    }
-
-                    $this->indexQueue->updateItem($recordTable, $recordUid,
-                        $configurationName);
-                }
-
-                if ($recordTable == 'pages') {
-                    $this->updateCanonicalPages($recordUid);
-                    $this->updateMountPages($recordUid);
-
-                    if ($this->isRecursiveUpdateRequired($recordUid, $fields)) {
-                        $treePageIds = $this->getSubPageIds($recordUid);
-                        foreach ($treePageIds as $treePageId) {
-                            $this->indexQueue->updateItem('pages', $treePageId);
-                        }
-                    }
-                }
-            } else {
-                // TODO move this part to the garbage collector
-                // check if the item should be removed from the index because it no longer matches the conditions
-                if ($this->indexQueue->containsItem($recordTable, $recordUid)) {
-                    $this->removeFromIndexAndQueue($recordTable, $recordUid);
-                }
+            }
+        } else {
+            // TODO move this part to the garbage collector
+            // check if the item should be removed from the index because it no longer matches the conditions
+            if ($this->indexQueue->containsItem($recordTable, $recordUid)) {
+                $this->removeFromIndexAndQueue($recordTable, $recordUid);
             }
         }
     }
