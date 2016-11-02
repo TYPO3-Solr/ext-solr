@@ -1840,4 +1840,27 @@ class TypoScriptConfiguration
         $sortingViewHelperConfiguration = $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.sortIndicator.', $defaultIfEmpty);
         return $sortingViewHelperConfiguration;
     }
+
+    /**
+     * Gets an array of tables configured for indexing by the Index Queue. Since the
+     * record monitor must watch these tables for manipulation.
+     *
+     * @return array Array of table names to be watched by the record monitor.
+     */
+    public function getMonitoredTables()
+    {
+        $monitoredTables = array();
+
+        $indexingConfigurations =  $this->getEnabledIndexQueueConfigurationNames();
+        foreach ($indexingConfigurations as $indexingConfigurationName) {
+            $monitoredTable = $this->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+            $monitoredTables[] = $monitoredTable;
+            if ($monitoredTable == 'pages') {
+                // when monitoring pages, also monitor creation of translations
+                $monitoredTables[] = 'pages_language_overlay';
+            }
+        }
+
+        return array_unique($monitoredTables);
+    }
 }

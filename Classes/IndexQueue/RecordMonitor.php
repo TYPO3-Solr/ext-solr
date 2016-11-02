@@ -44,8 +44,6 @@ class RecordMonitor extends AbstractDataHandlerListener
     /**
      * Solr TypoScript configuration
      *
-     * TODO check whether we need this or whether it's better to retrieve each time as in getMonitoredTables()
-     *
      * @var TypoScriptConfiguration
      */
     protected $solrConfiguration;
@@ -163,7 +161,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                 default:
                     $recordPageId = $tceMain->getPID($table, $uid);
                     $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-                    $monitoredTables = $this->getMonitoredTables($recordPageId);
+                    $monitoredTables = $this->solrConfiguration->getMonitoredTables();
 
                     if (in_array($table, $monitoredTables)) {
                         $record = $this->getRecord($table, $uid);
@@ -253,7 +251,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-        $monitoredTables = $this->getMonitoredTables($recordPageId);
+        $monitoredTables = $this->solrConfiguration->getMonitoredTables();
 
         if (in_array($recordTable, $monitoredTables, true)) {
             $record = $this->getRecord($recordTable, $recordUid);
@@ -309,7 +307,6 @@ class RecordMonitor extends AbstractDataHandlerListener
                 }
             } else {
                 // TODO move this part to the garbage collector
-
                 // check if the item should be removed from the index because it no longer matches the conditions
                 if ($this->indexQueue->containsItem($recordTable, $recordUid)) {
                     $this->removeFromIndexAndQueue($recordTable, $recordUid);
@@ -357,33 +354,6 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         return $record;
-    }
-
-    /**
-     * Gets an array of tables configured for indexing by the Index Queue. The
-     * record monitor must watch these tables for manipulation.
-     *
-     * @param int $pageId The page id for which we need to retrieve the configuration for
-     * @return array Array of table names to be watched by the record monitor.
-     */
-    protected function getMonitoredTables($pageId)
-    {
-        $monitoredTables = array();
-
-        // FIXME!! $pageId might be outside of a site root and thus might not know about solr configuration
-        // -> leads to record not being queued for reindexing
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
-        $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
-        foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $monitoredTable = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
-            $monitoredTables[] = $monitoredTable;
-            if ($monitoredTable == 'pages') {
-                // when monitoring pages, also monitor creation of translations
-                $monitoredTables[] = 'pages_language_overlay';
-            }
-        }
-
-        return array_unique($monitoredTables);
     }
 
     // Handle pages showing content from another page
