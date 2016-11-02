@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-REPRONAME="ext-solr"
+REPOSITORY_NAME="ext-solr"
 EXTENSION_KEY="solr"
 
 # This script is triggered by travis when a build has been triggered and was tagged
@@ -23,7 +23,7 @@ if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASS
          EXTENSION_DIR=$(pwd)
          PARENT_DIR="$EXTENSION_DIR/../"
          cd $PARENT_DIR
-         mv $REPRONAME $EXTENSION_KEY
+         mv $REPOSITORY_NAME $EXTENSION_KEY
          cd $EXTENSION_KEY
          pwd
 
