@@ -758,6 +758,17 @@ faceting.limit
 
 Number of options to display per facet. If more options are returned by Solr, they are hidden and can be expanded by clicking a "show more" link. This feature uses a small javascript function to collapse/expand the additional options.
 
+faceting.facetLimit
+~~~~~~~~~~~~~~~~~~~
+
+:Type: Integer
+:TS Path: plugin.tx_solr.search.faceting.facetLimit
+:Since: 6.0
+:Default: 100
+
+    Number of options of a facet returned from solr.
+
+
 faceting.singleFacetMode
 ~~~~~~~~~~~~~~~~~~~~~~~~
 

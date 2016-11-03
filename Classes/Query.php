@@ -770,6 +770,7 @@ class Query
         if ($faceting) {
             $this->queryParameters['facet'] = 'true';
             $this->queryParameters['facet.mincount'] = $this->solrConfiguration->getSearchFacetingMinimumCount();
+            $this->queryParameters['facet.limit'] = $this->solrConfiguration->getSearchFacetingFacetLimit();
 
             $this->applyConfiguredFacetSorting();
         } else {
