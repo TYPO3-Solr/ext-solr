@@ -35,6 +35,13 @@ class SiteSelectorMenuViewHelper extends AbstractSolrTagBasedViewHelper
 {
 
     /**
+     * As this ViewHelper renders HTML, the output must not be escaped.
+     *
+     * @var bool
+     */
+    protected $escapeOutput = false;
+
+    /**
      * @var string
      */
     protected $tagName = 'select';
@@ -74,8 +81,8 @@ class SiteSelectorMenuViewHelper extends AbstractSolrTagBasedViewHelper
                 $selectedAttribute = ' selected="selected"';
             }
 
-            $options .= '<option value="' . $site->getRootPageId() . '"' . $selectedAttribute . '>'
-                . $site->getLabel()
+            $options .= '<option value="' . htmlspecialchars($site->getRootPageId()) . '"' . $selectedAttribute . '>'
+                . htmlspecialchars($site->getLabel())
                 . '</option>';
         }
 

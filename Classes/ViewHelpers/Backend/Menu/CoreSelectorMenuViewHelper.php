@@ -35,6 +35,13 @@ class CoreSelectorMenuViewHelper extends AbstractSolrTagBasedViewHelper
 {
 
     /**
+     * As this ViewHelper renders HTML, the output must not be escaped.
+     *
+     * @var bool
+     */
+    protected $escapeOutput = false;
+
+    /**
      * @var string
      */
     protected $tagName = 'select';
@@ -84,8 +91,8 @@ class CoreSelectorMenuViewHelper extends AbstractSolrTagBasedViewHelper
                 $selectedAttribute = ' selected="selected"';
             }
 
-            $options .= '<option value="' . $core->getPath() . '"' . $selectedAttribute . '>'
-                . $core->getPath()
+            $options .= '<option value="' . htmlspecialchars($core->getPath()) . '"' . $selectedAttribute . '>'
+                . htmlspecialchars($core->getPath())
                 . '</option>';
         }
 
