@@ -1694,7 +1694,7 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Return the configured limit value for facets.
+     * Return the configured limit value for facets, used for displaying.
      *
      * plugin.tx_solr.search.faceting.limit
      *
@@ -1704,6 +1704,19 @@ class TypoScriptConfiguration
     public function getSearchFacetingLimit($defaultIfEmpty = 10)
     {
         return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.limit', $defaultIfEmpty);
+    }
+
+    /**
+     * Return the configured limit value for facets, used for the response.
+     *
+     * plugin.tx_solr.search.faceting.facetLimit
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getSearchFacetingFacetLimit($defaultIfEmpty = 100)
+    {
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.facetLimit', $defaultIfEmpty);
     }
 
     /**
