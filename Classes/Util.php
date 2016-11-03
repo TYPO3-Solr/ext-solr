@@ -246,6 +246,13 @@ class Util
         $language = 0,
         $useCache = true
     ) {
+        static $configurationsByCacheKey = array();
+        $cacheId = md5($pageId . '|' . $path . '|' . $language);
+
+        if (isset($configurationsByCacheKey[$cacheId])) {
+            return $configurationsByCacheKey[$cacheId];
+        }
+
         // If we're on UID 0, we cannot retrieve a configuration currently.
         // getRootline() below throws an exception (since #typo3-60 )
         // as UID 0 cannot have any parent rootline by design.
@@ -254,7 +261,6 @@ class Util
         }
 
         if ($useCache) {
-            $cacheId = md5($pageId . '|' . $path . '|' . $language);
             $cache = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache', 'tx_solr_configuration');
             $configurationToUse = $cache->get($cacheId);
         }
@@ -276,7 +282,7 @@ class Util
             $cache->set($cacheId, $configurationToUse);
         }
 
-        return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
+        return $configurationsByCacheKey[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
     }
 
     /**
