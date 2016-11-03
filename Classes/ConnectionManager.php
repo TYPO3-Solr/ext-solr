@@ -24,9 +24,13 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -312,12 +316,13 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     {
         if ($GLOBALS['BE_USER']->isAdmin()) {
             $title = 'Initialize Solr connections';
-            $iconFactory = GeneralUtility::makeInstance('TYPO3\CMS\Core\Imaging\IconFactory');
+            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
+            $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
             $cacheActions[] = array(
                 'id' => 'clearSolrConnectionCache',
                 'title' => $title,
-                'href' => BackendUtility::getAjaxUrl('solr::clearSolrConnectionCache'),
+                'href' =>  $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
                 'icon' => $iconFactory->getIcon('extensions-solr-module-initsolrconnections', Icon::SIZE_SMALL)
             );
             $optionValues[] = 'clearSolrConnectionCache';
@@ -337,6 +342,17 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
             $registry->set('tx_solr', 'servers', $solrConnections);
         }
+    }
+
+    /**
+     * Entrypoint for the ajax request
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     */
+    public function updateConnectionsInCacheMenu(ServerRequestInterface $request, ResponseInterface $response)
+    {
+        $this->updateConnections();
     }
 
     /**
