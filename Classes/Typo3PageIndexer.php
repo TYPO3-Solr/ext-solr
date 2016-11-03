@@ -124,9 +124,8 @@ class Typo3PageIndexer
         }
 
         $this->contentExtractor = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
-            $this->page->content,
-            $this->page->renderCharset
+            Typo3PageContentExtractor::class,
+            $this->page->content
         );
 
         $this->pageAccessRootline = GeneralUtility::makeInstance(
