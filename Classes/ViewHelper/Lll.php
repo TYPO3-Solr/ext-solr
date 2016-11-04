@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 
 use ApacheSolrForTypo3\Solr\LanguageFileUnavailableException;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -61,7 +62,7 @@ class Lll implements ViewHelper
     /**
      * An instance of the localization factory
      *
-     * @var \TYPO3\CMS\Core\Localization\LocalizationFactory
+     * @var LocalizationFactory
      */
     protected $languageFactory;
 
@@ -159,11 +160,8 @@ class Lll implements ViewHelper
 
         if (!isset($this->localLang[$path])) {
             // do some nice caching
-            $this->localLang[$path] = GeneralUtility::readLLfile(
-                $path,
-                $this->llKey,
-                $GLOBALS['TSFE']->renderCharset
-            );
+            $languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
+            $this->localLang[$path] = $languageFactory->getParsedData($path, $this->llKey, $GLOBALS['TSFE']->renderCharset);
         }
 
         return $this->getLabel($path, $labelKey);
