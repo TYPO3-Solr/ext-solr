@@ -145,7 +145,6 @@ class ResultsCommand implements PluginCommand
 
         foreach ($responseDocuments as $resultDocument) {
             /** @var  $resultDocument SearchResult */
-            $temporaryResultDocument = array();
             $temporaryResultDocument = $this->processDocumentFieldsToArray($resultDocument);
 
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'])) {
@@ -343,8 +342,6 @@ class ResultsCommand implements PluginCommand
      */
     protected function getPageBrowserRange()
     {
-        $label = '';
-
         $resultsFrom = $this->search->getResponseBody()->start + 1;
         $resultsTo = $resultsFrom + count($this->search->getResultDocumentsEscaped()) - 1;
         $resultsTotal = $this->search->getNumberOfResults();

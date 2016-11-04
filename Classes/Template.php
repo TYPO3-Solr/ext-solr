@@ -127,7 +127,7 @@ class Template
     /**
      * Finds the view helpers in the template and loads them.
      *
-     * @return void
+     * @param string $content
      */
     protected function initializeViewHelpers($content)
     {
@@ -221,6 +221,7 @@ class Template
                 . $viewHelperPath . $possibleFilename;
 
             if (file_exists($viewHelperIncludePath)) {
+                /**  */
                 include_once($viewHelperIncludePath);
                 $this->loadedHelperFiles[strtolower($helperKey)] = array(
                     'file' => $viewHelperIncludePath,
@@ -259,6 +260,7 @@ class Template
     /**
      * Renders the template and fills its markers.
      *
+     * @param bool $cleanTemplate
      * @return string the rendered html template with markers replaced with their content
      */
     public function render($cleanTemplate = false)
@@ -774,8 +776,6 @@ class Template
      */
     protected function evaluateCondition($comparand1, $comparand2, $operator)
     {
-        $conditionResult = false;
-
         switch ($operator) {
             case '==':
                 $conditionResult = ($comparand1 == $comparand2);

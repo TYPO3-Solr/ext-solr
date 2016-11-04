@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Access\Rootline;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -434,7 +435,7 @@ class PageIndexer extends Indexer
         }
 
         if (!isset($accessRootlineCache[$accessRootlineCacheEntryId])) {
-            $accessRootline = \ApacheSolrForTypo3\Solr\Access\Rootline::getAccessRootlineByPageId(
+            $accessRootline = Rootline::getAccessRootlineByPageId(
                 $item->getRecordUid(),
                 $mountPointParameter
             );

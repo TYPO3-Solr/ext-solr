@@ -24,7 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Access;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Access\RootlineElement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 

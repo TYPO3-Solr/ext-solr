@@ -25,8 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Plugin\PluginAware;
 use ApacheSolrForTypo3\Solr\Query;
@@ -234,6 +232,7 @@ class SearchResultSetService implements SingletonInterface
         $searchComponents = $this->getRegisteredSearchComponents();
 
         foreach ($searchComponents as $searchComponent) {
+            /** @var Search\SearchComponent $searchComponent */
             $searchComponent->setSearchConfiguration($this->typoScriptConfiguration->getSearchConfiguration());
 
             if ($searchComponent instanceof QueryAware && $this->useQueryAwareComponents) {
@@ -615,7 +614,7 @@ class SearchResultSetService implements SingletonInterface
     }
 
     /**
-     * @param integer $requestedPerPage
+     * @param int $requestedPerPage
      */
     protected function setPerPageInSession($requestedPerPage)
     {

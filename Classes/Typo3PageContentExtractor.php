@@ -140,7 +140,6 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
     public function getPageTitle()
     {
         $page = $GLOBALS['TSFE'];
-        $pageTitle = '';
 
         if ($page->indexedDocTitle) {
             $pageTitle = $page->indexedDocTitle;

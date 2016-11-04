@@ -172,8 +172,8 @@ class Typo3PageIndexer
         }
 
         if ($this->configuration->getLoggingIndexing()) {
+            $logData = array();
             if (!empty($data)) {
-                $logData = array();
                 foreach ($data as $value) {
                     $logData[] = (array)$value;
                 }
@@ -315,7 +315,7 @@ class Typo3PageIndexer
 
         // access
         $access = (string)$this->pageAccessRootline;
-        if (trim($access) !== "") {
+        if (trim($access) !== '') {
             $document->setField('access', $access);
         }
         if ($this->page->page['endtime']) {

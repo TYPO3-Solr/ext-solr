@@ -90,7 +90,6 @@ class SolrVersionStatus implements StatusProviderInterface
                     Status::ERROR
                 );
 
-
                 $reports[] = $status;
             }
         }

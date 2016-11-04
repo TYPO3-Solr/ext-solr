@@ -75,9 +75,9 @@ class SearchResult extends \Apache_Solr_Document
     /**
      * @param string $name
      * @param array $arguments
-     * @return null
      * @throws \Exception
      * @throws \RuntimeException
+     * @return string
      */
     public function __call($name, $arguments)
     {

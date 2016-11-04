@@ -74,7 +74,6 @@ class SimpleFacetRenderer extends AbstractFacetRenderer
     protected function renderFacetOptions()
     {
         $facetContent = '';
-        $facetField = $this->facetConfiguration['field'];
         $facetOptions = $this->getFacetOptions();
 
         if (!empty($facetOptions) || !empty($this->facetConfiguration['showEvenWhenEmpty'])) {

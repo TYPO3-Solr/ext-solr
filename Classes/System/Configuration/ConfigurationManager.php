@@ -56,7 +56,7 @@ class ConfigurationManager implements SingletonInterface
      * path that is used in in the current context.
      *
      * @param array $configurationArray
-     * @param integer $contextPageId
+     * @param int $contextPageId
      * @param int $contextLanguageId
      * @param string $contextTypoScriptPath
      * @return TypoScriptConfiguration

@@ -73,11 +73,11 @@ class Ts implements ViewHelper
      * Resolves a TS path and returns its value
      *
      * @param string $path a TS path, separated with dots
+     * @param array $arguments
      * @return string
      */
     protected function resolveTypoScriptPath($path, $arguments = null)
     {
-        $value = '';
         $pathExploded = explode('.', trim($path));
         $lastPathSegment = array_pop($pathExploded);
         /** @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration $configuration */

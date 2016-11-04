@@ -47,6 +47,7 @@ class Facet extends AbstractSubpartViewHelper
     /**
      * Constructor
      *
+     * @param array $arguments
      */
     public function __construct(array $arguments = array())
     {

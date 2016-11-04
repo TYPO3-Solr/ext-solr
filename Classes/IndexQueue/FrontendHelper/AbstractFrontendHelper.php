@@ -61,9 +61,8 @@ abstract class AbstractFrontendHelper implements FrontendHelper
      * Disables the frontend output for index queue requests.
      *
      * @param array $parameters Parameters from frontend
-     * @param TypoScriptFrontendController $parentObject TSFE object
      */
-    public function disableFrontendOutput(&$parameters, $parentObject)
+    public function disableFrontendOutput(&$parameters)
     {
         $parameters['enableOutput'] = false;
     }

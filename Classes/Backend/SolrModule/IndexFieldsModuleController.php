@@ -64,6 +64,7 @@ class IndexFieldsModuleController extends AbstractModuleController
 
             $registry = GeneralUtility::makeInstance('TYPO3\CMS\Core\Registry');
             $limit = $registry->get('tx_solr', 'luke.limit', 20000);
+            $limitNote = '';
 
             if (isset($lukeData->index->numDocs) && $lukeData->index->numDocs > $limit) {
                 $limitNote = '<em>Too many terms</em>';

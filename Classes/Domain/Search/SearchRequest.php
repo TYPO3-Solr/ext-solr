@@ -330,7 +330,7 @@ class SearchRequest
     /**
      * Helper function to get the sorting configuration name or direction.
      *
-     * @param integer $index
+     * @param int $index
      * @return string
      */
     protected function getSortingPart($index)
@@ -370,7 +370,7 @@ class SearchRequest
     public function removeSorting()
     {
         $path = $this->prefixWithNamespace('sort');
-        $this->argumentsAccessor->reset($path, null);
+        $this->argumentsAccessor->reset($path);
         $this->stateChanged = true;
         return $this;
     }

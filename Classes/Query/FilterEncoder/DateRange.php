@@ -47,9 +47,10 @@ class DateRange implements FilterEncoder, FacetBuilder
      * Parses the given date range from a GET parameter and returns a Solr
      * date range filter.
      *
-     * @param string $rangeFilter The range filter query string from the query URL
+     * @param string $dateRange
      * @param array $configuration Facet configuration
      * @return string Lucene query language filter to be used for querying Solr
+     * @internal param string $rangeFilter The range filter query string from the query URL
      */
     public function decodeFilter($dateRange, array $configuration = array())
     {

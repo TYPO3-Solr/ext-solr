@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -85,9 +84,9 @@ class Results extends CommandPluginBase
             $solrParameters = $solrPostParameters;
         }
 
-        /** @var $searchRequest \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest */
+        /** @var $searchRequest SearchRequest */
         $searchRequest = GeneralUtility::makeInstance(
-            \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest::class,
+            SearchRequest::class,
             array('tx_solr' => $solrParameters),
             $GLOBALS['TSFE']->id,
             $GLOBALS['TSFE']->sys_language_uid,

@@ -38,7 +38,7 @@ interface FieldProcessor
     /**
      * process method
      *
-     * @param array Array of values, an array because of multivalued fields
+     * @param array $values of values, an array because of multivalued fields
      * @return array Modified array of values
      */
     public function process(array $values);

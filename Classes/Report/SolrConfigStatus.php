@@ -67,11 +67,6 @@ class SolrConfigStatus implements StatusProviderInterface
             if ($solrConnection->ping()
                 && $solrConnection->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION
             ) {
-                $solrconfigName = $solrConnection->getSolrconfigName();
-                if (empty($solrconfigName)) {
-                    $solrconfigName = '&lt;not set&gt;';
-                }
-
                 $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
                 $standaloneView->setTemplatePathAndFilename(
                     GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrConfigStatus.html')

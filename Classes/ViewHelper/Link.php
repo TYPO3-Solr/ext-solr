@@ -65,7 +65,7 @@ class Link implements ViewHelper
     /**
      * Creates a link to a given page with a given link text
      *
-     * @param array Array of arguments, [0] is the link text, [1] is the (optional) page Id to link to (otherwise TSFE->id), [2] are additional URL parameters, [3] use cache, defaults to FALSE, [4] additional A tag parameters
+     * @param array $arguments Array of arguments, [0] is the link text, [1] is the (optional) page Id to link to (otherwise TSFE->id), [2] are additional URL parameters, [3] use cache, defaults to FALSE, [4] additional A tag parameters
      * @return string complete anchor tag with URL and link text
      */
     public function execute(array $arguments = array())

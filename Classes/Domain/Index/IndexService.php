@@ -99,7 +99,7 @@ class IndexService
         foreach ($itemsToIndex as $itemToIndex) {
             try {
                 // try indexing
-                $itemIndexed = $this->indexItem($itemToIndex);
+                $this->indexItem($itemToIndex);
             } catch (\Exception $e) {
                 $errors++;
 
@@ -145,7 +145,6 @@ class IndexService
      */
     protected function indexItem(Item $item)
     {
-        $itemIndexed = false;
         $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName());
 
         // Remember original http host value

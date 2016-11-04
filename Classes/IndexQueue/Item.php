@@ -414,6 +414,7 @@ class Item
      *
      * @param string $key Indexing property name/key.
      * @throws \InvalidArgumentException when the given $key does not exist.
+     * @return string
      */
     public function getIndexingProperty($key)
     {

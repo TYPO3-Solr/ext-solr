@@ -196,6 +196,7 @@ class StatisticsRepository
      *
      * @param array $mergedRow
      * @param array $statisticsRow
+     * @param string $fieldName
      * @return float|int
      */
     protected function getAverageFromField(array &$mergedRow, array $statisticsRow,  $fieldName)

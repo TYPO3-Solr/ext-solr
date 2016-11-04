@@ -64,7 +64,6 @@ class CurrentResultNumber implements ViewHelper
      */
     public function execute(array $arguments = array())
     {
-        $numberOfResults = $this->search->getNumberOfResults();
         $currentIterationIndex = $arguments[0];
         $resultsPerPage = $this->search->getResultsPerPage();
         $currentPage = 0;

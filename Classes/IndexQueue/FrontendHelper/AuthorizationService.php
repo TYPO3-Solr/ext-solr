@@ -69,7 +69,7 @@ class AuthorizationService extends AbstractAuthenticationService
      * whether a user is authenticated.
      *
      * @see \TYPO3\CMS\Core\Authentication\AbstractUserAuthentication::checkAuthentication()
-     * @param array Array of user data
+     * @param array $user of user data
      * @return int Returns 200 to grant access for the page indexer.
      */
     public function authUser($user)

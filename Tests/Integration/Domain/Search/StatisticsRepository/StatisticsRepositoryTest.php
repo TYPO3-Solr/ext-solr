@@ -76,7 +76,8 @@ class StatisticsRepositoryTest extends IntegrationTest
      * @param $timestamp
      * @return float
      */
-    protected static function getDaysSinceTimestamp($timestamp) {
+    protected static function getDaysSinceTimestamp($timestamp)
+    {
         $secondsUntilNow = time() - $timestamp;
         $days = floor($secondsUntilNow / (60*60*24));
         return $days;

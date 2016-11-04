@@ -497,7 +497,7 @@ class Query
     /**
      * Enables or disables the forceElevation query parameter.
      *
-     * @param boolean $forceElevation
+     * @param bool $forceElevation
      */
     protected function setForceElevation($forceElevation)
     {
@@ -1374,7 +1374,7 @@ class Query
     {
         if ($sorting) {
             if (!is_string($sorting)) {
-                throw new \InvalidArgumentException("Sorting needs to be a string!");
+                throw new \InvalidArgumentException('Sorting needs to be a string!');
             }
             $sortParameter = $this->removeRelevanceSortField($sorting);
             $this->queryParameters['sort'] = $sortParameter;

@@ -83,7 +83,6 @@ class FrequentSearchesService
     public function getFrequentSearchTerms()
     {
         $frequentSearchConfiguration = $this->configuration->getSearchFrequentSearchesConfiguration();
-        $terms = array();
 
         $identifier = $this->getCacheIdentifier($frequentSearchConfiguration);
 

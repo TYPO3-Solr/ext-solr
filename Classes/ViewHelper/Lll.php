@@ -123,8 +123,6 @@ class Lll implements ViewHelper
      */
     public function execute(array $arguments = array())
     {
-        $label = '';
-
         $isFullPath = false;
         if (GeneralUtility::isFirstPartOfStr($arguments[0], 'FILE')) {
             $arguments[0] = substr($arguments[0], 5);
@@ -178,8 +176,6 @@ class Lll implements ViewHelper
      */
     protected function getLabel($locallang, $labelKey)
     {
-        $label = '';
-
         if (!empty($this->localLang[$locallang][$this->llKey][$labelKey])) {
             $label = $this->localLang[$locallang][$this->llKey][$labelKey];
         } else {

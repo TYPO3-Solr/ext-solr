@@ -237,6 +237,7 @@ class Util
      * @param string $path The TypoScript configuration path to retrieve.
      * @param bool $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
      * @param int|bool $language System language uid or FALSE to disable language usage, optional, defaults to 0
+     * @param bool $useCache
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
     public static function getConfigurationFromPageId(
@@ -594,7 +595,6 @@ class Util
     public static function isLocalizedRecord($tableName, array $record)
     {
         $isLocalizedRecord = false;
-        $translationOriginalPointerField = '';
 
         if (isset($GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'])) {
             $translationOriginalPointerField = $GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'];

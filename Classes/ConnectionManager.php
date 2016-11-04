@@ -24,11 +24,8 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -178,7 +175,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getConfigurationByRootPageId($pageId, $language = 0)
     {
-        $solrConfiguration = false;
         $connectionKey = $pageId . '|' . $language;
 
         $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
@@ -346,11 +342,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 
     /**
      * Entrypoint for the ajax request
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      */
-    public function updateConnectionsInCacheMenu(ServerRequestInterface $request, ResponseInterface $response)
+    public function updateConnectionsInCacheMenu()
     {
         $this->updateConnections();
     }

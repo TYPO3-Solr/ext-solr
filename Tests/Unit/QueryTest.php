@@ -615,7 +615,6 @@ class QueryTest extends UnitTest
         $this->assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
         $this->assertSame('lex', $queryParameters['f.title.facet.sort'], 'Facet sorting parameter should be lex');
 
-
         $query->setFaceting(false);
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['facet'], 'Facet argument should be null after reset');
