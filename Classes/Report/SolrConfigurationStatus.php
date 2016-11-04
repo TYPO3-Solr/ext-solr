@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
@@ -80,7 +81,7 @@ class SolrConfigurationStatus implements StatusProviderInterface
         $rootPages = $this->getRootPages();
 
         if (empty($rootPages)) {
-            $status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+            $status = GeneralUtility::makeInstance(Status::class,
                 'Sites',
                 'No sites found',
                 'Connections to your Solr server are detected automatically.
@@ -127,17 +128,18 @@ class SolrConfigurationStatus implements StatusProviderInterface
         }
 
         if (!empty($rootPagesWithoutDomain)) {
-            foreach ($rootPagesWithoutDomain as $pageId => $page) {
-                $rootPagesWithoutDomain[$pageId] = '[' . $page['uid'] . '] ' . $page['title'];
-            }
+            $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+            $standaloneView->setTemplatePathAndFilename(
+                GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrConfigurationStatusDomainRecord.html')
+            );
+            $standaloneView->assignMultiple([
+                'pages' => $rootPagesWithoutDomain,
+            ]);
 
-            $status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+            $status = GeneralUtility::makeInstance(Status::class,
                 'Domain Records',
                 'Domain records missing',
-                'Domain records are needed to properly index pages. The following
-				sites are marked as root pages, but do not have a domain configured:
-				<ul><li>' . implode('</li><li>',
-                    $rootPagesWithoutDomain) . '</li></ul>',
+                $standaloneView->render(),
                 Status::ERROR
             );
         }
@@ -176,17 +178,18 @@ class SolrConfigurationStatus implements StatusProviderInterface
         }
 
         if (!empty($rootPagesWithIndexingOff)) {
-            foreach ($rootPagesWithIndexingOff as $key => $rootPageWithIndexingOff) {
-                $rootPagesWithIndexingOff[$key] = '[' . $rootPageWithIndexingOff['uid'] . '] ' . $rootPageWithIndexingOff['title'];
-            }
+            $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+            $standaloneView->setTemplatePathAndFilename(
+                GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrConfigurationStatusIndexing.html')
+            );
+            $standaloneView->assignMultiple([
+                'pages' => $rootPagesWithIndexingOff,
+            ]);
 
-            $status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+            $status = GeneralUtility::makeInstance(Status::class,
                 'Page Indexing',
                 'Indexing is disabled',
-                'You need to set config.index_enable = 1 to allow page indexing.
-				The following sites were found with indexing disabled:
-				<ul><li>' . implode('</li><li>',
-                    $rootPagesWithIndexingOff) . '</li></ul>',
+                $standaloneView->render(),
                 Status::ERROR
             );
         }

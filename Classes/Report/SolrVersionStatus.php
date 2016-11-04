@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
@@ -71,15 +72,24 @@ class SolrVersionStatus implements StatusProviderInterface
             $isOutdatedVersion = version_compare($this->getCleanSolrVersion($solrVersion), self::REQUIRED_SOLR_VERSION, '<');
 
             if ($isOutdatedVersion) {
-                $message = '<p style="margin-bottom: 10px;">Found an
-						outdated Apache Solr server version. <br />The <strong>minimum
-						required version is ' . self::REQUIRED_SOLR_VERSION . '</strong>, you have
-						' . $this->formatSolrVersion($solrVersion) . '.</p>
-						<p>Affected Solr server:</p>
-						<ul>' . '<li>Host: ' . $solrConnection->getHost() . '</li>' . '<li>Port: ' . $solrConnection->getPort() . '</li>' . '<li>Path: ' . $solrConnection->getPath() . '</li>' . '<li><strong>Version: ' . $this->formatSolrVersion($solrVersion) . '</strong></li>
-						</ul>';
+                $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+                $standaloneView->setTemplatePathAndFilename(
+                    GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrVersionStatus.html')
+                );
+                $standaloneView->assignMultiple([
+                    'requiredVersion' => self::REQUIRED_SOLR_VERSION,
+                    'currentVersion' => $this->formatSolrVersion($solrVersion),
+                    'solr' => $solrConnection
+                ]);
 
-                $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Outdated, Unsupported', $message, Status::ERROR);
+                $status = GeneralUtility::makeInstance(
+                    Status::class,
+                    'Apache Solr Version',
+                    'Outdated, Unsupported',
+                    $standaloneView->render(),
+                    Status::ERROR
+                );
+
 
                 $reports[] = $status;
             }

@@ -24,8 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
@@ -63,7 +65,7 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
     public function getStatus()
     {
         $reports = array();
-        $solrConnections = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getAllConnections();
+        $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
             if ($solrConnection->ping()) {
@@ -90,31 +92,24 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      * @return null|\TYPO3\CMS\Reports\Status
      */
     protected function checkPluginInstallationStatus(SolrService $solrConnection
-    ) {
+    )
+    {
         $status = null;
 
         if (!$this->isPluginInstalled($solrConnection)) {
-            $message = '<p style="margin-bottom: 10px;">
-			EXT:solr comes with a plugin for the Apache Solr server to
-			ensure TYPO3 access restrictions are enforced for search
-			results, thus allowing visitors to only see results they are
-			allowed to see. The plugin is not installed on the following
-			server. It is recommended to install the plugin if you are using
-			frontend user group access restrictions for your site.</p>';
+            $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+            $standaloneView->setTemplatePathAndFilename(
+                GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/AccessFilterPluginInstalledStatusNotInstalled.html')
+            );
+            $standaloneView->assignMultiple([
+                'solr' => $solrConnection,
+                'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION
+            ]);
 
-            $message .= '<p>Affected Solr server:</p>
-				<ul>'
-                . '<li>Host: ' . $solrConnection->getHost() . '</li>'
-                . '<li>Port: ' . $solrConnection->getPort() . '</li>'
-                . '<li>Path: ' . $solrConnection->getPath() . '</li>
-				</ul>';
-
-            $message .= $this->getPluginDownloadMessage();
-
-            $status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+            $status = GeneralUtility::makeInstance(Status::class,
                 'Access Filter Plugin',
                 'Not Installed',
-                $message,
+                $standaloneView->render(),
                 Status::WARNING
             );
         }
@@ -135,27 +130,20 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
         if ($this->isPluginInstalled($solrConnection)
             && $this->isPluginOutdated($solrConnection)
         ) {
-            $installedPluginVersion = $this->getInstalledPluginVersion($solrConnection);
+            $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+            $standaloneView->setTemplatePathAndFilename(
+                GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/AccessFilterPluginInstalledStatusIsOutDated.html')
+            );
+            $standaloneView->assignMultiple([
+                'solr' => $solrConnection,
+                'installedVersion' => $this->getInstalledPluginVersion($solrConnection),
+                'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION
+            ]);
 
-            $message = '<p style="margin-bottom: 10px;">The Solr Access Filter
-			Plugin you are using is outdated. You are using version <strong>' .
-                $installedPluginVersion . '</strong>, the currently recommended
-			version is <strong>' . self::RECOMMENDED_PLUGIN_VERSION .
-                '</strong>.</p>';
-
-            $message .= '<p>Affected Solr server:</p>
-				<ul>'
-                . '<li>Host: ' . $solrConnection->getHost() . '</li>'
-                . '<li>Port: ' . $solrConnection->getPort() . '</li>'
-                . '<li>Path: ' . $solrConnection->getPath() . '</li>
-				</ul>';
-
-            $message .= $this->getPluginDownloadMessage();
-
-            $status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+            $status = GeneralUtility::makeInstance(Status::class,
                 'Access Filter Plugin',
                 'Outdated',
-                $message,
+                $standaloneView->render(),
                 Status::WARNING
             );
         }
@@ -210,8 +198,6 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      */
     public function getInstalledPluginVersion(SolrService $solrConnection)
     {
-        $version = '0.0.0';
-
         $pluginsInformation = $solrConnection->getPluginsInformation();
         $rawVersion = $pluginsInformation->plugins->OTHER->{self::PLUGIN_CLASS_NAME}->version;
 
@@ -219,20 +205,5 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
         $version = $explodedRawVersion[0];
 
         return $version;
-    }
-
-    /**
-     * Generates a paragraph with message containing a download link for the
-     * current Solr TYPO3 plugin.
-     */
-    protected function getPluginDownloadMessage()
-    {
-        $pluginDownloadUrl = 'http://www.typo3-solr.com/fileadmin/files/solr/solr-typo3-plugin-' . self::RECOMMENDED_PLUGIN_VERSION . '.jar';
-
-        $pluginDownloadMessage = '<p>Please download and install the <a href="'
-            . $pluginDownloadUrl
-            . '">current version of the plugin</a>.</p>';
-
-        return $pluginDownloadMessage;
     }
 }

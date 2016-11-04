@@ -24,7 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
@@ -59,7 +61,7 @@ class SolrConfigStatus implements StatusProviderInterface
     public function getStatus()
     {
         $reports = array();
-        $solrConnections = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getAllConnections();
+        $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
             if ($solrConnection->ping()
@@ -70,39 +72,19 @@ class SolrConfigStatus implements StatusProviderInterface
                     $solrconfigName = '&lt;not set&gt;';
                 }
 
-                $message = '<p style="margin-bottom: 10px;">A solrconfig.xml
-					different from the one provided with the extension was
-					detected.</p>
-					<p style="margin-bottom: 10px;">It is recommended to use the
-					solrconfig.xml file shipping with the Apache Solr for TYPO3
-					extension as it provides an optimized setup for the  use of
-					Solr with TYPO3. A difference can occur when you  update the
-					TYPO3 extension, but forget to update the solrconfig.xml
-					file on the Solr server. The Solr configuration sometimes
-					changes to accommodate changes or new features in Apache
-					Solr. Also make sure to restart the Tomcat server after
-					updating solrconfig.xml.</p>
-					<p style="margin-bottom: 10px;">Your Solr server is
-					currently using a Solr configuration file named <strong>'
-                    . $solrconfigName . '</strong>, the
-					recommended schema is called <strong>'
-                    . self::RECOMMENDED_SOLRCONFIG_VERSION . '</strong>. You can
-					find the recommended solrconfig.xml file in the extension\'s
-					resources folder: EXT:solr/Resources/Private/Solr/.
-					While you\'re at it, please check whether you\'re using the
-					current schema.xml file, too.</p>';
+                $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+                $standaloneView->setTemplatePathAndFilename(
+                    GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrConfigStatus.html')
+                );
+                $standaloneView->assignMultiple([
+                    'solr' => $solrConnection,
+                    'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION,
+                ]);
 
-                $message .= '<p>Affected Solr server:</p>
-					<ul>'
-                    . '<li>Host: ' . $solrConnection->getHost() . '</li>'
-                    . '<li>Port: ' . $solrConnection->getPort() . '</li>'
-                    . '<li>Path: ' . $solrConnection->getPath() . '</li>
-					</ul>';
-
-                $status = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+                $status = GeneralUtility::makeInstance(Status::class,
                     'Solrconfig Version',
                     'Unsupported solrconfig.xml',
-                    $message,
+                    $standaloneView->render(),
                     Status::WARNING
                 );
 
