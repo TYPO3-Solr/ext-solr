@@ -56,7 +56,7 @@ class FilterVarStatus implements StatusProviderInterface
 				More information is available at
 				<a href="https://bugs.php.net/bug.php?id=51192">php.net</a>.';
 
-            $reports[] = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+            $reports[] = GeneralUtility::makeInstance(Status::class,
                 'PHP filter_var() bug',
                 'Affected PHP version detected.',
                 $message,

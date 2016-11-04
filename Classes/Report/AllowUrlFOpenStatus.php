@@ -57,7 +57,7 @@ class AllowUrlFOpenStatus implements StatusProviderInterface
 				this setting disabled.';
         }
 
-        $reports[] = GeneralUtility::makeInstance('TYPO3\\CMS\\Reports\\Status',
+        $reports[] = GeneralUtility::makeInstance(Status::class,
             'allow_url_fopen',
             $value,
             $message,

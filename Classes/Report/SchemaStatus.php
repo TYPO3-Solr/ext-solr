@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
@@ -75,38 +76,19 @@ class SchemaStatus implements StatusProviderInterface
 
             $isWrongSchema = $solrConnection->getSchemaName() != self::RECOMMENDED_SCHEMA_VERSION;
             if ($isWrongSchema) {
-                $message = '<p style="margin-bottom: 10px;">A schema different
-					from the one provided with the extension was detected.</p>
-					<p style="margin-bottom: 10px;">It is recommended to use the
-					schema.xml file shipping with the Apache Solr for TYPO3
-					extension as it provides an optimized field setup for
-					using Solr with TYPO3. A difference can occur when you
-					update the TYPO3 extension, but forget to update the
-					schema.xml file on the Solr server. The schema sometimes
-					changes to accommodate changes or new features in Apache
-					Solr. Also make sure to restart the Tomcat server after
-					updating the schema.xml file.</p>
-					<p style="margin-bottom: 10px;">Your Solr server is
-					currently using schema version <strong>'
-                    . $solrConnection->getSchemaName() . '</strong>, the
-					recommended schema version is <strong>'
-                    . self::RECOMMENDED_SCHEMA_VERSION . '</strong>. You can
-					find the recommended schema.xml file in the extension\'s
-					resources folder: EXT:solr/Resources/Private/Solr/. While
-					you\'re at it, please make sure you\'re using the
-					current solrconfig.xml file, too.</p>';
-
-                $message .= '<p>Affected Solr server:</p>
-					<ul>'
-                    . '<li>Host: ' . $solrConnection->getHost() . '</li>'
-                    . '<li>Port: ' . $solrConnection->getPort() . '</li>'
-                    . '<li>Path: ' . $solrConnection->getPath() . '</li>
-					</ul>';
+                $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+                $standaloneView->setTemplatePathAndFilename(
+                    GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SchemaStatus.html')
+                );
+                $standaloneView->assignMultiple([
+                    'solr' => $solrConnection,
+                    'recommendedVersion' => self::RECOMMENDED_SCHEMA_VERSION,
+                ]);
 
                 $status = GeneralUtility::makeInstance(Status::class,
                     'Schema Version',
                     'Unsupported Schema',
-                    $message,
+                    $standaloneView->render(),
                     Status::WARNING
                 );
 
