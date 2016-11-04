@@ -92,8 +92,7 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      * @return null|\TYPO3\CMS\Reports\Status
      */
     protected function checkPluginInstallationStatus(SolrService $solrConnection
-    )
-    {
+    ) {
         $status = null;
 
         if (!$this->isPluginInstalled($solrConnection)) {
