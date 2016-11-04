@@ -221,7 +221,6 @@ class Template
                 . $viewHelperPath . $possibleFilename;
 
             if (file_exists($viewHelperIncludePath)) {
-                /**  */
                 include_once($viewHelperIncludePath);
                 $this->loadedHelperFiles[strtolower($helperKey)] = array(
                     'file' => $viewHelperIncludePath,
