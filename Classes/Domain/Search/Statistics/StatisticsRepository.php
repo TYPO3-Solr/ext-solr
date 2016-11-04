@@ -148,7 +148,7 @@ class StatisticsRepository
     {
         $result = [];
         foreach ($statisticsRows as $statisticsRow) {
-            $term = $statisticsRow['keywords'];
+            $term = html_entity_decode($statisticsRow['keywords'], ENT_QUOTES);
 
             $mergedRow = isset($result[$term]) ? $result[$term] : ['mergedrows' => 0, 'count' => 0];
             $mergedRow['mergedrows']++;
@@ -160,7 +160,7 @@ class StatisticsRepository
                 // for the count we need to take the sum, because it's the sum of searches
             $mergedRow['count'] = $mergedRow['count'] + $statisticsRow['count'];
 
-            $mergedRow['keywords'] = $statisticsRow['keywords'];
+            $mergedRow['keywords'] = $term;
             $result[$term] = $mergedRow;
         }
 
