@@ -5,9 +5,9 @@ Ext.onReady(function() {
 				node.attributes.nodeData,
 				function(response) {
 					if (response) {
-						TYPO3.Flashmessage.display(TYPO3.Severity.error, '', response);
+						TYPO3.Notification.error(response);
 					} else {
-						TYPO3.Flashmessage.display(TYPO3.Severity.ok, '', 'Solr Connections initialized');
+						TYPO3.Notification.info('Solr Connections initialized!');
 					}
 				},
 				this
