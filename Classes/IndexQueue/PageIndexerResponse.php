@@ -49,7 +49,7 @@ class PageIndexerResponse
     /**
      * Turns a JSON encoded result string back into its PHP representation.
      *
-     * @param string $jsonEncodedResults JSON encoded result string
+     * @param string $jsonEncodedResponse JSON encoded result string
      * @return array|bool An array of action => result pairs or FALSE if the response could not be decoded
      */
     public static function getResultsFromJson($jsonEncodedResponse)

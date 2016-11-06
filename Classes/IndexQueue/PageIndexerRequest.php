@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -91,29 +92,28 @@ class PageIndexerRequest
     protected $timeout;
 
     /**
-     * Constructor.
+     * PageIndexerRequest constructor.
      *
-     * @param string $header JSON encoded Index Queue page indexer parameters
+     * @param string $jsonEncodedParameters json encoded header
      */
-    public function __construct($header = null)
+    public function __construct($jsonEncodedParameters = null)
     {
         $this->requestId = uniqid();
-
         $this->timeout = (float)ini_get('default_socket_timeout');
 
-        if (!is_null($header)) {
-            $this->parameters = json_decode($header, true);
-            $this->header = $header;
-
-            $this->requestId = $this->parameters['requestId'];
-            unset($this->parameters['requestId']);
-
-            $actions = explode(',', $this->parameters['actions']);
-            foreach ($actions as $action) {
-                $this->addAction($action);
-            }
-            unset($this->parameters['actions']);
+        if (is_null($jsonEncodedParameters)) {
+            return;
         }
+
+        $this->parameters = (array)json_decode($jsonEncodedParameters, true);
+        $this->requestId = $this->parameters['requestId'];
+        unset($this->parameters['requestId']);
+
+        $actions = explode(',', $this->parameters['actions']);
+        foreach ($actions as $action) {
+            $this->addAction($action);
+        }
+        unset($this->parameters['actions']);
     }
 
     /**
@@ -137,49 +137,22 @@ class PageIndexerRequest
      */
     public function send($url)
     {
-        $headers = $this->getHeaders();
-        $response = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
-
         $parsedURL = parse_url($url);
-        if (!preg_match('/^https?/', $parsedURL['scheme'])) {
-            throw new \RuntimeException(
-                'Cannot send request headers for HTTPS protocol',
-                1320319214
-            );
+
+        /**
+         * @todo
+         * This is the current check, which is not working should be,
+         * preg_match('/^https$/', $parsedURL['scheme']) === 1;
+         * we should fix or remove this check
+         */
+        $isHttpsUrl = !preg_match('/^https?/', $parsedURL['scheme']);
+        if ($isHttpsUrl) {
+            throw new \RuntimeException('Cannot send request headers for HTTPS protocol', 1320319214);
         }
 
-        $context = stream_context_create(array(
-            'http' => array(
-                'header' => implode(CRLF, $headers),
-                'timeout' => $this->timeout
-            )
-        ));
-
-        $rawResponse = file_get_contents($url, false, $context);
-
-        // convert JSON response to response object properties
-        $decodedResponse = $response->getResultsFromJson($rawResponse);
-
-        if ($rawResponse === false || $decodedResponse === false) {
-            GeneralUtility::devLog(
-                'Failed to execute Page Indexer Request. Request ID: ' . $this->requestId,
-                'solr',
-                3,
-                array(
-                    'request ID' => $this->requestId,
-                    'request url' => $url,
-                    'request headers' => $headers,
-                    'response headers' => $http_response_header,
-                    // automatically defined by file_get_contents()
-                    'raw response body' => $rawResponse,
-                )
-            );
-
-            throw new \RuntimeException(
-                'Failed to execute Page Indexer Request. See log for details. Request ID: ' . $this->requestId,
-                1319116885
-            );
-        }
+        /** @var $response PageIndexerResponse */
+        $response = GeneralUtility::makeInstance(PageIndexerResponse::class);
+        $decodedResponse = $this->getUrlAndDecodeResponse($url, $response);
 
         if ($decodedResponse['requestId'] != $this->requestId) {
             throw new \RuntimeException(
@@ -190,19 +163,55 @@ class PageIndexerRequest
 
         $response->setRequestId($decodedResponse['requestId']);
 
-        if (is_array($decodedResponse['actionResults'])) {
-            foreach ($decodedResponse['actionResults'] as $action => $actionResult) {
-                $response->addActionResult($action, $actionResult);
-            }
+        if (!is_array($decodedResponse['actionResults'])) {
+            // nothing to parse
+            return $response;
+        }
+
+        foreach ($decodedResponse['actionResults'] as $action => $actionResult) {
+            $response->addActionResult($action, $actionResult);
         }
 
         return $response;
     }
 
     /**
+     * This method is used to retrieve an url from the frontend and decode the response.
+     *
+     * @param string $url
+     * @param PageIndexerResponse $response
+     * @return mixed
+     */
+    protected function getUrlAndDecodeResponse($url, PageIndexerResponse $response)
+    {
+        $headers = $this->getHeaders();
+        $rawResponse = $this->getUrl($url, $headers, $this->timeout);
+        // convert JSON response to response object properties
+        $decodedResponse = $response->getResultsFromJson($rawResponse);
+
+        if ($rawResponse === false || $decodedResponse === false) {
+            GeneralUtility::devLog(
+                'Failed to execute Page Indexer Request. Request ID: ' . $this->requestId,
+                'solr',
+                3,
+                [
+                    'request ID' => $this->requestId,
+                    'request url' => $url,
+                    'request headers' => $headers,
+                    'response headers' => $http_response_header, // automatically defined by file_get_contents()
+                    'raw response body' => $rawResponse
+                ]
+            );
+
+            throw new \RuntimeException('Failed to execute Page Indexer Request. See log for details. Request ID: ' . $this->requestId, 1319116885);
+        }
+        return $decodedResponse;
+    }
+
+    /**
      * Generates the headers to be send with the request.
      *
-     * @return array Array of HTTP headers.
+     * @return string[] Array of HTTP headers.
      */
     public function getHeaders()
     {
@@ -222,15 +231,12 @@ class PageIndexerRequest
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
             )
         );
-        $indexerRequestData = array_merge($indexerRequestData,
-            $this->parameters);
 
+        $indexerRequestData = array_merge($indexerRequestData, $this->parameters);
         $headers[] = 'X-Tx-Solr-Iq: ' . json_encode($indexerRequestData);
 
         if (!empty($this->username) && !empty($this->password)) {
-            $headers[] = 'Authorization: Basic ' . base64_encode(
-                    $this->username . ':' . $this->password
-                );
+            $headers[] = 'Authorization: Basic ' . base64_encode($this->username . ':' . $this->password);
         }
 
         return $headers;
@@ -256,16 +262,18 @@ class PageIndexerRequest
     {
         $authenticated = false;
 
-        if (!is_null($this->parameters)) {
-            $calculatedHash = md5(
-                $this->parameters['item'] . '|' .
-                $this->parameters['page'] . '|' .
-                $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
-            );
+        if (is_null($this->parameters)) {
+            return $authenticated;
+        }
 
-            if ($this->parameters['hash'] === $calculatedHash) {
-                $authenticated = true;
-            }
+        $calculatedHash = md5(
+            $this->parameters['item'] . '|' .
+            $this->parameters['page'] . '|' .
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
+        );
+
+        if ($this->parameters['hash'] === $calculatedHash) {
+            $authenticated = true;
         }
 
         return $authenticated;
@@ -309,13 +317,7 @@ class PageIndexerRequest
      */
     public function getParameter($parameterName)
     {
-        $value = null;
-
-        if (isset($this->parameters[$parameterName])) {
-            $value = $this->parameters[$parameterName];
-        }
-
-        return $value;
+        return isset($this->parameters[$parameterName]) ? $this->parameters[$parameterName] : null;
     }
 
     /**
@@ -373,5 +375,20 @@ class PageIndexerRequest
     public function setTimeout($timeout)
     {
         $this->timeout = (float)$timeout;
+    }
+
+    /**
+     * Fetches a page by sending the configured headers.
+     *
+     * @param string $url
+     * @param string[] $headers
+     * @param float $timeout
+     * @return string
+     */
+    protected function getUrl($url, $headers, $timeout)
+    {
+        $context = stream_context_create(['http' => ['header' => implode(CRLF, $headers), 'timeout' => $timeout]]);
+        $rawResponse = file_get_contents($url, false, $context);
+        return $rawResponse;
     }
 }
