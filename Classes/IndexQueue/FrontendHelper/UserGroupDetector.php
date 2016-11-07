@@ -29,6 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageHookInterface;
 use TYPO3\CMS\Frontend\Page\PageRepositoryGetPageOverlayHookInterface;
 
@@ -125,12 +126,12 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @param int $uid The page ID
      * @param bool $disableGroupAccessCheck If set, the check for group access is disabled. VERY rarely used
-     * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject parent \TYPO3\CMS\Frontend\Page\PageRepository object
+     * @param PageRepository $parentObject parent \TYPO3\CMS\Frontend\Page\PageRepository object
      */
     public function getPage_preProcess(
         &$uid,
         &$disableGroupAccessCheck,
-        \TYPO3\CMS\Frontend\Page\PageRepository $parentObject
+        PageRepository $parentObject
     ) {
         $disableGroupAccessCheck = true;
         $parentObject->where_groupAccess = ''; // just to be on the safe side
@@ -142,12 +143,12 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @param array $pageRecord Page record
      * @param int $languageUid Overlay language ID
-     * @param \TYPO3\CMS\Frontend\Page\PageRepository $parentObject Parent \TYPO3\CMS\Frontend\Page\PageRepository object
+     * @param PageRepository $parentObject Parent \TYPO3\CMS\Frontend\Page\PageRepository object
      */
     public function getPageOverlay_preProcess(
         &$pageRecord,
         &$languageUid,
-        \TYPO3\CMS\Frontend\Page\PageRepository $parentObject
+        PageRepository $parentObject
     ) {
         if (is_array($pageRecord)) {
             $pageRecord['fe_group'] = '';

@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query;
-use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider;
@@ -243,9 +242,6 @@ abstract class PluginBase extends AbstractPlugin
     public function pi_loadLL($languageFilePath = '')
     {
         if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
-            $pathElements = pathinfo($this->scriptRelPath);
-            $languageFileName = $pathElements['filename'];
-
             $basePath = 'EXT:' . $this->extKey . '/Resources/Private/Language/locallang.xlf';
             // Read the strings in the required charset (since TYPO3 4.2)
             $this->LOCAL_LANG = $this->languageFactory->getParsedData($basePath,
@@ -336,7 +332,6 @@ abstract class PluginBase extends AbstractPlugin
     /**
      * Initializes the template engine and returns the initialized instance.
      *
-     * @return Template
      * @throws \UnexpectedValueException if a view helper provider fails to implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider
      */
     protected function initializeTemplateEngine()

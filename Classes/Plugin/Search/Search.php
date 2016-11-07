@@ -83,6 +83,7 @@ class Search extends CommandPluginBase
     /**
      * Post initialization of the template engine.
      * @param Template $template
+     * @return Template
      */
     protected function postInitializeTemplateEngine(Template $template)
     {

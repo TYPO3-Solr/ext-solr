@@ -54,6 +54,9 @@ class FrequentSearchesCommand implements PluginCommand
      */
     protected $frequentSearchConfiguration;
 
+    /** @var \ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService */
+    protected $frequentSearchesService;
+
     /**
      * @var bool
      */
@@ -97,7 +100,7 @@ class FrequentSearchesCommand implements PluginCommand
     protected function getInitializeCache()
     {
         /** @var $cacheManager CacheManager */
-        $cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
+        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         return $cacheManager->getCache('tx_solr');
     }
 

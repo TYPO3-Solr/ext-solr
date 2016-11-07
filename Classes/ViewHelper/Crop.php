@@ -43,6 +43,7 @@ class Crop implements ViewHelper
 
     /**
      * Constructor
+     * @param array $arguments
      */
     public function __construct(array $arguments = array())
     {
@@ -71,7 +72,7 @@ class Crop implements ViewHelper
      */
     public function execute(array $arguments = array())
     {
-        $croppedString = $stringToCrop = $arguments[0];
+        $stringToCrop = $arguments[0];
 
         $maxLength = $this->maxLength;
         if (isset($arguments[1])) {

@@ -13,6 +13,7 @@ namespace ApacheSolrForTypo3\Solr\Command;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 
@@ -26,7 +27,7 @@ class SolrCommandController extends CommandController
      */
     public function updateConnectionsCommand()
     {
-        $connectionManager = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\ConnectionManager::class);
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->updateConnections();
         $this->outputLine('<info>EXT:solr connections are updated in the registry.</info>');
     }

@@ -80,6 +80,8 @@ class FrequentSearches extends CommandPluginBase
     /**
      * Post initialization of the template engine.
      *
+     * @param \ApacheSolrForTypo3\Solr\Template $template
+     * @return \ApacheSolrForTypo3\Solr\Template
      */
     protected function postInitializeTemplateEngine($template)
     {

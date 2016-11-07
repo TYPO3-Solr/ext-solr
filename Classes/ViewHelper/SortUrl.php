@@ -79,7 +79,6 @@ class SortUrl implements ViewHelper
      */
     public function execute(array $arguments = array())
     {
-        $sortUrl = '';
         $urlParameters = GeneralUtility::_GP('tx_solr');
         $urlSortParameters = GeneralUtility::trimExplode(',',
             $urlParameters['sort']);

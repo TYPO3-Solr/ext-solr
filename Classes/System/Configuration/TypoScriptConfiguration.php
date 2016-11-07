@@ -415,7 +415,7 @@ class TypoScriptConfiguration
      * This method can be used to check if a table is configured to be monitored by the record monitor.
      *
      * @param string $tableName
-     * @return boolean
+     * @return bool
      */
     public function getIndexQueueIsMonitoredTable($tableName)
     {

@@ -101,7 +101,6 @@ class Faceting implements Modifier
      */
     protected function buildFacetingParameters()
     {
-        $facetParameters = array();
         foreach ($this->allConfiguredFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
 

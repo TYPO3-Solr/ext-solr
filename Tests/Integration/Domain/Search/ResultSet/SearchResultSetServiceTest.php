@@ -75,7 +75,6 @@ class SearchResultSetServiceTest extends IntegrationTest
      */
     public function canGetVariants()
     {
-
         $this->indexPageIdsFromFixture('can_get_searchResultSet.xml', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
         $this->waitToBeVisibleInSolr();
@@ -108,7 +107,6 @@ class SearchResultSetServiceTest extends IntegrationTest
         $secondResult = $searchResults[1];
         $this->assertSame(3, count($secondResult->getVariants()));
         $this->assertSame('Men Socks', $secondResult->getTitle());
-
 
         // And every variant is indicated to be a variant.
         foreach ($firstResult->getVariants() as $variant) {
@@ -144,7 +142,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $typoScriptConfiguration = Util::getSolrConfiguration();
 
             // user group 0 and 1 should see all elements
-        $this->simulateFrontedUserGroups([0,1]);
+        $this->simulateFrontedUserGroups([0, 1]);
         $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
 
         $this->assertSame(3, count($searchResults), 'We should see all content, because nothing should be filtered');

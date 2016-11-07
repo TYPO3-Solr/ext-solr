@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
+use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -121,7 +123,6 @@ abstract class AbstractIndexer
         $solrFieldName,
         array $data
     ) {
-        $fieldValue = '';
         $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
@@ -228,12 +229,12 @@ abstract class AbstractIndexer
         }
 
         // SOLR_MULTIVALUE - always returns serialized array
-        if ($indexingConfiguration[$solrFieldName] == \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME) {
+        if ($indexingConfiguration[$solrFieldName] == Multivalue::CONTENT_OBJECT_NAME) {
             $isSerialized = true;
         }
 
         // SOLR_RELATION - returns serialized array if multiValue option is set
-        if ($indexingConfiguration[$solrFieldName] == \ApacheSolrForTypo3\Solr\ContentObject\Relation::CONTENT_OBJECT_NAME
+        if ($indexingConfiguration[$solrFieldName] == Relation::CONTENT_OBJECT_NAME
             && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])
         ) {
             $isSerialized = true;

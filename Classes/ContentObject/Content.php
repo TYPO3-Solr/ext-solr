@@ -44,7 +44,7 @@ class Content
      * @param string $name content object name 'SOLR_CONTENT'
      * @param array $configuration for the content object
      * @param string $TyposcriptKey not used
-     * @param TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject parent cObj
+     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject parent cObj
      * @return string serialized array representation of the given list
      */
     public function cObjGetSingleExt(
@@ -64,7 +64,7 @@ class Content
     /**
      * Gets the raw content as configured - a certain value or database field.
      *
-     * @param TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject The original content object
+     * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $contentObject The original content object
      * @param array $configuration content object configuration
      * @return string The raw content
      */

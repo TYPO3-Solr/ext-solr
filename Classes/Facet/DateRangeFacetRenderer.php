@@ -106,6 +106,8 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer
 
     /**
      * tbd
+     * @param string $facetName
+     * @return string
      */
     protected function buildAddFacetUrl($facetName)
     {

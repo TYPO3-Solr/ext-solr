@@ -40,7 +40,7 @@ class TimestampToIsoDate implements FieldProcessor
      * Example date output format: 1995-12-31T23:59:59Z
      * The trailing "Z" designates UTC time and is mandatory
      *
-     * @param array Array of values, an array because of multivalued fields
+     * @param array $values Array of values, an array because of multivalued fields
      * @return array Modified array of values
      */
     public function process(array $values)

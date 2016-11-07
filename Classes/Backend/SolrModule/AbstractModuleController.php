@@ -264,7 +264,7 @@ abstract class AbstractModuleController extends ActionController implements Admi
     {
         $flashMessages = $this->controllerContext->getFlashMessageQueue($identifier)->getAllMessages();
         foreach ($flashMessages as $message) {
-            $this->addFlashMessage($message->getMessage(), $message->getTitle, $message->getSeverity());
+            $this->addFlashMessage($message->getMessage(), $message->getTitle(), $message->getSeverity());
         }
     }
 }

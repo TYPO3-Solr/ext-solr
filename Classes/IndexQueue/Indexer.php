@@ -28,7 +28,6 @@ use Apache_Solr_Document;
 use Apache_Solr_Response;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -83,7 +82,7 @@ class Indexer extends AbstractIndexer
     /**
      * Constructor
      *
-     * @param array Array of indexer options
+     * @param array $options array of indexer options
      */
     public function __construct(array $options = array())
     {
@@ -95,7 +94,7 @@ class Indexer extends AbstractIndexer
      * Indexes an item from the indexing queue.
      *
      * @param Item $item An index queue item
-     * @return boolean returns true when indexed, false when not
+     * @return bool returns true when indexed, false when not
      */
     public function index(Item $item)
     {
@@ -661,7 +660,6 @@ class Indexer extends AbstractIndexer
 
         $message = 'Index Queue indexing ' . $item->getType() . ':'
             . $item->getRecordUid() . ' - ';
-        $severity = 0; // info
 
         // preparing data
         $documents = array();

@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Query;
 
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -94,7 +95,7 @@ class LinkBuilder
     public function __construct(Query $query)
     {
         $this->solrConfiguration = Util::getSolrConfiguration();
-        $this->contentObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
         $this->query = $query;
 
         $targetPageUid = $this->contentObject->stdWrap(
@@ -221,7 +222,7 @@ class LinkBuilder
             'no_cache' => false,
             'parameter' => $this->linkTargetPageId,
             'additionalParams' => $queryGetParameter
-                . \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('',
+                . GeneralUtility::implodeArrayForUrl('',
                     array($this->prefix => $queryParameters), '', true)
                 . $this->getUrlParameters()
         );
@@ -241,7 +242,7 @@ class LinkBuilder
      */
     protected function getPluginParameters()
     {
-        $pluginParameters = \TYPO3\CMS\Core\Utility\GeneralUtility::_GPmerged($this->prefix);
+        $pluginParameters = GeneralUtility::_GPmerged($this->prefix);
 
         return $pluginParameters;
     }

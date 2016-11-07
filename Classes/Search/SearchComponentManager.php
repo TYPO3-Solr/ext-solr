@@ -23,6 +23,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Search components manager, registration and stuff...
@@ -85,7 +86,7 @@ class SearchComponentManager
             );
         }
 
-        $searchComponent = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(self::$searchComponents[$componentName]);
+        $searchComponent = GeneralUtility::makeInstance(self::$searchComponents[$componentName]);
 
         if (!($searchComponent instanceof SearchComponent)) {
             throw new \RuntimeException(

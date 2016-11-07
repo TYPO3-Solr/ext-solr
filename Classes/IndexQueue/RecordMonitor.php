@@ -68,6 +68,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * Holds the configuration when a recursive page queing should be triggered.
      *
      * @var array
+     * @return array
      */
     protected function getUpdateSubPagesRecursiveTriggerConfiguration()
     {
@@ -224,7 +225,6 @@ class RecordMonitor extends AbstractDataHandlerListener
     ) {
         $recordTable = $table;
         $recordUid = $uid;
-        $recordPageId = 0;
 
         if ($status == 'new') {
             $recordUid = $tceMain->substNEWwithIDs[$recordUid];

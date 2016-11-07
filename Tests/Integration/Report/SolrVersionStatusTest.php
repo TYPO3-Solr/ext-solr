@@ -23,11 +23,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use ApacheSolrForTypo3\Solr\Report\SolrConfigStatus;
 use ApacheSolrForTypo3\Solr\Report\SolrVersionStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Reports\Status;
 
 /**
  * Integration test for the solr version test

@@ -175,7 +175,6 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
         if ($rangeFile !== '' && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
             $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($rangeFile));
             $GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss'] = $rangeFile;
-            '<link href="' . $cssFile . '" rel="stylesheet" type="text/css" media="all" />';
         }
     }
 }

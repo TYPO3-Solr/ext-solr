@@ -74,6 +74,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * Holds the configuration when a recursive page queing should be triggered.
      *
      * @var array
+     * @return array
      */
     protected function getUpdateSubPagesRecursiveTriggerConfiguration()
     {
@@ -168,10 +169,9 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     }
 
     /**
-     * @param $table
-     * @param $uid
-     * @param $changedFields
-     * @param $indexQueue
+     * @param string $table
+     * @param int $uid
+     * @param array $changedFields
      */
     protected function deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $changedFields)
     {

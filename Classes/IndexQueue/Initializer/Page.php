@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

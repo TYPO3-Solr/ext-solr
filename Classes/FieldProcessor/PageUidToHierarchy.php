@@ -58,7 +58,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      * Expects a page ID of a page. Returns a Solr hierarchy notation for the
      * rootline of the page ID.
      *
-     * @param array Array of values, an array because of multivalued fields
+     * @param array $values Array of values, an array because of multivalued fields
      * @return array Modified array of values
      */
     public function process(array $values)

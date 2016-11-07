@@ -63,14 +63,10 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
      */
     public function execute()
     {
-        $executionSucceeded = false;
-
-            /** @var $cliEnvironment CliEnvironment */
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
         $cliEnvironment->backup();
         $cliEnvironment->initialize($this->getWebRoot());
 
-        /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
         $indexService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Index\\IndexService', $this->site);
         $indexService->setContextTask($this);
         $indexService->indexItems($this->documentsToIndexLimit);

@@ -128,7 +128,6 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      */
     protected function resolveFieldValue($solrFieldName)
     {
-        $fieldValue = '';
         $pageRecord = $GLOBALS['TSFE']->page;
 
         if (isset($this->pageIndexingConfiguration[$solrFieldName . '.'])) {

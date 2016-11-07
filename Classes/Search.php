@@ -110,6 +110,8 @@ class Search implements SingletonInterface
      * Since ApacheSolrForTypo3\Solr\Search is a \TYPO3\CMS\Core\SingletonInterface, this is needed to
      * be able to switch between multiple cores/connections during
      * one request
+     *
+     * @param SolrService $solrConnection
      */
     public function setSolrConnection(SolrService $solrConnection)
     {
@@ -530,7 +532,6 @@ class Search implements SingletonInterface
                 $spellcheckingSuggestions['collation'] = $collections['collation'];
             }
         }
-
 
         return $spellcheckingSuggestions;
     }

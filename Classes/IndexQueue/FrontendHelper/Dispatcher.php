@@ -82,6 +82,7 @@ class Dispatcher
         $frontendHelpers = $this->frontendHelperManager->getActivatedFrontendHelpers();
 
         foreach ($frontendHelpers as $frontendHelper) {
+            /** @var FrontendHelper $frontendHelper */
             $frontendHelper->deactivate();
         }
     }

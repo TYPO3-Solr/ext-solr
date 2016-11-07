@@ -205,6 +205,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
     /**
      * (non-PHPdoc)
      * @see \ApacheSolrForTypo3\Solr\Facet\FacetRenderer::setTemplate()
+     * @param Template $template
      */
     public function setTemplate(Template $template)
     {
@@ -214,6 +215,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
     /**
      * (non-PHPdoc)
      * @see \ApacheSolrForTypo3\Solr\Facet\FacetRenderer::setLinkTargetPageId()
+     * @param int $linkTargetPageId
      */
     public function setLinkTargetPageId($linkTargetPageId)
     {
@@ -229,7 +231,6 @@ abstract class AbstractFacetRenderer implements FacetRenderer
      */
     protected function buildResetFacetUrl()
     {
-        $resetFacetUrl = '';
         $resultParameters = GeneralUtility::_GPmerged('tx_solr');
 
         if (is_array($resultParameters['filter'])) {
