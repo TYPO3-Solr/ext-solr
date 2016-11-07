@@ -137,19 +137,6 @@ class PageIndexerRequest
      */
     public function send($url)
     {
-        $parsedURL = parse_url($url);
-
-        /**
-         * @todo
-         * This is the current check, which is not working should be,
-         * preg_match('/^https$/', $parsedURL['scheme']) === 1;
-         * we should fix or remove this check
-         */
-        $isHttpsUrl = !preg_match('/^https?/', $parsedURL['scheme']);
-        if ($isHttpsUrl) {
-            throw new \RuntimeException('Cannot send request headers for HTTPS protocol', 1320319214);
-        }
-
         /** @var $response PageIndexerResponse */
         $response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $decodedResponse = $this->getUrlAndDecodeResponse($url, $response);

@@ -168,16 +168,23 @@ class PageIndexerRequestTest extends UnitTest
     /**
      * @test
      */
-    public function sendThrowsExceptionOnHttpsUrl()
+    public function canSendRequestToSslSite()
     {
-        $this->markTestIncomplete('We need to verify before if indexing with https should work at all');
+        $testParameters = json_encode(['requestId' => '581f76be71f60']);
+        /** @var $requestMock PageIndexerRequest */
+        $requestMock = $this->getMockBuilder(PageIndexerRequest::class)
+            ->setMethods(['getUrl'])
+            ->setConstructorArgs([$testParameters])
+            ->getMock();
+
+        // we fake the response from a captured response json file
+        $fakeResponse = $this->getFixtureContent('fakeResponse.json');
+        $requestMock->expects($this->once())->method('getUrl')->will($this->returnValue($fakeResponse));
+
         $queueItemMock = $this->getDumbMock(Item::class);
+        $requestMock->setIndexQueueItem($queueItemMock);
 
-        $this->setExpectedException(\RuntimeException::class, 'Cannot send request headers for HTTPS protocol');
-        $pageIndexerRequest = $this->getPageIndexerRequest();
-        $pageIndexerRequest->setIndexQueueItem($queueItemMock);
-
-        $pageIndexerRequest->send('https://7.6.local.typo3.org/');
+        $requestMock->send('https://7.6.local.typo3.org/about/typo3/');
     }
 
     /**
