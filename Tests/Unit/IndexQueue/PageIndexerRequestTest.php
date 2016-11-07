@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -40,14 +42,13 @@ class PageIndexerRequestTest extends UnitTest
      */
     public function authenticatesValidRequest()
     {
-        $header = json_encode(array(
+        $jsonEncodedParameters = json_encode([
             'item' => 1,
             'page' => 1,
             'hash' => md5('1|1|' . $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'])
-        ));
+        ]);
 
-        $request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest',
-            $header);
+        $request = $this->getPageIndexerRequest($jsonEncodedParameters);
         $this->assertTrue($request->isAuthenticated());
     }
 
@@ -56,14 +57,13 @@ class PageIndexerRequestTest extends UnitTest
      */
     public function doesNotAuthenticateInvalidRequest()
     {
-        $header = json_encode(array(
+        $jsonEncodedParameters = json_encode([
             'item' => 1,
             'page' => 1,
             'hash' => md5('invalid|invalid|invalid')
-        ));
+        ]);
 
-        $request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest',
-            $header);
+        $request = $this->getPageIndexerRequest($jsonEncodedParameters);
         $this->assertFalse($request->isAuthenticated());
     }
 
@@ -73,12 +73,153 @@ class PageIndexerRequestTest extends UnitTest
     public function usesUniqueIdFromHeader()
     {
         $id = uniqid();
-        $header = json_encode(array(
+        $jsonEncodedParameters = json_encode([
             'requestId' => $id
-        ));
+        ]);
 
-        $request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest',
-            $header);
+        $request = $this->getPageIndexerRequest($jsonEncodedParameters);
         $this->assertEquals($id, $request->getRequestId());
+    }
+
+    /**
+     * @test
+     */
+    public function sendCreatesExpectedResponse()
+    {
+        $testParameters = json_encode(['requestId' => '581f76be71f60']);
+        /** @var $requestMock PageIndexerRequest */
+        $requestMock = $this->getMockBuilder(PageIndexerRequest::class)
+            ->setMethods(['getUrl'])
+            ->setConstructorArgs([$testParameters])
+            ->getMock();
+
+        // we fake the response from a captured response json file
+        $fakeResponse = $this->getFixtureContent('fakeResponse.json');
+        $requestMock->expects($this->once())->method('getUrl')->will($this->returnValue($fakeResponse));
+
+        $queueItemMock = $this->getDumbMock(Item::class);
+        $requestMock->setIndexQueueItem($queueItemMock);
+
+        $response = $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
+        $indexPageResult = $response->getActionResult('indexPage');
+
+        $this->assertTrue(is_array($indexPageResult));
+        $this->assertSame(1, $indexPageResult['pageIndexed']);
+        $this->assertSame($response->getRequestId(), '581f76be71f60', 'Response did not contain expected requestId');
+    }
+
+    /**
+     * @test
+     */
+    public function sendThrowsExceptionOnIsMissmatch()
+    {
+        $testParameters = json_encode(['requestId' => 'wrongId']);
+        /** @var $requestMock PageIndexerRequest */
+        $requestMock = $this->getMockBuilder(PageIndexerRequest::class)
+            ->setMethods(['getUrl'])
+            ->setConstructorArgs([$testParameters])
+            ->getMock();
+
+        // we fake the response from a captured response json file
+        $fakeResponse = $this->getFixtureContent('fakeResponse.json');
+        $requestMock->expects($this->once())->method('getUrl')->will($this->returnValue($fakeResponse));
+
+        $queueItemMock = $this->getDumbMock(Item::class);
+        $requestMock->setIndexQueueItem($queueItemMock);
+
+        $this->setExpectedException(\RuntimeException::class, 'Request ID mismatch');
+        $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
+    }
+
+    /**
+     * @test
+     */
+    public function sendThrowsExceptionWhenInvalidJsonIsReturned()
+    {
+        $testParameters = json_encode(['requestId' => 'wrongId']);
+        /** @var $requestMock PageIndexerRequest */
+        $requestMock = $this->getMockBuilder(PageIndexerRequest::class)
+            ->setMethods(['getUrl'])
+            ->setConstructorArgs([$testParameters])
+            ->getMock();
+
+        $requestMock->expects($this->once())->method('getUrl')->will($this->returnValue('invalidJsonString!!'));
+
+        $queueItemMock = $this->getDumbMock(Item::class);
+        $requestMock->setIndexQueueItem($queueItemMock);
+
+        $this->setExpectedException(\RuntimeException::class, 'Failed to execute Page Indexer Request');
+        $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetTimeOutFromPHPConfiguration()
+    {
+        $initialTimeout = ini_get('default_socket_timeout');
+        ini_set('default_socket_timeout',122.5);
+
+        $pageIndexerRequest = $this->getPageIndexerRequest();
+        $this->assertSame(122.5, $pageIndexerRequest->getTimeout());
+        ini_set('default_socket_timeout', $initialTimeout);
+    }
+
+    /**
+     * @test
+     */
+    public function sendThrowsExceptionOnHttpsUrl()
+    {
+        $this->markTestIncomplete('We need to verify before if indexing with https should work at all');
+        $queueItemMock = $this->getDumbMock(Item::class);
+
+        $this->setExpectedException(\RuntimeException::class, 'Cannot send request headers for HTTPS protocol');
+        $pageIndexerRequest = $this->getPageIndexerRequest();
+        $pageIndexerRequest->setIndexQueueItem($queueItemMock);
+
+        $pageIndexerRequest->send('https://7.6.local.typo3.org/');
+    }
+
+    /**
+     * @test
+     */
+    public function authenticationHeaderIsSetWhenUsernameAndPasswordHaveBeenPassed()
+    {
+        $queueItemMock = $this->getDumbMock(Item::class);
+
+        $pageIndexerRequest = $this->getPageIndexerRequest();
+        $pageIndexerRequest->setIndexQueueItem($queueItemMock);
+        $pageIndexerRequest->setAuthorizationCredentials('bob','topsecret');
+
+        $headers = $pageIndexerRequest->getHeaders();
+
+        $expetedHeader = 'Authorization: Basic ' . base64_encode('bob:topsecret');
+        $this->assertContains($expetedHeader, $headers, 'Headers did not contain authentication details');
+    }
+
+    /**
+     * @test
+     */
+    public function canSetParameter()
+    {
+        $pageIndexerRequest = $this->getPageIndexerRequest();
+        $this->assertNull($pageIndexerRequest->getParameter('foo'), 'Parameter foo should be null when nothing was set');
+
+        $pageIndexerRequest->setParameter('foo', 'bar');
+        $this->assertSame('bar', $pageIndexerRequest->getParameter('foo'), 'Could not get parameter foo after setting it');
+
+        $pageIndexerRequest->setParameter('test', 4711);
+        $this->assertSame(4711, $pageIndexerRequest->getParameter('test'), 'Could not get parameter foo after setting it');
+
+    }
+
+    /**
+     * @param string $jsonEncodedParameter
+     * @return PageIndexerRequest
+     */
+    protected function getPageIndexerRequest($jsonEncodedParameter = null)
+    {
+        $request = GeneralUtility::makeInstance(PageIndexerRequest::class, $jsonEncodedParameter);
+        return $request;
     }
 }
