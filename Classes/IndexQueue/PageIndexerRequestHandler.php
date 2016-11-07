@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -53,7 +54,7 @@ class PageIndexerRequestHandler implements SingletonInterface
     /**
      * Index Queue page indexer frontend helper dispatcher.
      *
-     * @var \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher
+     * @var Dispatcher
      */
     protected $dispatcher;
 
@@ -61,16 +62,12 @@ class PageIndexerRequestHandler implements SingletonInterface
      * Constructor.
      *
      * Initializes request, response, and dispatcher.
-     *
      */
     public function __construct()
     {
-        $this->dispatcher = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\Dispatcher');
-
-        $this->request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest',
-            $_SERVER['HTTP_X_TX_SOLR_IQ']
-        );
-        $this->response = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
+        $this->dispatcher = GeneralUtility::makeInstance(Dispatcher::class);
+        $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, $_SERVER['HTTP_X_TX_SOLR_IQ']);
+        $this->response = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $this->response->setRequestId($this->request->getRequestId());
     }
 
@@ -88,10 +85,10 @@ class PageIndexerRequestHandler implements SingletonInterface
                 'Invalid Index Queue Frontend Request detected!',
                 'solr',
                 3,
-                array(
+                [
                     'page indexer request' => (array)$this->request,
                     'index queue header' => $_SERVER['HTTP_X_TX_SOLR_IQ']
-                )
+                ]
             );
             http_response_code(403);
             die('Invalid Index Queue Request!');
