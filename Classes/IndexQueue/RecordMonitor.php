@@ -235,14 +235,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        if ($status == 'update' && !isset($fields['pid'])) {
-            $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
-            if ($recordTable == 'pages' && Util::isRootPage($recordUid)) {
-                $recordPageId = $uid;
-            }
-        } else {
-            $recordPageId = $fields['pid'];
-        }
+        $recordPageId = $this->getRecordPageId($status, $recordTable, $recordUid, $uid, $fields, $tceMain);
 
         // when a content element changes we need to updated the page instead
         if ($recordTable == 'tt_content') {
@@ -315,6 +308,31 @@ class RecordMonitor extends AbstractDataHandlerListener
                 $this->removeFromIndexAndQueue($recordTable, $recordUid);
             }
         }
+    }
+
+    /**
+     * Determines the recordPageId (pid) of a record.
+     *
+     * @param string $status
+     * @param string $recordTable
+     * @param int $recordUid
+     * @param int $originalUid
+     * @param array $fields
+     * @param DataHandler $tceMain
+     * @return int
+     */
+    protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
+    {
+        if ($status == 'update' && !isset($fields['pid'])) {
+            $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
+            if ($recordTable == 'pages' && Util::isRootPage($recordUid)) {
+                $recordPageId = $originalUid;
+            }
+
+            return $recordPageId;
+        }
+
+        return $fields['pid'];
     }
 
     /**
