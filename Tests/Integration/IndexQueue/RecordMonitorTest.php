@@ -269,12 +269,46 @@ class RecordMonitorTest extends IntegrationTest
             'endtime' => 1100000,
             'tsstamp' => 1000000
         ];
-        $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
 
         $this->importDataSetFromFixture('exception_is_triggered_without_pid.xml');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+    }
+
+    /**
+     * This testcase checks, that a queue item will be removed when an unexisting record was updated
+     *
+     * @test
+     */
+    public function queueEntryIsRemovedWhenUnExistingRecordWasUpdated()
+    {
+        // create fake extension database table and TCA
+        $this->importDumpFromFixture('fake_extension_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+
+        // create faked tce main call data
+        $status = 'update';
+        $table = 'pages';
+        // unexisting uid
+        $uid = 2;
+        $fields = [
+            'title' => 'testpage',
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000,
+            'pid' => 1
+        ];
+
+        $this->importDataSetFromFixture('update_unexisting_item_will_remove_queue_entry.xml');
+
+        // there should be one item in the queue.
+        $this->assertIndexQueueContainsItemAmount(1);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+
+        // the queue entry should be removed since the record itself does not exist
+        $this->assertEmptyIndexQueue();
+
     }
 }
