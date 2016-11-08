@@ -66,6 +66,7 @@
         <is_siteroot>1</is_siteroot>
         <doktype>1</doktype>
         <hidden>1</hidden>
+        <pid>0</pid>
         <extendToSubpages>1</extendToSubpages>
     </pages>
     <pages>

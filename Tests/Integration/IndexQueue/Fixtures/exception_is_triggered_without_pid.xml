@@ -52,7 +52,6 @@
     </pages>
     <tx_fakeextension_domain_model_foo>
         <uid>8</uid>
-        <pid>1</pid>
         <title>testnews</title>
     </tx_fakeextension_domain_model_foo>
 
