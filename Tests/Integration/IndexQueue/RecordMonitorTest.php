@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\NoPidException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
@@ -242,5 +243,38 @@ class RecordMonitorTest extends IntegrationTest
 
         // we assert that the index queue is still empty because the page was only set to hidden
         $this->assertEmptyIndexQueue();
+    }
+
+    /**
+     * When a record without pid is processed an exception should be thrown.
+     *
+     * @test
+     */
+    public function exceptionIsThrowsWhenRecordWithoutPidIsCreated()
+    {
+        // we expect that this exception is getting thrown, because a record without pid was updated
+        $this->setExpectedException(NoPidException::class);
+
+        // create fake extension database table and TCA
+        $this->importDumpFromFixture('fake_extension_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+
+        // create faked tce main call data
+        $status = 'update';
+        $table = 'tx_fakeextension_domain_model_foo';
+        $uid = 'NEW566a9eac309d8193936351';
+        $fields = [
+            'title' => 'testnews',
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000
+        ];
+        $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
+
+        $this->importDataSetFromFixture('exception_is_triggered_without_pid.xml');
+
+        // we expect that the index queue is empty before we start
+        $this->assertEmptyIndexQueue();
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
     }
 }

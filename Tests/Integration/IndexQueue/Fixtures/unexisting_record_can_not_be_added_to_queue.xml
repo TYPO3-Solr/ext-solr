@@ -74,6 +74,7 @@
     <pages>
         <uid>1</uid>
         <is_siteroot>1</is_siteroot>
+        <pid>0</pid>
         <doktype>1</doktype>
     </pages>
 </dataset>

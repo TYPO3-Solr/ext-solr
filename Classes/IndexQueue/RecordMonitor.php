@@ -105,7 +105,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
             // skip workspaces: index only LIVE workspace
             $this->indexQueue->updateItem('pages',
-                $tceMain->getPID($table, $uid),
+                $this->getValidatedPid($tceMain, $table, $uid),
                 null,
                 time()
             );
@@ -140,7 +140,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             switch ($table) {
                 /** @noinspection PhpMissingBreakStatementInspection */
                 case 'tt_content':
-                    $uid = $tceMain->getPID($table, $uid);
+                    $uid = $this->getValidatedPid($tceMain, $table, $uid);
                     $table = 'pages';
                 case 'pages':
                     $this->solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
@@ -160,7 +160,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                     }
                     break;
                 default:
-                    $recordPageId = $tceMain->getPID($table, $uid);
+                    $recordPageId = $this->getValidatedPid($tceMain, $table, $uid);
                     $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
                     $isMonitoredTable = $this->solrConfiguration->getIndexQueueIsMonitoredTable($table);
 
@@ -236,7 +236,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         if ($status == 'update' && !isset($fields['pid'])) {
-            $recordPageId = $tceMain->getPID($recordTable, $recordUid);
+            $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
             if ($recordTable == 'pages' && Util::isRootPage($recordUid)) {
                 $recordPageId = $uid;
             }
@@ -469,6 +469,26 @@ class RecordMonitor extends AbstractDataHandlerListener
 
         $pageInitializer->initializeMountedPage($mountProperties,
             $mountedPageId);
+    }
+
+    /**
+     * Retrieves the pid of a record and throws an exception when getPid returns false.
+     *
+     * @param DataHandler $tceMain
+     * @param string $table
+     * @param integer $uid
+     * @throws NoPidException
+     * @return integer
+     */
+    protected function getValidatedPid(DataHandler $tceMain, $table, $uid)
+    {
+        $pid = $tceMain->getPID($table, $uid);
+        if ($pid === false) {
+            throw new NoPidException('Pid should not be false');
+        }
+
+        $pid = intval($pid);
+        return $pid;
     }
 
     /**
