@@ -151,4 +151,19 @@ class QueueTest extends IntegrationTest
             // queue should still be empty
         $this->assertEmptyQueue();
     }
+
+    /**
+     * @test
+     */
+    public function mountPagesAreOnlyAddedOnceAfterInitialize()
+    {
+        $this->importDataSetFromFixture('mount_pages_initialize_queue_as_expected.xml');
+        $this->assertEmptyQueue();
+
+        $this->indexQueue->initialize(Site::getFirstAvailableSite(), 'pages');
+        $this->assertItemsInQueue(4);
+
+        $this->indexQueue->initialize(Site::getFirstAvailableSite(), 'pages');
+        $this->assertItemsInQueue(4);
+    }
 }

@@ -284,10 +284,6 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function queueEntryIsRemovedWhenUnExistingRecordWasUpdated()
     {
-        // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
-
         // create faked tce main call data
         $status = 'update';
         $table = 'pages';
@@ -309,6 +305,30 @@ class RecordMonitorTest extends IntegrationTest
 
         // the queue entry should be removed since the record itself does not exist
         $this->assertEmptyIndexQueue();
+    }
 
+    /**
+     * @test
+     */
+    public function mountPointIsOnlyAddedOnceOnUpdate()
+    {
+        $this->importDataSetFromFixture('mount_pages_are_added_once.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 40;
+        $fields = [
+            'title' => 'testpage',
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000,
+            'pid' => 4
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->assertIndexQueueContainsItemAmount(1);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->assertIndexQueueContainsItemAmount(1);
     }
 }
