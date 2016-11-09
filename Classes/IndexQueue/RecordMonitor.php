@@ -235,14 +235,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        if ($status == 'update' && !isset($fields['pid'])) {
-            $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
-            if ($recordTable == 'pages' && Util::isRootPage($recordUid)) {
-                $recordPageId = $uid;
-            }
-        } else {
-            $recordPageId = $fields['pid'];
-        }
+        $recordPageId = $this->getRecordPageId($status, $recordTable, $recordUid, $uid, $fields, $tceMain);
 
         // when a content element changes we need to updated the page instead
         if ($recordTable == 'tt_content') {
@@ -259,63 +252,105 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         $record = $this->getRecord($recordTable, $recordUid);
-        if (!empty($record)) {
-            // only update/insert the item if we actually found a record
-
-            if (Util::isLocalizedRecord($recordTable, $record)) {
-                // if it's a localization overlay, update the original record instead
-                $recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
-
-                if ($recordTable == 'pages_language_overlay') {
-                    $recordTable = 'pages';
-                }
-
-                $tableEnableFields = implode(', ',
-                    $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
-                $l10nParentRecord = BackendUtility::getRecord($recordTable,
-                    $recordUid, $tableEnableFields, '', false);
-                if (!$this->isEnabledRecord($recordTable,
-                    $l10nParentRecord)
-                ) {
-                    // the l10n parent record must be visible to have it's translation indexed
-                    return;
-                }
-            }
-
-            // Clear existing index queue items to prevent mount point duplicates.
-            if ($recordTable == 'pages') {
-                $this->indexQueue->deleteItem('pages', $recordUid);
-            }
-
-            if ($this->isEnabledRecord($recordTable, $record)) {
-                $configurationName = null;
-                if ($recordTable !== 'pages') {
-                    $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
-                }
-
-                $this->indexQueue->updateItem($recordTable, $recordUid,
-                    $configurationName);
-            }
-
-            if ($recordTable == 'pages') {
-                $this->updateCanonicalPages($recordUid);
-                $this->updateMountPages($recordUid);
-
-                if ($this->isRecursiveUpdateRequired($recordUid, $fields)) {
-                    $treePageIds = $this->getSubPageIds($recordUid);
-                    foreach ($treePageIds as $treePageId) {
-                        $this->indexQueue->updateItem('pages', $treePageId);
-                    }
-                }
-            }
-        } else {
+        if (empty($record)) {
             // TODO move this part to the garbage collector
             // check if the item should be removed from the index because it no longer matches the conditions
             if ($this->indexQueue->containsItem($recordTable, $recordUid)) {
                 $this->removeFromIndexAndQueue($recordTable, $recordUid);
             }
+            return;
+        }
+
+        // only update/insert the item if we actually found a record
+        if (Util::isLocalizedRecord($recordTable, $record)) {
+            // if it's a localization overlay, update the original record instead
+            $recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
+
+            if ($recordTable == 'pages_language_overlay') {
+                $recordTable = 'pages';
+            }
+
+            $tableEnableFields = implode(', ', $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
+            $l10nParentRecord = BackendUtility::getRecord($recordTable, $recordUid, $tableEnableFields, '', false);
+            if (!$this->isEnabledRecord($recordTable, $l10nParentRecord)) {
+                // the l10n parent record must be visible to have it's translation indexed
+                return;
+            }
+        }
+
+        // Clear existing index queue items to prevent mount point duplicates.
+        if ($recordTable == 'pages') {
+            $this->indexQueue->deleteItem('pages', $recordUid);
+        }
+
+        if ($this->isEnabledRecord($recordTable, $record)) {
+            $configurationName = null;
+            if ($recordTable !== 'pages') {
+                $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
+            }
+
+            $this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
+        }
+
+        if ($recordTable == 'pages') {
+            $this->doPagesPostUpdateOperations($fields, $recordUid);
         }
     }
+
+    /**
+     * Applies needed updates when a pages record was processed by the RecordMonitor.
+     *
+     * @param array $fields
+     * @param int $recordUid
+     */
+    protected function doPagesPostUpdateOperations(array $fields, $recordUid)
+    {
+        $this->updateCanonicalPages($recordUid);
+        $this->updateMountPages($recordUid);
+
+        if ($this->isRecursiveUpdateRequired($recordUid, $fields)) {
+            $treePageIds = $this->getSubPageIds($recordUid);
+            $this->updatePageIdItems($treePageIds);
+        }
+    }
+
+    /**
+     * Determines the recordPageId (pid) of a record.
+     *
+     * @param string $status
+     * @param string $recordTable
+     * @param int $recordUid
+     * @param int $originalUid
+     * @param array $fields
+     * @param DataHandler $tceMain
+     * @return int
+     */
+    protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
+    {
+        if ($status == 'update' && !isset($fields['pid'])) {
+            $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
+            if ($recordTable == 'pages' && Util::isRootPage($recordUid)) {
+                $recordPageId = $originalUid;
+            }
+
+            return $recordPageId;
+        }
+
+        return $fields['pid'];
+    }
+
+    /**
+     * Applies the updateItem instruction on a collection of pageIds.
+     *
+     * @param array $treePageIds
+     */
+    protected function updatePageIdItems(array $treePageIds)
+    {
+        foreach ($treePageIds as $treePageId) {
+            $this->indexQueue->updateItem('pages', $treePageId);
+        }
+    }
+
 
     /**
      * Removes record from the index queue and from the solr index
