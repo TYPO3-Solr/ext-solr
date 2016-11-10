@@ -100,8 +100,7 @@ class Page extends AbstractInitializer
         $mountedPages = array($mountPageId);
 
         $this->addMountedPagesToIndexQueue($mountedPages, $mountProperties);
-        $this->addIndexQueueItemIndexingProperties($mountProperties,
-            $mountedPages);
+        $this->addIndexQueueItemIndexingProperties($mountProperties, $mountedPages);
     }
 
     /**
@@ -246,19 +245,54 @@ class Page extends AbstractInitializer
         array $mountedPages,
         array $mountProperties
     ) {
+        $mountPointPageIsWithExistingQueueEntry = $this->getPageIdsOfExistingMountPages($mountedPages);
+        $mountedPagesThatNeedToBeAdded = array_diff($mountedPages, $mountPointPageIsWithExistingQueueEntry);
+
+        if (count($mountedPagesThatNeedToBeAdded) === 0) {
+            //nothing to do
+            return;
+        }
+
         $mountIdentifier = $this->getMountPointIdentifier($mountProperties);
         $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
             . $this->buildSelectStatement() . ', 1, ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($mountIdentifier,
                 'tx_solr_indexqueue_item') . ',""'
             . 'FROM pages '
             . 'WHERE '
-            . 'uid IN(' . implode(',', $mountedPages) . ') '
+            . 'uid IN(' . implode(',', $mountedPagesThatNeedToBeAdded) . ') '
             . $this->buildTcaWhereClause()
             . $this->buildUserWhereClause();
 
         $GLOBALS['TYPO3_DB']->sql_query($initializationQuery);
-
         $this->logInitialization($initializationQuery);
+    }
+
+    /**
+     * Retrieves an array of pageIds from mountPoints that allready have a queue entry.
+     *
+     * @param array $mountedPages
+     * @return array
+     */
+    protected function getPageIdsOfExistingMountPages($mountedPages)
+    {
+        $queueItemsOfExistingMountPoints = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+            'COUNT(*) AS queueItemCount,item_uid',
+            'tx_solr_indexqueue_item',
+            'item_type="pages" AND item_uid IN (' . implode(',', $mountedPages) . ')',
+            'item_uid',
+            '',
+            '',
+            'item_uid'
+        );
+
+        $mountedPagesIdsWithQueueItems = [];
+        foreach ($queueItemsOfExistingMountPoints as $id => $queueItemsOfExistingMountPoint) {
+            if (((int) $queueItemsOfExistingMountPoint['queueItemCount']) > 0) {
+                $mountedPagesIdsWithQueueItems[] = (int) $id;
+            }
+        }
+
+        return $mountedPagesIdsWithQueueItems;
     }
 
     /**
