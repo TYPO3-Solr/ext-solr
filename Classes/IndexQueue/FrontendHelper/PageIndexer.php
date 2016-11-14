@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -36,7 +37,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class PageIndexer extends AbstractFrontendHelper
+class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 {
 
     /**
@@ -66,10 +67,10 @@ class PageIndexer extends AbstractFrontendHelper
      */
     public function activate()
     {
-        $pageIndexingHookRegistration = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageIndexer';
+        $pageIndexingHookRegistration = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageIndexer';
 
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = $pageIndexingHookRegistration . '->authorizeFrontendUser';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = $pageIndexingHookRegistration . '->disableCaching';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = '&' . $pageIndexingHookRegistration . '->authorizeFrontendUser';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = '&' . $pageIndexingHookRegistration . '->disableCaching';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__] = $pageIndexingHookRegistration;
 
         // indexes fields defined in plugin.tx_solr.index.queue.pages.fields
@@ -81,7 +82,7 @@ class PageIndexer extends AbstractFrontendHelper
         // ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager before.
         // \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance() also uses a dedicated cache
         $GLOBALS['T3_VAR']['callUserFunction_classPool'][__CLASS__] = $this;
-        $GLOBALS['T3_VAR']['getUserObj'][$pageIndexingHookRegistration] = $this;
+        //$GLOBALS['T3_VAR']['getUserObj'][$pageIndexingHookRegistration] = $this;
 
         $this->registerAuthorizationService();
 # Since TypoScript is not available at this point we cannot bind it to some TS configuration option whether to log or not
