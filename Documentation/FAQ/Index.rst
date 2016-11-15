@@ -240,3 +240,16 @@ This was tested with "Docker for Mac" (not Docker Toolbox)
     # run docker container from image with volume
     docker run -d -p 127.0.0.1:8282:8983 -v ~/solrdata:/opt/solr/server/solr/data solr-full
 
+
+** Can i index a https (SSL) site?
+
+Yes. You need a valid ssl certificate and change the following setting:
+
+::
+
+    plugin.tx_solr.index.queue.pages.frontendDataHelper.scheme = https
+
+|
+
+
+
