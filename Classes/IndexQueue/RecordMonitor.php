@@ -230,7 +230,6 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($status == 'new') {
             $recordUid = $tceMain->substNEWwithIDs[$recordUid];
         }
-
         if (Util::isDraftRecord($table, $recordUid)) {
             // skip workspaces: index only LIVE workspace
             return;
@@ -263,20 +262,18 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         // only update/insert the item if we actually found a record
-        if (Util::isLocalizedRecord($recordTable, $record)) {
+        $isLocalizedRecord = Util::isLocalizedRecord($recordTable, $record);
+        if ($isLocalizedRecord) {
             // if it's a localization overlay, update the original record instead
             $recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
-
             if ($recordTable == 'pages_language_overlay') {
                 $recordTable = 'pages';
             }
+        }
 
-            $tableEnableFields = implode(', ', $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
-            $l10nParentRecord = BackendUtility::getRecord($recordTable, $recordUid, $tableEnableFields, '', false);
-            if (!$this->isEnabledRecord($recordTable, $l10nParentRecord)) {
-                // the l10n parent record must be visible to have it's translation indexed
-                return;
-            }
+        if ($isLocalizedRecord && !$this->getIsTranslationParentRecordEnabled($recordTable, $recordUid)) {
+            // we have a localized record without a visible parent record. Nothing to do.
+            return;
         }
 
         // Clear existing index queue items to prevent mount point duplicates.
@@ -296,6 +293,20 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($recordTable == 'pages') {
             $this->doPagesPostUpdateOperations($fields, $recordUid);
         }
+    }
+
+    /**
+     * Checks if the parent record of the translated record is enabled.
+     *
+     * @param string $recordTable
+     * @param integer $recordUid
+     * @return bool
+     */
+    protected function getIsTranslationParentRecordEnabled($recordTable, $recordUid)
+    {
+        $tableEnableFields = implode(', ', $GLOBALS['TCA'][$recordTable]['ctrl']['enablecolumns']);
+        $l10nParentRecord = BackendUtility::getRecord($recordTable, $recordUid, $tableEnableFields, '', false);
+        return $this->isEnabledRecord($recordTable, $l10nParentRecord);
     }
 
     /**
@@ -352,7 +363,6 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
     }
 
-
     /**
      * Removes record from the index queue and from the solr index
      *
@@ -376,18 +386,13 @@ class RecordMonitor extends AbstractDataHandlerListener
     protected function getRecord($recordTable, $recordUid)
     {
         $record = array();
-
         $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
-        foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $tableToIndex = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
-            if ($tableToIndex === $recordTable) {
-                $recordWhereClause = $this->solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
-                $record = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
-                if (!empty($record)) {
-                    // if we found a record which matches the conditions, we can continue
-                    break;
-                }
+        foreach ($indexingConfigurations as $indexingConfigurationName) {
+            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName);
+            if (!empty($record)) {
+                // if we found a record which matches the conditions, we can continue
+                break;
             }
         }
 
@@ -589,21 +594,79 @@ class RecordMonitor extends AbstractDataHandlerListener
                 continue;
             }
 
-            $tableToIndex = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
-
-            if ($tableToIndex === $recordTable) {
-                $recordWhereClause = $this->solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
-                $record = BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
-
-                if (!empty($record)) {
-                    // we found a record which matches the conditions
-                    $name = $indexingConfigurationName;
-                    // FIXME currently returns after the first configuration match
-                    break;
-                }
+            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName);
+            if (!empty($record)) {
+                $name = $indexingConfigurationName;
+                // FIXME currently returns after the first configuration match
+                break;
             }
         }
 
         return $name;
+    }
+
+    /**
+     * This method return the record array if the table is valid for this indexingConfiguration.
+     * Otherwise an empty array will be returned.
+     *
+     * @param string $recordTable
+     * @param integer $recordUid
+     * @param string $indexingConfigurationName
+     * @return array
+     */
+    protected function getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName)
+    {
+        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName)) {
+            return [];
+        }
+
+        $recordWhereClause = $this->solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
+
+        if ($recordTable === 'pages_language_overlay') {
+            return $this->getPageOverlayRecordWhenParentIsAccessible($recordUid, $recordWhereClause);
+        }
+
+        return (array) BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+    }
+
+    /**
+     * This method retrieves the pages_language_overlay record when the parent record is accessible
+     * through the recordWhereClause
+     *
+     * @param int $recordUid
+     * @param string $parentWhereClause
+     * @return array
+     */
+    protected function getPageOverlayRecordWhenParentIsAccessible($recordUid, $parentWhereClause)
+    {
+        $overlayRecord = (array) BackendUtility::getRecord('pages_language_overlay', $recordUid, '*');
+        $pageRecord = (array) BackendUtility::getRecord('pages', $overlayRecord['pid'], '*', $parentWhereClause);
+
+        if (empty($pageRecord)) {
+            return [];
+        }
+
+        return $overlayRecord;
+    }
+
+    /**
+     * This method is used to check if a table is an allowed table for an index configuration.
+     *
+     * @param string $recordTable
+     * @param string $indexingConfigurationName
+     * @return boolean
+     */
+    protected function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName)
+    {
+        $tableToIndex = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+
+        $isMatchingTable = $tableToIndex === $recordTable;
+        $isPagesPassedAndOverlayRequested = $tableToIndex === 'pages' && $recordTable === 'pages_language_overlay';
+
+        if ($isMatchingTable || $isPagesPassedAndOverlayRequested) {
+            return true;
+        }
+
+        return false;
     }
 }
