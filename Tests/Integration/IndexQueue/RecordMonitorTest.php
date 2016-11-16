@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 use ApacheSolrForTypo3\Solr\IndexQueue\NoPidException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -330,5 +331,94 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertIndexQueueContainsItemAmount(1);
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
         $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function localizedPageIsAddedToTheQueue()
+    {
+        $this->importDataSetFromFixture('localized_page_is_added_to_the_queue.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages_language_overlay';
+        $uid = 2;
+        $fields = [
+            'title' => 'New Translated Rootpage',
+            'pid' => 1
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->assertIndexQueueContainsItemAmount(1);
+
+        $firstQueueItem = $this->indexQueue->getItem(1);
+        $this->assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
+        $this->assertSame('pages', $firstQueueItem->getIndexingConfigurationName(), 'First queue item has unexpected indexingConfigurationName');
+    }
+
+
+    /**
+     * @test
+     */
+    public function localizedPageIsNotAddedToTheQueueWhenL10ParentIsHidden()
+    {
+        $this->importDataSetFromFixture('localized_page_is_not_added_to_the_queue_when_parent_hidden.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages_language_overlay';
+        $uid = 2;
+        $fields = [
+            'title' => 'New Translated Rootpage',
+            'pid' => 1
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->assertEmptyIndexQueue();
+    }
+
+    /**
+     * @test
+     */
+    public function pageIsQueueWhenContentElementIsChanged()
+    {
+        $this->importDataSetFromFixture('change_content_element.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'tt_content';
+        $uid = 456;
+        $fields = [
+            'header' => 'New Content',
+            'pid' => 1
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+
+        $firstQueueItem = $this->indexQueue->getItem(1);
+        $this->assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
+    }
+
+    /**
+     * @test
+     */
+    public function pageIsQueueWhenTranslatedContentElementIsChanged()
+    {
+        $this->importDataSetFromFixture('change_translated_content_element.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'tt_content';
+        $uid = 9999;
+        $fields = [
+            'header' => 'New Content',
+            'pid' => 1
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+
+        $firstQueueItem = $this->indexQueue->getItem(1);
+        $this->assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
     }
 }
