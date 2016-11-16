@@ -24,11 +24,15 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
+use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Utility class for tx_solr
@@ -205,8 +209,8 @@ class Util
      */
     private static function getConfigurationManager()
     {
-        /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
+        /** @var ConfigurationManager $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager;
     }
 
@@ -262,7 +266,8 @@ class Util
         }
 
         if ($useCache) {
-            $cache = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache', 'tx_solr_configuration');
+            /** @var $cache TwoLevelCache */
+            $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'tx_solr_configuration');
             $configurationToUse = $cache->get($cacheId);
         }
 
@@ -310,7 +315,8 @@ class Util
      */
     private static function getConfigurationFromInitializedTSFE($path)
     {
-        $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
+        /** @var $tmpl ExtendedTemplateService */
+        $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
         $configuration = $tmpl->ext_getSetup($GLOBALS['TSFE']->tmpl->setup, $path);
         $configurationToUse = $configuration[0];
         return $configurationToUse;
@@ -329,7 +335,8 @@ class Util
             GeneralUtility::_GETset($language, 'L');
         }
 
-        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+            /** @var $pageSelect PageRepository */
+        $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
         $rootLine = $pageSelect->getRootLine($pageId);
 
         $initializedTsfe = false;
@@ -348,8 +355,8 @@ class Util
             $GLOBALS['TSFE']->sys_page = $pageSelect;
             $initializedPageSelect = true;
         }
-
-        $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
+            /** @var $tmpl ExtendedTemplateService */
+        $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
         $tmpl->tt_track = false; // Do not log time-performance information
         $tmpl->init();
         $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
@@ -388,13 +395,13 @@ class Util
         $cacheId = $pageId . '|' . $language;
 
         if (!is_object($GLOBALS['TT'])) {
-            $GLOBALS['TT'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TimeTracker\\NullTimeTracker');
+            $GLOBALS['TT'] = GeneralUtility::makeInstance(NullTimeTracker::class);
         }
 
         if (!isset($tsfeCache[$cacheId]) || !$useCache) {
             GeneralUtility::_GETset($language, 'L');
 
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',
+            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
                 $GLOBALS['TYPO3_CONF_VARS'], $pageId, 0);
 
             // for certain situations we need to trick TSFE into granting us
@@ -404,7 +411,7 @@ class Util
             $groupListBackup = $GLOBALS['TSFE']->gr_list;
             $GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
 
-            $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+            $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
             $GLOBALS['TSFE']->getPageAndRootline();
 
             // restore gr_list
@@ -460,7 +467,7 @@ class Util
 
         // fallback, backend
         if ($pageId != 0 && ($forceFallback || empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
-            $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+            $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
             $rootLine = $pageSelect->getRootLine($pageId, '', true);
         }
 
