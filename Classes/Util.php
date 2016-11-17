@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
@@ -457,48 +458,24 @@ class Util
      */
     public static function getRootPageId($pageId = 0, $forceFallback = false)
     {
-        $rootLine = array();
+        /** @var Rootline $rootLine */
+        $rootLine = GeneralUtility::makeInstance(Rootline::class);
         $rootPageId = intval($pageId) ? intval($pageId) : $GLOBALS['TSFE']->id;
 
         // frontend
         if (!empty($GLOBALS['TSFE']->rootLine)) {
-            $rootLine = $GLOBALS['TSFE']->rootLine;
+            $rootLine->setRootLineArray($GLOBALS['TSFE']->rootLine);
         }
 
         // fallback, backend
-        if ($pageId != 0 && ($forceFallback || empty($rootLine) || !self::rootlineContainsRootPage($rootLine))) {
+        if ($pageId != 0 && ($forceFallback || !$rootLine->getHasRootPage())) {
             $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-            $rootLine = $pageSelect->getRootLine($pageId, '', true);
+            $rootLineArray = $pageSelect->getRootLine($pageId, '', true);
+            $rootLine->setRootLineArray($rootLineArray);
         }
 
-        $rootLine = array_reverse($rootLine);
-        foreach ($rootLine as $page) {
-            if ($page['is_siteroot']) {
-                $rootPageId = $page['uid'];
-            }
-        }
-
-        return $rootPageId;
-    }
-
-    /**
-     * Checks whether a given root line contains a page marked as root page.
-     *
-     * @param array $rootLine A root line array of page records
-     * @return bool TRUE if the root line contains a root page record, FALSE otherwise
-     */
-    protected static function rootlineContainsRootPage(array $rootLine)
-    {
-        $containsRootPage = false;
-
-        foreach ($rootLine as $page) {
-            if ($page['is_siteroot']) {
-                $containsRootPage = true;
-                break;
-            }
-        }
-
-        return $containsRootPage;
+        $rootPageFromRootLine = $rootLine->getRootPageId();
+        return $rootPageFromRootLine === 0 ? $rootPageId : $rootPageFromRootLine;
     }
 
     /**
