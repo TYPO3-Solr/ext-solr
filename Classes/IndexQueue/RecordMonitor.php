@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -451,21 +452,24 @@ class RecordMonitor extends AbstractDataHandlerListener
     /**
      * Finds Mount Pages that mount pages in a given root line.
      *
-     * @param array $rootLine Root line of pages to check for usage as mount source
+     * @param array $rootLineArray Root line of pages to check for usage as mount source
      * @return array Array of pages found to be mounting pages from the root line.
      */
-    protected function getDestinationMountPropertiesByRootLine(array $rootLine)
+    protected function getDestinationMountPropertiesByRootLine(array $rootLineArray)
     {
         $mountPages = array();
 
-        $currentPage = array_shift($rootLine);
+        $currentPage = array_shift($rootLineArray);
         $currentPageUid = (int)$currentPage['uid'];
 
-        $rootLineParentPageIds = $this->getParentPageIdsFromRootLine($rootLine);
 
-        if (empty($rootLine) && $currentPageUid === 0) {
+        if (empty($rootLineArray) && $currentPageUid === 0) {
             return $mountPages;
         }
+
+            /** @var $rootLine Rootline */
+        $rootLine = GeneralUtility::makeInstance(Rootline::class, $rootLineArray);
+        $rootLineParentPageIds = $rootLine->getParentPageIds();
 
         $pageQueryConditions = array();
         if (!empty($rootLineParentPageIds)) {
@@ -485,30 +489,6 @@ class RecordMonitor extends AbstractDataHandlerListener
         );
 
         return $mountPages;
-    }
-
-    /**
-     * Extracts an array of pageIds from an rootline array.
-     *
-     * @param array $rootLine
-     * @return array
-     */
-    protected function getParentPageIdsFromRootLine(array $rootLine)
-    {
-        $rootLineParentPageIds = [];
-        if (empty($rootLine)) {
-            // no rootline given
-            return $rootLineParentPageIds;
-        }
-
-        foreach ($rootLine as $pageRecord) {
-            $rootLineParentPageIds[] = $pageRecord['uid'];
-            if ($pageRecord['is_siteroot']) {
-                break;
-            }
-        }
-
-        return $rootLineParentPageIds;
     }
 
     /**
