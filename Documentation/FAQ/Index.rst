@@ -25,7 +25,7 @@ FAQ - Frequently Asked Questions
 
 Did you configure your solr connection as required?
 
-- Please read ":ref:started-configure-extension`" and check if you have configured everything
+- Please read ":ref:`started-configure-extension`" and check if you have configured everything
 - Did you configure solr server and port and does the scheme and path match?
 - Did you click "Initialize connection" after configuring the solr server?
 - Can you access the solr server with wget or curl from the command line?
