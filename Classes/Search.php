@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
@@ -85,10 +86,9 @@ class Search implements SingletonInterface
         $this->solr = $solrConnection;
 
         if (is_null($solrConnection)) {
-            $this->solr = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
-                $GLOBALS['TSFE']->id,
-                $GLOBALS['TSFE']->sys_language_uid
-            );
+            /** @var $connectionManager ConnectionManager */
+            $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+            $this->solr = $connectionManager->getConnectionByPageId($GLOBALS['TSFE']->id, $GLOBALS['TSFE']->sys_language_uid);
         }
 
         $this->configuration = Util::getSolrConfiguration();
@@ -247,15 +247,16 @@ class Search implements SingletonInterface
     /**
      * Sends a ping to the solr server to see whether it is available.
      *
+     * @param bool $useCache Set to true if the cache should be used.
      * @return bool Returns TRUE on successful ping.
      * @throws \Exception Throws an exception in case ping was not successful.
      */
-    public function ping()
+    public function ping($useCache = true)
     {
         $solrAvailable = false;
 
         try {
-            if (!$this->solr->ping()) {
+            if (!$this->solr->ping(2, $useCache)) {
                 throw new \Exception('Solr Server not responding.', 1237475791);
             }
 

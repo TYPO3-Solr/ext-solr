@@ -122,15 +122,7 @@ class SearchResultSetService implements SingletonInterface
      */
     public function getIsSolrAvailable($useCache = true)
     {
-        if (!$useCache) {
-            return $this->search->ping();
-        }
-
-        if ($this->isSolrAvailable === true) {
-            return true;
-        }
-
-        $this->isSolrAvailable = $this->search->ping();
+        $this->isSolrAvailable = $this->search->ping($useCache);
         return $this->isSolrAvailable;
     }
 

@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -65,25 +66,51 @@ class SolrService extends \Apache_Solr_Service
      */
     protected $_pluginsUrl;
 
+    /**
+     * @var string
+     */
     protected $_coresUrl;
 
+    /**
+     * @var string
+     */
     protected $_extractUrl;
 
+    /**
+     * @var string
+     */
     protected $_synonymsUrl;
 
+    /**
+     * @var string
+     */
     protected $_stopWordsUrl;
 
+    /**
+     * @var string
+     */
     protected $_schemaUrl;
 
-    protected $debug;
+    /**
+     * @var bool
+     */
+    protected $debug = false;
 
     /**
      * @var \Apache_Solr_Response
      */
     protected $responseCache = null;
+
+    /**
+     * @var bool
+     */
     protected $hasSearched = false;
 
-    protected $lukeData = array();
+    /**
+     * @var array
+     */
+    protected $lukeData = [];
+
     protected $systemData = null;
     protected $pluginsData = null;
 
@@ -91,9 +118,14 @@ class SolrService extends \Apache_Solr_Service
     protected $solrconfigName = null;
 
     /**
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
+
+    /**
+     * @var array
+     */
+    protected static $pingCache = [];
 
     /**
      * Constructor
@@ -102,15 +134,17 @@ class SolrService extends \Apache_Solr_Service
      * @param string $port Solr port
      * @param string $path Solr path
      * @param string $scheme Scheme, defaults to http, can be https
+     * @param TypoScriptConfiguration $typoScriptConfiguration
      */
     public function __construct(
         $host = '',
         $port = '8983',
         $path = '/solr/',
-        $scheme = 'http'
+        $scheme = 'http',
+        TypoScriptConfiguration $typoScriptConfiguration = null
     ) {
         $this->setScheme($scheme);
-        $this->configuration = Util::getSolrConfiguration();
+        $this->configuration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
 
         parent::__construct($host, $port, $path);
     }
@@ -176,11 +210,12 @@ class SolrService extends \Apache_Solr_Service
      * Also does not report the time, see https://forge.typo3.org/issues/64551
      *
      * @param float|int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
      * @return bool TRUE if Solr can be reached, FALSE if not
      */
-    public function ping($timeout = 2)
+    public function ping($timeout = 2, $useCache = true)
     {
-        $httpResponse = $this->performPingRequest($timeout);
+        $httpResponse = $this->performPingRequest($timeout, $useCache);
         return ($httpResponse->getStatusCode() === 200);
     }
 
@@ -188,13 +223,14 @@ class SolrService extends \Apache_Solr_Service
      * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
      *
      * @param float|int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
      * @return int runtime in milliseconds
      * @throws \ApacheSolrForTypo3\Solr\PingFailedException
      */
-    public function getPingRoundTripRuntime($timeout = 2)
+    public function getPingRoundTripRuntime($timeout = 2, $useCache = true)
     {
         $start = $this->getMilliseconds();
-        $httpResponse = $this->performPingRequest($timeout);
+        $httpResponse = $this->performPingRequest($timeout, $useCache);
         $end = $this->getMilliseconds();
 
         if ($httpResponse->getStatusCode() !== 200) {
@@ -212,11 +248,23 @@ class SolrService extends \Apache_Solr_Service
      * Performs a ping request and returns the result.
      *
      * @param int $timeout
+     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
      * @return \Apache_Solr_HttpTransport_Response
      */
-    protected function performPingRequest($timeout = 2)
+    protected function performPingRequest($timeout = 2, $useCache = true)
     {
-        return $this->getHttpTransport()->performGetRequest($this->_pingUrl, $timeout);
+        $cacheKey = (string) ($this);
+        if ($useCache && isset(static::$pingCache[$cacheKey])) {
+            return static::$pingCache[$cacheKey];
+        }
+
+        $pingResult = $this->getHttpTransport()->performGetRequest($this->_pingUrl, $timeout);
+
+        if ($useCache) {
+            static::$pingCache[$cacheKey] = $pingResult;
+        }
+
+        return $pingResult;
     }
 
     /**
@@ -278,7 +326,6 @@ class SolrService extends \Apache_Solr_Service
         $timeout = false
     ) {
         $httpTransport = $this->getHttpTransport();
-        $solrResponse = null;
 
         if ($method == 'GET' || $method == 'HEAD') {
             // Make sure we are not sending a request body.
@@ -296,6 +343,10 @@ class SolrService extends \Apache_Solr_Service
             // FIXME should respect all headers, not only Content-Type
             $httpResponse = $httpTransport->performPostRequest($url, $rawPost,
                 $requestHeaders['Content-Type'], $timeout);
+        }
+
+        if (is_null($httpResponse)) {
+            throw new \InvalidArgumentException('$method should be GET or POST');
         }
 
         $solrResponse = new \Apache_Solr_Response($httpResponse,
@@ -863,6 +914,7 @@ class SolrService extends \Apache_Solr_Service
             self::CORES_SERVLET;
 
         $this->_schemaUrl = $this->_constructUrl(self::SCHEMA_SERVLET);
+
 
         $managedLanguage = $this->getManagedLanguage();
         $this->_synonymsUrl = $this->_constructUrl(
