@@ -45,7 +45,7 @@ plugin.tx_solr.index.queue {
 
 			url = TEXT
 			url {
-				typolink.parameter = 134
+				typolink.parameter = {$plugin.tx_news.settings.detailPid}
 				typolink.additionalParams = &tx_news_pi1[controller]=News&tx_news_pi1[action]=detail&tx_news_pi1[news]={field:uid}
 				typolink.additionalParams.insertData = 1
 				typolink.useCacheHash = 1
@@ -53,8 +53,10 @@ plugin.tx_solr.index.queue {
 			}
 		}
 
+		attachments = 1
 		attachments {
-			fields = related_files
+			fields = fal_related_files
+			fileExtensions = *
 		}
 	}
 
