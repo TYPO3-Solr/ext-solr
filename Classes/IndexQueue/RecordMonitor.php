@@ -283,15 +283,12 @@ class RecordMonitor extends AbstractDataHandlerListener
             // we have a localized record without a visible parent record. Nothing to do.
             return;
         }
-
         if ($this->isEnabledRecord($recordTable, $record)) {
-            $configurationName = null;
-            if ($recordTable !== 'pages') {
-                $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
-            }
+            $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
 
             $this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
         }
+
 
         if ($recordTable == 'pages') {
             $this->doPagesPostUpdateOperations($fields, $recordUid);
