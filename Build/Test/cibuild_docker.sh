@@ -81,6 +81,9 @@ assertCoreIsAvailable "core_sv"
 assertCoreIsAvailable "core_th"
 assertCoreIsAvailable "core_tr"
 assertCoreIsAvailable "core_uk"
+assertCoreIsAvailable "core_rs"
+assertCoreIsAvailable "core_ir"
+assertCoreIsAvailable "core_lv"
 
 echo "all checks passed"
 exit 0
