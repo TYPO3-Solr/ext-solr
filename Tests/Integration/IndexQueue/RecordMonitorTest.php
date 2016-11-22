@@ -248,7 +248,6 @@ class RecordMonitorTest extends IntegrationTest
     }
 
     /**
-<<<<<<< HEAD
      * When a record without pid is processed an exception should be thrown.
      *
      * @test
