@@ -219,7 +219,7 @@ Put this into your sub vcl_fetch part of the configuration
     }
 
 
-**I want to build the Dockerfile_full image on my mac with a local volume, how can i do that?
+**I want to build the Dockerfile_full image on my mac with a local volume, how can i do that?**
 
 |
 
@@ -241,7 +241,7 @@ This was tested with "Docker for Mac" (not Docker Toolbox)
     docker run -d -p 127.0.0.1:8282:8983 -v ~/solrdata:/opt/solr/server/solr/data solr-full
 
 
-** Can i index a https (SSL) site?
+**Can i index a https (SSL) site?**
 
 Yes. You need a valid ssl certificate and change the following setting:
 
@@ -251,5 +251,21 @@ Yes. You need a valid ssl certificate and change the following setting:
 
 |
 
+**I want to index a value into a multiValue field from a user function. How can i do that?**
 
+You can do that, by using SOLR_MULTIVALUE
 
+::
+
+    plugin.tx_solr.index.queue.indexConfigName {
+        fields {
+          somevalue_stringM = SOLR_MULTIVALUE
+          somevalue_stringM {
+               stdWrap.cObject = USER
+               stdWrap.cObject.userFunc = Vendor\Ext\Classname->getValues
+               separator=,
+          }
+        }
+    }
+
+|
