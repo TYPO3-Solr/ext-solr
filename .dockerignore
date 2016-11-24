@@ -4,7 +4,6 @@
 .travis.yml
 Build
 Configuration
-Dockerfile_spec.rb
 composer.json
 ext_icon.png
 ext_tables.sql

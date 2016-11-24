@@ -223,13 +223,13 @@ Put this into your sub vcl_fetch part of the configuration
 
 |
 
-The following example shows how to build the Dockerfile_full image and start a container with a mapped local volume.
+The following example shows how to build the Dockerfile image and start a container with a mapped local volume (only for the data).
 This was tested with "Docker for Mac" (not Docker Toolbox)
 
 ::
 
     # build the image
-    docker build -t solr-full -f Dockerfile_full .
+    docker build -t typo3-solr -f Dockerfile .
 
     # create volume directory locally
     mkdir -p ~/solrdata
@@ -238,7 +238,7 @@ This was tested with "Docker for Mac" (not Docker Toolbox)
     sudo chown :8983 ~/solrdata
 
     # run docker container from image with volume
-    docker run -d -p 127.0.0.1:8282:8983 -v ~/solrdata:/opt/solr/server/solr/data solr-full
+    docker run -d -p 127.0.0.1:8282:8983 -v ~/solrdata:/opt/solr/server/solr/data typo3-solr
 
 
 **Can i index a https (SSL) site?**
