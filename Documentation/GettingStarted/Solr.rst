@@ -36,10 +36,8 @@ After running the script you are able to open a solr server with over the loopba
 Docker
 ------
 
-We provide 2 Dockerfiles for this extension. You can find them in the root directory of the extensions source.
-For minimal installation you can use `Dockerfile` and for a complete and ready to use docker image you can use `Dockerfile_full`.
-
-The minimal installation copy all settings, but doesn't create the solr cores, the full image contains an example core for all languages.
+You can use docker to install your solr server with a small effort. With the extension we provide a Dockerfile, that creates a container with a core for all languages ready to run.
+This helps you to setup a container very quickly.
 
 To build the images, simply type one of the following:
 
@@ -47,17 +45,15 @@ To build the images, simply type one of the following:
 
 .. code-block:: bash
 
-    docker build -t solr .
-    docker build -t solr-full -f Dockerfile_full .
-	
+    docker build -t typo3-solr .
+
 To run the container (only run one of the following):
 
 |
 
 .. code-block:: bash
 
-    docker run -d -p 8983:8983 solr
-    docker run -d -p 8983:8983 solr-full
+    docker run -d -p 8983:8983 typo3-solr
 
 If you want to keep the solr core data after a recreate of the container, you have to share `/opt/solr/server/solr/data` (please note: the directory on the host should have UID and GID 8983) to the host.
 
@@ -70,6 +66,26 @@ You should see the web interface of Solr to run queries:
 .. figure:: ../Images/GettingStarted/solr-query-webinterface.png
 
 |
+
+Advanced docker usage
+^^^^^^^^^^^^^^^^^^^^^
+
+Our image has the intension to create running cores out of the box. This implies, that the schema is inside the container.
+The intension in our integration was to stay as close as possible to the official Apache Solr docker images. Sometimes it might make
+sence that you use the official image directly instead of our image. An example could be when you want to have the solrconfig, schema and data outside of the container.
+
+The following example shows how you can run our configuration with the official Apache Solr docker container by mounting the configuration and data from a volume.
+
+|
+
+.. code-block:: bash
+
+    mkdir -p ~/mysolr
+    cp -r Resources/Private/Solr/* ~/mysolr
+    sudo chown :8983 ~/mysolr
+    docker run -d -p 8983:8983 -v ~/mysolr:/opt/solr/server/solr/ solr:6.3.0
+
+
 
 Other Setup
 -----------
