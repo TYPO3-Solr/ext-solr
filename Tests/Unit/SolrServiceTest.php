@@ -52,7 +52,7 @@ class SolrServiceTest extends UnitTest
         $transportMock->expects($this->once())->method('performGetRequest')->will($this->returnValue($responseMock));
 
             /** @var $solrService SolrService */
-        $solrService = $this->getMockBuilder(SolrService::class)->setMethods(['getHttpTransport','_initUrls'])->setConstructorArgs([
+        $solrService = $this->getMockBuilder(SolrService::class)->setMethods(['getHttpTransport'])->setConstructorArgs([
             'test',
             8983,
             '/solr/',
@@ -84,7 +84,7 @@ class SolrServiceTest extends UnitTest
         $transportMock->expects($this->exactly(2))->method('performGetRequest')->will($this->returnValue($responseMock));
 
         /** @var $solrService SolrService */
-        $solrService = $this->getMockBuilder(SolrService::class)->setMethods(['getHttpTransport','_initUrls'])->setConstructorArgs([
+        $solrService = $this->getMockBuilder(SolrService::class)->setMethods(['getHttpTransport'])->setConstructorArgs([
             'test',
             8983,
             '/solr/',

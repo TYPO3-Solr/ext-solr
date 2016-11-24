@@ -25,6 +25,8 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\StopWordParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SynonymParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -128,6 +130,21 @@ class SolrService extends \Apache_Solr_Service
     protected static $pingCache = [];
 
     /**
+     * @var SynonymParser
+     */
+    protected $synonymParser = null;
+
+    /**
+     * @var StopWordParser
+     */
+    protected $stopWordParser = null;
+
+    /**
+     * @var string
+     */
+    protected $managedLanguage = '';
+
+    /**
      * Constructor
      *
      * @param string $host Solr host
@@ -135,16 +152,22 @@ class SolrService extends \Apache_Solr_Service
      * @param string $path Solr path
      * @param string $scheme Scheme, defaults to http, can be https
      * @param TypoScriptConfiguration $typoScriptConfiguration
+     * @param SynonymParser $synonymParser
+     * @param StopWordParser $stopWordParser
      */
     public function __construct(
         $host = '',
         $port = '8983',
         $path = '/solr/',
         $scheme = 'http',
-        TypoScriptConfiguration $typoScriptConfiguration = null
+        TypoScriptConfiguration $typoScriptConfiguration = null,
+        SynonymParser $synonymParser = null,
+        StopWordParser $stopWordParser = null
     ) {
         $this->setScheme($scheme);
         $this->configuration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
+        $this->synonymParser = is_null($synonymParser) ? GeneralUtility::makeInstance(SynonymParser::class) : $synonymParser;
+        $this->stopWordParser = is_null($stopWordParser) ? GeneralUtility::makeInstance(StopWordParser::class) : $stopWordParser;
 
         parent::__construct($host, $port, $path);
     }
@@ -224,7 +247,7 @@ class SolrService extends \Apache_Solr_Service
      *
      * @param float|int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
      * @param boolean $useCache indicates if the ping result should be cached in the instance or not
-     * @return int runtime in milliseconds
+     * @return double runtime in milliseconds
      * @throws \ApacheSolrForTypo3\Solr\PingFailedException
      */
     public function getPingRoundTripRuntime($timeout = 2, $useCache = true)
@@ -345,7 +368,7 @@ class SolrService extends \Apache_Solr_Service
                 $requestHeaders['Content-Type'], $timeout);
         }
 
-        if (is_null($httpResponse)) {
+        if (empty($httpResponse)) {
             throw new \InvalidArgumentException('$method should be GET or POST');
         }
 
@@ -705,26 +728,14 @@ class SolrService extends \Apache_Solr_Service
      */
     public function getSynonyms($baseWord = '')
     {
+        $this->initializeSynonymsUrl();
         $synonymsUrl = $this->_synonymsUrl;
         if (!empty($baseWord)) {
             $synonymsUrl .= '/' . $baseWord;
         }
 
         $response = $this->_sendRawGet($synonymsUrl);
-        $decodedResponse = json_decode($response->getRawResponse());
-
-        $synonyms = array();
-        if (!empty($baseWord)) {
-            if (is_array($decodedResponse->{$baseWord})) {
-                $synonyms = $decodedResponse->{$baseWord};
-            }
-        } else {
-            if (isset($decodedResponse->synonymMappings->managedMap)) {
-                $synonyms = (array)$decodedResponse->synonymMappings->managedMap;
-            }
-        }
-
-        return $synonyms;
+        return $this->synonymParser->parseJson($baseWord, $response->getRawResponse());
     }
 
     /**
@@ -739,12 +750,9 @@ class SolrService extends \Apache_Solr_Service
      */
     public function addSynonym($baseWord, array $synonyms)
     {
-        if (empty($baseWord) || empty($synonyms)) {
-            throw new \Apache_Solr_InvalidArgumentException('Must provide base word and synonyms.');
-        }
-
-        $rawPut = json_encode(array($baseWord => $synonyms));
-        return $this->_sendRawPost($this->_synonymsUrl, $rawPut,
+        $this->initializeSynonymsUrl();
+        $json = $this->synonymParser->toJson($baseWord, $synonyms);
+        return $this->_sendRawPost($this->_synonymsUrl, $json,
             $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
     }
 
@@ -757,6 +765,7 @@ class SolrService extends \Apache_Solr_Service
      */
     public function deleteSynonym($baseWord)
     {
+        $this->initializeSynonymsUrl();
         if (empty($baseWord)) {
             throw new \Apache_Solr_InvalidArgumentException('Must provide base word.');
         }
@@ -819,16 +828,9 @@ class SolrService extends \Apache_Solr_Service
      */
     public function getStopWords()
     {
-        $stopWords = array();
-
+        $this->initializeStopWordsUrl();
         $response = $this->_sendRawGet($this->_stopWordsUrl);
-        $decodedResponse = json_decode($response->getRawResponse());
-
-        if (isset($decodedResponse->wordSet->managedList)) {
-            $stopWords = (array)$decodedResponse->wordSet->managedList;
-        }
-
-        return $stopWords;
+        return $this->stopWordParser->parseJson($response->getRawResponse());
     }
 
     /**
@@ -840,17 +842,9 @@ class SolrService extends \Apache_Solr_Service
      */
     public function addStopWords($stopWords)
     {
-        if (empty($stopWords)) {
-            throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
-        }
-
-        if (is_string($stopWords)) {
-            $stopWords = array($stopWords);
-        }
-
-        $stopWords = array_values($stopWords);
-        $rawPut = json_encode($stopWords);
-        return $this->_sendRawPost($this->_stopWordsUrl, $rawPut,
+        $this->initializeStopWordsUrl();
+        $json = $this->stopWordParser->toJson($stopWords);
+        return $this->_sendRawPost($this->_stopWordsUrl, $json,
             $this->getHttpTransport()->getDefaultTimeout(), 'application/json');
     }
 
@@ -863,6 +857,7 @@ class SolrService extends \Apache_Solr_Service
      */
     public function deleteStopWord($stopWord)
     {
+        $this->initializeStopWordsUrl();
         if (empty($stopWord)) {
             throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
         }
@@ -914,15 +909,29 @@ class SolrService extends \Apache_Solr_Service
             self::CORES_SERVLET;
 
         $this->_schemaUrl = $this->_constructUrl(self::SCHEMA_SERVLET);
+    }
 
+    /**
+     * @return void
+     */
+    protected function initializeSynonymsUrl()
+    {
+        if (trim($this->_synonymsUrl) !== '') {
+            return;
+        }
+        $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getManagedLanguage();
+    }
 
-        $managedLanguage = $this->getManagedLanguage();
-        $this->_synonymsUrl = $this->_constructUrl(
-                self::SYNONYMS_SERVLET
-            ) . $managedLanguage;
-        $this->_stopWordsUrl = $this->_constructUrl(
-                self::STOPWORDS_SERVLET
-            ) . $managedLanguage;
+    /**
+     * @return void
+     */
+    protected function initializeStopWordsUrl()
+    {
+        if (trim($this->_stopWordsUrl) !== '') {
+            return;
+        }
+
+        $this->_stopWordsUrl = $this->_constructUrl(self::STOPWORDS_SERVLET) . $this->getManagedLanguage();
     }
 
     /**
@@ -933,9 +942,12 @@ class SolrService extends \Apache_Solr_Service
      */
     protected function getManagedLanguage()
     {
-        $language = 'english';
+        if ($this->managedLanguage !== '') {
+            return $this->managedLanguage;
+        }
 
         $schema = $this->getSchema();
+        $language = 'english';
 
         if (is_object($schema) && isset($schema->fieldTypes)) {
             foreach ($schema->fieldTypes as $fieldType) {
@@ -949,6 +961,7 @@ class SolrService extends \Apache_Solr_Service
             }
         }
 
+        $this->managedLanguage = $language;
         return $language;
     }
 
