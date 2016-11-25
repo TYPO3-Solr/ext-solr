@@ -352,10 +352,16 @@ class Site
      */
     public function getDomain()
     {
-        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-        $rootLine = $pageSelect->getRootLine($this->rootPage['uid']);
-
-        return BackendUtility::firstDomainRecord($rootLine);
+        // first try to fetch domain from TypoScript siteConfig.domain
+        $config = self::getSolrConfiguration();
+        if (!empty($config['siteConfig.']['domain'])) {
+            $domain = $config['siteConfig.']['domain'];
+        } else {
+            $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+            $rootLine = $pageSelect->getRootLine($this->rootPage['uid']);
+            $domain = BackendUtility::firstDomainRecord($rootLine);
+        }
+        return $domain;
     }
 
     /**
