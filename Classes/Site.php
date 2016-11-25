@@ -25,7 +25,9 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * A site is a branch in a TYPO3 installation. Each site's root page is marked
@@ -35,13 +37,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Site
 {
-
     /**
      * Cache for ApacheSolrForTypo3\Solr\Site objects
      *
      * @var array
      */
-    protected static $sitesCache = array();
+    protected static $sitesCache = [];
+
     /**
      * Small cache for the list of pages in a site, so that the results of this
      * rather expensive operation can be used by all initializers without having
@@ -52,13 +54,15 @@ class Site
      *
      * @var array
      */
-    protected static $sitePagesCache = array();
+    protected static $sitePagesCache = [];
+
     /**
      * Root page record.
      *
      * @var array
      */
-    protected $rootPage = array();
+    protected $rootPage = [];
+
     /**
      * The site's sys_language_mode
      *
@@ -145,10 +149,8 @@ class Site
      */
     public static function getAvailableSites($stopOnInvalidSite = false)
     {
-        $sites = array();
-
-        $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
-        $servers = $registry->get('tx_solr', 'servers', array());
+        $sites = [];
+        $servers = self::getSolrServersFromRegistry();
 
         foreach ($servers as $server) {
             if (isset($sites[$server['rootPageUid']])) {
@@ -187,7 +189,7 @@ class Site
      */
     public static function clearSitePagesCache()
     {
-        self::$sitePagesCache = array();
+        self::$sitePagesCache = [];
     }
 
     /**
@@ -208,7 +210,7 @@ class Site
      */
     public function getLabel()
     {
-        $rootlineTitles = array();
+        $rootlineTitles = [];
         $rootLine = BackendUtility::BEgetRootLine($this->rootPage['uid']);
         // Remove last
         array_pop($rootLine);
@@ -217,6 +219,19 @@ class Site
             $rootlineTitles[] = $rootLineItem['title'];
         }
         return implode(' - ', $rootlineTitles) . ', Root Page ID: ' . $this->rootPage['uid'];
+    }
+
+    /**
+     * Retrieves the configured solr servers from the registry.
+     *
+     * @return array
+     */
+    protected static function getSolrServersFromRegistry()
+    {
+        /** @var $registry Registry */
+        $registry = GeneralUtility::makeInstance(Registry::class);
+        $servers = (array) $registry->get('tx_solr', 'servers', []);
+        return $servers;
     }
 
     /**
@@ -237,12 +252,11 @@ class Site
      */
     public function getLanguages()
     {
-        $siteLanguages = array();
+        $siteLanguages = [];
 
-        $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
-        $solrConnections = $registry->get('tx_solr', 'servers');
+        $servers = self::getSolrServersFromRegistry();
 
-        foreach ($solrConnections as $connectionKey => $solrConnection) {
+        foreach ($servers as $connectionKey => $solrConnection) {
             list($siteRootPageId, $systemLanguageId) = explode('|',
                 $connectionKey);
 
@@ -289,44 +303,55 @@ class Site
      */
     public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999)
     {
-        $pageIds = array();
+        // when we have a cached value, we can return it.
+        if (!empty(self::$sitePagesCache[$rootPageId])) {
+            return self::$sitePagesCache[$rootPageId];
+        }
+
+        $pageIds = [];
         $maxDepth = intval($maxDepth);
 
-        if (empty(self::$sitePagesCache[$rootPageId])) {
-            $recursionRootPageId = intval($rootPageId);
-            if ($rootPageId == 'SITE_ROOT') {
-                $recursionRootPageId = $this->rootPage['uid'];
-                $pageIds[] = $this->rootPage['uid'];
-            }
-
-            if ($maxDepth > 0) {
-                $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-                    'uid',
-                    'pages',
-                    'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages')
-                );
-
-                while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-                    $pageIds[] = $page['uid'];
-
-                    if ($maxDepth > 1) {
-                        $pageIds = array_merge(
-                            $pageIds,
-                            $this->getPages($page['uid'], $maxDepth - 1)
-                        );
-                    }
-                }
-                $GLOBALS['TYPO3_DB']->sql_free_result($result);
-            }
-        } else {
-            $pageIds = self::$sitePagesCache[$rootPageId];
+        $recursionRootPageId = intval($rootPageId);
+        if ($rootPageId == 'SITE_ROOT') {
+            $recursionRootPageId = $this->rootPage['uid'];
+            $pageIds[] = (int) $this->rootPage['uid'];
         }
 
-        if (empty(self::$sitePagesCache[$rootPageId])) {
+        if ($maxDepth <= 0) {
             // exiting the recursion loop, may write to cache now
             self::$sitePagesCache[$rootPageId] = $pageIds;
+            return $pageIds;
         }
 
+        // get the page ids of the current level and if needed call getPages recursive
+        $pageIds = $this->getPageIdsFromCurrentDepthAndCallRecursive($maxDepth, $recursionRootPageId, $pageIds);
+
+        // exiting the recursion loop, may write to cache now
+        self::$sitePagesCache[$rootPageId] = $pageIds;
+        return $pageIds;
+    }
+
+    /**
+     * This method retrieves the pages ids from the current tree level an calls getPages recursive,
+     * when the maxDepth has not been reached.
+     *
+     * @param int $maxDepth
+     * @param int $recursionRootPageId
+     * @param array $pageIds
+     * @return array
+     */
+    protected function getPageIdsFromCurrentDepthAndCallRecursive($maxDepth, $recursionRootPageId, $pageIds)
+    {
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'pages', 'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages'));
+
+        while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
+            $pageIds[] = (int) $page['uid'];
+
+            if ($maxDepth > 1) {
+                $pageIds = array_merge($pageIds, $this->getPages($page['uid'], $maxDepth - 1));
+            }
+        }
+        $GLOBALS['TYPO3_DB']->sql_free_result($result);
         return $pageIds;
     }
 
@@ -352,7 +377,7 @@ class Site
      */
     public function getDomain()
     {
-        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
         $rootLine = $pageSelect->getRootLine($this->rootPage['uid']);
 
         return BackendUtility::firstDomainRecord($rootLine);
