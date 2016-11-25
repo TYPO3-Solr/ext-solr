@@ -25,8 +25,7 @@
 			<f:form actionUri="{f:uri.action(controller:'Administration', arguments:{module:'{module.name}', moduleAction:'saveStopWords'} )}"
 					id="edit-stopwords">
 				<textarea name="tx_solr_tools_solradministration[stopWords]"
-					rows="20" cols="50" style="width: auto;"><f:for each="{stopWords}" as="stopWord">{stopWord}
-		</f:for></textarea>
+					rows="20" cols="50" style="width: auto;"><solr:format.implode glue="&#013;&#010;" value="{stopWords}"/></textarea>
 
 				<div class="submit">
 					<f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>

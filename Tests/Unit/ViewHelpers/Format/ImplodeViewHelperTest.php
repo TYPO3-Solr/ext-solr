@@ -1,6 +1,5 @@
 <?php
-
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Format;
 
 /***************************************************************
  *  Copyright notice
@@ -25,18 +24,26 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Format\ImplodeViewHelper;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
 
-abstract class AbstractSolrTagBasedViewHelper extends AbstractTagBasedViewHelper
+
+/**
+ * Testcase for the ImplodeViewHelper
+ *
+ * @author Timo Hund <timo.hund@dkd.de>
+ */
+class ImplodeViewHelperTest extends UnitTest
 {
-
     /**
-     * @var bool
+     * @test
      */
-    protected $escapeChildren = true;
-
-    /**
-     * @var bool
-     */
-    protected $escapeOutput = true;
+    public function canImplode() {
+        $viewHelper = new ImplodeViewHelper();
+        $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
+        $viewHelper->setRenderingContext($renderingContextMock);
+        $result = $viewHelper->render(',', ['one','two','three']);
+        $this->assertSame('one,two,three', $result, 'Implode ViewHelper created unexpected result');
+    }
 }

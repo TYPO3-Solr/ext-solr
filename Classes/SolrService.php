@@ -186,7 +186,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Returns the current time in milliseconds.
      *
-     * @return int
+     * @return double
      */
     protected function getMilliseconds()
     {
@@ -741,7 +741,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Add list of synonyms for base word to managed synonyms map
      *
-     * @param $baseWord
+     * @param string $baseWord
      * @param array $synonyms
      *
      * @return \Apache_Solr_Response
@@ -759,7 +759,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Remove a synonym from the synonyms map
      *
-     * @param $baseWord
+     * @param string $baseWord
      * @return \Apache_Solr_Response
      * @throws \Apache_Solr_InvalidArgumentException
      */
@@ -776,7 +776,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Central method for making a HTTP DELETE operation against the Solr server
      *
-     * @param $url
+     * @param string $url
      * @param bool|float $timeout Read timeout in seconds
      * @return \Apache_Solr_Response
      */

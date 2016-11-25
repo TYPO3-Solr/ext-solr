@@ -1,10 +1,11 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
+
+namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,34 +25,18 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Button;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrViewHelper;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
-/**
- * View helper to return a help button
- *
- */
-class HelpButtonViewHelper extends AbstractSolrViewHelper
+abstract class AbstractSolrTagBasedViewHelper extends AbstractTagBasedViewHelper
 {
 
     /**
      * @var bool
      */
-    protected $escapeOutput = false;
+    protected $escapeChildren = true;
 
     /**
-     * Render a help button wit the given title and content
-     *
-     * @param string $title Help title
-     * @return mixed
+     * @var bool
      */
-    public function render($title)
-    {
-        $content = $this->renderChildren();
-
-        return BackendUtility::wrapInHelp('', '', '', array(
-            'title' => $title,
-            'description' => $content
-        ));
-    }
+    protected $escapeOutput = true;
 }
