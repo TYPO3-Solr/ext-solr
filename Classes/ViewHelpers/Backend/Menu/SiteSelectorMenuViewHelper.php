@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Menu;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\AbstractSolrTagBasedViewHelper;
+use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrTagBasedViewHelper;
 
 /**
  * Site selector menu view helper

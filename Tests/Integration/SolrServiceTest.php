@@ -23,6 +23,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,7 +35,7 @@ class SolrServiceTest extends IntegrationTest
 {
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\SolrService
+     * @var SolrService
      */
     protected $solrService;
 
@@ -44,7 +45,7 @@ class SolrServiceTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->solrService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\SolrService', 'localhost', 8999, '/solr/core_en/');
+        $this->solrService = GeneralUtility::makeInstance(SolrService::class, 'localhost', 8999, '/solr/core_en/');
     }
 
     /**
@@ -58,5 +59,74 @@ class SolrServiceTest extends IntegrationTest
         $extractQuery->setExtractOnly();
         $response = $this->solrService->extractByQuery($extractQuery);
         $this->assertContains('PDF Test', $response[0], 'Could not extract text');
+    }
+
+    /**
+     * @test
+     */
+    public function canAddSynonym()
+    {
+        // make sure old synonyms have been deleted
+        $this->solrService->deleteSynonym('homepage');
+
+        $synonymsBeforeAdd = $this->solrService->getSynonyms('homepage');
+        $this->assertEquals([], $synonymsBeforeAdd, 'Synonyms was not empty');
+
+        $this->solrService->addSynonym('homepage', ['website']);
+        $synonymsAfterAdd = $this->solrService->getSynonyms('homepage');
+        $this->assertEquals(['website'], $synonymsAfterAdd, 'Could not retrieve synonym after adding');
+
+        $this->solrService->deleteSynonym('homepage');
+
+        $synonymsAfterRemove = $this->solrService->getSynonyms('homepage');
+        $this->assertEquals([], $synonymsAfterRemove, 'Synonym was not removed');
+    }
+
+    /**
+     * @test
+     */
+    public function canAddStopWord()
+    {
+        // make sure old stopwords are deleted
+        $this->solrService->deleteStopWord('badword');
+        $stopWords = $this->solrService->getStopWords();
+        $this->assertSame([], $stopWords, 'Stopwords are not empty after initializing');
+
+        $this->solrService->addStopWords('badword');
+        $stopWordsAfterAdd = $this->solrService->getStopWords();
+        $this->assertSame(['badword'], $stopWordsAfterAdd, 'Stopword was not added');
+
+        $this->solrService->deleteStopWord('badword');
+        $stopWordsAfterDelete = $this->solrService->getStopWords();
+        $this->assertSame([], $stopWordsAfterDelete, 'Stopwords are not empty after removing');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSystemInformation()
+    {
+        $informationResponse = $this->solrService->getSystemInformation();
+        $this->assertSame(200, $informationResponse->getHttpStatus(), 'Could not get information response from solr server');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetPingRoundtrimRunTime()
+    {
+        $pingRuntime = $this->solrService->getPingRoundTripRuntime();
+        $this->assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');
+        $this->assertTrue(is_double($pingRuntime),'Ping runtime should be an integer');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSolrServiceVersion()
+    {
+        $solrServerVersion = $this->solrService->getSolrServerVersion();
+        $isVersionHigherSix = version_compare('6.0.0', $solrServerVersion, '<');
+        $this->assertTrue($isVersionHigherSix, 'Expecting to run on version larger then 6.0.0');
     }
 }
