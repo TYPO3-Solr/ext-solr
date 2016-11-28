@@ -53,4 +53,14 @@ class SiteTest extends IntegrationTest
         $site = Site::getFirstAvailableSite();
         $this->assertEquals(888, $site->getDefaultLanguage(), 'Could not get default language from site');
     }
+
+    /**
+     * @test
+     */
+    public function canGetAllPagesFromSite()
+    {
+        $this->importDataSetFromFixture('can_get_all_pages_from_sites.xml');
+        $site = Site::getFirstAvailableSite();
+        $this->assertEquals([1,2,21,22,3,30], $site->getPages(), 'Can not get all pages from site');
+    }
 }
