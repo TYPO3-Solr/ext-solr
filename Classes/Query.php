@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -172,7 +173,7 @@ class Query
         }
 
         // What fields to return from Solr
-        $this->fieldList = $this->solrConfiguration->getSearchQueryReturnFieldsAsArray(array('*', 'score'));
+        $this->fieldList = $this->solrConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
         $this->linkTargetPageId = $this->solrConfiguration->getSearchTargetPage();
 
         $this->initializeQuery();
@@ -568,7 +569,7 @@ class Query
             && strpos($fieldName, ']') === false
             && in_array('*', $this->fieldList)
         ) {
-            $this->fieldList = array_diff($this->fieldList, array('*'));
+            $this->fieldList = array_diff($this->fieldList, ['*']);
         }
 
         $this->fieldList[] = $fieldName;
@@ -663,7 +664,7 @@ class Query
     public function addGroupField($fieldName)
     {
         if (!isset($this->queryParameters['group.field'])) {
-            $this->queryParameters['group.field'] = array();
+            $this->queryParameters['group.field'] = [];
         }
 
         $this->queryParameters['group.field'][] = $fieldName;
@@ -687,7 +688,7 @@ class Query
     public function addGroupSorting($sorting)
     {
         if (!isset($this->queryParameters['group.sort'])) {
-            $this->queryParameters['group.sort'] = array();
+            $this->queryParameters['group.sort'] = [];
         }
         $this->queryParameters['group.sort'][] = $sorting;
     }
@@ -712,7 +713,7 @@ class Query
     public function addGroupQuery($query)
     {
         if (!isset($this->queryParameters['group.query'])) {
-            $this->queryParameters['group.query'] = array();
+            $this->queryParameters['group.query'] = [];
         }
 
         $this->queryParameters['group.query'][] = $query;
@@ -826,7 +827,7 @@ class Query
      */
     public function setFacetFields(array $facetFields)
     {
-        $this->queryParameters['facet.field'] = array();
+        $this->queryParameters['facet.field'] = [];
 
         foreach ($facetFields as $facetField) {
             $this->addFacetField($facetField);
@@ -867,6 +868,23 @@ class Query
      */
     public function removeFilterByKey($key)
     {
+        unset($this->filters[$key]);
+    }
+
+    /**
+     * Removes a filter by the filter value. The value has the following format:
+     *
+     * "fieldname:value"
+     *
+     * @param string $filterString The filter to remove, in the form of field:value
+     */
+    public function removeFilterByValue($filterString)
+    {
+        $key = array_search($filterString, $this->filters);
+        if ($key === false) {
+            // value not found, nothing to do
+            return;
+        }
         unset($this->filters[$key]);
     }
 
@@ -915,11 +933,12 @@ class Query
     {
         // TODO refactor to split filter field and filter value, @see Drupal
         if ($this->solrConfiguration->getLoggingQueryFilters()) {
-            $this->writeDevLog('adding filter', 0, array($filterString));
+            $this->writeDevLog('adding filter', 0, [$filterString]);
         }
 
         $this->filters[] = $filterString;
     }
+
 
     // query parameters
 
@@ -931,7 +950,7 @@ class Query
     public function setSiteHashFilter($allowedSites)
     {
         $allowedSites = GeneralUtility::trimExplode(',', $allowedSites);
-        $filters = array();
+        $filters = [];
 
         foreach ($allowedSites as $site) {
             $siteHash = Util::getSiteHashForDomain($site);
@@ -950,9 +969,10 @@ class Query
     public function setRootlineFilter($pageIds)
     {
         $pageIds = GeneralUtility::trimExplode(',', $pageIds);
-        $filters = array();
+        $filters = [];
 
-        $processor = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\PageUidToHierarchy');
+            /** @var $processor PageUidToHierarchy */
+        $processor = GeneralUtility::makeInstance(PageUidToHierarchy::class);
         $hierarchies = $processor->process($pageIds);
 
         foreach ($hierarchies as $hierarchy) {
@@ -1007,7 +1027,7 @@ class Query
      * @param array|string $fieldList an array or comma-separated list of field names
      * @throws \UnexpectedValueException on parameters other than comma-separated lists and arrays
      */
-    public function setFieldList($fieldList = array('*', 'score'))
+    public function setFieldList($fieldList = ['*', 'score'])
     {
         if (is_string($fieldList)) {
             $fieldList = GeneralUtility::trimExplode(',', $fieldList);
@@ -1056,7 +1076,7 @@ class Query
      */
     public function setOperator($operator)
     {
-        if (in_array($operator, array(self::OPERATOR_AND, self::OPERATOR_OR))) {
+        if (in_array($operator, [self::OPERATOR_AND, self::OPERATOR_OR])) {
             $this->queryParameters['q.op'] = $operator;
         }
 
@@ -1242,10 +1262,10 @@ class Query
     public function getQueryParameters()
     {
         $queryParameters = array_merge(
-            array(
+            [
                 'fl' => implode(',', $this->fieldList),
                 'fq' => array_values($this->filters)
-            ),
+            ],
             $this->queryParameters
         );
 
