@@ -163,6 +163,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $solrServer['solrPath'],
             $solrServer['solrScheme']
         );
+        $this->checkAndSetAuthentication($solrConnection, $solrServer);
 
         return $solrConnection;
     }
@@ -220,6 +221,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $solrServer['solrPath'],
             $solrServer['solrScheme']
         );
+        $this->checkAndSetAuthentication($solrConnection, $solrServer);
 
         return $solrConnection;
     }
@@ -254,6 +256,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 $solrServer['solrPath'],
                 $solrServer['solrScheme']
             );
+            $this->checkAndSetAuthentication(end($connections), $solrServer);
         }
 
         return $connections;
@@ -297,6 +300,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 $solrServer['solrPath'],
                 $solrServer['solrScheme']
             );
+            $this->checkAndSetAuthentication(end($connections), $solrServer);
         }
 
         return $connections;
@@ -379,6 +383,21 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $solrConnections = $this->filterDuplicateConnections($solrConnections);
 
         $registry->set('tx_solr', 'servers', $solrConnections);
+    }
+
+    /**
+     * Checks if a username is given and sets up the authentication
+     *
+     * @param \ApacheSolrForTypo3\Solr\SolrService $connection
+     * @param array $configuration
+     */
+    public function checkAndSetAuthentication(SolrService $connection, array $configuration) {
+        if ((string)$configuration['solrUsername'] !== '') {
+            $connection->setAuthenticationCredentials(
+                $configuration['solrUsername'],
+                $configuration['solrPassword']
+            );
+        }
     }
 
     /**
@@ -465,6 +484,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 'solrHost' => $solrSetup['host'],
                 'solrPort' => $solrSetup['port'],
                 'solrPath' => $solrPath,
+                'solrUsername' => $solrSetup['username'],
+                'solrPassword' => $solrSetup['password'],
 
                 'language' => $languageId
             );
