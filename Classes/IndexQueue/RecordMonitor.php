@@ -255,7 +255,8 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param mixed $recordUid The record's uid, [integer] or [string] (like 'NEW...')
      * @param array $fields The record's data
      */
-    protected function processRecord($recordTable, $recordPageId, $recordUid, $fields) {
+    protected function processRecord($recordTable, $recordPageId, $recordUid, $fields)
+    {
         $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
         $isMonitoredRecord = $this->solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
 
@@ -350,10 +351,17 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param int $originalUid
      * @param array $fields
      * @param DataHandler $tceMain
+     *
      * @return int
      */
-    protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
-    {
+    protected function getRecordPageId(
+        $status,
+        $recordTable,
+        $recordUid,
+        $originalUid,
+        array $fields,
+        DataHandler $tceMain
+    ) {
         if ($status == 'update' && !isset($fields['pid'])) {
             $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
             if ($recordTable == 'pages' && Util::isRootPage($recordUid)) {
