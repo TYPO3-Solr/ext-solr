@@ -244,6 +244,18 @@ class RecordMonitor extends AbstractDataHandlerListener
             $recordUid = $recordPageId;
         }
 
+        $this->processRecord($recordTable, $recordPageId, $recordUid, $fields);
+    }
+
+    /**
+     * Process the record located in processDatamap_afterDatabaseOperations
+     *
+     * @param string $recordTable The table the record belongs to
+     * @param int $recordPageId pageid
+     * @param mixed $recordUid The record's uid, [integer] or [string] (like 'NEW...')
+     * @param array $fields The record's data
+     */
+    protected function processRecord($recordTable, $recordPageId, $recordUid, $fields) {
         $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
         $isMonitoredRecord = $this->solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
 
