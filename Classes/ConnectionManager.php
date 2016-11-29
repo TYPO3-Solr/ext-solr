@@ -391,8 +391,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @param \ApacheSolrForTypo3\Solr\SolrService $connection
      * @param array $configuration
      */
-	public function checkAndSetAuthentication(SolrService $connection, array $configuration)
-	{
+    public function checkAndSetAuthentication(SolrService $connection, array $configuration)
+    {
         if ((string)$configuration['solrUsername'] !== '') {
             $connection->setAuthenticationCredentials(
                 $configuration['solrUsername'],
