@@ -610,8 +610,9 @@ class SolrService extends \Apache_Solr_Service
             $solrconfigXmlUrl = $this->_scheme . '://'
                 . $this->_host . ':' . $this->_port
                 . $this->_path . 'admin/file/?file=solrconfig.xml';
+            $response= $this->_sendRawGet($solrconfigXmlUrl);
 
-            $solrconfigXml = simplexml_load_file($solrconfigXmlUrl);
+            $solrconfigXml = simplexml_load_string($response->getRawResponse());
             if ($solrconfigXml === false) {
                 throw new \InvalidArgumentException('No valid xml response from schema file: ' . $solrconfigXmlUrl);
             }
