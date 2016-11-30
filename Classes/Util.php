@@ -601,13 +601,15 @@ class Util
      * Check if the page type of a page record is allowed
      *
      * @param array $pageRecord The pages database row
+     * @param string $configurationName The name of the configuration to use.
      *
      * @return bool TRUE if the page type is allowed, otherwise FALSE
      */
-    public static function isAllowedPageType(array $pageRecord)
+    public static function isAllowedPageType(array $pageRecord, $configurationName = 'pages')
     {
         $isAllowedPageType = false;
-        $allowedPageTypes = self::getAllowedPageTypes($pageRecord['uid']);
+        $configurationName = is_null($configurationName) ? 'pages' : $configurationName;
+        $allowedPageTypes = self::getAllowedPageTypes($pageRecord['uid'], $configurationName);
 
         if (in_array($pageRecord['doktype'], $allowedPageTypes)) {
             $isAllowedPageType = true;
@@ -620,14 +622,15 @@ class Util
      * Get allowed page types
      *
      * @param int $pageId Page ID
+     * @param string $configurationName The name of the configuration to use.
      *
      * @return array Allowed page types to compare to a doktype of a page record
      */
-    public static function getAllowedPageTypes($pageId)
+    public static function getAllowedPageTypes($pageId, $configurationName = 'pages')
     {
         $rootPath = '';
         $configuration = self::getConfigurationFromPageId($pageId, $rootPath);
-        return $configuration->getIndexQueuePagesAllowedPageTypesArray();
+        return $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
     }
 
     /**

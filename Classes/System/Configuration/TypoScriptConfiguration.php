@@ -320,19 +320,37 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.index.queue.pages.allowedPageTypes
      *
+     * @param string $configurationName The configuration name of the queue to use.
      * @param array $defaultIfEmpty
      * @return array
      */
-    public function getIndexQueuePagesAllowedPageTypesArray($defaultIfEmpty = array())
+    public function getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName = 'pages', $defaultIfEmpty = [])
     {
-        $path = 'plugin.tx_solr.index.queue.pages.allowedPageTypes';
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.allowedPageTypes';
         $result = $this->getValueByPathOrDefaultValue($path, '');
-
         if (trim($result) == '') {
             return $defaultIfEmpty;
         }
 
         return GeneralUtility::trimExplode(',', $result);
+    }
+
+    /**
+     * Returns an array of all allowedPageTypes.
+     *
+     * plugin.tx_solr.index.queue.pages.allowedPageTypes
+     *
+     * @deprecated since 6.0 will be removed in 7.0
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueuePagesAllowedPageTypesArray($defaultIfEmpty = array())
+    {
+        return $this->getIndexQueueAllowedPageTypesArrayByConfigurationName(
+            'pages',
+            $defaultIfEmpty
+        );
     }
 
     /**
