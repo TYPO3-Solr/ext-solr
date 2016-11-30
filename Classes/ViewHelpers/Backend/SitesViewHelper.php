@@ -37,7 +37,7 @@ use ApacheSolrForTypo3\Solr\Site;
  *      </f:if>
  * </solr:backend.sites>
  */
-class SitesViewHelper extends AbstractSolrViewHelper
+class SitesViewHelper extends AbstractSolrBackendViewHelper
 {
     /**
      * @var \ApacheSolrForTypo3\Solr\Service\ModuleDataStorageService
