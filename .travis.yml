@@ -10,6 +10,7 @@ php:
 
 jdk:
   - oraclejdk8
+  - mysql-5.6
 
 addons:
   apt:
@@ -18,9 +19,9 @@ addons:
       - oracle-java8-installer
 env:
   global:
-   - JAVA_HOME=/usr/lib/jvm/java-8-oracle
+    - JAVA_HOME=/usr/lib/jvm/java-8-oracle
     - TYPO3_DATABASE_NAME="typo3_ci"
-    - TYPO3_DATABASE_HOST="localhost"
+    - TYPO3_DATABASE_HOST="127.0.0.1"
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
   matrix:
@@ -61,13 +62,11 @@ matrix:
 before_install:
   - composer self-update
   - composer --version
-  - composer global require friendsofphp/php-cs-fixer
+  - composer global require friendsofphp/php-cs-fixer:v1.13.1
   - composer global require namelesscoder/typo3-repository-client
 
-  # resources for TYPO3 https://github.com/travis-ci/travis-ci/issues/4870
-  - sudo rm -Rf /var/lib/apt/lists/*
-  - sudo apt-get update -qq
-  - sudo apt-get install -y mysql-server-5.5 mysql-client-5.5 mysql-client-core-5.5
+  # set root password
+  - mysql -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('')"
 
   # resources for solr
   - sudo update-java-alternatives -s java-8-oracle

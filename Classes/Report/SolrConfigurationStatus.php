@@ -115,7 +115,7 @@ class SolrConfigurationStatus implements StatusProviderInterface
             'sys_domain',
             'pid IN(' . implode(',',
                 $rootPageIds) . ') AND redirectTo=\'\' AND hidden=0',
-            'uid, pid',
+            'uid, pid, sorting',
             'pid, sorting',
             '',
             'pid'
