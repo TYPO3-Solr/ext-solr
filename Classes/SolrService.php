@@ -169,6 +169,9 @@ class SolrService extends \Apache_Solr_Service
         $this->synonymParser = is_null($synonymParser) ? GeneralUtility::makeInstance(SynonymParser::class) : $synonymParser;
         $this->stopWordParser = is_null($stopWordParser) ? GeneralUtility::makeInstance(StopWordParser::class) : $stopWordParser;
 
+        // Set the default timeout for the request
+        $this->getHttpTransport()->getDefaultTimeout();
+
         parent::__construct($host, $port, $path);
     }
 

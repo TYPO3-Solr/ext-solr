@@ -36,6 +36,8 @@
  * @author Timo Schmidt <timo.schmidt@aoemedia.de>, Donovan Jimenez <djimenez@conduit-it.com>
  */
 
+use ApacheSolrForTypo3\Solr\Util;
+
 /**
  * Convenience class that implements the transport implementation. Can be extended by
  * real implementations to do some of the common book keeping
@@ -50,7 +52,7 @@ abstract class Apache_Solr_HttpTransport_Abstract implements Apache_Solr_HttpTra
     private $_defaultTimeout = false;
 
     /**
-     * Get the current default timeout setting (initially the default_socket_timeout ini setting)
+     * Get the current default timeout setting (initially plugin.tx_solr.solr.defaultimeout or default_socket_timeout ini setting)
      * in seconds
      *
      * @return float
@@ -59,11 +61,20 @@ abstract class Apache_Solr_HttpTransport_Abstract implements Apache_Solr_HttpTra
     {
         // lazy load the default timeout from the ini settings
         if ($this->_defaultTimeout === false) {
-            $this->_defaultTimeout = (int)ini_get('default_socket_timeout');
 
-            // double check we didn't get 0 for a timeout
-            if ($this->_defaultTimeout <= 0) {
-                $this->_defaultTimeout = 60;
+            $solrConfiguration = Util::getSolrConfiguration()->getValueByPathOrDefaultValue('plugin.tx_solr.solr.', array());
+            $timeoutValue = (isset($solrConfiguration['defaultimeout']) && (intval($solrConfiguration['defaultimeout']) > 0)) ? intval($solrConfiguration['defaultimeout']) : 0;
+
+            // Check if plugin.tx_solr.solr.defaultimeout is > 0 or else take default_socket_timeout
+            if ($timeoutValue > 0) {
+                $this->_defaultTimeout = $timeoutValue;
+            } else {
+                $this->_defaultTimeout = (int)ini_get('default_socket_timeout');
+
+                // double check we didn't get 0 for a timeout
+                if ($this->_defaultTimeout <= 0) {
+                    $this->_defaultTimeout = 60;
+                }
             }
         }
 
