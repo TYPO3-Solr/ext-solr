@@ -59,7 +59,7 @@ abstract class Apache_Solr_HttpTransport_Abstract implements Apache_Solr_HttpTra
     {
         // lazy load the default timeout value from either TypoScript or the ini settings
         if ($this->_defaultTimeout === false) {
-            $timeoutValue = Util::getSolrConfiguration()->getDefaultTimeout();
+            $timeoutValue = Util::getSolrConfiguration()->getSolrDefaultTimeout();
 
             // Check if plugin.tx_solr.solr.defaultTimeout is > 0 or else take default_socket_timeout
             if ($timeoutValue > 0) {

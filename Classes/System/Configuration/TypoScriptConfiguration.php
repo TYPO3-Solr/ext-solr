@@ -1914,7 +1914,7 @@ class TypoScriptConfiguration
      * @param int $defaultIfEmpty
      * @return int
      */
-    public function getDefaultTimeout($defaultIfEmpty = 0)
+    public function getSolrDefaultTimeout($defaultIfEmpty = 0)
     {
         return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.solr.defaultTimeout', $defaultIfEmpty);
     }
