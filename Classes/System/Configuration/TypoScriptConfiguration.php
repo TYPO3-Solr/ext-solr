@@ -1905,4 +1905,18 @@ class TypoScriptConfiguration
         $sortingViewHelperConfiguration = $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.sortIndicator.', $defaultIfEmpty);
         return $sortingViewHelperConfiguration;
     }
+
+    /**
+     * Returns the defaultTimeout used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.defaultTimeout
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getDefaultTimeout($defaultIfEmpty = 0)
+    {
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.solr.defaultTimeout', $defaultIfEmpty);
+    }
+
 }
