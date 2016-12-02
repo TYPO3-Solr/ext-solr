@@ -96,4 +96,23 @@ class SolrServiceTest extends UnitTest
         $solrService->ping(2, false);
         $solrService->ping(2, false);
     }
+
+    /**
+     * @test
+     */
+    public function timeoutIsInitializedFromConfiguration()
+    {
+        $configuration = new TypoScriptConfiguration([
+            'plugin.' => [
+                'tx_solr.' => [
+                    'solr.' => [
+                        'timeout' => 99.0
+                    ]
+                ]
+            ]
+        ]);
+
+        $solrService = new SolrService('localhost','8080','/solr/','http', $configuration);
+        $this->assertSame(99.0, $solrService->getHttpTransport()->getDefaultTimeout(), 'Default timeout was not set from configuration');
+    }
 }

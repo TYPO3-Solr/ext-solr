@@ -169,7 +169,22 @@ class SolrService extends \Apache_Solr_Service
         $this->synonymParser = is_null($synonymParser) ? GeneralUtility::makeInstance(SynonymParser::class) : $synonymParser;
         $this->stopWordParser = is_null($stopWordParser) ? GeneralUtility::makeInstance(StopWordParser::class) : $stopWordParser;
 
+        $this->initializeTimeoutFromConfiguration();
+
         parent::__construct($host, $port, $path);
+    }
+
+    /**
+     * Initializes the timeout from TypoScript when configuration is present.
+     *
+     * @return void
+     */
+    protected function initializeTimeoutFromConfiguration()
+    {
+        $timeout = $this->configuration->getSolrTimeout();
+        if ($timeout > 0) {
+            $this->getHttpTransport()->setDefaultTimeout($timeout);
+        }
     }
 
     /**
