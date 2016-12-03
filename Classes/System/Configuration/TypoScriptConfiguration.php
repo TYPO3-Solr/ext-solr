@@ -868,6 +868,19 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns the defaultTimeout used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.defaultTimeout
+     *
+     * @param float $defaultIfEmpty
+     * @return float
+     */
+    public function getSolrTimeout($defaultIfEmpty = 0.0)
+    {
+        return (float)$this->getValueByPathOrDefaultValue('plugin.tx_solr.solr.timeout', $defaultIfEmpty);
+    }
+
+    /**
      * Retrieves the complete search configuration
      *
      * plugin.tx_solr.search.

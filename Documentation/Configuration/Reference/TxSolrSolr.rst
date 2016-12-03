@@ -69,3 +69,12 @@ path
 
 Sets the path portion of the URL. Make sure to have the path end with a slash (/).
 
+timeout
+-------
+
+:Type: Float
+:TS Path: plugin.tx_solr.solr.timeout
+:Default: 0.0
+:Since: 1.0
+
+Can be used to configure a connection timeout.
