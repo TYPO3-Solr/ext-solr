@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\SubstitutePageIndexer;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Indexer to add / overwrite page document fields as defined in
@@ -132,7 +133,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
 
         if (isset($this->pageIndexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
-            $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $contentObject->start($pageRecord, 'pages');
 
             $fieldValue = $contentObject->cObjGetSingle(
@@ -140,9 +141,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
                 $this->pageIndexingConfiguration[$solrFieldName . '.']
             );
 
-            if (AbstractIndexer::isSerializedValue($this->pageIndexingConfiguration,
-                $solrFieldName)
-            ) {
+            if (AbstractIndexer::isSerializedValue($this->pageIndexingConfiguration, $solrFieldName)) {
                 $fieldValue = unserialize($fieldValue);
             }
         } else {

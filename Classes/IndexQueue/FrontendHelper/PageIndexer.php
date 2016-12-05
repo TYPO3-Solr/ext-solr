@@ -24,11 +24,16 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -138,7 +143,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     /**
      * Gets the access rootline as defined by the request.
      *
-     * @return \ApacheSolrForTypo3\Solr\Access\Rootline The access rootline to use for indexing.
+     * @return Rootline The access rootline to use for indexing.
      */
     protected function getAccessRootline()
     {
@@ -148,11 +153,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $stringAccessRootline = $this->request->getParameter('accessRootline');
         }
 
-        $accessRootline = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Access\\Rootline',
-            $stringAccessRootline
-        );
-
+        $accessRootline = GeneralUtility::makeInstance(Rootline::class, $stringAccessRootline);
         return $accessRootline;
     }
 
@@ -228,7 +229,8 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             return $this->request->getParameter('overridePageUrl');
         }
 
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            /** @var $contentObject ContentObjectRenderer */
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         $typolinkConfiguration = array(
             'parameter' => intval($this->page->id),
@@ -271,8 +273,8 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         }
 
         try {
-            $indexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Typo3PageIndexer',
-                $page);
+            /** @var $indexer Typo3PageIndexer */
+            $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $page);
             $indexer->setSolrConnection($this->getSolrConnection());
             $indexer->setPageAccessRootline($this->getAccessRootline());
             $indexer->setPageUrl($this->generatePageUrl());
@@ -311,8 +313,10 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     protected function getSolrConnection()
     {
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        /** @var $indexQueue Queue */
+        $indexQueue = GeneralUtility::makeInstance(Queue::class);
+            /** @var $connectionManager ConnectionManager */
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $indexQueueItem = $indexQueue->getItem(
             $this->request->getParameter('item')

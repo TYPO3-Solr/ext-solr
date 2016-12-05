@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -99,6 +100,6 @@ class ConfigurationManager implements SingletonInterface
      */
     protected function getTypoScriptConfigurationInstance(array $configurationArray = null, $contextPageId = null)
     {
-        return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\TypoScriptConfiguration', $configurationArray, $contextPageId);
+        return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $configurationArray, $contextPageId);
     }
 }
