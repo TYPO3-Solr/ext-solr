@@ -230,15 +230,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         $this->importDataSetFromFixture($fixture);
 
         foreach ($importPageIds as $importPageId) {
-            $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
-            $fakeTSFE = $this->getConfiguredTSFE(array(), $importPageId);
-            $fakeTSFE->newCObj();
-
-            $GLOBALS['TSFE'] = $fakeTSFE;
-            $this->simulateFrontedUserGroups($feUserGroupArray);
-
-            PageGenerator::pagegenInit();
-            PageGenerator::renderContent();
+            $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
 
             /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
@@ -251,10 +243,31 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     }
 
     /**
+     * @param integer $pageId
+     * @param array $feUserGroupArray
+     * @return TypoScriptFrontendController
+     */
+    protected function fakeTSFE($pageId, $feUserGroupArray = [0])
+    {
+        $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
+
+        $fakeTSFE = $this->getConfiguredTSFE(array(), $pageId);
+        $fakeTSFE->newCObj();
+
+        $GLOBALS['TSFE'] = $fakeTSFE;
+        $this->simulateFrontedUserGroups($feUserGroupArray);
+
+        PageGenerator::pagegenInit();
+        PageGenerator::renderContent();
+        return $fakeTSFE;
+    }
+
+    /**
      * @param array $feUserGroupArray
      */
     protected function simulateFrontedUserGroups(array $feUserGroupArray)
     {
         $GLOBALS['TSFE']->gr_list = implode(',', $feUserGroupArray);
     }
+
 }
