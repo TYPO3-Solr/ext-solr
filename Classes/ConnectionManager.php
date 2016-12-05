@@ -24,12 +24,17 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
@@ -47,7 +52,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * @var array
      */
-    protected static $connections = array();
+    protected static $connections = [];
 
     /**
      * Gets a Solr connection.
@@ -62,12 +67,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @param string $scheme Solr scheme, defaults to http, can be https (optional)
      * @return SolrService A solr connection.
      */
-    public function getConnection(
-        $host = '',
-        $port = 8983,
-        $path = '/solr/',
-        $scheme = 'http'
-    ) {
+    public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http')
+    {
         $connection = null;
 
         if (empty($host)) {
@@ -81,7 +82,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             );
 
             $configuration = Util::getSolrConfiguration();
-            $solrConfiguration = $configuration->getValueByPathOrDefaultValue('plugin.tx_solr.solr.', array());
+            $solrConfiguration = $configuration->getValueByPathOrDefaultValue('plugin.tx_solr.solr.', []);
             $host = $solrConfiguration['host'];
             $port = $solrConfiguration['port'];
             $path = $solrConfiguration['path'];
@@ -91,18 +92,22 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $connectionHash = md5($scheme . '://' . $host . $port . $path);
 
         if (!isset(self::$connections[$connectionHash])) {
-            $connection = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\SolrService',
-                $host,
-                $port,
-                $path,
-                $scheme
-            );
-
+            $connection = GeneralUtility::makeInstance(SolrService::class, $host, $port, $path, $scheme);
             self::$connections[$connectionHash] = $connection;
         }
 
         return self::$connections[$connectionHash];
+    }
+
+    /**
+     * Creates a solr configuration from the configuration array and returns it.
+     *
+     * @param array $config
+     * @return SolrService
+     */
+    protected function getConnectionFromConfiguration(array $config)
+    {
+        return $this->getConnection($config['solrHost'], $config['solrPort'], $config['solrPath'], $config['solrScheme']);
     }
 
     /**
@@ -114,11 +119,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @return array A solr configuration.
      * @throws NoSolrConnectionFoundException
      */
-    public function getConfigurationByPageId(
-        $pageId,
-        $language = 0,
-        $mount = ''
-    ) {
+    public function getConfigurationByPageId($pageId, $language = 0, $mount = '')
+    {
         // find the root page
         $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
 
@@ -131,7 +133,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         } catch (NoSolrConnectionFoundException $nscfe) {
             /* @var $noSolrConnectionException NoSolrConnectionFoundException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\NoSolrConnectionFoundException',
+                NoSolrConnectionFoundException::class,
                 $nscfe->getMessage() . ' Initial page used was [' . $pageId . ']',
                 1275399922
             );
@@ -154,15 +156,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getConnectionByPageId($pageId, $language = 0, $mount = '')
     {
-        $solrConnection = null;
-
         $solrServer = $this->getConfigurationByPageId($pageId, $language, $mount);
-        $solrConnection = $this->getConnection(
-            $solrServer['solrHost'],
-            $solrServer['solrPort'],
-            $solrServer['solrPath'],
-            $solrServer['solrScheme']
-        );
+        $solrConnection = $this->getConnectionFromConfiguration($solrServer);
 
         return $solrConnection;
     }
@@ -178,16 +173,14 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     public function getConfigurationByRootPageId($pageId, $language = 0)
     {
         $connectionKey = $pageId . '|' . $language;
-
-        $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
-        $solrServers = $registry->get('tx_solr', 'servers');
+        $solrServers = $this->getAllConfigurations();
 
         if (isset($solrServers[$connectionKey])) {
             $solrConfiguration = $solrServers[$connectionKey];
         } else {
             /* @var $noSolrConnectionException NoSolrConnectionFoundException */
             $noSolrConnectionException = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\NoSolrConnectionFoundException',
+                NoSolrConnectionFoundException::class,
                 'Could not find a Solr connection for root page ['
                 . $pageId . '] and language [' . $language . '].',
                 1275396474
@@ -211,15 +204,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getConnectionByRootPageId($pageId, $language = 0)
     {
-        $solrConnection = null;
-
-        $solrServer = $this->getConfigurationByRootPageId($pageId, $language);
-        $solrConnection = $this->getConnection(
-            $solrServer['solrHost'],
-            $solrServer['solrPort'],
-            $solrServer['solrPath'],
-            $solrServer['solrScheme']
-        );
+        $config = $this->getConfigurationByRootPageId($pageId, $language);
+        $solrConnection = $this->getConnectionFromConfiguration($config);
 
         return $solrConnection;
     }
@@ -231,10 +217,23 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getAllConfigurations()
     {
-        $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
-        $solrConfigurations = $registry->get('tx_solr', 'servers', array());
+        /** @var $registry Registry */
+        $registry = GeneralUtility::makeInstance(Registry::class);
+        $solrConfigurations = $registry->get('tx_solr', 'servers', []);
 
         return $solrConfigurations;
+    }
+
+    /**
+     * Stores the connections in the registry.
+     *
+     * @param array $solrConfigurations
+     */
+    protected function setAllConfigurations(array $solrConfigurations)
+    {
+        /** @var $registry Registry */
+        $registry = GeneralUtility::makeInstance(Registry::class);
+        $registry->set('tx_solr', 'servers', $solrConfigurations);
     }
 
     /**
@@ -244,16 +243,11 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getAllConnections()
     {
-        $connections = array();
+        $connections = [];
 
-        $solrServers = $this->getAllConfigurations();
-        foreach ($solrServers as $solrServer) {
-            $connections[] = $this->getConnection(
-                $solrServer['solrHost'],
-                $solrServer['solrPort'],
-                $solrServer['solrPath'],
-                $solrServer['solrScheme']
-            );
+        $solrConfigurations = $this->getAllConfigurations();
+        foreach ($solrConfigurations as $solrConfiguration) {
+            $connections[] = $this->getConnectionFromConfiguration($solrConfiguration);
         }
 
         return $connections;
@@ -267,7 +261,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getConfigurationsBySite(Site $site)
     {
-        $solrConfigurations = array();
+        $solrConfigurations = [];
 
         $allConfigurations = $this->getAllConfigurations();
         foreach ($allConfigurations as $configuration) {
@@ -287,16 +281,11 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getConnectionsBySite(Site $site)
     {
-        $connections = array();
+        $connections = [];
 
         $solrServers = $this->getConfigurationsBySite($site);
         foreach ($solrServers as $solrServer) {
-            $connections[] = $this->getConnection(
-                $solrServer['solrHost'],
-                $solrServer['solrPort'],
-                $solrServer['solrPath'],
-                $solrServer['solrScheme']
-            );
+            $connections[] = $this->getConnectionFromConfiguration($solrServer);
         }
 
         return $connections;
@@ -317,12 +306,12 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
 
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-            $cacheActions[] = array(
+            $cacheActions[] = [
                 'id' => 'clearSolrConnectionCache',
                 'title' => $title,
                 'href' =>  $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
                 'icon' => $iconFactory->getIcon('extensions-solr-module-initsolrconnections', Icon::SIZE_SMALL)
-            );
+            ];
             $optionValues[] = 'clearSolrConnectionCache';
         }
     }
@@ -337,8 +326,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $solrConnections = $this->filterDuplicateConnections($solrConnections);
 
         if (!empty($solrConnections)) {
-            $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
-            $registry->set('tx_solr', 'servers', $solrConnections);
+            $this->setAllConfigurations($solrConnections);
         }
     }
 
@@ -358,27 +346,21 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     public function updateConnectionByRootPageId($rootPageId)
     {
         $systemLanguages = $this->getSystemLanguages();
-        $rootPage = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site',
-            $rootPageId)->getRootPage();
+        $rootPage = GeneralUtility::makeInstance(Site::class, $rootPageId)->getRootPage();
 
-        $updatedSolrConnections = array();
+        $updatedSolrConnections = [];
         foreach ($systemLanguages as $languageId) {
-            $connection = $this->getConfiguredSolrConnectionByRootPage($rootPage,
-                $languageId);
+            $connection = $this->getConfiguredSolrConnectionByRootPage($rootPage, $languageId);
 
             if (!empty($connection)) {
                 $updatedSolrConnections[$connection['connectionKey']] = $connection;
             }
         }
 
-        $registry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
-        $solrConnections = $registry->get('tx_solr', 'servers', array());
-
-        $solrConnections = array_merge($solrConnections,
-            $updatedSolrConnections);
+        $solrConnections = $this->getAllConfigurations();
+        $solrConnections = array_merge($solrConnections, $updatedSolrConnections);
         $solrConnections = $this->filterDuplicateConnections($solrConnections);
-
-        $registry->set('tx_solr', 'servers', $solrConnections);
+        $this->setAllConfigurations($solrConnections);
     }
 
     /**
@@ -389,7 +371,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     protected function getConfiguredSolrConnections()
     {
-        $configuredSolrConnections = array();
+        $configuredSolrConnections = [];
 
         // find website roots and languages for this installation
         $rootPages = $this->getRootPages();
@@ -417,20 +399,18 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @param int $languageId ID of a system language
      * @return array A solr connection configuration.
      */
-    protected function getConfiguredSolrConnectionByRootPage(
-        array $rootPage,
-        $languageId
-    ) {
-        $connection = array();
+    protected function getConfiguredSolrConnectionByRootPage(array $rootPage, $languageId)
+    {
+        $connection = [];
 
         $languageId = intval($languageId);
         GeneralUtility::_GETset($languageId, 'L');
         $connectionKey = $rootPage['uid'] . '|' . $languageId;
 
-        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
         $rootLine = $pageSelect->getRootLine($rootPage['uid']);
 
-        $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
+        $tmpl = GeneralUtility::makeInstance(ExtendedTemplateService::class);
         $tmpl->tt_track = false; // Do not log time-performance information
         $tmpl->init();
         $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
@@ -455,7 +435,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $solrPath = trim($solrSetup['path'], '/');
             $solrPath = '/' . $solrPath . '/';
 
-            $connection = array(
+            $connection = [
                 'connectionKey' => $connectionKey,
 
                 'rootPageTitle' => $rootPage['title'],
@@ -467,7 +447,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 'solrPath' => $solrPath,
 
                 'language' => $languageId
-            );
+            ];
             $connection['label'] = $this->buildConnectionLabel($connection);
         }
 
@@ -529,8 +509,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     protected function filterDuplicateConnections(array $connections)
     {
-        $hashedConnections = array();
-        $filteredConnections = array();
+        $hashedConnections = [];
+        $filteredConnections = [];
 
         // array_unique() doesn't work on multi dimensional arrays, so we need to flatten it first
         foreach ($connections as $key => $connection) {
@@ -555,7 +535,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     protected function getSystemLanguages()
     {
-        $languages = array(0);
+        $languages = [0];
 
         $languageRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'uid',
@@ -563,12 +543,13 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             'hidden = 0'
         );
 
-        if (is_array($languageRecords)) {
-            foreach ($languageRecords as $languageRecord) {
-                $languages[] = $languageRecord['uid'];
-            }
+        if (!is_array($languageRecords)) {
+            return $languages;
         }
 
+        foreach ($languageRecords as $languageRecord) {
+            $languages[] = $languageRecord['uid'];
+        }
         return $languages;
     }
 
