@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
+namespace ApacheSolrForTypo3\Solr\System\Solr\Parser;
 
 /***************************************************************
  *  Copyright notice

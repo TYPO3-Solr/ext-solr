@@ -211,7 +211,7 @@ class SolrStatus implements StatusProviderInterface
     protected function checkSolrSchemaName(SolrService $solr)
     {
         try {
-            $solrSchemaMessage = $solr->getSchemaName();
+            $solrSchemaMessage = $solr->getSchema()->getName();
         } catch (\Exception $e) {
             $this->responseStatus = Status::ERROR;
             $solrSchemaMessage = 'Error determining schema name: ' . $e->getMessage();

@@ -74,7 +74,7 @@ class SchemaStatus implements StatusProviderInterface
                 continue;
             }
 
-            $isWrongSchema = $solrConnection->getSchemaName() != self::RECOMMENDED_SCHEMA_VERSION;
+            $isWrongSchema = $solrConnection->getSchema()->getName() != self::RECOMMENDED_SCHEMA_VERSION;
             if ($isWrongSchema) {
                 $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
                 $standaloneView->setTemplatePathAndFilename(
