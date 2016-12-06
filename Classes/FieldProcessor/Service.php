@@ -24,6 +24,11 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy;
+use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
+use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
+use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate;
+use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -75,23 +80,28 @@ class Service
 
                 switch ($instruction) {
                     case 'timestampToUtcIsoDate':
-                        $processor = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\TimestampToUtcIsoDate');
+                        /** @var $processor TimestampToUtcIsoDate */
+                        $processor = GeneralUtility::makeInstance(TimestampToUtcIsoDate::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'timestampToIsoDate':
-                        $processor = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\TimestampToIsoDate');
+                        /** @var $processor TimestampToIsoDate */
+                        $processor = GeneralUtility::makeInstance(TimestampToIsoDate::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'pathToHierarchy':
-                        $processor = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\PathToHierarchy');
+                        /** @var $processor PathToHierarchy */
+                        $processor = GeneralUtility::makeInstance(PathToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'pageUidToHierarchy':
-                        $processor = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\PageUidToHierarchy');
+                        /** @var $processor PageUidToHierarchy */
+                        $processor = GeneralUtility::makeInstance(PageUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'categoryUidToHierarchy':
-                        $processor = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\CategoryUidToHierarchy');
+                        /** @var $processor CategoryUidToHierarchy */
+                        $processor = GeneralUtility::makeInstance(CategoryUidToHierarchy::class);
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'uppercase':

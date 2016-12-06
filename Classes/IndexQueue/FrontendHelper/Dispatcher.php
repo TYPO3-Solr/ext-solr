@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Manager;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,7 +50,7 @@ class Dispatcher
      */
     public function __construct()
     {
-        $this->frontendHelperManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\Manager');
+        $this->frontendHelperManager = GeneralUtility::makeInstance(Manager::class);
     }
 
     /**

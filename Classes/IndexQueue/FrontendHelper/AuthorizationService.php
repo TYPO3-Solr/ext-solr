@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequestHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Sv\AbstractAuthenticationService;
 
@@ -97,15 +99,12 @@ class AuthorizationService extends AbstractAuthenticationService
     {
         $groupData = array();
 
-        $requestHandler = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequestHandler');
+            /** @var $requestHandler PageIndexerRequestHandler */
+        $requestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);
         $accessRootline = $requestHandler->getRequest()->getParameter('accessRootline');
 
         if ($user['username'] == self::SOLR_INDEXER_USERNAME && !empty($accessRootline)) {
-            $accessRootline = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Access\\Rootline',
-                $accessRootline
-            );
-
+            $accessRootline = GeneralUtility::makeInstance(Rootline::class, $accessRootline);
             $groups = $accessRootline->getGroups();
 
             foreach ($groups as $groupId) {
