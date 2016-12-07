@@ -25,8 +25,10 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Solr\Service\StopWordParser;
-use ApacheSolrForTypo3\Solr\System\Solr\Service\SynonymParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
+use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -116,7 +118,6 @@ class SolrService extends \Apache_Solr_Service
     protected $systemData = null;
     protected $pluginsData = null;
 
-    protected $schemaName = null;
     protected $solrconfigName = null;
 
     /**
@@ -140,9 +141,14 @@ class SolrService extends \Apache_Solr_Service
     protected $stopWordParser = null;
 
     /**
-     * @var string
+     * @var SchemaParser
      */
-    protected $managedLanguage = '';
+    protected $schemaParser = null;
+
+    /**
+     * @var Schema
+     */
+    protected $schema;
 
     /**
      * Constructor
@@ -154,6 +160,7 @@ class SolrService extends \Apache_Solr_Service
      * @param TypoScriptConfiguration $typoScriptConfiguration
      * @param SynonymParser $synonymParser
      * @param StopWordParser $stopWordParser
+     * @param SchemaParser $schemaParser
      */
     public function __construct(
         $host = '',
@@ -162,12 +169,14 @@ class SolrService extends \Apache_Solr_Service
         $scheme = 'http',
         TypoScriptConfiguration $typoScriptConfiguration = null,
         SynonymParser $synonymParser = null,
-        StopWordParser $stopWordParser = null
+        StopWordParser $stopWordParser = null,
+        SchemaParser $schemaParser = null
     ) {
         $this->setScheme($scheme);
         $this->configuration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
         $this->synonymParser = is_null($synonymParser) ? GeneralUtility::makeInstance(SynonymParser::class) : $synonymParser;
         $this->stopWordParser = is_null($stopWordParser) ? GeneralUtility::makeInstance(StopWordParser::class) : $stopWordParser;
+        $this->schemaParser = is_null($schemaParser) ? GeneralUtility::makeInstance(SchemaParser::class) : $schemaParser;
 
         $this->initializeTimeoutFromConfiguration();
 
@@ -583,16 +592,13 @@ class SolrService extends \Apache_Solr_Service
      * Gets the name of the schema.xml file installed and in use on the Solr
      * server.
      *
+     * @deprecated use getSchema()->getName() instead will be removed in 7.0
      * @return string Name of the active schema.xml
      */
     public function getSchemaName()
     {
-        if (is_null($this->schemaName)) {
-            $systemInformation = $this->getSystemInformation();
-            $this->schemaName = $systemInformation->core->schema;
-        }
-
-        return $this->schemaName;
+        GeneralUtility::logDeprecatedFunction();
+        return $this->getSchema()->getName();
     }
 
     /**
@@ -934,7 +940,7 @@ class SolrService extends \Apache_Solr_Service
         if (trim($this->_synonymsUrl) !== '') {
             return;
         }
-        $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getManagedLanguage();
+        $this->_synonymsUrl = $this->_constructUrl(self::SYNONYMS_SERVLET) . $this->getSchema()->getLanguage();
     }
 
     /**
@@ -946,48 +952,21 @@ class SolrService extends \Apache_Solr_Service
             return;
         }
 
-        $this->_stopWordsUrl = $this->_constructUrl(self::STOPWORDS_SERVLET) . $this->getManagedLanguage();
+        $this->_stopWordsUrl = $this->_constructUrl(self::STOPWORDS_SERVLET) . $this->getSchema()->getLanguage();
     }
 
     /**
-     * Get the language map name for the text field.
-     * This is necessary to select the correct synonym map.
+     * Get the configured schema for the current core.
      *
-     * @return string
+     * @return Schema
      */
-    protected function getManagedLanguage()
+    public function getSchema()
     {
-        if ($this->managedLanguage !== '') {
-            return $this->managedLanguage;
+        if ($this->schema !== null) {
+            return $this->schema;
         }
-
-        $schema = $this->getSchema();
-        $language = 'english';
-
-        if (is_object($schema) && isset($schema->fieldTypes)) {
-            foreach ($schema->fieldTypes as $fieldType) {
-                if ($fieldType->name === 'text') {
-                    foreach ($fieldType->queryAnalyzer->filters as $filter) {
-                        if ($filter->class === 'solr.ManagedSynonymFilterFactory') {
-                            $language = $filter->managed;
-                        }
-                    }
-                }
-            }
-        }
-
-        $this->managedLanguage = $language;
-        return $language;
-    }
-
-    /**
-     * Get the configured schema for the current core
-     *
-     * @return \stdClass
-     */
-    protected function getSchema()
-    {
         $response = $this->_sendRawGet($this->_schemaUrl);
-        return json_decode($response->getRawResponse())->schema;
+        $this->schema = $this->schemaParser->parseJson($response->getRawResponse());
+        return $this->schema;
     }
 }
