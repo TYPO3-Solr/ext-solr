@@ -99,18 +99,6 @@ class Results extends CommandPluginBase
     }
 
     /**
-     * Returns the number of results per page.
-     *
-     * @deprecated use $this->searchResultSet->getResultsPerPage() instead , will be removed in version 5.0
-     * @return int
-     */
-    public function getNumberOfResultsPerPage()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->searchResultSet->getResultsPerPage();
-    }
-
-    /**
      * Implementation of preRender() method. Used to include CSS files.
      *
      */
