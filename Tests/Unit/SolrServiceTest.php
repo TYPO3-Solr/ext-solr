@@ -115,4 +115,38 @@ class SolrServiceTest extends UnitTest
         $solrService = new SolrService('localhost','8080','/solr/','http', $configuration);
         $this->assertSame(99.0, $solrService->getHttpTransport()->getDefaultTimeout(), 'Default timeout was not set from configuration');
     }
+
+    /**
+     * @test
+     */
+    public function canSetScheme()
+    {
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $solrService = new SolrService('localhost','8080','/solr/','http', $fakeConfiguration);
+        $this->assertSame('http', $solrService->getScheme());
+        $solrService->setScheme('https');
+    }
+
+    /**
+     * @test
+     */
+    public function setSchemeThrowsExceptionWhenEmptySchemeWasPassed()
+    {
+        $this->setExpectedException(\UnexpectedValueException::class, 'Scheme parameter is empty');
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $solrService = new SolrService('localhost','8080','/solr/','http', $fakeConfiguration);
+        $solrService->setScheme('');
+    }
+
+    /**
+     * @test
+     */
+    public function setSchemeThrowsExceptionWhenInvalidSchemeWasPassed()
+    {
+        $this->setExpectedException(\UnexpectedValueException::class, 'Unsupported scheme parameter, scheme must be http or https');
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $solrService = new SolrService('localhost','8080','/solr/','http', $fakeConfiguration);
+        $solrService->setScheme('invalidscheme');
+    }
+
 }

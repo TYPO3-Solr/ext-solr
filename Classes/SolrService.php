@@ -449,17 +449,16 @@ class SolrService extends \Apache_Solr_Service
     {
         // Use the provided scheme or use the default
         if (empty($scheme)) {
-            throw new \UnexpectedValueException('Scheme parameter is empty',
-                1380756390);
-        } else {
-            if (in_array($scheme,
-                array(self::SCHEME_HTTP, self::SCHEME_HTTPS))) {
-                $this->_scheme = $scheme;
-            } else {
-                throw new \UnexpectedValueException('Unsupported scheme parameter, scheme must be http or https',
-                    1380756442);
-            }
+            throw new \UnexpectedValueException('Scheme parameter is empty', 1380756390);
         }
+
+        $isHttpOrHttps = in_array($scheme, array(self::SCHEME_HTTP, self::SCHEME_HTTPS));
+        if (!$isHttpOrHttps) {
+            throw new \UnexpectedValueException('Unsupported scheme parameter, scheme must be http or https', 1380756442);
+        }
+
+        // we have a valid scheme
+        $this->_scheme = $scheme;
 
         if ($this->_urlsInited) {
             $this->_initUrls();
