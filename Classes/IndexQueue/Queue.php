@@ -199,13 +199,14 @@ class Queue
      *      Optional, not needed for all types.
      * @return string The indexing configuration's name to use when indexing
      * @deprecated Use getIndexingConfigurationsByItem() now, which behaves
-     *      almost the same way but returns an array of configurations
+     *      almost the same way but returns an array of configurations, will be removed in version 7.0
      */
     protected function getIndexingConfigurationByItem(
         $itemType,
         $itemUid,
         $rootPageId = null
     ) {
+        GeneralUtility::logDeprecatedFunction();
         $indexingConfigurationName = '';
 
         $configurations = $this->getIndexingConfigurationsByItem($itemType,
