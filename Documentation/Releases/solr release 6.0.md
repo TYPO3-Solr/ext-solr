@@ -29,7 +29,7 @@ access filter jar files - to configure and run a Solr server for use with TYPO3.
 * https://github.com/TYPO3-Solr/ext-solr/pull/580
 * https://github.com/TYPO3-Solr/ext-solr/pull/576
 
-### Access Filter Support for multi-value access fields
+### Access Filter Support for multi-value Access Fields
 
 The next release of EXT:solrfal will allow merging of duplicates into one document. 
 The implementation of this feature requires that the permissions are stored in a multi-value 
