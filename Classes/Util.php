@@ -274,22 +274,23 @@ class Util
 
         if ($initializeTsfe) {
             self::initializeTsfe($pageId, $language);
-            if (!empty($configurationToUse)) {
-                return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
+            if (empty($configurationToUse)) {
+                $configurationToUse = self::getConfigurationFromInitializedTSFE($path);
             }
-            $configurationToUse = self::getConfigurationFromInitializedTSFE($path);
         } else {
-            if (!empty($configurationToUse)) {
-                return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
+            if (empty($configurationToUse)) {
+                $configurationToUse = self::getConfigurationFromExistingTSFE($pageId, $path, $language);
             }
-            $configurationToUse = self::getConfigurationFromExistingTSFE($pageId, $path, $language);
         }
 
         if ($useCache) {
             $cache->set($cacheId, $configurationToUse);
         }
 
-        return $configurationsByCacheKey[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
+        $configurationsByCacheKey[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId,
+            $language, $path);
+
+        return $configurationsByCacheKey[$cacheId];
     }
 
     /**
