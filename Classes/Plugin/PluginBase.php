@@ -57,14 +57,6 @@ abstract class PluginBase extends AbstractPlugin
     public $extKey = 'solr';
 
     /**
-     * The plugin's query
-     *
-     * @deprecated use $this->searchResultSet->getUsedQuery() instead, will be removed in version 5.0
-     * @var Query
-     */
-    protected $query = null;
-
-    /**
      * An instance of ApacheSolrForTypo3\Solr\Template
      *
      * @var Template

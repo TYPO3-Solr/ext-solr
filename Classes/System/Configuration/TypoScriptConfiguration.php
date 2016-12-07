@@ -34,15 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TypoScriptConfiguration
 {
-
-    /**
-     * Holds the solr configuration
-     *
-     * @deprecated will be removed in 6.0
-     * @var array
-     */
-    protected $configuration = array();
-
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor|null
      */
@@ -60,7 +51,6 @@ class TypoScriptConfiguration
      */
     public function __construct(array $configuration, $contextPageId = 0)
     {
-        $this->configuration = $configuration;
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId;
     }
