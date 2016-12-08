@@ -379,6 +379,8 @@ class SearchResultSetService implements SingletonInterface
             $response->spellcheck = [];
             $response->debug = [];
             $response->responseHeader = [];
+            $response->facet_counts = [];
+
             $documents = [];
         }
 
