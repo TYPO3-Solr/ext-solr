@@ -287,10 +287,7 @@ class Util
             $cache->set($cacheId, $configurationToUse);
         }
 
-        $configurationsByCacheKey[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId,
-            $language, $path);
-
-        return $configurationsByCacheKey[$cacheId];
+        return $configurationsByCacheKey[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
     }
 
     /**
