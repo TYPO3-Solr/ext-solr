@@ -34,15 +34,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TypoScriptConfiguration
 {
-
-    /**
-     * Holds the solr configuration
-     *
-     * @deprecated will be removed in 6.0
-     * @var array
-     */
-    protected $configuration = array();
-
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor|null
      */
@@ -60,7 +51,6 @@ class TypoScriptConfiguration
      */
     public function __construct(array $configuration, $contextPageId = 0)
     {
-        $this->configuration = $configuration;
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId;
     }
@@ -320,19 +310,37 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.index.queue.pages.allowedPageTypes
      *
+     * @param string $configurationName The configuration name of the queue to use.
      * @param array $defaultIfEmpty
      * @return array
      */
-    public function getIndexQueuePagesAllowedPageTypesArray($defaultIfEmpty = array())
+    public function getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName = 'pages', $defaultIfEmpty = [])
     {
-        $path = 'plugin.tx_solr.index.queue.pages.allowedPageTypes';
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.allowedPageTypes';
         $result = $this->getValueByPathOrDefaultValue($path, '');
-
         if (trim($result) == '') {
             return $defaultIfEmpty;
         }
 
         return GeneralUtility::trimExplode(',', $result);
+    }
+
+    /**
+     * Returns an array of all allowedPageTypes.
+     *
+     * plugin.tx_solr.index.queue.pages.allowedPageTypes
+     *
+     * @deprecated since 6.0 will be removed in 7.0
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueuePagesAllowedPageTypesArray($defaultIfEmpty = array())
+    {
+        return $this->getIndexQueueAllowedPageTypesArrayByConfigurationName(
+            'pages',
+            $defaultIfEmpty
+        );
     }
 
     /**
@@ -847,6 +855,19 @@ class TypoScriptConfiguration
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.enableDebugMode', $defaultIfEmpty);
         return $this->getBool($result);
+    }
+
+    /**
+     * Returns the defaultTimeout used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.defaultTimeout
+     *
+     * @param float $defaultIfEmpty
+     * @return float
+     */
+    public function getSolrTimeout($defaultIfEmpty = 0.0)
+    {
+        return (float)$this->getValueByPathOrDefaultValue('plugin.tx_solr.solr.timeout', $defaultIfEmpty);
     }
 
     /**

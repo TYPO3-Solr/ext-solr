@@ -882,6 +882,24 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
+    public function canRemoveFilterByValue()
+    {
+        $fakeConfiguration = new TypoScriptConfiguration([]);
+        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
+
+        // can we add a filter?
+        $query->addFilter('foo:bar');
+        $filters = $query->getFilters();
+        $this->assertSame(['foo:bar'], $filters, 'Could not get filters from query object');
+
+        $query->removeFilterByValue('foo:bar');
+        $filters = $query->getFilters();
+        $this->assertSame([], $filters, 'Filters are not empty after removing the last one');
+    }
+
+    /**
+     * @test
+     */
     public function canSetAndUnSetQueryType()
     {
         $query = $this->getInitializedTestQuery('test');

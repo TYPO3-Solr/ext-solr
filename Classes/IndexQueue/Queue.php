@@ -199,13 +199,14 @@ class Queue
      *      Optional, not needed for all types.
      * @return string The indexing configuration's name to use when indexing
      * @deprecated Use getIndexingConfigurationsByItem() now, which behaves
-     *      almost the same way but returns an array of configurations
+     *      almost the same way but returns an array of configurations, will be removed in version 7.0
      */
     protected function getIndexingConfigurationByItem(
         $itemType,
         $itemUid,
         $rootPageId = null
     ) {
+        GeneralUtility::logDeprecatedFunction();
         $indexingConfigurationName = '';
 
         $configurations = $this->getIndexingConfigurationsByItem($itemType,
@@ -265,7 +266,6 @@ class Queue
         $forcedChangeTime = 0
     ) {
         $itemInQueue = $this->containsItem($itemType, $itemUid);
-
         if ($itemInQueue) {
             // update if that item is in the queue already
             $changes = array(
@@ -308,12 +308,13 @@ class Queue
         $additionalRecordFields = '';
         if ($itemType == 'pages') {
             $additionalRecordFields = ', doktype, uid';
+            $indexingConfiguration = is_null($indexingConfiguration) ? 'pages' : $indexingConfiguration;
         }
 
-        $record = BackendUtility::getRecord($itemType, $itemUid,
-            'pid' . $additionalRecordFields);
 
-        if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record))) {
+        $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
+
+        if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
             return;
         }
 
@@ -641,11 +642,11 @@ class Queue
 
             // reset Index Queue Properties
             $indexQueuePropertyResetQuery = '
-				DELETE tx_solr_indexqueue_indexing_property.*
-				FROM tx_solr_indexqueue_indexing_property
-				INNER JOIN tx_solr_indexqueue_item
-					ON tx_solr_indexqueue_item.uid = tx_solr_indexqueue_indexing_property.item_id
-					AND ' .
+                DELETE tx_solr_indexqueue_indexing_property.*
+                FROM tx_solr_indexqueue_indexing_property
+                INNER JOIN tx_solr_indexqueue_item
+                    ON tx_solr_indexqueue_item.uid = tx_solr_indexqueue_indexing_property.item_id
+                    AND ' .
                 $rootPageConstraint .
                 $indexingConfigurationConstraint;
 

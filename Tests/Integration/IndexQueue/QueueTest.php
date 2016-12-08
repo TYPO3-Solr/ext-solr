@@ -165,5 +165,25 @@ class QueueTest extends IntegrationTest
 
         $this->indexQueue->initialize(Site::getFirstAvailableSite(), 'pages');
         $this->assertItemsInQueue(4);
+
+    }
+
+    /**
+     * @test
+     */
+    public function canAddCustomPageTypeToTheQueue()
+    {
+        $this->importDataSetFromFixture('can_index_custom_page_type_with_own_configuration.xml');
+        $site = Site::getFirstAvailableSite();
+        $this->indexQueue->initialize($site, 'custom_page_type');
+
+        $this->assertItemsInQueue(1);
+
+        $queueItem = $this->indexQueue->getItem(1);
+        $this->assertEquals(
+            'custom_page_type',
+            $queueItem->getIndexingConfigurationName(),
+            'Item was queued with unexpected configuration'
+        );
     }
 }

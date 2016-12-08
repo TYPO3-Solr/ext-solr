@@ -89,3 +89,12 @@ password
 
    Sets the username required to access the solr server.
 
+timeout
+-------
+
+:Type: Float
+:TS Path: plugin.tx_solr.solr.timeout
+:Default: 0.0
+:Since: 1.0
+
+Can be used to configure a connection timeout.

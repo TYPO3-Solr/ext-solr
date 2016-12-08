@@ -397,8 +397,10 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         $record = $this->normalizeFrontendGroupField($table, $record);
 
         if ($this->isHidden($table, $record)
-            || ($this->isStartTimeInFuture($table,
-                    $record) && $this->isMarkedAsIndexed($table, $record))
+            || (($this->isStartTimeInFuture($table, $record)
+                    || $this->isEndTimeInPast($table, $record))
+                && $this->isMarkedAsIndexed($table, $record)
+            )
             || $this->hasFrontendGroupsRemoved($table, $record)
             || ($table == 'pages' && $this->isPageExcludedFromSearch($record))
             || ($table == 'pages' && !$this->isIndexablePageType($record))
@@ -450,6 +452,27 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         }
 
         return $startTimeInFuture;
+    }
+
+    /**
+     * Checks whether a end time field exists for the record's table and if so
+     * determines if a time is set and whether that time is in the past,
+     * making the record invisible on the website.
+     *
+     * @param string $table The table name.
+     * @param array $record An array with record fields that may affect visibility.
+     * @return bool True if the record's end time is in the past, FALSE otherwise.
+     */
+    protected function isEndTimeInPast($table, $record)
+    {
+        $endTimeInPast = false;
+
+        if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['endtime'])) {
+            $endTimeField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['endtime'];
+            $endTimeInPast = $record[$endTimeField] < time();
+        }
+
+        return $endTimeInPast;
     }
 
     /**
@@ -527,11 +550,13 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * The method remains as a dummy for possible later cleanups and to prevent
      * things from breaking if others were using it.
      *
+     * @deprecated since 6.0 will be removed in 7.0. deletion is done by DocExpirationUpdateProcessor
      * @param Site $site The site to clean indexes on
      * @param bool $commitAfterCleanUp Whether to commit right after the clean up, defaults to TRUE
      * @return void
      */
     public function cleanIndex(Site $site, $commitAfterCleanUp = true)
     {
+        GeneralUtility::logDeprecatedFunction();
     }
 }

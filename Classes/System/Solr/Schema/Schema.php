@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
+namespace ApacheSolrForTypo3\Solr\System\Solr\Schema;
 
 /***************************************************************
  *  Copyright notice
@@ -27,48 +27,51 @@ namespace ApacheSolrForTypo3\Solr\System\Solr\Service;
 
 
 /**
- * Class to parse the stopwords from a solr response.
+ * Object representation of the solr schema.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class StopWordParser
+class Schema
 {
+    /**
+     * @var string
+     */
+    protected $language = 'english';
 
     /**
-     * Parse the solr stopwords response from an json string to an array.
-     *
-     * @param string $jsonString
-     * @return array
+     * @var string
      */
-    public function parseJson($jsonString)
+    protected $name = '';
+
+    /**
+     * @return string
+     */
+    public function getLanguage()
     {
-        $stopWords = [];
-
-        $decodedResponse = json_decode($jsonString);
-
-        if (isset($decodedResponse->wordSet->managedList)) {
-            $stopWords = (array)$decodedResponse->wordSet->managedList;
-        }
-
-        return $stopWords;
+        return $this->language;
     }
 
     /**
-     * @param string|array $stopWords
-     * @return string
-     * @throws \Apache_Solr_InvalidArgumentException
+     * @param string $language
      */
-    public function toJson($stopWords)
+    public function setLanguage($language)
     {
-        if (empty($stopWords)) {
-            throw new \Apache_Solr_InvalidArgumentException('Must provide stop word.');
-        }
+        $this->language = $language;
+    }
 
-        if (is_string($stopWords)) {
-            $stopWords = [$stopWords];
-        }
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-        $stopWords = array_values($stopWords);
-        return json_encode($stopWords);
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 }

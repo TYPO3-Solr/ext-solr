@@ -25,6 +25,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Access\RootlineElement;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -197,7 +199,7 @@ class PageIndexer extends Indexer
      */
     protected function buildBasePageIndexerRequest()
     {
-        $request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequest');
+        $request = GeneralUtility::makeInstance(PageIndexerRequest::class);
         $request->setParameter('loggingEnabled', $this->loggingEnabled);
 
         if (!empty($this->options['authorization.'])) {
@@ -443,13 +445,10 @@ class PageIndexer extends Indexer
             // current page's content access groups
             $contentAccessGroups = array($contentAccessGroup);
             if (is_null($contentAccessGroup)) {
-                $contentAccessGroups = $this->getAccessGroupsFromContent($item,
-                    $language);
+                $contentAccessGroups = $this->getAccessGroupsFromContent($item, $language);
             }
-            $accessRootline->push(GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Access\\RootlineElement',
-                'c:' . implode(',', $contentAccessGroups)
-            ));
+            $element = GeneralUtility::makeInstance(RootlineElement::class, 'c:' . implode(',', $contentAccessGroups));
+            $accessRootline->push($element);
 
             $accessRootlineCache[$accessRootlineCacheEntryId] = $accessRootline;
         }

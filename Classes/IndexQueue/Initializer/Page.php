@@ -27,6 +27,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -62,17 +64,6 @@ class Page extends AbstractInitializer
     public function setType($type)
     {
         $this->type = 'pages';
-    }
-
-    /**
-     * Overrides the general setIndexingConfigurationName() implementation,
-     * forcing indexingConfigurationName to "pages".
-     *
-     * @param string $indexingConfigurationName Indexing configuration name (ignored)
-     */
-    public function setIndexingConfigurationName($indexingConfigurationName)
-    {
-        $this->indexingConfigurationName = 'pages';
     }
 
     /**
@@ -135,11 +126,8 @@ class Page extends AbstractInitializer
             } else {
                 // Add page like a regular page, as only the sub tree is
                 // mounted. The page itself has its own content.
-                GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue')->updateItem(
-                    $this->type,
-                    $mountPage['uid'],
-                    $this->indexingConfigurationName
-                );
+                $indexQueue = GeneralUtility::makeInstance(Queue::class);
+                $indexQueue->updateItem($this->type, $mountPage['uid'], $this->indexingConfigurationName);
             }
 
             // This can happen when the mount point does not show the content of the
@@ -151,8 +139,7 @@ class Page extends AbstractInitializer
             DatabaseUtility::transactionStart();
             try {
                 $this->addMountedPagesToIndexQueue($mountedPages, $mountPage);
-                $this->addIndexQueueItemIndexingProperties($mountPage,
-                    $mountedPages);
+                $this->addIndexQueueItemIndexingProperties($mountPage, $mountedPages);
 
                 DatabaseUtility::transactionCommit();
                 $mountPagesInitialized = true;
@@ -225,8 +212,7 @@ class Page extends AbstractInitializer
     {
         $mountedPageExists = false;
 
-        $mountedPage = BackendUtility::getRecord('pages', $mountedPageId, '*',
-            ' AND hidden = 0');
+        $mountedPage = BackendUtility::getRecord('pages', $mountedPageId, '*', ' AND hidden = 0');
         if (!empty($mountedPage)) {
             $mountedPageExists = true;
         }
@@ -241,10 +227,8 @@ class Page extends AbstractInitializer
      * @param array $mountedPages An array of mounted page IDs
      * @param array $mountProperties Array with mount point properties (mountPageSource, mountPageDestination, mountPageOverlayed)
      */
-    protected function addMountedPagesToIndexQueue(
-        array $mountedPages,
-        array $mountProperties
-    ) {
+    protected function addMountedPagesToIndexQueue(array $mountedPages, array $mountProperties)
+    {
         $mountPointPageIsWithExistingQueueEntry = $this->getPageIdsOfExistingMountPages($mountedPages);
         $mountedPagesThatNeedToBeAdded = array_diff($mountedPages, $mountPointPageIsWithExistingQueueEntry);
 
@@ -304,10 +288,8 @@ class Page extends AbstractInitializer
      * @param array $mountPage An array with information about the root/destination Mount Page
      * @param array $mountedPages An array of mounted page IDs
      */
-    protected function addIndexQueueItemIndexingProperties(
-        array $mountPage,
-        array $mountedPages
-    ) {
+    protected function addIndexQueueItemIndexingProperties(array $mountPage, array $mountedPages)
+    {
         $mountIdentifier = $this->getMountPointIdentifier($mountPage);
         $mountPageItems = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             '*',
@@ -325,13 +307,9 @@ class Page extends AbstractInitializer
         }
 
         foreach ($mountPageItems as $mountPageItemRecord) {
-            $mountPageItem = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Item',
-                $mountPageItemRecord);
-
-            $mountPageItem->setIndexingProperty('mountPageSource',
-                $mountPage['mountPageSource']);
-            $mountPageItem->setIndexingProperty('mountPageDestination',
-                $mountPage['mountPageDestination']);
+            $mountPageItem = GeneralUtility::makeInstance(Item::class, $mountPageItemRecord);
+            $mountPageItem->setIndexingProperty('mountPageSource', $mountPage['mountPageSource']);
+            $mountPageItem->setIndexingProperty('mountPageDestination', $mountPage['mountPageDestination']);
             $mountPageItem->setIndexingProperty('isMountedPage', '1');
 
             $mountPageItem->storeIndexingProperties();

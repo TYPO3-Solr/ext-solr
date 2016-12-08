@@ -360,18 +360,38 @@ class SearchResultSetService implements SingletonInterface
      * to use a custom result object.
      *
      * @param \Apache_Solr_Response $response
-     * @throws \InvalidArgumentException
+     * @throws \Apache_Solr_ParserException
      */
     protected function wrapResultDocumentInResultObject(\Apache_Solr_Response &$response)
     {
-        if (!is_array($response->response->docs)) {
+        try {
+            $documents = $response->response->docs;
+        } catch (\Apache_Solr_ParserException $e) {
+            // when variant are enable and the index is empty, we get a parse exception, because of a
+            // Apache Solr Bug.
+            // see: https://github.com/TYPO3-Solr/ext-solr/issues/668
+            // @todo this try/catch block can be removed after upgrading to Apache Solr 6.4
+            if (!$this->typoScriptConfiguration->getSearchVariants()) {
+                throw $e;
+            }
+
+            $response->response = new \stdClass();
+            $response->spellcheck = [];
+            $response->debug = [];
+            $response->responseHeader = [];
+            $documents = [];
+        }
+
+        if (!is_array($documents)) {
             return;
         }
 
-        foreach ($response->response->docs as $key => $originalDocument) {
+        foreach ($documents as $key => $originalDocument) {
             $result = $this->wrapApacheSolrDocumentInResultObject($originalDocument);
-            $response->response->docs[$key] = $result;
+            $documents[$key] = $result;
         }
+
+        $response->response->docs = $documents;
     }
 
     /**

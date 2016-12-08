@@ -117,6 +117,32 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @test
      */
+    public function canGetZeroResultsWithVariantsOnEmptyIndex()
+    {
+        $this->importDataSetFromFixture('can_get_searchResultSet.xml');
+        $this->fakeTsfe(1);
+
+        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(1, 0, 0);
+
+        $typoScriptConfiguration = Util::getSolrConfiguration();
+        $typoScriptConfiguration->mergeSolrConfiguration([
+            'search.' =>[
+                'variants' => 1,
+                'variants.' => [
+                    'variantField' => 'pid',
+                    'expand' => 1,
+                    'limit' => 11
+                ]
+            ]
+        ]);
+
+        $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration, 'nomatchfound');
+        $this->assertSame(0, count($searchResults), 'There should zero results when the index is empty');
+    }
+
+    /**
+     * @test
+     */
     public function cantGetHiddenElementWithoutPermissions()
     {
         $this->importFrontendRestrictedPageScenario();
@@ -162,9 +188,10 @@ class SearchResultSetServiceTest extends IntegrationTest
     /**
      * @param $solrConnection
      * @param $typoScriptConfiguration
+     * @param string $queryString
      * @return array
      */
-    protected function doSearchWithResultSetService($solrConnection, $typoScriptConfiguration)
+    protected function doSearchWithResultSetService($solrConnection, $typoScriptConfiguration, $queryString = '*')
     {
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
         /** @var $searchResultsSetService SearchResultSetService */
@@ -172,7 +199,7 @@ class SearchResultSetServiceTest extends IntegrationTest
 
         /** @var $searchRequest SearchRequest */
         $searchRequest = GeneralUtility::makeInstance(SearchRequest::class);
-        $searchRequest->setRawQueryString('*');
+        $searchRequest->setRawQueryString($queryString);
 
         $searchResultSet = $searchResultsSetService->search($searchRequest);
 
