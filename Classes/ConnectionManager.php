@@ -60,13 +60,17 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @param int $port Solr port (optional)
      * @param string $path Solr path (optional)
      * @param string $scheme Solr scheme, defaults to http, can be https (optional)
+     * @param string $username Solr user name (optional)
+     * @param string $password Solr password (optional)
      * @return SolrService A solr connection.
      */
     public function getConnection(
         $host = '',
         $port = 8983,
         $path = '/solr/',
-        $scheme = 'http'
+        $scheme = 'http',
+        $username = '',
+        $password = ''
     ) {
         $connection = null;
 
@@ -88,7 +92,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $scheme = $solrConfiguration['scheme'];
         }
 
-        $connectionHash = md5($scheme . '://' . $host . $port . $path);
+        $connectionHash = md5($scheme . '://' . $host . $port . $path . $username . $password);
 
         if (!isset(self::$connections[$connectionHash])) {
             $connection = GeneralUtility::makeInstance(
@@ -98,6 +102,9 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 $path,
                 $scheme
             );
+            if ($username !== '') {
+                $connection->setAuthenticationCredentials($username, $password);
+            }
 
             self::$connections[$connectionHash] = $connection;
         }
@@ -161,9 +168,10 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $solrServer['solrHost'],
             $solrServer['solrPort'],
             $solrServer['solrPath'],
-            $solrServer['solrScheme']
+            $solrServer['solrScheme'],
+            $solrServer['solrUsername'],
+            $solrServer['solrPassword']
         );
-        $this->checkAndSetAuthentication($solrConnection, $solrServer);
 
         return $solrConnection;
     }
@@ -219,9 +227,10 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $solrServer['solrHost'],
             $solrServer['solrPort'],
             $solrServer['solrPath'],
-            $solrServer['solrScheme']
+            $solrServer['solrScheme'],
+            $solrServer['solrUsername'],
+            $solrServer['solrPassword']
         );
-        $this->checkAndSetAuthentication($solrConnection, $solrServer);
 
         return $solrConnection;
     }
@@ -254,9 +263,10 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 $solrServer['solrHost'],
                 $solrServer['solrPort'],
                 $solrServer['solrPath'],
-                $solrServer['solrScheme']
+                $solrServer['solrScheme'],
+                $solrServer['solrUsername'],
+                $solrServer['solrPassword']
             );
-            $this->checkAndSetAuthentication(end($connections), $solrServer);
         }
 
         return $connections;
@@ -298,9 +308,10 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 $solrServer['solrHost'],
                 $solrServer['solrPort'],
                 $solrServer['solrPath'],
-                $solrServer['solrScheme']
+                $solrServer['solrScheme'],
+                $solrServer['solrUsername'],
+                $solrServer['solrPassword']
             );
-            $this->checkAndSetAuthentication(end($connections), $solrServer);
         }
 
         return $connections;
@@ -383,22 +394,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $solrConnections = $this->filterDuplicateConnections($solrConnections);
 
         $registry->set('tx_solr', 'servers', $solrConnections);
-    }
-
-    /**
-     * Checks if a username is given and sets up the authentication
-     *
-     * @param \ApacheSolrForTypo3\Solr\SolrService $connection
-     * @param array $configuration
-     */
-    public function checkAndSetAuthentication(SolrService $connection, array $configuration)
-    {
-        if ((string)$configuration['solrUsername'] !== '') {
-            $connection->setAuthenticationCredentials(
-                $configuration['solrUsername'],
-                $configuration['solrPassword']
-            );
-        }
     }
 
     /**

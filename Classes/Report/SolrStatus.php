@@ -95,9 +95,10 @@ class SolrStatus implements StatusProviderInterface
             $solrConnection['solrHost'],
             $solrConnection['solrPort'],
             $solrConnection['solrPath'],
-            $solrConnection['solrScheme']
+            $solrConnection['solrScheme'],
+            $solrConnection['solrUsername'],
+            $solrConnection['solrPassword']
         );
-        $this->connectionManager->checkAndSetAuthentication($solr, $solrConnection);
 
         $solrVersion = $this->checkSolrVersion($solr);
         $accessFilter = $this->checkAccessFilter($solr);
