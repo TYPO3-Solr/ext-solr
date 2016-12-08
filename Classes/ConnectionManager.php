@@ -70,7 +70,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @return SolrService A solr connection.
      */
 
-    public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '') {
+    public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '')
+    {
         $connection = null;
 
         if (empty($host)) {
@@ -219,7 +220,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getConnectionByRootPageId($pageId, $language = 0)
     {
-
         $config = $this->getConfigurationByRootPageId($pageId, $language);
         $solrConnection = $this->getConnectionFromConfiguration($config);
 
