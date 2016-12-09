@@ -65,9 +65,12 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @param int $port Solr port (optional)
      * @param string $path Solr path (optional)
      * @param string $scheme Solr scheme, defaults to http, can be https (optional)
+     * @param string $username Solr user name (optional)
+     * @param string $password Solr password (optional)
      * @return SolrService A solr connection.
      */
-    public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http')
+
+    public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '')
     {
         $connection = null;
 
@@ -87,12 +90,18 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $port = $solrConfiguration['port'];
             $path = $solrConfiguration['path'];
             $scheme = $solrConfiguration['scheme'];
+            $username = $solrConfiguration['username'];
+            $password = $solrConfiguration['password'];
         }
 
-        $connectionHash = md5($scheme . '://' . $host . $port . $path);
+        $connectionHash = md5($scheme . '://' . $host . $port . $path . $username . $password);
 
         if (!isset(self::$connections[$connectionHash])) {
             $connection = GeneralUtility::makeInstance(SolrService::class, $host, $port, $path, $scheme);
+            if ($username !== '') {
+                $connection->setAuthenticationCredentials($username, $password);
+            }
+
             self::$connections[$connectionHash] = $connection;
         }
 
@@ -102,12 +111,19 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * Creates a solr configuration from the configuration array and returns it.
      *
-     * @param array $config
+     * @param array $config The solr configuration array
      * @return SolrService
      */
     protected function getConnectionFromConfiguration(array $config)
     {
-        return $this->getConnection($config['solrHost'], $config['solrPort'], $config['solrPath'], $config['solrScheme']);
+        return $this->getConnection(
+            $config['solrHost'],
+            $config['solrPort'],
+            $config['solrPath'],
+            $config['solrScheme'],
+            $config['solrUsername'],
+            $config['solrPassword']
+        );
     }
 
     /**
@@ -445,6 +461,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 'solrHost' => $solrSetup['host'],
                 'solrPort' => $solrSetup['port'],
                 'solrPath' => $solrPath,
+                'solrUsername' => $solrSetup['username'],
+                'solrPassword' => $solrSetup['password'],
 
                 'language' => $languageId
             ];

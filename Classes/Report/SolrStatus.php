@@ -95,7 +95,9 @@ class SolrStatus implements StatusProviderInterface
             $solrConnection['solrHost'],
             $solrConnection['solrPort'],
             $solrConnection['solrPath'],
-            $solrConnection['solrScheme']
+            $solrConnection['solrScheme'],
+            $solrConnection['solrUsername'],
+            $solrConnection['solrPassword']
         );
 
         $solrVersion = $this->checkSolrVersion($solr);

@@ -69,6 +69,24 @@ path
 
 Sets the path portion of the URL. Make sure to have the path end with a slash (/).
 
+username
+--------
+
+:Type: String
+:TS Path: plugin.tx_solr.solr.username
+:Since: 6.0
+
+   Sets the username required to access the solr server.
+
+password
+--------
+
+:Type: String
+:TS Path: plugin.tx_solr.solr.password
+:Since: 6.0
+
+   Sets the username required to access the solr server.
+
 timeout
 -------
 
