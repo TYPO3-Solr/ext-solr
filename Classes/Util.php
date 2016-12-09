@@ -242,7 +242,7 @@ class Util
      * @param string $path The TypoScript configuration path to retrieve.
      * @param bool $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
      * @param int|bool $language System language uid or FALSE to disable language usage, optional, defaults to 0
-     * @param bool $useCache
+     * @param bool $useTwoLevelCache Flag to enable the two level cache for the typoscript configuration array
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
     public static function getConfigurationFromPageId(
@@ -250,46 +250,62 @@ class Util
         $path,
         $initializeTsfe = false,
         $language = 0,
-        $useCache = true
+        $useTwoLevelCache = true
     ) {
-        static $configurationsByCacheKey = array();
+        static $configurationObjectCache = [];
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
-
-        if (isset($configurationsByCacheKey[$cacheId])) {
-            return $configurationsByCacheKey[$cacheId];
+        if (isset($configurationObjectCache[$cacheId])) {
+            return $configurationObjectCache[$cacheId];
         }
 
         // If we're on UID 0, we cannot retrieve a configuration currently.
         // getRootline() below throws an exception (since #typo3-60 )
         // as UID 0 cannot have any parent rootline by design.
         if ($pageId == 0) {
-            return self::buildTypoScriptConfigurationFromArray(array(), $pageId, $language, $path);
+            return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray([], $pageId, $language, $path);
         }
 
-        if ($useCache) {
+        if ($useTwoLevelCache) {
             /** @var $cache TwoLevelCache */
             $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'tx_solr_configuration');
-            $configurationToUse = $cache->get($cacheId);
+            $configurationArray = $cache->get($cacheId);
         }
 
+        if (!empty($configurationArray)) {
+            // we have a cache hit and can return it.
+            return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationArray, $pageId, $language, $path);
+        }
+
+        // we have nothing in the cache. We need to build the configurationToUse
+        $configurationArray = self::buildConfigurationArray($pageId, $path, $initializeTsfe, $language);
+
+        if ($useTwoLevelCache && isset($cache)) {
+            $cache->set($cacheId, $configurationArray);
+        }
+
+        return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationArray, $pageId, $language, $path);
+    }
+
+
+    /**
+     * Initializes a TSFE, if required and builds an configuration array, containing the solr configuration.
+     *
+     * @param integer $pageId
+     * @param string $path
+     * @param boolean $initializeTsfe
+     * @param integer $language
+     * @return array
+     */
+    protected static function buildConfigurationArray($pageId, $path, $initializeTsfe, $language)
+    {
         if ($initializeTsfe) {
             self::initializeTsfe($pageId, $language);
-            if (!empty($configurationToUse)) {
-                return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
-            }
             $configurationToUse = self::getConfigurationFromInitializedTSFE($path);
         } else {
-            if (!empty($configurationToUse)) {
-                return self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
-            }
             $configurationToUse = self::getConfigurationFromExistingTSFE($pageId, $path, $language);
         }
 
-        if ($useCache) {
-            $cache->set($cacheId, $configurationToUse);
-        }
-
-        return $configurationsByCacheKey[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationToUse, $pageId, $language, $path);
+        return is_array($configurationToUse) ? $configurationToUse : [];
     }
 
     /**
