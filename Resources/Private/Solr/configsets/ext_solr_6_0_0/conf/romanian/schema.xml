@@ -10,7 +10,7 @@
 	status report - tx_solr_report_SchemaStatus - checking against this
 	name property, that status check must be updated as well.
 -->
-<schema name="tx_solr-6-0-0--20161122" version="1.6" >
+<schema name="tx_solr-6-0-0--20161209" version="1.6" >
 	<!-- attribute "name" is the name of this schema and is only used for display purposes.
 		Applications should change this to reflect the nature of the search collection.
 		version="1.4" is Solr's version number for the schema syntax and semantics.  It should
@@ -105,6 +105,20 @@
 				protected="romanian/protwords.txt"
 			/>
 			<filter class="solr.SnowballPorterFilterFactory" language="Romanian" protected="romanian/protwords.txt"/>
+			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+		</analyzer>
+	</fieldType>
+
+	<!-- Exact matching of words like textWhiteSpaceTokenized,
+		but with enabled Synonym and Stop Filter
+	 -->
+	<fieldType name="textExact" class="solr.TextField" positionIncrementGap="100" >
+		<analyzer>
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+
+			<filter class="solr.LowerCaseFilterFactory"/>
+			<filter class="solr.ManagedSynonymFilterFactory" managed="romanian"/>
+			<filter class="solr.ManagedStopFilterFactory" managed="romanian"/>
 			<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 		</analyzer>
 	</fieldType>

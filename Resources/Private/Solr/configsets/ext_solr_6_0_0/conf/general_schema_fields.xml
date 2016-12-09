@@ -122,6 +122,24 @@
 	<field name="tagsInline" type="text" indexed="true" stored="false" omitNorms="true" />
 
 	<!--
+		Alternative content fields. Less flexible, but more exact
+		matches.
+	-->
+	<field name="titleExact"      type="textExact" indexed="true" stored="true"  omitNorms="true" termVectors="true" />
+	<field name="contentExact"    type="textExact" indexed="true" stored="true"  omitNorms="true" termVectors="true" />
+	<field name="tagsH1Exact"     type="textExact" indexed="true" stored="false" omitNorms="true" />
+	<field name="tagsH2H3Exact"   type="textExact" indexed="true" stored="false" omitNorms="true" />
+	<field name="tagsH4H5H6Exact" type="textExact" indexed="true" stored="false" omitNorms="true" />
+	<field name="tagsInlineExact" type="textExact" indexed="true" stored="false" omitNorms="true" />
+
+	<copyField source="title"      dest="titleExact" />
+	<copyField source="content"    dest="contentExact" />
+	<copyField source="tagsH1"     dest="tagsH1Exact" />
+	<copyField source="tagsH2H3"   dest="tagsH2H3Exact" />
+	<copyField source="tagsH4H5H6" dest="tagsH4H5H6Exact" />
+	<copyField source="tagsInline" dest="tagsInlineExact" />
+
+	<!--
 		File meta data fields
 	-->
 	<field name="fileName"                type="string"  indexed="true"  stored="true" />
@@ -200,15 +218,17 @@
 	<dynamicField name="*_tDateM"    type="tdate"     indexed="true" stored="true" docValues="true" multiValued="true" />
 
 
-	<dynamicField name="*_textS"     type="text"      indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_textM"     type="text"      indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_textTS"    type="textTight" indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_textTM"    type="textTight" indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_textSortS" type="textSort"  indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_textSortM" type="textSort"  indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_textWstS"  type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="false" />
-	<dynamicField name="*_textWstM"  type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="true" />
-	<dynamicField name="*_textPath"  type="textPath"  indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textS"      type="text"      indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textM"      type="text"      indexed="true" stored="true" multiValued="true" />
+	<dynamicField name="*_textTS"     type="textTight" indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textTM"     type="textTight" indexed="true" stored="true" multiValued="true" />
+	<dynamicField name="*_textSortS"  type="textSort"  indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textSortM"  type="textSort"  indexed="true" stored="true" multiValued="true" />
+	<dynamicField name="*_textWstS"   type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textWstM"   type="textWhiteSpaceTokenized" indexed="true" stored="true" multiValued="true" />
+	<dynamicField name="*_textPath"   type="textPath"  indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textExactS" type="textExact" indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textExactM" type="textExact" indexed="true" stored="true" multiValued="true" />
 
 	<dynamicField name="*_textSpellS" type="textSpell" indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textSpellM" type="textSpell" indexed="true" stored="true" multiValued="true" />
