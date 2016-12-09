@@ -76,7 +76,7 @@ username
 :TS Path: plugin.tx_solr.solr.username
 :Since: 6.0
 
-   Sets the username required to access the solr server.
+Sets the username required to access the solr server.
 
 password
 --------
@@ -85,7 +85,7 @@ password
 :TS Path: plugin.tx_solr.solr.password
 :Since: 6.0
 
-   Sets the username required to access the solr server.
+Sets the password required to access the solr server.
 
 timeout
 -------
