@@ -67,8 +67,7 @@ class ConfigurationManager implements SingletonInterface
         if ($configurationArray == null) {
             if (isset($this->typoScriptConfigurations['default'])) {
                 $configurationArray = $this->typoScriptConfigurations['default'];
-            }
-            else {
+            } else {
                 if (!empty($GLOBALS['TSFE']->tmpl->setup) && is_array($GLOBALS['TSFE']->tmpl->setup)) {
                     $configurationArray = $GLOBALS['TSFE']->tmpl->setup;
                     $this->typoScriptConfigurations['default'] = $configurationArray;
