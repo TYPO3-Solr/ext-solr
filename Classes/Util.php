@@ -32,6 +32,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
@@ -580,7 +581,7 @@ class Util
     {
         $isWorkspaceRecord = false;
 
-        if (BackendUtility::isTableWorkspaceEnabled($table)) {
+        if ((ExtensionManagementUtility::isLoaded('workspaces')) && (BackendUtility::isTableWorkspaceEnabled($table))) {
             $record = BackendUtility::getRecord($table, $uid);
 
             if ($record['pid'] == '-1' || $record['t3ver_state'] > 0) {
