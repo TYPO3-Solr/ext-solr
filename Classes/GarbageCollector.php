@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -64,8 +66,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             $this->collectGarbage($table, $uid);
 
             if ($table == 'pages') {
-                $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-                $indexQueue->deleteItem($table, $uid);
+                $this->getIndexQueue()->deleteItem($table, $uid);
             }
         }
     }
@@ -134,35 +135,31 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function collectPageGarbage($table, $uid)
     {
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-
         switch ($table) {
             case 'tt_content':
-                $contentElement = BackendUtility::getRecord('tt_content', $uid,
-                    'uid, pid', '', false);
+                $contentElement = BackendUtility::getRecord('tt_content', $uid, 'uid, pid', '', false);
 
                 $table = 'pages';
                 $uid = $contentElement['pid'];
 
                 $this->deleteIndexDocuments($table, $uid);
                 // only a content element was removed, now update/re-index the page
-                $indexQueue->updateItem($table, $uid);
+                $this->getIndexQueue()->updateItem($table, $uid);
                 break;
             case 'pages_language_overlay':
-                $pageOverlayRecord = BackendUtility::getRecord('pages_language_overlay',
-                    $uid, 'uid, pid', '', false);
+                $pageOverlayRecord = BackendUtility::getRecord('pages_language_overlay', $uid, 'uid, pid', '', false);
 
                 $table = 'pages';
                 $uid = $pageOverlayRecord['pid'];
 
                 $this->deleteIndexDocuments($table, $uid);
                 // only a page overlay was removed, now update/re-index the page
-                $indexQueue->updateItem($table, $uid);
+                $this->getIndexQueue()->updateItem($table, $uid);
                 break;
             case 'pages':
 
                 $this->deleteIndexDocuments($table, $uid);
-                $indexQueue->deleteItem($table, $uid);
+                $this->getIndexQueue()->deleteItem($table, $uid);
 
                 break;
         }
@@ -179,7 +176,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             return;
         }
 
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
+        $indexQueue = $this->getIndexQueue();
         // get affected subpages when "extendToSubpages" flag was set
         $pagesToDelete = $this->getSubPageIds($uid);
         // we need to at least remove this page
@@ -197,11 +194,11 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function deleteIndexDocuments($table, $uid)
     {
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        /** @var $connectionManager ConnectionManager */
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         // record can be indexed for multiple sites
-        $indexQueueItems = $indexQueue->getItems($table, $uid);
+        $indexQueueItems = $this->getIndexQueue()->getItems($table, $uid);
         foreach ($indexQueueItems as $indexQueueItem) {
             $site = $indexQueueItem->getSite();
 
@@ -223,10 +220,8 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function collectRecordGarbage($table, $uid)
     {
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-
         $this->deleteIndexDocuments($table, $uid);
-        $indexQueue->deleteItem($table, $uid);
+        $this->getIndexQueue()->deleteItem($table, $uid);
     }
 
     // methods checking whether to trigger garbage collection
@@ -257,8 +252,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             $this->collectGarbage($table, $uid);
 
             // now re-index with new properties
-            $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-            $indexQueue->updateItem($table, $uid);
+            $this->getIndexQueue()->updateItem($table, $uid);
         }
     }
 
@@ -485,8 +479,15 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function isMarkedAsIndexed($table, $record)
     {
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-        return $indexQueue->containsIndexedItem($table, $record['uid']);
+        return $this->getIndexQueue()->containsIndexedItem($table, $record['uid']);
+    }
+
+    /**
+     * @return Queue
+     */
+    private function getIndexQueue()
+    {
+        return GeneralUtility::makeInstance(Queue::class);
     }
 
     /**
