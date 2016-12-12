@@ -223,6 +223,28 @@ plugin.tx_solr.solr.timeout = 20
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/798
 
+### Rendering Instruction for DateFormatting
+
+The following rendering instruction can be used, when you want to format a date as option facet and store it as date or timestamp.
+
+```
+plugin.tx_solr.search.faceting.facets.created {
+   field = created
+   label = Created
+   sortBy = alpha
+   reverseOrder = 1
+   renderingInstruction = TEXT
+   renderingInstruction {
+      field = optionValue
+      postUserFunc = ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RenderingInstructions\FormatDate->format
+   }
+}
+```
+
+**Related PRs:**
+
+* https://github.com/TYPO3-Solr/ext-solr/pull/829
+
 ## Bugfixes
 
 The following bugs have been fixed in this release.
@@ -262,6 +284,7 @@ awesome community. Here are the contributors for this release.
 * Daniel Siepmann
 * Dominique Kreemers
 * Georg Ringer
+* Hendrik Putzek
 * Ingo Renner
 * Josef Glatz
 * Markus Friedrich
