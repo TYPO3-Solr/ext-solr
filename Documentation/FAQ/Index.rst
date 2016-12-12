@@ -224,7 +224,7 @@ Put this into your sub vcl_fetch part of the configuration
 |
 
 The following example shows how to build the Dockerfile image and start a container with a mapped local volume (only for the data).
-This was tested with "Docker for Mac" (not Docker Toolbox)
+This was tested with "Docker for Mac" (not Docker Toolbox). Before executing the example, make sure, that you have added "~/solrdata" as allowed volume in the docker configuration.
 
 ::
 
