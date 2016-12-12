@@ -156,27 +156,6 @@ by setting `<useCompoundFile>false</useCompoundFile>` in your solrconfig.xml.
 
 * https://github.com/TYPO3-Solr/ext-solr/issues/695
 
-## Breaking Changes
-
-Updating from version 5.1.1 or earlier there are some breaking changes that 
-your need to keep in mind when updating.
-
-### Apache Solr 6 and Access Filter
-
-Since version 6 Apache Solr comes with an embedded Jetty server which completely 
-changes the setup compared to Apache Solr 4.10. It is now required to install a 
-new instance of Apache Solr Server. This can be done with our install script for 
-development or you can use our Docker image to start a new Solr server as a container. 
-Both approaches are described in our documentation.
-
-### Migration to Command Controllers for CLI
-
-We are now using a command controller to update the Solr server connections. 
-Please use the following command to update your connections:
-
-```bash
-php ./typo3/cli_dispatch.phpsh extbase solr:updateConnections
-```
 
 ### Added Schema Field for Exact Matches
 
@@ -244,6 +223,28 @@ plugin.tx_solr.search.faceting.facets.created {
 **Related PRs:**
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/829
+
+## Breaking Changes
+
+Updating from version 5.1.1 or earlier there are some breaking changes that 
+your need to keep in mind when updating.
+
+### Apache Solr 6 and Access Filter
+
+Since version 6 Apache Solr comes with an embedded Jetty server which completely 
+changes the setup compared to Apache Solr 4.10. It is now required to install a 
+new instance of Apache Solr Server. This can be done with our install script for 
+development or you can use our Docker image to start a new Solr server as a container. 
+Both approaches are described in our documentation.
+
+### Migration to Command Controllers for CLI
+
+We are now using a command controller to update the Solr server connections. 
+Please use the following command to update your connections:
+
+```bash
+php ./typo3/cli_dispatch.phpsh extbase solr:updateConnections
+```
 
 ## Bugfixes
 
