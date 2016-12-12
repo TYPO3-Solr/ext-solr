@@ -235,7 +235,7 @@ Since version 6 Apache Solr comes with an embedded Jetty server which completely
 changes the setup compared to Apache Solr 4.10. It is now required to install a 
 new instance of Apache Solr Server. This can be done with our install script for 
 development or you can use our Docker image to start a new Solr server as a container. 
-Both approaches are described in our documentation.
+Both approaches are described in our documentation. The embedded solr jetty server also uses a new default port (8983) to serve connections.
 
 ### Migration to Command Controllers for CLI
 

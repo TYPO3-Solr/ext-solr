@@ -53,7 +53,7 @@ To run the container (only run one of the following):
 
 .. code-block:: bash
 
-    docker run -d -p 8983:8983 typo3-solr
+    docker run -d -p 127.0.0.1:8983:8983 typo3-solr
 
 If you want to keep the solr core data after a recreate of the container, you have to share `/opt/solr/server/solr/data` (please note: the directory on the host should have UID and GID 8983) to the host.
 
@@ -67,6 +67,8 @@ You should see the web interface of Solr to run queries:
 
 |
 
+**Important**: The image "typo3-solr" ships a default core for all languages. The data of the cores is stored on a data volume. When you want to update the container, you can just start a new container using the data volume of the old container. But at the same time this has the limitation, that you should only use this image with the default cores! When you want to create custom cores with a different configuration please read the section "Advanced docker usage"
+
 Advanced docker usage
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -74,7 +76,7 @@ Our image has the intension to create running cores out of the box. This implies
 The intension in our integration was to stay as close as possible to the official Apache Solr docker images. Sometimes it might make
 sence that you use the official image directly instead of our image. An example could be when you want to have the solrconfig, schema and data outside of the container.
 
-The following example shows how you can run our configuration with the official Apache Solr docker container by mounting the configuration and data from a volume.
+The following example shows how you can run our configuration with the official Apache Solr docker container by mounting the configuration and data from a volume (When using docker on MacOs make sure you've added the volume folder to "Prefenrences -> File Sharing").
 
 |
 
@@ -82,9 +84,8 @@ The following example shows how you can run our configuration with the official 
 
     mkdir -p ~/mysolr
     cp -r Resources/Private/Solr/* ~/mysolr
-    sudo chown :8983 ~/mysolr
-    docker run -d -p 8983:8983 -v ~/mysolr:/opt/solr/server/solr/ solr:6.3.0
-
+    sudo chown -R :8983 ~/mysolr
+    docker run -d -p 127.0.0.1:8983:8983 -v ~/mysolr:/opt/solr/server/solr/ solr:6.3.0
 
 
 Other Setup
