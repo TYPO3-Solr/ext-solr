@@ -96,10 +96,15 @@ Reduce ping requests:
 
 The amount of ping requests has been reduced to only do one ping when the plugin is rendered.
 
+Improved configuration caching:
+
+Configuration object, are now cached in an in memory cache. This gives an improvement when pages in the backend are copied.
+
 **Related PRs:**
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/784
 * https://github.com/TYPO3-Solr/ext-solr/pull/776
+* https://github.com/TYPO3-Solr/ext-solr/pull/816
 
 ### Allow Solr Server-Side Facet Option Limits
 
@@ -173,6 +178,51 @@ Please use the following command to update your connections:
 php ./typo3/cli_dispatch.phpsh extbase solr:updateConnections
 ```
 
+### Added Schema Field for Exact Matches
+
+We've added a new data type "textExact" to the solr schema. Beside that copyFields have been added for the following fields:
+
+* titleExact
+* contentExact
+* tagsH1Exact
+* tagsH2H3Exact
+* tagsH4H5H6Exact
+* tagsInlineExact
+
+Beside that this type is also available as dynamic fields with the following suffixes:
+
+* _textExactS
+* _textExactM
+
+**Related PRs:**
+
+* https://github.com/TYPO3-Solr/ext-solr/pull/820
+
+### Username and Password for Solr Connection
+
+Username and password can now be configured for the solr connection:
+
+```
+plugin.tx_solr.solr.username = username
+plugin.tx_solr.solr.password = password
+```
+
+**Related PRs:**
+
+* https://github.com/TYPO3-Solr/ext-solr/pull/789
+
+### Timeout for Solr Connection
+
+A timeout for the solr connection can now be configured:
+
+```
+plugin.tx_solr.solr.timeout = 20
+```
+
+**Related PRs:**
+
+* https://github.com/TYPO3-Solr/ext-solr/pull/798
+
 ## Bugfixes
 
 The following bugs have been fixed in this release.
@@ -220,6 +270,7 @@ awesome community. Here are the contributors for this release.
 * Olivier Dobberkau
 * Patrick Oberdorf
 * Peter Kraume
+* Philipp Gampe
 * Pierrick Caillon
 * Sascha Egerer
 * Thomas Hohn
@@ -280,9 +331,11 @@ Also a big thanks to our partners that have joined the EB2016 program:
 
 Thanks also to our partners who already singed up for a 2017 partnership (EB2017):
 
+* Amedick & Sommer Neue Medien GmbH
 * cron IT GmbH
 * b:dreizehn GmbH
 * Die Medialen GmbH
+* Leibniz Universität IT Services, Hannover
 * LOUIS INTERNET
 * polargold GmbH
 * Mercedes-AMG GmbH
