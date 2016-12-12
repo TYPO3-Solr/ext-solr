@@ -65,8 +65,13 @@ class ConfigurationManager implements SingletonInterface
     public function getTypoScriptConfiguration(array $configurationArray = null, $contextPageId = null, $contextLanguageId = 0, $contextTypoScriptPath = '')
     {
         if ($configurationArray == null) {
-            if (!empty($GLOBALS['TSFE']->tmpl->setup) && is_array($GLOBALS['TSFE']->tmpl->setup)) {
-                $configurationArray = $GLOBALS['TSFE']->tmpl->setup;
+            if (isset($this->typoScriptConfigurations['default'])) {
+                $configurationArray = $this->typoScriptConfigurations['default'];
+            } else {
+                if (!empty($GLOBALS['TSFE']->tmpl->setup) && is_array($GLOBALS['TSFE']->tmpl->setup)) {
+                    $configurationArray = $GLOBALS['TSFE']->tmpl->setup;
+                    $this->typoScriptConfigurations['default'] = $configurationArray;
+                }
             }
         }
 
