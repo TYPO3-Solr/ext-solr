@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Response\Processor;
 
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -106,9 +107,11 @@ class StatisticsWriter implements ResponseProcessor
      */
     protected function sanitizeString($string)
     {
-        $string = GeneralUtility::removeXSS($string);
-        $string = htmlentities($string, ENT_QUOTES,
-            $GLOBALS['TSFE']->metaCharset);
+        // clean content
+        $string = HtmlContentExtractor::cleanContent($string);
+        $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
+        $string = filter_var(strip_tags($string), FILTER_SANITIZE_STRING); // after entity decoding we might have tags again
+        $string = trim($string);
 
         return $string;
     }

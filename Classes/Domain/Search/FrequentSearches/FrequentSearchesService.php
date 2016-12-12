@@ -148,7 +148,8 @@ class FrequentSearchesService
         }
 
         foreach ($frequentSearchTerms as $term) {
-            $terms[$term['search_term']] = $term['hits'];
+            $cleanedTerm = html_entity_decode($term['search_term'], ENT_QUOTES, 'UTF-8');
+            $terms[$cleanedTerm] = $term['hits'];
         }
 
         return $terms;

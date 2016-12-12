@@ -151,7 +151,7 @@ class LastSearchesService
 
         $lastSearches = array();
         foreach ($lastSearchesRows as $row) {
-            $lastSearches[] = $row['keywords'];
+            $lastSearches[] = html_entity_decode($row['keywords'], ENT_QUOTES, 'UTF-8');
         }
 
         return $lastSearches;
