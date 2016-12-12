@@ -1208,6 +1208,34 @@ Example: (taken from issue #5920)
         }
     }
 
+
+EXT:solr provides the following renderingInstructions that you can use in your project:
+
+**FormatDate**:
+
+This rendering instruction can be used in combination with a date field or an integer field that hold a timestamp. You can use this rendering instruction to format the facet value on rendering.
+A common usecase for this is, when the datatype in solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
+
+
+|
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.faceting.facets {
+        created {
+            field = created
+            label = Created
+            sortBy = alpha
+            reverseOrder = 1
+            renderingInstruction = TEXT
+            renderingInstruction {
+               field = optionValue
+               postUserFunc = ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RenderingInstructions\FormatDate->format
+            }
+        }
+    }
+
+
 faceting.facets.[facetName].facetLinkATagParams
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
