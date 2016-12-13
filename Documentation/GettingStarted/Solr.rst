@@ -67,16 +67,16 @@ You should see the web interface of Solr to run queries:
 
 |
 
-**Important**: The image "typo3-solr" ships a default core for all languages. The data of the cores is stored on a data volume. When you want to update the container, you can just start a new container using the data volume of the old container. But at the same time this has the limitation, that you should only use this image with the default cores! When you want to create custom cores with a different configuration please read the section "Advanced docker usage"
+**Important**: The image "typo3-solr" ships a default core for all languages. The data of the cores is stored on a data volume. When you want to update the container, you can just start a new container using the data volume of the old container. But at the same time this has the limitation, that you should only use this image with the default cores! If you want to create custom cores with a different configuration please read the section "Advanced Docker Usage"
 
-Advanced docker usage
+Advanced Docker Usage
 ^^^^^^^^^^^^^^^^^^^^^
 
 Our image has the intension to create running cores out of the box. This implies, that the schema is inside the container.
 The intension in our integration was to stay as close as possible to the official Apache Solr docker images. Sometimes it might make
 sence that you use the official image directly instead of our image. An example could be when you want to have the solrconfig, schema and data outside of the container.
 
-The following example shows how you can run our configuration with the official Apache Solr docker container by mounting the configuration and data from a volume (When using docker on MacOs make sure you've added the volume folder to "Prefenrences -> File Sharing").
+The following example shows how you can run our configuration with the official Apache Solr docker container by mounting the configuration and data from a volume (When using Docker on macOS make sure you've added the volume folder to "Prefenrences -> File Sharing").
 
 |
 
