@@ -243,9 +243,6 @@ cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/cores ${SOLR_INSTALL_DIR}/ser
 cecho "Setting environment" $green
 source $SOLR_INSTALL_DIR/bin/solr.in.sh
 
-cecho "Changing owner" $green
-#chown -R $SOLR_USER:$SOLR_USER "$SOLR_INSTALL_DIR/solr"
-
 cecho "Starting solr" $green
 $SOLR_INSTALL_DIR/bin/solr start
 
