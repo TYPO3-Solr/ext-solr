@@ -5,7 +5,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
+ *  (c) 2015-2016 Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -33,11 +33,12 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Service to perform indexing operations
  *
- * @author Timo Schmidt <timo.schmidt@dkd.de>
+ * @author Timo Hund <timo.schmidt@dkd.de>
  */
 class IndexService
 {
@@ -57,13 +58,27 @@ class IndexService
     protected $contextTask;
 
     /**
-     * @param Site $site
-     * @internal param \ApacheSolrForTypo3\Solr\Site $configuration
+     * @var Queue
      */
-    public function __construct(Site $site)
+    protected $indexQueue;
+
+    /**
+     * @var Dispatcher
+     */
+    protected $signalSlotDispatcher;
+
+    /**
+     * IndexService constructor.
+     * @param Site $site
+     * @param Queue|null $queue
+     * @param Dispatcher|null $dispatcher
+     */
+    public function __construct(Site $site, Queue $queue = null, Dispatcher $dispatcher = null)
     {
         $this->configuration = $site->getSolrConfiguration();
         $this->site = $site;
+        $this->indexQueue = is_null($queue) ? GeneralUtility::makeInstance(Queue::class) : $queue;
+        $this->signalSlotDispatcher = is_null($dispatcher)  ? GeneralUtility::makeInstance(Dispatcher::class) : $dispatcher;
     }
 
     /**
@@ -90,51 +105,58 @@ class IndexService
      */
     public function indexItems($limit)
     {
-        /** @var $indexQueue Queue */
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
         $errors     = 0;
+        $indexRunId = uniqid();
+
         // get items to index
-        $itemsToIndex = $indexQueue->getItemsToIndex($this->site, $limit);
+        $itemsToIndex = $this->indexQueue->getItemsToIndex($this->site, $limit);
+
+        $this->emitSignal('beforeIndexItems', [$itemsToIndex, $this->getContextTask(), $indexRunId]);
 
         foreach ($itemsToIndex as $itemToIndex) {
             try {
                 // try indexing
+                $this->emitSignal('beforeIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
                 $this->indexItem($itemToIndex);
+                $this->emitSignal('afterIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
             } catch (\Exception $e) {
                 $errors++;
-
-                $indexQueue->markItemAsFailed(
-                    $itemToIndex,
-                    $e->getCode() . ': ' . $e->__toString()
-                );
-
-                GeneralUtility::devLog(
-                    'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid(),
-                    'solr',
-                    3,
-                    array(
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage(),
-                        'trace' => $e->getTrace(),
-                        'item' => (array)$itemToIndex
-                    )
-                );
+                $this->indexQueue->markItemAsFailed($itemToIndex, $e->getCode() . ': ' . $e->__toString());
+                $this->generateIndexingErrorLog($itemToIndex, $e);
             }
         }
-        $this->emitAfterIndexItemsSignal($itemsToIndex);
+
+        $this->emitSignal('afterIndexItems', [$itemsToIndex, $this->getContextTask(), $indexRunId]);
 
         return ($errors === 0);
     }
 
     /**
-     * Emits a signal after all items was indexed
+     * Generates a message in the error log when an error occured.
      *
-     * @param Item[] $itemsToIndex
+     * @param Item $itemToIndex
+     * @param \Exception  $e
      */
-    protected function emitAfterIndexItemsSignal($itemsToIndex)
+    protected function generateIndexingErrorLog(Item $itemToIndex, \Exception $e)
     {
-        $signalSlotDispatcher = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
-        $signalSlotDispatcher->dispatch(__CLASS__, 'afterIndexItems', array($itemsToIndex, $this->getContextTask()));
+        $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
+        $data = [   'code' => $e->getCode(),
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTrace(),
+                    'item' => (array)$itemToIndex];
+        GeneralUtility::devLog($message, 'solr', 3, $data);
+    }
+
+    /**
+     * Builds an emits a singal for the IndexService.
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
+    protected function emitSignal($name, $arguments)
+    {
+        return $this->signalSlotDispatcher->dispatch(__CLASS__, $name, $arguments);
     }
 
     /**
