@@ -149,35 +149,34 @@ class Site
      */
     public static function getAvailableSites($stopOnInvalidSite = false)
     {
-        static $sitesCached = [];
+        static $sitesCached;
         $sites = [];
+
+        // Check if $sites has been cached
+        if (isset($sitesCached)) {
+            return $sitesCached;
+        }
 
         $servers = self::getSolrServersFromRegistry();
 
-        $cacheId = md5(serialize($servers));
-
-        if (isset($sitesCached[$cacheId])) {
-            return $sitesCached[$cacheId];
-        } else {
-            foreach ($servers as $server) {
-                if (isset($sites[$server['rootPageUid']])) {
-                    //get each site only once
-                    continue;
-                }
-
-                try {
-                    $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__, $server['rootPageUid']);
-                } catch (\InvalidArgumentException $e) {
-                    if ($stopOnInvalidSite) {
-                        throw $e;
-                    }
-                }
+        foreach ($servers as $server) {
+            if (isset($sites[$server['rootPageUid']])) {
+                //get each site only once
+                continue;
             }
 
-            $sitesCached[$cacheId] = $sites;
-
-            return $sitesCached[$cacheId];
+            try {
+                $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__, $server['rootPageUid']);
+            } catch (\InvalidArgumentException $e) {
+                if ($stopOnInvalidSite) {
+                    throw $e;
+                }
+            }
         }
+
+        $sitesCached = $sites;
+
+        return $sitesCached;
     }
 
     /**
