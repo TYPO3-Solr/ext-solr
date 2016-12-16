@@ -226,7 +226,7 @@ class Site
      *
      * @return array
      */
-    protected static function getSolrServersFromRegistry()
+    public static function getSolrServersFromRegistry()
     {
         /** @var $registry Registry */
         $registry = GeneralUtility::makeInstance(Registry::class);
