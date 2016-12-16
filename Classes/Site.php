@@ -149,7 +149,14 @@ class Site
      */
     public static function getAvailableSites($stopOnInvalidSite = false)
     {
+        static $sitesCached;
         $sites = [];
+
+        // Check if $sites has been cached
+        if (isset($sitesCached)) {
+            return $sitesCached;
+        }
+
         $servers = self::getSolrServersFromRegistry();
 
         foreach ($servers as $server) {
@@ -167,7 +174,9 @@ class Site
             }
         }
 
-        return $sites;
+        $sitesCached = $sites;
+
+        return $sitesCached;
     }
 
     /**
