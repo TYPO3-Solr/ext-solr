@@ -25,6 +25,11 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -94,9 +99,14 @@ class Typo3PageIndexer
     protected $documentsSentToSolr = array();
 
     /**
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
+
+    /**
+     * @var Item
+     */
+    protected $indexQueueItem;
 
     /**
      * Constructor
@@ -123,16 +133,18 @@ class Typo3PageIndexer
             }
         }
 
-        $this->contentExtractor = GeneralUtility::makeInstance(
-            Typo3PageContentExtractor::class,
-            $this->page->content
-        );
-
-        $this->pageAccessRootline = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Access\\Rootline',
-            ''
-        );
+        $this->contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $this->page->content);
+        $this->pageAccessRootline = GeneralUtility::makeInstance(Rootline::class, '');
     }
+
+    /**
+     * @param Item $indexQueueItem
+     */
+    public function setIndexQueueItem($indexQueueItem)
+    {
+        $this->indexQueueItem = $indexQueueItem;
+    }
+
 
     /**
      * Initializes the Solr server connection.
@@ -141,10 +153,7 @@ class Typo3PageIndexer
      */
     protected function initializeSolrConnection()
     {
-        $solr = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
-            $this->page->id,
-            $this->page->sys_language_uid
-        );
+        $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($this->page->id, $this->page->sys_language_uid);
 
         // do not continue if no server is available
         if (!$solr->ping()) {
@@ -247,9 +256,9 @@ class Typo3PageIndexer
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] as $classReference) {
                 $postProcessor = GeneralUtility::getUserObj($classReference);
+
                 if ($postProcessor instanceof PageDocumentPostProcessor) {
-                    $postProcessor->postProcessPageDocument($pageDocument,
-                        $this->page);
+                    $postProcessor->postProcessPageDocument($pageDocument, $this->page);
                 } else {
                     throw new \UnexpectedValueException(
                         get_class($pageDocument) . ' must implement interface ApacheSolrForTypo3\Solr\PageDocumentPostProcessor',
@@ -404,34 +413,44 @@ class Typo3PageIndexer
      * @param \Apache_Solr_Document $pageDocument The page document created by this indexer.
      * @return \Apache_Solr_Document An Apache Solr document representing the currently indexed page
      */
-    protected function substitutePageDocument(
-        \Apache_Solr_Document $pageDocument
-    ) {
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'] as $classReference) {
-                $substituteIndexer = GeneralUtility::getUserObj($classReference);
+    protected function substitutePageDocument(\Apache_Solr_Document $pageDocument)
+    {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'])) {
+            return $pageDocument;
+        }
 
-                if ($substituteIndexer instanceof SubstitutePageIndexer) {
-                    $substituteDocument = $substituteIndexer->getPageDocument($pageDocument);
+        $indexConfigurationName = $this->getIndexConfigurationNameForCurrentPage();
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument'] as $classReference) {
+            $substituteIndexer = GeneralUtility::getUserObj($classReference);
 
-                    if ($substituteDocument instanceof \Apache_Solr_Document) {
-                        $pageDocument = $substituteDocument;
-                    } else {
-                        throw new \UnexpectedValueException(
-                            'The document returned by ' . get_class($substituteIndexer) . ' is not a valid Apache_Solr_Document document.',
-                            1310490952
-                        );
-                    }
-                } else {
-                    throw new \UnexpectedValueException(
-                        get_class($substituteIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\SubstitutePageIndexer',
-                        1310491001
-                    );
-                }
+            if (!$substituteIndexer instanceof SubstitutePageIndexer) {
+                $message = get_class($substituteIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\SubstitutePageIndexer';
+                throw new \UnexpectedValueException($message, 1310491001);
             }
+
+            if ($substituteIndexer instanceof PageFieldMappingIndexer) {
+                $substituteIndexer->setPageIndexingConfigurationName($indexConfigurationName);
+            }
+
+            $substituteDocument = $substituteIndexer->getPageDocument($pageDocument);
+            if (!$substituteDocument instanceof \Apache_Solr_Document) {
+                $message = 'The document returned by ' . get_class($substituteIndexer) . ' is not a valid Apache_Solr_Document document.';
+                throw new \UnexpectedValueException($message, 1310490952);
+            }
+            $pageDocument = $substituteDocument;
         }
 
         return $pageDocument;
+    }
+
+    /**
+     * Retrieves the indexConfigurationName from the related queueItem, or falls back to pages when no queue item set.
+     *
+     * @return string
+     */
+    protected function getIndexConfigurationNameForCurrentPage()
+    {
+        return isset($this->indexQueueItem) ? $this->indexQueueItem->getIndexingConfigurationName() : 'pages';
     }
 
     /**

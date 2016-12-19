@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
@@ -273,15 +274,28 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         }
 
         try {
+            $indexQueueItem = $this->getIndexQueueItem();
+            if (is_null($indexQueueItem)) {
+                throw new \UnexpectedValueException('Can not get index queue item', 1482162337);
+            }
+
+            $solrConnection = $this->getSolrConnection($indexQueueItem);
+
             /** @var $indexer Typo3PageIndexer */
             $indexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $page);
-            $indexer->setSolrConnection($this->getSolrConnection());
+            $indexer->setSolrConnection($solrConnection);
             $indexer->setPageAccessRootline($this->getAccessRootline());
             $indexer->setPageUrl($this->generatePageUrl());
             $indexer->setMountPointParameter($GLOBALS['TSFE']->MP);
+            $indexer->setIndexQueueItem($indexQueueItem);
 
             $this->responseData['pageIndexed'] = (int)$indexer->indexPage();
             $this->responseData['originalPageDocument'] = (array)$indexer->getPageSolrDocument();
+            $this->responseData['solrConnection'] = array(
+                'rootPage' => $indexQueueItem->getRootPageUid(),
+                'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid,
+                'solr' => (string)$solrConnection
+            );
 
             $documentsSentToSolr = $indexer->getDocumentsSentToSolr();
             foreach ($documentsSentToSolr as $document) {
@@ -300,8 +314,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             $success = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
             $severity = $this->responseData['pageIndexed'] ? -1 : 3;
 
-            GeneralUtility::devLog('Page indexed: ' . $success, 'solr',
-                $severity, $this->responseData);
+            GeneralUtility::devLog('Page indexed: ' . $success, 'solr', $severity, $this->responseData);
         }
     }
 
@@ -309,31 +322,32 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * Gets the solr connection to use for indexing the page based on the
      * Index Queue item's properties.
      *
+     * @param Item $indexQueueItem
      * @return SolrService Solr server connection
      */
-    protected function getSolrConnection()
+    protected function getSolrConnection(Item $indexQueueItem)
     {
-        /** @var $indexQueue Queue */
-        $indexQueue = GeneralUtility::makeInstance(Queue::class);
-            /** @var $connectionManager ConnectionManager */
+        /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-
-        $indexQueueItem = $indexQueue->getItem(
-            $this->request->getParameter('item')
-        );
 
         $solrConnection = $connectionManager->getConnectionByRootPageId(
             $indexQueueItem->getRootPageUid(),
             $GLOBALS['TSFE']->sys_language_uid
         );
 
-        // log the Solr connection used and why
-        $this->responseData['solrConnection'] = array(
-            'rootPage' => $indexQueueItem->getRootPageUid(),
-            'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid,
-            'solr' => (string)$solrConnection
-        );
-
         return $solrConnection;
+    }
+
+    /**
+     * This method retrieves the item from the index queue, that is indexed in this request.
+     *
+     * @return \ApacheSolrForTypo3\Solr\IndexQueue\Item
+     */
+    protected function getIndexQueueItem()
+    {
+        /** @var $indexQueue Queue */
+        $indexQueue = GeneralUtility::makeInstance(Queue::class);
+        $indexQueueItem = $indexQueue->getItem($this->request->getParameter('item'));
+        return $indexQueueItem;
     }
 }
