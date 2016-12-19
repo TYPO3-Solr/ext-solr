@@ -364,46 +364,45 @@ class SolrService extends \Apache_Solr_Service
      * @return \Apache_Solr_Response Response object
      * @throws \Apache_Solr_HttpTransportException if returned HTTP status is other than 200
      */
-    public function requestServlet(
-        $servlet,
-        $parameters = array(),
-        $method = 'GET',
-        $requestHeaders = array(),
-        $rawPost = '',
-        $timeout = false
-    ) {
-        $httpTransport = $this->getHttpTransport();
-
-        if ($method == 'GET' || $method == 'HEAD') {
-            // Make sure we are not sending a request body.
-            $rawPost = '';
-        }
-
+    public function requestServlet($servlet, $parameters = [], $method = 'GET', $requestHeaders = [], $rawPost = '', $timeout = false)
+    {
         // Add default parameters
         $parameters['wt'] = self::SOLR_WRITER;
         $parameters['json.nl'] = $this->_namedListTreatment;
         $url = $this->_constructUrl($servlet, $parameters);
 
-        if ($method == self::METHOD_GET) {
-            $httpResponse = $httpTransport->performGetRequest($url, $timeout);
-        } elseif ($method == self::METHOD_POST) {
-            // FIXME should respect all headers, not only Content-Type
-            $httpResponse = $httpTransport->performPostRequest($url, $rawPost,
-                $requestHeaders['Content-Type'], $timeout);
-        }
-
-        if (empty($httpResponse)) {
-            throw new \InvalidArgumentException('$method should be GET or POST');
-        }
-
-        $solrResponse = new \Apache_Solr_Response($httpResponse,
-            $this->_createDocuments, $this->_collapseSingleValueArrays);
-
+        $httpResponse = $this->getResponseFromTransport($url, $method, $requestHeaders, $rawPost, $timeout);
+        $solrResponse = new \Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
         if ($solrResponse->getHttpStatus() != 200) {
             throw new \Apache_Solr_HttpTransportException($solrResponse);
         }
 
         return $solrResponse;
+    }
+
+    /**
+     * Decides which transport method to used, depending on the request method and retrieves the response.
+     *
+     * @param string $url
+     * @param string $method
+     * @param array $requestHeaders
+     * @param string $rawPost
+     * @param float|bool $timeout
+     * @return \Apache_Solr_HttpTransport_Response
+     */
+    protected function getResponseFromTransport($url, $method, $requestHeaders, $rawPost, $timeout)
+    {
+        $httpTransport = $this->getHttpTransport();
+
+        if ($method == self::METHOD_GET) {
+            return $httpTransport->performGetRequest($url, $timeout);
+        }
+        if ($method == self::METHOD_POST) {
+            // FIXME should respect all headers, not only Content-Type
+            return $httpTransport->performPostRequest($url, $rawPost, $requestHeaders['Content-Type'], $timeout);
+        }
+
+        throw new \InvalidArgumentException('$method should be GET or POST');
     }
 
     /**
