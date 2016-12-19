@@ -47,14 +47,9 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     protected $configuration;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $pageIndexingConfiguration = array();
-
-    /**
-     * @var array
-     */
-    protected $mappedFieldNames = array();
+    protected $pageIndexingConfigurationName = 'pages';
 
     /**
      * @param TypoScriptConfiguration $configuration
@@ -62,8 +57,14 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     public function __construct(TypoScriptConfiguration $configuration = null)
     {
         $this->configuration = $configuration == null ? Util::getSolrConfiguration() : $configuration;
-        $this->pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName('pages');
-        $this->mappedFieldNames = $this->configuration->getIndexQueueMappedFieldsByConfigurationName('pages');
+    }
+
+    /**
+     * @param string $pageIndexingConfigurationName
+     */
+    public function setPageIndexingConfigurationName($pageIndexingConfigurationName)
+    {
+        $this->pageIndexingConfigurationName = $pageIndexingConfigurationName;
     }
 
     /**
@@ -78,6 +79,8 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     public function getPageDocument(\Apache_Solr_Document $pageDocument)
     {
         $substitutePageDocument = clone $pageDocument;
+
+
         $mappedFields = $this->getMappedFields();
         foreach ($mappedFields as $fieldName => $fieldValue) {
             if (isset($substitutePageDocument->{$fieldName})) {
@@ -105,7 +108,9 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     {
         $fields = array();
 
-        foreach ($this->mappedFieldNames as $mappedFieldName) {
+        $mappedFieldNames = $this->configuration->getIndexQueueMappedFieldsByConfigurationName($this->pageIndexingConfigurationName);
+
+        foreach ($mappedFieldNames as $mappedFieldName) {
             if (!AbstractIndexer::isAllowedToOverrideField($mappedFieldName)) {
                 throw new InvalidFieldNameException(
                     'Must not overwrite field "type".',
@@ -131,21 +136,23 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     {
         $pageRecord = $GLOBALS['TSFE']->page;
 
-        if (isset($this->pageIndexingConfiguration[$solrFieldName . '.'])) {
+        $pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName($this->pageIndexingConfigurationName);
+
+        if (isset($pageIndexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $contentObject->start($pageRecord, 'pages');
 
             $fieldValue = $contentObject->cObjGetSingle(
-                $this->pageIndexingConfiguration[$solrFieldName],
-                $this->pageIndexingConfiguration[$solrFieldName . '.']
+                $pageIndexingConfiguration[$solrFieldName],
+                $pageIndexingConfiguration[$solrFieldName . '.']
             );
 
-            if (AbstractIndexer::isSerializedValue($this->pageIndexingConfiguration, $solrFieldName)) {
+            if (AbstractIndexer::isSerializedValue($pageIndexingConfiguration, $solrFieldName)) {
                 $fieldValue = unserialize($fieldValue);
             }
         } else {
-            $fieldValue = $pageRecord[$this->pageIndexingConfiguration[$solrFieldName]];
+            $fieldValue = $pageRecord[$pageIndexingConfiguration[$solrFieldName]];
         }
 
         return $fieldValue;

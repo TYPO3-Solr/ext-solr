@@ -67,6 +67,24 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @test
      */
+    public function canIndexPageWithCustomPageTypeIntoSolr()
+    {
+        $this->importDataSetFromFixture('can_index_custom_pagetype_into_solr.xml');
+
+        $this->executePageIndexer();
+
+        // we wait to make sure the document will be available in solr
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"hello solr"', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"custom_stringS":"my text from custom page type"', $solrContent, 'Document does not contains value build with typoscript');
+    }
+
+    /**
+     * @test
+     */
     public function canIndexPageIntoSolrWithAdditionalFields()
     {
         //@todo additional fields indexer requires the hook to be activated which is normally done in ext_localconf.php
