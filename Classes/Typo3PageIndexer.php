@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -96,7 +97,7 @@ class Typo3PageIndexer
      *
      * @var array
      */
-    protected $documentsSentToSolr = array();
+    protected $documentsSentToSolr = [];
 
     /**
      * @var TypoScriptConfiguration
@@ -126,10 +127,7 @@ class Typo3PageIndexer
 
             // TODO extract to a class "ExceptionLogger"
             if ($this->configuration->getLoggingExceptions()) {
-                GeneralUtility::devLog('Exception while trying to index a page',
-                    'solr', 3, array(
-                        $e->__toString()
-                    ));
+                GeneralUtility::devLog('Exception while trying to index a page', 'solr', 3, [$e->__toString()]);
             }
         }
 
@@ -174,14 +172,14 @@ class Typo3PageIndexer
      * @param array $data Additional data to log
      * @return void
      */
-    protected function log($message, $errorNum = 0, array $data = array())
+    protected function log($message, $errorNum = 0, array $data = [])
     {
         if (is_object($GLOBALS['TT'])) {
             $GLOBALS['TT']->setTSlogMessage('tx_solr: ' . $message, $errorNum);
         }
 
         if ($this->configuration->getLoggingIndexing()) {
-            $logData = array();
+            $logData = [];
             if (!empty($data)) {
                 foreach ($data as $value) {
                     $logData[] = (array)$value;
@@ -240,7 +238,7 @@ class Typo3PageIndexer
     public function indexPage()
     {
         $pageIndexed = false;
-        $documents = array(); // this will become useful as soon as when starting to index individual records instead of whole pages
+        $documents = []; // this will become useful as soon as when starting to index individual records instead of whole pages
 
         if (is_null($this->solrConnection)) {
             // intended early return as it doesn't make sense to continue
@@ -253,20 +251,7 @@ class Typo3PageIndexer
         $pageDocument = $this->getPageDocument();
         $pageDocument = $this->substitutePageDocument($pageDocument);
 
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] as $classReference) {
-                $postProcessor = GeneralUtility::getUserObj($classReference);
-
-                if ($postProcessor instanceof PageDocumentPostProcessor) {
-                    $postProcessor->postProcessPageDocument($pageDocument, $this->page);
-                } else {
-                    throw new \UnexpectedValueException(
-                        get_class($pageDocument) . ' must implement interface ApacheSolrForTypo3\Solr\PageDocumentPostProcessor',
-                        1397739154
-                    );
-                }
-            }
-        }
+        $this->applyIndexPagePostProcessors($pageDocument);
 
         self::$pageSolrDocument = $pageDocument;
         $documents[] = $pageDocument;
@@ -277,6 +262,27 @@ class Typo3PageIndexer
         $this->documentsSentToSolr = $documents;
 
         return $pageIndexed;
+    }
+
+    /**
+     * Applies the configured post processors (indexPagePostProcessPageDocument)
+     *
+     * @param \Apache_Solr_Document $pageDocument
+     */
+    protected function applyIndexPagePostProcessors($pageDocument)
+    {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'])) {
+            return;
+        }
+
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument'] as $classReference) {
+            $postProcessor = GeneralUtility::getUserObj($classReference);
+            if (!$postProcessor instanceof PageDocumentPostProcessor) {
+                throw new \UnexpectedValueException(get_class($pageDocument) . ' must implement interface ApacheSolrForTypo3\Solr\PageDocumentPostProcessor', 1397739154);
+            }
+
+            $postProcessor->postProcessPageDocument($pageDocument, $this->page);
+        }
     }
 
     /**
@@ -315,21 +321,12 @@ class Typo3PageIndexer
         $document->setField('created', $pageRecord['crdate']);
         $document->setField('changed', $pageRecord['SYS_LASTCHANGED']);
 
-        $rootline = $this->page->id;
-        $mountPointParameter = $this->getMountPointParameter();
-        if ($mountPointParameter !== '') {
-            $rootline .= ',' . $mountPointParameter;
-        }
+        $rootline = $this->getRootLineFieldValue();
         $document->setField('rootline', $rootline);
 
         // access
-        $access = (string)$this->pageAccessRootline;
-        if (trim($access) !== '') {
-            $document->setField('access', $access);
-        }
-        if ($this->page->page['endtime']) {
-            $document->setField('endtime', $pageRecord['endtime']);
-        }
+        $this->addAccessField($document);
+        $this->addEndtimeField($document, $pageRecord);
 
         // content
         $document->setField('title', $this->contentExtractor->getPageTitle());
@@ -338,27 +335,79 @@ class Typo3PageIndexer
         $document->setField('author', $pageRecord['author']);
         $document->setField('description', $pageRecord['description']);
         $document->setField('abstract', $pageRecord['abstract']);
-        $document->setField('content',
-            $this->contentExtractor->getIndexableContent());
+        $document->setField('content', $this->contentExtractor->getIndexableContent());
         $document->setField('url', $this->pageUrl);
 
-        // keywords, multi valued
-        $keywords = array_unique(GeneralUtility::trimExplode(
-            ',',
-            $pageRecord['keywords'],
-            true
-        ));
+        $this->addKeywordsField($document, $pageRecord);
+        $this->addTagContentFields($document);
+
+        return $document;
+    }
+
+    /**
+     * Adds the access field to the document if needed.
+     *
+     * @param \Apache_Solr_Document $document
+     */
+    protected function addAccessField(\Apache_Solr_Document $document)
+    {
+        $access = (string)$this->pageAccessRootline;
+        if (trim($access) !== '') {
+            $document->setField('access', $access);
+        }
+    }
+
+    /**
+     * @param $document
+     * @param $pageRecord
+     */
+    protected function addEndtimeField(\Apache_Solr_Document  $document, $pageRecord)
+    {
+        if ($this->page->page['endtime']) {
+            $document->setField('endtime', $pageRecord['endtime']);
+        }
+    }
+
+    /**
+     * Adds keywords, multi valued.
+     *
+     * @param \Apache_Solr_Document $document
+     * @param array $pageRecord
+     */
+    protected function addKeywordsField(\Apache_Solr_Document $document, $pageRecord)
+    {
+        $keywords = array_unique(GeneralUtility::trimExplode(',', $pageRecord['keywords'], true));
         foreach ($keywords as $keyword) {
             $document->addField('keywords', $keyword);
         }
+    }
 
-        // content from several tags like headers, anchors, ...
+    /**
+     * Add content from several tags like headers, anchors, ...
+     *
+     * @param \Apache_Solr_Document $document
+     */
+    protected function addTagContentFields(\Apache_Solr_Document  $document)
+    {
         $tagContent = $this->contentExtractor->getTagContent();
         foreach ($tagContent as $fieldName => $fieldValue) {
             $document->setField($fieldName, $fieldValue);
         }
+    }
 
-        return $document;
+    /**
+     * Builds the content for the rootline field.
+     *
+     * @return string
+     */
+    protected function getRootLineFieldValue()
+    {
+        $rootline = $this->page->id;
+        $mountPointParameter = $this->getMountPointParameter();
+        if ($mountPointParameter !== '') {
+            $rootline .= ',' . $mountPointParameter;
+        }
+        return $rootline;
     }
 
     /**
@@ -458,33 +507,28 @@ class Typo3PageIndexer
      * should be indexed for the current page.
      *
      * @param \Apache_Solr_Document $pageDocument The main document representing this page.
-     * @param array $existingDocuments An array of documents already created for this page.
+     * @param \Apache_Solr_Document[] $existingDocuments An array of documents already created for this page.
      * @return array An array of additional \Apache_Solr_Document objects to index
      */
-    protected function getAdditionalDocuments(
-        \Apache_Solr_Document $pageDocument,
-        array $existingDocuments
-    ) {
+    protected function getAdditionalDocuments(\Apache_Solr_Document $pageDocument, array $existingDocuments)
+    {
         $documents = $existingDocuments;
 
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'] as $classReference) {
-                $additionalIndexer = GeneralUtility::getUserObj($classReference);
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'])) {
+            return $documents;
+        }
 
-                if ($additionalIndexer instanceof AdditionalPageIndexer) {
-                    $additionalDocuments = $additionalIndexer->getAdditionalPageDocuments($pageDocument,
-                        $documents);
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments'] as $classReference) {
+            $additionalIndexer = GeneralUtility::getUserObj($classReference);
 
-                    if (is_array($additionalDocuments)) {
-                        $documents = array_merge($documents,
-                            $additionalDocuments);
-                    }
-                } else {
-                    throw new \UnexpectedValueException(
-                        get_class($additionalIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\AdditionalPageIndexer',
-                        1310491024
-                    );
-                }
+            if (!$additionalIndexer instanceof AdditionalPageIndexer) {
+                $message = get_class($additionalIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\AdditionalPageIndexer';
+                throw new \UnexpectedValueException($message, 1310491024);
+            }
+
+            $additionalDocuments = $additionalIndexer->getAdditionalPageDocuments($pageDocument, $documents);
+            if (is_array($additionalDocuments)) {
+                $documents = array_merge($documents, $additionalDocuments);
             }
         }
 
@@ -501,7 +545,7 @@ class Typo3PageIndexer
     {
         $processingInstructions = $this->configuration->getIndexFieldProcessingInstructionsConfiguration();
         if (count($processingInstructions) > 0) {
-            $service = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\Service');
+            $service = GeneralUtility::makeInstance(Service::class);
             $service->processDocuments($documents, $processingInstructions);
         }
     }
@@ -521,8 +565,7 @@ class Typo3PageIndexer
         }
 
         try {
-            $this->log('Adding ' . count($documents) . ' documents.', 0,
-                $documents);
+            $this->log('Adding ' . count($documents) . ' documents.', 0, $documents);
 
             // chunk adds by 20
             $documentChunks = array_chunk($documents, 20);
@@ -531,8 +574,7 @@ class Typo3PageIndexer
 
                 if ($response->getHttpStatus() != 200) {
                     $transportException = new \Apache_Solr_HttpTransportException($response);
-                    throw new \RuntimeException('Solr Request failed.',
-                        1331834983, $transportException);
+                    throw new \RuntimeException('Solr Request failed.', 1331834983, $transportException);
                 }
             }
 
@@ -541,10 +583,7 @@ class Typo3PageIndexer
             $this->log($e->getMessage() . ' Error code: ' . $e->getCode(), 2);
 
             if ($this->configuration->getLoggingExceptions()) {
-                GeneralUtility::devLog('Exception while adding documents',
-                    'solr', 3, array(
-                        $e->__toString()
-                    ));
+                GeneralUtility::devLog('Exception while adding documents', 'solr', 3, [$e->__toString()]);
             }
         }
 

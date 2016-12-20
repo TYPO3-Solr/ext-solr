@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
 /***************************************************************
  *  Copyright notice
@@ -107,6 +107,46 @@ class PageIndexerTest extends IntegrationTest
             // field values from index.additionalFields
         $this->assertContains('"additional_sortSubTitle_stringS":"subtitle"', $solrContent, 'Document does not contains value from index.additionFields');
         $this->assertContains('"additional_custom_stringS":"my text"', $solrContent, 'Document does not contains value from index.additionFields');
+    }
+
+    /**
+     * @test
+     */
+    public function canExecutePostProcessor()
+    {
+        $GLOBALS['T3_VAR']['getUserObj']['TestPostProcessor'] = new TestPostProcessor();
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument']['TestPostProcessor'] = 'TestPostProcessor';
+
+        $this->importDataSetFromFixture('can_index_into_solr.xml');
+        $this->executePageIndexer();
+
+        // we wait to make sure the document will be available in solr
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"postProcessorField_stringS":"postprocessed"', $solrContent, 'Field from post processor was not added');
+    }
+
+    /**
+     * @test
+     */
+    public function canExecuteAdditionalPageIndexer()
+    {
+        $GLOBALS['T3_VAR']['getUserObj']['TestAdditionalPageIndexer'] = new TestAdditionalPageIndexer();
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']['TestAdditionalPageIndexer'] = 'TestAdditionalPageIndexer';
+
+        $this->importDataSetFromFixture('can_index_into_solr.xml');
+        $this->executePageIndexer();
+
+        // we wait to make sure the document will be available in solr
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"numFound":2', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"custom_stringS":"my text"', $solrContent, 'Field from post processor was not added');
+        $this->assertContains('"custom_stringS":"additional text"', $solrContent, 'Field from post processor was not added');
+
     }
 
     /**
