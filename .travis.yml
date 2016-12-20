@@ -7,6 +7,7 @@ php:
   - 5.5
   - 5.6
   - 7.0
+  - 7.1
 
 jdk:
   - oraclejdk8
@@ -25,10 +26,8 @@ env:
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
   matrix:
-    - TYPO3_VERSION="~7.6.9"
-    - TYPO3_VERSION="~8.0.0"
-    - TYPO3_VERSION="~8.1.2"
-    - TYPO3_VERSION="~8.2.1"
+    - TYPO3_VERSION="~7.6.14"
+    - TYPO3_VERSION="~8.5.0"
     - TYPO3_VERSION="7.x-dev"
     - TYPO3_VERSION="dev-master"
 
@@ -36,29 +35,23 @@ matrix:
   fast_finish: true
   allow_failures:
     - env: TYPO3_VERSION="dev-master"
-      php: 7.0
-    - env: TYPO3_VERSION="~8.1.2"
-      php: 7.0
-    - env: TYPO3_VERSION="~8.2.1"
-      php: 7.0
-
+      php: 7.1
+    - env: TYPO3_VERSION="~8.5.0"
+      php: 7.1
   exclude:
     - php: 5.5
       env: TYPO3_VERSION="dev-master"
     - php: 5.6
       env: TYPO3_VERSION="dev-master"
     - php: 5.5
-      env: TYPO3_VERSION="~8.0.0"
+      env: TYPO3_VERSION="~8.5.0"
     - php: 5.6
-      env: TYPO3_VERSION="~8.0.0"
-    - php: 5.5
-      env: TYPO3_VERSION="~8.1.2"
-    - php: 5.6
-      env: TYPO3_VERSION="~8.1.2"
-    - php: 5.5
-      env: TYPO3_VERSION="~8.2.1"
-    - php: 5.6
-      env: TYPO3_VERSION="~8.2.1"
+      env: TYPO3_VERSION="~8.5.0"
+    - php: 7.1
+      env: TYPO3_VERSION="7.x-dev"
+    - php: 7.1
+      env: TYPO3_VERSION="~7.6.14"
+
 before_install:
   - composer self-update
   - composer --version

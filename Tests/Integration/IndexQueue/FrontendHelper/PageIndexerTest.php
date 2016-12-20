@@ -114,8 +114,7 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canExecutePostProcessor()
     {
-        $GLOBALS['T3_VAR']['getUserObj']['TestPostProcessor'] = new TestPostProcessor();
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument']['TestPostProcessor'] = 'TestPostProcessor';
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument']['TestPostProcessor'] = TestPostProcessor::class;
 
         $this->importDataSetFromFixture('can_index_into_solr.xml');
         $this->executePageIndexer();
@@ -133,8 +132,7 @@ class PageIndexerTest extends IntegrationTest
      */
     public function canExecuteAdditionalPageIndexer()
     {
-        $GLOBALS['T3_VAR']['getUserObj']['TestAdditionalPageIndexer'] = new TestAdditionalPageIndexer();
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']['TestAdditionalPageIndexer'] = 'TestAdditionalPageIndexer';
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageAddDocuments']['TestAdditionalPageIndexer'] = TestAdditionalPageIndexer::class;
 
         $this->importDataSetFromFixture('can_index_into_solr.xml');
         $this->executePageIndexer();
@@ -146,7 +144,6 @@ class PageIndexerTest extends IntegrationTest
         $this->assertContains('"numFound":2', $solrContent, 'Could not index document into solr');
         $this->assertContains('"custom_stringS":"my text"', $solrContent, 'Field from post processor was not added');
         $this->assertContains('"custom_stringS":"additional text"', $solrContent, 'Field from post processor was not added');
-
     }
 
     /**
