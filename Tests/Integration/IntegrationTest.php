@@ -157,7 +157,6 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
             $TYPO3_CONF_VARS, $id, $type);
-
         \TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
         $TSFE->initFEuser();
         $TSFE->set_no_cache();

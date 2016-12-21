@@ -62,7 +62,6 @@ class ConnectionManagerTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.']['scheme'] = 'http';
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = 25;
         $GLOBALS['TSFE']->tmpl->setup['config.']['tx_realurl_enable'] = '0';
-        $GLOBALS['TSFE']->config['config'] = $this->tmpl->setup['config.'];
 
         $this->configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
         $this->connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');

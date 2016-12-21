@@ -58,7 +58,6 @@ abstract class AbstractViewHelperTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->setup['config.']['typolinkEnableLinksAcrossDomains'] = 0;
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = 25;
         $GLOBALS['TSFE']->tmpl->setup['config.']['tx_realurl_enable'] = '0';
-        $GLOBALS['TSFE']->config['config'] = $this->tmpl->setup['config.'];
 
         /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
         $this->configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
