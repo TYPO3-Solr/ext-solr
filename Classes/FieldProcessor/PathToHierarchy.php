@@ -69,7 +69,7 @@ class PathToHierarchy implements FieldProcessor
         foreach ($treeParts as $i => $part) {
             $currentTreeParts[] = $part;
 
-            $hierarchy[] = $i . '-' . implode('/', $currentTreeParts);
+            $hierarchy[] = $i . '-' . implode('/', $currentTreeParts) . '/';
         }
 
         return $hierarchy;
