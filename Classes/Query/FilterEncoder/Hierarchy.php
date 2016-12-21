@@ -64,9 +64,10 @@ class Hierarchy implements FilterEncoder
     public function decodeFilter($hierarchy, array $configuration = array())
     {
         $hierarchy = substr($hierarchy, 1);
+        $hierarchy = rtrim($hierarchy, '/');
         $hierarchyItems = explode(self::DELIMITER, $hierarchy);
 
-        $hierarchyFilter = '"' . (count($hierarchyItems) - 1) . '-' . $hierarchy . '"';
+        $hierarchyFilter = '"' . (count($hierarchyItems) - 1) . '-' . $hierarchy . '/"';
 
         return $hierarchyFilter;
     }
