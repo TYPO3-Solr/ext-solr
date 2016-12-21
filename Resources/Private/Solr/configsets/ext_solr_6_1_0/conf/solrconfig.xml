@@ -1,4 +1,4 @@
-<config name="tx_solr-6-0-0--20161122">
+<config name="tx_solr-6-1-0--20161220">
 
 	<luceneMatchVersion>6.3.0</luceneMatchVersion>
 
@@ -252,8 +252,11 @@
 	</requestHandler>
 
 
-	<requestHandler name="mlt" class="solr.MoreLikeThisHandler">
+	<requestHandler name="/mlt" class="solr.MoreLikeThisHandler">
 		<lst name="defaults">
+			<str name="df">content</str>
+			<str name="mlt.qf">content^0.5 title^1.2 keywords^2.0</str>
+			<str name="mlt.fl">content,title,keywords</str>
 			<str name="mlt.mintf">1</str>
 			<str name="mlt.mindf">1</str>
 			<str name="mlt.minwl">3</str>

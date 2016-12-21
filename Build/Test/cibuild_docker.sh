@@ -13,7 +13,8 @@ isHTTP200 ()
 assertCoreIsAvailable ()
 {
     echo "checking ${1}"
-    isHTTP200 "http://localhost:8998/solr/${1}/select/" || { echo "${1} failed" ; exit 1; }
+    isHTTP200 "http://localhost:8998/solr/${1}/select" || { echo "${1} failed" ; exit 1; }
+    isHTTP200 "http://localhost:8998/solr/${1}/mlt?q=*" || { echo "${1} failed" ; exit 1; }
 }
 
 echo "Building docker image"
