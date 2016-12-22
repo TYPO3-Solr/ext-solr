@@ -253,7 +253,7 @@ class ResultsTest extends AbstractPluginTest
 
         $this->assertContains('facet-type-hierarchy', $resultPage, 'Did not render hierarchy facet in the response');
         $this->assertContains('class="rootlinefacet-item"', $resultPage, 'Hierarchy facet items did not contain expected class from TypoScript');
-        $this->assertContains('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%253A%252F1%252F2&amp;', $resultPage, 'Result page did not contain hierarchical facet link');
+        $this->assertContains('tx_solr%5Bfilter%5D%5B0%5D=pageHierarchy%253A%252F1%252F2%252F&amp;', $resultPage, 'Result page did not contain hierarchical facet link');
     }
 
     /**

@@ -50,8 +50,8 @@ class HierarchyTest extends UnitTest
      */
     public function canParseHierarchy3LevelQuery()
     {
-        $expected = '"2-sport/skateboarding/street"';
-        $actual = $this->parser->decodeFilter('/sport/skateboarding/street');
+        $expected = '"2-sport/skateboarding/street/"';
+        $actual = $this->parser->decodeFilter('/sport/skateboarding/street/');
 
         $this->assertEquals($expected, $actual);
     }
@@ -61,8 +61,8 @@ class HierarchyTest extends UnitTest
      */
     public function canParseHierarchy2LevelQuery()
     {
-        $expected = '"1-sport/skateboarding"';
-        $actual = $this->parser->decodeFilter('/sport/skateboarding');
+        $expected = '"1-sport/skateboarding/"';
+        $actual = $this->parser->decodeFilter('/sport/skateboarding/');
 
         $this->assertEquals($expected, $actual);
     }
@@ -72,8 +72,8 @@ class HierarchyTest extends UnitTest
      */
     public function canParseHierarchy1LevelQuery()
     {
-        $expected = '"0-sport"';
-        $actual = $this->parser->decodeFilter('/sport');
+        $expected = '"0-sport/"';
+        $actual = $this->parser->decodeFilter('/sport/');
 
         $this->assertEquals($expected, $actual);
     }

@@ -43,10 +43,10 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  *
  * In Solr hierarchy notation, we get
  *
- * 0-1
- * 1-1/10
- * 2-1/10/100
- * 3-1/10/100/11
+ * 0-1/
+ * 1-1/10/
+ * 2-1/10/100/
+ * 3-1/10/100/11/
  *
  * which is finally saved in a multi-value field.
  *

@@ -120,7 +120,7 @@ class HierarchicalFacetHelper
     {
         $menu = array();
 
-        $subMenuEntryPrefix = $level . '-' . $menuName . '/';
+        $subMenuEntryPrefix = $level . '-' . $menuName;
 
         foreach ($facetOptions as $facetOptionKey => $facetOption) {
             // find the sub menu items for the current menu
@@ -142,7 +142,7 @@ class HierarchicalFacetHelper
                 // move one level down (recursion)
                 $subMenu = $this->getSubMenu(
                     $facetOptions,
-                    $menuName . '/' . $lastPathSegment,
+                    $menuName . $lastPathSegment . '/',
                     $level + 1
                 );
                 if (!empty($subMenu)) {

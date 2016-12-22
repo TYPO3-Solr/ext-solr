@@ -159,7 +159,7 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
         $facetOptionKey = trim($facetOptionKey, '"');
         list(, $path) = explode('-', $facetOptionKey, 2);
 
-        $explodedPath = explode('/', $path);
+        $explodedPath = explode('/', rtrim($path, '/'));
         $lastPathSegment = $explodedPath[count($explodedPath) - 1];
 
         return $lastPathSegment;

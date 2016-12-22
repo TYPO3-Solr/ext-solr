@@ -50,12 +50,12 @@ abstract class AbstractHierarchyProcessor
         }
 
         foreach ($idRootline as $uid) {
-            $hierarchy[] = $depth . '-' . $currentPath;
+            $hierarchy[] = $depth . '-' . $currentPath . '/';
 
             $depth++;
             $currentPath .= '/' . $uid;
         }
-        $hierarchy[] = $depth . '-' . $currentPath;
+        $hierarchy[] = $depth . '-' . $currentPath . '/';
 
         return $hierarchy;
     }
