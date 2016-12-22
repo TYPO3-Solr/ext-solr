@@ -90,15 +90,26 @@ class SolrServiceTest extends IntegrationTest
         // make sure old stopwords are deleted
         $this->solrService->deleteStopWord('badword');
         $stopWords = $this->solrService->getStopWords();
-        $this->assertSame([], $stopWords, 'Stopwords are not empty after initializing');
+        $this->assertNotContains('badword', $stopWords, 'Stopwords are not empty after initializing');
 
         $this->solrService->addStopWords('badword');
         $stopWordsAfterAdd = $this->solrService->getStopWords();
-        $this->assertSame(['badword'], $stopWordsAfterAdd, 'Stopword was not added');
+        $this->assertContains('badword', $stopWordsAfterAdd, 'Stopword was not added');
 
         $this->solrService->deleteStopWord('badword');
         $stopWordsAfterDelete = $this->solrService->getStopWords();
-        $this->assertSame([], $stopWordsAfterDelete, 'Stopwords are not empty after removing');
+        $this->assertNotContains('badword', $stopWordsAfterDelete, 'Stopwords are not empty after removing');
+    }
+
+    /**
+     * Check if the default stopswords are stored in the solr server.
+     *
+     * @test
+     */
+    public function containsDefaultStopWord()
+    {
+        $stopWordsInSolr = $this->solrService->getStopWords();
+        $this->assertContains('and', $stopWordsInSolr, 'Default stopword and was not present');
     }
 
     /**
