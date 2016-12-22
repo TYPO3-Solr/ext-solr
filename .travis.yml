@@ -35,6 +35,8 @@ matrix:
   fast_finish: true
   allow_failures:
     - env: TYPO3_VERSION="dev-master"
+      php: 7.0
+    - env: TYPO3_VERSION="dev-master"
       php: 7.1
     - env: TYPO3_VERSION="~8.5.0"
       php: 7.1
