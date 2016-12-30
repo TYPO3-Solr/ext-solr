@@ -267,6 +267,12 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function processRecord($recordTable, $recordPageId, $recordUid, $fields)
     {
+        $rootPageId = Util::getRootPageId($recordPageId);
+        if (!Util::isRootPage($rootPageId)) {
+            // when the monitored record doesn't belong to a solr configured root-page we can skip it
+            return;
+        }
+
         $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
         $isMonitoredRecord = $this->solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
 
