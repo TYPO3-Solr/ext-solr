@@ -351,7 +351,16 @@ class Site
      */
     protected function getPageIdsFromCurrentDepthAndCallRecursive($maxDepth, $recursionRootPageId, $pageIds)
     {
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'pages', 'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages'));
+        static $initialPagesAdditionalWhereClause;
+
+        // Only fetch $initialPagesAdditionalWhereClause on first call
+        if (empty($initialPagesAdditionalWhereClause)) {
+            // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
+            $configuration = Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
+            $initialPagesAdditionalWhereClause = $configuration->getInitialPagesAdditionalWhereClause();
+        }
+
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'pages', 'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages') . $initialPagesAdditionalWhereClause);
 
         while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
             $pageIds[] = (int) $page['uid'];
