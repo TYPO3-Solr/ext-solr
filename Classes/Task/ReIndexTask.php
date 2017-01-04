@@ -94,9 +94,6 @@ class ReIndexTask extends AbstractTask
         }
 
         foreach ($solrServers as $solrServer) {
-            // make sure not-yet committed documents are removed, too
-            $solrServer->commit();
-
             $deleteQuery = 'type:(' . implode(' OR ', $typesToCleanUp) . ')'
                 . ' AND siteHash:' . $this->site->getSiteHash();
             $solrServer->deleteByQuery($deleteQuery);

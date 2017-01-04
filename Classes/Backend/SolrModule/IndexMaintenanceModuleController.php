@@ -73,8 +73,6 @@ class IndexMaintenanceModuleController extends AbstractModuleController
             $solrServers = $this->connectionManager->getConnectionsBySite($this->site);
             foreach ($solrServers as $solrServer) {
                 /* @var $solrServer SolrService */
-                // make sure maybe not-yet committed documents are committed
-                $solrServer->commit();
                 $solrServer->deleteByQuery('siteHash:' . $siteHash);
                 $solrServer->commit(false, false, false);
             }
