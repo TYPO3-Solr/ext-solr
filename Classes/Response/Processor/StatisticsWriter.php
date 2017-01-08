@@ -79,9 +79,9 @@ class StatisticsWriter implements ResponseProcessor
 
             'num_found' => $response->response->numFound,
             'suggestions_shown' => is_object($response->spellcheck->suggestions) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
-            'time_total' => $response->debug->timing->time,
-            'time_preparation' => $response->debug->timing->prepare->time,
-            'time_processing' => $response->debug->timing->process->time,
+            'time_total' => isset($response->debug->timing->time) ? $response->debug->timing->time : 0,
+            'time_preparation' => isset($response->debug->timing->prepare->time) ? $response->debug->timing->prepare->time : 0,
+            'time_processing' => isset($response->debug->timing->process->time) ? $response->debug->timing->process->time : 0,
 
             'feuser_id' => (int)$GLOBALS['TSFE']->fe_user->user['uid'],
             'cookie' => $GLOBALS['TSFE']->fe_user->id,

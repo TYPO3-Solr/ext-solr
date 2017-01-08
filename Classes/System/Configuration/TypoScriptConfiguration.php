@@ -1842,8 +1842,8 @@ class TypoScriptConfiguration
      */
     public function getStatistics($defaultIfEmpty = false)
     {
-        $isFacetingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics', $defaultIfEmpty);
-        return $this->getBool($isFacetingEnabled);
+        $isStatisticsEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics', $defaultIfEmpty);
+        return $this->getBool($isStatisticsEnabled);
     }
 
     /**
@@ -1858,6 +1858,20 @@ class TypoScriptConfiguration
     {
         $anomizeToLength = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.anonymizeIP', $defaultIfEmpty);
         return (int)$anomizeToLength;
+    }
+
+    /**
+     * Indicates if advancedStatistics is enabled or not.
+     *
+     * plugin.tx_solr.advancedStatistics
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getAdvancedStatistics($defaultIfEmpty = false)
+    {
+        $isAdvancedStatisticsEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.advancedStatistics', $defaultIfEmpty);
+        return $this->getBool($isAdvancedStatisticsEnabled);
     }
 
     /**
