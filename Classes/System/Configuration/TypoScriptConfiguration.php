@@ -1856,22 +1856,22 @@ class TypoScriptConfiguration
      */
     public function getStatisticsAnonymizeIP($defaultIfEmpty = 0)
     {
-        $anomizeToLength = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.anonymizeIP', $defaultIfEmpty);
-        return (int)$anomizeToLength;
+        $anonymizeToLength = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.anonymizeIP', $defaultIfEmpty);
+        return (int)$anonymizeToLength;
     }
 
     /**
-     * Indicates if advancedStatistics is enabled or not.
+     * Indicates if additional debug Data should be added to the statistics
      *
-     * plugin.tx_solr.advancedStatistics
+     * plugin.tx_solr.statistics.addDebugData
      *
      * @param bool $defaultIfEmpty
      * @return bool
      */
-    public function getAdvancedStatistics($defaultIfEmpty = false)
+    public function getStatisticsAddDebugData($defaultIfEmpty = false)
     {
-        $isAdvancedStatisticsEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.advancedStatistics', $defaultIfEmpty);
-        return $this->getBool($isAdvancedStatisticsEnabled);
+        $statisticsAddDebugDataEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.addDebugData', $defaultIfEmpty);
+        return $this->getBool($statisticsAddDebugDataEnabled);
     }
 
     /**

@@ -43,21 +43,15 @@ statistics.anonymizeIP
 
 Anonymizes the ip address in the logging records.
 
-tx_solr.advancedStatistics
-===================
-
-This section allows you to configure the logging for advancedStatistics. It fills the columns `time_total`, `time_preparation` and `time_processing`
-in the table `tx_solr_statistics` with values returned from the search query.
-
-**Note**: Enabling advancedStatistics can have performance impact since debugMode is appended to queries - requires that
-`plugin.tx_solr.statistics = 1` has been set.
-
-advancedStatistics
-----------
+statistics.addDebugData
+-----------------------
 
 :Type: Boolean
-:TS Path: plugin.tx_solr.advancedStatistics
+:TS Path: plugin.tx_solr.statistics.addDebugData
 :Since: 6.1
 :Default: 0
 
-Set `plugin.tx_solr.advancedStatistics = 1` to enable advanced statistics
+Adds debug data to the columns `time_total`, `time_preparation` and `time_processing` in the table `tx_solr_statistics`
+from the result of the search query.
+
+**Note**: Enabling addDebugData can have performance impact since debugMode is appended to queries.
