@@ -46,6 +46,16 @@ To build the images, simply type one of the following:
 .. code-block:: bash
 
     docker build -t typo3-solr .
+    
+Prepare the data folder (data is shared with the docker container by user and group with UID/GID 8983):
+
+|
+
+.. code-block:: bash
+
+    mkdir -p .solrdata
+    chmod g+w .solrdata
+    chown :8983 .solrdata
 
 To run the container (only run one of the following):
 
@@ -53,9 +63,7 @@ To run the container (only run one of the following):
 
 .. code-block:: bash
 
-    docker run -d -p 127.0.0.1:8983:8983 typo3-solr
-
-If you want to keep the solr core data after a recreate of the container, you have to share `/opt/solr/server/solr/data` (please note: the directory on the host should have UID and GID 8983) to the host.
+    docker run -d -p 127.0.0.1:8983:8983 -v "$PWD/.solrdata:/opt/solr/server/solr/data/" typo3-solr
 
 To check whether Solr is up and running head over to:
 
