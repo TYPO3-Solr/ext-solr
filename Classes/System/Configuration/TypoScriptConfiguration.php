@@ -1842,8 +1842,8 @@ class TypoScriptConfiguration
      */
     public function getStatistics($defaultIfEmpty = false)
     {
-        $isFacetingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics', $defaultIfEmpty);
-        return $this->getBool($isFacetingEnabled);
+        $isStatisticsEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics', $defaultIfEmpty);
+        return $this->getBool($isStatisticsEnabled);
     }
 
     /**
@@ -1856,8 +1856,22 @@ class TypoScriptConfiguration
      */
     public function getStatisticsAnonymizeIP($defaultIfEmpty = 0)
     {
-        $anomizeToLength = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.anonymizeIP', $defaultIfEmpty);
-        return (int)$anomizeToLength;
+        $anonymizeToLength = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.anonymizeIP', $defaultIfEmpty);
+        return (int)$anonymizeToLength;
+    }
+
+    /**
+     * Indicates if additional debug Data should be added to the statistics
+     *
+     * plugin.tx_solr.statistics.addDebugData
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getStatisticsAddDebugData($defaultIfEmpty = false)
+    {
+        $statisticsAddDebugDataEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.statistics.addDebugData', $defaultIfEmpty);
+        return $this->getBool($statisticsAddDebugDataEnabled);
     }
 
     /**

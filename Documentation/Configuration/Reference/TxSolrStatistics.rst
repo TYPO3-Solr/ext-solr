@@ -42,3 +42,16 @@ statistics.anonymizeIP
 :Default: 0
 
 Anonymizes the ip address in the logging records.
+
+statistics.addDebugData
+-----------------------
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.statistics.addDebugData
+:Since: 6.1
+:Default: 0
+
+Adds debug data to the columns `time_total`, `time_preparation` and `time_processing` in the table `tx_solr_statistics`
+from the result of the search query.
+
+**Note**: Enabling addDebugData can have performance impact since debugMode is appended to queries.
