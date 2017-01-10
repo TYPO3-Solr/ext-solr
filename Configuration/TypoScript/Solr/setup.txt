@@ -22,10 +22,25 @@ plugin.tx_solr {
 	}
 
 	solr {
-		scheme = {$plugin.tx_solr.solr.scheme}
-		host   = {$plugin.tx_solr.solr.host}
-		port   = {$plugin.tx_solr.solr.port}
-		path   = {$plugin.tx_solr.solr.path}
+		scheme = TEXT
+		scheme {
+			value = {$plugin.tx_solr.solr.scheme}
+			override.data = global:TYPO3_CONF_VARS|SOLR|scheme
+		}
+		host = TEXT
+		host {
+			value = {$plugin.tx_solr.solr.host}
+			override.data = global:TYPO3_CONF_VARS|SOLR|host
+		}
+		port = TEXT
+		port {
+			value = {$plugin.tx_solr.solr.port}
+			override.data = global:TYPO3_CONF_VARS|SOLR|port
+		}
+		path = TEXT
+		path {
+			value = {$plugin.tx_solr.solr.path}
+		}
 	}
 
 	templateFiles {

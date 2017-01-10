@@ -79,12 +79,14 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 2
             );
 
+            $contentObject = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+
             $solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
 
-            $host = $solrConfiguration['host'];
-            $port = $solrConfiguration['port'];
-            $path = $solrConfiguration['path'];
-            $scheme = $solrConfiguration['scheme'];
+            $host = $contentObject->stdWrap($solrConfiguration['host'], $solrConfiguration['host.']);
+            $port = $contentObject->stdWrap($solrConfiguration['port'], $solrConfiguration['port.']);
+            $path = $contentObject->stdWrap($solrConfiguration['path'], $solrConfiguration['path.']);
+            $scheme = $contentObject->stdWrap($solrConfiguration['scheme'], $solrConfiguration['scheme.']);
         }
 
         $connectionHash = md5($scheme . '://' . $host . $port . $path);
