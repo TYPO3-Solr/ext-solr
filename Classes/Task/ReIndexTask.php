@@ -98,6 +98,11 @@ class ReIndexTask extends AbstractTask
                 . ' AND siteHash:' . $this->site->getSiteHash();
             $solrServer->deleteByQuery($deleteQuery);
 
+            if(!$solrConfiguration->getEnableCommits()) {
+                # Do not commit
+                continue;
+            }
+
             $response = $solrServer->commit(false, false, false);
             if ($response->getHttpStatus() != 200) {
                 $cleanUpResult = false;
