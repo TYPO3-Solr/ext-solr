@@ -92,6 +92,26 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $scheme = $solrConfiguration['scheme'];
             $username = $solrConfiguration['username'];
             $password = $solrConfiguration['password'];
+
+            $contentObjectRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+            if (!empty($solrConfiguration['host.'])) {
+                $host = $contentObjectRenderer->stdWrap($solrConfiguration['host'], $solrConfiguration['host.']);
+            }
+            if (!empty($solrConfiguration['port.'])) {
+                $port = $contentObjectRenderer->stdWrap($solrConfiguration['port'], $solrConfiguration['port.']);
+            }
+            if (!empty($solrConfiguration['path.'])) {
+                $path = $contentObjectRenderer->stdWrap($solrConfiguration['path'], $solrConfiguration['path.']);
+            }
+            if (!empty($solrConfiguration['scheme.'])) {
+                $scheme = $contentObjectRenderer->stdWrap($solrConfiguration['scheme'], $solrConfiguration['scheme.']);
+            }
+            if (!empty($solrConfiguration['username.'])) {
+                $scheme = $contentObjectRenderer->stdWrap($solrConfiguration['username'], $solrConfiguration['username.']);
+            }
+            if (!empty($solrConfiguration['password.'])) {
+                $scheme = $contentObjectRenderer->stdWrap($solrConfiguration['password'], $solrConfiguration['password.']);
+            }
         }
 
         $connectionHash = md5($scheme . '://' . $host . $port . $path . $username . $password);
