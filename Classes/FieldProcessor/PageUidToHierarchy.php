@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
@@ -107,7 +108,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
         $rootline = $pageSelector->getRootLine($pageId, (string)$mountPoint);
 
         foreach ($rootline as $page) {
-            if ($page['is_siteroot']) {
+            if (Site::isRootPage($page)) {
                 break;
             }
 
