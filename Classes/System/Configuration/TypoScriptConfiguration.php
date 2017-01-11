@@ -1944,4 +1944,23 @@ class TypoScriptConfiguration
         $sortingViewHelperConfiguration = $this->getObjectByPathOrDefault('plugin.tx_solr.viewHelpers.sortIndicator.', $defaultIfEmpty);
         return $sortingViewHelperConfiguration;
     }
+
+    /**
+     * Controls whether ext-solr will send commits to solr.
+     * Beware: If you disable this, you need to ensure
+     * that some other mechanism will commit your changes
+     * otherwise they will never be searchable.
+     * A good way to achieve this is enabling the solr
+     * daemons autoCommit feature.
+     *
+     * plugin.tx_solr.index.enableCommits
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getEnableCommits($defaultIfEmpty = true)
+    {
+        $enableCommits = $this->getValueByPathOrDefaultValue('plugin.tx_solr.index.enableCommits', $defaultIfEmpty);
+        $this->getBool($enableCommits);
+    }
 }
