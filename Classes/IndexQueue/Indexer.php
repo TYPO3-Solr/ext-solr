@@ -184,7 +184,35 @@ class Indexer extends AbstractIndexer
      */
     protected function getFullItemRecord(Item $item, $language = 0)
     {
+        static $translationOverlaysList;
+
         $rootPageUid = $item->getRootPageUid();
+
+        // check if translation is available
+        if ($language > 0) {
+            if ($translationOverlaysList === null || !array_key_exists($rootPageUid, $translationOverlaysList)) {
+                $availableTranslations = [];
+
+                $translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+                    'sys_language_uid',
+                    'pages_language_overlay',
+                    'pid = ' . $rootPageUid
+                    . BackendUtility::deleteClause('pages_language_overlay')
+                    . BackendUtility::BEenableFields('pages_language_overlay')
+                );
+
+                foreach ($translationOverlays as $translationOverlay) {
+                    $availableTranslations[] = $translationOverlay['sys_language_uid'];
+                }
+
+                $translationOverlaysList[$rootPageUid] = implode(',', $availableTranslations);
+            }
+
+            if (!GeneralUtility::inList($translationOverlaysList[$rootPageUid], $language)) {
+                return null;
+            }
+        }
+
         $overlayIdentifier = $rootPageUid . '|' . $language;
         if (!isset(self::$sysLanguageOverlay[$overlayIdentifier])) {
             Util::initializeTsfe($rootPageUid, $language);
