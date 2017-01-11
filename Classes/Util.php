@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -503,14 +504,9 @@ class Util
      */
     public static function isRootPage($pageId)
     {
-        $isRootPage = false;
-
         $page = BackendUtility::getRecord('pages', $pageId);
-        if ($page['is_siteroot']) {
-            $isRootPage = true;
-        }
 
-        return $isRootPage;
+        return Site::isRootPage($page);
     }
 
     /**

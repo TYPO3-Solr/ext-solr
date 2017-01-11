@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\System\Page;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Site;
 
 /**
  * Rootline class. This class is used to perform operations on a rootline array.
@@ -90,7 +91,7 @@ class Rootline
         }
 
         foreach ($this->rootLineArray as $page) {
-            if ($page['is_siteroot']) {
+            if (Site::isRootPage($page)) {
                 $rootPageId = $page['uid'];
             }
         }
@@ -113,7 +114,7 @@ class Rootline
 
         foreach ($this->rootLineArray as $pageRecord) {
             $rootLineParentPageIds[] = $pageRecord['uid'];
-            if ($pageRecord['is_siteroot']) {
+            if (Site::isRootPage($pageRecord)) {
                 break;
             }
         }

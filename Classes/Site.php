@@ -79,7 +79,7 @@ class Site
     {
         $page = BackendUtility::getRecord('pages', $rootPageId);
 
-        if (!$page['is_siteroot']) {
+        if (!self::isRootPage($page)) {
             throw new \InvalidArgumentException(
                 'The page for the given page ID \'' . $rootPageId
                 . '\' is not marked as root page and can therefore not be used as site root page.',
@@ -199,6 +199,21 @@ class Site
     public static function clearSitePagesCache()
     {
         self::$sitePagesCache = [];
+    }
+
+    /**
+     * Takes an pagerecord and checks whether the page is marked as root page.
+     *
+     * @param array $page pagerecord
+     * @return bool true if the page is marked as root page, false otherwise
+     */
+    public static function isRootPage($page)
+    {
+        if ($page['is_siteroot']) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
