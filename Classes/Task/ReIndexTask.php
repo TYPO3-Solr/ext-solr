@@ -87,6 +87,7 @@ class ReIndexTask extends AbstractTask
         $solrConfiguration = $this->site->getSolrConfiguration();
         $solrServers = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionsBySite($this->site);
         $typesToCleanUp = array();
+        $enableCommitsSetting = $solrConfiguration->getEnableCommits();
 
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $type = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
@@ -98,7 +99,7 @@ class ReIndexTask extends AbstractTask
                 . ' AND siteHash:' . $this->site->getSiteHash();
             $solrServer->deleteByQuery($deleteQuery);
 
-            if (!$solrConfiguration->getEnableCommits()) {
+            if (!$enableCommitsSetting) {
                 # Do not commit
                 continue;
             }
