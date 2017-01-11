@@ -42,7 +42,9 @@
   "autoload-dev": {
     "psr-4": {
       "ApacheSolrForTypo3\\Solr\\Tests\\": "Tests/",
-      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/",
+      "TYPO3\\CMS\\Components\\TestingFramework\\Core\\": ".Build/vendor/typo3/cms/components/testing_framework/core/",
+      "TYPO3\\CMS\\Components\\TestingFramework\\Fluid\\": ".Build/vendor/typo3/cms/components/testing_framework/fluid/"
     }
   },
   "config": {
