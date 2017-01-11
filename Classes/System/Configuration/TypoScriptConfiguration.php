@@ -1946,8 +1946,7 @@ class TypoScriptConfiguration
      */
     public function getEnableCommits($defaultIfEmpty = true)
     {
-	$enableCommits = $this->getValueByPathOrDefaultValue('plugin.tx_solr.index.enableCommits', $defaultIfEmpty);
-	$this->getBool($enableCommits);
+        $enableCommits = $this->getValueByPathOrDefaultValue('plugin.tx_solr.index.enableCommits', $defaultIfEmpty);
+        $this->getBool($enableCommits);
     }
-
 }

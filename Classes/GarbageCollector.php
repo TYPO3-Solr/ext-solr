@@ -207,7 +207,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             $solrConnections = $connectionManager->getConnectionsBySite($site);
             foreach ($solrConnections as $solr) {
                 $solr->deleteByQuery('type:' . $table . ' AND uid:' . intval($uid));
-                if($solrConfiguration->getEnableCommits()) {
+                if ($solrConfiguration->getEnableCommits()) {
                     $solr->commit(false, false, false);
                 }
             }
