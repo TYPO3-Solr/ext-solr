@@ -83,10 +83,23 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 
             $solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
 
-            $host = $contentObject->stdWrap($solrConfiguration['host'], $solrConfiguration['host.']);
-            $port = $contentObject->stdWrap($solrConfiguration['port'], $solrConfiguration['port.']);
-            $path = $contentObject->stdWrap($solrConfiguration['path'], $solrConfiguration['path.']);
-            $scheme = $contentObject->stdWrap($solrConfiguration['scheme'], $solrConfiguration['scheme.']);
+            $host = $solrConfiguration['host'];
+            $port = $solrConfiguration['port'];
+            $path = $solrConfiguration['path'];
+            $scheme = $solrConfiguration['scheme'];
+
+            if (!empty($solrConfiguration['host.'])) {
+                $host = $contentObject->stdWrap($solrConfiguration['host'], $solrConfiguration['host.']);
+            }
+            if (!empty($solrConfiguration['port.'])) {
+                $port = $contentObject->stdWrap($solrConfiguration['port'], $solrConfiguration['port.']);
+            }
+            if (!empty($solrConfiguration['path.'])) {
+                $path = $contentObject->stdWrap($solrConfiguration['path'], $solrConfiguration['path.']);
+            }
+            if (!empty($solrConfiguration['scheme.'])) {
+                $scheme = $contentObject->stdWrap($solrConfiguration['scheme'], $solrConfiguration['scheme.']);
+            }
         }
 
         $connectionHash = md5($scheme . '://' . $host . $port . $path);
