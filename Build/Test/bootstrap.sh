@@ -39,11 +39,18 @@ fi
 
 composer require --dev --prefer-source typo3/cms="$TYPO3_VERSION"
 
+if [[ $TYPO3_VERSION == "dev-master" ]]; then
+    # For dev-master we need to use the new testing framework
+    # after dropping 7.x support we need to change this in the patched files
+    sed  -i 's/Core\Tests\FunctionalTestCase as TYPO3IntegrationTest/Components\TestingFramework\Core\FunctionalTestCase as TYPO3IntegrationTest/g' Tests/Integration/IntegrationTest.php
+    sed  -i 's/Core\Tests\UnitTestCase as TYPO3UnitTest/Components\TestingFramework\Core\UnitTestCase as TYPO3UnitTest/g' Tests/Unit/UnitTest.php
+    ln -s  ../vendor/typo3/cms/components .Build/Web/components
+fi
+
 # Restore composer.json
 git checkout composer.json
 
 export TYPO3_PATH_WEB=$SCRIPTPATH/.Build/Web
-
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
 # Setup Solr Using our install script
