@@ -269,3 +269,33 @@ You can do that, by using SOLR_MULTIVALUE
     }
 
 |
+
+**How can i use a configuration from AdditionalConfiguration.php when i deploy my application on several instances?**
+
+The configuration of the connection is done with typoscript. When you want to use a configuration from TYPO3_CONF_VARS or from the system environment,
+you can apply an stdWrap on the configuration that reads from these configurations.
+
+The following example shows how a host can be configured in the AdditionalConfiguration.php and used in your typoscript to connect to solr:
+
+The following line is added to AdditionalConfiguration.php
+
+::
+
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['host'] = 'mysolrserver.de';
+
+|
+
+To use this configuration for the host, you can use a TEXT element in the configuration and use override.data to use the
+value from the AdditionalConfiguration.php
+
+::
+
+    plugin.tx_solr.solr {
+       host = TEXT
+       host {
+         value = localhost
+         override.data = global:TYPO3_CONF_VARS|EXTCONF|solr|host
+       }
+    }
+
+|

@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
@@ -85,13 +86,12 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             );
 
             $configuration = Util::getSolrConfiguration();
-            $solrConfiguration = $configuration->getValueByPathOrDefaultValue('plugin.tx_solr.solr.', []);
-            $host = $solrConfiguration['host'];
-            $port = $solrConfiguration['port'];
-            $path = $solrConfiguration['path'];
-            $scheme = $solrConfiguration['scheme'];
-            $username = $solrConfiguration['username'];
-            $password = $solrConfiguration['password'];
+            $host = $configuration->getSolrHost();
+            $port = $configuration->getSolrPort();
+            $path = $configuration->getSolrPath();
+            $scheme = $configuration->getSolrScheme();
+            $username = $configuration->getSolrUsername();
+            $password = $configuration->getSolrPassword();
         }
 
         $connectionHash = md5($scheme . '://' . $host . $port . $path . $username . $password);
@@ -174,7 +174,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     {
         $solrServer = $this->getConfigurationByPageId($pageId, $language, $mount);
         $solrConnection = $this->getConnectionFromConfiguration($solrServer);
-
         return $solrConnection;
     }
 
@@ -434,41 +433,36 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         // fake micro TSFE to get correct condition parsing
         $GLOBALS['TSFE'] = new \stdClass();
         $GLOBALS['TSFE']->tmpl = new \stdClass();
+        $GLOBALS['TSFE']->cObjectDepthCounter = 50;
         $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
         $GLOBALS['TSFE']->sys_page = $pageSelect;
         $GLOBALS['TSFE']->id = $rootPage['uid'];
         $GLOBALS['TSFE']->page = $rootPage;
 
         $tmpl->generateConfig();
+        $GLOBALS['TSFE']->tmpl->setup = $tmpl->setup;
 
-        list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup,
-            'plugin.tx_solr.solr');
-        list(, $solrEnabled) = $tmpl->ext_getSetup($tmpl->setup,
-            'plugin.tx_solr.enabled');
-        $solrEnabled = !empty($solrEnabled) ? true : false;
-
-        if (!empty($solrSetup) && $solrEnabled) {
-            $solrPath = trim($solrSetup['path'], '/');
-            $solrPath = '/' . $solrPath . '/';
-
-            $connection = [
-                'connectionKey' => $connectionKey,
-
-                'rootPageTitle' => $rootPage['title'],
-                'rootPageUid' => $rootPage['uid'],
-
-                'solrScheme' => $solrSetup['scheme'],
-                'solrHost' => $solrSetup['host'],
-                'solrPort' => $solrSetup['port'],
-                'solrPath' => $solrPath,
-                'solrUsername' => $solrSetup['username'],
-                'solrPassword' => $solrSetup['password'],
-
-                'language' => $languageId
-            ];
-            $connection['label'] = $this->buildConnectionLabel($connection);
+        $configuration = Util::getSolrConfiguration();
+        $solrIsEnabledAndConfigured = $configuration->getEnabled() && $configuration->getSolrHasConnectionConfiguration();
+        if (!$solrIsEnabledAndConfigured) {
+            return $connection;
         }
 
+        $connection = [
+            'connectionKey' => $connectionKey,
+            'rootPageTitle' => $rootPage['title'],
+            'rootPageUid' => $rootPage['uid'],
+            'solrScheme' => $configuration->getSolrScheme(),
+            'solrHost' => $configuration->getSolrHost(),
+            'solrPort' => $configuration->getSolrPort(),
+            'solrPath' => $configuration->getSolrPath(),
+            'solrUsername' => $configuration->getSolrUsername(),
+            'solrPassword' => $configuration->getSolrPassword(),
+
+            'language' => $languageId
+        ];
+
+        $connection['label'] = $this->buildConnectionLabel($connection);
         return $connection;
     }
 
