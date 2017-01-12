@@ -53,7 +53,7 @@ class Search extends CommandPluginBase
      */
     protected function getCommandResolver()
     {
-        return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\CommandResolver');
+        return GeneralUtility::makeInstance(CommandResolver::class);
     }
 
     /**

@@ -95,7 +95,7 @@ class LinkBuilder
     public function __construct(Query $query)
     {
         $this->solrConfiguration = Util::getSolrConfiguration();
-        $this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $this->query = $query;
 
         $targetPageUid = $this->contentObject->stdWrap(

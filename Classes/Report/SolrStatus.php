@@ -69,7 +69,7 @@ class SolrStatus implements StatusProviderInterface
     public function getStatus()
     {
         $reports = array();
-        $this->connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $solrConnections = $this->connectionManager->getAllConfigurations();
 

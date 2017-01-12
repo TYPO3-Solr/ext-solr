@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\JavascriptManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -59,12 +60,12 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
         $handlePositions = $this->getHandlePositions();
 
         // the option's value will be appended by javascript after the slide event
-        $incompleteFacetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
+        $incompleteFacetOption = GeneralUtility::makeInstance(FacetOption::class,
             $this->facetName,
             ''
         );
 
-        $facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
+        $facetLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
             $this->search->getQuery(),
             $this->facetName,
             $incompleteFacetOption
@@ -85,7 +86,7 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
      */
     protected function loadJavaScriptFiles()
     {
-        $javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
+        $javascriptManager = GeneralUtility::makeInstance(JavascriptManager::class);
 
         $javascriptManager->loadFile('library');
         $javascriptManager->loadFile('ui');

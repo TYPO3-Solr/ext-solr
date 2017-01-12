@@ -26,6 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -65,7 +67,7 @@ class ReIndexTask extends AbstractTask
         $cleanUpResult = $this->cleanUpIndex();
 
         // initialize for re-indexing
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
+        $indexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexQueueInitializationResults = array();
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $indexQueueInitializationResults = $indexQueue->initialize($this->site,
@@ -85,7 +87,7 @@ class ReIndexTask extends AbstractTask
     {
         $cleanUpResult = true;
         $solrConfiguration = $this->site->getSolrConfiguration();
-        $solrServers = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionsBySite($this->site);
+        $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
         $typesToCleanUp = array();
 
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {

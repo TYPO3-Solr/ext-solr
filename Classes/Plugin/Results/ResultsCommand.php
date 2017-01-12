@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Results view command
@@ -254,7 +255,7 @@ class ResultsCommand implements PluginCommand
     protected function renderDocumentFields(array $document)
     {
         $renderingInstructions = $this->configuration->getSearchResultsFieldRenderingInstructionsConfiguration();
-        $cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $cObj->start($document);
 
         foreach ($renderingInstructions as $renderingInstructionName => $renderingInstruction) {
@@ -304,7 +305,7 @@ class ResultsCommand implements PluginCommand
             );
 
             $pageBrowser = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\PageBrowser',
+                PageBrowser::class,
                 $pageBrowserConfiguration,
                 $this->getPageBrowserLabels()
             );

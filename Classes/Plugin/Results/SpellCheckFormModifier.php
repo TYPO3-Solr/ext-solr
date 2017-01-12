@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Plugin\FormModifier;
+use ApacheSolrForTypo3\Solr\SpellChecker;
 use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -46,7 +47,7 @@ class SpellCheckFormModifier implements FormModifier
      */
     public function modifyForm(array $markers, Template $template)
     {
-        $spellChecker = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SpellChecker');
+        $spellChecker = GeneralUtility::makeInstance(SpellChecker::class);
         $suggestionsLink = $spellChecker->getSpellCheckingSuggestions();
 
         if (!empty($suggestionsLink)) {

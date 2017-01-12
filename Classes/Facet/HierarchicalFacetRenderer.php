@@ -67,12 +67,12 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
         $facetOptions = $this->getFacetOptions();
 
         /* @var $filterEncoder Hierarchy */
-        $filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
+        $filterEncoder = GeneralUtility::makeInstance(Hierarchy::class);
 
         // enrich the facet options with links before building the menu structure
         $enrichedFacetOptions = array();
         foreach ($facetOptions as $facetOptionValue => $facetOptionResultCount) {
-            $facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
+            $facetOption = GeneralUtility::makeInstance(FacetOption::class,
                 $this->facetName,
                 $facetOptionValue,
                 $facetOptionResultCount
@@ -81,7 +81,7 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
             /* @var $facetOption FacetOption */
             $facetOption->setUrlValue($filterEncoder->encodeFilter($facetOptionValue));
 
-            $facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
+            $facetLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
                 $this->search->getQuery(), $this->facetName, $facetOption);
 
             $optionSelected = $facetOption->isSelectedInFacet($this->facetName);
@@ -125,7 +125,7 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
         // assuming a rendering instruction is always set for hierarchical facets
         // passing field name and facet options to the necessary userFunc
         /* @var $contentObject ContentObjectRenderer */
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $contentObject->start(array(
             'facetFieldName' => $this->facetConfiguration['field'],
             'facetOptions' => $facetOptions

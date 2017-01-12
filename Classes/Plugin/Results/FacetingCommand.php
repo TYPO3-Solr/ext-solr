@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 
 use ApacheSolrForTypo3\Solr\Facet\Facet;
 use ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory;
+use ApacheSolrForTypo3\Solr\Facet\UsedFacetRenderer;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
@@ -75,7 +76,7 @@ class FacetingCommand implements PluginCommand
      */
     public function __construct(CommandPluginBase $parentPlugin)
     {
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+        $this->search = GeneralUtility::makeInstance(Search::class);
 
         $this->parentPlugin = $parentPlugin;
         $this->configuration = $parentPlugin->typoScriptConfiguration;
@@ -127,13 +128,13 @@ class FacetingCommand implements PluginCommand
         $configuredFacets = $this->configuration->getSearchFacetingFacets();
 
         $facetRendererFactory = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory',
+            FacetRendererFactory::class,
             $configuredFacets
         );
         /** @var $facetRendererFactory FacetRendererFactory */
         foreach ($configuredFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
-            $facet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet',
+            $facet = GeneralUtility::makeInstance(Facet::class,
                 $facetName,
                 $facetRendererFactory->getFacetInternalType($facetName)
             );
@@ -175,7 +176,7 @@ class FacetingCommand implements PluginCommand
 
         $query = $this->search->getQuery();
 
-        $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
+        $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
             $this->search->getQuery());
         /* @var $queryLinkBuilder LinkBuilder */
         $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
@@ -215,7 +216,7 @@ class FacetingCommand implements PluginCommand
             }
 
             $usedFacetRenderer = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Facet\\UsedFacetRenderer',
+                UsedFacetRenderer::class,
                 $filterName,
                 $filterValue,
                 $filter,

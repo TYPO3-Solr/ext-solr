@@ -82,7 +82,7 @@ class Facet
     {
         $this->name = $facetName;
         $this->type = $facetType;
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+        $this->search = GeneralUtility::makeInstance(Search::class);
 
         $this->initializeConfiguration();
     }
@@ -219,8 +219,7 @@ class Facet
     {
         $requirementMet = false;
 
-        $requiredFacet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet',
-            $requirement['facet']);
+        $requiredFacet = GeneralUtility::makeInstance(Facet::class, $requirement['facet']);
         $selectedOptions = $requiredFacet->getSelectedOptions();
         $csvSelectedOptions = implode(', ', $selectedOptions);
 

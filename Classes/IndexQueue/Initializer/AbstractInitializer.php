@@ -29,6 +29,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -83,7 +84,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     public function __construct()
     {
-        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $this->flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
     }
 

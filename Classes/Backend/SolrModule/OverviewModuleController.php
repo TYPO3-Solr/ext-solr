@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Api;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -112,7 +113,7 @@ class OverviewModuleController extends AbstractModuleController
     {
         parent::initializeAction();
 
-        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->connections = $connectionManager->getConnectionsBySite($this->site);
     }
 }

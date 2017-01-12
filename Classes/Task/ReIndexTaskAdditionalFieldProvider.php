@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -141,10 +142,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             return $selectorMarkup;
         }
 
-        $selectorField = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Backend\\IndexingConfigurationSelectorField',
-            $this->site
-        );
+        $selectorField = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, $this->site);
 
         $selectorField->setFormElementName('tx_scheduler[indexingConfigurations]');
         $selectorField->setSelectedValues($this->task->getIndexingConfigurationsToReIndex());
@@ -188,8 +186,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         array $submittedData,
         AbstractTask $task
     ) {
-        $task->setSite(GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site',
-            $submittedData['site']));
+        $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
 
         $indexingConfigurations = array();
         if (!empty($submittedData['indexingConfigurations'])) {
@@ -204,7 +201,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     protected function getPageRenderer()
     {
         if (!isset($this->pageRenderer)) {
-            $this->pageRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Page\\PageRenderer');
+            $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         }
         return $this->pageRenderer;
     }

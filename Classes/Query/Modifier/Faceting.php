@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
@@ -66,7 +67,7 @@ class Faceting implements Modifier
         }
 
         $this->allConfiguredFacets = $this->configuration->getSearchFacetingFacets();
-        $this->facetRendererFactory = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory',
+        $this->facetRendererFactory = GeneralUtility::makeInstance(FacetRendererFactory::class,
             $this->allConfiguredFacets);
     }
 

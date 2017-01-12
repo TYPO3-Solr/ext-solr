@@ -22,8 +22,13 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\SuggestQuery;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 
 # TSFE initialization
@@ -35,7 +40,7 @@ $languageId = filter_var(
     array('options' => array('default' => 0, 'min_range' => 0))
 );
 $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-    'TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController',
+    TypoScriptFrontendController::class,
     $GLOBALS['TYPO3_CONF_VARS'],
     $pageId,
     0,
@@ -44,7 +49,7 @@ $GLOBALS['TSFE']->initFEuser();
 $GLOBALS['TSFE']->initUserGroups();
 // load TCA
 EidUtility::initTCA();
-$GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+$GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
 $GLOBALS['TSFE']->rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($pageId, '');
 $GLOBALS['TSFE']->initTemplate();
 $GLOBALS['TSFE']->getConfigArray();
@@ -69,7 +74,7 @@ $allowedSites = Util::resolveSiteHashAllowedSites(
     $allowedSitesConfig['allowedSites']
 );
 
-$suggestQuery = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\SuggestQuery', $q);
+$suggestQuery = GeneralUtility::makeInstance(SuggestQuery::class, $q);
 $suggestQuery->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
 $suggestQuery->setSiteHashFilter($allowedSites);
 $suggestQuery->setOmitHeader();
@@ -85,12 +90,11 @@ if (!empty($additionalFilters)) {
 #--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 // Search
-$solr = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
+$solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(
     $pageId,
     $languageId
 );
-$search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search',
-    $solr);
+$search = GeneralUtility::makeInstance(Search::class, $solr);
 
 if ($search->ping()) {
     $results = json_decode($search->search($suggestQuery, 0, 0)->getRawResponse());

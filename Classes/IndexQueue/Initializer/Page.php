@@ -173,7 +173,7 @@ class Page extends AbstractInitializer
             $isValidMountPage = false;
 
             $flashMessage = GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                FlashMessage::class,
                 'Property "Mounted page" must not be empty. Invalid Mount Page configuration for page ID ' . $mountPage['uid'] . '.',
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
@@ -185,7 +185,7 @@ class Page extends AbstractInitializer
             $isValidMountPage = false;
 
             $flashMessage = GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                FlashMessage::class,
                 'The mounted page must be accessible in the frontend. '
                 . 'Invalid Mount Page configuration for page ID '
                 . $mountPage['uid'] . ', the mounted page with ID '

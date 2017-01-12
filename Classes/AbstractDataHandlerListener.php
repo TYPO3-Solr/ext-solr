@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -68,7 +69,7 @@ abstract class AbstractDataHandlerListener
     protected function getSubPageIds($pageId)
     {
         /** @var $queryGenerator \TYPO3\CMS\Core\Database\QueryGenerator */
-        $queryGenerator = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\QueryGenerator');
+        $queryGenerator = GeneralUtility::makeInstance(QueryGenerator::class);
 
         // here we retrieve only the subpages of this page because the permission clause is not evaluated
         // on the root node.

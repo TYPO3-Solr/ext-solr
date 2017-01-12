@@ -1,4 +1,6 @@
 <?php
+namespace ApacheSolrForTypo3\Solr\System\Cache;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -25,8 +27,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-namespace ApacheSolrForTypo3\Solr\System\Cache;
-
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -61,7 +62,7 @@ class TwoLevelCache
     {
         $this->cacheName = $cacheName;
         if ($secondaryCacheFrontend == null) {
-            $cacheManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager');
+            $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
             $this->secondLevelCache = $cacheManager->getCache($cacheName);
         } else {
             $this->secondLevelCache = $secondaryCacheFrontend;

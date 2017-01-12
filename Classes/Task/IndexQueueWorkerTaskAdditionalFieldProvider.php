@@ -130,7 +130,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         array $submittedData,
         AbstractTask $task
     ) {
-        $task->setSite(GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site', $submittedData['site']));
+        $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
         $task->setForcedWebRoot($submittedData['forcedWebRoot']);
     }

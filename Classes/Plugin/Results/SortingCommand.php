@@ -26,7 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Sorting;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -65,7 +67,7 @@ class SortingCommand implements PluginCommand
      */
     public function __construct(CommandPluginBase $parentPlugin)
     {
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+        $this->search = GeneralUtility::makeInstance(Search::class);
 
         $this->parentPlugin = $parentPlugin;
         $this->configuration = $parentPlugin->typoScriptConfiguration;
@@ -94,13 +96,12 @@ class SortingCommand implements PluginCommand
 
     protected function getSortingLinks()
     {
-        $sortHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Sorting',
+        $sortHelper = GeneralUtility::makeInstance(Sorting::class,
             $this->configuration->getSearchSortingOptionsConfiguration());
 
         $query = $this->search->getQuery();
 
-        $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-            $query);
+        $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class, $query);
         $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
         $sortOptions = array();

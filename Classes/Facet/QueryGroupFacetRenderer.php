@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -57,7 +58,7 @@ class QueryGroupFacetRenderer extends SimpleFacetRenderer
         $facetOptions = array();
         $facetOptionsRaw = parent::getFacetOptions();
 
-        $filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\QueryGroup');
+        $filterEncoder = GeneralUtility::makeInstance(QueryGroup::class);
         foreach ($facetOptionsRaw as $facetOption => $numberOfResults) {
             $facetOption = $filterEncoder->encodeFilter($facetOption,
                 $this->facetConfiguration);

@@ -160,8 +160,7 @@ class Item
      */
     public function getSite()
     {
-        return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site',
-            $this->rootPageUid);
+        return GeneralUtility::makeInstance(Site::class, $this->rootPageUid);
     }
 
     public function getType()

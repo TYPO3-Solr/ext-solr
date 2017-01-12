@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -87,7 +88,7 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer
      */
     protected function loadJavaScriptFiles()
     {
-        $javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
+        $javascriptManager = GeneralUtility::makeInstance(JavascriptManager::class);
 
         $javascriptManager->loadFile('library');
         $javascriptManager->loadFile('ui');
@@ -111,9 +112,8 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer
      */
     protected function buildAddFacetUrl($facetName)
     {
-        $facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
-            $this->facetName, '');
-        $facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
+        $facetOption = GeneralUtility::makeInstance(FacetOption::class, $this->facetName, '');
+        $facetLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
             $this->search->getQuery(), $this->facetName, $facetOption);
         $facetLinkBuilder->setLinkTargetPageId($this->linkTargetPageId);
 

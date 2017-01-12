@@ -58,7 +58,7 @@ class Link implements ViewHelper
     public function __construct(array $arguments = array())
     {
         if (is_null($this->contentObject)) {
-            $this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         }
     }
 

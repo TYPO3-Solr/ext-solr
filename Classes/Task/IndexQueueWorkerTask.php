@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -67,7 +68,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
         $cliEnvironment->backup();
         $cliEnvironment->initialize($this->getWebRoot());
 
-        $indexService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Index\\IndexService', $this->site);
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->site);
         $indexService->setContextTask($this);
         $indexService->indexItems($this->documentsToIndexLimit);
 
@@ -146,7 +147,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     public function getProgress()
     {
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
-        $indexService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Index\IndexService', $this->site);
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->site);
         $indexService->setContextTask($this);
 
         return $indexService->getProgress();

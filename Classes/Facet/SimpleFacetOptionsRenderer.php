@@ -143,14 +143,14 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
                 continue;
             }
 
-            $facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
+            $facetOption = GeneralUtility::makeInstance(FacetOption::class,
                 $this->facetName,
                 $facetOption,
                 $facetOptionResultCount
             );
             /* @var $facetOption FacetOption */
 
-            $facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
+            $facetLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
                 $this->query,
                 $this->facetName,
                 $facetOption

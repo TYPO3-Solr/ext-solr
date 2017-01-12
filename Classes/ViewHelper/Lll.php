@@ -80,7 +80,7 @@ class Lll implements ViewHelper
                 1234972358
             );
         }
-        $this->languageFactory = GeneralUtility::makeInstance('TYPO3\CMS\Core\Localization\LocalizationFactory');
+        $this->languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
         $this->languageFile = $arguments['languageFile'];
         $this->llKey = $arguments['llKey'];
 

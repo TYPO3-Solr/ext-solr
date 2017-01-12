@@ -23,6 +23,8 @@ namespace ApacheSolrForTypo3\Solr;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -223,7 +225,7 @@ class JavascriptManager
      */
     protected function getPageRenderer()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Core\Page\PageRenderer');
+        return GeneralUtility::makeInstance(PageRenderer::class);
     }
 
     /**
