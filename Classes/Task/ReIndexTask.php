@@ -89,6 +89,7 @@ class ReIndexTask extends AbstractTask
         $solrConfiguration = $this->site->getSolrConfiguration();
         $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
         $typesToCleanUp = array();
+        $enableCommitsSetting = $solrConfiguration->getEnableCommits();
 
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $type = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
@@ -99,6 +100,11 @@ class ReIndexTask extends AbstractTask
             $deleteQuery = 'type:(' . implode(' OR ', $typesToCleanUp) . ')'
                 . ' AND siteHash:' . $this->site->getSiteHash();
             $solrServer->deleteByQuery($deleteQuery);
+
+            if (!$enableCommitsSetting) {
+                # Do not commit
+                continue;
+            }
 
             $response = $solrServer->commit(false, false, false);
             if ($response->getHttpStatus() != 200) {
