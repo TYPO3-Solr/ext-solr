@@ -58,9 +58,9 @@ class LastSearchesServiceTest extends UnitTest
      */
     public function setUp()
     {
-        $this->tsfeMock = $this->getDumbMock('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController');
-        $this->databaseMock = $this->getDumbMock('TYPO3\CMS\Core\Database\DatabaseConnection');
-        $this->configurationMock = $this->getDumbMock('\ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration');
+        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
+        $this->databaseMock = $this->getDumbMock(DatabaseConnection::class);
+        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
         $this->lastSearchesService = $this->getMockBuilder(LastSearchesService::class)
             ->setMethods(['getLastSearchesFromFrontendSession'])

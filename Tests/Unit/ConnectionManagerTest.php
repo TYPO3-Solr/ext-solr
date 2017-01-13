@@ -26,7 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * PHP Unit test for connection manager
@@ -49,11 +51,11 @@ class ConnectionManagerTest extends UnitTest
      */
     public function setUp()
     {
-        $TSFE = $this->getDumbMock('\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
+        $TSFE = $this->getDumbMock(TypoScriptFrontendController::class);
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $GLOBALS['TSFE']->tmpl = $this->getDumbMock('\\TYPO3\\CMS\\Core\\TypoScript\\TemplateService', array('linkData'));
+        $GLOBALS['TSFE']->tmpl = $this->getDumbMock(TemplateService::class, array('linkData'));
         $GLOBALS['TSFE']->tmpl->init();
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
         $GLOBALS['TSFE']->tmpl->setup['config.']['typolinkEnableLinksAcrossDomains'] = 0;

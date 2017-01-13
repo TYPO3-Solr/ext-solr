@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\AbstractPluginTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 /**
  * Integration testcase to test the results plugin.
@@ -463,7 +464,7 @@ class ResultsTest extends AbstractPluginTest
         $searchResults->main('', array());
         $parentPlugin = $searchResults->getSearchResultSetService()->getParentPlugin();
 
-        $this->assertInstanceOf('TYPO3\CMS\Frontend\Plugin\AbstractPlugin', $parentPlugin);
+        $this->assertInstanceOf(AbstractPlugin::class, $parentPlugin);
     }
 
     /**

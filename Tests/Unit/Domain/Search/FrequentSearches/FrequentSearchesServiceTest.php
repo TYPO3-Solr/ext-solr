@@ -64,10 +64,10 @@ class FrequentSearchesServiceTest extends UnitTest
      */
     public function setUp()
     {
-        $this->tsfeMock = $this->getDumbMock('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController');
-        $this->databaseMock = $this->getDumbMock('TYPO3\CMS\Core\Database\DatabaseConnection');
-        $this->cacheMock = $this->getDumbMock('TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend');
-        $this->configurationMock = $this->getDumbMock('\ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration');
+        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
+        $this->databaseMock = $this->getDumbMock(DatabaseConnection::class );
+        $this->cacheMock = $this->getDumbMock(AbstractFrontend::class);
+        $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
         $this->frequentSearchesService = new FrequentSearchesService(
             $this->configurationMock,

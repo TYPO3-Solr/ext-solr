@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\ViewHelper\Relevance;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -52,7 +53,7 @@ class RelevanceTest extends AbstractViewHelperTest
         parent::setUp();
 
         // prepare solr request handler
-        $solrRequestHandler = GeneralUtility::makeInstance(Search::class, $this->getDumbMock('ApacheSolrForTypo3\Solr\SolrService'));
+        $solrRequestHandler = GeneralUtility::makeInstance(Search::class, $this->getDumbMock(SolrService::class));
 
         // init view helper
         $this->viewHelper = GeneralUtility::makeInstance(Relevance::class);

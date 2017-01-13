@@ -177,7 +177,7 @@ class AdministrationController extends ActionController
     {
         $activeModuleDescription = $this->moduleManager->getModuleDescription($this->activeModuleName);
 
-        $request = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Request');
+        $request = $this->objectManager->get(Request::class);
         /* @var Request $request */
         $request->setControllerExtensionName(ucfirst($activeModuleDescription['extensionKey']));
         $request->setControllerName($activeModuleDescription['controller'] . 'Module');
@@ -203,7 +203,7 @@ class AdministrationController extends ActionController
             $request->setArgument($argumentName, $argumentValue);
         }
 
-        $response = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Mvc\\Web\\Response');
+        $response = $this->objectManager->get(Response::class);
         /* @var Response $response */
 
         while (!$request->isDispatched()) {

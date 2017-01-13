@@ -43,7 +43,7 @@ class Typo3PageContentExtractorTest extends UnitTest
 
     public function setUp()
     {
-        $this->typoScripConfigurationMock = $this->getDumbMock('ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration');
+        $this->typoScripConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->typoScripConfigurationMock->expects($this->once())->method(
             'getIndexQueuePagesExcludeContentByClassArray'
         )->will($this->returnValue(array('typo3-search-exclude')));

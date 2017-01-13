@@ -36,6 +36,7 @@ use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  *
@@ -54,7 +55,7 @@ class SimpleFacetRendererTest extends UnitTest
         chdir(PATH_site);
         $GLOBALS['TYPO3_DB'] = $this->getMockBuilder(DatabaseConnection::class);
 
-        $TSFE = $this->getDumbMock('\\TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController');
+        $TSFE = $this->getDumbMock(TypoScriptFrontendController::class);
 
         $GLOBALS['TSFE'] = $TSFE;
         $GLOBALS['TSFE']->config['config']['disablePrefixComment'] = true;
