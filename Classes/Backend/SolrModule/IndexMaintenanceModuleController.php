@@ -99,14 +99,13 @@ class IndexMaintenanceModuleController extends AbstractModuleController
     public function reloadIndexConfigurationAction()
     {
         $coresReloaded = true;
+        $reloadedCores = [];
         $solrServers = $this->connectionManager->getConnectionsBySite($this->site);
 
         foreach ($solrServers as $solrServer) {
             /* @var $solrServer SolrService */
-
-            $coreName = array_pop(explode('/',
-                trim($solrServer->getPath(), '/')));
-            $coreReloaded = $this->reloadCore($solrServer, $coreName);
+            $coreReloaded = $solrServer->reloadCore()->getHttpStatus() === 200;
+            $coreName = $solrServer->getCoreName();
 
             if (!$coreReloaded) {
                 $coresReloaded = false;
@@ -118,51 +117,18 @@ class IndexMaintenanceModuleController extends AbstractModuleController
                 );
                 break;
             }
+
+            $reloadedCores[] = $coreName;
         }
 
         if ($coresReloaded) {
             $this->addFlashMessage(
-                'Core configuration reloaded.',
+                'Core configuration reloaded ('.implode(', ', $reloadedCores).').',
                 '',
                 FlashMessage::OK
             );
         }
 
         $this->forward('index');
-    }
-
-    /**
-     * Reloads a single Solr core.
-     *
-     * @param SolrService $solrServer A Solr server connection
-     * @param string $coreName Name of the core to reload
-     * @return bool TRUE if reloading the core was successful, FALSE otherwise
-     */
-    protected function reloadCore(SolrService $solrServer, $coreName)
-    {
-        $coreReloaded = false;
-
-        $path = $solrServer->getPath();
-        $pathElements = explode('/', trim($path, '/'));
-
-        $coreAdminReloadUrl =
-            $solrServer->getScheme() . '://' .
-            $solrServer->getHost() . ':' .
-            $solrServer->getPort() . '/' .
-            $pathElements[0] . '/' .
-            'admin/cores?action=reload&core=' .
-            $coreName;
-
-        $httpTransport = $solrServer->getHttpTransport();
-        $httpResponse = $httpTransport->performGetRequest($coreAdminReloadUrl);
-        $solrResponse = new \Apache_Solr_Response($httpResponse,
-            $solrServer->getCreateDocuments(),
-            $solrServer->getCollapseSingleValueArrays());
-
-        if ($solrResponse->getHttpStatus() == 200) {
-            $coreReloaded = true;
-        }
-
-        return $coreReloaded;
     }
 }

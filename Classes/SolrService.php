@@ -886,15 +886,34 @@ class SolrService extends \Apache_Solr_Service
     }
 
     /**
+     * Returns the core name from the configured path.
+     *
+     * @return string
+     */
+    public function getCoreName()
+    {
+        return (string) array_pop(explode('/', trim($this->_path, '/')));
+    }
+
+    /**
      * Reloads the current core
      *
      * @return \Apache_Solr_Response
      */
     public function reloadCore()
     {
-        $coreName = array_pop(explode('/', trim($this->_path, '/')));
-        $coreAdminReloadUrl = $this->_coresUrl . '?action=reload&core=' . $coreName;
+        return $this->reloadCoreByName($this->getCoreName());
+    }
 
+    /**
+     * Reloads a core of the connection by a given corename.
+     *
+     * @param string $coreName
+     * @return \Apache_Solr_Response
+     */
+    public function reloadCoreByName($coreName)
+    {
+        $coreAdminReloadUrl = $this->_coresUrl . '?action=reload&core=' . $coreName;
         return $this->_sendRawGet($coreAdminReloadUrl);
     }
 

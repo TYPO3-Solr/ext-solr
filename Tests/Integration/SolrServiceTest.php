@@ -142,4 +142,13 @@ class SolrServiceTest extends IntegrationTest
         $isVersionHigherSix = version_compare('6.0.0', $solrServerVersion, '<');
         $this->assertTrue($isVersionHigherSix, 'Expecting to run on version larger then 6.0.0');
     }
+
+    /**
+     * @test
+     */
+    public function canReloadCore()
+    {
+        $result = $this->solrService->reloadCore();
+        $this->assertSame(200, $result->getHttpStatus(), 'Reload core did not responde with a 200 ok status');
+    }
 }
