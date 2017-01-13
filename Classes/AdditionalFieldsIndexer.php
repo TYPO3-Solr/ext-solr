@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Additional fields indexer.
@@ -54,13 +56,20 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
     protected $additionalFieldNames = array();
 
     /**
-     * @param TypoScriptConfiguration $configuration
+     * @var ContentObjectService
      */
-    public function __construct(TypoScriptConfiguration $configuration = null)
+    protected $contentObjectService = null;
+
+    /**
+     * @param TypoScriptConfiguration $configuration
+     * @param ContentObjectService $contentObjectService
+     */
+    public function __construct(TypoScriptConfiguration $configuration = null, ContentObjectService $contentObjectService = null)
     {
         $this->configuration = $configuration === null ? Util::getSolrConfiguration() : $configuration;
         $this->additionalIndexingFields = $this->configuration->getIndexAdditionalFieldsConfiguration();
         $this->additionalFieldNames = $this->configuration->getIndexMappedAdditionalFieldNames();
+        $this->contentObjectService = $contentObjectService === null ? GeneralUtility::makeInstance(ContentObjectService::class, $GLOBALS['TSFE']->cObj) : $contentObjectService;
     }
 
     /**
@@ -111,16 +120,6 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
      */
     protected function getFieldValue($fieldName)
     {
-        // support for cObject if the value is a configuration
-        if (is_array($this->additionalIndexingFields[$fieldName . '.'])) {
-            $fieldValue = $GLOBALS['TSFE']->cObj->cObjGetSingle(
-                $this->additionalIndexingFields[$fieldName],
-                $this->additionalIndexingFields[$fieldName . '.']
-            );
-        } else {
-            $fieldValue = $this->additionalIndexingFields[$fieldName];
-        }
-
-        return $fieldValue;
+        return $this->contentObjectService->renderSingleContentObjectByArrayAndKey($this->additionalIndexingFields, $fieldName);
     }
 }

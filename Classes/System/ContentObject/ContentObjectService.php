@@ -51,19 +51,19 @@ class ContentObjectService
     }
 
     /**
-     * This method use $content and $conf and passes it directly to stdWrap.
+     * This method use $name and $conf and passes it directly to cObjGetSingle.
      *
-     * @param string $content
+     * @param string $name
      * @param array $conf
      * @return string
      */
-    public function renderSingleContentObject($content = '', $conf = [])
+    public function renderSingleContentObject($name = '', $conf = [])
     {
-        return $this->contentObjectRenderer->cObjGetSingle($content, $conf);
+        return $this->contentObjectRenderer->cObjGetSingle($name, $conf);
     }
 
     /**
-     * Very object stdWrap is used with 'field' as $content and 'field.' as $conf with this
+     * Very often cObjGetSingle is used with 'field' as $name and 'field.' as $conf with this
      * method you can pass the array and the $key that is used to access $conant and $conf from $array.
      *
      * @param array $array
@@ -72,8 +72,13 @@ class ContentObjectService
      */
     public function renderSingleContentObjectByArrayAndKey($array = [], $key = '')
     {
-        $content = isset($array[$key]) ? $array[$key] : [];
+        $name = isset($array[$key]) ? $array[$key] : [];
         $conf = isset($array[$key . '.']) ? $array[$key . '.'] : '';
-        return $this->renderSingleContentObject($content, $conf);
+
+        if (!is_array($conf)) {
+            return $name;
+        }
+
+        return $this->renderSingleContentObject($name, $conf);
     }
 }

@@ -24,7 +24,6 @@ namespace  ApacheSolrForTypo3\Solr\Test\System\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 use ApacheSolrForTypo3\Solr\System\ContentObject\ContentObjectService;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -64,5 +63,19 @@ class ContentObjectServiceTest extends UnitTest
 
         $this->contentObjectRendererMock->expects($this->once())->method('cObjGetSingle')->with('TEXT',  ['value' => 'test']);
         $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
+    }
+
+    /**
+     * @test
+     */
+    public function renderSingleContentObjectByArrayAndKeyWillReturnNameWhenConfigIsNotAnArray()
+    {
+        $fakeStdWrapConfiguration = [
+            'field' => 'fooo'
+        ];
+
+        $this->contentObjectRendererMock->expects($this->never())->method('cObjGetSingle');
+        $result = $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
+        $this->assertSame('fooo', $result);
     }
 }
