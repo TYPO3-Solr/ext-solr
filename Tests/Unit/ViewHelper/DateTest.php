@@ -53,7 +53,7 @@ class DateTest extends AbstractViewHelperTest
      */
     protected function getDateViewHelper()
     {
-        return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ViewHelper\\Date');
+        return GeneralUtility::makeInstance(Date::class);
     }
 
     /**

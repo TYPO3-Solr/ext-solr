@@ -48,7 +48,7 @@ class QueueTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Queue');
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
     }
 
     /**

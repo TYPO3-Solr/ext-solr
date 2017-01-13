@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -54,8 +55,8 @@ class PageTest extends IntegrationTest
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
-        $this->pageInitializer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page');
-        $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Queue');
+        $this->pageInitializer = GeneralUtility::makeInstance(Page::class);
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
     }
 
     /**
@@ -137,7 +138,7 @@ class PageTest extends IntegrationTest
 
         $this->assertItemsInQueue(4);
 
-        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
         $this->assertEquals(2, count($flashMessageQueue->getAllMessages()));
     }

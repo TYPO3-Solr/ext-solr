@@ -24,8 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Template;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * TestCase to check if the template parsing works as expected
@@ -47,16 +52,15 @@ class TemplateTest extends IntegrationTest
         $GLOBALS['TT'] = $TT;
 
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
-        $TSFE = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController', array(), 1,
-            0);
+        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, array(), 1, 0);
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var $TMPL \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $TMPL = GeneralUtility::makeInstance('TYPO3\CMS\Core\TypoScript\TemplateService');
+        $TMPL = GeneralUtility::makeInstance(TemplateService::class);
         $TMPL->init();
         $GLOBALS['TSFE']->tmpl = $TMPL;
         $GLOBALS['TSFE']->renderCharset = 'utf-8';
-        $GLOBALS['TSFE']->csConvObj = GeneralUtility::makeInstance('TYPO3\CMS\Core\Charset\CharsetConverter');
+        $GLOBALS['TSFE']->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
     }
 
     /**
@@ -65,12 +69,11 @@ class TemplateTest extends IntegrationTest
     public function canRenderSimpleTemplate()
     {
         /** @var $cObj \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer */
-        $cObj = GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
+        $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $testTemplatePath = 'EXT:solr/Tests/Integration/Fixtures/test_template.html';
 
         /** @var $template \ApacheSolrForTypo3\Solr\Template */
-        $template = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Template', $cObj, $testTemplatePath,
-            'SOLR_TEST');
+        $template = GeneralUtility::makeInstance(Template::class, $cObj, $testTemplatePath, 'SOLR_TEST');
         $template->addViewHelperIncludePath('solr', 'Classes/ViewHelper/');
         $template->addViewHelper('Crop');
         $result = $template->render(true);

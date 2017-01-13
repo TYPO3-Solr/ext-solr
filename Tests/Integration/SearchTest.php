@@ -24,6 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -46,16 +49,16 @@ class SearchTest extends IntegrationTest
         $GLOBALS['TSFE'] = $fakeTSFE;
 
         /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
-        $pageIndexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Typo3PageIndexer', $fakeTSFE);
+        $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);
         $pageIndexer->indexPage();
 
         $this->waitToBeVisibleInSolr();
 
             /** @var $searchInstance \ApacheSolrForTypo3\Solr\Search */
-        $searchInstance = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Search');
+        $searchInstance = GeneralUtility::makeInstance(Search::class);
 
             /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Query');
+        $query = GeneralUtility::makeInstance(Query::class);
         $query->useRawQueryString(true);
         $query->setQueryFieldsFromString('content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0');
         $query->setQueryString('hello');

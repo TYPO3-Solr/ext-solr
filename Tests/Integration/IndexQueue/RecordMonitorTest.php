@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\NoPidException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -59,9 +58,9 @@ class RecordMonitorTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->recordMonitor = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor');
-        $this->dataHandler = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
-        $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Queue');
+        $this->recordMonitor = GeneralUtility::makeInstance(RecordMonitor::class);
+        $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
     }
 
     /**

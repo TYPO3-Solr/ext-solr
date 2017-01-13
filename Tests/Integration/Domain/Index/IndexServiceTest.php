@@ -26,12 +26,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
-use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Testcase for the record indexer
@@ -55,12 +57,12 @@ class IndexServiceTest extends IntegrationTest
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
 
         /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
-        $beUser = GeneralUtility::makeInstance('TYPO3\CMS\Core\Authentication\BackendUserAuthentication');
+        $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
         /** @var $languageService  \TYPO3\CMS\Lang\LanguageService */
-        $languageService = GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
-        $languageService->csConvObj = GeneralUtility::makeInstance('TYPO3\CMS\Core\Charset\CharsetConverter');
+        $languageService = GeneralUtility::makeInstance(LanguageService::class);
+        $languageService->csConvObj = GeneralUtility::makeInstance(CharsetConverter::class);
         $GLOBALS['LANG'] = $languageService;
     }
 

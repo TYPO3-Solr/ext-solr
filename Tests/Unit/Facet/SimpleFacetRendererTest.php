@@ -25,6 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Facet\Facet;
+use ApacheSolrForTypo3\Solr\Facet\SimpleFacetRenderer;
+use ApacheSolrForTypo3\Solr\Plugin\Results\Results;
+use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
@@ -72,7 +76,7 @@ class SimpleFacetRendererTest extends UnitTest
             'selectingSelectedFacetOptionRemovesFilter' => 0,
             'renderingInstruction'
         );
-        $parentPlugin = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Plugin\\Results\\Results');
+        $parentPlugin = GeneralUtility::makeInstance(Results::class);
         $parentPlugin->cObj = $this->getMockBuilder(ContentObjectRenderer::class)
             ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
             ->setConstructorArgs($TSFE)->getMock();
@@ -80,14 +84,11 @@ class SimpleFacetRendererTest extends UnitTest
         $parentPlugin->main('', array());
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test');
+        $query = GeneralUtility::makeInstance(Query::class, 'test');
 
         /** @var $facet \ApacheSolrForTypo3\Solr\Facet\Facet */
-        $facet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet', array($facetName));
-        $this->facetRenderer = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetRenderer',
-            $facet
-        );
+        $facet = GeneralUtility::makeInstance(Facet::class, array($facetName));
+        $this->facetRenderer = GeneralUtility::makeInstance(SimpleFacetRenderer::class, $facet);
         $this->facetRenderer->setLinkTargetPageId($parentPlugin->getLinkTargetPageId());
     }
 

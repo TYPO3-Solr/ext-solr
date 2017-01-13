@@ -23,6 +23,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\ExtractingQuery;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -55,7 +57,7 @@ class SolrServiceTest extends IntegrationTest
     {
         $testFilePath = $this->getFixturePath('testpdf.pdf');
             /** @var $extractQuery \ApacheSolrForTypo3\Solr\ExtractingQuery */
-        $extractQuery = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\ExtractingQuery', $testFilePath);
+        $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
         $extractQuery->setExtractOnly();
         $response = $this->solrService->extractByQuery($extractQuery);
         $this->assertContains('PDF Test', $response[0], 'Could not extract text');
