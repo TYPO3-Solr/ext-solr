@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Sorting;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -56,7 +57,7 @@ class SortingCommand implements PluginCommand
     /**
      * Configuration
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
 
