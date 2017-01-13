@@ -24,6 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
+use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -143,8 +146,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     protected function getIndexQueueInitializationSelector()
     {
-        $selector = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Backend\\IndexingConfigurationSelectorField',
-            $this->site);
+        $selector = GeneralUtility::makeInstance(IndexingConfigurationSelectorField::class, $this->site);
         $selector->setFormElementName('tx_solr-index-queue-initialization');
 
         return $selector->render();
@@ -173,7 +175,7 @@ class IndexQueueModuleController extends AbstractModuleController
     {
         $initializedIndexingConfigurations = array();
 
-        $itemIndexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
+        $itemIndexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
         if (!empty($indexingConfigurationsToInitialize)) {
             // initialize selected indexing configuration
@@ -232,7 +234,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function clearIndexQueueAction()
     {
-        $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
+        $indexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexQueue->deleteItemsBySite($this->site);
 
         $this->forward('index');
@@ -319,7 +321,7 @@ class IndexQueueModuleController extends AbstractModuleController
     public function doIndexingRunAction()
     {
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
-        $indexService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Index\\IndexService', $this->site);
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->site);
         $indexWithoutErrors = $indexService->indexItems(10);
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.index_manual';

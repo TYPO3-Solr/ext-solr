@@ -66,7 +66,7 @@ class FormCommand implements PluginCommand
      */
     public function __construct(CommandPluginBase $parentPlugin)
     {
-        $this->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $this->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         $this->parentPlugin = $parentPlugin;
         $this->configuration = $parentPlugin->typoScriptConfiguration;

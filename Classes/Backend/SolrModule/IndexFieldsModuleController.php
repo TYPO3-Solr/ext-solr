@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -62,7 +63,7 @@ class IndexFieldsModuleController extends AbstractModuleController
         if ($solrConnection->ping()) {
             $lukeData = $solrConnection->getLukeMetaData();
 
-            $registry = GeneralUtility::makeInstance('TYPO3\CMS\Core\Registry');
+            $registry = GeneralUtility::makeInstance(Registry::class);
             $limit = $registry->get('tx_solr', 'luke.limit', 20000);
             $limitNote = '';
 

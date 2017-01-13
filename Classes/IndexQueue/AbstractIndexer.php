@@ -26,7 +26,9 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
+use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * An abstract indexer class to collect a few common methods shared with other
@@ -123,7 +125,7 @@ abstract class AbstractIndexer
         $solrFieldName,
         array $data
     ) {
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         if (isset($indexingConfiguration[$solrFieldName . '.'])) {
             // configuration found => need to resolve a cObj
@@ -151,7 +153,7 @@ abstract class AbstractIndexer
         ) {
             $referencedTsPath = trim(substr($indexingConfiguration[$solrFieldName],
                 1));
-            $typoScriptParser = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
+            $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
             // $name and $conf is loaded with the referenced values.
             list($name, $conf) = $typoScriptParser->getVal($referencedTsPath,
                 $GLOBALS['TSFE']->tmpl->setup);

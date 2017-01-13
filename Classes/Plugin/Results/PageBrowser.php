@@ -29,6 +29,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * The page browser used in search result listings
@@ -59,7 +60,7 @@ class PageBrowser
         $this->configuration = $configuration;
         $this->labels = $labels;
 
-        $this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         $this->numberOfPages = $configuration['numberOfPages'];
         $this->currentPage = $configuration['currentPage'];

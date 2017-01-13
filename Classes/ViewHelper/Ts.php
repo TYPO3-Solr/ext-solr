@@ -128,7 +128,7 @@ class Ts implements ViewHelper
     protected function getContentObject()
     {
         if (is_null($this->contentObject)) {
-            $this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         }
 
         return $this->contentObject;

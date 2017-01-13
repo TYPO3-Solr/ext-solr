@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Sorting;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -65,7 +66,7 @@ class SortingComponent extends AbstractComponent implements QueryAware
                 $solrGetParameters['sort'])
         ) {
             $sortHelper = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Sorting',
+                Sorting::class,
                 $this->searchConfiguration['sorting.']['options.']
             );
             $sortField = $sortHelper->getSortFieldFromUrlParameter($solrGetParameters['sort']);

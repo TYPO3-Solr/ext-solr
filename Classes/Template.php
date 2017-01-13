@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\ViewHelper\SubpartViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -80,7 +81,7 @@ class Template
      */
     protected function getTemplateService()
     {
-        return GeneralUtility::makeInstance('TYPO3\CMS\Core\Service\MarkerBasedTemplateService');
+        return GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
     }
 
     /**

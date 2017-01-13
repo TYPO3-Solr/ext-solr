@@ -694,7 +694,7 @@ class Queue
             $indexQueueItemRecord = $indexQueueItemRecord[0];
 
             $item = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\IndexQueue\\Item',
+                Item::class,
                 $indexQueueItemRecord
             );
         }
@@ -843,7 +843,7 @@ class Queue
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
             if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
                 $indexQueueItems[] = GeneralUtility::makeInstance(
-                    'ApacheSolrForTypo3\\Solr\\IndexQueue\\Item',
+                    Item::class,
                     $indexQueueItemRecord,
                     $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
                 );

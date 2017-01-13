@@ -78,7 +78,7 @@ class SimpleFacetRenderer extends AbstractFacetRenderer
 
         if (!empty($facetOptions) || !empty($this->facetConfiguration['showEvenWhenEmpty'])) {
             $facetOptionsRenderer = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetOptionsRenderer',
+                SimpleFacetOptionsRenderer::class,
                 $this->facetName,
                 $facetOptions,
                 $this->template,

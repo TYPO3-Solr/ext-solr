@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -54,7 +55,7 @@ class SpellChecker
      */
     public function __construct()
     {
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+        $this->search = GeneralUtility::makeInstance(Search::class);
         $this->configuration = Util::getSolrConfiguration();
     }
 
@@ -106,8 +107,7 @@ class SpellChecker
         $query = clone $this->search->getQuery();
         $query->setKeywords($suggestions['collation']);
 
-        $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-            $query);
+        $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class, $query);
         $queryLinkBuilder->setLinkTargetPageId($GLOBALS['TSFE']->id);
 
         return $queryLinkBuilder->getQueryUrl();
@@ -148,8 +148,7 @@ class SpellChecker
         $query = clone $this->search->getQuery();
         $query->setKeywords($suggestions['collation']);
 
-        $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-            $query);
+        $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class, $query);
         $queryLinkBuilder->setLinkTargetPageId($GLOBALS['TSFE']->id);
 
         return $queryLinkBuilder->getQueryLink(htmlspecialchars($query->getKeywordsRaw()));

@@ -25,6 +25,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Facet\Facet as SolrFacet;
+use ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory;
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -78,7 +81,7 @@ class Facet extends AbstractSubpartViewHelper
         $configuredFacets = $this->configuration->getSearchFacetingFacets();
         $facetContent = '';
         $template = clone $this->template;
-        $search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+        $search = GeneralUtility::makeInstance(Search::class);
 
         if (!array_key_exists($facetName . '.', $configuredFacets)) {
             throw new \UnexpectedValueException(
@@ -88,13 +91,10 @@ class Facet extends AbstractSubpartViewHelper
         }
 
         if ($search->hasSearched()) {
-            $facetRendererFactory = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Facet\\FacetRendererFactory',
-                $configuredFacets
-            );
+            $facetRendererFactory = GeneralUtility::makeInstance(FacetRendererFactory::class, $configuredFacets);
 
             $facet = GeneralUtility::makeInstance(
-                'ApacheSolrForTypo3\\Solr\\Facet\\Facet',
+                SolrFacet::class,
                 $facetName,
                 $facetRendererFactory->getFacetInternalType($facetName)
             );

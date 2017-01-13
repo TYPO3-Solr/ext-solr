@@ -52,7 +52,7 @@ class CurrentResultNumber implements ViewHelper
      */
     public function __construct(array $arguments = array())
     {
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+        $this->search = GeneralUtility::makeInstance(Search::class);
     }
 
     /**

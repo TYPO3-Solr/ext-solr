@@ -26,9 +26,11 @@ namespace ApacheSolrForTypo3\Solr\Facet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Renderer for Used Facets.
@@ -86,12 +88,12 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
     {
         $solrConfiguration = Util::getSolrConfiguration();
 
-        $facetOption = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\FacetOption',
+        $facetOption = GeneralUtility::makeInstance(FacetOption::class,
             $this->facetName,
             $this->filterValue
         );
 
-        $facetLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\LinkBuilder',
+        $facetLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
             $this->query,
             $this->facetName,
             $facetOption
@@ -101,11 +103,9 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
 
         if ($this->facetConfiguration['type'] == 'hierarchy') {
             // FIXME decouple this
-            $filterEncoder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Hierarchy');
-            $facet = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\Facet',
-                $this->facetName);
-            $facetRenderer = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Facet\\HierarchicalFacetRenderer',
-                $facet);
+            $filterEncoder = GeneralUtility::makeInstance(Hierarchy::class);
+            $facet = GeneralUtility::makeInstance(Facet::class, $this->facetName);
+            $facetRenderer = GeneralUtility::makeInstance(HierarchicalFacetRenderer::class, $facet);
 
             $facetText = $facetRenderer->getLastPathSegmentFromHierarchicalFacetOption($filterEncoder->decodeFilter($this->filterValue));
         } else {
@@ -114,7 +114,7 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
 
         $facetText = $this->getModifiedFacetTextFromHook($facetText);
 
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $facetConfiguration = $solrConfiguration->getSearchFacetingFacetByName($this->facetName);
         $facetLabel = $contentObject->stdWrap($facetConfiguration['label'], $facetConfiguration['label.']);
 

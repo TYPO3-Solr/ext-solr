@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Utility class for sorting.
@@ -54,7 +55,7 @@ class Sorting
     public function getSortFields()
     {
         $sortFields = array();
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         foreach ($this->configuration as $optionName => $optionConfiguration) {
             $fieldName = $contentObject->stdWrap(
@@ -110,7 +111,7 @@ class Sorting
     public function getSortOptions()
     {
         $sortOptions = array();
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         foreach ($this->configuration as $optionName => $optionConfiguration) {
             $optionField = $contentObject->stdWrap(

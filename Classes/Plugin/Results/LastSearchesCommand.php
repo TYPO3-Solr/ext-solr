@@ -103,7 +103,7 @@ class LastSearchesCommand implements PluginCommand
     protected function getLastSearches()
     {
         /** @var $lastSearchesService \ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService */
-        $lastSearchesService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService',
+        $lastSearchesService = GeneralUtility::makeInstance(LastSearchesService::class,
             $this->configuration,
             $GLOBALS['TSFE'],
             $GLOBALS['TYPO3_DB']);

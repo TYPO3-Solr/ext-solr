@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -54,7 +55,7 @@ class Content
         $contentObject
     ) {
         $contentExtractor = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\Solr\HtmlContentExtractor',
+            HtmlContentExtractor::class,
             $this->getRawContent($contentObject, $configuration)
         );
 

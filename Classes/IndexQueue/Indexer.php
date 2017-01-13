@@ -27,11 +27,15 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use Apache_Solr_Document;
 use Apache_Solr_Response;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * A general purpose indexer to be used for indexing of any kind of regular
@@ -87,7 +91,7 @@ class Indexer extends AbstractIndexer
     public function __construct(array $options = array())
     {
         $this->options = $options;
-        $this->connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
     }
 
     /**
@@ -194,7 +198,7 @@ class Indexer extends AbstractIndexer
         $itemRecord = $item->getRecord();
 
         if ($language > 0) {
-            $page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+            $page = GeneralUtility::makeInstance(PageRepository::class);
             $page->init(false);
 
             $itemRecord = $page->getRecordOverlay(
@@ -311,9 +315,8 @@ class Indexer extends AbstractIndexer
      */
     protected function getBaseDocument(Item $item, array $itemRecord)
     {
-        $site = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Site',
-            $item->getRootPageUid());
-        $document = GeneralUtility::makeInstance('Apache_Solr_Document');
+        $site = GeneralUtility::makeInstance(Site::class, $item->getRootPageUid());
+        $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
         /* @var $document Apache_Solr_Document */
 
         // required fields
@@ -399,7 +402,7 @@ class Indexer extends AbstractIndexer
 
         // same as in the FE indexer
         if (is_array($fieldProcessingInstructions)) {
-            $service = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\FieldProcessor\\Service');
+            $service = GeneralUtility::makeInstance(Service::class);
             $service->processDocuments(
                 $documents,
                 $fieldProcessingInstructions
@@ -591,7 +594,7 @@ class Indexer extends AbstractIndexer
      */
     protected function getSystemLanguages()
     {
-        return GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Configuration\\TranslationConfigurationProvider')->getSystemLanguages();
+        return GeneralUtility::makeInstance(TranslationConfigurationProvider::class)->getSystemLanguages();
     }
 
     /**

@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Menu;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrTagBasedViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -77,7 +78,7 @@ class CoreSelectorMenuViewHelper extends AbstractSolrTagBasedViewHelper
         $currentSite = $this->moduleDataStorageService->loadModuleData()->getSite();
         $currentCore = $this->moduleDataStorageService->loadModuleData()->getCore();
 
-        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $cores = $connectionManager->getConnectionsBySite($currentSite);
 
         if (empty($currentCore)) {

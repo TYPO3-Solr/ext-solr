@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -70,7 +71,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
 
         $selectOptions = $this->getResultsPerPageOptions();
         if ($selectOptions) {
-            $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
+            $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
                 $this->parentPlugin->getSearchResultSetService()->getSearch()->getQuery());
             $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
             $form = array(
@@ -98,7 +99,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
         $resultsPerPageSwitchOptions = $this->configuration->getSearchResultsPerPageSwitchOptionsAsArray();
         $currentNumberOfResultsShown = $this->parentPlugin->getSearchResultSetService()->getLastResultSet()->getResultsPerPage();
 
-        $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
+        $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
             $this->parentPlugin->getSearchResultSetService()->getSearch()->getQuery());
         $queryLinkBuilder->removeUnwantedUrlParameter('resultsPerPage');
         $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());

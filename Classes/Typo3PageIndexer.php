@@ -24,12 +24,11 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Apache_Solr_Document;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
-use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -292,7 +291,7 @@ class Typo3PageIndexer
      */
     protected function getPageDocument()
     {
-        $document = GeneralUtility::makeInstance('Apache_Solr_Document');
+        $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
         /* @var $document \Apache_Solr_Document */
         $site = Site::getSiteByPageId($this->page->id);
         $pageRecord = $this->page->page;

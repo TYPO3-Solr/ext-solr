@@ -24,7 +24,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Sorting;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -64,11 +66,10 @@ class SortUrl implements ViewHelper
      */
     public function __construct(array $arguments = array())
     {
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+        $this->search = GeneralUtility::makeInstance(Search::class);
 
         $this->configuration = Util::getSolrConfiguration();
-        $this->queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-            $this->search->getQuery());
+        $this->queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class, $this->search->getQuery());
     }
 
     /**
@@ -86,7 +87,7 @@ class SortUrl implements ViewHelper
         $currentSortOption = '';
 
         $sortHelper = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Sorting',
+            Sorting::class,
             $this->configuration->getValueByPathOrDefaultValue('plugin.tx_solr.search.sorting.options.', array())
         );
         $configuredSortOptions = $sortHelper->getSortOptions();

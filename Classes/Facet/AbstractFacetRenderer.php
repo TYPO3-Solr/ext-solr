@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Facet renderer.
@@ -95,7 +96,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
      */
     public function __construct(Facet $facet)
     {
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+        $this->search = GeneralUtility::makeInstance(Search::class);
 
         $this->facet = $facet;
         $this->facetName = $facet->getName();
@@ -105,8 +106,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
 
         $this->linkTargetPageId = $GLOBALS['TSFE']->id;
 
-        $this->queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-            $this->search->getQuery());
+        $this->queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class, $this->search->getQuery());
     }
 
     /**
@@ -170,7 +170,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
         $facet['empty'] = $this->facet->isEmpty() ? '1' : '0';
         $facet['reset_url'] = $this->buildResetFacetUrl();
 
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $facet['label'] = $contentObject->stdWrap(
             $this->facetConfiguration['label'],
             $this->facetConfiguration['label.']

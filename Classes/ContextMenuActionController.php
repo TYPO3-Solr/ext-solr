@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Backend\Tree\Pagetree\PagetreeNode;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,10 +42,9 @@ class ContextMenuActionController
      */
     public function initializeSolrConnectionsByRootPage($nodeData)
     {
-        $node = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\Pagetree\\PagetreeNode',
-            (array)$nodeData);
+        $node = GeneralUtility::makeInstance(PagetreeNode::class, (array)$nodeData);
 
-        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->updateConnectionByRootPageId($node->getId());
     }
 }

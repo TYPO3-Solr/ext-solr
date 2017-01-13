@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Crop viewhelper to to shorten strings
@@ -88,7 +89,7 @@ class Crop implements ViewHelper
             $this->cropFullWords = true;
         }
 
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $contentObject->start(array(), '');
         $croppedString = $contentObject->cropHTML(
             $stringToCrop,

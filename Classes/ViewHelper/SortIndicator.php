@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Creates a graphical representation of the current sorting direction by
@@ -59,7 +60,7 @@ class SortIndicator implements ViewHelper
         $content = '';
         $sortDirection = trim($arguments[0]);
         $configuration = Util::getSolrConfiguration();
-        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $defaultImagePrefix = 'EXT:solr/Resources/Public/Images/Indicator';
 
         $sortViewHelperConfiguration = $configuration->getViewHelpersSortIndicatorConfiguration();

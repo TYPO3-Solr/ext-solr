@@ -61,7 +61,7 @@ class Relevance implements ViewHelper
     public function __construct(array $arguments = array())
     {
         if (is_null($this->search)) {
-            $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+            $this->search = GeneralUtility::makeInstance(Search::class);
             $this->maxScore = $this->search->getMaximumResultScore();
         }
     }

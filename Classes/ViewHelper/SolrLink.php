@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -61,11 +63,11 @@ class SolrLink implements ViewHelper
     public function __construct(array $arguments = array())
     {
         if (is_null($this->contentObject)) {
-            $this->contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         }
 
         if (is_null($this->search)) {
-            $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search');
+            $this->search = GeneralUtility::makeInstance(Search::class);
         }
     }
 
@@ -101,12 +103,10 @@ class SolrLink implements ViewHelper
         if ($this->search->hasSearched()) {
             $query = $this->search->getQuery();
         } else {
-            $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-                '');
+            $query = GeneralUtility::makeInstance(Query::class, '');
         }
 
-        $linkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder',
-            $query);
+        $linkBuilder = GeneralUtility::makeInstance(LinkBuilder::class, $query);
         $linkBuilder->setLinkTargetPageId($pageId);
         $queryLink = $linkBuilder->getQueryLink(
             $linkText,

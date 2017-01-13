@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * A facet option
@@ -103,7 +104,7 @@ class FacetOption
         $renderedFacetOption = $this->value;
 
         if (isset($this->facetConfiguration['renderingInstruction'])) {
-            $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $contentObject->start(array(
                 'optionValue' => $this->value,
                 'optionCount' => $this->numberOfResults,

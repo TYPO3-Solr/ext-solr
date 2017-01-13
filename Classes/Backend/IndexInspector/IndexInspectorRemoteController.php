@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\IndexInspector;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Site;
@@ -75,11 +76,10 @@ class IndexInspectorRemoteController
      */
     protected function initializeSearch()
     {
-        $connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $solrConnection = $connectionManager->getConnectionByPageId($this->pageId);
 
-        $this->search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search',
-            $solrConnection);
+        $this->search = GeneralUtility::makeInstance(Search::class, $solrConnection);
     }
 
     /**
@@ -121,8 +121,7 @@ class IndexInspectorRemoteController
     protected function getIndexDocuments()
     {
         /* @var Query $query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query',
-            '');
+        $query = GeneralUtility::makeInstance(Query::class, '');
         $query->setQueryType('standard');
         $query->useRawQueryString(true);
         $query->setQueryString('*:*');

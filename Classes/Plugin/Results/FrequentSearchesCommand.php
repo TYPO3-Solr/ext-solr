@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\Template;
@@ -83,7 +84,7 @@ class FrequentSearchesCommand implements PluginCommand
 
         $cacheInstance = $this->getInitializeCache();
 
-        $this->frequentSearchesService = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Domain\\Search\\FrequentSearches\\FrequentSearchesService',
+        $this->frequentSearchesService = GeneralUtility::makeInstance(FrequentSearchesService::class,
             $configuration,
             $cacheInstance,
             $GLOBALS['TSFE'],

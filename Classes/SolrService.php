@@ -25,10 +25,10 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -283,7 +283,7 @@ class SolrService extends \Apache_Solr_Service
         if ($httpResponse->getStatusCode() !== 200) {
             $message = 'Solr ping failed with unexpected response code: ' . $httpResponse->getStatusCode();
             /** @var $exception \ApacheSolrForTypo3\Solr\PingFailedException */
-            $exception = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\PingFailedException', $message);
+            $exception = GeneralUtility::makeInstance(PingFailedException::class, $message);
             $exception->setHttpResponse($httpResponse);
             throw $exception;
         }

@@ -25,12 +25,17 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\JavascriptManager;
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider;
+use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
@@ -176,7 +181,7 @@ abstract class PluginBase extends AbstractPlugin
     protected function initialize($configuration)
     {
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $typoScriptConfiguration = $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($configuration);
         $this->typoScriptConfiguration = $typoScriptConfiguration;
 
@@ -300,15 +305,15 @@ abstract class PluginBase extends AbstractPlugin
      */
     protected function initializeSearch()
     {
-        $solrConnection = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionByPageId(
+        $solrConnection = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(
             $GLOBALS['TSFE']->id,
             $GLOBALS['TSFE']->sys_language_uid,
             $GLOBALS['TSFE']->MP
         );
 
-        $search = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $solrConnection);
+        $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
         /** @var $this->searchService ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService */
-        $this->searchResultsSetService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService', $this->typoScriptConfiguration, $search, $this);
+        $this->searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $this->typoScriptConfiguration, $search, $this);
         $this->solrAvailable = $this->searchResultsSetService->getIsSolrAvailable();
         $this->search = $this->searchResultsSetService->getSearch();
     }
@@ -342,7 +347,7 @@ abstract class PluginBase extends AbstractPlugin
 
         /** @var Template $template */
         $template = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Template',
+            Template::class,
             $this->cObj,
             $templateFile,
             $subPart
@@ -386,7 +391,7 @@ abstract class PluginBase extends AbstractPlugin
      */
     protected function initializeJavascriptManager()
     {
-        $this->javascriptManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\JavascriptManager');
+        $this->javascriptManager = GeneralUtility::makeInstance(JavascriptManager::class);
     }
 
     /**
@@ -394,7 +399,7 @@ abstract class PluginBase extends AbstractPlugin
      */
     protected function initializeLanguageFactory()
     {
-        $this->languageFactory = GeneralUtility::makeInstance('TYPO3\CMS\Core\Localization\LocalizationFactory');
+        $this->languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
     }
 
     /**
@@ -591,7 +596,7 @@ abstract class PluginBase extends AbstractPlugin
         }
 
         if ($resultService->getIsSolrAvailable() && $this->getSearchResultSetService()->getHasSearched()) {
-            $queryLinkBuilder = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\LinkBuilder', $this->getSearchResultSetService()->getSearch()->getQuery());
+            $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class, $this->getSearchResultSetService()->getSearch()->getQuery());
             $currentUrl = $queryLinkBuilder->getQueryUrl();
             return $currentUrl;
         }

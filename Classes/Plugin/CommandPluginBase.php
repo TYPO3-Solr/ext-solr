@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\TemplateModifier;
+use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -71,7 +72,7 @@ abstract class CommandPluginBase extends PluginBase
             return $GLOBALS['TT'];
         } else {
             // Since 8.0
-            return GeneralUtility::makeInstance('TYPO3\CMS\Core\TimeTracker\TimeTracker');
+            return GeneralUtility::makeInstance(TimeTracker::class);
         }
     }
 

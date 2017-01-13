@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\ResultsetModifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -59,7 +60,7 @@ class LastSearches implements ResultSetModifier
         $configuration = $resultCommand->getParentPlugin()->getConfiguration();
 
             /** @var $lastSearchesService \ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService */
-        $lastSearchesService = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService',
+        $lastSearchesService = GeneralUtility::makeInstance(LastSearchesService::class,
             $configuration,
             $GLOBALS['TSFE'],
             $GLOBALS['TYPO3_DB']);
