@@ -41,7 +41,7 @@ class MultivalueTest extends AbstractViewHelperTest
      */
     protected function getMultivalueViewHelper()
     {
-        return GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ViewHelper\\Multivalue');
+        return GeneralUtility::makeInstance(Multivalue::class);
     }
 
     /**

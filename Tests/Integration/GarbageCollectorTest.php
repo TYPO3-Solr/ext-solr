@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
-use ApacheSolrForTypo3\Solrfal\Queue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -62,10 +62,10 @@ class GarbageCollectorTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->recordMonitor = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor');
-        $this->dataHandler = GeneralUtility::makeInstance('TYPO3\CMS\Core\DataHandling\DataHandler');
-        $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Queue');
-        $this->garbageCollector = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\GarbageCollector');
+        $this->recordMonitor = GeneralUtility::makeInstance(RecordMonitor::class);
+        $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+        $this->garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
     }
 
     /**

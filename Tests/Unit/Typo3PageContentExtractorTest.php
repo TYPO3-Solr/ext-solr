@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -56,10 +57,7 @@ class Typo3PageContentExtractorTest extends UnitTest
         $content = '<!-- TYPO3SEARCH_begin -->In Olten&nbsp;ist<!-- TYPO3SEARCH_end -->';
         $expectedResult = 'In Olten ist';
 
-        $contentExtractor = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
-            $content
-        );
+        $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
         $actualResult = $contentExtractor->getIndexableContent();
         $this->assertEquals($expectedResult, $actualResult);
@@ -73,10 +71,7 @@ class Typo3PageContentExtractorTest extends UnitTest
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Exclude content</div><p>Expected content</p><!-- TYPO3SEARCH_end -->';
         $expectedResult = '<!-- TYPO3SEARCH_begin --><p>Expected content</p><!-- TYPO3SEARCH_end -->';
 
-        $contentExtractor = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
-            $content
-        );
+        $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
@@ -90,10 +85,7 @@ class Typo3PageContentExtractorTest extends UnitTest
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>Was ein schöner Tag</p><!-- TYPO3SEARCH_end -->';
 
-        $contentExtractor = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
-            $content
-        );
+        $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->excludeContentByClass($content);
@@ -109,10 +101,7 @@ class Typo3PageContentExtractorTest extends UnitTest
     {
         $content = '<!-- TYPO3SEARCH_begin --><div class="typo3-search-exclude">Remove me</div><p>100€</p><!-- TYPO3SEARCH_end -->';
 
-        $contentExtractor = GeneralUtility::makeInstance(
-            'ApacheSolrForTypo3\\Solr\\Typo3PageContentExtractor',
-            $content
-        );
+        $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
         $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
 
         $actualResult = $contentExtractor->excludeContentByClass($content);

@@ -23,6 +23,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,7 +43,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $this->importDataSetFromFixture('can_get_green_solr_configuration_status_report.xml');
 
             /** @var $solrConfigurationStatus  \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus */
-        $solrConfigurationStatus = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus');
+        $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
         $this->assertEmpty($violations, 'We did not get an empty response from the solr configuration status report! Something is wrong');
     }
@@ -54,7 +56,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $this->importDataSetFromFixture('can_detect_missing_domain_record.xml');
 
         /** @var $solrConfigurationStatus  \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus */
-        $solrConfigurationStatus = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus');
+        $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 
         $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
@@ -71,7 +73,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $this->importDataSetFromFixture('can_detect_missing_rootpage.xml');
 
         /** @var $solrConfigurationStatus  \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus */
-        $solrConfigurationStatus = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus');
+        $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 
         $this->assertCount(1, $violations, 'Asserting to contain only one violation.');
@@ -88,7 +90,7 @@ class SolrConfigurationStatusTest extends IntegrationTest
         $this->importDataSetFromFixture('can_detect_indexing_disabled.xml');
 
         /** @var $solrConfigurationStatus  \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus */
-        $solrConfigurationStatus = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus');
+        $solrConfigurationStatus = GeneralUtility::makeInstance(SolrConfigurationStatus::class);
         $violations = $solrConfigurationStatus->getStatus();
 
         $this->assertCount(1, $violations, 'Asserting to contain only one violation.');

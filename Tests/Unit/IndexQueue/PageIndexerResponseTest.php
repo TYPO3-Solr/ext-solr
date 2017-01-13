@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -43,7 +44,7 @@ class PageIndexerResponseTest extends UnitTest
         $action = 'testAction';
         $result = 'testResult';
 
-        $request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
+        $request = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $request->addActionResult($action, $result);
 
         $this->assertEquals($result, $request->getActionResult($action));
@@ -54,7 +55,7 @@ class PageIndexerResponseTest extends UnitTest
      */
     public function getResultReturnsAllResults()
     {
-        $request = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerResponse');
+        $request = GeneralUtility::makeInstance(PageIndexerResponse::class);
         $request->addActionResult('action1', 'result1');
         $request->addActionResult('action2', 'result2');
 

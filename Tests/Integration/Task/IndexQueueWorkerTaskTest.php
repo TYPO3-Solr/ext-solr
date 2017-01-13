@@ -55,8 +55,12 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * TestCase to check if we can indexer from a index queue worker task into a solr server
@@ -81,7 +85,7 @@ class IndexQueueWorkerTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\Queue');
+        $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
     }
 
     /**
@@ -95,19 +99,19 @@ class IndexQueueWorkerTest extends IntegrationTest
         $this->assertFalse($this->indexQueue->containsIndexedItem('pages', 1));
 
         /** @var $beUser  \TYPO3\CMS\Core\Authentication\BackendUserAuthentication */
-        $beUser = GeneralUtility::makeInstance('TYPO3\CMS\Core\Authentication\BackendUserAuthentication');
+        $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $GLOBALS['BE_USER'] = $beUser;
 
         /** @var $languageService  \TYPO3\CMS\Lang\LanguageService */
-        $languageService = GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
+        $languageService = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['LANG'] = $languageService;
 
-        $charsetConverter = GeneralUtility::makeInstance('TYPO3\CMS\Core\Charset\CharsetConverter');
+        $charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
         $GLOBALS['LANG']->csConvObj = $charsetConverter;
 
         $site = Site::getFirstAvailableSite();
         /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
-        $indexQueueQueueWorkerTask = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask');
+        $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
         $indexQueueQueueWorkerTask->setSite($site);
 
@@ -129,7 +133,7 @@ class IndexQueueWorkerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_trigger_frontend_calls_for_page_index.xml');
         $site = Site::getFirstAvailableSite();
         /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
-        $indexQueueQueueWorkerTask = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask');
+        $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
         $indexQueueQueueWorkerTask->setSite($site);
 

@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelper\Ts;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -92,7 +93,7 @@ class TsTest extends UnitTest
             'TEXT' => 'TYPO3\\CMS\\Frontend\\ContentObject\\TextContentObject'
         ));
         /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->reset();
 
         $this->viewHelper = new Ts();

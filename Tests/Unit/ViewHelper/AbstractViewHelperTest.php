@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -60,6 +61,6 @@ abstract class AbstractViewHelperTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->setup['config.']['tx_realurl_enable'] = '0';
 
         /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
-        $this->configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
     }
 }

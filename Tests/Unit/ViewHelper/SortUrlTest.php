@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\ViewHelper\SortUrl;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -72,15 +74,15 @@ class SortUrlTest extends AbstractViewHelperTest
         );
 
         // prepare solr request handler
-        $solrRequestHandler = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Search', $this->getDumbMock('ApacheSolrForTypo3\Solr\SolrService'));
-        $this->inject($solrRequestHandler, 'query', GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'testQuery'));
+        $solrRequestHandler = GeneralUtility::makeInstance(Search::class, $this->getDumbMock('ApacheSolrForTypo3\Solr\SolrService'));
+        $this->inject($solrRequestHandler, 'query', GeneralUtility::makeInstance(Query::class, 'testQuery'));
 
         // prepare link builder mock
         $linkBuilderMock = $this->getDumbMock('ApacheSolrForTypo3\Solr\Query\LinkBuilder');
         $linkBuilderMock->expects($this->any())->method('getQueryUrl')->willReturnArgument(0);
 
         // init view helper
-        $this->viewHelper = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ViewHelper\\SortUrl');
+        $this->viewHelper = GeneralUtility::makeInstance(SortUrl::class);
         $this->inject($this->viewHelper, 'queryLinkBuilder', $linkBuilderMock);
     }
 

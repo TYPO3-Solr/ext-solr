@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\AbstractPluginTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -167,7 +167,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion'] = 1;
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         //not in the content but we expect to get auto corrected results for shoes
@@ -204,7 +204,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['lastSearches.']['mode'] = 'global';
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         //not in the content but we expect to get shoes suggested
@@ -268,7 +268,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $resultPage = $searchResults->main('', array());
@@ -288,7 +288,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = '';
@@ -309,7 +309,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = ' ';
@@ -331,7 +331,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['query.']['allowEmptyQuery'] = 0;
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = '';
@@ -353,7 +353,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['query.']['allowEmptyQuery'] = 0;
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = ' ';
@@ -373,7 +373,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['query.']['filter.']['subtitle:men'] = 'subTitle:men';
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = '*';
@@ -395,7 +395,7 @@ class ResultsTest extends AbstractPluginTest
         $overwriteConfiguration['_LOCAL_LANG.']['default.']['results_range'] = 'My own label';
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = '*';

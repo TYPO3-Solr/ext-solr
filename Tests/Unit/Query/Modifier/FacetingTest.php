@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -44,9 +45,9 @@ class FacetingTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query', 'test', $fakeConfiguration);
+        $query = GeneralUtility::makeInstance(Query::class, 'test', $fakeConfiguration);
         /** @var $facetModifier \ApacheSolrForTypo3\Solr\Query\Modifier\Faceting */
-        $facetModifier = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\Modifier\\Faceting', $fakeConfiguration);
+        $facetModifier = GeneralUtility::makeInstance(Faceting::class, $fakeConfiguration);
         $facetModifier->modifyQuery($query);
 
         $queryParameter = $query->getQueryParameters();

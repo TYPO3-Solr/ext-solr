@@ -24,9 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -155,17 +159,17 @@ class PageIndexerTest extends IntegrationTest
 
         $TSFE = $this->getConfiguredTSFE();
         $TSFE->config['config']['index_enable'] = 1;
-        $TSFE->cObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+        $TSFE->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var $request \ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest */
-        $request = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest');
+        $request = GeneralUtility::makeInstance(PageIndexerRequest::class);
         $request->setParameter('item', 4711);
         /** @var $request \ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse */
-        $response = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse');
+        $response = GeneralUtility::makeInstance(PageIndexerResponse::class);
 
         /** @var $pageIndexer  \ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer */
-        $pageIndexer = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer');
+        $pageIndexer = GeneralUtility::makeInstance(PageIndexer::class);
         $pageIndexer->activate();
         $pageIndexer->processRequest($request, $response);
         $pageIndexer->hook_indexContent($TSFE);

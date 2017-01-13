@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -63,8 +64,8 @@ class ConnectionManagerTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = 25;
         $GLOBALS['TSFE']->tmpl->setup['config.']['tx_realurl_enable'] = '0';
 
-        $this->configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\System\\Configuration\\ConfigurationManager');
-        $this->connectionManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager');
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
     }
 
     /**

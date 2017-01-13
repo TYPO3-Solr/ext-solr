@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -47,7 +48,7 @@ class RangeTest extends UnitTest
 
     public function setUp()
     {
-        $this->rangeParser = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\Query\\FilterEncoder\\Range');
+        $this->rangeParser = GeneralUtility::makeInstance(Range::class);
     }
 
     /**

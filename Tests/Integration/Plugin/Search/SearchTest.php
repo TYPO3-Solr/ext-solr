@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\FrequentSearches;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\AbstractPluginTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -68,7 +69,7 @@ class SearchTest extends AbstractPluginTest
         $overwriteConfiguration['search.']['query.']['filter.']['subtitle:men'] = 'subTitle:men';
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
-        $configurationManager = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager');
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $searchFormOutput = $searchForm->main('', array());
