@@ -75,13 +75,20 @@ class TypoScriptConfiguration
     protected $contextPageId = 0;
 
     /**
+     * @var ContentObjectService
+     */
+    protected $contentObjectService;
+
+    /**
      * @param array $configuration
      * @param int $contextPageId
+     * @param ContentObjectService $contentObjectService
      */
-    public function __construct(array $configuration, $contextPageId = 0)
+    public function __construct(array $configuration, $contextPageId = 0, ContentObjectService $contentObjectService = null)
     {
         $this->configurationAccess = new ArrayAccessor($configuration, '.', true);
         $this->contextPageId = $contextPageId;
+        $this->contentObjectService = is_null($contentObjectService) ? GeneralUtility::makeInstance(ContentObjectService::class) : $contentObjectService;
     }
 
     /**
@@ -260,6 +267,19 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns true when ext_solr is enabled
+     *
+     * @param boolean $defaultIfEmpty
+     * @return boolean
+     */
+    public function getEnabled($defaultIfEmpty = false)
+    {
+        $path = 'plugin.tx_solr.enabled';
+        $result = $this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
      * Returns the configured css file for a specific fileKey.
      *
      * plugin.tx_solr.cssFiles.<fileKey>
@@ -435,7 +455,7 @@ class TypoScriptConfiguration
     {
         $monitoredTables = [];
 
-        $indexingConfigurations =  $this->getEnabledIndexQueueConfigurationNames();
+        $indexingConfigurations = $this->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
             $monitoredTable = $this->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
             $monitoredTables[] = $monitoredTable;
@@ -561,13 +581,13 @@ class TypoScriptConfiguration
     public function getInitialPagesAdditionalWhereClause($defaultIfEmpty = ' AND 1=1')
     {
         $path = 'plugin.tx_solr.index.queue.pages' . '.initialPagesAdditionalWhereClause';
-        $initialPagesAdditionalWhereClause =  $this->getValueByPathOrDefaultValue($path, '');
+        $initialPagesAdditionalWhereClause = $this->getValueByPathOrDefaultValue($path, '');
 
         if (trim($initialPagesAdditionalWhereClause) === '') {
             return $defaultIfEmpty;
         }
 
-        return ' AND ' .  $initialPagesAdditionalWhereClause;
+        return ' AND ' . $initialPagesAdditionalWhereClause;
     }
 
     /**
@@ -909,9 +929,23 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns true or false if something is configured below plugin.tx_solr.solr.
+     *
+     * plugin.tx_solr.solr.
+     *
+     * @param boolean $defaultIfEmpty
+     * @return boolean
+     */
+    public function getSolrHasConnectionConfiguration($defaultIfEmpty = false)
+    {
+        $configuration = $this->getObjectByPathOrDefault('plugin.tx_solr.solr.', []);
+        return $configuration !== [] ? true : $defaultIfEmpty;
+    }
+
+    /**
      * Returns the defaultTimeout used for requests to the Solr server
      *
-     * plugin.tx_solr.solr.defaultTimeout
+     * plugin.tx_solr.solr.timeout
      *
      * @param float $defaultIfEmpty
      * @return float
@@ -919,6 +953,113 @@ class TypoScriptConfiguration
     public function getSolrTimeout($defaultIfEmpty = 0.0)
     {
         return (float)$this->getValueByPathOrDefaultValue('plugin.tx_solr.solr.timeout', $defaultIfEmpty);
+    }
+
+    /**
+     * Returns the scheme used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.scheme
+     *
+     * Applies stdWrap on the configured setting
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSolrScheme($defaultIfEmpty = 'http')
+    {
+        $valuePath = 'plugin.tx_solr.solr.scheme';
+        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
+        return $this->renderContentElementOfConfigured($valuePath, $value);
+    }
+
+    /**
+     * Returns the hostname used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.host
+     *
+     * Applies stdWrap on the configured setting
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSolrHost($defaultIfEmpty = 'localhost')
+    {
+        $valuePath = 'plugin.tx_solr.solr.host';
+        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
+        return $this->renderContentElementOfConfigured($valuePath, $value);
+    }
+
+    /**
+     * Returns the port used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.port
+     *
+     * Applies stdWrap on the configured setting
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getSolrPort($defaultIfEmpty = 8983)
+    {
+        $valuePath = 'plugin.tx_solr.solr.port';
+        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
+        return $this->renderContentElementOfConfigured($valuePath, $value);
+    }
+
+    /**
+     * Returns the path used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.path
+     *
+     * Applies stdWrap on the configured setting
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSolrPath($defaultIfEmpty = '/solr/core_en/')
+    {
+        $valuePath = 'plugin.tx_solr.solr.path';
+        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
+        $solrPath = $this->renderContentElementOfConfigured($valuePath, $value);
+
+        $solrPath = trim($solrPath, '/');
+        $solrPath = '/' . $solrPath . '/';
+
+        return $solrPath;
+    }
+
+    /**
+     * Returns the username used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.username
+     *
+     * Applies stdWrap on the configured setting
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSolrUsername($defaultIfEmpty = '')
+    {
+        $valuePath = 'plugin.tx_solr.solr.username';
+        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
+        return $this->renderContentElementOfConfigured($valuePath, $value);
+    }
+
+    /**
+     * Returns the password used for requests to the Solr server
+     *
+     * plugin.tx_solr.solr.password
+     *
+     * Applies stdWrap on the configured setting
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSolrPassword($defaultIfEmpty = '')
+    {
+        $valuePath = 'plugin.tx_solr.solr.password';
+        $value = (string)$this->getValueByPathOrDefaultValue($valuePath, $defaultIfEmpty);
+        return $this->renderContentElementOfConfigured($valuePath, $value);
     }
 
     /**
@@ -1991,5 +2132,24 @@ class TypoScriptConfiguration
     {
         $enableCommits = $this->getValueByPathOrDefaultValue('plugin.tx_solr.index.enableCommits', $defaultIfEmpty);
         $this->getBool($enableCommits);
+    }
+
+    /*
+     * Applies the stdWrap if it is configured for the path, otherwise the unprocessed value will be returned.
+     *
+     * @param string $valuePath
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function renderContentElementOfConfigured($valuePath, $value)
+    {
+        $configurationPath = $valuePath . '.';
+        $configuration = $this->getObjectByPath($configurationPath);
+
+        if ($configuration == null) {
+            return $value;
+        }
+
+        return $this->contentObjectService->renderSingleContentObject($value, $configuration);
     }
 }

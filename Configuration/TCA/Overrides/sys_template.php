@@ -32,3 +32,6 @@
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/Examples/IntroPackageSearchBox/',
     'Search - (Example) Replace Introduction Package search box');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/ConnectionFromConfVars/',
+    'Search - (Example) Use connection settings from TYPO3_CONF_VARS');
