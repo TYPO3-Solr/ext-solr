@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 
 /**
  * Unit testcase to check if the two level cache is working as expected.
@@ -50,7 +51,7 @@ class TwoLevelCacheTest extends UnitTest
      */
     public function setUp()
     {
-        $this->secondLevelCacheMock = $this->getDumbMock('\TYPO3\CMS\Core\Cache\Frontend\FrontendInterface');
+        $this->secondLevelCacheMock = $this->getDumbMock(FrontendInterface::class);
         $this->twoLevelCache = new TwoLevelCache('test', $this->secondLevelCacheMock);
     }
 

@@ -23,9 +23,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use Apache_Solr_HttpTransport_Response;
+use Apache_Solr_HttpTransport_Interface;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
@@ -43,11 +45,11 @@ class SolrServiceTest extends UnitTest
 
         // we fake a 200 OK response and expect that
             /** @var  \Apache_Solr_HttpTransport_Response $responseMock */
-        $responseMock = $this->getDumbMock(\Apache_Solr_HttpTransport_Response::class);
+        $responseMock = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
         $responseMock->expects($this->any())->method('getStatusCode')->will($this->returnValue(200));
 
             /** @var \Apache_Solr_HttpTransport_Interface $transportMock */
-        $transportMock = $this->getDumbMock(\Apache_Solr_HttpTransport_Interface::class);
+        $transportMock = $this->getDumbMock(Apache_Solr_HttpTransport_Interface::class);
         // we expect that exactly one get request is done
         $transportMock->expects($this->once())->method('performGetRequest')->will($this->returnValue($responseMock));
 
@@ -75,11 +77,11 @@ class SolrServiceTest extends UnitTest
 
         // we fake a 200 OK response and expect that
         /** @var  \Apache_Solr_HttpTransport_Response $responseMock */
-        $responseMock = $this->getDumbMock(\Apache_Solr_HttpTransport_Response::class);
+        $responseMock = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
         $responseMock->expects($this->any())->method('getStatusCode')->will($this->returnValue(200));
 
         /** @var \Apache_Solr_HttpTransport_Interface $transportMock */
-        $transportMock = $this->getDumbMock(\Apache_Solr_HttpTransport_Interface::class);
+        $transportMock = $this->getDumbMock(Apache_Solr_HttpTransport_Interface::class);
         // we expect that exactly one get request is done
         $transportMock->expects($this->exactly(2))->method('performGetRequest')->will($this->returnValue($responseMock));
 

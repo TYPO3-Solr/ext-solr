@@ -25,7 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\ViewHelper\SortUrl;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -74,11 +76,11 @@ class SortUrlTest extends AbstractViewHelperTest
         );
 
         // prepare solr request handler
-        $solrRequestHandler = GeneralUtility::makeInstance(Search::class, $this->getDumbMock('ApacheSolrForTypo3\Solr\SolrService'));
+        $solrRequestHandler = GeneralUtility::makeInstance(Search::class, $this->getDumbMock(SolrService::class));
         $this->inject($solrRequestHandler, 'query', GeneralUtility::makeInstance(Query::class, 'testQuery'));
 
         // prepare link builder mock
-        $linkBuilderMock = $this->getDumbMock('ApacheSolrForTypo3\Solr\Query\LinkBuilder');
+        $linkBuilderMock = $this->getDumbMock(LinkBuilder::class);
         $linkBuilderMock->expects($this->any())->method('getQueryUrl')->willReturnArgument(0);
 
         // init view helper
