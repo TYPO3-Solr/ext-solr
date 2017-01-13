@@ -35,7 +35,6 @@ use InvalidArgumentException;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * TypoScript configuration object, used to read all TypoScript configuration.
  *
