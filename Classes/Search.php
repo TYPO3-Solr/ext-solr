@@ -24,9 +24,9 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Facet\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
+use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
