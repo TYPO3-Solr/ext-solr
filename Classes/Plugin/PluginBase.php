@@ -373,7 +373,7 @@ abstract class PluginBase extends AbstractPlugin
                     }
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($viewHelperProvider) . ' must implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider',
+                        get_class($viewHelperProvider) . ' must implement interface ' . ViewHelperProvider::class,
                         1310387296
                     );
                 }

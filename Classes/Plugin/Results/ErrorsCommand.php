@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
+use ApacheSolrForTypo3\Solr\Plugin\Results\ErrorDetector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -122,7 +123,7 @@ class ErrorsCommand implements PluginCommand
                     }
                 } else {
                     throw new \InvalidArgumentException(
-                        'Error detector "' . $classReference . '" must implement interface ApacheSolrForTypo3\Solr\Plugin\Results\ErrorDetector.',
+                        'Error detector ' . $classReference . ' must implement interface ' . ErrorDetector::class,
                         1359156192
                     );
                 }

@@ -27,12 +27,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
+use TYPO3\CMS\Frontend\Utility\EidUtility;
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -157,14 +159,14 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
             $TYPO3_CONF_VARS, $id, $type);
-        \TYPO3\CMS\Frontend\Utility\EidUtility::initLanguage();
+        EidUtility::initLanguage();
         $TSFE->initFEuser();
         $TSFE->set_no_cache();
         $TSFE->checkAlternativeIdMethods();
         $TSFE->determineId();
         $TSFE->initTemplate();
         $TSFE->getConfigArray();
-        \TYPO3\CMS\Core\Core\Bootstrap::getInstance();
+        Bootstrap::getInstance();
         $TSFE->settingLanguage();
         $TSFE->settingLocale();
 

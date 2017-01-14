@@ -137,7 +137,7 @@ class ResultsCommand implements PluginCommand
                         $responseDocuments);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($resultSetModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier',
+                        get_class($resultSetModifier) . ' must implement interface' . ResultSetModifier::class,
                         1310386927
                     );
                 }
@@ -157,7 +157,7 @@ class ResultsCommand implements PluginCommand
                             $temporaryResultDocument);
                     } else {
                         throw new \UnexpectedValueException(
-                            get_class($resultDocumentModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier',
+                            get_class($resultDocumentModifier) . ' must implement interface ' . ResultDocumentModifier::class,
                             1310386725
                         );
                     }

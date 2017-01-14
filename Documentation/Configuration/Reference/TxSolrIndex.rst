@@ -313,7 +313,7 @@ PHP:
 
     namespace MyVendor\Namespace;
 
-    use \ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+    use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 
     class MyIndexer extends Indexer {
       public function index(tx_solr_indexqueue_Item $item) {

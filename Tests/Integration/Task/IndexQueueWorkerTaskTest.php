@@ -1,7 +1,7 @@
 <?php
-
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
+use ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependencyFaker;
 /**
  * This function is used to overwrite uniqid in the IndexQueue context to provide a fake request id.
  * We use this since this is a integration test and the unique id could not be injected from outside.
@@ -10,11 +10,11 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  */
 function uniqid()
 {
-    return \ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependencyFaker::getRequestId();
+    return IndexQueueDependencyFaker::getRequestId();
 }
 
 /**
- * This function fakes the file_get_contents calls to provied a faked frontend indexing response.
+ * This function fakes the file_get_contents calls to provide a faked frontend indexing response.
  *
  * @param string $url
  * @param bool $flags
@@ -24,7 +24,7 @@ function uniqid()
  */
 function file_get_contents($url, $flags, $context)
 {
-    return \ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependencyFaker::getHttpContent($url, $flags,
+    return IndexQueueDependencyFaker::getHttpContent($url, $flags,
         $context);
 }
 

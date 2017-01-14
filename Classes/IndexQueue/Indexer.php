@@ -442,7 +442,7 @@ class Indexer extends AbstractIndexer
                     }
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($additionalIndexer) . ' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer',
+                        get_class($additionalIndexer) . ' must implement interface ' . AdditionalIndexQueueItemIndexer::class,
                         1326284551
                     );
                 }

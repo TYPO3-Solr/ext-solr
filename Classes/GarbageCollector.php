@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -118,7 +118,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
                         $uid);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($garbageCollectorPostProcessor) . ' must implement interface ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor',
+                        get_class($garbageCollectorPostProcessor) . ' must implement interface ' . GarbageCollectorPostProcessor::class,
                         1345807460
                     );
                 }

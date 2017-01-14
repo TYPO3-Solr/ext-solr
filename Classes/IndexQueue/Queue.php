@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
@@ -138,7 +139,7 @@ class Queue
                 } else {
                     throw new \UnexpectedValueException(
                         get_class($indexQueueInitializationPostProcessor) .
-                        ' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor',
+                        ' must implement interface ' . InitializationPostProcessor::class,
                         1345815561
                     );
                 }

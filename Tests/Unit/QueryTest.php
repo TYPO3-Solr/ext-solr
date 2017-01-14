@@ -735,7 +735,7 @@ class QueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getMockBuilder(\ApacheSolrForTypo3\Solr\Query::class)
+        $query = $this->getMockBuilder(Query::class)
             ->setMethods(['writeDevLog'])
             ->setConstructorArgs(['test', $fakeConfiguration])
             ->getMock();

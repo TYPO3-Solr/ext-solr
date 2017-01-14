@@ -54,7 +54,7 @@ class MultivalueTest extends UnitTest
         $this->contentObject->start(array('list' => $list));
 
         $actual = $this->contentObject->cObjGetSingle(
-            \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
+            Multivalue::CONTENT_OBJECT_NAME,
             array(
                 'field' => 'list',
                 'separator' => ','
@@ -89,9 +89,9 @@ class MultivalueTest extends UnitTest
     {
         $this->skipInVersionBelow('7.6');
         // fake a registered hook
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][\ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = array(
-            \ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME,
-            'ApacheSolrForTypo3\\Solr\\ContentObject\\Multivalue'
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Multivalue::CONTENT_OBJECT_NAME] = array(
+            Multivalue::CONTENT_OBJECT_NAME,
+            Multivalue::class
         );
 
         $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);

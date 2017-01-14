@@ -24,9 +24,8 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Facet\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
-use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
 use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -198,7 +197,7 @@ class Search implements SingletonInterface
                     $query = $queryModifier->modifyQuery($query);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($queryModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Query\Modifier\QueryModifier',
+                        get_class($queryModifier) . ' must implement interface ' . Modifier::class,
                         1310387414
                     );
                 }
@@ -231,7 +230,7 @@ class Search implements SingletonInterface
                     $response = $responseModifier->modifyResponse($response);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($responseModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Search\ResponseModifier',
+                        get_class($responseModifier) . ' must implement interface ' . ResponseModifier::class,
                         1343147211
                     );
                 }
@@ -431,7 +430,7 @@ class Search implements SingletonInterface
                         $facetCountsModified = true;
                     } else {
                         throw new \UnexpectedValueException(
-                            get_class($facetsModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Facet\FacetsModifier',
+                            get_class($facetsModifier) . ' must implement interface ' . FacetsModifier::class,
                             1310387526
                         );
                     }

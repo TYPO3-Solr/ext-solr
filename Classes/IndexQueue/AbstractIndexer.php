@@ -223,7 +223,7 @@ abstract class AbstractIndexer
                     }
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($serializedValueDetector) . ' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\SerializedValueDetector',
+                        get_class($serializedValueDetector) . ' must implement interface ' . SerializedValueDetector::class,
                         1404471741
                     );
                 }
