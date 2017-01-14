@@ -442,7 +442,8 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $tmpl->generateConfig();
         $GLOBALS['TSFE']->tmpl->setup = $tmpl->setup;
 
-        $configuration = Util::getSolrConfiguration();
+        $configuration = Util::getSolrConfigurationFromPageId($rootPage['uid'], false, $languageId);
+
         $solrIsEnabledAndConfigured = $configuration->getEnabled() && $configuration->getSolrHasConnectionConfiguration();
         if (!$solrIsEnabledAndConfigured) {
             return $connection;
