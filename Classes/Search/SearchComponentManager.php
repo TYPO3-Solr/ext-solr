@@ -23,6 +23,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use ApacheSolrForTypo3\Solr\Search\SearchComponent;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -90,7 +92,7 @@ class SearchComponentManager
 
         if (!($searchComponent instanceof SearchComponent)) {
             throw new \RuntimeException(
-                'Class ' . self::$searchComponents[$componentName] . ' must implement interface ApacheSolrForTypo3\Solr\Search\SearchComponent.',
+                'Class ' . self::$searchComponents[$componentName] . ' must implement interface ' . SearchComponent::class,
                 1343398621
             );
         }

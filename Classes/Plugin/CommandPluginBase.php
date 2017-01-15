@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
+use ApacheSolrForTypo3\Solr\Plugin\CommandPostProcessor;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\TemplateModifier;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
@@ -121,7 +122,7 @@ abstract class CommandPluginBase extends PluginBase
                     $templateModifier->modifyTemplate($this->template);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($templateModifier) . ' must implement interface ApacheSolrForTypo3\Solr\TemplateModifier',
+                        get_class($templateModifier) . ' must implement interface ' . TemplateModifier::class,
                         1310387230
                     );
                 }
@@ -173,7 +174,7 @@ abstract class CommandPluginBase extends PluginBase
                         $commandVariables);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($commandPostProcessor) . ' must implement interface ApacheSolrForTypo3\Solr\Plugin\CommandPostProcessor',
+                        get_class($commandPostProcessor) . ' must implement interface ' . CommandPostProcessor::class,
                         1346079897
                     );
                 }

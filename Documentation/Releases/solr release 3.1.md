@@ -24,7 +24,7 @@ Stopwords are usually used to discard common words when indexing. This can incre
 
 ### Introducing PHP Namespaces
 
-Our complete codebase is now namespaced and uses root namespace "\ApacheSolrForTypo3\Solr\" for all classes. We also added a class map to provide backwards compatibility. Nevertheless we suggest updating your extensions to use the namespaced class names if you use them.
+Our complete codebase is now namespaced and uses root namespace "ApacheSolrForTypo3\Solr\" for all classes. We also added a class map to provide backwards compatibility. Nevertheless we suggest updating your extensions to use the namespaced class names if you use them.
 
 ### Introducing Travis CI
 

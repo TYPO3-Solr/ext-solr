@@ -174,7 +174,7 @@ class CommandResolver
 
             if (!($command instanceof PluginCommand)) {
                 throw new \RuntimeException(
-                    self::$commands[$commandName]['commandClass'] . ' is not an implementation of \ApacheSolrForTypo3\Solr\Plugin\PluginCommand',
+                    self::$commands[$commandName]['commandClass'] . ' is not an implementation of ' . PluginCommand::class,
                     1297899998
                 );
             }

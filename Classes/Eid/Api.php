@@ -24,10 +24,11 @@
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Api;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 
-$api = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('api');
-$apiKey = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('apiKey'));
+$api = GeneralUtility::_GP('api');
+$apiKey = trim(GeneralUtility::_GP('apiKey'));
 
 if (!Api::isValidApiKey($apiKey)) {
     header(HttpUtility::HTTP_STATUS_403);

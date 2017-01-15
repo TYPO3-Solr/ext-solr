@@ -34,8 +34,9 @@
 
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\HttpUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-$domain = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('domain');
+$domain = GeneralUtility::_GP('domain');
 $returnData = '';
 
 if (!empty($domain)) {
