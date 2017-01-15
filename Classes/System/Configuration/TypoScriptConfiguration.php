@@ -480,7 +480,7 @@ class TypoScriptConfiguration
 
     /**
      * Returns the configured indexer class that should be used for a certain indexingConfiguration.
-     * By default "ApacheSolrForTypo3\\Solr\\IndexQueue\\Indexer" will be returned.
+     * By default "ApacheSolrForTypo3\Solr\IndexQueue\Indexer" will be returned.
      *
      * plugin.tx_solr.index.queue.<configurationName>.indexer
      *

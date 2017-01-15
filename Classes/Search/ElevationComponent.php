@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query\Modifier\Elevation;
+
 /**
  * Elevation search component
  *
@@ -38,6 +40,6 @@ class ElevationComponent extends AbstractComponent
      */
     public function initializeSearchComponent()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['elevation'] = 'ApacheSolrForTypo3\\Solr\\Query\\Modifier\\Elevation';
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['elevation'] = Elevation::class;
     }
 }

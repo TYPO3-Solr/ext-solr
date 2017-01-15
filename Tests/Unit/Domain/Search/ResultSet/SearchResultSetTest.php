@@ -155,7 +155,7 @@ class SearchResultSetTest extends UnitTest
     {
         $processSearchResponseBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'];
 
-        $testProcessor = 'ApacheSolrForTypo3\\Solr\\Tests\\Unit\\Domain\\Search\\ResultSet\\TestSearchResponseProcessor';
+        $testProcessor = TestSearchResponseProcessor::class;
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['testProcessor'] = $testProcessor;
         $this->fakeRegisteredSearchComponents(array());
 

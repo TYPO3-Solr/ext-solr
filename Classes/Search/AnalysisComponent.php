@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Plugin\Results\QueryAnalyzerFormModifier;
+use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ScoreAnalyzer;
 use ApacheSolrForTypo3\Solr\Query;
 
 /**
@@ -50,8 +52,8 @@ class AnalysisComponent extends AbstractComponent implements QueryAware
     {
         if ($this->searchConfiguration['results.']['showDocumentScoreAnalysis']) {
             $this->query->setDebugMode();
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['scoreAnalysis'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\ScoreAnalyzer';
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm']['queryAnalysis'] = 'ApacheSolrForTypo3\\Solr\\Plugin\\Results\\QueryAnalyzerFormModifier';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['scoreAnalysis'] = ScoreAnalyzer::class;
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm']['queryAnalysis'] = QueryAnalyzerFormModifier::class;
         }
     }
 
