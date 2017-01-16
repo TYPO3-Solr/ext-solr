@@ -19,11 +19,11 @@ if (TYPO3_MODE == 'BE') {
 $extIconPath = 'EXT:solr/Resources/Public/Images/Icons/';
 if (TYPO3_MODE === 'BE') {
     $modulePrefix = 'extensions-solr-module';
-    $bitmapProvider = 'TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider';
-    $svgProvider = 'TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider';
+    $bitmapProvider = \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class;
+    $svgProvider = \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class;
 
         // register all module icons with extensions-solr-module-modulename
-    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Imaging\IconRegistry');
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     $iconRegistry->registerIcon($modulePrefix . '-administration', $svgProvider,
         array('source' => $extIconPath . 'ModuleAdministration.svg'));
     $iconRegistry->registerIcon($modulePrefix . '-overview', $bitmapProvider,
@@ -106,20 +106,20 @@ if (TYPO3_MODE == 'BE') {
 
     // registering reports
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
-        'ApacheSolrForTypo3\\Solr\\Report\\SchemaStatus',
-        'ApacheSolrForTypo3\\Solr\\Report\\SolrConfigStatus',
-        'ApacheSolrForTypo3\\Solr\\Report\\SolrConfigurationStatus',
-        'ApacheSolrForTypo3\\Solr\\Report\\SolrStatus',
-        'ApacheSolrForTypo3\\Solr\\Report\\SolrVersionStatus',
-        'ApacheSolrForTypo3\\Solr\\Report\\AccessFilterPluginInstalledStatus',
-        'ApacheSolrForTypo3\\Solr\\Report\\AllowUrlFOpenStatus',
-        'ApacheSolrForTypo3\\Solr\\Report\\FilterVarStatus'
+        \ApacheSolrForTypo3\Solr\Report\SchemaStatus::class,
+        \ApacheSolrForTypo3\Solr\Report\SolrConfigStatus::class,
+        \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus::class,
+        \ApacheSolrForTypo3\Solr\Report\SolrStatus::class,
+        \ApacheSolrForTypo3\Solr\Report\SolrVersionStatus::class,
+        \ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus::class,
+        \ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus::class,
+        \ApacheSolrForTypo3\Solr\Report\FilterVarStatus::class
     );
 
     // Index Inspector
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
         'web_info',
-        'ApacheSolrForTypo3\\Solr\\Backend\\IndexInspector\\IndexInspector',
+        \ApacheSolrForTypo3\Solr\Backend\IndexInspector\IndexInspector::class,
         null,
         'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:module_indexinspector'
     );
@@ -132,12 +132,12 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
     // for certain scenarios items must be removed by GC first, and then be re-added to to Index Queue
 
     // hooking into TCE Main to monitor record updates that may require deleting documents from the index
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'ApacheSolrForTypo3\\Solr\\GarbageCollector';
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'ApacheSolrForTypo3\\Solr\\GarbageCollector';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \ApacheSolrForTypo3\Solr\GarbageCollector::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \ApacheSolrForTypo3\Solr\GarbageCollector::class;
 
     // hooking into TCE Main to monitor record updates that may require reindexing by the index queue
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\RecordMonitor';
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\RecordMonitor';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = \ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor::class;
 }
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
@@ -161,7 +161,7 @@ options.contextMenu.table.pages.items.851 = DIVIDER
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
     'TYPO3.Solr.ContextMenuActionController',
-    'ApacheSolrForTypo3\Solr\ContextMenuActionController',
+    \ApacheSolrForTypo3\Solr\ContextMenuActionController::class,
     'web',
     'admin'
 );
