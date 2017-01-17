@@ -85,7 +85,7 @@ class DocumentHighlighter implements ResultDocumentModifier
         $highlightedContent = $this->search->getHighlightedContent();
         foreach ($this->highlightFields as $highlightField) {
             if (!empty($highlightedContent->{$resultDocument['id']}->{$highlightField}[0])) {
-                $fragments = array();
+                $fragments = [];
                 foreach ($highlightedContent->{$resultDocument['id']}->{$highlightField} as $fragment) {
                     $fragments[] = Template::escapeMarkers($fragment);
                 }

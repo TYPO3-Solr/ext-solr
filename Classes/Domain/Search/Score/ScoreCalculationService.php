@@ -56,7 +56,7 @@ class ScoreCalculationService
      */
     public function render(array $highScores)
     {
-        $scores = array();
+        $scores = [];
         $totalScore = 0;
 
         foreach ($highScores as $highScore) {
@@ -89,7 +89,7 @@ class ScoreCalculationService
      */
     public function parseScores($debugData, $queryFields)
     {
-        $highScores = array();
+        $highScores = [];
 
         /* TODO Provide better parsing
          *
@@ -102,7 +102,7 @@ class ScoreCalculationService
 
         // matches search term weights, ex: 0.42218783 = (MATCH) weight(content:iPod^40.0 in 43), product of:
         $pattern = '/(.*) = \(MATCH\) weight\((.*)\^/';
-        $scoreMatches = array();
+        $scoreMatches = [];
         preg_match_all($pattern, $debugData, $scoreMatches);
 
         foreach ($scoreMatches[0] as $key => $value) {
@@ -122,7 +122,7 @@ class ScoreCalculationService
             // keep track of highest score per search term
             if (!$scoreWasSetForFieldBefore || $scoreIsHigher) {
                 $pattern = '/' . $field . '\^([\d.]*)/';
-                $boostMatches = array();
+                $boostMatches = [];
                 preg_match_all($pattern, $queryFields, $boostMatches);
                 $boost = $boostMatches[1][0];
                 $highScores[$field] = new Score($boost, $field, $currentScoreValue, $searchTerm);

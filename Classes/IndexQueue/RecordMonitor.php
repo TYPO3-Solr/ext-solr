@@ -421,7 +421,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function getRecord($recordTable, $recordUid)
     {
-        $record = array();
+        $record = [];
         $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
 
         foreach ($indexingConfigurations as $indexingConfigurationName) {

@@ -58,7 +58,7 @@ class Relevance implements ViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         if (is_null($this->search)) {
             $this->search = GeneralUtility::makeInstance(Search::class);
@@ -72,7 +72,7 @@ class Relevance implements ViewHelper
      * @param array $arguments Array of arguments, [0] is expected to contain the result document.
      * @return string The score as percent value.
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $content = '';
         $document = $arguments[0];

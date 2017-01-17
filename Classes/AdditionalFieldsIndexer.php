@@ -48,12 +48,12 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
     /**
      * @var array
      */
-    protected $additionalIndexingFields = array();
+    protected $additionalIndexingFields = [];
 
     /**
      * @var array
      */
-    protected $additionalFieldNames = array();
+    protected $additionalFieldNames = [];
 
     /**
      * @var ContentObjectService
@@ -103,7 +103,7 @@ class AdditionalFieldsIndexer implements SubstitutePageIndexer
      */
     protected function getAdditionalFields()
     {
-        $additionalFields = array();
+        $additionalFields = [];
 
         foreach ($this->additionalFieldNames as $additionalFieldName) {
             $additionalFields[$additionalFieldName] = $this->getFieldValue($additionalFieldName);

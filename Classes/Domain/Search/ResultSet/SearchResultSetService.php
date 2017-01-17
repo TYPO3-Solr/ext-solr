@@ -52,7 +52,7 @@ class SearchResultSetService implements SingletonInterface
      *
      * @var array
      */
-    protected $additionalFilters = array();
+    protected $additionalFilters = [];
 
     /**
      * Track, if the number of results per page has been changed by the current request
@@ -479,7 +479,7 @@ class SearchResultSetService implements SingletonInterface
 
         $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
         if (count($searchQueryFilters) <= 0) {
-            return array();
+            return [];
         }
 
         $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);

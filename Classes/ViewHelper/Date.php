@@ -50,7 +50,7 @@ class Date implements ViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         if (is_null($this->dateFormat) || is_null($this->contentObject)) {
             $configuration = Util::getSolrConfiguration();
@@ -65,7 +65,7 @@ class Date implements ViewHelper
      * @param array $arguments
      * @return string
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $content = '';
 

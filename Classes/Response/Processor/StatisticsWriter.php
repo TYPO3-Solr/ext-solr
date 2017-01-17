@@ -50,7 +50,7 @@ class StatisticsWriter implements ResponseProcessor
     ) {
         $urlParameters = GeneralUtility::_GP('tx_solr');
         $keywords = $query->getKeywords();
-        $filters = isset($urlParameters['filter']) ? $urlParameters['filter'] : array();
+        $filters = isset($urlParameters['filter']) ? $urlParameters['filter'] : [];
 
         if (empty($keywords)) {
             // do not track empty queries

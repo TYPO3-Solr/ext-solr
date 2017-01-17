@@ -132,7 +132,7 @@ class FacetOption
         $isSelected = false;
 
         $resultParameters = GeneralUtility::_GET('tx_solr');
-        $filterParameters = array();
+        $filterParameters = [];
         if (isset($resultParameters['filter'])) {
             $filterParameters = (array)array_map('urldecode',
                 $resultParameters['filter']);

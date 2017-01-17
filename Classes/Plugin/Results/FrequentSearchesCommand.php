@@ -132,7 +132,7 @@ class FrequentSearchesCommand implements PluginCommand
      */
     protected function getSearchTermMarkerProperties(array $frequentSearchTerms)
     {
-        $frequentSearches = array();
+        $frequentSearches = [];
 
         $minimumSize = $this->frequentSearchConfiguration['minSize'];
         $maximumSize = $this->frequentSearchConfiguration['maxSize'];

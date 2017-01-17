@@ -457,7 +457,7 @@ class Search implements SingletonInterface
 
     public function getFacetQueryOptions($facetField)
     {
-        $options = array();
+        $options = [];
 
         $facetQueries = get_object_vars($this->getFacetCounts()->facet_queries);
         foreach ($facetQueries as $facetQuery => $numberOfResults) {

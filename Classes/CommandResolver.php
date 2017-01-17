@@ -40,7 +40,7 @@ class CommandResolver
      *
      * @var array
      */
-    protected static $commands = array();
+    protected static $commands = [];
 
     /**
      * Registers a command and its command class for several plugins
@@ -99,7 +99,7 @@ class CommandResolver
         $pluginName,
         $pluginStatus = PluginCommand::REQUIREMENT_NONE
     ) {
-        $commands = array();
+        $commands = [];
 
         $requiredBits = self::getRequiredBits($pluginStatus);
         foreach (self::$commands as $command) {
@@ -135,7 +135,7 @@ class CommandResolver
      */
     protected static function getRequiredBits($bitmask)
     {
-        $requiredBits = array();
+        $requiredBits = [];
 
         for ($i = 0; $i < PluginCommand::REQUIREMENTS_NUM_BITS; $i++) {
             if (!(($bitmask & pow(2, $i)) == 0)) {

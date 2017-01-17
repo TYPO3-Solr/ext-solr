@@ -45,8 +45,8 @@ class PageBrowser
 
     protected $template;
 
-    protected $configuration = array();
-    protected $labels = array();
+    protected $configuration = [];
+    protected $labels = [];
     protected $contentObject = null;
 
     /**
@@ -91,7 +91,7 @@ class PageBrowser
                 '###TEXT_PREV###' => htmlspecialchars($this->labels['pagebrowser_prev']),
                 '###TEXT_LAST###' => htmlspecialchars($this->labels['pagebrowser_last']),
             );
-            $subPartMarkers = array();
+            $subPartMarkers = [];
             $subPart = $this->contentObject->getSubpart($this->template,
                 '###PAGE_BROWSER###');
 

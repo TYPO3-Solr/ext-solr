@@ -113,7 +113,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     ) {
         $this->initialize($taskInfo, $task, $schedulerModule);
 
-        $additionalFields = array();
+        $additionalFields = [];
 
         $additionalFields['site'] = array(
             'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
@@ -188,7 +188,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     ) {
         $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
 
-        $indexingConfigurations = array();
+        $indexingConfigurations = [];
         if (!empty($submittedData['indexingConfigurations'])) {
             $indexingConfigurations = $submittedData['indexingConfigurations'];
         }

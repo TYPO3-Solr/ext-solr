@@ -58,7 +58,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
      *
      * @var array
      */
-    protected $facetOptions = array();
+    protected $facetOptions = [];
 
     /**
      * Template engine to replace template markers with their values.
@@ -123,7 +123,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
      */
     public function renderFacetOptions()
     {
-        $facetOptionLinks = array();
+        $facetOptionLinks = [];
         $solrConfiguration = Util::getSolrConfiguration();
         $this->template->workOnSubpart('single_facet_option');
 
@@ -206,7 +206,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
      */
     protected function sortFacetOptionsByUserDefinedOrder()
     {
-        $sortedOptions = array();
+        $sortedOptions = [];
 
         $manualFacetOptionSortOrder = GeneralUtility::trimExplode(',',
             $this->facetConfiguration['manualSortOrder']);

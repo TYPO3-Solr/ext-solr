@@ -67,7 +67,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
      */
     public function execute()
     {
-        $markers = array();
+        $markers = [];
 
         $selectOptions = $this->getResultsPerPageOptions();
         if ($selectOptions) {
@@ -94,7 +94,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
      */
     public function getResultsPerPageOptions()
     {
-        $resultsPerPageOptions = array();
+        $resultsPerPageOptions = [];
 
         $resultsPerPageSwitchOptions = $this->configuration->getSearchResultsPerPageSwitchOptionsAsArray();
         $currentNumberOfResultsShown = $this->parentPlugin->getSearchResultSetService()->getLastResultSet()->getResultsPerPage();

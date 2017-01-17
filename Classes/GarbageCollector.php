@@ -42,7 +42,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GarbageCollector extends AbstractDataHandlerListener implements SingletonInterface
 {
-    protected $trackedRecords = array();
+    protected $trackedRecords = [];
 
     /**
      * Hooks into TCE main and tracks record deletion commands.

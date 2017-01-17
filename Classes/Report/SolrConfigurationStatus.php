@@ -46,7 +46,7 @@ class SolrConfigurationStatus implements StatusProviderInterface
      */
     public function getStatus()
     {
-        $reports = array();
+        $reports = [];
 
         $rootPageFlagStatus = $this->getRootPageFlagStatus();
         if (!is_null($rootPageFlagStatus)) {
@@ -103,9 +103,9 @@ class SolrConfigurationStatus implements StatusProviderInterface
     {
         $status = null;
         $rootPages = $this->getRootPages();
-        $rootPagesWithoutDomain = array();
+        $rootPagesWithoutDomain = [];
 
-        $rootPageIds = array();
+        $rootPageIds = [];
         foreach ($rootPages as $rootPage) {
             $rootPageIds[] = $rootPage['uid'];
         }
@@ -157,7 +157,7 @@ class SolrConfigurationStatus implements StatusProviderInterface
     {
         $status = null;
         $rootPages = $this->getRootPages();
-        $rootPagesWithIndexingOff = array();
+        $rootPagesWithIndexingOff = [];
 
         foreach ($rootPages as $rootPage) {
             try {

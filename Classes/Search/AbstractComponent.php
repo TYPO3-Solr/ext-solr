@@ -37,7 +37,7 @@ abstract class AbstractComponent implements SearchComponent
      *
      * @var array
      */
-    protected $searchConfiguration = array();
+    protected $searchConfiguration = [];
 
     /**
      * Sets the plugin's search configuration.

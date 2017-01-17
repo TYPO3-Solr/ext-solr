@@ -63,7 +63,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @var array
      */
-    protected $frontendGroups = array();
+    protected $frontendGroups = [];
 
     // activation
 

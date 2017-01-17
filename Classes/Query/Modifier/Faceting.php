@@ -44,16 +44,16 @@ class Faceting implements Modifier
      */
     protected $configuration;
 
-    protected $facetParameters = array();
+    protected $facetParameters = [];
 
-    protected $facetFilters = array();
+    protected $facetFilters = [];
 
     protected $facetRendererFactory = null;
 
     /**
      * @var array
      */
-    protected $allConfiguredFacets = array();
+    protected $allConfiguredFacets = [];
 
     /**
      * @param TypoScriptConfiguration $solrConfiguration
@@ -126,11 +126,11 @@ class Faceting implements Modifier
      */
     protected function buildFacetParameters(array $facetConfiguration)
     {
-        $facetParameters = array();
+        $facetParameters = [];
 
         // simple for now, may add overrides f.<field_name>.facet.* later
         if ($this->configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
-            $facets = array();
+            $facets = [];
             foreach ($this->allConfiguredFacets as $facet) {
                 $facets[] = $facet['field'];
             }
@@ -174,7 +174,7 @@ class Faceting implements Modifier
             // decide later whether we need to do AND or OR for multiple
             // filters for a certain facet/field
             // $filtersByFacetName look like array('name' => array ('value1', 'value2'), 'fieldname2' => array('foo'))
-            $filtersByFacetName = array();
+            $filtersByFacetName = [];
             foreach ($filters as $filter) {
                 // only split by the first colon to allow using colons in the filter value itself
                 list($filterFacetName, $filterValue) = explode(':', $filter, 2);
@@ -194,12 +194,12 @@ class Faceting implements Modifier
                     $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
                 }
 
-                $filterParts = array();
+                $filterParts = [];
                 foreach ($filterValues as $filterValue) {
                     if (!is_null($filterEncoder)) {
                         $filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
                         if (empty($filterOptions)) {
-                            $filterOptions = array();
+                            $filterOptions = [];
                         }
 
                         $filterValue = $filterEncoder->decodeFilter($filterValue,
@@ -224,7 +224,7 @@ class Faceting implements Modifier
      */
     protected function getConfiguredFacets()
     {
-        $facets = array();
+        $facets = [];
 
         foreach ($this->allConfiguredFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);

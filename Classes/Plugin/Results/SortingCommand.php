@@ -79,7 +79,7 @@ class SortingCommand implements PluginCommand
      */
     public function execute()
     {
-        $marker = array();
+        $marker = [];
 
         if ($this->configuration->getSearchSorting() && $this->search->getNumberOfResults()) {
             $marker['loop_sort|sort'] = $this->getSortingLinks();
@@ -105,7 +105,7 @@ class SortingCommand implements PluginCommand
         $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class, $query);
         $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
 
-        $sortOptions = array();
+        $sortOptions = [];
 
         $urlParameters = GeneralUtility::_GP('tx_solr');
         $urlSortParameters = GeneralUtility::trimExplode(',',

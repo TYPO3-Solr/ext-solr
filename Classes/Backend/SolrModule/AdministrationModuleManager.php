@@ -37,7 +37,7 @@ class AdministrationModuleManager
      *
      * @var array
      */
-    protected static $modules = array();
+    protected static $modules = [];
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
@@ -79,7 +79,7 @@ class AdministrationModuleManager
      */
     public function sortModules()
     {
-        $thirdPartyModules = array();
+        $thirdPartyModules = [];
 
         foreach (self::$modules as $moduleName => $module) {
             if ($module['extensionKey'] != 'solr') {
@@ -98,7 +98,7 @@ class AdministrationModuleManager
      */
     public function getModules()
     {
-        $modules = array();
+        $modules = [];
 
         foreach (self::$modules as $moduleName => $moduleClass) {
             $modules[$moduleName] = $this->getModule($moduleName);

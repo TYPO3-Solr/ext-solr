@@ -51,7 +51,7 @@ class DateRange implements FilterEncoder, FacetBuilder
      * @param array $configuration Facet configuration
      * @return string Lucene query language filter to be used for querying Solr
      */
-    public function decodeFilter($dateRange, array $configuration = array())
+    public function decodeFilter($dateRange, array $configuration = [])
     {
         list($dateRangeStart, $dateRangeEnd) = explode(self::DELIMITER,
             $dateRange);
@@ -74,7 +74,7 @@ class DateRange implements FilterEncoder, FacetBuilder
      * @param array $configuration Facet configuration
      * @return string Value to be used in a URL GET parameter
      */
-    public function encodeFilter($filterValue, array $configuration = array())
+    public function encodeFilter($filterValue, array $configuration = [])
     {
         return $filterValue;
     }
@@ -88,7 +88,7 @@ class DateRange implements FilterEncoder, FacetBuilder
      */
     public function buildFacetParameters($facetName, array $facetConfiguration)
     {
-        $facetParameters = array();
+        $facetParameters = [];
 
         $tag = '';
         if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {

@@ -224,7 +224,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     protected function getPages()
     {
         $pages = $this->site->getPages();
-        $additionalPageIds = array();
+        $additionalPageIds = [];
         if (!empty($this->indexingConfiguration['additionalPageIds'])) {
             $additionalPageIds = GeneralUtility::intExplode(
                 ',',
@@ -247,7 +247,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     protected function buildTcaWhereClause()
     {
         $tcaWhereClause = '';
-        $conditions = array();
+        $conditions = [];
 
         if (isset($GLOBALS['TCA'][$this->type]['ctrl']['delete'])) {
             $conditions['delete'] = $GLOBALS['TCA'][$this->type]['ctrl']['delete'] . ' = 0';

@@ -53,7 +53,7 @@ class ReIndexTask extends AbstractTask
      *
      * @var array
      */
-    protected $indexingConfigurationsToReIndex = array();
+    protected $indexingConfigurationsToReIndex = [];
 
     /**
      * Purges/commits all Solr indexes, initializes the Index Queue
@@ -68,7 +68,7 @@ class ReIndexTask extends AbstractTask
 
         // initialize for re-indexing
         $indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $indexQueueInitializationResults = array();
+        $indexQueueInitializationResults = [];
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $indexQueueInitializationResults = $indexQueue->initialize($this->site,
                 $indexingConfigurationName);
@@ -88,7 +88,7 @@ class ReIndexTask extends AbstractTask
         $cleanUpResult = true;
         $solrConfiguration = $this->site->getSolrConfiguration();
         $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
-        $typesToCleanUp = array();
+        $typesToCleanUp = [];
         $enableCommitsSetting = $solrConfiguration->getEnableCommits();
 
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {

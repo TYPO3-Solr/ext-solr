@@ -67,7 +67,7 @@ class Indexer extends AbstractIndexer
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * To log or not to log... #Shakespeare
@@ -81,14 +81,14 @@ class Indexer extends AbstractIndexer
      *
      * @var array
      */
-    protected static $sysLanguageOverlay = array();
+    protected static $sysLanguageOverlay = [];
 
     /**
      * Constructor
      *
      * @param array $options array of indexer options
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         $this->options = $options;
         $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
@@ -138,7 +138,7 @@ class Indexer extends AbstractIndexer
     protected function indexItem(Item $item, $language = 0)
     {
         $itemIndexed = false;
-        $documents = array();
+        $documents = [];
 
         $itemDocument = $this->itemToDocument($item, $language);
         if (is_null($itemDocument)) {
@@ -270,7 +270,7 @@ class Indexer extends AbstractIndexer
             true, $language);
 
         $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName(
-            $item->getIndexingConfigurationName(), array()
+            $item->getIndexingConfigurationName(), []
         );
 
         if (count($fields) === 0) {
@@ -426,7 +426,7 @@ class Indexer extends AbstractIndexer
         $language,
         Apache_Solr_Document $itemDocument
     ) {
-        $documents = array();
+        $documents = [];
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] as $classReference) {
@@ -501,7 +501,7 @@ class Indexer extends AbstractIndexer
      */
     protected function getSolrConnectionsByItem(Item $item)
     {
-        $solrConnections = array();
+        $solrConnections = [];
 
         $pageId = $item->getRootPageUid();
         if ($item->getType() == 'pages') {
@@ -512,7 +512,7 @@ class Indexer extends AbstractIndexer
         $site = $item->getSite();
         $solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($site);
 
-        $siteLanguages = array();
+        $siteLanguages = [];
         foreach ($solrConfigurationsBySite as $solrConfiguration) {
             $siteLanguages[] = $solrConfiguration['language'];
         }
@@ -553,7 +553,7 @@ class Indexer extends AbstractIndexer
      */
     protected function getTranslationOverlaysForPage($pageId, $languageMode)
     {
-        $translationOverlays = array();
+        $translationOverlays = [];
         $pageId = intval($pageId);
 
         $languageModes = array('content_fallback', 'strict', 'ignore');
@@ -607,7 +607,7 @@ class Indexer extends AbstractIndexer
     protected function getConnectionsForIndexableLanguages(
         array $translationOverlays
     ) {
-        $connections = array();
+        $connections = [];
 
         foreach ($translationOverlays as $translationOverlay) {
             $pageId = $translationOverlay['pid'];
@@ -665,7 +665,7 @@ class Indexer extends AbstractIndexer
             . $item->getRecordUid() . ' - ';
 
         // preparing data
-        $documents = array();
+        $documents = [];
         foreach ($itemDocuments as $document) {
             $documents[] = (array)$document;
         }

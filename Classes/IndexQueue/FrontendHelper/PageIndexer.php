@@ -65,7 +65,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @var array
      */
-    protected $responseData = array();
+    protected $responseData = [];
 
     /**
      * Activates a frontend helper by registering for hooks and other
@@ -126,7 +126,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         }
 
         if (!is_array($GLOBALS['TSFE']->fe_user->user)) {
-            $GLOBALS['TSFE']->fe_user->user = array();
+            $GLOBALS['TSFE']->fe_user->user = [];
         }
 
         $groups = $accessRootline->getGroups();

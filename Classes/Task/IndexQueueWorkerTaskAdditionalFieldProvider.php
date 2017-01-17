@@ -54,7 +54,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $task,
         SchedulerModuleController $schedulerModule
     ) {
-        $additionalFields = array();
+        $additionalFields = [];
 
         if ($schedulerModule->CMD == 'add') {
             $taskInfo['site'] = null;

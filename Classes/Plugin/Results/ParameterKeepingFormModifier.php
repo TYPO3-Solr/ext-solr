@@ -85,7 +85,7 @@ class ParameterKeepingFormModifier implements FormModifier, CommandPluginAware
      */
     public function modifyForm(array $markers, Template $template)
     {
-        $hiddenFields = array();
+        $hiddenFields = [];
 
         if ($this->parentPlugin instanceof Results && $this->configuration->getSearchKeepExistingParametersForNewSearches()) {
             foreach ($this->parentPlugin->piVars as $key => $value) {

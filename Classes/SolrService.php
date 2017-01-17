@@ -228,7 +228,7 @@ class SolrService extends \Apache_Solr_Service
      * @return \Apache_Solr_Response Solr response
      * @throws \RuntimeException if Solr returns a HTTP status code other than 200
      */
-    public function search($query, $offset = 0, $limit = 10, $params = array(), $method = self::METHOD_GET)
+    public function search($query, $offset = 0, $limit = 10, $params = [], $method = self::METHOD_GET)
     {
         $response = parent::search($query, $offset, $limit, $params, $method);
         $this->hasSearched = true;
@@ -413,7 +413,7 @@ class SolrService extends \Apache_Solr_Service
      * @param array $params Additional URL parameters to attach to the end of the URL
      * @return string Servlet URL
      */
-    protected function _constructUrl($servlet, $params = array())
+    protected function _constructUrl($servlet, $params = [])
     {
         $url = parent::_constructUrl($servlet, $params);
 

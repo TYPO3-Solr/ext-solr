@@ -47,7 +47,7 @@ class Hierarchy implements FilterEncoder
      * @param array $configuration Facet configuration
      * @return string Value to be used in a URL GET parameter
      */
-    public function encodeFilter($filterValue, array $configuration = array())
+    public function encodeFilter($filterValue, array $configuration = [])
     {
         list(, $hierarchyPath) = explode('-', $filterValue, 2);
 
@@ -61,7 +61,7 @@ class Hierarchy implements FilterEncoder
      * @param array $configuration Facet configuration
      * @return string Lucene query language filter to be used for querying Solr
      */
-    public function decodeFilter($hierarchy, array $configuration = array())
+    public function decodeFilter($hierarchy, array $configuration = [])
     {
         $hierarchy = substr($hierarchy, 1);
         $hierarchy = rtrim($hierarchy, '/');

@@ -52,7 +52,7 @@ class QueryGroup implements FilterEncoder, FacetBuilder
      * @param array $configuration options set in a facet's configuration
      * @return string Value to be used in a URL GET parameter
      */
-    public function encodeFilter($filterValue, array $configuration = array())
+    public function encodeFilter($filterValue, array $configuration = [])
     {
         $field = $configuration['field'];
         $queries = $configuration['queryGroup.'];
@@ -75,7 +75,7 @@ class QueryGroup implements FilterEncoder, FacetBuilder
      * @param array $configuration options set in a facet's configuration
      * @return string Value to be used in a Lucene filter
      */
-    public function decodeFilter($filterValue, array $configuration = array())
+    public function decodeFilter($filterValue, array $configuration = [])
     {
         return $configuration[$filterValue . '.']['query'];
     }
@@ -91,7 +91,7 @@ class QueryGroup implements FilterEncoder, FacetBuilder
      */
     public function buildFacetParameters($facetName, array $facetConfiguration)
     {
-        $facetParameters = array();
+        $facetParameters = [];
 
         foreach ($facetConfiguration['queryGroup.'] as $queryName => $queryConfiguration) {
             $tag = '';
@@ -99,7 +99,7 @@ class QueryGroup implements FilterEncoder, FacetBuilder
                 // TODO This code is duplicated from "Query/Modifier/Faceting.php"
                 // Eventually the "exclude fields" should get passed to this method beforehand instead
                 // of generating them in each different "buildFacetParameters" implementation
-                $facets = array();
+                $facets = [];
                 foreach ($this->configuration->getSearchFacetingFacets() as $facet) {
                     $facets[] = $facet['field'];
                 }

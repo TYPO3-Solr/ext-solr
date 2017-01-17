@@ -46,7 +46,7 @@ class Crop implements ViewHelper
      * Constructor
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         $configuration = Util::getSolrConfiguration();
         $cropConfiguration = $configuration->getViewHelpersCropConfiguration();
@@ -71,7 +71,7 @@ class Crop implements ViewHelper
      * @param array $arguments
      * @return string
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $stringToCrop = $arguments[0];
 
@@ -90,7 +90,7 @@ class Crop implements ViewHelper
         }
 
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-        $contentObject->start(array(), '');
+        $contentObject->start([], '');
         $croppedString = $contentObject->cropHTML(
             $stringToCrop,
             $maxLength . '|' . $cropIndicator . ($this->cropFullWords ? '|1' : '')

@@ -62,7 +62,7 @@ class SuggestQuery extends Query
         if (!empty($this->configuration['treatMultipleTermsAsSingleTerm'])) {
             $this->prefix = $this->escape($keywords);
         } else {
-            $matches = array();
+            $matches = [];
             preg_match('/^(:?(.* |))([^ ]+)$/', $keywords, $matches);
             $fullKeywords = trim($matches[2]);
             $partialKeyword = trim($matches[3]);

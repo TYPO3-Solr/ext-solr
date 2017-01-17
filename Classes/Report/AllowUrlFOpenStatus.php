@@ -43,7 +43,7 @@ class AllowUrlFOpenStatus implements StatusProviderInterface
      */
     public function getStatus()
     {
-        $reports = array();
+        $reports = [];
         $severity = Status::OK;
         $value = 'On';
         $message = '';

@@ -102,7 +102,7 @@ class FrequentSearchesService
                 $lifetime = intval($frequentSearchConfiguration['cacheLifetime']);
             }
 
-            $this->cache->set($identifier, $terms, array(), $lifetime);
+            $this->cache->set($identifier, $terms, [], $lifetime);
         }
 
         return $terms;
@@ -116,7 +116,7 @@ class FrequentSearchesService
      */
     protected function getFrequentSearchTermsFromStatistics($frequentSearchConfiguration)
     {
-        $terms = array();
+        $terms = [];
 
         if ($frequentSearchConfiguration['select.']['checkRootPageId']) {
             $checkRootPidWhere = 'root_pid = ' . $this->tsfe->tmpl->rootLine[0]['uid'];

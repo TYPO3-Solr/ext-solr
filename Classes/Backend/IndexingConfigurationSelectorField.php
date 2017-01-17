@@ -56,7 +56,7 @@ class IndexingConfigurationSelectorField
      *
      * @var array
      */
-    protected $selectedValues = array();
+    protected $selectedValues = [];
 
     /**
      * Constructor
@@ -140,7 +140,7 @@ class IndexingConfigurationSelectorField
      */
     protected function getIndexQueueConfigurationTableMap()
     {
-        $indexingTableMap = array();
+        $indexingTableMap = [];
 
         $solrConfiguration      = $this->site->getSolrConfiguration();
         $configurationNames     = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
@@ -159,7 +159,7 @@ class IndexingConfigurationSelectorField
      */
     protected function buildSelectorItems(array $tablesToIndex)
     {
-        $selectorItems = array();
+        $selectorItems = [];
 
         foreach ($tablesToIndex as $configurationName => $tableName) {
             $icon = 'tcarecords-' . $tableName . '-default';
@@ -187,7 +187,7 @@ class IndexingConfigurationSelectorField
     protected function renderSelectCheckbox($items, $selectedValues)
     {
         $parameterArray = array(
-            'fieldChangeFunc' => array(),
+            'fieldChangeFunc' => [],
             'itemFormElName' => $this->formElementName,
             'itemFormElValue' => $selectedValues,
             'fieldConf' => array('config' => array('items' => $items)), 'fieldTSConfig' => array('noMatchingValue_label' => '')
@@ -195,7 +195,7 @@ class IndexingConfigurationSelectorField
 
         /** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
-        $options = array('renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector', 'fieldName' => 'additionalFields', 'databaseRow' => array(), 'parameterArray' => $parameterArray);
+        $options = array('renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector', 'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray);
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
 

@@ -90,7 +90,7 @@ class FacetingCommand implements PluginCommand
      */
     public function execute()
     {
-        $marker = array();
+        $marker = [];
 
         if ($this->configuration->getSearchFaceting()
             && ($this->search->getNumberOfResults() || $this->configuration->getSearchInitializeWithEmptyQuery() || $this->configuration->getSearchInitializeWithQuery())
@@ -197,13 +197,13 @@ class FacetingCommand implements PluginCommand
         }
 
         $resultParameters = GeneralUtility::_GET('tx_solr');
-        $filterParameters = array();
+        $filterParameters = [];
         if (isset($resultParameters['filter'])) {
             $filterParameters = (array)array_map('urldecode',
                 $resultParameters['filter']);
         }
 
-        $facetsInUse = array();
+        $facetsInUse = [];
         foreach ($filterParameters as $filter) {
             // only split by the first ":" to allow the use of colons in the filter value
             list($filterName, $filterValue) = explode(':', $filter, 2);
@@ -233,7 +233,7 @@ class FacetingCommand implements PluginCommand
         $template->addLoop('facets_in_use', 'remove_facet', $facetsInUse);
 
         $template->addVariable('remove_all_facets', array(
-            'url' => $queryLinkBuilder->getQueryUrl(array('filter' => array())),
+            'url' => $queryLinkBuilder->getQueryUrl(array('filter' => [])),
             'text' => '###LLL:faceting_removeAllFilters###'
         ));
 

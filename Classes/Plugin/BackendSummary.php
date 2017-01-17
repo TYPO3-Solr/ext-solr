@@ -34,9 +34,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackendSummary
 {
-    protected $pluginContentElement = array();
-    protected $flexformData = array();
-    protected $settings = array();
+    protected $pluginContentElement = [];
+    protected $flexformData = [];
+    protected $settings = [];
 
     /**
      * Returns information about a plugin's flexform configuration

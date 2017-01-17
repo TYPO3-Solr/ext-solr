@@ -72,7 +72,7 @@ class Lll implements ViewHelper
      * @param array $arguments
      * @throws \ApacheSolrForTypo3\Solr\LanguageFileUnavailableException
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         if (!isset($arguments['languageFile'])) {
             throw new LanguageFileUnavailableException(
@@ -122,7 +122,7 @@ class Lll implements ViewHelper
      * @param array $arguments
      * @return string
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $isFullPath = false;
         if (GeneralUtility::isFirstPartOfStr($arguments[0], 'FILE')) {
