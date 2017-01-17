@@ -108,7 +108,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         $dataHandler = $this->dataHandler;
-        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, array(), $dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, [], $dataHandler);
 
         // we expect that one item is now in the solr server
         $this->assertIndexQueryContainsItemAmount(1);

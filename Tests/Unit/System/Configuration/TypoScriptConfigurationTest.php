@@ -45,7 +45,7 @@ class TypoScriptConfigurationTest extends UnitTest
      */
     public function setUp()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content'] = 'SOLR_CONTENT';
         $fakeConfigurationArray['plugin.']['tx_solr.']['index.']['queue.']['tt_news.']['fields.']['content.']['field'] = 'bodytext';
         $this->configuration = new TypoScriptConfiguration($fakeConfigurationArray);
@@ -84,7 +84,7 @@ class TypoScriptConfigurationTest extends UnitTest
                 'faceting.' => array(
                     'facetLinkATagParams' => 'class="all-facets"',
                     'facets.' => array(
-                        'color.' => array(),
+                        'color.' => [],
                         'type.' => array(
                             'facetLinkATagParams' => 'class="type-facets"'
                         )
@@ -111,7 +111,7 @@ class TypoScriptConfigurationTest extends UnitTest
                 'faceting.' => array(
                     'showEmptyFacets' => true,
                     'facets.' => array(
-                        'color.' => array(),
+                        'color.' => [],
                         'type.' => array(
                             'showEvenWhenEmpty' => true
                         )
@@ -131,7 +131,7 @@ class TypoScriptConfigurationTest extends UnitTest
             'search.' => array(
                 'faceting.' => array(
                     'facets.' => array(
-                        'color.' => array(),
+                        'color.' => [],
                         'type.' => array(
                             'showEvenWhenEmpty' => true
                         )
@@ -296,7 +296,7 @@ class TypoScriptConfigurationTest extends UnitTest
                         'table' => 'tx_model_news'
                     ),
                     'pages' => 1,
-                    'pages.' => array()
+                    'pages.' => []
                 )
             )
         );
@@ -327,7 +327,7 @@ class TypoScriptConfigurationTest extends UnitTest
                         'table' => 'tx_model_news'
                     ),
                     'pages' => 1,
-                    'pages.' => array()
+                    'pages.' => []
                 )
             )
         );
@@ -422,7 +422,7 @@ class TypoScriptConfigurationTest extends UnitTest
                         'fields.' => array(
                             'sortSubTitle_stringS' => 'subtitle',
                             'subTitle_stringM' => 'subtitle',
-                            'fooShouldBeSkipped.' => array()
+                            'fooShouldBeSkipped.' => []
                         )
                     )
                 )

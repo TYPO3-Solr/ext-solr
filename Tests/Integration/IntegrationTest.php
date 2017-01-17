@@ -154,7 +154,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     /**
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getConfiguredTSFE($TYPO3_CONF_VARS = array(), $id = 1, $type = 0)
+    protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0)
     {
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
@@ -252,7 +252,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     {
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        $fakeTSFE = $this->getConfiguredTSFE(array(), $pageId);
+        $fakeTSFE = $this->getConfiguredTSFE([], $pageId);
         $fakeTSFE->newCObj();
 
         $GLOBALS['TSFE'] = $fakeTSFE;

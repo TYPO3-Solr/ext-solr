@@ -43,12 +43,12 @@ class ArrayAccessorTest extends UnitTest
         $arrayAccessor = new ArrayAccessor($data);
         $this->assertSame(1, $arrayAccessor->get('foo:bla'));
 
-        $data = array();
+        $data = [];
         $data['one']['two']['three']['four'] = 'test';
         $arrayAccessor = new ArrayAccessor($data);
         $this->assertSame('test', $arrayAccessor->get('one:two:three:four'));
 
-        $emptyArray = array();
+        $emptyArray = [];
         $arrayAccessor = new ArrayAccessor($emptyArray);
         $this->assertSame(null, $arrayAccessor->get('one:two:three:four'));
     }

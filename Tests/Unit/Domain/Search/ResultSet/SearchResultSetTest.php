@@ -92,7 +92,7 @@ class SearchResultSetTest extends UnitTest
      */
     public function testSearchIfFiredWithInitializedQuery()
     {
-        $this->fakeRegisteredSearchComponents(array());
+        $this->fakeRegisteredSearchComponents([]);
 
             // we expect the the ->search method on the Search object will be called once
             // and we pass the response that should be returned when it was call to compare
@@ -112,7 +112,7 @@ class SearchResultSetTest extends UnitTest
      */
     public function testOffsetIsPassedAsExpectedWhenSearchWasPaginated()
     {
-        $this->fakeRegisteredSearchComponents(array());
+        $this->fakeRegisteredSearchComponents([]);
 
         $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 2. search', 50, $fakeResponse);
@@ -130,7 +130,7 @@ class SearchResultSetTest extends UnitTest
      */
     public function testQueryAwareComponentGetsInitialized()
     {
-        $this->configurationMock->expects($this->once())->method('getSearchConfiguration')->will($this->returnValue(array()));
+        $this->configurationMock->expects($this->once())->method('getSearchConfiguration')->will($this->returnValue([]));
 
             // we expect that the initialize method of our component will be called
         $fakeQueryAwareSpellChecker = $this->getDumbMock(SpellcheckingComponent::class);
@@ -157,7 +157,7 @@ class SearchResultSetTest extends UnitTest
 
         $testProcessor = TestSearchResponseProcessor::class;
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['testProcessor'] = $testProcessor;
-        $this->fakeRegisteredSearchComponents(array());
+        $this->fakeRegisteredSearchComponents([]);
 
         $fakedSolrResponse = $this->getFixtureContent('fakeResponse.json');
         $fakeHttpResponse = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
@@ -185,7 +185,7 @@ class SearchResultSetTest extends UnitTest
      */
     public function testGoingToFirstPageWhenResultPerPageWasChanged()
     {
-        $this->fakeRegisteredSearchComponents(array());
+        $this->fakeRegisteredSearchComponents([]);
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
                                 ->will($this->returnValue(array(10, 25)));
 
@@ -211,7 +211,7 @@ class SearchResultSetTest extends UnitTest
      */
     public function testAdditionalFiltersGetPassedToTheQuery()
     {
-        $this->fakeRegisteredSearchComponents(array());
+        $this->fakeRegisteredSearchComponents([]);
         $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
 
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('test', 0, $fakeResponse);
@@ -241,7 +241,7 @@ class SearchResultSetTest extends UnitTest
             // in this case we collapse on the type field
         $this->configurationMock->expects($this->atLeastOnce())->method('getSearchVariantsField')->will($this->returnValue('type'));
 
-        $this->fakeRegisteredSearchComponents(array());
+        $this->fakeRegisteredSearchComponents([]);
         $fakedSolrResponse = $this->getFixtureContent('fakeCollapsedResponse.json');
         $fakeHttpResponse = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
         $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));

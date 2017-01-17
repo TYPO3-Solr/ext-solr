@@ -51,11 +51,11 @@ class FrequentSearchesTest extends AbstractPluginTest
         // trigger a search
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4), 'can_render_frequentSearches_plugin.xml', 'results');
         $_GET['q'] = 'prices';
-        $searchResults->main('', array());
+        $searchResults->main('', []);
 
             // and now render the frequent Results Plugin
         $frequentSearches = $this->getPluginInstance('frequent_search');
-        $frequentSearchesOutput = $frequentSearches->main('', array());
+        $frequentSearchesOutput = $frequentSearches->main('', []);
         $this->assertContainerByIdContains('rel="nofollow">prices</a>', $frequentSearchesOutput, 'tx-solr-frequent-searches');
     }
 }

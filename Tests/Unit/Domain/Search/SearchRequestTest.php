@@ -104,7 +104,7 @@ class SearchRequestTest extends UnitTest
     {
         $request = $this->getSearchRequestFromQueryString('');
         $arguments  = $request->addFacetValue('foo', 'bar')->getAsArray();
-        $expectedArguments = array();
+        $expectedArguments = [];
         $expectedArguments['tx_solr']['filter'][0] = 'foo:bar';
         $this->assertSame($arguments, $expectedArguments, 'Adding a facet did not product the expected structure');
     }
@@ -116,7 +116,7 @@ class SearchRequestTest extends UnitTest
     {
         $request = $this->getSearchRequestFromQueryString('');
         $arguments  = $request->addFacetValue('type', 'pages')->addFacetValue('type', 'tt_content')->getAsArray();
-        $expectedArguments = array();
+        $expectedArguments = [];
         $expectedArguments['tx_solr']['filter'][0] = 'type:pages';
         $expectedArguments['tx_solr']['filter'][1] = 'type:tt_content';
 
@@ -131,7 +131,7 @@ class SearchRequestTest extends UnitTest
         $request = $this->getSearchRequestFromQueryString('');
         $arguments  = $request->setRawQueryString('mysearch')->addFacetValue('type', 'tt_content')->getAsArray();
 
-        $expectedArguments = array();
+        $expectedArguments = [];
         $expectedArguments['q'] = 'mysearch';
         $expectedArguments['tx_solr']['filter'][0] = 'type:tt_content';
 
@@ -145,7 +145,7 @@ class SearchRequestTest extends UnitTest
     {
         $request = $this->getSearchRequestFromQueryString('');
         $arguments  = $request->setRawQueryString('mysearch')->addFacetValue('type', 'tt_content')->reset()->getAsArray();
-        $expectedArguments = array();
+        $expectedArguments = [];
         $this->assertSame($arguments, $expectedArguments, 'Could not reset arguments');
     }
 
@@ -162,7 +162,7 @@ class SearchRequestTest extends UnitTest
                             ->getCopyForSubRequest()
                             ->getAsArray();
 
-        $expectedArguments = array();
+        $expectedArguments = [];
         $expectedArguments['q'] = 'mysearch';
         $expectedArguments['tx_solr']['filter'][0] = 'type:tt_content';
 
@@ -182,7 +182,7 @@ class SearchRequestTest extends UnitTest
                                 ->setPage(2)
                                 ->getCopyForSubRequest()->getAsArray();
 
-        $expectedArguments = array();
+        $expectedArguments = [];
         $expectedArguments['q'] = 'mysearch';
         $expectedArguments['tx_solr']['filter'][0] = 'type:tt_content';
 
@@ -194,7 +194,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canGetContextSystemLanguageUidPassedOnCreation()
     {
-        $request = new SearchRequest(array(), 111, 4711);
+        $request = new SearchRequest([], 111, 4711);
         $this->assertSame($request->getContextSystemLanguageUid(), 4711, 'Can get initial passed sys_language_uid');
     }
 
@@ -203,7 +203,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canGetContextPageUidPassedOnCreation()
     {
-        $request = new SearchRequest(array(), 111, 4711);
+        $request = new SearchRequest([], 111, 4711);
         $this->assertSame($request->getContextPageUid(), 111, 'Can get initial passed page_uid');
     }
 
@@ -323,7 +323,7 @@ class SearchRequestTest extends UnitTest
      */
     protected function getSearchRequestFromQueryString($query)
     {
-        $FAKE_GET = array();
+        $FAKE_GET = [];
         parse_str(urldecode($query), $FAKE_GET);
         $request = new SearchRequest($FAKE_GET);
         return $request;
@@ -335,7 +335,7 @@ class SearchRequestTest extends UnitTest
     public function canGetContextTypoScriptConfigurationPassedOnCreation()
     {
         $typoScriptConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
-        $request = new SearchRequest(array(), 111, 4711, $typoScriptConfiguration);
+        $request = new SearchRequest([], 111, 4711, $typoScriptConfiguration);
 
         $this->assertSame($request->getContextTypoScriptConfiguration(), $typoScriptConfiguration, 'Can get initial passed TypoScriptConfiguration');
     }

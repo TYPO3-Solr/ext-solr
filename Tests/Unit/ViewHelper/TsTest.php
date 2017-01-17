@@ -49,7 +49,7 @@ class TsTest extends UnitTest
     /**
      * @var array
      */
-    protected $fixtures = array();
+    protected $fixtures = [];
 
     public function setUp()
     {
