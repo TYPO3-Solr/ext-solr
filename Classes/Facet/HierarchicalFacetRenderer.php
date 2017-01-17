@@ -70,7 +70,7 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
         $filterEncoder = GeneralUtility::makeInstance(Hierarchy::class);
 
         // enrich the facet options with links before building the menu structure
-        $enrichedFacetOptions = array();
+        $enrichedFacetOptions = [];
         foreach ($facetOptions as $facetOptionValue => $facetOptionResultCount) {
             $facetOption = GeneralUtility::makeInstance(FacetOption::class,
                 $this->facetName,

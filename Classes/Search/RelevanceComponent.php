@@ -62,7 +62,7 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
         }
 
         if (!empty($this->searchConfiguration['query.']['boostQuery.'])) {
-            $boostQueries = array();
+            $boostQueries = [];
             $boostConfiguration = $this->searchConfiguration['query.']['boostQuery.'];
 
             foreach ($boostConfiguration as $query) {

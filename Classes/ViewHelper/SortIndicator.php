@@ -43,7 +43,7 @@ class SortIndicator implements ViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
     }
 
@@ -55,7 +55,7 @@ class SortIndicator implements ViewHelper
      * @return string
      * @throws \InvalidArgumentException when providing an invalid sorting direction
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $content = '';
         $sortDirection = trim($arguments[0]);

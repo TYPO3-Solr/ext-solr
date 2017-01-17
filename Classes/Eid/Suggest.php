@@ -102,7 +102,7 @@ if ($search->ping()) {
     $facetSuggestions = $results->facet_counts->facet_fields->{$suggestConfig['suggestField']};
     $facetSuggestions = get_object_vars($facetSuggestions);
 
-    $suggestions = array();
+    $suggestions = [];
     foreach ($facetSuggestions as $partialKeyword => $value) {
         $suggestionKey = trim($suggestQuery->getKeywords() . ' ' . $partialKeyword);
         $suggestions[$suggestionKey] = $facetSuggestions[$partialKeyword];

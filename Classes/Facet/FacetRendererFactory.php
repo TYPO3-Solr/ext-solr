@@ -41,13 +41,13 @@ class FacetRendererFactory
      *
      * @var array
      */
-    protected static $facetTypes = array();
+    protected static $facetTypes = [];
     /**
      * Facets configuration from plugin.tx_solr.search.faceting.facets
      *
      * @var array
      */
-    protected $facetsConfiguration = array();
+    protected $facetsConfiguration = [];
     /**
      * The default facet render, good for most cases.
      *

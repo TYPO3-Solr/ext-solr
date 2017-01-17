@@ -65,7 +65,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      */
     public function process(array $values)
     {
-        $results = array();
+        $results = [];
 
         foreach ($values as $value) {
             list($rootPageUid, $mountPoint) = GeneralUtility::trimExplode(',',
@@ -101,7 +101,7 @@ class PageUidToHierarchy extends AbstractHierarchyProcessor implements FieldProc
      */
     protected function buildPageIdRootline($pageId, $mountPoint = '')
     {
-        $rootlinePageIds = array();
+        $rootlinePageIds = [];
 
             /** @var $pageSelector PageRepository */
         $pageSelector = GeneralUtility::makeInstance(PageRepository::class);

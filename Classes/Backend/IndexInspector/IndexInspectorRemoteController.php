@@ -92,7 +92,7 @@ class IndexInspectorRemoteController
     {
         $this->initialize($pageId);
 
-        $responseDocuments = array();
+        $responseDocuments = [];
         $documents = $this->getIndexDocuments();
 
         foreach ($documents as $key => $document) {
@@ -162,7 +162,7 @@ class IndexInspectorRemoteController
      */
     protected function buildResponseFieldDescription()
     {
-        $fields = array();
+        $fields = [];
         $fieldNames = array('id', 'type', 'title', '__data');
 
         foreach ($fieldNames as $fieldName) {
@@ -184,7 +184,7 @@ class IndexInspectorRemoteController
      */
     protected function formatDocumentData(\Apache_Solr_Document $document)
     {
-        $fields = array();
+        $fields = [];
         foreach ($document as $fieldName => $value) {
             $fields[$fieldName] = $value;
         }
@@ -192,7 +192,7 @@ class IndexInspectorRemoteController
 
         $sortedData = $fields;
 
-        $formattedData = array();
+        $formattedData = [];
         foreach ($sortedData as $fieldName => $fieldValue) {
             if (is_array($fieldValue)) {
                 $formattedData[] = array(

@@ -48,12 +48,12 @@ class Template
     protected $template;
     protected $workOnSubpart;
     protected $viewHelperIncludePath;
-    protected $helpers = array();
-    protected $loadedHelperFiles = array();
-    protected $variables = array();
-    protected $markers = array();
-    protected $subparts = array();
-    protected $loops = array();
+    protected $helpers = [];
+    protected $loadedHelperFiles = [];
+    protected $variables = [];
+    protected $markers = [];
+    protected $subparts = [];
+    protected $loops = [];
 
     protected $debugMode = false;
 
@@ -168,7 +168,7 @@ class Template
      * @param array $arguments optional array of arguments
      * @return bool
      */
-    public function addViewHelper($helperName, array $arguments = array())
+    public function addViewHelper($helperName, array $arguments = [])
     {
         $success = false;
 
@@ -740,7 +740,7 @@ class Template
      */
     protected function findConditions($content)
     {
-        $conditions = array();
+        $conditions = [];
         $ifMarkers = $this->getViewHelperArgumentLists('IF', $content, false);
 
         foreach ($ifMarkers as $ifMarker) {
@@ -822,9 +822,9 @@ class Template
      */
     protected function resolveVariableMarkers(array $markers, $variableValue)
     {
-        $resolvedMarkers = array();
+        $resolvedMarkers = [];
 
-        $normalizedKeysArray = array();
+        $normalizedKeysArray = [];
         foreach ($variableValue as $key => $value) {
             $key = $this->normalizeString($key);
             $normalizedKeysArray[$key] = $value;
@@ -886,7 +886,7 @@ class Template
      */
     protected function normalizeString($selector)
     {
-        static $normalizeCache = array();
+        static $normalizeCache = [];
 
         if (!isset($normalizeCache[$selector])) {
             $originalSelector = $selector;

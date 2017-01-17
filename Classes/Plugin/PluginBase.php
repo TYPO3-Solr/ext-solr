@@ -215,7 +215,7 @@ abstract class PluginBase extends AbstractPlugin
                     $this->conf['_DEFAULT_PI_VARS.'][$key . '.']);
             }
 
-            $piVars = is_array($this->piVars) ? $this->piVars : array();
+            $piVars = is_array($this->piVars) ? $this->piVars : [];
             $this->piVars = $this->conf['_DEFAULT_PI_VARS.'];
             ArrayUtility::mergeRecursiveWithOverrule(
                 $this->piVars,
@@ -260,7 +260,7 @@ abstract class PluginBase extends AbstractPlugin
             }
 
             // Clear the "unset memory"
-            $this->LOCAL_LANG_UNSET = array();
+            $this->LOCAL_LANG_UNSET = [];
             foreach ($translationInTypoScript as $languageKey => $languageArray) {
                 // Remove the dot after the language key
                 $languageKey = substr($languageKey, 0, -1);

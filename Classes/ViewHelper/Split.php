@@ -38,7 +38,7 @@ class Split extends AbstractSubpartViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
     }
 
@@ -48,7 +48,7 @@ class Split extends AbstractSubpartViewHelper
      * @param array $arguments
      * @return string
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         try {
             $iterator  = unserialize($arguments[0]);

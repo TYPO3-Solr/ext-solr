@@ -47,7 +47,7 @@ class TwoLevelCache
     /**
      * @var array
      */
-    protected static $firstLevelCache = array();
+    protected static $firstLevelCache = [];
 
     /**
      * @var \TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
@@ -129,7 +129,7 @@ class TwoLevelCache
      */
     public function flush()
     {
-        self::$firstLevelCache[$this->cacheName] = array();
+        self::$firstLevelCache[$this->cacheName] = [];
         $this->secondLevelCache->flush();
     }
 }

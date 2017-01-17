@@ -54,7 +54,7 @@ class HierarchicalFacetHelper
      */
     public function getMenuStructure($content, array $configuration)
     {
-        $menuStructure = array();
+        $menuStructure = [];
         $facetOptions = $this->cObj->data['facetOptions'];
 
         foreach ($facetOptions as $facetOptionKey => $facetOption) {
@@ -118,7 +118,7 @@ class HierarchicalFacetHelper
      */
     protected function getSubMenu(array $facetOptions, $menuName, $level)
     {
-        $menu = array();
+        $menu = [];
 
         $subMenuEntryPrefix = $level . '-' . $menuName;
 

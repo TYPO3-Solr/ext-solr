@@ -40,7 +40,7 @@ interface ViewHelper
      *
      * @param array $arguments optional initialisation arguments
      */
-    public function __construct(array $arguments = array());
+    public function __construct(array $arguments = []);
 
     /**
      * execute method
@@ -48,5 +48,5 @@ interface ViewHelper
      * @param array array of arguments
      * @return string The rendered output.
      */
-    public function execute(array $arguments = array());
+    public function execute(array $arguments = []);
 }

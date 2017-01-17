@@ -106,7 +106,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      */
     protected function getMappedFields()
     {
-        $fields = array();
+        $fields = [];
 
         $mappedFieldNames = $this->configuration->getIndexQueueMappedFieldsByConfigurationName($this->pageIndexingConfigurationName);
 

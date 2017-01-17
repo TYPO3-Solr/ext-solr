@@ -126,7 +126,7 @@ class ResultsCommand implements PluginCommand
     protected function getResultDocuments()
     {
         $responseDocuments = $this->search->getResultDocumentsEscaped();
-        $resultDocuments = array();
+        $resultDocuments = [];
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
@@ -214,7 +214,7 @@ class ResultsCommand implements PluginCommand
     ) {
         $processingInstructions = $this->configuration->getSearchResultsFieldProcessingInstructionsConfiguration();
         $availableFields = $document->getFieldNames();
-        $result = array();
+        $result = [];
 
         foreach ($availableFields as $fieldName) {
             $processingInstruction = $processingInstructions[$fieldName];
@@ -288,7 +288,7 @@ class ResultsCommand implements PluginCommand
 
             $solrGetParameters = GeneralUtility::_GET('tx_solr');
             if (!is_array($solrGetParameters)) {
-                $solrGetParameters = array();
+                $solrGetParameters = [];
             }
             $currentPage = $solrGetParameters['page'];
             unset($solrGetParameters['page']);
@@ -330,7 +330,7 @@ class ResultsCommand implements PluginCommand
             'pagebrowser_last'
         );
 
-        $labels = array();
+        $labels = [];
         foreach ($labelKeys as $labelKey) {
             $labels[$labelKey] = $this->parentPlugin->pi_getLL($labelKey);
         }

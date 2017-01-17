@@ -53,7 +53,7 @@ class Range implements FilterEncoder, FacetBuilder
      * @param array $configuration Facet configuration
      * @return string Value to be used in a URL GET parameter
      */
-    public function encodeFilter($filterValue, array $configuration = array())
+    public function encodeFilter($filterValue, array $configuration = [])
     {
         return $filterValue;
     }
@@ -67,7 +67,7 @@ class Range implements FilterEncoder, FacetBuilder
      * @return string Lucene query language filter to be used for querying Solr
      * @throws \InvalidArgumentException
      */
-    public function decodeFilter($range, array $configuration = array())
+    public function decodeFilter($range, array $configuration = [])
     {
         preg_match('/(-?\d*?)' . self::DELIMITER . '(-?\d*)/', $range, $filterParts);
         if ($filterParts[1] == '' || $filterParts[2] == '') {
@@ -91,7 +91,7 @@ class Range implements FilterEncoder, FacetBuilder
      */
     public function buildFacetParameters($facetName, array $facetConfiguration)
     {
-        $facetParameters = array();
+        $facetParameters = [];
 
         $tag = '';
         if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {

@@ -64,7 +64,7 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      */
     public function getStatus()
     {
-        $reports = array();
+        $reports = [];
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {

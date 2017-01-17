@@ -40,21 +40,21 @@ class PageIndexerRequest
      *
      * @var array
      */
-    protected $actions = array();
+    protected $actions = [];
 
     /**
      * Parameters as sent from the Index Queue page indexer.
      *
      * @var array
      */
-    protected $parameters = array();
+    protected $parameters = [];
 
     /**
      * Headers as sent from the Index Queue page indexer.
      *
      * @var array
      */
-    protected $header = array();
+    protected $header = [];
 
     /**
      * Unique request ID.

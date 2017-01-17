@@ -40,7 +40,7 @@ class SearchComponentManager
      *
      * @var array
      */
-    protected static $searchComponents = array();
+    protected static $searchComponents = [];
 
     /**
      * Registers a search component.
@@ -62,7 +62,7 @@ class SearchComponentManager
      */
     public function getSearchComponents()
     {
-        $searchComponents = array();
+        $searchComponents = [];
 
         foreach (self::$searchComponents as $componentName => $componentClass) {
             $searchComponents[$componentName] = $this->getSearchComponent($componentName);

@@ -64,7 +64,7 @@ class SortUrl implements ViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         $this->search = GeneralUtility::makeInstance(Search::class);
 
@@ -78,7 +78,7 @@ class SortUrl implements ViewHelper
      * @param array $arguments
      * @return string
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $urlParameters = GeneralUtility::_GP('tx_solr');
         $urlSortParameters = GeneralUtility::trimExplode(',',
@@ -88,11 +88,11 @@ class SortUrl implements ViewHelper
 
         $sortHelper = GeneralUtility::makeInstance(
             Sorting::class,
-            $this->configuration->getValueByPathOrDefaultValue('plugin.tx_solr.search.sorting.options.', array())
+            $this->configuration->getValueByPathOrDefaultValue('plugin.tx_solr.search.sorting.options.', [])
         );
         $configuredSortOptions = $sortHelper->getSortOptions();
 
-        $sortParameters = array();
+        $sortParameters = [];
         foreach ($sortOptions as $sortOption) {
             if (isset($configuredSortOptions[$sortOption])) {
                 $sortDirection = $this->configuration->getValueByPathOrDefaultValue('plugin.tx_solr.search.sorting.defaultOrder', 'asc');

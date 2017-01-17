@@ -121,7 +121,7 @@ class PageIndexer extends Indexer
         }
 
         if (GeneralUtility::hideIfNotTranslated($page['l18n_cfg'])) {
-            $accessibleSolrConnections = array();
+            $accessibleSolrConnections = [];
             if (isset($solrConnections[0])) {
                 $accessibleSolrConnections[0] = $solrConnections[0];
             }

@@ -72,7 +72,7 @@ class MountPagesUpdater
      */
     protected function getDestinationMountPropertiesByRootLine(array $rootLineArray)
     {
-        $mountPages = array();
+        $mountPages = [];
 
         $currentPage = array_shift($rootLineArray);
         $currentPageUid = (int)$currentPage['uid'];
@@ -85,7 +85,7 @@ class MountPagesUpdater
         $rootLine = GeneralUtility::makeInstance(Rootline::class, $rootLineArray);
         $rootLineParentPageIds = $rootLine->getParentPageIds();
 
-        $pageQueryConditions = array();
+        $pageQueryConditions = [];
         if (!empty($rootLineParentPageIds)) {
             $pageQueryConditions[] = '(mount_pid IN(' . implode(',', $rootLineParentPageIds) . '))';
         }

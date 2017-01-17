@@ -40,7 +40,7 @@ interface FilterEncoder
      * @param array $configuration Facet configuration
      * @return string Value to be used in a URL GET parameter
      */
-    public function encodeFilter($filterValue, array $configuration = array());
+    public function encodeFilter($filterValue, array $configuration = []);
 
     /**
      * Parses the query filter from GET parameters in the URL and translates it
@@ -50,5 +50,5 @@ interface FilterEncoder
      * @param array $configuration Facet configuration
      * @return string Value to be used in a Lucene filter
      */
-    public function decodeFilter($filterValue, array $configuration = array());
+    public function decodeFilter($filterValue, array $configuration = []);
 }

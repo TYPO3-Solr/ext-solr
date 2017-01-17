@@ -42,13 +42,13 @@ class JavascriptManager
      *
      * @var array
      */
-    protected static $files = array();
+    protected static $files = [];
     /**
      * Raw script snippets to load.
      *
      * @var array
      */
-    protected static $snippets = array();
+    protected static $snippets = [];
     /**
      * Javascript file configuration.
      *
@@ -66,7 +66,7 @@ class JavascriptManager
      *
      * @var array
      */
-    protected $javaScriptTags = array();
+    protected $javaScriptTags = [];
 
     /**
      * Constructor.

@@ -39,7 +39,7 @@ class ConfigurationManager implements SingletonInterface
     /**
      * @var TypoScriptConfiguration
      */
-    protected $typoScriptConfigurations = array();
+    protected $typoScriptConfigurations = [];
 
     /**
      * Resets the state of the configuration manager.
@@ -48,7 +48,7 @@ class ConfigurationManager implements SingletonInterface
      */
     public function reset()
     {
-        $this->typoScriptConfigurations = array();
+        $this->typoScriptConfigurations = [];
     }
 
     /**
@@ -75,11 +75,11 @@ class ConfigurationManager implements SingletonInterface
         }
 
         if (!is_array($configurationArray)) {
-            $configurationArray = array();
+            $configurationArray = [];
         }
 
         if (!isset($configurationArray['plugin.']['tx_solr.'])) {
-            $configurationArray['plugin.']['tx_solr.'] = array();
+            $configurationArray['plugin.']['tx_solr.'] = [];
         }
 
         if ($contextPageId === null && !empty($GLOBALS['TSFE']->id)) {

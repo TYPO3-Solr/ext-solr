@@ -71,7 +71,7 @@ class ErrorsCommand implements PluginCommand
      */
     public function execute()
     {
-        $marker = array();
+        $marker = [];
 
         $errors = $this->getErrors();
         if (!empty($errors)) {
@@ -90,7 +90,7 @@ class ErrorsCommand implements PluginCommand
      */
     protected function getErrors()
     {
-        $errors = array();
+        $errors = [];
 
         // detect empty user queries
         $resultService = $this->parentPlugin->getSearchResultSetService();

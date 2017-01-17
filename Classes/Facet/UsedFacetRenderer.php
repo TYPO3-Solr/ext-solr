@@ -73,7 +73,7 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
         Template $template,
         Query $query
     ) {
-        parent::__construct($facetName, array(), $template, $query);
+        parent::__construct($facetName, [], $template, $query);
 
         $this->filter = $filter;
         $this->filterValue = $filterValue;

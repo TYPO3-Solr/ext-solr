@@ -130,7 +130,7 @@ class IndexFieldsModuleController extends AbstractModuleController
      */
     protected function getFields(\Apache_Solr_Response $lukeData, $limitNote)
     {
-        $rows = array();
+        $rows = [];
 
         $fields = (array)$lukeData->fields;
         foreach ($fields as $name => $field) {

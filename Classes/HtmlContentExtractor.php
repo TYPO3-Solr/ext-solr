@@ -214,8 +214,8 @@ class HtmlContentExtractor
      */
     public function getTagContent()
     {
-        $result = array();
-        $matches = array();
+        $result = [];
+        $matches = [];
         $content = $this->getContentMarkedForIndexing();
 
         // strip all ignored tags

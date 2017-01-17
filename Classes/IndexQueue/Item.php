@@ -79,7 +79,7 @@ class Item
      *
      * @var array
      */
-    protected $indexingProperties = array();
+    protected $indexingProperties = [];
 
     /**
      * Flag for lazy loading indexing properties.
@@ -117,7 +117,7 @@ class Item
      */
     public function __construct(
         array $itemMetaData,
-        array $fullRecord = array()
+        array $fullRecord = []
     ) {
         $this->indexQueueUid = $itemMetaData['uid'];
         $this->rootPageUid = $itemMetaData['root'];
@@ -296,7 +296,7 @@ class Item
      */
     protected function writeIndexingProperties()
     {
-        $properties = array();
+        $properties = [];
         foreach ($this->indexingProperties as $propertyKey => $propertyValue) {
             $properties[] = array(
                 $this->rootPageUid,

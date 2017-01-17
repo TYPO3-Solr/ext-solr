@@ -42,7 +42,7 @@ class PathToHierarchy implements FieldProcessor
      */
     public function process(array $values)
     {
-        $results = array();
+        $results = [];
 
         foreach ($values as $value) {
             $valueResults = $this->buildSolrHierarchyFromPath($value);
@@ -61,10 +61,10 @@ class PathToHierarchy implements FieldProcessor
      */
     protected function buildSolrHierarchyFromPath($path)
     {
-        $hierarchy = array();
+        $hierarchy = [];
 
         $treeParts = GeneralUtility::trimExplode('/', $path, true);
-        $currentTreeParts = array();
+        $currentTreeParts = [];
 
         foreach ($treeParts as $i => $part) {
             $currentTreeParts[] = $part;

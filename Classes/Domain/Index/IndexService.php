@@ -265,7 +265,7 @@ class IndexService
      */
     protected function initializeHttpServerEnvironment(Item $item)
     {
-        static $hosts = array();
+        static $hosts = [];
         $rootpageId = $item->getRootPageUid();
         $hostFound = !empty($hosts[$rootpageId]);
 

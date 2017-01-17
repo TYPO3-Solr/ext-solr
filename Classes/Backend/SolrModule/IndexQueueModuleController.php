@@ -173,7 +173,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function initializeIndexQueueAction()
     {
-        $initializedIndexingConfigurations = array();
+        $initializedIndexingConfigurations = [];
 
         $itemIndexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
@@ -201,7 +201,7 @@ class IndexQueueModuleController extends AbstractModuleController
             );
         }
 
-        $messagesForConfigurations = array();
+        $messagesForConfigurations = [];
         foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
             $itemCount = $itemIndexQueue->getItemsCountBySite($this->site,
                 $indexingConfigurationName);

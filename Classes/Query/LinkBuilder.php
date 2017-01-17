@@ -176,8 +176,8 @@ class LinkBuilder
      * @return string A query URL
      */
     public function getQueryUrl(
-        array $additionalQueryParameters = array(),
-        array $typolinkOptions = array()
+        array $additionalQueryParameters = [],
+        array $typolinkOptions = []
     ) {
         $linkConfigurationOverwrite = array('returnLast' => 'url');
         $link = $this->getQueryLink(
@@ -201,8 +201,8 @@ class LinkBuilder
      */
     public function getQueryLink(
         $linkText,
-        array $additionalQueryParameters = array(),
-        array $typolinkOptions = array()
+        array $additionalQueryParameters = [],
+        array $typolinkOptions = []
     ) {
         $queryParameters = array_merge(
             $this->getPluginParameters(),

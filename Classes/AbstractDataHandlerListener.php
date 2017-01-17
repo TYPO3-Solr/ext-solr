@@ -45,7 +45,7 @@ abstract class AbstractDataHandlerListener
      */
     protected function getAllRelevantFieldsForCurrentState()
     {
-        $allCurrentStateFieldnames = array();
+        $allCurrentStateFieldnames = [];
 
         foreach ($this->getUpdateSubPagesRecursiveTriggerConfiguration() as $triggerConfiguration) {
             if (!isset($triggerConfiguration['currentState']) || !is_array($triggerConfiguration['currentState'])) {

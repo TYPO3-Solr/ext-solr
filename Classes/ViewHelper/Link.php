@@ -55,7 +55,7 @@ class Link implements ViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         if (is_null($this->contentObject)) {
             $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
@@ -68,7 +68,7 @@ class Link implements ViewHelper
      * @param array $arguments Array of arguments, [0] is the link text, [1] is the (optional) page Id to link to (otherwise TSFE->id), [2] are additional URL parameters, [3] use cache, defaults to FALSE, [4] additional A tag parameters
      * @return string complete anchor tag with URL and link text
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $linkText = $arguments[0];
         $additionalParameters = $arguments[2] ? $arguments[2] : '';

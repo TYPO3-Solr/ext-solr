@@ -97,7 +97,7 @@ class AuthorizationService extends AbstractAuthenticationService
      */
     public function getGroups($user, $knownGroups)
     {
-        $groupData = array();
+        $groupData = [];
 
             /** @var $requestHandler PageIndexerRequestHandler */
         $requestHandler = GeneralUtility::makeInstance(PageIndexerRequestHandler::class);

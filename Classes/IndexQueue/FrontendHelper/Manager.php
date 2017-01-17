@@ -41,14 +41,14 @@ class Manager
      *
      * @var array
      */
-    protected static $frontendHelperRegistry = array();
+    protected static $frontendHelperRegistry = [];
 
     /**
      * Instances of activated frontend helpers.
      *
      * @var array
      */
-    protected $activatedFrontendHelpers = array();
+    protected $activatedFrontendHelpers = [];
 
     /**
      * Registers a frontend helper class for a certain action.

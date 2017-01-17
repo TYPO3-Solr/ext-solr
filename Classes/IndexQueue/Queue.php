@@ -109,8 +109,8 @@ class Queue
      */
     public function initialize(Site $site, $indexingConfigurationName = '')
     {
-        $indexingConfigurations = array();
-        $initializationStatus = array();
+        $indexingConfigurations = [];
+        $initializationStatus = [];
 
         if (empty($indexingConfigurationName)) {
             $solrConfiguration = $site->getSolrConfiguration();
@@ -235,7 +235,7 @@ class Queue
         $itemUid,
         $rootPageId = null
     ) {
-        $possibleIndexingConfigurationNames = array();
+        $possibleIndexingConfigurationNames = [];
 
         if (!is_null($rootPageId)) {
             // get configuration for the root's branch
@@ -544,7 +544,7 @@ class Queue
      */
     public function deleteItem($itemType, $itemUid)
     {
-        $uidList = array();
+        $uidList = [];
 
         // get the item uids to use them in the deletes afterwards
         $items = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -578,7 +578,7 @@ class Queue
      */
     public function deleteItemsByType($itemType)
     {
-        $uidList = array();
+        $uidList = [];
 
         // get the item uids to use them in the deletes afterwards
         $items = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -777,7 +777,7 @@ class Queue
      */
     public function getItemsToIndex(Site $site, $limit = 50)
     {
-        $itemsToIndex = array();
+        $itemsToIndex = [];
 
         // determine which items to index with this run
         $indexQueueItemRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -809,9 +809,9 @@ class Queue
     protected function getIndexQueueItemObjectsFromRecords(
         array $indexQueueItemRecords
     ) {
-        $indexQueueItems = array();
-        $tableUids = array();
-        $tableRecords = array();
+        $indexQueueItems = [];
+        $tableUids = [];
+        $tableRecords = [];
 
         // grouping records by table
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {

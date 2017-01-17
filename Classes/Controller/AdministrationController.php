@@ -68,7 +68,7 @@ class AdministrationController extends ActionController
      *
      * @var array
      */
-    protected $modules = array();
+    protected $modules = [];
 
     /**
      * Name of the currently active module

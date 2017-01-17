@@ -109,7 +109,7 @@ class LastSearchesCommand implements PluginCommand
             $GLOBALS['TYPO3_DB']);
 
             // fill array for output
-        $lastSearches = array();
+        $lastSearches = [];
         $lastSearchesKeywords = $lastSearchesService->getLastSearches();
         foreach ($lastSearchesKeywords as $keywords) {
             $keywords = stripslashes($keywords);
