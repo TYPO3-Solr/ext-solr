@@ -73,14 +73,14 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     public function activate()
     {
-        $pageIndexingHookRegistration = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageIndexer';
+        $pageIndexingHookRegistration = PageIndexer::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = '&' . $pageIndexingHookRegistration . '->authorizeFrontendUser';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = '&' . $pageIndexingHookRegistration . '->disableCaching';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__] = $pageIndexingHookRegistration;
 
         // indexes fields defined in plugin.tx_solr.index.queue.pages.fields
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer';
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = PageFieldMappingIndexer::class;
 
         // making sure this instance is reused when called by the hooks registered before
         // \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction() and \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj() use
@@ -171,7 +171,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         ExtensionManagementUtility::addService(
             'solr', // extension key
             'auth', // service type
-            'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\AuthorizationService',
+            AuthorizationService::class,
             // service key
             array( // service meta data
                 'title' => 'Solr Indexer Authorization',
@@ -187,7 +187,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
                 'exec' => '',
 
                 'classFile' => $GLOBALS['PATH_solr'] . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
-                'className' => 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\AuthorizationService',
+                'className' => AuthorizationService::class,
             )
         );
     }

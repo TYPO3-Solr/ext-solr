@@ -53,7 +53,7 @@ class FacetRendererFactory
      *
      * @var string
      */
-    private $defaultFacetRendererClassName = 'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetRenderer';
+    private $defaultFacetRendererClassName = SimpleFacetRenderer::class;
 
     /**
      * Constructor.

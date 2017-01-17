@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ResultDocumentModifier\DocumentHighlighter;
+use ApacheSolrForTypo3\Solr\ResultDocumentModifier\SiteHighlighter;
 use ApacheSolrForTypo3\Solr\Query;
 
 /**
@@ -49,7 +51,7 @@ class HighlightingComponent extends AbstractComponent implements QueryAware
     public function initializeSearchComponent()
     {
         if ($this->searchConfiguration['results.']['siteHighlighting']) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\SiteHighlighter';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['siteHighlighter'] = SiteHighlighter::class;
         }
 
         if ($this->searchConfiguration['results.']['resultsHighlighting']) {
@@ -58,7 +60,7 @@ class HighlightingComponent extends AbstractComponent implements QueryAware
                 $this->searchConfiguration['results.']['resultsHighlighting.']['fragmentSize']
             );
 
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = 'ApacheSolrForTypo3\\Solr\\ResultDocumentModifier\\DocumentHighlighter';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument']['highlighting'] = DocumentHighlighter::class;
         }
     }
 

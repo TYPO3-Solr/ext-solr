@@ -61,7 +61,7 @@ class ModuleDataStorageService implements SingletonInterface
         }
 
         if (empty($moduleData) || !$moduleData) {
-            $moduleData = $this->objectManager->get('ApacheSolrForTypo3\\Solr\\Domain\\Model\\ModuleData');
+            $moduleData = $this->objectManager->get(ModuleData::class);
         } else {
             $moduleData = unserialize($moduleData);
         }
