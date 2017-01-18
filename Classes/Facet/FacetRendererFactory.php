@@ -41,19 +41,19 @@ class FacetRendererFactory
      *
      * @var array
      */
-    protected static $facetTypes = array();
+    protected static $facetTypes = [];
     /**
      * Facets configuration from plugin.tx_solr.search.faceting.facets
      *
      * @var array
      */
-    protected $facetsConfiguration = array();
+    protected $facetsConfiguration = [];
     /**
      * The default facet render, good for most cases.
      *
      * @var string
      */
-    private $defaultFacetRendererClassName = 'ApacheSolrForTypo3\\Solr\\Facet\\SimpleFacetRenderer';
+    private $defaultFacetRendererClassName = SimpleFacetRenderer::class;
 
     /**
      * Constructor.
@@ -79,12 +79,12 @@ class FacetRendererFactory
         $filterEncoderClassName = '',
         $queryFacetBuilderClassName = ''
     ) {
-        self::$facetTypes[$facetType] = array(
+        self::$facetTypes[$facetType] = [
             'type' => $facetType,
             'renderer' => $rendererClassName,
             'filterEncoder' => $filterEncoderClassName,
             'queryFacetBuilder' => $queryFacetBuilderClassName
-        );
+        ];
     }
 
     /**
@@ -161,10 +161,10 @@ class FacetRendererFactory
             $facetRendererClassName = $this->getFacetRendererClassNameByFacetType($facetConfiguration['type']);
         }
 
-        return call_user_func(array(
+        return call_user_func([
             $facetRendererClassName,
             'getFacetInternalType'
-        ));
+        ]);
     }
 
     /**

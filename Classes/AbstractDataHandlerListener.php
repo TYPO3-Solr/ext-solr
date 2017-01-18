@@ -45,7 +45,7 @@ abstract class AbstractDataHandlerListener
      */
     protected function getAllRelevantFieldsForCurrentState()
     {
-        $allCurrentStateFieldnames = array();
+        $allCurrentStateFieldnames = [];
 
         foreach ($this->getUpdateSubPagesRecursiveTriggerConfiguration() as $triggerConfiguration) {
             if (!isset($triggerConfiguration['currentState']) || !is_array($triggerConfiguration['currentState'])) {
@@ -143,12 +143,12 @@ abstract class AbstractDataHandlerListener
      *
      * The structure needs to be:
      *
-     * array(
-     *      array(
-     *           'currentState' => array('fieldName1' => 'value1'),
-     *           'changeSet' => array('fieldName1' => 'value1')
-     *      )
-     * )
+     * [
+     *      [
+     *           'currentState' => ['fieldName1' => 'value1'],
+     *           'changeSet' => ['fieldName1' => 'value1']
+     *      ]
+     * ]
      *
      * When the all values of the currentState AND all values of the changeSet match, a recursive update
      * will be triggered.

@@ -72,7 +72,7 @@ class LastSearchesService
      */
     public function getLastSearches()
     {
-        $lastSearchesKeywords = array();
+        $lastSearchesKeywords = [];
         $mode   = $this->configuration->getSearchLastSearchesMode();
         $limit  = $this->configuration->getSearchLastSearchesLimit();
 
@@ -123,7 +123,7 @@ class LastSearchesService
         $lastSearches = $this->getLastSearchesFromFrontendSession();
 
         if (!is_array($lastSearches)) {
-            return array();
+            return [];
         }
 
         $lastSearches = array_slice(array_reverse(array_unique($lastSearches)), 0, $limit);
@@ -149,7 +149,7 @@ class LastSearchesService
             $limit
         );
 
-        $lastSearches = array();
+        $lastSearches = [];
         foreach ($lastSearchesRows as $row) {
             $lastSearches[] = html_entity_decode($row['keywords'], ENT_QUOTES, 'UTF-8');
         }
@@ -176,7 +176,7 @@ class LastSearchesService
         $currentLastSearches = $this->tsfe->fe_user->getKey('ses', 'tx_solr_lastSearches');
 
         if (!is_array($currentLastSearches)) {
-            $currentLastSearches = array();
+            $currentLastSearches = [];
         }
 
         $lastSearches = $currentLastSearches;

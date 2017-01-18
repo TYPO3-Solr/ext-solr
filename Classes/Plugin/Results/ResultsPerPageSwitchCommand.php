@@ -67,16 +67,16 @@ class ResultsPerPageSwitchCommand implements PluginCommand
      */
     public function execute()
     {
-        $markers = array();
+        $markers = [];
 
         $selectOptions = $this->getResultsPerPageOptions();
         if ($selectOptions) {
             $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
                 $this->parentPlugin->getSearchResultSetService()->getSearch()->getQuery());
             $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
-            $form = array(
+            $form = [
                 'action' => $queryLinkBuilder->getQueryUrl()
-            );
+            ];
 
             $markers['loop_options|option'] = $selectOptions;
             $markers['form'] = $form;
@@ -94,7 +94,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
      */
     public function getResultsPerPageOptions()
     {
-        $resultsPerPageOptions = array();
+        $resultsPerPageOptions = [];
 
         $resultsPerPageSwitchOptions = $this->configuration->getSearchResultsPerPageSwitchOptionsAsArray();
         $currentNumberOfResultsShown = $this->parentPlugin->getSearchResultSetService()->getLastResultSet()->getResultsPerPage();
@@ -113,12 +113,12 @@ class ResultsPerPageSwitchCommand implements PluginCommand
                 $selectedClass = ' class="currentNumberOfResults"';
             }
 
-            $resultsPerPageOptions[] = array(
+            $resultsPerPageOptions[] = [
                 'value' => $option,
                 'selected' => $selected,
                 'selectedClass' => $selectedClass,
-                'url' => $queryLinkBuilder->getQueryUrl(array('resultsPerPage' => $option)),
-            );
+                'url' => $queryLinkBuilder->getQueryUrl(['resultsPerPage' => $option]),
+            ];
         }
 
         return $resultsPerPageOptions;

@@ -51,7 +51,7 @@ class SearchRequest
      *
      * @var array
      */
-    protected $persistentArgumentsPaths = array('q', 'tx_solr:filter', 'tx_solr:sort');
+    protected $persistentArgumentsPaths = ['q', 'tx_solr:filter', 'tx_solr:sort'];
 
     /**
      * @var bool

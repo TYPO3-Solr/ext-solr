@@ -99,10 +99,10 @@ class FrequentSearches extends CommandPluginBase
     {
         $currentUrl = $this->getCurrentUrlWithQueryLinkBuilder();
 
-        return array(
+        return [
             'prefix' => $this->prefixId,
             'current_url' => $currentUrl
-        );
+        ];
     }
 
     /**

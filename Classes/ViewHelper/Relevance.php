@@ -58,7 +58,7 @@ class Relevance implements ViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         if (is_null($this->search)) {
             $this->search = GeneralUtility::makeInstance(Search::class);
@@ -72,7 +72,7 @@ class Relevance implements ViewHelper
      * @param array $arguments Array of arguments, [0] is expected to contain the result document.
      * @return string The score as percent value.
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $content = '';
         $document = $arguments[0];
@@ -127,10 +127,10 @@ class Relevance implements ViewHelper
                 $solrConfiguration = Util::getSolrConfiguration();
                 if ($solrConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.logging.exceptions', false)) {
                     GeneralUtility::devLog('Could not resolve document score for relevance calculation',
-                        'solr', 3, array(
+                        'solr', 3, [
                             'rawDocument' => $rawDocument,
                             'unserializedDocument' => $document
-                        ));
+                        ]);
                 }
 
                 throw new \RuntimeException(

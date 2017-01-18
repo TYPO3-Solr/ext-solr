@@ -37,7 +37,7 @@ $pageId = filter_var(GeneralUtility::_GET('id'), FILTER_SANITIZE_NUMBER_INT);
 $languageId = filter_var(
     GeneralUtility::_GET('L'),
     FILTER_VALIDATE_INT,
-    array('options' => array('default' => 0, 'min_range' => 0))
+    ['options' => ['default' => 0, 'min_range' => 0]]
 );
 $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
     TypoScriptFrontendController::class,
@@ -102,22 +102,22 @@ if ($search->ping()) {
     $facetSuggestions = $results->facet_counts->facet_fields->{$suggestConfig['suggestField']};
     $facetSuggestions = get_object_vars($facetSuggestions);
 
-    $suggestions = array();
+    $suggestions = [];
     foreach ($facetSuggestions as $partialKeyword => $value) {
         $suggestionKey = trim($suggestQuery->getKeywords() . ' ' . $partialKeyword);
         $suggestions[$suggestionKey] = $facetSuggestions[$partialKeyword];
     }
 
     if ($isOpenSearchRequest) {
-        $suggestions = array(
+        $suggestions = [
             $q,
             array_keys($suggestions)
-        );
+        ];
     }
 
     $ajaxReturnData = json_encode($suggestions);
 } else {
-    $ajaxReturnData = json_encode(array('status' => false));
+    $ajaxReturnData = json_encode(['status' => false]);
 }
 
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');

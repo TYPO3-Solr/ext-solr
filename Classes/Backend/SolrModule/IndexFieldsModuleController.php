@@ -130,16 +130,16 @@ class IndexFieldsModuleController extends AbstractModuleController
      */
     protected function getFields(\Apache_Solr_Response $lukeData, $limitNote)
     {
-        $rows = array();
+        $rows = [];
 
         $fields = (array)$lukeData->fields;
         foreach ($fields as $name => $field) {
-            $rows[$name] = array(
+            $rows[$name] = [
                 'name' => $name,
                 'type' => $field->type,
                 'docs' => isset($field->docs) ? $field->docs : 0,
                 'terms' => isset($field->distinct) ? $field->distinct : $limitNote
-            );
+            ];
         }
         ksort($rows);
 
@@ -156,12 +156,12 @@ class IndexFieldsModuleController extends AbstractModuleController
      */
     protected function getCoreMetrics(\Apache_Solr_Response $lukeData, array $fields)
     {
-        $coreMetrics = array(
+        $coreMetrics = [
             'numberOfDocuments' => $lukeData->index->numDocs,
             'numberOfDeletedDocuments' => $lukeData->index->deletedDocs,
             'numberOfTerms' => $lukeData->index->numTerms,
             'numberOfFields' => count($fields)
-        );
+        ];
 
         return $coreMetrics;
     }

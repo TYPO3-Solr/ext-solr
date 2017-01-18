@@ -60,7 +60,7 @@ class SolrLink implements ViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         if (is_null($this->contentObject)) {
             $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
@@ -78,7 +78,7 @@ class SolrLink implements ViewHelper
      * @param array $arguments Array of arguments, [0] is the link text, [1] is the (optional) page Id to link to (otherwise TSFE->id), [2] are additional URL parameters, [3] use cache, defaults to FALSE
      * @return string complete anchor tag with URL and link text
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $linkText = $arguments[0];
         $pageId = $this->determinePageId(trim($arguments[1]));
@@ -89,12 +89,12 @@ class SolrLink implements ViewHelper
         // FIXME pass anything not prefixed with tx_solr in $additionalParameters as 4th parameter
         $additionalUrlParameters = GeneralUtility::explodeUrl2Array($additionalUrlParameters,
             true);
-        $solrUrlParameters = array();
+        $solrUrlParameters = [];
         if (!empty($additionalUrlParameters['tx_solr'])) {
             $solrUrlParameters = $additionalUrlParameters['tx_solr'];
         }
 
-        $linkConfiguration = array('useCacheHash' => $useCache);
+        $linkConfiguration = ['useCacheHash' => $useCache];
 
         if ($returnOnlyUrl) {
             $linkConfiguration['returnLast'] = 'url';

@@ -45,7 +45,7 @@ class TimestampToIsoDate implements FieldProcessor
      */
     public function process(array $values)
     {
-        $results = array();
+        $results = [];
 
         foreach ($values as $timestamp) {
             $results[] = Util::timestampToIso($timestamp);

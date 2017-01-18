@@ -124,10 +124,10 @@ class Facet
      */
     public function getSelectedOptions()
     {
-        $selectedOptions = array();
+        $selectedOptions = [];
 
         $resultParameters = GeneralUtility::_GET('tx_solr');
-        $filterParameters = array();
+        $filterParameters = [];
         if (isset($resultParameters['filter'])) {
             $filterParameters = (array)array_map('urldecode',
                 $resultParameters['filter']);
@@ -193,16 +193,16 @@ class Facet
      */
     protected function getRequirements()
     {
-        $requirements = array();
+        $requirements = [];
 
         if (!empty($this->configuration['requirements.'])) {
             foreach ($this->configuration['requirements.'] as $name => $requirement) {
-                $requirements[] = array(
+                $requirements[] = [
                     'name' => substr($name, 0, -1),
                     'facet' => $requirement['facet'],
                     'values' => GeneralUtility::trimExplode(',',
                         $requirement['values']),
-                );
+                ];
             }
         }
 
@@ -247,7 +247,7 @@ class Facet
      */
     public function getOptionsRaw()
     {
-        $facetOptions = array();
+        $facetOptions = [];
 
         switch ($this->type) {
             case self::TYPE_FIELD:

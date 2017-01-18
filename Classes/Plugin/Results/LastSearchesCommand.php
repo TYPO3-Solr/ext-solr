@@ -88,9 +88,9 @@ class LastSearchesCommand implements PluginCommand
             return null;
         }
 
-        $marker = array(
+        $marker = [
             'loop_lastsearches|lastsearch' => $lastSearches
-        );
+        ];
 
         return $marker;
     }
@@ -109,16 +109,16 @@ class LastSearchesCommand implements PluginCommand
             $GLOBALS['TYPO3_DB']);
 
             // fill array for output
-        $lastSearches = array();
+        $lastSearches = [];
         $lastSearchesKeywords = $lastSearchesService->getLastSearches();
         foreach ($lastSearchesKeywords as $keywords) {
             $keywords = stripslashes($keywords);
-            $lastSearches[] = array(
+            $lastSearches[] = [
                 'q' => Template::escapeMarkers($keywords),
                 'parameters' => '&q=' . html_entity_decode($keywords,
                         ENT_NOQUOTES, 'UTF-8'),
                 'pid' => $this->parentPlugin->getLinkTargetPageId()
-            );
+            ];
         }
 
         return $lastSearches;

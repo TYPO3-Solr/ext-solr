@@ -84,18 +84,18 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function getUpdateSubPagesRecursiveTriggerConfiguration()
     {
-        return array(
+        return [
             // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 0 => requeue subpages
-            'extendToSubpageEnabledAndHiddenFlagWasRemoved' => array(
-                'currentState' =>  array('extendToSubpages' => '1'),
-                'changeSet' => array('hidden' => '0')
-            ),
+            'extendToSubpageEnabledAndHiddenFlagWasRemoved' => [
+                'currentState' =>  ['extendToSubpages' => '1'],
+                'changeSet' => ['hidden' => '0']
+            ],
             // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 0 => requeue subpages
-            'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => array(
-                'currentState' =>  array('hidden' => '1'),
-                'changeSet' => array('extendToSubpages' => '0')
-            )
-        );
+            'hiddenIsEnabledAndExtendToSubPagesWasRemoved' => [
+                'currentState' =>  ['hidden' => '1'],
+                'changeSet' => ['extendToSubpages' => '0']
+            ]
+        ];
     }
 
     /**
@@ -421,7 +421,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function getRecord($recordTable, $recordUid)
     {
-        $record = array();
+        $record = [];
         $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
 
         foreach ($indexingConfigurations as $indexingConfigurationName) {

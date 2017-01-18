@@ -42,13 +42,13 @@ class JavascriptManager
      *
      * @var array
      */
-    protected static $files = array();
+    protected static $files = [];
     /**
      * Raw script snippets to load.
      *
      * @var array
      */
-    protected static $snippets = array();
+    protected static $snippets = [];
     /**
      * Javascript file configuration.
      *
@@ -66,7 +66,7 @@ class JavascriptManager
      *
      * @var array
      */
-    protected $javaScriptTags = array();
+    protected $javaScriptTags = [];
 
     /**
      * Constructor.
@@ -86,10 +86,10 @@ class JavascriptManager
     public function addJavascript($identifier, $snippet)
     {
         if (!array_key_exists($identifier, self::$snippets)) {
-            self::$snippets[$identifier] = array(
+            self::$snippets[$identifier] = [
                 'addedToPage' => false,
                 'snippet' => $snippet
-            );
+            ];
         }
     }
 
@@ -104,10 +104,10 @@ class JavascriptManager
             $fileReference = $this->configuration->getJavaScriptFileByFileKey($fileKey);
 
             if (!empty($fileReference)) {
-                self::$files[$fileKey] = array(
+                self::$files[$fileKey] = [
                     'addedToPage' => false,
                     'file' => $GLOBALS['TSFE']->tmpl->getFileName($fileReference)
-                );
+                ];
             }
         }
     }

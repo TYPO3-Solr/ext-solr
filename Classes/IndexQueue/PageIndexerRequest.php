@@ -40,21 +40,21 @@ class PageIndexerRequest
      *
      * @var array
      */
-    protected $actions = array();
+    protected $actions = [];
 
     /**
      * Parameters as sent from the Index Queue page indexer.
      *
      * @var array
      */
-    protected $parameters = array();
+    protected $parameters = [];
 
     /**
      * Headers as sent from the Index Queue page indexer.
      *
      * @var array
      */
-    protected $header = array();
+    protected $header = [];
 
     /**
      * Unique request ID.
@@ -207,7 +207,7 @@ class PageIndexerRequest
         $itemId = $this->indexQueueItem->getIndexQueueUid();
         $pageId = $this->indexQueueItem->getRecordPageId();
 
-        $indexerRequestData = array(
+        $indexerRequestData = [
             'requestId' => $this->requestId,
             'item' => $itemId,
             'page' => $pageId,
@@ -217,7 +217,7 @@ class PageIndexerRequest
                 $pageId . '|' .
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']
             )
-        );
+        ];
 
         $indexerRequestData = array_merge($indexerRequestData, $this->parameters);
         $headers[] = 'X-Tx-Solr-Iq: ' . json_encode($indexerRequestData);

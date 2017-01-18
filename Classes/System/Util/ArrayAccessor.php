@@ -32,7 +32,7 @@ namespace ApacheSolrForTypo3\Solr\System\Util;
  *
  * Example:
  *
- * $data = array();
+ * $data = [];
  * $data['foo']['bar'] = 'bla';
  *
  * $accessor = new ArrayAccesor($data);
@@ -66,7 +66,7 @@ class ArrayAccessor
      * @param string $pathSeparator
      * @param bool $includePathSeparatorInKeys
      */
-    public function __construct(array $data = array(), $pathSeparator = ':', $includePathSeparatorInKeys = false)
+    public function __construct(array $data = [], $pathSeparator = ':', $includePathSeparatorInKeys = false)
     {
         $this->data = $data;
         $this->pathSeparator = $pathSeparator;
@@ -182,7 +182,7 @@ class ArrayAccessor
         $currentElement = &$this->data;
         foreach ($pathArray as $key => $pathSegment) {
             if (!isset($currentElement[$pathSegment])) {
-                $currentElement[$pathSegment] = array();
+                $currentElement[$pathSegment] = [];
             }
 
             unset($pathArray[$key]);

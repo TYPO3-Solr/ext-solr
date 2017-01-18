@@ -55,7 +55,7 @@ class QueryGroupFacetRenderer extends SimpleFacetRenderer
      */
     public function getFacetOptions()
     {
-        $facetOptions = array();
+        $facetOptions = [];
         $facetOptionsRaw = parent::getFacetOptions();
 
         $filterEncoder = GeneralUtility::makeInstance(QueryGroup::class);

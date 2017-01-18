@@ -34,19 +34,20 @@
 
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\HttpUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-$domain = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('domain');
+$domain = GeneralUtility::_GP('domain');
 $returnData = '';
 
 if (!empty($domain)) {
     $siteHash = Util::getSiteHashForDomain($domain);
-    $returnData = json_encode(array('sitehash' => $siteHash));
+    $returnData = json_encode(['sitehash' => $siteHash]);
 } else {
     header(HttpUtility::HTTP_STATUS_400);
 
     $errorMessage = 'You have to provide an existing domain, e.g. www.example.com.';
 
-    $returnData = json_encode(array('errorMessage' => $errorMessage));
+    $returnData = json_encode(['errorMessage' => $errorMessage]);
 }
 
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');

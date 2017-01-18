@@ -37,7 +37,7 @@ class AdministrationModuleManager
      *
      * @var array
      */
-    protected static $modules = array();
+    protected static $modules = [];
 
     /**
      * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
@@ -65,12 +65,12 @@ class AdministrationModuleManager
             list($vendor, $extensionKey) = explode('.', $extensionIdentifier);
         }
 
-        self::$modules[$controllerName] = array(
+        self::$modules[$controllerName] = [
             'vendor' => $vendor,
             'extensionKey' => $extensionKey,
             'controller' => $controllerName,
             'actions' => $controllerActions
-        );
+        ];
     }
 
     /**
@@ -79,7 +79,7 @@ class AdministrationModuleManager
      */
     public function sortModules()
     {
-        $thirdPartyModules = array();
+        $thirdPartyModules = [];
 
         foreach (self::$modules as $moduleName => $module) {
             if ($module['extensionKey'] != 'solr') {
@@ -98,7 +98,7 @@ class AdministrationModuleManager
      */
     public function getModules()
     {
-        $modules = array();
+        $modules = [];
 
         foreach (self::$modules as $moduleName => $moduleClass) {
             $modules[$moduleName] = $this->getModule($moduleName);
@@ -124,7 +124,7 @@ class AdministrationModuleManager
 
         if (!($module instanceof AdministrationModuleInterface)) {
             throw new \RuntimeException(
-                'Class ' . self::$modules[$moduleName] . ' must implement interface \ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleInterface',
+                'Class ' . self::$modules[$moduleName] . ' must implement interface ' . AdministrationModuleInterface::class,
                 1360373784
             );
         }

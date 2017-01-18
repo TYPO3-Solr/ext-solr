@@ -43,7 +43,7 @@ class FilterVarStatus implements StatusProviderInterface
      */
     public function getStatus()
     {
-        $reports = array();
+        $reports = [];
 
         $validUrl = 'http://www.typo3-solr.com';
         if (!filter_var($validUrl, FILTER_VALIDATE_URL)) {

@@ -61,7 +61,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
      */
     public function process(array $values)
     {
-        $results = array();
+        $results = [];
 
         foreach ($values as $value) {
             $results = array_merge($results,
@@ -93,7 +93,7 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
      */
     protected function buildCategoryIdRootline($uid)
     {
-        $rootlineIds = array();
+        $rootlineIds = [];
         $parentCategory = intval($uid);
 
         while ($parentCategory !== 0) {

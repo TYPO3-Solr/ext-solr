@@ -113,22 +113,22 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     ) {
         $this->initialize($taskInfo, $task, $schedulerModule);
 
-        $additionalFields = array();
+        $additionalFields = [];
 
-        $additionalFields['site'] = array(
+        $additionalFields['site'] = [
             'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
                 $this->site),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
             'cshLabel' => ''
-        );
+        ];
 
-        $additionalFields['indexingConfigurations'] = array(
+        $additionalFields['indexingConfigurations'] = [
             'code' => $this->getIndexingConfigurationSelector(),
             'label' => 'Index Queue configurations to re-index',
             'cshKey' => '',
             'cshLabel' => ''
-        );
+        ];
 
         return $additionalFields;
     }
@@ -188,7 +188,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     ) {
         $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
 
-        $indexingConfigurations = array();
+        $indexingConfigurations = [];
         if (!empty($submittedData['indexingConfigurations'])) {
             $indexingConfigurations = $submittedData['indexingConfigurations'];
         }

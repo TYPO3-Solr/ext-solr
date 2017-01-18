@@ -406,7 +406,7 @@ class Util
         $language = 0,
         $useCache = true
     ) {
-        static $tsfeCache = array();
+        static $tsfeCache = [];
 
         // resetting, a TSFE instance with data from a different page Id could be set already
         unset($GLOBALS['TSFE']);
@@ -440,7 +440,7 @@ class Util
             $GLOBALS['TSFE']->forceTemplateParsing = true;
             $GLOBALS['TSFE']->initFEuser();
             $GLOBALS['TSFE']->initUserGroups();
-            // $GLOBALS['TSFE']->getCompressedTCarray(); // seems to cause conflicts sometimes
+            //  $GLOBALS['TSFE']->getCompressedTCarray(); // seems to cause conflicts sometimes
 
             $GLOBALS['TSFE']->no_cache = true;
             $GLOBALS['TSFE']->tmpl->start($GLOBALS['TSFE']->rootLine);
@@ -549,7 +549,7 @@ class Util
     ) {
         if ($allowedSitesConfiguration == '*' || $allowedSitesConfiguration == '__all') {
             $sites = Site::getAvailableSites();
-            $domains = array();
+            $domains = [];
             foreach ($sites as $site) {
                 $domains[] = $site->getDomain();
             }
@@ -557,7 +557,7 @@ class Util
             $allowedSites = implode(',', $domains);
         } else {
             $allowedSites = str_replace(
-                array('__solr_current_site', '__current_site'),
+                ['__solr_current_site', '__current_site'],
                 Site::getSiteByPageId($pageId)->getDomain(),
                 $allowedSitesConfiguration
             );

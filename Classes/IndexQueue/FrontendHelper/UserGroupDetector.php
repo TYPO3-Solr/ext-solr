@@ -63,7 +63,7 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @var array
      */
-    protected $frontendGroups = array();
+    protected $frontendGroups = [];
 
     // activation
 
@@ -74,15 +74,15 @@ class UserGroupDetector extends AbstractFrontendHelper implements
     public function activate()
     {
         // register hooks
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->disableFrontendOutput';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->disableCaching';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->deactivateTcaFrontendGroupEnableFields';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector->checkEnableFields';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['isOutputting'][__CLASS__] = UserGroupDetector::class . '->disableFrontendOutput';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = UserGroupDetector::class . '->disableCaching';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['configArrayPostProc'][__CLASS__] = UserGroupDetector::class . '->deactivateTcaFrontendGroupEnableFields';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_checkEnableFields'][__CLASS__] = UserGroupDetector::class . '->checkEnableFields';
 
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPage'][__CLASS__] = UserGroupDetector::class;
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_page.php']['getPageOverlay'][__CLASS__] = UserGroupDetector::class;
 
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\UserGroupDetector';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][__CLASS__] = UserGroupDetector::class;
     }
 
     /**
@@ -192,11 +192,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
             } else {
                 if ($this->request->getParameter('loggingEnabled')) {
                     GeneralUtility::devLog('Access restriction found', 'solr',
-                        0, array(
+                        0, [
                             'groups' => $frontendGroups,
                             'record' => $record,
                             'record type' => $table,
-                        ));
+                        ]);
                 }
             }
 

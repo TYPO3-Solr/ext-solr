@@ -46,16 +46,16 @@ class HtmlContentExtractor
      * @see http://en.wikipedia.org/wiki/Unicode_block
      * @var array
      */
-    protected static $stripUnicodeRanges = array(
-        array('FFFD', 'FFFD'),
+    protected static $stripUnicodeRanges = [
+        ['FFFD', 'FFFD'],
         // Replacement Character (�) @see http://en.wikipedia.org/wiki/Specials_%28Unicode_block%29
-        array('E000', 'F8FF'),
+        ['E000', 'F8FF'],
         // Private Use Area (part of Plane 0)
-        array('F0000', 'FFFFF'),
+        ['F0000', 'FFFFF'],
         // Supplementary Private Use Area (Plane 15)
-        array('100000', '10FFFF'),
+        ['100000', '10FFFF'],
         // Supplementary Private Use Area (Plane 16)
-    );
+    ];
     /**
      * The raw HTML markup content to extract clean content from.
      *
@@ -67,7 +67,7 @@ class HtmlContentExtractor
      *
      * @var array
      */
-    protected $tagToFieldMapping = array(
+    protected $tagToFieldMapping = [
         'h1' => 'tagsH1',
         'h2' => 'tagsH2H3',
         'h3' => 'tagsH2H3',
@@ -80,7 +80,7 @@ class HtmlContentExtractor
         'i' => 'tagsInline',
         'em' => 'tagsInline',
         'a' => 'tagsA',
-    );
+    ];
 
     /**
      * @var TypoScriptConfiguration
@@ -155,9 +155,9 @@ class HtmlContentExtractor
         $content = preg_replace('@<style[^>]*>.*?<\/style>@msi', '', $content);
 
         // prevents concatenated words when stripping tags afterwards
-        $content = str_replace(array('<', '>'), array(' <', '> '), $content);
+        $content = str_replace(['<', '>'], [' <', '> '], $content);
         $content = strip_tags($content);
-        $content = str_replace(array("\t", "\n", "\r", '&nbsp;'), ' ',
+        $content = str_replace(["\t", "\n", "\r", '&nbsp;'], ' ',
             $content);
         $content = self::stripUnicodeRanges($content);
         $content = trim($content);
@@ -214,8 +214,8 @@ class HtmlContentExtractor
      */
     public function getTagContent()
     {
-        $result = array();
-        $matches = array();
+        $result = [];
+        $matches = [];
         $content = $this->getContentMarkedForIndexing();
 
         // strip all ignored tags

@@ -54,7 +54,7 @@ class Relation
      *
      * @var array
      */
-    protected $configuration = array();
+    protected $configuration = [];
 
     /**
      * Constructor.
@@ -119,7 +119,7 @@ class Relation
     protected function getRelatedItems(
         ContentObjectRenderer $parentContentObject
     ) {
-        $relatedItems = array();
+        $relatedItems = [];
 
         list($localTableName, $localRecordUid) = explode(':',
             $parentContentObject->currentRecord);

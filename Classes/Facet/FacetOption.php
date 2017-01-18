@@ -105,11 +105,11 @@ class FacetOption
 
         if (isset($this->facetConfiguration['renderingInstruction'])) {
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-            $contentObject->start(array(
+            $contentObject->start([
                 'optionValue' => $this->value,
                 'optionCount' => $this->numberOfResults,
                 'facetName' => $this->facetName,
-            ));
+            ]);
 
             $renderedFacetOption = $contentObject->cObjGetSingle(
                 $this->facetConfiguration['renderingInstruction'],
@@ -132,7 +132,7 @@ class FacetOption
         $isSelected = false;
 
         $resultParameters = GeneralUtility::_GET('tx_solr');
-        $filterParameters = array();
+        $filterParameters = [];
         if (isset($resultParameters['filter'])) {
             $filterParameters = (array)array_map('urldecode',
                 $resultParameters['filter']);

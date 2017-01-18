@@ -85,7 +85,7 @@ class LinkBuilder
      *
      * @var array
      */
-    protected $unwantedUrlParameters = array('resultsPerPage', 'page');
+    protected $unwantedUrlParameters = ['resultsPerPage', 'page'];
 
     /**
      * Constructor.
@@ -176,10 +176,10 @@ class LinkBuilder
      * @return string A query URL
      */
     public function getQueryUrl(
-        array $additionalQueryParameters = array(),
-        array $typolinkOptions = array()
+        array $additionalQueryParameters = [],
+        array $typolinkOptions = []
     ) {
-        $linkConfigurationOverwrite = array('returnLast' => 'url');
+        $linkConfigurationOverwrite = ['returnLast' => 'url'];
         $link = $this->getQueryLink(
             '',
             $additionalQueryParameters,
@@ -201,8 +201,8 @@ class LinkBuilder
      */
     public function getQueryLink(
         $linkText,
-        array $additionalQueryParameters = array(),
-        array $typolinkOptions = array()
+        array $additionalQueryParameters = [],
+        array $typolinkOptions = []
     ) {
         $queryParameters = array_merge(
             $this->getPluginParameters(),
@@ -217,15 +217,15 @@ class LinkBuilder
             $queryGetParameter = '&q=' . $keywords;
         }
 
-        $linkConfiguration = array(
+        $linkConfiguration = [
             'useCacheHash' => false,
             'no_cache' => false,
             'parameter' => $this->linkTargetPageId,
             'additionalParams' => $queryGetParameter
                 . GeneralUtility::implodeArrayForUrl('',
-                    array($this->prefix => $queryParameters), '', true)
+                    [$this->prefix => $queryParameters], '', true)
                 . $this->getUrlParameters()
-        );
+        ];
 
         // merge linkConfiguration with typolinkOptions
         $linkConfiguration = array_merge($linkConfiguration, $typolinkOptions);

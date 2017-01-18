@@ -79,7 +79,7 @@ class Item
      *
      * @var array
      */
-    protected $indexingProperties = array();
+    protected $indexingProperties = [];
 
     /**
      * Flag for lazy loading indexing properties.
@@ -117,7 +117,7 @@ class Item
      */
     public function __construct(
         array $itemMetaData,
-        array $fullRecord = array()
+        array $fullRecord = []
     ) {
         $this->indexQueueUid = $itemMetaData['uid'];
         $this->rootPageUid = $itemMetaData['root'];
@@ -203,7 +203,7 @@ class Item
         $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
             'tx_solr_indexqueue_item',
             'uid = ' . (int)$this->indexQueueUid,
-            array('indexed' => time())
+            ['indexed' => time()]
         );
     }
 
@@ -296,19 +296,19 @@ class Item
      */
     protected function writeIndexingProperties()
     {
-        $properties = array();
+        $properties = [];
         foreach ($this->indexingProperties as $propertyKey => $propertyValue) {
-            $properties[] = array(
+            $properties[] = [
                 $this->rootPageUid,
                 $this->indexQueueUid,
                 $propertyKey,
                 $propertyValue
-            );
+            ];
         }
 
         $GLOBALS['TYPO3_DB']->exec_INSERTmultipleRows(
             'tx_solr_indexqueue_indexing_property',
-            array('root', 'item_id', 'property_key', 'property_value'),
+            ['root', 'item_id', 'property_key', 'property_value'],
             $properties
         );
 
@@ -335,7 +335,7 @@ class Item
         $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
             'tx_solr_indexqueue_item',
             'uid = ' . intval($this->indexQueueUid),
-            array('has_indexing_properties' => $hasIndexingProperties)
+            ['has_indexing_properties' => $hasIndexingProperties]
         );
 
         if ($GLOBALS['TYPO3_DB']->sql_error()) {

@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
@@ -108,8 +109,8 @@ class Queue
      */
     public function initialize(Site $site, $indexingConfigurationName = '')
     {
-        $indexingConfigurations = array();
-        $initializationStatus = array();
+        $indexingConfigurations = [];
+        $initializationStatus = [];
 
         if (empty($indexingConfigurationName)) {
             $solrConfiguration = $site->getSolrConfiguration();
@@ -138,7 +139,7 @@ class Queue
                 } else {
                     throw new \UnexpectedValueException(
                         get_class($indexQueueInitializationPostProcessor) .
-                        ' must implement interface ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor',
+                        ' must implement interface ' . InitializationPostProcessor::class,
                         1345815561
                     );
                 }
@@ -234,7 +235,7 @@ class Queue
         $itemUid,
         $rootPageId = null
     ) {
-        $possibleIndexingConfigurationNames = array();
+        $possibleIndexingConfigurationNames = [];
 
         if (!is_null($rootPageId)) {
             // get configuration for the root's branch
@@ -268,11 +269,11 @@ class Queue
         $itemInQueue = $this->containsItem($itemType, $itemUid);
         if ($itemInQueue) {
             // update if that item is in the queue already
-            $changes = array(
+            $changes = [
                 'changed' => ($forcedChangeTime > 0)
                                 ? $forcedChangeTime
                                 : $this->getItemChangedTime($itemType, $itemUid)
-            );
+            ];
 
             if (!empty($indexingConfiguration)) {
                 $changes['indexing_configuration'] = $indexingConfiguration;
@@ -325,16 +326,16 @@ class Queue
         }
 
         if (Util::isRootPage($rootPageId)) {
-            $item = array(
+            $item = [
                 'root' => $rootPageId,
                 'item_type' => $itemType,
                 'item_uid' => $itemUid,
                 'changed' => $this->getItemChangedTime($itemType, $itemUid),
                 'errors' => ''
-            );
+            ];
 
             if (!empty($indexingConfiguration)) {
-                $indexingConfigurationList = array($indexingConfiguration);
+                $indexingConfigurationList = [$indexingConfiguration];
             } else {
                 $indexingConfigurationList = $this->getIndexingConfigurationsByItem(
                     $itemType, $itemUid, $rootPageId
@@ -448,7 +449,7 @@ class Queue
     {
         if (!empty($page['content_from_pid'])) {
             // canonical page, get the original page's last changed time
-            $pageContentLastChangedTime = $this->getPageItemChangedTime(array('uid' => $page['content_from_pid']));
+            $pageContentLastChangedTime = $this->getPageItemChangedTime(['uid' => $page['content_from_pid']]);
         } else {
             $pageContentLastChangedTime = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
                 'MAX(tstamp) AS changed_time',
@@ -543,7 +544,7 @@ class Queue
      */
     public function deleteItem($itemType, $itemUid)
     {
-        $uidList = array();
+        $uidList = [];
 
         // get the item uids to use them in the deletes afterwards
         $items = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -577,7 +578,7 @@ class Queue
      */
     public function deleteItemsByType($itemType)
     {
-        $uidList = array();
+        $uidList = [];
 
         // get the item uids to use them in the deletes afterwards
         $items = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -776,7 +777,7 @@ class Queue
      */
     public function getItemsToIndex(Site $site, $limit = 50)
     {
-        $itemsToIndex = array();
+        $itemsToIndex = [];
 
         // determine which items to index with this run
         $indexQueueItemRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
@@ -808,9 +809,9 @@ class Queue
     protected function getIndexQueueItemObjectsFromRecords(
         array $indexQueueItemRecords
     ) {
-        $indexQueueItems = array();
-        $tableUids = array();
-        $tableRecords = array();
+        $indexQueueItems = [];
+        $tableUids = [];
+        $tableRecords = [];
 
         // grouping records by table
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
@@ -849,7 +850,7 @@ class Queue
                 );
             } else {
                 GeneralUtility::devLog('Record missing for Index Queue item. Item removed.',
-                    'solr', 3, array($indexQueueItemRecord));
+                    'solr', 3, [$indexQueueItemRecord]);
                 $this->deleteItem($indexQueueItemRecord['item_type'],
                     $indexQueueItemRecord['item_uid']);
             }
@@ -882,9 +883,9 @@ class Queue
         $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
             'tx_solr_indexqueue_item',
             'uid = ' . $itemUid,
-            array(
+            [
                 'errors' => $errorMessage
-            )
+            ]
         );
     }
 }

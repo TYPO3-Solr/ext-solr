@@ -51,7 +51,7 @@ class OverviewModuleController extends AbstractModuleController
      */
     protected $moduleTitle = 'Overview';
 
-    protected $connections = array();
+    protected $connections = [];
 
     /**
      * Index action, shows an overview of the state of the Solr index
@@ -74,8 +74,8 @@ class OverviewModuleController extends AbstractModuleController
      */
     protected function checkConnections()
     {
-        $connectedHosts = array();
-        $missingHosts = array();
+        $connectedHosts = [];
+        $missingHosts = [];
 
         foreach ($this->connections as $connection) {
             $coreUrl = $connection->getScheme() . '://' . $connection->getHost() . ':' . $connection->getPort() . $connection->getPath();

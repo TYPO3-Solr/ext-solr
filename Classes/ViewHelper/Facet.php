@@ -52,7 +52,7 @@ class Facet extends AbstractSubpartViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
         if (is_null($this->configuration)) {
             $this->configuration = Util::getSolrConfiguration();
@@ -75,7 +75,7 @@ class Facet extends AbstractSubpartViewHelper
      * @param array $arguments
      * @return string
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $facetName = trim($arguments[0]);
         $configuredFacets = $this->configuration->getSearchFacetingFacets();

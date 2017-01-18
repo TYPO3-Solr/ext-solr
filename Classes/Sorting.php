@@ -54,7 +54,7 @@ class Sorting
      */
     public function getSortFields()
     {
-        $sortFields = array();
+        $sortFields = [];
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         foreach ($this->configuration as $optionName => $optionConfiguration) {
@@ -81,7 +81,7 @@ class Sorting
      */
     public function getSortFieldFromUrlParameter($urlParameters)
     {
-        $sortFields = array();
+        $sortFields = [];
         $sortParameters = GeneralUtility::trimExplode(',', $urlParameters);
         $availableSortOptions = $this->getSortOptions();
 
@@ -110,7 +110,7 @@ class Sorting
      */
     public function getSortOptions()
     {
-        $sortOptions = array();
+        $sortOptions = [];
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
         foreach ($this->configuration as $optionName => $optionConfiguration) {
@@ -125,11 +125,11 @@ class Sorting
             );
 
             $optionName = substr($optionName, 0, -1);
-            $sortOptions[$optionName] = array(
+            $sortOptions[$optionName] = [
                 'field' => $optionField,
                 'label' => $optionLabel,
                 'defaultOrder' => $optionConfiguration['defaultOrder']
-            );
+            ];
             if (isset($optionConfiguration['fixedOrder'])) {
                 $sortOptions[$optionName]['fixedOrder'] = $optionConfiguration['fixedOrder'];
             }

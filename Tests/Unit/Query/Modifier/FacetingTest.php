@@ -67,7 +67,7 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddASimpleFacet()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
             'type.' => array(
@@ -93,7 +93,7 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddSortByQueryArgument()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
             'type.' => array(
@@ -126,7 +126,7 @@ class FacetingTest extends UnitTest
      */
     public function testCanHandleKeepAllFacetsOnSelectionOnAllFacetWhenGloballyConfigured()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
@@ -164,7 +164,7 @@ class FacetingTest extends UnitTest
      */
     public function testCanHandleKeepAllOptionsOnSelectionForASingleFacet()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
             'type.' => array(
@@ -194,7 +194,7 @@ class FacetingTest extends UnitTest
 
         $_GET = $fakeRequest;
 
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
             'type.' => array(
@@ -223,7 +223,7 @@ class FacetingTest extends UnitTest
 
         $_GET = $fakeRequest;
 
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
             'type.' => array(
@@ -253,7 +253,7 @@ class FacetingTest extends UnitTest
 
         $_GET = $fakeRequest;
 
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(

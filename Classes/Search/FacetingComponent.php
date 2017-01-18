@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
+
 /**
  * Faceting search component
  *
@@ -39,7 +41,7 @@ class FacetingComponent extends AbstractComponent
     public function initializeSearchComponent()
     {
         if ($this->searchConfiguration['faceting']) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = 'ApacheSolrForTypo3\\Solr\\Query\\Modifier\\Faceting';
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['faceting'] = Faceting::class;
         }
     }
 }

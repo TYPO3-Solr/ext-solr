@@ -87,18 +87,18 @@ class ResultsCommand implements PluginCommand
 
         $searchedFor = strtr(
             $this->parentPlugin->pi_getLL('results_searched_for'),
-            array('@searchWord' => '<span class="tx-solr-search-word">' . $queryTerms . '</span>')
+            ['@searchWord' => '<span class="tx-solr-search-word">' . $queryTerms . '</span>']
         );
 
         $foundResultsInfo = strtr(
             $this->parentPlugin->pi_getLL('results_found'),
-            array(
+            [
                 '@resultsTotal' => $this->search->getNumberOfResults(),
                 '@resultsTime' => $this->search->getQueryTime()
-            )
+            ]
         );
 
-        return array(
+        return [
             'searched_for' => $searchedFor,
             'query' => $queryTerms,
             'query_urlencoded' => rawurlencode($rawQueryTerms),
@@ -117,7 +117,7 @@ class ResultsCommand implements PluginCommand
              * result_document : is the marker name for the single items in the loop
              */
             'loop_result_documents|result_document' => $this->getResultDocuments()
-        );
+        ];
     }
 
     /**
@@ -126,7 +126,7 @@ class ResultsCommand implements PluginCommand
     protected function getResultDocuments()
     {
         $responseDocuments = $this->search->getResultDocumentsEscaped();
-        $resultDocuments = array();
+        $resultDocuments = [];
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'] as $classReference) {
@@ -137,7 +137,7 @@ class ResultsCommand implements PluginCommand
                         $responseDocuments);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($resultSetModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier',
+                        get_class($resultSetModifier) . ' must implement interface' . ResultSetModifier::class,
                         1310386927
                     );
                 }
@@ -157,7 +157,7 @@ class ResultsCommand implements PluginCommand
                             $temporaryResultDocument);
                     } else {
                         throw new \UnexpectedValueException(
-                            get_class($resultDocumentModifier) . ' must implement interface ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier',
+                            get_class($resultDocumentModifier) . ' must implement interface ' . ResultDocumentModifier::class,
                             1310386725
                         );
                     }
@@ -214,7 +214,7 @@ class ResultsCommand implements PluginCommand
     ) {
         $processingInstructions = $this->configuration->getSearchResultsFieldProcessingInstructionsConfiguration();
         $availableFields = $document->getFieldNames();
-        $result = array();
+        $result = [];
 
         foreach ($availableFields as $fieldName) {
             $processingInstruction = $processingInstructions[$fieldName];
@@ -288,20 +288,20 @@ class ResultsCommand implements PluginCommand
 
             $solrGetParameters = GeneralUtility::_GET('tx_solr');
             if (!is_array($solrGetParameters)) {
-                $solrGetParameters = array();
+                $solrGetParameters = [];
             }
             $currentPage = $solrGetParameters['page'];
             unset($solrGetParameters['page']);
 
             $pageBrowserConfiguration = array_merge(
                 $solrPageBrowserConfiguration,
-                array(
+                [
                     'numberOfPages' => $numberOfPages,
                     'currentPage' => $currentPage,
                     'extraQueryString' => GeneralUtility::implodeArrayForUrl('tx_solr',
                         $solrGetParameters),
                     'templateFile' => $this->configuration->getTemplateByFileKey('pagebrowser')
-                )
+                ]
             );
 
             $pageBrowser = GeneralUtility::makeInstance(
@@ -323,14 +323,14 @@ class ResultsCommand implements PluginCommand
      */
     protected function getPageBrowserLabels()
     {
-        $labelKeys = array(
+        $labelKeys = [
             'pagebrowser_first',
             'pagebrowser_next',
             'pagebrowser_prev',
             'pagebrowser_last'
-        );
+        ];
 
-        $labels = array();
+        $labels = [];
         foreach ($labelKeys as $labelKey) {
             $labels[$labelKey] = $this->parentPlugin->pi_getLL($labelKey);
         }
@@ -349,11 +349,11 @@ class ResultsCommand implements PluginCommand
 
         $label = strtr(
             $this->parentPlugin->pi_getLL('results_range'),
-            array(
+            [
                 '@resultsFrom' => $resultsFrom,
                 '@resultsTo' => $resultsTo,
                 '@resultsTotal' => $resultsTotal
-            )
+            ]
         );
 
         return $label;

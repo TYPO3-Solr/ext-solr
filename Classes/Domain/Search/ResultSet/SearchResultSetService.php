@@ -52,7 +52,7 @@ class SearchResultSetService implements SingletonInterface
      *
      * @var array
      */
-    protected $additionalFilters = array();
+    protected $additionalFilters = [];
 
     /**
      * Track, if the number of results per page has been changed by the current request
@@ -192,7 +192,7 @@ class SearchResultSetService implements SingletonInterface
         $this->applyPageSectionsRootLineFilter($query);
 
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
-            GeneralUtility::devLog('received search query', 'solr', 0, array($rawQuery));
+            GeneralUtility::devLog('received search query', 'solr', 0, [$rawQuery]);
         }
 
         $query->setResultsPerPage($resultsPerPage);
@@ -479,7 +479,7 @@ class SearchResultSetService implements SingletonInterface
 
         $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
         if (count($searchQueryFilters) <= 0) {
-            return array();
+            return [];
         }
 
         $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);

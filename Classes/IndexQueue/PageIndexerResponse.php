@@ -44,7 +44,7 @@ class PageIndexerResponse
      *
      * @var array
      */
-    protected $results = array();
+    protected $results = [];
 
     /**
      * Turns a JSON encoded result string back into its PHP representation.
@@ -136,16 +136,16 @@ class PageIndexerResponse
      */
     protected function toJson()
     {
-        $serializedActionResults = array();
+        $serializedActionResults = [];
 
         foreach ($this->results as $action => $result) {
             $serializedActionResults[$action] = serialize($result);
         }
 
-        $responseData = array(
+        $responseData = [
             'requestId' => $this->requestId,
             'actionResults' => $serializedActionResults
-        );
+        ];
 
         return json_encode($responseData);
     }

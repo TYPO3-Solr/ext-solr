@@ -82,7 +82,7 @@ class SimpleFacetRendererTest extends UnitTest
             ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
             ->setConstructorArgs($TSFE)->getMock();
 
-        $parentPlugin->main('', array());
+        $parentPlugin->main('', []);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance(Query::class, 'test');

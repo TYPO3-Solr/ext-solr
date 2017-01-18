@@ -114,7 +114,7 @@ class QueryTest extends UnitTest
     public function grantsAccessToGroupZeroIfNoGroupsProvided()
     {
         $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups(array());
+        $query->setUserAccessGroups([]);
         $filters = $query->getFilters();
 
         $this->assertContains(
@@ -331,7 +331,7 @@ class QueryTest extends UnitTest
      */
     public function canSetHighlightingFieldList()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['highlightFields'] = 'title';
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -348,7 +348,7 @@ class QueryTest extends UnitTest
      */
     public function canPassCustomWrapForHighlighting()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -367,7 +367,7 @@ class QueryTest extends UnitTest
      */
     public function simplePreAndPostIsUsedWhenFastVectorHighlighterCouldNotBeUsed()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['results.']['resultsHighlighting.']['wrap'] = '[A]|[B]';
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -387,7 +387,7 @@ class QueryTest extends UnitTest
      */
     public function canUseFastVectorHighlighting()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
@@ -403,7 +403,7 @@ class QueryTest extends UnitTest
      */
     public function fastVectorHighlighterIsDisabledWhenFragSizeIsLessThen18()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
@@ -420,7 +420,7 @@ class QueryTest extends UnitTest
     public function canGetQueryFieldsAsStringWhenPassedFromConfiguration()
     {
         $input = 'content^10, title^5';
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['queryFields'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -436,7 +436,7 @@ class QueryTest extends UnitTest
      */
     public function canReturnEmptyStringAsQueryFieldStringWhenNothingWasPassed()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
@@ -501,7 +501,7 @@ class QueryTest extends UnitTest
     public function canReturnFieldListWhenConfigurationWithReturnFieldsWasPassed()
     {
         $input = 'abstract, price';
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['query.']['returnFields'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -516,7 +516,7 @@ class QueryTest extends UnitTest
      */
     public function canReturnDefaultFieldListWhenNoConfigurationWasPassed()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
@@ -530,7 +530,7 @@ class QueryTest extends UnitTest
      */
     public function canAddReturnField()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
@@ -550,7 +550,7 @@ class QueryTest extends UnitTest
      */
     public function canRemoveReturnField()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $initialReturnFieldList = ['title','content','url'];
@@ -568,7 +568,7 @@ class QueryTest extends UnitTest
     public function canSetTargetPageFromConfiguration()
     {
         $input = 4711;
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['targetPage'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -581,7 +581,7 @@ class QueryTest extends UnitTest
      */
     public function canFallbackToTSFEIdWhenNoTargetPageConfigured()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray, 8000);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
@@ -661,7 +661,7 @@ class QueryTest extends UnitTest
     public function canUseFacetMinCountFromConfiguration()
     {
         $input = 10;
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['minimumCount'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -678,7 +678,7 @@ class QueryTest extends UnitTest
     public function canUseFacetSortByFromConfiguration()
     {
         $input = 'alpha';
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['sortBy'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -714,7 +714,7 @@ class QueryTest extends UnitTest
     public function canTestNumberOfSuggestionsToTryFromConfiguration()
     {
         $input = 9;
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['spellchecking.']['numberOfSuggestionsToTry'] = $input;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -730,12 +730,12 @@ class QueryTest extends UnitTest
      */
     public function canWriteALogForAFilterWhenLoggingIsEnabled()
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['logging.']['query.']['filters'] = true;
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getMockBuilder(\ApacheSolrForTypo3\Solr\Query::class)
+        $query = $this->getMockBuilder(Query::class)
             ->setMethods(['writeDevLog'])
             ->setConstructorArgs(['test', $fakeConfiguration])
             ->getMock();
@@ -777,7 +777,7 @@ class QueryTest extends UnitTest
      */
     public function canEscapeAsExpected($input, $expectedOutput)
     {
-        $fakeConfigurationArray = array();
+        $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);

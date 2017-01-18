@@ -87,13 +87,13 @@ class Results extends CommandPluginBase
         /** @var $searchRequest SearchRequest */
         $searchRequest = GeneralUtility::makeInstance(
             SearchRequest::class,
-            array('tx_solr' => $solrParameters),
+            ['tx_solr' => $solrParameters],
             $GLOBALS['TSFE']->id,
             $GLOBALS['TSFE']->sys_language_uid,
             $this->typoScriptConfiguration
         );
-        $searchRequest->mergeArguments(array('tx_solr' => $this->piVars));
-        $searchRequest->mergeArguments(array('q' => $this->getRawUserQuery()));
+        $searchRequest->mergeArguments(['tx_solr' => $this->piVars]);
+        $searchRequest->mergeArguments(['q' => $this->getRawUserQuery()]);
 
         return $searchRequest;
     }
@@ -253,7 +253,7 @@ class Results extends CommandPluginBase
     {
         $currentUrl = $this->getCurrentUrlWithQueryLinkBuilder();
 
-        return array('prefix' => $this->prefixId, 'query_parameter' => 'q', 'current_url' => $currentUrl, 'q' => $this->getCleanUserQuery());
+        return ['prefix' => $this->prefixId, 'query_parameter' => 'q', 'current_url' => $currentUrl, 'q' => $this->getCleanUserQuery()];
     }
 
     /**

@@ -99,7 +99,7 @@ class PageIndexerRequestHandler implements SingletonInterface
         // register shutdown method here instead of in ext_localconf.php to
         // allow frontend helpers to execute at hook_eofe in
         // tslib/class.tslib_fe.php before shutting down
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe'][__CLASS__] = '&ApacheSolrForTypo3\\Solr\\IndexQueue\\PageIndexerRequestHandler->shutdown';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['hook_eofe'][__CLASS__] = '&' . self::class . '->shutdown';
     }
 
     /**

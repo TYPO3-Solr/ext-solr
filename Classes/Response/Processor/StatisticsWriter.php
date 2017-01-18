@@ -50,7 +50,7 @@ class StatisticsWriter implements ResponseProcessor
     ) {
         $urlParameters = GeneralUtility::_GP('tx_solr');
         $keywords = $query->getKeywords();
-        $filters = isset($urlParameters['filter']) ? $urlParameters['filter'] : array();
+        $filters = isset($urlParameters['filter']) ? $urlParameters['filter'] : [];
 
         if (empty($keywords)) {
             // do not track empty queries
@@ -71,7 +71,7 @@ class StatisticsWriter implements ResponseProcessor
 
         $ipMaskLength = $configuration->getStatisticsAnonymizeIP();
 
-        $insertFields = array(
+        $insertFields = [
             'pid' => $GLOBALS['TSFE']->id,
             'root_pid' => $GLOBALS['TSFE']->tmpl->rootLine[0]['uid'],
             'tstamp' => $GLOBALS['EXEC_TIME'],
@@ -93,7 +93,7 @@ class StatisticsWriter implements ResponseProcessor
             'filters' => serialize($filters),
             'sorting' => $sorting,
             'parameters' => serialize($response->responseHeader->params)
-        );
+        ];
 
         $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_statistics',
             $insertFields);
@@ -136,12 +136,12 @@ class StatisticsWriter implements ResponseProcessor
                 $ip[--$i] = chr(0);
             }
         } else {
-            $masks = array(
+            $masks = [
                 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff',
                 'ffff:ffff:ffff:ffff::',
                 'ffff:ffff:ffff:0000::',
                 'ffff:ff00:0000:0000::'
-            );
+            ];
             return $ip & pack('a16', inet_pton($masks[$maskLength]));
         }
 

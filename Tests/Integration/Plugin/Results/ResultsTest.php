@@ -58,7 +58,7 @@ class ResultsTest extends AbstractPluginTest
         $_GET['tx_solr']['filter'][0] = rawurlencode('subtitle:men');
         $_GET['tx_solr']['sort'] = 'title asc';
 
-        $result = $searchResults->main('', array());
+        $result = $searchResults->main('', []);
 
         $sortingLink = 'q=prices&amp;tx_solr%5Bfilter%5D%5B0%5D=subtitle%253Amen&amp;tx_solr%5Bsort%5D=title%20desc">Title</a>';
         $this->assertContains($sortingLink, $result, 'Could not find sorting link in search result');
@@ -93,7 +93,7 @@ class ResultsTest extends AbstractPluginTest
 
         $_GET['q'] = 'jeans';
 
-        $result = $searchResults->main('', array());
+        $result = $searchResults->main('', []);
 
         $this->assertContains('<h5 class="results-topic"><a href="http:///.Build/bin/phpunit"><span class="results-highlight">Jeans</span></a></h5>', $result, 'Could not find expected highlighting snipped in title');
         $this->assertContains('<span class="results-highlight">jeans</span>', $result, 'Could not find highlighting in response');
@@ -107,7 +107,7 @@ class ResultsTest extends AbstractPluginTest
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
         $_GET['q'] = '*';
-        $resultPage1 = $searchResults->main('', array());
+        $resultPage1 = $searchResults->main('', []);
 
         $this->assertPaginationVisible($resultPage1);
         $this->assertContains('Displaying results 1 to 5', $resultPage1, 'Wrong result count indicated in template');
@@ -123,7 +123,7 @@ class ResultsTest extends AbstractPluginTest
         //now we jump to the second page
         $_GET['q'] = '*';
         $searchResults->piVars['page'] = 1;
-        $resultPage2 = $searchResults->main('', array());
+        $resultPage2 = $searchResults->main('', []);
 
         $this->assertPaginationVisible($resultPage2);
         $this->assertContains('Displaying results 6 to 8', $resultPage2, 'Wrong result count indicated in template');
@@ -138,7 +138,7 @@ class ResultsTest extends AbstractPluginTest
 
         //now we jump to the second page
         $_GET['q'] = 'nothingwillbefound';
-        $resultPage1 = $searchResults->main('', array());
+        $resultPage1 = $searchResults->main('', []);
         $this->assertNothingWasFound($resultPage1);
     }
 
@@ -151,7 +151,7 @@ class ResultsTest extends AbstractPluginTest
 
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoo';
-        $resultPage1 = $searchResults->main('', array());
+        $resultPage1 = $searchResults->main('', []);
 
         $this->assertContains('Did you mean', $resultPage1, 'Could not find did you mean in response');
         $this->assertContains('shoes', $resultPage1, 'Could not find shoes in response');
@@ -164,7 +164,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion'] = 1;
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
@@ -173,7 +173,7 @@ class ResultsTest extends AbstractPluginTest
 
         //not in the content but we expect to get auto corrected results for shoes
         $_GET['q'] = 'shoo';
-        $resultPage1 = $searchResults->main('', array());
+        $resultPage1 = $searchResults->main('', []);
 
         $this->assertContains('Nothing found for "shoo"', $resultPage1, 'Could not find nothing found hint');
         $this->assertContains('shoes', $resultPage1, 'Could not find auto corrected term shoes in response');
@@ -188,8 +188,8 @@ class ResultsTest extends AbstractPluginTest
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoe';
-        $resultPage1 = $searchResults->main('', array());
-        $resultPage2 = $searchResults->main('', array());
+        $resultPage1 = $searchResults->main('', []);
+        $resultPage2 = $searchResults->main('', []);
 
         $this->assertContainerByIdContains('rel="nofollow">shoe</a>', $resultPage2, 'tx-solr-lastsearches');
     }
@@ -201,7 +201,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['lastSearches.']['mode'] = 'global';
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
@@ -210,8 +210,8 @@ class ResultsTest extends AbstractPluginTest
 
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoe';
-        $resultPage1 = $searchResults->main('', array());
-        $resultPage2 = $searchResults->main('', array());
+        $resultPage1 = $searchResults->main('', []);
+        $resultPage2 = $searchResults->main('', []);
 
         $this->assertContainerByIdContains('rel="nofollow">shoe</a>', $resultPage2, 'tx-solr-lastsearches');
     }
@@ -224,8 +224,8 @@ class ResultsTest extends AbstractPluginTest
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoe';
-        $resultPage1 = $searchResults->main('', array());
-        $resultPage2 = $searchResults->main('', array());
+        $resultPage1 = $searchResults->main('', []);
+        $resultPage2 = $searchResults->main('', []);
             //@todo this testcase fails when $GLOBALS['TSFE']->fe_user->id is set to a value that is to long
         $this->assertContainerByIdContains('rel="nofollow">shoe</a>', $resultPage2, 'tx-solr-frequent-searches');
     }
@@ -239,7 +239,7 @@ class ResultsTest extends AbstractPluginTest
         //now we jump to the second page
         $_GET['q'] = 'prices';
         $searchResults->piVars['tx_solr']['sort'] = 'title asc';
-        $resultPage2 = $searchResults->main('', array());
+        $resultPage2 = $searchResults->main('', []);
         $this->assertContains('<input type="hidden" name="tx_solr[tx_solr][sort]" value="title+asc" />', $resultPage2, 'Hidden sorting field was not found in the form');
     }
 
@@ -250,7 +250,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
         $_GET['q'] = 'prices';
-        $resultPage = $searchResults->main('', array());
+        $resultPage = $searchResults->main('', []);
 
         $this->assertContains('facet-type-hierarchy', $resultPage, 'Did not render hierarchy facet in the response');
         $this->assertContains('class="rootlinefacet-item"', $resultPage, 'Hierarchy facet items did not contain expected class from TypoScript');
@@ -264,7 +264,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
 
@@ -272,7 +272,7 @@ class ResultsTest extends AbstractPluginTest
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
-        $resultPage = $searchResults->main('', array());
+        $resultPage = $searchResults->main('', []);
 
         $this->assertContains('Found 2 results', $resultPage, 'Did not render hierarchy facet in the response');
     }
@@ -284,7 +284,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
 
@@ -293,7 +293,7 @@ class ResultsTest extends AbstractPluginTest
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = '';
-        $resultPage = $searchResults->main('', array());
+        $resultPage = $searchResults->main('', []);
 
         $this->assertContains('Found 2 results', $resultPage, 'Unexpected response for initial search');
     }
@@ -305,7 +305,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
 
@@ -314,7 +314,7 @@ class ResultsTest extends AbstractPluginTest
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = ' ';
-        $resultPage = $searchResults->main('', array());
+        $resultPage = $searchResults->main('', []);
 
         $this->assertContains('Found 2 results', $resultPage, 'Initialsearch was not triggered when whitspace query was passed');
     }
@@ -326,7 +326,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
         $overwriteConfiguration['search.']['query.']['allowEmptyQuery'] = 0;
@@ -336,7 +336,7 @@ class ResultsTest extends AbstractPluginTest
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = '';
-        $resultPage = $searchResults->main('', array());
+        $resultPage = $searchResults->main('', []);
 
         $this->assertContains('Please enter your search', $resultPage, 'Did not render hierarchy facet in the response');
     }
@@ -348,7 +348,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
         $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
         $overwriteConfiguration['search.']['query.']['allowEmptyQuery'] = 0;
@@ -358,7 +358,7 @@ class ResultsTest extends AbstractPluginTest
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
         $_GET['q'] = ' ';
-        $resultPage = $searchResults->main('', array());
+        $resultPage = $searchResults->main('', []);
 
         $this->assertContains('Please enter your search', $resultPage, 'Did not render hierarchy facet in the response');
     }
@@ -370,7 +370,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['query.']['filter.']['subtitle:men'] = 'subTitle:men';
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
@@ -379,7 +379,7 @@ class ResultsTest extends AbstractPluginTest
 
         $_GET['q'] = '*';
 
-        $resultPage = $searchResults->main('', array());
+        $resultPage = $searchResults->main('', []);
         $this->assertContains('pages/2/0/0/0', $resultPage, 'Could not find page 2 in result set');
         $this->assertContains('pages/3/0/0/0', $resultPage, 'Could not find page 3 in result set');
         $this->assertContains('pages/6/0/0/0', $resultPage, 'Could not find page 6 in result set');
@@ -392,7 +392,7 @@ class ResultsTest extends AbstractPluginTest
     public function canAddCustomTranslationsInTYPOScript()
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml');
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['_LOCAL_LANG.']['default.']['results_range'] = 'My own label';
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
@@ -401,7 +401,7 @@ class ResultsTest extends AbstractPluginTest
 
         $_GET['q'] = '*';
 
-        $resultPage = $searchResults->main('', array());
+        $resultPage = $searchResults->main('', []);
         $this->assertContains('My own label', $resultPage, 'Could not find custom TypoScript label');
     }
 
@@ -412,7 +412,7 @@ class ResultsTest extends AbstractPluginTest
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml', 'results', 5);
         $_GET['q'] = '*';
-        $searchResults->main('', array());
+        $searchResults->main('', []);
 
         // after executing a search the SearchRequest of the last search should have the ContextPageUid where the search was executed
         $searchRequest = $searchResults->getSearchResultSetService()->getLastResultSet()->getUsedSearchRequest();
@@ -461,7 +461,7 @@ class ResultsTest extends AbstractPluginTest
 
         $_GET['q'] = '*';
 
-        $searchResults->main('', array());
+        $searchResults->main('', []);
         $parentPlugin = $searchResults->getSearchResultSetService()->getParentPlugin();
 
         $this->assertInstanceOf(AbstractPlugin::class, $parentPlugin);
@@ -473,7 +473,7 @@ class ResultsTest extends AbstractPluginTest
     public function canAccessTypoScriptConfigurationThroughSearchRequest()
     {
         $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml', 'results', 5);
-        $searchResults->main('', array());
+        $searchResults->main('', []);
 
         // after initiating the searchResults plugin we should be able to access the TypoScriptConfiguration through the search request
         $searchRequest = $searchResults->getSearchResultSetService()->getLastResultSet()->getUsedSearchRequest();

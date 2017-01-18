@@ -58,7 +58,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
      *
      * @var array
      */
-    protected $facetOptions = array();
+    protected $facetOptions = [];
 
     /**
      * Template engine to replace template markers with their values.
@@ -123,7 +123,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
      */
     public function renderFacetOptions()
     {
-        $facetOptionLinks = array();
+        $facetOptionLinks = [];
         $solrConfiguration = Util::getSolrConfiguration();
         $this->template->workOnSubpart('single_facet_option');
 
@@ -180,7 +180,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
                 $optionLinkUrl = $facetLinkBuilder->getReplaceFacetOptionUrl();
             }
 
-            $facetOptionLinks[] = array(
+            $facetOptionLinks[] = [
                 'hidden' => $optionHidden,
                 'link' => $optionLink,
                 'url' => $optionLinkUrl,
@@ -189,7 +189,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
                 'count' => $facetOption->getNumberOfResults(),
                 'selected' => $optionSelected ? '1' : '0',
                 'facet_name' => $this->facetName
-            );
+            ];
         }
 
         $this->template->addLoop('facet_links', 'facet_link',
@@ -206,7 +206,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
      */
     protected function sortFacetOptionsByUserDefinedOrder()
     {
-        $sortedOptions = array();
+        $sortedOptions = [];
 
         $manualFacetOptionSortOrder = GeneralUtility::trimExplode(',',
             $this->facetConfiguration['manualSortOrder']);

@@ -84,7 +84,7 @@ class RootlineElement
      *
      * @var array
      */
-    protected $accessGroups = array();
+    protected $accessGroups = [];
 
     /**
      * Constructor for RootlineElement.

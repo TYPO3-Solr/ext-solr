@@ -41,7 +41,7 @@ abstract class AbstractHierarchyProcessor
      */
     protected function buildSolrHierarchyFromIdRootline(array $idRootline)
     {
-        $hierarchy = array();
+        $hierarchy = [];
 
         $depth = 0;
         $currentPath = array_shift($idRootline);

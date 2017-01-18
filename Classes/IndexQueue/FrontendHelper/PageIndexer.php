@@ -65,7 +65,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      *
      * @var array
      */
-    protected $responseData = array();
+    protected $responseData = [];
 
     /**
      * Activates a frontend helper by registering for hooks and other
@@ -73,14 +73,14 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     public function activate()
     {
-        $pageIndexingHookRegistration = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageIndexer';
+        $pageIndexingHookRegistration = PageIndexer::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = '&' . $pageIndexingHookRegistration . '->authorizeFrontendUser';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = '&' . $pageIndexingHookRegistration . '->disableCaching';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['pageIndexing'][__CLASS__] = $pageIndexingHookRegistration;
 
         // indexes fields defined in plugin.tx_solr.index.queue.pages.fields
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer';
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPageSubstitutePageDocument']['ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\PageFieldMappingIndexer'] = PageFieldMappingIndexer::class;
 
         // making sure this instance is reused when called by the hooks registered before
         // \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction() and \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj() use
@@ -92,9 +92,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
         $this->registerAuthorizationService();
 # Since TypoScript is not available at this point we cannot bind it to some TS configuration option whether to log or not
-#		\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Registered Solr Page Indexer authorization service', 'solr', 1, array(
+#		\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Registered Solr Page Indexer authorization service', 'solr', 1, [
 #			'auth services' => $GLOBALS['T3_SERVICES']['auth']
-#		));
+#		]);
     }
 
     /**
@@ -126,7 +126,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         }
 
         if (!is_array($GLOBALS['TSFE']->fe_user->user)) {
-            $GLOBALS['TSFE']->fe_user->user = array();
+            $GLOBALS['TSFE']->fe_user->user = [];
         }
 
         $groups = $accessRootline->getGroups();
@@ -135,10 +135,10 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         $GLOBALS['TSFE']->fe_user->user['username'] = AuthorizationService::SOLR_INDEXER_USERNAME;
         $GLOBALS['TSFE']->fe_user->user['usergroup'] = $groupList;
 
-        $this->responseData['authorization'] = array(
+        $this->responseData['authorization'] = [
             'username' => $GLOBALS['TSFE']->fe_user->user['username'],
             'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup']
-        );
+        ];
     }
 
     /**
@@ -171,9 +171,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         ExtensionManagementUtility::addService(
             'solr', // extension key
             'auth', // service type
-            'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\AuthorizationService',
+            AuthorizationService::class,
             // service key
-            array( // service meta data
+            [ // service meta data
                 'title' => 'Solr Indexer Authorization',
                 'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
 
@@ -187,8 +187,8 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
                 'exec' => '',
 
                 'classFile' => $GLOBALS['PATH_solr'] . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
-                'className' => 'ApacheSolrForTypo3\\Solr\\IndexQueue\\FrontendHelper\\AuthorizationService',
-            )
+                'className' => AuthorizationService::class,
+            ]
         );
     }
 
@@ -233,10 +233,10 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             /** @var $contentObject ContentObjectRenderer */
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
-        $typolinkConfiguration = array(
+        $typolinkConfiguration = [
             'parameter' => intval($this->page->id),
             'linkAccessRestrictedPages' => '1'
-        );
+        ];
 
         $language = GeneralUtility::_GET('L');
         if (!empty($language)) {
@@ -291,11 +291,11 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
             $this->responseData['pageIndexed'] = (int)$indexer->indexPage();
             $this->responseData['originalPageDocument'] = (array)$indexer->getPageSolrDocument();
-            $this->responseData['solrConnection'] = array(
+            $this->responseData['solrConnection'] = [
                 'rootPage' => $indexQueueItem->getRootPageUid(),
                 'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid,
                 'solr' => (string)$solrConnection
-            );
+            ];
 
             $documentsSentToSolr = $indexer->getDocumentsSentToSolr();
             foreach ($documentsSentToSolr as $document) {
@@ -304,9 +304,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         } catch (\Exception $e) {
             if ($configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('Exception while trying to index page ' . $page->id,
-                    'solr', 3, array(
+                    'solr', 3, [
                         $e->__toString()
-                    ));
+                    ]);
             }
         }
 

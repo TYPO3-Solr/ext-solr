@@ -215,7 +215,7 @@ abstract class PluginBase extends AbstractPlugin
                     $this->conf['_DEFAULT_PI_VARS.'][$key . '.']);
             }
 
-            $piVars = is_array($this->piVars) ? $this->piVars : array();
+            $piVars = is_array($this->piVars) ? $this->piVars : [];
             $this->piVars = $this->conf['_DEFAULT_PI_VARS.'];
             ArrayUtility::mergeRecursiveWithOverrule(
                 $this->piVars,
@@ -260,7 +260,7 @@ abstract class PluginBase extends AbstractPlugin
             }
 
             // Clear the "unset memory"
-            $this->LOCAL_LANG_UNSET = array();
+            $this->LOCAL_LANG_UNSET = [];
             foreach ($translationInTypoScript as $languageKey => $languageArray) {
                 // Remove the dot after the language key
                 $languageKey = substr($languageKey, 0, -1);
@@ -354,10 +354,10 @@ abstract class PluginBase extends AbstractPlugin
         );
         $template->addViewHelperIncludePath($this->extKey,
             'Classes/ViewHelper/');
-        $template->addViewHelper('LLL', array(
+        $template->addViewHelper('LLL', [
             'languageFile' => 'EXT:solr/Resources/Private/Language/locallang.xlf',
             'llKey' => $this->LLkey
-        ));
+        ]);
 
         // can be used for view helpers that need configuration during initialization
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'])) {
@@ -373,7 +373,7 @@ abstract class PluginBase extends AbstractPlugin
                     }
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($viewHelperProvider) . ' must implement interface ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider',
+                        get_class($viewHelperProvider) . ' must implement interface ' . ViewHelperProvider::class,
                         1310387296
                     );
                 }

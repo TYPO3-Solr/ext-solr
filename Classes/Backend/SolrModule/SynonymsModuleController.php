@@ -58,7 +58,7 @@ class SynonymsModuleController extends AbstractModuleController
     {
         $solrConnection = $this->getSelectedCoreSolrConnection();
 
-        $synonyms = array();
+        $synonyms = [];
         $rawSynonyms = $solrConnection->getSynonyms();
 
         foreach ($rawSynonyms as $baseWord => $synonymList) {

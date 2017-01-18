@@ -24,10 +24,9 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
-use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
+use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -149,24 +148,24 @@ class Search implements SingletonInterface
 
             if ($this->configuration->getLoggingQueryQueryString()) {
                 GeneralUtility::devLog('Querying Solr, getting result', 'solr',
-                    0, array(
+                    0, [
                         'query string' => $query->getQueryString(),
                         'query parameters' => $query->getQueryParameters(),
                         'response' => json_decode($response->getRawResponse(),
                             true)
-                    ));
+                    ]);
             }
         } catch (\RuntimeException $e) {
             $response = $this->solr->getResponse();
 
             if ($this->configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('Exception while querying Solr', 'solr',
-                    3, array(
+                    3, [
                         'exception' => $e->__toString(),
                         'query' => (array)$query,
                         'offset' => $offset,
                         'limit' => $limit
-                    ));
+                    ]);
             }
         }
 
@@ -198,7 +197,7 @@ class Search implements SingletonInterface
                     $query = $queryModifier->modifyQuery($query);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($queryModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Query\Modifier\QueryModifier',
+                        get_class($queryModifier) . ' must implement interface ' . Modifier::class,
                         1310387414
                     );
                 }
@@ -231,7 +230,7 @@ class Search implements SingletonInterface
                     $response = $responseModifier->modifyResponse($response);
                 } else {
                     throw new \UnexpectedValueException(
-                        get_class($responseModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Search\ResponseModifier',
+                        get_class($responseModifier) . ' must implement interface ' . ResponseModifier::class,
                         1343147211
                     );
                 }
@@ -264,9 +263,9 @@ class Search implements SingletonInterface
         } catch (\Exception $e) {
             if ($this->configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('exception while trying to ping the solr server',
-                    'solr', 3, array(
+                    'solr', 3, [
                         $e->__toString()
-                    ));
+                    ]);
             }
         }
 
@@ -431,7 +430,7 @@ class Search implements SingletonInterface
                         $facetCountsModified = true;
                     } else {
                         throw new \UnexpectedValueException(
-                            get_class($facetsModifier) . ' must implement interface ApacheSolrForTypo3\Solr\Facet\FacetsModifier',
+                            get_class($facetsModifier) . ' must implement interface ' . FacetsModifier::class,
                             1310387526
                         );
                     }
@@ -458,7 +457,7 @@ class Search implements SingletonInterface
 
     public function getFacetQueryOptions($facetField)
     {
-        $options = array();
+        $options = [];
 
         $facetQueries = get_object_vars($this->getFacetCounts()->facet_queries);
         foreach ($facetQueries as $facetQuery => $numberOfResults) {

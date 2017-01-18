@@ -49,7 +49,7 @@ class Ts implements ViewHelper
      *
      * @param array $arguments
      */
-    public function __construct(array $arguments = array())
+    public function __construct(array $arguments = [])
     {
     }
 
@@ -57,7 +57,7 @@ class Ts implements ViewHelper
      * @param array $arguments
      * @return string
      */
-    public function execute(array $arguments = array())
+    public function execute(array $arguments = [])
     {
         $typoScriptPath = array_shift($arguments);
 
@@ -91,9 +91,9 @@ class Ts implements ViewHelper
             $value = htmlspecialchars($pathBranch[$lastPathSegment]);
         } else {
             if (count($arguments)) {
-                $data = array(
+                $data = [
                     'arguments' => $arguments
-                );
+                ];
 
                 $numberOfArguments = count($arguments);
                 for ($i = 0; $i < $numberOfArguments; $i++) {

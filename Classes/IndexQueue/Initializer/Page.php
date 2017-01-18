@@ -88,7 +88,7 @@ class Page extends AbstractInitializer
      */
     public function initializeMountedPage(array $mountProperties, $mountPageId)
     {
-        $mountedPages = array($mountPageId);
+        $mountedPages = [$mountPageId];
 
         $this->addMountedPagesToIndexQueue($mountedPages, $mountProperties);
         $this->addIndexQueueItemIndexingProperties($mountProperties, $mountedPages);
@@ -150,7 +150,7 @@ class Page extends AbstractInitializer
                     'Index Queue initialization failed for mount pages',
                     'solr',
                     3,
-                    array($e->__toString())
+                    [$e->__toString()]
                 );
                 break;
             }
