@@ -77,11 +77,11 @@ class RelevanceTest extends AbstractViewHelperTest
      */
     public function dataScoreExtractionDataProvider()
     {
-        return array(
-            array('document' => serialize(array('score' => 5)), 'expectsException' => false, 'expectedResult' => 5),
-            array('document' => '-invalid-', 'expectsException' => true, 'expectedResult' => null),
-            array('document' => '###RESULT_DOCUMENT###', 'expectsException' => false, 'expectedResult' => null)
-        );
+        return [
+            ['document' => serialize(['score' => 5]), 'expectsException' => false, 'expectedResult' => 5],
+            ['document' => '-invalid-', 'expectsException' => true, 'expectedResult' => null],
+            ['document' => '###RESULT_DOCUMENT###', 'expectsException' => false, 'expectedResult' => null]
+        ];
     }
 
     /**
@@ -115,11 +115,11 @@ class RelevanceTest extends AbstractViewHelperTest
      */
     public function maximumScoreExtractionDataProvider()
     {
-        return array(
-            array('document' => serialize(array('__solr_grouping_groupMaximumScore' => 10)), 'globalMaximumScore' => 20, 'expectedResult' => 10),
-            array('document' => serialize([]), 'globalMaximumScore' => 20, 'expectedResult' => 20),
-            array('document' => serialize('-invalid-'), 'globalMaximumScore' => 20, 'expectedResult' => 20),
-        );
+        return [
+            ['document' => serialize(['__solr_grouping_groupMaximumScore' => 10]), 'globalMaximumScore' => 20, 'expectedResult' => 10],
+            ['document' => serialize([]), 'globalMaximumScore' => 20, 'expectedResult' => 20],
+            ['document' => serialize('-invalid-'), 'globalMaximumScore' => 20, 'expectedResult' => 20],
+        ];
     }
 
     /**
@@ -147,11 +147,11 @@ class RelevanceTest extends AbstractViewHelperTest
      */
     public function relevanceCalculationDataProvider()
     {
-        return array(
-            array('documentScore' => 50, 'maximumScore' => 100, 'expectedResult' => 50.0),
-            array('documentScore' => 50, 'maximumScore' => 0, 'expectedResult' => ''),
-            array('documentScore' => 100, 'maximumScore' => 100, 'expectedResult' => 100.0),
-        );
+        return [
+            ['documentScore' => 50, 'maximumScore' => 100, 'expectedResult' => 50.0],
+            ['documentScore' => 50, 'maximumScore' => 0, 'expectedResult' => ''],
+            ['documentScore' => 100, 'maximumScore' => 100, 'expectedResult' => 100.0],
+        ];
     }
 
     /**

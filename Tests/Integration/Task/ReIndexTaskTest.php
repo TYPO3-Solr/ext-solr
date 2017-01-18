@@ -114,7 +114,7 @@ class ReIndexTaskTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         $this->task->setSite(Site::getFirstAvailableSite());
-        $this->task->setIndexingConfigurationsToReIndex(array('pages'));
+        $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $this->task->execute();
 
         $this->assertIndexQueryContainsItemAmount(2);
@@ -129,7 +129,7 @@ class ReIndexTaskTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         $this->task->setSite(Site::getFirstAvailableSite());
-        $this->task->setIndexingConfigurationsToReIndex(array('pages'));
+        $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $additionalInformation = $this->task->getAdditionalInformation();
 
         $this->assertContains('Indexing Configurations: pages', $additionalInformation);
@@ -154,7 +154,7 @@ class ReIndexTaskTest extends IntegrationTest
 
         $this->assertSolrContainsDocumentCount(1);
         $this->task->setSite($site);
-        $this->task->setIndexingConfigurationsToReIndex(array('pages'));
+        $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $this->task->execute();
 
         $this->waitToBeVisibleInSolr();

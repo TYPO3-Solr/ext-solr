@@ -86,7 +86,7 @@ class FrequentSearchesServiceTest extends UnitTest
         $expectedCacheIdentifier = 'frequentSearchesTags_' . md5(serialize($fakeConfiguration));
         $this->configurationMock->expects($this->once())->method('getSearchFrequentSearchesConfiguration')->will($this->returnValue($fakeConfiguration));
 
-        $this->fakeCacheResult($expectedCacheIdentifier, array('term a'));
+        $this->fakeCacheResult($expectedCacheIdentifier, ['term a']);
 
         $frequentTerms = $this->frequentSearchesService->getFrequentSearchTerms();
         $this->assertSame('term a', $frequentTerms[0], 'Could not get frequent terms from service');
@@ -97,8 +97,8 @@ class FrequentSearchesServiceTest extends UnitTest
      */
     public function databaseResultIsUsedWhenNoCachedResultIsPresent()
     {
-        $fakeConfiguration = array(
-            'select.' => array(
+        $fakeConfiguration = [
+            'select.' => [
                 'checkRootPageId' => true,
                 'checkLanguage' => true,
                 'SELECT' => '',
@@ -106,24 +106,24 @@ class FrequentSearchesServiceTest extends UnitTest
                 'ADD_WHERE' => '',
                 'GROUP_BY' => '',
                 'ORDER_BY' => ''
-            ),
+            ],
             'limit'
-        );
+        ];
 
         $this->configurationMock->expects($this->once())->method('getSearchFrequentSearchesConfiguration')->will($this->returnValue($fakeConfiguration));
 
-        $this->databaseMock->expects($this->once())->method('exec_SELECTgetRows')->will($this->returnValue(array(
-            array(
+        $this->databaseMock->expects($this->once())->method('exec_SELECTgetRows')->will($this->returnValue([
+            [
                'search_term' => 'my search',
                 'hits' => 22
-            )
-        )));
+            ]
+        ]));
 
             //we fake that we have no frequent searches in the cache and therefore expect that the database will be queried
         $this->fakeIdentifierNotInCache();
         $frequentTerms = $this->frequentSearchesService->getFrequentSearchTerms();
 
-        $this->assertSame($frequentTerms, array('my search' => 22), 'Could not retrieve frequent search terms');
+        $this->assertSame($frequentTerms, ['my search' => 22], 'Could not retrieve frequent search terms');
     }
 
     /**

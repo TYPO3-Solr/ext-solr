@@ -39,7 +39,7 @@ class ArrayAccessorTest extends UnitTest
      */
     public function canGet()
     {
-        $data = array('foo' => array('bla' => 1));
+        $data = ['foo' => ['bla' => 1]];
         $arrayAccessor = new ArrayAccessor($data);
         $this->assertSame(1, $arrayAccessor->get('foo:bla'));
 
@@ -66,7 +66,7 @@ class ArrayAccessorTest extends UnitTest
         $arrayAccessor->set('one:two:three', 'test');
         $this->assertSame('test', $arrayAccessor->get('one:two:three'));
 
-        $arrayAccessor->set('one:two:three', array('four' => 'test2'));
+        $arrayAccessor->set('one:two:three', ['four' => 'test2']);
         $this->assertSame('test2', $arrayAccessor->get('one:two:three:four'));
     }
 

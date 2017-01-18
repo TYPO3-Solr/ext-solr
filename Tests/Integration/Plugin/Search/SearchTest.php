@@ -51,7 +51,7 @@ class SearchTest extends AbstractPluginTest
     public function canRenderSearchForm()
     {
         // trigger a search
-        $searchForm = $this->importTestDataSetAndGetInitializedPlugin(array(1), 'can_render_search_plugin.xml', 'search');
+        $searchForm = $this->importTestDataSetAndGetInitializedPlugin([1], 'can_render_search_plugin.xml', 'search');
         $searchFormOutput = $searchForm->main('', []);
         $this->assertContains('<form id="tx-solr-search-form-pi-search"', $searchFormOutput, 'Can not find searchform in plugin output');
     }
@@ -63,7 +63,7 @@ class SearchTest extends AbstractPluginTest
     {
 
         // trigger a search
-        $searchForm = $this->importTestDataSetAndGetInitializedPlugin(array(1), 'can_render_search_plugin.xml', 'search');
+        $searchForm = $this->importTestDataSetAndGetInitializedPlugin([1], 'can_render_search_plugin.xml', 'search');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['query.']['filter.']['subtitle:men'] = 'subTitle:men';

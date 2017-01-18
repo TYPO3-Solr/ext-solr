@@ -46,9 +46,9 @@ class IndexQueueDependencyFaker
             $fakeResponse->requestId = self::getRequestId();
 
             if (self::$callCount == 0) {
-                $fakeResponse->actionResults['findUserGroups'] = serialize(array('1'));
+                $fakeResponse->actionResults['findUserGroups'] = serialize(['1']);
             } else {
-                $fakeResponse->actionResults['indexPage'] = serialize(array('pageIndexed' => 1));
+                $fakeResponse->actionResults['indexPage'] = serialize(['pageIndexed' => 1]);
             }
 
             self::$callCount++;

@@ -116,7 +116,7 @@ class RecordMonitorTest extends IntegrationTest
             'version',
             'pages',
             1,
-            array('action' => 'swap'),
+            ['action' => 'swap'],
             $this->dataHandler
         );
 
@@ -146,14 +146,14 @@ class RecordMonitorTest extends IntegrationTest
         $status = 'new';
         $table = 'tx_fakeextension_domain_model_foo';
         $uid = 'NEW566a9eac309d8193936351';
-        $fields = array(
+        $fields = [
             'title' => 'testnews',
             'pid' => 1,
             'starttime' => 1000000,
             'endtime' => 1100000,
             'tsstamp' => 1000000
-        );
-        $this->dataHandler->substNEWwithIDs = array('NEW566a9eac309d8193936351' => 8);
+        ];
+        $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
 
         $this->importDataSetFromFixture('new_non_pages_record_is_using_correct_configuration_name.xml');
 
@@ -186,8 +186,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', array('hidden' => 0));
-        $changeSet = array('hidden' => 0);
+        $database->exec_UPDATEquery('pages', 'uid=1', ['hidden' => 0]);
+        $changeSet = ['hidden' => 0];
 
         $dataHandler = $this->dataHandler;
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
@@ -211,8 +211,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', array('extendToSubpages' => 0));
-        $changeSet = array('extendToSubpages' => 0);
+        $database->exec_UPDATEquery('pages', 'uid=1', ['extendToSubpages' => 0]);
+        $changeSet = ['extendToSubpages' => 0];
 
         $dataHandler = $this->dataHandler;
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
@@ -236,8 +236,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', array('hidden' => 1));
-        $changeSet = array('hidden' => 1);
+        $database->exec_UPDATEquery('pages', 'uid=1', ['hidden' => 1]);
+        $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
@@ -314,15 +314,15 @@ class RecordMonitorTest extends IntegrationTest
         $status = 'new';
         $table = 'pages';
         $uid = 'NEW566a9eac309d8193936351';
-        $fields = array(
+        $fields = [
             'title' => 'test custom page type',
             'pid' => 1,
             'doktype' => 130,
             'starttime' => 1000000,
             'endtime' => 1100000,
             'tsstamp' => 1000000
-        );
-        $this->dataHandler->substNEWwithIDs = array('NEW566a9eac309d8193936351' => 8);
+        ];
+        $this->dataHandler->substNEWwithIDs = ['NEW566a9eac309d8193936351' => 8];
         // $this->importDataSetFromFixture('new_pages_record_is_using_correct_configuration_name_for_custom_page_type.xml');
 
         // we expect that the index queue is empty before we start
@@ -362,8 +362,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=8', array('hidden' => 0));
-        $changeSet = array('hidden' => 0);
+        $database->exec_UPDATEquery('pages', 'uid=8', ['hidden' => 0]);
+        $changeSet = ['hidden' => 0];
 
         $dataHandler = $this->dataHandler;
         $this->recordMonitor->processDatamap_afterDatabaseOperations('update', 'pages', 8, $changeSet, $dataHandler);

@@ -100,7 +100,7 @@ class SearchResultSetTest extends UnitTest
         $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my search', 0, $fakeResponse);
 
-        $fakeRequest = new SearchRequest(array('q' => 'my search'));
+        $fakeRequest = new SearchRequest(['q' => 'my search']);
 
         $this->assertPerPageInSessionWillNotBeChanged();
         $resultSet = $this->searchResultSetService->search($fakeRequest);
@@ -118,7 +118,7 @@ class SearchResultSetTest extends UnitTest
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 2. search', 50, $fakeResponse);
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPage')->will($this->returnValue(25));
 
-        $fakeRequest = new SearchRequest(array('q' => 'my 2. search', 'tx_solr' => array('page' => 2)));
+        $fakeRequest = new SearchRequest(['q' => 'my 2. search', 'tx_solr' => ['page' => 2]]);
 
         $this->assertPerPageInSessionWillNotBeChanged();
         $resultSet = $this->searchResultSetService->search($fakeRequest);
@@ -137,11 +137,11 @@ class SearchResultSetTest extends UnitTest
         $fakeQueryAwareSpellChecker->expects($this->once())->method('initializeSearchComponent');
         $fakeQueryAwareSpellChecker->expects($this->once())->method('setQuery');
 
-        $this->fakeRegisteredSearchComponents(array($fakeQueryAwareSpellChecker));
+        $this->fakeRegisteredSearchComponents([$fakeQueryAwareSpellChecker]);
         $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 3. search', 0, $fakeResponse);
 
-        $fakeRequest = new SearchRequest(array('q' => 'my 3. search'));
+        $fakeRequest = new SearchRequest(['q' => 'my 3. search']);
 
         $this->assertPerPageInSessionWillNotBeChanged();
         $resultSet = $this->searchResultSetService->search($fakeRequest);
@@ -166,7 +166,7 @@ class SearchResultSetTest extends UnitTest
         $fakeResponse =new \Apache_Solr_Response($fakeHttpResponse);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 4. search', 0, $fakeResponse);
 
-        $fakeRequest = new SearchRequest(array('q' => 'my 4. search'));
+        $fakeRequest = new SearchRequest(['q' => 'my 4. search']);
         $this->assertPerPageInSessionWillNotBeChanged();
         $resultSet  = $this->searchResultSetService->search($fakeRequest);
 
@@ -187,13 +187,13 @@ class SearchResultSetTest extends UnitTest
     {
         $this->fakeRegisteredSearchComponents([]);
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
-                                ->will($this->returnValue(array(10, 25)));
+                                ->will($this->returnValue([10, 25]));
 
         $fakeRequest = new SearchRequest(
-            array(
+            [
                 'q' => 'test',
-                'tx_solr' => array('page' => 5, 'resultsPerPage' => 25)
-            )
+                'tx_solr' => ['page' => 5, 'resultsPerPage' => 25]
+            ]
         );
 
             // we expect that still an offset of 0 is passed because page was 5 AND perPageWas passed which means
@@ -217,9 +217,9 @@ class SearchResultSetTest extends UnitTest
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('test', 0, $fakeResponse);
 
         $this->configurationMock->expects($this->any())->method('getSearchQueryFilterConfiguration')->will(
-            $this->returnValue(array('type:pages'))
+            $this->returnValue(['type:pages'])
         );
-        $fakeRequest = new SearchRequest(array('q' => 'test'));
+        $fakeRequest = new SearchRequest(['q' => 'test']);
 
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('test', 0, $fakeResponse);
         $this->assertPerPageInSessionWillNotBeChanged();
@@ -249,7 +249,7 @@ class SearchResultSetTest extends UnitTest
         $fakeResponse =new \Apache_Solr_Response($fakeHttpResponse);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('variantsSearch', 0, $fakeResponse);
 
-        $fakeRequest = new SearchRequest(array('q' => 'variantsSearch'));
+        $fakeRequest = new SearchRequest(['q' => 'variantsSearch']);
 
         $resultSet = $this->searchResultSetService->search($fakeRequest);
         $this->assertSame(1, count($resultSet->getResponse()->response->docs), 'Unexpected amount of document');

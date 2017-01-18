@@ -49,7 +49,7 @@ class FrequentSearchesTest extends AbstractPluginTest
     public function canShowTheFrequentSearches()
     {
         // trigger a search
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4), 'can_render_frequentSearches_plugin.xml', 'results');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4], 'can_render_frequentSearches_plugin.xml', 'results');
         $_GET['q'] = 'prices';
         $searchResults->main('', []);
 

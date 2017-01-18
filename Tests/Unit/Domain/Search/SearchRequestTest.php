@@ -60,10 +60,10 @@ class SearchRequestTest extends UnitTest
      */
     public function testCanMerge()
     {
-        $this->searchRequest = new SearchRequest(array('tx_solr' => array('page' => 2)));
+        $this->searchRequest = new SearchRequest(['tx_solr' => ['page' => 2]]);
         $this->assertSame(2, $this->searchRequest->getPage(), 'Retrieved unexpected page');
 
-        $this->searchRequest->mergeArguments(array('tx_solr' => array('page' => 8)));
+        $this->searchRequest->mergeArguments(['tx_solr' => ['page' => 8]]);
         $this->assertSame(8, $this->searchRequest->getPage(), 'Page was not properly merged');
     }
 
@@ -74,7 +74,7 @@ class SearchRequestTest extends UnitTest
     {
         $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
         $request = $this->getSearchRequestFromQueryString($query);
-        $this->assertEquals(array('type'), $request->getActiveFacetNames());
+        $this->assertEquals(['type'], $request->getActiveFacetNames());
     }
 
     /**
@@ -94,7 +94,7 @@ class SearchRequestTest extends UnitTest
     {
         $request = $this->getSearchRequestFromQueryString('');
         $data  = $request->setRawQueryString('foobar')->getAsArray();
-        $this->assertEquals(array('q' => 'foobar'), $data, 'The argument container did not contain the expected argument');
+        $this->assertEquals(['q' => 'foobar'], $data, 'The argument container did not contain the expected argument');
     }
 
     /**

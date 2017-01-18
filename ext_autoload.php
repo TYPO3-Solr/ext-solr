@@ -1,7 +1,6 @@
 <?php
 $extensionPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
-return array(
-
+return [
     'apache_solr_httptransport_abstract' => $extensionPath . 'Resources/Private/Php/SolrPhpClient/Apache/Solr/HttpTransport/Abstract.php',
     'apache_solr_httptransport_curl' => $extensionPath . 'Resources/Private/Php/SolrPhpClient/Apache/Solr/HttpTransport/Curl.php',
     'apache_solr_httptransport_curlnoreuse' => $extensionPath . 'Resources/Private/Php/SolrPhpClient/Apache/Solr/HttpTransport/CurlNoReuse.php',
@@ -18,4 +17,4 @@ return array(
     'apache_solr_response' => $extensionPath . 'Resources/Private/Php/SolrPhpClient/Apache/Solr/Response.php',
     'apache_solr_service' => $extensionPath . 'Resources/Private/Php/SolrPhpClient/Apache/Solr/Service.php',
 
-);
+];
