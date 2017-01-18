@@ -100,7 +100,7 @@ class LinkBuilder extends Query\LinkBuilder
         $filterParameters = $this->addFacetAndEncodeFilterParameters();
 
         return $this->getQueryLink($linkText,
-            array('filter' => $filterParameters), $typolinkOptions);
+            ['filter' => $filterParameters], $typolinkOptions);
     }
 
     /**
@@ -111,7 +111,7 @@ class LinkBuilder extends Query\LinkBuilder
      */
     protected function getTypolinkOptions()
     {
-        return $this->facetTypoLinkATagParameter !== '' ? array('ATagParams' => $this->facetTypoLinkATagParameter) : [];
+        return $this->facetTypoLinkATagParameter !== '' ? ['ATagParams' => $this->facetTypoLinkATagParameter] : [];
     }
 
     /**
@@ -152,7 +152,7 @@ class LinkBuilder extends Query\LinkBuilder
     {
         $filterParameters = $this->addFacetAndEncodeFilterParameters();
 
-        return $this->getQueryUrl(array('filter' => $filterParameters));
+        return $this->getQueryUrl(['filter' => $filterParameters]);
     }
 
     /**
@@ -167,7 +167,7 @@ class LinkBuilder extends Query\LinkBuilder
         $filterParameters = $this->removeFacetAndEncodeFilterParameters();
 
         return $this->getQueryLink($linkText,
-            array('filter' => $filterParameters), $typolinkOptions);
+            ['filter' => $filterParameters], $typolinkOptions);
     }
 
     /**
@@ -210,7 +210,7 @@ class LinkBuilder extends Query\LinkBuilder
     {
         $filterParameters = $this->removeFacetAndEncodeFilterParameters();
 
-        return $this->getQueryUrl(array('filter' => $filterParameters));
+        return $this->getQueryUrl(['filter' => $filterParameters]);
     }
 
     /**
@@ -226,7 +226,7 @@ class LinkBuilder extends Query\LinkBuilder
         $filterParameters = $this->replaceFacetAndEncodeFilterParameters();
 
         return $this->getQueryLink($linkText,
-            array('filter' => $filterParameters), $typolinkOptions);
+            ['filter' => $filterParameters], $typolinkOptions);
     }
 
     /**
@@ -284,6 +284,6 @@ class LinkBuilder extends Query\LinkBuilder
     {
         $filterParameters = $this->replaceFacetAndEncodeFilterParameters();
 
-        return $this->getQueryUrl(array('filter' => $filterParameters));
+        return $this->getQueryUrl(['filter' => $filterParameters]);
     }
 }

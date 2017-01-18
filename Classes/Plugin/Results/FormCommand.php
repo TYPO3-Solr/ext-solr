@@ -82,14 +82,14 @@ class FormCommand implements PluginCommand
     {
         $url = $this->cObj->getTypoLink_URL($this->parentPlugin->typoScriptConfiguration->getSearchTargetPage());
 
-        $marker = array(
+        $marker = [
             'action' => htmlspecialchars($url),
             'action_id' => intval($this->parentPlugin->typoScriptConfiguration->getSearchTargetPage()),
             'action_language' => intval($GLOBALS['TSFE']->sys_page->sys_language_uid),
             'action_language_parameter' => 'L',
             'accept-charset' => $GLOBALS['TSFE']->metaCharset,
             'q' => $this->parentPlugin->getCleanUserQuery()
-        );
+        ];
 
         // hook to modify the search form
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchForm'])) {

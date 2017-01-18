@@ -91,9 +91,9 @@ class Ts implements ViewHelper
             $value = htmlspecialchars($pathBranch[$lastPathSegment]);
         } else {
             if (count($arguments)) {
-                $data = array(
+                $data = [
                     'arguments' => $arguments
-                );
+                ];
 
                 $numberOfArguments = count($arguments);
                 for ($i = 0; $i < $numberOfArguments; $i++) {

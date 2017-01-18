@@ -556,7 +556,7 @@ class Indexer extends AbstractIndexer
         $translationOverlays = [];
         $pageId = intval($pageId);
 
-        $languageModes = array('content_fallback', 'strict', 'ignore');
+        $languageModes = ['content_fallback', 'strict', 'ignore'];
         $hasOverlayMode = in_array($languageMode, $languageModes,
             true);
         $isContentFallbackMode = ($languageMode === 'content_fallback');
@@ -577,10 +577,10 @@ class Indexer extends AbstractIndexer
                 if ($language['uid'] <= 0) {
                     continue;
                 }
-                $translationOverlays[] = array(
+                $translationOverlays[] = [
                     'pid' => $pageId,
                     'sys_language_uid' => $language['uid'],
-                );
+                ];
             }
         }
 
@@ -670,11 +670,11 @@ class Indexer extends AbstractIndexer
             $documents[] = (array)$document;
         }
 
-        $logData = array(
+        $logData = [
             'item' => (array)$item,
             'documents' => $documents,
             'response' => (array)$response
-        );
+        ];
 
         if ($response->getHttpStatus() == 200) {
             $severity = -1;

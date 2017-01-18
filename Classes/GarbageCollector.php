@@ -79,18 +79,18 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function getUpdateSubPagesRecursiveTriggerConfiguration()
     {
-        return array(
+        return [
             // the current page has the field "extendToSubpages" enabled and the field "hidden" was set to 1
-            'extendToSubpageEnabledAndHiddenFlagWasAdded' => array(
-                'currentState' =>  array('extendToSubpages' => '1'),
-                'changeSet' => array('hidden' => '1')
-            ),
+            'extendToSubpageEnabledAndHiddenFlagWasAdded' => [
+                'currentState' =>  ['extendToSubpages' => '1'],
+                'changeSet' => ['hidden' => '1']
+            ],
             // the current page has the field "hidden" enabled and the field "extendToSubpages" was set to 1
-            'hiddenIsEnabledAndExtendToSubPagesWasAdded' => array(
-                'currentState' =>  array('hidden' => '1'),
-                'changeSet' => array('extendToSubpages' => '1')
-            )
-        );
+            'hiddenIsEnabledAndExtendToSubPagesWasAdded' => [
+                'currentState' =>  ['hidden' => '1'],
+                'changeSet' => ['extendToSubpages' => '1']
+            ]
+        ];
     }
 
     /**
@@ -319,7 +319,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
 
         if (!isset($visibilityAffectingFields[$table])) {
             // we always want to get the uid and pid although they do not affect visibility
-            $fields = array('uid', 'pid');
+            $fields = ['uid', 'pid'];
             if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
                 $fields = array_merge($fields,
                     $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);

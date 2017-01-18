@@ -100,11 +100,11 @@ class Search extends CommandPluginBase
     protected function getSolrVariables()
     {
         $currentUrl = $this->getCurrentUrlWithQueryLinkBuilder();
-        return array(
+        return [
             'prefix' => $this->prefixId,
             'query_parameter' => 'q',
             'current_url' => $currentUrl
-        );
+        ];
     }
 
     /**

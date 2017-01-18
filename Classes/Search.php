@@ -148,24 +148,24 @@ class Search implements SingletonInterface
 
             if ($this->configuration->getLoggingQueryQueryString()) {
                 GeneralUtility::devLog('Querying Solr, getting result', 'solr',
-                    0, array(
+                    0, [
                         'query string' => $query->getQueryString(),
                         'query parameters' => $query->getQueryParameters(),
                         'response' => json_decode($response->getRawResponse(),
                             true)
-                    ));
+                    ]);
             }
         } catch (\RuntimeException $e) {
             $response = $this->solr->getResponse();
 
             if ($this->configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('Exception while querying Solr', 'solr',
-                    3, array(
+                    3, [
                         'exception' => $e->__toString(),
                         'query' => (array)$query,
                         'offset' => $offset,
                         'limit' => $limit
-                    ));
+                    ]);
             }
         }
 
@@ -263,9 +263,9 @@ class Search implements SingletonInterface
         } catch (\Exception $e) {
             if ($this->configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('exception while trying to ping the solr server',
-                    'solr', 3, array(
+                    'solr', 3, [
                         $e->__toString()
-                    ));
+                    ]);
             }
         }
 

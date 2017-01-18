@@ -42,12 +42,12 @@ class ContentElementWizardIconProvider
      */
     public function proc($wizardItems)
     {
-        $wizardItems['plugins_tx_solr_results'] = array(
+        $wizardItems['plugins_tx_solr_results'] = [
             'icon' => ExtensionManagementUtility::extRelPath('solr') . 'Resources/Public/Images/ContentElement.svg',
             'title' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results'),
             'description' => $GLOBALS['LANG']->sL('LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results_description'),
             'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=solr_pi_results'
-        );
+        ];
 
         return $wizardItems;
     }

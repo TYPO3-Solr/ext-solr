@@ -92,9 +92,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
         $this->registerAuthorizationService();
 # Since TypoScript is not available at this point we cannot bind it to some TS configuration option whether to log or not
-#		\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Registered Solr Page Indexer authorization service', 'solr', 1, array(
+#		\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Registered Solr Page Indexer authorization service', 'solr', 1, [
 #			'auth services' => $GLOBALS['T3_SERVICES']['auth']
-#		));
+#		]);
     }
 
     /**
@@ -135,10 +135,10 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         $GLOBALS['TSFE']->fe_user->user['username'] = AuthorizationService::SOLR_INDEXER_USERNAME;
         $GLOBALS['TSFE']->fe_user->user['usergroup'] = $groupList;
 
-        $this->responseData['authorization'] = array(
+        $this->responseData['authorization'] = [
             'username' => $GLOBALS['TSFE']->fe_user->user['username'],
             'usergroups' => $GLOBALS['TSFE']->fe_user->user['usergroup']
-        );
+        ];
     }
 
     /**
@@ -173,7 +173,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             'auth', // service type
             AuthorizationService::class,
             // service key
-            array( // service meta data
+            [ // service meta data
                 'title' => 'Solr Indexer Authorization',
                 'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
 
@@ -188,7 +188,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
                 'classFile' => $GLOBALS['PATH_solr'] . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
                 'className' => AuthorizationService::class,
-            )
+            ]
         );
     }
 
@@ -233,10 +233,10 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             /** @var $contentObject ContentObjectRenderer */
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
 
-        $typolinkConfiguration = array(
+        $typolinkConfiguration = [
             'parameter' => intval($this->page->id),
             'linkAccessRestrictedPages' => '1'
-        );
+        ];
 
         $language = GeneralUtility::_GET('L');
         if (!empty($language)) {
@@ -291,11 +291,11 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
 
             $this->responseData['pageIndexed'] = (int)$indexer->indexPage();
             $this->responseData['originalPageDocument'] = (array)$indexer->getPageSolrDocument();
-            $this->responseData['solrConnection'] = array(
+            $this->responseData['solrConnection'] = [
                 'rootPage' => $indexQueueItem->getRootPageUid(),
                 'sys_language_uid' => $GLOBALS['TSFE']->sys_language_uid,
                 'solr' => (string)$solrConnection
-            );
+            ];
 
             $documentsSentToSolr = $indexer->getDocumentsSentToSolr();
             foreach ($documentsSentToSolr as $document) {
@@ -304,9 +304,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         } catch (\Exception $e) {
             if ($configuration->getLoggingExceptions()) {
                 GeneralUtility::devLog('Exception while trying to index page ' . $page->id,
-                    'solr', 3, array(
+                    'solr', 3, [
                         $e->__toString()
-                    ));
+                    ]);
             }
         }
 

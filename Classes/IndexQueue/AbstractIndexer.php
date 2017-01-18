@@ -51,7 +51,7 @@ abstract class AbstractIndexer
      *
      * @var array
      */
-    protected static $unAllowedOverrideFields = array('type');
+    protected static $unAllowedOverrideFields = ['type'];
 
     /**
      * @param string $solrFieldName

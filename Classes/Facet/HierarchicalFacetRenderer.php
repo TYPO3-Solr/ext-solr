@@ -101,11 +101,11 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
             // we're reverting the facet builder's htmlspecials() here
             $optionLinkUrl = htmlspecialchars_decode($optionLinkUrl);
 
-            $enrichedFacetOptions[$facetOption->getValue()] = array(
+            $enrichedFacetOptions[$facetOption->getValue()] = [
                 'numberOfResults' => $facetOption->getNumberOfResults(),
                 'url' => $optionLinkUrl,
                 'selected' => $optionSelected,
-            );
+            ];
         }
 
         $facetContent .= $this->renderHierarchicalFacet($enrichedFacetOptions);
@@ -126,10 +126,10 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
         // passing field name and facet options to the necessary userFunc
         /* @var $contentObject ContentObjectRenderer */
         $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-        $contentObject->start(array(
+        $contentObject->start([
             'facetFieldName' => $this->facetConfiguration['field'],
             'facetOptions' => $facetOptions
-        ));
+        ]);
 
         if (!isset($this->facetConfiguration['hierarchy.']['special'])) {
             // pre-setting some configuration needed to turn the facet options into a menu structure

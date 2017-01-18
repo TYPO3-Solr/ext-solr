@@ -89,11 +89,11 @@ class IndexQueueModuleController extends AbstractModuleController
             'pending, failed'
         );
 
-        $statistics = array(
+        $statistics = [
             'errors' => 0,
             'pending' => 0,
             'indexed' => 0
-        );
+        ];
         foreach ($indexQueueStats as $row) {
             if ($row['failed'] == 1) {
                 $statistics['errors'] = $row['count'];
@@ -121,11 +121,11 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     protected function getIndexQueueStatisticsPercentages($statistics)
     {
-        $percentages = array(
+        $percentages = [
             'errors' => 0,
             'pending' => 0,
             'indexed' => 0
-        );
+        ];
 
         if ($statistics['total'] > 0) {
             foreach ($statistics as $key => $count) {
@@ -216,7 +216,7 @@ class IndexQueueModuleController extends AbstractModuleController
             $titleLabel = 'solr.backend.index_queue_module.flashmessage.initialize.title';
             $this->addFlashMessage(
                 LocalizationUtility::translate($messageLabel, 'Solr',
-                    array(implode(', ', $messagesForConfigurations))),
+                    [implode(', ', $messagesForConfigurations)]),
                 LocalizationUtility::translate($titleLabel, 'Solr'),
                 FlashMessage::OK
             );
@@ -252,7 +252,7 @@ class IndexQueueModuleController extends AbstractModuleController
         $resetResult = $database->exec_UPDATEquery(
             'tx_solr_indexqueue_item',
             'errors NOT LIKE ""',
-            array('errors' => '')
+            ['errors' => '']
         );
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.reset_errors';

@@ -54,7 +54,7 @@ class Date implements ViewHelper
     {
         if (is_null($this->dateFormat) || is_null($this->contentObject)) {
             $configuration = Util::getSolrConfiguration();
-            $this->dateFormat = $configuration->getValueByPathOrDefaultValue('plugin.tx_solr.general.dateFormat.', array('date' => 'd.m.Y H:i'));
+            $this->dateFormat = $configuration->getValueByPathOrDefaultValue('plugin.tx_solr.general.dateFormat.', ['date' => 'd.m.Y H:i']);
             $this->contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         }
     }

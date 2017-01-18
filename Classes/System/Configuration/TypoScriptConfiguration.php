@@ -1447,7 +1447,7 @@ class TypoScriptConfiguration
      * @param array $defaultIfEmpty
      * @return array
      */
-    public function getSearchTrustedFieldsArray($defaultIfEmpty = array('url'))
+    public function getSearchTrustedFieldsArray($defaultIfEmpty = ['url'])
     {
         $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.trustedFields', '');
 

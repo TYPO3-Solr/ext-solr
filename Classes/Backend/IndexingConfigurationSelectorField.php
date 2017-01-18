@@ -172,7 +172,7 @@ class IndexingConfigurationSelectorField
                 $labelTableName = ' (' . $tableName . ')';
             }
 
-            $selectorItems[] = array($configurationName . $labelTableName, $configurationName, $icon);
+            $selectorItems[] = [$configurationName . $labelTableName, $configurationName, $icon];
         }
 
         return $selectorItems;
@@ -186,16 +186,17 @@ class IndexingConfigurationSelectorField
      */
     protected function renderSelectCheckbox($items, $selectedValues)
     {
-        $parameterArray = array(
+        $parameterArray = [
             'fieldChangeFunc' => [],
             'itemFormElName' => $this->formElementName,
             'itemFormElValue' => $selectedValues,
-            'fieldConf' => array('config' => array('items' => $items)), 'fieldTSConfig' => array('noMatchingValue_label' => '')
-        );
+            'fieldConf' => ['config' => ['items' => $items]],
+            'fieldTSConfig' => ['noMatchingValue_label' => '']
+        ];
 
         /** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
-        $options = array('renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector', 'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray);
+        $options = ['renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector', 'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray];
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
 

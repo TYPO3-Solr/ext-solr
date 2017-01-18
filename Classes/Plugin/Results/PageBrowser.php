@@ -85,12 +85,12 @@ class PageBrowser
 
         if ($this->numberOfPages > 1) {
             // Set up
-            $markers = array(
+            $markers = [
                 '###TEXT_FIRST###' => htmlspecialchars($this->labels['pagebrowser_first']),
                 '###TEXT_NEXT###' => htmlspecialchars($this->labels['pagebrowser_next']),
                 '###TEXT_PREV###' => htmlspecialchars($this->labels['pagebrowser_prev']),
                 '###TEXT_LAST###' => htmlspecialchars($this->labels['pagebrowser_last']),
-            );
+            ];
             $subPartMarkers = [];
             $subPart = $this->contentObject->getSubpart($this->template,
                 '###PAGE_BROWSER###');
@@ -139,11 +139,11 @@ class PageBrowser
 
             for ($i = $start; $i < $end; $i++) {
                 $template = ($i == $this->currentPage ? $actPageLinkSubPart : $inactivePageLinkSubPart);
-                $localMarkers = array(
+                $localMarkers = [
                     '###NUMBER###' => $i,
                     '###NUMBER_DISPLAY###' => $i + 1,
                     '###LINK###' => $this->getPageLink($i),
-                );
+                ];
                 $pageLinks .= $this->contentObject->substituteMarkerArray($template,
                     $localMarkers);
             }
@@ -183,11 +183,11 @@ class PageBrowser
     {
         // Prepare query string. We do both urlencoded and non-encoded version
         // because older TYPO3 versions use un-encoded parameter names
-        $queryConf = array(
+        $queryConf = [
             'exclude' => $this->pageParameterName . ',' .
                 rawurlencode($this->pageParameterName) .
                 ',cHash',
-        );
+        ];
         $additionalParams = urldecode($this->contentObject->getQueryArguments($queryConf));
 
         // Add page number
@@ -207,11 +207,11 @@ class PageBrowser
         }
 
         // Assemble typolink configuration
-        $conf = array(
+        $conf = [
             'parameter' => $GLOBALS['TSFE']->id,
             'additionalParams' => $additionalParams,
             'useCacheHash' => false,
-        );
+        ];
 
         return htmlspecialchars($this->contentObject->typoLink_URL($conf));
     }

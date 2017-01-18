@@ -264,12 +264,12 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         }
 
         if (BackendUtility::isTableLocalizable($this->type)) {
-            $conditions['languageField'] = array(
+            $conditions['languageField'] = [
                 $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = 0',
                 // default language
                 $GLOBALS['TCA'][$this->type]['ctrl']['languageField'] . ' = -1'
                 // all languages
-            );
+            ];
             if (isset($GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'])) {
                 $conditions['languageField'][] = $GLOBALS['TCA'][$this->type]['ctrl']['transOrigPointerField'] . ' = 0'; // translations without original language source
             }
@@ -363,13 +363,13 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $solrConfiguration = $this->site->getSolrConfiguration();
 
         $logSeverity = -1;
-        $logData = array(
+        $logData = [
             'site' => $this->site->getLabel(),
             'indexing configuration name' => $this->indexingConfigurationName,
             'type' => $this->type,
             'query' => $initializationQuery,
             'rows' => $GLOBALS['TYPO3_DB']->sql_affected_rows()
-        );
+        ];
 
         if ($GLOBALS['TYPO3_DB']->sql_errno()) {
             $logSeverity = 3;

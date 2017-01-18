@@ -97,10 +97,10 @@ class ErrorsCommand implements PluginCommand
         $searchWasTriggeredWithEmptyQuery = $resultService->getLastSearchWasExecutedWithEmptyQueryString();
 
         if ($searchWasTriggeredWithEmptyQuery && !$this->configuration->getSearchQueryAllowEmptyQuery()) {
-            $errors[] = array(
+            $errors[] = [
                 'message' => '###LLL:error_emptyQuery###',
                 'code' => 1300893669
-            );
+            ];
         }
 
         // hook to provide additional error messages

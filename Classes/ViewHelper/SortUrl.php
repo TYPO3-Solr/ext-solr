@@ -134,9 +134,9 @@ class SortUrl implements ViewHelper
             }
         }
 
-        $sortUrl = $this->queryLinkBuilder->getQueryUrl(array(
+        $sortUrl = $this->queryLinkBuilder->getQueryUrl([
             'sort' => implode(', ', $sortParameters)
-        ));
+        ]);
 
         return $sortUrl;
     }

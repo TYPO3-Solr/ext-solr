@@ -65,12 +65,12 @@ class AdministrationModuleManager
             list($vendor, $extensionKey) = explode('.', $extensionIdentifier);
         }
 
-        self::$modules[$controllerName] = array(
+        self::$modules[$controllerName] = [
             'vendor' => $vendor,
             'extensionKey' => $extensionKey,
             'controller' => $controllerName,
             'actions' => $controllerActions
-        );
+        ];
     }
 
     /**

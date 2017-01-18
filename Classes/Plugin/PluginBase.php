@@ -354,10 +354,10 @@ abstract class PluginBase extends AbstractPlugin
         );
         $template->addViewHelperIncludePath($this->extKey,
             'Classes/ViewHelper/');
-        $template->addViewHelper('LLL', array(
+        $template->addViewHelper('LLL', [
             'languageFile' => 'EXT:solr/Resources/Private/Language/locallang.xlf',
             'llKey' => $this->LLkey
-        ));
+        ]);
 
         // can be used for view helpers that need configuration during initialization
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'])) {

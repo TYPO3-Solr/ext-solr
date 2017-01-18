@@ -192,7 +192,7 @@ class SearchResultSetService implements SingletonInterface
         $this->applyPageSectionsRootLineFilter($query);
 
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
-            GeneralUtility::devLog('received search query', 'solr', 0, array($rawQuery));
+            GeneralUtility::devLog('received search query', 'solr', 0, [$rawQuery]);
         }
 
         $query->setResultsPerPage($resultsPerPage);

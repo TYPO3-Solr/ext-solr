@@ -120,24 +120,24 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
 
         $removeFacetText = strtr(
             $solrConfiguration->getSearchFacetingRemoveFacetLinkText(),
-            array(
+            [
                 '@facetValue' => $this->filterValue,
                 '@facetName' => $this->facetName,
                 '@facetLabel' => $facetLabel,
                 '@facetText' => $facetText
-            )
+            ]
         );
 
         $removeFacetLink = $facetLinkBuilder->getRemoveFacetOptionLink($removeFacetText);
         $removeFacetUrl = $facetLinkBuilder->getRemoveFacetOptionUrl();
 
-        $facetToRemove = array(
+        $facetToRemove = [
             'link' => $removeFacetLink,
             'url' => $removeFacetUrl,
             'text' => $removeFacetText,
             'value' => $this->filterValue,
             'facet_name' => $this->facetName
-        );
+        ];
 
         return $facetToRemove;
     }
@@ -156,12 +156,12 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processUsedFacetText'] as $classReference) {
             $usedFacetOptionsRenderer = GeneralUtility::getUserObj($classReference);
-            $params = array(
+            $params = [
                 'facetName' => $this->facetName,
                 'facetValue' => $this->filterValue,
                 'facetConfiguration' => $this->facetConfiguration,
                 'facetText' => $facetText
-            );
+            ];
 
             if (!$usedFacetOptionsRenderer instanceof UsedFacetOptionsRenderer) {
                 $message = 'Invalid hook configured in processUsedFacetText. Hook needs to implement Interface UsedFacetOptionsRenderer!';

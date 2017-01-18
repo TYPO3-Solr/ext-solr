@@ -197,12 +197,12 @@ class Facet
 
         if (!empty($this->configuration['requirements.'])) {
             foreach ($this->configuration['requirements.'] as $name => $requirement) {
-                $requirements[] = array(
+                $requirements[] = [
                     'name' => substr($name, 0, -1),
                     'facet' => $requirement['facet'],
                     'values' => GeneralUtility::trimExplode(',',
                         $requirement['values']),
-                );
+                ];
             }
         }
 

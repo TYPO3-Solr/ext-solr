@@ -322,9 +322,9 @@ class SolrService extends \Apache_Solr_Service
      */
     public function extractByQuery(ExtractingQuery $query)
     {
-        $headers = array(
+        $headers = [
             'Content-Type' => 'multipart/form-data; boundary=' . $query->getMultiPartPostDataBoundary()
-        );
+        ];
 
         try {
             $response = $this->requestServlet(
@@ -336,20 +336,20 @@ class SolrService extends \Apache_Solr_Service
             );
         } catch (\Exception $e) {
             GeneralUtility::devLog('Extracting text and meta data through Solr Cell over HTTP POST',
-                'solr', 3, array(
+                'solr', 3, [
                     'query' => (array)$query,
                     'parameters' => $query->getQueryParameters(),
                     'file' => $query->getFile(),
                     'headers' => $headers,
                     'query url' => self::EXTRACT_SERVLET,
                     'exception' => $e->getMessage()
-                ));
+                ]);
         }
 
-        return array(
+        return [
             $response->extracted,
             (array)$response->extracted_metadata
-        );
+        ];
     }
 
     /**
@@ -451,7 +451,7 @@ class SolrService extends \Apache_Solr_Service
             throw new \UnexpectedValueException('Scheme parameter is empty', 1380756390);
         }
 
-        $isHttpOrHttps = in_array($scheme, array(self::SCHEME_HTTP, self::SCHEME_HTTPS));
+        $isHttpOrHttps = in_array($scheme, [self::SCHEME_HTTP, self::SCHEME_HTTPS]);
         if (!$isHttpOrHttps) {
             throw new \UnexpectedValueException('Unsupported scheme parameter, scheme must be http or https', 1380756442);
         }
@@ -486,11 +486,11 @@ class SolrService extends \Apache_Solr_Service
         if (!isset($this->lukeData[$numberOfTerms])) {
             $lukeUrl = $this->_constructUrl(
                 self::LUKE_SERVLET,
-                array(
+                [
                     'numTerms' => $numberOfTerms,
                     'wt' => self::SOLR_WRITER,
                     'fl' => '*'
-                )
+                ]
             );
 
             $this->lukeData[$numberOfTerms] = $this->_sendRawGet($lukeUrl);
@@ -518,10 +518,10 @@ class SolrService extends \Apache_Solr_Service
         }
 
         if ($this->configuration->getLoggingQueryRawGet() || $response->getHttpStatus() != 200) {
-            $logData = array(
+            $logData = [
                 'query url' => $url,
                 'response' => (array)$response
-            );
+            ];
 
             if (!empty($e)) {
                 $logData['exception'] = $e->__toString();
@@ -687,11 +687,11 @@ class SolrService extends \Apache_Solr_Service
             'Delete Query sent.',
             'solr',
             1,
-            array(
+            [
                 'query' => $rawPost,
                 'query url' => $this->_updateUrl,
                 'response' => (array)$response
-            )
+            ]
         );
 
         return $response;
@@ -723,11 +723,11 @@ class SolrService extends \Apache_Solr_Service
         }
 
         if ($this->configuration->getLoggingQueryRawPost() || $response->getHttpStatus() != 200) {
-            $logData = array(
+            $logData = [
                 'query url' => $url,
                 'content' => $rawPost,
                 'response' => (array)$response
-            );
+            ];
 
             if (!empty($e)) {
                 $logData['exception'] = $e->__toString();
@@ -821,10 +821,10 @@ class SolrService extends \Apache_Solr_Service
         }
 
         if ($this->configuration->getLoggingQueryRawDelete() || $solrResponse->getHttpStatus() != 200) {
-            $logData = array(
+            $logData = [
                 'query url' => $url,
                 'response' => (array)$solrResponse
-            );
+            ];
 
             if (!empty($e)) {
                 $logData['exception'] = $e->__toString();
@@ -928,15 +928,15 @@ class SolrService extends \Apache_Solr_Service
 
         $this->_lukeUrl = $this->_constructUrl(
             self::LUKE_SERVLET,
-            array(
+            [
                 'numTerms' => '0',
                 'wt' => self::SOLR_WRITER
-            )
+            ]
         );
 
         $this->_pluginsUrl = $this->_constructUrl(
             self::PLUGINS_SERVLET,
-            array('wt' => self::SOLR_WRITER)
+            ['wt' => self::SOLR_WRITER]
         );
 
         $pathElements = explode('/', trim($this->_path, '/'));
