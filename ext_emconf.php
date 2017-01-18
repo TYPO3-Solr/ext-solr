@@ -27,9 +27,9 @@ $EM_CONF[$_EXTKEY] = array(
         'classmap' => array(
             'Resources/Private/Php/'
         ),
-        'psr-4' => array(
+        'psr-4' => [
             'ApacheSolrForTypo3\\Solr\\' => 'Classes/',
             'ApacheSolrForTypo3\\Solr\\Tests\\' => 'Tests/'
-        )
+        ]
     )
 );
