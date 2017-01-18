@@ -79,12 +79,12 @@ class FacetRendererFactory
         $filterEncoderClassName = '',
         $queryFacetBuilderClassName = ''
     ) {
-        self::$facetTypes[$facetType] = array(
+        self::$facetTypes[$facetType] = [
             'type' => $facetType,
             'renderer' => $rendererClassName,
             'filterEncoder' => $filterEncoderClassName,
             'queryFacetBuilder' => $queryFacetBuilderClassName
-        );
+        ];
     }
 
     /**
@@ -161,10 +161,10 @@ class FacetRendererFactory
             $facetRendererClassName = $this->getFacetRendererClassNameByFacetType($facetConfiguration['type']);
         }
 
-        return call_user_func(array(
+        return call_user_func([
             $facetRendererClassName,
             'getFacetInternalType'
-        ));
+        ]);
     }
 
     /**

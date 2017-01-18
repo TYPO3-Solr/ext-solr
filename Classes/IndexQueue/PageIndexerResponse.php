@@ -142,10 +142,10 @@ class PageIndexerResponse
             $serializedActionResults[$action] = serialize($result);
         }
 
-        $responseData = array(
+        $responseData = [
             'requestId' => $this->requestId,
             'actionResults' => $serializedActionResults
-        );
+        ];
 
         return json_encode($responseData);
     }

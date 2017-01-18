@@ -269,11 +269,11 @@ class Queue
         $itemInQueue = $this->containsItem($itemType, $itemUid);
         if ($itemInQueue) {
             // update if that item is in the queue already
-            $changes = array(
+            $changes = [
                 'changed' => ($forcedChangeTime > 0)
                                 ? $forcedChangeTime
                                 : $this->getItemChangedTime($itemType, $itemUid)
-            );
+            ];
 
             if (!empty($indexingConfiguration)) {
                 $changes['indexing_configuration'] = $indexingConfiguration;
@@ -326,16 +326,16 @@ class Queue
         }
 
         if (Util::isRootPage($rootPageId)) {
-            $item = array(
+            $item = [
                 'root' => $rootPageId,
                 'item_type' => $itemType,
                 'item_uid' => $itemUid,
                 'changed' => $this->getItemChangedTime($itemType, $itemUid),
                 'errors' => ''
-            );
+            ];
 
             if (!empty($indexingConfiguration)) {
-                $indexingConfigurationList = array($indexingConfiguration);
+                $indexingConfigurationList = [$indexingConfiguration];
             } else {
                 $indexingConfigurationList = $this->getIndexingConfigurationsByItem(
                     $itemType, $itemUid, $rootPageId
@@ -449,7 +449,7 @@ class Queue
     {
         if (!empty($page['content_from_pid'])) {
             // canonical page, get the original page's last changed time
-            $pageContentLastChangedTime = $this->getPageItemChangedTime(array('uid' => $page['content_from_pid']));
+            $pageContentLastChangedTime = $this->getPageItemChangedTime(['uid' => $page['content_from_pid']]);
         } else {
             $pageContentLastChangedTime = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
                 'MAX(tstamp) AS changed_time',
@@ -850,7 +850,7 @@ class Queue
                 );
             } else {
                 GeneralUtility::devLog('Record missing for Index Queue item. Item removed.',
-                    'solr', 3, array($indexQueueItemRecord));
+                    'solr', 3, [$indexQueueItemRecord]);
                 $this->deleteItem($indexQueueItemRecord['item_type'],
                     $indexQueueItemRecord['item_uid']);
             }
@@ -883,9 +883,9 @@ class Queue
         $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
             'tx_solr_indexqueue_item',
             'uid = ' . $itemUid,
-            array(
+            [
                 'errors' => $errorMessage
-            )
+            ]
         );
     }
 }

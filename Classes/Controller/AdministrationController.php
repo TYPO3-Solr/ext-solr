@@ -196,7 +196,7 @@ class AdministrationController extends ActionController
         // transfer additional parameters
         foreach ($this->request->getArguments() as $argumentName => $argumentValue) {
             if (in_array($argumentName,
-                array('module', 'moduleAction', 'controller'))) {
+                ['module', 'moduleAction', 'controller'])) {
                 // these have been transferred already
                 continue;
             }

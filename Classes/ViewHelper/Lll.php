@@ -109,7 +109,7 @@ class Lll implements ViewHelper
             if (is_array($overrideLabels)) {
                 foreach ($overrideLabels as $labelKey => $overrideLabel) {
                     if (!is_array($overrideLabel)) {
-                        $this->localLang[$this->languageFile][$language][$labelKey] = array(array('source' => $overrideLabel));
+                        $this->localLang[$this->languageFile][$language][$labelKey] = [['source' => $overrideLabel]];
                     }
                 }
             }

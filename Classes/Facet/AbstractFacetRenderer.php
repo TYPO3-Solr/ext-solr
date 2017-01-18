@@ -248,7 +248,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
             }
             $filterParameters = array_map('urlencode', $filterParameters);
 
-            $resetFacetUrl = $this->queryLinkBuilder->getQueryUrl(array('filter' => $filterParameters));
+            $resetFacetUrl = $this->queryLinkBuilder->getQueryUrl(['filter' => $filterParameters]);
         } else {
             $resetFacetUrl = $this->queryLinkBuilder->getQueryUrl();
         }

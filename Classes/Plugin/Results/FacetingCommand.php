@@ -232,10 +232,10 @@ class FacetingCommand implements PluginCommand
         }
         $template->addLoop('facets_in_use', 'remove_facet', $facetsInUse);
 
-        $template->addVariable('remove_all_facets', array(
-            'url' => $queryLinkBuilder->getQueryUrl(array('filter' => [])),
+        $template->addVariable('remove_all_facets', [
+            'url' => $queryLinkBuilder->getQueryUrl(['filter' => []]),
             'text' => '###LLL:faceting_removeAllFilters###'
-        ));
+        ]);
 
         $content = '';
         if (count($facetsInUse)) {

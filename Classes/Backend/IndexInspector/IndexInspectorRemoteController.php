@@ -96,12 +96,12 @@ class IndexInspectorRemoteController
         $documents = $this->getIndexDocuments();
 
         foreach ($documents as $key => $document) {
-            $responseDocuments[$key] = array(
+            $responseDocuments[$key] = [
                 'id' => $document->id,
                 'type' => $document->type,
                 'title' => $document->title,
                 '__data' => $this->formatDocumentData($document)
-            );
+            ];
         }
 
         $response = new \stdClass();
@@ -146,10 +146,10 @@ class IndexInspectorRemoteController
         $metaData->idProperty = 'id';
         $metaData->root = 'documents';
         $metaData->totalProperty = 'numFound';
-        $metaData->sortInfo = array(
+        $metaData->sortInfo = [
             'field' => 'type',
             'direction' => 'ASC'
-        );
+        ];
         $metaData->fields = $this->buildResponseFieldDescription();
 
         return $metaData;
@@ -163,7 +163,7 @@ class IndexInspectorRemoteController
     protected function buildResponseFieldDescription()
     {
         $fields = [];
-        $fieldNames = array('id', 'type', 'title', '__data');
+        $fieldNames = ['id', 'type', 'title', '__data'];
 
         foreach ($fieldNames as $fieldName) {
             $field = new \stdClass();
@@ -195,16 +195,16 @@ class IndexInspectorRemoteController
         $formattedData = [];
         foreach ($sortedData as $fieldName => $fieldValue) {
             if (is_array($fieldValue)) {
-                $formattedData[] = array(
+                $formattedData[] = [
                     'fieldName' => $fieldName,
-                    'fieldValue' => '- array(' . count($fieldValue) . ') -'
-                );
+                    'fieldValue' => '- [' . count($fieldValue) . '] -'
+                ];
                 $formattedData = $this->formatMultiValueFields($fieldValue, $formattedData);
             } else {
-                $formattedData[] = array(
+                $formattedData[] = [
                     'fieldName' => $fieldName,
                     'fieldValue' => htmlspecialchars($fieldValue)
-                );
+                ];
             }
         }
 
@@ -226,22 +226,22 @@ class IndexInspectorRemoteController
 
         foreach ($multipleFieldValues as $index => $singleFieldValue) {
             if (is_array($singleFieldValue)) {
-                $fieldValue = '- array(' . count($singleFieldValue) . ') -';
+                $fieldValue = '- [' . count($singleFieldValue) . '] -';
             } else {
                 $fieldValue = htmlspecialchars($singleFieldValue);
             }
 
-            $formattedData[] = array(
+            $formattedData[] = [
                 'fieldName' => '',
                 'fieldValue' => $fieldValue
-            );
+            ];
         }
 
         if ($valueCount > 10) {
-            $formattedData[] = array(
+            $formattedData[] = [
                 'fieldName' => '',
                 'fieldValue' => '...'
-            );
+            ];
         }
 
         return $formattedData;

@@ -142,11 +142,11 @@ class ExtractingQuery extends Query
         $filename = basename($this->file);
 
         // TODO create an Apache Solr patch to support Apache Tika's -m (and -l) options
-        $suggestParameters = array(
+        $suggestParameters = [
             'resource.name' => $filename,
             'extractFormat' => 'text',
             // Matches the -t command for the tika CLI app.
-        );
+        ];
 
         return array_merge($suggestParameters, $this->queryParameters);
     }

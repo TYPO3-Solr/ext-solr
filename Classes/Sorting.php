@@ -125,11 +125,11 @@ class Sorting
             );
 
             $optionName = substr($optionName, 0, -1);
-            $sortOptions[$optionName] = array(
+            $sortOptions[$optionName] = [
                 'field' => $optionField,
                 'label' => $optionLabel,
                 'defaultOrder' => $optionConfiguration['defaultOrder']
-            );
+            ];
             if (isset($optionConfiguration['fixedOrder'])) {
                 $sortOptions[$optionName]['fixedOrder'] = $optionConfiguration['fixedOrder'];
             }

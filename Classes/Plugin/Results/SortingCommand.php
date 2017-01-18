@@ -147,13 +147,13 @@ class SortingCommand implements PluginCommand
 
             $sortParameter = $sortOptionName . ' ' . $sortDirection;
 
-            $temp = array(
+            $temp = [
                 'link' => $queryLinkBuilder->getQueryLink(
                     $sortOption['label'],
-                    array('sort' => $sortParameter)
+                    ['sort' => $sortParameter]
                 ),
                 'url' => $queryLinkBuilder->getQueryUrl(
-                    array('sort' => $sortParameter)
+                    ['sort' => $sortParameter]
                 ),
                 'optionName' => $sortOptionName,
                 'field' => $sortOption['field'],
@@ -162,7 +162,7 @@ class SortingCommand implements PluginCommand
                 'direction' => $sortDirection,
                 'indicator' => $sortIndicator,
                 'current_direction' => ' '
-            );
+            ];
 
             // set sort indicator for the current sorting field
             if ($currentSortOption == $sortOptionName) {
@@ -176,10 +176,10 @@ class SortingCommand implements PluginCommand
             if ($sortOptionName == 'relevance') {
                 $temp['link'] = $queryLinkBuilder->getQueryLink(
                     $sortOption['label'],
-                    array('sort' => null)
+                    ['sort' => null]
                 );
                 $temp['url'] = $queryLinkBuilder->getQueryUrl(
-                    array('sort' => null)
+                    ['sort' => null]
                 );
                 unset($temp['direction'], $temp['indicator']);
             }

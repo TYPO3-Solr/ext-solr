@@ -54,11 +54,11 @@ class AuthorizationService extends AbstractAuthenticationService
      */
     public function getUser()
     {
-        return array(
+        return [
             'uid' => 0,
             'username' => self::SOLR_INDEXER_USERNAME,
             'authenticated' => true
-        );
+        ];
     }
 
     /**
@@ -109,12 +109,12 @@ class AuthorizationService extends AbstractAuthenticationService
 
             foreach ($groups as $groupId) {
                 // faking a user group record
-                $groupData[] = array(
+                $groupData[] = [
                     'uid' => $groupId,
                     'pid' => 0,
                     'title' => '__SolrIndexerGroup__',
                     'TSconfig' => ''
-                );
+                ];
             }
         }
 

@@ -192,11 +192,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
             } else {
                 if ($this->request->getParameter('loggingEnabled')) {
                     GeneralUtility::devLog('Access restriction found', 'solr',
-                        0, array(
+                        0, [
                             'groups' => $frontendGroups,
                             'record' => $record,
                             'record type' => $table,
-                        ));
+                        ]);
                 }
             }
 

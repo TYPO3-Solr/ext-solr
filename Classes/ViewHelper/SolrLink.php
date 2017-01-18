@@ -94,7 +94,7 @@ class SolrLink implements ViewHelper
             $solrUrlParameters = $additionalUrlParameters['tx_solr'];
         }
 
-        $linkConfiguration = array('useCacheHash' => $useCache);
+        $linkConfiguration = ['useCacheHash' => $useCache];
 
         if ($returnOnlyUrl) {
             $linkConfiguration['returnLast'] = 'url';

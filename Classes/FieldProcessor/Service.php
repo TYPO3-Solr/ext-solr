@@ -74,7 +74,7 @@ class Service
 
                 if (!is_array($fieldValue)) {
                     // turn single value field into multi value field
-                    $fieldValue = array($fieldValue);
+                    $fieldValue = [$fieldValue];
                     $isSingleValueField = true;
                 }
 

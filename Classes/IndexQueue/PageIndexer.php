@@ -175,14 +175,14 @@ class PageIndexer extends Indexer
             }
 
             if ($this->loggingEnabled) {
-                GeneralUtility::devLog('Page Access Groups', 'solr', 0, array(
+                GeneralUtility::devLog('Page Access Groups', 'solr', 0, [
                     'item' => (array)$item,
                     'language' => $language,
                     'index request url' => $indexRequestUrl,
                     'request' => (array)$request,
                     'response' => (array)$response,
                     'groups' => $groups
-                ));
+                ]);
             }
         }
 
@@ -275,7 +275,7 @@ class PageIndexer extends Indexer
                 'Could not create a valid URL to get frontend data while trying to index a page.',
                 'solr',
                 3,
-                array(
+                [
                     'item' => (array)$item,
                     'constructed URL' => $dataUrl,
                     'scheme' => $scheme,
@@ -283,7 +283,7 @@ class PageIndexer extends Indexer
                     'path' => $path,
                     'page ID' => $pageId,
                     'indexer options' => $this->options
-                )
+                ]
             );
 
             throw new \RuntimeException(
@@ -296,14 +296,14 @@ class PageIndexer extends Indexer
             $dataUrlModifier = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
 
             if ($dataUrlModifier instanceof PageIndexerDataUrlModifier) {
-                $dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, array(
+                $dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, [
                     'item' => $item,
                     'scheme' => $scheme,
                     'host' => $host,
                     'path' => $path,
                     'pageId' => $pageId,
                     'language' => $language
-                ));
+                ]);
             } else {
                 throw new \RuntimeException(
                     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']
@@ -374,7 +374,7 @@ class PageIndexer extends Indexer
             }
 
             GeneralUtility::devLog('Page Indexer: ' . $logStatus, 'solr',
-                $logSeverity, array(
+                $logSeverity, [
                     'item' => (array)$item,
                     'language' => $language,
                     'user group' => $userGroup,
@@ -382,7 +382,7 @@ class PageIndexer extends Indexer
                     'request' => (array)$request,
                     'request headers' => $request->getHeaders(),
                     'response' => (array)$response
-                ));
+                ]);
         }
 
         if (!$indexActionResult['pageIndexed']) {
@@ -443,7 +443,7 @@ class PageIndexer extends Indexer
             );
 
             // current page's content access groups
-            $contentAccessGroups = array($contentAccessGroup);
+            $contentAccessGroups = [$contentAccessGroup];
             if (is_null($contentAccessGroup)) {
                 $contentAccessGroups = $this->getAccessGroupsFromContent($item, $language);
             }

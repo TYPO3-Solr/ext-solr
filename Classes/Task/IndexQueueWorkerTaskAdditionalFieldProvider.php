@@ -68,27 +68,27 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
             $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();
         }
 
-        $additionalFields['site'] = array(
+        $additionalFields['site'] = [
             'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
                 $taskInfo['site']),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
             'cshLabel' => ''
-        );
+        ];
 
-        $additionalFields['documentsToIndexLimit'] = array(
+        $additionalFields['documentsToIndexLimit'] = [
             'code' => '<input type="number" class="form-control" name="tx_scheduler[documentsToIndexLimit]" value="' . htmlspecialchars($taskInfo['documentsToIndexLimit']) . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_documentsToIndexLimit',
             'cshKey' => '',
             'cshLabel' => ''
-        );
+        ];
 
-        $additionalFields['forcedWebRoot'] = array(
+        $additionalFields['forcedWebRoot'] = [
             'code' => '<input type="text" class="form-control" name="tx_scheduler[forcedWebRoot]" value="' . htmlspecialchars($taskInfo['forcedWebRoot']) . '" />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_forcedWebRoot',
             'cshKey' => '',
             'cshLabel' => ''
-        );
+        ];
 
         return $additionalFields;
     }

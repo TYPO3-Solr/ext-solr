@@ -104,13 +104,13 @@ class Link implements ViewHelper
             }
         }
 
-        $linkConfiguration = array(
+        $linkConfiguration = [
             'useCacheHash' => $useCache,
             'no_cache' => false,
             'parameter' => $linkTarget,
             'additionalParams' => $additionalParameters,
             'ATagParams' => $ATagParams
-        );
+        ];
 
         return $this->contentObject->typoLink($linkText, $linkConfiguration);
     }

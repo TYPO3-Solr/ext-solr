@@ -105,7 +105,7 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
         $html = $doc->saveHTML($doc->documentElement->parentNode);
         // remove XML-Preamble, newlines and doctype
         $html = preg_replace('/(<\?xml[^>]+\?>|\r?\n|<!DOCTYPE.+?>)/imS', '', $html);
-        $html = str_replace(array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), $html);
+        $html = str_replace(['<html>', '</html>', '<body>', '</body>'], ['', '', '', ''], $html);
 
         return $html;
     }

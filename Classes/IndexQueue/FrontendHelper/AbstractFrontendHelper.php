@@ -93,9 +93,9 @@ abstract class AbstractFrontendHelper implements FrontendHelper
 
         if ($request->getParameter('loggingEnabled')) {
             GeneralUtility::devLog('Page indexer request received', 'solr', 0,
-                array(
+                [
                     'request' => (array)$request,
-                ));
+                ]);
         }
     }
 

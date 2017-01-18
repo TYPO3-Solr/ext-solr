@@ -129,7 +129,7 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
             }
         }
 
-        return array('start' => $handle1Position, 'end' => $handle2Position);
+        return ['start' => $handle1Position, 'end' => $handle2Position];
     }
 
     /**

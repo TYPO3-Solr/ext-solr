@@ -557,7 +557,7 @@ class Util
             $allowedSites = implode(',', $domains);
         } else {
             $allowedSites = str_replace(
-                array('__solr_current_site', '__current_site'),
+                ['__solr_current_site', '__current_site'],
                 Site::getSiteByPageId($pageId)->getDomain(),
                 $allowedSitesConfiguration
             );

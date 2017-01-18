@@ -88,40 +88,40 @@ class NoResultsCommand implements PluginCommand
 
         $nothingFound = strtr(
             $this->parentPlugin->pi_getLL('no_results_nothing_found'),
-            array(
+            [
                 '@searchWord' => $searchWord
-            )
+            ]
         );
 
         $showingResultsSuggestion = strtr(
             $this->parentPlugin->pi_getLL('no_results_showing_results_suggestion'),
-            array(
+            [
                 '@suggestedWord' => $spellChecker->getCollatedSuggestion()
-            )
+            ]
         );
 
         # TODO add link to execute query
         $searchForOriginal = strtr(
             $this->parentPlugin->pi_getLL('no_results_search_for_original'),
-            array(
+            [
                 '@searchWord' => $searchWord
-            )
+            ]
         );
 
         $searchedFor = strtr(
             $this->parentPlugin->pi_getLL('results_searched_for'),
-            array(
+            [
                 '@searchWord' => $searchWord
-            )
+            ]
         );
 
-        $markers = array(
+        $markers = [
             'query' => $searchWord,
             'nothing_found' => $nothingFound,
             'showing_results_suggestion' => $showingResultsSuggestion,
             'search_for_original' => $searchForOriginal,
             'searched_for' => $searchedFor,
-        );
+        ];
 
         return $markers;
     }

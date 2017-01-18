@@ -49,9 +49,9 @@ class HelpButtonViewHelper extends AbstractSolrViewHelper
     {
         $content = $this->renderChildren();
 
-        return BackendUtility::wrapInHelp('', '', '', array(
+        return BackendUtility::wrapInHelp('', '', '', [
             'title' => $title,
             'description' => $content
-        ));
+        ]);
     }
 }

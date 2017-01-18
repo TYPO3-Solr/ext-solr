@@ -186,9 +186,9 @@ class Template
                     $configuration = Util::getSolrConfiguration();
                     if ($configuration->getLoggingExceptions()) {
                         GeneralUtility::devLog('exception while adding a viewhelper',
-                            'solr', 3, array(
+                            'solr', 3, [
                                 $e->__toString()
-                            ));
+                            ]);
                     }
                 }
             }
@@ -223,10 +223,10 @@ class Template
 
             if (file_exists($viewHelperIncludePath)) {
                 include_once($viewHelperIncludePath);
-                $this->loadedHelperFiles[strtolower($helperKey)] = array(
+                $this->loadedHelperFiles[strtolower($helperKey)] = [
                     'file' => $viewHelperIncludePath,
                     'class' => $possibleClassName
-                );
+                ];
 
                 return $possibleClassName;
             }
@@ -491,9 +491,9 @@ class Template
                 $configuration = Util::getSolrConfiguration();
                 if ($configuration->getLoggingExceptions()) {
                     GeneralUtility::devLog('Exception while rendering a viewhelper',
-                        'solr', 3, array(
+                        'solr', 3, [
                             $e->__toString()
-                        ));
+                        ]);
                 }
 
                 $viewHelperContent = '';
@@ -589,7 +589,7 @@ class Template
 
         $loopContent = $this->getTemplateService()->substituteMarkerArray(
             $loopContent,
-            array('LOOP_ELEMENT_COUNT' => $loopCount),
+            ['LOOP_ELEMENT_COUNT' => $loopCount],
             '###|###'
         );
 
@@ -661,7 +661,7 @@ class Template
      */
     protected function filterProtectedLoops($loopMarkers)
     {
-        $protectedMarkers = array('result_documents');
+        $protectedMarkers = ['result_documents'];
 
         foreach ($loopMarkers as $key => $loopMarker) {
             if (in_array(strtolower($loopMarker), $protectedMarkers)) {
@@ -751,13 +751,13 @@ class Template
                 '###IF:' . $ifMarker . '###'
             );
 
-            $conditions[] = array(
+            $conditions[] = [
                 'marker' => '###IF:' . $ifMarker . '###',
                 'content' => $ifContent,
                 'operator' => trim($operator),
                 'comparand1' => $comparand1,
                 'comparand2' => $comparand2
-            );
+            ];
         }
 
         return $conditions;
@@ -998,10 +998,10 @@ class Template
      */
     public function addLoop($loopName, $markerName, array $variables)
     {
-        $this->loops[$loopName] = array(
+        $this->loops[$loopName] = [
             'marker' => $markerName,
             'data' => $variables
-        );
+        ];
     }
 
     /**

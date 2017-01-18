@@ -117,9 +117,9 @@ class FrequentSearchesCommand implements PluginCommand
             return null;
         }
 
-        $marker = array(
+        $marker = [
             'loop_frequentsearches|term' => $this->getSearchTermMarkerProperties($this->frequentSearchesService->getFrequentSearchTerms())
-        );
+        ];
 
         return $marker;
     }
@@ -144,7 +144,7 @@ class FrequentSearchesCommand implements PluginCommand
 
             foreach ($frequentSearchTerms as $term => $hits) {
                 $size = round($minimumSize + (($hits - $minimumHits) * $step));
-                $frequentSearches[] = array(
+                $frequentSearches[] = [
                     'term' => Template::escapeMarkers($term),
                     'hits' => $hits,
                     'style' => 'font-size: ' . $size . 'px',
@@ -152,7 +152,7 @@ class FrequentSearchesCommand implements PluginCommand
                     'parameters' => '&q=' . html_entity_decode($term,
                             ENT_NOQUOTES, 'UTF-8'),
                     'pid' => $this->parentPlugin->getLinkTargetPageId()
-                );
+                ];
             }
         }
 

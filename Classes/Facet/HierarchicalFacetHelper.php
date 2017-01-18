@@ -60,7 +60,7 @@ class HierarchicalFacetHelper
         foreach ($facetOptions as $facetOptionKey => $facetOption) {
             // let's start with top level menu options
             if (substr($facetOptionKey, 0, 1) == '0') {
-                $topLevelMenu = array(
+                $topLevelMenu = [
                     'title' => $this->getFacetOptionLabel($facetOptionKey,
                         $facetOption['numberOfResults']),
                     'facetKey' => HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey),
@@ -68,7 +68,7 @@ class HierarchicalFacetHelper
                     '_OVERRIDE_HREF' => $facetOption['url'],
                     'ITEM_STATE' => $facetOption['selected'] ? 'ACT' : 'NO',
                     '_PAGES_OVERLAY' => ($GLOBALS['TSFE']->sys_language_uid > 0)
-                );
+                ];
 
                 list(, $mainMenuName) = explode('-', $facetOptionKey, 2);
 
@@ -127,7 +127,7 @@ class HierarchicalFacetHelper
             if (GeneralUtility::isFirstPartOfStr($facetOptionKey,
                 $subMenuEntryPrefix)
             ) {
-                $currentMenu = array(
+                $currentMenu = [
                     'title' => $this->getFacetOptionLabel($facetOptionKey,
                         $facetOption['numberOfResults']),
                     'facetKey' => HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey),
@@ -135,7 +135,7 @@ class HierarchicalFacetHelper
                     '_OVERRIDE_HREF' => $facetOption['url'],
                     'ITEM_STATE' => $facetOption['selected'] ? 'ACT' : 'NO',
                     '_PAGES_OVERLAY' => ($GLOBALS['TSFE']->sys_language_uid > 0)
-                );
+                ];
 
                 $lastPathSegment = HierarchicalFacetRenderer::getLastPathSegmentFromHierarchicalFacetOption($facetOptionKey);
 

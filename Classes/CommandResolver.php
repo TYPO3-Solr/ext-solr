@@ -59,12 +59,12 @@ class CommandResolver
         if (!array_key_exists($commandName, self::$commands)) {
             $plugins = GeneralUtility::trimExplode(',', $plugins, true);
 
-            self::$commands[$commandName] = array(
+            self::$commands[$commandName] = [
                 'plugins' => $plugins,
                 'commandName' => $commandName,
                 'commandClass' => $commandClass,
                 'requirements' => $requirements
-            );
+            ];
         }
     }
 

@@ -180,7 +180,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
                 $optionLinkUrl = $facetLinkBuilder->getReplaceFacetOptionUrl();
             }
 
-            $facetOptionLinks[] = array(
+            $facetOptionLinks[] = [
                 'hidden' => $optionHidden,
                 'link' => $optionLink,
                 'url' => $optionLinkUrl,
@@ -189,7 +189,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
                 'count' => $facetOption->getNumberOfResults(),
                 'selected' => $optionSelected ? '1' : '0',
                 'facet_name' => $this->facetName
-            );
+            ];
         }
 
         $this->template->addLoop('facet_links', 'facet_link',
