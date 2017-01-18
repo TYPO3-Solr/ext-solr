@@ -52,7 +52,7 @@ class TemplateTest extends IntegrationTest
         $GLOBALS['TT'] = $TT;
 
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
-        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, array(), 1, 0);
+        $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], 1, 0);
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var $TMPL \TYPO3\CMS\Core\TypoScript\TemplateService */

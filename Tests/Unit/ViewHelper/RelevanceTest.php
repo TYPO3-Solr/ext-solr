@@ -117,7 +117,7 @@ class RelevanceTest extends AbstractViewHelperTest
     {
         return array(
             array('document' => serialize(array('__solr_grouping_groupMaximumScore' => 10)), 'globalMaximumScore' => 20, 'expectedResult' => 10),
-            array('document' => serialize(array()), 'globalMaximumScore' => 20, 'expectedResult' => 20),
+            array('document' => serialize([]), 'globalMaximumScore' => 20, 'expectedResult' => 20),
             array('document' => serialize('-invalid-'), 'globalMaximumScore' => 20, 'expectedResult' => 20),
         );
     }

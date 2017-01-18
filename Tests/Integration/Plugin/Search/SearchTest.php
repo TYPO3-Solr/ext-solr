@@ -52,7 +52,7 @@ class SearchTest extends AbstractPluginTest
     {
         // trigger a search
         $searchForm = $this->importTestDataSetAndGetInitializedPlugin(array(1), 'can_render_search_plugin.xml', 'search');
-        $searchFormOutput = $searchForm->main('', array());
+        $searchFormOutput = $searchForm->main('', []);
         $this->assertContains('<form id="tx-solr-search-form-pi-search"', $searchFormOutput, 'Can not find searchform in plugin output');
     }
 
@@ -65,14 +65,14 @@ class SearchTest extends AbstractPluginTest
         // trigger a search
         $searchForm = $this->importTestDataSetAndGetInitializedPlugin(array(1), 'can_render_search_plugin.xml', 'search');
 
-        $overwriteConfiguration = array();
+        $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['query.']['filter.']['subtitle:men'] = 'subTitle:men';
 
         /** @var $configurationManager \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
 
-        $searchFormOutput = $searchForm->main('', array());
+        $searchFormOutput = $searchForm->main('', []);
 
         $this->assertContains('<form id="tx-solr-search-form-pi-search"', $searchFormOutput, 'Can not find searchform in plugin output');
         $this->assertContains('eID=tx_solr_suggest&id=1&filters=%7B%22subtitle%3Amen%22%3A%22subTitle%3Amen%22%7D', $searchFormOutput, 'Can not find filters in eID');

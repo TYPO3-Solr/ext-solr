@@ -75,7 +75,7 @@ abstract class AbstractPluginTest extends IntegrationTest
 
         }
 
-        $fakeTSFE = $this->getConfiguredTSFE(array(), $pluginPageId);
+        $fakeTSFE = $this->getConfiguredTSFE([], $pluginPageId);
         $fakeTSFE->newCObj();
         $GLOBALS['TSFE'] = $fakeTSFE;
 
