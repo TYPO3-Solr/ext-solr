@@ -36,6 +36,9 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\CompilableInterface;
  */
 class ImplodeViewHelper extends AbstractSolrViewHelper implements CompilableInterface
 {
+    // Set $escapeOutput to false in order to ensure that "newline" is handled correctly
+    protected $escapeOutput = false;
+
     /**
      * This ViewHelper can be used to implode the values of an array into one string.
      *
