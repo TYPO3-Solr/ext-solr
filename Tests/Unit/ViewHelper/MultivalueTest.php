@@ -63,12 +63,12 @@ class MultivalueTest extends AbstractViewHelperTest
      */
     public function implodeMultiValuesDataProvider()
     {
-        return array(
-            array('defaultGlue' => ',', 'multiValue' => serialize(array(1, 2, 3)), 'glue' => ';', 'expectedResult' => '1;2;3'),
-            array('defaultGlue' => ',', 'multiValue' => serialize(array(1, 2, 3)), 'glue' => null, 'expectedResult' => '1,2,3'),
-            array('defaultGlue' => null, 'multiValue' => serialize(array(1, 2, 3)), 'glue' => null, 'expectedResult' => '1, 2, 3'),
-            array('defaultGlue' => ',', 'multiValue' => 'no-array', 'glue' => ',', 'expectedResult' => 'no-array')
-        );
+        return [
+            ['defaultGlue' => ',', 'multiValue' => serialize([1, 2, 3]), 'glue' => ';', 'expectedResult' => '1;2;3'],
+            ['defaultGlue' => ',', 'multiValue' => serialize([1, 2, 3]), 'glue' => null, 'expectedResult' => '1,2,3'],
+            ['defaultGlue' => null, 'multiValue' => serialize([1, 2, 3]), 'glue' => null, 'expectedResult' => '1, 2, 3'],
+            ['defaultGlue' => ',', 'multiValue' => 'no-array', 'glue' => ',', 'expectedResult' => 'no-array']
+        ];
     }
 
     /**
@@ -85,7 +85,7 @@ class MultivalueTest extends AbstractViewHelperTest
      */
     public function canImplodeMultiValues($defaultGlue, $multiValue, $glue, $expectedResult)
     {
-        $arguments = array($multiValue);
+        $arguments = [$multiValue];
         if (!is_null($glue)) {
             $arguments[] = $glue;
         }

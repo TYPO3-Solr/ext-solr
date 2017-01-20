@@ -72,11 +72,7 @@ class SimpleFacetRendererTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['templateFiles.']['results'] = 'EXT:solr/Resources/Templates/PiResults/results.htm';
 
         $facetName = 'TestFacet';
-        $facetOptions = array('testoption' => 1);
-        $facetConfiguration = array(
-            'selectingSelectedFacetOptionRemovesFilter' => 0,
-            'renderingInstruction'
-        );
+
         $parentPlugin = GeneralUtility::makeInstance(Results::class);
         $parentPlugin->cObj = $this->getMockBuilder(ContentObjectRenderer::class)
             ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
@@ -84,11 +80,8 @@ class SimpleFacetRendererTest extends UnitTest
 
         $parentPlugin->main('', []);
 
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance(Query::class, 'test');
-
         /** @var $facet \ApacheSolrForTypo3\Solr\Facet\Facet */
-        $facet = GeneralUtility::makeInstance(Facet::class, array($facetName));
+        $facet = GeneralUtility::makeInstance(Facet::class, [$facetName]);
         $this->facetRenderer = GeneralUtility::makeInstance(SimpleFacetRenderer::class, $facet);
         $this->facetRenderer->setLinkTargetPageId($parentPlugin->getLinkTargetPageId());
     }

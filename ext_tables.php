@@ -25,24 +25,23 @@ if (TYPO3_MODE === 'BE') {
         // register all module icons with extensions-solr-module-modulename
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     $iconRegistry->registerIcon($modulePrefix . '-administration', $svgProvider,
-        array('source' => $extIconPath . 'ModuleAdministration.svg'));
+        ['source' => $extIconPath . 'ModuleAdministration.svg']);
     $iconRegistry->registerIcon($modulePrefix . '-overview', $bitmapProvider,
-        array('source' => $extIconPath . 'Search.png'));
+        ['source' => $extIconPath . 'Search.png']);
     $iconRegistry->registerIcon($modulePrefix . '-indexqueue', $bitmapProvider,
-        array('source' => $extIconPath . 'IndexQueue.png'));
+        ['source' => $extIconPath . 'IndexQueue.png']);
     $iconRegistry->registerIcon($modulePrefix . '-indexmaintenance', $bitmapProvider,
-        array('source' => $extIconPath . 'IndexMaintenance.png'));
+        ['source' => $extIconPath . 'IndexMaintenance.png']);
     $iconRegistry->registerIcon($modulePrefix . '-indexfields', $bitmapProvider,
-        array('source' => $extIconPath . 'IndexFields.png'));
+        ['source' => $extIconPath . 'IndexFields.png']);
     $iconRegistry->registerIcon($modulePrefix . '-stopwords', $bitmapProvider,
-        array('source' => $extIconPath . 'StopWords.png'));
+        ['source' => $extIconPath . 'StopWords.png']);
     $iconRegistry->registerIcon($modulePrefix . '-synonyms', $bitmapProvider,
-        array('source' => $extIconPath . 'Synonyms.png'));
+        ['source' => $extIconPath . 'Synonyms.png']);
     $iconRegistry->registerIcon($modulePrefix . '-searchstatistics', $bitmapProvider,
-        array('source' => $extIconPath . 'SearchStatistics.png'));
-
+        ['source' => $extIconPath . 'SearchStatistics.png']);
     $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $svgProvider,
-        array('source' => $extIconPath . 'InitSolrConnections.svg'));
+        ['source' => $extIconPath . 'InitSolrConnections.svg']);
 }
 
 if (TYPO3_MODE == 'BE') {
@@ -51,61 +50,61 @@ if (TYPO3_MODE == 'BE') {
         'tools',
         'administration',
         '',
-        array(
+        [
             // An array holding the controller-action-combinations that are accessible
             'Administration' => 'index,setSite,setCore,noSiteAvailable'
-        ),
-        array(
+        ],
+        [
             'access' => 'admin',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleAdministration.svg',
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf',
-        )
+        ]
     );
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'Overview',
-        array('index')
+        ['index']
     );
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'IndexQueue',
-        array('index,initializeIndexQueue,resetLogErrors,clearIndexQueue')
+        ['index,initializeIndexQueue,resetLogErrors,clearIndexQueue']
     );
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'IndexMaintenance',
-        array('index,cleanUpIndex,emptyIndex,reloadIndexConfiguration')
+        ['index,cleanUpIndex,emptyIndex,reloadIndexConfiguration']
     );
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'IndexFields',
-        array('index')
+        ['index']
     );
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'SearchStatistics',
-        array('index')
+        ['index']
     );
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'StopWords',
-        array('index,saveStopWords')
+        ['index,saveStopWords']
     );
 
     ApacheSolrForTypo3\Solr\Backend\SolrModule\AdministrationModuleManager::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
         'Synonyms',
-        array('index,addSynonyms,deleteSynonyms')
+        ['index,addSynonyms,deleteSynonyms']
     );
 
     // registering reports
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = array(
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['reports']['tx_reports']['status']['providers']['solr'] = [
         \ApacheSolrForTypo3\Solr\Report\SchemaStatus::class,
         \ApacheSolrForTypo3\Solr\Report\SolrConfigStatus::class,
         \ApacheSolrForTypo3\Solr\Report\SolrConfigurationStatus::class,
@@ -114,7 +113,7 @@ if (TYPO3_MODE == 'BE') {
         \ApacheSolrForTypo3\Solr\Report\AccessFilterPluginInstalledStatus::class,
         \ApacheSolrForTypo3\Solr\Report\AllowUrlFOpenStatus::class,
         \ApacheSolrForTypo3\Solr\Report\FilterVarStatus::class
-    );
+    ];
 
     // Index Inspector
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(

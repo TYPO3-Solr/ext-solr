@@ -1,7 +1,7 @@
 <?php
 
-return array(
-    'ctrl' => array(
+return [
+    'ctrl' => [
         'title' => $ll . 'tx_fakeextension_domain_model_directrelated',
         'descriptionColumn' => 'category',
         'label' => 'category_label',
@@ -21,132 +21,132 @@ return array(
         'default_sortby' => 'ORDER BY datetime DESC',
         'sortby' => 'sorting',
         'delete' => 'deleted',
-        'enablecolumns' => array(
+        'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime'
-        ),
+        ],
         'searchFields' => 'uid,category',
-    ),
-    'interface' => array(
+    ],
+    'interface' => [
         'showRecordFieldList' => 'cruser_id,pid,sys_language_uid,l10n_parent,l10n_diffsource,hidden,starttime,endtime,category,sys_category'
-    ),
-    'columns' => array(
-        'sys_language_uid' => array(
+    ],
+    'columns' => [
+        'sys_language_uid' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'special' => 'languages',
-                'items' => array(
-                    array(
+                'items' => [
+                    [
                         'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
                         -1,
                         'flags-multiple'
-                    ),
-                ),
+                    ],
+                ],
                 'default' => 0,
-            )
-        ),
-        'l10n_parent' => array(
+            ]
+        ],
+        'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => array(
-                    array('', 0),
-                ),
+                'items' => [
+                    ['', 0],
+                ],
                 'foreign_table' => 'tx_fakeextension_domain_model_foo',
                 'foreign_table_where' => 'AND tx_fakeextension_domain_model_foo.pid=###CURRENT_PID### AND tx_fakeextension_domain_model_foo.sys_language_uid IN (-1,0)',
                 'showIconTable' => false
-            )
-        ),
-        'l10n_diffsource' => array(
-            'config' => array(
+            ]
+        ],
+        'l10n_diffsource' => [
+            'config' => [
                 'type' => 'passthrough',
                 'default' => ''
-            )
-        ),
-        'hidden' => array(
+            ]
+        ],
+        'hidden' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'default' => 0
-            )
-        ),
-        'cruser_id' => array(
+            ]
+        ],
+        'cruser_id' => [
             'label' => 'cruser_id',
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough'
-            )
-        ),
-        'pid' => array(
+            ]
+        ],
+        'pid' => [
             'label' => 'pid',
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough'
-            )
-        ),
-        'crdate' => array(
+            ]
+        ],
+        'crdate' => [
             'label' => 'crdate',
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            )
-        ),
-        'tstamp' => array(
+            ]
+        ],
+        'tstamp' => [
             'label' => 'tstamp',
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            )
-        ),
-        'sorting' => array(
+            ]
+        ],
+        'sorting' => [
             'label' => 'sorting',
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            )
-        ),
-        'starttime' => array(
+            ]
+        ],
+        'starttime' => [
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:cms/locallang_ttc.xlf:starttime_formlabel',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 8,
                 'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
-            )
-        ),
-        'endtime' => array(
+            ]
+        ],
+        'endtime' => [
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:cms/locallang_ttc.xlf:endtime_formlabel',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 8,
                 'max' => 20,
                 'eval' => 'datetime',
                 'default' => 0,
-            )
-        ),
-        'category_label' => array(
+            ]
+        ],
+        'category_label' => [
             'exclude' => 0,
             'l10n_mode' => 'prefixLangTitle',
             'label' => 'LLL:EXT:cms/locallang_ttc.xlf:header_formlabel',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 60,
                 'eval' => 'required',
-            )
-        ),
-        'sys_category' => array(
+            ]
+        ],
+        'sys_category' => [
             'exclude' => 0,
             'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'sorting',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'sys_category',
@@ -154,22 +154,20 @@ return array(
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
-            )
-        ),
-
-        'editlock' => array(
+            ]
+        ],
+        'editlock' => [
             'exclude' => 1,
             'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:lang/locallang_tca.xlf:editlock',
-            'config' => array(
+            'config' => [
                 'type' => 'check'
-            )
-        )
-
-    ),
-    'types' => array(
-        '0' => array(
+            ]
+        ]
+    ],
+    'types' => [
+        '0' => [
             'showitem' => 'l10n_parent, l10n_diffsource,category,sys_category'
-        )
-    )
-);
+        ]
+    ]
+];

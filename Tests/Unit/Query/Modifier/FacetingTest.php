@@ -69,11 +69,11 @@ class FacetingTest extends UnitTest
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
-            'type.' => array(
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
                 'field' => 'type'
-            )
-        );
+            ]
+        ];
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertContains('type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
@@ -95,12 +95,12 @@ class FacetingTest extends UnitTest
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
-            'type.' => array(
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
                 'field' => 'type',
                 'sortBy' => 'index'
-            )
-        );
+            ]
+        ];
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertContains('lex',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
@@ -129,14 +129,14 @@ class FacetingTest extends UnitTest
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
-            'type.' => array(
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
                 'field' => 'type',
-            ),
-            'color.' => array(
+            ],
+            'color.' => [
                 'field' => 'color',
-            )
-        );
+            ]
+        ];
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
 
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
@@ -166,15 +166,15 @@ class FacetingTest extends UnitTest
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
-            'type.' => array(
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
                 'field' => 'type',
                 'keepAllOptionsOnSelection' => 1
-            ),
-            'color.' => array(
+            ],
+            'color.' => [
                 'field' => 'color',
-            )
-        );
+            ]
+        ];
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
@@ -188,22 +188,22 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFilters()
     {
-        $fakeRequest = array(
-            'tx_solr' => array('filter' => array(urlencode('color:red'),urlencode('type:product')))
-        );
+        $fakeRequest = [
+            'tx_solr' => ['filter' => [urlencode('color:red'),urlencode('type:product')]]
+        ];
 
         $_GET = $fakeRequest;
 
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
-            'type.' => array(
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
                 'field' => 'type',
-            ),
-            'color.' => array(
+            ],
+            'color.' => [
                 'field' => 'color',
-            )
-        );
+            ]
+        ];
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
@@ -217,23 +217,23 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFiltersWithKeepAllOptionsOnSelectionFacet()
     {
-        $fakeRequest = array(
-            'tx_solr' => array('filter' => array(urlencode('color:red'),urlencode('type:product')))
-        );
+        $fakeRequest = [
+            'tx_solr' => ['filter' => [urlencode('color:red'),urlencode('type:product')]]
+        ];
 
         $_GET = $fakeRequest;
 
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
-            'type.' => array(
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
                 'field' => 'type',
                 'keepAllOptionsOnSelection' => 1
-            ),
-            'color.' => array(
+            ],
+            'color.' => [
                 'field' => 'color',
-            )
-        );
+            ]
+        ];
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
@@ -247,23 +247,23 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFiltersWithGlobalKeepAllOptionsOnSelection()
     {
-        $fakeRequest = array(
-            'tx_solr' => array('filter' => array(urlencode('color:red'),urlencode('type:product')))
-        );
+        $fakeRequest = [
+            'tx_solr' => ['filter' => [urlencode('color:red'),urlencode('type:product')]]
+        ];
 
         $_GET = $fakeRequest;
 
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
-        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = array(
-            'type.' => array(
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
                 'field' => 'type',
-            ),
-            'color.' => array(
+            ],
+            'color.' => [
                 'field' => 'color',
-            )
-        );
+            ]
+        ];
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 

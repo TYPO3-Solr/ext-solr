@@ -58,11 +58,11 @@ class RangeTest extends UnitTest
      */
     public function rangeQueryParsingDataProvider()
     {
-        return array(
-            array('firstValue' => '50', 'secondValue' => '100', 'expected' => '[50 TO 100]'),
-            array('firstValue' => '-10', 'secondValue' => '20', 'expected' => '[-10 TO 20]'),
-            array('firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]')
-        );
+        return [
+            ['firstValue' => '50', 'secondValue' => '100', 'expected' => '[50 TO 100]'],
+            ['firstValue' => '-10', 'secondValue' => '20', 'expected' => '[-10 TO 20]'],
+            ['firstValue' => '-10', 'secondValue' => '-5', 'expected' => '[-10 TO -5]']
+        ];
     }
 
     /**

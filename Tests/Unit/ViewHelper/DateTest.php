@@ -80,12 +80,12 @@ class DateTest extends AbstractViewHelperTest
     public function dateFormattingDataProvider()
     {
         $timestamp = '1465893746'; // 14 Jun 2016 10:42:26 +0200
-        return array(
-            array('defaultFormat' => 'd.m.Y H:i', 'timestamp' => $timestamp, 'format' => 'd.m.Y H:i', 'expectedResult' => '14.06.2016 10:42'),
-            array('defaultFormat' => 'd.m.Y H:i', 'timestamp' => $timestamp, 'format' => 'Y-m-d H:i', 'expectedResult' => '2016-06-14 10:42'),
-            array('defaultFormat' => 'd.m.Y H:i', 'timestamp' => $timestamp, 'format' => null, 'expectedResult' => '14.06.2016 10:42'),
-            array('defaultFormat' => null, 'timestamp' => $timestamp, 'format' => null, 'expectedResult' => '14.06.2016 10:42')
-        );
+        return [
+            ['defaultFormat' => 'd.m.Y H:i', 'timestamp' => $timestamp, 'format' => 'd.m.Y H:i', 'expectedResult' => '14.06.2016 10:42'],
+            ['defaultFormat' => 'd.m.Y H:i', 'timestamp' => $timestamp, 'format' => 'Y-m-d H:i', 'expectedResult' => '2016-06-14 10:42'],
+            ['defaultFormat' => 'd.m.Y H:i', 'timestamp' => $timestamp, 'format' => null, 'expectedResult' => '14.06.2016 10:42'],
+            ['defaultFormat' => null, 'timestamp' => $timestamp, 'format' => null, 'expectedResult' => '14.06.2016 10:42']
+        ];
     }
 
     /**
@@ -102,7 +102,7 @@ class DateTest extends AbstractViewHelperTest
      */
     public function canFormatDates($defaultFormat, $timestamp, $format, $expectedResult)
     {
-        $arguments = array($timestamp);
+        $arguments = [$timestamp];
         if (!is_null($format)) {
             $arguments[] = $format;
         }

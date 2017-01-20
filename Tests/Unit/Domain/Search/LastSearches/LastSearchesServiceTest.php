@@ -74,7 +74,7 @@ class LastSearchesServiceTest extends UnitTest
      */
     public function canGetLastSearchesFromSessionInUserMode()
     {
-        $fakedLastSearchesInSession = array('first search', 'second search');
+        $fakedLastSearchesInSession = ['first search', 'second search'];
 
         $this->lastSearchesService->expects($this->once())->method('getLastSearchesFromFrontendSession')->will($this->returnValue(
             $fakedLastSearchesInSession
@@ -93,10 +93,10 @@ class LastSearchesServiceTest extends UnitTest
      */
     public function canGetLastSearchesFromDatabaseInGlobalMode()
     {
-        $fakedLastSearchesInDatabase = array(
-            array('keywords' => 'test'),
-            array('keywords' => 'test 2')
-        );
+        $fakedLastSearchesInDatabase = [
+            ['keywords' => 'test'],
+            ['keywords' => 'test 2']
+        ];
 
         $this->fakeLastSearchMode('global');
         $this->fakeLastSearchLimit(10);
@@ -106,7 +106,7 @@ class LastSearchesServiceTest extends UnitTest
 
         $lastSearches = $this->lastSearchesService->getLastSearches();
 
-        $this->assertSame(array('test', 'test 2'), $lastSearches, 'Did not get last searches from database');
+        $this->assertSame(['test', 'test 2'], $lastSearches, 'Did not get last searches from database');
     }
 
     /**

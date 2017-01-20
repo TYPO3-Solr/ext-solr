@@ -98,7 +98,7 @@ class QueryTest extends UnitTest
     public function addsCorrectAccessFilterForAnonymousUser()
     {
         $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups(array(-1, 0));
+        $query->setUserAccessGroups([-1, 0]);
         $filters = $query->getFilters();
 
         $this->assertContains(
@@ -130,7 +130,7 @@ class QueryTest extends UnitTest
     public function grantsAccessToGroupZeroIfZeroNotProvided()
     {
         $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups(array(5));
+        $query->setUserAccessGroups([5]);
         $filters = $query->getFilters();
 
         $this->assertContains(
@@ -146,7 +146,7 @@ class QueryTest extends UnitTest
     public function filtersDuplicateAccessGroups()
     {
         $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups(array(1, 1));
+        $query->setUserAccessGroups([1, 1]);
         $filters = $query->getFilters();
 
         $this->assertContains(
@@ -162,8 +162,8 @@ class QueryTest extends UnitTest
     public function allowsOnlyOneAccessFilter()
     {
         $query = $this->getInitializedTestQuery();
-        $query->setUserAccessGroups(array(1));
-        $query->setUserAccessGroups(array(2));
+        $query->setUserAccessGroups([1]);
+        $query->setUserAccessGroups([2]);
         $filters = $query->getFilters();
 
         $this->assertSame(
@@ -507,7 +507,7 @@ class QueryTest extends UnitTest
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
         $output = $query->getFieldList();
-        $expectedOutput = array('abstract', 'price');
+        $expectedOutput = ['abstract', 'price'];
         $this->assertSame($output, $expectedOutput, 'Did not parse returnsFields as expected');
     }
 
@@ -521,7 +521,7 @@ class QueryTest extends UnitTest
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
         $output = $query->getFieldList();
-        $expectedOutput = array('*', 'score');
+        $expectedOutput = ['*', 'score'];
         $this->assertSame($output, $expectedOutput, 'Did not parse returnsFields as expected');
     }
 
@@ -748,27 +748,27 @@ class QueryTest extends UnitTest
      */
     public function escapeQueryDataProvider()
     {
-        return array(
-            'empty' => array('input' => '', 'expectedOutput' => ''),
-            'simple' => array('input' => 'foo', 'expectedOutput' => 'foo'),
-            'single quoted word' => array('input' => '"world"', 'expectedOutput' => '"world"'),
-            'simple quoted phrase' => array('input' => '"hello world"', 'expectedOutput' => '"hello world"'),
-            'simple quoted phrase with ~' => array('input' => '"hello world~"', 'expectedOutput' => '"hello world~"'),
-            'simple phrase with ~' => array('input' => 'hello world~', 'expectedOutput' => 'hello world\~'),
-            'single quote' =>  array('input' => '20" monitor', 'expectedOutput' => '20\" monitor'),
-            'rounded brackets many words' => array('input' => 'hello (world)', 'expectedOutput' => 'hello \(world\)'),
-            'rounded brackets one word' => array('input' => '(world)', 'expectedOutput' => '\(world\)'),
-            'plus character is kept' => array('input' => 'foo +bar -world', 'expectedOutput' => 'foo +bar -world'),
-            '&& character is kept' => array('input' => 'hello && world', 'expectedOutput' => 'hello && world'),
-            '! character is kept' => array('input' => 'hello !world', 'expectedOutput' => 'hello !world'),
-            '* character is kept' => array('input' => 'hello *world', 'expectedOutput' => 'hello *world'),
-            '? character is kept' => array('input' => 'hello ?world', 'expectedOutput' => 'hello ?world'),
-            'ö character is kept' => array('input' => 'schöner tag', 'expectedOutput' => 'schöner tag'),
-            'numeric is kept' => array('input' => 42, 'expectedOutput' => 42),
-            'combined quoted phrase' => array('input' => '"hello world" or planet', 'expectedOutput' => '"hello world" or planet'),
-            'two combined quoted phrases' => array('input' => '"hello world" or "hello planet"', 'expectedOutput' => '"hello world" or "hello planet"'),
-            'combined quoted phrase mixed with escape character' => array('input' => '"hello world" or (planet)', 'expectedOutput' => '"hello world" or \(planet\)')
-        );
+        return [
+            'empty' => ['input' => '', 'expectedOutput' => ''],
+            'simple' => ['input' => 'foo', 'expectedOutput' => 'foo'],
+            'single quoted word' => ['input' => '"world"', 'expectedOutput' => '"world"'],
+            'simple quoted phrase' => ['input' => '"hello world"', 'expectedOutput' => '"hello world"'],
+            'simple quoted phrase with ~' => ['input' => '"hello world~"', 'expectedOutput' => '"hello world~"'],
+            'simple phrase with ~' => ['input' => 'hello world~', 'expectedOutput' => 'hello world\~'],
+            'single quote' =>  ['input' => '20" monitor', 'expectedOutput' => '20\" monitor'],
+            'rounded brackets many words' => ['input' => 'hello (world)', 'expectedOutput' => 'hello \(world\)'],
+            'rounded brackets one word' => ['input' => '(world)', 'expectedOutput' => '\(world\)'],
+            'plus character is kept' => ['input' => 'foo +bar -world', 'expectedOutput' => 'foo +bar -world'],
+            '&& character is kept' => ['input' => 'hello && world', 'expectedOutput' => 'hello && world'],
+            '! character is kept' => ['input' => 'hello !world', 'expectedOutput' => 'hello !world'],
+            '* character is kept' => ['input' => 'hello *world', 'expectedOutput' => 'hello *world'],
+            '? character is kept' => ['input' => 'hello ?world', 'expectedOutput' => 'hello ?world'],
+            'ö character is kept' => ['input' => 'schöner tag', 'expectedOutput' => 'schöner tag'],
+            'numeric is kept' => ['input' => 42, 'expectedOutput' => 42],
+            'combined quoted phrase' => ['input' => '"hello world" or planet', 'expectedOutput' => '"hello world" or planet'],
+            'two combined quoted phrases' => ['input' => '"hello world" or "hello planet"', 'expectedOutput' => '"hello world" or "hello planet"'],
+            'combined quoted phrase mixed with escape character' => ['input' => '"hello world" or (planet)', 'expectedOutput' => '"hello world" or \(planet\)']
+        ];
     }
 
     /**

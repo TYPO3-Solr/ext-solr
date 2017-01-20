@@ -46,7 +46,7 @@ class Typo3PageContentExtractorTest extends UnitTest
         $this->typoScripConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->typoScripConfigurationMock->expects($this->once())->method(
             'getIndexQueuePagesExcludeContentByClassArray'
-        )->will($this->returnValue(array('typo3-search-exclude')));
+        )->will($this->returnValue(['typo3-search-exclude']));
     }
 
     /**

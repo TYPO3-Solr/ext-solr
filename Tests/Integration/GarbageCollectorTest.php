@@ -140,8 +140,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(3);
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', array('hidden' => 1));
-        $changeSet = array('hidden' => 1);
+        $database->exec_UPDATEquery('pages', 'uid=1', ['hidden' => 1]);
+        $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
         $this->garbageCollector->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);
@@ -173,8 +173,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(4);
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', array('hidden' => 1));
-        $changeSet = array('hidden' => 1);
+        $database->exec_UPDATEquery('pages', 'uid=1', ['hidden' => 1]);
+        $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
         $this->garbageCollector->processDatamap_afterDatabaseOperations('update', 'pages', 1, $changeSet, $dataHandler);

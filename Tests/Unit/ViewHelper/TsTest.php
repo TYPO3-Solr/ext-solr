@@ -68,30 +68,30 @@ class TsTest extends UnitTest
 
         // setup up ts objects
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['detailPage'] = 5050;
-        $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['renderObjects.'] = array(
+        $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['renderObjects.'] = [
             'testContent' => 'TEXT',
-            'testContent.' => array(
+            'testContent.' => [
                 'field' => 'argument_0'
-            ),
+            ],
             'testContent2' => 'TEXT',
-            'testContent2.' => array(
+            'testContent2.' => [
                 'field' => 'argument_1',
                 'stripHtml' => 1
-            )
-        );
+            ]
+        ];
 
-        $this->fixtures = array(
+        $this->fixtures = [
             'argument content',
             '<span>argument content with html</span>',
             'third argument content'
-        );
+        ];
 
         $cObj = $this->getMockBuilder(ContentObjectRenderer::class)
             ->setMethods(['getResourceFactory', 'getEnvironmentVariable'])
             ->setConstructorArgs([$TSFE])
             ->getMock();
 
-        $cObj->setContentObjectClassMap(array('TEXT' => TextContentObject::class));
+        $cObj->setContentObjectClassMap(['TEXT' => TextContentObject::class]);
         /** @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configurationManager->reset();

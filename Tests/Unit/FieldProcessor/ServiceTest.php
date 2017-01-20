@@ -60,7 +60,7 @@ class ServiceTest extends UnitTest
     public function transformsStringToUppercaseOnSingleValuedField()
     {
         $this->documentMock->setField('stringField', 'stringvalue');
-        $configuration = array('stringField' => 'uppercase');
+        $configuration = ['stringField' => 'uppercase'];
 
         $this->service->processDocument($this->documentMock, $configuration);
         $value = $this->documentMock->getField('stringField');
@@ -78,13 +78,13 @@ class ServiceTest extends UnitTest
     {
         $this->documentMock->addField('stringField', 'stringvalue_1');
         $this->documentMock->addField('stringField', 'stringvalue_2');
-        $configuration = array('stringField' => 'uppercase');
+        $configuration = ['stringField' => 'uppercase'];
 
         $this->service->processDocument($this->documentMock, $configuration);
         $value = $this->documentMock->getField('stringField');
         $this->assertEquals(
             $value['value'],
-            array('STRINGVALUE_1', 'STRINGVALUE_2'),
+            ['STRINGVALUE_1', 'STRINGVALUE_2'],
             'field was not processed with uppercase'
         );
     }
@@ -96,7 +96,7 @@ class ServiceTest extends UnitTest
     {
         $this->documentMock->setField('dateField',
             '1262343600'); // 2010-01-01 12:00
-        $configuration = array('dateField' => 'timestampToIsoDate');
+        $configuration = ['dateField' => 'timestampToIsoDate'];
 
         $this->service->processDocument($this->documentMock, $configuration);
         $value = $this->documentMock->getField('dateField');
@@ -116,13 +116,13 @@ class ServiceTest extends UnitTest
             '1262343600'); // 2010-01-01 12:00
         $this->documentMock->addField('dateField',
             '1262343601'); // 2010-01-01 12:01
-        $configuration = array('dateField' => 'timestampToIsoDate');
+        $configuration = ['dateField' => 'timestampToIsoDate'];
 
         $this->service->processDocument($this->documentMock, $configuration);
         $value = $this->documentMock->getField('dateField');
         $this->assertEquals(
             $value['value'],
-            array('2010-01-01T12:00:00Z', '2010-01-01T12:00:01Z'),
+            ['2010-01-01T12:00:00Z', '2010-01-01T12:00:01Z'],
             'field was not processed with timestampToIsoDate'
         );
     }

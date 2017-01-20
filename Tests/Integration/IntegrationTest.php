@@ -122,7 +122,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         $database->debugOutput = true;
 
         $dumpContent = $this->getFixtureContent($fixtureName);
-        $dumpContent = str_replace(array("\r", "\n"), '', $dumpContent);
+        $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
 
         $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
         foreach ($queries as $query) {

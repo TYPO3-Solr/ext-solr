@@ -48,21 +48,21 @@ class PathToHierarchyTest extends UnitTest
      */
     public function canBuildSolrHierarchyString()
     {
-        $this->assertEquals($this->processor->process(array('sport/cricket')),
-            array('0-sport/', '1-sport/cricket/'));
-        $this->assertEquals($this->processor->process(array('sport/skateboarding')),
-            array('0-sport/', '1-sport/skateboarding/'));
-        $this->assertEquals($this->processor->process(array('sport/skateboarding/street')),
-            array(
+        $this->assertEquals($this->processor->process(['sport/cricket']),
+            ['0-sport/', '1-sport/cricket/']);
+        $this->assertEquals($this->processor->process(['sport/skateboarding']),
+            ['0-sport/', '1-sport/skateboarding/']);
+        $this->assertEquals($this->processor->process(['sport/skateboarding/street']),
+            [
                 '0-sport/',
                 '1-sport/skateboarding/',
                 '2-sport/skateboarding/street/'
-            ));
-        $this->assertEquals($this->processor->process(array('/sport/skateboarding/street//')),
-            array(
+            ]);
+        $this->assertEquals($this->processor->process(['/sport/skateboarding/street//']),
+            [
                 '0-sport/',
                 '1-sport/skateboarding/',
                 '2-sport/skateboarding/street/'
-            ));
+            ]);
     }
 }

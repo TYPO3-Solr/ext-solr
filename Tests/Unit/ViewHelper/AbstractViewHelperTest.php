@@ -55,7 +55,7 @@ abstract class AbstractViewHelperTest extends UnitTest
         $GLOBALS['TSFE'] = $TSFE;
 
         /** @var $GLOBALS ['TSFE']->tmpl  \TYPO3\CMS\Core\TypoScript\TemplateService */
-        $GLOBALS['TSFE']->tmpl = $this->getDumbMock(TemplateService::class, array('linkData'));
+        $GLOBALS['TSFE']->tmpl = $this->getDumbMock(TemplateService::class, ['linkData']);
         $GLOBALS['TSFE']->tmpl->init();
         $GLOBALS['TSFE']->tmpl->getFileName_backPath = PATH_site;
         $GLOBALS['TSFE']->tmpl->setup['config.']['typolinkEnableLinksAcrossDomains'] = 0;

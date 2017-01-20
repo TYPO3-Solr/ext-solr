@@ -59,9 +59,9 @@ class PageIndexerResponseTest extends UnitTest
         $request->addActionResult('action1', 'result1');
         $request->addActionResult('action2', 'result2');
 
-        $this->assertEquals(array(
+        $this->assertEquals([
             'action1' => 'result1',
             'action2' => 'result2'
-        ), $request->getActionResult());
+        ], $request->getActionResult());
     }
 }

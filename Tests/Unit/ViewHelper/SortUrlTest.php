@@ -56,24 +56,24 @@ class SortUrlTest extends AbstractViewHelperTest
 
         // set sorting configuration
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['sorting'] = 1;
-        $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['sorting.'] = array(
+        $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['sorting.'] = [
             'defaultOrder' => 'asc',
-            'options.' => array(
-                'title.' => array(
+            'options.' => [
+                'title.' => [
                     'field' => 'sortTitle',
                     'label' => 'Title'
-                ),
-                'type.' => array(
+                ],
+                'type.' => [
                     'field' => 'type',
                     'label' => 'Title'
-                ),
-                'author.' => array(
+                ],
+                'author.' => [
                     'field' => 'sortAuthor',
                     'label' => 'Author',
                     'fixedOrder' => 'desc'
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         // prepare solr request handler
         $solrRequestHandler = GeneralUtility::makeInstance(Search::class, $this->getDumbMock(SolrService::class));
@@ -106,17 +106,17 @@ class SortUrlTest extends AbstractViewHelperTest
      */
     public function sortUrlCreationDataProvider()
     {
-        return array(
-            array('currentSorting' => 'title asc', 'sorting' => 'title', 'expectedResult' => 'title desc'),
-            array('currentSorting' => 'title desc', 'sorting' => 'title', 'expectedResult' => 'title asc'),
-            array('currentSorting' => '', 'sorting' => 'title', 'expectedResult' => 'title asc'),
-            array('currentSorting' => 'type asc', 'sorting' => 'title', 'expectedResult' => 'title asc'),
-            array('currentSorting' => 'type asc', 'sorting' => 'author', 'expectedResult' => 'author desc'),
-            array('currentSorting' => 'author desc', 'sorting' => 'author', 'expectedResult' => 'author desc'),
-            array('currentSorting' => '', 'sorting' => 'author', 'expectedResult' => 'author desc'),
-            array('currentSorting' => 'title', 'sorting' => 'author,type', 'expectedResult' => 'author desc, type asc'),
-            array('currentSorting' => 'type asc', 'sorting' => 'title,author,type', 'expectedResult' => 'title asc, author desc, type desc')
-        );
+        return [
+            ['currentSorting' => 'title asc', 'sorting' => 'title', 'expectedResult' => 'title desc'],
+            ['currentSorting' => 'title desc', 'sorting' => 'title', 'expectedResult' => 'title asc'],
+            ['currentSorting' => '', 'sorting' => 'title', 'expectedResult' => 'title asc'],
+            ['currentSorting' => 'type asc', 'sorting' => 'title', 'expectedResult' => 'title asc'],
+            ['currentSorting' => 'type asc', 'sorting' => 'author', 'expectedResult' => 'author desc'],
+            ['currentSorting' => 'author desc', 'sorting' => 'author', 'expectedResult' => 'author desc'],
+            ['currentSorting' => '', 'sorting' => 'author', 'expectedResult' => 'author desc'],
+            ['currentSorting' => 'title', 'sorting' => 'author,type', 'expectedResult' => 'author desc, type asc'],
+            ['currentSorting' => 'type asc', 'sorting' => 'title,author,type', 'expectedResult' => 'title asc, author desc, type desc']
+        ];
     }
 
     /**
@@ -132,8 +132,8 @@ class SortUrlTest extends AbstractViewHelperTest
      */
     public function canCreateSortUrls($currentSorting, $sorting, $expectedResult)
     {
-        GeneralUtility::_GETset(array('sort' => $currentSorting), 'tx_solr');
-        $sortUrl = $this->viewHelper->execute(array($sorting));
+        GeneralUtility::_GETset(['sort' => $currentSorting], 'tx_solr');
+        $sortUrl = $this->viewHelper->execute([$sorting]);
         $this->assertEquals($expectedResult, $sortUrl['sort'], 'Sort url parameter "' . $sortUrl['sort'] . '"  doesn\'t match the expected parameters: ' . $expectedResult);
     }
 }

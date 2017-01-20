@@ -52,7 +52,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canDoAFacetedAndSortedSearch()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4], 'can_render_results_plugin.xml');
 
         $_GET['q'] = 'prices';
         $_GET['tx_solr']['filter'][0] = rawurlencode('subtitle:men');
@@ -89,7 +89,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canHighlightContentAndTitleField()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4], 'can_render_results_plugin.xml');
 
         $_GET['q'] = 'jeans';
 
@@ -104,7 +104,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canDoAPaginatedSearch()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $_GET['q'] = '*';
         $resultPage1 = $searchResults->main('', []);
@@ -118,7 +118,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canOpenSecondPageOfPaginatedSearch()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         //now we jump to the second page
         $_GET['q'] = '*';
@@ -134,7 +134,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canDoASearchThatDoesNotReturnAnyResults()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         //now we jump to the second page
         $_GET['q'] = 'nothingwillbefound';
@@ -147,7 +147,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canGetADidYouMeanProposalForATypo()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoo';
@@ -162,7 +162,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canGetAnAutoCorrectedResultSetForATypo()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion'] = 1;
@@ -185,7 +185,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canShowLastSearchesFromSessionInResponse()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoe';
         $resultPage1 = $searchResults->main('', []);
@@ -199,7 +199,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canShowLastSearchesFromDatabaseInResponse()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['lastSearches.']['mode'] = 'global';
@@ -221,7 +221,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canShowFrequentSearchesInResponse()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
         //not in the content but we expect to get shoes suggested
         $_GET['q'] = 'shoe';
         $resultPage1 = $searchResults->main('', []);
@@ -235,7 +235,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canKeepPiVarsInForm()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
         //now we jump to the second page
         $_GET['q'] = 'prices';
         $searchResults->piVars['tx_solr']['sort'] = 'title asc';
@@ -248,7 +248,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canRenderPageHierarchyFacet()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
         $_GET['q'] = 'prices';
         $resultPage = $searchResults->main('', []);
 
@@ -262,7 +262,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canDoAnInitialSearchWithCustomQueryString()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
@@ -282,7 +282,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canDoAnInitialSearchWhenAnEmptyQueryStringWasPassed()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
@@ -303,7 +303,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canDoAnInitialSearchWhenAnQueryStringWithWhitespacesOnlyWasPassed()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
@@ -324,7 +324,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canNotDoInitialSearchWhenEmptyQueryStringWasPassedAndAllowEmptyQueryIsDisabled()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
@@ -346,7 +346,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canNotDoInitialSearchWhenAQueryStringWithWhitespacesOnlyWasPassedAndAllowEmptyQueryIsDisabled()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithQuery'] = 'products';
@@ -368,7 +368,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canApplyCustomTypoScriptFilters()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2, 3, 4, 5, 6, 7, 8), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2, 3, 4, 5, 6, 7, 8], 'can_render_results_plugin.xml');
 
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['query.']['filter.']['subtitle:men'] = 'subTitle:men';
@@ -391,7 +391,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canAddCustomTranslationsInTYPOScript()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2], 'can_render_results_plugin.xml');
         $overwriteConfiguration = [];
         $overwriteConfiguration['_LOCAL_LANG.']['default.']['results_range'] = 'My own label';
 
@@ -410,7 +410,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canGetPageIdFromSearchRequestAfterRendering()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml', 'results', 5);
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2], 'can_render_results_plugin.xml', 'results', 5);
         $_GET['q'] = '*';
         $searchResults->main('', []);
 
@@ -457,7 +457,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function parentPluginIsPassedToSearchResultService()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1), 'can_render_results_plugin.xml');
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1], 'can_render_results_plugin.xml');
 
         $_GET['q'] = '*';
 
@@ -472,7 +472,7 @@ class ResultsTest extends AbstractPluginTest
      */
     public function canAccessTypoScriptConfigurationThroughSearchRequest()
     {
-        $searchResults = $this->importTestDataSetAndGetInitializedPlugin(array(1, 2), 'can_render_results_plugin.xml', 'results', 5);
+        $searchResults = $this->importTestDataSetAndGetInitializedPlugin([1, 2], 'can_render_results_plugin.xml', 'results', 5);
         $searchResults->main('', []);
 
         // after initiating the searchResults plugin we should be able to access the TypoScriptConfiguration through the search request
