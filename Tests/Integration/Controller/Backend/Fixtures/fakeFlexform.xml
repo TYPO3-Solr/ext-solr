@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3FlexForms>
+    <data>
+        <sheet index="sDEF">
+            <language index="lDEF">
+                <field index="targetPage">
+                    <value index="vDEF"></value>
+                </field>
+            </language>
+        </sheet>
+        <sheet index="sQuery">
+            <language index="lDEF">
+                <field index="initializeWithEmptyQuery">
+                    <value index="vDEF">1</value>
+                </field>
+                <field index="showResultsOfInitialEmptyQuery">
+                    <value index="vDEF">1</value>
+                </field>
+                <field index="initializeWithQuery">
+                    <value index="vDEF">foobar</value>
+                </field>
+                <field index="showResultsOfInitialQuery">
+                    <value index="vDEF">1</value>
+                </field>
+                <field index="filter">
+                    <value index="vDEF">filter:filter</value>
+                </field>
+                <field index="sortBy">
+                    <value index="vDEF">sorting</value>
+                </field>
+                <field index="resultsPerPage">
+                    <value index="vDEF">10</value>
+                </field>
+                <field index="boostFunction">
+                    <value index="vDEF">boostFunction</value>
+                </field>
+                <field index="boostQuery">
+                    <value index="vDEF">boostQuery</value>
+                </field>
+            </language>
+        </sheet>
+        <sheet index="sOptions">
+            <language index="lDEF">
+                <field index="templateFile">
+                    <value index="vDEF"></value>
+                </field>
+            </language>
+        </sheet>
+    </data>
+</T3FlexForms>
