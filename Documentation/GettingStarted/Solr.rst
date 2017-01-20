@@ -46,7 +46,7 @@ To build the images, simply type one of the following:
 .. code-block:: bash
 
     docker build -t typo3-solr .
-    
+
 Prepare the data folder (data is shared with the docker container by user and group with UID/GID 8983):
 
 |
@@ -84,7 +84,7 @@ Our image has the intension to create running cores out of the box. This implies
 The intension in our integration was to stay as close as possible to the official Apache Solr docker images. Sometimes it might make
 sence that you use the official image directly instead of our image. An example could be when you want to have the solrconfig, schema and data outside of the container.
 
-The following example shows how you can run our configuration with the official Apache Solr docker container by mounting the configuration and data from a volume (When using Docker on macOS make sure you've added the volume folder to "Prefenrences -> File Sharing").
+The following example shows how you can run our configuration with the official Apache Solr docker container by mounting the configuration and data from a volume (When using Docker on macOS make sure you've added the volume folder to "Preferences -> File Sharing").
 
 |
 
