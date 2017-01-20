@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Plugin;
+
+namespace ApacheSolrForTypo3\Solr\Controller\Backend;
 
 /***************************************************************
  *  Copyright notice
@@ -26,16 +27,29 @@ namespace ApacheSolrForTypo3\Solr\Plugin;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Summary to display flexform settings in the page layout backend module.
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-class BackendSummary
+class PageModuleSummary
 {
+    /**
+     * @var array
+     */
     protected $pluginContentElement = [];
+
+    /**
+     * @var array
+     */
     protected $flexformData = [];
+
+    /**
+     * @var array
+     */
     protected $settings = [];
 
     /**
@@ -48,17 +62,20 @@ class BackendSummary
     {
         $this->initialize($parameters['row']);
 
-        $this->getTargetPage();
-        $this->getFilter();
-        $this->getSorting();
-        $this->getResultsPerPage();
-        $this->getBoostFunction();
-        $this->getBoostQuery();
-        $this->getTemplateFile();
+        $this->addTargetPage();
+        $this->addSettingFromFlexForm('Filter', 'filter');
+        $this->addSettingFromFlexForm('Sorting', 'sortBy');
+        $this->addSettingFromFlexForm('Results per Page', 'resultsPerPage');
+        $this->addSettingFromFlexForm('Boost Function', 'boostFunction');
+        $this->addSettingFromFlexForm('Boost Query', 'boostQuery');
+        $this->addSettingFromFlexForm('Template', 'templateFile', 'sOptions');
 
-        return $this->renderSettings();
+        return $this->render();
     }
 
+    /**
+     * @param array $contentElement
+     */
     protected function initialize(array $contentElement)
     {
         $this->pluginContentElement = $contentElement;
@@ -67,13 +84,29 @@ class BackendSummary
         $this->flexformData = $flexformAsArray['data'];
     }
 
-    protected function getTargetPage()
+    /**
+     * Adds the target page to the settings.
+     */
+    protected function addTargetPage()
     {
         $targetPageId = $this->getFieldFromFlexform('targetPage');
-
         if (!empty($targetPageId)) {
             $page = BackendUtility::getRecord('pages', $targetPageId, 'title');
             $this->settings['Target Page'] = '[' . (int)$targetPageId . '] ' . $page['title'];
+        }
+    }
+
+    /**
+     * @param string $settingName
+     * @param string $flexFormField
+     * @param string $sheetName
+     */
+    protected function addSettingFromFlexForm($settingName, $flexFormField, $sheetName = 'sQuery')
+    {
+        $templateFile = $this->getFieldFromFlexform($flexFormField, $sheetName);
+
+        if (!empty($templateFile)) {
+            $this->settings[$settingName] = $templateFile;
         }
     }
 
@@ -99,92 +132,21 @@ class BackendSummary
         return $fieldValue;
     }
 
-    protected function getFilter()
+    /**
+     * @return string
+     */
+    protected function render()
     {
-        $filter = $this->getFieldFromFlexform('filter', 'sQuery');
+        /** @var $standaloneView StandaloneView */
+        $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+        $standaloneView->setTemplatePathAndFilename(
+            GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/PageModule/Summary.html')
+        );
+        $standaloneView->assignMultiple([
+            'hidden' => $this->pluginContentElement['hidden'],
+            'settings' => $this->settings,
+        ]);
 
-        if (!empty($filter)) {
-            $this->settings['Filter'] = $filter;
-        }
-    }
-
-    protected function getSorting()
-    {
-        $sorting = $this->getFieldFromFlexform('sortBy', 'sQuery');
-
-        if (!empty($sorting)) {
-            $this->settings['Sorting'] = $sorting;
-        }
-    }
-
-    protected function getResultsPerPage()
-    {
-        $resultsPerPage = $this->getFieldFromFlexform('resultsPerPage',
-            'sQuery');
-
-        if (!empty($resultsPerPage)) {
-            $this->settings['Results per Page'] = $resultsPerPage;
-        }
-    }
-
-    protected function getBoostFunction()
-    {
-        $boostFunction = $this->getFieldFromFlexform('boostFunction', 'sQuery');
-
-        if (!empty($boostFunction)) {
-            $this->settings['Boost Function'] = $boostFunction;
-        }
-    }
-
-    protected function getBoostQuery()
-    {
-        $boostQuery = $this->getFieldFromFlexform('boostQuery', 'sQuery');
-
-        if (!empty($boostQuery)) {
-            $this->settings['Boost Query'] = $boostQuery;
-        }
-    }
-
-    protected function getTemplateFile()
-    {
-        $templateFile = $this->getFieldFromFlexform('templateFile', 'sOptions');
-
-        if (!empty($templateFile)) {
-            $this->settings['Template'] = $templateFile;
-        }
-    }
-
-    protected function renderSettings()
-    {
-        $content = '';
-
-        if (!empty($this->settings)) {
-            $isVisibleRecord = !$this->pluginContentElement['hidden'];
-
-            $tableStyle = 'width:100%;';
-            if (!$isVisibleRecord) {
-                $tableStyle .= ' background: none; border-color: #e5e5e5; color: #bbb';
-            }
-
-            $content = '<table class="typo3-dblist" style="' . $tableStyle . '">';
-
-            $i = 0;
-            foreach ($this->settings as $label => $value) {
-                $classAttribute = 'class="';
-                $classAttribute .= ($i++ % 2 == 0) ? 'bgColor4' : 'bgColor3';
-                $classAttribute .= '"';
-
-                $content .= '
-					<tr ' . ($isVisibleRecord ? $classAttribute : '') . '>
-						<td style="' . ($isVisibleRecord ? 'font-weight:bold; ' : '') . 'width:40%; padding-right: 3px;">' . $label . '</td>
-						<td>' . $value . '</td>
-					</tr>
-				';
-            }
-
-            $content .= '</table>';
-        }
-
-        return $content;
+        return $standaloneView->render();
     }
 }
