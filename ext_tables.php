@@ -42,6 +42,10 @@ if (TYPO3_MODE === 'BE') {
         ['source' => $extIconPath . 'SearchStatistics.png']);
     $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $svgProvider,
         ['source' => $extIconPath . 'InitSolrConnections.svg']);
+
+    // register plugin icon
+    $iconRegistry->registerIcon('extensions-solr-plugin-contentelement', $svgProvider,
+        ['source' => $extIconPath . 'ContentElement.svg']);
 }
 
 if (TYPO3_MODE == 'BE') {
