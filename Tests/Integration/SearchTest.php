@@ -58,7 +58,7 @@ class SearchTest extends IntegrationTest
         $searchInstance = GeneralUtility::makeInstance(Search::class);
 
             /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = GeneralUtility::makeInstance(Query::class);
+        $query = GeneralUtility::makeInstance(Query::class, '');
         $query->useRawQueryString(true);
         $query->setQueryFieldsFromString('content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0');
         $query->setQueryString('hello');
