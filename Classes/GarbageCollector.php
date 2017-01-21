@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -42,7 +43,24 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GarbageCollector extends AbstractDataHandlerListener implements SingletonInterface
 {
+    /**
+     * @var array
+     */
     protected $trackedRecords = [];
+
+    /**
+     * @var TCAService
+     */
+    protected $tcaService;
+
+    /**
+     * GarbageCollector constructor.
+     * @param TCAService|null $TCAService
+     */
+    public function __construct(TCAService $TCAService = null)
+    {
+        $this->tcaService = is_null($TCAService) ? GeneralUtility::makeInstance(TCAService::class) : $TCAService;
+    }
 
     /**
      * Hooks into TCE main and tracks record deletion commands.
@@ -286,12 +304,10 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             return;
         }
 
-        $visibilityAffectingFields = $this->getVisibilityAffectingFieldsByTable($table);
+        $hasConfiguredEnableColumnForFeGroup = $this->tcaService->isEnableColumn($table, 'fe_group');
 
-        if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
-            && array_key_exists('fe_group',
-                $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
-        ) {
+        if ($hasConfiguredEnableColumnForFeGroup) {
+            $visibilityAffectingFields = $this->tcaService->getVisibilityAffectingFieldsByTable($table);
             $record = BackendUtility::getRecord(
                 $table,
                 $uid,
@@ -299,65 +315,11 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
                 '',
                 false
             );
-            $record = $this->normalizeFrontendGroupField($table, $record);
+            $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
 
             // keep previous state of important fields for later comparison
             $this->trackedRecords[$table][$uid] = $record;
         }
-    }
-
-    /**
-     * Compiles a list of visibility affecting fields of a table so that it can
-     * be used in SQL queries.
-     *
-     * @param string $table Table name to retrieve visibility affecting fields for
-     * @return string Comma separated list of field names that affect the visibility of a record on the website
-     */
-    protected function getVisibilityAffectingFieldsByTable($table)
-    {
-        static $visibilityAffectingFields;
-
-        if (!isset($visibilityAffectingFields[$table])) {
-            // we always want to get the uid and pid although they do not affect visibility
-            $fields = ['uid', 'pid'];
-            if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])) {
-                $fields = array_merge($fields,
-                    $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']);
-            }
-
-            if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
-                $fields[] = $GLOBALS['TCA'][$table]['ctrl']['delete'];
-            }
-
-            if ($table == 'pages') {
-                $fields[] = 'no_search';
-                $fields[] = 'doktype';
-            }
-
-            $visibilityAffectingFields[$table] = implode(', ', $fields);
-        }
-
-        return $visibilityAffectingFields[$table];
-    }
-
-    /**
-     * Makes sure that "empty" frontend group fields are always the same value.
-     *
-     * @param string $table The record's table name.
-     * @param array $record the record array.
-     * @return array The cleaned record
-     */
-    protected function normalizeFrontendGroupField($table, $record)
-    {
-        if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group'])) {
-            $frontendGroupsField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['fe_group'];
-
-            if ($record[$frontendGroupsField] == '') {
-                $record[$frontendGroupsField] = '0';
-            }
-        }
-
-        return $record;
     }
 
     /**
@@ -388,15 +350,14 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             return;
         }
 
-        $garbageCollectionRelevantFields = $this->getVisibilityAffectingFieldsByTable($table);
+        $garbageCollectionRelevantFields = $this->tcaService->getVisibilityAffectingFieldsByTable($table);
 
-        $record = BackendUtility::getRecord($table, $uid,
-            $garbageCollectionRelevantFields, '', false);
-        $record = $this->normalizeFrontendGroupField($table, $record);
+        $record = BackendUtility::getRecord($table, $uid, $garbageCollectionRelevantFields, '', false);
+        $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
 
-        if ($this->isHidden($table, $record)
-            || (($this->isStartTimeInFuture($table, $record)
-                    || $this->isEndTimeInPast($table, $record))
+        if ($this->tcaService->isHidden($table, $record)
+            || (($this->tcaService->isStartTimeInFuture($table, $record)
+                    || $this->tcaService->isEndTimeInPast($table, $record))
                 && $this->isMarkedAsIndexed($table, $record)
             )
             || $this->hasFrontendGroupsRemoved($table, $record)
@@ -409,68 +370,6 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
                 $this->deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $fields);
             }
         }
-    }
-
-    /**
-     * Checks whether a hidden field exists for the current table and if so
-     * determines whether it is set on the current record.
-     *
-     * @param string $table The table name.
-     * @param array $record An array with record fields that may affect visibility.
-     * @return bool True if the record is hidden, FALSE otherwise.
-     */
-    protected function isHidden($table, $record)
-    {
-        $hidden = false;
-
-        if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'])) {
-            $hiddenField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'];
-            $hidden = (boolean)$record[$hiddenField];
-        }
-
-        return $hidden;
-    }
-
-    /**
-     * Checks whether a start time field exists for the record's table and if so
-     * determines if a time is set and whether that time is in the future,
-     * making the record invisible on the website.
-     *
-     * @param string $table The table name.
-     * @param array $record An array with record fields that may affect visibility.
-     * @return bool True if the record's start time is in the future, FALSE otherwise.
-     */
-    protected function isStartTimeInFuture($table, $record)
-    {
-        $startTimeInFuture = false;
-
-        if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['starttime'])) {
-            $startTimeField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['starttime'];
-            $startTimeInFuture = $record[$startTimeField] > time();
-        }
-
-        return $startTimeInFuture;
-    }
-
-    /**
-     * Checks whether a end time field exists for the record's table and if so
-     * determines if a time is set and whether that time is in the past,
-     * making the record invisible on the website.
-     *
-     * @param string $table The table name.
-     * @param array $record An array with record fields that may affect visibility.
-     * @return bool True if the record's end time is in the past, FALSE otherwise.
-     */
-    protected function isEndTimeInPast($table, $record)
-    {
-        $endTimeInPast = false;
-
-        if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['endtime'])) {
-            $endTimeField = $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['endtime'];
-            $endTimeInPast = $record[$endTimeField] < time();
-        }
-
-        return $endTimeInPast;
     }
 
     /**

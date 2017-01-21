@@ -708,7 +708,7 @@ class Queue
      *
      * @param string $itemType item type, usually  the table name
      * @param int $itemUid item uid
-     * @return array An array of items matching $itemType and $itemUid
+     * @return Item[] An array of items matching $itemType and $itemUid
      */
     public function getItems($itemType, $itemUid)
     {
