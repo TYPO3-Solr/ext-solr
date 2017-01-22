@@ -250,6 +250,53 @@ class TypoScriptConfigurationTest extends UnitTest
     /**
      * @test
      */
+    public function canGetRecursivePageUpdateFields()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'pages' => 1,
+                    'pages.' => [
+                        'recursivePageUpdateFields' => ''
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals([], $configuration->getRecursivePageUpdateFields());
+
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'pages' => 1,
+                    'pages.' => [
+                    ],
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals([], $configuration->getRecursivePageUpdateFields());
+
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'pages' => 1,
+                    'pages.' => [
+                        'recursivePageUpdateFields' => 'title, subtitle'
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals(['title' => 'title', 'subtitle' => 'subtitle'], $configuration->getRecursivePageUpdateFields());
+    }
+
+    /**
+     * @test
+     */
     public function canGetIndexQueueConfigurationNamesByTableName()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
