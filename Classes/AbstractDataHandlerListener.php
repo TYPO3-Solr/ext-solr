@@ -84,8 +84,9 @@ abstract class AbstractDataHandlerListener
     }
 
     /**
-     * Check if an page update will trigger an recursive update of pages
-     * This can be the case if $changedFields are part of the TriggerConfiguration or
+     * Checks if a page update will trigger a recursive update of pages
+     *
+     * This can either be the case if some $changedFields are part of the TriggerConfiguration or
      * columns have explicit been configured via plugin.tx_solr.index.queue.recursivePageUpdateFields
      *
      * @param int $pageId
@@ -97,17 +98,17 @@ abstract class AbstractDataHandlerListener
         // First check TriggerConfiguration
         $isRecursiveUpdateRequiredTriggerConfiguration = $this->isRecursiveUpdateRequired($pageId, $changedFields);
 
-        // If TriggerConfiguration is false => also check if changeFields are part of recursivePageUpdateFields
+        // If TriggerConfiguration is false => check if changeFields are part of recursivePageUpdateFields
         if ($isRecursiveUpdateRequiredTriggerConfiguration === false) {
             $solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
             $recursiveUpdateFields = $solrConfiguration->getRecursivePageUpdateFields();
 
-            // Check if no additional fields have been defined
+            // Check if no additional fields have been defined and then skip recursive update
             if (count($recursiveUpdateFields) === 0) {
                 return false;
             }
 
-            // The recursiveUpdateFields configuration is not part of the $changedFields
+            // If the recursiveUpdateFields configuration is not part of the $changedFields skip recursive update
             if (!array_intersect_key($changedFields, $recursiveUpdateFields)) {
                 return false;
             }
