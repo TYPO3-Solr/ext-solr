@@ -172,7 +172,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $changedFields)
     {
-        if (!$this->isRecursiveUpdateRequired($uid, $changedFields)) {
+        if (!$this->isRecursivePageUpdateRequired($uid, $changedFields)) {
             return;
         }
 
