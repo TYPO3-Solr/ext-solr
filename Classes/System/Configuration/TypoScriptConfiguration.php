@@ -568,6 +568,29 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Retrieves an array of additional Fields that will trigger an
+     * recursive of pages when some of the fields on that page are modified
+     *
+     * plugin.tx_solr.index.queue.recursiveUpdateFields
+     *
+     * @param string $configurationName
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueueConfigurationRecursiveUpdateFields($configurationName, $defaultIfEmpty = [])
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.recursiveUpdateFields';
+        $recursiveUpdateFieldsString = $this->getValueByPathOrDefaultValue($path, '');
+        if (trim($recursiveUpdateFieldsString) === '') {
+            return $defaultIfEmpty;
+        }
+        $recursiveUpdateFields = GeneralUtility::trimExplode(',', $recursiveUpdateFieldsString);
+        // For easier check later on we return an array by combining $recursiveUpdateFields
+        return array_combine($recursiveUpdateFields, $recursiveUpdateFields);
+    }
+
+
+    /**
      * Retrieves and initialPagesAdditionalWhereClause where clause when configured or an empty string.
      *
      * plugin.tx_solr.index.queue.pages.initialPagesAdditionalWhereClause

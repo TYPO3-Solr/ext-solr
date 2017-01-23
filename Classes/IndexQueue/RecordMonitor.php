@@ -355,7 +355,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $this->updateCanonicalPages($recordUid);
         $this->mountPageUpdater->update($recordUid);
 
-        if ($this->isRecursiveUpdateRequired($recordUid, $fields)) {
+        if ($this->isRecursivePageUpdateRequired($recordUid, $fields)) {
             $treePageIds = $this->getSubPageIds($recordUid);
             $this->updatePageIdItems($treePageIds);
         }
