@@ -39,6 +39,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractDataHandlerListener
 {
+    /**
+     * Solr TypoScript configuration
+     *
+     * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
+     */
+    protected $solrConfiguration = null;
 
     /**
      * @return array
@@ -99,12 +105,9 @@ abstract class AbstractDataHandlerListener
         $isRecursiveUpdateRequiredTriggerConfiguration = $this->isRecursiveUpdateRequired($pageId, $changedFields);
         // If TriggerConfiguration is false => check if changeFields are part of recursiveUpdateFields
         if ($isRecursiveUpdateRequiredTriggerConfiguration === false) {
-            $solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
-            // @TODO This should be fetched via configuration - however that requires
-            // that we move some methods from RecordMonitor into this class and
-            // handles the issue involved with $solrConfiguration
-            $indexQueueConfigurationName = 'pages';
-            $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields($indexQueueConfigurationName);
+            $this->solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
+            $indexQueueConfigurationName = $this->getIndexingConfigurationName('pages', $pageId);
+            $updateFields = $this->solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields($indexQueueConfigurationName);
 
             // Check if no additional fields have been defined and then skip recursive update
             if (count($updateFields) === 0) {
@@ -170,6 +173,124 @@ abstract class AbstractDataHandlerListener
 
         $diff = array_diff_assoc($triggerConfiguration['changeSet'], $changedFields);
         return empty($diff);
+    }
+
+    /**
+     * Retrieves the name of the  Indexing Queue Configuration for a record assumes
+     * that $this->solrConfiguration has been initialized properly
+     *
+     * @param string $recordTable Table to read from
+     * @param int $recordUid Id of the record
+     * @return string Name of indexing configuration
+     */
+    protected function getIndexingConfigurationName($recordTable, $recordUid)
+    {
+        $name = $recordTable;
+        $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
+        foreach ($indexingConfigurations as $indexingConfigurationName) {
+            if (!$this->solrConfiguration->getIndexQueueConfigurationIsEnabled($indexingConfigurationName)) {
+                // ignore disabled indexing configurations
+                continue;
+            }
+
+            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName);
+            if (!empty($record)) {
+                $name = $indexingConfigurationName;
+                // FIXME currently returns after the first configuration match
+                break;
+            }
+        }
+
+        return $name;
+    }
+
+    /**
+     * Retrieves a record, taking into account the additionalWhereClauses of the
+     * Indexing Queue configurations.
+     *
+     * @param string $recordTable Table to read from
+     * @param int $recordUid Id of the record
+     * @return array Record if found, otherwise empty array
+     */
+    protected function getRecord($recordTable, $recordUid)
+    {
+        $record = [];
+        $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
+
+        foreach ($indexingConfigurations as $indexingConfigurationName) {
+            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName);
+            if (!empty($record)) {
+                // if we found a record which matches the conditions, we can continue
+                break;
+            }
+        }
+
+        return $record;
+    }
+
+    /**
+     * This method return the record array if the table is valid for this indexingConfiguration.
+     * Otherwise an empty array will be returned.
+     *
+     * @param string $recordTable
+     * @param integer $recordUid
+     * @param string $indexingConfigurationName
+     * @return array
+     */
+    private function getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName)
+    {
+        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName)) {
+            return [];
+        }
+
+        $recordWhereClause = $this->solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
+
+        if ($recordTable === 'pages_language_overlay') {
+            return $this->getPageOverlayRecordWhenParentIsAccessible($recordUid, $recordWhereClause);
+        }
+
+        return (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+    }
+
+    /**
+     * This method is used to check if a table is an allowed table for an index configuration.
+     *
+     * @param string $recordTable
+     * @param string $indexingConfigurationName
+     * @return boolean
+     */
+    private function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName)
+    {
+        $tableToIndex = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+
+        $isMatchingTable = $tableToIndex === $recordTable;
+        $isPagesPassedAndOverlayRequested = $tableToIndex === 'pages' && $recordTable === 'pages_language_overlay';
+
+        if ($isMatchingTable || $isPagesPassedAndOverlayRequested) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * This method retrieves the pages_language_overlay record when the parent record is accessible
+     * through the recordWhereClause
+     *
+     * @param int $recordUid
+     * @param string $parentWhereClause
+     * @return array
+     */
+    private function getPageOverlayRecordWhenParentIsAccessible($recordUid, $parentWhereClause)
+    {
+        $overlayRecord = (array)BackendUtility::getRecord('pages_language_overlay', $recordUid, '*');
+        $pageRecord = (array)BackendUtility::getRecord('pages', $overlayRecord['pid'], '*', $parentWhereClause);
+
+        if (empty($pageRecord)) {
+            return [];
+        }
+
+        return $overlayRecord;
     }
 
     /**
