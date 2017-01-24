@@ -315,7 +315,6 @@ class RecordMonitor extends AbstractDataHandlerListener
             $this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
         }
 
-
         if ($recordTable == 'pages') {
             $this->doPagesPostUpdateOperations($fields, $recordUid);
         }
@@ -441,5 +440,4 @@ class RecordMonitor extends AbstractDataHandlerListener
         $pid = intval($pid);
         return $pid;
     }
-
 }
