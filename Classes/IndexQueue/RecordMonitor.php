@@ -400,6 +400,31 @@ class RecordMonitor extends AbstractDataHandlerListener
     }
 
     /**
+     * Determines the recordPageId (pid) of a record.
+     *
+     * @param string $status
+     * @param string $recordTable
+     * @param int $recordUid
+     * @param int $originalUid
+     * @param array $fields
+     * @param DataHandler $tceMain
+     * @return int
+     */
+    protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
+    {
+        if ($status == 'update' && !isset($fields['pid'])) {
+            $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
+            if ($recordTable == 'pages' && Util::isRootPage($recordUid)) {
+                $recordPageId = $originalUid;
+            }
+
+            return $recordPageId;
+        }
+
+        return $fields['pid'];
+    }
+
+    /**
      * Removes record from the index queue and from the solr index
      *
      * @param string $recordTable Name of table where the record lives
