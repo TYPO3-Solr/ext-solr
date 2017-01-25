@@ -254,7 +254,7 @@ class RecordMonitorTest extends IntegrationTest
     public function exceptionIsThrowsWhenRecordWithoutPidIsCreated()
     {
         // we expect that this exception is getting thrown, because a record without pid was updated
-        $this->setExpectedExceptio(NoPidException::class);
+        $this->setExpectedException(NoPidException::class);
 
         // create fake extension database table and TCA
         $this->importDumpFromFixture('fake_extension_table.sql');
