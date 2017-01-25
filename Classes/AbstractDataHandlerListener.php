@@ -179,8 +179,11 @@ abstract class AbstractDataHandlerListener
      * @param TypoScriptConfiguration $solrConfiguration
      * @return string Name of indexing configuration
      */
-    protected function getIndexingConfigurationName($recordTable, $recordUid,TypoScriptConfiguration $solrConfiguration)
-    {
+    protected function getIndexingConfigurationName(
+        $recordTable,
+        $recordUid,
+        TypoScriptConfiguration $solrConfiguration
+    ) {
         $name = $recordTable;
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
@@ -189,7 +192,8 @@ abstract class AbstractDataHandlerListener
                 continue;
             }
 
-            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName, $solrConfiguration);
+            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid,
+                $indexingConfigurationName, $solrConfiguration);
             if (!empty($record)) {
                 $name = $indexingConfigurationName;
                 // FIXME currently returns after the first configuration match
@@ -215,7 +219,8 @@ abstract class AbstractDataHandlerListener
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
 
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName, $solrConfiguration);
+            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid,
+                $indexingConfigurationName, $solrConfiguration);
             if (!empty($record)) {
                 // if we found a record which matches the conditions, we can continue
                 break;
@@ -235,9 +240,15 @@ abstract class AbstractDataHandlerListener
      * @param TypoScriptConfiguration $solrConfiguration
      * @return array
      */
-    private function getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
-    {
-        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, $solrConfiguration)) {
+    private function getRecordWhenIndexConfigurationIsValid(
+        $recordTable,
+        $recordUid,
+        $indexingConfigurationName,
+        TypoScriptConfiguration $solrConfiguration
+    ) {
+        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName,
+            $solrConfiguration)
+        ) {
             return [];
         }
 
@@ -258,8 +269,11 @@ abstract class AbstractDataHandlerListener
      * @param TypoScriptConfiguration $solrConfiguration
      * @return boolean
      */
-    private function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
-    {
+    private function isValidTableForIndexConfigurationName(
+        $recordTable,
+        $indexingConfigurationName,
+        TypoScriptConfiguration $solrConfiguration
+    ) {
         $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
         $isMatchingTable = $tableToIndex === $recordTable;
