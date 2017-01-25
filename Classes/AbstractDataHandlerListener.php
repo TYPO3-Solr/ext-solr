@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -39,13 +40,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 abstract class AbstractDataHandlerListener
 {
-    /**
-     * Solr TypoScript configuration
-     *
-     * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
-     */
-    protected $solrConfiguration = null;
-
     /**
      * @return array
      */
@@ -105,9 +99,9 @@ abstract class AbstractDataHandlerListener
         $isRecursiveUpdateRequiredTriggerConfiguration = $this->isRecursiveUpdateRequired($pageId, $changedFields);
         // If TriggerConfiguration is false => check if changeFields are part of recursiveUpdateFields
         if ($isRecursiveUpdateRequiredTriggerConfiguration === false) {
-            $this->solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
-            $indexQueueConfigurationName = $this->getIndexingConfigurationName('pages', $pageId);
-            $updateFields = $this->solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields($indexQueueConfigurationName);
+            $solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
+            $indexQueueConfigurationName = $this->getIndexingConfigurationName('pages', $pageId, $solrConfiguration);
+            $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields($indexQueueConfigurationName);
 
             // Check if no additional fields have been defined and then skip recursive update
             if (count($updateFields) === 0) {
@@ -118,6 +112,7 @@ abstract class AbstractDataHandlerListener
                 return false;
             }
         }
+
         return true;
     }
 
@@ -181,19 +176,20 @@ abstract class AbstractDataHandlerListener
      *
      * @param string $recordTable Table to read from
      * @param int $recordUid Id of the record
+     * @param TypoScriptConfiguration $solrConfiguration
      * @return string Name of indexing configuration
      */
-    protected function getIndexingConfigurationName($recordTable, $recordUid)
+    protected function getIndexingConfigurationName($recordTable, $recordUid,TypoScriptConfiguration $solrConfiguration)
     {
         $name = $recordTable;
-        $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
+        $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            if (!$this->solrConfiguration->getIndexQueueConfigurationIsEnabled($indexingConfigurationName)) {
+            if (!$solrConfiguration->getIndexQueueConfigurationIsEnabled($indexingConfigurationName)) {
                 // ignore disabled indexing configurations
                 continue;
             }
 
-            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName);
+            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName, $solrConfiguration);
             if (!empty($record)) {
                 $name = $indexingConfigurationName;
                 // FIXME currently returns after the first configuration match
@@ -210,15 +206,16 @@ abstract class AbstractDataHandlerListener
      *
      * @param string $recordTable Table to read from
      * @param int $recordUid Id of the record
+     * @param TypoScriptConfiguration $solrConfiguration
      * @return array Record if found, otherwise empty array
      */
-    protected function getRecord($recordTable, $recordUid)
+    protected function getRecord($recordTable, $recordUid, TypoScriptConfiguration $solrConfiguration)
     {
         $record = [];
-        $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
+        $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
 
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName);
+            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName, $solrConfiguration);
             if (!empty($record)) {
                 // if we found a record which matches the conditions, we can continue
                 break;
@@ -235,15 +232,16 @@ abstract class AbstractDataHandlerListener
      * @param string $recordTable
      * @param integer $recordUid
      * @param string $indexingConfigurationName
+     * @param TypoScriptConfiguration $solrConfiguration
      * @return array
      */
-    private function getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName)
+    private function getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
     {
-        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName)) {
+        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, $solrConfiguration)) {
             return [];
         }
 
-        $recordWhereClause = $this->solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
+        $recordWhereClause = $solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
 
         if ($recordTable === 'pages_language_overlay') {
             return $this->getPageOverlayRecordWhenParentIsAccessible($recordUid, $recordWhereClause);
@@ -257,11 +255,12 @@ abstract class AbstractDataHandlerListener
      *
      * @param string $recordTable
      * @param string $indexingConfigurationName
+     * @param TypoScriptConfiguration $solrConfiguration
      * @return boolean
      */
-    private function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName)
+    private function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
     {
-        $tableToIndex = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
+        $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
         $isMatchingTable = $tableToIndex === $recordTable;
         $isPagesPassedAndOverlayRequested = $tableToIndex === 'pages' && $recordTable === 'pages_language_overlay';

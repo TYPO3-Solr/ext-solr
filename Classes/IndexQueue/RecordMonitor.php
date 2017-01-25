@@ -157,8 +157,8 @@ class RecordMonitor extends AbstractDataHandlerListener
                     $uid = $this->getValidatedPid($tceMain, $table, $uid);
                     $table = 'pages';
                 case 'pages':
-                    $this->solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
-                    $record = $this->getRecord($table, $uid);
+                    $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
+                    $record = $this->getRecord($table, $uid, $solrConfiguration);
 
                     if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                         $this->mountPageUpdater->update($uid);
@@ -172,11 +172,11 @@ class RecordMonitor extends AbstractDataHandlerListener
                     break;
                 default:
                     $recordPageId = $this->getValidatedPid($tceMain, $table, $uid);
-                    $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-                    $isMonitoredTable = $this->solrConfiguration->getIndexQueueIsMonitoredTable($table);
+                    $solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
+                    $isMonitoredTable = $solrConfiguration->getIndexQueueIsMonitoredTable($table);
 
                     if ($isMonitoredTable) {
-                        $record = $this->getRecord($table, $uid);
+                        $record = $this->getRecord($table, $uid, $solrConfiguration);
 
                         if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                             if (Util::isLocalizedRecord($table, $record)) {
@@ -185,7 +185,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                             }
 
                             $configurationName = $this->getIndexingConfigurationName($table,
-                                $uid);
+                                $uid, $solrConfiguration);
                             $this->indexQueue->updateItem($table, $uid,
                                 $configurationName);
                         } else {
@@ -200,8 +200,8 @@ class RecordMonitor extends AbstractDataHandlerListener
 
         if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
             // moving pages in LIVE workspace
-            $this->solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
-            $record = $this->getRecord('pages', $uid);
+            $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
+            $record = $this->getRecord('pages', $uid, $solrConfiguration);
             if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                 $this->indexQueue->updateItem('pages', $uid);
             } else {
@@ -270,15 +270,15 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-        $isMonitoredRecord = $this->solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
+        $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
 
         if (!$isMonitoredRecord) {
             // when it is a non monitored record, we can skip it.
             return;
         }
 
-        $record = $this->getRecord($recordTable, $recordUid);
+        $record = $this->getRecord($recordTable, $recordUid, $solrConfiguration);
         if (empty($record)) {
             // TODO move this part to the garbage collector
             // check if the item should be removed from the index because it no longer matches the conditions
@@ -310,7 +310,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
         if ($this->tcaService->isEnabledRecord($recordTable, $record)) {
-            $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
+            $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid, $solrConfiguration);
 
             $this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
         }
