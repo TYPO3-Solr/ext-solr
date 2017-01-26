@@ -26,6 +26,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
+
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
@@ -35,6 +39,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -229,7 +235,16 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     protected function indexPageIdsFromFixture($fixture, $importPageIds, $feUserGroupArray = [0])
     {
         $this->importDataSetFromFixture($fixture);
+        $this->indexPageIds($importPageIds, $feUserGroupArray);
+        $this->fakeBEUser();
+    }
 
+    /**
+     * @param array $importPageIds
+     * @param array $feUserGroupArray
+     */
+    protected function indexPageIds($importPageIds, $feUserGroupArray = [0])
+    {
         foreach ($importPageIds as $importPageId) {
             $fakeTSFE = $this->fakeTSFE($importPageId, $feUserGroupArray);
 
@@ -238,9 +253,21 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
             $pageIndexer->setPageAccessRootline(Rootline::getAccessRootlineByPageId($importPageId));
             $pageIndexer->indexPage();
         }
+    }
+
+    /**
+     * @param int $isAdmin
+     * @param int $workspace
+     * @return BackendUserAuthentication
+     */
+    protected function fakeBEUser($isAdmin = 0, $workspace = 0) {
         /** @var $beUser  BackendUserAuthentication */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
+        $beUser->user['admin'] = $isAdmin;
+        $beUser->workspace = $workspace;
         $GLOBALS['BE_USER'] = $beUser;
+
+        return $beUser;
     }
 
     /**
@@ -270,5 +297,4 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     {
         $GLOBALS['TSFE']->gr_list = implode(',', $feUserGroupArray);
     }
-
 }
