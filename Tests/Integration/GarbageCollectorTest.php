@@ -27,6 +27,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\Site;
+use GeorgRinger\News\Hooks\BackendUtility;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -182,5 +185,303 @@ class GarbageCollectorTest extends IntegrationTest
         // finally we expect that the index is empty again because the root page with "extendToSubPages" has been set to
         // hidden = 1
         $this->assertEmptyIndexQueue();
+    }
+
+    /**
+     * @test
+     */
+    public function canRemoveDeletedContentElement()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('can_remove_content_element.xml');
+
+        $this->indexPageIds([1]);
+
+        // we index a page with two content elements and expect solr contains the content of both
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+
+        // we delete the second content element
+        $beUser = $this->fakeBEUser(1, 0);
+
+        $cmd['tt_content'][88]['delete'] = 1;
+        $this->dataHandler->start([], $cmd, $beUser);
+        $this->dataHandler->stripslashes_values = 0;
+        $this->dataHandler->process_cmdmap();
+        $this->dataHandler->process_datamap();
+
+        // after applying the commands solr should be empty (because the page was removed from solr and queued for indexing)
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrIsEmpty();
+
+        // we expect the is one item in the indexQueue
+        $this->assertIndexQueryContainsItemAmount(1);
+        $items = $this->indexQueue->getItems('pages', 1);
+
+        // we index this item
+        $this->indexPageIds($items);
+        $this->waitToBeVisibleInSolr();
+
+        // now the content of the deletec content element should be gone
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove deleted content');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+    }
+
+    /**
+     * @test
+     */
+    public function canRemoveHiddenContentElement()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('can_remove_content_element.xml');
+
+        $this->indexPageIds([1]);
+
+        // we index a page with two content elements and expect solr contains the content of both
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+
+        // we hide the second content element
+        $beUser = $this->fakeBEUser(1, 0);
+        $data = [
+            'tt_content' => [
+                '88' => [
+                    'hidden' => 1
+                ]
+            ]
+        ];
+        $this->dataHandler->start($data, [], $beUser);
+        $this->dataHandler->stripslashes_values = 0;
+        $this->dataHandler->process_cmdmap();
+        $this->dataHandler->process_datamap();
+
+        // after applying the commands solr should be empty (because the page was removed from solr and queued for indexing)
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrIsEmpty();
+
+        // we expect the is one item in the indexQueue
+        $this->assertIndexQueryContainsItemAmount(1);
+        $items = $this->indexQueue->getItems('pages', 1);
+
+        // we index this item
+        $this->indexPageIds($items);
+        $this->waitToBeVisibleInSolr();
+
+        // now the content of the deletec content element should be gone
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove hidden content');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+    }
+
+    /**
+     * @test
+     */
+    public function canRemoveContentElementWithEndTimeSetToPast()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('can_remove_content_element.xml');
+
+        $this->indexPageIds([1]);
+
+        // we index a page with two content elements and expect solr contains the content of both
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+
+        // we hide the second content element
+        $beUser = $this->fakeBEUser(1, 0);
+
+        $timeStampInPast = time() - (60 * 60 * 24);
+        $data = [
+            'tt_content' => [
+                '88' => [
+                    'endtime' => $timeStampInPast
+                ]
+            ]
+        ];
+        $this->dataHandler->start($data, [], $beUser);
+        $this->dataHandler->stripslashes_values = 0;
+        $this->dataHandler->process_cmdmap();
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->clear_cacheCmd('all');
+
+        // after applying the commands solr should be empty (because the page was removed from solr and queued for indexing)
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrIsEmpty();
+
+        // we expect the is one item in the indexQueue
+        $this->assertIndexQueryContainsItemAmount(1);
+        $items = $this->indexQueue->getItems('pages', 1);
+
+        // we index this item
+        $this->indexPageIds($items);
+        $this->waitToBeVisibleInSolr();
+
+        // now the content of the deletec content element should be gone
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content hidden by endtime in past');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+    }
+
+    /**
+     * @test
+     */
+    public function canRemoveContentElementWithStartDateSetToFuture()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('can_remove_content_element.xml');
+
+        $this->indexPageIds([1]);
+
+        // we index a page with two content elements and expect solr contains the content of both
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+
+        // we hide the second content element
+        $beUser = $this->fakeBEUser(1, 0);
+
+        $timestampInFuture = time() +  (60 * 60 * 24);
+        $data = [
+            'tt_content' => [
+                '88' => [
+                    'starttime' => $timestampInFuture
+                ]
+            ]
+        ];
+        $this->dataHandler->start($data, [], $beUser);
+        $this->dataHandler->stripslashes_values = 0;
+        $this->dataHandler->process_cmdmap();
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->clear_cacheCmd('all');
+
+        // after applying the commands solr should be empty (because the page was removed from solr and queued for indexing)
+        $this->waitToBeVisibleInSolr();
+        $this->assertSolrIsEmpty();
+
+        // we expect the is one item in the indexQueue
+        $this->assertIndexQueryContainsItemAmount(1);
+        $items = $this->indexQueue->getItems('pages', 1);
+
+        // we index this item
+        $this->indexPageIds($items);
+        $this->waitToBeVisibleInSolr();
+
+        // now the content of the deletec content element should be gone
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content hidden by starttime in future');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canRemovePageWhenPageIsHidden()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('can_remove_page.xml');
+
+        $this->indexPageIds([1,2]);
+
+        // we index two pages and check that both are visible
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('"numFound":2', $solrContent, 'Expected to have two documents in the index');
+
+        // we hide the seconde page
+        $beUser = $this->fakeBEUser(1, 0);
+
+        $data = [
+            'pages' => [
+                '2' => [
+                    'hidden' => 1
+                ]
+            ]
+        ];
+        $this->dataHandler->start($data, [], $beUser);
+        $this->dataHandler->stripslashes_values = 0;
+        $this->dataHandler->process_cmdmap();
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->clear_cacheCmd('all');
+
+        $this->waitToBeVisibleInSolr();
+        $this->assertIndexQueryContainsItemAmount(1);
+
+        // we reindex all queue items
+        $items = $this->indexQueue->getItemsToIndex(Site::getFirstAvailableSite());
+        $pages = [];
+        foreach($items as $item) {
+            $pages[] = $item->getRecordUid();
+        }
+        $this->indexPageIds($pages);
+        $this->waitToBeVisibleInSolr();
+
+        // now only one document should be left with the content of the first content element
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content from hidden page');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('"numFound":1', $solrContent, 'Expected to have two documents in the index');
+    }
+
+    /**
+     * @test
+     */
+    public function canRemovePageWhenPageIsDeleted()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('can_remove_page.xml');
+
+        $this->indexPageIds([1,2]);
+
+        // we index two pages and check that both are visible
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('will be removed!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('"numFound":2', $solrContent, 'Expected to have two documents in the index');
+
+        // we hide the seconde page
+        $beUser = $this->fakeBEUser(1, 0);
+
+        $cmd['pages'][2]['delete'] = 1;
+        $this->dataHandler->start([], $cmd, $beUser);
+        $this->dataHandler->stripslashes_values = 0;
+        $this->dataHandler->process_cmdmap();
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->clear_cacheCmd('all');
+
+        $this->waitToBeVisibleInSolr();
+        $this->assertIndexQueryContainsItemAmount(1);
+
+        // we reindex all queue items
+        $items = $this->indexQueue->getItemsToIndex(Site::getFirstAvailableSite());
+        $pages = [];
+        foreach($items as $item) {
+            $pages[] = $item->getRecordUid();
+        }
+        $this->indexPageIds($pages);
+        $this->waitToBeVisibleInSolr();
+
+        // now only one document should be left with the content of the first content element
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertNotContains('will be removed!', $solrContent, 'solr did not remove content from deleted page');
+        $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
+        $this->assertContains('"numFound":1', $solrContent, 'Expected to have two documents in the index');
     }
 }

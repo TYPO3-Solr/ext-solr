@@ -356,10 +356,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
 
         if ($this->tcaService->isHidden($table, $record)
-            || (($this->tcaService->isStartTimeInFuture($table, $record)
-                    || $this->tcaService->isEndTimeInPast($table, $record))
-                && $this->isMarkedAsIndexed($table, $record)
-            )
+            || $this->isInvisibleByStartOrEndtime($table, $record)
             || $this->hasFrontendGroupsRemoved($table, $record)
             || ($table == 'pages' && $this->isPageExcludedFromSearch($record))
             || ($table == 'pages' && !$this->isIndexablePageType($record))
@@ -373,16 +370,41 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     }
 
     /**
-     * Checks whether the record is in the Index Queue and whether it has been
-     * indexed already.
+     * Check if a record is getting invisible due to changes in start or endtime. In addition it is checked that the related
+     * queue item was marked as indexed.
+     *
+     * @param string $table
+     * @param array $record
+     * @return bool
+     */
+    protected function isInvisibleByStartOrEndtime($table, $record)
+    {
+        return (
+            ($this->tcaService->isStartTimeInFuture($table, $record) || $this->tcaService->isEndTimeInPast($table, $record)) &&
+            $this->isRelatedQueueRecordMarkedAsIndexed($table, $record)
+        );
+    }
+
+    /**
+     * Checks if the related index queue item is indexed.
+     *
+     * * For tt_content and pages_language_overlay the page from the pid is checked
+     * * For all other records the table it's self is checked
      *
      * @param string $table The table name.
      * @param array $record An array with record fields that may affect visibility.
      * @return bool True if the record is marked as being indexed
      */
-    protected function isMarkedAsIndexed($table, $record)
+    protected function isRelatedQueueRecordMarkedAsIndexed($table, $record)
     {
-        return $this->getIndexQueue()->containsIndexedItem($table, $record['uid']);
+        if ($table == 'tt_content' || $table == 'pages_language_overlay') {
+            $table = 'pages';
+            $uid = $record['pid'];
+        } else {
+            $uid = $record['uid'];
+        }
+
+        return $this->getIndexQueue()->containsIndexedItem($table, $uid);
     }
 
     /**
