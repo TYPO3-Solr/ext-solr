@@ -441,7 +441,7 @@ class SearchResultSetService implements SingletonInterface
      */
     protected function shouldHideResultsFromInitialSearch($rawQuery)
     {
-        return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchInitializeWithQuery()) && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery() && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery() && empty($rawQuery);
+        return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchInitializeWithQuery()) && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery() && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery() && $rawQuery === null;
     }
 
     /**
