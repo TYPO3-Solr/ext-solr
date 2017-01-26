@@ -401,6 +401,8 @@ class RecordMonitor extends AbstractDataHandlerListener
         $garbageCollector->collectGarbage($recordTable, $recordUid);
     }
 
+    // Handle pages showing content from another page
+
     /**
      * Triggers Index Queue updates for other pages showing content from the
      * page currently being updated.

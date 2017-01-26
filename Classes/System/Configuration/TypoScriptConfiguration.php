@@ -568,8 +568,8 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Retrieves an array of additional Fields that will trigger an
-     * recursive of pages when some of the fields on that page are modified
+     * Retrieves an array of additional fields that will trigger an recursive update of pages
+     * when some of the fields on that page are modified.
      *
      * plugin.tx_solr.index.queue.recursiveUpdateFields
      *

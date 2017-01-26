@@ -86,8 +86,8 @@ abstract class AbstractDataHandlerListener
     /**
      * Checks if a page update will trigger a recursive update of pages
      *
-     * This can either be the case if some $changedFields are part of the TriggerConfiguration or
-     * columns have explicit been configured via plugin.tx_solr.index.queue.recursiveUpdateFields
+     * This can either be the case if some $changedFields are part of the RecursiveUpdateTriggerConfiguration or
+     * columns have explicitly been configured via plugin.tx_solr.index.queue.recursiveUpdateFields
      *
      * @param int $pageId
      * @param array $changedFields
@@ -95,16 +95,16 @@ abstract class AbstractDataHandlerListener
      */
     protected function isRecursivePageUpdateRequired($pageId, $changedFields)
     {
-        // First check TriggerConfiguration
-        $isRecursiveUpdateRequiredTriggerConfiguration = $this->isRecursiveUpdateRequired($pageId, $changedFields);
-        // If TriggerConfiguration is false => check if changeFields are part of recursiveUpdateFields
-        if ($isRecursiveUpdateRequiredTriggerConfiguration === false) {
+        // First check RecursiveUpdateTriggerConfiguration
+        $isRecursiveUpdateRequired = $this->isRecursiveUpdateRequired($pageId, $changedFields);
+        // If RecursiveUpdateTriggerConfiguration is false => check if changeFields are part of recursiveUpdateFields
+        if ($isRecursiveUpdateRequired === false) {
             $solrConfiguration = Util::getSolrConfigurationFromPageId($pageId);
             $indexQueueConfigurationName = $this->getIndexingConfigurationName('pages', $pageId, $solrConfiguration);
             $updateFields = $solrConfiguration->getIndexQueueConfigurationRecursiveUpdateFields($indexQueueConfigurationName);
 
             // Check if no additional fields have been defined and then skip recursive update
-            if (count($updateFields) === 0) {
+            if (empty($updateFields)) {
                 return false;
             }
             // If the recursiveUpdateFields configuration is not part of the $changedFields skip recursive update
@@ -171,8 +171,7 @@ abstract class AbstractDataHandlerListener
     }
 
     /**
-     * Retrieves the name of the  Indexing Queue Configuration for a record assumes
-     * that $this->solrConfiguration has been initialized properly
+     * Retrieves the name of the Index Queue Configuration for a record.
      *
      * @param string $recordTable Table to read from
      * @param int $recordUid Id of the record
@@ -192,7 +191,7 @@ abstract class AbstractDataHandlerListener
                 continue;
             }
 
-            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid,
+            $record = $this->getRecordIfIndexConfigurationIsValid($recordTable, $recordUid,
                 $indexingConfigurationName, $solrConfiguration);
             if (!empty($record)) {
                 $name = $indexingConfigurationName;
@@ -219,7 +218,7 @@ abstract class AbstractDataHandlerListener
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
 
         foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid,
+            $record = $this->getRecordIfIndexConfigurationIsValid($recordTable, $recordUid,
                 $indexingConfigurationName, $solrConfiguration);
             if (!empty($record)) {
                 // if we found a record which matches the conditions, we can continue
@@ -240,7 +239,7 @@ abstract class AbstractDataHandlerListener
      * @param TypoScriptConfiguration $solrConfiguration
      * @return array
      */
-    private function getRecordWhenIndexConfigurationIsValid(
+    protected function getRecordIfIndexConfigurationIsValid(
         $recordTable,
         $recordUid,
         $indexingConfigurationName,
@@ -255,7 +254,7 @@ abstract class AbstractDataHandlerListener
         $recordWhereClause = $solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
 
         if ($recordTable === 'pages_language_overlay') {
-            return $this->getPageOverlayRecordWhenParentIsAccessible($recordUid, $recordWhereClause);
+            return $this->getPageOverlayRecordIfParentIsAccessible($recordUid, $recordWhereClause);
         }
 
         return (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
@@ -269,14 +268,14 @@ abstract class AbstractDataHandlerListener
      * @param TypoScriptConfiguration $solrConfiguration
      * @return boolean
      */
-    private function isValidTableForIndexConfigurationName(
+    protected function isValidTableForIndexConfigurationName(
         $recordTable,
         $indexingConfigurationName,
         TypoScriptConfiguration $solrConfiguration
     ) {
         $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
-        $isMatchingTable = $tableToIndex === $recordTable;
+        $isMatchingTable = ($tableToIndex === $recordTable);
         $isPagesPassedAndOverlayRequested = $tableToIndex === 'pages' && $recordTable === 'pages_language_overlay';
 
         if ($isMatchingTable || $isPagesPassedAndOverlayRequested) {
@@ -294,7 +293,7 @@ abstract class AbstractDataHandlerListener
      * @param string $parentWhereClause
      * @return array
      */
-    private function getPageOverlayRecordWhenParentIsAccessible($recordUid, $parentWhereClause)
+    protected function getPageOverlayRecordIfParentIsAccessible($recordUid, $parentWhereClause)
     {
         $overlayRecord = (array)BackendUtility::getRecord('pages_language_overlay', $recordUid, '*');
         $pageRecord = (array)BackendUtility::getRecord('pages', $overlayRecord['pid'], '*', $parentWhereClause);
