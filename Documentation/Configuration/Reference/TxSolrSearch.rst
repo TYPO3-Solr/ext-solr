@@ -100,7 +100,7 @@ Version 3.0 introduced a couple more magic keywords that get replaced:
 
 - **__current_site** same as **__solr_current_site**
 - **__all** Adds all domains as allowed sites
-- \* (asterisk character) Same as **__all**
+- \* (asterisk character) means everything is allowed as siteHash (same as no siteHash check)
 
 query.getParameter
 ~~~~~~~~~~~~~~~~~~

@@ -32,6 +32,7 @@
 
 */
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,7 +41,9 @@ $domain = GeneralUtility::_GP('domain');
 $returnData = '';
 
 if (!empty($domain)) {
-    $siteHash = Util::getSiteHashForDomain($domain);
+    /** @var $siteHashService SiteHashService */
+    $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
+    $siteHash = $siteHashService->getSiteHashForDomain($domain);
     $returnData = json_encode(['sitehash' => $siteHash]);
 } else {
     header(HttpUtility::HTTP_STATUS_400);
