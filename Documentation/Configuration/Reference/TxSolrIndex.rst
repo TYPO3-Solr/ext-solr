@@ -388,7 +388,7 @@ queue.[indexConfig].recursiveUpdateFields
 :Since: 6.1
 :Default: Empty
 
-Allows to define a list of additional fields from the pages table that will trigger an recursive update.
+Allows to define a list of additional fields from the pages table that will trigger a recursive update.
 
 .. code-block:: typoscript
 
