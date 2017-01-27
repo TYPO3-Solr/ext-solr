@@ -416,6 +416,27 @@ Even if you have multiple queues for pages, e.g. via different ``additionalWhere
 to set this value to allow further ``doktype``'s. Restrict the pages to be indexed by each queue via
 ``additionalWhereClause``.
 
+queue.pages.recursivePageUpdateFields
+-------------------------------------
+
+:Type: String
+:TS Path: plugin.tx_solr.index.queue.pages.recursivePageUpdateFields
+:Since: 6.1
+:Default: Empty
+
+Allows to define a list of additional fields from the pages table that will trigger an recursive update of
+pages.
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.index.queue.pages.recursivePageUpdateFields = title
+
+The example above will trigger an recursive update of pages if the title is changed.
+
+Please not that the following columns should NOT be configured hidden and extendToSubpages since
+they are covered internally by solr and thus they will have not effect.
+
+
 queue.pages.indexer.authorization.username
 ------------------------------------------
 
