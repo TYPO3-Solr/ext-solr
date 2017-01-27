@@ -27,8 +27,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -43,13 +41,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RecordMonitor extends AbstractDataHandlerListener
 {
-
-    /**
-     * Solr TypoScript configuration
-     *
-     * @var TypoScriptConfiguration
-     */
-    protected $solrConfiguration;
 
     /**
      * Index Queue
@@ -166,8 +157,8 @@ class RecordMonitor extends AbstractDataHandlerListener
                     $uid = $this->getValidatedPid($tceMain, $table, $uid);
                     $table = 'pages';
                 case 'pages':
-                    $this->solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
-                    $record = $this->getRecord($table, $uid);
+                    $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
+                    $record = $this->getRecord($table, $uid, $solrConfiguration);
 
                     if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                         $this->mountPageUpdater->update($uid);
@@ -181,11 +172,11 @@ class RecordMonitor extends AbstractDataHandlerListener
                     break;
                 default:
                     $recordPageId = $this->getValidatedPid($tceMain, $table, $uid);
-                    $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-                    $isMonitoredTable = $this->solrConfiguration->getIndexQueueIsMonitoredTable($table);
+                    $solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
+                    $isMonitoredTable = $solrConfiguration->getIndexQueueIsMonitoredTable($table);
 
                     if ($isMonitoredTable) {
-                        $record = $this->getRecord($table, $uid);
+                        $record = $this->getRecord($table, $uid, $solrConfiguration);
 
                         if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                             if (Util::isLocalizedRecord($table, $record)) {
@@ -194,7 +185,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                             }
 
                             $configurationName = $this->getIndexingConfigurationName($table,
-                                $uid);
+                                $uid, $solrConfiguration);
                             $this->indexQueue->updateItem($table, $uid,
                                 $configurationName);
                         } else {
@@ -209,8 +200,8 @@ class RecordMonitor extends AbstractDataHandlerListener
 
         if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
             // moving pages in LIVE workspace
-            $this->solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
-            $record = $this->getRecord('pages', $uid);
+            $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
+            $record = $this->getRecord('pages', $uid, $solrConfiguration);
             if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                 $this->indexQueue->updateItem('pages', $uid);
             } else {
@@ -279,15 +270,15 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        $this->solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
-        $isMonitoredRecord = $this->solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
+        $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
 
         if (!$isMonitoredRecord) {
             // when it is a non monitored record, we can skip it.
             return;
         }
 
-        $record = $this->getRecord($recordTable, $recordUid);
+        $record = $this->getRecord($recordTable, $recordUid, $solrConfiguration);
         if (empty($record)) {
             // TODO move this part to the garbage collector
             // check if the item should be removed from the index because it no longer matches the conditions
@@ -319,11 +310,10 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
         if ($this->tcaService->isEnabledRecord($recordTable, $record)) {
-            $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid);
+            $configurationName = $this->getIndexingConfigurationName($recordTable, $recordUid, $solrConfiguration);
 
             $this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
         }
-
 
         if ($recordTable == 'pages') {
             $this->doPagesPostUpdateOperations($fields, $recordUid);
@@ -355,7 +345,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $this->updateCanonicalPages($recordUid);
         $this->mountPageUpdater->update($recordUid);
 
-        if ($this->isRecursiveUpdateRequired($recordUid, $fields)) {
+        if ($this->isRecursivePageUpdateRequired($recordUid, $fields)) {
             $treePageIds = $this->getSubPageIds($recordUid);
             $this->updatePageIdItems($treePageIds);
         }
@@ -411,30 +401,6 @@ class RecordMonitor extends AbstractDataHandlerListener
         $garbageCollector->collectGarbage($recordTable, $recordUid);
     }
 
-    /**
-     * Retrieves a record, taking into account the additionalWhereClauses of the
-     * Indexing Queue configurations.
-     *
-     * @param string $recordTable Table to read from
-     * @param int $recordUid Id of the record
-     * @return array Record if found, otherwise empty array
-     */
-    protected function getRecord($recordTable, $recordUid)
-    {
-        $record = [];
-        $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
-
-        foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName);
-            if (!empty($record)) {
-                // if we found a record which matches the conditions, we can continue
-                break;
-            }
-        }
-
-        return $record;
-    }
-
     // Handle pages showing content from another page
 
     /**
@@ -475,98 +441,5 @@ class RecordMonitor extends AbstractDataHandlerListener
 
         $pid = intval($pid);
         return $pid;
-    }
-
-    /**
-     * Retrieves the name of the  Indexing Queue Configuration for a record
-     *
-     * @param string $recordTable Table to read from
-     * @param int $recordUid Id of the record
-     * @return string Name of indexing configuration
-     */
-    protected function getIndexingConfigurationName($recordTable, $recordUid)
-    {
-        $name = $recordTable;
-        $indexingConfigurations = $this->solrConfiguration->getEnabledIndexQueueConfigurationNames();
-        foreach ($indexingConfigurations as $indexingConfigurationName) {
-            if (!$this->solrConfiguration->getIndexQueueConfigurationIsEnabled($indexingConfigurationName)) {
-                // ignore disabled indexing configurations
-                continue;
-            }
-
-            $record = $this->getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName);
-            if (!empty($record)) {
-                $name = $indexingConfigurationName;
-                // FIXME currently returns after the first configuration match
-                break;
-            }
-        }
-
-        return $name;
-    }
-
-    /**
-     * This method return the record array if the table is valid for this indexingConfiguration.
-     * Otherwise an empty array will be returned.
-     *
-     * @param string $recordTable
-     * @param integer $recordUid
-     * @param string $indexingConfigurationName
-     * @return array
-     */
-    protected function getRecordWhenIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName)
-    {
-        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName)) {
-            return [];
-        }
-
-        $recordWhereClause = $this->solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($indexingConfigurationName);
-
-        if ($recordTable === 'pages_language_overlay') {
-            return $this->getPageOverlayRecordWhenParentIsAccessible($recordUid, $recordWhereClause);
-        }
-
-        return (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
-    }
-
-    /**
-     * This method retrieves the pages_language_overlay record when the parent record is accessible
-     * through the recordWhereClause
-     *
-     * @param int $recordUid
-     * @param string $parentWhereClause
-     * @return array
-     */
-    protected function getPageOverlayRecordWhenParentIsAccessible($recordUid, $parentWhereClause)
-    {
-        $overlayRecord = (array)BackendUtility::getRecord('pages_language_overlay', $recordUid, '*');
-        $pageRecord = (array)BackendUtility::getRecord('pages', $overlayRecord['pid'], '*', $parentWhereClause);
-
-        if (empty($pageRecord)) {
-            return [];
-        }
-
-        return $overlayRecord;
-    }
-
-    /**
-     * This method is used to check if a table is an allowed table for an index configuration.
-     *
-     * @param string $recordTable
-     * @param string $indexingConfigurationName
-     * @return boolean
-     */
-    protected function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName)
-    {
-        $tableToIndex = $this->solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
-
-        $isMatchingTable = $tableToIndex === $recordTable;
-        $isPagesPassedAndOverlayRequested = $tableToIndex === 'pages' && $recordTable === 'pages_language_overlay';
-
-        if ($isMatchingTable || $isPagesPassedAndOverlayRequested) {
-            return true;
-        }
-
-        return false;
     }
 }

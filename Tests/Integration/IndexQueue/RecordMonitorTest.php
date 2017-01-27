@@ -86,7 +86,7 @@ class RecordMonitorTest extends IntegrationTest
     protected function assertIndexQueueContainsItemAmount($amount)
     {
         $this->assertEquals($amount, $this->indexQueue->getAllItemsCount(),
-            'Index queue is empty and was expected to contain ' . (int) $amount . ' items.');
+            'Index queue is empty and was expected to contain ' . (int)$amount . ' items.');
     }
 
     /**
@@ -275,7 +275,8 @@ class RecordMonitorTest extends IntegrationTest
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
     }
 
     /**
@@ -290,19 +291,26 @@ class RecordMonitorTest extends IntegrationTest
         $table = 'pages';
         // unexisting uid
         $uid = 2;
-        $fields = ['title' => 'testpage', 'starttime' => 1000000, 'endtime' => 1100000, 'tsstamp' => 1000000, 'pid' => 1];
+        $fields = [
+            'title' => 'testpage',
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000,
+            'pid' => 1
+        ];
 
         $this->importDataSetFromFixture('update_unexisting_item_will_remove_queue_entry.xml');
 
         // there should be one item in the queue.
         $this->assertIndexQueueContainsItemAmount(1);
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
 
         // the queue entry should be removed since the record itself does not exist
         $this->assertEmptyIndexQueue();
     }
 
-     /**
+    /**
      * @see https://github.com/TYPO3-Solr/ext-solr/issues/639
      * @test
      */
@@ -400,9 +408,11 @@ class RecordMonitorTest extends IntegrationTest
             'pid' => 4
         ];
 
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
         $this->assertIndexQueueContainsItemAmount(1);
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
         $this->assertIndexQueueContainsItemAmount(1);
     }
 
@@ -422,12 +432,14 @@ class RecordMonitorTest extends IntegrationTest
             'pid' => 1
         ];
 
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
         $this->assertIndexQueueContainsItemAmount(1);
 
         $firstQueueItem = $this->indexQueue->getItem(1);
         $this->assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
-        $this->assertSame('pages', $firstQueueItem->getIndexingConfigurationName(), 'First queue item has unexpected indexingConfigurationName');
+        $this->assertSame('pages', $firstQueueItem->getIndexingConfigurationName(),
+            'First queue item has unexpected indexingConfigurationName');
     }
 
 
@@ -448,13 +460,15 @@ class RecordMonitorTest extends IntegrationTest
             'hidden' => 1
         ];
 
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
         $this->assertIndexQueueContainsItemAmount(1);
 
         $firstQueueItem = $this->indexQueue->getItem(1);
         $this->assertInstanceOf(Item::class, $firstQueueItem, 'Expect to get a queue item');
         $this->assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
-        $this->assertSame('pages', $firstQueueItem->getIndexingConfigurationName(), 'First queue item has unexpected indexingConfigurationName');
+        $this->assertSame('pages', $firstQueueItem->getIndexingConfigurationName(),
+            'First queue item has unexpected indexingConfigurationName');
     }
 
     /**
@@ -473,7 +487,8 @@ class RecordMonitorTest extends IntegrationTest
             'pid' => 1
         ];
 
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
         $this->assertEmptyIndexQueue();
     }
 
@@ -493,7 +508,8 @@ class RecordMonitorTest extends IntegrationTest
             'pid' => 1
         ];
 
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
 
         $firstQueueItem = $this->indexQueue->getItem(1);
         $this->assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
@@ -515,9 +531,199 @@ class RecordMonitorTest extends IntegrationTest
             'pid' => 1
         ];
 
-        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
 
         $firstQueueItem = $this->indexQueue->getItem(1);
         $this->assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
+    }
+
+    /**
+     * @test
+     */
+    public function updateRootPageWithRecursiveUpdateFieldsConfiguredForTitle()
+    {
+        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 1;
+        $fields = [
+            'title' => 'Update updateRootPageWithRecursiveUpdateFieldsConfiguredForTitle'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(5);
+    }
+
+    /**
+     * @test
+     */
+    public function updateSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle()
+    {
+        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 3;
+        $fields = [
+            'title' => 'Update updateSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(2);
+    }
+
+    /**
+     * @test
+     */
+    public function updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle()
+    {
+        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 5;
+        $fields = [
+            'title' => 'Update updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForTitle'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function updateRootPageWithRecursiveUpdateFieldsConfiguredForDokType()
+    {
+        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 1;
+        $fields = [
+            'subtitle' => 'Update updateRootPageWithRecursiveUpdateFieldsConfiguredForDokType'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function updateSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType()
+    {
+        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 3;
+        $fields = [
+            'subtitle' => 'Update updateSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType()
+    {
+        $this->importDataSetFromFixture('update_page_with_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 5;
+        $fields = [
+            'subtitle' => 'Update updateSubSubChildPageWithRecursiveUpdateFieldsConfiguredForDokType'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function updateRootPageWithoutRecursiveUpdateFieldsConfigured()
+    {
+        $this->importDataSetFromFixture('update_page_without_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 1;
+        $fields = [
+            'title' => 'Update updateRootPageWithoutRecursiveUpdateFieldsConfigured'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function updateSubChildPageWithoutRecursiveUpdateFieldsConfigured()
+    {
+        $this->importDataSetFromFixture('update_page_without_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 3;
+        $fields = [
+            'title' => 'Update updateSubChildPageWithoutRecursiveUpdateFieldsConfigured'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function updateSubSubChildPageWithoutRecursiveUpdateFieldsConfigured()
+    {
+        $this->importDataSetFromFixture('update_page_without_recursive_update_fields_configured.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 5;
+        $fields = [
+            'title' => 'Update updateSubSubChildPageWithoutRecursiveUpdateFieldsConfigured'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(1);
     }
 }

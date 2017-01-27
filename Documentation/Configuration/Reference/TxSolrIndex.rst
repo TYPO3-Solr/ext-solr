@@ -380,6 +380,24 @@ Example:
 
     plugin.tx_solr.index.queue.tt_news.attachments.fields = news_files
 
+queue.[indexConfig].recursiveUpdateFields
+-----------------------------------------
+
+:Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].recursiveUpdateFields
+:Since: 6.1
+:Default: Empty
+
+Allows to define a list of additional fields from the pages table that will trigger a recursive update.
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.index.queue.pages.recursiveUpdateFields = title
+
+The example above will trigger a recursive update of pages if the title is changed.
+
+Please note that the following columns should NOT be configured as recursive update fields: "hidden" and "extendToSubpages".
+These fields are handled by EXT:solr already internally and thus they will have not effect.
 
 queue.pages.excludeContentByClass
 ---------------------------------

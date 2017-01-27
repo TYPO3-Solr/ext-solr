@@ -225,6 +225,61 @@ class TypoScriptConfigurationTest extends UnitTest
     /**
      * @test
      */
+    public function canGetIndexQueueConfigurationRecursiveUpdateFields()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'pages' => 1,
+                    'pages.' => [
+                        'recursiveUpdateFields' => ''
+                    ],
+                    'custom.' => [
+                        'recursiveUpdateFields' => ''
+                    ]
+                ]
+            ]
+        ];
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
+        $this->assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
+
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'pages' => 1,
+                    'pages.' => [
+                    ],
+                    'custom.' => [
+                    ]
+                ]
+            ]
+        ];
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
+        $this->assertEquals([], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
+
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'pages' => 1,
+                    'pages.' => [
+                        'recursiveUpdateFields' => 'title, subtitle'
+                    ],
+                    'custom.' => [
+                        'recursiveUpdateFields' => 'title, subtitle'
+                    ]
+                ]
+            ]
+        ];
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals(['title' => 'title', 'subtitle' => 'subtitle'], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('pages'));
+        $this->assertEquals(['title' => 'title', 'subtitle' => 'subtitle'], $configuration->getIndexQueueConfigurationRecursiveUpdateFields('custom'));
+    }
+
+    /**
+     * @test
+     */
     public function canGetAdditionalWhereClause()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
