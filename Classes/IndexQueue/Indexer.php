@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use Apache_Solr_Document;
 use Apache_Solr_Response;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
@@ -77,6 +78,11 @@ class Indexer extends AbstractIndexer
     protected $loggingEnabled = false;
 
     /**
+     * @var IdBuilder
+     */
+    protected $variantIdBuilder;
+
+    /**
      * Cache of the sys_language_overlay information
      *
      * @var array
@@ -87,11 +93,13 @@ class Indexer extends AbstractIndexer
      * Constructor
      *
      * @param array $options array of indexer options
+     * @param IdBuilder $idBuilder
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = [], IdBuilder $idBuilder = null)
     {
         $this->options = $options;
         $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+        $this->variantIdBuilder = is_null($idBuilder) ? GeneralUtility::makeInstance(IdBuilder::class) : $idBuilder;
     }
 
     /**
@@ -337,7 +345,8 @@ class Indexer extends AbstractIndexer
         $document->setField('pid', $itemRecord['pid']);
 
         // variantId
-        $document->setField('variantId', $item->getType() . '/' . $itemRecord['uid']);
+        $variantId = $this->variantIdBuilder->buildFromTypeAndUid($item->getType(), $itemRecord['uid']);
+        $document->setField('variantId', $variantId);
 
         // created, changed
         if (!empty($GLOBALS['TCA'][$item->getType()]['ctrl']['crdate'])) {
