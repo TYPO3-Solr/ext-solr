@@ -56,6 +56,13 @@ class ReIndexTask extends AbstractTask
      */
     protected $indexingConfigurationsToReIndex = array();
 
+    /**
+     * Clear Index for selected sites and record types
+     *
+     * @var boolean
+     */
+    protected $clearSearchIndex;
+
 
     /**
      * Purges/commits all Solr indexes, initializes the Index Queue
@@ -65,8 +72,14 @@ class ReIndexTask extends AbstractTask
      */
     public function execute()
     {
-        // clean up
-        $cleanUpResult = $this->cleanUpIndex();
+        
+        if ($this->shouldClearSearchIndex()) {
+                // clean up
+            $cleanUpResult = $this->cleanUpIndex();
+        } else {
+            $cleanUpResult = true;
+        }
+
 
         // initialize for re-indexing
         $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
@@ -138,6 +151,24 @@ class ReIndexTask extends AbstractTask
     {
         $this->site = $site;
     }
+
+    /**
+     * @return bool
+     */
+    public function shouldClearSearchIndex()
+    {
+        return $this->clearSearchIndex;
+    }
+
+    /**
+     * @param bool $clearSearchIndex
+     */
+    public function setClearSearchIndex($clearSearchIndex)
+    {
+        $this->clearSearchIndex = $clearSearchIndex;
+    }
+
+
 
     /**
      * Gets the indexing configurations to re-index.

@@ -132,6 +132,13 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             'cshLabel' => ''
         );
 
+        $additionalFields['clearSearchIndex'] = array(
+            'code' => '<input type="checkbox" name="tx_scheduler[clearSearchIndex]" value="1" ' . (($task->shouldClearSearchIndex()) ? 'checked="checked"' : '') . ' />',
+            'label' => 'Clear Index for selected sites and record types',
+            'cshKey' => '',
+            'cshLabel' => ''
+        );
+
         return $additionalFields;
     }
 
@@ -202,6 +209,8 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             $indexingConfigurations = $submittedData['indexingConfigurations'];
         }
         $task->setIndexingConfigurationsToReIndex($indexingConfigurations);
+
+        $task->setClearSearchIndex((bool)$submittedData['clearSearchIndex']);
     }
 
     /**
