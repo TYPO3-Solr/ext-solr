@@ -219,6 +219,8 @@ class IndexQueueModuleController extends AbstractModuleController
                 LocalizationUtility::translate($titleLabel, 'Solr'),
                 FlashMessage::OK
             );
+
+            $this->addFlashMessagesByQueueIdentifier('solr.queue.initializer');
         }
 
         $this->forward('index');

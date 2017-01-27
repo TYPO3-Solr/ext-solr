@@ -212,8 +212,16 @@ class Results extends CommandPluginBase
 
         $this->initializeAdditionalFilters($query);
 
+        if (!$this->conf['search.']['query.']['allowEmptyQuery'] && $this->getRawUserQueryIsEmptyString()) {
+            // If empty query is not allowed, but query is an empty string, don't perform a search
+            return false;
+        }
+
         // TODO check whether a search has been conducted already?
-        if ($this->solrAvailable && (isset($rawUserQuery) || $this->conf['search.']['initializeWithEmptyQuery'] || $this->conf['search.']['initializeWithQuery'])) {
+        if ($this->solrAvailable
+            && !$this->getRawUserQueryIsNull()
+            || $this->conf['search.']['initializeWithEmptyQuery']
+            || $this->conf['search.']['initializeWithQuery']) {
             if ($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['logging.']['query.']['searchWords']) {
                 GeneralUtility::devLog('received search query', 'solr', 0,
                     array($rawUserQuery));
@@ -415,7 +423,7 @@ class Results extends CommandPluginBase
      * @param Template $template The template object as initialized thus far.
      * @return Template The modified template instance with additional variables available for rendering.
      */
-    protected function postInitializeTemplateEngine($template)
+    protected function postInitializeTemplateEngine(Template $template)
     {
         $template->addVariable('tx_solr', $this->getSolrVariables());
 

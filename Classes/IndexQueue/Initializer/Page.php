@@ -51,6 +51,8 @@ class Page extends AbstractInitializer
      */
     public function __construct()
     {
+        parent::__construct();
+
         $this->type = 'pages';
         $this->indexingConfigurationName = 'pages';
     }
@@ -193,7 +195,7 @@ class Page extends AbstractInitializer
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
             );
-            FlashMessageQueue::addMessage($flashMessage);
+            $this->flashMessageQueue->addMessage($flashMessage);
         }
 
         if (!$this->mountedPageExists($mountPage['mountPageSource'])) {
@@ -209,7 +211,7 @@ class Page extends AbstractInitializer
                 'Failed to initialize Mount Page tree. ',
                 FlashMessage::ERROR
             );
-            FlashMessageQueue::addMessage($flashMessage);
+            $this->flashMessageQueue->addMessage($flashMessage);
         }
 
         return $isValidMountPage;
@@ -248,9 +250,9 @@ class Page extends AbstractInitializer
         array $mountProperties
     ) {
         $mountIdentifier = $this->getMountPointIdentifier($mountProperties);
-        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier) '
+        $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, has_indexing_properties, pages_mountidentifier, errors) '
             . $this->buildSelectStatement() . ', 1, ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($mountIdentifier,
-                'tx_solr_indexqueue_item')
+                'tx_solr_indexqueue_item') . ',""'
             . 'FROM pages '
             . 'WHERE '
             . 'uid IN(' . implode(',', $mountedPages) . ') '

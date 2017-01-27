@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\FrequentSearches;
 
 use ApacheSolrForTypo3\Solr\CommandResolver;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
+use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -83,7 +84,7 @@ class FrequentSearches extends CommandPluginBase
      * Post initialization of the template engine.
      *
      */
-    protected function postInitializeTemplateEngine($template)
+    protected function postInitializeTemplateEngine(Template $template)
     {
         $template->addVariable('tx_solr', $this->getSolrVariables());
 

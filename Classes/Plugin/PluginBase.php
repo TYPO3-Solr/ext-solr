@@ -229,7 +229,7 @@ abstract class PluginBase extends AbstractPlugin
      *
      * @return void
      */
-    public function pi_loadLL()
+    public function pi_loadLL($languageFilePath = '')
     {
         if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
             $pathElements = pathinfo($this->scriptRelPath);
@@ -583,5 +583,36 @@ abstract class PluginBase extends AbstractPlugin
     public function getRawUserQuery()
     {
         return $this->rawUserQuery;
+    }
+
+    /**
+     * Method to check if the query string is an empty string
+     * (also empty string or whitespaces only are handled as empty).
+     *
+     * When no query string is set (null) the method returns false.
+     * @return bool
+     */
+    public function getRawUserQueryIsEmptyString()
+    {
+        $query = $this->getRawUserQuery();
+        if ($query === null) {
+            return false;
+        }
+        if (trim($query) === '') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * This method returns true when no query string is present at all.
+     * Which means no search by the user was triggered
+     *
+     * @return boolean
+     */
+    public function getRawUserQueryIsNull()
+    {
+        $query = $this->getRawUserQuery();
+        return $query === null;
     }
 }

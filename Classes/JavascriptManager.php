@@ -110,7 +110,7 @@ class JavascriptManager
             if (!empty($fileReference)) {
                 self::$files[$fileKey] = array(
                     'addedToPage' => false,
-                    'file' => GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($fileReference))
+                    'file' => $GLOBALS['TSFE']->tmpl->getFileName($fileReference)
                 );
             }
         }
@@ -165,13 +165,7 @@ class JavascriptManager
      */
     public function buildJavascriptTags()
     {
-        $filePathPrefix = '';
-        if (!empty($GLOBALS['TSFE']->config['config']['absRefPrefix'])) {
-            $filePathPrefix = $GLOBALS['TSFE']->config['config']['absRefPrefix'];
-            if ($filePathPrefix === 'auto') {
-                $filePathPrefix = GeneralUtility::getIndpEnv('TYPO3_SITE_PATH');
-            }
-        }
+        $filePathPrefix = Util::getAbsRefPrefixFromTSFE($GLOBALS['TSFE']);
 
         // add files
         foreach (self::$files as $identifier => $file) {
