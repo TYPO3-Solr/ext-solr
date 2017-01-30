@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\GarbageCollectorPostProcessor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -60,6 +60,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     public function __construct(TCAService $TCAService = null)
     {
         $this->tcaService = is_null($TCAService) ? GeneralUtility::makeInstance(TCAService::class) : $TCAService;
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
     }
 
     /**

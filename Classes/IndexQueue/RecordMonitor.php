@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -76,6 +77,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $this->indexQueue = is_null($indexQueue) ? GeneralUtility::makeInstance(Queue::class) : $indexQueue;
         $this->mountPageUpdater = is_null($mountPageUpdater) ? GeneralUtility::makeInstance(MountPagesUpdater::class) : $mountPageUpdater;
         $this->tcaService = is_null($TCAService) ? GeneralUtility::makeInstance(TCAService::class) : $TCAService;
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
     }
 
     /**
@@ -158,7 +160,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                     $table = 'pages';
                 case 'pages':
                     $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
-                    $record = self::getRecord($table, $uid, $solrConfiguration);
+                    $record = $this->configurationManager->getRecord($table, $uid, $solrConfiguration);
 
                     if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                         $this->mountPageUpdater->update($uid);
@@ -176,7 +178,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                     $isMonitoredTable = $solrConfiguration->getIndexQueueIsMonitoredTable($table);
 
                     if ($isMonitoredTable) {
-                        $record = self::getRecord($table, $uid, $solrConfiguration);
+                        $record = $this->configurationManager->getRecord($table, $uid, $solrConfiguration);
 
                         if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                             if (Util::isLocalizedRecord($table, $record)) {
@@ -184,7 +186,7 @@ class RecordMonitor extends AbstractDataHandlerListener
                                 $uid = $record[$GLOBALS['TCA'][$table]['ctrl']['transOrigPointerField']];
                             }
 
-                            $configurationName = self::getIndexingConfigurationName($table,
+                            $configurationName = $this->configurationManager->getIndexingConfigurationName($table,
                                 $uid, $solrConfiguration);
                             $this->indexQueue->updateItem($table, $uid,
                                 $configurationName);
@@ -201,7 +203,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
             // moving pages in LIVE workspace
             $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
-            $record = self::getRecord('pages', $uid, $solrConfiguration);
+            $record = $this->configurationManager->getRecord('pages', $uid, $solrConfiguration);
             if (!empty($record) && $this->tcaService->isEnabledRecord($table, $record)) {
                 $this->indexQueue->updateItem('pages', $uid);
             } else {
@@ -278,7 +280,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        $record = self::getRecord($recordTable, $recordUid, $solrConfiguration);
+        $record = $this->configurationManager->getRecord($recordTable, $recordUid, $solrConfiguration);
         if (empty($record)) {
             // TODO move this part to the garbage collector
             // check if the item should be removed from the index because it no longer matches the conditions
@@ -310,7 +312,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
         if ($this->tcaService->isEnabledRecord($recordTable, $record)) {
-            $configurationName = self::getIndexingConfigurationName($recordTable, $recordUid, $solrConfiguration);
+            $configurationName = $this->configurationManager->getIndexingConfigurationName($recordTable, $recordUid, $solrConfiguration);
 
             $this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
         }
