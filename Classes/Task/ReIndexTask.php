@@ -54,14 +54,14 @@ class ReIndexTask extends AbstractTask
      *
      * @var array
      */
-    protected $indexingConfigurationsToReIndex = array();
+    protected $indexingConfigurationsToReIndex = [];
 
     /**
      * Clear Index for selected sites and record types
      *
      * @var boolean
      */
-    protected $clearSearchIndex;
+    protected $clearSearchIndex = false;
 
 
     /**
@@ -72,7 +72,7 @@ class ReIndexTask extends AbstractTask
      */
     public function execute()
     {
-        
+
         if ($this->shouldClearSearchIndex()) {
                 // clean up
             $cleanUpResult = $this->cleanUpIndex();
@@ -83,7 +83,7 @@ class ReIndexTask extends AbstractTask
 
         // initialize for re-indexing
         $indexQueue = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\IndexQueue\\Queue');
-        $indexQueueInitializationResults = array();
+        $indexQueueInitializationResults = [];
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $indexQueueInitializationResults = $indexQueue->initialize($this->site,
                 $indexingConfigurationName);
@@ -103,7 +103,7 @@ class ReIndexTask extends AbstractTask
         $cleanUpResult = true;
         $solrConfiguration = $this->site->getSolrConfiguration();
         $solrServers = GeneralUtility::makeInstance('ApacheSolrForTypo3\\Solr\\ConnectionManager')->getConnectionsBySite($this->site);
-        $typesToCleanUp = array();
+        $typesToCleanUp = [];
 
         foreach ($this->indexingConfigurationsToReIndex as $indexingConfigurationName) {
             $type = Queue::getTableToIndexByIndexingConfigurationName(
