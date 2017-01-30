@@ -59,7 +59,7 @@ abstract class AbstractIndexer
      */
     public static function isAllowedToOverrideField($solrFieldName)
     {
-        return !in_array($solrFieldName, self::$unAllowedOverrideFields);
+        return !in_array($solrFieldName, static::$unAllowedOverrideFields);
     }
 
     /**
