@@ -83,7 +83,7 @@ abstract class AbstractIndexer
                 continue;
             }
 
-            if (!self::isAllowedToOverrideField($solrFieldName)) {
+            if (!static::isAllowedToOverrideField($solrFieldName)) {
                 throw new InvalidFieldNameException(
                     'Must not overwrite field .' . $solrFieldName,
                     1435441863
