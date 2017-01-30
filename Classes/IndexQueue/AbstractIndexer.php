@@ -59,7 +59,7 @@ abstract class AbstractIndexer
      */
     public static function isAllowedToOverrideField($solrFieldName)
     {
-        return !in_array($solrFieldName, self::$unAllowedOverrideFields);
+        return !in_array($solrFieldName, static::$unAllowedOverrideFields);
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class AbstractIndexer
                 continue;
             }
 
-            if (!self::isAllowedToOverrideField($solrFieldName)) {
+            if (!static::isAllowedToOverrideField($solrFieldName)) {
                 throw new InvalidFieldNameException(
                     'Must not overwrite field .' . $solrFieldName,
                     1435441863
