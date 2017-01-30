@@ -373,8 +373,8 @@ class Site
         if (empty($initialPagesAdditionalWhereClause)) {
             // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
             $solrConfiguration = Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
-            //@todo Call proper method
-            $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause('pages');
+            $indexQueueConfigurationName = AbstractDataHandlerListener::getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
+            $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
         }
 
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'pages', 'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages') . $initialPagesAdditionalWhereClause);
