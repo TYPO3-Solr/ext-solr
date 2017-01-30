@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\QueryGenerator;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -45,6 +47,11 @@ abstract class AbstractDataHandlerListener
      * @var \ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager
      */
     protected $configurationManager;
+
+    public function __construct()
+    {
+        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+    }
 
     /**
      * @return array
@@ -174,6 +181,32 @@ abstract class AbstractDataHandlerListener
 
         $diff = array_diff_assoc($triggerConfiguration['changeSet'], $changedFields);
         return empty($diff);
+    }
+
+    /**
+     * Retrieves a record, taking into account the additionalWhereClauses of the
+     * Indexing Queue configurations.
+     *
+     * @param string $recordTable Table to read from
+     * @param int $recordUid Id of the record
+     * @param TypoScriptConfiguration $solrConfiguration
+     * @return array Record if found, otherwise empty array
+     */
+    protected function getRecord($recordTable, $recordUid, TypoScriptConfiguration $solrConfiguration)
+    {
+        $record = [];
+        $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
+
+        foreach ($indexingConfigurations as $indexingConfigurationName) {
+            $record = $this->configurationManager->getRecordIfIndexConfigurationIsValid($recordTable, $recordUid,
+                $indexingConfigurationName, $solrConfiguration);
+            if (!empty($record)) {
+                // if we found a record which matches the conditions, we can continue
+                break;
+            }
+        }
+
+        return $record;
     }
 
     /**

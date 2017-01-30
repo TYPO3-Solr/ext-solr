@@ -141,32 +141,6 @@ class ConfigurationManager implements SingletonInterface
     }
 
     /**
-     * Retrieves a record, taking into account the additionalWhereClauses of the
-     * Indexing Queue configurations.
-     *
-     * @param string $recordTable Table to read from
-     * @param int $recordUid Id of the record
-     * @param TypoScriptConfiguration $solrConfiguration
-     * @return array Record if found, otherwise empty array
-     */
-    public function getRecord($recordTable, $recordUid, TypoScriptConfiguration $solrConfiguration)
-    {
-        $record = [];
-        $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
-
-        foreach ($indexingConfigurations as $indexingConfigurationName) {
-            $record = $this->getRecordIfIndexConfigurationIsValid($recordTable, $recordUid,
-                $indexingConfigurationName, $solrConfiguration);
-            if (!empty($record)) {
-                // if we found a record which matches the conditions, we can continue
-                break;
-            }
-        }
-
-        return $record;
-    }
-
-    /**
      * This method return the record array if the table is valid for this indexingConfiguration.
      * Otherwise an empty array will be returned.
      *
@@ -176,7 +150,7 @@ class ConfigurationManager implements SingletonInterface
      * @param TypoScriptConfiguration $solrConfiguration
      * @return array
      */
-    protected function getRecordIfIndexConfigurationIsValid(
+    public function getRecordIfIndexConfigurationIsValid(
         $recordTable,
         $recordUid,
         $indexingConfigurationName,
