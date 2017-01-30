@@ -593,20 +593,20 @@ class TypoScriptConfiguration
     /**
      * Retrieves and initialPagesAdditionalWhereClause where clause when configured or an empty string.
      *
-     * plugin.tx_solr.index.queue.pages.initialPagesAdditionalWhereClause
+     * plugin.tx_solr.index.queue.<configurationName>.initialPagesAdditionalWhereClause
      *
      * @param string $defaultIfEmpty
      *
      * @return string
      *
      */
-    public function getInitialPagesAdditionalWhereClause($defaultIfEmpty = ' AND 1=1')
+    public function getInitialPagesAdditionalWhereClause($configurationName)
     {
-        $path = 'plugin.tx_solr.index.queue.pages' . '.initialPagesAdditionalWhereClause';
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.initialPagesAdditionalWhereClause';
         $initialPagesAdditionalWhereClause = $this->getValueByPathOrDefaultValue($path, '');
 
         if (trim($initialPagesAdditionalWhereClause) === '') {
-            return $defaultIfEmpty;
+            return '';
         }
 
         return ' AND ' . $initialPagesAdditionalWhereClause;
@@ -625,7 +625,7 @@ class TypoScriptConfiguration
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.additionalWhereClause';
         $additionalWhere = $this->getValueByPathOrDefaultValue($path, '');
 
-        if (trim($additionalWhere) == '') {
+        if (trim($additionalWhere) === '') {
             return '';
         }
 

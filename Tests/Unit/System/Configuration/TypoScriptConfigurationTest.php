@@ -280,6 +280,31 @@ class TypoScriptConfigurationTest extends UnitTest
     /**
      * @test
      */
+    public function canGetInitialPagesAdditionalWhereClause()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'index.' => [
+                'queue.' => [
+                    'pages' => 1,
+                    'pages.' => [
+                    ],
+                    'custom.' => [
+                        'initialPagesAdditionalWhereClause' => '1=1'
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $this->assertEquals('', $configuration->getInitialPagesAdditionalWhereClause('pages'));
+        $this->assertEquals(' AND 1=1', $configuration->getInitialPagesAdditionalWhereClause('custom'));
+        $this->assertEquals('', $configuration->getInitialPagesAdditionalWhereClause('notconfigured'));
+    }
+
+    /**
+     * @test
+     */
     public function canGetAdditionalWhereClause()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
