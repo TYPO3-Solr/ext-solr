@@ -23,6 +23,7 @@
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\SuggestQuery;
 use ApacheSolrForTypo3\Solr\Util;
@@ -69,10 +70,8 @@ if ('OpenSearch' == GeneralUtility::_GET('format')) {
     $q = GeneralUtility::_GET('q');
 }
 $allowedSitesConfig = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.search.query.', []);
-$allowedSites = Util::resolveSiteHashAllowedSites(
-    $pageId,
-    $allowedSitesConfig['allowedSites']
-);
+$siteService = GeneralUtility::makeInstance(SiteHashService::class);
+$allowedSites = $siteService->getAllowedSitesForPageIdAndAllowedSitesConfiguration($pageId, $allowedSitesConfig['allowedSites']);
 
 $suggestQuery = GeneralUtility::makeInstance(SuggestQuery::class, $q);
 $suggestQuery->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));

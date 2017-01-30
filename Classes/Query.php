@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -151,17 +152,22 @@ class Query
     protected $variantField = 'variantId';
 
     /**
+     * @var null
+     */
+    protected $siteHashService = null;
+
+    /**
+     * Query constructor.
      * @param string $keywords
      * @param TypoScriptConfiguration $solrConfiguration
+     * @param SiteHashService|null $siteHashService
      */
-    public function __construct($keywords, $solrConfiguration = null)
+    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null)
     {
         $keywords = (string) $keywords;
-        if ($solrConfiguration == null) {
-            $this->solrConfiguration = Util::getSolrConfiguration();
-        } else {
-            $this->solrConfiguration = $solrConfiguration;
-        }
+
+        $this->solrConfiguration = is_null($solrConfiguration) ? Util::getSolrConfiguration() : $solrConfiguration;
+        $this->siteHashService = is_null($siteHashService) ? GeneralUtility::makeInstance(SiteHashService::class) : $siteHashService;
 
         $this->setKeywords($keywords);
         $this->sorting = '';
@@ -949,12 +955,15 @@ class Query
      */
     public function setSiteHashFilter($allowedSites)
     {
+        if (trim($allowedSites) === '*') {
+            return;
+        }
+
         $allowedSites = GeneralUtility::trimExplode(',', $allowedSites);
         $filters = [];
 
         foreach ($allowedSites as $site) {
-            $siteHash = Util::getSiteHashForDomain($site);
-
+            $siteHash = $this->siteHashService->getSiteHashForDomain($site);
             $filters[] = 'siteHash:"' . $siteHash . '"';
         }
 

@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -512,23 +512,16 @@ class Util
     /**
      * Gets the site hash for a domain
      *
+     * @deprecated since 6.1 will be removed in 7.0. use SiteHashService->getSiteHashForDomain now.
      * @param string $domain Domain to calculate the site hash for.
      * @return string site hash for $domain
      */
     public static function getSiteHashForDomain($domain)
     {
-        static $siteHashes = [];
-        if (isset($siteHashes[$domain])) {
-            return $siteHashes[$domain];
-        }
-
-        $siteHashes[$domain] = sha1(
-            $domain .
-            $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
-            'tx_solr'
-        );
-
-        return $siteHashes[$domain];
+        GeneralUtility::logDeprecatedFunction();
+            /** @var $siteHashService SiteHashService */
+        $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
+        return $siteHashService->getSiteHashForDomain($domain);
     }
 
     /**
@@ -537,33 +530,19 @@ class Util
      *   __solr_current_site - The domain of the site the query has been started from
      *   __current_site - Same as __solr_current_site
      *   __all - Adds all domains as allowed sites
-     *   * - Same as __all
+     *   * - Means all sites are allowed, same as no siteHash
      *
+     * @deprecated since 6.1 will be removed in 7.0. use SiteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration now.
      * @param int $pageId A page ID that is then resolved to the site it belongs to
      * @param string $allowedSitesConfiguration TypoScript setting for allowed sites
      * @return string List of allowed sites/domains, magic keywords resolved
      */
-    public static function resolveSiteHashAllowedSites(
-        $pageId,
-        $allowedSitesConfiguration
-    ) {
-        if ($allowedSitesConfiguration == '*' || $allowedSitesConfiguration == '__all') {
-            $sites = Site::getAvailableSites();
-            $domains = [];
-            foreach ($sites as $site) {
-                $domains[] = $site->getDomain();
-            }
-
-            $allowedSites = implode(',', $domains);
-        } else {
-            $allowedSites = str_replace(
-                ['__solr_current_site', '__current_site'],
-                Site::getSiteByPageId($pageId)->getDomain(),
-                $allowedSitesConfiguration
-            );
-        }
-
-        return $allowedSites;
+    public static function resolveSiteHashAllowedSites($pageId, $allowedSitesConfiguration)
+    {
+        /** @var $siteHashService SiteHashService */
+        GeneralUtility::logDeprecatedFunction();
+        $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
+        return $siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration($pageId, $allowedSitesConfiguration);
     }
 
     /**

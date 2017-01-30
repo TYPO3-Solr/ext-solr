@@ -711,6 +711,34 @@ class QueryTest extends UnitTest
     /**
      * @test
      */
+    public function noSiteHashFilterIsSetWhenWildcardIsPassed()
+    {
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = $this->getInitializedTestQuery();
+        $query->setSiteHashFilter('*');
+        $filters = $query->getFilters();
+        $this->assertEmpty($filters, 'The filters should be empty when a wildcard sitehash was passed');
+    }
+
+    /**
+     * @test
+     */
+    public function filterIsAddedWhenAllowedSiteIsPassed()
+    {
+        /** @var $query \ApacheSolrForTypo3\Solr\Query */
+        $query = $this->getInitializedTestQuery();
+        $query->setSiteHashFilter('solrtest.local');
+        $filters = $query->getFilters();
+
+        $this->assertCount(1, $filters, 'We expected that one filter was added');
+
+        $firstFilter= $filters[0];
+        $this->assertContains('siteHash:', $firstFilter, 'The filter was expected to start with siteHash*');
+    }
+
+    /**
+     * @test
+     */
     public function canTestNumberOfSuggestionsToTryFromConfiguration()
     {
         $input = 9;
