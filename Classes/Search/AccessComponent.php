@@ -24,8 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Query;
-use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Access search component
@@ -43,17 +44,31 @@ class AccessComponent extends AbstractComponent implements QueryAware
     protected $query;
 
     /**
+     * @var SiteHashService
+     */
+    protected $siteHashService;
+
+    /**
+     * AccessComponent constructor.
+     * @param SiteHashService|null $siteService
+     */
+    public function __construct(SiteHashService $siteService = null)
+    {
+        $this->siteHashService = is_null($siteService) ? GeneralUtility::makeInstance(SiteHashService::class) : $siteService;
+    }
+
+    /**
      * Initializes the search component.
      */
     public function initializeSearchComponent()
     {
-        $allowedSites = Util::resolveSiteHashAllowedSites(
+        $allowedSites = $this->siteHashService->getAllowedSitesForPageIdAndAllowedSitesConfiguration(
             $GLOBALS['TSFE']->id,
             $this->searchConfiguration['query.']['allowedSites']
         );
+
         $this->query->setSiteHashFilter($allowedSites);
-        $this->query->setUserAccessGroups(explode(',',
-            $GLOBALS['TSFE']->gr_list));
+        $this->query->setUserAccessGroups(explode(',', $GLOBALS['TSFE']->gr_list));
     }
 
     /**

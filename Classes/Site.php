@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -399,7 +400,9 @@ class Site
      */
     public function getSiteHash()
     {
-        return Util::getSiteHashForDomain($this->getDomain());
+        /** @var $siteHashService SiteHashService */
+        $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
+        return $siteHashService->getSiteHashForDomain($this->getDomain());
     }
 
     /**

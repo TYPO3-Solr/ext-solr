@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use Apache_Solr_Document;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
@@ -109,11 +110,17 @@ class Typo3PageIndexer
     protected $indexQueueItem;
 
     /**
+     * @var IdBuilder
+     */
+    protected $variantIdBuilder;
+
+    /**
      * Constructor
      *
      * @param TypoScriptFrontendController $page The page to index
+     * @param IdBuilder $variantIdBuilder
      */
-    public function __construct(TypoScriptFrontendController $page)
+    public function __construct(TypoScriptFrontendController $page, IdBuilder $variantIdBuilder = null)
     {
         $this->page = $page;
         $this->pageUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
@@ -132,6 +139,7 @@ class Typo3PageIndexer
 
         $this->contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $this->page->content);
         $this->pageAccessRootline = GeneralUtility::makeInstance(Rootline::class, '');
+        $this->variantIdBuilder = is_null($variantIdBuilder) ? GeneralUtility::makeInstance(IdBuilder::class) : $variantIdBuilder;
     }
 
     /**
@@ -314,7 +322,8 @@ class Typo3PageIndexer
         $document->setField('pid', $pageRecord['pid']);
 
         // variantId
-        $document->setField('variantId', 'pages/' . $this->page->id);
+        $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $this->page->id);
+        $document->setField('variantId', $variantId);
 
         $document->setField('typeNum', $this->page->type);
         $document->setField('created', $pageRecord['crdate']);
