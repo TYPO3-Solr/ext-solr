@@ -106,5 +106,4 @@ class ConfigurationManager implements SingletonInterface
     {
         return GeneralUtility::makeInstance(TypoScriptConfiguration::class, $configurationArray, $contextPageId);
     }
-
 }

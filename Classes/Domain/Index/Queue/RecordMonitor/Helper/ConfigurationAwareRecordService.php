@@ -168,6 +168,4 @@ class ConfigurationAwareRecordService
 
         return $overlayRecord;
     }
-
-
 }
