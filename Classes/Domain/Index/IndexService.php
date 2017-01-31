@@ -75,10 +75,9 @@ class IndexService
      */
     public function __construct(Site $site, Queue $queue = null, Dispatcher $dispatcher = null)
     {
-        $this->configuration = $site->getSolrConfiguration();
         $this->site = $site;
         $this->indexQueue = is_null($queue) ? GeneralUtility::makeInstance(Queue::class) : $queue;
-        $this->signalSlotDispatcher = is_null($dispatcher)  ? GeneralUtility::makeInstance(Dispatcher::class) : $dispatcher;
+        $this->signalSlotDispatcher = is_null($dispatcher) ? GeneralUtility::makeInstance(Dispatcher::class) : $dispatcher;
     }
 
     /**
@@ -107,6 +106,7 @@ class IndexService
     {
         $errors     = 0;
         $indexRunId = uniqid();
+        $configurationToUse = $this->site->getSolrConfiguration();
 
         // get items to index
         $itemsToIndex = $this->indexQueue->getItemsToIndex($this->site, $limit);
@@ -117,7 +117,7 @@ class IndexService
             try {
                 // try indexing
                 $this->emitSignal('beforeIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
-                $this->indexItem($itemToIndex);
+                $this->indexItem($itemToIndex, $configurationToUse);
                 $this->emitSignal('afterIndexItem', [$itemToIndex, $this->getContextTask(), $indexRunId]);
             } catch (\Exception $e) {
                 $errors++;
@@ -140,10 +140,7 @@ class IndexService
     protected function generateIndexingErrorLog(Item $itemToIndex, \Exception $e)
     {
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
-        $data = [   'code' => $e->getCode(),
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTrace(),
-                    'item' => (array)$itemToIndex];
+        $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTrace(), 'item' => (array)$itemToIndex];
         GeneralUtility::devLog($message, 'solr', 3, $data);
     }
 
@@ -163,11 +160,12 @@ class IndexService
      * Indexes an item from the Index Queue.
      *
      * @param Item $item An index queue item to index
+     * @param TypoScriptConfiguration $configuration
      * @return bool TRUE if the item was successfully indexed, FALSE otherwise
      */
-    protected function indexItem(Item $item)
+    protected function indexItem(Item $item, TypoScriptConfiguration $configuration)
     {
-        $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName());
+        $indexer = $this->getIndexerByItem($item->getIndexingConfigurationName(), $configuration);
 
         // Remember original http host value
         $originalHttpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : null;
@@ -202,13 +200,13 @@ class IndexService
      * can be specified through TypoScript if needed.
      *
      * @param string $indexingConfigurationName Indexing configuration name.
-     * @throws \RuntimeException
-     * @return Indexer An instance of ApacheSolrForTypo3\Solr\IndexQueue\Indexer or a sub class of it.
+     * @param TypoScriptConfiguration $configuration
+     * @return Indexer
      */
-    protected function getIndexerByItem($indexingConfigurationName)
+    protected function getIndexerByItem($indexingConfigurationName, TypoScriptConfiguration $configuration)
     {
-        $indexerClass = $this->configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
-        $indexerConfiguration = $this->configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
+        $indexerClass = $configuration->getIndexQueueIndexerByConfigurationName($indexingConfigurationName);
+        $indexerConfiguration = $configuration->getIndexQueueIndexerConfigurationByConfigurationName($indexingConfigurationName);
 
         $indexer = GeneralUtility::makeInstance($indexerClass, $indexerConfiguration);
         if (!($indexer instanceof Indexer)) {
@@ -230,16 +228,8 @@ class IndexService
     {
         $itemsIndexedPercentage = 0.0;
 
-        $totalItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-            'uid',
-            'tx_solr_indexqueue_item',
-            'root = ' . $this->site->getRootPageId()
-        );
-        $remainingItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-            'uid',
-            'tx_solr_indexqueue_item',
-            'changed > indexed AND root = ' . $this->site->getRootPageId()
-        );
+        $totalItemsCount = $this->indexQueue->getItemsCountBySite($this->site);
+        $remainingItemsCount = $this->indexQueue->getRemainingItemsCountBySite($this->site);
         $itemsIndexedCount = $totalItemsCount - $remainingItemsCount;
 
         if ($totalItemsCount > 0) {

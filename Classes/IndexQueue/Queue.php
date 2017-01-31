@@ -725,30 +725,34 @@ class Queue
 
     /**
      * Gets number of Index Queue items for a specific site / indexing configuration
-     * optional parameter to limit the deleted items by indexing configuration.
+     * optional parameter to limit the counted items by indexing configuration.
      *
      * @param Site $site The site to search for.
      * @param string $indexingConfigurationName name of a specific indexing
      *      configuration
-     * @return mixed Number of items (integer) or FALSE if something went
-     *      wrong (boolean)
+     * @return int Number of items
      */
-    public function getItemsCountBySite(
-        Site $site,
-        $indexingConfigurationName = ''
-    ) {
-        $indexingConfigurationConstraint = '';
-        if (!empty($indexingConfigurationName)) {
-            $indexingConfigurationConstraint = ' AND indexing_configuration = \'' . $indexingConfigurationName . '\'';
-        }
+    public function getItemsCountBySite(Site $site, $indexingConfigurationName = '')
+    {
+        $indexingConfigurationConstraint = $this->buildIndexConfigurationConstraint($indexingConfigurationName);
+        $where = 'root = ' . $site->getRootPageId() . $indexingConfigurationConstraint;
+        return (int)$this->getItemCount($where);
+    }
 
-        $itemCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-            'uid',
-            'tx_solr_indexqueue_item',
-            'root = ' . $site->getRootPageId() . $indexingConfigurationConstraint
-        );
-
-        return $itemCount;
+    /**
+     * Gets number of unprocessed Index Queue items for a specific site / indexing configuration
+     * optional parameter to limit the counted items by indexing configuration.
+     *
+     * @param Site $site The site to search for.
+     * @param string $indexingConfigurationName name of a specific indexing
+     *      configuration
+     * @return int Number of items.
+     */
+    public function getRemainingItemsCountBySite(Site $site, $indexingConfigurationName = '')
+    {
+        $indexingConfigurationConstraint = $this->buildIndexConfigurationConstraint($indexingConfigurationName);
+        $where = 'changed > indexed AND root = ' . $site->getRootPageId() . $indexingConfigurationConstraint;
+        return (int)$this->getItemCount($where);
     }
 
     /**
@@ -758,14 +762,35 @@ class Queue
      */
     public function getAllItemsCount()
     {
-        $db = $GLOBALS['TYPO3_DB'];
-        /**  @var $db \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $itemCount = $db->exec_SELECTcountRows(
-            'uid',
-            'tx_solr_indexqueue_item'
-        );
+        return $this->getItemCount();
+    }
 
-        return (int)$itemCount;
+    /**
+     * @param string $where
+     * @return int
+     */
+    private function getItemCount($where = '1=1')
+    {
+        /**  @var $db \TYPO3\CMS\Core\Database\DatabaseConnection */
+        $db = $GLOBALS['TYPO3_DB'];
+
+        return (int)$db->exec_SELECTcountRows('uid', 'tx_solr_indexqueue_item', $where);
+    }
+
+    /**
+     * Build a database constraint that limits to a certain indexConfigurationName
+     *
+     * @param string $indexingConfigurationName
+     * @return string
+     */
+    protected function buildIndexConfigurationConstraint($indexingConfigurationName)
+    {
+        $indexingConfigurationConstraint = '';
+        if (!empty($indexingConfigurationName)) {
+            $indexingConfigurationConstraint = ' AND indexing_configuration = \'' . $indexingConfigurationName . '\'';
+            return $indexingConfigurationConstraint;
+        }
+        return $indexingConfigurationConstraint;
     }
 
     /**

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <sys_registry>
+        <uid>4711</uid>
+        <entry_namespace>tx_solr</entry_namespace>
+        <entry_key>servers</entry_key>
+        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8999";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8999/solr/core_en/";}}</entry_value>
+    </sys_registry>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+    </pages>
+    <pages>
+        <uid>2</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+    </pages>
+    <tx_solr_indexqueue_item>
+        <uid>4711</uid>
+        <root>1</root>
+        <item_type>pages</item_type>
+        <item_uid>1</item_uid>
+        <indexing_configuration>pages</indexing_configuration>
+        <has_indexing_properties>0</has_indexing_properties>
+        <indexing_priority>0</indexing_priority>
+        <changed>1449151778</changed>
+        <indexed>0</indexed>
+        <errors></errors>
+        <pages_mountidentifier></pages_mountidentifier>
+    </tx_solr_indexqueue_item>
+    <tx_solr_indexqueue_item>
+        <uid>4712</uid>
+        <root>2</root>
+        <item_type>pages</item_type>
+        <item_uid>2</item_uid>
+        <indexing_configuration>pages</indexing_configuration>
+        <has_indexing_properties>0</has_indexing_properties>
+        <indexing_priority>0</indexing_priority>
+        <changed>1449151778</changed>
+        <indexed>0</indexed>
+        <errors></errors>
+    </tx_solr_indexqueue_item>
+</dataset>

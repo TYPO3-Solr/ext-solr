@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
@@ -64,12 +65,6 @@ class IndexServiceTest extends UnitTest
         $this->siteMock = $this->getDumbMock(Site::class);
         $this->queueMock = $this->getDumbMock(Queue::class);
         $this->dispatcherMock = $this->getDumbMock(Dispatcher::class);
-
-        // we create an IndexeService where indexItem is mocked to avoid real indexing in the unit test
-        $this->indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock])
-            ->setMethods(['indexItem'])
-            ->getMock();
     }
 
     /**
@@ -77,6 +72,15 @@ class IndexServiceTest extends UnitTest
      */
     public function signalsAreTriggered()
     {
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->siteMock->expects($this->once())->method('getSolrConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        // we create an IndexeService where indexItem is mocked to avoid real indexing in the unit test
+        $indexService = $this->getMockBuilder(IndexService::class)
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock])
+            ->setMethods(['indexItem'])
+            ->getMock();
+
         // we fake an index queue with two items
         $item1 = $this->getDumbMock(Item::class);
         $item2 = $this->getDumbMock(Item::class);
@@ -85,7 +89,26 @@ class IndexServiceTest extends UnitTest
 
             // we assert that 6 signals will be dispatched 1 at the beginning 1 before and after each items and 1 at the end.
         $this->assertSignalsWillBeDispatched(6);
-        $this->indexService->indexItems(2);
+        $indexService->indexItems(2);
+    }
+
+    /**
+     * @test
+     */
+    public function testConfigurationIsNotFetchedWhenProgressIsCaluclated()
+    {
+        $this->siteMock->expects($this->never())->method('getSolrConfiguration');
+
+        $this->queueMock->expects($this->once())->method('getItemsCountBySite')->will($this->returnValue(50));
+        $this->queueMock->expects($this->once())->method('getRemainingItemsCountBySite')->will($this->returnValue(25));
+
+        $indexService = $this->getMockBuilder(IndexService::class)
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock])
+            ->setMethods(['indexItem'])
+            ->getMock();
+
+        $progress = $indexService->getProgress();
+        $this->assertEquals(50, $progress);
     }
 
     /**
