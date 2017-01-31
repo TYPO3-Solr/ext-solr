@@ -374,7 +374,7 @@ class Site
         if (empty($initialPagesAdditionalWhereClause)) {
             $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
             // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
-            $solrConfiguration = Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
+            $solrConfiguration = $this->getSolrConfiguration();
             $indexQueueConfigurationName = $configurationManager->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
             $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
         }
