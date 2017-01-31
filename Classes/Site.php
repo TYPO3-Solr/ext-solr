@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -372,10 +372,10 @@ class Site
 
         // Only fetch $initialPagesAdditionalWhereClause on first call
         if (empty($initialPagesAdditionalWhereClause)) {
-            $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+            $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
             // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
             $solrConfiguration = $this->getSolrConfiguration();
-            $indexQueueConfigurationName = $configurationManager->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
+            $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
             $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
         }
 
