@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -371,9 +372,11 @@ class Site
 
         // Only fetch $initialPagesAdditionalWhereClause on first call
         if (empty($initialPagesAdditionalWhereClause)) {
+            $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
             // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
-            $configuration = Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
-            $initialPagesAdditionalWhereClause = $configuration->getInitialPagesAdditionalWhereClause();
+            $solrConfiguration = $this->getSolrConfiguration();
+            $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
+            $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
         }
 
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'pages', 'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages') . $initialPagesAdditionalWhereClause);

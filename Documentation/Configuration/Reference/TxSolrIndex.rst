@@ -203,6 +203,26 @@ A WHERE clause that is used when initializing the Index Queue, limiting what goe
 
 |
 
+queue.[indexConfig].initialPagesAdditionalWhereClause
+---------------------------------------------------
+
+:Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].initialPagesAdditionalWhereClause
+:Since: 6.1
+
+A WHERE clause that is used when initializing the Index Queue, limiting pages that goes into the Queue.
+This filter is applied **prior** to the plugin.tx_solr.index.queue.[indexConfig].additionalWhereClause
+filter and hence provides an even stronger filter mechanism - since it can be used to filter away page
+ID's that shouldn't be processed at all.
+|
+
+.. code-block:: typoscript
+
+    // Filter away pages that are "spacer" and have no_search, hidden and nav_hide set to zero
+    plugin.tx_solr.index.queue.pages.initialPagesAdditionalWhereClause = doktype <> 199 AND no_search = 0 AND hidden = 0 AND nav_hide = 0
+
+|
+
 
 queue.[indexConfig].additionalPageIds
 -----------------------------------------------
