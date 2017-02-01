@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;

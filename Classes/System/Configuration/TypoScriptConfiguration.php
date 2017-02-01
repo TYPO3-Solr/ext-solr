@@ -595,10 +595,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.index.queue.<configurationName>.initialPagesAdditionalWhereClause
      *
-     * @param string $defaultIfEmpty
-     *
+     * @param string $configurationName
      * @return string
-     *
      */
     public function getInitialPagesAdditionalWhereClause($configurationName)
     {
@@ -675,7 +673,7 @@ class TypoScriptConfiguration
      *
      * @param string $configurationName
      * @param string $defaultIfEmpty
-     * @return mixed
+     * @return string
      */
     public function getIndexQueueInitializerClassByConfigurationName($configurationName, $defaultIfEmpty = Record::class)
     {
@@ -1501,7 +1499,7 @@ class TypoScriptConfiguration
      * plugin.tx_solr.search.query.allowEmptyQuery
      *
      * @param string $defaultIfEmpty
-     * @return string
+     * @return bool
      */
     public function getSearchQueryAllowEmptyQuery($defaultIfEmpty = '')
     {
@@ -2153,7 +2151,7 @@ class TypoScriptConfiguration
     public function getEnableCommits($defaultIfEmpty = true)
     {
         $enableCommits = $this->getValueByPathOrDefaultValue('plugin.tx_solr.index.enableCommits', $defaultIfEmpty);
-        $this->getBool($enableCommits);
+        return $this->getBool($enableCommits);
     }
 
     /*
