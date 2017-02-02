@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
@@ -39,6 +41,26 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Queue
 {
+    /**
+     * @var RootPageResolver
+     */
+    protected $rootPageResolver;
+
+    /**
+     * @var ConfigurationAwareRecordService
+     */
+    protected $recordService;
+
+    /**
+     * Queue constructor.
+     * @param RootPageResolver|null $rootPageResolver
+     * @param ConfigurationAwareRecordService|null $recordService
+     */
+    public function __construct(RootPageResolver $rootPageResolver = null, ConfigurationAwareRecordService $recordService = null)
+    {
+        $this->rootPageResolver = isset($rootPageResolver) ? $rootPageResolver : GeneralUtility::makeInstance(RootPageResolver::class);
+        $this->recordService = isset($recordService) ? $recordService : GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
+    }
 
     // FIXME some of the methods should be renamed to plural forms
     // FIXME singular form methods should deal with exactly one item only
@@ -252,44 +274,62 @@ class Queue
      * Like with Solr itself, there's no add method, just a simple update method
      * that handles the adds, too.
      *
+     * The method creates or updates the index queue items for all related rootPageIds.
+     *
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @param string $indexingConfiguration The item's indexing configuration to use.
-     *      Optional, overwrites existing / determined configuration.
      * @param int $forcedChangeTime The change time for the item if set, otherwise
      *          value from getItemChangedTime() is used.
      */
-    public function updateItem(
-        $itemType,
-        $itemUid,
-        $indexingConfiguration = null,
-        $forcedChangeTime = 0
-    ) {
-        $itemInQueue = $this->containsItem($itemType, $itemUid);
-        if ($itemInQueue) {
-            // update if that item is in the queue already
-            $changes = [
-                'changed' => ($forcedChangeTime > 0)
-                                ? $forcedChangeTime
-                                : $this->getItemChangedTime($itemType, $itemUid)
-            ];
-
-            if (!empty($indexingConfiguration)) {
-                $changes['indexing_configuration'] = $indexingConfiguration;
+    public function updateItem($itemType, $itemUid, $forcedChangeTime = 0)
+    {
+        $rootPageIds = $this->rootPageResolver->getResponsibleRootPageIds($itemType, $itemUid);
+        foreach ($rootPageIds as $rootPageId) {
+            $skipInvalidRootPage = $rootPageId === 0;
+            if ($skipInvalidRootPage) {
+                continue;
             }
 
-            $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-                'tx_solr_indexqueue_item',
-                'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType,
-                    'tx_solr_indexqueue_item') .
-                ' AND item_uid = ' . (int)$itemUid,
-                $changes
-            );
-        } else {
-            // add the item since it's not in the queue yet
-            $this->addItem($itemType, $itemUid, $indexingConfiguration);
+            $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
+            $indexingConfiguration = $this->recordService->getIndexingConfigurationName($itemType, $itemUid, $solrConfiguration);
+            $itemInQueueForRootPage = $this->containsItemWithRootPageId($itemType, $itemUid, $rootPageId);
+            if ($itemInQueueForRootPage) {
+                // update the existing queue item
+                $this->updateExistingItem($itemType, $itemUid, $indexingConfiguration, $rootPageId, $forcedChangeTime);
+            } else {
+                // add the item since it's not in the queue yet
+                $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
+            }
         }
+    }
+
+    /**
+     * Updates an existing queue entry by $itemType $itemUid and $rootPageId.
+     *
+     * @param string $itemType  The item's type, usually a table name.
+     * @param int $itemUid The item's uid, usually an integer uid, could be a
+     *      different value for non-database-record types.
+     * @param string $indexingConfiguration The name of the related indexConfiguration
+     * @param int $rootPageId The uid of the rootPage
+     * @param int $forcedChangeTime The forced change time that should be used for updating
+     */
+    protected function updateExistingItem($itemType, $itemUid, $indexingConfiguration, $rootPageId, $forcedChangeTime)
+    {
+        // update if that item is in the queue already
+        $changes = [
+            'changed' => ($forcedChangeTime > 0) ? $forcedChangeTime : $this->getItemChangedTime($itemType, $itemUid)
+        ];
+
+        if (!empty($indexingConfiguration)) {
+            $changes['indexing_configuration'] = $indexingConfiguration;
+        }
+
+        $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+            'tx_solr_indexqueue_item',
+            'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') .
+            ' AND item_uid = ' . (int)$itemUid . ' AND root = ' . (int)$rootPageId,
+            $changes);
     }
 
     /**
@@ -304,77 +344,29 @@ class Queue
      *      Optional, overwrites existing / determined configuration.
      * @return void
      */
-    private function addItem($itemType, $itemUid, $indexingConfiguration)
+    private function addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId)
     {
         $additionalRecordFields = '';
         if ($itemType == 'pages') {
             $additionalRecordFields = ', doktype, uid';
-            $indexingConfiguration = is_null($indexingConfiguration) ? 'pages' : $indexingConfiguration;
         }
 
-
         $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
-
         if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
             return;
         }
 
-        if ($itemType == 'pages') {
-            $rootPageId = Util::getRootPageId($itemUid);
-        } else {
-            $rootPageId = Util::getRootPageId($record['pid'], true);
-        }
+        $item = [
+            'root' => $rootPageId,
+            'item_type' => $itemType,
+            'item_uid' => $itemUid,
+            'changed' => $this->getItemChangedTime($itemType, $itemUid),
+            'errors' => ''
+        ];
 
-        if (Util::isRootPage($rootPageId)) {
-            $item = [
-                'root' => $rootPageId,
-                'item_type' => $itemType,
-                'item_uid' => $itemUid,
-                'changed' => $this->getItemChangedTime($itemType, $itemUid),
-                'errors' => ''
-            ];
-
-            if (!empty($indexingConfiguration)) {
-                $indexingConfigurationList = [$indexingConfiguration];
-            } else {
-                $indexingConfigurationList = $this->getIndexingConfigurationsByItem(
-                    $itemType, $itemUid, $rootPageId
-                );
-            }
-
-            $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
-
-            // make a backup of the current item
-            $baseItem = $item;
-            foreach ($indexingConfigurationList as $indexingConfigurationCurrent) {
-                $item = $baseItem;
-                $item['indexing_configuration'] = $indexingConfigurationCurrent;
-
-                $addItemToQueue = true;
-                // Ensure additionalWhereClause is applied.
-                $additionalWhere = $solrConfiguration->getIndexQueueAdditionalWhereClauseByConfigurationName($item['indexing_configuration']);
-                if ($additionalWhere !== '') {
-                    $indexingConfigurationCheckRecord = BackendUtility::getRecord(
-                        $itemType,
-                        $itemUid,
-                        'pid' . $additionalRecordFields,
-                        $additionalWhere
-                    );
-
-                    if (empty($indexingConfigurationCheckRecord)) {
-                        // item does not match the indexing configuration's additionalWhereClause
-                        $addItemToQueue = false;
-                    }
-                }
-
-                if ($addItemToQueue) {
-                    $GLOBALS['TYPO3_DB']->exec_INSERTquery(
-                        'tx_solr_indexqueue_item',
-                        $item
-                    );
-                }
-            }
-        }
+        // make a backup of the current item
+        $item['indexing_configuration'] = $indexingConfiguration;
+        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_indexqueue_item', $item);
     }
 
     /**
@@ -408,8 +400,7 @@ class Queue
             $changedTimeColumns .= ', content_from_pid';
         }
 
-        $record = BackendUtility::getRecord($itemType, $itemUid,
-            $changedTimeColumns);
+        $record = BackendUtility::getRecord($itemType, $itemUid, $changedTimeColumns);
         $itemChangedTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['tstamp']];
 
         if ($itemTypeHasStartTimeColumn) {
@@ -423,8 +414,7 @@ class Queue
             $pageChangedTime = $this->getPageItemChangedTime($record);
         }
 
-        $localizationsChangedTime = $this->getLocalizableItemChangedTime($itemType,
-            $itemUid);
+        $localizationsChangedTime = $this->getLocalizableItemChangedTime($itemType, $itemUid);
 
         // if start time exists and start time is higher than last changed timestamp
         // then set changed to the future start time to make the item
@@ -507,6 +497,28 @@ class Queue
             'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType,
                 'tx_solr_indexqueue_item') .
             ' AND item_uid = ' . (int)$itemUid
+        );
+
+        return $itemIsInQueue;
+    }
+
+    /**
+     * Checks whether the Index Queue contains a specific item.
+     *
+     * @param string $itemType The item's type, usually a table name.
+     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     *      different value for non-database-record types.
+     * @param integer $rootPageId
+     * @return bool TRUE if the item is found in the queue, FALSE otherwise
+     */
+    public function containsItemWithRootPageId($itemType, $itemUid, $rootPageId)
+    {
+        $itemIsInQueue = (boolean)$GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+            'uid',
+            'tx_solr_indexqueue_item',
+            'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType,
+                'tx_solr_indexqueue_item') .
+            ' AND item_uid = ' . (int)$itemUid . ' AND root = ' . (int)$rootPageId
         );
 
         return $itemIsInQueue;
