@@ -65,6 +65,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     public function execute()
     {
         $cliEnvironment = null;
+
         // Wrapped the CliEnvironment to avoid defining TYPO3_PATH_WEB since this
         // should only be done in the case when running it from outside TYPO3 BE
         // @see #921 and #934 on https://github.com/TYPO3-Solr
@@ -73,6 +74,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
             $cliEnvironment->backup();
             $cliEnvironment->initialize($this->getWebRoot());
         }
+
         $indexService = GeneralUtility::makeInstance(IndexService::class, $this->site);
         $indexService->setContextTask($this);
         $indexService->indexItems($this->documentsToIndexLimit);
