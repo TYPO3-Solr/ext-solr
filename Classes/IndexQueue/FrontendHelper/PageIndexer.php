@@ -186,7 +186,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
                 'os' => '',
                 'exec' => '',
 
-                'classFile' => $GLOBALS['PATH_solr'] . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
+                'classFile' => ExtensionManagementUtility::extPath('solr') . 'Classes/IndexQueue/FrontendHelper/AuthorizationService.php',
                 'className' => AuthorizationService::class,
             ]
         );
