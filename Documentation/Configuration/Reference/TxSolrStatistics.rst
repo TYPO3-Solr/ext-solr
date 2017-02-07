@@ -36,12 +36,12 @@ Set `plugin.tx_solr.statistics = 1` to log statistics.
 statistics.anonymizeIP
 ----------------------
 
-:Type: Boolean
+:Type: Integer
 :TS Path: plugin.tx_solr.statistics.anonymizeIP
 :Since: 2.0
 :Default: 0
 
-Anonymizes the ip address in the logging records.
+Defines the number of octets of the IP address to anonymize in the statistics log records.
 
 statistics.addDebugData
 -----------------------
