@@ -217,7 +217,6 @@
 	<dynamicField name="*_tDateS"    type="tdate"     indexed="true" stored="true" docValues="true" multiValued="false" />
 	<dynamicField name="*_tDateM"    type="tdate"     indexed="true" stored="true" docValues="true" multiValued="true" />
 
-
 	<dynamicField name="*_textS"      type="text"      indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textM"      type="text"      indexed="true" stored="true" multiValued="true" />
 	<dynamicField name="*_textTS"     type="textTight" indexed="true" stored="true" multiValued="false" />
@@ -232,6 +231,12 @@
 
 	<dynamicField name="*_textSpellS" type="textSpell" indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_textSpellM" type="textSpell" indexed="true" stored="true" multiValued="true" />
+
+	<dynamicField name="*_textEdgeNgramS" type="textEdgeNgram" indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textEdgeNgramM" type="textEdgeNgram" indexed="true" stored="true" multiValued="true" />
+
+	<dynamicField name="*_textNgramS" type="textNgram" indexed="true" stored="true" multiValued="false" />
+	<dynamicField name="*_textNgramM" type="textNgram" indexed="true" stored="true" multiValued="true" />
 
 	<dynamicField name="*_phoneticS" type="phonetic"  indexed="true" stored="true" multiValued="false" />
 	<dynamicField name="*_phoneticM" type="phonetic"  indexed="true" stored="true" multiValued="true" />

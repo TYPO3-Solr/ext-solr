@@ -162,6 +162,25 @@
 		</analyzer>
 	</fieldType>
 
+	<fieldType name="textEdgeNgram" class="solr.TextField" positionIncrementGap="100">
+		<analyzer type="index">
+			<tokenizer class="solr.LowerCaseTokenizerFactory"/>
+			<filter class="solr.EdgeNGramFilterFactory" minGramSize="3" maxGramSize="15"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.LowerCaseTokenizerFactory"/>
+		</analyzer>
+	</fieldType>
+
+	<fieldType name="textNgram" class="solr.TextField" positionIncrementGap="100">
+		<analyzer type="index">
+			<tokenizer class="solr.StandardTokenizerFactory"/>
+			<filter class="solr.NGramFilterFactory" minGramSize="2" maxGramSize="3"/>
+		</analyzer>
+		<analyzer type="query">
+			<tokenizer class="solr.LowerCaseTokenizerFactory"/>
+		</analyzer>
+	</fieldType>
 
 	<fieldType name="phonetic" stored="false" indexed="true" class="solr.TextField" >
 		<analyzer>
