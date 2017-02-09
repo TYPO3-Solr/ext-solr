@@ -115,7 +115,7 @@ class ConfigurationAwareRecordService
         }
 
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
-        $cacheId = md5('getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
+        $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
 
         $row = $cache->get($cacheId);
         if (!empty($row)) {
