@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
@@ -117,12 +118,13 @@ class IndexInspector extends AbstractFunctionModule
         // Ext.grid.RowExpander.js from 7.6.x has been included
         if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
             $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ExtJs/Ext.grid.RowExpander.js');
+            $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ExtJs/override/gridpanel.js');
+            $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ModIndex/index_inspector.js');
         } else {
-            $pageRenderer->addJsFile('sysext/backend/Resources/Public/JavaScript/extjs/ux/Ext.grid.RowExpander.js');
+            $pageRenderer->addJsFile(ExtensionManagementUtility::extRelPath('backend') . 'Resources/Public/JavaScript/extjs/ux/Ext.grid.RowExpander.js');
+            $pageRenderer->addJsFile(ExtensionManagementUtility::extRelPath('solr') . 'Resources/JavaScript/ExtJs/override/gridpanel.js');
+            $pageRenderer->addJsFile(ExtensionManagementUtility::extRelPath('solr') . 'Resources/JavaScript/ModIndex/index_inspector.js');
         }
-
-        $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ExtJs/override/gridpanel.js');
-        $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ModIndex/index_inspector.js');
 
         $pageRenderer->addCssInlineBlock('grid-selection-enabler', '
 			.x-selectable, .x-selectable * {
