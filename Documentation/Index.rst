@@ -59,6 +59,7 @@
 	Logging/Index
 	Solr/Index
 	Configuration/Index
+    Database/Index
 	Development/Index
 	FAQ/*
 	Appendix/*
