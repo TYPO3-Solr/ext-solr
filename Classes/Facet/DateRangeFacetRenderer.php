@@ -92,7 +92,6 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer
 
         $javascriptManager->loadFile('library');
         $javascriptManager->loadFile('ui');
-        $javascriptManager->loadFile('ui.datepicker');
 
         $language = $GLOBALS['TSFE']->tmpl->setup['config.']['language'];
         if ($language != 'en') {

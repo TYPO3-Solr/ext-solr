@@ -90,7 +90,6 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
 
         $javascriptManager->loadFile('library');
         $javascriptManager->loadFile('ui');
-        $javascriptManager->loadFile('ui.slider');
 
         $javascriptManager->loadFile('faceting.numericRangeHelper');
 
