@@ -44,11 +44,8 @@ class ConfigurationAwareRecordService
      * @param TypoScriptConfiguration $solrConfiguration
      * @return string Name of indexing configuration
      */
-    public function getIndexingConfigurationName(
-        $recordTable,
-        $recordUid,
-        TypoScriptConfiguration $solrConfiguration
-    ) {
+    public function getIndexingConfigurationName($recordTable, $recordUid, TypoScriptConfiguration $solrConfiguration)
+    {
         $name = $recordTable;
         $indexingConfigurations = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($indexingConfigurations as $indexingConfigurationName) {
@@ -103,15 +100,9 @@ class ConfigurationAwareRecordService
      * @param TypoScriptConfiguration $solrConfiguration
      * @return array
      */
-    protected function getRecordIfIndexConfigurationIsValid(
-        $recordTable,
-        $recordUid,
-        $indexingConfigurationName,
-        TypoScriptConfiguration $solrConfiguration
-    ) {
-        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName,
-            $solrConfiguration)
-        ) {
+    protected function getRecordIfIndexConfigurationIsValid($recordTable, $recordUid, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
+    {
+        if (!$this->isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, $solrConfiguration)) {
             return [];
         }
 
@@ -132,11 +123,8 @@ class ConfigurationAwareRecordService
      * @param TypoScriptConfiguration $solrConfiguration
      * @return boolean
      */
-    protected function isValidTableForIndexConfigurationName(
-        $recordTable,
-        $indexingConfigurationName,
-        TypoScriptConfiguration $solrConfiguration
-    ) {
+    protected function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
+    {
         $tableToIndex = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
 
         $isMatchingTable = ($tableToIndex === $recordTable);

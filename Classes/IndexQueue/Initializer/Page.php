@@ -53,7 +53,6 @@ class Page extends AbstractInitializer
         parent::__construct();
 
         $this->type = 'pages';
-        $this->indexingConfigurationName = 'pages';
     }
 
     /**
@@ -127,7 +126,7 @@ class Page extends AbstractInitializer
                 // Add page like a regular page, as only the sub tree is
                 // mounted. The page itself has its own content.
                 $indexQueue = GeneralUtility::makeInstance(Queue::class);
-                $indexQueue->updateItem($this->type, $mountPage['uid'], $this->indexingConfigurationName);
+                $indexQueue->updateItem($this->type, $mountPage['uid']);
             }
 
             // This can happen when the mount point does not show the content of the

@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
@@ -64,18 +65,27 @@ class RecordMonitor extends AbstractDataHandlerListener
     protected $tcaService;
 
     /**
+     * RootPageResolver
+     *
+     * @var RootPageResolver
+     */
+    protected $rootPageResolver;
+
+    /**
      * RecordMonitor constructor.
      *
      * @param Queue|null $indexQueue
      * @param MountPagesUpdater|null $mountPageUpdater
      * @param TCAService|null $TCAService
+     * @param RootPageResolver $rootPageResolver
      */
-    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null)
+    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null)
     {
         parent::__construct();
         $this->indexQueue = is_null($indexQueue) ? GeneralUtility::makeInstance(Queue::class) : $indexQueue;
         $this->mountPageUpdater = is_null($mountPageUpdater) ? GeneralUtility::makeInstance(MountPagesUpdater::class) : $mountPageUpdater;
         $this->tcaService = is_null($TCAService) ? GeneralUtility::makeInstance(TCAService::class) : $TCAService;
+        $this->rootPageResolver = is_null($rootPageResolver) ? GeneralUtility::makeInstance(RootPageResolver::class) : $rootPageResolver;
     }
 
     /**
@@ -118,11 +128,8 @@ class RecordMonitor extends AbstractDataHandlerListener
     ) {
         if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
             // skip workspaces: index only LIVE workspace
-            $this->indexQueue->updateItem('pages',
-                $this->getValidatedPid($tceMain, $table, $uid),
-                null,
-                time()
-            );
+            $pid = $this->getValidatedPid($tceMain, $table, $uid);
+            $this->indexQueue->updateItem('pages', $pid, time());
         }
     }
 
@@ -264,13 +271,15 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function processRecord($recordTable, $recordPageId, $recordUid, $fields)
     {
-        $rootPageId = Util::getRootPageId($recordPageId);
-        if (!Util::isRootPage($rootPageId)) {
-            // when the monitored record doesn't belong to a solr configured root-page we can skip it
+        $configurationPageId = $this->getConfigurationPageId($recordTable, $recordPageId, $recordUid);
+
+        if ($configurationPageId === 0) {
+            // when the monitored record doesn't belong to a solr configured root-page and no alternative
+            // siteroot can be found this is not a relevant record
             return;
         }
 
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($recordPageId);
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($configurationPageId);
         $isMonitoredRecord = $solrConfiguration->getIndexQueueIsMonitoredTable($recordTable);
 
         if (!$isMonitoredRecord) {
@@ -279,6 +288,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         $record = $this->configurationAwareRecordService->getRecord($recordTable, $recordUid, $solrConfiguration);
+
         if (empty($record)) {
             // TODO move this part to the garbage collector
             // check if the item should be removed from the index because it no longer matches the conditions
@@ -309,15 +319,34 @@ class RecordMonitor extends AbstractDataHandlerListener
             // we have a localized record without a visible parent record. Nothing to do.
             return;
         }
-        if ($this->tcaService->isEnabledRecord($recordTable, $record)) {
-            $configurationName = $this->configurationAwareRecordService->getIndexingConfigurationName($recordTable, $recordUid, $solrConfiguration);
 
-            $this->indexQueue->updateItem($recordTable, $recordUid, $configurationName);
+        if ($this->tcaService->isEnabledRecord($recordTable, $record)) {
+            $this->indexQueue->updateItem($recordTable, $recordUid);
         }
 
         if ($recordTable == 'pages') {
             $this->doPagesPostUpdateOperations($fields, $recordUid);
         }
+    }
+
+    /**
+     * This method is used to determine the pageId that should be used to retrieve the index queue configuration.
+     *
+     * @param string $recordTable
+     * @param integer $recordPageId
+     * @param integer $recordUid
+     * @return integer
+     */
+    protected function getConfigurationPageId($recordTable, $recordPageId, $recordUid)
+    {
+        $rootPageId = Util::getRootPageId($recordPageId);
+        if (Util::isRootPage($rootPageId)) {
+            return $recordPageId;
+        }
+
+        $alternativeSiteRoots = $this->rootPageResolver->getAlternativeSiteRootPagesIds($recordTable, $recordUid, $recordPageId);
+        $lastRootPage = array_pop($alternativeSiteRoots);
+        return empty($lastRootPage) ? 0 : $lastRootPage;
     }
 
     /**

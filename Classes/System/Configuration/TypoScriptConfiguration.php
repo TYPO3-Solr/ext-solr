@@ -354,6 +354,26 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns an array of all additionalPageIds by index configuration name.
+     *
+     * plugin.tx_solr.index.queue.pages.additionalPageIds
+     *
+     * @param string $configurationName
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getIndexQueueAdditionalPageIdsByConfigurationName($configurationName = 'pages', $defaultIfEmpty = [])
+    {
+        $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.additionalPageIds';
+        $result = $this->getValueByPathOrDefaultValue($path, '');
+        if (trim($result) == '') {
+            return $defaultIfEmpty;
+        }
+
+        return GeneralUtility::trimExplode(',', $result);
+    }
+
+    /**
      * Returns an array of all allowedPageTypes.
      *
      * plugin.tx_solr.index.queue.pages.allowedPageTypes
@@ -896,7 +916,7 @@ class TypoScriptConfiguration
      * Returns if a log message should be written when a page was indexed.
      *
      * plugin.tx_solr.logging.indexing.pageIndexed
-
+     *
      * @param bool $defaultIfEmpty
      * @return bool
      */
@@ -910,7 +930,7 @@ class TypoScriptConfiguration
      * Returns if a log message should be written when the TYPO3 search markers are missing in the page.
      *
      * plugin.tx_solr.logging.indexing.missingTypo3SearchMarkers
-
+     *
      * @param bool $defaultIfEmpty
      * @return bool
      */
@@ -938,7 +958,7 @@ class TypoScriptConfiguration
      * Indicates if the debug mode is enabled or not.
      *
      * plugin.tx_solr.enableDebugMode
-
+     *
      * @param bool $defaultIfEmpty
      * @return bool
      */

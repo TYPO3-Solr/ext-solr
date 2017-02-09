@@ -74,7 +74,7 @@ class IndexServiceTest extends IntegrationTest
     protected function addToIndexQueue($table, $uid)
     {
         // write an index queue item
-        $this->indexQueue->updateItem($table, $uid, null, time());
+        $this->indexQueue->updateItem($table, $uid, time());
     }
 
     public function canResolveAbsRefPrefixDataProvider()

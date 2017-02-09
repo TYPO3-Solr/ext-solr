@@ -726,4 +726,60 @@ class RecordMonitorTest extends IntegrationTest
 
         $this->assertIndexQueueContainsItemAmount(1);
     }
+
+    /**
+     * @test
+     */
+    public function updateRecordOutsideSiteRoot()
+    {
+        $this->importDumpFromFixture('fake_extension_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+
+        $this->importDataSetFromFixture('update_record_outside_siteroot.xml');
+
+        $this->assertEmptyIndexQueue();
+
+        // create faked tce main call data
+        $status = 'update';
+        $table = 'tx_fakeextension_domain_model_foo';
+        $uid = 8;
+        $fields = [
+            'title' => 'i am outside the site root',
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000,
+            'pid' => 2
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function updateRecordOutsideSiteRootReferencedInTwoSites()
+    {
+        $this->importDumpFromFixture('fake_extension_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+
+        $this->importDataSetFromFixture('update_record_outside_siteroot_from_two_sites.xml');
+
+        $this->assertEmptyIndexQueue();
+
+        // create faked tce main call data
+        $status = 'update';
+        $table = 'tx_fakeextension_domain_model_foo';
+        $uid = 8;
+        $fields = [
+            'title' => 'i am outside the site root and referenced in two sites',
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000,
+            'pid' => 3
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->assertIndexQueueContainsItemAmount(2);
+    }
 }
