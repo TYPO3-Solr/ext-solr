@@ -26,8 +26,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
-use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -351,7 +351,15 @@ class Queue
             $additionalRecordFields = ', doktype, uid';
         }
 
-        $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $cacheId = md5('Queue' . ':' . 'addNewItem' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
+
+        $record = $cache->get($cacheId);
+        if (empty($row)) {
+            $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
+            $cache->set($cacheId, $record);
+        }
+
         if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
             return;
         }
