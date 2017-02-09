@@ -99,7 +99,7 @@ class MountPagesUpdater
             'uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed',
             'pages',
             'doktype = 7 AND no_search = 0 '
-            . BackendUtility::deleteClause('pages') . ' AND ' . $pageQueryCondition . ') '
+            . BackendUtility::deleteClause('pages') . ' AND (' . $pageQueryCondition . ') '
         );
 
         return $mountPages;
