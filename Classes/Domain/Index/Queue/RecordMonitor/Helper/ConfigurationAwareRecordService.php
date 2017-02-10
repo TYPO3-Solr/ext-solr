@@ -114,6 +114,22 @@ class ConfigurationAwareRecordService
             return $this->getPageOverlayRecordIfParentIsAccessible($recordUid, $recordWhereClause);
         }
 
+        $row = $this->getRecordForIndexConfigurationIsValid($recordTable, $recordUid, $recordWhereClause);
+
+        return $row;
+    }
+
+    /**
+     * Returns the row need by getRecordIfIndexConfigurationIsValid either directly from database
+     * or from cache
+     *
+     * @param string $recordTable
+     * @param integer $recordUid
+     * @param string $recordWhereClause
+     *
+     * @return array
+     */
+    protected function getRecordForIndexConfigurationIsValid($recordTable, $recordUid, $recordWhereClause) {
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
         $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
 
