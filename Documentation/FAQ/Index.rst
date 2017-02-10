@@ -299,3 +299,20 @@ value from the AdditionalConfiguration.php
     }
 
 |
+
+**How can I replace jQuery and/or jQuery UI versions or use different JavaScript library for searching field used by EXT:solr?
+
+You need to add following lines in your TypoScript setup:
+
+::
+
+    plugin.tx_solr.solr {
+        javascriptFiles {
+            library = EXT:your_site_extension/Resources/JavaScript/JQuery/jquery.XYZ.min.js
+            ui = EXT:your_site_extension/Resources/JavaScript/JQuery/jquery-ui.XYZ.min.js
+        }
+    }
+
+|
+
+For more information please see :doc:`tx_solr.javascriptFiles <../Configuration/Reference/TxSolrJavaScriptFiles>`.
