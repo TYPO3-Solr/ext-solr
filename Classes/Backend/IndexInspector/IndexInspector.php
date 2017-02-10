@@ -28,6 +28,8 @@ use ApacheSolrForTypo3\Solr\Search;
 use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Index Inspector to see what documents have been indexed for a selected page.
@@ -111,9 +113,18 @@ class IndexInspector extends AbstractFunctionModule
         );
 
         $pageRenderer->addExtDirectCode(['TYPO3.tx_solr.IndexInspector.Remote']);
-        $pageRenderer->addJsFile('sysext/backend/Resources/Public/JavaScript/extjs/ux/Ext.grid.RowExpander.js');
-        $pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'Resources/JavaScript/ExtJs/override/gridpanel.js');
-        $pageRenderer->addJsFile($this->document->backPath . $GLOBALS['PATHrel_solr'] . 'Resources/JavaScript/ModIndex/index_inspector.js');
+
+        // @Todo This should be solved otherwise see #948 - for now a copy of
+        // Ext.grid.RowExpander.js from 7.6.x has been included
+        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
+            $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ExtJs/Ext.grid.RowExpander.js');
+            $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ExtJs/override/gridpanel.js');
+            $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ModIndex/index_inspector.js');
+        } else {
+            $pageRenderer->addJsFile(ExtensionManagementUtility::extRelPath('backend') . 'Resources/Public/JavaScript/extjs/ux/Ext.grid.RowExpander.js');
+            $pageRenderer->addJsFile(ExtensionManagementUtility::extRelPath('solr') . 'Resources/JavaScript/ExtJs/override/gridpanel.js');
+            $pageRenderer->addJsFile(ExtensionManagementUtility::extRelPath('solr') . 'Resources/JavaScript/ModIndex/index_inspector.js');
+        }
 
         $pageRenderer->addCssInlineBlock('grid-selection-enabler', '
 			.x-selectable, .x-selectable * {

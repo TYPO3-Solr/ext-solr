@@ -3,14 +3,12 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-$GLOBALS['PATH_solr'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
-
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // Windows compatibility
 
 if (!function_exists('strptime')) {
-    require_once($GLOBALS['PATH_solr'] . 'Resources/Private/Php/strptime/strptime.php');
+    require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr') . 'Resources/Private/Php/strptime/strptime.php');
 }
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #

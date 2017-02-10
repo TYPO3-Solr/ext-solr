@@ -3,10 +3,6 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-// TODO change to a constant, so that it can't get manipulated
-$GLOBALS['PATH_solr'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr');
-$GLOBALS['PATHrel_solr'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('solr');
-
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // add search plugin to content element wizard
@@ -170,7 +166,7 @@ options.contextMenu.table.pages.items.851 = DIVIDER
 );
 
 // include JS in backend
-$GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = $GLOBALS['PATH_solr'] . 'Classes/BackendItem/ContextMenuActionJavascriptRegistration.php';
+$GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr') . 'Classes/BackendItem/ContextMenuActionJavascriptRegistration.php';
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
