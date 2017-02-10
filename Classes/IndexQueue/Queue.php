@@ -386,7 +386,7 @@ class Queue
         $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
 
         $record = $cache->get($cacheId);
-        if (empty($row)) {
+        if (empty($record)) {
             $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
             $cache->set($cacheId, $record);
         }
