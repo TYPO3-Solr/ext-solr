@@ -117,6 +117,25 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @test
      */
+    public function canIndexPageIntoSolrWithAdditionalFieldsFromRootLine()
+    {
+        $this->importDataSetFromFixture('can_overwrite_configuration_in_rootline.xml');
+        $this->executePageIndexer(2);
+
+        // we wait to make sure the document will be available in solr
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+
+        // field values from index.queue.pages.fields.
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"hello subpage"', $solrContent, 'Could not index subpage with custom field configuration into solr');
+        $this->assertContains('"additional_stringS":"from rootline"', $solrContent, 'Document does not contain custom field from rootline');
+    }
+
+    /**
+     * @test
+     */
     public function canExecutePostProcessor()
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['Indexer']['indexPagePostProcessPageDocument']['TestPostProcessor'] = TestPostProcessor::class;
@@ -152,13 +171,14 @@ class PageIndexerTest extends IntegrationTest
     }
 
     /**
-     * @return void
+     * @param int $pageId
+     * @param int $type
      */
-    protected function executePageIndexer()
+    protected function executePageIndexer($pageId = 1, $type = 0)
     {
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        $TSFE = $this->getConfiguredTSFE();
+        $TSFE = $this->getConfiguredTSFE([], $pageId, $type = 0);
         $TSFE->config['config']['index_enable'] = 1;
         $TSFE->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $GLOBALS['TSFE'] = $TSFE;

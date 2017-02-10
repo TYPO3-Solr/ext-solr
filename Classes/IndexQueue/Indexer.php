@@ -160,18 +160,9 @@ class Indexer extends AbstractIndexer
         }
 
         $documents[] = $itemDocument;
-        $documents = array_merge($documents, $this->getAdditionalDocuments(
-            $item,
-            $language,
-            $itemDocument
-        ));
+        $documents = array_merge($documents, $this->getAdditionalDocuments($item, $language, $itemDocument));
         $documents = $this->processDocuments($item, $documents);
-
-        $documents = $this->preAddModifyDocuments(
-            $item,
-            $language,
-            $documents
-        );
+        $documents = $this->preAddModifyDocuments($item, $language, $documents);
 
         $response = $this->solr->addDocuments($documents);
         if ($response->getHttpStatus() == 200) {
@@ -274,12 +265,9 @@ class Indexer extends AbstractIndexer
      */
     protected function getItemTypeConfiguration(Item $item, $language = 0)
     {
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(),
-            true, $language);
-
-        $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName(
-            $item->getIndexingConfigurationName(), []
-        );
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRecordPageId(), true, $language);
+        $indexConfigurationName = $item->getIndexingConfigurationName();
+        $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
 
         if (count($fields) === 0) {
             throw new \RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
@@ -303,12 +291,9 @@ class Indexer extends AbstractIndexer
 
         $itemRecord = $this->getFullItemRecord($item, $language);
         if (!is_null($itemRecord)) {
-            $itemIndexingConfiguration = $this->getItemTypeConfiguration($item,
-                $language);
-
+            $itemIndexingConfiguration = $this->getItemTypeConfiguration($item, $language);
             $document = $this->getBaseDocument($item, $itemRecord);
-            $document = $this->addDocumentFieldsFromTyposcript($document,
-                $itemIndexingConfiguration, $itemRecord);
+            $document = $this->addDocumentFieldsFromTyposcript($document, $itemIndexingConfiguration, $itemRecord);
         }
 
         return $document;
