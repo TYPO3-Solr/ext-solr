@@ -351,14 +351,7 @@ class Queue
             $additionalRecordFields = ', doktype, uid';
         }
 
-        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
-        $cacheId = md5('Queue' . ':' . 'addNewItem' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
-
-        $record = $cache->get($cacheId);
-        if (empty($row)) {
-            $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
-            $cache->set($cacheId, $record);
-        }
+        $record = $this->getRecordCached($itemType, $itemUid, $additionalRecordFields);
 
         if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
             return;
@@ -375,6 +368,30 @@ class Queue
         // make a backup of the current item
         $item['indexing_configuration'] = $indexingConfiguration;
         $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_indexqueue_item', $item);
+    }
+
+    /**
+     * Get record to be added in addNewItem
+     *
+     * @param string $itemType The item's type, usually a table name.
+     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     *      different value for non-database-record types.
+     * @param string $additionalRecordFields for sql-query
+     *
+     * @return array|NULL
+     */
+    protected function getRecordCached($itemType, $itemUid, $additionalRecordFields)
+    {
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
+
+        $record = $cache->get($cacheId);
+        if (empty($row)) {
+            $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
+            $cache->set($cacheId, $record);
+        }
+
+        return $record;
     }
 
     /**
