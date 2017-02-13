@@ -280,7 +280,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         // more than one time per table with nearly identical $fields array - but we only use the pid
         // @see https://forge.typo3.org/issues/79635
         $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
-        $cacheId = 'RecordMonitor' . '_' . 'processDatamap_afterDatabaseOperations' . '_' . $table . '_' . $uid . '_' . $status;
+        $cacheId = 'RecordMonitor' . '_' . 'hasRecordBeenProcessed' . '_' . $table . '_' . $uid . '_' . $status;
 
         $isProcessed = $cache->get($cacheId);
         if (!empty($isProcessed)) {
