@@ -86,16 +86,11 @@
 
                         library = EXT:solr/Resources/JavaScript/JQuery/jquery.min.js
 
-                        ui = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.core.min.js
+                        ui = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.min.js
 
-                        ui.autocomplete = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.autocomplete.min.js
-
-                        ui.datepicker    = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.datepicker.min.js
                         ui.datepicker.de = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-de.js
                         ui.datepicker.fr = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-fr.js
                         ui.datepicker.nl = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-nl.js
-
-                        ui.slider = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.slider.min.js
 
                         suggest = EXT:solr/Resources/JavaScript/EidSuggest/suggest.js
 

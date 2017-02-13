@@ -88,30 +88,23 @@ ui
 
 :Type: String
 :TS Path: plugin.tx_solr.javascriptFiles.ui
-:Default: EXT:solr/Resources/JavaScript/JQuery/jquery-ui.core.min.js
-:Since: 2.0
+:Default: EXT:solr/Resources/JavaScript/JQuery/jquery-ui.min.js
+:Since: 6.1
 
 Defines the user interface components library to use. By default this is jQuery UI.
-
-ui.autocomplete
----------------
-
-:Type: String
-:TS Path: plugin.tx_solr.javascriptFiles.ui.autocomplete
-:Default: EXT:solr/Resources/JavaScript/JQuery/jquery-ui.autocomplete.min.js
-:Since: 2.0
-
-Defines the autocomplete / suggest Javascript library component to use.
+This is minified and concatenated jQuery UI, which includes following components:
+  widget
+  position
+  keycode
+  unique-id
+  widgets/autocomplete
+  widgets/datepicker
+  widgets/menu
+  widgets/mouse
+  widgets/slider
 
 ui.datepicker
 -------------
-
-:Type: String
-:TS Path: plugin.tx_solr.javascriptFiles.ui.datepicker
-:Default: EXT:solr/Resources/JavaScript/JQuery/jquery-ui.datepicker.min.js
-:Since: 2.0
-
-Defines the date picker Javascript library component to use for date range facets.
 
 The date picker in jQuery UI is localizable, the localization labels are defined
 in separate files which are loaded depending on the current page's language.
@@ -126,16 +119,6 @@ The localization label files are defined as followed:
      fr = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-fr.js
      nl = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-nl.js
    }
-
-ui.slider
----------
-
-:Type: String
-:TS Path: plugin.tx_solr.javascriptFiles.ui.slider
-:Default: EXT:solr/Resources/JavaScript/JQuery/jquery-ui.slider.min.js
-:Since: 2.0
-
-Defines the slider Javascript library component to use for numeric range facets.
 
 suggest
 -------
