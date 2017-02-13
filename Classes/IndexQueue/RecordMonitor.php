@@ -243,7 +243,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $recordTable = $table;
         $recordUid = $uid;
 
-        if ($this->hasRecordBeenProcessed($table, $uid, $status)) {
+        if ($this->hasRecordBeenProcessed($status, $table, $uid)) {
             return;
         }
 
@@ -272,10 +272,9 @@ class RecordMonitor extends AbstractDataHandlerListener
      * @param string $status Status of the current operation, 'new' or 'update'
      * @param string $table The table the record belongs to
      * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
-     *
      * @return bool
      */
-    protected function hasRecordBeenProcessed($table, $uid, $status)
+    protected function hasRecordBeenProcessed($status, $table, $uid)
     {
         // Check if record has already been processed since DataHandler sends processDatamap_afterDatabaseOperations
         // more than one time per table with nearly identical $fields array - but we only use the pid
