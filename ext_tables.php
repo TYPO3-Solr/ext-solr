@@ -52,7 +52,8 @@ if (TYPO3_MODE == 'BE') {
         '',
         [
             // An array holding the controller-action-combinations that are accessible
-            'Administration' => 'index,setSite,setCore,noSiteAvailable'
+            'Administration' => 'index,setSite,setCore,noSiteAvailable',
+            'Backend\\Web\\Info\\ApacheSolrDocument' => 'index'
         ],
         [
             'access' => 'admin',
@@ -118,7 +119,7 @@ if (TYPO3_MODE == 'BE') {
     // Index Inspector
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
         'web_info',
-        \ApacheSolrForTypo3\Solr\Backend\IndexInspector\IndexInspector::class,
+        \ApacheSolrForTypo3\Solr\Backend\IndexInspector\ModuleBootstrap::class,
         null,
         'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:module_indexinspector'
     );

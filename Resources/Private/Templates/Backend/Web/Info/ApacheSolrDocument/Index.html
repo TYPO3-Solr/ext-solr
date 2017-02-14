@@ -1,0 +1,37 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+{namespace core=TYPO3\CMS\Core\ViewHelpers}
+
+<f:layout name="IndexInspector"/>
+
+<f:section name="Main"> <f:comment><!-- This View shows panel groups for each document type.--></f:comment>
+    <div class="panel-group">
+    <f:for each="{documentsByType}" as="documents" key="documentType">
+        <f:if condition="{documents}"> <f:comment><!-- Don't show emty panel groups if array with documents is empty. --></f:comment>
+            <f:render section="PanelGroupForDocumentType" arguments="{_all}"/>
+        </f:if>
+    </f:for>
+    </div>
+</f:section>
+
+<f:section name="PanelGroupForDocumentType">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a href="#panel-group4document-type-{documentType}" data-toggle="collapse">Type: {documentType}</a>
+                <a href="#panel-group4document-type-{documentType}" title="Collapse table" class="pull-right" data-toggle="collapse">
+                    <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                </a>
+            </h3>
+        </div>
+        <div id="panel-group4document-type-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'in', else: '')}">
+            <div class="panel-body">
+                <div class="panel-group">
+                <f:for each="{documents}" as="document">
+                    <f:comment><!-- Shows apache solr document. If only one document for given type given, then document inside is expanded. Collapsed othervise.--></f:comment>
+                    <f:render partial="ApacheSolrDocument/SingleDocument" arguments="{document: document, documentType: documentType, documentsCount: '{f:count(subject: documents)}'}"/>
+                </f:for>
+                </div>
+            </div>
+        </div>
+    </div>
+</f:section>

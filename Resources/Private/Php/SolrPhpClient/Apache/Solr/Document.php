@@ -236,6 +236,16 @@ class Apache_Solr_Document implements IteratorAggregate
     }
 
     /**
+     * Returns fields array
+     *
+     * @return array
+     */
+    public function getFields()
+    {
+        return $this->_fields;
+    }
+
+    /**
      * Return current field boosts, indexed by field name
      *
      * @return array
