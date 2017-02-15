@@ -130,10 +130,11 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('unexisting_record_can_not_be_added_to_queue.xml');
         $this->assertEmptyQueue();
 
-            // record does not exist in fixture
+        // record does not exist in fixture
+        $this->setExpectedException(\InvalidArgumentException::class);
         $this->indexQueue->updateItem('pages', 5);
 
-            // queue should still be empty
+        // queue should still be empty
         $this->assertEmptyQueue();
     }
 

@@ -211,7 +211,7 @@ class Page extends AbstractInitializer
     {
         $mountedPageExists = false;
 
-        $mountedPage = BackendUtility::getRecord('pages', $mountedPageId, '*', ' AND hidden = 0');
+        $mountedPage = BackendUtility::getRecord('pages', $mountedPageId, 'uid', ' AND hidden = 0');
         if (!empty($mountedPage)) {
             $mountedPageExists = true;
         }

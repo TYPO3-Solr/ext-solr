@@ -426,7 +426,7 @@ class Util
             // for certain situations we need to trick TSFE into granting us
             // access to the page in any case to make getPageAndRootline() work
             // see http://forge.typo3.org/issues/42122
-            $pageRecord = BackendUtility::getRecord('pages', $pageId);
+            $pageRecord = BackendUtility::getRecord('pages', $pageId, 'fe_group');
             $groupListBackup = $GLOBALS['TSFE']->gr_list;
             $GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
 
@@ -512,9 +512,17 @@ class Util
             return $isSiteRoot;
         }
 
-        $page = BackendUtility::getRecord('pages', $pageId);
-        $isSiteRoot = Site::isRootPage($page);
+        $page = (array)BackendUtility::getRecord('pages', $pageId, 'is_siteroot');
 
+        if (empty($page)) {
+            throw new \InvalidArgumentException(
+                'The page for the given page ID \'' . $pageId
+                . '\' could not be found in the database and can therefore not be used as site root page.',
+                1487171426
+            );
+        }
+
+        $isSiteRoot = Site::isRootPage($page);
         $cache->set($cacheId, $isSiteRoot);
 
         return $isSiteRoot;
@@ -568,7 +576,7 @@ class Util
         $isWorkspaceRecord = false;
 
         if ((ExtensionManagementUtility::isLoaded('workspaces')) && (BackendUtility::isTableWorkspaceEnabled($table))) {
-            $record = BackendUtility::getRecord($table, $uid);
+            $record = BackendUtility::getRecord($table, $uid, 'pid, t3ver_state');
 
             if ($record['pid'] == '-1' || $record['t3ver_state'] > 0) {
                 $isWorkspaceRecord = true;
