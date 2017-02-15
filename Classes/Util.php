@@ -510,7 +510,6 @@ class Util
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
 
         return $rootPageResolver->isRootPage($pageId);
-
     }
 
     /**
