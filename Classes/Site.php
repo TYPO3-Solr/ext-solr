@@ -79,7 +79,7 @@ class Site
      */
     public function __construct($rootPageId)
     {
-        $page = BackendUtility::getRecord('pages', $rootPageId, 'is_siteroot');
+        $page = BackendUtility::getRecord('pages', $rootPageId);
 
         if (!self::isRootPage($page)) {
             throw new \InvalidArgumentException(
