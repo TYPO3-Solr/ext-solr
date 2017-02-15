@@ -122,7 +122,7 @@ class RootPageResolver implements SingletonInterface
             $rootPageId = Util::getRootPageId($uid);
             return $rootPageId;
         } else {
-            $record = BackendUtility::getRecord($table, $uid);
+            $record = BackendUtility::getRecord($table, $uid, 'pid');
             $rootPageId = Util::getRootPageId($record['pid'], true);
             return $rootPageId;
         }
