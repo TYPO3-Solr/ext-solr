@@ -1060,6 +1060,7 @@ class QueryTest extends UnitTest
 
     /**
      * @test
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public function canAddSortField()
     {
