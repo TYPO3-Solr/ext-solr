@@ -512,9 +512,17 @@ class Util
             return $isSiteRoot;
         }
 
-        $page = BackendUtility::getRecord('pages', $pageId, 'is_siteroot');
-        $isSiteRoot = Site::isRootPage($page);
+        $page = (array)BackendUtility::getRecord('pages', $pageId, 'is_siteroot');
 
+        if (empty($page)) {
+            throw new \InvalidArgumentException(
+                'The page for the given page ID \'' . $pageId
+                . '\' could not be found in the database and can therefore not be used as site root page.',
+                1487171426
+            );
+        }
+
+        $isSiteRoot = Site::isRootPage($page);
         $cache->set($cacheId, $isSiteRoot);
 
         return $isSiteRoot;
