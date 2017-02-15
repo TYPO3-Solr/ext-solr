@@ -62,7 +62,7 @@ class RootPageResolverTest extends UnitTest
         /** @var $rootPageResolver RootPageResolver */
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
-            ->setMethods(['getIsRootPageId','getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid'])->getMock();
+            ->setMethods(['isRootPage','getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid'])->getMock();
     }
 
     /**
@@ -71,7 +71,7 @@ class RootPageResolverTest extends UnitTest
     public function getResponsibleRootPageIdsMergesRootLineAndTypoScriptReferences()
     {
         $this->rootPageResolver->expects($this->once())->method('getRootPageIdByTableAndUid')->will($this->returnValue(222));
-        $this->rootPageResolver->expects($this->once())->method('getIsRootPageId')->will($this->returnValue(true));
+        $this->rootPageResolver->expects($this->once())->method('isRootPage')->will($this->returnValue(true));
         $this->rootPageResolver->expects($this->once())->method('getAlternativeSiteRootPagesIds')->will($this->returnValue([333,444]));
 
         $resolvedRootPages = $this->rootPageResolver->getResponsibleRootPageIds('pages', 41);
@@ -86,7 +86,7 @@ class RootPageResolverTest extends UnitTest
     public function getResponsibleRootPageIdsIgnoresPageFromRootLineThatIsNoSiteRoot()
     {
         $this->rootPageResolver->expects($this->once())->method('getRootPageIdByTableAndUid')->will($this->returnValue(222));
-        $this->rootPageResolver->expects($this->once())->method('getIsRootPageId')->will($this->returnValue(false));
+        $this->rootPageResolver->expects($this->once())->method('isRootPage')->will($this->returnValue(false));
         $this->rootPageResolver->expects($this->once())->method('getAlternativeSiteRootPagesIds')->will($this->returnValue([333,444]));
 
         $resolvedRootPages = $this->rootPageResolver->getResponsibleRootPageIds('pages', 41);

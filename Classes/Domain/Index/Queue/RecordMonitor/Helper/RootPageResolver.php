@@ -51,7 +51,7 @@ class RootPageResolver implements SingletonInterface
     /**
      * @var TwoLevelCache
      */
-    protected $siteRootsCache;
+    protected $runtimeCache;
 
     /**
      * RootPageResolver constructor.
@@ -61,7 +61,7 @@ class RootPageResolver implements SingletonInterface
     public function __construct(ConfigurationAwareRecordService $recordService = null, TwoLevelCache $twoLevelCache = null)
     {
         $this->recordService = isset($recordService) ? $recordService : GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
-        $this->siteRootsCache = isset($twoLevelCache) ? $twoLevelCache : GeneralUtility::makeInstance(TwoLevelCache::class, 'tx_solr_siteroots');
+        $this->runtimeCache = isset($twoLevelCache) ? $twoLevelCache : GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
     }
 
     /**
@@ -75,17 +75,47 @@ class RootPageResolver implements SingletonInterface
      */
     public function getResponsibleRootPageIds($table, $uid)
     {
-        $cacheKey = 'rootpageids-' . $table . '-'.$uid;
-        $cacheResult = $this->siteRootsCache->get($cacheKey);
-        if ($cacheResult !== false) {
-            return $cacheResult;
+        $cacheId = 'RootPageResolver' . '_' . 'getResponsibleRootPageIds' . '_' . $table . '_'.$uid;
+        $methodResult = $this->runtimeCache->get($cacheId);
+        if (!empty($methodResult)) {
+            return $methodResult;
         }
 
         $methodResult = $this->buildResponsibleRootPageIds($table, $uid);
-        $this->siteRootsCache->set($cacheKey, $methodResult);
+        $this->runtimeCache->set($cacheId, $methodResult);
+
         return $methodResult;
     }
 
+    /**
+     * Takes a page Id and checks whether the page is marked as root page.
+     *
+     * @param int $pageId Page ID
+     * @return bool TRUE if the page is marked as root page, FALSE otherwise
+     */
+    public function isRootPage($pageId)
+    {
+        $cacheId = 'RootPageResolver' . '_' . 'isRootPage' . '_' . $pageId;
+        $isSiteRoot = $this->runtimeCache->get($cacheId);
+        if (!empty($isSiteRoot)) {
+            return $isSiteRoot;
+        }
+
+        $page = (array)BackendUtility::getRecord('pages', $pageId, 'is_siteroot');
+
+        if (empty($page)) {
+            throw new \InvalidArgumentException(
+                'The page for the given page ID \'' . $pageId
+                . '\' could not be found in the database and can therefore not be used as site root page.',
+                1487171426
+            );
+        }
+
+        $isSiteRoot = Site::isRootPage($page);
+        $this->runtimeCache->set($cacheId, $isSiteRoot);
+
+        return $isSiteRoot;
+    }
 
     /**
      * This method determines the responsible site roots for a record by getting the rootPage of the record and checking
@@ -99,12 +129,13 @@ class RootPageResolver implements SingletonInterface
     {
         $rootPages = [];
         $rootPageId = $this->getRootPageIdByTableAndUid($table, $uid);
-        if ($this->getIsRootPageId($rootPageId)) {
+        if ($this->isRootPage($rootPageId)) {
             $rootPages[] = $rootPageId;
         }
 
         $alternativeSiteRoots = $this->getAlternativeSiteRootPagesIds($table, $uid, $rootPageId);
         $rootPages = array_merge($rootPages, $alternativeSiteRoots);
+
         return $rootPages;
     }
 
@@ -126,17 +157,6 @@ class RootPageResolver implements SingletonInterface
             $rootPageId = Util::getRootPageId($record['pid'], true);
             return $rootPageId;
         }
-    }
-
-    /**
-     * Checks if the passed pageId is a root page.
-     *
-     * @param integer $pageId
-     * @return bool
-     */
-    protected function getIsRootPageId($pageId)
-    {
-        return Util::isRootPage($pageId);
     }
 
     /**
@@ -168,14 +188,15 @@ class RootPageResolver implements SingletonInterface
      */
     protected function getSiteRootsByObservedPageIds($table, $uid)
     {
-        $cacheKey = 'alternativesiteroots-' . $table . '-' . $uid;
-        $cacheResult = $this->siteRootsCache->get($cacheKey);
-        if ($cacheResult !== false) {
-            return $cacheResult;
+        $cacheId = 'RootPageResolver' . '_' . 'getSiteRootsByObservedPageIds' . '_' . $table . '_' . $uid;
+        $methodResult = $this->runtimeCache->get($cacheId);
+        if (!empty($methodResult)) {
+            return $methodResult;
         }
 
         $methodResult = $this->buildSiteRootsByObservedPageIds($table, $uid);
-        $this->siteRootsCache->set($cacheKey, $methodResult);
+        $this->runtimeCache->set($cacheId, $methodResult);
+
         return $methodResult;
     }
 

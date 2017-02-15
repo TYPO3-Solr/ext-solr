@@ -340,7 +340,7 @@ class RecordMonitor extends AbstractDataHandlerListener
     protected function getConfigurationPageId($recordTable, $recordPageId, $recordUid)
     {
         $rootPageId = Util::getRootPageId($recordPageId);
-        if (Util::isRootPage($rootPageId)) {
+        if ($this->rootPageResolver->isRootPage($rootPageId)) {
             return $recordPageId;
         }
 
@@ -396,7 +396,7 @@ class RecordMonitor extends AbstractDataHandlerListener
     {
         if ($status == 'update' && !isset($fields['pid'])) {
             $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
-            if ($recordTable == 'pages' && Util::isRootPage($recordUid)) {
+            if (($recordTable == 'pages') && ($this->rootPageResolver->isRootPage($recordUid))) {
                 $recordPageId = $originalUid;
             }
 
