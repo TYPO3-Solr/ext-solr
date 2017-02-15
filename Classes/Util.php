@@ -504,9 +504,20 @@ class Util
      */
     public static function isRootPage($pageId)
     {
-        $page = BackendUtility::getRecord('pages', $pageId);
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $cacheId = 'Util' . '_' . 'isRootPage' . '_' . $pageId;
 
-        return Site::isRootPage($page);
+        $isSiteRoot = $cache->get($cacheId);
+        if (!empty($isSiteRoot)) {
+            return $isSiteRoot;
+        }
+
+        $page = BackendUtility::getRecord('pages', $pageId);
+        $isSiteRoot = Site::isRootPage($page);
+
+        $cache->set($cacheId, $isSiteRoot);
+
+        return $isSiteRoot;
     }
 
     /**
