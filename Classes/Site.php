@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -100,7 +101,8 @@ class Site
      */
     public static function getSiteByPageId($pageId)
     {
-        $rootPageId = Util::getRootPageId($pageId);
+        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
+        $rootPageId = $rootPageResolver->getRootPageId($pageId);
 
         if (!isset(self::$sitesCache[$rootPageId])) {
             self::$sitesCache[$rootPageId] = GeneralUtility::makeInstance(__CLASS__,

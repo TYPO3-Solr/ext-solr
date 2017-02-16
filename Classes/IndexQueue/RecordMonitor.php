@@ -370,7 +370,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function getConfigurationPageId($recordTable, $recordPageId, $recordUid)
     {
-        $rootPageId = Util::getRootPageId($recordPageId);
+        $rootPageId = $this->rootPageResolver->getRootPageId($recordPageId);
         if ($this->rootPageResolver->getIsRootPageId($rootPageId)) {
             return $recordPageId;
         }

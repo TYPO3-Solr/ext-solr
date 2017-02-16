@@ -27,10 +27,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
-use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * RootPageResolver.
@@ -118,6 +119,37 @@ class RootPageResolver implements SingletonInterface
     }
 
     /**
+     * Determines the rootpage ID for a given page.
+     *
+     * @param int $pageId A page ID somewhere in a tree.
+     * @param bool $forceFallback Force the explicit detection and do not use the current frontend root line
+     * @return int The page's tree branch's root page ID
+     */
+    public function getRootPageId($pageId = 0, $forceFallback = false)
+    {
+        /** @var Rootline $rootLine */
+        $rootLine = GeneralUtility::makeInstance(Rootline::class);
+        $rootPageId = intval($pageId) ? intval($pageId) : $GLOBALS['TSFE']->id;
+
+        // frontend
+        if (!empty($GLOBALS['TSFE']->rootLine)) {
+            $rootLine->setRootLineArray($GLOBALS['TSFE']->rootLine);
+        }
+
+        // fallback, backend
+        if ($pageId != 0 && ($forceFallback || !$rootLine->getHasRootPage())) {
+            $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
+            $rootLineArray = $pageSelect->getRootLine($pageId, '', true);
+            $rootLine->setRootLineArray($rootLineArray);
+        }
+
+        $rootPageFromRootLine = $rootLine->getRootPageId();
+
+        return $rootPageFromRootLine === 0 ? $rootPageId : $rootPageFromRootLine;
+    }
+
+
+    /**
      * This method determines the responsible site roots for a record by getting the rootPage of the record and checking
      * if the pid is references in another site with additionalPageIds and returning those rootPageIds as well.
      *
@@ -150,11 +182,11 @@ class RootPageResolver implements SingletonInterface
     protected function getRootPageIdByTableAndUid($table, $uid)
     {
         if ($table === 'pages') {
-            $rootPageId = Util::getRootPageId($uid);
+            $rootPageId = $this->getRootPageId($uid);
             return $rootPageId;
         } else {
             $record = BackendUtility::getRecord($table, $uid, 'pid');
-            $rootPageId = Util::getRootPageId($record['pid'], true);
+            $rootPageId = $this->getRootPageId($record['pid'], true);
             return $rootPageId;
         }
     }
