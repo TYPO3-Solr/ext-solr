@@ -26,8 +26,8 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
-use ApacheSolrForTypo3\Solr\IndexQueue\InitializationPostProcessor;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -351,7 +351,8 @@ class Queue
             $additionalRecordFields = ', doktype, uid';
         }
 
-        $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
+        $record = $this->getRecordCached($itemType, $itemUid, $additionalRecordFields);
+
         if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
             return;
         }
@@ -367,6 +368,30 @@ class Queue
         // make a backup of the current item
         $item['indexing_configuration'] = $indexingConfiguration;
         $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_indexqueue_item', $item);
+    }
+
+    /**
+     * Get record to be added in addNewItem
+     *
+     * @param string $itemType The item's type, usually a table name.
+     * @param string $itemUid The item's uid, usually an integer uid, could be a
+     *      different value for non-database-record types.
+     * @param string $additionalRecordFields for sql-query
+     *
+     * @return array|NULL
+     */
+    protected function getRecordCached($itemType, $itemUid, $additionalRecordFields)
+    {
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $cacheId = md5('Queue' . ':' . 'getRecordCached' . ':' . $itemType . ':' . $itemUid . ':' . 'pid' . $additionalRecordFields);
+
+        $record = $cache->get($cacheId);
+        if (empty($record)) {
+            $record = BackendUtility::getRecord($itemType, $itemUid, 'pid' . $additionalRecordFields);
+            $cache->set($cacheId, $record);
+        }
+
+        return $record;
     }
 
     /**
