@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\AbstractDataHandlerListener;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUpdater;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -242,6 +243,10 @@ class RecordMonitor extends AbstractDataHandlerListener
         $recordTable = $table;
         $recordUid = $uid;
 
+        if ($this->hasRecordBeenProcessed($status, $table, $uid)) {
+            return;
+        }
+
         if ($status == 'new') {
             $recordUid = $tceMain->substNEWwithIDs[$recordUid];
         }
@@ -259,6 +264,32 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         $this->processRecord($recordTable, $recordPageId, $recordUid, $fields);
+    }
+
+    /**
+     * Checks if the record has already been processed by the processDatamap_afterDatabaseOperations hook
+     *
+     * @param string $status Status of the current operation, 'new' or 'update'
+     * @param string $table The table the record belongs to
+     * @param mixed $uid The record's uid, [integer] or [string] (like 'NEW...')
+     * @return bool
+     */
+    protected function hasRecordBeenProcessed($status, $table, $uid)
+    {
+        // Check if record has already been processed since DataHandler sends processDatamap_afterDatabaseOperations
+        // more than one time per table with nearly identical $fields array - but we only use the pid
+        // @see https://forge.typo3.org/issues/79635
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $cacheId = 'RecordMonitor' . '_' . 'hasRecordBeenProcessed' . '_' . $table . '_' . $uid . '_' . $status;
+
+        $isProcessed = $cache->get($cacheId);
+        if (!empty($isProcessed)) {
+            // item already processed in this request
+            return true;
+        }
+        $cache->set($cacheId, true);
+
+        return false;
     }
 
     /**
