@@ -116,7 +116,7 @@ class FormatServiceTest extends UnitTest
      */
     public function canIsoToTimestampIllegalDate()
     {
-        $this->assertEquals(-62169987600, $this->formatService->IsoToTimestamp('0000-00-00T00:00:00Z'));
+        $this->assertEquals(0, $this->formatService->IsoToTimestamp('02-16-2017T20:13:57Z'));
     }
 
     /**
@@ -164,7 +164,7 @@ class FormatServiceTest extends UnitTest
      */
     public function canUtcIsoToTimestampIllegalDate()
     {
-        $this->assertEquals(-62169984000, $this->formatService->utcIsoToTimestamp('0000-00-00T00:00:00Z'));
+        $this->assertEquals(0, $this->formatService->utcIsoToTimestamp('02-16-2017T20:13:57Z'));
     }
 
     /**
