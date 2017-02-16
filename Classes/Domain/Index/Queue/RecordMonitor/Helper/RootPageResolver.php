@@ -88,14 +88,14 @@ class RootPageResolver implements SingletonInterface
     }
 
     /**
-     * Takes a page Id and checks whether the page is marked as root page.
+     * Checks if the passed pageId is a root page.
      *
      * @param int $pageId Page ID
      * @return bool TRUE if the page is marked as root page, FALSE otherwise
      */
-    public function isRootPage($pageId)
+    public function getIsRootPageId($pageId)
     {
-        $cacheId = 'RootPageResolver' . '_' . 'isRootPage' . '_' . $pageId;
+        $cacheId = 'RootPageResolver' . '_' . 'getIsRootPageId' . '_' . $pageId;
         $isSiteRoot = $this->runtimeCache->get($cacheId);
         if (!empty($isSiteRoot)) {
             return $isSiteRoot;
@@ -129,7 +129,7 @@ class RootPageResolver implements SingletonInterface
     {
         $rootPages = [];
         $rootPageId = $this->getRootPageIdByTableAndUid($table, $uid);
-        if ($this->isRootPage($rootPageId)) {
+        if ($this->getIsRootPageId($rootPageId)) {
             $rootPages[] = $rootPageId;
         }
 

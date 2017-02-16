@@ -509,7 +509,7 @@ class Util
         GeneralUtility::logDeprecatedFunction();
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
 
-        return $rootPageResolver->isRootPage($pageId);
+        return $rootPageResolver->getIsRootPageId($pageId);
     }
 
     /**
