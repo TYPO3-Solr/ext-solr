@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
@@ -501,31 +502,14 @@ class Util
      *
      * @param int $pageId Page ID
      * @return bool TRUE if the page is marked as root page, FALSE otherwise
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function isRootPage($pageId)
     {
-        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
-        $cacheId = 'Util' . '_' . 'isRootPage' . '_' . $pageId;
+        GeneralUtility::logDeprecatedFunction();
+        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
 
-        $isSiteRoot = $cache->get($cacheId);
-        if (!empty($isSiteRoot)) {
-            return $isSiteRoot;
-        }
-
-        $page = (array)BackendUtility::getRecord('pages', $pageId, 'is_siteroot');
-
-        if (empty($page)) {
-            throw new \InvalidArgumentException(
-                'The page for the given page ID \'' . $pageId
-                . '\' could not be found in the database and can therefore not be used as site root page.',
-                1487171426
-            );
-        }
-
-        $isSiteRoot = Site::isRootPage($page);
-        $cache->set($cacheId, $isSiteRoot);
-
-        return $isSiteRoot;
+        return $rootPageResolver->getIsRootPageId($pageId);
     }
 
     /**
