@@ -25,8 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Extracted logic from the AbstractDataHandlerListener in order to
@@ -112,7 +114,35 @@ class ConfigurationAwareRecordService
             return $this->getPageOverlayRecordIfParentIsAccessible($recordUid, $recordWhereClause);
         }
 
-        return (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+        $row = $this->getRecordForIndexConfigurationIsValid($recordTable, $recordUid, $recordWhereClause);
+
+        return $row;
+    }
+
+    /**
+     * Returns the row need by getRecordIfIndexConfigurationIsValid either directly from database
+     * or from cache
+     *
+     * @param string $recordTable
+     * @param integer $recordUid
+     * @param string $recordWhereClause
+     *
+     * @return array
+     */
+    protected function getRecordForIndexConfigurationIsValid($recordTable, $recordUid, $recordWhereClause)
+    {
+        $cache = GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $cacheId = md5('ConfigurationAwareRecordService' . ':' . 'getRecordIfIndexConfigurationIsValid' . ':' . $recordTable . ':' . $recordUid . ':' . $recordWhereClause);
+
+        $row = $cache->get($cacheId);
+        if (!empty($row)) {
+            return $row;
+        }
+
+        $row = (array)BackendUtility::getRecord($recordTable, $recordUid, '*', $recordWhereClause);
+        $cache->set($cacheId, $row);
+
+        return $row;
     }
 
     /**
