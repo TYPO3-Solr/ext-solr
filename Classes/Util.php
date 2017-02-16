@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
@@ -474,27 +473,14 @@ class Util
      * @param int $pageId A page ID somewhere in a tree.
      * @param bool $forceFallback Force the explicit detection and do not use the current frontend root line
      * @return int The page's tree branch's root page ID
+     * @deprecated since 6.1 will be removed in 7.0
      */
-    public static function getRootPageId($pageId = 0, $forceFallback = false)
+    public function getRootPageId($pageId = 0, $forceFallback = false)
     {
-        /** @var Rootline $rootLine */
-        $rootLine = GeneralUtility::makeInstance(Rootline::class);
-        $rootPageId = intval($pageId) ? intval($pageId) : $GLOBALS['TSFE']->id;
+        GeneralUtility::logDeprecatedFunction();
+        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
 
-        // frontend
-        if (!empty($GLOBALS['TSFE']->rootLine)) {
-            $rootLine->setRootLineArray($GLOBALS['TSFE']->rootLine);
-        }
-
-        // fallback, backend
-        if ($pageId != 0 && ($forceFallback || !$rootLine->getHasRootPage())) {
-            $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-            $rootLineArray = $pageSelect->getRootLine($pageId, '', true);
-            $rootLine->setRootLineArray($rootLineArray);
-        }
-
-        $rootPageFromRootLine = $rootLine->getRootPageId();
-        return $rootPageFromRootLine === 0 ? $rootPageId : $rootPageFromRootLine;
+        return $rootPageResolver->getRootPageId($pageId, $forceFallback);
     }
 
     /**
