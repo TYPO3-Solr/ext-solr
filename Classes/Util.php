@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
@@ -44,7 +45,6 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
  */
 class Util
 {
-    const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
 
     /**
      * Generates a document id for documents representing page records.
@@ -109,10 +109,14 @@ class Util
      *
      * @param int $timestamp unix timestamp
      * @return string the date in ISO 8601 format
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function timestampToIso($timestamp)
     {
-        return date(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
+        GeneralUtility::logDeprecatedFunction();
+        $formatService = GeneralUtility::makeInstance(FormatService::class);
+
+        return $formatService->timestampToIso($timestamp);
     }
 
     /**
@@ -120,12 +124,14 @@ class Util
      *
      * @param string $isoTime date in ISO 8601 format
      * @return int unix timestamp
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function isoToTimestamp($isoTime)
     {
-        $dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT,
-            $isoTime);
-        return $dateTime ? (int)$dateTime->format('U') : 0;
+        GeneralUtility::logDeprecatedFunction();
+        $formatService = GeneralUtility::makeInstance(FormatService::class);
+
+        return $formatService->isoToTimestamp($isoTime);
     }
 
     /**
@@ -133,10 +139,14 @@ class Util
      *
      * @param int $timestamp unix timestamp
      * @return string the date in ISO 8601 format
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function timestampToUtcIso($timestamp)
     {
-        return gmdate(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
+        GeneralUtility::logDeprecatedFunction();
+        $formatService = GeneralUtility::makeInstance(FormatService::class);
+
+        return $formatService->timestampToUtcIso($timestamp);
     }
 
     /**
@@ -144,13 +154,14 @@ class Util
      *
      * @param string $isoTime date in ISO 8601 format
      * @return int unix timestamp
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function utcIsoToTimestamp($isoTime)
     {
-        $utcTimeZone = new \DateTimeZone('UTC');
-        $dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT,
-            $isoTime, $utcTimeZone);
-        return $dateTime ? (int)$dateTime->format('U') : 0;
+        GeneralUtility::logDeprecatedFunction();
+        $formatService = GeneralUtility::makeInstance(FormatService::class);
+
+        return $formatService->utcIsoToTimestamp($isoTime);
     }
 
     /**

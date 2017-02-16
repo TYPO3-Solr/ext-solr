@@ -26,7 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
-use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Parser to build solr range queries from tx_solr[filter]
@@ -59,9 +60,10 @@ class DateRange implements FilterEncoder, FacetBuilder
         $dateRangeEnd .= '59'; // adding 59 seconds
 
         // TODO for PHP 5.3 use date_parse_from_format() / date_create_from_format() / DateTime::createFromFormat()
-        $dateRangeFilter = '[' . Util::timestampToIso(strtotime($dateRangeStart));
+        $formatService = GeneralUtility::makeInstance(FormatService::class);
+        $dateRangeFilter = '[' . $formatService->timestampToIso(strtotime($dateRangeStart));
         $dateRangeFilter .= ' TO ';
-        $dateRangeFilter .= Util::timestampToIso(strtotime($dateRangeEnd)) . ']';
+        $dateRangeFilter .= $formatService->timestampToIso(strtotime($dateRangeEnd)) . ']';
 
         return $dateRangeFilter;
     }

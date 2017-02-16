@@ -30,8 +30,8 @@ use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
 use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
 use ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
 use ApacheSolrForTypo3\Solr\Template;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -212,6 +212,7 @@ class ResultsCommand implements PluginCommand
     protected function processDocumentFieldsToArray(
         \Apache_Solr_Document $document
     ) {
+        $formatService = GeneralUtility::makeInstance(FormatService::class);
         $processingInstructions = $this->configuration->getSearchResultsFieldProcessingInstructionsConfiguration();
         $availableFields = $document->getFieldNames();
         $result = [];
@@ -223,7 +224,7 @@ class ResultsCommand implements PluginCommand
             // TODO allow to have multiple (comma-separated) instructions for each field
             switch ($processingInstruction) {
                 case 'timestamp':
-                    $processedFieldValue = Util::isoToTimestamp($document->{$fieldName});
+                    $processedFieldValue = $formatService->isoToTimestamp($document->{$fieldName});
                     break;
                 case 'serialize':
                     if (!empty($document->{$fieldName})) {

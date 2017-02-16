@@ -35,6 +35,7 @@ use DateTimeZone;
  */
 class FormatService
 {
+    const SOLR_ISO_DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
 
     /**
      * @see http://php.net/manual/de/function.date.php for formatting options
@@ -55,6 +56,55 @@ class FormatService
         // try to create DateTime object
         $timezone = is_null($timezone) ?  new DateTimeZone(date_default_timezone_get()) : $timezone;
         return $this->getFormattedDate($input, $inputFormat, $outputFormat, $timezone);
+    }
+
+    /**
+     * Converts a date from unix timestamp to ISO 8601 format.
+     *
+     * @param int $timestamp unix timestamp
+     * @return string the date in ISO 8601 format
+     */
+    public function timestampToIso($timestamp)
+    {
+        return date(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
+    }
+
+    /**
+     * Converts a date from ISO 8601 format to unix timestamp.
+     *
+     * @param string $isoTime date in ISO 8601 format
+     * @return int unix timestamp
+     */
+    public function isoToTimestamp($isoTime)
+    {
+        $dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT,
+            $isoTime);
+        return $dateTime ? (int)$dateTime->format('U') : 0;
+    }
+
+    /**
+     * Converts a date from unix timestamp to ISO 8601 format in UTC timezone.
+     *
+     * @param int $timestamp unix timestamp
+     * @return string the date in ISO 8601 format
+     */
+    public function timestampToUtcIso($timestamp)
+    {
+        return gmdate(self::SOLR_ISO_DATETIME_FORMAT, $timestamp);
+    }
+
+    /**
+     * Converts a date from ISO 8601 format in UTC timezone to unix timestamp.
+     *
+     * @param string $isoTime date in ISO 8601 format
+     * @return int unix timestamp
+     */
+    public function utcIsoToTimestamp($isoTime)
+    {
+        $utcTimeZone = new \DateTimeZone('UTC');
+        $dateTime = \DateTime::createFromFormat(self::SOLR_ISO_DATETIME_FORMAT,
+            $isoTime, $utcTimeZone);
+        return $dateTime ? (int)$dateTime->format('U') : 0;
     }
 
     /**

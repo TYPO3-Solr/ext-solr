@@ -24,7 +24,8 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Util;
+use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A field processor that converts timestamps to ISO dates as needed by Solr
@@ -46,9 +47,10 @@ class TimestampToIsoDate implements FieldProcessor
     public function process(array $values)
     {
         $results = [];
+        $formatService = GeneralUtility::makeInstance(FormatService::class);
 
         foreach ($values as $timestamp) {
-            $results[] = Util::timestampToIso($timestamp);
+            $results[] = $formatService->timestampToIso($timestamp);
         }
 
         return $results;
