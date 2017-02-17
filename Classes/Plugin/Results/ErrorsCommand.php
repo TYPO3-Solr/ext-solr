@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
-use ApacheSolrForTypo3\Solr\Plugin\Results\ErrorDetector;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -42,14 +42,14 @@ class ErrorsCommand implements PluginCommand
     /**
      * Parent plugin
      *
-     * @var Results
+     * @var CommandPluginBase
      */
     protected $parentPlugin;
 
     /**
      * Configuration
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
 
