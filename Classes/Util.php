@@ -243,7 +243,7 @@ class Util
      * @param int $pageId Id of the (root) page to get the Solr configuration from.
      * @param string $path The TypoScript configuration path to retrieve.
      * @param bool $initializeTsfe Optionally initializes a full TSFE to get the configuration, defaults to FALSE
-     * @param int|bool $language System language uid or FALSE to disable language usage, optional, defaults to 0
+     * @param int $language System language uid, optional, defaults to 0
      * @param bool $useTwoLevelCache Flag to enable the two level cache for the typoscript configuration array
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
