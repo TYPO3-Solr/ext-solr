@@ -74,6 +74,8 @@ class TCAService
     public function isEnabledRecord($table, $record)
     {
         if (
+            (empty($record))
+            ||
             (isset($this->tca[$table]['ctrl']['enablecolumns']['disabled']) && !empty($record[$this->tca[$table]['ctrl']['enablecolumns']['disabled']]))
             ||
             (isset($this->tca[$table]['ctrl']['delete']) && !empty($record[$this->tca[$table]['ctrl']['delete']]))
