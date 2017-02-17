@@ -24,10 +24,6 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\SolrService;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
@@ -73,8 +69,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 
     public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '')
     {
-        $connection = null;
-
         if (empty($host)) {
             GeneralUtility::devLog(
                 'ApacheSolrForTypo3\Solr\ConnectionManager::getConnection() called with empty
