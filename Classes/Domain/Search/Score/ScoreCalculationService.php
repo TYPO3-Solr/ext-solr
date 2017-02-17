@@ -85,7 +85,7 @@ class ScoreCalculationService
      *
      * @param string $debugData
      * @param string $queryFields
-     * @return array[Score]
+     * @return array[] array of Score
      */
     public function parseScores($debugData, $queryFields)
     {
