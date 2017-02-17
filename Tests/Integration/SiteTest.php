@@ -76,7 +76,7 @@ class SiteTest extends IntegrationTest
     public function canCreateInstanceWithRootSiteUidOK() {
         $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
         $this->site = GeneralUtility::makeInstance(Site::class, 1);
-        $this->assertSame(1, $this->site->getRootPageId());
+        $this->assertEquals(1, $this->site->getRootPageId());
     }
 
     /**
