@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Plugin\CommandPluginAware;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\FormModifier;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -55,7 +56,7 @@ class FormCommand implements PluginCommand
     /**
      * Configuration
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
 
