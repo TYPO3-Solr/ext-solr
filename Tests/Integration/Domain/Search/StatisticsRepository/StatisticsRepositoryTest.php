@@ -71,6 +71,41 @@ class StatisticsRepositoryTest extends IntegrationTest
     }
 
     /**
+     * @test
+     */
+    public function canGetTopKeywordsWithoutHitsNoResult()
+    {
+        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $fixtureTimestamp = 1480000000;
+        $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
+
+        /** @var $repository StatisticsRepository */
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+        $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
+
+        $expectedResult = [];
+
+        $this->assertSame($expectedResult, $topHits);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSearchStatisticsNoResult() {
+        $this->importDataSetFromFixture('can_get_statistics.xml');
+        $fixtureTimestamp = 1480000000;
+        $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
+
+        /** @var $repository StatisticsRepository */
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+        $topHits = $repository->getSearchStatistics(37, $daysSinceFixture);
+
+        $expectedResult = [];
+
+        $this->assertSame($expectedResult, $topHits);
+    }
+
+    /**
      * Helper method to calculate the number of days from now to a specific timestamp.
      *
      * @param $timestamp
