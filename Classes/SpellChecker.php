@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -45,7 +46,7 @@ class SpellChecker
     /**
      * Configuration
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
 
