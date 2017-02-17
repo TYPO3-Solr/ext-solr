@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Facet;
 
 use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -64,7 +65,9 @@ abstract class AbstractFacetRenderer implements FacetRenderer
     protected $facetConfiguration;
 
     /**
-     * @var array
+     * Configuration
+     *
+     * @var TypoScriptConfiguration
      */
     protected $solrConfiguration;
 
