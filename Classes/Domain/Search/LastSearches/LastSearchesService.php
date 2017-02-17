@@ -134,10 +134,10 @@ class LastSearchesService
     /**
      * Gets the last searched keywords from the database
      *
-     * @param int|bool $limit
+     * @param int|string $limit
      * @return array An array containing the last searches of the current user
      */
-    protected function getLastSearchesFromDatabase($limit = false)
+    protected function getLastSearchesFromDatabase($limit = '')
     {
         $limit = $limit ? intval($limit) : false;
         $lastSearchesRows = $this->database->exec_SELECTgetRows(
@@ -150,8 +150,12 @@ class LastSearchesService
         );
 
         $lastSearches = [];
-        foreach ($lastSearchesRows as $row) {
-            $lastSearches[] = html_entity_decode($row['keywords'], ENT_QUOTES, 'UTF-8');
+
+        // Only post process result if $lastSearchesRows has elements
+        if (!empty($lastSearchesRows)) {
+            foreach ($lastSearchesRows as $row) {
+                $lastSearches[] = html_entity_decode($row['keywords'], ENT_QUOTES, 'UTF-8');
+            }
         }
 
         return $lastSearches;
