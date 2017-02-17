@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
 use ApacheSolrForTypo3\Solr\Facet\Facet as SolrFacet;
 use ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -43,7 +44,7 @@ class Facet extends AbstractSubpartViewHelper
     /**
      * TypoScript configuration of tx_solr
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration = null;
 
