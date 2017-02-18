@@ -71,7 +71,7 @@ class ResultsPerPageSwitchCommand implements PluginCommand
         $markers = [];
 
         $selectOptions = $this->getResultsPerPageOptions();
-        if ($selectOptions) {
+        if (!empty($selectOptions)) {
             $queryLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
                 $this->parentPlugin->getSearchResultSetService()->getSearch()->getQuery());
             $queryLinkBuilder->setLinkTargetPageId($this->parentPlugin->getLinkTargetPageId());
