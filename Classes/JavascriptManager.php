@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -37,30 +38,35 @@ class JavascriptManager
     const POSITION_HEADER = 'header';
     const POSITION_FOOTER = 'footer';
     const POSITION_NONE = 'none';
+
     /**
      * Javascript files to load.
      *
      * @var array
      */
     protected static $files = [];
+
     /**
      * Raw script snippets to load.
      *
      * @var array
      */
     protected static $snippets = [];
+
     /**
      * Javascript file configuration.
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
+
     /**
      * Where to insert the JS, either header or footer
      *
      * @var string
      */
     protected $javascriptInsertPosition;
+
     /**
      * JavaScript tags to add to the page for the current instance
      *
