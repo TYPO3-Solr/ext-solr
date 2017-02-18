@@ -111,7 +111,7 @@ class OverviewModuleController extends AbstractModuleController
 
         if (!empty($invalidPath)) {
             $this->addFlashMessage(
-                'Path should not contain the characters *, ?, <, >, |, :, or #":' . PHP_EOL . implode(PHP_EOL, $invalidPath),
+                'Path should not contain the characters "*, ?, <, >, |, :, or #":' . PHP_EOL . implode(PHP_EOL, $invalidPath),
                 'Path is not valid',
                 FlashMessage::WARNING
             );
