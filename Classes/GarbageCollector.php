@@ -316,13 +316,15 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
                 false
             );
 
-            // Check that record is not empty before processing
-            if (!empty($record)) {
-                $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
-
-                // keep previous state of important fields for later comparison
-                $this->trackedRecords[$table][$uid] = $record;
+            // If no record could be found skip further processing
+            if (empty($record)) {
+                return;
             }
+
+            $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
+
+            // keep previous state of important fields for later comparison
+            $this->trackedRecords[$table][$uid] = $record;
         }
     }
 
@@ -358,21 +360,23 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
 
         $record = (array)BackendUtility::getRecord($table, $uid, $garbageCollectionRelevantFields, '', false);
 
-        // Check that record is not empty before processing
-        if (!empty($record)) {
-            $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
+        // If no record could be found skip further processing
+        if (empty($record)) {
+            return;
+        }
 
-            if ($this->tcaService->isHidden($table, $record)
-                || $this->isInvisibleByStartOrEndtime($table, $record)
-                || $this->hasFrontendGroupsRemoved($table, $record)
-                || ($table == 'pages' && $this->isPageExcludedFromSearch($record))
-                || ($table == 'pages' && !$this->isIndexablePageType($record))
-            ) {
-                $this->collectGarbage($table, $uid);
+        $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
 
-                if ($table == 'pages') {
-                    $this->deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $fields);
-                }
+        if ($this->tcaService->isHidden($table, $record)
+            || $this->isInvisibleByStartOrEndtime($table, $record)
+            || $this->hasFrontendGroupsRemoved($table, $record)
+            || ($table == 'pages' && $this->isPageExcludedFromSearch($record))
+            || ($table == 'pages' && !$this->isIndexablePageType($record))
+        ) {
+            $this->collectGarbage($table, $uid);
+
+            if ($table == 'pages') {
+                $this->deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $fields);
             }
         }
     }
