@@ -107,6 +107,27 @@ class TCAServiceTest extends UnitTest
         $this->assertFalse($isVisible);
     }
 
+    /**
+     * When a page record is passed with the field no_search = 1 it should be detected is invisible
+     *
+     * @test
+     */
+    public function getIsEnabledRecordEmptyRecord() {
+        $fakeTCA = [
+            'pages' => [
+                'ctrl' => [
+                    'delete' => 'deleted'
+                ]
+            ]
+        ];
+
+        $fakePageRecord = [];
+
+        $tcaService = new TCAService($fakeTCA);
+        $isVisible = $tcaService->isEnabledRecord('pages', $fakePageRecord);
+
+        $this->assertFalse($isVisible);
+    }
 
     /**
      * @test
