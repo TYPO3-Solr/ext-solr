@@ -80,7 +80,15 @@ class Site
      */
     public function __construct($rootPageId)
     {
-        $page = BackendUtility::getRecord('pages', $rootPageId);
+        $page = (array)BackendUtility::getRecord('pages', $rootPageId);
+
+        if (empty($page)) {
+            throw new \InvalidArgumentException(
+                'The page for the given page ID \'' . $rootPageId
+                . '\' could not be found in the database and can therefore not be used as site root page.',
+                1487326416
+            );
+        }
 
         if (!self::isRootPage($page)) {
             throw new \InvalidArgumentException(
@@ -309,9 +317,7 @@ class Site
 
         $configuration = Util::getConfigurationFromPageId(
             $this->rootPage['uid'],
-            'config',
-            false,
-            false
+            'config'
         );
 
         $siteDefaultLanguage = $configuration->getValueByPathOrDefaultValue('sys_language_uid', $siteDefaultLanguage);
