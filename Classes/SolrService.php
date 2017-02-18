@@ -30,6 +30,8 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use \Apache_Solr_HttpTransportException;
+
 
 /**
  * Solr Service Access
@@ -892,7 +894,9 @@ class SolrService extends \Apache_Solr_Service
      */
     public function getCoreName()
     {
-        return (string) array_pop(explode('/', trim($this->_path, '/')));
+        $paths = explode('/', trim($this->_path, '/'));
+
+        return (string) array_pop($paths);
     }
 
     /**
