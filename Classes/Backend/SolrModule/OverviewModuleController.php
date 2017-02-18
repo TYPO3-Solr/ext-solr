@@ -76,6 +76,7 @@ class OverviewModuleController extends AbstractModuleController
     {
         $connectedHosts = [];
         $missingHosts = [];
+        $invalidPath = [];
 
         foreach ($this->connections as $connection) {
             $coreUrl = $connection->getScheme() . '://' . $connection->getHost() . ':' . $connection->getPort() . $connection->getPath();
@@ -84,6 +85,11 @@ class OverviewModuleController extends AbstractModuleController
                 $connectedHosts[] = $coreUrl;
             } else {
                 $missingHosts[] = $coreUrl;
+            }
+
+            // Check that path is valid
+            if ($this->validatePath($connection->getPath()) === false) {
+                $invalidPath[] = $connection->getPath();
             }
         }
 
@@ -102,6 +108,32 @@ class OverviewModuleController extends AbstractModuleController
                 FlashMessage::ERROR
             );
         }
+
+        if (!empty($invalidPath)) {
+            $this->addFlashMessage(
+                'Path should not contain the characters *, ?, <, >, |, :, or #":' . PHP_EOL . implode(PHP_EOL, $invalidPath),
+                'Path is not valid',
+                FlashMessage::ERROR
+            );
+        }
+    }
+
+    /**
+     * Validate solr path
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    protected function validatePath($path) {
+        $path = trim($path);
+
+        // Check for invalid characters
+        if(preg_match('/^[^*?"<>|:#]*$/',$path)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
