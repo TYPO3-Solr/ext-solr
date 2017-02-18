@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Query;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -47,7 +48,7 @@ class LinkBuilder
     /**
      * Solr configuration.
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $solrConfiguration;
 
