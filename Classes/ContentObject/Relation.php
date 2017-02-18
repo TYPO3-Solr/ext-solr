@@ -337,7 +337,7 @@ class Relation
             $this->configuration['localField'] = $foreignTableLabelField;
             $parentContentObject->data = $relatedRecord;
             if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
-                list(,, $this->configuration['foreignLabelField']) = explode('.',
+                list(, $this->configuration['foreignLabelField']) = explode('.',
                     $this->configuration['foreignLabelField'], 2);
             } else {
                 $this->configuration['foreignLabelField'] = '';
