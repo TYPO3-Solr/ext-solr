@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Plugin\Results;
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\Plugin\CommandPluginBase;
 use ApacheSolrForTypo3\Solr\Plugin\PluginCommand;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -44,14 +45,14 @@ class LastSearchesCommand implements PluginCommand
     /**
      * Parent plugin
      *
-     * @var Results
+     * @var CommandPluginBase
      */
     protected $parentPlugin;
 
     /**
      * Configuration
      *
-     * @var array
+     * @var TypoScriptConfiguration
      */
     protected $configuration;
 
