@@ -102,6 +102,7 @@ class SortUrl implements ViewHelper
                     $sortDirection = $configuredSortOptions[$sortOption]['defaultOrder'];
                 }
                 $sortParameter = $sortOption . ' ' . $sortDirection;
+                $currentSortDirection = '';
 
                 foreach ($urlSortParameters as $urlSortParameter) {
                     $explodedUrlSortParameter = explode(' ', $urlSortParameter);
