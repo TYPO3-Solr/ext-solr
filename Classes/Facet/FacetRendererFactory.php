@@ -95,7 +95,6 @@ class FacetRendererFactory
      */
     public function getFacetRendererByFacet($facet)
     {
-        $facetRenderer = null;
         $facetConfiguration = $this->facetsConfiguration[$facet->getName() . '.'];
 
         $facetRendererClassName = $this->defaultFacetRendererClassName;
