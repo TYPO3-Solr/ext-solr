@@ -73,7 +73,7 @@ class TwoLevelCache
      * Retrieves a value from the first level cache.
      *
      * @param string $cacheId
-     * @return null
+     * @return mixed|null
      */
     protected function getFromFirstLevelCache($cacheId)
     {
