@@ -308,13 +308,19 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
 
         if ($hasConfiguredEnableColumnForFeGroup) {
             $visibilityAffectingFields = $this->tcaService->getVisibilityAffectingFieldsByTable($table);
-            $record = BackendUtility::getRecord(
+            $record = (array)BackendUtility::getRecord(
                 $table,
                 $uid,
                 $visibilityAffectingFields,
                 '',
                 false
             );
+
+            // If no record could be found skip further processing
+            if (empty($record)) {
+                return;
+            }
+
             $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
 
             // keep previous state of important fields for later comparison
@@ -352,7 +358,13 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
 
         $garbageCollectionRelevantFields = $this->tcaService->getVisibilityAffectingFieldsByTable($table);
 
-        $record = BackendUtility::getRecord($table, $uid, $garbageCollectionRelevantFields, '', false);
+        $record = (array)BackendUtility::getRecord($table, $uid, $garbageCollectionRelevantFields, '', false);
+
+        // If no record could be found skip further processing
+        if (empty($record)) {
+            return;
+        }
+
         $record = $this->tcaService->normalizeFrontendGroupField($table, $record);
 
         if ($this->tcaService->isHidden($table, $record)
