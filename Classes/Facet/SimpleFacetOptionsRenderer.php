@@ -49,7 +49,7 @@ class SimpleFacetOptionsRenderer implements FacetOptionsRenderer
     /**
      * The facet's TypoScript configuration.
      *
-     * @var string
+     * @var array
      */
     protected $facetConfiguration;
 
