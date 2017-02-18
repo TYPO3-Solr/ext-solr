@@ -71,41 +71,43 @@ class HierarchicalFacetRenderer extends AbstractFacetRenderer
 
         // enrich the facet options with links before building the menu structure
         $enrichedFacetOptions = [];
-        foreach ($facetOptions as $facetOptionValue => $facetOptionResultCount) {
-            $facetOption = GeneralUtility::makeInstance(FacetOption::class,
-                $this->facetName,
-                $facetOptionValue,
-                $facetOptionResultCount
-            );
+        if (!empty($facetOptions)) {
+            foreach ($facetOptions as $facetOptionValue => $facetOptionResultCount) {
+                $facetOption = GeneralUtility::makeInstance(FacetOption::class,
+                    $this->facetName,
+                    $facetOptionValue,
+                    $facetOptionResultCount
+                );
 
-            /* @var $facetOption FacetOption */
-            $facetOption->setUrlValue($filterEncoder->encodeFilter($facetOptionValue));
+                /* @var $facetOption FacetOption */
+                $facetOption->setUrlValue($filterEncoder->encodeFilter($facetOptionValue));
 
-            $facetLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
-                $this->search->getQuery(), $this->facetName, $facetOption);
+                $facetLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
+                    $this->search->getQuery(), $this->facetName, $facetOption);
 
-            $optionSelected = $facetOption->isSelectedInFacet($this->facetName);
-            $optionLinkUrl = $facetLinkBuilder->getAddFacetOptionUrl();
+                $optionSelected = $facetOption->isSelectedInFacet($this->facetName);
+                $optionLinkUrl = $facetLinkBuilder->getAddFacetOptionUrl();
 
-            // negating the facet option links to remove a filter
-            if ($this->facetConfiguration['selectingSelectedFacetOptionRemovesFilter'] && $optionSelected) {
-                $optionLinkUrl = $facetLinkBuilder->getRemoveFacetOptionUrl();
+                // negating the facet option links to remove a filter
+                if ($this->facetConfiguration['selectingSelectedFacetOptionRemovesFilter'] && $optionSelected) {
+                    $optionLinkUrl = $facetLinkBuilder->getRemoveFacetOptionUrl();
+                }
+
+                if ($this->facetConfiguration['singleOptionMode']) {
+                    $optionLinkUrl = $facetLinkBuilder->getReplaceFacetOptionUrl();
+                }
+
+                // by default the facet link builder creates htmlspecialchars()ed URLs
+                // HMENU will also apply htmlspecialchars(), to prevent corrupt URLs
+                // we're reverting the facet builder's htmlspecials() here
+                $optionLinkUrl = htmlspecialchars_decode($optionLinkUrl);
+
+                $enrichedFacetOptions[$facetOption->getValue()] = [
+                    'numberOfResults' => $facetOption->getNumberOfResults(),
+                    'url' => $optionLinkUrl,
+                    'selected' => $optionSelected,
+                ];
             }
-
-            if ($this->facetConfiguration['singleOptionMode']) {
-                $optionLinkUrl = $facetLinkBuilder->getReplaceFacetOptionUrl();
-            }
-
-            // by default the facet link builder creates htmlspecialchars()ed URLs
-            // HMENU will also apply htmlspecialchars(), to prevent corrupt URLs
-            // we're reverting the facet builder's htmlspecials() here
-            $optionLinkUrl = htmlspecialchars_decode($optionLinkUrl);
-
-            $enrichedFacetOptions[$facetOption->getValue()] = [
-                'numberOfResults' => $facetOption->getNumberOfResults(),
-                'url' => $optionLinkUrl,
-                'selected' => $optionSelected,
-            ];
         }
 
         $facetContent .= $this->renderHierarchicalFacet($enrichedFacetOptions);
