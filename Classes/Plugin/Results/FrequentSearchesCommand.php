@@ -44,7 +44,7 @@ class FrequentSearchesCommand implements PluginCommand
     /**
      * Parent plugin
      *
-     * @var Results
+     * @var CommandPluginBase
      */
     protected $parentPlugin;
 
