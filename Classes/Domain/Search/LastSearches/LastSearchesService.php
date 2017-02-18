@@ -149,13 +149,15 @@ class LastSearchesService
             $limit
         );
 
+        // If no records could be found return empty result
+        if (empty($lastSearchesRows)) {
+            return [];
+        }
+
         $lastSearches = [];
 
-        // Only post process result if $lastSearchesRows has elements
-        if (!empty($lastSearchesRows)) {
-            foreach ($lastSearchesRows as $row) {
-                $lastSearches[] = html_entity_decode($row['keywords'], ENT_QUOTES, 'UTF-8');
-            }
+        foreach ($lastSearchesRows as $row) {
+            $lastSearches[] = html_entity_decode($row['keywords'], ENT_QUOTES, 'UTF-8');
         }
 
         return $lastSearches;
