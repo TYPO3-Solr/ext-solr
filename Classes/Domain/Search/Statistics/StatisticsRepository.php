@@ -47,7 +47,7 @@ class StatisticsRepository
         $rootPageId = (int) $rootPageId;
         $limit = (int) $limit;
 
-        $statisticsRows = $this->getDatabase()->exec_SELECTgetRows(
+        $statisticsRows = (array)$this->getDatabase()->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
             'tx_solr_statistics',
             'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
@@ -123,7 +123,7 @@ class StatisticsRepository
             $comparisonOperator = '>';
         }
 
-        $statisticsRows = $this->getDatabase()->exec_SELECTgetRows(
+        $statisticsRows = (array)$this->getDatabase()->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
             'tx_solr_statistics',
             'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId . ' AND num_found ' . $comparisonOperator . ' 0',
