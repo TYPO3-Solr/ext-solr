@@ -177,7 +177,7 @@ class IndexQueueModuleController extends AbstractModuleController
 
         $itemIndexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
-        if (!empty($indexingConfigurationsToInitialize)) {
+        if ((!empty($indexingConfigurationsToInitialize)) && (is_array($indexingConfigurationsToInitialize))) {
             // initialize selected indexing configuration
             foreach ($indexingConfigurationsToInitialize as $indexingConfigurationName) {
                 $initializedIndexingConfiguration = $itemIndexQueue->initialize(
