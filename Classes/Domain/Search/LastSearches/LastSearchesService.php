@@ -134,12 +134,11 @@ class LastSearchesService
     /**
      * Gets the last searched keywords from the database
      *
-     * @param int|string $limit
+     * @param int $limit
      * @return array An array containing the last searches of the current user
      */
-    protected function getLastSearchesFromDatabase($limit = '')
+    protected function getLastSearchesFromDatabase($limit = 10)
     {
-        $limit = $limit ? intval($limit) : false;
         $lastSearchesRows = $this->database->exec_SELECTgetRows(
             'DISTINCT keywords',
             'tx_solr_last_searches',
