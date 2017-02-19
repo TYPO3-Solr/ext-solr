@@ -50,7 +50,7 @@ class SortingCommand implements PluginCommand
     /**
      * Parent plugin
      *
-     * @var Results
+     * @var CommandPluginBase
      */
     protected $parentPlugin;
 
