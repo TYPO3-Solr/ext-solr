@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 
 /**
@@ -34,6 +35,13 @@ use ApacheSolrForTypo3\Solr\Util;
  */
 class QueryGroup implements FilterEncoder, FacetBuilder
 {
+
+    /**
+     * TypoScript configuration of tx_solr
+     *
+     * @var TypoScriptConfiguration
+     */
+    protected $configuration = null;
 
     /**
      * Constructor
