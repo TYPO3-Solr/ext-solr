@@ -244,7 +244,7 @@ abstract class AbstractFacetRenderer implements FacetRenderer
 
             // find and remove all options for this facet
             foreach ($filterParameters as $key => $filter) {
-                list($filterName,) = explode(':', $filter);
+                list($filterName) = explode(':', $filter);
                 if ($filterName == $this->facetName) {
                     unset($filterParameters[$key]);
                 }
