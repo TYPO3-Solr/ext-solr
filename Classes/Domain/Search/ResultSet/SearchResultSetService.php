@@ -37,6 +37,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
+use \Apache_Solr_ParserException;
 
 /**
  * The SearchResultSetService is responsible to build a SearchResultSet from a SearchRequest.
