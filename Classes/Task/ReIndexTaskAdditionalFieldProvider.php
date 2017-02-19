@@ -111,7 +111,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         $task,
         SchedulerModuleController $schedulerModule
     ) {
-        if (!$task instanceof ReIndexTask) {
+        if ((!is_null($task)) && (!($task instanceof ReIndexTask))) {
             throw new \LogicException(
                 '$task must be an instance of ReIndexTask, '
                 .'other instances are not supported.', 1487500366
@@ -192,7 +192,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         array $submittedData,
         AbstractTask $task
     ) {
-        if (!$task instanceof ReIndexTask) {
+        if (!($task instanceof ReIndexTask)) {
             throw new \LogicException(
                 '$task must be an instance of ReIndexTask, '
                 .'other instances are not supported.', 1487500392
