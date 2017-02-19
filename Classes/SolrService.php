@@ -32,7 +32,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use \Apache_Solr_HttpTransportException;
 
-
 /**
  * Solr Service Access
  *
