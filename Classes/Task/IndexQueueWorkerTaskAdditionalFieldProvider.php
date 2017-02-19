@@ -137,7 +137,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         array $submittedData,
         AbstractTask $task
     ) {
-        if (!($task instanceof IndexQueueWorkerTask)){
+        if (!($task instanceof IndexQueueWorkerTask)) {
             throw new \LogicException(
                 '$task must be an instance of IndexQueueWorkerTask, '
                 .'other instances are not supported.', 1487499827
