@@ -72,7 +72,7 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer
 				/*]]>*/
 				</script>
 
-				<input type="hidden" id="' . $this->facetName . '_url" value="' . $this->buildAddFacetUrl($this->facetName) . '" />
+				<input type="hidden" id="' . $this->facetName . '_url" value="' . $this->buildAddFacetUrl() . '" />
 				<input type="text" id="start_date_' . $this->facetName . '" class="dateselector" />
 				###LLL:rangebarrier###
 				<input type="text" id="end_date_' . $this->facetName . '" class="dateselector" />
@@ -105,11 +105,11 @@ class DateRangeFacetRenderer extends AbstractFacetRenderer
     }
 
     /**
-     * tbd
-     * @param string $facetName
+     * Build Facet Url
+     *
      * @return string
      */
-    protected function buildAddFacetUrl($facetName)
+    protected function buildAddFacetUrl()
     {
         $facetOption = GeneralUtility::makeInstance(FacetOption::class, $this->facetName, '');
         $facetLinkBuilder = GeneralUtility::makeInstance(LinkBuilder::class,
