@@ -96,6 +96,11 @@ class RootPageResolver implements SingletonInterface
      */
     public function getIsRootPageId($pageId)
     {
+        // Page 0 can never be a root page
+        if ($pageId === 0) {
+            return false;
+        }
+
         $cacheId = 'RootPageResolver' . '_' . 'getIsRootPageId' . '_' . $pageId;
         $isSiteRoot = $this->runtimeCache->get($cacheId);
         if (!empty($isSiteRoot)) {
@@ -129,7 +134,7 @@ class RootPageResolver implements SingletonInterface
     {
         /** @var Rootline $rootLine */
         $rootLine = GeneralUtility::makeInstance(Rootline::class);
-        $rootPageId = intval($pageId) ? intval($pageId) : $GLOBALS['TSFE']->id;
+        $rootPageId = intval($pageId) ? intval($pageId) : intval($GLOBALS['TSFE']->id);
 
         // frontend
         if (!empty($GLOBALS['TSFE']->rootLine)) {
