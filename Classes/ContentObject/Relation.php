@@ -235,7 +235,7 @@ class Relation
      *
      * @param string $tableName
      * @param array $record
-     * @return mixed
+     * @return array
      */
     protected function getTranslationOverlay($tableName, $record)
     {
@@ -337,19 +337,20 @@ class Relation
             $this->configuration['localField'] = $foreignTableLabelField;
             $parentContentObject->data = $relatedRecord;
             if (strpos($this->configuration['foreignLabelField'], '.') !== false) {
-                list($unusedDummy, $this->configuration['foreignLabelField']) = explode('.',
+                list(, $this->configuration['foreignLabelField']) = explode('.',
                     $this->configuration['foreignLabelField'], 2);
             } else {
                 $this->configuration['foreignLabelField'] = '';
             }
 
             // recursion
-            $value = array_pop($this->getRelatedItemsFromForeignTable(
+            $relatedItemsFromForeignTable = $this->getRelatedItemsFromForeignTable(
                 $foreignTableName,
                 $relatedRecord['uid'],
                 $foreignTableTca['columns'][$foreignTableLabelField],
                 $parentContentObject
-            ));
+            );
+            $value = array_pop($relatedItemsFromForeignTable);
 
             // restore
             $this->configuration= $backupConfiguration;
