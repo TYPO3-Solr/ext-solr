@@ -37,6 +37,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
+use Apache_Solr_ParserException;
 
 /**
  * The SearchResultSetService is responsible to build a SearchResultSet from a SearchRequest.
@@ -366,7 +367,7 @@ class SearchResultSetService implements SingletonInterface
     {
         try {
             $documents = $response->response->docs;
-        } catch (\Apache_Solr_ParserException $e) {
+        } catch (Apache_Solr_ParserException $e) {
             // when variant are enable and the index is empty, we get a parse exception, because of a
             // Apache Solr Bug.
             // see: https://github.com/TYPO3-Solr/ext-solr/issues/668
