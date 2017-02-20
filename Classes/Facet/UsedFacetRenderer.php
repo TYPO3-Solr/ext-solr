@@ -61,8 +61,8 @@ class UsedFacetRenderer extends SimpleFacetOptionsRenderer
      * Constructor
      *
      * @param string $facetName
-     * @param array $filterValue
-     * @param \ApacheSolrForTypo3\Solr\Template $filter
+     * @param string $filterValue
+     * @param string $filter
      * @param \ApacheSolrForTypo3\Solr\Template $template
      * @param \ApacheSolrForTypo3\Solr\Query $query
      */
