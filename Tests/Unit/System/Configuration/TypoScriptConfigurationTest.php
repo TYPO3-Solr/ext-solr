@@ -684,4 +684,38 @@ class TypoScriptConfigurationTest extends UnitTest
         $configuration->removeSearchQueryFilterForPageSections();
         $this->assertEquals(['type:pages'], $configuration->getSearchQueryFilterConfiguration());
     }
+
+    /**
+     * @test
+     */
+    public function canGetSearchQueryReturnFieldsAsArrayNoConfig()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'query.' => [
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals([], $configuration->GetSearchQueryReturnFieldsAsArray());
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSearchQueryReturnFieldsAsArrayWithConfig()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'query.' => [
+                    'returnFields' => 'foo, bar'
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $this->assertEquals(['foo', 'bar'], $configuration->GetSearchQueryReturnFieldsAsArray());
+    }
+
 }

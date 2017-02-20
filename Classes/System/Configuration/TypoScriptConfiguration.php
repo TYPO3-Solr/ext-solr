@@ -137,7 +137,7 @@ class TypoScriptConfiguration
      * returns $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage']
      *
      * @param string $path TypoScript path
-     * @return array The TypoScript object defined by the given path
+     * @return mixed The TypoScript object defined by the given path
      * @throws InvalidArgumentException
      */
     public function getValueByPath($path)
@@ -146,7 +146,6 @@ class TypoScriptConfiguration
             throw new InvalidArgumentException('Parameter $path is not a string',
                 1325623321);
         }
-
         return $this->configurationAccess->get($path);
     }
 
@@ -1590,6 +1589,7 @@ class TypoScriptConfiguration
         if (is_null($returnFields)) {
             return $defaultIfEmpty;
         }
+
         return GeneralUtility::trimExplode(',', $returnFields);
     }
 
