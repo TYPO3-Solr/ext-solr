@@ -30,7 +30,7 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use \Apache_Solr_HttpTransportException;
+use Apache_Solr_HttpTransportException;
 
 /**
  * Solr Service Access
@@ -513,7 +513,7 @@ class SolrService extends \Apache_Solr_Service
 
         try {
             $response = parent::_sendRawGet($url, $timeout);
-        } catch (\Apache_Solr_HttpTransportException $e) {
+        } catch (Apache_Solr_HttpTransportException $e) {
             $logSeverity = 3; // fatal error
             $response = $e->getResponse();
         }
@@ -718,7 +718,7 @@ class SolrService extends \Apache_Solr_Service
         try {
             $response = parent::_sendRawPost($url, $rawPost, $timeout,
                 $contentType);
-        } catch (\Apache_Solr_HttpTransportException $e) {
+        } catch (Apache_Solr_HttpTransportException $e) {
             $logSeverity = 3; // fatal error
             $response = $e->getResponse();
         }
@@ -816,7 +816,7 @@ class SolrService extends \Apache_Solr_Service
             if ($solrResponse->getHttpStatus() != 200) {
                 throw new \Apache_Solr_HttpTransportException($solrResponse);
             }
-        } catch (\Apache_Solr_HttpTransportException $e) {
+        } catch (Apache_Solr_HttpTransportException $e) {
             $logSeverity = 3; // fatal error
             $solrResponse = $e->getResponse();
         }
