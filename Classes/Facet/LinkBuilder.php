@@ -248,7 +248,7 @@ class LinkBuilder extends Query\LinkBuilder
 
             // find the currently used option for this facet
             foreach ($filterParameters as $key => $filter) {
-                list($filterName, $filterValue) = explode(':', $filter);
+                list($filterName, ) = explode(':', $filter);
 
                 if ($filterName == $this->facetName) {
                     $indexToReplace = $key;
