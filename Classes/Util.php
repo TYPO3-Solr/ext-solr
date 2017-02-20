@@ -486,7 +486,7 @@ class Util
      * @return int The page's tree branch's root page ID
      * @deprecated since 6.1 will be removed in 7.0
      */
-    public function getRootPageId($pageId = 0, $forceFallback = false)
+    public static function getRootPageId($pageId = 0, $forceFallback = false)
     {
         GeneralUtility::logDeprecatedFunction();
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
