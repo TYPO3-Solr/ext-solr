@@ -35,6 +35,7 @@ use TYPO3\CMS\Core\TimeTracker\NullTimeTracker;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
@@ -289,7 +290,18 @@ class Util
             return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationArray, $pageId, $language, $path);
         }
 
-        // we have nothing in the cache. We need to build the configurationToUse
+        // Check if there is no TypoScript Template on this page since we might
+        // be able to re-use the TypoScript config from the parent
+        $parentPageId = self::shouldReuseParentTypoScriptConfiguration($pageId);
+        if ($parentPageId !== $pageId) {
+            $parentCacheId = md5($parentPageId . '|' . $path . '|' . $language);
+            if (isset($configurationObjectCache[$parentCacheId])) {
+                $configurationObjectCache[$cacheId] = $configurationObjectCache[$parentCacheId];
+                return $configurationObjectCache[$cacheId];
+            }
+        }
+
+        // We have nothing in the cache. We need to build the configurationToUse
         $configurationArray = self::buildConfigurationArray($pageId, $path, $initializeTsfe, $language);
 
         if ($useTwoLevelCache && isset($cache)) {
@@ -297,6 +309,50 @@ class Util
         }
 
         return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationArray, $pageId, $language, $path);
+    }
+
+    /**
+     * Send signal to check if we should re-use parent TS config
+     *
+     * @param int $pageId
+     * @return int
+     */
+    protected static function shouldReuseParentTypoScriptConfiguration($pageId)
+    {
+        static $signalDispatched = false;
+        static $shouldReuseParentTypoScriptConfiguration = false;
+
+        if ($signalDispatched === false) {
+            $signalDispatched = true;
+            $signalSlotDispatcher = GeneralUtility::makeInstance(Dispatcher::class);
+            $signalSlotDispatcher->dispatch(__CLASS__, 'shouldReuseParentTypoScriptConfiguration',
+                [&$shouldReuseParentTypoScriptConfiguration]);
+        }
+
+        if ($shouldReuseParentTypoScriptConfiguration === true) {
+            $res = self::checkIfPageHasTypoScriptTemplate($pageId);
+            if ((!empty($res)) && ($res['pid'] > 0) && ($res['hasTemplate'] == 0)) {
+                return $res['pid'];
+            }
+        }
+
+        return $pageId;
+    }
+
+    /**
+     * Check if page has a TS template or not
+     *
+     * @param $pageId
+     * @return array
+     */
+    protected static function checkIfPageHasTypoScriptTemplate($pageId) {
+        $result = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+            'pid, (select count(*) from sys_template s where s.pid = p.uid and s.deleted = 0 and s.hidden = 0) as hasTemplate',
+            'pages p',
+            'uid = ' . $pageId . ' and hidden = 0 and deleted = 0'
+        );
+
+        return (array)$result;
     }
 
 
