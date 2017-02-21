@@ -345,7 +345,8 @@ class Util
      * @param $pageId
      * @return array
      */
-    protected static function checkIfPageHasTypoScriptTemplate($pageId) {
+    protected static function checkIfPageHasTypoScriptTemplate($pageId)
+    {
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
             'pid, (select count(*) from sys_template s where s.pid = p.uid and s.deleted = 0 and s.hidden = 0) as hasTemplate',
             'pages p',
@@ -354,7 +355,6 @@ class Util
 
         return (array)$result;
     }
-
 
     /**
      * Initializes a TSFE, if required and builds an configuration array, containing the solr configuration.
