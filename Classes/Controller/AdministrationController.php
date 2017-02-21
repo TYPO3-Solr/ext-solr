@@ -210,6 +210,7 @@ class AdministrationController extends ActionController
             try {
                 $this->activeModule->processRequest($request, $response);
             } catch (StopActionException $ignoredException) {
+                /* Silently ignore exception */
             }
         }
 
