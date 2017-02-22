@@ -111,8 +111,9 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         $task,
         SchedulerModuleController $schedulerModule
     ) {
-        $this->initialize($taskInfo, $task, $schedulerModule);
+        $this->isTaskInstanceofReIndexTask($task);
 
+        $this->initialize($taskInfo, $task, $schedulerModule);
         $additionalFields = [];
 
         $additionalFields['site'] = [
@@ -186,6 +187,8 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         array $submittedData,
         AbstractTask $task
     ) {
+        $this->isTaskInstanceofReIndexTask($task);
+
         $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
 
         $indexingConfigurations = [];
@@ -204,5 +207,21 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             $this->pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         }
         return $this->pageRenderer;
+    }
+
+    /**
+     * Check that a task is an instance of ReIndexTask
+     *
+     * @param $task
+     * @throws \LogicException
+     */
+    protected function isTaskInstanceofReIndexTask($task)
+    {
+        if ((!is_null($task)) && (!($task instanceof ReIndexTask))) {
+            throw new \LogicException(
+                '$task must be an instance of ReIndexTask, '
+                . 'other instances are not supported.', 1487500366
+            );
+        }
     }
 }
