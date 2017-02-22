@@ -221,8 +221,9 @@ class Queue
      * @param int $rootPageId The configuration's page tree's root page id.
      *      Optional, not needed for all types.
      * @return string The indexing configuration's name to use when indexing
-     * @deprecated Use getIndexingConfigurationsByItem() now, which behaves
-     *      almost the same way but returns an array of configurations, will be removed in version 7.0
+     * @deprecated since 6.1 will be removed in 7.0
+     * Use getIndexingConfigurationsByItem() now, which behaves
+     * almost the same way but returns an array of configurations
      */
     protected function getIndexingConfigurationByItem(
         $itemType,
@@ -232,8 +233,7 @@ class Queue
         GeneralUtility::logDeprecatedFunction();
         $indexingConfigurationName = '';
 
-        $configurations = $this->getIndexingConfigurationsByItem($itemType,
-            $itemUid, $rootPageId);
+        $configurations = $this->getIndexingConfigurationsByItem($itemType, $rootPageId);
         if (count($configurations) > 0) {
             $indexingConfigurationName = $configurations[0];
         }
@@ -246,17 +246,17 @@ class Queue
      * Multiple configurations for a certain item type (table) might be available.
      *
      * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a
-     *      different value for non-database-record types.
      * @param int $rootPageId The configuration's page tree's root page id.
      *      Optional, not needed for all types.
      * @return array<string> The indexing configurations names to use when indexing
+     * @deprecated since 6.1 will be removed in 7.0
      */
     protected function getIndexingConfigurationsByItem(
         $itemType,
-        $itemUid,
         $rootPageId = null
     ) {
+        GeneralUtility::logDeprecatedFunction();
+
         $possibleIndexingConfigurationNames = [];
 
         if (!is_null($rootPageId)) {
