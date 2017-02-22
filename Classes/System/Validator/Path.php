@@ -38,7 +38,7 @@ class Path
      * @param string $path
      * @return bool
      */
-    public function isValidSolrPath(string $path)
+    public function isValidSolrPath($path)
     {
         $path = trim($path);
 
