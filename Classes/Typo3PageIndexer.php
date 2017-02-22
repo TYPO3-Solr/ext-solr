@@ -490,7 +490,7 @@ class Typo3PageIndexer
             }
 
             $substituteDocument = $substituteIndexer->getPageDocument($pageDocument);
-            if (!$substituteDocument instanceof \Apache_Solr_Document) {
+            if (!$substituteDocument instanceof Apache_Solr_Document) {
                 $message = 'The document returned by ' . get_class($substituteIndexer) . ' is not a valid Apache_Solr_Document document.';
                 throw new \UnexpectedValueException($message, 1310490952);
             }
