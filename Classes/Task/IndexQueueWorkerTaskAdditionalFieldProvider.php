@@ -54,14 +54,9 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $task,
         SchedulerModuleController $schedulerModule
     ) {
-        if ((!is_null($task)) && (!($task instanceof IndexQueueWorkerTask))) {
-            throw new \LogicException(
-                '$task must be an instance of IndexQueueWorkerTask, '
-                .'other instances are not supported.', 1487499814
-            );
-        }
-
         $additionalFields = [];
+
+        $this->isTaskInstanceofIndexQueueWorkerTask($task);
 
         if ($schedulerModule->CMD == 'add') {
             $taskInfo['site'] = null;
@@ -137,15 +132,26 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         array $submittedData,
         AbstractTask $task
     ) {
-        if (!($task instanceof IndexQueueWorkerTask)) {
-            throw new \LogicException(
-                '$task must be an instance of IndexQueueWorkerTask, '
-                .'other instances are not supported.', 1487499827
-            );
-        }
+        $this->isTaskInstanceofIndexQueueWorkerTask($task);
 
         $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
         $task->setForcedWebRoot($submittedData['forcedWebRoot']);
+    }
+
+    /**
+     * Check that a task is an instance of IndexQueueWorkerTask
+     *
+     * @param $task
+     * @throws \LogicException
+     */
+    protected function isTaskInstanceofIndexQueueWorkerTask($task)
+    {
+        if ((!is_null($task)) && (!($task instanceof IndexQueueWorkerTask))) {
+            throw new \LogicException(
+                '$task must be an instance of IndexQueueWorkerTask, '
+                .'other instances are not supported.', 1487499814
+            );
+        }
     }
 }
