@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\Configuratio
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -93,6 +94,26 @@ class RootPageResolverTest extends UnitTest
 
         $message = 'Root page resolver should only return rootPageIds from references';
         $this->assertEquals([333,444], $resolvedRootPages, $message);
+    }
+
+    /**
+     * @test
+     */
+    public function getIsRootPageIdWithPageIdZero() {
+        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
+        $rootPage = $rootPageResolver->getIsRootPageId(0);
+
+        $this->assertEquals(false, $rootPage);
+    }
+
+    /**
+     * @test
+     */
+    public function getIsRootPageIdWithUnknownPageId() {
+        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
+
+        $this->setExpectedException(\InvalidArgumentException::class);
+        $rootPageResolver->getIsRootPageId(42);
     }
 
     /**
