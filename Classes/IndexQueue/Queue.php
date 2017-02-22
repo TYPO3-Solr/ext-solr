@@ -224,8 +224,6 @@ class Queue
      * @deprecated since 6.1 will be removed in 7.0
      * Use getIndexingConfigurationsByItem() now, which behaves
      * almost the same way but returns an array of configurations
-     *
-     * @todo: Timo - used at all?
      */
     protected function getIndexingConfigurationByItem(
         $itemType,
@@ -252,13 +250,13 @@ class Queue
      *      Optional, not needed for all types.
      * @return array<string> The indexing configurations names to use when indexing
      * @deprecated since 6.1 will be removed in 7.0
-     *
-     * @todo: Timo - used at all?
      */
     protected function getIndexingConfigurationsByItem(
         $itemType,
         $rootPageId = null
     ) {
+        GeneralUtility::logDeprecatedFunction();
+
         $possibleIndexingConfigurationNames = [];
 
         if (!is_null($rootPageId)) {
