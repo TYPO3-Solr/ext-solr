@@ -215,11 +215,12 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * @param $task
      * @throws \LogicException
      */
-    protected function isTaskInstanceofReIndexTask($task) {
+    protected function isTaskInstanceofReIndexTask($task)
+    {
         if ((!is_null($task)) && (!($task instanceof ReIndexTask))) {
             throw new \LogicException(
                 '$task must be an instance of ReIndexTask, '
-                .'other instances are not supported.', 1487500366
+                . 'other instances are not supported.', 1487500366
             );
         }
     }
