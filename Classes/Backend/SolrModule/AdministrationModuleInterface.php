@@ -24,6 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Mvc\ResponseInterface;
+
 /**
  * Class AdministrationModuleInterface
  *
@@ -34,4 +37,6 @@ interface AdministrationModuleInterface
     public function getName();
 
     public function getTitle();
+
+    public function processRequest(RequestInterface $request, ResponseInterface $response);
 }
