@@ -121,7 +121,7 @@ abstract class PluginBase extends AbstractPlugin
         /** @noinspection PhpUnusedLocalVariableInspection */
         $content = '';
 
-        $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 
         try {
             $this->initialize($configuration);
