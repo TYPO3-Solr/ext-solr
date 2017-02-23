@@ -46,7 +46,12 @@ class SolrLogManager
      */
     protected $logger = null;
 
-    function __construct($className)
+    /**
+     * SolrLogManager constructor.
+     *
+     * @param $className
+     */
+    public function __construct($className)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger($className);
     }
