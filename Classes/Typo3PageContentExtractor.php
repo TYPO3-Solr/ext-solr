@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -33,6 +34,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Typo3PageContentExtractor extends HtmlContentExtractor
 {
+
+    /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
 
     /**
      * Shortcut method to retrieve the raw content marked for indexing.
@@ -59,7 +65,11 @@ class Typo3PageContentExtractor extends HtmlContentExtractor
 
         $indexableContent = $this->excludeContentByClass($indexableContent);
         if (empty($indexableContent) && $this->getConfiguration()->getLoggingIndexingMissingTypo3SearchMarkers()) {
-            GeneralUtility::devLog('No TYPO3SEARCH markers found.', 'solr', 2);
+            $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $this->logger->log(
+                SolrLogManager::WARNING,
+                'No TYPO3SEARCH markers found.'
+            );
         }
 
         return $indexableContent;

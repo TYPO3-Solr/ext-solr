@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -68,6 +69,11 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
     protected $responseData = [];
 
     /**
+     * @var \TYPO3\CMS\Core\Log\Logger
+     */
+    protected $logger = null;
+
+    /**
      * Activates a frontend helper by registering for hooks and other
      * resources required by the frontend helper to work.
      */
@@ -91,10 +97,6 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         //$GLOBALS['T3_VAR']['getUserObj'][$pageIndexingHookRegistration] = $this;
 
         $this->registerAuthorizationService();
-# Since TypoScript is not available at this point we cannot bind it to some TS configuration option whether to log or not
-#		\TYPO3\CMS\Core\Utility\GeneralUtility::devLog('Registered Solr Page Indexer authorization service', 'solr', 1, [
-#			'auth services' => $GLOBALS['T3_SERVICES']['auth']
-#		]);
     }
 
     /**
@@ -261,14 +263,18 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     public function hook_indexContent(TypoScriptFrontendController $page)
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+
         $this->page = $page;
         $configuration = Util::getSolrConfiguration();
 
         $logPageIndexed = $configuration->getLoggingIndexingPageIndexed();
         if (!$this->page->config['config']['index_enable']) {
             if ($logPageIndexed) {
-                GeneralUtility::devLog('Indexing is disabled. Set config.index_enable = 1 .',
-                    'solr', 3);
+                $this->logger->log(
+                    SolrLogManager::ERROR,
+                    'Indexing is disabled. Set config.index_enable = 1 .'
+                );
             }
             return;
         }
@@ -303,18 +309,25 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             }
         } catch (\Exception $e) {
             if ($configuration->getLoggingExceptions()) {
-                GeneralUtility::devLog('Exception while trying to index page ' . $page->id,
-                    'solr', 3, [
+                $this->logger->log(
+                    SolrLogManager::ERROR,
+                    'Exception while trying to index page ' . $page->id,
+                    [
                         $e->__toString()
-                    ]);
+                    ]
+                );
             }
         }
 
         if ($logPageIndexed) {
             $success = $this->responseData['pageIndexed'] ? 'Success' : 'Failed';
-            $severity = $this->responseData['pageIndexed'] ? -1 : 3;
+            $severity = $this->responseData['pageIndexed'] ? SolrLogManager::NOTICE : SolrLogManager::ERROR;
 
-            GeneralUtility::devLog('Page indexed: ' . $success, 'solr', $severity, $this->responseData);
+            $this->logger->log(
+                $severity,
+                'Page indexed: ' . $success,
+                $this->responseData
+            );
         }
     }
 

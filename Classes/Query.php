@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -158,6 +159,11 @@ class Query
     protected $siteHashService = null;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Query constructor.
      * @param string $keywords
      * @param TypoScriptConfiguration $solrConfiguration
@@ -167,6 +173,7 @@ class Query
     {
         $keywords = (string) $keywords;
 
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->solrConfiguration = is_null($solrConfiguration) ? Util::getSolrConfiguration() : $solrConfiguration;
         $this->siteHashService = is_null($siteHashService) ? GeneralUtility::makeInstance(SiteHashService::class) : $siteHashService;
 
@@ -194,18 +201,6 @@ class Query
     protected function initializeQuery()
     {
         $this->initializeCollapsingFromConfiguration();
-    }
-
-    /**
-     * Writes a message to the devLog.
-     *
-     * @param string $msg
-     * @param int $severity
-     * @param mixed $dataVar
-     */
-    protected function writeDevLog($msg, $severity = 0, $dataVar = false)
-    {
-        GeneralUtility::devLog($msg, 'solr', $severity, $dataVar);
     }
 
     /**
@@ -940,7 +935,13 @@ class Query
     {
         // TODO refactor to split filter field and filter value, @see Drupal
         if ($this->solrConfiguration->getLoggingQueryFilters()) {
-            $this->writeDevLog('adding filter', 0, [$filterString]);
+            $this->logger->log(
+                SolrLogManager::INFO,
+                'Adding filter',
+                [
+                    $filterString
+                ]
+            );
         }
 
         $this->filters[] = $filterString;

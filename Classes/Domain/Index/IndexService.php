@@ -30,6 +30,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -68,6 +69,11 @@ class IndexService
     protected $signalSlotDispatcher;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * IndexService constructor.
      * @param Site $site
      * @param Queue|null $queue
@@ -75,6 +81,7 @@ class IndexService
      */
     public function __construct(Site $site, Queue $queue = null, Dispatcher $dispatcher = null)
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->site = $site;
         $this->indexQueue = is_null($queue) ? GeneralUtility::makeInstance(Queue::class) : $queue;
         $this->signalSlotDispatcher = is_null($dispatcher) ? GeneralUtility::makeInstance(Dispatcher::class) : $dispatcher;
@@ -141,7 +148,12 @@ class IndexService
     {
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
         $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTrace(), 'item' => (array)$itemToIndex];
-        GeneralUtility::devLog($message, 'solr', 3, $data);
+
+        $this->logger->log(
+            SolrLogManager::ERROR,
+            $message,
+            $data
+        );
     }
 
     /**

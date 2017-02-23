@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\Configuratio
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -52,12 +53,18 @@ class Queue
     protected $recordService;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Queue constructor.
      * @param RootPageResolver|null $rootPageResolver
      * @param ConfigurationAwareRecordService|null $recordService
      */
     public function __construct(RootPageResolver $rootPageResolver = null, ConfigurationAwareRecordService $recordService = null)
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->rootPageResolver = isset($rootPageResolver) ? $rootPageResolver : GeneralUtility::makeInstance(RootPageResolver::class);
         $this->recordService = isset($recordService) ? $recordService : GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
     }
@@ -911,8 +918,13 @@ class Queue
                     $tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']]
                 );
             } else {
-                GeneralUtility::devLog('Record missing for Index Queue item. Item removed.',
-                    'solr', 3, [$indexQueueItemRecord]);
+                $this->logger->log(
+                    SolrLogManager::ERROR,
+                    'Record missing for Index Queue item. Item removed.',
+                    [
+                        $indexQueueItemRecord
+                    ]
+                );
                 $this->deleteItem($indexQueueItemRecord['item_type'],
                     $indexQueueItemRecord['item_uid']);
             }

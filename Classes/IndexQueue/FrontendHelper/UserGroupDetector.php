@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectPostInitHookInterface;
@@ -64,6 +65,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * @var array
      */
     protected $frontendGroups = [];
+
+    /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
 
     // activation
 
@@ -191,12 +197,15 @@ class UserGroupDetector extends AbstractFrontendHelper implements
                 $frontendGroups = 0;
             } else {
                 if ($this->request->getParameter('loggingEnabled')) {
-                    GeneralUtility::devLog('Access restriction found', 'solr',
-                        0, [
+                    $this->logger->log(
+                        SolrLogManager::INFO,
+                        'Access restriction found',
+                        [
                             'groups' => $frontendGroups,
                             'record' => $record,
                             'record type' => $table,
-                        ]);
+                        ]
+                    );
                 }
             }
 

@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -92,12 +92,18 @@ class PageIndexerRequest
     protected $timeout;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * PageIndexerRequest constructor.
      *
      * @param string $jsonEncodedParameters json encoded header
      */
     public function __construct($jsonEncodedParameters = null)
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->requestId = uniqid();
         $this->timeout = (float)ini_get('default_socket_timeout');
 
@@ -177,10 +183,9 @@ class PageIndexerRequest
         $decodedResponse = $response->getResultsFromJson($rawResponse);
 
         if ($rawResponse === false || $decodedResponse === false) {
-            GeneralUtility::devLog(
+            $this->logger->log(
+                SolrLogManager::ERROR,
                 'Failed to execute Page Indexer Request. Request ID: ' . $this->requestId,
-                'solr',
-                3,
                 [
                     'request ID' => $this->requestId,
                     'request url' => $url,

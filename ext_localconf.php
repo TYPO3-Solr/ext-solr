@@ -318,3 +318,20 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassN
 
 // Log devLog entries to console and files
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog']['extsolr-debug-writer'] = \ApacheSolrForTypo3\Solr\System\Logging\DevLogDebugWriter::class . '->log';
+
+$context = \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext();
+if ($context->isProduction()) {
+    $logLevel = \TYPO3\CMS\Core\Log\LogLevel::ERROR;
+} elseif ($context->isDevelopment()) {
+    $logLevel = \TYPO3\CMS\Core\Log\LogLevel::DEBUG;
+} else {
+    $logLevel = \TYPO3\CMS\Core\Log\LogLevel::INFO;
+}
+
+$GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'] = array(
+    $logLevel => array(
+        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
+            'logFile' => 'typo3temp/var/logs/solr.log'
+        )
+    ),
+);

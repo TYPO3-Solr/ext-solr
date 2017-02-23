@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\Query\LinkBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Template;
 use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelperProvider;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
@@ -104,6 +105,11 @@ abstract class PluginBase extends AbstractPlugin
     private $searchResultsSetService;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * The main method of the plugin
      *
      * @param string $content The plugin content
@@ -114,6 +120,8 @@ abstract class PluginBase extends AbstractPlugin
     {
         /** @noinspection PhpUnusedLocalVariableInspection */
         $content = '';
+
+        $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 
         try {
             $this->initialize($configuration);
@@ -130,10 +138,9 @@ abstract class PluginBase extends AbstractPlugin
             $content = $this->postRender($content);
         } catch (\Exception $e) {
             if ($this->typoScriptConfiguration->getLoggingExceptions()) {
-                GeneralUtility::devLog(
+                $this->logger->log(
+                    SolrLogManager::ERROR,
                     $e->getCode() . ': ' . $e->__toString(),
-                    'solr',
-                    3,
                     (array)$e
                 );
             }

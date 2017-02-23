@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -115,6 +116,11 @@ class Typo3PageIndexer
     protected $variantIdBuilder;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Constructor
      *
      * @param TypoScriptFrontendController $page The page to index
@@ -122,6 +128,8 @@ class Typo3PageIndexer
      */
     public function __construct(TypoScriptFrontendController $page, IdBuilder $variantIdBuilder = null)
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+
         $this->page = $page;
         $this->pageUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
         $this->configuration = Util::getSolrConfiguration();
@@ -129,11 +137,20 @@ class Typo3PageIndexer
         try {
             $this->initializeSolrConnection();
         } catch (\Exception $e) {
-            $this->log($e->getMessage() . ' Error code: ' . $e->getCode(), 3);
+            $this->logger->log(
+                SolrLogManager::ERROR,
+                $e->getMessage() . ' Error code: ' . $e->getCode()
+            );
 
             // TODO extract to a class "ExceptionLogger"
             if ($this->configuration->getLoggingExceptions()) {
-                GeneralUtility::devLog('Exception while trying to index a page', 'solr', 3, [$e->__toString()]);
+                $this->logger->log(
+                    SolrLogManager::ERROR,
+                    'Exception while trying to index a page',
+                    [
+                        $e->__toString()
+                    ]
+                );
             }
         }
 
@@ -169,32 +186,6 @@ class Typo3PageIndexer
         }
 
         $this->solrConnection = $solr;
-    }
-
-    /**
-     * Logs messages to devlog and TS log (admin panel)
-     *
-     * @param string $message Message to set
-     * @param int $errorNum Error number
-     * @param array $data Additional data to log
-     * @return void
-     */
-    protected function log($message, $errorNum = 0, array $data = [])
-    {
-        if (is_object($GLOBALS['TT'])) {
-            $GLOBALS['TT']->setTSlogMessage('tx_solr: ' . $message, $errorNum);
-        }
-
-        if ($this->configuration->getLoggingIndexing()) {
-            $logData = [];
-            if (!empty($data)) {
-                foreach ($data as $value) {
-                    $logData[] = (array)$value;
-                }
-            }
-
-            GeneralUtility::devLog($message, 'solr', $errorNum, $logData);
-        }
     }
 
     /**
@@ -573,7 +564,11 @@ class Typo3PageIndexer
         }
 
         try {
-            $this->log('Adding ' . count($documents) . ' documents.', 0, $documents);
+            $this->logger->log(
+                SolrLogManager::INFO,
+                'Adding ' . count($documents) . ' documents.',
+                $documents
+            );
 
             // chunk adds by 20
             $documentChunks = array_chunk($documents, 20);
@@ -588,10 +583,19 @@ class Typo3PageIndexer
 
             $documentsAdded = true;
         } catch (\Exception $e) {
-            $this->log($e->getMessage() . ' Error code: ' . $e->getCode(), 2);
+            $this->logger->log(
+                SolrLogManager::ERROR,
+                $e->getMessage() . ' Error code: ' . $e->getCode()
+            );
 
             if ($this->configuration->getLoggingExceptions()) {
-                GeneralUtility::devLog('Exception while adding documents', 'solr', 3, [$e->__toString()]);
+                $this->logger->log(
+                    SolrLogManager::ERROR,
+                    'Exception while adding documents',
+                    [
+                        $e->__toString()
+                    ]
+                );
             }
         }
 
