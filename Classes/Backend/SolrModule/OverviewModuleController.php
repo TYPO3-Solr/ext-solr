@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
 
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -76,6 +77,9 @@ class OverviewModuleController extends AbstractModuleController
     {
         $connectedHosts = [];
         $missingHosts = [];
+        $invalidPaths = [];
+
+        $path = GeneralUtility::makeInstance(Path::class);
 
         foreach ($this->connections as $connection) {
             $coreUrl = $connection->getScheme() . '://' . $connection->getHost() . ':' . $connection->getPort() . $connection->getPath();
@@ -84,6 +88,11 @@ class OverviewModuleController extends AbstractModuleController
                 $connectedHosts[] = $coreUrl;
             } else {
                 $missingHosts[] = $coreUrl;
+            }
+
+            // Check that path is valid
+            if (!$path->isValidSolrPath($connection->getPath())) {
+                $invalidPaths[] = $connection->getPath();
             }
         }
 
@@ -100,6 +109,15 @@ class OverviewModuleController extends AbstractModuleController
                 'Hosts missing:' . PHP_EOL . implode(PHP_EOL, $missingHosts),
                 'Unable to contact your Apache Solr server.',
                 FlashMessage::ERROR
+            );
+        }
+
+        if (!empty($invalidPaths)) {
+            $this->addFlashMessage(
+                'Path should not contain the characters "*, ?, <, >, |, :, or #":' . PHP_EOL . implode(PHP_EOL,
+                    $invalidPaths),
+                'Path is not valid',
+                FlashMessage::WARNING
             );
         }
     }
