@@ -55,7 +55,7 @@ class SolrServiceTest extends IntegrationTest
      */
     public function canExtractByQuery()
     {
-        $testFilePath = $this->getFixturePath('testpdf.pdf');
+        $testFilePath = $this->getFixturePathByName('testpdf.pdf');
             /** @var $extractQuery \ApacheSolrForTypo3\Solr\ExtractingQuery */
         $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
         $extractQuery->setExtractOnly();

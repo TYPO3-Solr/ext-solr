@@ -102,7 +102,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
      * @param $fixtureName
      * @return string
      */
-    protected function getFixturePath($fixtureName)
+    protected function getFixturePathByName($fixtureName)
     {
         return $this->getFixtureRootPath() . $fixtureName;
     }
@@ -113,9 +113,9 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
      * @param string $fixtureName
      * @return string
      */
-    protected function getFixtureContent($fixtureName)
+    protected function getFixtureContentByName($fixtureName)
     {
-        return file_get_contents($this->getFixturePath($fixtureName));
+        return file_get_contents($this->getFixturePathByName($fixtureName));
     }
 
     /**
@@ -127,7 +127,7 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
         $database = $GLOBALS['TYPO3_DB'];
         $database->debugOutput = true;
 
-        $dumpContent = $this->getFixtureContent($fixtureName);
+        $dumpContent = $this->getFixtureContentByName($fixtureName);
         $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
 
         $queries = GeneralUtility::trimExplode(';', $dumpContent, true);

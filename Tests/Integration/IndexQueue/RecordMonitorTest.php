@@ -140,7 +140,7 @@ class RecordMonitorTest extends IntegrationTest
     {
         // create fake extension database table and TCA
         $this->importDumpFromFixture('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         // create faked tce main call data
         $status = 'new';
@@ -258,7 +258,7 @@ class RecordMonitorTest extends IntegrationTest
 
         // create fake extension database table and TCA
         $this->importDumpFromFixture('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         // create faked tce main call data
         $status = 'update';
@@ -733,7 +733,7 @@ class RecordMonitorTest extends IntegrationTest
     public function updateRecordOutsideSiteRoot()
     {
         $this->importDumpFromFixture('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot.xml');
 
@@ -761,7 +761,7 @@ class RecordMonitorTest extends IntegrationTest
     public function updateRecordOutsideSiteRootReferencedInTwoSites()
     {
         $this->importDumpFromFixture('fake_extension_table.sql');
-        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePath('fake_extension_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_two_sites.xml');
 

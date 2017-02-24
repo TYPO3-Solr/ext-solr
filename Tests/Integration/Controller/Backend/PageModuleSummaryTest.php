@@ -40,7 +40,7 @@ class PageModuleSummaryTest extends IntegrationTest
      * @test
      */
     public function canGetSummary() {
-        $flexFormData = $this->getFixtureContent('fakeFlexform.xml');
+        $flexFormData = $this->getFixtureContentByName('fakeFlexform.xml');
 
         $fakeRow = ['pi_flexform' => $flexFormData];
         $data = ['row' => $fakeRow];
