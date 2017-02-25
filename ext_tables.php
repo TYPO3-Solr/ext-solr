@@ -1,4 +1,6 @@
 <?php
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+
 if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
@@ -36,9 +38,12 @@ if (TYPO3_MODE === 'BE') {
         ['source' => $extIconPath . 'Synonyms.png']);
     $iconRegistry->registerIcon($modulePrefix . '-searchstatistics', $bitmapProvider,
         ['source' => $extIconPath . 'SearchStatistics.png']);
+    // all connections
     $iconRegistry->registerIcon($modulePrefix . '-initsolrconnections', $svgProvider,
         ['source' => $extIconPath . 'InitSolrConnections.svg']);
-
+    // single connection - context menu
+    $iconRegistry->registerIcon($modulePrefix . '-initsolrconnection', $svgProvider,
+        ['source' => $extIconPath . 'InitSolrConnection.svg']);
     // register plugin icon
     $iconRegistry->registerIcon('extensions-solr-plugin-contentelement', $svgProvider,
         ['source' => $extIconPath . 'ContentElement.svg']);
@@ -141,22 +146,28 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-// register click menu item to initialize the Solr connections for a single site
-// visible for admin users only
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
-[adminUser = 1]
-options.contextMenu.table.pages.items.850 = ITEM
-options.contextMenu.table.pages.items.850 {
-	name = Tx_Solr_initializeSolrConnections
-	label = Initialize Solr Connections
-	iconName = extensions-solr-module-initsolrconnections
-	displayCondition = getRecord|is_siteroot = 1
-	callbackAction = initializeSolrConnections
+// @Todo This should be removed when we don't support 7.6 LTS anymore
+if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
+    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
+} else {
+    // register click menu item to initialize the Solr connections for a single site
+    // visible for admin users only
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
+    [adminUser = 1]
+    options.contextMenu.table.pages.items.850 = ITEM
+    options.contextMenu.table.pages.items.850 {
+        name = Tx_Solr_initializeSolrConnections
+        label = Initialize Solr Connections
+        iconName = extensions-solr-module-initsolrconnection
+        displayCondition = getRecord|is_siteroot = 1
+        callbackAction = initializeSolrConnections
+    }
+
+    options.contextMenu.table.pages.items.851 = DIVIDER
+    [global]
+    ');
 }
 
-options.contextMenu.table.pages.items.851 = DIVIDER
-[global]
-');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
     'TYPO3.Solr.ContextMenuActionController',
