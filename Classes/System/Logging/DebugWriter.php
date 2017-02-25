@@ -31,40 +31,35 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
- * The DevLogDebugWriter is used to write the devLog messages to the output of the page, or to the TYPO3 console in the
+ * The DebugWriter is used to write the devLog messages to the output of the page, or to the TYPO3 console in the
  * backend to provide a simple and lightweigt debugging possibility.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class DevLogDebugWriter
+class DebugWriter
 {
 
     /**
      * When the feature is enabled with: plugin.tx_solr.logging.debugOutput the log writer uses the extbase
      * debug functionality in the frontend, or the console in the backend to display the devlog messages.
      *
-     * @param array $parameters
+     * @param int|string $level Log level. Value according to \TYPO3\CMS\Core\Log\LogLevel. Alternatively accepts a string.
+     * @param string $message Log message.
+     * @param array $data Additional data to log
      */
-    public function log($parameters)
+    public function write($level, $message, $data = [])
     {
-        $extensionKey = isset($parameters['extKey']) ? $parameters['extKey'] : '';
-
-        $isLogMessageFromSolr = $extensionKey === 'solr';
-        if (!$isLogMessageFromSolr) {
-            return;
-        }
-
         $debugAllowedForIp = $this->getIsAllowedByDevIPMask();
         if (!$debugAllowedForIp) {
             return;
         }
 
-        $isDebugOutputEnabled = $this->getIsdebugOutputEnabled();
+        $isDebugOutputEnabled = $this->getIsDebugOutputEnabled();
         if (!$isDebugOutputEnabled) {
             return;
         }
 
-        $this->writeDebugMessage($parameters);
+        $this->writeDebugMessage($level, $message, $data);
     }
 
     /**
@@ -80,17 +75,19 @@ class DevLogDebugWriter
      *
      * @return bool
      */
-    protected function getIsdebugOutputEnabled()
+    protected function getIsDebugOutputEnabled()
     {
-        $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
-        return $logger->isDebugOutputEnabled();
+        return Util::getSolrConfiguration()->getLoggingDebugOutput();
     }
 
     /**
-     * @param $parameters
+     * @param int|string $level Log level. Value according to \TYPO3\CMS\Core\Log\LogLevel. Alternatively accepts a string.
+     * @param string $message Log message.
+     * @param array $data Additional data to log
      */
-    protected function writeDebugMessage($parameters)
+    protected function writeDebugMessage($level, $message, $data)
     {
+        $parameters = ['extKey' => 'solr', 'msg' => $message, 'level' => $level, 'data' => $data];
         $message = isset($parameters['msg']) ? $parameters['msg'] : '';
         if (TYPO3_MODE == 'BE') {
             DebugUtility::debug($parameters, $parameters['extKey'], 'DevLog ext:solr: ' . $message);

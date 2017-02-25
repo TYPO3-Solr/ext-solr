@@ -33,6 +33,7 @@ debugOutput
 :Since: 6.1
 
 If enabled the written log entries will be printed out as debug message in the frontend or to the TYPO3 debug console in the backend.
+This setting replaces the previous setting `plugin.tx_solr.logging.debugDevLogOutput` which was needed, when the devLog was used.
 
 exceptions
 ----------
