@@ -23,14 +23,14 @@ This section defines logging options. All loggings will be available in the devl
 .. contents::
    :local:
 
-debugDevlogOutput
------------------
+debugOutput
+-----------
 
 :Type: Boolean
-:TS Path: plugin.tx_solr.logging.debugDevlogOutput
+:TS Path: plugin.tx_solr.logging.debugOutput
 :Default: 0
 :Options: 0,1
-:Since: 5.0
+:Since: 6.1
 
 If enabled the written log entries will be printed out as debug message in the frontend or to the TYPO3 debug console in the backend.
 

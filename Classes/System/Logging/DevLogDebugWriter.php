@@ -40,7 +40,7 @@ class DevLogDebugWriter
 {
 
     /**
-     * When the feature is enabled with: plugin.tx_solr.logging.debugDevlogOutput the log writer uses the extbase
+     * When the feature is enabled with: plugin.tx_solr.logging.debugOutput the log writer uses the extbase
      * debug functionality in the frontend, or the console in the backend to display the devlog messages.
      *
      * @param array $parameters
@@ -59,7 +59,7 @@ class DevLogDebugWriter
             return;
         }
 
-        $isDebugOutputEnabled = $this->getIsDevLogDebugOutputEnabled();
+        $isDebugOutputEnabled = $this->getIsdebugOutputEnabled();
         if (!$isDebugOutputEnabled) {
             return;
         }
@@ -76,11 +76,14 @@ class DevLogDebugWriter
     }
 
     /**
+     * Check if Logging via debugOutput has been configured
+     *
      * @return bool
      */
-    protected function getIsDevLogDebugOutputEnabled()
+    protected function getIsdebugOutputEnabled()
     {
-        return Util::getSolrConfiguration()->getLoggingDebugOutputDevlog();
+        $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        return $logger->isDebugOutputEnabled();
     }
 
     /**

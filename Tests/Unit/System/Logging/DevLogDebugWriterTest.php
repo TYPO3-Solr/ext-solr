@@ -39,9 +39,9 @@ class DevLogDebugWriterTest extends UnitTest
     public function testDebugMessageIsWrittenForMessageFromSolr()
     {
         /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsDevLogDebugOutputEnabled', 'writeDebugMessage'])->getMock();
+        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
-        $logWriter->expects($this->any())->method('getIsDevLogDebugOutputEnabled')->will($this->returnValue(true));
+        $logWriter->expects($this->any())->method('getIsdebugOutputEnabled')->will($this->returnValue(true));
 
             //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects($this->once())->method('writeDebugMessage');
@@ -54,9 +54,9 @@ class DevLogDebugWriterTest extends UnitTest
     public function testDebugMessageIsNotWrittenForOtherExtensions()
     {
         /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsDevLogDebugOutputEnabled', 'writeDebugMessage'])->getMock();
+        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
-        $logWriter->expects($this->any())->method('getIsDevLogDebugOutputEnabled')->will($this->returnValue(true));
+        $logWriter->expects($this->any())->method('getIsdebugOutputEnabled')->will($this->returnValue(true));
 
         //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects($this->never())->method('writeDebugMessage');
@@ -69,9 +69,9 @@ class DevLogDebugWriterTest extends UnitTest
     public function testDebugMessageIsNotWrittenWhenDevIpMaskIsNotMatching()
     {
         /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsDevLogDebugOutputEnabled', 'writeDebugMessage'])->getMock();
+        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(false));
-        $logWriter->expects($this->any())->method('getIsDevLogDebugOutputEnabled')->will($this->returnValue(true));
+        $logWriter->expects($this->any())->method('getIsdebugOutputEnabled')->will($this->returnValue(true));
 
         //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects($this->never())->method('writeDebugMessage');
@@ -84,9 +84,9 @@ class DevLogDebugWriterTest extends UnitTest
     public function testDebugMessageIsNotWrittenWhenDebugOutputIsDisabled()
     {
         /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsDevLogDebugOutputEnabled', 'writeDebugMessage'])->getMock();
+        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
-        $logWriter->expects($this->any())->method('getIsDevLogDebugOutputEnabled')->will($this->returnValue(false));
+        $logWriter->expects($this->any())->method('getIsdebugOutputEnabled')->will($this->returnValue(false));
 
         //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects($this->never())->method('writeDebugMessage');

@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\System\Logging;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -68,5 +69,16 @@ class SolrLogManager
     public function log($level, $message, array $data = [])
     {
         $this->logger->log($level, $message, $data);
+    }
+
+
+    /**
+     * Check if Logging via debugOutput has been configured
+     *
+     * @return bool
+     */
+    public function isDebugOutputEnabled()
+    {
+        return Util::getSolrConfiguration()->getLoggingDebugOutput();
     }
 }

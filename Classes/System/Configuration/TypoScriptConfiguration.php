@@ -751,9 +751,9 @@ class TypoScriptConfiguration
      * @param bool $defaultIfEmpty
      * @return bool
      */
-    public function getLoggingDebugOutputDevlog($defaultIfEmpty = false)
+    public function getLoggingDebugOutput($defaultIfEmpty = false)
     {
-        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.logging.debugDevlogOutput', $defaultIfEmpty);
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.logging.debugOutput', $defaultIfEmpty);
         return $this->getBool($result);
     }
 
