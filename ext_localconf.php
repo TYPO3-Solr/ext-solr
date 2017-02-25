@@ -316,9 +316,6 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassN
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] = \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet::class;
 }
 
-// Log devLog entries to console and files
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_div.php']['devLog']['extsolr-debug-writer'] = \ApacheSolrForTypo3\Solr\System\Logging\DevLogDebugWriter::class . '->log';
-
 $context = \TYPO3\CMS\Core\Utility\GeneralUtility::getApplicationContext();
 if ($context->isProduction()) {
     $logLevel = \TYPO3\CMS\Core\Log\LogLevel::ERROR;

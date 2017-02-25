@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Logging;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2011-2016 Timo Hund <timo.hund@dkd.de>
+ *  (c) 2011-2017 Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,13 +24,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
 use ApacheSolrForTypo3\Solr\System\Logging\DevLogDebugWriter;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class DevLogDebugWriterTest extends UnitTest
+class DebugWriterTest extends UnitTest
 {
 
     /**
@@ -38,29 +40,14 @@ class DevLogDebugWriterTest extends UnitTest
      */
     public function testDebugMessageIsWrittenForMessageFromSolr()
     {
-        /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
+        /** @var $logWriter DebugWriter */
+        $logWriter = $this->getMockBuilder(DebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
         $logWriter->expects($this->any())->method('getIsdebugOutputEnabled')->will($this->returnValue(true));
 
             //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects($this->once())->method('writeDebugMessage');
-        $logWriter->log(['extKey' => 'solr', 'message' => 'test']);
-    }
-
-    /**
-     * @test
-     */
-    public function testDebugMessageIsNotWrittenForOtherExtensions()
-    {
-        /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
-        $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
-        $logWriter->expects($this->any())->method('getIsdebugOutputEnabled')->will($this->returnValue(true));
-
-        //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
-        $logWriter->expects($this->never())->method('writeDebugMessage');
-        $logWriter->log(['extKey' => 'news', 'message' => 'test']);
+        $logWriter->write(SolrLogManager::INFO, 'test');
     }
 
     /**
@@ -68,14 +55,14 @@ class DevLogDebugWriterTest extends UnitTest
      */
     public function testDebugMessageIsNotWrittenWhenDevIpMaskIsNotMatching()
     {
-        /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
+        /** @var $logWriter DebugWriter */
+        $logWriter = $this->getMockBuilder(DebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(false));
         $logWriter->expects($this->any())->method('getIsdebugOutputEnabled')->will($this->returnValue(true));
 
         //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects($this->never())->method('writeDebugMessage');
-        $logWriter->log(['extKey' => 'solr', 'message' => 'test']);
+        $logWriter->write(SolrLogManager::INFO, 'test');
     }
 
     /**
@@ -83,13 +70,13 @@ class DevLogDebugWriterTest extends UnitTest
      */
     public function testDebugMessageIsNotWrittenWhenDebugOutputIsDisabled()
     {
-        /** @var $logWriter DevLogDebugWriter */
-        $logWriter = $this->getMockBuilder(DevLogDebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
+        /** @var $logWriter DebugWriter */
+        $logWriter = $this->getMockBuilder(DebugWriter::class)->setMethods(['getIsAllowedByDevIPMask', 'getIsdebugOutputEnabled', 'writeDebugMessage'])->getMock();
         $logWriter->expects($this->any())->method('getIsAllowedByDevIPMask')->will($this->returnValue(true));
         $logWriter->expects($this->any())->method('getIsdebugOutputEnabled')->will($this->returnValue(false));
 
         //we have a matching devIpMask and the debugOutput of log messages is enabled => debug should be written
         $logWriter->expects($this->never())->method('writeDebugMessage');
-        $logWriter->log(['extKey' => 'solr', 'message' => 'test']);
+        $logWriter->write(SolrLogManager::INFO, 'test');
     }
 }

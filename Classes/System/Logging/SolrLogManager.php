@@ -48,13 +48,20 @@ class SolrLogManager
     protected $logger = null;
 
     /**
+     * @var DebugWriter
+     */
+    protected $debugWriter = null;
+
+    /**
      * SolrLogManager constructor.
      *
      * @param $className
+     * @param DebugWriter $debugWriter
      */
-    public function __construct($className)
+    public function __construct($className, DebugWriter $debugWriter = null)
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger($className);
+        $this->debugWriter = isset($debugWriter) ? $debugWriter : GeneralUtility::makeInstance(DebugWriter::class);
     }
 
     /**
@@ -69,16 +76,6 @@ class SolrLogManager
     public function log($level, $message, array $data = [])
     {
         $this->logger->log($level, $message, $data);
-    }
-
-
-    /**
-     * Check if Logging via debugOutput has been configured
-     *
-     * @return bool
-     */
-    public function isDebugOutputEnabled()
-    {
-        return Util::getSolrConfiguration()->getLoggingDebugOutput();
+        $this->debugWriter->write($level, $message, $data);
     }
 }
