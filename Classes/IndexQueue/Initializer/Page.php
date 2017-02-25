@@ -30,6 +30,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -43,6 +44,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Page extends AbstractInitializer
 {
+    /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
 
     /**
      * Constructor, sets type and indexingConfigurationName to "pages".
@@ -53,6 +58,7 @@ class Page extends AbstractInitializer
         parent::__construct();
 
         $this->type = 'pages';
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
@@ -145,11 +151,12 @@ class Page extends AbstractInitializer
             } catch (\Exception $e) {
                 DatabaseUtility::transactionRollback();
 
-                GeneralUtility::devLog(
+                $this->logger->log(
+                    SolrLogManager::ERROR,
                     'Index Queue initialization failed for mount pages',
-                    'solr',
-                    3,
-                    [$e->__toString()]
+                    [
+                        $e->__toString()
+                    ]
                 );
                 break;
             }

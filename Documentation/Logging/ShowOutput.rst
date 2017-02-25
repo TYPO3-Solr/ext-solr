@@ -23,7 +23,7 @@ To enable this features you need to:
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.logging.debugDevlogOutput = 1
+    plugin.tx_solr.logging.debugOutput = 1
 
 
 You can now see the written log in the frontend:

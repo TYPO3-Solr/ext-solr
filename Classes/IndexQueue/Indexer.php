@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -90,6 +91,11 @@ class Indexer extends AbstractIndexer
     protected static $sysLanguageOverlay = [];
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Constructor
      *
      * @param array $options array of indexer options
@@ -97,6 +103,7 @@ class Indexer extends AbstractIndexer
      */
     public function __construct(array $options = [], IdBuilder $idBuilder = null)
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->options = $options;
         $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->variantIdBuilder = is_null($idBuilder) ? GeneralUtility::makeInstance(IdBuilder::class) : $idBuilder;
@@ -671,16 +678,20 @@ class Indexer extends AbstractIndexer
         ];
 
         if ($response->getHttpStatus() == 200) {
-            $severity = -1;
+            $severity = SolrLogManager::NOTICE;
             $message .= 'Success';
         } else {
-            $severity = 3;
+            $severity = SolrLogManager::ERROR;
             $message .= 'Failure';
 
             $logData['status'] = $response->getHttpStatus();
             $logData['status message'] = $response->getHttpStatusMessage();
         }
 
-        GeneralUtility::devLog($message, 'solr', $severity, $logData);
+        $this->logger->log(
+            $severity,
+            $message,
+            $logData
+        );
     }
 }

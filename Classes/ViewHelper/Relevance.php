@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelper;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -54,12 +55,18 @@ class Relevance implements ViewHelper
     protected $maxScore = 0.0;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Constructor
      *
      * @param array $arguments
      */
     public function __construct(array $arguments = [])
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         if (is_null($this->search)) {
             $this->search = GeneralUtility::makeInstance(Search::class);
             $this->maxScore = $this->search->getMaximumResultScore();
@@ -126,11 +133,14 @@ class Relevance implements ViewHelper
             } else {
                 $solrConfiguration = Util::getSolrConfiguration();
                 if ($solrConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.logging.exceptions', false)) {
-                    GeneralUtility::devLog('Could not resolve document score for relevance calculation',
-                        'solr', 3, [
+                    $this->logger->log(
+                        SolrLogManager::ERROR,
+                        'Could not resolve document score for relevance calculation',
+                        [
                             'rawDocument' => $rawDocument,
                             'unserializedDocument' => $document
-                        ]);
+                        ]
+                    );
                 }
 
                 throw new \RuntimeException(

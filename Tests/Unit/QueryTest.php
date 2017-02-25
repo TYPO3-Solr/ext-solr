@@ -754,24 +754,6 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @test
-     */
-    public function canWriteALogForAFilterWhenLoggingIsEnabled()
-    {
-        $fakeConfigurationArray = [];
-        $fakeConfigurationArray['plugin.']['tx_solr.']['logging.']['query.']['filters'] = true;
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getMockBuilder(Query::class)
-            ->setMethods(['writeDevLog'])
-            ->setConstructorArgs(['test', $fakeConfiguration])
-            ->getMock();
-        $query->expects($this->once())->method('writeDevLog');
-        $query->addFilter('foo');
-    }
-
-    /**
      * @return array
      */
     public function escapeQueryDataProvider()

@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\QueryAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -98,12 +99,18 @@ class SearchResultSetService implements SingletonInterface
     protected $typoScriptConfiguration;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+     */
+    protected $logger = null;
+
+    /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
      * @param AbstractPlugin $parentPlugin (optional parent plugin, needed for plugin aware components)
      */
     public function __construct(TypoScriptConfiguration $configuration, Search $search, AbstractPlugin $parentPlugin = null)
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
         $this->parentPlugin = $parentPlugin;
@@ -193,7 +200,13 @@ class SearchResultSetService implements SingletonInterface
         $this->applyPageSectionsRootLineFilter($query);
 
         if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
-            GeneralUtility::devLog('received search query', 'solr', 0, [$rawQuery]);
+            $this->logger->log(
+                SolrLogManager::INFO,
+                'Received search query',
+                [
+                    $rawQuery
+                ]
+            );
         }
 
         $query->setResultsPerPage($resultsPerPage);

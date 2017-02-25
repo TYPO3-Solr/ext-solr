@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\Dispatcher;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -59,12 +60,18 @@ class PageIndexerRequestHandler implements SingletonInterface
     protected $dispatcher;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Constructor.
      *
      * Initializes request, response, and dispatcher.
      */
     public function __construct()
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->dispatcher = GeneralUtility::makeInstance(Dispatcher::class);
         $this->request = GeneralUtility::makeInstance(PageIndexerRequest::class, $_SERVER['HTTP_X_TX_SOLR_IQ']);
         $this->response = GeneralUtility::makeInstance(PageIndexerResponse::class);
@@ -81,10 +88,9 @@ class PageIndexerRequestHandler implements SingletonInterface
     public function run()
     {
         if (!$this->request->isAuthenticated()) {
-            GeneralUtility::devLog(
+            $this->logger->log(
+                SolrLogManager::ERROR,
                 'Invalid Index Queue Frontend Request detected!',
-                'solr',
-                3,
                 [
                     'page indexer request' => (array)$this->request,
                     'index queue header' => $_SERVER['HTTP_X_TX_SOLR_IQ']

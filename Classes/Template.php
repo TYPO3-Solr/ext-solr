@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\ViewHelper\SubpartViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelper\ViewHelper;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
@@ -58,6 +59,11 @@ class Template
     protected $debugMode = false;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Constructor for the html marker template engine.
      *
      * @param ContentObjectRenderer $contentObject content object
@@ -69,6 +75,8 @@ class Template
         $templateFile,
         $subpart
     ) {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+
         $this->cObj = $contentObject;
         $this->templateFile = $templateFile;
 
@@ -185,10 +193,13 @@ class Template
                 } catch (\Exception $e) {
                     $configuration = Util::getSolrConfiguration();
                     if ($configuration->getLoggingExceptions()) {
-                        GeneralUtility::devLog('exception while adding a viewhelper',
-                            'solr', 3, [
+                        $this->logger->log(
+                            SolrLogManager::ERROR,
+                            'Exception while adding a viewhelper',
+                            [
                                 $e->__toString()
-                            ]);
+                            ]
+                        );
                     }
                 }
             }
@@ -490,10 +501,13 @@ class Template
             } catch (\UnexpectedValueException $e) {
                 $configuration = Util::getSolrConfiguration();
                 if ($configuration->getLoggingExceptions()) {
-                    GeneralUtility::devLog('Exception while rendering a viewhelper',
-                        'solr', 3, [
+                    $this->logger->log(
+                        SolrLogManager::ERROR,
+                        'Exception while rendering a viewhelper',
+                        [
                             $e->__toString()
-                        ]);
+                        ]
+                    );
                 }
 
                 $viewHelperContent = '';

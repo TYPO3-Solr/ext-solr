@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
 use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -76,12 +77,19 @@ class Search implements SingletonInterface
     // TODO Override __clone to reset $response and $hasSearched
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Constructor
      *
      * @param SolrService $solrConnection The Solr connection to use for searching
      */
     public function __construct(SolrService $solrConnection = null)
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+
         $this->solr = $solrConnection;
 
         if (is_null($solrConnection)) {
@@ -147,25 +155,31 @@ class Search implements SingletonInterface
             );
 
             if ($this->configuration->getLoggingQueryQueryString()) {
-                GeneralUtility::devLog('Querying Solr, getting result', 'solr',
-                    0, [
+                $this->logger->log(
+                    SolrLogManager::INFO,
+                    'Querying Solr, getting result',
+                    [
                         'query string' => $query->getQueryString(),
                         'query parameters' => $query->getQueryParameters(),
                         'response' => json_decode($response->getRawResponse(),
                             true)
-                    ]);
+                    ]
+                );
             }
         } catch (\RuntimeException $e) {
             $response = $this->solr->getResponse();
 
             if ($this->configuration->getLoggingExceptions()) {
-                GeneralUtility::devLog('Exception while querying Solr', 'solr',
-                    3, [
+                $this->logger->log(
+                    SolrLogManager::ERROR,
+                    'Exception while querying Solr',
+                    [
                         'exception' => $e->__toString(),
                         'query' => (array)$query,
                         'offset' => $offset,
                         'limit' => $limit
-                    ]);
+                    ]
+                );
             }
         }
 
@@ -262,10 +276,13 @@ class Search implements SingletonInterface
             $solrAvailable = true;
         } catch (\Exception $e) {
             if ($this->configuration->getLoggingExceptions()) {
-                GeneralUtility::devLog('exception while trying to ping the solr server',
-                    'solr', 3, [
+                $this->logger->log(
+                    SolrLogManager::ERROR,
+                    'Exception while trying to ping the solr server',
+                    [
                         $e->__toString()
-                    ]);
+                    ]
+                );
             }
         }
 

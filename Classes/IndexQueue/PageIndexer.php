@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Access\RootlineElement;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,7 +41,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PageIndexer extends Indexer
 {
-
     /**
      * Indexes an item from the indexing queue.
      *
@@ -175,14 +174,18 @@ class PageIndexer extends Indexer
             }
 
             if ($this->loggingEnabled) {
-                GeneralUtility::devLog('Page Access Groups', 'solr', 0, [
-                    'item' => (array)$item,
-                    'language' => $language,
-                    'index request url' => $indexRequestUrl,
-                    'request' => (array)$request,
-                    'response' => (array)$response,
-                    'groups' => $groups
-                ]);
+                $this->logger->log(
+                    SolrLogManager::INFO,
+                    'Page Access Groups',
+                    [
+                        'item' => (array)$item,
+                        'language' => $language,
+                        'index request url' => $indexRequestUrl,
+                        'request' => (array)$request,
+                        'response' => (array)$response,
+                        'groups' => $groups
+                    ]
+                );
             }
         }
 
@@ -242,10 +245,9 @@ class PageIndexer extends Indexer
 
         // deprecated
         if (!empty($this->options['scheme'])) {
-            GeneralUtility::devLog(
-                'Using deprecated option "scheme" to set the scheme (http / https) for the page indexer frontend helper. Use plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.scheme instead',
-                'solr',
-                2
+            $this->logger->log(
+                SolrLogManager::INFO,
+                'Using deprecated option "scheme" to set the scheme (http / https) for the page indexer frontend helper. Use plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.scheme instead'
             );
             $scheme = $this->options['scheme'];
         }
@@ -271,10 +273,9 @@ class PageIndexer extends Indexer
         $dataUrl .= '&L=' . $language;
 
         if (!GeneralUtility::isValidUrl($dataUrl)) {
-            GeneralUtility::devLog(
+            $this->logger->log(
+                SolrLogManager::ERROR,
                 'Could not create a valid URL to get frontend data while trying to index a page.',
-                'solr',
-                3,
                 [
                     'item' => (array)$item,
                     'constructed URL' => $dataUrl,
@@ -366,15 +367,17 @@ class PageIndexer extends Indexer
         $indexActionResult = $response->getActionResult('indexPage');
 
         if ($this->loggingEnabled) {
-            $logSeverity = 0;
+            $logSeverity = SolrLogManager::INFO;
             $logStatus = 'Info';
             if ($indexActionResult['pageIndexed']) {
-                $logSeverity = -1;
+                $logSeverity = SolrLogManager::NOTICE;
                 $logStatus = 'Success';
             }
 
-            GeneralUtility::devLog('Page Indexer: ' . $logStatus, 'solr',
-                $logSeverity, [
+            $this->logger->log(
+                $logSeverity,
+                'Page Indexer: ' . $logStatus,
+                [
                     'item' => (array)$item,
                     'language' => $language,
                     'user group' => $userGroup,
@@ -382,7 +385,8 @@ class PageIndexer extends Indexer
                     'request' => (array)$request,
                     'request headers' => $request->getHeaders(),
                     'response' => (array)$response
-                ]);
+                ]
+            );
         }
 
         if (!$indexActionResult['pageIndexed']) {

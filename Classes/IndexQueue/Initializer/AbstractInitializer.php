@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -76,6 +77,11 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     protected $flashMessageQueue;
 
+    /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
     // Object initialization
 
     /**
@@ -84,6 +90,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     public function __construct()
     {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $this->flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
     }
@@ -362,7 +369,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
     {
         $solrConfiguration = $this->site->getSolrConfiguration();
 
-        $logSeverity = -1;
+        $logSeverity = SolrLogManager::NOTICE;
         $logData = [
             'site' => $this->site->getLabel(),
             'indexing configuration name' => $this->indexingConfigurationName,
@@ -372,15 +379,14 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         ];
 
         if ($GLOBALS['TYPO3_DB']->sql_errno()) {
-            $logSeverity = 3;
+            $logSeverity = SolrLogManager::ERROR;
             $logData['error'] = $GLOBALS['TYPO3_DB']->sql_errno() . ': ' . $GLOBALS['TYPO3_DB']->sql_error();
         }
 
         if ($solrConfiguration->getLoggingIndexingIndexQueueInitialization()) {
-            GeneralUtility::devLog(
-                'Index Queue initialized for indexing configuration ' . $this->indexingConfigurationName,
-                'solr',
+            $this->logger->log(
                 $logSeverity,
+                'Index Queue initialized for indexing configuration ' . $this->indexingConfigurationName,
                 $logData
             );
         }

@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
@@ -152,6 +153,11 @@ class SolrService extends \Apache_Solr_Service
     protected $schema;
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Constructor
      *
      * @param string $host Solr host
@@ -173,6 +179,8 @@ class SolrService extends \Apache_Solr_Service
         StopWordParser $stopWordParser = null,
         SchemaParser $schemaParser = null
     ) {
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+
         $this->setScheme($scheme);
         $this->configuration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
         $this->synonymParser = is_null($synonymParser) ? GeneralUtility::makeInstance(SynonymParser::class) : $synonymParser;
@@ -336,15 +344,18 @@ class SolrService extends \Apache_Solr_Service
                 $query->getRawPostFileData()
             );
         } catch (\Exception $e) {
-            GeneralUtility::devLog('Extracting text and meta data through Solr Cell over HTTP POST',
-                'solr', 3, [
+            $this->logger->log(
+                SolrLogManager::ERROR,
+                'Extracting text and meta data through Solr Cell over HTTP POST',
+                [
                     'query' => (array)$query,
                     'parameters' => $query->getQueryParameters(),
                     'file' => $query->getFile(),
                     'headers' => $headers,
                     'query url' => self::EXTRACT_SERVLET,
                     'exception' => $e->getMessage()
-                ]);
+                ]
+            );
         }
 
         return [
@@ -509,12 +520,12 @@ class SolrService extends \Apache_Solr_Service
      */
     protected function _sendRawGet($url, $timeout = false)
     {
-        $logSeverity = 0; // info
+        $logSeverity = SolrLogManager::INFO;
 
         try {
             $response = parent::_sendRawGet($url, $timeout);
         } catch (Apache_Solr_HttpTransportException $e) {
-            $logSeverity = 3; // fatal error
+            $logSeverity = SolrLogManager::ERROR;
             $response = $e->getResponse();
         }
 
@@ -532,8 +543,11 @@ class SolrService extends \Apache_Solr_Service
                 $logData['response data'] = print_r($response, true);
             }
 
-            GeneralUtility::devLog('Querying Solr using GET', 'solr',
-                $logSeverity, $logData);
+            $this->logger->log(
+                $logSeverity,
+                'Querying Solr using GET',
+                $logData
+            );
         }
 
         return $response;
@@ -684,10 +698,9 @@ class SolrService extends \Apache_Solr_Service
     {
         $response = $this->_sendRawPost($this->_updateUrl, $rawPost, $timeout);
 
-        GeneralUtility::devLog(
+        $this->logger->log(
+            SolrLogManager::NOTICE,
             'Delete Query sent.',
-            'solr',
-            1,
             [
                 'query' => $rawPost,
                 'query url' => $this->_updateUrl,
@@ -713,13 +726,13 @@ class SolrService extends \Apache_Solr_Service
         $timeout = false,
         $contentType = 'text/xml; charset=UTF-8'
     ) {
-        $logSeverity = 0; // info
+        $logSeverity = SolrLogManager::INFO;
 
         try {
             $response = parent::_sendRawPost($url, $rawPost, $timeout,
                 $contentType);
         } catch (Apache_Solr_HttpTransportException $e) {
-            $logSeverity = 3; // fatal error
+            $logSeverity = SolrLogManager::ERROR;
             $response = $e->getResponse();
         }
 
@@ -734,8 +747,11 @@ class SolrService extends \Apache_Solr_Service
                 $logData['exception'] = $e->__toString();
             }
 
-            GeneralUtility::devLog('Querying Solr using POST', 'solr',
-                $logSeverity, $logData);
+            $this->logger->log(
+                $logSeverity,
+                'Querying Solr using POST',
+                $logData
+            );
         }
 
         return $response;
@@ -803,7 +819,7 @@ class SolrService extends \Apache_Solr_Service
      */
     protected function _sendRawDelete($url, $timeout = false)
     {
-        $logSeverity = 0; // info
+        $logSeverity = SolrLogManager::INFO;
 
         try {
             $httpTransport = $this->getHttpTransport();
@@ -817,7 +833,7 @@ class SolrService extends \Apache_Solr_Service
                 throw new \Apache_Solr_HttpTransportException($solrResponse);
             }
         } catch (Apache_Solr_HttpTransportException $e) {
-            $logSeverity = 3; // fatal error
+            $logSeverity = SolrLogManager::ERROR;
             $solrResponse = $e->getResponse();
         }
 
@@ -835,8 +851,11 @@ class SolrService extends \Apache_Solr_Service
                 $logData['response data'] = print_r($solrResponse, true);
             }
 
-            GeneralUtility::devLog('Querying Solr using DELETE', 'solr',
-                $logSeverity, $logData);
+            $this->logger->log(
+                $logSeverity,
+                'Querying Solr using DELETE',
+                $logData
+            );
         }
 
         return $solrResponse;

@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -56,6 +57,11 @@ abstract class AbstractFrontendHelper implements FrontendHelper
      * The action a frontend helper executes.
      */
     protected $action = null;
+
+    /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
 
     /**
      * Disables the frontend output for index queue requests.
@@ -90,12 +96,16 @@ abstract class AbstractFrontendHelper implements FrontendHelper
     ) {
         $this->request = $request;
         $this->response = $response;
+        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 
         if ($request->getParameter('loggingEnabled')) {
-            GeneralUtility::devLog('Page indexer request received', 'solr', 0,
+            $this->logger->log(
+                SolrLogManager::INFO,
+                'Page indexer request received',
                 [
                     'request' => (array)$request,
-                ]);
+                ]
+            );
         }
     }
 

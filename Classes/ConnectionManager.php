@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
@@ -52,6 +53,11 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     protected static $connections = [];
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
+     */
+    protected $logger = null;
+
+    /**
      * Gets a Solr connection.
      *
      * Instead of generating a new connection with each call, connections are
@@ -70,13 +76,10 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '')
     {
         if (empty($host)) {
-            GeneralUtility::devLog(
-                'ApacheSolrForTypo3\Solr\ConnectionManager::getConnection() called with empty
-                host parameter. Using configuration from TSFE, might be
-                inaccurate. Always provide a host or use the getConnectionBy*
-                methods.',
-                'solr',
-                2
+            $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $this->logger->log(
+                SolrLogManager::WARNING,
+                'ApacheSolrForTypo3\Solr\ConnectionManager::getConnection() called with empty host parameter. Using configuration from TSFE, might be inaccurate. Always provide a host or use the getConnectionBy* methods.'
             );
 
             $configuration = Util::getSolrConfiguration();
