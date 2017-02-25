@@ -50,4 +50,4 @@ Configuration Reference
 	Reference/TxSolrStatistics
 	Reference/TxSolrViewHelpers
 	Reference/TxSolrLogging
-
+    Reference/ExtensionSettings

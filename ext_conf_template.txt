@@ -1,0 +1,2 @@
+# cat=basic/enable/10; type=boolean; label=Use closest rootpage for configuration (Performance improvement)
+useConfigurationFromClosestTemplate = 0
