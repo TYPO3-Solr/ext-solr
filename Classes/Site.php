@@ -337,18 +337,19 @@ class Site
      */
     public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999)
     {
-        // when we have a cached value, we can return it.
-        if (!empty(self::$sitePagesCache[$rootPageId])) {
-            return self::$sitePagesCache[$rootPageId];
-        }
-
         $pageIds = [];
         $maxDepth = intval($maxDepth);
 
-        $recursionRootPageId = intval($rootPageId);
         if ($rootPageId == 'SITE_ROOT') {
-            $recursionRootPageId = $this->rootPage['uid'];
+            $rootPageId = $this->rootPage['uid'];
             $pageIds[] = (int) $this->rootPage['uid'];
+        }
+
+        $recursionRootPageId = intval($rootPageId);
+
+        // when we have a cached value, we can return it.
+        if (!empty(self::$sitePagesCache[$rootPageId])) {
+            return self::$sitePagesCache[$rootPageId];
         }
 
         if ($maxDepth <= 0) {
