@@ -218,4 +218,39 @@ class QueueTest extends IntegrationTest
         $this->assertSame(0, $itemCount, 'After updating a remaining item no remaining item should be left');
     }
 
+    /**
+     * @test
+     */
+    public function canInitializeMultipleSites()
+    {
+        $this->importDataSetFromFixture('can_initialize_multiple_sites.xml');
+        $this->assertEmptyQueue();
+
+        $availableSites = Site::getAvailableSites();
+        $this->indexQueue->deleteAllItems();
+
+        if (is_array($availableSites)) {
+            foreach ($availableSites as $site) {
+                if ($site instanceof Site) {
+                    $this->indexQueue->initialize($site);
+                }
+            }
+        }
+
+
+        $firstRootPage = $this->indexQueue->getItems('pages',1);
+        $secondRootPage = $this->indexQueue->getItems('pages',2);
+
+        $this->assertCount(1, $firstRootPage);
+        $this->assertCount(1, $secondRootPage);
+
+        $firstSubPage = $this->indexQueue->getItems('pages',10);
+        $secondSubPage = $this->indexQueue->getItems('pages',20);
+
+        $this->assertCount(1, $firstSubPage);
+        $this->assertCount(1, $secondSubPage);
+
+        $this->assertItemsInQueue(4);
+    }
+
 }
