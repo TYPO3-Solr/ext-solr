@@ -476,7 +476,7 @@ queue.pages.indexer.frontendDataHelper.scheme
 ---------------------------------------------
 
 :Type: String
-:TS Path: plugin.tx_solr.index.queue.pages.frontendDataHelper.scheme
+:TS Path: plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.scheme
 :Since: 2.0
 
 Specifies the scheme to use when indexing pages.
@@ -485,7 +485,7 @@ queue.pages.indexer.frontendDataHelper.host
 -------------------------------------------
 
 :Type: String
-:TS Path: plugin.tx_solr.index.queue.pages.frontendDataHelper.host
+:TS Path: plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.host
 :Since: 2.0
 
 Specifies the host to use when indexing pages.
@@ -494,7 +494,7 @@ queue.pages.indexer.frontendDataHelper.path
 -------------------------------------------
 
 :Type: String
-:TS Path: plugin.tx_solr.index.queue.pages.frontendDataHelper.path
+:TS Path: plugin.tx_solr.index.queue.pages.indexer.frontendDataHelper.path
 :Since: 2.0
 
 Specifies the path to use when indexing pages.
