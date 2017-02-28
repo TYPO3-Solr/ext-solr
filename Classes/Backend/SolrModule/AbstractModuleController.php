@@ -170,7 +170,8 @@ abstract class AbstractModuleController extends ActionController implements Admi
      *
      * @return Site
      */
-    protected function getFallbackSite() {
+    protected function getFallbackSite()
+    {
         $sites = Site::getAvailableSites();
 
         $site = array_shift($sites);
