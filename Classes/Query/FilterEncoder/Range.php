@@ -77,7 +77,7 @@ class Range implements FilterEncoder, FacetBuilder
             );
         }
 
-        return '[' . (int) $filterParts[1] . ' TO ' . (int)  $filterParts[2] . ']';
+        return '[' . (int)$filterParts[1] . ' TO ' . (int)$filterParts[2] . ']';
     }
 
     /**

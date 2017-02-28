@@ -175,7 +175,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
             'auth', // service type
             AuthorizationService::class,
             // service key
-            [ // service meta data
+            [// service meta data
                 'title' => 'Solr Indexer Authorization',
                 'description' => 'Authorizes the Solr Index Queue indexer to access protected pages.',
 

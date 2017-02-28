@@ -143,7 +143,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
             $message .= ' Failures: ' . $failedItemsCount;
         }
 
-        $message .=  ' / Using webroot: ' . htmlspecialchars($this->getWebRoot());
+        $message .= ' / Using webroot: ' . htmlspecialchars($this->getWebRoot());
 
         return $message;
     }

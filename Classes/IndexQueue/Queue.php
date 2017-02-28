@@ -937,8 +937,7 @@ class Queue
      * Marks an item as failed and causes the indexer to skip the item in the
      * next run.
      *
-     * @param int|Item $item Either the item's Index Queue
-     *      uid or the complete item
+     * @param int|Item $item Either the item's Index Queue uid or the complete item
      * @param string $errorMessage Error message
      */
     public function markItemAsFailed($item, $errorMessage = '')

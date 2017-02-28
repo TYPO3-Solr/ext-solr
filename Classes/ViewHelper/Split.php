@@ -51,14 +51,14 @@ class Split extends AbstractSubpartViewHelper
     public function execute(array $arguments = [])
     {
         try {
-            $iterator  = unserialize($arguments[0]);
+            $iterator = unserialize($arguments[0]);
         } catch (\Exception $e) {
             $iterator = [];
         }
         if ($iterator === false) {
             $iterator = [];
         }
-        $variable  = $arguments[1];
+        $variable = $arguments[1];
 
         $data = '';
         foreach ($iterator as $value) {

@@ -37,7 +37,7 @@ class SuggestQuery extends Query
      */
     protected $configuration;
 
-     /**
+    /**
      * @var string
      */
     protected $prefix;
@@ -50,7 +50,7 @@ class SuggestQuery extends Query
      */
     public function __construct($keywords, $solrConfiguration = null)
     {
-        $keywords = (string) $keywords;
+        $keywords = (string)$keywords;
         if ($solrConfiguration == null) {
             $solrConfiguration = Util::getSolrConfiguration();
         }

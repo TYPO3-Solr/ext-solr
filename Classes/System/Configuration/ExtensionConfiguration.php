@@ -32,6 +32,12 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
  */
 class ExtensionConfiguration
 {
+    /**
+     * Extension Configuration
+     *
+     * @var array
+     */
+    protected $configuration = [];
 
     /**
      * ExtensionConfiguration constructor.
@@ -51,7 +57,7 @@ class ExtensionConfiguration
      */
     public function getIsUseConfigurationFromClosestTemplateEnabled()
     {
-        return (bool) $this->getConfigurationOrDefaultValue('useConfigurationFromClosestTemplate', false);
+        return (bool)$this->getConfigurationOrDefaultValue('useConfigurationFromClosestTemplate', false);
     }
 
     /**

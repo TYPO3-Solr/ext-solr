@@ -216,7 +216,7 @@ class Rootline
     public static function cleanGroupArray(array $groups)
     {
         $groups = array_unique($groups); // removes duplicates
-        sort($groups, SORT_NUMERIC);     // sort
+        sort($groups, SORT_NUMERIC); // sort
 
         return $groups;
     }

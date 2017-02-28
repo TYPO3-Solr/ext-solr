@@ -277,8 +277,8 @@ class Page extends AbstractInitializer
 
         $mountedPagesIdsWithQueueItems = [];
         foreach ($queueItemsOfExistingMountPoints as $id => $queueItemsOfExistingMountPoint) {
-            if (((int) $queueItemsOfExistingMountPoint['queueItemCount']) > 0) {
-                $mountedPagesIdsWithQueueItems[] = (int) $id;
+            if (((int)$queueItemsOfExistingMountPoint['queueItemCount']) > 0) {
+                $mountedPagesIdsWithQueueItems[] = (int)$id;
             }
         }
 

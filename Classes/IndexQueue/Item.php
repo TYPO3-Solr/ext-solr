@@ -241,6 +241,9 @@ class Item
         $this->record = $record;
     }
 
+    /**
+     * @return int
+     */
     public function getRecordPageId()
     {
         $this->getRecord();

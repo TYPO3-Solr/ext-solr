@@ -169,9 +169,8 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      *
      * @param ContentObjectRenderer $parentObject parent content object
      */
-    public function postProcessContentObjectInitialization(
-        ContentObjectRenderer &$parentObject
-    ) {
+    public function postProcessContentObjectInitialization(ContentObjectRenderer &$parentObject)
+    {
         if (!empty($parentObject->currentRecord)) {
             list($table) = explode(':', $parentObject->currentRecord);
 

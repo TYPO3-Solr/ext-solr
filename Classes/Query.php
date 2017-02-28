@@ -171,7 +171,7 @@ class Query
      */
     public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null)
     {
-        $keywords = (string) $keywords;
+        $keywords = (string)$keywords;
 
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->solrConfiguration = is_null($solrConfiguration) ? Util::getSolrConfiguration() : $solrConfiguration;
@@ -679,7 +679,7 @@ class Query
      */
     public function getGroupFields()
     {
-        return (array) $this->getQueryParameter('group.field', []);
+        return (array)$this->getQueryParameter('group.field', []);
     }
 
     /**
@@ -702,7 +702,7 @@ class Query
      */
     public function getGroupSortings()
     {
-        return (array) $this->getQueryParameter('group.sort', []);
+        return (array)$this->getQueryParameter('group.sort', []);
     }
 
     // faceting
@@ -728,7 +728,7 @@ class Query
      */
     public function getGroupQueries()
     {
-        return (array) $this->getQueryParameter('group.query', []);
+        return (array)$this->getQueryParameter('group.query', []);
     }
 
     /**
