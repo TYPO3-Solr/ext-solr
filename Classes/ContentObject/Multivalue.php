@@ -60,9 +60,9 @@ class Multivalue
      * @return string serialized array representation of the given list
      */
     public function cObjGetSingleExt(
-        $name,
+        /** @noinspection PhpUnusedParameterInspection */ $name,
         array $configuration,
-        $TyposcriptKey,
+        /** @noinspection PhpUnusedParameterInspection */ $TyposcriptKey,
         $contentObject
     ) {
         $data = '';

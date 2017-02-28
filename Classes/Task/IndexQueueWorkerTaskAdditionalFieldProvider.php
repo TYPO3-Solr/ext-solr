@@ -56,41 +56,42 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
     ) {
         $additionalFields = [];
 
-        $this->isTaskInstanceofIndexQueueWorkerTask($task);
+        if ($this->isTaskInstanceofIndexQueueWorkerTask($task)) {
 
-        if ($schedulerModule->CMD == 'add') {
-            $taskInfo['site'] = null;
-            $taskInfo['documentsToIndexLimit'] = 50;
-            $taskInfo['forcedWebRoot'] = '';
+            if ($schedulerModule->CMD == 'add') {
+                $taskInfo['site'] = null;
+                $taskInfo['documentsToIndexLimit'] = 50;
+                $taskInfo['forcedWebRoot'] = '';
+            }
+
+            if ($schedulerModule->CMD == 'edit') {
+                $taskInfo['site'] = $task->getSite();
+                $taskInfo['documentsToIndexLimit'] = $task->getDocumentsToIndexLimit();
+                $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();
+            }
+
+            $additionalFields['site'] = [
+                'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
+                    $taskInfo['site']),
+                'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
+                'cshKey' => '',
+                'cshLabel' => ''
+            ];
+
+            $additionalFields['documentsToIndexLimit'] = [
+                'code' => '<input type="number" class="form-control" name="tx_scheduler[documentsToIndexLimit]" value="' . htmlspecialchars($taskInfo['documentsToIndexLimit']) . '" />',
+                'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_documentsToIndexLimit',
+                'cshKey' => '',
+                'cshLabel' => ''
+            ];
+
+            $additionalFields['forcedWebRoot'] = [
+                'code' => '<input type="text" class="form-control" name="tx_scheduler[forcedWebRoot]" value="' . htmlspecialchars($taskInfo['forcedWebRoot']) . '" />',
+                'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_forcedWebRoot',
+                'cshKey' => '',
+                'cshLabel' => ''
+            ];
         }
-
-        if ($schedulerModule->CMD == 'edit') {
-            $taskInfo['site'] = $task->getSite();
-            $taskInfo['documentsToIndexLimit'] = $task->getDocumentsToIndexLimit();
-            $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();
-        }
-
-        $additionalFields['site'] = [
-            'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
-                $taskInfo['site']),
-            'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
-            'cshKey' => '',
-            'cshLabel' => ''
-        ];
-
-        $additionalFields['documentsToIndexLimit'] = [
-            'code' => '<input type="number" class="form-control" name="tx_scheduler[documentsToIndexLimit]" value="' . htmlspecialchars($taskInfo['documentsToIndexLimit']) . '" />',
-            'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_documentsToIndexLimit',
-            'cshKey' => '',
-            'cshLabel' => ''
-        ];
-
-        $additionalFields['forcedWebRoot'] = [
-            'code' => '<input type="text" class="form-control" name="tx_scheduler[forcedWebRoot]" value="' . htmlspecialchars($taskInfo['forcedWebRoot']) . '" />',
-            'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_field_forcedWebRoot',
-            'cshKey' => '',
-            'cshLabel' => ''
-        ];
 
         return $additionalFields;
     }
@@ -132,17 +133,18 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         array $submittedData,
         AbstractTask $task
     ) {
-        $this->isTaskInstanceofIndexQueueWorkerTask($task);
-
-        $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
-        $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
-        $task->setForcedWebRoot($submittedData['forcedWebRoot']);
+        if ($this->isTaskInstanceofIndexQueueWorkerTask($task)) {
+            $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
+            $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
+            $task->setForcedWebRoot($submittedData['forcedWebRoot']);
+        }
     }
 
     /**
      * Check that a task is an instance of IndexQueueWorkerTask
      *
      * @param AbstractTask $task
+     * @return boolean
      * @throws \LogicException
      */
     protected function isTaskInstanceofIndexQueueWorkerTask($task)
@@ -153,5 +155,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
                 .'other instances are not supported.', 1487499814
             );
         }
+
+        return true;
     }
 }

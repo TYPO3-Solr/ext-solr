@@ -99,8 +99,11 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * @param TypoScriptFrontendController $tsfe
      * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::checkEnableFields()
      */
-    public function checkEnableFields($parameters, $tsfe)
-    {
+    public function checkEnableFields(
+        $parameters,
+        /** @noinspection PhpUnusedParameterInspection */
+        $tsfe
+    ) {
         $parameters['row']['fe_group'] = '';
     }
 
@@ -112,7 +115,9 @@ class UserGroupDetector extends AbstractFrontendHelper implements
      * @param TypoScriptFrontendController $parentObject TSFE object
      */
     public function deactivateTcaFrontendGroupEnableFields(
+        /** @noinspection PhpUnusedParameterInspection */
         &$parameters,
+        /** @noinspection PhpUnusedParameterInspection */
         $parentObject
     ) {
         $this->originalTca = $GLOBALS['TCA'];

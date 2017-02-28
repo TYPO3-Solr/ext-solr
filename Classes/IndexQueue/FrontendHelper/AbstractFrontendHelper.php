@@ -79,8 +79,11 @@ abstract class AbstractFrontendHelper implements FrontendHelper
      * @param array $parameters Parameters from frontend
      * @param TypoScriptFrontendController $parentObject TSFE object
      */
-    public function disableCaching(&$parameters, $parentObject)
-    {
+    public function disableCaching(
+        /** @noinspection PhpUnusedParameterInspection */
+        &$parameters,
+        $parentObject
+    ) {
         $parentObject->no_cache = true;
     }
 

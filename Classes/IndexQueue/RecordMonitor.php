@@ -124,6 +124,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $command,
         $table,
         $uid,
+        /** @noinspection PhpUnusedParameterInspection */
         $value,
         DataHandler $tceMain
     ) {

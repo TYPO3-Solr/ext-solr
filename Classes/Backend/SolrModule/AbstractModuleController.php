@@ -150,13 +150,12 @@ abstract class AbstractModuleController extends ActionController implements Admi
             } else {
                 if ($site instanceof Site) {
                     $this->site = $site;
+                } else {
+                    $this->site = $this->getFallbackSite();
                 }
             }
         } catch (NoSuchArgumentException $nsae) {
-            $sites = Site::getAvailableSites();
-
-            $site = array_shift($sites);
-            $this->site = $site;
+            $this->site = $this->getFallbackSite();
         }
 
         $this->request->setArgument('site', $this->site);
@@ -164,6 +163,18 @@ abstract class AbstractModuleController extends ActionController implements Admi
         $moduleData = $this->moduleDataStorageService->loadModuleData();
         $moduleData->setSite($this->site);
         $this->moduleDataStorageService->persistModuleData($moduleData);
+    }
+
+    /**
+     * Return Fallback site
+     *
+     * @return Site
+     */
+    protected function getFallbackSite() {
+        $sites = Site::getAvailableSites();
+
+        $site = array_shift($sites);
+        return $site;
     }
 
     /**

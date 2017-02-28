@@ -80,9 +80,9 @@ class Relation
      * @return string serialized array representation of the given list
      */
     public function cObjGetSingleExt(
-        $name,
+        /** @noinspection PhpUnusedParameterInspection */ $name,
         array $configuration,
-        $TyposcriptKey,
+        /** @noinspection PhpUnusedParameterInspection */ $TyposcriptKey,
         $parentContentObject
     ) {
         $this->configuration = array_merge($this->configuration, $configuration);

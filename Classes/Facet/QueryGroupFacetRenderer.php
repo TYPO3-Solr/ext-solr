@@ -59,10 +59,12 @@ class QueryGroupFacetRenderer extends SimpleFacetRenderer
         $facetOptionsRaw = parent::getFacetOptions();
 
         $filterEncoder = GeneralUtility::makeInstance(QueryGroup::class);
-        foreach ($facetOptionsRaw as $facetOption => $numberOfResults) {
-            $facetOption = $filterEncoder->encodeFilter($facetOption,
-                $this->facetConfiguration);
-            $facetOptions[$facetOption] = $numberOfResults;
+        if (!empty($facetOptionsRaw)) {
+            foreach ($facetOptionsRaw as $facetOption => $numberOfResults) {
+                $facetOption = $filterEncoder->encodeFilter($facetOption,
+                    $this->facetConfiguration);
+                $facetOptions[$facetOption] = $numberOfResults;
+            }
         }
 
         return $facetOptions;

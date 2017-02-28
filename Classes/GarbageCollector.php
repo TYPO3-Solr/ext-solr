@@ -76,7 +76,9 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         $command,
         $table,
         $uid,
+        /** @noinspection PhpUnusedParameterInspection */
         $value,
+        /** @noinspection PhpUnusedParameterInspection */
         DataHandler $tceMain
     ) {
         // workspaces: collect garbage only for LIVE workspace
@@ -261,7 +263,9 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         $command,
         $table,
         $uid,
+        /** @noinspection PhpUnusedParameterInspection */
         $value,
+        /** @noinspection PhpUnusedParameterInspection */
         DataHandler $tceMain
     ) {
         // workspaces: collect garbage only for LIVE workspace
@@ -289,9 +293,11 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      * @param DataHandler $tceMain TYPO3 Core Engine parent object, not used
      */
     public function processDatamap_preProcessFieldArray(
+        /** @noinspection PhpUnusedParameterInspection */
         $incomingFields,
         $table,
         $uid,
+        /** @noinspection PhpUnusedParameterInspection */
         DataHandler $tceMain
     ) {
         if (!is_int($uid)) {
@@ -344,6 +350,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         $table,
         $uid,
         array $fields,
+        /** @noinspection PhpUnusedParameterInspection */
         DataHandler $tceMain
     ) {
         if ($status == 'new') {
