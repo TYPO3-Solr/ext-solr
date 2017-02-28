@@ -28,6 +28,8 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageReso
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -265,6 +267,8 @@ class Util
         $language = 0,
         $useTwoLevelCache = true
     ) {
+        $pageId = self::getConfigurationPageIdToUse($pageId);
+
         static $configurationObjectCache = [];
         $cacheId = md5($pageId . '|' . $path . '|' . $language);
         if (isset($configurationObjectCache[$cacheId])) {
@@ -299,6 +303,24 @@ class Util
         return $configurationObjectCache[$cacheId] = self::buildTypoScriptConfigurationFromArray($configurationArray, $pageId, $language, $path);
     }
 
+    /**
+     * This method retrieves the closest pageId where a configuration is located, when this
+     * feature is enabled.
+     *
+     * @param int $pageId
+     * @return int
+     */
+    protected static function getConfigurationPageIdToUse($pageId)
+    {
+        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        if ($extensionConfiguration->getIsUseConfigurationFromClosestTemplateEnabled()) {
+            /** @var $configurationPageResolve ConfigurationPageResolver */
+            $configurationPageResolver = GeneralUtility::makeInstance(ConfigurationPageResolver::class);
+            $pageId = $configurationPageResolver->getClosestPageIdWithActiveTemplate($pageId);
+            return $pageId;
+        }
+        return $pageId;
+    }
 
     /**
      * Initializes a TSFE, if required and builds an configuration array, containing the solr configuration.
