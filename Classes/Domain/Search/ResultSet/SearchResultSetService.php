@@ -296,7 +296,7 @@ class SearchResultSetService implements SingletonInterface
      * @param Query $query The query that has been searched for.
      * @param \Apache_Solr_Response $response The search's response.
      */
-    protected function processResponse($rawQuery,Query $query, \Apache_Solr_Response &$response)
+    protected function processResponse($rawQuery, Query $query, \Apache_Solr_Response &$response)
     {
         if ($this->shouldHideResultsFromInitialSearch($rawQuery)) {
             // explicitly set number of results to 0 as we just wanted
