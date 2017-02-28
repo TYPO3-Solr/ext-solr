@@ -226,7 +226,7 @@ class Template
             $ucHelperKey = Util::underscoredToUpperCamelCase($helperKey);
             $vendorNameSpace = 'ApacheSolrForTypo3\\Solr\\';
             $possibleFilename = $ucHelperKey . '.php';
-            $possibleClassName =  $vendorNameSpace . str_replace('/', '\\',
+            $possibleClassName = $vendorNameSpace . str_replace('/', '\\',
                     $viewHelperRealPath) . '\\' . $ucHelperKey;
 
             $viewHelperIncludePath = ExtensionManagementUtility::extPath($extensionKey)

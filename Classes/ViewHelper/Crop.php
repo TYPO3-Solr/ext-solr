@@ -60,7 +60,7 @@ class Crop implements ViewHelper
         }
 
         if (isset($cropConfiguration['cropFullWords'])) {
-            $this->cropFullWords = (boolean) $cropConfiguration ['cropFullWords'];
+            $this->cropFullWords = (boolean)$cropConfiguration ['cropFullWords'];
         }
     }
 

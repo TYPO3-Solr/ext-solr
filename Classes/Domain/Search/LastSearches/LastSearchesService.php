@@ -96,7 +96,7 @@ class LastSearchesService
      */
     public function addToLastSearches($keywords)
     {
-        $mode   = $this->configuration->getSearchLastSearchesMode();
+        $mode = $this->configuration->getSearchLastSearchesMode();
         switch ($mode) {
             case 'user':
                 $this->storeKeywordsToSession($keywords);
@@ -230,7 +230,7 @@ class LastSearchesService
     protected function getNextSequenceId()
     {
         $nextSequenceId = 0;
-        $numberOfLastSearchesToLog = (int) $this->configuration->getSearchLastSearchesLimit();
+        $numberOfLastSearchesToLog = (int)$this->configuration->getSearchLastSearchesLimit();
 
         $row = $this->database->exec_SELECTgetRows(
             '(sequence_id + 1) % ' . $numberOfLastSearchesToLog . ' as next_sequence_id',

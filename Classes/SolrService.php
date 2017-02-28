@@ -265,7 +265,7 @@ class SolrService extends \Apache_Solr_Service
      *
      * Also does not report the time, see https://forge.typo3.org/issues/64551
      *
-     * @param float|int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+     * @param int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
      * @param boolean $useCache indicates if the ping result should be cached in the instance or not
      * @return bool TRUE if Solr can be reached, FALSE if not
      */
@@ -278,7 +278,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
      *
-     * @param float|int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
+     * @param int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
      * @param boolean $useCache indicates if the ping result should be cached in the instance or not
      * @return double runtime in milliseconds
      * @throws \ApacheSolrForTypo3\Solr\PingFailedException
@@ -309,7 +309,7 @@ class SolrService extends \Apache_Solr_Service
      */
     protected function performPingRequest($timeout = 2, $useCache = true)
     {
-        $cacheKey = (string) ($this);
+        $cacheKey = (string)($this);
         if ($useCache && isset(static::$pingCache[$cacheKey])) {
             return static::$pingCache[$cacheKey];
         }
@@ -644,7 +644,7 @@ class SolrService extends \Apache_Solr_Service
             $solrconfigXmlUrl = $this->_scheme . '://'
                 . $this->_host . ':' . $this->_port
                 . $this->_path . 'admin/file/?file=solrconfig.xml';
-            $response= $this->_sendRawGet($solrconfigXmlUrl);
+            $response = $this->_sendRawGet($solrconfigXmlUrl);
 
             $solrconfigXml = simplexml_load_string($response->getRawResponse());
             if ($solrconfigXml === false) {
@@ -914,7 +914,7 @@ class SolrService extends \Apache_Solr_Service
     {
         $paths = explode('/', trim($this->_path, '/'));
 
-        return (string) array_pop($paths);
+        return (string)array_pop($paths);
     }
 
     /**

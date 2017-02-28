@@ -43,9 +43,9 @@ class StatisticsRepository
     public function getSearchStatistics($rootPageId, $days = 30, $limit = 10)
     {
         $now = time();
-        $timeStart = (int) ($now - 86400 * intval($days)); // 86400 seconds/day
-        $rootPageId = (int) $rootPageId;
-        $limit = (int) $limit;
+        $timeStart = (int)($now - 86400 * intval($days)); // 86400 seconds/day
+        $rootPageId = (int)$rootPageId;
+        $limit = (int)$limit;
 
         $statisticsRows = (array)$this->getDatabase()->exec_SELECTgetRows(
             'keywords, count(keywords) as count, num_found as hits',
@@ -65,7 +65,6 @@ class StatisticsRepository
 
         $statisticsRows = array_map(function ($row) use ($sumCount) {
             $row['percent'] = $row['count'] * 100 / $sumCount;
-
             return $row;
         }, $statisticsRows);
 
@@ -109,9 +108,9 @@ class StatisticsRepository
      */
     protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $days = 30, $limit, $withoutHits)
     {
-        $rootPageId = (int) $rootPageId;
-        $limit = (int) $limit;
-        $withoutHits = (bool) $withoutHits;
+        $rootPageId = (int)$rootPageId;
+        $limit = (int)$limit;
+        $withoutHits = (bool)$withoutHits;
 
         $now = time();
         $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
@@ -153,11 +152,11 @@ class StatisticsRepository
             $mergedRow = isset($result[$term]) ? $result[$term] : ['mergedrows' => 0, 'count' => 0];
             $mergedRow['mergedrows']++;
 
-                // for the hits we need to take the average
+            // for the hits we need to take the average
             $avgHits = $this->getAverageFromField($mergedRow, $statisticsRow, 'hits');
-            $mergedRow['hits'] = (int) $avgHits;
+            $mergedRow['hits'] = (int)$avgHits;
 
-                // for the count we need to take the sum, because it's the sum of searches
+            // for the count we need to take the sum, because it's the sum of searches
             $mergedRow['count'] = $mergedRow['count'] + $statisticsRow['count'];
 
             $mergedRow['keywords'] = $term;
@@ -199,7 +198,7 @@ class StatisticsRepository
      * @param string $fieldName
      * @return float|int
      */
-    protected function getAverageFromField(array &$mergedRow, array $statisticsRow,  $fieldName)
+    protected function getAverageFromField(array &$mergedRow, array $statisticsRow, $fieldName)
     {
         // when this is the first row we can take it.
         if ($mergedRow['mergedrows'] === 1) {

@@ -76,7 +76,7 @@ class RootPageResolver implements SingletonInterface
      */
     public function getResponsibleRootPageIds($table, $uid)
     {
-        $cacheId = 'RootPageResolver' . '_' . 'getResponsibleRootPageIds' . '_' . $table . '_'.$uid;
+        $cacheId = 'RootPageResolver' . '_' . 'getResponsibleRootPageIds' . '_' . $table . '_' . $uid;
         $methodResult = $this->runtimeCache->get($cacheId);
         if (!empty($methodResult)) {
             return $methodResult;

@@ -142,7 +142,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
     /**
      * Check that a task is an instance of IndexQueueWorkerTask
      *
-     * @param $task
+     * @param AbstractTask $task
      * @throws \LogicException
      */
     protected function isTaskInstanceofIndexQueueWorkerTask($task)

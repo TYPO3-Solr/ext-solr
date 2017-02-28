@@ -67,7 +67,7 @@ class FrequentSearchesService
      * @param TypoScriptFrontendController $tsfe
      * @param DatabaseConnection $database
      */
-    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, AbstractFrontend $cache,  TypoScriptFrontendController $tsfe, DatabaseConnection $database)
+    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, AbstractFrontend $cache, TypoScriptFrontendController $tsfe, DatabaseConnection $database)
     {
         $this->configuration = $typoscriptConfiguration;
         $this->cache = $cache;
@@ -129,9 +129,9 @@ class FrequentSearchesService
             $checkLanguageWhere = '';
         }
 
-        $frequentSearchConfiguration['select.']['ADD_WHERE'] =  $checkRootPidWhere .
-                                                                $checkLanguageWhere . ' ' .
-                                                                $frequentSearchConfiguration['select.']['ADD_WHERE'];
+        $frequentSearchConfiguration['select.']['ADD_WHERE'] = $checkRootPidWhere .
+            $checkLanguageWhere . ' ' .
+            $frequentSearchConfiguration['select.']['ADD_WHERE'];
 
         /** @noinspection PhpUndefinedMethodInspection */
         $frequentSearchTerms = $this->database->exec_SELECTgetRows(
@@ -165,10 +165,10 @@ class FrequentSearchesService
         $identifier = 'frequentSearchesTags';
 
         if ($frequentSearchConfiguration['select.']['checkRootPageId']) {
-            $identifier .= '_RP' . (int) $this->tsfe->tmpl->rootLine[0]['uid'];
+            $identifier .= '_RP' . (int)$this->tsfe->tmpl->rootLine[0]['uid'];
         }
         if ($frequentSearchConfiguration['select.']['checkLanguage']) {
-            $identifier .= '_L' . (int) $this->tsfe->sys_language_uid;
+            $identifier .= '_L' . (int)$this->tsfe->sys_language_uid;
         }
 
         $identifier .= '_' . md5(serialize($frequentSearchConfiguration));

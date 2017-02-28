@@ -436,7 +436,7 @@ abstract class PluginBase extends AbstractPlugin
      * This method executes the requested commands and applies the changes to
      * the template.
      *
-     * @param $actionResult
+     * @param string $actionResult
      * @return string Rendered plugin content
      */
     abstract protected function render($actionResult);

@@ -266,7 +266,7 @@ class Site
     {
         /** @var $registry Registry */
         $registry = GeneralUtility::makeInstance(Registry::class);
-        $servers = (array) $registry->get('tx_solr', 'servers', []);
+        $servers = (array)$registry->get('tx_solr', 'servers', []);
         return $servers;
     }
 
@@ -342,7 +342,7 @@ class Site
 
         if ($rootPageId == 'SITE_ROOT') {
             $rootPageId = $this->rootPage['uid'];
-            $pageIds[] = (int) $this->rootPage['uid'];
+            $pageIds[] = (int)$this->rootPage['uid'];
         }
 
         $recursionRootPageId = intval($rootPageId);
@@ -391,7 +391,7 @@ class Site
         $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'pages', 'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages') . $initialPagesAdditionalWhereClause);
 
         while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            $pageIds[] = (int) $page['uid'];
+            $pageIds[] = (int)$page['uid'];
 
             if ($maxDepth > 1) {
                 $pageIds = array_merge($pageIds, $this->getPages($page['uid'], $maxDepth - 1));

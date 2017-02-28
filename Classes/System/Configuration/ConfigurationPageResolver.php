@@ -49,6 +49,11 @@ class ConfigurationPageResolver
     protected $twoLevelCache;
 
     /**
+     * @var TwoLevelCache
+     */
+    protected $runtimeCache;
+
+    /**
      * ConfigurationPageResolver constructor.
      * @param PageRepository|null $pageRepository
      * @param TwoLevelCache|null $twoLevelCache
