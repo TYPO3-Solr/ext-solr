@@ -97,7 +97,6 @@ class SearchResultSetServiceTest extends IntegrationTest
         $this->assertEquals(11, $typoScriptConfiguration->getSearchVariantsLimit());
 
         $searchResults = $this->doSearchWithResultSetService($solrConnection, $typoScriptConfiguration);
-
         $this->assertSame(3, count($searchResults), 'There should be three results at all');
 
         // We assume that the first result has one variants.
