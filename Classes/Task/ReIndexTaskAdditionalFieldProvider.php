@@ -113,26 +113,27 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     ) {
         $additionalFields = [];
 
-        if ($this->isTaskInstanceofReIndexTask($task)) {
-
-            $this->initialize($taskInfo, $task, $schedulerModule);
-            $additionalFields = [];
-
-            $additionalFields['site'] = [
-                'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
-                    $this->site),
-                'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
-                'cshKey' => '',
-                'cshLabel' => ''
-            ];
-
-            $additionalFields['indexingConfigurations'] = [
-                'code' => $this->getIndexingConfigurationSelector(),
-                'label' => 'Index Queue configurations to re-index',
-                'cshKey' => '',
-                'cshLabel' => ''
-            ];
+        if (!$this->isTaskInstanceofReIndexTask($task)) {
+            return $additionalFields;
         }
+
+        $this->initialize($taskInfo, $task, $schedulerModule);
+        $additionalFields = [];
+
+        $additionalFields['site'] = [
+            'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
+                $this->site),
+            'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
+            'cshKey' => '',
+            'cshLabel' => ''
+        ];
+
+        $additionalFields['indexingConfigurations'] = [
+            'code' => $this->getIndexingConfigurationSelector(),
+            'label' => 'Index Queue configurations to re-index',
+            'cshKey' => '',
+            'cshLabel' => ''
+        ];
 
         return $additionalFields;
     }
@@ -190,16 +191,17 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         array $submittedData,
         AbstractTask $task
     ) {
-        if ($this->isTaskInstanceofReIndexTask($task)) {
-
-            $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
-
-            $indexingConfigurations = [];
-            if (!empty($submittedData['indexingConfigurations'])) {
-                $indexingConfigurations = $submittedData['indexingConfigurations'];
-            }
-            $task->setIndexingConfigurationsToReIndex($indexingConfigurations);
+        if (!$this->isTaskInstanceofReIndexTask($task)) {
+            return;
         }
+
+        $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
+
+        $indexingConfigurations = [];
+        if (!empty($submittedData['indexingConfigurations'])) {
+            $indexingConfigurations = $submittedData['indexingConfigurations'];
+        }
+        $task->setIndexingConfigurationsToReIndex($indexingConfigurations);
     }
 
     /**
