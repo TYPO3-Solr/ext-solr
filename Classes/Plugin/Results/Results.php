@@ -149,7 +149,7 @@ class Results extends CommandPluginBase
     protected function postInitialize()
     {
         // disable caching
-        $this->pi_USER_INT_obj = 1;
+        $this->pi_USER_INT_obj = true;
     }
 
     /**

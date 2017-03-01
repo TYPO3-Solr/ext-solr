@@ -286,7 +286,7 @@ abstract class PluginBase extends AbstractPlugin
                 }
             }
         }
-        $this->LOCAL_LANG_loaded = 1;
+        $this->LOCAL_LANG_loaded = true;
     }
 
     /**
@@ -321,6 +321,7 @@ abstract class PluginBase extends AbstractPlugin
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
         /** @var $this->searchService ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService */
         $this->searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $this->typoScriptConfiguration, $search, $this);
+        // @todo Timo - is this used or has is some side-effects?
         $this->solrAvailable = $this->searchResultsSetService->getIsSolrAvailable();
         $this->search = $this->searchResultsSetService->getSearch();
     }
@@ -375,6 +376,7 @@ abstract class PluginBase extends AbstractPlugin
                     $viewHelpers = $viewHelperProvider->getViewHelpers();
                     foreach ($viewHelpers as $helperName => $helperObject) {
                         // TODO check whether $helperAdded is TRUE, throw an exception if not
+                        /** @noinspection PhpUnusedLocalVariableInspection */
                         $helperAdded = $template->addViewHelperObject($helperName,
                             $helperObject);
                     }

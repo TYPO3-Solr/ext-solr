@@ -95,8 +95,11 @@ class AuthorizationService extends AbstractAuthenticationService
      * @param array $knownGroups Group data array of already known groups. This is handy if you want select other related groups. Keys in this array are unique IDs of those groups.
      * @return mixed Groups array, keys = uid which must be unique
      */
-    public function getGroups($user, $knownGroups)
-    {
+    public function getGroups(
+        $user,
+        /** @noinspection PhpUnusedParameterInspection */
+        $knownGroups
+    ) {
         $groupData = [];
 
             /** @var $requestHandler PageIndexerRequestHandler */

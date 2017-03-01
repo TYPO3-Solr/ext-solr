@@ -56,7 +56,9 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
     ) {
         $additionalFields = [];
 
-        $this->isTaskInstanceofIndexQueueWorkerTask($task);
+        if (!$this->isTaskInstanceofIndexQueueWorkerTask($task)) {
+            return $additionalFields;
+        }
 
         if ($schedulerModule->CMD == 'add') {
             $taskInfo['site'] = null;
@@ -132,7 +134,9 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         array $submittedData,
         AbstractTask $task
     ) {
-        $this->isTaskInstanceofIndexQueueWorkerTask($task);
+        if (!$this->isTaskInstanceofIndexQueueWorkerTask($task)) {
+            return;
+        }
 
         $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
@@ -143,6 +147,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
      * Check that a task is an instance of IndexQueueWorkerTask
      *
      * @param AbstractTask $task
+     * @return boolean
      * @throws \LogicException
      */
     protected function isTaskInstanceofIndexQueueWorkerTask($task)
@@ -153,5 +158,6 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
                 .'other instances are not supported.', 1487499814
             );
         }
+        return true;
     }
 }

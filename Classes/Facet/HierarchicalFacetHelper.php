@@ -52,8 +52,12 @@ class HierarchicalFacetHelper
      * @param array $configuration
      * @return array A menu structure usable for HMENU
      */
-    public function getMenuStructure($content, array $configuration)
-    {
+    public function getMenuStructure(
+        /** @noinspection PhpUnusedParameterInspection */
+        $content,
+        /** @noinspection PhpUnusedParameterInspection */
+        array $configuration
+    ) {
         $menuStructure = [];
         $facetOptions = $this->cObj->data['facetOptions'];
 

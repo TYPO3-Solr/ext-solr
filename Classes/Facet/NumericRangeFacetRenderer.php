@@ -173,6 +173,7 @@ class NumericRangeFacetRenderer extends AbstractFacetRenderer
     {
         $rangeFile = $this->solrConfiguration->getCssFileByFileKey('ui');
         if ($rangeFile !== '' && !$GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss']) {
+            // @todo Timo needed?
             $cssFile = GeneralUtility::createVersionNumberedFilename($GLOBALS['TSFE']->tmpl->getFileName($rangeFile));
             $GLOBALS['TSFE']->additionalHeaderData['tx_solr-uiCss'] = $rangeFile;
         }

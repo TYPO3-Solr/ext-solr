@@ -224,7 +224,7 @@ class Item
     public function getRecord()
     {
         if (empty($this->record)) {
-            $this->record = BackendUtility::getRecord(
+            $this->record = (array)BackendUtility::getRecord(
                 $this->type,
                 $this->recordUid,
                 '*',
