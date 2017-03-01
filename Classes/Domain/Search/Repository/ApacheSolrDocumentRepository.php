@@ -83,7 +83,7 @@ class ApacheSolrDocumentRepository implements SingletonInterface
      */
     protected function initializeSearch($pageId, $languageId = 0)
     {
-        if (empty($pageId) || !is_int($pageId)) {
+        if (!is_int($pageId)) {
             throw new \InvalidArgumentException('Invalid page ID = ' . $pageId, 1487332926);
         }
         if (!is_int($languageId)) { // @todo: Check if lang id is defined and present?
