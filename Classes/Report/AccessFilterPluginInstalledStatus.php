@@ -47,7 +47,7 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      *
      * @var string
      */
-    const RECOMMENDED_PLUGIN_VERSION = '1.2.0';
+    const RECOMMENDED_PLUGIN_VERSION = '2.0.0';
 
     /**
      * The plugin's Java class name.

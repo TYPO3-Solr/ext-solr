@@ -253,6 +253,9 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
             $pageIndexer->setPageAccessRootline(Rootline::getAccessRootlineByPageId($importPageId));
             $pageIndexer->indexPage();
         }
+
+        // reset to group 0
+        $this->simulateFrontedUserGroups([0]);
     }
 
     /**
