@@ -159,7 +159,7 @@ class SearchResultSetTest extends UnitTest
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['testProcessor'] = $testProcessor;
         $this->fakeRegisteredSearchComponents([]);
 
-        $fakedSolrResponse = $this->getFixtureContent('fakeResponse.json');
+        $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
         $fakeHttpResponse = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
         $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
 
@@ -242,7 +242,7 @@ class SearchResultSetTest extends UnitTest
         $this->configurationMock->expects($this->atLeastOnce())->method('getSearchVariantsField')->will($this->returnValue('type'));
 
         $this->fakeRegisteredSearchComponents([]);
-        $fakedSolrResponse = $this->getFixtureContent('fakeCollapsedResponse.json');
+        $fakedSolrResponse = $this->getFixtureContentByName('fakeCollapsedResponse.json');
         $fakeHttpResponse = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
         $fakeHttpResponse->expects($this->once())->method('getBody')->will($this->returnValue($fakedSolrResponse));
 

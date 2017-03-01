@@ -62,7 +62,7 @@ abstract class UnitTest extends TYPO3UnitTest
      * @param $fixtureName
      * @return string
      */
-    protected function getFixturePath($fixtureName)
+    protected function getFixturePathByName($fixtureName)
     {
         return $this->getFixtureRootPath() . $fixtureName;
     }
@@ -73,9 +73,9 @@ abstract class UnitTest extends TYPO3UnitTest
      * @param string $fixtureName
      * @return string
      */
-    protected function getFixtureContent($fixtureName)
+    protected function getFixtureContentByName($fixtureName)
     {
-        return file_get_contents($this->getFixturePath($fixtureName));
+        return file_get_contents($this->getFixturePathByName($fixtureName));
     }
 
     /**
