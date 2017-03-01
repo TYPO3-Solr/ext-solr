@@ -814,12 +814,12 @@ class Util
             $host = $username . ':' . $password . '@' . $host;
         }
 
-        return [
+        return array(
             'host' => $host,
             'port' => $port,
             'path' => $path,
             'scheme' => $scheme,
             'enabled' => $solrEnabled
-        ];
+        );
     }
 }
