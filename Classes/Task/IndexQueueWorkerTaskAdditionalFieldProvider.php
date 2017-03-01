@@ -155,7 +155,6 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
                 .'other instances are not supported.', 1487499814
             );
         }
-
         return true;
     }
 }

@@ -228,7 +228,6 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
                 . 'other instances are not supported.', 1487500366
             );
         }
-
         return true;
     }
 }
