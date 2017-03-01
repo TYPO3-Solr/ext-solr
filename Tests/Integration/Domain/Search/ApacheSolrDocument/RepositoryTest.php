@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\Repository;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\ApacheSolrDocument;
 
 /***************************************************************
  *  Copyright notice
@@ -24,14 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Search\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Repository\ApacheSolrDocumentRepository;
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 {
     /**
-     * @var ApacheSolrDocumentRepository
+     * @var Repository
      */
     protected $apacheSolrDocumentRepository;
 
@@ -43,8 +43,8 @@ class ApacheSolrDocumentRepositoryTest extends IntegrationTest
 
         $this->waitToBeVisibleInSolr();
 
-        /* @var $apacheSolrDocumentRepository ApacheSolrDocumentRepository */
-        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(ApacheSolrDocumentRepository::class);
+        /* @var $apacheSolrDocumentRepository Repository */
+        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
     }
 
     /**

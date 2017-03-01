@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use Apache_Solr_Document;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Builder;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
@@ -111,11 +112,6 @@ class Typo3PageIndexer
     protected $indexQueueItem;
 
     /**
-     * @var IdBuilder
-     */
-    protected $variantIdBuilder;
-
-    /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
     protected $logger = null;
@@ -124,9 +120,8 @@ class Typo3PageIndexer
      * Constructor
      *
      * @param TypoScriptFrontendController $page The page to index
-     * @param IdBuilder $variantIdBuilder
      */
-    public function __construct(TypoScriptFrontendController $page, IdBuilder $variantIdBuilder = null)
+    public function __construct(TypoScriptFrontendController $page)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 
@@ -154,9 +149,7 @@ class Typo3PageIndexer
             }
         }
 
-        $this->contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $this->page->content);
         $this->pageAccessRootline = GeneralUtility::makeInstance(Rootline::class, '');
-        $this->variantIdBuilder = is_null($variantIdBuilder) ? GeneralUtility::makeInstance(IdBuilder::class) : $variantIdBuilder;
     }
 
     /**
@@ -166,7 +159,6 @@ class Typo3PageIndexer
     {
         $this->indexQueueItem = $indexQueueItem;
     }
-
 
     /**
      * Initializes the Solr server connection.
@@ -290,144 +282,15 @@ class Typo3PageIndexer
      */
     protected function getPageDocument()
     {
-        $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
-        /* @var $document \Apache_Solr_Document */
-        $site = Site::getSiteByPageId($this->page->id);
-        $pageRecord = $this->page->page;
+        $documentBuilder = GeneralUtility::makeInstance(Builder::class);
+        $document = $documentBuilder->fromPage($this->page, $this->pageUrl, $this->pageAccessRootline, $this->mountPointParameter);
+        $idField = $document->getField('id');
 
-        self::$pageSolrDocumentId = $documentId = Util::getPageDocumentId(
-            $this->page->id,
-            $this->page->type,
-            $this->page->sys_language_uid,
-            $this->getDocumentIdGroups(),
-            $this->getMountPointParameter()
-        );
-        $document->setField('id', $documentId);
-        $document->setField('site', $site->getDomain());
-        $document->setField('siteHash', $site->getSiteHash());
-        $document->setField('appKey', 'EXT:solr');
-        $document->setField('type', 'pages');
-
-        // system fields
-        $document->setField('uid', $this->page->id);
-        $document->setField('pid', $pageRecord['pid']);
-
-        // variantId
-        $variantId = $this->variantIdBuilder->buildFromTypeAndUid('pages', $this->page->id);
-        $document->setField('variantId', $variantId);
-
-        $document->setField('typeNum', $this->page->type);
-        $document->setField('created', $pageRecord['crdate']);
-        $document->setField('changed', $pageRecord['SYS_LASTCHANGED']);
-
-        $rootline = $this->getRootLineFieldValue();
-        $document->setField('rootline', $rootline);
-
-        // access
-        $this->addAccessField($document);
-        $this->addEndtimeField($document, $pageRecord);
-
-        // content
-        $document->setField('title', $this->contentExtractor->getPageTitle());
-        $document->setField('subTitle', $pageRecord['subtitle']);
-        $document->setField('navTitle', $pageRecord['nav_title']);
-        $document->setField('author', $pageRecord['author']);
-        $document->setField('description', $pageRecord['description']);
-        $document->setField('abstract', $pageRecord['abstract']);
-        $document->setField('content', $this->contentExtractor->getIndexableContent());
-        $document->setField('url', $this->pageUrl);
-
-        $this->addKeywordsField($document, $pageRecord);
-        $this->addTagContentFields($document);
+        self::$pageSolrDocumentId = $idField['value'];
 
         return $document;
     }
 
-    /**
-     * Adds the access field to the document if needed.
-     *
-     * @param \Apache_Solr_Document $document
-     */
-    protected function addAccessField(\Apache_Solr_Document $document)
-    {
-        $access = (string)$this->pageAccessRootline;
-        if (trim($access) !== '') {
-            $document->setField('access', $access);
-        }
-    }
-
-    /**
-     * @param $document
-     * @param $pageRecord
-     */
-    protected function addEndtimeField(\Apache_Solr_Document  $document, $pageRecord)
-    {
-        if ($this->page->page['endtime']) {
-            $document->setField('endtime', $pageRecord['endtime']);
-        }
-    }
-
-    /**
-     * Adds keywords, multi valued.
-     *
-     * @param \Apache_Solr_Document $document
-     * @param array $pageRecord
-     */
-    protected function addKeywordsField(\Apache_Solr_Document $document, $pageRecord)
-    {
-        $keywords = array_unique(GeneralUtility::trimExplode(',', $pageRecord['keywords'], true));
-        foreach ($keywords as $keyword) {
-            $document->addField('keywords', $keyword);
-        }
-    }
-
-    /**
-     * Add content from several tags like headers, anchors, ...
-     *
-     * @param \Apache_Solr_Document $document
-     */
-    protected function addTagContentFields(\Apache_Solr_Document  $document)
-    {
-        $tagContent = $this->contentExtractor->getTagContent();
-        foreach ($tagContent as $fieldName => $fieldValue) {
-            $document->setField($fieldName, $fieldValue);
-        }
-    }
-
-    /**
-     * Builds the content for the rootline field.
-     *
-     * @return string
-     */
-    protected function getRootLineFieldValue()
-    {
-        $rootline = $this->page->id;
-        $mountPointParameter = $this->getMountPointParameter();
-        if ($mountPointParameter !== '') {
-            $rootline .= ',' . $mountPointParameter;
-        }
-        return $rootline;
-    }
-
-    /**
-     * Gets a comma separated list of frontend user groups to use for the
-     * document ID.
-     *
-     * @return string A comma separated list of frontend user groups.
-     */
-    protected function getDocumentIdGroups()
-    {
-        $groups = $this->pageAccessRootline->getGroups();
-        $groups = Rootline::cleanGroupArray($groups);
-
-        if (empty($groups)) {
-            $groups[] = 0;
-        }
-
-        $groups = implode(',', $groups);
-
-        return $groups;
-    }
 
     // Logging
     // TODO replace by a central logger
