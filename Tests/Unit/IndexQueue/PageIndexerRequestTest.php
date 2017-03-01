@@ -94,7 +94,7 @@ class PageIndexerRequestTest extends UnitTest
             ->getMock();
 
         // we fake the response from a captured response json file
-        $fakeResponse = $this->getFixtureContent('fakeResponse.json');
+        $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
         $requestMock->expects($this->once())->method('getUrl')->will($this->returnValue($fakeResponse));
 
         $queueItemMock = $this->getDumbMock(Item::class);
@@ -121,7 +121,7 @@ class PageIndexerRequestTest extends UnitTest
             ->getMock();
 
         // we fake the response from a captured response json file
-        $fakeResponse = $this->getFixtureContent('fakeResponse.json');
+        $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
         $requestMock->expects($this->once())->method('getUrl')->will($this->returnValue($fakeResponse));
 
         $queueItemMock = $this->getDumbMock(Item::class);
@@ -178,7 +178,7 @@ class PageIndexerRequestTest extends UnitTest
             ->getMock();
 
         // we fake the response from a captured response json file
-        $fakeResponse = $this->getFixtureContent('fakeResponse.json');
+        $fakeResponse = $this->getFixtureContentByName('fakeResponse.json');
         $requestMock->expects($this->once())->method('getUrl')->will($this->returnValue($fakeResponse));
 
         $queueItemMock = $this->getDumbMock(Item::class);

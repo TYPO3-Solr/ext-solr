@@ -38,7 +38,7 @@ class TemplateTest extends UnitTest
      */
     public function testExtractViewHelperArgumentsDataProvider()
     {
-        $htmlFixture = $this->getFixtureContent('fixture.html');
+        $htmlFixture = $this->getFixtureContentByName('fixture.html');
         return [
             'simple' => ['LINK','###LINK:a|b###',['a|b']],
             'inlinemarker' => ['LINK','###LINK:###a###|b###',['###a###|b']],

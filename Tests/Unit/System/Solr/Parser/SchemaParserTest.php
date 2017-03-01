@@ -41,7 +41,7 @@ class SchemaParserTest extends UnitTest
     public function canParseLanguage()
     {
         $parser = new SchemaParser();
-        $schema = $parser->parseJson($this->getFixtureContent('schema.json'));
+        $schema = $parser->parseJson($this->getFixtureContentByName('schema.json'));
         $this->assertSame('german', $schema->getLanguage(), 'Could not parser language from schema response');
     }
 
@@ -51,7 +51,7 @@ class SchemaParserTest extends UnitTest
     public function canParseName()
     {
         $parser = new SchemaParser();
-        $schema = $parser->parseJson($this->getFixtureContent('schema.json'));
+        $schema = $parser->parseJson($this->getFixtureContentByName('schema.json'));
         $this->assertSame('tx_solr-6-0-0--20161122', $schema->getName(), 'Could not parser name from schema response');
     }
 

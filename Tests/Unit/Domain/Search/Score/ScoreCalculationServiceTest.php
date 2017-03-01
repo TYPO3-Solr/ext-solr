@@ -52,7 +52,7 @@ class ScoreCalculationServiceTest extends UnitTest
      */
     public function canGetRenderedScoreAnalysis()
     {
-        $fakeDebugData = $this->getFixtureContent('fakeSolrDebugData.txt');
+        $fakeDebugData = $this->getFixtureContentByName('fakeSolrDebugData.txt');
         $fakeQueryFields = 'content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0';
 
         $scoreAnalysis = $this->scoreCalculationService->getRenderedScores($fakeDebugData, $fakeQueryFields);
