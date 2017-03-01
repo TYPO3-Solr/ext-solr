@@ -36,7 +36,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ConfigurationManager implements SingletonInterface
 {
     /**
-     * Typoscript Configurations
+     * TypoScript Configurations
      *
      * @var array
      */
