@@ -744,7 +744,8 @@ class Util
 
     /**
      * Gets solr configuration from TypoScript.
-     * If there is configuration in $GLOBALS['TYPO3_CONF_VARS']['SOLR'], this configuration will be overwritten
+     * If there is configuration in e.g. $GLOBALS['TYPO3_CONF_VARS']['SOLR'],
+     * this configuration will be overwritten
      *
      * @param array $rootPage
      * @param int $languageId
@@ -753,7 +754,7 @@ class Util
     public static function getSolrServerConfigurationByRootPageIdAndLanguage($rootPage, $languageId = 0)
     {
 
-        $contentObject = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
         $languageId = intval($languageId);
         GeneralUtility::_GETset($languageId, 'L');
@@ -762,9 +763,11 @@ class Util
         $rootLine = $pageSelect->getRootLine($rootPage['uid']);
 
         $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
-        $tmpl->tt_track = false; // Do not log time-performance information
+        // Do not log time-performance information
+        $tmpl->tt_track = false;
         $tmpl->init();
-        $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
+        // This generates the constants/config + hierarchy info for the template.
+        $tmpl->runThroughTemplates($rootLine);
 
         // fake micro TSFE to get correct condition parsing
         $GLOBALS['TSFE'] = new \stdClass();
