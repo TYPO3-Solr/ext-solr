@@ -1,0 +1,56 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<f:if condition="{document}">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a href="#panel-group4document-id-{document.fields._version_}" data-toggle="collapse">Title: {document.fields.title}</a>
+                <a href="#panel-group4document-id-{document.fields._version_}" title="Collapse table" class="pull-right" data-toggle="collapse">
+                    <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                </a>
+            </h3>
+        </div>
+        <div id="panel-group4document-id-{document.fields._version_}" class="panel-collapse collapse {f:if(condition: '{documentsCount} < 2', then: 'in', else: '')}">
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <thead><tr><th>Fieldname</th><th>Value</th><th>Boosted</th></tr></thead>
+                    <tbody id="document-tbody-pid-{document.fields.uid}">
+                    <f:render section="Rows" arguments="{tableRows: document.fields, showBoostedColumn: 1, document: document}"/>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</f:if>
+
+<f:section name="Rows">
+    <f:for each="{tableRows}" key="tableRowFiledName" as="tableRowValue" >
+        <tr>
+            <th scope="row">{tableRowFiledName}</th>
+            <solr:isString value="{tableRowValue}">
+                <f:then>
+                    <td>{tableRowValue}</td>
+                </f:then>
+                <f:else>
+                    <td>
+                        <f:render section="SubTable" arguments="{tableRows: tableRowValue}"/>
+                    </td>
+                </f:else>
+            </solr:isString>
+            <f:if condition="{showBoostedColumn}">
+                <f:then>
+                    <td>{solr:document.isBoostedField(document:document, fieldName:tableRowFiledName, then:'true', else:'false')}</td>
+                </f:then>
+            </f:if>
+        </tr>
+    </f:for>
+</f:section>
+
+<f:section name="SubTable">
+    <table class="table table-bordered">
+        <thead><tr><th>Fieldname</th><th>Value</th></tr></thead>
+        <tbody>
+            <f:render section="Rows" arguments="{tableRows: tableRows}"/>
+        </tbody>
+    </table>
+</f:section>

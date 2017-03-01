@@ -32,15 +32,6 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
-    'TYPO3.tx_solr.IndexInspector.Remote',
-    \ApacheSolrForTypo3\Solr\Backend\IndexInspector\IndexInspectorRemoteController::class,
-    'web_info',
-    'user,group'
-);
-
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
 // page module plugin settings summary
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] = \ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary::class . '->getSummary';
