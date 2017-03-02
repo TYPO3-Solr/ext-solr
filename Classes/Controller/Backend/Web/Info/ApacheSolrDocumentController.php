@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info;
  ***************************************************************/
 
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Repository\ApacheSolrDocumentRepository;
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -54,7 +54,7 @@ class ApacheSolrDocumentController extends ActionController
     protected $languageId = 0;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Domain\Search\Repository\ApacheSolrDocumentRepository
+     * @var \ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository
      * @inject
      */
     protected $apacheSolrDocumentRepository;

@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Repository;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
 
 /***************************************************************
  *  Copyright notice
@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class ApacheSolrDocumentRepository uses connection to Solr Server
  */
-class ApacheSolrDocumentRepository implements SingletonInterface
+class Repository implements SingletonInterface
 {
 
     /**
