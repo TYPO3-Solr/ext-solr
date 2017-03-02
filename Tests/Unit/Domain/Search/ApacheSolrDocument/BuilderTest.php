@@ -137,7 +137,18 @@ class BuilderTest extends UnitTest
      */
     public function canSetTagFieldsForApacheSolrDocument()
     {
+        $fakePage = $this->getDumbMock(TypoScriptFrontendController::class);
+        $fakeRootLine = $this->getDumbMock(Rootline::class);
+        $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 
+        $this->fakeDocumentId('siteHash/pages/4711');
+        $this->fakeTagContent(['tagsH1' => 'Fake H1 content']);
+
+        $fakePage->page = [];
+        $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
+        $tagsH1 = $document->getField('tagsH1');
+
+        $this->assertSame($tagsH1['value'], 'Fake H1 content', 'Could not assign extracted h1 heading to solr document');
     }
 
     /**
