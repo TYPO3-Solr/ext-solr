@@ -21,6 +21,14 @@ FAQ - Frequently Asked Questions
 ================================
 
 
+**What does the term `"Core"<https://cwiki.apache.org/confluence/display/solr/Solr+Cores+and+solr.xml>`_  mean?**
+
+This term comes from Apache Solr and means a single capsuled index area. It is possible to use multiple cores on one single Apache Solr instance.
+Good examples are e.g. using different Apache Solr Core for each language or of course own Core for each Website.
+For more informations please refer Apache Solr documentation.
+
+|
+
 **When i open the search page i see the message 'Search is currently not available. ', whats wrong?**
 
 Did you configure your solr connection as required?
