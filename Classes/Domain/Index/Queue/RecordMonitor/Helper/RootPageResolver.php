@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -55,6 +56,11 @@ class RootPageResolver implements SingletonInterface
     protected $runtimeCache;
 
     /**
+     * @var ExtensionConfiguration
+     */
+    protected $extensionConfiguration;
+
+    /**
      * RootPageResolver constructor.
      * @param ConfigurationAwareRecordService|null $recordService
      * @param TwoLevelCache|null $twoLevelCache
@@ -63,6 +69,7 @@ class RootPageResolver implements SingletonInterface
     {
         $this->recordService = isset($recordService) ? $recordService : GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         $this->runtimeCache = isset($twoLevelCache) ? $twoLevelCache : GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
     }
 
     /**
@@ -169,9 +176,10 @@ class RootPageResolver implements SingletonInterface
         if ($this->getIsRootPageId($rootPageId)) {
             $rootPages[] = $rootPageId;
         }
-
-        $alternativeSiteRoots = $this->getAlternativeSiteRootPagesIds($table, $uid, $rootPageId);
-        $rootPages = array_merge($rootPages, $alternativeSiteRoots);
+        if ($this->extensionConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot()) {
+            $alternativeSiteRoots = $this->getAlternativeSiteRootPagesIds($table, $uid, $rootPageId);
+            $rootPages = array_merge($rootPages, $alternativeSiteRoots);
+        }
 
         return $rootPages;
     }

@@ -53,11 +53,23 @@ class ExtensionConfiguration
     }
 
     /**
+     * Get configuration for useConfigurationFromClosestTemplate
+     *
      * @return bool
      */
     public function getIsUseConfigurationFromClosestTemplateEnabled()
     {
         return (bool)$this->getConfigurationOrDefaultValue('useConfigurationFromClosestTemplate', false);
+    }
+
+    /**
+     * Get configuration for useConfigurationTrackRecordsOutsideSiteroot
+     *
+     * @return bool
+     */
+    public function getIsUseConfigurationTrackRecordsOutsideSiteroot()
+    {
+        return (bool)$this->getConfigurationOrDefaultValue('useConfigurationTrackRecordsOutsideSiteroot', true);
     }
 
     /**

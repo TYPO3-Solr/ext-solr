@@ -1,2 +1,5 @@
 # cat=basic/enable/10; type=boolean; label=Use closest rootpage for configuration (Performance improvement)
 useConfigurationFromClosestTemplate = 0
+
+# cat=basic/enable/20; type=boolean; label=Enable/Disable record tracking outside siteroot
+useConfigurationTrackRecordsOutsideSiteroot = 1
