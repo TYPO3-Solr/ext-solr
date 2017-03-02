@@ -49,4 +49,18 @@ class ExtensionConfigurationTest extends UnitTest
         );
         $this->assertTrue($configurationWithClosestTemplateEnabled->getIsUseConfigurationFromClosestTemplateEnabled());
     }
+
+    /**
+     * @test
+     */
+    public function testIsUseConfigurationTrackRecordsOutsideSiterootEnabled()
+    {
+        $defaultConfiguration = new ExtensionConfiguration();
+        $this->assertTrue($defaultConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot());
+        $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
+            ['useConfigurationTrackRecordsOutsideSiteroot' => 0]
+        );
+        $this->assertFalse($configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationTrackRecordsOutsideSiteroot());
+    }
+
 }

@@ -30,3 +30,14 @@ useConfigurationFromClosestTemplate
 
 When this setting is active the closest page with a typoscript template will be used to fetch the configuration.
 This improves the performance but limits also the possibilities. E.g. conditions can not be used that are related to a certain page.
+
+useConfigurationTrackRecordsOutsideSiteroot
+-------------------------------------------
+
+:Type: Boolean
+:Since: 6.1
+:Default: 1
+
+A common common scenario is to have a site and a storage folder for records parallel to it
+on the same level (f.e.)
+If you don't want this behaviour - it should be set to false.
