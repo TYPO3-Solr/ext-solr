@@ -29,6 +29,20 @@ For more informations please refer Apache Solr documentation.
 
 |
 
+**Where can I report a bug?**
+
+Please make sure that this bug is not reported already, use also the search function of our issue tracker.
+Our issue tracker is on `"GitHub"<https://github.com/TYPO3-Solr/ext-solr/issues/>`_.
+
+|
+
+**Where can I report a security issue?**
+
+If you have found a security issue in our extension, please do not post about it in a public channel.
+Please `send us an email<mailto:team-solr@dkd.de>`_ with detailed description of found vulnerability.
+
+|
+
 **When i open the search page i see the message 'Search is currently not available. ', whats wrong?**
 
 Did you configure your solr connection as required?
