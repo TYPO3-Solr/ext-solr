@@ -23,9 +23,9 @@ FAQ - Frequently Asked Questions
 
 **What does the term `"Core"<https://cwiki.apache.org/confluence/display/solr/Solr+Cores+and+solr.xml>`_  mean?**
 
-This term comes from Apache Solr and means a single capsuled index area. It is possible to use multiple cores on one single Apache Solr instance.
-Good examples are e.g. using different Apache Solr Core for each language or of course own Core for each Website.
-For more informations please refer Apache Solr documentation.
+This term relates to Apache Solr indexes and means a single distinct part of an index. It is possible to use multiple cores on one single Apache Solr instance.
+Good examples are using a different Apache Solr core for each language or of course a separate core for each website.
+For more informations please refer to the Apache Solr documentation.
 
 |
 
