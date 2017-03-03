@@ -3,3 +3,6 @@ useConfigurationFromClosestTemplate = 0
 
 # cat=basic/enable/20; type=boolean; label=Enable/Disable record tracking outside siteroot
 useConfigurationTrackRecordsOutsideSiteroot = 1
+
+# cat=basic/enable/30; type=string; label=Monitor tables - explicitly monitor these (still requires TS configuration)
+useConfigurationMonitorTables =

@@ -782,4 +782,81 @@ class RecordMonitorTest extends IntegrationTest
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
         $this->assertIndexQueueContainsItemAmount(2);
     }
+
+    /**
+     * @test
+     */
+    public function updateRecordMonitoringTablesConfiguredDefault()
+    {
+        $this->importDataSetFromFixture('update_page_use_configuration_monitor_tables.xml');
+        $this->assertEmptyIndexQueue();
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 5;
+        $fields = [
+            'title' => 'Update updateRecordMonitoringTablesConfiguredDefault'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
+
+    /**
+     * @test
+     */
+    public function updateRecordMonitoringTablesConfiguredNotForTableBeingUpdated()
+    {
+        $this->importDataSetFromFixture('update_page_use_configuration_monitor_tables.xml');
+        $this->assertEmptyIndexQueue();
+
+        $testConfig = [];
+        $testConfig['useConfigurationMonitorTables'] = 'tt_content';
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr'] = serialize($testConfig);
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 5;
+        $fields = [
+            'title' => 'Update updateRecordMonitoringTablesConfiguredNotForTableBeingUpdated'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $testConfig = [];
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr'] = serialize($testConfig);
+
+        $this->assertEmptyIndexQueue();
+    }
+
+    /**
+     * @test
+     */
+    public function updateRecordMonitoringTablesConfiguredForTableBeingUpdated()
+    {
+        $this->importDataSetFromFixture('update_page_use_configuration_monitor_tables.xml');
+        $this->assertEmptyIndexQueue();
+
+        $testConfig = [];
+        $testConfig['useConfigurationMonitorTables'] = 'pages, tt_content';
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr'] = serialize($testConfig);
+
+        $status = 'update';
+        $table = 'pages';
+        $uid = 5;
+        $fields = [
+            'title' => 'Update updateRecordMonitoringTablesConfiguredForTableBeingUpdated'
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
+            $this->dataHandler);
+
+        $testConfig = [];
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr'] = serialize($testConfig);
+
+        $this->assertIndexQueueContainsItemAmount(1);
+    }
 }
