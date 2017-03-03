@@ -43,8 +43,8 @@ Did you configure your solr connection as required?
 
 **In which cases do I want to trigger indexing manually?**
 
-- by changing any configuration file.
-- by modifying synonyms, stop words, protected words in BE>Search
+- after changing any configuration file.
+- after modifying synonyms, stop words, protected words in TYPO3 Backend -> Search
 
 Moreover by changing core/index configuration you need to reload the core to make the changes become active.
 To reload configuration you can either restart the whole Solr server or simply reload a specific core.
