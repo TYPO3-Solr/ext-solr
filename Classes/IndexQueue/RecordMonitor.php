@@ -275,7 +275,7 @@ class RecordMonitor extends AbstractDataHandlerListener
     /**
      * Check if the provided table is explicitly configured for monitoring
      *
-     * @param $table
+     * @param string $table
      * @return bool
      */
     protected function skipMonitoringOfTable($table)
