@@ -43,9 +43,9 @@ Please `send us an email<mailto:team-solr@dkd.de>`_ with detailed description of
 
 |
 
-**Is there some chat/irc channel for EXT:solr point available?**
+**Is there some chat/irc channel for EXT:solr available?**
 
-Join us on official `Slack for TYPO3<https://forger.typo3.org/slack>`_ and get answers related to EXT:solr in #ext-solr channel immediately!
+Join us on the official `Slack for TYPO3<https://forger.typo3.org/slack>`_ and get answers related to EXT:solr in the #ext-solr channel immediately!
 
 |
 
