@@ -43,6 +43,12 @@ Please `send us an email<mailto:team-solr@dkd.de>`_ with detailed description of
 
 |
 
+**Is there some chat/irc channel for EXT:solr available?**
+
+Join us on the official `Slack for TYPO3<https://forger.typo3.org/slack>`_ and get answers related to EXT:solr in the #ext-solr channel immediately!
+
+|
+
 **When i open the search page i see the message 'Search is currently not available. ', whats wrong?**
 
 Did you configure your solr connection as required?
