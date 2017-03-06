@@ -125,10 +125,14 @@ class QueueStatistic
 
     /**
      * @param integer $count
-     * @return float|int
+     * @return float
      */
     protected function getPercentage($count)
     {
-        return round((100 / $this->getTotalCount()) * $count, 2);
+        $total = $this->getTotalCount();
+        if ($total === 0) {
+            return 0.0;
+        }
+        return (float)round((100 / $total) * $count, 2);
     }
 }

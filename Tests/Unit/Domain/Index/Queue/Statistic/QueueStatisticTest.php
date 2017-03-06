@@ -49,4 +49,13 @@ class QueueStatisticTest extends UnitTest
         $this->assertSame(25.0, $statistic->getPendingPercentage(), 'Can not calculate pending percentage');
     }
 
+    /**
+     * @test
+     */
+    public function canGetZeroPercentagesWhenEmpty() {
+        /** @var $statistic QueueStatistic */
+        $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
+        $this->assertSame(0.0, $statistic->getFailedPercentage(), 'Can not zero percent for empty');
+    }
+
 }
