@@ -133,7 +133,7 @@ class IndexQueueModuleController extends AbstractModuleController
 
         $messagesForConfigurations = [];
         foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
-            $itemCount = $this->indexQueue->getItemsCountBySite($this->site, $indexingConfigurationName);
+            $itemCount = $this->indexQueue->getStatisticsBySite($this->site, $indexingConfigurationName)->getTotalCount();
             $messagesForConfigurations[] = $indexingConfigurationName . ' (' . $itemCount . ' records)';
         }
 

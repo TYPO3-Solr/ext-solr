@@ -26,11 +26,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use Dkd\DkdReports\Reports\Status;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
@@ -99,8 +102,9 @@ class IndexServiceTest extends UnitTest
     {
         $this->siteMock->expects($this->never())->method('getSolrConfiguration');
 
-        $this->queueMock->expects($this->once())->method('getItemsCountBySite')->will($this->returnValue(50));
-        $this->queueMock->expects($this->once())->method('getRemainingItemsCountBySite')->will($this->returnValue(25));
+        $statisticMock = $this->getDumbMock(QueueStatistic::class);
+        $statisticMock->expects($this->once())->method('getSuccessPercentage')->will($this->returnValue(50.0));
+        $this->queueMock->expects($this->once())->method('getStatisticsBySite')->will($this->returnValue($statisticMock));
 
         $indexService = $this->getMockBuilder(IndexService::class)
             ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock])

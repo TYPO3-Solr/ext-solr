@@ -803,13 +803,13 @@ class Queue
      * @param Site $site The site to search for.
      * @param string $indexingConfigurationName name of a specific indexing
      *      configuration
+     * @deprecated since 6.1 will be removed in 7.0 use getStatisticsBySite()->getTotalCount() please
      * @return int Number of items
      */
     public function getItemsCountBySite(Site $site, $indexingConfigurationName = '')
     {
-        $indexingConfigurationConstraint = $this->buildIndexConfigurationConstraint($indexingConfigurationName);
-        $where = 'root = ' . $site->getRootPageId() . $indexingConfigurationConstraint;
-        return (int)$this->getItemCount($where);
+        GeneralUtility::logDeprecatedFunction();
+        return (int) $this->getStatisticsBySite($site, $indexingConfigurationName)->getTotalCount();
     }
 
     /**
@@ -819,13 +819,13 @@ class Queue
      * @param Site $site The site to search for.
      * @param string $indexingConfigurationName name of a specific indexing
      *      configuration
+     * @deprecated since 6.1 will be removed in 7.0 use getStatisticsBySite()->getPendingCount() please
      * @return int Number of items.
      */
     public function getRemainingItemsCountBySite(Site $site, $indexingConfigurationName = '')
     {
-        $indexingConfigurationConstraint = $this->buildIndexConfigurationConstraint($indexingConfigurationName);
-        $where = 'changed > indexed AND root = ' . $site->getRootPageId() . $indexingConfigurationConstraint;
-        return (int)$this->getItemCount($where);
+        GeneralUtility::logDeprecatedFunction();
+        return (int) $this->getStatisticsBySite($site, $indexingConfigurationName)->getPendingCount();
     }
 
     /**
@@ -854,16 +854,22 @@ class Queue
      * Extracts the number of pending, indexed and erroneous items from the
      * Index Queue.
      *
+     * @param Site $site
+     * @param string $indexingConfigurationName
+     *
      * @return QueueStatistic
      */
-    public function getStatisticsBySite(Site $site)
+    public function getStatisticsBySite(Site $site, $indexingConfigurationName = '')
     {
+        $indexingConfigurationConstraint = $this->buildIndexConfigurationConstraint($indexingConfigurationName);
+        $where = 'root = ' . (int)$site->getRootPageId() . $indexingConfigurationConstraint;
+
         $indexQueueStats = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'indexed < changed as pending,'
             . '(errors not like "") as failed,'
             . 'COUNT(*) as count',
             'tx_solr_indexqueue_item',
-            'root = ' . (int) $site->getRootPageId(),
+            $where,
             'pending, failed'
         );
             /** @var $statistic QueueStatistic */

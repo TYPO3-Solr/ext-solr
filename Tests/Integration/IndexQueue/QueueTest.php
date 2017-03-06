@@ -191,11 +191,11 @@ class QueueTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetItemCountBySite()
+    public function canGetStatisticsWithTotalItemCount()
     {
         $this->importDataSetFromFixture('can_get_item_count_by_site.xml');
         $site = Site::getFirstAvailableSite();
-        $itemCount = $this->indexQueue->getItemsCountBySite($site);
+        $itemCount = $this->indexQueue->getStatisticsBySite($site)->getTotalCount();
 
             // there are two items in the queue but only one for the site
         $this->assertSame(1, $itemCount, 'Unexpected item count for the first site');
@@ -204,17 +204,17 @@ class QueueTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetRemainingItemCountBySite()
+    public function canGetStatisticsBySiteWithPendingItems()
     {
         $this->importDataSetFromFixture('can_get_item_count_by_site.xml');
         $site = Site::getFirstAvailableSite();
 
-        $itemCount = $this->indexQueue->getRemainingItemsCountBySite($site);
+        $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
         $this->assertSame(1, $itemCount, 'Unexpected remaining item count for the first site');
 
             // when we update the item, no remaining item should be left
         $this->indexQueue->updateItem('pages', 1);
-        $itemCount = $this->indexQueue->getRemainingItemsCountBySite($site);
+        $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
         $this->assertSame(0, $itemCount, 'After updating a remaining item no remaining item should be left');
     }
 

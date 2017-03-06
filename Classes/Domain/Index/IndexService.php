@@ -238,18 +238,7 @@ class IndexService
      */
     public function getProgress()
     {
-        $itemsIndexedPercentage = 0.0;
-
-        $totalItemsCount = $this->indexQueue->getItemsCountBySite($this->site);
-        $remainingItemsCount = $this->indexQueue->getRemainingItemsCountBySite($this->site);
-        $itemsIndexedCount = $totalItemsCount - $remainingItemsCount;
-
-        if ($totalItemsCount > 0) {
-            $itemsIndexedPercentage = $itemsIndexedCount * 100 / $totalItemsCount;
-            $itemsIndexedPercentage = round($itemsIndexedPercentage, 2);
-        }
-
-        return $itemsIndexedPercentage;
+        return $this->indexQueue->getStatisticsBySite($this->site)->getSuccessPercentage();
     }
 
     /**
