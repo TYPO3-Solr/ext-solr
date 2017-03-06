@@ -753,7 +753,6 @@ class Util
      */
     public static function getSolrServerConfigurationByRootPageIdAndLanguage($rootPage, $languageId = 0)
     {
-
         $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
 
         $languageId = intval($languageId);
