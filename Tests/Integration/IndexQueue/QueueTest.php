@@ -253,4 +253,18 @@ class QueueTest extends IntegrationTest
         $this->assertItemsInQueue(4);
     }
 
+    /**
+     * @test
+     */
+    public function canGetStatistics()
+    {
+        $this->importDataSetFromFixture('can_get_statistics_by_site.xml');
+        $this->assertItemsInQueue(4);
+
+        $statistics = $this->indexQueue->getStatisticsBySite(Site::getSiteByPageId(2));
+        $this->assertSame(1, $statistics->getSuccessCount(), 'Can not get successful processed items from queue');
+        $this->assertSame(1, $statistics->getFailedCount(), 'Can not get failed processed items from queue');
+        $this->assertSame(1, $statistics->getPendingCount(), 'Can not get pending processed items from queue');
+    }
+
 }

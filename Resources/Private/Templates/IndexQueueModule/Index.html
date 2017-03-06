@@ -12,7 +12,7 @@
 
 <hr class="section-divider" />
 
-<f:if condition="{indexqueue_statistics_counts.total} > 0">
+<f:if condition="{indexqueue_statistics.totalCount} > 0">
 	<div class="row section-with-header">
 		<div class="col-md-12">
 			<h2>
@@ -22,28 +22,28 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="progress">
-						<f:if condition="{indexqueue_statistics_counts.indexed} > 0">
+						<f:if condition="{indexqueue_statistics.successCount} > 0">
 							<div class="progress-bar progress-bar-success"
-								 style="width: {indexqueue_statistics_percentages.indexed}%"
-								 title="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}: {indexqueue_statistics_counts.indexed}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.indexed}%)">
+								 style="width: {indexqueue_statistics.successPercentage}%"
+								 title="{f:translate(key:'solr.backend.index_queue_module.status.indexed')}: {indexqueue_statistics.successCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.successPercentage}%)">
 								<f:translate
 										key="solr.backend.index_queue_module.status.indexed"/>
 							</div>
 						</f:if>
 
-						<f:if condition="{indexqueue_statistics_counts.pending} > 0">
+						<f:if condition="{indexqueue_statistics.pendingCount} > 0">
 							<div class="progress-bar progress-bar-warning"
-								 style="width: {indexqueue_statistics_percentages.pending}%"
-								 title="{f:translate(key:'solr.backend.index_queue_module.status.pending')}: {indexqueue_statistics_counts.pending}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.pending}%)">
+								 style="width: {indexqueue_statistics.pendingPercentage}%"
+								 title="{f:translate(key:'solr.backend.index_queue_module.status.pending')}: {indexqueue_statistics.pendingCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.pendingPercentage}%)">
 								<f:translate
 										key="solr.backend.index_queue_module.status.pending"/>
 							</div>
 						</f:if>
 
-						<f:if condition="{indexqueue_statistics_counts.errors} > 0">
+						<f:if condition="{indexqueue_statistics.failedCount} > 0">
 							<div class="progress-bar progress-bar-danger"
-								 style="width: {indexqueue_statistics_percentages.errors}%"
-								 title="{f:translate(key:'solr.backend.index_queue_module.status.errors')}: {indexqueue_statistics_counts.errors}/{indexqueue_statistics_counts.total} ({indexqueue_statistics_percentages.errors}%)">
+								 style="width: {indexqueue_statistics.failedPercentage}%"
+								 title="{f:translate(key:'solr.backend.index_queue_module.status.errors')}: {indexqueue_statistics.failedCount}/{indexqueue_statistics.totalCount} ({indexqueue_statistics.failedPercentage}%)">
 								<f:translate
 										key="solr.backend.index_queue_module.status.errors"/>
 							</div>

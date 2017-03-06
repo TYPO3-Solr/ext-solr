@@ -110,6 +110,11 @@ class Item
     protected $record;
 
     /**
+     * @var string
+     */
+    protected $errors = '';
+
+    /**
      * Constructor, takes item meta data information and resolves that to the full record.
      *
      * @param array $itemMetaData Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
@@ -124,6 +129,7 @@ class Item
         $this->type = $itemMetaData['item_type'];
         $this->recordUid = $itemMetaData['item_uid'];
         $this->changed = $itemMetaData['changed'];
+        $this->errors = (string) empty($itemMetaData['errors']) ? '' : $itemMetaData['errors'];
 
         $this->indexingConfigurationName = $itemMetaData['indexing_configuration'];
         $this->hasIndexingProperties = (boolean)$itemMetaData['has_indexing_properties'];
@@ -133,6 +139,9 @@ class Item
         }
     }
 
+    /**
+     * @return int|mixed
+     */
     public function getIndexQueueUid()
     {
         return $this->indexQueueUid;
@@ -148,9 +157,20 @@ class Item
         return $this->rootPageUid;
     }
 
+    /**
+     * @param integer $uid
+     */
     public function setRootPageUid($uid)
     {
         $this->rootPageUid = intval($uid);
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 
     /**

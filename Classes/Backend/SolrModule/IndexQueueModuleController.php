@@ -55,86 +55,31 @@ class IndexQueueModuleController extends AbstractModuleController
     protected $moduleTitle = 'Index Queue';
 
     /**
+     * @var Queue
+     */
+    protected $indexQueue;
+
+    /**
+     * IndexQueueModuleController constructor.
+     * @param Queue $indexQueue
+     */
+    public function __construct(Queue $indexQueue = null)
+    {
+        parent::__construct();
+        $this->indexQueue = is_null($indexQueue) ? GeneralUtility::makeInstance(Queue::class) : $indexQueue;
+    }
+
+    /**
      * Lists the available indexing configurations
      *
      * @return void
      */
     public function indexAction()
     {
-        $statisticsCounts = $this->getIndexQueueStatistics();
-        $statisticsPercentages = $this->getIndexQueueStatisticsPercentages($statisticsCounts);
-
-        $this->view->assign('indexQueueInitializationSelector',
-            $this->getIndexQueueInitializationSelector());
-        $this->view->assign('indexqueue_statistics_counts', $statisticsCounts);
-        $this->view->assign('indexqueue_statistics_percentages',
-            $statisticsPercentages);
-        $this->view->assign('indexqueue_errors', $this->getIndexQueueErrors());
-    }
-
-    /**
-     * Extracts the number of pending, indexed and erroneous items from the
-     * Index Queue.
-     *
-     * @return array
-     */
-    protected function getIndexQueueStatistics()
-    {
-        $indexQueueStats = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'indexed < changed as pending,'
-            . '(errors not like "") as failed,'
-            . 'COUNT(*) as count',
-            'tx_solr_indexqueue_item',
-            'root = ' . $this->site->getRootPageId(),
-            'pending, failed'
-        );
-
-        $statistics = [
-            'errors' => 0,
-            'pending' => 0,
-            'indexed' => 0
-        ];
-        foreach ($indexQueueStats as $row) {
-            if ($row['failed'] == 1) {
-                $statistics['errors'] = $row['count'];
-            } elseif ($row['pending'] == 1) {
-                $statistics['pending'] = $row['count'];
-            } else {
-                $statistics['indexed'] = $row['count'];
-            }
-        }
-
-        $total = 0;
-        foreach ($statistics as $count) {
-            $total += $count;
-        }
-        $statistics['total'] = $total;
-
-        return $statistics;
-    }
-
-    /**
-     * Gets the Index Queue statistics as percentages
-     *
-     * @param array $statistics Input from getIndexQueueStatistics()
-     * @return array
-     */
-    protected function getIndexQueueStatisticsPercentages($statistics)
-    {
-        $percentages = [
-            'errors' => 0,
-            'pending' => 0,
-            'indexed' => 0
-        ];
-
-        if ($statistics['total'] > 0) {
-            foreach ($statistics as $key => $count) {
-                $percentages[$key] = round(($count * 100 / $statistics['total']),
-                    0);
-            }
-        }
-
-        return $percentages;
+        $statistics = $this->indexQueue->getStatisticsBySite($this->site);
+        $this->view->assign('indexQueueInitializationSelector', $this->getIndexQueueInitializationSelector());
+        $this->view->assign('indexqueue_statistics', $statistics);
+        $this->view->assign('indexqueue_errors', $this->indexQueue->getErrorsBySite($this->site));
     }
 
     /**
@@ -153,20 +98,6 @@ class IndexQueueModuleController extends AbstractModuleController
     }
 
     /**
-     * Finds indexing errors for the current site
-     *
-     * @return array Error items for the current site's Index Queue
-     */
-    protected function getIndexQueueErrors()
-    {
-        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid, item_type, item_uid, errors',
-            'tx_solr_indexqueue_item',
-            'errors NOT LIKE "" AND root = ' . $this->site->getRootPageId()
-        );
-    }
-
-    /**
      * Initializes the Index Queue for selected indexing configurations
      *
      * @return void
@@ -175,12 +106,11 @@ class IndexQueueModuleController extends AbstractModuleController
     {
         $initializedIndexingConfigurations = [];
 
-        $itemIndexQueue = GeneralUtility::makeInstance(Queue::class);
         $indexingConfigurationsToInitialize = GeneralUtility::_POST('tx_solr-index-queue-initialization');
         if ((!empty($indexingConfigurationsToInitialize)) && (is_array($indexingConfigurationsToInitialize))) {
             // initialize selected indexing configuration
             foreach ($indexingConfigurationsToInitialize as $indexingConfigurationName) {
-                $initializedIndexingConfiguration = $itemIndexQueue->initialize(
+                $initializedIndexingConfiguration = $this->indexQueue->initialize(
                     $this->site,
                     $indexingConfigurationName
                 );
@@ -203,7 +133,7 @@ class IndexQueueModuleController extends AbstractModuleController
 
         $messagesForConfigurations = [];
         foreach (array_keys($initializedIndexingConfigurations) as $indexingConfigurationName) {
-            $itemCount = $itemIndexQueue->getItemsCountBySite($this->site, $indexingConfigurationName);
+            $itemCount = $this->indexQueue->getItemsCountBySite($this->site, $indexingConfigurationName);
             $messagesForConfigurations[] = $indexingConfigurationName . ' (' . $itemCount . ' records)';
         }
 
@@ -230,9 +160,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function clearIndexQueueAction()
     {
-        $indexQueue = GeneralUtility::makeInstance(Queue::class);
-        $indexQueue->deleteItemsBySite($this->site);
-
+        $this->indexQueue->deleteItemsBySite($this->site);
         $this->forward('index');
     }
 
@@ -243,13 +171,7 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function resetLogErrorsAction()
     {
-        /** @var DatabaseConnection $database */
-        $database = $GLOBALS['TYPO3_DB'];
-        $resetResult = $database->exec_UPDATEquery(
-            'tx_solr_indexqueue_item',
-            'errors NOT LIKE ""',
-            ['errors' => '']
-        );
+        $resetResult = $this->indexQueue->resetAllErrors();
 
         $label = 'solr.backend.index_queue_module.flashmessage.success.reset_errors';
         $severity = FlashMessage::OK;
@@ -260,27 +182,11 @@ class IndexQueueModuleController extends AbstractModuleController
 
         $this->addFlashMessage(
             LocalizationUtility::translate($label, 'Solr'),
-            LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title',
-                'Solr'),
+            LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'),
             $severity
         );
 
         $this->forward('index');
-    }
-
-    /**
-     * Retrieves an queue item by uid.
-     *
-     * @param int $uid
-     * @return array
-     */
-    protected function getIndexQueueItemById($uid)
-    {
-        return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-            'uid, item_type, item_uid, errors',
-            'tx_solr_indexqueue_item',
-            'uid = ' . intval($uid)
-        );
     }
 
     /**
@@ -306,7 +212,7 @@ class IndexQueueModuleController extends AbstractModuleController
             return;
         }
 
-        $item = $this->getIndexQueueItemById($queueItemId);
+        $item = $this->indexQueue->getItem($queueItemId);
         $this->view->assign('indexQueueItem', $item);
     }
 
