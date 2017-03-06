@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -309,6 +310,35 @@ class Queue
                 $this->addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId);
             }
         }
+    }
+
+    /**
+     * Finds indexing errors for the current site
+     *
+     * @param Site $site
+     * @return array Error items for the current site's Index Queue
+     */
+    public function getErrorsBySite(Site $site)
+    {
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+            'uid, item_type, item_uid, errors',
+            'tx_solr_indexqueue_item',
+            'errors NOT LIKE "" AND root = ' . $site->getRootPageId()
+        );
+    }
+
+    /**
+     * Resets all the errors for all index queue items.
+     *
+     * @return mixed
+     */
+    public function resetAllErrors()
+    {
+        return $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+            'tx_solr_indexqueue_item',
+            'errors NOT LIKE ""',
+            ['errors' => '']
+        );
     }
 
     /**
@@ -737,7 +767,6 @@ class Queue
 
         if (count($indexQueueItemRecord) == 1) {
             $indexQueueItemRecord = $indexQueueItemRecord[0];
-
             $item = GeneralUtility::makeInstance(
                 Item::class,
                 $indexQueueItemRecord
@@ -819,6 +848,38 @@ class Queue
         $db = $GLOBALS['TYPO3_DB'];
 
         return (int)$db->exec_SELECTcountRows('uid', 'tx_solr_indexqueue_item', $where);
+    }
+
+    /**
+     * Extracts the number of pending, indexed and erroneous items from the
+     * Index Queue.
+     *
+     * @return QueueStatistic
+     */
+    public function getStatisticsBySite(Site $site)
+    {
+        $indexQueueStats = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+            'indexed < changed as pending,'
+            . '(errors not like "") as failed,'
+            . 'COUNT(*) as count',
+            'tx_solr_indexqueue_item',
+            'root = ' . (int) $site->getRootPageId(),
+            'pending, failed'
+        );
+            /** @var $statistic QueueStatistic */
+        $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
+
+        foreach ($indexQueueStats as $row) {
+            if ($row['failed'] == 1) {
+                $statistic->setFailedCount((int) $row['count']);
+            } elseif ($row['pending'] == 1) {
+                $statistic->setPendingCount((int) $row['count']);
+            } else {
+                $statistic->setSuccessCount((int) $row['count']);
+            }
+        }
+
+        return $statistic;
     }
 
     /**
