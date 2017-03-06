@@ -242,6 +242,16 @@ class IndexService
     }
 
     /**
+     * Returns the amount of failed queue items for the current site.
+     *
+     * @return int
+     */
+    public function getFailCount()
+    {
+        return $this->indexQueue->getStatisticsBySite($this->site)->getFailedCount();
+    }
+
+    /**
      * Initializes the $_SERVER['HTTP_HOST'] environment variable in CLI
      * environments dependent on the Index Queue item's root page.
      *

@@ -75,8 +75,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
             $cliEnvironment->initialize($this->getWebRoot());
         }
 
-        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->site);
-        $indexService->setContextTask($this);
+        $indexService = $this->getInitializedIndexService();
         $indexService->indexItems($this->documentsToIndexLimit);
 
         if (TYPO3_REQUESTTYPE & TYPO3_REQUESTTYPE_CLI) {
@@ -134,11 +133,10 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     {
         $message = 'Site: ' . $this->site->getLabel();
 
-        $failedItemsCount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-            'uid',
-            'tx_solr_indexqueue_item',
-            'root = ' . $this->site->getRootPageId() . ' AND errors != \'\''
-        );
+        /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
+        $indexService = $this->getInitializedIndexService();
+        $failedItemsCount = $indexService->getFailCount();
+
         if ($failedItemsCount) {
             $message .= ' Failures: ' . $failedItemsCount;
         }
@@ -156,8 +154,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     public function getProgress()
     {
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
-        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->site);
-        $indexService->setContextTask($this);
+        $indexService = $this->getInitializedIndexService();
 
         return $indexService->getProgress();
     }
@@ -213,5 +210,17 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
     public function getForcedWebRoot()
     {
         return $this->forcedWebRoot;
+    }
+
+    /**
+     * Returns the initialize IndexService instance.
+     *
+     * @return IndexService
+     */
+    protected function getInitializedIndexService()
+    {
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->site);
+        $indexService->setContextTask($this);
+        return $indexService;
     }
 }
