@@ -53,7 +53,7 @@ class ExtensionConfigurationTest extends UnitTest
     /**
      * @test
      */
-    public function testIsUseConfigurationTrackRecordsOutsideSiterootEnabled()
+    public function testIsGetUseConfigurationTrackRecordsOutsideSiterootEnabled()
     {
         $defaultConfiguration = new ExtensionConfiguration();
         $this->assertTrue($defaultConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot());
@@ -63,4 +63,20 @@ class ExtensionConfigurationTest extends UnitTest
         $this->assertFalse($configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationTrackRecordsOutsideSiteroot());
     }
 
+    /**
+     * @test
+     */
+    public function testIsGetIsUseConfigurationMonitorTablesConfigured()
+    {
+        $defaultConfiguration = new ExtensionConfiguration();
+        $this->assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
+        $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
+            ['useConfigurationMonitorTables' => 'pages, tt_content']
+        );
+        $expectedResult = [
+            'pages' => true,
+            'tt_content' => true
+        ];
+        $this->assertEquals($expectedResult, $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables());
+    }
 }

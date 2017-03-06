@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * This class encapsulates the access to the extension configuration.
  *
@@ -70,6 +72,28 @@ class ExtensionConfiguration
     public function getIsUseConfigurationTrackRecordsOutsideSiteroot()
     {
         return (bool)$this->getConfigurationOrDefaultValue('useConfigurationTrackRecordsOutsideSiteroot', true);
+    }
+
+    /**
+     * Get configuration for useConfigurationMonitorTables
+     *
+     * @return array of tableName => true
+     */
+    public function getIsUseConfigurationMonitorTables()
+    {
+        $monitorTables = [];
+        $monitorTablesList = $this->getConfigurationOrDefaultValue('useConfigurationMonitorTables', '');
+
+        if (empty($monitorTablesList)) {
+            return $monitorTables;
+        }
+
+        $monitorTablesTemp = GeneralUtility::trimExplode(',', $monitorTablesList);
+        foreach ($monitorTablesTemp as $value) {
+            $monitorTables[$value] = true;
+        }
+
+        return $monitorTables;
     }
 
     /**

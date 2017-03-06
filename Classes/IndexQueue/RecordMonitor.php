@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUp
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -244,6 +245,10 @@ class RecordMonitor extends AbstractDataHandlerListener
         $recordTable = $table;
         $recordUid = $uid;
 
+        if ($this->skipMonitoringOfTable($table)) {
+            return;
+        }
+
         if ($this->hasRecordBeenProcessed($status, $table, $uid)) {
             return;
         }
@@ -265,6 +270,32 @@ class RecordMonitor extends AbstractDataHandlerListener
         }
 
         $this->processRecord($recordTable, $recordPageId, $recordUid, $fields);
+    }
+
+    /**
+     * Check if the provided table is explicitly configured for monitoring
+     *
+     * @param string $table
+     * @return bool
+     */
+    protected function skipMonitoringOfTable($table)
+    {
+        static $configurationMonitorTables;
+
+        if (empty($configurationMonitorTables)) {
+            $configuration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+            $configurationMonitorTables = $configuration->getIsUseConfigurationMonitorTables();
+        }
+
+        // No explicit configuration => all tables should be monitored
+        if (empty($configurationMonitorTables)) {
+            return false;
+        }
+
+        if (!isset($configurationMonitorTables[$table])) {
+            return true;
+        }
+        return false;
     }
 
     /**
