@@ -741,4 +741,84 @@ class Util
 
         return $absRefPrefix;
     }
+
+    /**
+     * Gets solr configuration from TypoScript.
+     * If there is configuration in e.g. $GLOBALS['TYPO3_CONF_VARS']['SOLR'],
+     * this configuration will be overwritten
+     *
+     * @param array $rootPage
+     * @param int $languageId
+     * @return array
+     */
+    public static function getSolrServerConfigurationByRootPageIdAndLanguage($rootPage, $languageId = 0)
+    {
+        $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+
+        $languageId = intval($languageId);
+        GeneralUtility::_GETset($languageId, 'L');
+
+        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $rootLine = $pageSelect->getRootLine($rootPage['uid']);
+
+        $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
+        // Do not log time-performance information
+        $tmpl->tt_track = false;
+        $tmpl->init();
+        // This generates the constants/config + hierarchy info for the template.
+        $tmpl->runThroughTemplates($rootLine);
+
+        // fake micro TSFE to get correct condition parsing
+        $GLOBALS['TSFE'] = new \stdClass();
+        $GLOBALS['TSFE']->tmpl = new \stdClass();
+        $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
+        $GLOBALS['TSFE']->sys_page = $pageSelect;
+        $GLOBALS['TSFE']->id = $rootPage['uid'];
+        $GLOBALS['TSFE']->page = $rootPage;
+
+        $tmpl->generateConfig();
+
+        list($solrConfiguration) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.solr');
+        list(, $solrEnabled) = $tmpl->ext_getSetup($tmpl->setup, 'plugin.tx_solr.enabled');
+        $solrEnabled = !empty($solrEnabled) ? true : false;
+
+        $host = $solrConfiguration['host'];
+        $port = $solrConfiguration['port'];
+        $path = $solrConfiguration['path'];
+        $scheme = $solrConfiguration['scheme'];
+        $username = $solrConfiguration['username'];
+        $password = $solrConfiguration['password'];
+
+        if (!empty($solrConfiguration['host.'])) {
+            $host = $contentObject->TEXT($solrConfiguration['host.']);
+        }
+        if (!empty($solrConfiguration['port.'])) {
+            $port = $contentObject->TEXT($solrConfiguration['port.']);
+        }
+        if (!empty($solrConfiguration['path.'])) {
+            $path = $contentObject->TEXT($solrConfiguration['path.']);
+        }
+        if (!empty($solrConfiguration['scheme.'])) {
+            $scheme = $contentObject->TEXT($solrConfiguration['scheme.']);
+        }
+        if (!empty($solrConfiguration['username.'])) {
+            $username = $contentObject->TEXT($solrConfiguration['username.']);
+        }
+        if (!empty($solrConfiguration['password.'])) {
+            $password = $contentObject->TEXT($solrConfiguration['password.']);
+        }
+
+        // we include username and password in host
+        if (!empty($username) && !empty($password)) {
+            $host = $username . ':' . $password . '@' . $host;
+        }
+
+        return array(
+            'host' => $host,
+            'port' => $port,
+            'path' => $path,
+            'scheme' => $scheme,
+            'enabled' => $solrEnabled
+        );
+    }
 }

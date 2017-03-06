@@ -78,28 +78,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
                 'solr',
                 2
             );
-
-            $contentObject = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
-
-            $solrConfiguration = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['solr.'];
-
-            $host = $solrConfiguration['host'];
-            $port = $solrConfiguration['port'];
-            $path = $solrConfiguration['path'];
-            $scheme = $solrConfiguration['scheme'];
-
-            if (!empty($solrConfiguration['host.'])) {
-                $host = $contentObject->stdWrap($solrConfiguration['host'], $solrConfiguration['host.']);
-            }
-            if (!empty($solrConfiguration['port.'])) {
-                $port = $contentObject->stdWrap($solrConfiguration['port'], $solrConfiguration['port.']);
-            }
-            if (!empty($solrConfiguration['path.'])) {
-                $path = $contentObject->stdWrap($solrConfiguration['path'], $solrConfiguration['path.']);
-            }
-            if (!empty($solrConfiguration['scheme.'])) {
-                $scheme = $contentObject->stdWrap($solrConfiguration['scheme'], $solrConfiguration['scheme.']);
-            }
         }
 
         $connectionHash = md5($scheme . '://' . $host . $port . $path);
@@ -432,35 +410,10 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     ) {
         $connection = array();
 
-        $languageId = intval($languageId);
-        GeneralUtility::_GETset($languageId, 'L');
+        $solrSetup = Util::getSolrServerConfigurationByRootPageIdAndLanguage($rootPage, $languageId);
         $connectionKey = $rootPage['uid'] . '|' . $languageId;
 
-        $pageSelect = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-        $rootLine = $pageSelect->getRootLine($rootPage['uid']);
-
-        $tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\ExtendedTemplateService');
-        $tmpl->tt_track = false; // Do not log time-performance information
-        $tmpl->init();
-        $tmpl->runThroughTemplates($rootLine); // This generates the constants/config + hierarchy info for the template.
-
-        // fake micro TSFE to get correct condition parsing
-        $GLOBALS['TSFE'] = new \stdClass();
-        $GLOBALS['TSFE']->tmpl = new \stdClass();
-        $GLOBALS['TSFE']->tmpl->rootLine = $rootLine;
-        $GLOBALS['TSFE']->sys_page = $pageSelect;
-        $GLOBALS['TSFE']->id = $rootPage['uid'];
-        $GLOBALS['TSFE']->page = $rootPage;
-
-        $tmpl->generateConfig();
-
-        list($solrSetup) = $tmpl->ext_getSetup($tmpl->setup,
-            'plugin.tx_solr.solr');
-        list(, $solrEnabled) = $tmpl->ext_getSetup($tmpl->setup,
-            'plugin.tx_solr.enabled');
-        $solrEnabled = !empty($solrEnabled) ? true : false;
-
-        if (!empty($solrSetup) && $solrEnabled) {
+        if (!empty($solrSetup) && $solrSetup['enabled']) {
             $solrPath = trim($solrSetup['path'], '/');
             $solrPath = '/' . $solrPath . '/';
 
