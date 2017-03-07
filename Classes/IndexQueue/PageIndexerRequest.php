@@ -379,7 +379,18 @@ class PageIndexerRequest
      */
     protected function getUrl($url, $headers, $timeout)
     {
-        $context = stream_context_create(['http' => ['header' => implode(CRLF, $headers), 'timeout' => $timeout]]);
+        $context = stream_context_create(
+          [
+            'http' => [
+            'header' => implode(CRLF, $headers),
+            'timeout' => $timeout
+            ],
+            'ssl' => [
+              'verify_peer' => false,
+              'allow_self_signed'=> true
+            ]
+          ]
+        );
         $rawResponse = file_get_contents($url, false, $context);
         return $rawResponse;
     }

@@ -281,7 +281,7 @@ This was tested with "Docker for Mac" (not Docker Toolbox). Before executing the
 
 **Can i index a https (SSL) site?**
 
-Yes. You need a valid ssl certificate and change the following setting:
+Yes. You need a ssl certificate (can be self signed) and change the following setting:
 
 ::
 
