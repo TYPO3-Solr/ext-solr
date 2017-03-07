@@ -187,7 +187,7 @@ class IndexService
 
         // update IQ item so that the IQ can determine what's been indexed already
         if ($itemIndexed) {
-            $this->indexQueue->updateIndexQueueByItem($item);
+            $this->indexQueue->updateIndexTimeByItem($item);
         }
 
         if (!is_null($originalHttpHost)) {

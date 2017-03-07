@@ -223,7 +223,7 @@ class Item
     {
         GeneralUtility::logDeprecatedFunction();
         $queue = GeneralUtility::makeInstance(Queue::class);
-        $queue->updateIndexQueueByItem($this);
+        $queue->updateIndexTimeByItem($this);
     }
 
     public function getRecordUid()

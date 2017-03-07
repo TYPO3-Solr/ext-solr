@@ -1034,7 +1034,7 @@ class Queue
      *
      * @param Item $item
      */
-    public function updateIndexQueueByItem(Item $item)
+    public function updateIndexTimeByItem(Item $item)
     {
         $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
             'tx_solr_indexqueue_item',
