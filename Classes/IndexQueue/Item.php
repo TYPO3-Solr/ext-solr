@@ -217,14 +217,13 @@ class Item
      * Sets the timestamp of when an item has been indexed.
      *
      * @return void
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public function updateIndexedTime()
     {
-        $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-            'tx_solr_indexqueue_item',
-            'uid = ' . (int)$this->indexQueueUid,
-            ['indexed' => time()]
-        );
+        GeneralUtility::logDeprecatedFunction();
+        $queue = GeneralUtility::makeInstance(Queue::class);
+        $queue->updateIndexTimeByItem($this);
     }
 
     public function getRecordUid()

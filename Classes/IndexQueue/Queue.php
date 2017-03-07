@@ -1028,4 +1028,18 @@ class Queue
             ]
         );
     }
+
+    /**
+     * Sets the timestamp of when an item last has been indexed.
+     *
+     * @param Item $item
+     */
+    public function updateIndexTimeByItem(Item $item)
+    {
+        $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+            'tx_solr_indexqueue_item',
+            'uid = ' . (int)$item->getIndexQueueUid(),
+            ['indexed' => time()]
+        );
+    }
 }
