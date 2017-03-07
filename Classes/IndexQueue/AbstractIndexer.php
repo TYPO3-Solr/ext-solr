@@ -66,13 +66,6 @@ abstract class AbstractIndexer
                 continue;
             }
 
-            if ($solrFieldName == 'type') {
-                throw new InvalidFieldNameException(
-                    'Must not overwrite field "type".',
-                    1435441863
-                );
-            }
-
             $fieldValue = $this->resolveFieldValue($indexingConfiguration,
                 $solrFieldName, $data);
 
