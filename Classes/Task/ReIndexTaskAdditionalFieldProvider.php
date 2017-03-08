@@ -82,7 +82,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
      */
     protected function initialize(
-        array $taskInfo,
+        array $taskInfo = [],
         AbstractTask $task = null,
         SchedulerModuleController $schedulerModule
     ) {
