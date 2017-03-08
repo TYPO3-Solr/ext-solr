@@ -106,7 +106,7 @@ class StatisticsRepository
      * @param bool $withoutHits
      * @return array
      */
-    protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $days = 30, $limit, $withoutHits)
+    protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $days = 30, $limit = 10, $withoutHits = false)
     {
         $rootPageId = (int)$rootPageId;
         $limit = (int)$limit;
