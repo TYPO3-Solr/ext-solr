@@ -95,10 +95,9 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         }
 
         $connectionHash = md5($scheme . '://' . $host . $port . $path . $username . $password);
-
         if (!isset(self::$connections[$connectionHash])) {
-            $connection = GeneralUtility::makeInstance(SolrService::class, $host, $port, $path, $scheme);
-            if ($username !== '') {
+            $connection = $this->buildSolrService($host, $port, $path, $scheme);
+            if (trim($username) !== '') {
                 $connection->setAuthenticationCredentials($username, $password);
             }
 
@@ -106,6 +105,20 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         }
 
         return self::$connections[$connectionHash];
+    }
+
+    /**
+     * Create a Solr Service instance from the passed connection configuration.
+     *
+     * @param string $host
+     * @param int $port
+     * @param string $path
+     * @param string $scheme
+     * @return SolrService|object
+     */
+    protected function buildSolrService($host, $port, $path, $scheme)
+    {
+        return GeneralUtility::makeInstance(SolrService::class, $host, $port, $path, $scheme);
     }
 
     /**
