@@ -6,6 +6,8 @@ plugin.tx_solr {
 		host = localhost
 		port = 8983
 		path = /solr/core_en/
+		username =
+		password =
 	}
 
 	search {
