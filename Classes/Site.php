@@ -26,11 +26,11 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 
 /**
  * A site is a branch in a TYPO3 installation. Each site's root page is marked
@@ -104,20 +104,16 @@ class Site
     /**
      * Gets the Site for a specific page Id.
      *
-     * @param int $pageId The page Id to get a Site object for.
+     * @param int $pageId The page Id to get afunction Site object for.
      * @return Site Site for the given page Id.
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function getSiteByPageId($pageId)
     {
-        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
-        $rootPageId = $rootPageResolver->getRootPageId($pageId);
+        GeneralUtility::logDeprecatedFunction();
 
-        if (!isset(self::$sitesCache[$rootPageId])) {
-            self::$sitesCache[$rootPageId] = GeneralUtility::makeInstance(__CLASS__,
-                $rootPageId);
-        }
-
-        return self::$sitesCache[$rootPageId];
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getSiteByPageId($pageId);
     }
 
     /**
@@ -128,28 +124,16 @@ class Site
      * @param Site $selectedSite Optional, currently selected site
      * @return string Site selector HTML code
      * @todo Extract into own class like indexing configuration selector
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function getAvailableSitesSelector(
         $selectorName,
         Site $selectedSite = null
     ) {
-        $sites = self::getAvailableSites();
-        $selector = '<select name="' . $selectorName . '" class="form-control">';
+        GeneralUtility::logDeprecatedFunction();
 
-        foreach ($sites as $site) {
-            $selectedAttribute = '';
-            if ($selectedSite !== null && $site->getRootPageId() == $selectedSite->getRootPageId()) {
-                $selectedAttribute = ' selected="selected"';
-            }
-
-            $selector .= '<option value="' . $site->getRootPageId() . '"' . $selectedAttribute . '>'
-                . $site->getLabel()
-                . '</option>';
-        }
-
-        $selector .= '</select>';
-
-        return $selector;
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getAvailableSitesSelector($selectorName, $selectedSite);
     }
 
     /**
@@ -158,37 +142,14 @@ class Site
      * @param bool $stopOnInvalidSite
      *
      * @return Site[] An array of available sites
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function getAvailableSites($stopOnInvalidSite = false)
     {
-        static $sitesCached;
-        $sites = [];
+        GeneralUtility::logDeprecatedFunction();
 
-        // Check if $sites has been cached
-        if (isset($sitesCached)) {
-            return $sitesCached;
-        }
-
-        $servers = self::getSolrServersFromRegistry();
-
-        foreach ($servers as $server) {
-            if (isset($sites[$server['rootPageUid']])) {
-                //get each site only once
-                continue;
-            }
-
-            try {
-                $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(__CLASS__, $server['rootPageUid']);
-            } catch (\InvalidArgumentException $e) {
-                if ($stopOnInvalidSite) {
-                    throw $e;
-                }
-            }
-        }
-
-        $sitesCached = $sites;
-
-        return $sitesCached;
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getAvailableSites($stopOnInvalidSite);
     }
 
     /**
@@ -197,11 +158,14 @@ class Site
      * @param bool $stopOnInvalidSite
      *
      * @return Site
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public static function getFirstAvailableSite($stopOnInvalidSite = false)
     {
-        $sites = self::getAvailableSites($stopOnInvalidSite);
-        return array_shift($sites);
+        GeneralUtility::logDeprecatedFunction();
+
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getFirstAvailableSite($stopOnInvalidSite);
     }
 
     /**
@@ -258,19 +222,6 @@ class Site
     }
 
     /**
-     * Retrieves the configured solr servers from the registry.
-     *
-     * @return array
-     */
-    protected static function getSolrServersFromRegistry()
-    {
-        /** @var $registry Registry */
-        $registry = GeneralUtility::makeInstance(Registry::class);
-        $servers = (array)$registry->get('tx_solr', 'servers', []);
-        return $servers;
-    }
-
-    /**
      * Gets the site's Solr TypoScript configuration (plugin.tx_solr.*)
      *
      * @return  \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration The Solr TypoScript configuration
@@ -285,23 +236,13 @@ class Site
      * configured.
      *
      * @return array Array of system language IDs for which connections have been configured on this site.
+     * @deprecated since 6.1 will be removed in 7.0
      */
     public function getLanguages()
     {
-        $siteLanguages = [];
-
-        $servers = self::getSolrServersFromRegistry();
-
-        foreach ($servers as $connectionKey => $solrConnection) {
-            list($siteRootPageId, $systemLanguageId) = explode('|',
-                $connectionKey);
-
-            if ($siteRootPageId == $this->rootPage['uid']) {
-                $siteLanguages[] = $systemLanguageId;
-            }
-        }
-
-        return $siteLanguages;
+        GeneralUtility::logDeprecatedFunction();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getAllLanguages($this);
     }
 
     /**
