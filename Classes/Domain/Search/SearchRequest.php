@@ -554,7 +554,12 @@ class SearchRequest
         if (!$onlyPersistentArguments) {
             // create a new request with all data
             $argumentsArray = $this->argumentsAccessor->getData();
-            return new SearchRequest($argumentsArray);
+            return new SearchRequest(
+                $argumentsArray,
+                $this->contextPageUid,
+                $this->contextSystemLanguageUid,
+                $this->contextTypoScriptConfiguration
+            );
         }
 
         $arguments = new ArrayAccessor();
@@ -564,7 +569,12 @@ class SearchRequest
             }
         }
 
-        return new SearchRequest($arguments->getData());
+        return new SearchRequest(
+            $arguments->getData(),
+            $this->contextPageUid,
+            $this->contextSystemLanguageUid,
+            $this->contextTypoScriptConfiguration
+        );
     }
 
     /**
