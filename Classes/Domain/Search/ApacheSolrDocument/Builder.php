@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
 
 use Apache_Solr_Document;
 use ApacheSolrForTypo3\Solr\Access\Rootline;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
@@ -134,7 +135,8 @@ class Builder
      */
     protected function getSiteByPageId($pageId)
     {
-        return Site::getSiteByPageId($pageId);
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getSiteByPageId($pageId);
     }
 
     /**

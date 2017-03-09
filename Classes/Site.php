@@ -24,10 +24,10 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
@@ -132,8 +132,8 @@ class Site
     ) {
         GeneralUtility::logDeprecatedFunction();
 
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        return $siteRepository->getAvailableSitesSelector($selectorName, $selectedSite);
+        $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
+        return $siteSelectorField->getAvailableSitesSelector($selectorName, $selectedSite);
     }
 
     /**

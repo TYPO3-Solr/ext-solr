@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Site;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * SiteHashService
@@ -115,7 +116,8 @@ class SiteHashService
      */
     protected function getAvailableSites()
     {
-        return Site::getAvailableSites();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getAvailableSites();
     }
 
     /**
@@ -124,6 +126,7 @@ class SiteHashService
      */
     protected function getSiteByPageId($pageId)
     {
-        return Site::getSiteByPageId($pageId);
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getSiteByPageId($pageId);
     }
 }

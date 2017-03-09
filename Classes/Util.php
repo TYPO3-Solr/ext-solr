@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
@@ -96,7 +97,9 @@ class Util
         $uid,
         $additionalIdParameters = ''
     ) {
-        $siteHash = Site::getSiteByPageId($pid)->getSiteHash();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getSiteByPageId($pid);
+        $siteHash = $site->getSiteHash();
 
         $documentId = $siteHash . '/' . $table . '/' . $uid;
         if (!empty($additionalIdParameters)) {

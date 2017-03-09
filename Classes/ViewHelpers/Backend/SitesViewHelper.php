@@ -24,7 +24,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Make site information available in the rendering scope of this ViewHelper
@@ -60,7 +61,8 @@ class SitesViewHelper extends AbstractSolrBackendViewHelper
      */
     public function render()
     {
-        $availableSites = Site::getAvailableSites();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $availableSites = $siteRepository->getAvailableSites();
         $currentSite = $this->moduleDataStorageService->loadModuleData()->getSite();
         $hasSites = is_array($availableSites) && count($availableSites) > 0;
 

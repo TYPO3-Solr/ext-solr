@@ -24,8 +24,9 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Menu;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrTagBasedViewHelper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Site selector menu view helper
@@ -68,10 +69,11 @@ class SiteSelectorMenuViewHelper extends AbstractSolrTagBasedViewHelper
 
     public function render()
     {
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->tag->addAttribute('onchange',
             'jumpToUrl(document.URL + \'&tx_solr_tools_solradministration[action]=setSite&tx_solr_tools_solradministration[site]=\'+this.options[this.selectedIndex].value,this);');
 
-        $sites = Site::getAvailableSites();
+        $sites = $siteRepository->getAvailableSites();
         $currentSite = $this->moduleDataStorageService->loadModuleData()->getSite();
 
         $options = '';

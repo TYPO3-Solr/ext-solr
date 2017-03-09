@@ -27,6 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Backend\IndexingConfigurationSelectorField;
+use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -118,10 +120,10 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         }
 
         $this->initialize($taskInfo, $task, $schedulerModule);
-        $additionalFields = [];
+        $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
         $additionalFields['site'] = [
-            'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
+            'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]',
                 $this->site),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
@@ -170,9 +172,10 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         SchedulerModuleController $schedulerModule
     ) {
         $result = false;
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 
         // validate site
-        $sites = Site::getAvailableSites();
+        $sites = $siteRepository->getAvailableSites();
         if (array_key_exists($submittedData['site'], $sites)) {
             $result = true;
         }
@@ -195,7 +198,8 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             return;
         }
 
-        $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $task->setSite($siteRepository->getSiteByRootPageId($submittedData['site']));
 
         $indexingConfigurations = [];
         if (!empty($submittedData['indexingConfigurations'])) {

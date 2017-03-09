@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
@@ -55,6 +57,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         SchedulerModuleController $schedulerModule
     ) {
         $additionalFields = [];
+        $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
         if (!$this->isTaskInstanceofIndexQueueWorkerTask($task)) {
             return $additionalFields;
@@ -73,7 +76,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         }
 
         $additionalFields['site'] = [
-            'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
+            'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]',
                 $taskInfo['site']),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
@@ -110,9 +113,10 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         SchedulerModuleController $schedulerModule
     ) {
         $result = false;
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 
         // validate site
-        $sites = Site::getAvailableSites();
+        $sites = $siteRepository->getAvailableSites();
         if (array_key_exists($submittedData['site'], $sites)) {
             $result = true;
         }
@@ -138,7 +142,8 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
             return;
         }
 
-        $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $task->setSite($siteRepository->getSiteByRootPageId($submittedData['site']));
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
         $task->setForcedWebRoot($submittedData['forcedWebRoot']);
     }

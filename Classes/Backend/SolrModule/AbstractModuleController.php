@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Backend\SolrModule;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Utility\StringUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -146,7 +147,8 @@ abstract class AbstractModuleController extends ActionController implements Admi
 
             if (is_numeric($site)) {
                 $siteRootPageId = $this->request->getArgument('site');
-                $this->site = Site::getSiteByPageId($siteRootPageId);
+                $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+                $this->site = $siteRepository->getSiteByPageId($siteRootPageId);
             } else {
                 if ($site instanceof Site) {
                     $this->site = $site;
@@ -172,7 +174,8 @@ abstract class AbstractModuleController extends ActionController implements Admi
      */
     protected function getFallbackSite()
     {
-        $sites = Site::getAvailableSites();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $sites = $siteRepository->getAvailableSites();
 
         $site = array_shift($sites);
         return $site;

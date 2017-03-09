@@ -27,9 +27,9 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -365,7 +365,8 @@ class Page extends AbstractInitializer
      */
     protected function resolveMountPageTree($mountPageSourceId)
     {
-        $mountedSite = Site::getSiteByPageId($mountPageSourceId);
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $mountedSite = $siteRepository->getSiteByPageId($mountPageSourceId);
 
         return $mountedSite->getPages($mountPageSourceId);
     }

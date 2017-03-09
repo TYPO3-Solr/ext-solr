@@ -69,12 +69,22 @@ class SiteRepository
      * Gets the Site for a specific page Id.
      *
      * @param int $pageId The page Id to get a Site object for.
-     *
      * @return Site Site for the given page Id.
      */
     public function getSiteByPageId($pageId)
     {
         $rootPageId = $this->rootPageResolver->getRootPageId($pageId);
+        return $this->getSiteByRootPageId($rootPageId);
+    }
+
+    /**
+     * Gets the Site for a specific root page Id.
+     *
+     * @param int $rootPageId Root page Id to get a Site object for.
+     * @return Site Site for the given page Id.
+     */
+    public function getSiteByRootPageId($rootPageId)
+    {
         $cacheId = 'SiteRepository' . '_' . 'getSiteByPageId' . '_' . $rootPageId;
 
         $methodResult = $this->runtimeCache->get($cacheId);
@@ -92,7 +102,6 @@ class SiteRepository
      * Returns the first available Site.
      *
      * @param bool $stopOnInvalidSite
-     *
      * @return Site
      */
     public function getFirstAvailableSite($stopOnInvalidSite = false)
@@ -105,7 +114,6 @@ class SiteRepository
      * Gets all available TYPO3 sites with Solr configured.
      *
      * @param bool $stopOnInvalidSite
-     *
      * @return Site[] An array of available sites
      */
     public function getAvailableSites($stopOnInvalidSite = false)
@@ -163,39 +171,6 @@ class SiteRepository
         }
 
         return $siteLanguages;
-    }
-
-    /**
-     * Creates a dropdown selector of available TYPO3 sites with Solr
-     * configured.
-     *
-     * @param string $selectorName Name to be used in the select's name attribute
-     * @param Site $selectedSite Optional, currently selected site
-     *
-     * @return string Site selector HTML code
-     * @todo Extract into own class like indexing configuration selector
-     */
-    public function getAvailableSitesSelector(
-        $selectorName,
-        Site $selectedSite = null
-    ) {
-        $sites = $this->getAvailableSites();
-        $selector = '<select name="' . $selectorName . '" class="form-control">';
-
-        foreach ($sites as $site) {
-            $selectedAttribute = '';
-            if ($selectedSite !== null && $site->getRootPageId() == $selectedSite->getRootPageId()) {
-                $selectedAttribute = ' selected="selected"';
-            }
-
-            $selector .= '<option value="' . $site->getRootPageId() . '"' . $selectedAttribute . '>'
-                . $site->getLabel()
-                . '</option>';
-        }
-
-        $selector .= '</select>';
-
-        return $selector;
     }
 
     /**

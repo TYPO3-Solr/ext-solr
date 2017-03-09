@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -225,7 +226,9 @@ class AdministrationController extends ActionController
      */
     public function setSiteAction($site)
     {
-        $site = Site::getSiteByPageId((int)$site);
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getSiteByPageId((int)$site);
+
         $this->setSiteAndResetCore($site);
 
         $this->forwardHome();
@@ -312,7 +315,8 @@ class AdministrationController extends ActionController
      */
     protected function initializeSiteFromFirstAvailableAndStoreInModuleData()
     {
-        $site = Site::getFirstAvailableSite();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
         if (!$site instanceof Site) {
             return;
         }

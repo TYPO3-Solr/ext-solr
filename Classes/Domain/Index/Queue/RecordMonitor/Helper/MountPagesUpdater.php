@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -113,9 +113,10 @@ class MountPagesUpdater
      */
     protected function addPageToMountingSiteIndexQueue($mountedPageId, array $mountProperties)
     {
-        $mountingSite = Site::getSiteByPageId($mountProperties['mountPageDestination']);
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $mountingSite = $siteRepository->getSiteByPageId($mountProperties['mountPageDestination']);
 
-            /** @var $pageInitializer Page */
+        /** @var $pageInitializer Page */
         $pageInitializer = GeneralUtility::makeInstance(Page::class);
         $pageInitializer->setSite($mountingSite);
 
