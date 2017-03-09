@@ -7,6 +7,7 @@ The configuration can be found in the folder "Resources/Private/Solr".
 This folder contains:
 
 * The folder "configsets": This folder a set of configuration files that can be deployed into a solr server, as a template.
+
 It contains the "solrconfig.xml" file, the "schema.xml" files for all languages and the accessfilter libary that belongs to
 this version as a jar file. This configSet needs to be in place on a solr server to create cores that are compatible to the EXT:solr
 extension.
@@ -42,6 +43,7 @@ The configset of the current release it located in "Resources/Private/Solr/confi
 Inside the configSet you find the following folders:
 
 * conf: This folder contains the solr configuration and all schemata files. There is one directory for each language which ships the schema.xml file for this language.
+
 The schema.xml file contains the language specific adaptions and includes all general schema fields and types with an XInclude statement.
 
 |
@@ -57,6 +59,7 @@ The schema.xml file contains the language specific adaptions and includes all ge
 |
 
 * typo3lib: This folder ships the compiled access filter jar file, that should be used with this EXT:solr version.
+
 The solrconfig (conf/solrconfig.xml) is configured to load all jar files from typo3lib.
 
 ===========

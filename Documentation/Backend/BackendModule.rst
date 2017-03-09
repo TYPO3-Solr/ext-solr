@@ -53,7 +53,7 @@ Index Fields
 The **Index Fields** module allows you to see, how many documents you have in which solr core and which fields those documents have.
 
 Search Statistics
-------------
+-----------------
 
 .. image:: ../Images/Backend/solr-backend-searchstatistics.png
 

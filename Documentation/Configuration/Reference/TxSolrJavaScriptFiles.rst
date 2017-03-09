@@ -93,15 +93,16 @@ ui
 
 Defines the user interface components library to use. By default this is jQuery UI.
 This is minified and concatenated jQuery UI, which includes following components:
-  widget
-  position
-  keycode
-  unique-id
-  widgets/autocomplete
-  widgets/datepicker
-  widgets/menu
-  widgets/mouse
-  widgets/slider
+
+   widget
+   position
+   keycode
+   unique-id
+   widgets/autocomplete
+   widgets/datepicker
+   widgets/menu
+   widgets/mouse
+   widgets/slider
 
 ui.datepicker
 -------------
