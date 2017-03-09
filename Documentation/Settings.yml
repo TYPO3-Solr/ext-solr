@@ -6,13 +6,29 @@
 conf.py:
   copyright: 2017
   project: Documentation for EXT:solr the Apache Solr integration for TYPO3
-  version: 6.1.0
-  release: 6.1.0
+  version: 6.1.0-dev
+  release: 6.1.0-dev
+  extensions:
+    - sphinx.ext.intersphinx
+    - t3sphinx.ext.t3extras
+    - t3sphinx.ext.t3tablerows
+    - t3sphinx.ext.targets
   intersphinx_mapping:
     t3tsref:
     - https://docs.typo3.org/typo3cms/TyposcriptReference/
-    - null
+    - /var/www/dev-master.local.typo3.org/typo3temp/tx_sphinx/intersphinx/t3tsref-efb6a4193f9a7fa543b2c135e4f9c6c7-objects.inv
     t3api:
     - https://docs.typo3.org/typo3cms/CoreApiReference/
-    - null
+    - /var/www/dev-master.local.typo3.org/typo3temp/tx_sphinx/intersphinx/t3api-2761377f435645484c196727c22473f7-objects.inv
+  latex_documents:
+  - - Index
+    - ExtSolr.tex
+    - Apache Solr for TYPO3 - Enterprise search meets enterprise CMS
+    - Ingo Renner, Timo Hund, Markus Friedrich
+    - manual
+  latex_elements:
+    papersize: a4paper
+    pointsize: 10pt
+    preamble: \usepackage{typo3}
 ...
+
