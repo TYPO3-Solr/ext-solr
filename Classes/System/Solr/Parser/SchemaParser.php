@@ -49,6 +49,10 @@ class SchemaParser
 
         $schema = GeneralUtility::makeInstance(Schema::class);
 
+        if ($schemaResponse === null) {
+            return $schema;
+        }
+
         $language = $this->parseLanguage($schemaResponse);
         $schema->setLanguage($language);
 

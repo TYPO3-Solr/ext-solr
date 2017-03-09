@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Test\System\Solr\Parser;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
@@ -53,6 +54,16 @@ class SchemaParserTest extends UnitTest
         $parser = new SchemaParser();
         $schema = $parser->parseJson($this->getFixtureContentByName('schema.json'));
         $this->assertSame('tx_solr-6-0-0--20161122', $schema->getName(), 'Could not parser name from schema response');
+    }
+
+    /**
+     * @test
+     */
+    public function canReturnEmptySchemaWhenNoSchemaPropertyInResponse()
+    {
+        $parser = new SchemaParser();
+        $schema = $parser->parseJson('{}');
+        $this->assertInstanceOf(Schema::class, $schema, 'Can not get schema object from empty response');
     }
 
 }
