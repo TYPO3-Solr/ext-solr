@@ -346,7 +346,8 @@ class AdministrationController extends ActionController
      *
      * @return SiteRepository
      */
-    protected function getSiteRepository() {
+    protected function getSiteRepository()
+    {
         return GeneralUtility::makeInstance(SiteRepository::class);
     }
 }
