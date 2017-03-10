@@ -72,10 +72,26 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      */
     protected $site = null;
 
+
+    /**
+     * SiteRepository
+     *
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
     /**
      * @var PageRenderer
      */
     protected $pageRenderer = null;
+
+    /**
+     * ReIndexTaskAdditionalFieldProvider constructor.
+     */
+    public function __construct()
+    {
+        $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+    }
 
     /**
      *
@@ -172,10 +188,9 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         SchedulerModuleController $schedulerModule
     ) {
         $result = false;
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 
         // validate site
-        $sites = $siteRepository->getAvailableSites();
+        $sites = $this->siteRepository->getAvailableSites();
         if (array_key_exists($submittedData['site'], $sites)) {
             $result = true;
         }
@@ -198,8 +213,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
             return;
         }
 
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $task->setSite($siteRepository->getSiteByRootPageId($submittedData['site']));
+        $task->setSite($this->siteRepository->getSiteByRootPageId($submittedData['site']));
 
         $indexingConfigurations = [];
         if (!empty($submittedData['indexingConfigurations'])) {

@@ -41,6 +41,18 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
 {
 
     /**
+     * SiteRepository
+     *
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+    public function __construct()
+    {
+        $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+    }
+
+    /**
      * Used to define fields to provide the TYPO3 site to index and number of
      * items to index per run when adding or editing a task.
      *
@@ -113,10 +125,9 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         SchedulerModuleController $schedulerModule
     ) {
         $result = false;
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 
         // validate site
-        $sites = $siteRepository->getAvailableSites();
+        $sites = $this->siteRepository->getAvailableSites();
         if (array_key_exists($submittedData['site'], $sites)) {
             $result = true;
         }
@@ -142,8 +153,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
             return;
         }
 
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $task->setSite($siteRepository->getSiteByRootPageId($submittedData['site']));
+        $task->setSite($this->siteRepository->getSiteByRootPageId($submittedData['site']));
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
         $task->setForcedWebRoot($submittedData['forcedWebRoot']);
     }

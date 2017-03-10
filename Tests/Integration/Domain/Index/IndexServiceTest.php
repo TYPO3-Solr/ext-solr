@@ -24,10 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -118,13 +117,14 @@ class IndexServiceTest extends IntegrationTest
 
         $this->addToIndexQueue('tx_fakeextension_domain_model_bar', 111);
 
-            /** @var  $cliEnvironment CliEnvironment */
+        /** @var  $cliEnvironment CliEnvironment */
         $cliEnvironment = GeneralUtility::makeInstance(CliEnvironment::class);
         $cliEnvironment->backup();
         $cliEnvironment->initialize(PATH_site);
 
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
         /** @var $indexService IndexService */
-        $site = Site::getFirstAvailableSite();
         $indexService = GeneralUtility::makeInstance(IndexService::class, $site);
 
         // run the indexer

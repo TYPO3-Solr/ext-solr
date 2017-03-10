@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
@@ -43,12 +44,18 @@ class QueueTest extends IntegrationTest
     protected $indexQueue;
 
     /**
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+    /**
      * @return void
      */
     public function setUp()
     {
         parent::setUp();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+        $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
     }
 
     /**
@@ -84,7 +91,7 @@ class QueueTest extends IntegrationTest
         $this->assertTrue($this->indexQueue->containsItem('pages', 4711));
 
         // after initialize the prefilled queue item should be lost and the root page should be added again
-        $site = Site::getFirstAvailableSite();
+        $site = $this->siteRepository->getFirstAvailableSite();
         $this->indexQueue->initialize($site, 'pages');
 
         $this->assertItemsInQueue(1);
@@ -160,11 +167,12 @@ class QueueTest extends IntegrationTest
     {
         $this->importDataSetFromFixture('mount_pages_initialize_queue_as_expected.xml');
         $this->assertEmptyQueue();
+        $site = $this->siteRepository->getFirstAvailableSite();
 
-        $this->indexQueue->initialize(Site::getFirstAvailableSite(), 'pages');
+        $this->indexQueue->initialize($site, 'pages');
         $this->assertItemsInQueue(4);
 
-        $this->indexQueue->initialize(Site::getFirstAvailableSite(), 'pages');
+        $this->indexQueue->initialize($site, 'pages');
         $this->assertItemsInQueue(4);
 
     }
@@ -175,7 +183,7 @@ class QueueTest extends IntegrationTest
     public function canAddCustomPageTypeToTheQueue()
     {
         $this->importDataSetFromFixture('can_index_custom_page_type_with_own_configuration.xml');
-        $site = Site::getFirstAvailableSite();
+        $site = $this->siteRepository->getFirstAvailableSite();
         $this->indexQueue->initialize($site, 'custom_page_type');
 
         $this->assertItemsInQueue(1);
@@ -194,7 +202,7 @@ class QueueTest extends IntegrationTest
     public function canGetStatisticsWithTotalItemCount()
     {
         $this->importDataSetFromFixture('can_get_item_count_by_site.xml');
-        $site = Site::getFirstAvailableSite();
+        $site = $this->siteRepository->getFirstAvailableSite();
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getTotalCount();
 
             // there are two items in the queue but only one for the site
@@ -207,7 +215,7 @@ class QueueTest extends IntegrationTest
     public function canGetStatisticsBySiteWithPendingItems()
     {
         $this->importDataSetFromFixture('can_get_item_count_by_site.xml');
-        $site = Site::getFirstAvailableSite();
+        $site = $this->siteRepository->getFirstAvailableSite();
 
         $itemCount = $this->indexQueue->getStatisticsBySite($site)->getPendingCount();
         $this->assertSame(1, $itemCount, 'Unexpected remaining item count for the first site');
@@ -226,7 +234,7 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_initialize_multiple_sites.xml');
         $this->assertEmptyQueue();
 
-        $availableSites = Site::getAvailableSites();
+        $availableSites = $this->siteRepository->getAvailableSites();
         $this->indexQueue->deleteAllItems();
 
         if (is_array($availableSites)) {
@@ -261,7 +269,8 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('can_get_statistics_by_site.xml');
         $this->assertItemsInQueue(4);
 
-        $statistics = $this->indexQueue->getStatisticsBySite(Site::getSiteByPageId(2));
+        $site = $this->siteRepository->getSiteByPageId(2);
+        $statistics = $this->indexQueue->getStatisticsBySite($site);
         $this->assertSame(1, $statistics->getSuccessCount(), 'Can not get successful processed items from queue');
         $this->assertSame(1, $statistics->getFailedCount(), 'Can not get failed processed items from queue');
         $this->assertSame(1, $statistics->getPendingCount(), 'Can not get pending processed items from queue');
