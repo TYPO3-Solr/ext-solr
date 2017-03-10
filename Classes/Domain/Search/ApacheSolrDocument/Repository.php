@@ -25,10 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -104,13 +104,15 @@ class Repository implements SingletonInterface
      */
     protected function getQueryForPage($pageId)
     {
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getSiteByPageId($pageId);
         /* @var Query $query */
         $query = GeneralUtility::makeInstance(Query::class, '');
         $query->setQueryType('standard');
         $query->useRawQueryString(true);
         $query->setQueryString('*:*');
         $query->addFilter('(type:pages AND uid:' . $pageId . ') OR (*:* AND pid:' . $pageId . ' NOT type:pages)');
-        $query->addFilter('siteHash:' . Site::getSiteByPageId($pageId)->getSiteHash());
+        $query->addFilter('siteHash:' . $site->getSiteHash());
         $query->setFieldList('*');
         $query->setSorting('type asc, title asc');
 

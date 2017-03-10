@@ -24,8 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Util;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
@@ -225,7 +227,9 @@ class AdministrationController extends ActionController
      */
     public function setSiteAction($site)
     {
-        $site = Site::getSiteByPageId((int)$site);
+        $siteRepository = $this->getSiteRepository();
+        $site = $siteRepository->getSiteByPageId((int)$site);
+
         $this->setSiteAndResetCore($site);
 
         $this->forwardHome();
@@ -312,7 +316,8 @@ class AdministrationController extends ActionController
      */
     protected function initializeSiteFromFirstAvailableAndStoreInModuleData()
     {
-        $site = Site::getFirstAvailableSite();
+        $siteRepository = $this->getSiteRepository();
+        $site = $siteRepository->getFirstAvailableSite();
         if (!$site instanceof Site) {
             return;
         }
@@ -334,5 +339,15 @@ class AdministrationController extends ActionController
         if ($rootPageId > 0 && !Util::pageExists($rootPageId)) {
             $this->initializeSiteFromFirstAvailableAndStoreInModuleData();
         }
+    }
+
+    /**
+     * Get an instance of the SiteRepository
+     *
+     * @return SiteRepository
+     */
+    protected function getSiteRepository()
+    {
+        return GeneralUtility::makeInstance(SiteRepository::class);
     }
 }

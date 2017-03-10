@@ -25,9 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Task\ReIndexTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -113,7 +113,9 @@ class ReIndexTaskTest extends IntegrationTest
         $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
         $this->assertEmptyIndexQueue();
 
-        $this->task->setSite(Site::getFirstAvailableSite());
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $this->task->setSite($site);
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $this->task->execute();
 
@@ -128,7 +130,9 @@ class ReIndexTaskTest extends IntegrationTest
         $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
         $this->assertEmptyIndexQueue();
 
-        $this->task->setSite(Site::getFirstAvailableSite());
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $this->task->setSite($site);
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $additionalInformation = $this->task->getAdditionalInformation();
 
@@ -144,7 +148,8 @@ class ReIndexTaskTest extends IntegrationTest
         $this->importDataSetFromFixture('can_reindex_task_fill_queue.xml');
 
         // fill the solr
-        $site = Site::getFirstAvailableSite();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
         $this->indexQueue->updateItem('pages', 1);
         $items = $this->indexQueue->getItems('pages', 1);
         /** @var $indexer \ApacheSolrForTypo3\Solr\IndexQueue\Indexer */

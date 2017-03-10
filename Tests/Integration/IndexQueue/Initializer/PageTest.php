@@ -24,9 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -86,8 +86,10 @@ class PageTest extends IntegrationTest
      */
     protected function initializePageIndexQueue()
     {
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
         $this->pageInitializer->setIndexingConfigurationName('pages');
-        $this->pageInitializer->setSite(Site::getFirstAvailableSite());
+        $this->pageInitializer->setSite($site);
         $this->pageInitializer->setType('pages');
         $this->pageInitializer->initialize();
     }

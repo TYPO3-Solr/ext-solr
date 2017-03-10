@@ -30,7 +30,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
@@ -315,7 +315,9 @@ class Indexer extends AbstractIndexer
      */
     protected function getBaseDocument(Item $item, array $itemRecord)
     {
-        $site = GeneralUtility::makeInstance(Site::class, $item->getRootPageUid());
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getSiteByRootPageId($item->getRootPageUid());
+
         $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
         /* @var $document Apache_Solr_Document */
 

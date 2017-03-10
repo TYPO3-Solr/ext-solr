@@ -24,12 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Site;
-use GeorgRinger\News\Hooks\BackendUtility;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -423,7 +421,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(1);
 
         // we reindex all queue items
-        $items = $this->indexQueue->getItemsToIndex(Site::getFirstAvailableSite());
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $items = $this->indexQueue->getItemsToIndex($site);
         $pages = [];
         foreach($items as $item) {
             $pages[] = $item->getRecordUid();
@@ -470,7 +470,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(1);
 
         // we reindex all queue items
-        $items = $this->indexQueue->getItemsToIndex(Site::getFirstAvailableSite());
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
+        $items = $this->indexQueue->getItemsToIndex($site);
         $pages = [];
         foreach($items as $item) {
             $pages[] = $item->getRecordUid();

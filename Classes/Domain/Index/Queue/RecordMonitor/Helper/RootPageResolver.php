@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
@@ -256,7 +257,9 @@ class RootPageResolver implements SingletonInterface
     protected function buildSiteRootsByObservedPageIds($table, $uid)
     {
         $siteRootByObservedPageIds = [];
-        $allSites = Site::getAvailableSites();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $allSites = $siteRepository->getAvailableSites();
+
         foreach ($allSites as $site) {
             $solrConfiguration = $site->getSolrConfiguration();
             $indexingConfigurationName = $this->recordService->getIndexingConfigurationName($table, $uid, $solrConfiguration);

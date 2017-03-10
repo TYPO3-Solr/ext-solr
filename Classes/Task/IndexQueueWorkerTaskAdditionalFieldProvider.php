@@ -24,7 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
@@ -37,6 +38,18 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
+
+    /**
+     * SiteRepository
+     *
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+    public function __construct()
+    {
+        $this->siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+    }
 
     /**
      * Used to define fields to provide the TYPO3 site to index and number of
@@ -55,6 +68,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         SchedulerModuleController $schedulerModule
     ) {
         $additionalFields = [];
+        $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
         if (!$this->isTaskInstanceofIndexQueueWorkerTask($task)) {
             return $additionalFields;
@@ -73,7 +87,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         }
 
         $additionalFields['site'] = [
-            'code' => Site::getAvailableSitesSelector('tx_scheduler[site]',
+            'code' => $siteSelectorField->getAvailableSitesSelector('tx_scheduler[site]',
                 $taskInfo['site']),
             'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:field_site',
             'cshKey' => '',
@@ -112,7 +126,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $result = false;
 
         // validate site
-        $sites = Site::getAvailableSites();
+        $sites = $this->siteRepository->getAvailableSites();
         if (array_key_exists($submittedData['site'], $sites)) {
             $result = true;
         }
@@ -138,7 +152,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
             return;
         }
 
-        $task->setSite(GeneralUtility::makeInstance(Site::class, $submittedData['site']));
+        $task->setSite($this->siteRepository->getSiteByRootPageId($submittedData['site']));
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
         $task->setForcedWebRoot($submittedData['forcedWebRoot']);
     }

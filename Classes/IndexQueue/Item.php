@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -180,7 +181,8 @@ class Item
      */
     public function getSite()
     {
-        return GeneralUtility::makeInstance(Site::class, $this->rootPageUid);
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        return $siteRepository->getSiteByRootPageId($this->rootPageUid);
     }
 
     public function getType()

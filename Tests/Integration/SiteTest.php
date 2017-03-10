@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -43,31 +44,12 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetAllSites()
-    {
-        $this->importDataSetFromFixture('can_get_all_sites.xml');
-        $sites = Site::getAvailableSites();
-        $this->assertSame(1, count($sites), 'Expected to retrieve one site from fixture');
-    }
-
-    /**
-     * @test
-     */
     public function canGetDefaultLanguage()
     {
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_default_language.xml');
-        $site = Site::getFirstAvailableSite();
+        $site = $siteRepository->getFirstAvailableSite();
         $this->assertEquals(888, $site->getDefaultLanguage(), 'Could not get default language from site');
-    }
-
-    /**
-     * @test
-     */
-    public function canGetAllPagesFromSite()
-    {
-        $this->importDataSetFromFixture('can_get_all_pages_from_sites.xml');
-        $site = Site::getFirstAvailableSite();
-        $this->assertEquals([1,2,21,22,3,30], $site->getPages(), 'Can not get all pages from site');
     }
 
     /**

@@ -53,8 +53,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Task;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -109,7 +109,8 @@ class IndexQueueWorkerTest extends IntegrationTest
         $charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
         $GLOBALS['LANG']->csConvObj = $charsetConverter;
 
-        $site = Site::getFirstAvailableSite();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
         /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
@@ -131,7 +132,8 @@ class IndexQueueWorkerTest extends IntegrationTest
     public function canGetAdditionalInformationFromTask()
     {
         $this->importDataSetFromFixture('can_trigger_frontend_calls_for_page_index.xml');
-        $site = Site::getFirstAvailableSite();
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getFirstAvailableSite();
         /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
