@@ -112,7 +112,7 @@ E.g. when:
 
 Before the extension "solr_disablesitehash" was required to turn this sitehash check off. With solr 6.1.0 we've changed the meaning of the allowedSites:
 
-* Before: * was the same as __all, which means all sites in the system
+* Before: \* was the same as __all, which means all sites in the system
 * After: __all is still handled as __all sites in the system, but * now means every site (same as no check at all)
     
 Migration: When you are using * for query.allowedSites change the setting to __all.
@@ -155,7 +155,7 @@ Related Issues:
 
 * https://github.com/TYPO3-Solr/ext-solr/issues/933
 
-### Preperation for Doctrine migration
+### Preparation for Doctrine migration
 
 In the next release we will drop the support of TYPO3 7 LTS and only support 8 LTS. Since in the TYPO3 core the database access was migrated to Doctrine, we will use Doctrine as well.
 
@@ -226,6 +226,10 @@ For the continues improvement of the codestructure and preparation for upcoming 
 * Queue::getRemainingItemsCountBySite
 * TypoScriptConfiguration::getIndexQueuePagesAllowedPageTypesArray
 * QueryTest::canAddSortField
+* Site::getLanguages
+* Site::getFirstAvailableSite
+* Site::getAvailableSites
+* Site::getAvailableSitesSelector
 
 Please check your deprecation log and replace the usages in your code.
 
