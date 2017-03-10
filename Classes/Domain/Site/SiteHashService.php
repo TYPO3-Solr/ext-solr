@@ -116,8 +116,7 @@ class SiteHashService
      */
     protected function getAvailableSites()
     {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        return $siteRepository->getAvailableSites();
+        return $this->getSiteRepository()->getAvailableSites();
     }
 
     /**
@@ -126,7 +125,10 @@ class SiteHashService
      */
     protected function getSiteByPageId($pageId)
     {
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        return $siteRepository->getSiteByPageId($pageId);
+        return $this->getSiteRepository()->getSiteByPageId($pageId);
+    }
+
+    protected function getSiteRepository() {
+        return GeneralUtility::makeInstance(SiteRepository::class);
     }
 }
