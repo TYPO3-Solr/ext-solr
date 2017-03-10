@@ -128,7 +128,13 @@ class SiteHashService
         return $this->getSiteRepository()->getSiteByPageId($pageId);
     }
 
-    protected function getSiteRepository() {
+    /**
+     * Get a reference to SiteRepository
+     *
+     * @return SiteRepository
+     */
+    protected function getSiteRepository()
+    {
         return GeneralUtility::makeInstance(SiteRepository::class);
     }
 }
