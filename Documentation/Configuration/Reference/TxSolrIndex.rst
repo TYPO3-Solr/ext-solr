@@ -25,7 +25,7 @@ to easily index pages or any kind of records of your TYPO3 CMS.
     :local:
 
 enablePageIndexing (removed)
----------------------------
+----------------------------
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.index.enablePageIndexing
@@ -171,7 +171,7 @@ Example:
 |
 
 queue.[indexConfig]
------------------------------
+-------------------
 
 :Type: Boolean, Array
 :TS Path: plugin.tx_solr.index.queue.[indexConfig]
@@ -186,7 +186,7 @@ By setting `plugin.tx_solr.index.queue.[indexConfig] = 1 or 0` you can en- / dis
 
 
 queue.[indexConfig].additionalWhereClause
----------------------------------------------------
+-----------------------------------------
 
 :Type: String
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].additionalWhereClause
@@ -204,7 +204,7 @@ A WHERE clause that is used when initializing the Index Queue, limiting what goe
 |
 
 queue.[indexConfig].initialPagesAdditionalWhereClause
----------------------------------------------------
+-----------------------------------------------------
 
 :Type: String
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].initialPagesAdditionalWhereClause
@@ -225,7 +225,7 @@ ID's that shouldn't be processed at all.
 
 
 queue.[indexConfig].additionalPageIds
------------------------------------------------
+-------------------------------------
 
 :Type: String
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].additionalPageIds
@@ -237,7 +237,7 @@ Additional page IDs can be provided as comma-separated list.
 
 
 queue.[indexConfig].table
------------------------------------
+-------------------------
 
 :Type: String
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].table
@@ -271,7 +271,7 @@ Sometimes you may want to index records from a table with different configuratio
 
 
 queue.[indexConfig].initialization
---------------------------------------------
+----------------------------------
 
 :Type: String
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].initialization
@@ -283,7 +283,7 @@ The extension uses this option for initializing the pages and more specifically 
 
 
 queue.[indexConfig].indexer
--------------------------------------
+---------------------------
 
 :Type: String, Array
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].indexer
@@ -346,7 +346,7 @@ PHP:
 |
 
 queue.[indexConfig].indexingPriority
-----------------------------------------------
+------------------------------------
 
 :Type: Integer
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].indexingPriority
@@ -357,7 +357,7 @@ Allows to define the order in which Index Queue items of different kinds are ind
 
 
 queue.[indexConfig].fields
-------------------------------------
+--------------------------
 
 :Type: Array
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].fields
@@ -384,7 +384,7 @@ Example:
     }
 
 queue.[indexConfig].attachments.fields
-------------------------------------------------
+--------------------------------------
 
 :Type: String
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].attachments.fields
@@ -661,7 +661,7 @@ Whether to return related records suitable for a multi value field. If this is d
 :Type: String
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].singleValueGlue
 :Since: 2.0
-:Default: |, |
+:Default: ", "
 
 When not using multiValue, the related records need to be concatenated using a glue string, by default this is ", " (comma followed by space). Using this option a custom glue can be specified. The custom value must be wrapped by pipe (|) characters to be able to have leading or trailing spaces.
 
@@ -725,7 +725,7 @@ Example:
     }
 
 enableCommits
------------------------------
+-------------
 
 :Type: Boolean
 :TS Path: plugin.tx_solr.index.enableCommits

@@ -48,7 +48,7 @@ echo "Building latex, which is needed for pdf rendering."
 echo "Please check output, which can contain a hints for the errors in your documents."
 sleep 3
 LANG=en_US.UTF-8
-sphinx-build -b latex -c Documentation -d Documentation -w Documentation/_build/warnings.txt -D latex_paper_size=a4 Documentation Documentation/_build/latex
+sphinx-build -b latex -c Documentation -d Documentation/_build/doctrees -w Documentation/_build/warnings.txt -D latex_paper_size=a4 Documentation Documentation/_build/latex
 
 
 echo "Building PDF file. This may take some time..."

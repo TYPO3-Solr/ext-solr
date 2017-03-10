@@ -11,7 +11,7 @@
 
 .. raw:: latex
 
-    \newpage
+	\newpage
 
 .. raw:: pdf
 
@@ -28,8 +28,8 @@ In this chapter we want to go deeper and learn how to write more complex indexin
 	:maxdepth: 5
 	:glob:
 
-    ConnectionManager
-    IndexQueue
-    BackendModule
-    IndexInspector
-    Scheduler
+	ConnectionManager
+	IndexQueue
+	BackendModule
+	IndexInspector
+	Scheduler

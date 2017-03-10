@@ -32,20 +32,20 @@ For more informations please refer to the Apache Solr documentation.
 **Where can I report a bug?**
 
 Please make sure that this bug is not reported already, use also the search function of our issue tracker.
-Our issue tracker is on `"GitHub"<https://github.com/TYPO3-Solr/ext-solr/issues/>`_.
+Our issue tracker is on `GitHub <https://github.com/TYPO3-Solr/ext-solr/issues/>`_.
 
 |
 
 **Where can I report a security issue?**
 
 If you have found a security issue in our extension, please do not post about it in a public channel.
-Please `send us an email<mailto:team-solr@dkd.de>`_ with detailed description of found vulnerability.
+Please `send us an email <mailto:team-solr@dkd.de>`_ with detailed description of found vulnerability.
 
 |
 
 **Is there some chat/irc channel for EXT:solr available?**
 
-Join us on the official `Slack for TYPO3<https://forger.typo3.org/slack>`_ and get answers related to EXT:solr in the #ext-solr channel immediately!
+Join us on the official `Slack for TYPO3 <https://forger.typo3.org/slack>`_ and get answers related to EXT:solr in the #ext-solr channel immediately!
 
 |
 
@@ -137,6 +137,7 @@ If you want to index records that are outside your sideroot, you need to configu
 |
 
 .. code-block:: typoscript
+
     plugin.tx_solr.index.queue.[yourQueueName].additionalPageIds = 4711,4712
 
 |
@@ -156,9 +157,8 @@ Beside the indexing part you need to configure the query part. Make sure that al
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.query.queryFields := addToList(test_textS^1.0)
+    plugin.tx_solr.search.query.queryFields := addToList(test_textS\^1.0)
 
-|
 
 **I don't find the expected document on the first position. What can i do?**
 
@@ -180,7 +180,8 @@ Example:
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.query.queryFields = title^20.0, title^15.0
+    plugin.tx_solr.search.query.queryFields = title\^20.0, title\^15.0
+
 
 *Use boostFunctions or boostQueries*
 
@@ -338,7 +339,7 @@ value from the AdditionalConfiguration.php
 
 |
 
-**How can I replace jQuery and/or jQuery UI versions or use different JavaScript library for searching field used by EXT:solr?
+**How can I replace jQuery and/or jQuery UI versions or use different JavaScript library for searching field used by EXT:solr?**
 
 You need to add following lines in your TypoScript setup:
 

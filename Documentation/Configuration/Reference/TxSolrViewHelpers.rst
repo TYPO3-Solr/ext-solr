@@ -14,8 +14,6 @@
 
    PageBreak
 
-.. _conf-tx-solr-suggest:
-
 tx_solr.viewHelpers
 ===================
 
