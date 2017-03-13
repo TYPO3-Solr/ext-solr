@@ -34,7 +34,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * SiteRepository
  *
- * Responsible for...
+ * Responsible to retrieve instances of Site objects
  *
  * @author Thomas Hohn <tho@systime.dk>
  */
@@ -53,16 +53,22 @@ class SiteRepository
     protected $runtimeCache;
 
     /**
+     * @var Registry
+     */
+    protected $registry;
+
+    /**
      * SiteRepository constructor.
      *
      * @param RootPageResolver|null $rootPageResolver
      * @param TwoLevelCache|null $twoLevelCache
+     * @param Registry|null $registry
      */
-    public function __construct(RootPageResolver $rootPageResolver = null, TwoLevelCache $twoLevelCache = null)
+    public function __construct(RootPageResolver $rootPageResolver = null, TwoLevelCache $twoLevelCache = null, Registry $registry = null)
     {
         $this->rootPageResolver = isset($rootPageResolver) ? $rootPageResolver : GeneralUtility::makeInstance(RootPageResolver::class);
-        $this->runtimeCache = isset($twoLevelCache) ? $twoLevelCache : GeneralUtility::makeInstance(TwoLevelCache::class,
-            'cache_runtime');
+        $this->runtimeCache = isset($twoLevelCache) ? $twoLevelCache : GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+        $this->registry = isset($registry) ? $registry : GeneralUtility::makeInstance(Registry::class);
     }
 
     /**
@@ -92,7 +98,7 @@ class SiteRepository
             return $methodResult;
         }
 
-        $methodResult = GeneralUtility::makeInstance(Site::class, $rootPageId);
+        $methodResult = $this->buildSite($rootPageId);
         $this->runtimeCache->set($cacheId, $methodResult);
 
         return $methodResult;
@@ -127,7 +133,6 @@ class SiteRepository
         }
 
         $servers = $this->getSolrServersFromRegistry();
-
         foreach ($servers as $server) {
             if (isset($sites[$server['rootPageUid']])) {
                 //get each site only once
@@ -135,7 +140,7 @@ class SiteRepository
             }
 
             try {
-                $sites[$server['rootPageUid']] = GeneralUtility::makeInstance(Site::class, $server['rootPageUid']);
+                $sites[$server['rootPageUid']] = $this->buildSite($server['rootPageUid']);
             } catch (\InvalidArgumentException $e) {
                 if ($stopOnInvalidSite) {
                     throw $e;
@@ -158,19 +163,28 @@ class SiteRepository
     public function getAllLanguages(Site $site)
     {
         $siteLanguages = [];
-
         $servers = $this->getSolrServersFromRegistry();
 
         foreach ($servers as $connectionKey => $solrConnection) {
-            list($siteRootPageId, $systemLanguageId) = explode('|',
-                $connectionKey);
+            list($siteRootPageId, $systemLanguageId) = explode('|', $connectionKey);
 
-            if ($siteRootPageId == $site->getRootPage()) {
+            if ($siteRootPageId == $site->getRootPageId()) {
                 $siteLanguages[] = $systemLanguageId;
             }
         }
 
         return $siteLanguages;
+    }
+
+    /**
+     * Creates an instance of the Site object.
+     *
+     * @param integer $rootPageId
+     * @return Site
+     */
+    protected function buildSite($rootPageId)
+    {
+        return GeneralUtility::makeInstance(Site::class, $rootPageId);
     }
 
     /**
@@ -180,9 +194,7 @@ class SiteRepository
      */
     protected function getSolrServersFromRegistry()
     {
-        /** @var $registry Registry */
-        $registry = GeneralUtility::makeInstance(Registry::class);
-        $servers = (array)$registry->get('tx_solr', 'servers', []);
+        $servers = (array)$this->registry->get('tx_solr', 'servers', []);
         return $servers;
     }
 }
