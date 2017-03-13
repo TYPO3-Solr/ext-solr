@@ -276,4 +276,25 @@ class QueueTest extends IntegrationTest
         $this->assertSame(1, $statistics->getPendingCount(), 'Can not get pending processed items from queue');
     }
 
+    /**
+     * @test
+     */
+    public function canGetLastIndexNonExistingRoot()
+    {
+        $this->importDataSetFromFixture('can_get_last_index_time.xml');
+        $this->assertItemsInQueue(3);
+        $lastIndexTime = $this->indexQueue->getLastIndexTime(2);
+        $this->assertEquals($lastIndexTime, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetLastIndexRootExists()
+    {
+        $this->importDataSetFromFixture('can_get_last_index_time.xml');
+        $this->assertItemsInQueue(3);
+        $lastIndexTime = $this->indexQueue->getLastIndexTime(1);
+        $this->assertEquals($lastIndexTime, 1489383800);
+    }
 }
