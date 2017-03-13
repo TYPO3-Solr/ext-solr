@@ -297,4 +297,26 @@ class QueueTest extends IntegrationTest
         $lastIndexTime = $this->indexQueue->getLastIndexTime(1);
         $this->assertEquals($lastIndexTime, 1489383800);
     }
+
+    /**
+     * @test
+     */
+    public function canGetLastIndexedItemIdNonExistingRoot()
+    {
+        $this->importDataSetFromFixture('can_get_last_indexed_item_id.xml');
+        $this->assertItemsInQueue(3);
+        $lastIndexedItemIdUid = $this->indexQueue->getLastIndexedItemId(2);
+        $this->assertEquals($lastIndexedItemIdUid, 0);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetLastIndexedItemIdRootExists()
+    {
+        $this->importDataSetFromFixture('can_get_last_indexed_item_id.xml');
+        $this->assertItemsInQueue(3);
+        $lastIndexedItemIdUid = $this->indexQueue->getLastIndexedItemId(1);
+        $this->assertEquals($lastIndexedItemIdUid, 4713);
+    }
 }

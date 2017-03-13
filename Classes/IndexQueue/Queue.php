@@ -84,14 +84,7 @@ class Queue
     {
         $lastIndexTime = 0;
 
-        $lastIndexedRow = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'indexed',
-            'tx_solr_indexqueue_item',
-            'root = ' . (int)$rootPageId,
-            '',
-            'indexed DESC',
-            1
-        );
+        $lastIndexedRow = $this->getLastIndexedRow($rootPageId);
 
         if ($lastIndexedRow[0]['indexed']) {
             $lastIndexTime = $lastIndexedRow[0]['indexed'];
@@ -111,19 +104,36 @@ class Queue
     {
         $lastIndexedItemId = 0;
 
-        $lastIndexedItemRow = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid',
+        $lastIndexedItemRow = $this->getLastIndexedRow($rootPageId);
+        if ($lastIndexedItemRow[0]['uid']) {
+            $lastIndexedItemId = $lastIndexedItemRow[0]['uid'];
+        }
+
+        return $lastIndexedItemId;
+    }
+
+    /**
+     * Fetches the last indexed row
+     *
+     * @param int $rootPageId The root page uid for which to get the last indexed row
+     * @return array
+     */
+    protected function getLastIndexedRow($rootPageId)
+    {
+        $row = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+            'uid, indexed',
             'tx_solr_indexqueue_item',
             'root = ' . (int)$rootPageId,
             '',
             'indexed DESC',
             1
         );
-        if ($lastIndexedItemRow[0]['uid']) {
-            $lastIndexedItemId = $lastIndexedItemRow[0]['uid'];
+
+        if ($row[0]['uid']) {
+            return $row;
         }
 
-        return $lastIndexedItemId;
+        return [];
     }
 
     /**
