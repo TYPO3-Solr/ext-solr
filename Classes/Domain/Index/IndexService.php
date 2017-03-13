@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
@@ -114,6 +115,7 @@ class IndexService
         $errors     = 0;
         $indexRunId = uniqid();
         $configurationToUse = $this->site->getSolrConfiguration();
+        $enableCommitsSetting = $configurationToUse->getEnableCommits();
 
         // get items to index
         $itemsToIndex = $this->indexQueue->getItemsToIndex($this->site, $limit);
@@ -134,6 +136,13 @@ class IndexService
         }
 
         $this->emitSignal('afterIndexItems', [$itemsToIndex, $this->getContextTask(), $indexRunId]);
+
+        if ($enableCommitsSetting && count($itemsToIndex) > 0) {
+            $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
+            foreach ($solrServers as $solrServer) {
+                $solrServer->commit(false, false, false);
+            }
+        }
 
         return ($errors === 0);
     }
