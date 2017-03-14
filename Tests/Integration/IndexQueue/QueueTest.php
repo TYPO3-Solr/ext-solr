@@ -319,4 +319,79 @@ class QueueTest extends IntegrationTest
         $lastIndexedItemIdUid = $this->indexQueue->getLastIndexedItemId(1);
         $this->assertEquals($lastIndexedItemIdUid, 4713);
     }
+
+    /**
+     * @test
+     */
+    public function canMarkItemAsFailedWithItemAndEmptyMessage()
+    {
+        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->assertItemsInQueue(3);
+        $item = $this->indexQueue->getItem(4711);
+        $this->indexQueue->markItemAsFailed($item);
+        $processedItem = $this->indexQueue->getItem($item->getIndexQueueUid());
+        $this->assertEquals($processedItem->getErrors(), '1');
+    }
+
+    /**
+     * @test
+     */
+    public function canMarkItemAsFailedWithItemAndMessage()
+    {
+        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->assertItemsInQueue(3);
+        $item = $this->indexQueue->getItem(4711);
+        $this->indexQueue->markItemAsFailed($item, 'Error during indexing canMarkItemAsFailedWithItemAndMessage');
+        $processedItem = $this->indexQueue->getItem($item->getIndexQueueUid());
+        $this->assertEquals($processedItem->getErrors(), 'Error during indexing canMarkItemAsFailedWithItemAndMessage');
+    }
+
+    /**
+     * @test
+     */
+    public function canMarkItemAsFailedWithUidAndEmptyMessage()
+    {
+        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->assertItemsInQueue(3);
+        $this->indexQueue->markItemAsFailed(4712);
+        $item = $this->indexQueue->getItem(4712);
+        $this->assertEquals($item->getErrors(), '1');
+    }
+
+    /**
+     * @test
+     */
+    public function canMarkItemAsFailedWithUidAndMessage()
+    {
+        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->assertItemsInQueue(3);
+        $this->indexQueue->markItemAsFailed(4712, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
+        $item = $this->indexQueue->getItem(4712);
+        $this->assertEquals($item->getErrors(), 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
+    }
+
+    /**
+     * @test
+     */
+    public function canMarkItemAsFailedNonexistingUid()
+    {
+        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->assertItemsInQueue(3);
+        $this->indexQueue->markItemAsFailed(42, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
+        $item = $this->indexQueue->getItem(42);
+        $this->assertEquals($item, null);
+    }
+
+    /**
+     * @test
+     */
+    public function canMarkItemAsFailedNonexistingItem()
+    {
+        $this->importDataSetFromFixture('can_mark_item_as_failed.xml');
+        $this->assertItemsInQueue(3);
+        $item = $this->indexQueue->getItem(42);
+        $this->indexQueue->markItemAsFailed($item, 'Error during indexing canMarkItemAsFailedWithUidAndMessage');
+        $processedItem = $this->indexQueue->getItem(42);
+        $this->assertEquals($processedItem, null);
+    }
 }
