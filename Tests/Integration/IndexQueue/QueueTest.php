@@ -394,4 +394,29 @@ class QueueTest extends IntegrationTest
         $processedItem = $this->indexQueue->getItem(42);
         $this->assertEquals($processedItem, null);
     }
+
+    /**
+     * @test
+     */
+    public function canUpdateIndexTimeByItemNonExistingItem()
+    {
+        $this->importDataSetFromFixture('can_update_index_time_by_item.xml');
+        $this->assertItemsInQueue(3);
+        $item = $this->indexQueue->getItem(42);
+        $this->assertEquals($item, null);
+    }
+
+    /**
+     * @test
+     */
+    public function canUpdateIndexTimeByItemExistingItem()
+    {
+        $this->importDataSetFromFixture('can_update_index_time_by_item.xml');
+        $this->assertItemsInQueue(3);
+        $lastestUpdatedItem = $this->indexQueue->getLastIndexedItemId(1);
+        $this->assertEquals($lastestUpdatedItem, 4713);
+        $this->indexQueue->updateIndexTimeByItem($this->indexQueue->getItem(4711));
+        $lastestUpdatedItem = $this->indexQueue->getLastIndexedItemId(1);
+        $this->assertEquals($lastestUpdatedItem, 4711);
+    }
 }
