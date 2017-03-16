@@ -155,6 +155,20 @@ class Tx_Solr_GarbageCollector {
 			|| ($table == 'pages' && !$this->isIndexablePageType($record))
 		) {
 			$this->collectGarbage($table, $uid);
+
+			// if the start time is in the future and not otherwise invisible,
+			// it is necessary to add the item to the queue again to be indexed once the start time is reached
+			if ($this->isStartTimeInFuture($table, $record)
+				&& !$this->isHidden($table, $record)
+				&& !$this->hasFrontendGroupsRemoved($table, $record)
+				&& ($table != 'tt_content' && $table != 'pages_language_overlay')
+				&& !($table == 'pages' && $this->isPageExcludedFromSearch($record))
+				&& !($table == 'pages' && !$this->isIndexablePageType($record))
+			) {
+				/** @var Tx_Solr_IndexQueue_Queue $indexQueue */
+				$indexQueue = t3lib_div::makeInstance('Tx_Solr_IndexQueue_Queue');
+				$indexQueue->updateItem($table, $uid);
+			}
 		}
 	}
 
