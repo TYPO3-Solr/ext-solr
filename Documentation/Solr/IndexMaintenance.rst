@@ -76,20 +76,6 @@ Getting information / statistics about the index
 
 |
 
-Initializing the spell checker
-==============================
-
-You only need to do this once. Once the spell checker index is initialized it gets updated automatically.
-
-|
-
-.. code-block:: bash
-
-    curl 'http://host:port/path-to-solr/select/?spellcheck=true&spellcheck.build=true'
-
-|
-
-Alternatively, since version version:1.2 the spell checker index is built automatically when you run an optimize command on your index. The extension comes with an Optimize Index Task for the scheduler. We recommend to set it up to run once a day.
 
 Create cores with the core admin api
 ====================================
