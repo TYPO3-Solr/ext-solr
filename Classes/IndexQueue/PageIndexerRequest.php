@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -97,6 +98,11 @@ class PageIndexerRequest
     protected $logger = null;
 
     /**
+     * @var ExtensionConfiguration
+     */
+    protected $extensionConfiguration;
+
+    /**
      * PageIndexerRequest constructor.
      *
      * @param string $jsonEncodedParameters json encoded header
@@ -106,6 +112,7 @@ class PageIndexerRequest
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->requestId = uniqid();
         $this->timeout = (float)ini_get('default_socket_timeout');
+        $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
 
         if (is_null($jsonEncodedParameters)) {
             return;
@@ -379,18 +386,21 @@ class PageIndexerRequest
      */
     protected function getUrl($url, $headers, $timeout)
     {
-        $context = stream_context_create(
-          [
+        $options = [
             'http' => [
-            'header' => implode(CRLF, $headers),
-            'timeout' => $timeout
+                'header' => implode(CRLF, $headers),
+                'timeout' => $timeout
             ],
-            'ssl' => [
-              'verify_peer' => false,
-              'allow_self_signed'=> true
-            ]
-          ]
-        );
+        ];
+
+        if ($this->extensionConfiguration->getIsSelfSignedCertificatesEnabled()) {
+            $options['ssl'] = [
+                'verify_peer' => false,
+                'allow_self_signed'=> true
+            ];
+        }
+
+        $context = stream_context_create($options);
         $rawResponse = file_get_contents($url, false, $context);
         return $rawResponse;
     }

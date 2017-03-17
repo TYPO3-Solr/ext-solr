@@ -79,4 +79,17 @@ class ExtensionConfigurationTest extends UnitTest
         ];
         $this->assertEquals($expectedResult, $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables());
     }
+
+    /**
+     * @test
+     */
+    public function testIsGetIsSelfSignedCertificatesEnabled()
+    {
+        $defaultConfiguration = new ExtensionConfiguration();
+        $this->assertFalse($defaultConfiguration->getIsSelfSignedCertificatesEnabled());
+        $configurationUseConfigurationAllowSelfSignedCertificates = new ExtensionConfiguration(
+            ['allowSelfSignedCertificates' => 1]
+        );
+        $this->assertTrue($configurationUseConfigurationAllowSelfSignedCertificates->getIsSelfSignedCertificatesEnabled());
+    }
 }

@@ -75,6 +75,16 @@ class ExtensionConfiguration
     }
 
     /**
+     * Get configuration for allowSelfSignedCertificates
+     *
+     * @return bool
+     */
+    public function getIsSelfSignedCertificatesEnabled()
+    {
+        return (bool)$this->getConfigurationOrDefaultValue('allowSelfSignedCertificates', false);
+    }
+
+    /**
      * Get configuration for useConfigurationMonitorTables
      *
      * @return array of tableName => true
