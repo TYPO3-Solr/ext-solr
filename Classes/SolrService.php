@@ -521,33 +521,17 @@ class SolrService extends \Apache_Solr_Service
     protected function _sendRawGet($url, $timeout = false)
     {
         $logSeverity = SolrLogManager::INFO;
+        $exception = null;
 
         try {
             $response = parent::_sendRawGet($url, $timeout);
-        } catch (Apache_Solr_HttpTransportException $e) {
+        } catch (\Apache_Solr_HttpTransportException $exception) {
             $logSeverity = SolrLogManager::ERROR;
-            $response = $e->getResponse();
+            $response = $exception->getResponse();
         }
 
         if ($this->configuration->getLoggingQueryRawGet() || $response->getHttpStatus() != 200) {
-            $logData = [
-                'query url' => $url,
-                'response' => (array)$response
-            ];
-
-            if (!empty($e)) {
-                $logData['exception'] = $e->__toString();
-            } else {
-                // trigger data parsing
-                $response->response;
-                $logData['response data'] = print_r($response, true);
-            }
-
-            $this->logger->log(
-                $logSeverity,
-                'Querying Solr using GET',
-                $logData
-            );
+            $this->writeLog($logSeverity, 'Querying Solr using GET', $url, $response, $exception);
         }
 
         return $response;
@@ -720,38 +704,20 @@ class SolrService extends \Apache_Solr_Service
      * @param string $contentType
      * @return \Apache_Solr_Response
      */
-    protected function _sendRawPost(
-        $url,
-        $rawPost,
-        $timeout = false,
-        $contentType = 'text/xml; charset=UTF-8'
-    ) {
+    protected function _sendRawPost($url, $rawPost, $timeout = false, $contentType = 'text/xml; charset=UTF-8')
+    {
         $logSeverity = SolrLogManager::INFO;
+        $exception = null;
 
         try {
-            $response = parent::_sendRawPost($url, $rawPost, $timeout,
-                $contentType);
-        } catch (Apache_Solr_HttpTransportException $e) {
+            $response = parent::_sendRawPost($url, $rawPost, $timeout, $contentType);
+        } catch (\Apache_Solr_HttpTransportException $exception) {
             $logSeverity = SolrLogManager::ERROR;
-            $response = $e->getResponse();
+            $response = $exception->getResponse();
         }
 
         if ($this->configuration->getLoggingQueryRawPost() || $response->getHttpStatus() != 200) {
-            $logData = [
-                'query url' => $url,
-                'content' => $rawPost,
-                'response' => (array)$response
-            ];
-
-            if (!empty($e)) {
-                $logData['exception'] = $e->__toString();
-            }
-
-            $this->logger->log(
-                $logSeverity,
-                'Querying Solr using POST',
-                $logData
-            );
+            $this->writeLog($logSeverity, 'Querying Solr using POST', $url, $response, $exception, $rawPost);
         }
 
         return $response;
@@ -820,45 +786,70 @@ class SolrService extends \Apache_Solr_Service
     protected function _sendRawDelete($url, $timeout = false)
     {
         $logSeverity = SolrLogManager::INFO;
+        $exception = null;
 
         try {
             $httpTransport = $this->getHttpTransport();
-
-            $httpResponse = $httpTransport->performDeleteRequest($url,
-                $timeout);
-            $solrResponse = new \Apache_Solr_Response($httpResponse,
-                $this->_createDocuments, $this->_collapseSingleValueArrays);
+            $httpResponse = $httpTransport->performDeleteRequest($url, $timeout);
+            $solrResponse = new \Apache_Solr_Response($httpResponse, $this->_createDocuments, $this->_collapseSingleValueArrays);
 
             if ($solrResponse->getHttpStatus() != 200) {
                 throw new \Apache_Solr_HttpTransportException($solrResponse);
             }
-        } catch (Apache_Solr_HttpTransportException $e) {
+        } catch (\Apache_Solr_HttpTransportException $exception) {
             $logSeverity = SolrLogManager::ERROR;
-            $solrResponse = $e->getResponse();
+            $solrResponse = $exception->getResponse();
         }
 
         if ($this->configuration->getLoggingQueryRawDelete() || $solrResponse->getHttpStatus() != 200) {
-            $logData = [
-                'query url' => $url,
-                'response' => (array)$solrResponse
-            ];
-
-            if (!empty($e)) {
-                $logData['exception'] = $e->__toString();
-            } else {
-                // trigger data parsing
-                $solrResponse->response;
-                $logData['response data'] = print_r($solrResponse, true);
-            }
-
-            $this->logger->log(
-                $logSeverity,
-                'Querying Solr using DELETE',
-                $logData
-            );
+            $this->writeLog($logSeverity, 'Querying Solr using DELETE', $url, $solrResponse, $exception);
         }
 
         return $solrResponse;
+    }
+
+    /**
+     * Build the log data and writes the message to the log
+     *
+     * @param integer $logSeverity
+     * @param string $message
+     * @param string $url
+     * @param \Apache_Solr_Response $solrResponse
+     * @param \Exception $exception
+     * @param string $contentSend
+     */
+    protected function writeLog($logSeverity, $message, $url, $solrResponse, $exception = null, $contentSend = '')
+    {
+        $logData = $this->buildLogDataFromResponse($solrResponse, $exception, $url, $contentSend);
+        $this->logger->log($logSeverity, $message, $logData);
+    }
+
+    /**
+     * Parses the solr information to build data for the logger.
+     *
+     * @param \Apache_Solr_Response $solrResponse
+     * @param \Exception $e
+     * @param string $url
+     * @param string $contentSend
+     * @return array
+     */
+    protected function buildLogDataFromResponse(\Apache_Solr_Response $solrResponse, \Exception $e = null, $url = '', $contentSend = '')
+    {
+        $logData = ['query url' => $url, 'response' => (array)$solrResponse];
+
+        if ($contentSend !== '') {
+            $logData['content'] = $contentSend;
+        }
+
+        if (!empty($e)) {
+            $logData['exception'] = $e->__toString();
+            return $logData;
+        } else {
+            // trigger data parsing
+            $solrResponse->response;
+            $logData['response data'] = print_r($solrResponse, true);
+            return $logData;
+        }
     }
 
     /**
