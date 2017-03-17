@@ -32,6 +32,7 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -120,7 +121,7 @@ class PageIndexerTest extends IntegrationTest
     public function canIndexPageIntoSolrWithAdditionalFieldsFromRootLine()
     {
         $this->importDataSetFromFixture('can_overwrite_configuration_in_rootline.xml');
-        $this->executePageIndexer(2);
+        $this->executePageIndexer([], 2);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -171,14 +172,93 @@ class PageIndexerTest extends IntegrationTest
     }
 
     /**
+     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     *
+     * There is following scenario:
+     *
+     *  [0]
+     *  |
+     *  ——[20] Shared-Pages (Not root)
+     *  |   |
+     *  |   ——[24] FirstShared (Not root)
+     *  |
+     *  ——[ 1] Page (Root)
+     *  |
+     *  ——[14] Mount Point (to [24] to show contents from)
+     *
+     * @test
+     */
+    public function canIndexMountedPage()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
+
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('can_index_mounted_page.xml');
+        $this->executePageIndexer([], 24, 0, '', '', null, '24-14');
+
+        // we wait to make sure the document will be available in solr
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"title":"FirstShared (Not root)"', $solrContent, 'Could not find content from mounted page in solr');
+    }
+
+    /**
+     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     *
+     * There is following scenario:
+     *
+     *  [0]
+     *  |
+     *  ——[20] Shared-Pages (Not root)
+     *  |   |
+     *  |   ——[44] FirstShared (Not root)
+     *  |
+     *  ——[ 1] Page (Root)
+     *  |
+     *  ——[14] Mount Point (to [24] to show contents from)
+     *
+     *  |
+     *  ——[ 2] Page (Root)
+     *  |
+     *  ——[24] Mount Point (to [24] to show contents from)
+     * @test
+     */
+    public function canIndexMultipleMountedPage()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['enable_mount_pids'] = 1;
+
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('can_index_multiple_mounted_page.xml');
+        $this->executePageIndexer([], 44, 0, '', '', null, '44-14');
+        $this->executePageIndexer([], 44, 0, '', '', null, '44-24');
+
+        // we wait to make sure the document will be available in solr
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+
+        $this->assertContains('"numFound":2', $solrContent, 'Unexpected amount of documents in the core');
+
+        $this->assertContains('"url":"index.php?id=44&MP=44-14"', $solrContent, 'Could not find document of first mounted page');
+        $this->assertContains('"url":"index.php?id=44&MP=44-24"', $solrContent, 'Could not find document of second mounted page');
+    }
+
+    /**
+     * @param array $typo3ConfVars
      * @param int $pageId
      * @param int $type
+     * @param string $no_cache
+     * @param string $cHash
+     * @param null $_2
+     * @param string $MP
+     * @param string $RDCT
      */
-    protected function executePageIndexer($pageId = 1, $type = 0)
+    protected function executePageIndexer($typo3ConfVars = [], $pageId = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '')
     {
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        $TSFE = $this->getConfiguredTSFE([], $pageId, $type = 0);
+        $TSFE = $this->getConfiguredTSFE($typo3ConfVars, $pageId, $type, $no_cache, $cHash, $_2, $MP, $RDCT);
         $TSFE->config['config']['index_enable'] = 1;
         $TSFE->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $GLOBALS['TSFE'] = $TSFE;

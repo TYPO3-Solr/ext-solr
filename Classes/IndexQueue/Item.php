@@ -111,6 +111,13 @@ class Item
     protected $record;
 
     /**
+     * Moint point identifier.
+     *
+     * @var string
+     */
+    protected $mountPointIdentifier;
+
+    /**
      * @var string
      */
     protected $errors = '';
@@ -129,6 +136,7 @@ class Item
         $this->rootPageUid = $itemMetaData['root'];
         $this->type = $itemMetaData['item_type'];
         $this->recordUid = $itemMetaData['item_uid'];
+        $this->mountPointIdentifier = (string) empty($itemMetaData['pages_mountidentifier']) ? '' : $itemMetaData['pages_mountidentifier'];
         $this->changed = $itemMetaData['changed'];
         $this->errors = (string) empty($itemMetaData['errors']) ? '' : $itemMetaData['errors'];
 
@@ -156,6 +164,16 @@ class Item
     public function getRootPageUid()
     {
         return $this->rootPageUid;
+    }
+
+    /**
+     * Returns mount point identifier
+     *
+     * @return string
+     */
+    public function getMountPointIdentifier()
+    {
+        return $this->mountPointIdentifier;
     }
 
     /**

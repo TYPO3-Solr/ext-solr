@@ -530,7 +530,7 @@ class Indexer extends AbstractIndexer
             }
         }
 
-        $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId);
+        $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, 0, $item->getMountPointIdentifier());
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
 
         $solrConnections[0] = $defaultConnection;

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+<!--
+There is following scenario:
+
+ [0]
+  |
+  ——[20] Shared-Pages (Folder: Not root)
+  |   |
+  |   ——[24] FirstShared
+  |       |
+  |       ——[25] first sub page from FirstShared
+  |       |
+  |       ——[26] second sub page from FirstShared
+  |
+  ——[ 1] Page (Root)
+  |   |
+  |   ——[14] Mount Point 1 (to [24] to show contents from)
+  |
+  ——[ 2] Page2 (Root)
+      |
+      ——[34] Mount Point 2 (to [24] to show contents from)
+
+-->
+    <sys_registry>
+        <uid>4711</uid>
+        <entry_namespace>tx_solr</entry_namespace>
+        <entry_key>servers</entry_key>
+        <entry_value>a:2:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:1;s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";i:8999;s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:16:"testconnection a";}s:3:"2|0";a:9:{s:13:"connectionKey";s:3:"2|0";s:13:"rootPageTitle";s:0:"";s:11:"rootPageUid";i:2;s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";i:8998;s:8:"solrPath";s:14:"/solr/core_de/";s:8:"language";i:0;s:5:"label";s:16:"testconnection a";}}</entry_value>
+    </sys_registry>
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                plugin.tx_solr {
+
+                    enabled = 1
+
+                    solr {
+                        scheme = http
+                        host   = localhost
+                        port   = 8999
+                        path   = /solr/core_en/
+                    }
+
+                    index {
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                        }
+
+                        queue {
+
+                            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+                            pages = 1
+                            pages {
+                                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                                // allowed page types (doktype) when indexing records from table "pages"
+                                allowedPageTypes = 1,7
+
+                                indexingPriority = 0
+
+                                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                                indexer {
+                                    // add options for the indexer here
+                                }
+
+                                // Only index standard pages and mount points that are not overlayed.
+                                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                                fields {
+                                    sortSubTitle_stringS = subtitle
+                                }
+                            }
+
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+
+    <!-- Shared Pages tree -->
+    <pages>
+        <uid>20</uid>
+        <pid>0</pid>
+        <is_siteroot>0</is_siteroot>
+        <doktype>254</doktype>
+        <mount_pid>0</mount_pid>
+        <mount_pid_ol>0</mount_pid_ol>
+        <title>Shared-Pages</title>
+        <TSconfig/>
+        <tsconfig_includes/>
+    </pages>
+        <pages>
+            <uid>24</uid>
+            <pid>20</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <mount_pid>0</mount_pid>
+            <mount_pid_ol>0</mount_pid_ol>
+            <title>FirstShared (Not root)</title>
+            <TSconfig></TSconfig>
+            <tsconfig_includes/>
+        </pages>
+            <pages>
+                <uid>25</uid>
+                <pid>24</pid>
+                <is_siteroot>0</is_siteroot>
+                <doktype>1</doktype>
+                <mount_pid>0</mount_pid>
+                <mount_pid_ol>0</mount_pid_ol>
+                <title>first sub page from FirstShared (Not root)</title>
+                <TSconfig></TSconfig>
+                <tsconfig_includes/>
+            </pages>
+            <pages>
+                <uid>26</uid>
+                <pid>24</pid>
+                <is_siteroot>0</is_siteroot>
+                <doktype>1</doktype>
+                <mount_pid>0</mount_pid>
+                <mount_pid_ol>0</mount_pid_ol>
+                <title>second sub page from FirstShared (Not root)</title>
+                <TSconfig></TSconfig>
+                <tsconfig_includes/>
+            </pages>
+
+
+    <!-- Site tree -->
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <pid>0</pid>
+        <title>Page (Root)</title>
+    </pages>
+        <pages>
+            <uid>14</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>7</doktype>
+            <mount_pid>24</mount_pid>
+            <mount_pid_ol>1</mount_pid_ol>
+            <title>Mount Point 1</title>
+            <TSconfig/>
+            <urltype>1</urltype>
+            <content_from_pid>0</content_from_pid>
+            <tsconfig_includes/>
+        </pages>
+
+    <!-- Second Site tree -->
+    <pages>
+        <uid>2</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <pid>0</pid>
+        <title>Second Site (Root)</title>
+    </pages>
+        <pages>
+            <uid>34</uid>
+            <pid>2</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>7</doktype>
+            <mount_pid>24</mount_pid>
+            <mount_pid_ol>1</mount_pid_ol>
+            <title>Mount Point 2</title>
+            <TSconfig/>
+            <urltype>1</urltype>
+            <content_from_pid>0</content_from_pid>
+            <tsconfig_includes/>
+        </pages>
+</dataset>
