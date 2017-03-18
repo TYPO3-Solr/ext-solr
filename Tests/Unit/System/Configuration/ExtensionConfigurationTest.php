@@ -74,8 +74,8 @@ class ExtensionConfigurationTest extends UnitTest
             ['useConfigurationMonitorTables' => 'pages, tt_content']
         );
         $expectedResult = [
-            'pages' => true,
-            'tt_content' => true
+            'pages' => 0,
+            'tt_content' => 1
         ];
         $this->assertEquals($expectedResult, $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables());
     }
