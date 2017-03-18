@@ -98,11 +98,7 @@ class ExtensionConfiguration
             return $monitorTables;
         }
 
-        $monitorTablesTemp = GeneralUtility::trimExplode(',', $monitorTablesList);
-        foreach ($monitorTablesTemp as $value) {
-            $monitorTables[$value] = true;
-        }
-
+        $monitorTables = array_flip(GeneralUtility::trimExplode(',', $monitorTablesList));
         return $monitorTables;
     }
 
