@@ -171,9 +171,12 @@ Related Issues:
 
 Not every project can use officially signed SSL certificates for all stages. Because of that we allowed for the page indexing to index a host, with a self signed certificate.
 
+You can enable this feature by configuring the extension setting (allowSelfSignedCertificates) in the extension manager to true.
+
 Related Issues:
 
 * https://github.com/TYPO3-Solr/ext-solr/issues/1134
+* https://github.com/TYPO3-Solr/ext-solr/issues/1173
 
 ### Add cObject support for solr settings
 
