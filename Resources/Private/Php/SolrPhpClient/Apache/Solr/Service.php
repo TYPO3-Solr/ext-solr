@@ -690,10 +690,7 @@ class Apache_Solr_Service
                         $fieldBoost = false;
                     }
 
-                    $multivalue = htmlspecialchars($multivalue, ENT_NOQUOTES,
-                        'UTF-8');
-
-                    $xml .= '>' . $multivalue . '</field>';
+                    $xml .= '><![CDATA[' . $multivalue . ']]></field>';
                 }
             } else {
                 $xml .= '<field name="' . $key . '"';
@@ -702,9 +699,7 @@ class Apache_Solr_Service
                     $xml .= ' boost="' . $fieldBoost . '"';
                 }
 
-                $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
-
-                $xml .= '>' . $value . '</field>';
+                $xml .= '><![CDATA[' . $value . ']]></field>';
             }
         }
 
