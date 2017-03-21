@@ -66,18 +66,45 @@ class ExtensionConfigurationTest extends UnitTest
     /**
      * @test
      */
-    public function testIsGetIsUseConfigurationMonitorTablesConfigured()
+    public function testIsGetIsUseConfigurationMonitorTablesConfiguredKnownTable()
     {
         $defaultConfiguration = new ExtensionConfiguration();
         $this->assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
         $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
             ['useConfigurationMonitorTables' => 'pages, tt_content']
         );
-        $expectedResult = [
-            'pages' => true,
-            'tt_content' => true
-        ];
-        $this->assertEquals($expectedResult, $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables());
+        $tableList = $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables();
+        $result = in_array('pages', $tableList);
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function testIsGetIsUseConfigurationMonitorTablesConfiguredUnknownTable()
+    {
+        $defaultConfiguration = new ExtensionConfiguration();
+        $this->assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
+        $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
+            ['useConfigurationMonitorTables' => 'pages, tt_content']
+        );
+        $tableList = $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables();
+        $result = in_array('unknowntable', $tableList);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function testIsGetIsUseConfigurationMonitorTablesConfiguredEmptyList()
+    {
+        $defaultConfiguration = new ExtensionConfiguration();
+        $this->assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());
+        $configurationUseConfigurationTrackRecordsOutsideSiteroot = new ExtensionConfiguration(
+            ['useConfigurationMonitorTables' => '']
+        );
+        $tableList = $configurationUseConfigurationTrackRecordsOutsideSiteroot->getIsUseConfigurationMonitorTables();
+        $this->assertSame([], $tableList);
     }
 
     /**

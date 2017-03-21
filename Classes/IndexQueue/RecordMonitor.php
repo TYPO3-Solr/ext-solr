@@ -292,10 +292,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return false;
         }
 
-        if (!isset($configurationMonitorTables[$table])) {
-            return true;
-        }
-        return false;
+        return !in_array($table, $configurationMonitorTables);
     }
 
     /**
