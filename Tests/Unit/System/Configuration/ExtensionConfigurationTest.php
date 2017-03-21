@@ -66,7 +66,7 @@ class ExtensionConfigurationTest extends UnitTest
     /**
      * @test
      */
-    public function testIsGetIsUseConfigurationMonitorTablesConfiguredKnowTable()
+    public function testIsGetIsUseConfigurationMonitorTablesConfiguredKnownTable()
     {
         $defaultConfiguration = new ExtensionConfiguration();
         $this->assertEquals([], $defaultConfiguration->getIsUseConfigurationMonitorTables());

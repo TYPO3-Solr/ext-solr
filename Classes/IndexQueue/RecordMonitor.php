@@ -287,7 +287,12 @@ class RecordMonitor extends AbstractDataHandlerListener
             $configurationMonitorTables = $configuration->getIsUseConfigurationMonitorTables();
         }
 
-        return in_array($table, $configurationMonitorTables);
+        // No explicit configuration => all tables should be monitored
+        if (empty($configurationMonitorTables)) {
+            return false;
+        }
+
+        return !in_array($table, $configurationMonitorTables);
     }
 
     /**
