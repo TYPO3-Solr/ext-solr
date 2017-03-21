@@ -87,7 +87,7 @@ class ExtensionConfiguration
     /**
      * Get configuration for useConfigurationMonitorTables
      *
-     * @return array of tableName => true
+     * @return array of tableName
      */
     public function getIsUseConfigurationMonitorTables()
     {
@@ -98,8 +98,7 @@ class ExtensionConfiguration
             return $monitorTables;
         }
 
-        $monitorTables = array_flip(GeneralUtility::trimExplode(',', $monitorTablesList));
-        return $monitorTables;
+        return GeneralUtility::trimExplode(',', $monitorTablesList);
     }
 
     /**
