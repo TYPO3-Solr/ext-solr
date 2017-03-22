@@ -26,6 +26,8 @@ plugin.tx_solr {
 		host   = {$plugin.tx_solr.solr.host}
 		port   = {$plugin.tx_solr.solr.port}
 		path   = {$plugin.tx_solr.solr.path}
+		username = {$plugin.tx_solr.solr.username}
+		password = {$plugin.tx_solr.solr.password}
 	}
 
 	templateFiles {
