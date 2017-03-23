@@ -316,10 +316,10 @@ if ($context->isProduction()) {
     $logLevel = \TYPO3\CMS\Core\Log\LogLevel::INFO;
 }
 
-$GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'] = array(
-    $logLevel => array(
-        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
+$GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['writerConfiguration'] = [
+    $logLevel => [
+        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
             'logFile' => 'typo3temp/var/logs/solr.log'
-        )
-    ),
-);
+        ]
+    ],
+];
