@@ -2,6 +2,7 @@
 
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
+use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 
 /**
@@ -17,7 +18,7 @@ class TestSearchResponseProcessor implements ResponseProcessor
      * @param \Apache_Solr_Response $response The response for the last query.
      * @return void
      */
-    public function processResponse(\ApacheSolrForTypo3\Solr\Query $query, \Apache_Solr_Response $response)
+    public function processResponse(Query $query, \Apache_Solr_Response $response)
     {
         foreach ($response->response->docs as $document) {
             $document->type = strtoupper($document->type);

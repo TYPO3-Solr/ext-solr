@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\System\Configuration;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Frontend\Page\PageRepository;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * This class is responsible to find the closest page id from the rootline where
