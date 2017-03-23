@@ -34,90 +34,16 @@ If you want to help with development you should have the following things runnin
 * Apache Solr server with proposed version and configured schema & plugins -
   You can find a script included in the extension's "Resources" directory to
   help you to easily set up Solr and the required configuration
-
-
-The following version combinations are recommended:
-
-* master
-    * TYPO3 CMS: 7.6.x (LTS) / dev-master
-    * Apache Solr: 4.10.4
-    * Solr plugins:
-        * solr-typo3-plugin-1.3.0.jar
-    * Add-ons:
-        * EXT:tika: master
-        * EXT:solrgrouping: master
-        * EXT:solrfal: master
-
-* EXT:solr 6.0.x
-    * TYPO3: 7.6.x (LTS)
-    * Apache Solr: 4.10.4 (Tomcat 8)
-    * Solr plugins:
-        * solr-typo3-plugin-1.3.0.jar (https://github.com/TYPO3-Solr/solr-typo3-plugin/releases/download/release-1_3_0/solr-typo3-plugin-1.3.0.jar)
-    * Add-ons:
-        * EXT:tika: 2.1.0 (TER)
-        * EXT:solrgrouping: 1.2.0 (TER)
-        * EXT:solrfal: 3.1.x (Partners only)
-
-* EXT:solr 5.0.x
-    * TYPO3: 7.6.x (LTS)
-    * Apache Solr: 4.10.4 (Tomcat 8)
-    * Solr plugins:
-        * solr-typo3-plugin-1.3.0.jar (https://github.com/TYPO3-Solr/solr-typo3-plugin/releases/download/release-1_3_0/solr-typo3-plugin-1.3.0.jar)
-    * Add-ons:
-        * EXT:tika: 2.1.0 (TER)
-        * EXT:solrgrouping: 1.2.0 (TER)
-        * EXT:solrfal: 3.1.x (Partners only)
-
-* EXT:solr 4.0.x
-    * TYPO3: 7.6.x (LTS)
-    * Apache Solr: 4.10.4 (Tomcat 8)
-    * Solr plugins:
-        * solr-typo3-plugin-1.3.0.jar (https://github.com/TYPO3-Solr/solr-typo3-plugin/releases/download/release-1_3_0/solr-typo3-plugin-1.3.0.jar)
-    * Add-ons:
-        * EXT:tika: 2.1.0 (TER)
-        * EXT:solrgrouping: 1.2.0 (TER)
-        * EXT:solrfal: 3.0.1 (Partners only)
-
-*  EXT:solr 3.1.x
-    * TYPO3: 6.2.x (LTS) / 7.6.x (LTS)
-    * Apache Solr: 4.10.4 (Tomcat 8)
-    * Solr plugins:
-        * solr-typo3-plugin-1.3.0.jar (https://github.com/TYPO3-Solr/solr-typo3-plugin/releases/download/release-1_3_0/solr-typo3-plugin-1.3.0.jar)
-    * Add-ons:
-        * EXT:tika: 2.0.0 (TER)
-        * EXT:solrgrouping: 1.1.0 (TER)
-        * EXT:solrfal: 2.1.1  (Partners only)
-
-Older unsupported Versions:
-
-*  EXT:solr 3.0.x
-    * TYPO3: 4.7.x (LTS) / 6.2.x (LTS)
-    * Apache Solr: 4.8 (Tomcat 6)
-    * Solr plugins:
-        * http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-access-2.0.jar
-        * http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/solr-typo3-utils-1.1.jar
-        * http://www.typo3-solr.com/fileadmin/files/solr/Solr4x/commons-lang3-3.1.jar
-    * Add-ons:
-        * EXT:solrfal: 2.1.1  (Partners only)
-
-*  EXT:solr 2.8.x
-    * TYPO3: 4.7.x (LTS)
-    * Apache Solr: 3.6.2 (Tomcat 6)
-    * Solr plugins:
-        * http://www.typo3-solr.com/fileadmin/files/solr/solr-typo3-plugin-1.2.0.jar
-    * Add-ons:
-        * EXT:tika: 1.2.0  (TER)
-        * EXT:solrfile: 1.0.1 (https://github.com/TYPO3-Solr/ext-solrfile/archive/1.0.1.zip)
-        * EXT:solrgrouping: 1.0.0 (https://github.com/TYPO3-Solr/ext-solrgrouping/archive/1.0.0.zip)
-
+  
+Please check the documentation for the required [versions](Documentation/Appendix/VersionMatrix.rst).
 
 You can use the following preconfigured development environments to get started
 very quickly:
 
 ### Vagrant
 
-There is a Vagrant box with a preconfigured TYPO3 6.2 LTS & 7.6 LTS with two
-local Solr servers (version 4.8.0 & version 4.10.4):
+There is a Vagrant box with a preconfigured TYPO3 6.2 / 7.6 LTS with two
+local Solr servers (version 4.8.0 & version 6.3:
 
 https://github.com/TYPO3-Solr/solr-typo3-devbox
 
