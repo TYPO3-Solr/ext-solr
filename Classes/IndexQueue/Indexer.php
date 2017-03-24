@@ -428,8 +428,7 @@ class Indexer extends AbstractIndexer
         Item $item,
         $language,
         Apache_Solr_Document $itemDocument
-    )
-    {
+    ) {
         $documents = [];
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'])) {
