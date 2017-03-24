@@ -40,3 +40,11 @@ tools:
     external_code_coverage:
         runs: 2
         timeout: 1800
+
+build_failure_conditions:
+    - 'patches.label("Doc Comments").new.count > 0'
+    - 'patches.label("Spacing").new.count > 0'
+    - 'issues.label("coding-style").new.count > 0'
+    - 'issues.severity(>= MAJOR).new.exists'
+    - 'project.metric("scrutinizer.quality", < 8)'
+    - 'project.metric_change("scrutinizer.test_coverage", < -0.10)'
