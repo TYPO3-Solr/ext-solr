@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
-use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides an status report about which schema version is used and checks
@@ -37,7 +36,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class SchemaStatus implements StatusProviderInterface
+class SchemaStatus extends AbstractSolrStatus
 {
 
     /**
@@ -76,22 +75,9 @@ class SchemaStatus implements StatusProviderInterface
 
             $isWrongSchema = $solrConnection->getSchema()->getName() != self::RECOMMENDED_SCHEMA_VERSION;
             if ($isWrongSchema) {
-                $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-                $standaloneView->setTemplatePathAndFilename(
-                    GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SchemaStatus.html')
-                );
-                $standaloneView->assignMultiple([
-                    'solr' => $solrConnection,
-                    'recommendedVersion' => self::RECOMMENDED_SCHEMA_VERSION,
-                ]);
-
-                $status = GeneralUtility::makeInstance(Status::class,
-                    'Schema Version',
-                    'Unsupported Schema',
-                    $standaloneView->render(),
-                    Status::WARNING
-                );
-
+                $variables = ['solr' => $solrConnection, 'recommendedVersion' => self::RECOMMENDED_SCHEMA_VERSION];
+                $report = $this->getRenderedReport('SchemaStatus.html', $variables);
+                $status = GeneralUtility::makeInstance(Status::class, 'Schema Version', 'Unsupported Schema', $report, Status::WARNING);
                 $reports[] = $status;
             }
         }

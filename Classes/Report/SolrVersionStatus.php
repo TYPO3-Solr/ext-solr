@@ -38,7 +38,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  *
  * @author Stefan Sprenger <stefan.sprenger@dkd.de>
  */
-class SolrVersionStatus implements StatusProviderInterface
+class SolrVersionStatus extends AbstractSolrStatus
 {
 
     /**
@@ -71,27 +71,16 @@ class SolrVersionStatus implements StatusProviderInterface
             $solrVersion = $solrConnection->getSolrServerVersion();
             $isOutdatedVersion = version_compare($this->getCleanSolrVersion($solrVersion), self::REQUIRED_SOLR_VERSION, '<');
 
-            if ($isOutdatedVersion) {
-                $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-                $standaloneView->setTemplatePathAndFilename(
-                    GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrVersionStatus.html')
-                );
-                $standaloneView->assignMultiple([
-                    'requiredVersion' => self::REQUIRED_SOLR_VERSION,
-                    'currentVersion' => $this->formatSolrVersion($solrVersion),
-                    'solr' => $solrConnection
-                ]);
-
-                $status = GeneralUtility::makeInstance(
-                    Status::class,
-                    'Apache Solr Version',
-                    'Outdated, Unsupported',
-                    $standaloneView->render(),
-                    Status::ERROR
-                );
-
-                $reports[] = $status;
+            if (!$isOutdatedVersion) {
+                continue;
             }
+
+            $formattedVersion = $this->formatSolrVersion($solrVersion);
+            $variables = ['requiredVersion' => self::REQUIRED_SOLR_VERSION, 'currentVersion' => $formattedVersion, 'solr' => $solrConnection];
+            $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
+            $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Outdated, Unsupported', $report, Status::ERROR);
+
+            $reports[] = $status;
         }
 
         return $reports;

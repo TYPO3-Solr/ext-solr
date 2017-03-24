@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
-use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides a status report about whether the php.ini setting allow_url_fopen
@@ -34,7 +33,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class AllowUrlFOpenStatus implements StatusProviderInterface
+class AllowUrlFOpenStatus extends AbstractSolrStatus
 {
 
     /**
@@ -57,12 +56,7 @@ class AllowUrlFOpenStatus implements StatusProviderInterface
 				this setting disabled.';
         }
 
-        $reports[] = GeneralUtility::makeInstance(Status::class,
-            'allow_url_fopen',
-            $value,
-            $message,
-            $severity
-        );
+        $reports[] = GeneralUtility::makeInstance(Status::class, 'allow_url_fopen', $value, $message, $severity);
 
         return $reports;
     }

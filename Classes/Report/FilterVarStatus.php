@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
-use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * There's a buggy PHP version in Ubuntu LTS 10.04 which causes filter_var to
@@ -34,7 +33,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class FilterVarStatus implements StatusProviderInterface
+class FilterVarStatus extends AbstractSolrStatus
 {
 
     /**

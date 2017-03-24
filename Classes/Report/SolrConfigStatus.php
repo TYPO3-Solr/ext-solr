@@ -36,7 +36,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class SolrConfigStatus implements StatusProviderInterface
+class SolrConfigStatus extends AbstractSolrStatus
 {
 
     /**
@@ -64,24 +64,10 @@ class SolrConfigStatus implements StatusProviderInterface
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-            if ($solrConnection->ping()
-                && $solrConnection->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION
-            ) {
-                $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-                $standaloneView->setTemplatePathAndFilename(
-                    GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrConfigStatus.html')
-                );
-                $standaloneView->assignMultiple([
-                    'solr' => $solrConnection,
-                    'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION,
-                ]);
-
-                $status = GeneralUtility::makeInstance(Status::class,
-                    'Solrconfig Version',
-                    'Unsupported solrconfig.xml',
-                    $standaloneView->render(),
-                    Status::WARNING
-                );
+            if ($solrConnection->ping() && $solrConnection->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
+                $variables = ['solr' => $solrConnection, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
+                $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
+                $status = GeneralUtility::makeInstance(Status::class, 'Solrconfig Version', 'Unsupported solrconfig.xml', $report, Status::WARNING);
 
                 $reports[] = $status;
             }
