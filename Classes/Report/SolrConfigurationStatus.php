@@ -43,6 +43,7 @@ class SolrConfigurationStatus implements StatusProviderInterface
     /**
      * Compiles a collection of configuration status checks.
      *
+     * @return array
      */
     public function getStatus()
     {
@@ -77,21 +78,13 @@ class SolrConfigurationStatus implements StatusProviderInterface
      */
     protected function getRootPageFlagStatus()
     {
-        $status = null;
         $rootPages = $this->getRootPages();
-
-        if (empty($rootPages)) {
-            $status = GeneralUtility::makeInstance(Status::class,
-                'Sites',
-                'No sites found',
-                'Connections to your Solr server are detected automatically.
-				To make this work you need to set the "Use as Root Page" page
-				property for your site root pages.',
-                Status::ERROR
-            );
+        if (!empty($rootPages)) {
+            return null;
         }
 
-        return $status;
+        $report = $this->getRenderedReport('RootPageFlagStatus.html');
+        return GeneralUtility::makeInstance(Status::class, 'Sites', 'No sites found', $report, Status::ERROR);
     }
 
     /**
@@ -101,50 +94,13 @@ class SolrConfigurationStatus implements StatusProviderInterface
      */
     protected function getDomainRecordAvailableStatus()
     {
-        $status = null;
-        $rootPages = $this->getRootPages();
-        $rootPagesWithoutDomain = [];
-
-        $rootPageIds = [];
-        foreach ($rootPages as $rootPage) {
-            $rootPageIds[] = $rootPage['uid'];
+        $rootPagesWithoutDomain = $this->getRootPagesWithoutDomain();
+        if (empty($rootPagesWithoutDomain)) {
+            return null;
         }
 
-        $domainRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid, pid',
-            'sys_domain',
-            'pid IN(' . implode(',',
-                $rootPageIds) . ') AND redirectTo=\'\' AND hidden=0',
-            'uid, pid, sorting',
-            'pid, sorting',
-            '',
-            'pid'
-        );
-
-        foreach ($rootPageIds as $rootPageId) {
-            if (!array_key_exists($rootPageId, $domainRecords)) {
-                $rootPagesWithoutDomain[$rootPageId] = $rootPages[$rootPageId];
-            }
-        }
-
-        if (!empty($rootPagesWithoutDomain)) {
-            $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-            $standaloneView->setTemplatePathAndFilename(
-                GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrConfigurationStatusDomainRecord.html')
-            );
-            $standaloneView->assignMultiple([
-                'pages' => $rootPagesWithoutDomain,
-            ]);
-
-            $status = GeneralUtility::makeInstance(Status::class,
-                'Domain Records',
-                'Domain records missing',
-                $standaloneView->render(),
-                Status::ERROR
-            );
-        }
-
-        return $status;
+        $report = $this->getRenderedReport('SolrConfigurationStatusDomainRecord.html', ['pages' => $rootPagesWithoutDomain]);
+        return GeneralUtility::makeInstance(Status::class, 'Domain Records', 'Domain records missing', $report, Status::ERROR);
     }
 
     /**
@@ -155,15 +111,54 @@ class SolrConfigurationStatus implements StatusProviderInterface
      */
     protected function getConfigIndexEnableStatus()
     {
-        $status = null;
+        $rootPagesWithIndexingOff = $this->getRootPagesWithIndexingOff();
+        if (empty($rootPagesWithIndexingOff)) {
+            return null;
+        }
+
+        $report = $this->getRenderedReport('SolrConfigurationStatusIndexing.html', ['pages' => $rootPagesWithIndexingOff]);
+        return GeneralUtility::makeInstance(Status::class, 'Page Indexing', 'Indexing is disabled', $report, Status::WARNING);
+    }
+
+    /**
+     * Returns an array of rootPages without an existing domain record.
+     *
+     * @return array
+     */
+    protected function getRootPagesWithoutDomain()
+    {
+        $rootPagesWithoutDomain = [];
+        $rootPages = $this->getRootPages();
+
+        $rootPageIds = [];
+        foreach ($rootPages as $rootPage) {
+            $rootPageIds[] = $rootPage['uid'];
+        }
+
+        $domainRecords = $this->getDomainRecordsForRootPagesIds($rootPageIds);
+        foreach ($rootPageIds as $rootPageId) {
+            if (!array_key_exists($rootPageId, $domainRecords)) {
+                $rootPagesWithoutDomain[$rootPageId] = $rootPages[$rootPageId];
+            }
+        }
+        return $rootPagesWithoutDomain;
+    }
+
+    /**
+     * Returns an array of rootPages where the indexing is off and EXT:solr is enabled.
+     *
+     * @return array
+     */
+    protected function getRootPagesWithIndexingOff()
+    {
         $rootPages = $this->getRootPages();
         $rootPagesWithIndexingOff = [];
 
         foreach ($rootPages as $rootPage) {
             try {
-                Util::initializeTsfe($rootPage['uid']);
-
-                if (!$GLOBALS['TSFE']->config['config']['index_enable']) {
+                $this->initializeTSFE($rootPage);
+                $solrIsEnabledAndIndexingDisabled = $this->getIsSolrEnabled() && !$this->getIsIndexingEnabled();
+                if ($solrIsEnabledAndIndexingDisabled) {
                     $rootPagesWithIndexingOff[] = $rootPage;
                 }
             } catch (\RuntimeException $rte) {
@@ -177,24 +172,56 @@ class SolrConfigurationStatus implements StatusProviderInterface
             }
         }
 
-        if (!empty($rootPagesWithIndexingOff)) {
-            $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-            $standaloneView->setTemplatePathAndFilename(
-                GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrConfigurationStatusIndexing.html')
-            );
-            $standaloneView->assignMultiple([
-                'pages' => $rootPagesWithIndexingOff,
-            ]);
+        return $rootPagesWithIndexingOff;
+    }
 
-            $status = GeneralUtility::makeInstance(Status::class,
-                'Page Indexing',
-                'Indexing is disabled',
-                $standaloneView->render(),
-                Status::ERROR
-            );
-        }
+    /**
+     * Assigns variables to the fluid StandaloneView and renders the view.
+     *
+     * @param string $templateFilename
+     * @param array $variables
+     * @return string
+     */
+    protected function getRenderedReport($templateFilename = '', $variables = [])
+    {
+        $templatePath = 'EXT:solr/Resources/Private/Templates/Reports/' . $templateFilename;
+        $standaloneView = $this->getFluidStandaloneViewWithTemplate($templatePath);
+        $standaloneView->assignMultiple($variables);
 
-        return $status;
+        return $standaloneView->render();
+    }
+
+    /**
+     * Initializes a StandaloneView with a template and returns it.
+     *
+     * @param string $templatePath
+     * @return StandaloneView
+     */
+    protected function getFluidStandaloneViewWithTemplate($templatePath = '')
+    {
+        $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+        $standaloneView->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName($templatePath));
+
+        return $standaloneView;
+    }
+
+    /**
+     * Retrieves sys_domain records for a set of root page ids.
+     *
+     * @param array $rootPageIds
+     * @return mixed
+     */
+    protected function getDomainRecordsForRootPagesIds($rootPageIds = [])
+    {
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+            'uid, pid',
+            'sys_domain',
+            'pid IN(' . implode(',', $rootPageIds) . ') AND redirectTo=\'\' AND hidden=0',
+            'uid, pid, sorting',
+            'pid, sorting',
+            '',
+            'pid'
+        );
     }
 
     /**
@@ -205,14 +232,47 @@ class SolrConfigurationStatus implements StatusProviderInterface
      */
     protected function getRootPages()
     {
-        $rootPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'uid, title',
             'pages',
             'is_siteroot = 1 AND deleted = 0 AND hidden = 0 AND pid != -1 AND doktype IN(1,4) ',
             '', '', '',
             'uid'
         );
+    }
 
-        return $rootPages;
+    /**
+     * Checks if the solr plugin is enabled with plugin.tx_solr.enabled.
+     *
+     * @return bool
+     */
+    protected function getIsSolrEnabled()
+    {
+        if (empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'])) {
+            return false;
+        }
+        return (bool) $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'];
+    }
+
+    /**
+     * Checks if the indexing is enabled with config.index_enable
+     *
+     * @return bool
+     */
+    protected function getIsIndexingEnabled()
+    {
+        if (empty($GLOBALS['TSFE']->config['config']['index_enable'])) {
+            return false;
+        }
+
+        return (bool)$GLOBALS['TSFE']->config['config']['index_enable'];
+    }
+
+    /**
+     * @param $rootPage
+     */
+    protected function initializeTSFE($rootPage)
+    {
+        Util::initializeTsfe($rootPage['uid']);
     }
 }
