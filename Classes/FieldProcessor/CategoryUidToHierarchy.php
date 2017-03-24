@@ -23,6 +23,8 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\System\Records\SystemCategory\SystemCategoryRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This Processor takes a UID of sys_category, and resolves its rootline in solr notation.
@@ -51,6 +53,20 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  */
 class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements FieldProcessor
 {
+    /**
+     * @var SystemCategoryRepository
+     */
+    protected $systemCategoryRepository;
+
+    /**
+     * CategoryUidToHierarchy constructor.
+     *
+     * @param SystemCategoryRepository|null $systemCategoryRepository
+     */
+    public function __construct(SystemCategoryRepository $systemCategoryRepository = null)
+    {
+        $this->systemCategoryRepository = is_null($systemCategoryRepository) ? GeneralUtility::makeInstance(SystemCategoryRepository::class) : $systemCategoryRepository;
+    }
 
     /**
      * Expects a uid ID of a category. Returns a Solr hierarchy notation for the
@@ -98,16 +114,11 @@ class CategoryUidToHierarchy extends AbstractHierarchyProcessor implements Field
 
         while ($parentCategory !== 0) {
             $rootlineIds[] = $parentCategory;
-            $row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-                'parent',
-                'sys_category',
-                'uid = ' . intval($parentCategory)
-            );
-
-            if ($row === null) {
+            $childCategory = $this->systemCategoryRepository->findOneByUid($parentCategory);
+            if ($childCategory === null) {
                 $parentCategory = 0;
             } else {
-                $parentCategory = intval($row['parent']);
+                $parentCategory = intval($childCategory['parent']);
             }
         }
         krsort($rootlineIds);
