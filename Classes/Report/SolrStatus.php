@@ -38,7 +38,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class SolrStatus implements StatusProviderInterface
+class SolrStatus extends AbstractSolrStatus
 {
 
     /**
@@ -110,9 +110,7 @@ class SolrStatus implements StatusProviderInterface
             $header = 'Failed contacting the Solr server.';
         }
 
-        $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-        $standaloneView->setTemplatePathAndFilename(GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/SolrStatus.html'));
-        $standaloneView->assignMultiple([
+        $variables = [
             'header' => $header,
             'connection' => $solrConnection,
             'solr' => $solr,
@@ -121,14 +119,10 @@ class SolrStatus implements StatusProviderInterface
             'configName' => $configName,
             'schemaName' => $schemaName,
             'accessFilter' => $accessFilter
-        ]);
+        ];
 
-        return GeneralUtility::makeInstance(Status::class,
-            'Apache Solr',
-            '',
-            $standaloneView->render(),
-            $this->responseStatus
-        );
+        $report = $this->getRenderedReport('SolrStatus.html', $variables);
+        return GeneralUtility::makeInstance(Status::class, 'Apache Solr', '', $report, $this->responseStatus);
     }
 
     /**

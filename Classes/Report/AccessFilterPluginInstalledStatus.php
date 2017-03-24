@@ -27,9 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
-use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides a status report about whether the Access Filter Query Parser Plugin
@@ -37,7 +35,7 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class AccessFilterPluginInstalledStatus implements StatusProviderInterface
+class AccessFilterPluginInstalledStatus extends AbstractSolrStatus
 {
 
     /**
@@ -91,29 +89,16 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      * @param \ApacheSolrForTypo3\Solr\SolrService $solrConnection
      * @return null|\TYPO3\CMS\Reports\Status
      */
-    protected function checkPluginInstallationStatus(SolrService $solrConnection
-    ) {
-        $status = null;
-
-        if (!$this->isPluginInstalled($solrConnection)) {
-            $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-            $standaloneView->setTemplatePathAndFilename(
-                GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/AccessFilterPluginInstalledStatusNotInstalled.html')
-            );
-            $standaloneView->assignMultiple([
-                'solr' => $solrConnection,
-                'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION
-            ]);
-
-            $status = GeneralUtility::makeInstance(Status::class,
-                'Access Filter Plugin',
-                'Not Installed',
-                $standaloneView->render(),
-                Status::WARNING
-            );
+    protected function checkPluginInstallationStatus(SolrService $solrConnection)
+    {
+        if ($this->isPluginInstalled($solrConnection)) {
+            return null;
         }
 
-        return $status;
+        $variables = ['solr' => $solrConnection, 'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION];
+
+        $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusNotInstalled.html', $variables);
+        return GeneralUtility::makeInstance(Status::class, 'Access Filter Plugin', 'Not Installed', $report, Status::WARNING);
     }
 
     /**
@@ -124,30 +109,15 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
      */
     protected function checkPluginVersion(SolrService $solrConnection)
     {
-        $status = null;
-
-        if ($this->isPluginInstalled($solrConnection)
-            && $this->isPluginOutdated($solrConnection)
-        ) {
-            $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
-            $standaloneView->setTemplatePathAndFilename(
-                GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Reports/AccessFilterPluginInstalledStatusIsOutDated.html')
-            );
-            $standaloneView->assignMultiple([
-                'solr' => $solrConnection,
-                'installedVersion' => $this->getInstalledPluginVersion($solrConnection),
-                'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION
-            ]);
-
-            $status = GeneralUtility::makeInstance(Status::class,
-                'Access Filter Plugin',
-                'Outdated',
-                $standaloneView->render(),
-                Status::WARNING
-            );
+        if (!($this->isPluginInstalled($solrConnection) && $this->isPluginOutdated($solrConnection))) {
+            return null;
         }
 
-        return $status;
+        $version = $this->getInstalledPluginVersion($solrConnection);
+        $variables = ['solr' => $solrConnection, 'installedVersion' => $version, 'recommendedVersion' => self::RECOMMENDED_PLUGIN_VERSION];
+        $report = $this->getRenderedReport('AccessFilterPluginInstalledStatusIsOutDated.html', $variables);
+
+        return GeneralUtility::makeInstance(Status::class, 'Access Filter Plugin', 'Outdated', $report, Status::WARNING);
     }
 
     /**
@@ -179,12 +149,7 @@ class AccessFilterPluginInstalledStatus implements StatusProviderInterface
     protected function isPluginOutdated(SolrService $solrConnection)
     {
         $pluginVersion = $this->getInstalledPluginVersion($solrConnection);
-
-        $pluginVersionOutdated = version_compare(
-            $pluginVersion,
-            self::RECOMMENDED_PLUGIN_VERSION,
-            '<'
-        );
+        $pluginVersionOutdated = version_compare($pluginVersion, self::RECOMMENDED_PLUGIN_VERSION, '<');
 
         return $pluginVersionOutdated;
     }
