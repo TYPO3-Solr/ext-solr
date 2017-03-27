@@ -122,6 +122,6 @@ CREATE TABLE sys_registry (
 # Extending 'pages' table with extra keys
 #
 CREATE TABLE pages (
-  KEY content_from_pid_deleted (content_from_pid, deleted),
-  KEY doktype_no_search_deleted (doktype, no_search, deleted)
+	KEY content_from_pid_deleted (content_from_pid,deleted),
+	KEY doktype_no_search_deleted (doktype, no_search,deleted)
 );
