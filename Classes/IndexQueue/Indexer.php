@@ -433,8 +433,10 @@ class Indexer extends AbstractIndexer
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'] as $classReference) {
-                $additionalIndexer = GeneralUtility::getUserObj($classReference);
-
+                if (!class_exists($classReference)) {
+                    throw new \InvalidArgumentException('Class does not exits' . $classReference, 1490363487);
+                }
+                $additionalIndexer = GeneralUtility::makeInstance($classReference);
                 if ($additionalIndexer instanceof AdditionalIndexQueueItemIndexer) {
                     $additionalDocuments = $additionalIndexer->getAdditionalItemDocuments($item,
                         $language, $itemDocument);
@@ -451,7 +453,6 @@ class Indexer extends AbstractIndexer
                 }
             }
         }
-
         return $documents;
     }
 
@@ -471,7 +472,7 @@ class Indexer extends AbstractIndexer
     ) {
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
-                $documentsModifier = &GeneralUtility::getUserObj($classReference);
+                $documentsModifier = GeneralUtility::getUserObj($classReference);
 
                 if ($documentsModifier instanceof PageIndexerDocumentsModifier) {
                     $documents = $documentsModifier->modifyDocuments($item,

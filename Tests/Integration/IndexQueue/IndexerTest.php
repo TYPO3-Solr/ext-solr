@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -239,6 +240,65 @@ class IndexerTest extends IntegrationTest
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->cleanUpSolrServerAndAssertEmpty();
     }
+
+    /**
+     * @test
+     */
+    public function canGetAdditionalDocumentsInterfaceOnly()
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer::class;
+        $document = new \Apache_Solr_Document;
+        $metaData = ['item_type' => 'pages'];
+        $record = [];
+        $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
+        $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetAdditionalDocumentsNotImplementingInterface()
+    {
+        $this->setExpectedException(\UnexpectedValueException::class);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer::class;
+        $document = new \Apache_Solr_Document;
+        $metaData = ['item_type' => 'pages'];
+        $record = [];
+        $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
+        $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetAdditionalDocumentsNonExistingClass()
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = 'NonExistingClass';
+        $document = new \Apache_Solr_Document;
+        $metaData = ['item_type' => 'pages'];
+        $record = [];
+        $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
+
+        $result = $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetAdditionalDocuments()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyAdditionalIndexQueueItemIndexer::class;
+        $document = new \Apache_Solr_Document;
+        $metaData = ['item_type' => 'pages'];
+        $record = [];
+        $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
+
+        $result = $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
+        $this->assertSame([], $result);
+    }
+
 
     /**
      * @param string $table
