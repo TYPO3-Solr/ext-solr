@@ -370,7 +370,7 @@ abstract class PluginBase extends AbstractPlugin
         // can be used for view helpers that need configuration during initialization
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['addViewHelpers'] as $classReference) {
-                $viewHelperProvider = &GeneralUtility::getUserObj($classReference);
+                $viewHelperProvider = GeneralUtility::getUserObj($classReference);
 
                 if ($viewHelperProvider instanceof ViewHelperProvider) {
                     $viewHelpers = $viewHelperProvider->getViewHelpers();

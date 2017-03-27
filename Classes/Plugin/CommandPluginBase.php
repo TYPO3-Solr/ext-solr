@@ -116,7 +116,7 @@ abstract class CommandPluginBase extends PluginBase
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['renderTemplate'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$this->getPluginKey()]['renderTemplate'] as $classReference) {
-                $templateModifier = &GeneralUtility::getUserObj($classReference);
+                $templateModifier = GeneralUtility::getUserObj($classReference);
 
                 if ($templateModifier instanceof TemplateModifier) {
                     $templateModifier->modifyTemplate($this->template);
