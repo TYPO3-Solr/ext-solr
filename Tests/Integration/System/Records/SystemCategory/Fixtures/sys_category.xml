@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <sys_category>
+        <uid>1</uid>
+        <pid>1</pid>
+        <parent>0</parent>
+        <title>root</title>
+        <l10n_diffsource></l10n_diffsource>
+    </sys_category>
+    <sys_category>
+        <uid>2</uid>
+        <pid>1</pid>
+        <parent>1</parent>
+        <title>child</title>
+        <l10n_diffsource></l10n_diffsource>
+    </sys_category>
+</dataset>
