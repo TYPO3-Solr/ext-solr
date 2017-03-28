@@ -64,43 +64,70 @@ class SolrServiceTest extends IntegrationTest
     }
 
     /**
+     * @return array
+     */
+    public function synonymDataProvider()
+    {
+        return [
+            'normal' => ['baseword' => 'homepage', 'synonyms' => ['website']],
+            'umlaut' => ['baseword' => 'früher', 'synonyms' => ['vergangenheit']]
+
+        ];
+    }
+
+    /**
+     * @param string $baseWord
+     * @param array $synonyms
+     * @dataProvider synonymDataProvider
      * @test
      */
-    public function canAddSynonym()
+    public function canAddSynonym($baseWord, $synonyms = [])
     {
         // make sure old synonyms have been deleted
-        $this->solrService->deleteSynonym('homepage');
+        $this->solrService->deleteSynonym($baseWord);
 
-        $synonymsBeforeAdd = $this->solrService->getSynonyms('homepage');
+        $synonymsBeforeAdd = $this->solrService->getSynonyms($baseWord);
         $this->assertEquals([], $synonymsBeforeAdd, 'Synonyms was not empty');
 
-        $this->solrService->addSynonym('homepage', ['website']);
-        $synonymsAfterAdd = $this->solrService->getSynonyms('homepage');
-        $this->assertEquals(['website'], $synonymsAfterAdd, 'Could not retrieve synonym after adding');
+        $this->solrService->addSynonym($baseWord, $synonyms);
+        $synonymsAfterAdd = $this->solrService->getSynonyms($baseWord);
+        $this->assertEquals($synonyms, $synonymsAfterAdd, 'Could not retrieve synonym after adding');
 
-        $this->solrService->deleteSynonym('homepage');
+        $this->solrService->deleteSynonym($baseWord);
 
-        $synonymsAfterRemove = $this->solrService->getSynonyms('homepage');
+        $synonymsAfterRemove = $this->solrService->getSynonyms($baseWord);
         $this->assertEquals([], $synonymsAfterRemove, 'Synonym was not removed');
     }
 
     /**
-     * @test
+     * @return array
      */
-    public function canAddStopWord()
+    public function stopWordDataProvider()
+    {
+        return [
+            'normal' => ['stopword' => 'badword'],
+            'umlaut' => ['stopword' => 'frühaufsteher']
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider stopwordDataProvider
+     */
+    public function canAddStopWord($stopWord)
     {
         // make sure old stopwords are deleted
-        $this->solrService->deleteStopWord('badword');
+        $this->solrService->deleteStopWord($stopWord);
         $stopWords = $this->solrService->getStopWords();
-        $this->assertNotContains('badword', $stopWords, 'Stopwords are not empty after initializing');
+        $this->assertNotContains($stopWord, $stopWords, 'Stopwords are not empty after initializing');
 
-        $this->solrService->addStopWords('badword');
+        $this->solrService->addStopWords($stopWord);
         $stopWordsAfterAdd = $this->solrService->getStopWords();
-        $this->assertContains('badword', $stopWordsAfterAdd, 'Stopword was not added');
+        $this->assertContains($stopWord, $stopWordsAfterAdd, 'Stopword was not added');
 
-        $this->solrService->deleteStopWord('badword');
+        $this->solrService->deleteStopWord($stopWord);
         $stopWordsAfterDelete = $this->solrService->getStopWords();
-        $this->assertNotContains('badword', $stopWordsAfterDelete, 'Stopwords are not empty after removing');
+        $this->assertNotContains($stopWord, $stopWordsAfterDelete, 'Stopwords are not empty after removing');
     }
 
     /**
