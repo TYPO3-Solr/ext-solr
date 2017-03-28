@@ -123,5 +123,5 @@ CREATE TABLE sys_registry (
 #
 CREATE TABLE pages (
 	KEY content_from_pid_deleted (content_from_pid,deleted),
-	KEY doktype_no_search_deleted (doktype, no_search,deleted)
+	KEY doktype_no_search_deleted (doktype,no_search,deleted)
 );
