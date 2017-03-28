@@ -55,10 +55,42 @@ class SolrServiceTest extends IntegrationTest
     public function canExtractByQuery()
     {
         $testFilePath = $this->getFixturePath('testpdf.pdf');
-            /** @var $extractQuery \ApacheSolrForTypo3\Solr\ExtractingQuery */
+        /** @var $extractQuery \ApacheSolrForTypo3\Solr\ExtractingQuery */
         $extractQuery = GeneralUtility::makeInstance('ApacheSolrForTypo3\Solr\ExtractingQuery', $testFilePath);
         $extractQuery->setExtractOnly();
         $response = $this->solrService->extractByQuery($extractQuery);
         $this->assertContains('PDF Test', $response[0], 'Could not extract text');
+    }
+
+    /**
+     * @test
+     */
+    public function canAddAndDeleteStopwords()
+    {
+        $stopWord = 'blabla_word';
+
+        $this->solrService->addStopWords($stopWord);
+        $stopWordsFromSolr = $this->solrService->getStopWords();
+        $this->assertContains($stopWord, $stopWordsFromSolr);
+
+        $this->solrService->deleteStopWord('blabla_word');
+        $stopWordsFromSolr = $this->solrService->getStopWords();
+        $this->assertNotContains($stopWord, $stopWordsFromSolr);
+    }
+
+    /**
+     * @test
+     */
+    public function canAddAndDeleteStopwordsWithUmlauts()
+    {
+        $stopWordWithUmlauts = 'ärger';
+
+        $this->solrService->addStopWords($stopWordWithUmlauts);
+        $stopWordsFromSolr = $this->solrService->getStopWords();
+        $this->assertContains($stopWordWithUmlauts, $stopWordsFromSolr);
+
+        $this->solrService->deleteStopWord($stopWordWithUmlauts);
+        $stopWordsFromSolr = $this->solrService->getStopWords();
+        $this->assertNotContains($stopWordWithUmlauts, $stopWordsFromSolr);
     }
 }
