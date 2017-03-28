@@ -93,4 +93,46 @@ class SolrServiceTest extends IntegrationTest
         $stopWordsFromSolr = $this->solrService->getStopWords();
         $this->assertNotContains($stopWordWithUmlauts, $stopWordsFromSolr);
     }
+
+    /**
+     * @test
+     */
+    public function canAddAndDeleteSynonyms()
+    {
+        $baseword = 'base';
+        $synonyms = array(
+            'pad',
+            'underlay',
+            'record'
+        );
+
+        $this->solrService->addSynonym($baseword, $synonyms);
+        $synonymsFromSolr = $this->solrService->getSynonyms();
+        $this->assertArrayHasKey($baseword, $synonymsFromSolr);
+
+        $this->solrService->deleteSynonym($baseword);
+        $synonymsFromSolr = $this->solrService->getSynonyms();
+        $this->assertArrayNotHasKey($baseword, $synonymsFromSolr);
+    }
+
+    /**
+     * @test
+     */
+    public function canAddAndDeleteSynonymsWithUmlauts()
+    {
+        $baseword = 'ärger';
+        $synonyms = array(
+            'kummer',
+            'problem',
+            'unruhe'
+        );
+
+        $this->solrService->addSynonym($baseword, $synonyms);
+        $synonymsFromSolr = $this->solrService->getSynonyms();
+        $this->assertArrayHasKey($baseword, $synonymsFromSolr);
+
+        $this->solrService->deleteSynonym($baseword);
+        $synonymsFromSolr = $this->solrService->getSynonyms();
+        $this->assertArrayNotHasKey($baseword, $synonymsFromSolr);
+    }
 }

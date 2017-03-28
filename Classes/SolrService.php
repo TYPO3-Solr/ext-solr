@@ -714,7 +714,7 @@ class SolrService extends \Apache_Solr_Service
             throw new \Apache_Solr_InvalidArgumentException('Must provide base word.');
         }
 
-        return $this->_sendRawDelete($this->_synonymsUrl . '/' . $baseWord);
+        return $this->_sendRawDelete($this->_synonymsUrl . '/' . urlencode($baseWord));
     }
 
     /**
