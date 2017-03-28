@@ -909,6 +909,18 @@ class SolrService extends \Apache_Solr_Service
     }
 
     /**
+     * Returns the core name from the configured path without the core name.
+     *
+     * @return string
+     */
+    public function getCoreBasePath()
+    {
+        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->_path), "/");
+        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, "/"));
+        return '/' . $pathWithoutLastSegment . '/';
+    }
+
+    /**
      * Reloads the current core
      *
      * @return \Apache_Solr_Response
@@ -952,12 +964,11 @@ class SolrService extends \Apache_Solr_Service
             ['wt' => self::SOLR_WRITER]
         );
 
-        $pathElements = explode('/', trim($this->_path, '/'));
         $this->_coresUrl =
             $this->_scheme . '://' .
             $this->_host . ':' .
-            $this->_port . '/' .
-            $pathElements[0] . '/' .
+            $this->_port .
+            $this->getCoreBasePath() .
             self::CORES_SERVLET;
 
         $this->_schemaUrl = $this->_constructUrl(self::SCHEMA_SERVLET);
