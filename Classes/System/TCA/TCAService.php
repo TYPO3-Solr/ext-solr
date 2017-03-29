@@ -103,8 +103,9 @@ class TCAService
 
         if (isset($this->tca[$table]['ctrl']['enablecolumns']['endtime'])) {
             $endTimeField = $this->tca[$table]['ctrl']['enablecolumns']['endtime'];
-            if($record[$endTimeField] > 0)
-	            $endTimeInPast = $record[$endTimeField] < $this->getTime();
+            if($record[$endTimeField] > 0) {
+                $endTimeInPast = $record[$endTimeField] < $this->getTime();
+            }
         }
 
         return $endTimeInPast;
