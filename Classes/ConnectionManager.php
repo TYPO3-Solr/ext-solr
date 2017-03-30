@@ -332,6 +332,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
             $optionValues[] = 'clearSolrConnectionCache';
 
+            // @Todo This should be removed when we don't support 7.6 LTS anymore
             if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
                 $cacheActions[] = [
                     'id' => 'clearSolrConnectionCache',
