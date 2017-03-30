@@ -35,6 +35,7 @@ use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -328,17 +329,27 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     public function manipulateCacheActions(&$cacheActions, &$optionValues)
     {
         if ($GLOBALS['BE_USER']->isAdmin()) {
-            $title = 'Initialize Solr connections';
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-            $cacheActions[] = [
-                'id' => 'clearSolrConnectionCache',
-                'title' => $title,
-                'href' =>  $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
-                'icon' => $iconFactory->getIcon('extensions-solr-module-initsolrconnections', Icon::SIZE_SMALL)
-            ];
             $optionValues[] = 'clearSolrConnectionCache';
+
+            if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
+                $cacheActions[] = [
+                    'id' => 'clearSolrConnectionCache',
+                    'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:cache_initialize_solr_connections',
+                    'href' => $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
+                    'iconIdentifier' => 'extensions-solr-module-initsolrconnections'
+                ];
+            } else {
+                $title = 'Initialize Solr connections';
+                $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+
+                $cacheActions[] = [
+                    'id' => 'clearSolrConnectionCache',
+                    'title' => $title,
+                    'href' => $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
+                    'icon' => $iconFactory->getIcon('extensions-solr-module-initsolrconnections', Icon::SIZE_SMALL)
+                ];
+            }
         }
     }
 
