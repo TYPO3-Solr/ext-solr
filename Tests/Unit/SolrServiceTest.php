@@ -149,4 +149,48 @@ class SolrServiceTest extends UnitTest
         $solrService->setScheme('invalidscheme');
     }
 
+    /**
+     * @return array
+     */
+    public function coreNameDataProvider()
+    {
+        return [
+            ['path' => '/solr/bla', 'expectedName' => 'bla'],
+            ['path' => '/somewherelese/solr/corename', 'expectedName' => 'corename']
+
+        ];
+    }
+
+    /**
+     * @dataProvider coreNameDataProvider
+     * @test
+     */
+    public function canGetCoreName($path, $expectedCoreName)
+    {
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $solrService = new SolrService('localhost','8080', $path,'http', $fakeConfiguration);
+        $this->assertSame($expectedCoreName, $solrService->getCoreName());
+    }
+
+    /**
+     * @return array
+     */
+    public function coreBasePathDataProvider()
+    {
+        return [
+            ['path' => '/solr/bla', 'expectedPath' => '/solr/'],
+            ['path' => '/somewherelese/solr/corename', 'expectedCoreBasePath' => '/somewherelese/solr/']
+        ];
+    }
+
+    /**
+     * @dataProvider coreBasePathDataProvider
+     * @test
+     */
+    public function canGetCoreBasePath($path, $expectedCoreBasePath)
+    {
+        $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
+        $solrService = new SolrService('localhost','8080', $path,'http', $fakeConfiguration);
+        $this->assertSame($expectedCoreBasePath, $solrService->getCoreBasePath());
+    }
 }
