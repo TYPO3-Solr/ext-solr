@@ -5,6 +5,9 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
+			<trans-unit id="cache_initialize_solr_connections" xml:space="preserve">
+				<source>Initialize Solr connections</source>
+			</trans-unit>
 			<!-- From Backend/locallang.xlf //-->
 			<trans-unit id="module_indexinspector" xml:space="preserve">
 				<source>Search Index Inspector</source>
