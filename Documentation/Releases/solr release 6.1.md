@@ -275,6 +275,24 @@ Related Issues:
 
 * https://github.com/TYPO3-Solr/ext-solr/issues/490
 
+### "Only variables should be assigned by reference" in IndexQueue\Indexer::preAddModifyDocuments()
+
+Along we the removal of the reference ``GeneralUtility::getUserObj`` was replaced  with ``GeneralUtility::makeInstance``, because the usage with ":" is deprecated since TYPO3 8 and will be removed.
+
+Migration:
+
+When you reference custom indexer (in ``$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments']``) you should reference only an autoloadable classname.
+
+The following steps are required:
+
+* Move your Indexer to an own extension with proper autoloading configuration
+* Reference the autoloadable classname
+
+Related Issues:
+
+* https://github.com/TYPO3-Solr/ext-solr/issues/1183
+
+
 ## Bugfixes
 
 StatisticRepository::getTopKeyWordsWithOrWithoutHits $limit, $withoutHits have no default values 
@@ -313,6 +331,18 @@ Custom field is not indexed for custom page queue configuration
 
 https://github.com/TYPO3-Solr/ext-solr/issues/842
  
+GarbageCollector fails to check endtime correctly
+
+https://github.com/TYPO3-Solr/ext-solr/issues/1212
+
+"Only variables should be assigned by reference" in IndexQueue\Indexer::preAddModifyDocuments()
+
+https://github.com/TYPO3-Solr/ext-solr/issues/1183
+
+Use urlencode for deletion of synonyms and stopwords
+
+https://github.com/TYPO3-Solr/ext-solr/issues/1205
+https://github.com/TYPO3-Solr/ext-solr/issues/1206
 
 ### Contributors
 
@@ -328,6 +358,7 @@ awesome community. Here are the contributors for this release.
 * Frans Saris
 * Ingo Renner
 * Josef Glatz
+* Markus Kobligk
 * Rafael Kähm
 * Rasmus Larsen
 * Sascha Egerer 
