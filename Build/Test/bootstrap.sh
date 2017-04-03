@@ -37,20 +37,32 @@ if [ $? -ne "0" ]; then
 	exit 1
 fi
 
-composer require --dev --prefer-source typo3/cms="$TYPO3_VERSION"
+if [ -z $TYPO3_PATH_PACKAGES ]; then
+    # in non travis builds we need to set the TYPO3_PATH_PACKAGES
+    export TYPO3_PATH_PACKAGES="${EXTENSION_ROOTPATH}.Build/vendor/"
+fi
+
+export TYPO3_PATH_WEB="${EXTENSION_ROOTPATH}.Build/Web/"
+
+echo "Using extension path $EXTENSION_ROOTPATH"
+echo "Using package path $TYPO3_PATH_PACKAGES"
+echo "Using web path $TYPO3_PATH_WEB"
 
 if [[ $TYPO3_VERSION == "dev-master" ]]; then
     # For dev-master we need to use the new testing framework
     # after dropping 7.x support we need to change this in the patched files
-    sed  -i 's/Core\Tests\FunctionalTestCase as TYPO3IntegrationTest/Components\TestingFramework\Core\FunctionalTestCase as TYPO3IntegrationTest/g' Tests/Integration/IntegrationTest.php
-    sed  -i 's/Core\Tests\UnitTestCase as TYPO3UnitTest/Components\TestingFramework\Core\UnitTestCase as TYPO3UnitTest/g' Tests/Unit/UnitTest.php
-    ln -s  ../vendor/typo3/cms/components .Build/Web/components
+    composer require --dev typo3/cms="$TYPO3_VERSION"
+    composer require --dev --prefer-source typo3/testing-framework="~1.0.0"
+
+    sed  -i 's/Core\Tests\FunctionalTestCase as TYPO3IntegrationTest/TYPO3\TestingFramework\Core\FunctionalTestCase as TYPO3IntegrationTest/g' Tests/Integration/IntegrationTest.php
+    sed  -i 's/Core\Tests\UnitTestCase as TYPO3UnitTest/TYPO3\TestingFramework\Core\UnitTestCase as TYPO3UnitTest/g' Tests/Unit/UnitTest.php
+else
+    composer require --dev --prefer-source typo3/cms="$TYPO3_VERSION"
 fi
 
 # Restore composer.json
 git checkout composer.json
 
-export TYPO3_PATH_WEB=$SCRIPTPATH/.Build/Web
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
 # Setup Solr Using our install script
