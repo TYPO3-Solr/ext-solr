@@ -25,6 +25,7 @@ env:
     - TYPO3_DATABASE_HOST="127.0.0.1"
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
+    - TYPO3_PATH_PACKAGES="../vendor/"
   matrix:
     - TYPO3_VERSION="~7.6.14"
     - TYPO3_VERSION="~8.5.0"
