@@ -48,7 +48,7 @@ if [[ $TYPO3_VERSION == "dev-master" ]]; then
     # For dev-master we need to use the new testing framework
     # after dropping 7.x support we need to change this in the patched files
     composer require --dev typo3/cms="$TYPO3_VERSION"
-    composer require --dev --prefer-source typo3/testing-framework="~1.0.0"
+    composer require --dev --prefer-source typo3/testing-framework="1.0.1"
 
     sed  -i 's/Core\Tests\FunctionalTestCase as TYPO3IntegrationTest/TYPO3\TestingFramework\Core\FunctionalTestCase as TYPO3IntegrationTest/g' Tests/Integration/IntegrationTest.php
     sed  -i 's/Core\Tests\UnitTestCase as TYPO3UnitTest/TYPO3\TestingFramework\Core\UnitTestCase as TYPO3UnitTest/g' Tests/Unit/UnitTest.php
