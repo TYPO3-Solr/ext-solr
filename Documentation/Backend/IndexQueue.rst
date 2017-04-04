@@ -59,7 +59,7 @@ As a core feature EXT:solr allows you to write custom typoscript configuration t
 
                 url = TEXT
                 url {
-                    typolink.parameter = 134
+                    typolink.parameter =  {$plugin.tx_news.settings.detailPid}
                     typolink.additionalParams = &tx_news_pi1[controller]=News&
                         tx_news_pi1[action]=detail&tx_news_pi1[news]={field:uid}
                     typolink.additionalParams.insertData = 1
@@ -91,3 +91,15 @@ By reading the example above you might recognize the following facts:
 
 When the index queue configuration of your custom record is ready, you can check the index queue in the backend module and add the news items to the queue.
 
+Links in custom records
+-----------------------
+
+In the example above *typolink* is used to build a link to the detail view of the news. This is required, because EXT:solr can not know the business logic of the news extension to build a detail link.
+The typoscript constant "plugin.tx_news.settings.detailPid" is used to configure the target pageId of the news single view. This has two important impacts:
+
+* The constant (*plugin.tx_news.settings.detailPid*) need to point to a valid news single page.
+* The page with the news single view, should be configured with *"Include in Search => Disable"* because indexing this page with the normal page indexing without a news id will produce an error page.
+
+.. figure:: ../Images/Backend/backend-disable-in-search.png
+
+    Include in Search - Disable

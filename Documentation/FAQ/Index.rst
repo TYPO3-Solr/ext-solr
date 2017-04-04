@@ -355,3 +355,16 @@ You need to add following lines in your TypoScript setup:
 |
 
 For more information please see :doc:`tx_solr.javascriptFiles <../Configuration/Reference/TxSolrJavaScriptFiles>`.
+
+**I want to index extension records, what do i need to do?**
+
+EXT:solr provides a flexible indexing for TYPO3 pages and records. You can add a custom indexing configuration for your own records with a valid TCA configuration.
+
+You can read more about this in the section :doc:`IndexQueue Configuration <../Backend/IndexQueue>`.
+
+The following things are important:
+
+* The extension ships several examples in the Folder "Configuration/TypoScript/Examples", read them and try to undestand them.
+* EXT:solr can not know the business logic of an extension to generate a link to a detail view. You need to use typolink to build an url that points to a valid, existing detail page.
+* When you index records, e.g. news it these records are indexed in solr and point to a news details page. That's the reason why it makes sence to exclude the news detail page from the normal page indexing. Otherwise the indexing of this page will produce an error message, because only a url with a valid news uid produces a valid output.
+
