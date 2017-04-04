@@ -1,7 +1,7 @@
 Show Logging Output
 -------------------
 
-As written in the introduction, the devLog functionally is used to write the log entries. You can use any available devLog extension from TYPO3 to browse written log entries.
+As written in the introduction, the logging framework functionally is used to write the log entries.
 
 For a quick debugging without any extension there is the possibility to show the debug messages directly:
 
@@ -17,7 +17,7 @@ For a quick debugging without any extension there is the possibility to show the
 To enable this features you need to:
 
 - Make sure that your ip address is configured to match the devIPMask ($GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'])
-- Enable the devLog debug output in the EXT:solr typoscript:
+- Enable the debug output in the EXT:solr typoscript:
 
 |
 
