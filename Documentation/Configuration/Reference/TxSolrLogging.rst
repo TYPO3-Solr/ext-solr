@@ -18,7 +18,7 @@
 tx_solr.logging
 ===============
 
-This section defines logging options. All loggings will be available in the devlog.
+This section defines logging options. All loggings will be available in the TYPO3 logging framework.
 
 .. contents::
    :local:
