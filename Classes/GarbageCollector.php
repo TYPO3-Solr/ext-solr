@@ -485,23 +485,4 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
     {
         return Util::isAllowedPageType($record);
     }
-
-    /**
-     * Cleans an index from garbage entries.
-     *
-     * Was used to clean the index from expired documents/past endtime. Solr 4.8
-     * introduced DocExpirationUpdateProcessor to do that job by itself.
-     *
-     * The method remains as a dummy for possible later cleanups and to prevent
-     * things from breaking if others were using it.
-     *
-     * @deprecated since 6.0 will be removed in 7.0. deletion is done by DocExpirationUpdateProcessor
-     * @param Site $site The site to clean indexes on
-     * @param bool $commitAfterCleanUp Whether to commit right after the clean up, defaults to TRUE
-     * @return void
-     */
-    public function cleanIndex(Site $site, $commitAfterCleanUp = true)
-    {
-        GeneralUtility::logDeprecatedFunction();
-    }
 }

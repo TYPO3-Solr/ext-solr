@@ -102,73 +102,6 @@ class Site
     }
 
     /**
-     * Gets the Site for a specific page Id.
-     *
-     * @param int $pageId The page Id to get afunction Site object for.
-     * @return Site Site for the given page Id.
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public static function getSiteByPageId($pageId)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        return $siteRepository->getSiteByPageId($pageId);
-    }
-
-    /**
-     * Creates a dropdown selector of available TYPO3 sites with Solr
-     * configured.
-     *
-     * @param string $selectorName Name to be used in the select's name attribute
-     * @param Site $selectedSite Optional, currently selected site
-     * @return string Site selector HTML code
-     * @todo Extract into own class like indexing configuration selector
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public static function getAvailableSitesSelector(
-        $selectorName,
-        Site $selectedSite = null
-    ) {
-        GeneralUtility::logDeprecatedFunction();
-
-        $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
-        return $siteSelectorField->getAvailableSitesSelector($selectorName, $selectedSite);
-    }
-
-    /**
-     * Gets all available TYPO3 sites with Solr configured.
-     *
-     * @param bool $stopOnInvalidSite
-     *
-     * @return Site[] An array of available sites
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public static function getAvailableSites($stopOnInvalidSite = false)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        return $siteRepository->getAvailableSites($stopOnInvalidSite);
-    }
-
-    /**
-     * Returns the first available Site.
-     *
-     * @param bool $stopOnInvalidSite
-     *
-     * @return Site
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public static function getFirstAvailableSite($stopOnInvalidSite = false)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        return $siteRepository->getFirstAvailableSite($stopOnInvalidSite);
-    }
-
-    /**
      * Clears the $sitePagesCache
      *
      */
@@ -229,20 +162,6 @@ class Site
     public function getSolrConfiguration()
     {
         return Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
-    }
-
-    /**
-     * Gets the system languages (IDs) for which Solr connections have been
-     * configured.
-     *
-     * @return array Array of system language IDs for which connections have been configured on this site.
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public function getLanguages()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        return $siteRepository->getAllLanguages($this);
     }
 
     /**

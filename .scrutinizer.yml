@@ -36,15 +36,17 @@ tools:
 
     php_analyzer:
         enabled: true
+        dependency_paths:
+            - 'Resources/Private/Php/*'
 
     external_code_coverage:
         runs: 2
         timeout: 1800
 
 build_failure_conditions:
-    - 'patches.label("Doc Comments").new.count > 0'
-    - 'patches.label("Spacing").new.count > 0'
-    - 'issues.label("coding-style").new.count > 0'
-    - 'issues.severity(>= MAJOR).new.exists'
+    - 'patches.label("Doc Comments").count > 10'
+    - 'patches.label("Spacing").count > 15'
+    - 'issues.label("coding-style").count > 10'
+    - 'issues.severity(>= MAJOR).count > 30'
     - 'project.metric("scrutinizer.quality", < 8)'
     - 'project.metric_change("scrutinizer.test_coverage", < -0.10)'
