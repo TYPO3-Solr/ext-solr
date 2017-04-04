@@ -44,8 +44,8 @@ echo "Using extension path $EXTENSION_ROOTPATH"
 echo "Using package path $TYPO3_PATH_PACKAGES"
 echo "Using web path $TYPO3_PATH_WEB"
 
-if [[ $TYPO3_VERSION == "dev-master" ]]; then
-    # For dev-master we need to use the new testing framework
+if [[ $TYPO3_VERSION == "~8.7.0" ]]; then
+    # For ~8.7.0 we need to use the new testing framework
     # after dropping 7.x support we need to change this in the patched files
     composer require --dev typo3/cms="$TYPO3_VERSION"
     composer require --dev --prefer-source typo3/testing-framework="1.0.1"
