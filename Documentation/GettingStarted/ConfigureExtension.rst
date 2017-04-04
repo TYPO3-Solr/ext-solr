@@ -5,15 +5,13 @@
 Configure Extension
 ===================
 
-After :ref:`started-install-extension` you need to configure the extension. The extension already
-comes with basic configuration that will work for small pages out of the box. For further
-configuration options head over to :ref:`started-index` once everything is setup.
+After :ref:`started-install-extension` you need to configure the extension. Only a few steps from below are necessary for :ref:`started-index`.
 
 Static TypoScript
 -----------------
 
-For now create, or edit an existing, TypoScript Template record in your page tree and add the
-provided static TypoScript:
+The extension already comes with basic configuration that will work for small pages out of the box. For now create, or
+edit an existing, TypoScript Template record in your page tree and add the provided static TypoScript:
 
 .. image:: ../Images/GettingStarted/typo3-include-static-typoscript.png
 
