@@ -137,12 +137,6 @@ class Query
     protected $filterFields;
 
     /**
-     * @var array
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    protected $sortingFields = [];
-
-    /**
      * @var bool
      */
     private $rawQueryString = false;
@@ -992,40 +986,6 @@ class Query
         }
 
         $this->addFilter(implode(' OR ', $filters));
-    }
-
-    /**
-     * Adds a sort field and the sorting direction for that field
-     *
-     * @param string $fieldName The field name to sort by
-     * @param string $direction Either ApacheSolrForTypo3\Solr\Query::SORT_ASC to sort the field ascending or ApacheSolrForTypo3\Solr\Query::SORT_DESC to sort descending
-     * @return void
-     * @throws \InvalidArgumentException if the $direction parameter given is neither ApacheSolrForTypo3\Solr\Query::SORT_ASC nor ApacheSolrForTypo3\Solr\Query::SORT_DESC
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public function addSortField($fieldName, $direction)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        $isValidSorting = $direction === self::SORT_DESC || $direction === self::SORT_ASC;
-        if (!$isValidSorting) {
-            throw new \InvalidArgumentException('Invalid sort direction "' . $direction . '"', 1235051723);
-        }
-
-        $this->sortingFields[$fieldName] = $direction;
-    }
-
-    /**
-     * Gets the currently set sorting fields and their sorting directions
-     *
-     * @return array An associative array with the field names as key and their sorting direction as value
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public function getSortingFields()
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        return $this->sortingFields;
     }
 
     /**

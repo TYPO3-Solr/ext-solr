@@ -1042,34 +1042,6 @@ class QueryTest extends UnitTest
 
     /**
      * @test
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public function canAddSortField()
-    {
-        $query = $this->getInitializedTestQuery('test');
-
-        // do we have the expected default value?
-        $sortingFields = $query->getSortingFields();
-        $this->assertSame([], $sortingFields, 'Unexpected initial sorting fields');
-
-        // can we set an ascending sorting?
-        $query->addSortField('title', Query::SORT_ASC);
-        $sortingFields = $query->getSortingFields();
-        $this->assertSame(['title' => Query::SORT_ASC], $sortingFields, 'Could not add ascending sort field');
-
-        // can we in addition add an ascending sorting
-        $query->addSortField('price', Query::SORT_DESC);
-        $sortingFields = $query->getSortingFields();
-        $this->assertSame(['title' => Query::SORT_ASC, 'price' => Query::SORT_DESC],
-                            $sortingFields, 'Could not add descending sort field');
-
-        // do we get an exception when an invalid sort direction is getting passed?
-        $this->setExpectedException(\InvalidArgumentException::class);
-        $query->addSortField('width', 'arsc');
-    }
-
-    /**
-     * @test
      */
     public function canSetQueryElevation()
     {

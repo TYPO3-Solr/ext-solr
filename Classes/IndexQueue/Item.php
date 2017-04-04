@@ -215,19 +215,6 @@ class Item
         $this->changed = intval($changed);
     }
 
-    /**
-     * Sets the timestamp of when an item has been indexed.
-     *
-     * @return void
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    public function updateIndexedTime()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $queue = GeneralUtility::makeInstance(Queue::class);
-        $queue->updateIndexTimeByItem($this);
-    }
-
     public function getRecordUid()
     {
         $this->getRecord();

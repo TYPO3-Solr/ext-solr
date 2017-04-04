@@ -393,24 +393,6 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns an array of all allowedPageTypes.
-     *
-     * plugin.tx_solr.index.queue.pages.allowedPageTypes
-     *
-     * @deprecated since 6.0 will be removed in 7.0
-     *
-     * @param array $defaultIfEmpty
-     * @return array
-     */
-    public function getIndexQueuePagesAllowedPageTypesArray($defaultIfEmpty = [])
-    {
-        return $this->getIndexQueueAllowedPageTypesArrayByConfigurationName(
-            'pages',
-            $defaultIfEmpty
-        );
-    }
-
-    /**
      * Returns the configured excludeContentByClass patterns as array.
      *
      * plugin.tx_solr.index.queue.pages.excludeContentByClass
