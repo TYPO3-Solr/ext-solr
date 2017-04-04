@@ -333,6 +333,57 @@ class GarbageCollectorTest extends IntegrationTest
     /**
      * @test
      */
+    public function doesNotRemoveUpdatedContentElementWithNotSetEndTime()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->importDataSetFromFixture('does_not_remove_updated_content_element_with_not_set_endtime.xml');
+
+        $this->indexPageIds([1]);
+
+        // we index a page with two content elements and expect solr contains the content of both
+        $this->waitToBeVisibleInSolr();
+
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('Will stay after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
+
+        // we hide the second content element
+        $beUser = $this->fakeBEUser(1, 0);
+
+        $data = [
+            'tt_content' => [
+                '88' => [
+                    'bodytext' => 'Updated! Will stay after update!'
+                ]
+            ]
+        ];
+
+        $this->dataHandler->start($data, [], $beUser);
+        $this->dataHandler->stripslashes_values = 0;
+        $this->dataHandler->process_cmdmap();
+        $this->dataHandler->process_datamap();
+        $this->dataHandler->clear_cacheCmd('all');
+
+        // document should stay in the index, because endtime was not in past but empty
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('Will stay after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
+
+        $this->waitToBeVisibleInSolr();
+        
+        $this->assertIndexQueryContainsItemAmount(1);
+        $items = $this->indexQueue->getItems('pages', 1);
+
+        // we index this item
+        $this->indexPageIds($items);
+        $this->waitToBeVisibleInSolr();
+
+        // now the content of the deletec content element should be gone
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('Updated! Will stay after update!', $solrContent, 'solr did not remove content hidden by endtime in past');
+    }
+
+    /**
+     * @test
+     */
     public function canRemoveContentElementWithStartDateSetToFuture()
     {
         $this->cleanUpSolrServerAndAssertEmpty();

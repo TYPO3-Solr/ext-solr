@@ -181,6 +181,31 @@ class TCAServiceTest extends UnitTest
     /**
      * @test
      */
+    public function isEndTimeInPastCanDetectedEndtimeIsEmpty(){
+        $fakeTCA = [
+            'pages' => [
+                'ctrl' => [
+                    'enablecolumns' => [
+                        'endtime' => 'end'
+                    ]
+                ]
+            ]
+        ];
+
+        $GLOBALS['EXEC_TIME'] = 1000;
+        $fakePageRecord = [
+            'end' => 0
+        ];
+
+        $tcaService = new TCAService($fakeTCA);
+        $isEndTimeInPast = $tcaService->isEndTimeInPast('pages', $fakePageRecord);
+
+        $this->assertFalse($isEndTimeInPast, 'Not set endtime(default 0), was detected as endtime in past.');
+    }
+
+    /**
+     * @test
+     */
     public function isStartTimeInFutureCanDetectedStartTimeInFuture() {
         $fakeTCA = [
             'pages' => [
