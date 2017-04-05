@@ -43,7 +43,7 @@ We recommend to create one solr core per language. The shipped solr example conf
 
 The configuration of the connection between solr cores and sites is done in typoscript.
 
-The following typoscript snipped shows and example how configure multiple languages for the introduction package (EN, DE and DA):
+The following typoscript snipped shows an example how to configure multiple languages for the introduction package (EN, DE and DA):
 
 
 |
