@@ -35,33 +35,6 @@ conditions where you do not want EXT:solr.
    This also influences the connection manager; connections will be registered /
    detected only for enabled = 1.
 
-addDefaultCss (removed)
------------------------
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.addDefaultCss
-:Default: 1
-:Options: 0, 1
-:Since: 1.0
-:Removed: 2.0, see tx_solr.cssFiles instead
-
-If enabled, default stylesheets for page browser, results, and suggestions will
-be included. Otherwise, no stylesheets will be included by EXT:solr.
-
-addDefaultJs (removed)
-----------------------
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.addDefaultJs
-:Default: 1
-:Options: 0, 1
-:Since: 1.0
-:Removed: 2.0, see tx_solr.javascriptFiles instead
-
-If enabled, some javascript files for facet option (un)folding and suggestions
-will be included. Furthermore, the jQuery UI library required for suggestions
-can only get included, if addDefaultJs is set.
-
 enableDebugMode
 ---------------
 

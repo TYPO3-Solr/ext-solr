@@ -24,28 +24,6 @@ to easily index pages or any kind of records of your TYPO3 CMS.
 .. contents::
     :local:
 
-enablePageIndexing (removed)
-----------------------------
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.index.enablePageIndexing
-:Default: 1
-:Options: 0, 1
-:Since: 1.0
-:Removed: 2.0 (en/disable Index Queue page indexing configuration instead)
-
-En- / disables frontend page indexing.
-
-enableIndexingWhileBeUserLoggedIn (removed)
--------------------------------------------
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.index.enableIndexingWhileBeUserLoggedIn
-:Default: 1
-:Options: 0, 1
-:Since: 1.0
-:Removed: 2.0
-
 Allows to prevent frontend indexing of pages when a backend editor is logged in and browsing the website.
 
 additionalFields (deprecated)
