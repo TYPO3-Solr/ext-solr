@@ -77,7 +77,7 @@ class StatisticsWriter implements ResponseProcessor
             'tstamp' => $GLOBALS['EXEC_TIME'],
             'language' => $GLOBALS['TSFE']->sys_language_uid,
 
-            'num_found' => $response->response->numFound,
+            'num_found' => isset($response->response->numFound) ? (int)$response->response->numFound : 0,
             'suggestions_shown' => is_object($response->spellcheck->suggestions) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
             'time_total' => isset($response->debug->timing->time) ? $response->debug->timing->time : 0,
             'time_preparation' => isset($response->debug->timing->prepare->time) ? $response->debug->timing->prepare->time : 0,
