@@ -180,12 +180,4 @@ if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= Version
 // include JS in backend
 $GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr') . 'Classes/BackendItem/ContextMenuActionJavascriptRegistration.php';
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-// replace the built-in search content element
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/Results.xml',
-    'search'
-);
 

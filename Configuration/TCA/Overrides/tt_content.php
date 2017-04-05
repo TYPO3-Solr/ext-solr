@@ -41,6 +41,15 @@ $pluginCode = 'solr_pi_frequentsearches';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginCode] = 'layout,select_key,pages,recursive';
 
 
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+// replace the built-in search content element
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    '*',
+    'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/Results.xml',
+    'search'
+);
+
 $GLOBALS['TCA']['tt_content']['types']['search']['showitem'] =
     '--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
 	--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
