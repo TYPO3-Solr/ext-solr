@@ -63,17 +63,6 @@ results
 
 Defines the stylesheet to be used for styling the search results page.
 
-pagebrowser (removed)
----------------------
-
-:Type: String
-:TS Path: plugin.tx_solr.cssFiles.pagebrowser
-:Default: EXT:pagebrowse/res/styles_min.css
-:Since: 2.0
-:Removed: 3.1
-
-Defines the stylesheet to be used for styling the page browser.
-
 ui
 --
 
