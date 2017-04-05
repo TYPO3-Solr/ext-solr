@@ -120,7 +120,7 @@ e.g. https://galaxy.ansible.com/geerlingguy/solr/ (ansible) or https://supermark
 Deployment of EXT:solr configuration into Apache Solr
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Since EXT:solr 6.0.0 the configuration and all jar files are shipped in one "configSet". The goal of this approach is to make the deloyment much easier.
+Since EXT:solr 6.0.0 the configuration and all jar files are shipped in one "configSet". The goal of this approach is to make the deployment much easier.
 
 All you need to do is, you need to copy the configSet directory into your prepared solr installation and replace the solr.xml file. In the installer we do it like this:
 

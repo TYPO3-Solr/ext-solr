@@ -14,7 +14,7 @@ The **"Index Queue Worker"** task has the following custom properties:
 
 **Site:** Here you select the solr site, that you want to index with this task instance.
 **Number of documents to Index:** Here you can configure how many documents you want to index in one run. Depending on the performance of your system and the expected update time of the search you can choose a realistic number here.
-**Forced webroot:** The scheduler task can be executed in the cli context, because no webserver is used there, TYPO3 is unable to detect your webroot. As assumption we use PATH_site as default here. When you need to configure something else, you can do it with this option. You can use the marker ###PATH_site### and ###PATH_typo3### to define relative pathes here, do be independent from the concrete instance.
+**Forced webroot:** The scheduler task can be executed in the cli context, because no webserver is used there, TYPO3 is unable to detect your webroot. As assumption we use PATH_site as default here. When you need to configure something else, you can do it with this option. You can use the marker ###PATH_site### and ###PATH_typo3### to define relative pathes here, to be independent from the concrete instance.
 
 .. figure:: ../Images/Backend/solr-scheduler-index-worker.png
 
