@@ -368,3 +368,11 @@ The following things are important:
 * EXT:solr can not know the business logic of an extension to generate a link to a detail view. You need to use typolink to build an url that points to a valid, existing detail page.
 * When you index records, e.g. news it these records are indexed in solr and point to a news details page. That's the reason why it makes sence to exclude the news detail page from the normal page indexing. Otherwise the indexing of this page will produce an error message, because only a url with a valid news uid produces a valid output.
 
+|
+
+**Are in EXT:solr some cli commands available?**
+
+Yes, currently(v. 6.1) only one for initializing solr connections.
+But check for new ones with :code:`bin/typo3 list` command.
+
+|
