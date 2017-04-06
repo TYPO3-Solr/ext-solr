@@ -38,7 +38,7 @@ The EXT:solr configSet
 As mentioned before the configSet is one single package, that contains all to customize a plain Apache Solr Server, to an Apache Solr Server, ready
 for EXT:solr & TYPO3.
 
-The configset of the current release it located in "Resources/Private/Solr/configsets/ext_solr_<release>".
+The configset of the current release is located in "Resources/Private/Solr/configsets/ext_solr_<release>".
 
 Inside the configSet you find the following folders:
 
