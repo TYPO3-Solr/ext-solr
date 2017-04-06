@@ -49,6 +49,16 @@ Join us on the official `Slack for TYPO3 <https://forger.typo3.org/slack>`_ and 
 
 |
 
+**Which plugins(TYPO3 Frontend) are avalable?**
+
+- Search: Form only
+- Search: Form, Result, Additional Components
+- Search: Frequent Searches
+
+Just insert one of this plugins on corresponding page to fade in the search form and/or supply the front end with a search results.
+
+|
+
 **When i open the search page i see the message 'Search is currently not available. ', whats wrong?**
 
 Did you configure your solr connection as required?
