@@ -344,6 +344,14 @@ Use urlencode for deletion of synonyms and stopwords
 https://github.com/TYPO3-Solr/ext-solr/issues/1205
 https://github.com/TYPO3-Solr/ext-solr/issues/1206
 
+## Outlook
+
+This is the last release for TYPO3 7.6 LTS and the last release with marker based templating. The next release (7.0.0) will drop the marked based templating and will require TYPO3 8 LTS. If you want to start with fluid templating now we suggest to use solrfluid (available as EB partner) 
+
+## Thanks
+
+Thanks to everyone who has supported the release of EXT:solr 6.1.0.
+
 ### Contributors
 
 Like always this release would not have been possible without the help from our
