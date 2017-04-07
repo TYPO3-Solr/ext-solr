@@ -179,25 +179,3 @@ if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= Version
 
 // include JS in backend
 $GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr') . 'Classes/BackendItem/ContextMenuActionJavascriptRegistration.php';
-
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-// replace the built-in search content element
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:' . $_EXTKEY . '/Configuration/FlexForms/Results.xml',
-    'search'
-);
-
-$TCA['tt_content']['types']['search']['showitem'] =
-    '--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
-	--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.plugin,
-		pi_flexform;;;;1-1-1,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.visibility;visibility,
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.access;access,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.appearance,
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.behaviour,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended';
