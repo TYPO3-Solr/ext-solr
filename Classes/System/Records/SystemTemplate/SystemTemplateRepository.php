@@ -1,11 +1,11 @@
 <?php
-
-namespace ApacheSolrForTypo3\Solr\System\Records;
+namespace ApacheSolrForTypo3\Solr\System\Records\SystemTemplate;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2017 Timo Hund <timo.hund@dkd.de
+ *  (c) 2010-2017 dkd Internet Service GmbH <solr-eb-support@dkd.de>
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,48 +25,43 @@ namespace ApacheSolrForTypo3\Solr\System\Records;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 
 /**
- * Repository class to encapsulate the database access for records used in solr.
+ * SystemTemplateRepository to encapsulate the database access for records used in solr.
  *
- * @author Timo Hund <timo.hund@dkd.de>
  */
-abstract class AbstractRepository
+class SystemTemplateRepository extends AbstractRepository
 {
+
     /**
      * @var string
      */
-    protected $table = '';
+    protected $table = 'sys_template';
 
     /**
-     * Retrieves a single row from the database by a given uid
+     * Finds a first closest page id with active template.
      *
-     * @param string $fields
-     * @param string $uid
-     * @return mixed
+     * This method expects one startPageId, which must be inside the root line and does not check if it is one in the root line.
+     *
+     * @param array $rootLine
+     * @return int
      */
-    protected function getOneRowByUid($fields, $uid)
+    public function findOneClosestPageIdWithActiveTemplateByRootLine(array $rootLine)
     {
+        $rootLinePageIds = [0];
+        foreach ($rootLine as $rootLineItem) {
+            $rootLinePageIds[] = (int)$rootLineItem['uid'];
+        }
+
         $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder
-            ->select($fields)
-            ->from($this->table)
-            ->where($queryBuilder->expr()->eq('uid', intval($uid)))
-            ->execute()->fetch();
-    }
 
-    /**
-     * Returns QueryBuilder for Doctrine DBAL
-     *
-     * @return QueryBuilder
-     */
-    protected function getQueryBuilder()
-    {
-        /** @var QueryBuilder $queryBuilder */
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
-        return $queryBuilder;
+        $result = $queryBuilder
+            ->select('uid', 'pid')
+            ->from($this->table)
+            ->where($queryBuilder->expr()->in('pid', $rootLinePageIds))
+            ->execute()->fetch();
+
+        return isset($result['pid']) ? $result['pid'] : 0;
     }
 }
