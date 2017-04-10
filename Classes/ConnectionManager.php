@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
+use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -55,9 +56,22 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     protected static $connections = [];
 
     /**
+     * @var \ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository
+     */
+    protected $systemLanguageRepository;
+
+    /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
     protected $logger = null;
+
+    /**
+     * @param SystemLanguageRepository $systemLanguageRepository
+     */
+    public function __construct(SystemLanguageRepository $systemLanguageRepository = null)
+    {
+        $this->systemLanguageRepository = isset($systemLanguageRepository) ? $systemLanguageRepository : GeneralUtility::makeInstance(SystemLanguageRepository::class);
+    }
 
     /**
      * Gets a Solr connection.
@@ -74,7 +88,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      * @param string $password Solr password (optional)
      * @return SolrService A solr connection.
      */
-
     public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '')
     {
         if (empty($host)) {
@@ -369,7 +382,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function updateConnectionByRootPageId($rootPageId)
     {
-        $systemLanguages = $this->getSystemLanguages();
+        $systemLanguages = $this->systemLanguageRepository->findSystemLanguages();
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByRootPageId($rootPageId);
         $rootPage = $site->getRootPage();
@@ -401,7 +414,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
 
         // find website roots and languages for this installation
         $rootPages = $this->getRootPages();
-        $languages = $this->getSystemLanguages();
+        $languages = $this->systemLanguageRepository->findSystemLanguages();
 
         // find solr configurations and add them as function menu entries
         foreach ($rootPages as $rootPage) {
@@ -478,30 +491,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         return $connection;
     }
 
-    /**
-     * Gets the language name for a given language ID.
-     *
-     * @param int $languageId language ID
-     * @return string Language name
-     */
-    protected function getLanguageName($languageId)
-    {
-        $languageName = '';
 
-        $language = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid, title',
-            'sys_language',
-            'uid = ' . (integer)$languageId
-        );
-
-        if (count($language)) {
-            $languageName = $language[0]['title'];
-        } elseif ($languageId == 0) {
-            $languageName = 'default';
-        }
-
-        return $languageName;
-    }
 
     /**
      * Creates a human readable label from the connections' configuration.
@@ -513,7 +503,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     {
         $connectionLabel = $connection['rootPageTitle']
             . ' (pid: ' . $connection['rootPageUid']
-            . ', language: ' . $this->getLanguageName($connection['language'])
+            . ', language: ' . $this->systemLanguageRepository->findOneLanguageTitleByLanguageId($connection['language'])
             . ') - '
 #			. $connection['solrScheme'] . '://'
             . $connection['solrHost'] . ':'
@@ -550,31 +540,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         }
 
         return $filteredConnections;
-    }
-
-    /**
-     * Finds the system's configured languages.
-     *
-     * @return array An array of language IDs
-     */
-    protected function getSystemLanguages()
-    {
-        $languages = [0];
-
-        $languageRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid',
-            'sys_language',
-            'hidden = 0'
-        );
-
-        if (!is_array($languageRecords)) {
-            return $languages;
-        }
-
-        foreach ($languageRecords as $languageRecord) {
-            $languages[] = $languageRecord['uid'];
-        }
-        return $languages;
     }
 
     /**
