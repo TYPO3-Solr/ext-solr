@@ -466,8 +466,11 @@ class Util
 
             $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
             $groupListBackup = $GLOBALS['TSFE']->gr_list;
+            $GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
 
-            if ($pageRecord['pid'] != 0) {
+            if ($pageRecord['pid'] != 0 &&
+                !$GLOBALS['TSFE']->gr_list
+            ) {
                 $rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($pageId, '');
                 foreach ($rootLine as $parent) {
                     if ($parent['extendToSubpages']) {
@@ -475,8 +478,6 @@ class Util
                         break;
                     }
                 }
-            } else {
-                $GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
             }
 
             $GLOBALS['TSFE']->getPageAndRootline();
