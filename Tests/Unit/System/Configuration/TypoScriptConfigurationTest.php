@@ -595,25 +595,6 @@ class TypoScriptConfigurationTest extends UnitTest
     /**
      * @test
      */
-    public function canGetIndexQueuePagesAllowedPageTypesArray()
-    {
-        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
-            'index.' => [
-                'queue.' => [
-                    'pages.' => [
-                        'allowedPageTypes' => '1,2, 7'
-                    ]
-                ]
-            ]
-        ];
-        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $allowedPageTypes = $configuration->getIndexQueuePagesAllowedPageTypesArray();
-        $this->assertEquals([1, 2, 7], $allowedPageTypes, 'Can not get allowed pagestype from configuration');
-    }
-
-    /**
-     * @test
-     */
     public function canGetIndexQueuePagesExcludeContentByClassArray()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
