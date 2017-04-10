@@ -272,7 +272,7 @@ class Indexer extends AbstractIndexer
      */
     protected function getItemTypeConfiguration(Item $item, $language = 0)
     {
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(), true, $language);
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRecordPageId(), true, $language);
         $indexConfigurationName = $item->getIndexingConfigurationName();
         $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
 

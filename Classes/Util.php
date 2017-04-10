@@ -462,11 +462,23 @@ class Util
             // for certain situations we need to trick TSFE into granting us
             // access to the page in any case to make getPageAndRootline() work
             // see http://forge.typo3.org/issues/42122
-            $pageRecord = BackendUtility::getRecord('pages', $pageId, 'fe_group');
-            $groupListBackup = $GLOBALS['TSFE']->gr_list;
-            $GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
+            $pageRecord = BackendUtility::getRecord('pages', $pageId, 'fe_group, pid');
 
             $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
+            $groupListBackup = $GLOBALS['TSFE']->gr_list;
+
+            if ($pageRecord['pid'] != 0) {
+                $rootLine = $GLOBALS['TSFE']->sys_page->getRootLine($pageId, '');
+                foreach ($rootLine as $parent) {
+                    if ($parent['extendToSubpages']) {
+                        $GLOBALS['TSFE']->gr_list = $parent['fe_group'];
+                        break;
+                    }
+                }
+            } else {
+                $GLOBALS['TSFE']->gr_list = $pageRecord['fe_group'];
+            }
+
             $GLOBALS['TSFE']->getPageAndRootline();
 
             // restore gr_list
