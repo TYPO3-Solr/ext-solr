@@ -586,19 +586,6 @@ class SolrService extends \Apache_Solr_Service
     }
 
     /**
-     * Gets the name of the schema.xml file installed and in use on the Solr
-     * server.
-     *
-     * @deprecated use getSchema()->getName() instead will be removed in 7.0
-     * @return string Name of the active schema.xml
-     */
-    public function getSchemaName()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getSchema()->getName();
-    }
-
-    /**
      * Gets information about the Solr server
      *
      * @return array A nested array of system data.

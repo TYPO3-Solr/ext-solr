@@ -222,71 +222,6 @@ class Queue
     }
 
     /**
-     * Gets the indexing configuration to use for an item.
-     * Sometimes, when there are multiple configurations for a certain item type
-     * (table) it can be hard or even impossible to find which one to use
-     * though.
-     * Currently selects the first indexing configuration where the name matches
-     * the itemType or where the configured tbale is the same as the itemType.
-     *
-     * !!! Might return incorrect results for complex configurations !!!
-     * Try to set the indexingConfiguration directly when using the updateItem()
-     * method in such situations.
-     *
-     * @param string $itemType The item's type, usually a table name.
-     * @param string $itemUid The item's uid, usually an integer uid, could be a
-     *      different value for non-database-record types.
-     * @param int $rootPageId The configuration's page tree's root page id.
-     *      Optional, not needed for all types.
-     * @return string The indexing configuration's name to use when indexing
-     * @deprecated since 6.1 will be removed in 7.0
-     * Use getIndexingConfigurationsByItem() now, which behaves
-     * almost the same way but returns an array of configurations
-     */
-    protected function getIndexingConfigurationByItem(
-        $itemType,
-        $itemUid,
-        $rootPageId = null
-    ) {
-        GeneralUtility::logDeprecatedFunction();
-        $indexingConfigurationName = '';
-
-        $configurations = $this->getIndexingConfigurationsByItem($itemType, $rootPageId);
-        if (count($configurations) > 0) {
-            $indexingConfigurationName = $configurations[0];
-        }
-
-        return $indexingConfigurationName;
-    }
-
-    /**
-     * Gets the indexing configurations to use for an item.
-     * Multiple configurations for a certain item type (table) might be available.
-     *
-     * @param string $itemType The item's type, usually a table name.
-     * @param int $rootPageId The configuration's page tree's root page id.
-     *      Optional, not needed for all types.
-     * @return array<string> The indexing configurations names to use when indexing
-     * @deprecated since 6.1 will be removed in 7.0
-     */
-    protected function getIndexingConfigurationsByItem(
-        $itemType,
-        $rootPageId = null
-    ) {
-        GeneralUtility::logDeprecatedFunction();
-
-        $possibleIndexingConfigurationNames = [];
-
-        if (!is_null($rootPageId)) {
-            // get configuration for the root's branch
-            $solrConfiguration = Util::getSolrConfigurationFromPageId($rootPageId);
-            $possibleIndexingConfigurationNames = $solrConfiguration->getIndexQueueConfigurationNamesByTableName($itemType);
-        }
-
-        return $possibleIndexingConfigurationNames;
-    }
-
-    /**
      * Marks an item as needing (re)indexing.
      *
      * Like with Solr itself, there's no add method, just a simple update method
@@ -807,38 +742,6 @@ class Queue
     }
 
     /**
-     * Gets number of Index Queue items for a specific site / indexing configuration
-     * optional parameter to limit the counted items by indexing configuration.
-     *
-     * @param Site $site The site to search for.
-     * @param string $indexingConfigurationName name of a specific indexing
-     *      configuration
-     * @deprecated since 6.1 will be removed in 7.0 use getStatisticsBySite()->getTotalCount() please
-     * @return int Number of items
-     */
-    public function getItemsCountBySite(Site $site, $indexingConfigurationName = '')
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return (int) $this->getStatisticsBySite($site, $indexingConfigurationName)->getTotalCount();
-    }
-
-    /**
-     * Gets number of unprocessed Index Queue items for a specific site / indexing configuration
-     * optional parameter to limit the counted items by indexing configuration.
-     *
-     * @param Site $site The site to search for.
-     * @param string $indexingConfigurationName name of a specific indexing
-     *      configuration
-     * @deprecated since 6.1 will be removed in 7.0 use getStatisticsBySite()->getPendingCount() please
-     * @return int Number of items.
-     */
-    public function getRemainingItemsCountBySite(Site $site, $indexingConfigurationName = '')
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return (int) $this->getStatisticsBySite($site, $indexingConfigurationName)->getPendingCount();
-    }
-
-    /**
      * Returns the number of items for all queues.
      *
      * @return int
@@ -887,11 +790,11 @@ class Queue
 
         foreach ($indexQueueStats as $row) {
             if ($row['failed'] == 1) {
-                $statistic->setFailedCount((int) $row['count']);
+                $statistic->setFailedCount((int)$row['count']);
             } elseif ($row['pending'] == 1) {
-                $statistic->setPendingCount((int) $row['count']);
+                $statistic->setPendingCount((int)$row['count']);
             } else {
-                $statistic->setSuccessCount((int) $row['count']);
+                $statistic->setSuccessCount((int)$row['count']);
             }
         }
 
