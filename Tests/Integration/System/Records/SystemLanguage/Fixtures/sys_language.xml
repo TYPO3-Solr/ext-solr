@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <sys_language>
+        <uid>1</uid>
+        <pid>0</pid>
+        <title>English</title>
+    </sys_language>
+    <sys_language>
+        <uid>2</uid>
+        <pid>0</pid>
+        <title>Deutsch</title>
+    </sys_language>
+    <sys_language>
+        <uid>3</uid>
+        <pid>0</pid>
+        <title>Français</title>
+    </sys_language>
+</dataset>
