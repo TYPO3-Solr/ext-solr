@@ -331,26 +331,12 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         if ($GLOBALS['BE_USER']->isAdmin()) {
             $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
             $optionValues[] = 'clearSolrConnectionCache';
-
-            // @Todo This should be removed when we don't support 7.6 LTS anymore
-            if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
-                $cacheActions[] = [
-                    'id' => 'clearSolrConnectionCache',
-                    'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:cache_initialize_solr_connections',
-                    'href' => $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
-                    'iconIdentifier' => 'extensions-solr-module-initsolrconnections'
-                ];
-            } else {
-                $title = 'Initialize Solr connections';
-                $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-
-                $cacheActions[] = [
-                    'id' => 'clearSolrConnectionCache',
-                    'title' => $title,
-                    'href' => $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
-                    'icon' => $iconFactory->getIcon('extensions-solr-module-initsolrconnections', Icon::SIZE_SMALL)
-                ];
-            }
+            $cacheActions[] = [
+                'id' => 'clearSolrConnectionCache',
+                'title' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:cache_initialize_solr_connections',
+                'href' => $uriBuilder->buildUriFromRoute('ajax_solr_updateConnections'),
+                'iconIdentifier' => 'extensions-solr-module-initsolrconnections'
+            ];
         }
     }
 

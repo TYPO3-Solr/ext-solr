@@ -28,10 +28,8 @@ if [ $? -eq "0" ]; then
     fi
 fi
 
-UNIT_BOOTSTRAP=".Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTestsBootstrap.php"
-if [[ $TYPO3_VERSION == "~8.7.0" ]]; then
-    UNIT_BOOTSTRAP=".Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php"
-fi
+
+UNIT_BOOTSTRAP=".Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php"
 
 echo "Run unit tests"
 .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --coverage-clover=coverage.unit.clover --bootstrap=$UNIT_BOOTSTRAP
@@ -70,9 +68,6 @@ else
 	exit 1
 fi
 
-INTEGRATION_BOOTSTRAP=".Build/vendor/typo3/cms/typo3/sysext/core/Build/FunctionalTestsBootstrap.php"
-if [[ $TYPO3_VERSION == "~8.7.0" ]]; then
-    INTEGRATION_BOOTSTRAP=".Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php"
-fi
+INTEGRATION_BOOTSTRAP=".Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php"
 
 .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --coverage-clover=coverage.integration.clover --bootstrap=$INTEGRATION_BOOTSTRAP

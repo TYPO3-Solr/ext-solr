@@ -21,8 +21,8 @@
     "source": "https://github.com/TYPO3-Solr/ext-solr"
   },
   "require": {
-    "php": ">=5.5.0",
-    "typo3/cms": ">=7.6.0"
+    "php": ">=7.0.0",
+    "typo3/cms": ">=8.7.0"
   },
   "require-dev": {
     "phpunit/phpunit": ">=4.8.0 <6.0.0"
@@ -60,7 +60,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "6.1.x-dev"
+      "dev-master": "7.0.x-dev"
     },
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
