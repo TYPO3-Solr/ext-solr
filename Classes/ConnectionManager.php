@@ -27,16 +27,14 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository as PagesRepositoryAtExtSolr;
 use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
@@ -66,11 +64,18 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     protected $logger = null;
 
     /**
-     * @param SystemLanguageRepository $systemLanguageRepository
+     * @var PagesRepositoryAtExtSolr
      */
-    public function __construct(SystemLanguageRepository $systemLanguageRepository = null)
+    protected $pagesRepositoryAtExtSolr;
+
+    /**
+     * @param SystemLanguageRepository $systemLanguageRepository
+     * @param PagesRepositoryAtExtSolr|null $pagesRepositoryAtExtSolr
+     */
+    public function __construct(SystemLanguageRepository $systemLanguageRepository = null, PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null)
     {
         $this->systemLanguageRepository = isset($systemLanguageRepository) ? $systemLanguageRepository : GeneralUtility::makeInstance(SystemLanguageRepository::class);
+        $this->pagesRepositoryAtExtSolr = isset($pagesRepositoryAtExtSolr) ? $pagesRepositoryAtExtSolr : GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
     }
 
     /**
@@ -413,7 +418,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         $configuredSolrConnections = [];
 
         // find website roots and languages for this installation
-        $rootPages = $this->getRootPages();
+        $rootPages = $this->pagesRepositoryAtExtSolr->findAllRootPages();
         $languages = $this->systemLanguageRepository->findSystemLanguages();
 
         // find solr configurations and add them as function menu entries
@@ -540,22 +545,5 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         }
 
         return $filteredConnections;
-    }
-
-    /**
-     * Gets the site's root pages. The "Is root of website" flag must be set,
-     * which usually is the case for pages with pid = 0.
-     *
-     * @return array An array of (partial) root page records, containing the uid and title fields
-     */
-    protected function getRootPages()
-    {
-        $rootPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid, title',
-            'pages',
-            'is_siteroot = 1 AND deleted = 0 AND hidden = 0 AND pid != -1'
-        );
-
-        return $rootPages;
     }
 }
