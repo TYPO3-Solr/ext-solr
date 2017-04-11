@@ -1,5 +1,4 @@
 <?php
-
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin;
 
 /***************************************************************

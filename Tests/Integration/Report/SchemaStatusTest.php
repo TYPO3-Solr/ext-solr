@@ -23,6 +23,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Report;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\Report\SchemaStatus;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

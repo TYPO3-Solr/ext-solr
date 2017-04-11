@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Site;
 
 /***************************************************************
  *  Copyright notice
@@ -23,7 +23,9 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

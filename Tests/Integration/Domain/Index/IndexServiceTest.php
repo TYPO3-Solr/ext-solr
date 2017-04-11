@@ -1,5 +1,4 @@
 <?php
-
 namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
 
 /***************************************************************
@@ -24,6 +23,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Domain\Index;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;

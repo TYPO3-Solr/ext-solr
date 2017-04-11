@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\FrequentSearches;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Search;
 
 /***************************************************************
  *  Copyright notice
