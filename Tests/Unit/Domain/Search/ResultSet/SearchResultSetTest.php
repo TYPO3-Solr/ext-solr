@@ -1,5 +1,4 @@
 <?php
-
 namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
 /***************************************************************
@@ -35,6 +34,8 @@ use ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 
 /**
  * @author Timo Schmidt <timo.schmidt@dkd.de>

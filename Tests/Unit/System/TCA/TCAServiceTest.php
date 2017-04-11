@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\System\TCA;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\TCA;
 
 /***************************************************************
  *  Copyright notice
