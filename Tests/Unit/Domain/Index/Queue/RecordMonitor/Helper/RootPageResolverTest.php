@@ -1,6 +1,5 @@
 <?php
-
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Index\Queue\RecordMonitor\Helper;
 
 /***************************************************************
  *  Copyright notice

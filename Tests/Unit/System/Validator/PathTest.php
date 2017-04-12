@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\System\Validator;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Validator;
 
 /***************************************************************
  *  Copyright notice

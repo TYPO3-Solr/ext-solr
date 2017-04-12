@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelper;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Cache;
 
 /***************************************************************
  *  Copyright notice

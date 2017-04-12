@@ -1,6 +1,5 @@
 <?php
-
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\RenderingInstructions;
 
 /***************************************************************
  *  Copyright notice

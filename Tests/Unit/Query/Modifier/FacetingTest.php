@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
 
 /***************************************************************
  *  Copyright notice
@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

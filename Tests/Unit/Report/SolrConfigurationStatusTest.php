@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Report;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Report;
 
 /***************************************************************
  *  Copyright notice

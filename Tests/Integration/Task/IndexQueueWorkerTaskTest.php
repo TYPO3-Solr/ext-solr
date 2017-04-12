@@ -2,6 +2,7 @@
 namespace ApacheSolrForTypo3\Solr\IndexQueue;
 
 use ApacheSolrForTypo3\Solr\Tests\Integration\Task\IndexQueueDependencyFaker;
+
 /**
  * This function is used to overwrite uniqid in the IndexQueue context to provide a fake request id.
  * We use this since this is a integration test and the unique id could not be injected from outside.

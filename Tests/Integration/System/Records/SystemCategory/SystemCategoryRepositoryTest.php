@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Environment;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Records\SystemCategory;
 
 /***************************************************************
  *  Copyright notice

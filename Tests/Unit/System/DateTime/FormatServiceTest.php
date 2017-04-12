@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\System\DateTime;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\DateTime;
 
 /***************************************************************
  *  Copyright notice
