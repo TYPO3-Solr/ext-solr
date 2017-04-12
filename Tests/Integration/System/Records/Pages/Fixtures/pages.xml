@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <title>Products</title>
+    </pages>
+    <pages>
+        <uid>2</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <title>Category 1</title>
+    </pages>
+    <pages>
+        <uid>3</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <title>Category 2</title>
+    </pages>
+    <pages>
+        <uid>4</uid>
+        <pid>1</pid>
+        <is_siteroot>0</is_siteroot>
+        <title>Category 3</title>
+    </pages>
+    <pages>
+        <uid>5</uid>
+        <pid>3</pid>
+        <is_siteroot>1</is_siteroot>
+        <title>Support</title>
+    </pages>
+</dataset>
