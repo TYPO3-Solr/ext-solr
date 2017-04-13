@@ -276,7 +276,7 @@ class Indexer extends AbstractIndexer
         $indexConfigurationName = $item->getIndexingConfigurationName();
         $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
 
-	if (count($fields) === 0) {
+        if (count($fields) === 0) {
             $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(), true, $language);
             if (!empty($solrConfiguration->getIndexQueueAdditionalPageIdsByConfigurationName($indexConfigurationName))) {
                 $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
