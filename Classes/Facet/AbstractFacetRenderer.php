@@ -138,9 +138,9 @@ abstract class AbstractFacetRenderer implements FacetRenderer
 
             // remove properties irrelevant for rendering in the template engine
             unset(
-                $facet['renderingInstruction'],
-                $facet['renderingInstruction.'],
-                $facet[$facet['type'] . '.']
+            $facet['renderingInstruction'],
+            $facet['renderingInstruction.'],
+            $facet[$facet['type'] . '.']
             );
 
             $facetTemplate->addVariable('facet', $facet);
