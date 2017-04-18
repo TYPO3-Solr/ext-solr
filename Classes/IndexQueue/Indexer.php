@@ -96,6 +96,13 @@ class Indexer extends AbstractIndexer
     protected $logger = null;
 
     /**
+     * Cache of the sys_language_content information
+     *
+     * @var array
+    */
+    protected static $sysLanguageContent = array();
+
+    /**
      * Constructor
      *
      * @param array $options array of indexer options
@@ -198,6 +205,7 @@ class Indexer extends AbstractIndexer
         $overlayIdentifier = $rootPageUid . '|' . $language;
         if (!isset(self::$sysLanguageOverlay[$overlayIdentifier])) {
             Util::initializeTsfe($rootPageUid, $language);
+            self::$sysLanguageContent[$overlayIdentifier] = $GLOBALS['TSFE']->sys_language_content;
             self::$sysLanguageOverlay[$overlayIdentifier] = $GLOBALS['TSFE']->sys_language_contentOL;
         }
 
@@ -207,12 +215,23 @@ class Indexer extends AbstractIndexer
             $page = GeneralUtility::makeInstance(PageRepository::class);
             $page->init(false);
 
-            $itemRecord = $page->getRecordOverlay(
+            $localizedItemRecord = $page->getRecordOverlay(
                 $item->getType(),
                 $itemRecord,
                 $language,
                 self::$sysLanguageOverlay[$overlayIdentifier]
             );
+            if (!isset($localizedItemRecord['_LOCALIZED_UID'])) {
+                $localizedItemRecord = $page->getRecordOverlay(
+                    $item->getType(),
+                    $itemRecord,
+                    self::$sysLanguageContent[$overlayIdentifier],
+                    self::$sysLanguageOverlay[$overlayIdentifier]
+                );
+            }
+            if ($localizedItemRecord) {
+                $itemRecord = $localizedItemRecord;
+            }
         }
 
         if (!$itemRecord) {
