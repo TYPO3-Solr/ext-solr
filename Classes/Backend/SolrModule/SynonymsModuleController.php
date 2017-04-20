@@ -49,6 +49,7 @@ class SynonymsModuleController extends AbstractModuleController
      */
     protected $moduleTitle = 'Synonyms';
 
+
     /**
      * Gets synonyms for the currently selected core
      *
@@ -78,12 +79,29 @@ class SynonymsModuleController extends AbstractModuleController
         $solrConnection = $this->getSelectedCoreSolrConnection();
         $synonymMap = GeneralUtility::_POST('tx_solr_tools_solradministration');
 
-        if (empty($synonymMap['baseWord']) || empty($synonymMap['synonyms'])) {
+        if ((empty($synonymMap['baseWord']) || empty($synonymMap['synonyms']))
+            && empty($synonymMap['synonymsMulti'])
+        ) {
             $this->addFlashMessage(
                 'Please provide a base word and synonyms.',
                 'Missing parameter',
                 FlashMessage::ERROR
             );
+        } elseif (!empty($synonymMap['synonymsMulti'])) {
+            $lines = GeneralUtility::trimExplode(PHP_EOL, $synonymMap['synonymsMulti'], 1);
+            foreach ($lines as $line) {
+                $synonyms = GeneralUtility::trimExplode(',', $line, 1);
+                $baseWord = array_shift($synonyms);
+                $solrConnection->addSynonym(
+                    $baseWord,
+                    $synonyms
+                );
+            }
+            $solrConnection->reloadCore();
+            $this->addFlashMessage(
+                '"Multiple synonyms added."'
+            );
+
         } else {
             $baseWord = $this->stringUtility->toLower($synonymMap['baseWord']);
             $synonyms = $this->stringUtility->toLower($synonymMap['synonyms']);
