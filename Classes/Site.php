@@ -161,7 +161,13 @@ class Site
      */
     public function getSolrConfiguration()
     {
-        return Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
+        static $rootPageIdSolrConfiguration;
+
+        if (isset($rootPageIdSolrConfiguration)) {
+            return $rootPageIdSolrConfiguration;
+        }
+
+        return $rootPageIdSolrConfiguration = Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
     }
 
     /**
