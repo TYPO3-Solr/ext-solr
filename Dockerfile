@@ -8,7 +8,8 @@ COPY Resources/Private/Solr/ /opt/solr/server/solr
 
 USER root
 
-RUN chown -R solr:solr /opt/solr/server/solr/
+RUN mkdir -p /opt/solr/server/solr/data && \
+    chown -R solr:solr /opt/solr/server/solr/
 
 USER solr
 
