@@ -1,0 +1,14 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+
+<solr:backend.style file="{f:uri.resource(path:'StyleSheets/Backend/IndexQueueModule.css')}" />
+
+<f:if condition="{indexQueueItem.errors}">
+    <p><f:translate key="solr.backend.index_queue_module.error_details"/> (uid: {indexQueueItem.indexQueueUid}, type: {indexQueueItem.type}):</p>
+    <pre class="alert alert-danger">
+        {indexQueueItem.errors}
+    </pre>
+
+    <f:link.action>
+        <f:translate key="solr.backend.index_queue_module.back"/>
+    </f:link.action>
+</f:if>

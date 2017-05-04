@@ -1,0 +1,227 @@
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+<f:layout name="Backend/WithPageTree"/>
+
+<f:section name="Main">
+    <div role="tabpanel">
+        <ul class="nav nav-tabs t3js-tabs" role="tablist" id="tabs-tab" data-store-last-tab="1">
+            <li role="presentation" class="t3js-tabmenu-item  active">
+                <a href="#connections-tab" title="" aria-controls="tab-1" role="tab" data-toggle="tab">
+                    Connections
+                </a>
+            </li>
+            <li role="presentation" class="t3js-tabmenu-item ">
+                <a href="#statistics-tab" title="" aria-controls="tab-3" role="tab" data-toggle="tab">
+                    Statistics
+                </a>
+            </li>
+            <li role="presentation" class="t3js-tabmenu-item ">
+                <a href="#index_fields-tab" title="" aria-controls="tab-2" role="tab" data-toggle="tab">
+                    Index Fields
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="connections-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+                        <f:render section="ConnectionInfos" arguments="{_all}"/>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="statistics-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+                        <f:render section="Statistics" arguments="{_all}"/>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="index_fields-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+                        <f:render section="IndexFields" arguments="{_all}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</f:section>
+
+<f:comment><!-- Sections --></f:comment>
+
+<f:section name="ConnectionInfos">
+    <h2>Site: {site.label}</h2>
+
+    <f:if condition="{connectedHosts}">
+        <f:be.infobox title="Following Apache Solr servers have been contacted:" state="0">
+            <ul>
+                <f:for each="{connectedHosts}" as="connectedHost">
+                    <li>{connectedHost}</li>
+                </f:for>
+            </ul>
+        </f:be.infobox>
+    </f:if>
+
+    <f:if condition="{missingHosts}">
+        <f:be.infobox title="Unable to contact following Apache Solr servers:" state="2">
+            <ul>
+                <f:for each="{missingHosts}" as="missingHost">
+                    <li>{missingHost}</li>
+                </f:for>
+            </ul>
+        </f:be.infobox>
+    </f:if>
+
+    <f:if condition="{invalidPaths}">
+        <f:be.infobox title="Following paths are not valid:" state="1">
+            <ul>
+                <f:for each="{invalidPaths}" as="invalidPath">
+                    <li>{invalidPath}</li>
+                </f:for>
+            </ul>
+            <p>Path should not contain the characters "*, ?, <, >, |, :, or #"!</p>
+        </f:be.infobox>
+    </f:if>
+
+    <hr class="double" />
+    API key: {apiKey}
+
+    <hr class="double" />
+
+    No solr server running? You can use <strong><a href="http://www.hosted-solr.com/" target="_blank">hosted-solr.com</a></strong> to setup a solr core with just a few clicks.
+</f:section>
+
+<f:section name="Statistics">
+    <!-- TODO add buttons to select time frame [last 24h] [last 30 days] [all] -->
+
+    <f:be.pageRenderer
+            loadJQuery="true"
+            includeJsFiles="{
+        0: '{f:uri.resource(path:\'JavaScript/SearchStatistics.js\')}'
+    }"
+    />
+
+    <div class="row">
+        <div class="col-md-12">
+            <script type="application/javascript">
+                var queryLabels = <f:format.raw>{queriesChartLabels}</f:format.raw>;
+                var queryData = {queriesChartData};
+            </script>
+            <canvas id="queriesOverTime"></canvas>
+        </div>
+    </div>
+
+
+    <f:if condition="{top_search_phrases}">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>
+                    <f:translate key="solr.backend.search_statistics_module.top_search_phrases"/>
+                </h2>
+
+                <ul>
+                    <f:for each="{top_search_phrases}" as="phrase">
+                        <li>
+                            {phrase.keywords} ({phrase.count})
+                        </li>
+                    </f:for>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="section-divider" />
+    </f:if>
+
+    <f:if condition="{top_search_phrases_without_hits}">
+        <div class="row section-with-header">
+            <div class="col-md-12">
+                <h2>
+                    <f:translate key="solr.backend.search_statistics_module.top_search_phrases_without_hits"/>
+                </h2>
+
+                <ul>
+                    <f:for each="{top_search_phrases_without_hits}" as="phrase">
+                        <li>
+                            {phrase.keywords} ({phrase.count})
+                        </li>
+                    </f:for>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="section-divider" />
+    </f:if>
+
+    <div class="row section-with-header">
+        <div class="col-md-12">
+            <h2>
+                <f:translate key="solr.backend.search_statistics_module.search_phrases_header"/>
+            </h2>
+
+            <f:if condition="{search_phrases_statistics}">
+                <f:then>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr class="t3-row-header">
+                            <th class="nowrap">&nbsp;</th>
+                            <th>
+                                <f:translate key="solr.backend.search_statistics_module.item_phrase"/>
+                            </th>
+                            <th>
+                                <f:translate key="solr.backend.search_statistics_module.item_count"/>
+                            </th>
+                            <th>
+                                <f:translate key="solr.backend.search_statistics_module.results"/>
+                            </th>
+                            <th>
+                                <f:translate key="solr.backend.search_statistics_module.percentage"/>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <f:for each="{search_phrases_statistics}" as="item" iteration="i">
+                            <tr>
+                                <td class="nowrap"><strong>{i.cycle}.</strong></td>
+                                <td>{item.keywords}</td>
+                                <td>{item.count}</td>
+                                <td>{item.hits}</td>
+                                <td><f:format.number decimals="1">{item.percent}</f:format.number>%</td>
+                            </tr>
+                        </f:for>
+                        </tbody>
+                    </table>
+                </f:then>
+                <f:else>
+                    <f:be.infobox state="2">
+                        <f:translate key="solr.backend.search_statistics_module.no_records_found"/>
+                    </f:be.infobox>
+                </f:else>
+            </f:if>
+        </div>
+    </div>
+</f:section>
+
+<f:section name="IndexFields">
+    <div class="panel-group" id="index-fields_accordion">
+        <f:for each="{indexFieldsInfoByCorePaths}" as="indexFieldsInfoForCore" iteration="iterator">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
+                            <f:then>
+                                <a data-toggle="collapse" data-parent="#index-fields_accordion" href="#collapse-core{iterator.index}">{indexFieldsInfoForCore.corePath}</a>
+                            </f:then>
+                            <f:else>
+                                <a>{indexFieldsInfoForCore.corePath} is empty!</a>
+                            </f:else>
+                        </f:if>
+                    </h4>
+                </div>
+                <div id="collapse-core{iterator.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'in')}">
+                    <div class="panel-body">
+                        <f:render partial="ApacheSolr/FieldTypesForSingleCore" arguments="{indexFieldsInfoForCore: indexFieldsInfoForCore}"/>
+                    </div>
+                </div>
+            </div>
+        </f:for>
+    </div>
+</f:section>

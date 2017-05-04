@@ -187,7 +187,7 @@ class StatisticsRepository
             'bucket ASC'
         );
 
-        return $queries;
+        return (array)$queries;
     }
 
     /**

@@ -5,10 +5,57 @@
 			<generator>LFEditor</generator>
 		</header>
 		<body>
+
+		<!-- Backend module -->
+			<trans-unit id="module_main_label" xml:space="preserve">
+				<source>Apache Solr</source>
+			</trans-unit>
+
+			<trans-unit id="module_core_optimization_label" xml:space="preserve">
+				<source>Core Optimization</source>
+			</trans-unit>
+
+			<trans-unit id="module_indexqueue_label" xml:space="preserve">
+				<source>Index Queue</source>
+			</trans-unit>
+
+			<trans-unit id="solr.backend.index_administration.label" xml:space="preserve">
+				<source>Index Administration</source>
+			</trans-unit>
+
+			<trans-unit id="module_searchstatistics_label" xml:space="preserve">
+				<source>Search Statistics</source>
+			</trans-unit>
+
+			<trans-unit id="module_info_label" xml:space="preserve">
+				<source>Info</source>
+			</trans-unit>
+		<!-- End: Backend module -->
+
 			<trans-unit id="cache_initialize_solr_connections" xml:space="preserve">
 				<source>Initialize Solr connections</source>
 			</trans-unit>
-			<!-- From Backend/locallang.xlf //-->
+
+		<!-- Index Administration -->
+			<trans-unit id="solr.backend.index_administration.description" xml:space="preserve">
+				<source>The Index Administration Module is responsible for emptying the cores(deleting documents) on Solr Server and index queues in TYPO3 CMS. </source>
+			</trans-unit>
+
+			<trans-unit id="solr.backend.index_administration.index_emptied_all" xml:space="preserve">
+				<source>Index emptied for Site "%s" (%s).</source>
+			</trans-unit>
+
+			<trans-unit id="solr.backend.index_administration.success.queue_emptied" xml:space="preserve">
+				<source>Index Queue emptied for Site "%s".</source>
+			</trans-unit>
+
+			<trans-unit id="solr.backend.index_administration.error.on_empty_index" xml:space="preserve">
+				<source>An error occurred while trying to delete documents from the index: %s</source>
+			</trans-unit>
+		<!-- End: Index Maintenance -->
+
+
+		<!-- From Backend/locallang.xlf //-->
 			<trans-unit id="module_indexinspector" xml:space="preserve">
 				<source>Search Index Inspector</source>
 			</trans-unit>
@@ -18,6 +65,30 @@
 			<trans-unit id="plugin_results_description" xml:space="preserve">
 				<source>A search form and results list.</source>
 			</trans-unit>
+
+		<!-- Backend Components -->
+			<!-- SiteSelector -->
+			<trans-unit id="siteselector_switched_successfully" xml:space="preserve">
+				<source>Successfully switched to Site "%s".</source>
+			</trans-unit>
+
+			<trans-unit id="siteselector_switched_to_first_available_site" xml:space="preserve">
+				<source>The previously selected Site "%s" does not exist or the indexing for that Site was disabled. Switched to "%s", which was the first available one.</source>
+			</trans-unit>
+
+			<trans-unit id="siteselector_site_does_not_exist_anymore" xml:space="preserve">
+				<source>Couldn't switch to the Site "%s". This site does not exist anymore or the indexing for that Site was disabled. Switched to the first available Site "%s".</source>
+			</trans-unit>
+
+			<!-- CoreSelector -->
+			<trans-unit id="coreselector_switched_to_default_core" xml:space="preserve">
+				<source>The previously selected core "%s" is not available in "%s" site, therefore switched to default core "%s".</source>
+			</trans-unit>
+
+			<trans-unit id="coreselector_switched_successfully" xml:space="preserve">
+				<source>Successfully switched to core "%s".</source>
+			</trans-unit>
+		<!-- End: Backend Components -->
 
 			<!-- From ModuleAdministration/locallang.xlf //-->
 			<trans-unit id="mlang_labels_tablabel" xml:space="preserve">
@@ -246,9 +317,6 @@
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.button.clear_index_queue" xml:space="preserve">
 				<source>Clear Index Queue</source>
-			</trans-unit>
-			<trans-unit id="solr.backend.danger_zone" xml:space="preserve">
-				<source>Danger Zone</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.back" xml:space="preserve">
 				<source>&lt; Go back</source>

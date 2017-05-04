@@ -28,7 +28,7 @@
                 <div class="panel-group">
                 <f:for each="{documents}" as="document">
                     <f:comment><!-- Shows apache solr document. If only one document for given type given, then document inside is expanded. Collapsed othervise.--></f:comment>
-                    <f:render partial="ApacheSolrDocument/SingleDocument" arguments="{document: document, documentType: documentType, documentsCount: '{f:count(subject: documents)}'}"/>
+                    <f:render partial="ApacheSolr/SingleDocument" arguments="{document: document, documentType: documentType, documentsCount: '{f:count(subject: documents)}'}"/>
                 </f:for>
                 </div>
             </div>
