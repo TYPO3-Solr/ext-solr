@@ -39,7 +39,7 @@ Our issue tracker is on `GitHub <https://github.com/TYPO3-Solr/ext-solr/issues/>
 **Where can I report a security issue?**
 
 If you have found a security issue in our extension, please do not post about it in a public channel.
-Please `send us an email <mailto:team-solr@dkd.de>`_ with detailed description of found vulnerability.
+Please send an email to the `TYPO3 security team <mailto:security@typo3.org>`_ with detailed description of found vulnerability. For more details about security issue handling see `https://typo3.org/teams/security/contact-us/`
 
 |
 
