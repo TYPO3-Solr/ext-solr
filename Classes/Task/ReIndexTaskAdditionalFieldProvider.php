@@ -133,7 +133,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         );
 
         $additionalFields['clearSearchIndex'] = array(
-            'code' => '<input type="checkbox" name="tx_scheduler[clearSearchIndex]" value="1" ' . (($task->shouldClearSearchIndex()) ? 'checked="checked"' : '') . ' />',
+            'code' => '<input type="checkbox" name="tx_scheduler[clearSearchIndex]" value="1" ' . (($task && $task->shouldClearSearchIndex()) ? 'checked="checked"' : '') . ' />',
             'label' => 'LLL:EXT:solr/Resources/Private/Language/ModuleScheduler.xml:reindex_field_clearSearchIndex',
             'cshKey' => '',
             'cshLabel' => ''
