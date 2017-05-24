@@ -109,6 +109,11 @@ class RootPageResolver implements SingletonInterface
             return false;
         }
 
+        // Page -1 is a workspace thing
+        if ($pageId === -1) {
+            return false;
+        }
+
         $cacheId = 'RootPageResolver' . '_' . 'getIsRootPageId' . '_' . $pageId;
         $isSiteRoot = $this->runtimeCache->get($cacheId);
         if (!empty($isSiteRoot)) {
