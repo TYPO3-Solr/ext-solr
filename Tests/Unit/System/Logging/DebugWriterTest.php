@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Logging;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Logging\DebugWriter;
-use ApacheSolrForTypo3\Solr\System\Logging\DevLogDebugWriter;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
