@@ -109,6 +109,16 @@ class RootPageResolverTest extends UnitTest
     /**
      * @test
      */
+    public function getIsRootPageWithPageIdMinusOne() {
+        $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
+        $rootPage = $rootPageResolver->getIsRootPageId(-1);
+
+        $this->assertEquals(false, $rootPage);
+    }
+
+    /**
+     * @test
+     */
     public function getIsRootPageIdWithUnknownPageId() {
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
 
