@@ -147,28 +147,7 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-// @Todo This should be removed when we don't support 7.6 LTS anymore
-if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= VersionNumberUtility::convertVersionNumberToInteger('8.0')) {
-    $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
-} else {
-    // register click menu item to initialize the Solr connections for a single site
-    // visible for admin users only
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('
-    [adminUser = 1]
-    options.contextMenu.table.pages.items.850 = ITEM
-    options.contextMenu.table.pages.items.850 {
-        name = Tx_Solr_initializeSolrConnections
-        label = Initialize Solr Connections
-        iconName = extensions-solr-module-initsolrconnection
-        displayCondition = getRecord|is_siteroot = 1
-        callbackAction = initializeSolrConnections
-    }
-
-    options.contextMenu.table.pages.items.851 = DIVIDER
-    [global]
-    ');
-}
-
+$GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
     'TYPO3.Solr.ContextMenuActionController',
