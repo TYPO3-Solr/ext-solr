@@ -277,10 +277,16 @@ class Indexer extends AbstractIndexer
         $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
 
         if (count($fields) === 0) {
-            throw new \RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
-                '" on root page uid ' . $item->getRootPageUid() . ' could not be found!', 1455530112);
-        }
+            $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(), true, $language);
+            if (!empty($solrConfiguration->getIndexQueueAdditionalPageIdsByConfigurationName($indexConfigurationName))) {
+                $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
+            }
 
+            if (count($fields) === 0) {
+                throw new \RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
+                    '" on root page uid ' . $item->getRootPageUid() . ' could not be found!', 1455530112);
+            }
+        }
         return $fields;
     }
 
