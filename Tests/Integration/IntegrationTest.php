@@ -160,18 +160,21 @@ abstract class IntegrationTest extends TYPO3IntegrationTest
     /**
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0)
+    protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '')
     {
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
-            $TYPO3_CONF_VARS, $id, $type);
+            $TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT);
         EidUtility::initLanguage();
+
         $TSFE->initFEuser();
         $TSFE->set_no_cache();
         $TSFE->checkAlternativeIdMethods();
+        $TSFE->clear_preview();
         $TSFE->determineId();
         $TSFE->initTemplate();
         $TSFE->getConfigArray();
+
         Bootstrap::getInstance();
         $TSFE->settingLanguage();
         $TSFE->settingLocale();

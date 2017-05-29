@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solrfal\Queue\Queue;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -99,6 +100,41 @@ class ConnectionManagerTest extends IntegrationTest
         $connectionManager->updateConnectionByRootPageId(2);
         $connections = $connectionManager->getAllConnections();
         $this->assertEquals(1, count($connections), 'There should be one connection present');
+    }
+
+    /**
+     * ConnectionManager must use the connection for site(tree), where mount Point is defined.
+     *
+     * There is following scenario:
+     *
+     *     [0]
+     *     |
+     *     ——[20] Shared-Pages (Folder)
+     *     |   |
+     *     |   ——[24] FirstShared
+     *     |       |
+     *     |       ——[25] first sub page from FirstShared
+     *     |       |
+     *     |       ——[26] second sub page from FirstShared
+     *     |
+     *     ——[ 1] Page (Root)
+     *         |
+     *         ——[14] Mount Point 1 (to [24] to show contents from)
+     *
+     * @test
+     */
+    public function canFindSolrConnectionForMountedPageIfMountPointIsGiven()
+    {
+        $this->importDataSetFromFixture('can_find_connection_for_mouted_page.xml');
+
+        /** @var $connectionManager ConnectionManager */
+        $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+
+        $solrService = $connectionManager->getConnectionByPageId(24, 0, '24-14');
+        $this->assertInstanceOf(SolrService::class, $solrService, 'Should find solr connection for level 0 of mounted page.');
+
+        $solrService1 = $connectionManager->getConnectionByPageId(25, 0, '24-14');
+        $this->assertInstanceOf(SolrService::class, $solrService1, 'Should find solr connection for level 1 of mounted page.');
     }
 
     /**

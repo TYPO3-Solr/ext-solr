@@ -122,7 +122,8 @@ class Page extends AbstractInitializer
                 continue;
             }
 
-            $mountedPages = $this->resolveMountPageTree($mountPage['mountPageSource']);
+
+            $mountedPages = $this->resolveMountPageTree($mountPage);
 
             // handling mount_pid_ol behavior
             if ($mountPage['mountPageOverlayed']) {
@@ -235,7 +236,7 @@ class Page extends AbstractInitializer
      */
     protected function addMountedPagesToIndexQueue(array $mountedPages, array $mountProperties)
     {
-        $mountPointPageIsWithExistingQueueEntry = $this->getPageIdsOfExistingMountPages($mountedPages);
+        $mountPointPageIsWithExistingQueueEntry = $this->getPageIdsOfExistingMountPages($mountProperties);
         $mountedPagesThatNeedToBeAdded = array_diff($mountedPages, $mountPointPageIsWithExistingQueueEntry);
 
         if (count($mountedPagesThatNeedToBeAdded) === 0) {
@@ -260,15 +261,16 @@ class Page extends AbstractInitializer
     /**
      * Retrieves an array of pageIds from mountPoints that allready have a queue entry.
      *
-     * @param array $mountedPages
+     * @param array $mountProperties
      * @return array
      */
-    protected function getPageIdsOfExistingMountPages($mountedPages)
+    protected function getPageIdsOfExistingMountPages($mountProperties)
     {
+        $identifier = $this->getMountPointIdentifier($mountProperties);
         $queueItemsOfExistingMountPoints = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'COUNT(*) AS queueItemCount,item_uid',
             'tx_solr_indexqueue_item',
-            'item_type="pages" AND item_uid IN (' . implode(',', $mountedPages) . ')',
+            'item_type="pages" AND pages_mountidentifier = '. $identifier,
             'item_uid',
             '',
             '',
@@ -326,12 +328,12 @@ class Page extends AbstractInitializer
      * Builds an identifier of the given mount point properties.
      *
      * @param array $mountProperties Array with mount point properties (mountPageSource, mountPageDestination, mountPageOverlayed)
-     * @return string String consisting of mountPageDestination-mountPageSource-mountPageOverlayed
+     * @return string String consisting of mountPageSource-mountPageDestination-mountPageOverlayed
      */
     protected function getMountPointIdentifier(array $mountProperties)
     {
-        return $mountProperties['mountPageDestination']
-        . '-' . $mountProperties['mountPageSource']
+        return $mountProperties['mountPageSource']
+        . '-' . $mountProperties['mountPageDestination']
         . '-' . $mountProperties['mountPageOverlayed'];
     }
 
@@ -360,13 +362,17 @@ class Page extends AbstractInitializer
     /**
      * Gets all the pages from a mounted page tree.
      *
-     * @param int $mountPageSourceId
+     * @param array $mountPage
      * @return array An array of page IDs in the mounted page tree
      */
-    protected function resolveMountPageTree($mountPageSourceId)
+    protected function resolveMountPageTree($mountPage)
     {
+        $mountPageSourceId = $mountPage['mountPageSource'];
+        $mountPageIdentifier = $this->getMountPointIdentifier($mountPage);
+
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $mountedSite = $siteRepository->getSiteByPageId($mountPageSourceId);
+        /* @var $siteRepository SiteRepository */
+        $mountedSite = $siteRepository->getSiteByPageId($mountPageSourceId, $mountPageIdentifier);
 
         return $mountedSite->getPages($mountPageSourceId);
     }

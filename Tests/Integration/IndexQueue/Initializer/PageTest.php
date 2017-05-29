@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Initializer;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -84,15 +85,21 @@ class PageTest extends IntegrationTest
      *
      * @return void
      */
-    protected function initializePageIndexQueue()
+    protected function initializeAllPageIndexQueues()
     {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getFirstAvailableSite();
-        $this->pageInitializer->setIndexingConfigurationName('pages');
-        $this->pageInitializer->setSite($site);
-        $this->pageInitializer->setType('pages');
-        $this->pageInitializer->initialize();
+        /* @var $siteRepository SiteRepository */
+        $sites = $siteRepository->getAvailableSites();
+
+        foreach($sites as $site) {
+            $this->pageInitializer->setIndexingConfigurationName('pages');
+            $this->pageInitializer->setSite($site);
+            $this->pageInitializer->setType('pages');
+            $this->pageInitializer->initialize();
+        }
     }
+
+
 
     /**
      * In this testcase we check if the pages queue will be initialized as expected
@@ -112,7 +119,7 @@ class PageTest extends IntegrationTest
         $this->importDataSetFromFixture('can_add_mount_pages.xml');
 
         $this->assertEmptyQueue();
-        $this->initializePageIndexQueue();
+        $this->initializeAllPageIndexQueues();
 
         $this->assertItemsInQueue(4);
 
@@ -126,6 +133,121 @@ class PageTest extends IntegrationTest
     }
 
     /**
+     * In this testcase we check if the pages queue will be initialized as expected
+     * when we have a page with mounted page from other site tree, which is not marked as siteroot.
+     *
+     *     [0]
+     *      |
+     *      ——[20] Shared-Pages (Not root)
+     *      |   |
+     *      |   ——[24] FirstShared_NotRoot
+     *      |
+     *      ——[ 1] Page (Root)
+     *          |
+     *          ——[14] Mounted Page (to [24] to show contents from)
+     *
+     * @test
+     */
+    public function initializerIsFillingQueueWithMountedNonRootPages()
+    {
+        $this->importDataSetFromFixture('mouted_shared_non_root_page_from_different_tree_can_be_indexed.xml');
+        $this->assertEmptyQueue();
+        $this->initializeAllPageIndexQueues();
+        $this->assertItemsInQueue(3);
+
+        $this->assertTrue($this->indexQueue->containsItem('pages', 1));
+        // we should check if the mountpoint itself should be in the queue
+        $this->assertTrue($this->indexQueue->containsItem('pages', 14));
+        $this->assertTrue($this->indexQueue->containsItem('pages', 24));
+
+        $items = $this->indexQueue->getItems('pages', 24);
+        $firstItem = $items[0];
+
+        $this->assertSame('24-14-1', $firstItem->getMountPointIdentifier());
+    }
+
+    /**
+     * In this testcase we check if the pages queue will be initialized as expected
+     * when we have a page with mounted page from other site tree, which is not marked as siteroot.
+     *
+     *     [0]
+     *      |
+     *      ——[20] Shared-Pages (Folder: Not root)
+     *      |   |
+     *      |   ——[24] FirstShared_Root
+     *      |
+     *      ——[ 1] Page (Root)
+     *          |
+     *          ——[14] Mounted Page (to [24] to show contents from)
+     *
+     * @test
+     */
+    public function initializerIsFillingQueueWithMountedRootPages()
+    {
+        $this->importDataSetFromFixture('mouted_shared_root_page_from_different_tree_can_be_indexed.xml');
+        $this->assertEmptyQueue();
+        $this->initializeAllPageIndexQueues();
+        $this->assertItemsInQueue(3);
+
+        $this->assertTrue($this->indexQueue->containsItem('pages', 1));
+        // we should check if the mountpoint itself should be in the queue
+        $this->assertTrue($this->indexQueue->containsItem('pages', 14));
+        $this->assertTrue($this->indexQueue->containsItem('pages', 24));
+
+        $items = $this->indexQueue->getItems('pages', 24);
+        $firstItem = $items[0];
+
+        $this->assertSame('24-14-1', $firstItem->getMountPointIdentifier());
+    }
+
+    /**
+     * In this testcase we check if the pages queue will be initialized as expected
+     * when we have two pages with mounted page from other site tree, which is not marked as siteroot.
+     *
+     *     [0]
+     *      |
+     *      ——[20] Shared-Pages (Folder: Not root)
+     *      |   |
+     *      |   ——[24] FirstShared_Root
+     *      |
+     *      ——[ 1] Page (Root)
+     *      |   |
+     *      |   ——[14] Mounted Page (to [24] to show contents from)
+     *      |
+     *      ——[ 2] Page2 (Root)
+     *          |
+     *          ——[34] Mounted Page (to [24] to show contents from)
+     *
+     * @test
+     */
+    public function initializerIsFillingQueuesWithMultipleSitesMounted()
+    {
+        $this->importDataSetFromFixture('mouted_shared_page_from_multiple_trees_can_be_queued.xml');
+        $this->assertEmptyQueue();
+        $this->initializeAllPageIndexQueues();
+        $this->assertItemsInQueue(6);
+
+        $this->assertTrue($this->indexQueue->containsItem('pages', 1));
+        // we should check if the mountpoint itself should be in the queue
+        $this->assertTrue($this->indexQueue->containsItem('pages', 14));
+        $this->assertTrue($this->indexQueue->containsItem('pages', 24));
+
+        $this->assertTrue($this->indexQueue->containsItem('pages', 2));
+        $this->assertTrue($this->indexQueue->containsItem('pages', 34));
+
+        $items = $this->indexQueue->getItems('pages', 24);
+        $firstItem = $items[0];
+
+        $this->assertSame('24-14-1', $firstItem->getMountPointIdentifier());
+
+        $secondItem = $items[1];
+        $this->assertSame('24-34-1', $secondItem->getMountPointIdentifier());
+    }
+
+
+
+
+    /**
      * Check if invalid mount page is ignored and messages were added to the flash
      * message queue
      *
@@ -136,7 +258,7 @@ class PageTest extends IntegrationTest
         $this->importDataSetFromFixture('can_add_mount_pages.xml');
 
         $this->assertEmptyQueue();
-        $this->initializePageIndexQueue();
+        $this->initializeAllPageIndexQueues();
 
         $this->assertItemsInQueue(4);
 

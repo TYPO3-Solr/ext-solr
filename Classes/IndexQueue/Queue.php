@@ -730,12 +730,33 @@ class Queue
      */
     public function getItems($itemType, $itemUid)
     {
+        $whereClause = 'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType, 'tx_solr_indexqueue_item') . ' AND item_uid = ' . intval($itemUid);
+        return $this->getItemsByWhereClause($whereClause);
+    }
+
+    /**
+     * Returns all items in the queue.
+     *
+     * @return Item[] An array of items matching $itemType and $itemUid
+     */
+    public function getAllItems()
+    {
+        return $this->getItemsByWhereClause('1 = 1');
+    }
+
+    /**
+     * Returns a collection of items by whereClause.
+     *
+     * @param string $whereClause
+     * @return array
+     */
+    protected function getItemsByWhereClause($whereClause = '1=1')
+    {
         $indexQueueItemRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             '*',
             'tx_solr_indexqueue_item',
-            'item_type = ' . $GLOBALS['TYPO3_DB']->fullQuoteStr($itemType,
-                'tx_solr_indexqueue_item') .
-            ' AND item_uid = ' . intval($itemUid)
+            $whereClause
+
         );
 
         return $this->getIndexQueueItemObjectsFromRecords($indexQueueItemRecords);

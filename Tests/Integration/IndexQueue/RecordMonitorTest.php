@@ -390,9 +390,11 @@ class RecordMonitorTest extends IntegrationTest
     }
 
     /**
+     *
+     *
      * @test
      */
-    public function mountPointIsOnlyAddedOnceOnUpdate()
+    public function mountPointIsOnlyAddedOnceForEachTree()
     {
         $this->importDataSetFromFixture('mount_pages_are_added_once.xml');
         $this->assertEmptyIndexQueue();
@@ -410,10 +412,14 @@ class RecordMonitorTest extends IntegrationTest
 
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
             $this->dataHandler);
-        $this->assertIndexQueueContainsItemAmount(1);
+
+        // we assert that the page is added twice, once for the original tree and once for the mounted tree
+        $this->assertIndexQueueContainsItemAmount(2);
+        /* @var $indexQueue Queue */
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
             $this->dataHandler);
-        $this->assertIndexQueueContainsItemAmount(1);
+        // we assert that the page is added twice, once for the original tree and once for the mounted tree
+        $this->assertIndexQueueContainsItemAmount(2);
     }
 
     /**
