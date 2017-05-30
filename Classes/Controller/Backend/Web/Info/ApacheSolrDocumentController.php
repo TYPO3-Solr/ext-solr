@@ -24,12 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
-use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Administration module controller

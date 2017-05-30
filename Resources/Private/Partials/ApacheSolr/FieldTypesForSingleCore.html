@@ -1,0 +1,56 @@
+
+<f:if condition="{indexFieldsInfoForCore.noError}">
+
+    <f:if condition="{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}">
+        <f:then>
+            <div class="row core-metrics">
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        <p>{indexFieldsInfoForCore.coreMetrics.numberOfDocuments}</p>
+                        <h3>Documents</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        <p>{indexFieldsInfoForCore.coreMetrics.numberOfDeletedDocuments}</p>
+
+                        <h3>Deleted Documents</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="well text-center">
+                        <p>{indexFieldsInfoForCore.coreMetrics.numberOfFields}</p>
+                        <h3>Fields</h3>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                <tr class="t3-row-header">
+                    <th>Field Name</th>
+                    <th>Index Field Type</th>
+                    <th># Documents</th>
+                    <th>Distinct Terms</th>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{indexFieldsInfoForCore.fields}" as="field">
+                    <tr>
+                        <td>{field.name}</td>
+                        <td>{field.type}</td>
+                        <td>{field.docs}</td>
+                        <td>{field.terms}</td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </f:then>
+
+        <f:else>
+            <div class="well">
+                <p>Your index in "{indexFieldsInfoForCore.corePath}" is empty.</p>
+            </div>
+        </f:else>
+    </f:if>
+</f:if>

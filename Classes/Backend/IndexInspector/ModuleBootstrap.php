@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Backend\IndexInspector;
  ***************************************************************/
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Core\Bootstrap;
 
 /**
@@ -71,14 +70,14 @@ class ModuleBootstrap
         $configuration = [
             'vendorName' => 'ApacheSolrForTypo3',
             'extensionName' => 'Solr',
-            'pluginName' => 'tools_SolrAdministration'
+            'pluginName' => 'searchbackend_SolrInfo'
         ];
         // Yeah, this is ugly. But currently, there is no other direct way
         // in extbase to force a specific controller in backend mode.
         // Overwriting $_GET was the most simple solution here until extbase
         // provides a clean way to solve this.
 
-        $_GET['tx_solr_tools_solradministration']['controller'] = 'Backend\\Web\\Info\\ApacheSolrDocument';
+        $_GET['tx_solr_searchbackend_solrinfo']['controller'] = 'Backend\\Web\\Info\\ApacheSolrDocument';
         /* @var $extbaseBootstrap Bootstrap */
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
         return $extbaseBootstrap->run('', $configuration);

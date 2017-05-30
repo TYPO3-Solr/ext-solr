@@ -1,0 +1,8 @@
+<f:if condition="{can_not_proceed}">
+    <f:then>
+        <f:render partial="Backend/NoSiteAvailable" arguments="{_all}"/>
+    </f:then>
+    <f:else>
+        <f:render section="Main"/>
+    </f:else>
+</f:if>
