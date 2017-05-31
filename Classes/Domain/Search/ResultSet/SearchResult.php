@@ -137,4 +137,60 @@ class SearchResult extends \Apache_Solr_Document
     {
         $this->variantParent = $variantParent;
     }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->_fields['content'];
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsElevated()
+    {
+        return $this->_fields['isElevated'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->_fields['type'];
+    }
+
+    /**
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->_fields['id'];
+    }
+
+    /**
+     * @return float
+     */
+    public function getScore()
+    {
+        return $this->_fields['score'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->_fields['url'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->_fields['title'];
+    }
 }

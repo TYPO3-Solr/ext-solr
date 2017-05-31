@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers">
+
+<f:layout name="Main"/>
+
+<f:section name="main">
+	<f:if condition="{document}">
+		<f:then>
+			<h1>{document.title}</h1>
+
+			<p>{document.content}</p>
+
+			<a href="{document.url}">open</a>
+		</f:then>
+		<f:else>No document found!</f:else>
+	</f:if>
+</f:section>

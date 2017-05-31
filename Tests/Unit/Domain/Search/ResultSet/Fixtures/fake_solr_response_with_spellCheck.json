@@ -1,0 +1,74 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 5,
+        "params": {
+            "hl.fragsize": "200",
+            "spellcheck": "true",
+            "enableElevation": "false",
+            "facet": "true",
+            "facet.mincount": "1",
+            "spellcheck.maxCollationTries": "0",
+            "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline",
+            "hl.simple.pre": "<span class=\"results-highlight\">",
+            "json.nl": "map",
+            "hl.fl": "content",
+            "wt": "json",
+            "spellcheck.collate": "true",
+            "hl": "true",
+            "rows": "10",
+            "fl": "*,score",
+            "debugQuery": "true",
+            "echoParams": "all",
+            "start": "0",
+            "facet.sort": "count",
+            "q": "tipo3",
+            "hl.simple.post": "</span>",
+            "facet.field": "type",
+            "fq": [
+                "siteHash:\"c56040516adcfdb545d2120d595a56930f6ddaa3\"",
+                "{!typo3access}-1,0"
+            ],
+            "hl.requireFieldMatch": "true",
+            "mm": "2<-35%",
+            "indent": "true",
+            "spellcheck.extendedResults": "false",
+            "hl.mergeContiguous": "true",
+            "f.content.hl.maxAlternateFieldLength": "200",
+            "spellcheck.onlyMorePopular": "false",
+            "defType": "edismax",
+            "pf": "content^2.0",
+            "df": "content",
+            "hl.snippets": "3",
+            "f.content.hl.alternateField": "content",
+            "spellcheck.dictionary": [
+                "default",
+                "wordbreak"
+            ],
+            "q.op": "OR",
+            "spellcheck.count": "1",
+            "ps": "15"
+        }
+    },
+    "response": {
+        "numFound": 0,
+        "start": 0,
+        "maxScore": 0.0,
+        "docs": [
+
+        ]
+    },
+    "spellcheck": {
+        "suggestions": {
+            "tipo3": {
+                "numFound": 1,
+                "startOffset": 0,
+                "endOffset": 5,
+                "suggestion": [
+                    "typo3"
+                ]
+            },
+            "collation": "typo3"
+        }
+    }
+}
