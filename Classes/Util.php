@@ -86,19 +86,19 @@ class Util
      * Generates a document id in the form $siteHash/$type/$uid.
      *
      * @param string $table The records table name
-     * @param int $pid The record's pid
+     * @param int $rootPageId The record's site root id
      * @param int $uid The record's uid
      * @param string $additionalIdParameters Additional ID parameters
      * @return string A document id
      */
     public static function getDocumentId(
         $table,
-        $pid,
+        $rootPageId,
         $uid,
         $additionalIdParameters = ''
     ) {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getSiteByPageId($pid);
+        $site = $siteRepository->getSiteByPageId($rootPageId);
         $siteHash = $site->getSiteHash();
 
         $documentId = $siteHash . '/' . $table . '/' . $uid;

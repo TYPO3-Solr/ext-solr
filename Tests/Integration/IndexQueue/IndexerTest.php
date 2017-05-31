@@ -301,6 +301,32 @@ class IndexerTest extends IntegrationTest
 
 
     /**
+     * @test
+     */
+    public function testCanIndexCustomRecordOutsideOfSiteRoot()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+
+        // create fake extension database table and TCA
+        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePathByName('fake_extension2_mmrelated_tca.php'));
+        $this->importDataSetFromFixture('can_index_custom_record_outside_site_root.xml');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
+
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the value from the mm relation?
+        $this->waitToBeVisibleInSolr();
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"external testnews"', $solrContent, 'Could not index document into solr');
+        $this->cleanUpSolrServerAndAssertEmpty();
+    }
+
+    /**
      * @param string $table
      * @param int $uid
      * @return \Apache_Solr_Response

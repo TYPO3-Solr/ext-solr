@@ -272,16 +272,53 @@ class Indexer extends AbstractIndexer
      */
     protected function getItemTypeConfiguration(Item $item, $language = 0)
     {
-        $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRecordPageId(), true, $language);
         $indexConfigurationName = $item->getIndexingConfigurationName();
-        $fields = $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
-
+        $fields = $this->getFieldConfigurationFromItemRecordPage($item, $language, $indexConfigurationName);
         if (count($fields) === 0) {
-            throw new \RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
-                '" on root page uid ' . $item->getRootPageUid() . ' could not be found!', 1455530112);
+            $fields = $this->getFieldConfigurationFromItemRootPage($item, $language, $indexConfigurationName);
+            if (count($fields) === 0) {
+                throw new \RuntimeException('The item indexing configuration "' . $item->getIndexingConfigurationName() .
+                    '" on root page uid ' . $item->getRootPageUid() . ' could not be found!', 1455530112);
+            }
         }
 
         return $fields;
+    }
+
+    /**
+     * The method retrieves the field configuration of the items record page id (pid).
+     *
+     * @param Item $item
+     * @param integer $language
+     * @param string $indexConfigurationName
+     * @return array
+     */
+    protected function getFieldConfigurationFromItemRecordPage(Item $item, $language, $indexConfigurationName)
+    {
+        try {
+            $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRecordPageId(), true, $language);
+            return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * The method returns the field configuration of the items root page id (uid of the related root page).
+     *
+     * @param Item $item
+     * @param integer $language
+     * @param string $indexConfigurationName
+     * @return array
+     */
+    protected function getFieldConfigurationFromItemRootPage(Item $item, $language, $indexConfigurationName)
+    {
+        $solrConfiguration = Util::getSolrConfigurationFromPageId($item->getRootPageUid(), true, $language);
+        if (empty($solrConfiguration->getIndexQueueAdditionalPageIdsByConfigurationName($indexConfigurationName))) {
+            return [];
+        }
+
+        return $solrConfiguration->getIndexQueueFieldsConfigurationByConfigurationName($indexConfigurationName, []);
     }
 
     /**
@@ -322,11 +359,7 @@ class Indexer extends AbstractIndexer
         /* @var $document Apache_Solr_Document */
 
         // required fields
-        $document->setField('id', Util::getDocumentId(
-            $item->getType(),
-            $itemRecord['pid'],
-            $itemRecord['uid']
-        ));
+        $document->setField('id', Util::getDocumentId($item->getType(), $site->getRootPageId(), $itemRecord['uid']));
         $document->setField('type', $item->getType());
         $document->setField('appKey', 'EXT:solr');
 
