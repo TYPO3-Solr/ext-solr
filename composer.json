@@ -29,7 +29,8 @@
   },
   "replace": {
     "solr": "self.version",
-    "typo3-ter/solr": "self.version"
+    "typo3-ter/solr": "self.version",
+    "apache-solr-for-typo3/solrfluid": "*"
   },
   "autoload": {
     "classmap": [

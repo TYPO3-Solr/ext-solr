@@ -26,33 +26,29 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Format;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrViewHelper;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\CompilableInterface;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * ViewHelper to implode an array with a specific glue value.
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class ImplodeViewHelper extends AbstractSolrViewHelper implements CompilableInterface
+class ImplodeViewHelper extends AbstractSolrViewHelper
 {
+    use CompileWithRenderStatic;
+
     // Set $escapeOutput to false in order to ensure that "newline" is handled correctly
     protected $escapeOutput = false;
 
     /**
-     * This ViewHelper can be used to implode the values of an array into one string.
-     *
-     * @param string $glue The glue value that should be used on implode
-     * @param array $value The array that should be imploded.
-     * @return string
+     * Initializes the arguments
      */
-    public function render($glue = ',', $value = [])
+    public function initializeArguments()
     {
-        return static::renderStatic(
-            ['glue' => $glue, 'value' => $value],
-            $this->buildRenderChildrenClosure(),
-            $this->renderingContext
-        );
+        parent::initializeArguments();
+        $this->registerArgument('glue', 'string', 'The glue value', false, ',');
+        $this->registerArgument('value', 'array', 'The the array to implode', false, []);
     }
 
     /**

@@ -25,6 +25,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingCollection;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
@@ -77,6 +82,115 @@ class SearchResultSet
      * @var array
      */
     protected $searchResults = [];
+
+    /**
+     * @var int
+     */
+    protected $allResultCount = 0;
+
+    /**
+     * @var Suggestion[]
+     */
+    protected $spellCheckingSuggestions = [];
+
+    /**
+     * @var FacetCollection
+     */
+    protected $facets = null;
+
+    /**
+     * @var SortingCollection
+     */
+    protected $sortings = null;
+
+    /**
+     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
+     */
+    public function __construct()
+    {
+        $this->facets = new FacetCollection();
+        $this->sortings = new SortingCollection();
+    }
+
+    /**
+     * @param int $allResultCount
+     */
+    public function setAllResultCount($allResultCount)
+    {
+        $this->allResultCount = $allResultCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAllResultCount()
+    {
+        return $this->allResultCount;
+    }
+
+    /**
+     * @param Suggestion $suggestion
+     */
+    public function addSpellCheckingSuggestion(Suggestion $suggestion)
+    {
+        $this->spellCheckingSuggestions[$suggestion->getSuggestion()] = $suggestion;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getHasSpellCheckingSuggestions()
+    {
+        return count($this->spellCheckingSuggestions) > 0;
+    }
+
+    /**
+     * @param \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion[] $spellCheckingSuggestions
+     */
+    public function setSpellCheckingSuggestions($spellCheckingSuggestions)
+    {
+        $this->spellCheckingSuggestions = $spellCheckingSuggestions;
+    }
+
+    /**
+     * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion[]
+     */
+    public function getSpellCheckingSuggestions()
+    {
+        return $this->spellCheckingSuggestions;
+    }
+
+    /**
+     * @return FacetCollection
+     */
+    public function getFacets()
+    {
+        return $this->facets;
+    }
+
+    /**
+     * @param AbstractFacet $facet
+     */
+    public function addFacet(AbstractFacet $facet)
+    {
+        $this->facets->addFacet($facet);
+    }
+
+    /**
+     * @param Sorting $sorting
+     */
+    public function addSorting(Sorting $sorting)
+    {
+        $this->sortings->addSorting($sorting);
+    }
+
+    /**
+     * @return SortingCollection
+     */
+    public function getSortings()
+    {
+        return $this->sortings;
+    }
 
     /**
      * @param \Apache_Solr_Response $response

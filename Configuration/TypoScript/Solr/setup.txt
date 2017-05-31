@@ -1,16 +1,3 @@
-plugin.tx_solr_PiResults_Results = USER_INT
-plugin.tx_solr_PiResults_Results.userFunc = ApacheSolrForTypo3\Solr\Plugin\Results\Results->main
-tt_content.list.20.solr_pi_results =< plugin.tx_solr_PiResults_Results
-
-plugin.tx_solr_PiSearch_Search = USER
-plugin.tx_solr_PiSearch_Search.userFunc = ApacheSolrForTypo3\Solr\Plugin\Search\Search->main
-tt_content.list.20.solr_pi_search =< plugin.tx_solr_PiSearch_Search
-
-plugin.tx_solr_PiFrequentSearches_FrequentSearches = USER
-plugin.tx_solr_PiFrequentSearches_FrequentSearches.userFunc = ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches->main
-tt_content.list.20.solr_pi_frequentsearches =< plugin.tx_solr_PiFrequentSearches_FrequentSearches
-
-
 plugin.tx_solr {
 
 	enabled = 1
@@ -28,36 +15,6 @@ plugin.tx_solr {
 		path   = {$plugin.tx_solr.solr.path}
 		username = {$plugin.tx_solr.solr.username}
 		password = {$plugin.tx_solr.solr.password}
-	}
-
-	templateFiles {
-		frequentSearches = EXT:solr/Resources/Templates/PiFrequentSearches/frequentsearches.htm
-		pagebrowser      = EXT:solr/Resources/Templates/PiResults/pagebrowser.htm
-		results          = EXT:solr/Resources/Templates/PiResults/results.htm
-		search           = EXT:solr/Resources/Templates/PiSearch/search.htm
-	}
-
-	cssFiles {
-		results = EXT:solr/Resources/Css/PiResults/results.css
-		ui      = EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css
-	}
-
-	javascriptFiles {
-		loadIn = footer
-
-		library = EXT:solr/Resources/JavaScript/JQuery/jquery.min.js
-
-		ui = EXT:solr/Resources/JavaScript/JQuery/jquery-ui.min.js
-
-		ui.datepicker.de = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-de.js
-		ui.datepicker.fr = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-fr.js
-		ui.datepicker.nl = EXT:solr/Resources/JavaScript/JQuery/ui-i18n/jquery.ui.datepicker-nl.js
-
-		suggest = EXT:solr/Resources/JavaScript/EidSuggest/suggest.js
-
-		faceting.limitExpansion     = EXT:solr/Resources/JavaScript/PiResults/results.js
-		faceting.dateRangeHelper    = EXT:solr/Resources/JavaScript/PiResults/date_range_facet.js
-		faceting.numericRangeHelper = EXT:solr/Resources/JavaScript/PiResults/numeric_range_facet.js
 	}
 
 	index {
@@ -161,16 +118,6 @@ plugin.tx_solr {
 
 			resultsPerPage = {$plugin.tx_solr.search.results.resultsPerPage}
 			resultsPerPageSwitchOptions = 10, 25, 50
-
-			pagebrowser {
-				enabled = 1
-
-				pagesBefore = 3
-				pagesAfter = 3
-
-				enableMorePages = 1
-				enableLessPages = 1
-			}
 
 			// fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)
 			fieldProcessingInstructions {
@@ -344,22 +291,11 @@ plugin.tx_solr {
 		anonymizeIP = 0
 	}
 
-	viewHelpers {
-		crop {
-			maxLength = 300
-			cropIndicator = ...
-		}
-
-		sortIndicator {
-			up {
-				altText = sort ascending
-				file = EXT:solr/Resources/Public/Images/IndicatorUp.png
-			}
-			down {
-				altText = sort descending
-				file = EXT:solr/Resources/Public/Images/IndicatorDown.png
-			}
-		}
+	view {
+		layoutRootPaths.10 = EXT:solr/Resources/Private/Layouts/Frontend/
+		partialRootPaths.10 = EXT:solr/Resources/Private/Partials/Frontend/
+		templateRootPaths.10 = EXT:solr/Resources/Private/Templates/Frontend/
+		pluginNamespace = tx_solr
 	}
 
 	logging {
@@ -384,5 +320,10 @@ plugin.tx_solr {
 			rawGet = 0
 			rawDelete = 0
 		}
+	}
+
+	features {
+		requireCHashArgumentForActionArguments = 0
+		useRawDocuments = 1
 	}
 }

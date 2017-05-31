@@ -2,7 +2,7 @@ filter:
     excluded_paths:
         - 'Documentation/*'
         - 'Tests/*'
-        - 'Resources/JavaScript/*'
+        - 'Resources/Public/JavaScript/*'
         - 'Resources/Private/Solr/*'
     paths:
         - 'Classes/*'

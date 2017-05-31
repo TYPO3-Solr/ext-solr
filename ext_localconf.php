@@ -95,78 +95,6 @@ ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     \ApacheSolrForTypo3\Solr\Search\ElevationComponent::class
 );
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-// register plugin commands
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'results, frequentsearches',
-    'frequentSearches',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\FrequentSearchesCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'search, results',
-    'form',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\FormCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'results',
-    'resultsPerPageSwitch',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsPerPageSwitchCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'search, results',
-    'errors',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\ErrorsCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'results',
-    'lastSearches',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\LastSearchesCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NONE
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'results',
-    'no_results',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\NoResultsCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NO_RESULTS
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'results',
-    'faceting',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\FacetingCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
-    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_NO_RESULTS
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'results',
-    'results',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
-);
-
-ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
-    'results',
-    'sorting',
-    \ApacheSolrForTypo3\Solr\Plugin\Results\SortingCommand::class,
-    ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_SEARCHED
-    + ApacheSolrForTypo3\Solr\Plugin\PluginCommand::REQUIREMENT_HAS_RESULTS
-);
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -174,27 +102,23 @@ ApacheSolrForTypo3\Solr\CommandResolver::registerPluginCommand(
 
 ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
     'numericRange',
-    \ApacheSolrForTypo3\Solr\Facet\NumericRangeFacetRenderer::class,
     \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range::class,
     \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range::class
 );
 
 ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
     'dateRange',
-    \ApacheSolrForTypo3\Solr\Facet\DateRangeFacetRenderer::class,
     \ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange::class,
     \ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange::class
 );
 
 ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
     'hierarchy',
-    \ApacheSolrForTypo3\Solr\Facet\HierarchicalFacetRenderer::class,
     \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy::class
 );
 
 ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
     'queryGroup',
-    \ApacheSolrForTypo3\Solr\Facet\QueryGroupFacetRenderer::class,
     \ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup::class,
     \ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup::class
 );
@@ -216,13 +140,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTy
     'description' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:indexqueueworker_description',
     'additionalFields' => \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider::class
 ];
-
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-// TODO move into pi_results, initializeSearch, add only when features are activated
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['keepParameters'] = \ApacheSolrForTypo3\Solr\Plugin\Results\ParameterKeepingFormModifier::class;
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['spellcheck'] = \ApacheSolrForTypo3\Solr\Plugin\Results\SpellCheckFormModifier::class;
-$TYPO3_CONF_VARS['EXTCONF']['solr']['modifySearchForm']['suggest'] = \ApacheSolrForTypo3\Solr\Plugin\Results\SuggestFormModifier::class;
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
@@ -324,3 +241,35 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
         ],
     ];
 }
+
+# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'ApacheSolrForTypo3.solr',
+    'pi_result',
+    [
+        'Frontend\Search' => 'results,form,detail'
+    ],
+    [
+        'Frontend\Search' => 'results'
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'ApacheSolrForTypo3.solr',
+    'pi_search',
+    [
+        'Frontend\Search' => 'form'
+    ]
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'ApacheSolrForTypo3.solr',
+    'pi_frequentlySearched',
+    [
+        'Frontend\Search' => 'frequentlySearched'
+    ],
+    [
+        'Frontend\Search' => 'frequentlySearched'
+    ]
+);

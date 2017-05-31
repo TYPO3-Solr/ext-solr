@@ -154,7 +154,7 @@ class SearchRequest
         $activeFacets = $this->getActiveFacets();
         $facetNames = [];
 
-        array_map(function ($activeFacet) use (&$facetNames) {
+        array_map(function($activeFacet) use (&$facetNames) {
             $facetNames[] = substr($activeFacet, 0, strpos($activeFacet, ':'));
         }, $activeFacets);
 
@@ -171,7 +171,7 @@ class SearchRequest
         $values = [];
         $activeFacets = $this->getActiveFacets();
 
-        array_map(function ($activeFacet) use (&$values, $facetName) {
+        array_map(function($activeFacet) use (&$values, $facetName) {
             $parts = explode(':', $activeFacet, 2);
             if ($parts[0] === $facetName) {
                 $values[] = $parts[1];
@@ -273,7 +273,7 @@ class SearchRequest
     public function removeAllFacetValuesByName($facetName)
     {
         $facetValues = $this->getActiveFacets();
-        $facetValues = array_filter($facetValues, function ($facetValue) use ($facetName) {
+        $facetValues = array_filter($facetValues, function($facetValue) use ($facetName) {
             $parts = explode(':', $facetValue, 2);
             return $parts[0] !== $facetName;
         });
