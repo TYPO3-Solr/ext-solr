@@ -67,6 +67,10 @@ abstract class AbstractModuleController extends ActionController
     protected $selectedPageUID;
 
     /**
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+    /**
      * @var Site
      */
     protected $selectedSite;
@@ -111,13 +115,16 @@ abstract class AbstractModuleController extends ActionController
     {
         parent::initializeAction();
         $this->selectedPageUID = (int)GeneralUtility::_GP('id');
+        if ($this->request->hasArgument('id')) {
+            $this->selectedPageUID = (int)$this->request->getArgument('id');
+        }
 
         if ($this->selectedPageUID < 1) {
             return;
         }
-        /* @var SiteRepository $siteRepository */
-        $siteRepository = $this->objectManager->get(SiteRepository::class);
-        $this->selectedSite = $siteRepository->getSiteByPageId($this->selectedPageUID);
+
+        $this->siteRepository = $this->objectManager->get(SiteRepository::class);
+        $this->selectedSite = $this->siteRepository->getSiteByPageId($this->selectedPageUID);
     }
 
     /**
@@ -141,6 +148,10 @@ abstract class AbstractModuleController extends ActionController
             throw new \InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
         }
         $this->view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation($pageRecord);
+
+        $this->view->getModuleTemplate()->addJavaScriptCode('mainJsFunctions', '
+                top.fsMod.recentIds["searchbackend"] = ' . (int)$this->selectedPageUID . ';'
+        );
     }
 
     /**
@@ -150,13 +161,9 @@ abstract class AbstractModuleController extends ActionController
      */
     public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null)
     {
-        $selectedPageUID = (int)GeneralUtility::_GP('id');
-        if ($selectedPageUID < 1) {
+        if ($this->selectedPageUID < 1) {
             return;
         }
-        /* @var SiteRepository $siteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->selectedSite = $siteRepository->getSiteByPageId($selectedPageUID);
 
         if ($this->view instanceof NotFoundView) {
             $this->initializeSelectedSolrCoreConnection();

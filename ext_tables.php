@@ -4,21 +4,16 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-// add search plugin to content element wizard
 if (TYPO3_MODE == 'BE') {
+    // add search plugin to content element wizard
     $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['ApacheSolrForTypo3\\Solr\\Backend\\ContentElementWizardIconProvider'] =
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Backend/ContentElementWizardIconProvider.php';
-}
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-$extIconPath = 'EXT:solr/Resources/Public/Images/Icons/';
-if (TYPO3_MODE === 'BE') {
     $modulePrefix = 'extensions-solr-module';
     $svgProvider = \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class;
 
-        // register all module icons with extensions-solr-module-modulename
+    // register all module icons with extensions-solr-module-modulename
+    $extIconPath = 'EXT:solr/Resources/Public/Images/Icons/';
     /* @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     $iconRegistry->registerIcon($modulePrefix . '-main', $svgProvider,
@@ -37,15 +32,19 @@ if (TYPO3_MODE === 'BE') {
     $iconRegistry->registerIcon('extensions-solr-plugin-contentelement', $svgProvider,
         ['source' => $extIconPath . 'ContentElement.svg']);
 
-
-    // Register Main module "APACHE SOLR".
+    // Add Main module "APACHE SOLR".
     // Acces to a main module is implicit, as soon as a user has access to at least one of its submodules. To make it possible, main module must be registered in that way and without any Actions!
-    $GLOBALS['TBE_MODULES']['searchbackend'] = '';
-    $GLOBALS['TBE_MODULES']['_configuration']['searchbackend'] = [
-        'name' => 'searchbackend',
-        'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_main_label',
-        'iconIdentifier' => 'extensions-solr-module-main'
-    ];
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+        'searchbackend',
+        '',
+        '',
+        null,
+        [
+            'name' => 'searchbackend',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_main_label',
+            'iconIdentifier' => 'extensions-solr-module-main'
+        ]
+    );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'ApacheSolrForTypo3.' . $_EXTKEY,
