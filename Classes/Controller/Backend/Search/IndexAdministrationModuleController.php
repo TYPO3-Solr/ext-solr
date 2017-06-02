@@ -26,8 +26,10 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\SolrService;
+use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Web\ReferringRequest;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -111,8 +113,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
             LocalizationUtility::translate('solr.backend.index_administration.success.queue_emptied', 'Solr',
                 [$this->selectedSite->getLabel()])
         );
-
-        $this->redirect('index');
+        $this->redirectToReferrerModule();
     }
 
     /**
@@ -154,5 +155,35 @@ class IndexAdministrationModuleController extends AbstractModuleController
         }
 
         $this->redirect('index');
+    }
+
+    /**
+     * Redirects to the referrer module index Action.
+     *
+     * Fluids <f:form VH can not make urls to other modules properly.
+     * The module name/key is not provided in the hidden fields __referrer by bulding form.
+     * So this is currently the single way to make it possible.
+     *
+     * @todo: remove this method if f:form works properly between backend modules.
+     */
+    protected function redirectToReferrerModule()
+    {
+        /* @var ReferringRequest $referringRequest */
+        $referringRequest = $this->request->getReferringRequest();
+        $controllerName = $this->request->getControllerName();
+        $referrerControllerName = $referringRequest->getControllerName();
+        if ($controllerName === $referrerControllerName) {
+            $this->redirect('index');
+            return;
+        }
+        /* @var BackendUriBuilder $backendUriBuilder */
+        $backendUriBuilder = GeneralUtility::makeInstance(BackendUriBuilder::class);
+        $referrerUriFromBackendUriBuilder = $backendUriBuilder->buildUriFromModule(
+            'searchbackend_SolrIndexqueue',
+            [
+                'id' => $this->selectedPageUID
+            ]
+        );
+        $this->redirectToUri($referrerUriFromBackendUriBuilder);
     }
 }

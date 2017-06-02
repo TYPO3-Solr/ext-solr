@@ -93,7 +93,7 @@ if (TYPO3_MODE == 'BE') {
         'IndexQueue',
         '',
         [
-            'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, clearIndexQueue, resetLogErrors, showError, doIndexingRun, switchSite'
+            'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, , resetLogErrors, showError, doIndexingRun, switchSite'
         ],
         [
             'access' => 'user,group',

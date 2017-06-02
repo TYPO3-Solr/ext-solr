@@ -130,4 +130,35 @@
 			</f:form>
 		</div>
 	</div>
+
+	<f:comment><!-- Show this button only if module indexadministration is allowed for be user/group --></f:comment>
+	<solr:backend.security.ifHasAccessToModule extension="Solr" main="searchbackend" sub="indexadministration">
+		<f:then>
+			<hr class="section-divider" />
+
+			<div class="row section-with-header">
+				<div class="col-md-3">
+                    <f:comment><!-- This is the dirty hack to make it possible to call actions between backend modules. --></f:comment>
+					<f:form addQueryString="1" addQueryStringMethod="POST" fieldNamePrefix="tx_solr_searchbackend_solrindexadministration"
+                            additionalParams="{M: 'searchbackend_SolrIndexadministration', id: '{pUID}', tx_solr_searchbackend_solrindexadministration:{controller: 'Backend\\Search\\IndexAdministrationModule', action: 'clearIndexQueue'}}">
+						<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
+									   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
+									   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>
+					</f:form>
+				</div>
+				<div class="col-md-9 action-description">
+					<h3>
+						<f:translate key="solr.backend.index_queue_module.button.clear_index_queue"/>
+					</h3>
+
+					<p>
+						This will empty the Index Queue. It will take care of only deleting
+						the currently selected site's Index Queue entries.
+						You will have to re-initialize the Index Queue afterwards.
+					</p>
+				</div>
+			</div>
+		</f:then>
+	</solr:backend.security.ifHasAccessToModule>
+
 </f:section>
