@@ -24,11 +24,18 @@ class SolrCommandController extends CommandController
 {
     /**
      * Update EXT:solr connections
+     *
+     * @param int $rootPageId A site root page id
      */
-    public function updateConnectionsCommand()
+    public function updateConnectionsCommand($rootPageId = null)
     {
+        /* @var ConnectionManager $connectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
-        $connectionManager->updateConnections();
+        if ($rootPageId !== null) {
+            $connectionManager->updateConnectionByRootPageId($rootPageId);
+        } else {
+            $connectionManager->updateConnections();
+        }
         $this->outputLine('<info>EXT:solr connections are updated in the registry.</info>');
     }
 }
