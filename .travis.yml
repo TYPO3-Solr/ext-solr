@@ -33,7 +33,7 @@ matrix:
 before_install:
   - composer self-update
   - composer --version
-  - composer global require friendsofphp/php-cs-fixer:v1.13.1
+  - composer global require friendsofphp/php-cs-fixer:v2.3.2
   - composer global require namelesscoder/typo3-repository-client
 
   # set root password

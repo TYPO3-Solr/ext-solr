@@ -19,7 +19,7 @@ find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=
 php-cs-fixer --version > /dev/null 2>&1
 if [ $? -eq "0" ]; then
     echo "Check PSR-2 compliance"
-    php-cs-fixer fix --level=psr2 --diff --verbose --dry-run Classes
+    php-cs-fixer fix --diff --verbose --dry-run --rules='{"function_declaration": {"closure_function_spacing": "none"}}' Classes
 
     if [ $? -ne "0" ]; then
         echo "Some files are not PSR-2 compliant"

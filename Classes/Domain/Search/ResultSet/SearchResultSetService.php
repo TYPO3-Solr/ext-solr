@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\Plugin\PluginAware;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 use ApacheSolrForTypo3\Solr\Search;
@@ -34,10 +33,8 @@ use ApacheSolrForTypo3\Solr\Search\QueryAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 use Apache_Solr_ParserException;
 
 /**
@@ -46,7 +43,7 @@ use Apache_Solr_ParserException;
  *
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class SearchResultSetService implements SingletonInterface
+class SearchResultSetService
 {
     /**
      * Additional filters, which will be added to the query, as well as to
@@ -74,19 +71,9 @@ class SearchResultSetService implements SingletonInterface
     protected $lastResultSet = null;
 
     /**
-     * @var AbstractPlugin
-     */
-    protected $parentPlugin;
-
-    /**
      * @var bool
      */
     protected $useQueryAwareComponents = true;
-
-    /**
-     * @var bool
-     */
-    protected $usePluginAwareComponents = true;
 
     /**
      * @var
@@ -106,22 +93,12 @@ class SearchResultSetService implements SingletonInterface
     /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
-     * @param AbstractPlugin $parentPlugin (optional parent plugin, needed for plugin aware components)
      */
-    public function __construct(TypoScriptConfiguration $configuration, Search $search, AbstractPlugin $parentPlugin = null)
+    public function __construct(TypoScriptConfiguration $configuration, Search $search)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
-        $this->parentPlugin = $parentPlugin;
-    }
-
-    /**
-     * @return AbstractPlugin
-     */
-    public function getParentPlugin()
-    {
-        return $this->parentPlugin;
     }
 
     /**
@@ -150,22 +127,6 @@ class SearchResultSetService implements SingletonInterface
     public function getSearch()
     {
         return $this->search;
-    }
-
-    /**
-     * @param bool $usePluginAwareComponents
-     */
-    public function setUsePluginAwareComponents($usePluginAwareComponents)
-    {
-        $this->usePluginAwareComponents = $usePluginAwareComponents;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getUsePluginAwareComponents()
-    {
-        return $this->usePluginAwareComponents;
     }
 
     /**
@@ -245,10 +206,6 @@ class SearchResultSetService implements SingletonInterface
                 $searchComponent->setQuery($query);
             }
 
-            if ($searchComponent instanceof PluginAware && $this->usePluginAwareComponents) {
-                $searchComponent->setParentPlugin($this->parentPlugin);
-            }
-
             $searchComponent->initializeSearchComponent();
         }
     }
@@ -296,7 +253,7 @@ class SearchResultSetService implements SingletonInterface
      * @param Query $query The query that has been searched for.
      * @param \Apache_Solr_Response $response The search's response.
      */
-    protected function processResponse($rawQuery, Query $query, \Apache_Solr_Response &$response)
+    protected function processResponse($rawQuery, Query $query, \Apache_Solr_Response $response)
     {
         if ($this->shouldHideResultsFromInitialSearch($rawQuery)) {
             // explicitly set number of results to 0 as we just wanted
@@ -324,7 +281,7 @@ class SearchResultSetService implements SingletonInterface
      *
      * @param \Apache_Solr_Response $response
      */
-    protected function addExpandedDocumentsFromVariants(\Apache_Solr_Response &$response)
+    protected function addExpandedDocumentsFromVariants(\Apache_Solr_Response $response)
     {
         if (!is_array($response->response->docs)) {
             return;
@@ -376,7 +333,7 @@ class SearchResultSetService implements SingletonInterface
      * @param \Apache_Solr_Response $response
      * @throws \Apache_Solr_ParserException
      */
-    protected function wrapResultDocumentInResultObject(\Apache_Solr_Response &$response)
+    protected function wrapResultDocumentInResultObject(\Apache_Solr_Response $response)
     {
         $documents = $response->response->docs;
 
@@ -553,6 +510,10 @@ class SearchResultSetService implements SingletonInterface
         $resultSet->setUsedResultsPerPage($resultsPerPage);
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
         $resultSet->setUsedSearch($this->search);
+
+        /** @var $searchResultReconstitutionProcessor ResultSetReconstitutionProcessor */
+        $searchResultReconstitutionProcessor = GeneralUtility::makeInstance(ResultSetReconstitutionProcessor::class);
+        $searchResultReconstitutionProcessor->process($resultSet);
 
         return $this->handleSearchHook('afterSearch', $resultSet);
     }

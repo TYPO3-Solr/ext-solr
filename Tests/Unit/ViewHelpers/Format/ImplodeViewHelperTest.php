@@ -43,7 +43,8 @@ class ImplodeViewHelperTest extends UnitTest
         $viewHelper = new ImplodeViewHelper();
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
         $viewHelper->setRenderingContext($renderingContextMock);
-        $result = $viewHelper->render(',', ['one','two','three']);
+        $viewHelper->setArguments(['glue' => ',', 'value' =>  ['one','two','three']]);
+        $result = $viewHelper->render();
         $this->assertSame('one,two,three', $result, 'Implode ViewHelper created unexpected result');
     }
 }

@@ -6,5 +6,5 @@ if (!defined('TYPO3_MODE')) {
 if (is_object($TYPO3backend)) {
     /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
     $pageRenderer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-    $pageRenderer->addJsFile('EXT:solr/Resources/JavaScript/ContextMenu/initializesolrconnectionsclickmenuaction.js');
+    $pageRenderer->addJsFile('EXT:solr/Resources/Public/JavaScript/ContextMenu/initializesolrconnectionsclickmenuaction.js');
 }

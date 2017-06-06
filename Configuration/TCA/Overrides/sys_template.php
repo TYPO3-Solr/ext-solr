@@ -4,6 +4,10 @@
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/Solr/', 'Search - Base Configuration');
 
+// StyleSheets
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/StyleSheets/', 'Search - Default Stylesheets');
+
 // OpenSearch
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/OpenSearch/', 'Search - OpenSearch');
@@ -35,3 +39,21 @@
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/Examples/ConnectionFromConfVars/',
     'Search - (Example) Use connection settings from TYPO3_CONF_VARS');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Suggest/',
+    'Search - (Example) suggest/autocomplete with jquery ui');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Facets/QueryGroup/',
+    'Search - (Example) QueryGroup facet on the created field');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Facets/Hierarchy/',
+    'Search - (Example) Hierarchy facet on the rootline field');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Facets/DateRange/',
+    'Search - (Example) DateRange facet with jquery ui datepicker on created field');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Facets/NumericRange/',
+    'Search - (Example) NumericRange facet with jquery ui slider on pid field');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Ajaxify/',
+    'Search - Ajaxify the search results with jQuery');

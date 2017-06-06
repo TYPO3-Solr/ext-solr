@@ -1151,9 +1151,26 @@ class Query
 
         // escape triple hashes as they are used in the template engine
         // TODO remove after switching to fluid templates
-        $keywords = Template::escapeMarkers($keywords);
+        $keywords = static::escapeMarkers($keywords);
 
         return $keywords;
+    }
+
+    /**
+     * Escapes marker hashes and the pipe symbol so that they will not be
+     * executed in templates.
+     *
+     * @param string $content Content potentially containing markers
+     * @return string Content with markers escaped
+     */
+    protected static function escapeMarkers($content)
+    {
+        // escape marker hashes
+        $content = str_replace('###', '&#35;&#35;&#35;', $content);
+        // escape pipe character used for parameter separation
+        $content = str_replace('|', '&#124;', $content);
+
+        return $content;
     }
 
     // relevance, matching

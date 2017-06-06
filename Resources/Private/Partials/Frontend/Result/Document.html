@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers">
+
+<f:section name="Document">
+
+	<li class="results-entry{f:if(condition:document.isElevated, then: ' results-elevated')}"
+			data-document-score="{document.score}"
+			data-document-id="{document.id}"
+			data-document-url="{document.url}"
+		>
+		<f:if condition="{document.isElevated}">
+			<div class="results-elevated-label"><s:translate key="sponsored"/></div>
+		</f:if>
+		<h5 class="results-topic"><a href="{document.url}">{document.title}</a></h5>
+		<div class="results-teaser">
+			<f:render partial="Result/RelevanceBar" section="RelevanceBar" arguments="{resultSet:resultSet, document:document}" />
+
+			<p class="result-content">{s:document.highlightResult(resultSet:resultSet, document:document, fieldName:'content')}</p>
+
+			<f:if condition="{0:document.type} == {0:'tx_solr_file'}">
+				<p>
+					<s:translate key="file_mimetype" />: {document.fileMimeType}<br />
+					<s:translate key="file_referenced" />:
+
+					<ul class="references">
+						<f:if condition="{document.fileReferenceUrl}">
+							<li><f:link.typolink title="{document.fileReferenceTitle}" parameter="{document.fileReferenceUrl}">{document.fileReferenceTitle}</f:link.typolink></li>
+						</f:if>
+						<f:if condition="{document.variants}">
+							<f:for each="{document.variants}" as="variant">
+								<li><f:link.typolink title="{variant.fileReferenceTitle}" parameter="{variant.fileReferenceUrl}">{variant.fileReferenceTitle}</f:link.typolink></li>
+							</f:for>
+						</f:if>
+					</ul>
+				</p>
+			</f:if>
+			<s:debug.documentScoreAnalyzer document="{document}" />
+		</div>
+	</li>
+
+</f:section>

@@ -1,0 +1,95 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 11,
+    "params": {
+      "spellcheck": "true",
+      "facet": "true",
+      "enableElevation": "false",
+      "hl.tag.post": "</em>",
+      "spellcheck.maxCollationTries": "5",
+      "q.alt": "*:*",
+      "hl": "true",
+      "echoParams": "all",
+      "debugQuery": "true",
+      "fl": "*,score",
+      "bf": "recip(ms(NOW,filter_dateS),3.16e-11,1,1)^20.0",
+      "facet.query": [
+        "created:[NOW/DAY-7DAYS TO *]",
+        "created:[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]",
+        "created:[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]",
+        "created:[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]",
+        "created:[* TO NOW/DAY-1YEAR]"
+      ],
+      "facet.field": [
+        "type",
+        "category_stringM"
+      ],
+      "fq": [
+        "siteHash:\"73f9dbeae83ff400a97eedfb88e33a5a9d9f58fe\"",
+        "{!typo3access}-2,0,1",
+        "(created:[NOW/DAY-1MONTH TO NOW/DAY-7DAYS])"
+      ],
+      "hl.fragsize": "100",
+      "facet.mincount": "1",
+      "qf": "content^10.0 title^12.0 category_textM^2.0",
+      "hl.tag.pre": "<em class=\"match\">",
+      "hl.fl": "content",
+      "json.nl": "map",
+      "spellcheck.collate": "true",
+      "wt": "json",
+      "rows": "10",
+      "hl.useFastVectorHighlighter": "true",
+      "start": "0",
+      "facet.sort": "count",
+      "q": "",
+      "hl.requireFieldMatch": "true",
+      "mm": "2<-35%",
+      "indent": "true",
+      "spellcheck.extendedResults": "false",
+      "hl.mergeContiguous": "true",
+      "f.content.hl.maxAlternateFieldLength": "200",
+      "spellcheck.onlyMorePopular": "false",
+      "defType": "edismax",
+      "pf": "content^2.0",
+      "df": "content",
+      "hl.snippets": "3",
+      "f.content.hl.alternateField": "content",
+      "spellcheck.dictionary": [
+        "default",
+        "wordbreak"
+      ],
+      "spellcheck.count": "1",
+      "ps": "15"
+    }
+  },
+  "response": {
+    "numFound": 10,
+    "start": 0,
+    "maxScore": 1.0868415
+  },
+  "facet_counts": {
+    "facet_queries": {
+      "created:[NOW/DAY-7DAYS TO *]": 1,
+      "created:[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]": 3,
+      "created:[NOW/DAY-6MONTHS TO NOW/DAY-1MONTH]": 4,
+      "created:[NOW/DAY-1YEAR TO NOW/DAY-6MONTHS]": 7,
+      "created:[* TO NOW/DAY-1YEAR]": 7
+    },
+    "facet_fields": {
+      "type": {
+        "tx_solr_file": 3
+      },
+      "category_stringM": {
+        "Huisartsen": 2,
+        "Leden en buitengewone leden": 1,
+        "POH's": 1,
+        "Specialisten": 1,
+        "Waarnemers": 1
+      }
+    },
+    "facet_dates": {},
+    "facet_ranges": {},
+    "facet_intervals": {}
+  }
+}

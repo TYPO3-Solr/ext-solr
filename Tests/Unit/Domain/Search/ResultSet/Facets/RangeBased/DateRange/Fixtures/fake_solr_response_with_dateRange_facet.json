@@ -1,0 +1,82 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 20,
+        "params": {
+            "spellcheck": "true",
+            "facet": "true",
+            "enableElevation": "false",
+            "hl.tag.post": "</span>",
+            "spellcheck.maxCollationTries": "0",
+            "facet.range": "created",
+            "hl": "true",
+            "echoParams": "all",
+            "debugQuery": "true",
+            "fl": "*,score",
+            "facet.field": "type",
+            "fq": ["siteHash:\"d73deaf9a3866ceb9004d90a513a32cabab3eada\"",
+                "(created:[2014-09-01T00:00:00Z TO 2016-06-30T23:59:59Z])"],
+            "hl.fragsize": "200",
+            "f.created.facet.range.end": "NOW/DAY+1YEAR",
+            "facet.mincount": "1",
+            "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline",
+            "hl.tag.pre": "<span class=\"results-highlight\">",
+            "json.nl": "map",
+            "hl.fl": "content",
+            "spellcheck.collate": "true",
+            "wt": "json",
+            "rows": "10",
+            "hl.useFastVectorHighlighter": "true",
+            "start": "0",
+            "facet.sort": "count",
+            "q": "*",
+            "f.created.facet.range.start": "NOW/DAY-1YEAR",
+            "f.created.facet.range.gap": "+1DAY",
+            "hl.requireFieldMatch": "true",
+            "mm": "2<-35%",
+            "indent": "true",
+            "spellcheck.extendedResults": "false",
+            "hl.mergeContiguous": "true",
+            "f.content.hl.maxAlternateFieldLength": "200",
+            "spellcheck.onlyMorePopular": "false",
+            "defType": "edismax",
+            "pf": "content^2.0",
+            "df": "content",
+            "hl.snippets": "3",
+            "f.content.hl.alternateField": "content",
+            "spellcheck.dictionary": ["default",
+                "wordbreak"],
+            "q.op": "OR",
+            "spellcheck.count": "1",
+            "ps": "15"
+        }
+    },
+    "response": {
+        "numFound": 32,
+        "start": 0,
+        "maxScore": 1.0,
+        "docs": []
+    },
+    "facet_counts": {
+        "facet_queries": {},
+        "facet_fields": {
+            "type": {
+                "pages": 32
+            }
+        },
+        "facet_dates": {},
+        "facet_ranges": {
+            "created": {
+                "counts": {
+                    "2015-11-17T00:00:00Z": 1,
+                    "2016-03-22T00:00:00Z": 30,
+                    "2016-06-02T00:00:00Z": 1
+                },
+                "gap": "+1DAY",
+                "start": "2015-06-02T00:00:00Z",
+                "end": "2017-06-02T00:00:00Z"
+            }
+        },
+        "facet_intervals": {}
+    }
+}
