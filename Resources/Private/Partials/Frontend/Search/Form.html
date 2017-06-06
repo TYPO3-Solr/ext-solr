@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers">
+
+<f:section name="Form">
+
+<div class="tx-solr-search-form">
+
+	<s:searchForm id="tx-solr-search-form-pi-results" additionalFilters="{additionalFilters}">
+		<input type="hidden" name="L" value="{languageUid}" />
+		<input type="hidden" name="id" value="{pageUid}" />
+		<input type="text" class="tx-solr-q js-solr-q" name="q" value="{q}" />
+		<input type="submit" class="tx-solr-submit" value="{s:translate(key:'submit',default:'Search')}" />
+
+	</s:searchForm>
+
+	<s:debug.query />
+</div>
+
+</f:section>

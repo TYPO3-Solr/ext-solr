@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+      xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+      data-namespace-typo3-fluid="true"
+>
+
+	<f:section name="hierarchyTree">
+		<f:for each="{node.childNodes}" as="childNode" iteration="iteration">
+			<li class="facet-option{f:if(condition:'{iteration.index} > 9', then:' tx-solr-facet-hidden')}" data-facet-item-value="{childNode.value}">
+				+ <a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: childNode)}">{childNode.label}</a> <span class="facet-result-count">({childNode.documentCount})</span>
+			</li>
+			<f:if condition="{childNode.childNodes}">
+				<li><ul><f:render section="hierarchyTree" arguments="{node: childNode, facet: facet}" /></ul></li>
+			</f:if>
+		</f:for>
+	</f:section>
+
+    <h5 class="facet-label">{facet.label}</h5>
+    <ul class="facet-option-list facet-type-hierarchy fluidfacet" data-facet-name="{facet.name}" data-facet-label="{facet.label}">
+		<f:render section="hierarchyTree" arguments="{node: facet, facet: facet}" />
+    </ul>
+
+</html>

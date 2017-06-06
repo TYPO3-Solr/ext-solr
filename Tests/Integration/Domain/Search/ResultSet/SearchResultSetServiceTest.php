@@ -196,7 +196,7 @@ class SearchResultSetServiceTest extends IntegrationTest
         $searchResultsSetService = GeneralUtility::makeInstance(SearchResultSetService::class, $typoScriptConfiguration, $search);
 
         /** @var $searchRequest SearchRequest */
-        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class);
+        $searchRequest = GeneralUtility::makeInstance(SearchRequest::class, [], 0, 0, $typoScriptConfiguration);
         $searchRequest->setRawQueryString($queryString);
 
         $searchResultSet = $searchResultsSetService->search($searchRequest);

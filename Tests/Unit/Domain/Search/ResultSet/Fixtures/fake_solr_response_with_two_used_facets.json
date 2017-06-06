@@ -1,0 +1,73 @@
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 4,
+        "params": {
+            "hl.fragsize": "200",
+            "spellcheck": "true",
+            "enableElevation": "false",
+            "facet": "true",
+            "hl.tag.post": "</span>",
+            "facet.mincount": "1",
+            "spellcheck.maxCollationTries": "0",
+            "qf": "content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline",
+            "hl.tag.pre": "<span class=\"results-highlight\">",
+            "json.nl": "map",
+            "hl.fl": "content",
+            "wt": "json",
+            "spellcheck.collate": "true",
+            "hl": "true",
+            "rows": "10",
+            "f.title.facet.sort": "lex",
+            "fl": "id,title,siteHash,score",
+            "debugQuery": "true",
+            "echoParams": "all",
+            "hl.useFastVectorHighlighter": "true",
+            "start": "0",
+            "facet.sort": "count",
+            "q": "kasper",
+            "facet.field": ["type",
+                "title"],
+            "fq": ["siteHash:\"c56040516adcfdb545d2120d595a56930f6ddaa3\"",
+                "{!typo3access}-1,0",
+                "(title:\"jpeg\" AND title:\"kasper\\\"s\")"],
+            "hl.requireFieldMatch": "true",
+            "mm": "2<-35%",
+            "indent": "true",
+            "spellcheck.extendedResults": "false",
+            "hl.mergeContiguous": "true",
+            "f.content.hl.maxAlternateFieldLength": "200",
+            "spellcheck.onlyMorePopular": "false",
+            "defType": "edismax",
+            "pf": "content^2.0",
+            "df": "content",
+            "hl.snippets": "3",
+            "f.content.hl.alternateField": "content",
+            "spellcheck.dictionary": ["default",
+                "wordbreak"],
+            "q.op": "OR",
+            "spellcheck.count": "1",
+            "ps": "15"
+        }
+    },
+    "response": {
+        "numFound": 1,
+        "start": 0,
+        "maxScore": 0.8142768
+    },
+    "facet_counts": {
+        "facet_queries": {},
+        "facet_fields": {
+            "type": {
+                "tx_solr_file": 1
+            },
+            "title": {
+                "jpeg": 1,
+                "kasper\"s": 1
+            }
+        },
+        "facet_dates": {},
+        "facet_ranges": {},
+        "facet_intervals": {}
+    }
+}

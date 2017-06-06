@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+	  data-namespace-typo3-fluid="true"
+		>
+
+	<h5 class="facet-label">{facet.label}</h5>
+	<ul class="facet-option-list fluidfacet facet-type-dateRange"
+		data-facet-name="{facet.name}"
+		data-facet-label="{facet.label}"
+		data-range-min="{facet.range.startInResponse}"
+		data-range-max="{facet.range.endInResponse}"
+		data-range-min-selected="{facet.range.startRequested}"
+		data-range-max-selected="{facet.range.endRequested}"
+		data-range-gap="{facet.range.gap}"
+		data-facet-url="{s:uri.facet.setFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}"
+	>
+		<li>
+			<input type="hidden" value="{s:uri.facet.addFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}" id="created_url">
+			<input type="text" class="dateselector" id="start_date_created">
+			<input type="text" class="dateselector" id="end_date_created">
+		</li>
+	</ul>
+</html>

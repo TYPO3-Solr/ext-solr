@@ -554,6 +554,10 @@ class SearchResultSetService implements SingletonInterface
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
         $resultSet->setUsedSearch($this->search);
 
+        /** @var $searchResultReconstitutionProcessor ResultSetReconstitutionProcessor */
+        $searchResultReconstitutionProcessor = GeneralUtility::makeInstance(ResultSetReconstitutionProcessor::class);
+        $searchResultReconstitutionProcessor->process($resultSet);
+
         return $this->handleSearchHook('afterSearch', $resultSet);
     }
 
