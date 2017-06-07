@@ -67,11 +67,8 @@ class IndexAdministrationModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
-        if ($this->selectedSite === null) {
-            $this->view->assignMultiple([
-                'can_not_proceed' => true,
-                'pageUID' => $this->selectedPageUID
-            ]);
+        if ($this->selectedSite === null || empty($this->solrConnectionManager->getConnectionsBySite($this->selectedSite))) {
+            $this->view->assign('can_not_proceed', true);
         }
     }
 
