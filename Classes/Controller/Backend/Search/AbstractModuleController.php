@@ -124,7 +124,12 @@ abstract class AbstractModuleController extends ActionController
         }
 
         $this->siteRepository = $this->objectManager->get(SiteRepository::class);
-        $this->selectedSite = $this->siteRepository->getSiteByPageId($this->selectedPageUID);
+
+        try {
+            $this->selectedSite = $this->siteRepository->getSiteByPageId($this->selectedPageUID);
+        } catch (\InvalidArgumentException $exception) {
+            return;
+        }
     }
 
     /**
@@ -139,6 +144,13 @@ abstract class AbstractModuleController extends ActionController
         if ($view instanceof NotFoundView || $this->selectedPageUID < 1) {
             return;
         }
+        $this->view->getModuleTemplate()->addJavaScriptCode('mainJsFunctions', '
+                top.fsMod.recentIds["searchbackend"] = ' . (int)$this->selectedPageUID . ';'
+        );
+        if (null === $this->selectedSite) {
+            return;
+        }
+
         /* @var BackendUserAuthentication $beUser */
         $beUser = $GLOBALS['BE_USER'];
         $permissionClause = $beUser->getPagePermsClause(1);
@@ -149,9 +161,6 @@ abstract class AbstractModuleController extends ActionController
         }
         $this->view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation($pageRecord);
 
-        $this->view->getModuleTemplate()->addJavaScriptCode('mainJsFunctions', '
-                top.fsMod.recentIds["searchbackend"] = ' . (int)$this->selectedPageUID . ';'
-        );
         $this->view->assign('pUID', $this->selectedPageUID);
     }
 
@@ -162,7 +171,7 @@ abstract class AbstractModuleController extends ActionController
      */
     public function generateCoreSelectorMenuUsingPageTree(string $uriToRedirectTo = null)
     {
-        if ($this->selectedPageUID < 1) {
+        if ($this->selectedPageUID < 1 || null === $this->selectedSite) {
             return;
         }
 
