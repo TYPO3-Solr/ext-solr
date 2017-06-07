@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /***************************************************************
  *  Copyright notice
@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterface;
 
 /**
  * Parser to build Solr range queries from tx_solr[filter]
@@ -35,7 +35,7 @@ use ApacheSolrForTypo3\Solr\Facet\FacetBuilder;
  * @author Ingo Renner <ingo@typo3.org>
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class Range implements FilterEncoder, FacetBuilder
+class NumericRangeUrlDecoder implements FacetUrlDecoderInterface
 {
 
     /**
@@ -46,19 +46,6 @@ class Range implements FilterEncoder, FacetBuilder
     const DELIMITER = '-';
 
     /**
-     * Takes a filter value and encodes it to a human readable format to be
-     * used in an URL GET parameter.
-     *
-     * @param string $filterValue the filter value
-     * @param array $configuration Facet configuration
-     * @return string Value to be used in a URL GET parameter
-     */
-    public function encodeFilter($filterValue, array $configuration = [])
-    {
-        return $filterValue;
-    }
-
-    /**
      * Parses the given range from a GET parameter and returns a Solr range
      * filter.
      *
@@ -67,7 +54,7 @@ class Range implements FilterEncoder, FacetBuilder
      * @return string Lucene query language filter to be used for querying Solr
      * @throws \InvalidArgumentException
      */
-    public function decodeFilter($range, array $configuration = [])
+    public function decode($range, array $configuration = [])
     {
         preg_match('/(-?\d*?)' . self::DELIMITER . '(-?\d*)/', $range, $filterParts);
         if ($filterParts[1] == '' || $filterParts[2] == '') {
@@ -78,31 +65,5 @@ class Range implements FilterEncoder, FacetBuilder
         }
 
         return '[' . (int)$filterParts[1] . ' TO ' . (int)$filterParts[2] . ']';
-    }
-
-    /**
-     * Builds the facet parameters depending on a facet's configuration.
-     *
-     * Currently only covers numeric ranges.
-     *
-     * @param string $facetName Facet name
-     * @param array $facetConfiguration The facet's configuration
-     * @return array
-     */
-    public function buildFacetParameters($facetName, array $facetConfiguration)
-    {
-        $facetParameters = [];
-
-        $tag = '';
-        if ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
-            $tag = '{!ex=' . $facetConfiguration['field'] . '}';
-        }
-        $facetParameters['facet.range'][] = $tag . $facetConfiguration['field'];
-
-        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.start'] = $facetConfiguration['numericRange.']['start'];
-        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.end'] = $facetConfiguration['numericRange.']['end'];
-        $facetParameters['f.' . $facetConfiguration['field'] . '.facet.range.gap'] = $facetConfiguration['numericRange.']['gap'];
-
-        return $facetParameters;
     }
 }

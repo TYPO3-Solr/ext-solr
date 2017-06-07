@@ -31,7 +31,6 @@ abstract class AbstractRangeFacetItem extends AbstractFacetItem
      */
     protected $rangeCounts;
 
-
     /**
      * @var string
      */

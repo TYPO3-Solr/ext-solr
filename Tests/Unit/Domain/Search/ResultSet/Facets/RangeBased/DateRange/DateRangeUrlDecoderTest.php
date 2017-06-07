@@ -25,57 +25,35 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- *
  * Testcase for query parser range
+ *
  * @author Markus Goldbach
  */
-class HierarchyTest extends UnitTest
+class DateRangeUrlEncoderTest extends UnitTest
 {
+
     /**
-     * @var \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy
+     * @var DateRangeUrlDecoder
      */
-    protected $parser;
+    protected $rangeParser;
 
     public function setUp()
     {
-        $this->parser = GeneralUtility::makeInstance(Hierarchy::class);
+        $this->rangeParser = GeneralUtility::makeInstance(DateRangeUrlDecoder::class);
     }
 
     /**
      * @test
      */
-    public function canParseHierarchy3LevelQuery()
+    public function canParseDateRangeQuery()
     {
-        $expected = '"2-sport/skateboarding/street/"';
-        $actual = $this->parser->decodeFilter('/sport/skateboarding/street/');
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function canParseHierarchy2LevelQuery()
-    {
-        $expected = '"1-sport/skateboarding/"';
-        $actual = $this->parser->decodeFilter('/sport/skateboarding/');
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function canParseHierarchy1LevelQuery()
-    {
-        $expected = '"0-sport/"';
-        $actual = $this->parser->decodeFilter('/sport/');
-
+        $expected = '[2010-01-01T00:00:00Z TO 2010-01-31T23:59:59Z]';
+        $actual = $this->rangeParser->decode('201001010000-201001312359');
         $this->assertEquals($expected, $actual);
     }
 }

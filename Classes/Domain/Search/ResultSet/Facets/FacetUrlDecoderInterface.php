@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /***************************************************************
  *  Copyright notice
@@ -25,30 +25,21 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
  ***************************************************************/
 
 /**
- * Query Filter Encoder Interface
+ * The facet url encode is responsible to encode and decode values for EXT:solr urls.
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-interface FilterEncoder
+interface FacetUrlDecoderInterface
 {
-
-    /**
-     * Takes a filter value and encodes it to a human readable format to be
-     * used in an URL GET parameter.
-     *
-     * @param string $filterValue the filter value
-     * @param array $configuration Facet configuration
-     * @return string Value to be used in a URL GET parameter
-     */
-    public function encodeFilter($filterValue, array $configuration = []);
 
     /**
      * Parses the query filter from GET parameters in the URL and translates it
      * to a Lucene filter value.
      *
-     * @param string $filterValue the filter query from plugin
+     * @param string $value the filter query from plugin
      * @param array $configuration Facet configuration
      * @return string Value to be used in a Lucene filter
      */
-    public function decodeFilter($filterValue, array $configuration = []);
+    public function decode($value, array $configuration = []);
 }

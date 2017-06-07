@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
+namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /***************************************************************
  *  Copyright notice
@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,26 +34,47 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Testcase for query parser range
  * @author Markus Goldbach
  */
-class DateRangeTest extends UnitTest
+class HierarchyUrlEncoderTest extends UnitTest
 {
-
     /**
-     * @var \ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange
+     * @var HierarchyUrlDecoder
      */
-    protected $rangeParser;
+    protected $parser;
 
     public function setUp()
     {
-        $this->rangeParser = GeneralUtility::makeInstance(DateRange::class);
+        $this->parser = GeneralUtility::makeInstance(HierarchyUrlDecoder::class);
     }
 
     /**
      * @test
      */
-    public function canParseDateRangeQuery()
+    public function canParseHierarchy3LevelQuery()
     {
-        $expected = '[2010-01-01T00:00:00Z TO 2010-01-31T23:59:59Z]';
-        $actual = $this->rangeParser->decodeFilter('201001010000-201001312359');
+        $expected = '"2-sport/skateboarding/street/"';
+        $actual = $this->parser->decode('/sport/skateboarding/street/');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function canParseHierarchy2LevelQuery()
+    {
+        $expected = '"1-sport/skateboarding/"';
+        $actual = $this->parser->decode('/sport/skateboarding/');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function canParseHierarchy1LevelQuery()
+    {
+        $expected = '"0-sport/"';
+        $actual = $this->parser->decode('/sport/');
 
         $this->assertEquals($expected, $actual);
     }

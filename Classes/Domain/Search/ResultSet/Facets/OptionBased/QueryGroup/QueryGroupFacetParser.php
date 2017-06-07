@@ -65,7 +65,7 @@ class QueryGroupFacetParser extends AbstractFacetParser
             foreach ($rawOptions as $query => $count) {
                 $value = $this->getValueByQuery($query, $facetConfiguration);
                 // Skip unknown queries
-                if (!$value) {
+                if ($value === null) {
                     continue;
                 }
 
