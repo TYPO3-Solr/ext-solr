@@ -141,6 +141,7 @@ abstract class AbstractModuleController extends ActionController
     protected function initializeView(ViewInterface $view)
     {
         parent::initializeView($view);
+        $this->view->assign('pageUID', $this->selectedPageUID);
         if ($view instanceof NotFoundView || $this->selectedPageUID < 1) {
             return;
         }
@@ -160,8 +161,6 @@ abstract class AbstractModuleController extends ActionController
             throw new \InvalidArgumentException(vsprintf('There is something wrong with permissions for page "%s" for backend user "%s".', [$this->selectedSite->getRootPageId(), $beUser->user['username']]), 1496146317);
         }
         $this->view->getModuleTemplate()->getDocHeaderComponent()->setMetaInformation($pageRecord);
-
-        $this->view->assign('pUID', $this->selectedPageUID);
     }
 
     /**
@@ -261,6 +260,7 @@ abstract class AbstractModuleController extends ActionController
         $currentSolrCorePath = $moduleData->getCore();
         if (empty($currentSolrCorePath)) {
             $this->initializeFirstAvailableSolrCoreConnection($solrCoreConnections, $moduleData);
+            return;
         }
         foreach ($solrCoreConnections as $solrCoreConnection) {
             if ($solrCoreConnection->getPath() == $currentSolrCorePath) {
@@ -279,6 +279,9 @@ abstract class AbstractModuleController extends ActionController
      */
     private function initializeFirstAvailableSolrCoreConnection(array $solrCoreConnections, $moduleData)
     {
+        if (empty($solrCoreConnections)) {
+            return;
+        }
         $this->selectedSolrCoreConnection = $solrCoreConnections[0];
         $moduleData->setCore($this->selectedSolrCoreConnection->getPath());
         $this->moduleDataStorageService->persistModuleData($moduleData);

@@ -59,10 +59,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
     public function indexAction()
     {
         if ($this->selectedSolrCoreConnection === null) {
-            $this->view->assignMultiple([
-                'can_not_proceed' => true,
-                'pageUID' => $this->selectedPageUID
-            ]);
+            $this->view->assign('can_not_proceed', true);
             return;
         }
 

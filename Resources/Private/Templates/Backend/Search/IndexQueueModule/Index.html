@@ -140,7 +140,7 @@
 				<div class="col-md-3">
                     <f:comment><!-- This is the dirty hack to make it possible to call actions between backend modules. --></f:comment>
 					<f:form addQueryString="1" addQueryStringMethod="POST" fieldNamePrefix="tx_solr_searchbackend_solrindexadministration"
-                            additionalParams="{M: 'searchbackend_SolrIndexadministration', id: '{pUID}', tx_solr_searchbackend_solrindexadministration:{controller: 'Backend\\Search\\IndexAdministrationModule', action: 'clearIndexQueue'}}">
+                            additionalParams="{M: 'searchbackend_SolrIndexadministration', id: '{pageUID}', tx_solr_searchbackend_solrindexadministration:{controller: 'Backend\\Search\\IndexAdministrationModule', action: 'clearIndexQueue'}}">
 						<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
 									   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
 									   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>

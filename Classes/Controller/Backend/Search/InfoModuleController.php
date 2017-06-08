@@ -68,10 +68,7 @@ class InfoModuleController extends AbstractModuleController
     public function indexAction()
     {
         if ($this->selectedSite === null) {
-            $this->view->assignMultiple([
-                'can_not_proceed' => true,
-                'pageUID' => $this->selectedPageUID
-            ]);
+            $this->view->assign('can_not_proceed', true);
             return;
         }
 
@@ -95,6 +92,11 @@ class InfoModuleController extends AbstractModuleController
         /* @var Path $path */
         $path = GeneralUtility::makeInstance(Path::class);
         $connections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
+
+        if (empty($connections)) {
+            $this->view->assign('can_not_proceed', true);
+            return;
+        }
 
         foreach ($connections as $connection) {
             $coreUrl = $connection->getScheme() . '://' . $connection->getHost() . ':' . $connection->getPort() . $connection->getPath();

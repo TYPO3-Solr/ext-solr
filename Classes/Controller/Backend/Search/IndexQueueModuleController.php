@@ -88,11 +88,8 @@ class IndexQueueModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
-        if ($this->selectedSite === null) {
-            $this->view->assignMultiple([
-                'can_not_proceed' => true,
-                'pageUID' => $this->selectedPageUID
-            ]);
+        if (!$this->canQueueSelectedSite()) {
+            $this->view->assign('can_not_proceed', true);
             return;
         }
 
@@ -100,6 +97,23 @@ class IndexQueueModuleController extends AbstractModuleController
         $this->view->assign('indexQueueInitializationSelector', $this->getIndexQueueInitializationSelector());
         $this->view->assign('indexqueue_statistics', $statistics);
         $this->view->assign('indexqueue_errors', $this->indexQueue->getErrorsBySite($this->selectedSite));
+    }
+
+    /**
+     * Checks if selected site can be queued.
+     *
+     * @return bool
+     */
+    protected function canQueueSelectedSite()
+    {
+        if ($this->selectedSite === null) {
+            return false;
+        }
+        $enabledIndexQueueConfigurationNames = $this->selectedSite->getSolrConfiguration()->getEnabledIndexQueueConfigurationNames();
+        if (empty($enabledIndexQueueConfigurationNames)) {
+            return false;
+        }
+        return true;
     }
 
     /**
