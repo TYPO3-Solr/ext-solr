@@ -35,11 +35,6 @@ class QueryGroupFacet extends AbstractOptionsFacet
     protected static $type = self::TYPE_QUERY_GROUP;
 
     /**
-     * @var OptionCollection
-     */
-    protected $options;
-
-    /**
      * OptionsFacet constructor
      *
      * @param SearchResultSet $resultSet

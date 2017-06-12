@@ -13,8 +13,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetParserRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -24,9 +25,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 /**
  * This processor is used to transform the solr response into a
  * domain object hierarchy that can be used in the application (controller and view).
- *
- * @todo: the logic in this class can go into the SearchResultSetService after moving the
- * code of EXT:solrfluid to EXT:solr
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -60,11 +58,11 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 
 
     /**
-     * @return FacetParserRegistry
+     * @return FacetRegistry
      */
-    protected function getFacetParserRegistry()
+    protected function getFacetRegistry()
     {
-        return $this->getObjectManager()->get(FacetParserRegistry::class);
+        return $this->getObjectManager()->get(FacetRegistry::class);
     }
 
     /**
@@ -222,8 +220,8 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             return $resultSet;
         }
 
-        /** @var FacetParserRegistry $facetParserRegistry */
-        $facetParserRegistry = $this->getFacetParserRegistry();
+        /** @var FacetRegistry $facetRegistry */
+        $facetRegistry = $this->getFacetRegistry();
         $facetsConfiguration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchFacetingFacets();
 
         foreach ($facetsConfiguration as $name => $options) {
@@ -233,8 +231,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             $facetName = rtrim($name, '.');
             $type = !empty($options['type']) ? $options['type'] : '';
 
-            $parser = $facetParserRegistry->getParser($type);
-
+            $parser = $facetRegistry->getPackage($type)->getParser();
             $facet = $parser->parse($resultSet, $facetName, $options);
             if ($facet !== null) {
                 $resultSet->addFacet($facet);

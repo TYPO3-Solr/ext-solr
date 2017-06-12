@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Facet;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2017- Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,19 +24,4 @@ namespace ApacheSolrForTypo3\Solr\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * Query filter builder interface
- *
- * @author Ingo Renner <ingo@typo3.org>
- */
-interface FacetBuilder
-{
-
-    /**
-     * Builds the facet parameters depending on a facet's configuration
-     *
-     * @param string $facetName Facet name
-     * @param array $facetConfiguration The facet's configuration
-     */
-    public function buildFacetParameters($facetName, array $facetConfiguration);
-}
+class InvalidFacetParserException extends \Exception {}

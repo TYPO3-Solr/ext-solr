@@ -24,11 +24,15 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderRegistry;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\Query\Modifier\Faceting class
@@ -45,10 +49,19 @@ class FacetingTest extends UnitTest
     {
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
+        $fakeObjectManager = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->setMethods(['get'])->getMock();
+        $fakeObjectManager->expects($this->any())->method('get')->will($this->returnCallback(function($className) {
+            return new $className();
+        }));
+
+        $facetRegistry = new FacetRegistry();
+        $facetRegistry->injectObjectManager($fakeObjectManager);
+
+
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance(Query::class, 'test', $fakeConfiguration);
         /** @var $facetModifier \ApacheSolrForTypo3\Solr\Query\Modifier\Faceting */
-        $facetModifier = GeneralUtility::makeInstance(Faceting::class, $fakeConfiguration);
+        $facetModifier = GeneralUtility::makeInstance(Faceting::class, $fakeConfiguration, $facetRegistry);
         $facetModifier->modifyQuery($query);
 
         $queryParameter = $query->getQueryParameters();

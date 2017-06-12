@@ -95,34 +95,6 @@ ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     \ApacheSolrForTypo3\Solr\Search\ElevationComponent::class
 );
 
-
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
-// registering facet types
-
-ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
-    'numericRange',
-    \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range::class,
-    \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range::class
-);
-
-ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
-    'dateRange',
-    \ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange::class,
-    \ApacheSolrForTypo3\Solr\Query\FilterEncoder\DateRange::class
-);
-
-ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
-    'hierarchy',
-    \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Hierarchy::class
-);
-
-ApacheSolrForTypo3\Solr\Facet\FacetRendererFactory::registerFacetType(
-    'queryGroup',
-    \ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup::class,
-    \ApacheSolrForTypo3\Solr\Query\FilterEncoder\QueryGroup::class
-);
-
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // adding scheduler tasks

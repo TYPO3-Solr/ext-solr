@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solrfluid\Domain\Search\Uri
+ * @package ApacheSolrForTypo3\Solr\Domain\Search\Uri
  */
 
 class SearchUriBuilder

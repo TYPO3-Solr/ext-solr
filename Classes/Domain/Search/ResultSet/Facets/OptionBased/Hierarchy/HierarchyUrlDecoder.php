@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy;
 
 /***************************************************************
  *  Copyright notice
@@ -24,12 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Query\FilterEncoder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderInterface;
+
 /**
  * Filter encoder to build Solr hierarchy queries from tx_solr[filter]
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Hierarchy implements FilterEncoder
+class HierarchyUrlDecoder implements FacetUrlDecoderInterface
 {
 
     /**
@@ -40,28 +42,13 @@ class Hierarchy implements FilterEncoder
     const DELIMITER = '/';
 
     /**
-     * Takes a filter value and encodes it to a human readable format to be
-     * used in an URL GET parameter.
-     *
-     * @param string $filterValue the filter value
-     * @param array $configuration Facet configuration
-     * @return string Value to be used in a URL GET parameter
-     */
-    public function encodeFilter($filterValue, array $configuration = [])
-    {
-        list(, $hierarchyPath) = explode('-', $filterValue, 2);
-
-        return '/' . $hierarchyPath;
-    }
-
-    /**
      * Parses the given hierarchy filter and returns a Solr filter query.
      *
      * @param string $hierarchy The hierarchy filter query.
      * @param array $configuration Facet configuration
      * @return string Lucene query language filter to be used for querying Solr
      */
-    public function decodeFilter($hierarchy, array $configuration = [])
+    public function decode($hierarchy, array $configuration = [])
     {
         $hierarchy = substr($hierarchy, 1);
         $hierarchy = rtrim($hierarchy, '/');

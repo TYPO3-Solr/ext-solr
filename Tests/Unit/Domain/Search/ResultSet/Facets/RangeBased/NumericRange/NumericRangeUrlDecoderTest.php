@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
+namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased\NumericRange;
 
 /***************************************************************
  *  Copyright notice
@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\FilterEncoder;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange\NumericRangeUrlDecoder;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -37,18 +37,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Ingo Renner <ingo@typo3.org>
  * @author Markus Friedrich <markus.friedrich@dkd.de>
  */
-class RangeTest extends UnitTest
+class NumericRangeUrlEncoderTest extends UnitTest
 {
     /**
      * Parser to build Solr range queries
      *
-     * @var \ApacheSolrForTypo3\Solr\Query\FilterEncoder\Range
+     * @var NumericRangeUrlDecoder
      */
     protected $rangeParser;
 
     public function setUp()
     {
-        $this->rangeParser = GeneralUtility::makeInstance(Range::class);
+        $this->rangeParser = GeneralUtility::makeInstance(NumericRangeUrlDecoder::class);
     }
 
     /**
@@ -78,7 +78,7 @@ class RangeTest extends UnitTest
      */
     public function canParseRangeQuery($firstValue, $secondValue, $expectedResult)
     {
-        $actual = $this->rangeParser->decodeFilter($firstValue . '-' . $secondValue);
+        $actual = $this->rangeParser->decode($firstValue . '-' . $secondValue);
         $this->assertEquals($expectedResult, $actual);
     }
 
@@ -91,6 +91,6 @@ class RangeTest extends UnitTest
      */
     public function canHandleInvalidParameters()
     {
-        $this->rangeParser->decodeFilter('invalid-value');
+        $this->rangeParser->decode('invalid-value');
     }
 }
