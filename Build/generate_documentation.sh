@@ -4,7 +4,7 @@ WORKING_DIR=`pwd`
 
 function doInstallSphinxAndDependencies {
     sudo apt-get install -y python-pip texlive-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-latex-base texlive-font-utils python-setuptools python-pygments python-sphinx xzdec make
-    pip install --upgrade t3SphinxThemeRtd requests pygments sphinx setuptools imagesize pyyaml snowballstemmer t3fieldlisttable t3tablerows t3targets
+    pip install --upgrade t3SphinxThemeRtd requests pygments sphinx==1.5.6 setuptools imagesize pyyaml snowballstemmer t3fieldlisttable t3tablerows t3targets
 
     # set repo fix to 2015, newer does not work currently(2017.3)
     tlmgr option repository ftp://tug.org/historic/systems/texlive/2015/tlnet-final
