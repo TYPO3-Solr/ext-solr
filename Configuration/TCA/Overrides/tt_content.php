@@ -25,10 +25,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSi
     = 'layout,select_key,pages,recursive';
 
 
-$pluginSignature = 'solr_pi_result';
+$pluginSignature = 'solr_pi_results';
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'solr',
-    'pi_result',
+    'pi_results',
     'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:tt_content.list_type_pi_results'
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature]

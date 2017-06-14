@@ -4,10 +4,14 @@ Index the first time
 ====================
 
 After everything is setup, you need to index the contents of TYPO3 to enable searching in Solr.
-To do so open the *Search* module and navigate to the *Index Queue*. Select the contents to index
+To do so open the *Apache Solr* module and navigate to the *Index Queue*. Select the contents to index
 and *Queue Selected Content for Indexing*.
 
 .. image:: ../Images/GettingStarted/typo3-add-index-queue.png
+
+
+Now the records are added to the index queue and ready to index. The indexing can be triggered from the backend module, or
+can be triggered by the TYPO3 scheduler.
 
 Switch to the *Scheduler* module. If the module is not available, make sure to enable the extension
 first. It comes bundled with TYPO3 CMS but is not enabled by default.

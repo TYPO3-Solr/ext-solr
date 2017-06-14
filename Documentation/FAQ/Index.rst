@@ -5,10 +5,6 @@
 
 .. include:: ../Includes.txt
 
-
-.. _conf-index:
-
-
 .. raw:: latex
 
     \newpage
@@ -16,6 +12,8 @@
 .. raw:: pdf
 
    PageBreak
+
+.. _faq-index:
 
 FAQ - Frequently Asked Questions
 ================================
@@ -101,7 +99,7 @@ Please check the :ref:`appendix-version-matrix`, the you can find the proposed v
 
 **My indexed documents are empty, i can not find the content of a page?**
 
-Did you configure the search markers(`<!-- TYPO3SEARCH_begin -->` and `<!-- TYPO3SEARCH_end -->`) on your page? Check the paragraph :ref:`Search Markers` and make sure your page renders them.
+Did you configure the search markers ( "<!-- TYPO3SEARCH_begin -->" and "<!-- TYPO3SEARCH_end -->") on your page? Check the paragraph :ref:`started-search-markers` and make sure your page renders them.
 
 |
 
@@ -190,7 +188,7 @@ Example:
 
 .. code-block:: typoscript
 
-    plugin.tx_solr.search.query.queryFields = title\^20.0, title\^15.0
+    plugin.tx_solr.search.query.queryFields = title^20.0, title^15.0
 
 
 *Use boostFunctions or boostQueries*
@@ -199,7 +197,7 @@ For use cases like "*news* are always more important then *pages*" or "Newer doc
 
 *The search term only exists as a synonym*
 
-You can use the backend module synonyms (:ref:`Synonyms`) to maintain synonyms and configure solr to retrieve documents by a term that is not naturally inside the document.
+You can use the backend module synonyms (:ref:`backend-module-synonyms`) to maintain synonyms and configure solr to retrieve documents by a term that is not naturally inside the document.
 
 *Ask DKD support*
 
@@ -348,23 +346,6 @@ value from the AdditionalConfiguration.php
     }
 
 |
-
-**How can I replace jQuery and/or jQuery UI versions or use different JavaScript library for searching field used by EXT:solr?**
-
-You need to add following lines in your TypoScript setup:
-
-::
-
-    plugin.tx_solr.solr {
-        javascriptFiles {
-            library = EXT:your_site_extension/Resources/JavaScript/JQuery/jquery.XYZ.min.js
-            ui = EXT:your_site_extension/Resources/JavaScript/JQuery/jquery-ui.XYZ.min.js
-        }
-    }
-
-|
-
-For more information please see :doc:`tx_solr.javascriptFiles <../Configuration/Reference/TxSolrJavaScriptFiles>`.
 
 **I want to index extension records, what do i need to do?**
 

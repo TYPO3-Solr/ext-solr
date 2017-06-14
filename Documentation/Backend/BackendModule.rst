@@ -52,6 +52,9 @@ Core Optimization
 
 Core optimization Module is responsive for managing the behaviour of cores. By modifying of following things, you can also change the ranking and/or the results.
 
+.. _backend-module-stopword:
+
+
 Stop Words
 ^^^^^^^^^^
 
@@ -64,6 +67,8 @@ Common usecases are:
 * Very often occurring words like "the", "and" ... are excluded are filtered out because they are more or less "noize words".
 * You can add words that you want to avoid from indexing.
 
+
+.. _backend-module-synonyms:
 
 Synonyms
 ^^^^^^^^

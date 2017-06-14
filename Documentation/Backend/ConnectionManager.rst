@@ -1,3 +1,5 @@
+.. _connection-manager:
+
 ConnectionManager
 =================
 

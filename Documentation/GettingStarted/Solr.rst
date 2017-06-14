@@ -22,14 +22,10 @@ By default this script is not executable and you need to add the execute permiss
 
 The example below shows how to install a solr server to /home/developer
 
-|
-
 .. code-block:: bash
 
     chmod u+x ./Resources/Private/Install/install-solr.sh
     ./Resources/Private/Install/install-solr.sh -p /home/developer
-
-|
 
 After running the script you are able to open a solr server with over the loopback address. Which means, when you want to access it from outside, you need to create an ssh tunnel.
 
@@ -41,15 +37,11 @@ This helps you to setup a container very quickly.
 
 To build the images, simply type one of the following:
 
-|
-
 .. code-block:: bash
 
     docker build -t typo3-solr .
 
 Prepare the data folder (data is shared with the docker container by user and group with UID/GID 8983):
-
-|
 
 .. code-block:: bash
 
@@ -58,8 +50,6 @@ Prepare the data folder (data is shared with the docker container by user and gr
     chown :8983 .solrdata
 
 To run the container (only run one of the following):
-
-|
 
 .. code-block:: bash
 
@@ -73,9 +63,11 @@ You should see the web interface of Solr to run queries:
 
 .. figure:: ../Images/GettingStarted/solr-query-webinterface.png
 
-|
-
 **Important**: The image "typo3-solr" ships a default core for all languages. The data of the cores is stored on a data volume. When you want to update the container, you can just start a new container using the data volume of the old container. But at the same time this has the limitation, that you should only use this image with the default cores! If you want to create custom cores with a different configuration please read the section "Advanced Docker Usage"
+
+Please note: The steps above show how to build the image from the Dockerfile. You can also download and use our compiled images from dockerhub:
+
+https://hub.docker.com/r/typo3solr/ext-solr/
 
 Advanced Docker Usage
 ^^^^^^^^^^^^^^^^^^^^^
@@ -85,8 +77,6 @@ The intension in our integration was to stay as close as possible to the officia
 sence that you use the official image directly instead of our image. An example could be when you want to have the solrconfig, schema and data outside of the container.
 
 The following example shows how you can run our configuration with the official Apache Solr docker container by mounting the configuration and data from a volume (When using Docker on macOS make sure you've added the volume folder to "Preferences -> File Sharing").
-
-|
 
 .. code-block:: bash
 
@@ -124,39 +114,27 @@ Since EXT:solr 6.0.0 the configuration and all jar files are shipped in one "con
 
 All you need to do is, you need to copy the configSet directory into your prepared solr installation and replace the solr.xml file. In the installer we do it like this:
 
-|
-
 .. code-block:: bash
 
     cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/configsets ${SOLR_INSTALL_DIR}/server/solr
     cp ${EXTENSION_ROOTPATH}/Resources/Private/Solr/solr.xml ${SOLR_INSTALL_DIR}/server/solr/solr.xml
 
-|
-
 After this, you can decide if you want to create the default cores by copying the default core.properties files or if you want to create a core with the solr rest api.
 
 Copy the default cores:
-
-|
 
 .. code-block:: bash
 
     cp -r ${EXTENSION_ROOTPATH}/Resources/Private/Solr/cores ${SOLR_INSTALL_DIR}/server/solr
 
-|
-
 Create a core with the rest api:
-
-|
 
 .. code-block:: bash
 
-    curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_6_0_0&schema=german/schema.xml&dataDir=dataDir=../../data/german"
-
-|
+    curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=core_de&configSet=ext_solr_7_0_0&schema=german/schema.xml&dataDir=dataDir=../../data/german"
 
 After installing the solr server and deploying all schemata, the TYPO3 reports module helps you to verify if your setup fits to the requirements of EXT:solr
 
 You now have a fully working, pre configured Solr running to start with
 
-:ref:`started-install-extension`.
+No you can continue with installing the extension :ref:`started-install-extension`.

@@ -15,7 +15,7 @@ tx_solr_ajaxPage {
 	10 {
 		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
 		extensionName = Solr
-		pluginName = pi_result
+		pluginName = pi_results
 		vendorName = ApacheSolrForTypo3
 		controller = Frontend\Search
 		action = results

@@ -16,8 +16,6 @@ In the next steps we want to see as example how we can use the debug output to s
 
 The first step is to debug the output for "rawGet":
 
-|
-
 .. code-block:: typoscript
 
     plugin.tx_solr.logging.query.rawGet = 1

@@ -1,7 +1,6 @@
 Introduction
 ============
 
-
 What does it do?
 ----------------
 
@@ -13,6 +12,9 @@ When development started, the primary goal was to create a replacement for
 Indexed Search. With the initial public release at T3CON09 in Frankfurt, Germany
 that goal was reached and even passed by adding features which Indexed Search
 does not support.
+
+With EXT:solr it is simple to build a search for a TYPO3 website, that allows you to index any kind of TYPO3 records with TCA configuration and pages.
+The results can be rendered with flexible fluid templates, to render the results as you need them.
 
 Feature List
 ------------
@@ -36,16 +38,18 @@ Feature List
 Development and Partnership
 ---------------------------
 
-The extension is developed in an open source way and the source code is completely available on github. Releases to the TYPO3 TER are done in regular time frames.
+The extension is developed in an open source way and the source code is completely available on github. Releases to the TYPO3 TER are done in regular time frames (Usually every 3 months).
 
 To make the development possible you can join a partner ship with dkd. By joining the partner program you have the following benefits:
 
 * You support the further development on EXT:solr
 * You get access to addon's that are not public available
     - Indexing of files from FAL (TYPO3 File Abstraction Layer)
-    - Fluid templating (Result rendering with Fluid Template engine)
 * You can be mentioned as a sponsor on http://www.typo3-solr.com
 * You can included support based on your subscription
+
+By the financial invest of our partners it is possible to keep this extension uptodate and integrate great new features.
+If you like this extension please think about to become a partner as well!
 
 |
 
