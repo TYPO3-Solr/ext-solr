@@ -122,24 +122,6 @@ $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api
 
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
-$hasCompatibilityLayer = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('compatibility6');
-if ($hasCompatibilityLayer) {
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
-        'solr',
-        'setup',
-        'tt_content.search = COA
-         tt_content.search {
-           10 = < lib.stdheader
-           20 >
-           20 = < plugin.tx_solr_PiResults_Results
-           30 >
-        }',
-        'defaultContentRendering'
-    );
-}
-
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
-
 // add custom Solr content objects
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][ApacheSolrForTypo3\Solr\ContentObject\Multivalue::CONTENT_OBJECT_NAME] = [
@@ -218,7 +200,7 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'ApacheSolrForTypo3.solr',
-    'pi_result',
+    'pi_results',
     [
         'Frontend\Search' => 'results,form,detail'
     ],

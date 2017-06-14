@@ -18,16 +18,12 @@ A "core.properties" file references a "configSet" that should be used. The path 
 
 By example a "core.properties" file looks like this:
 
-|
-
 .. code-block:: bash
 
     configSet=ext_solr_6_0_0
     schema=german/schema.xml
     name=core_de
     dataDir=../../data/german
-
-|
 
 * The solr.xml file: This file configures solr as required for the used Apache Solr version.
 
@@ -46,8 +42,6 @@ Inside the configSet you find the following folders:
 
 The schema.xml file contains the language specific adaptions and includes all general schema fields and types with an XInclude statement.
 
-|
-
 .. code-block:: xml
 
     <!-- xinclude fields -->
@@ -55,8 +49,6 @@ The schema.xml file contains the language specific adaptions and includes all ge
 
     <!--  xinclude fields-->
     <xi:include href="../general_schema_fields.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
-
-|
 
 * typo3lib: This folder ships the compiled access filter jar file, that should be used with this EXT:solr version.
 
@@ -81,5 +73,3 @@ When you want to install solr on your system in another way the following steps 
 
 *Hint:* Apache Solr ships an install script in newer version that might cover your requirements for production
 ($SOLR_HOME/bin/install_solr_service.sh). We don't use it in EXT:solr because there are currently problems when using it with ubuntu xenial (16.04)
-
-

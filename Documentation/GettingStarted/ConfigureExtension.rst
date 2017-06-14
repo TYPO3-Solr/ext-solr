@@ -17,8 +17,6 @@ edit an existing, TypoScript Template record in your page tree and add the provi
 
 Update the constants to match the current setup:
 
-|
-
 .. code-block:: typoscript
 
     plugin {
@@ -32,6 +30,15 @@ Update the constants to match the current setup:
 
 Adjust the host according to where your Solr is reachable, see :ref:`started-solr`.
 
+**Note:**
+
+The static template configures what you need to query the solr server and do the indexing.
+In most projects you want to add facets or custom styles. If you want to use the default style you need to add
+the template "Search - Default Stylesheets". Beside that EXT:solr provides a few example typoscript templates that should
+help you to build your own configuration.
+
+.. _started-search-markers:
+
 Search Markers
 --------------
 
@@ -41,7 +48,6 @@ If the markers are missing, you should add them to your template. To increase th
 
 The most simple configuration for my page was:
 
-|
 
 .. code-block:: typoscript
 
@@ -50,14 +56,11 @@ The most simple configuration for my page was:
     }
 
 
-
 Domain Records and Indexing
 ---------------------------
 
 To enable Solr connections, the extension needs a Domain Record and indexing has to be enabled.
 Therefore enable indexing by setting the following TypoScript:
-
-|
 
 .. code-block:: typoscript
 

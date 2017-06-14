@@ -14,7 +14,7 @@
 		solr
 
 	:Version:
-		6.1.0
+		7.0.0
 
 	:Language:
 		en
@@ -26,10 +26,10 @@
 		search, full text, index, solr, lucene, fast, query, results
 
 	:Copyright:
-		2009-2016
+		2009-2017
 
 	:Author:
-		Ingo Renner, Daniel Siepmann, Timo Hund
+		Ingo Renner, Markus Friedrich, Rafael Kähm, Timo Hund
 
 	:Email:
 		ingo@typo3.org
@@ -63,6 +63,8 @@
 	Development/Index
 	FAQ/*
 	Appendix/*
+	Releases/Index
+
 
 
 

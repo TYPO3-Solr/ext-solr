@@ -8,18 +8,13 @@ For a quick debugging without any extension there is the possibility to show the
 - For the frontend as formatted output.
 - For the backend as TYPO3 console output.
 
-|
-
 **Note:** You should use this on a development system only and make sure that the devIPmask does not allow other users to see the debug output.
-
-|
 
 To enable this features you need to:
 
 - Make sure that your ip address is configured to match the devIPMask ($GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'])
 - Enable the debug output in the EXT:solr typoscript:
 
-|
 
 .. code-block:: typoscript
 

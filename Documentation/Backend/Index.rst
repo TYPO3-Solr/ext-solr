@@ -17,6 +17,7 @@
 
    PageBreak
 
+=======
 Backend
 =======
 
@@ -33,3 +34,5 @@ In this chapter we want to go deeper and learn how to write more complex indexin
 	BackendModule
 	IndexInspector
 	Scheduler
+	Plugins.rst
+	ResultsPlugin.rst

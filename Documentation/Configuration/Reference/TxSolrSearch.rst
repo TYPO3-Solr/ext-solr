@@ -116,8 +116,6 @@ The option expects a string, you can also define an array in the form of arrayNa
 
 Example:
 
-|
-
 .. code-block:: typoscript
 
     plugin.tx_solr.search.query.getParameter = q
@@ -180,32 +178,22 @@ Technically the parameter will be mapped to the **"bf"** parameter in the solr q
 
 Use cases for example could be:
 
-* "Give never documents a higher priority":
+**"Give never documents a higher priority":**
 
-    |
+This could be done with a recip function:
 
-    This could be done with a recip function:
+.. code-block:: bash
 
-    |
+    recip(ms(NOW,created),3.16e-11,1,1)
 
-    *recip(ms(NOW,created),3.16e-11,1,1)*
+**"Give documents with a certain field value a higher priority":**
 
-    |
+This could be done with:
 
-* "Give documents with a certain field value a higher priority":
+.. code-block:: bash
 
-    |
+    termfreq(type,'tx_solr_file')
 
-
-    This could be done with:
-
-    |
-
-    *termfreq(type,'tx_solr_file')*
-
-    |
-
-|
 
 .. _conf-tx-solr-search-boostQuery:
 
@@ -226,8 +214,6 @@ Please consult the link to the Solr wiki for a more detailed description of boos
 
 Example (boosts tt_news documents by factor 10):
 
-|
-
 .. code-block:: typoscript
 
     plugin.tx_solr.search.query.boostQuery = (type:tt_news)^10
@@ -244,8 +230,6 @@ query.filter
 Allows to predefine filters to apply to a search query. You can add multiple filters through a name to Lucene filter mapping. The filters support stdWrap.
 
 Example:
-
-|
 
 .. code-block:: typoscript
 
@@ -280,8 +264,6 @@ Allows to set a custom sorting for the query. By default Solr will sort by relea
 Needs a Solr field name followed by asc for ascending order or desc for descending.
 
 Example:
-
-|
 
 .. code-block:: typoscript
 
@@ -430,69 +412,6 @@ results.showDocumentScoreAnalysis
 :Options: 0,1
 
 If enabled, the analysis and display of the score analysis for logged in backend users will be initialized.
-
-results.markResultTypeBoundaries
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.search.results.markResultTypeBoundaries
-:Since: 2.0, 2.5-dkd
-:Default: 0
-:Options: 0,1
-
-This option allows for some kind of fake or client side (EXT:solr being the client) grouping of results. First you need to sort results by the type field. Then whenever the type field changes during rendering of the results, special fields are added to the documents at the result document type boundary. In your template you can then use an IF condition to insert markup at those boundaries based on those fields' values. The special document field names are "typeBegin" and "typeEnd". They have a value set to the new/old document type appended with "_begin"/"end".
-
-Example:
-
-A result set with documents of types tt_news, pages, and tt_address:
-
-|
-
-.. code-block:: text
-
-    1 pages      -> typeBegin = pages_begin
-    2 pages
-    3 pages      -> typeEnd   = pages_end
-    4 tt_address -> typeBegin = tt_address_begin
-    5 tt_address
-    6 tt_address -> typeEnd   = tt_address_end
-    7 tt_news    -> typeBegin = tt_news_begin
-    8 tt_news
-    9 tt_news    -> typeEnd   = tt_news_end
-
-Example template snippet:
-
-|
-
-.. code-block:: html
-
-    <!-- ###LOOP:RESULT_DOCUMENTS### begin -->
-    <!-- ###LOOP_CONTENT### -->
-
-    <!-- ###IF:###RESULT_DOCUMENT.typeBegin###|==|pages_begin### begin -->
-    <li>Pages</li>
-    <!-- ###IF:###RESULT_DOCUMENT.typeBegin###|==|pages_begin### end -->
-
-    <!-- ... regular page results here ... -->
-
-    <!-- ###IF:###RESULT_DOCUMENT.typeEnd###|==|pages_end### begin -->
-    <li>Pages End</li>
-    <!-- ###IF:###RESULT_DOCUMENT.typeEnd###|==|pages_end### end -->
-
-    ...
-
-    <!-- ###IF:###RESULT_DOCUMENT.typeBegin###|==|tt_address_begin### begin -->
-    <li>Contacts</li>
-    <!-- ###IF:###RESULT_DOCUMENT.typeBegin###|==|tt_address_begin### end -->
-
-    <!-- ###IF:###RESULT_DOCUMENT.typeBegin###|==|tt_news_begin### begin -->
-    <li>News</li>
-    <!-- ###IF:###RESULT_DOCUMENT.typeBegin###|==|tt_news_begin### end -->
-
-    <!-- ... more markup here ... -->
-
-    <!-- ###LOOP_CONTENT### -->
-    <!-- ###LOOP:RESULT_DOCUMENTS### end -->
 
 
 spellchecking
@@ -645,8 +564,6 @@ This is a list of sorting options. Each option has a field and label to be used.
 
 Example:
 
-|
-
 .. code-block:: typoscript
 
     plugin.tx_solr.search {
@@ -665,7 +582,6 @@ Example:
         }
     }
 
-|
 
 Note: As mentioned before **relevance** is a virtual field that is used to **reset** the sorting. Sorting by relevance means to have the order provided by the scoring from solr. That the reason why sorting **descending** on relevance is not possible.
 
@@ -834,8 +750,6 @@ faceting.facetLinkATagParams
 
 With this option you can add A-Tag attributes for links of all facet-options.
 
-|
-
 .. code-block:: typoscript
 
     plugin.tx_solr.search.faceting.facetLinkATagParams = class="green"
@@ -869,8 +783,6 @@ faceting.facets
 :See: `Apache Solr Wiki / Faceting Overview <http://wiki.apache.org/solr/SolrFacetingOverview>`_
 
 Defines which fields you want to use for faceting. It's a list of facet configurations.
-
-|
 
 .. code-block:: typoscript
 
@@ -989,8 +901,6 @@ By default facet options are sorted by the amount of results they will return wh
 
 Example - We have a category facet like this:
 
-|
-
 .. code-block:: bash
 
     News Category
@@ -1003,8 +913,6 @@ Example - We have a category facet like this:
     + Travel (51)
 
 Using `faceting.facets.[facetName].manualSortOrder = Travel, Health` will result in the following order of options:
-
-|
 
 .. code-block:: bash
 
@@ -1083,8 +991,6 @@ When setting a special type for a facet you can set further options for this typ
 
 Example (numericRange facet displayed as a slider):
 
-|
-
 .. code-block:: typoscript
 
     plugin.tx_solr.search.faceting.facets.size {
@@ -1117,8 +1023,6 @@ There are two magic values for the requirement's values definition:
 
 
 Example of a category facet showing only when the user selects the news type facet option:
-
-|
 
 .. code-block:: typoscript
 
@@ -1161,8 +1065,6 @@ faceting.facets.[facetName].renderingInstruction
 Overwrites how single facet options are rendered using TypoScript cObjects.
 
 Example: (taken from issue #5920)
-
-|
 
 .. code-block:: typoscript
 
@@ -1216,8 +1118,6 @@ EXT:solr provides the following renderingInstructions that you can use in your p
 This rendering instruction can be used in combination with a date field or an integer field that hold a timestamp. You can use this rendering instruction to format the facet value on rendering.
 A common usecase for this is, when the datatype in solr needs to be sortable (date or int) but you need to render the date as readable date option in the frontend:
 
-
-|
 
 .. code-block:: typoscript
 
