@@ -16,6 +16,13 @@
         <config>
             <![CDATA[
                 config.disableAllHeaderCode = 1
+                config.tx_extbase {
+                	view {
+                        layoutRootPaths.10 = EXT:solr/Resources/Private/Layouts/Frontend/
+                        partialRootPaths.10 = EXT:solr/Resources/Private/Partials/Frontend/
+                        templateRootPaths.10 = EXT:solr/Resources/Private/Templates/Frontend/
+                    }
+                }
 
                 page = PAGE
                 page.typeNum = 0
@@ -35,19 +42,6 @@
                 }
 
                 page.10.wrap = <!--TYPO3SEARCH_begin--><html><body>|</body></html><!--TYPO3SEARCH_end-->
-
-                plugin.tx_solr_PiResults_Results = USER_INT
-                plugin.tx_solr_PiResults_Results.userFunc = ApacheSolrForTypo3\Solr\Plugin\Results\Results->main
-                tt_content.list.20.solr_pi_results =< plugin.tx_solr_PiResults_Results
-
-                plugin.tx_solr_PiSearch_Search = USER
-                plugin.tx_solr_PiSearch_Search.userFunc = ApacheSolrForTypo3\Solr\Plugin\Search\Search->main
-                tt_content.list.20.solr_pi_search =< plugin.tx_solr_PiSearch_Search
-
-                plugin.tx_solr_PiFrequentSearches_FrequentSearches = USER
-                plugin.tx_solr_PiFrequentSearches_FrequentSearches.userFunc = ApacheSolrForTypo3\Solr\Plugin\FrequentSearches\FrequentSearches->main
-                tt_content.list.20.solr_pi_frequentsearches =< plugin.tx_solr_PiFrequentSearches_FrequentSearches
-
 
                 plugin.tx_solr {
 
@@ -69,6 +63,9 @@
                         path   = /solr/core_en/
                     }
 
+                    templateFiles {
+                    	results = EXT:solr/Tests/Integration/Controller/Frontend/Fixtures/customTemplates/Search/MyResults.html
+                    }
 
                     index {
                         additionalFields {
@@ -162,8 +159,12 @@
                         results {
                             resultsHighlighting = 1
                             resultsHighlighting {
-                                highlightFields = content, title
-                                fragmentSize = 200
+                                 // can be used to increase the highlighting performance requires the field is termVectors=on,
+                                 // termPositions=on and termOffsets=on which is set for content. NOTE: fragmentSize needs to be larger
+                                 // then 18
+                                useFastVectorHighlighter = 0
+                                highlightFields = content
+                                fragmentSize = 20
                                 fragmentSeparator = [...]
 
                                 wrap = <span class="results-highlight">|</span>
@@ -230,7 +231,226 @@
                                     }
                                 }
                             }
-                            showDocumentScoreAnalysis = 0
+
+                            showDocumentScoreAnalysis = 1
+                        }
+
+                        spellchecking = 1
+                        spellchecking {
+                            wrap = |<div class="spelling-suggestions">###LLL:didYouMean### |</div>|
+                            searchUsingSpellCheckerSuggestion = 0
+                            numberOfSuggestionsToTry = 0
+                        }
+
+                        lastSearches = 1
+                        lastSearches {
+                            limit = 10
+                            // tracking mode "user" or "global"
+                            mode = user
+                        }
+
+                        frequentSearches = 1
+                        frequentSearches {
+                            useLowercaseKeywords = 0
+
+                            minSize = 15
+                            maxSize = 40
+                            limit = 20
+
+                            select {
+                                SELECT = keywords as search_term, count(*) as hits
+                                FROM = tx_solr_statistics
+                                ADD_WHERE =
+                                GROUP_BY = keywords
+                                ORDER_BY = hits DESC, search_term ASC
+                                checkRootPageId = 0
+                                checkLanguage = 0
+                            }
+
+                            // cache lifetime in seconds (default is 86400s = 24h)
+                            cacheLifetime = 0
+                        }
+
+                        sorting = 1
+                        sorting {
+                            defaultOrder = asc
+
+                            options {
+                                relevance {
+                                    field = relevance
+                                    label = Relevance
+                                }
+
+                                title {
+                                    field = sortTitle
+                                    label = Title
+                                }
+
+                                type {
+                                    field = type
+                                    label = Type
+                                }
+
+                                author {
+                                    field = sortAuthor
+                                    label = Author
+                                }
+
+                                created {
+                                    field = created
+                                    label = Creation Date
+                                }
+                            }
+                        }
+
+                        faceting = 1
+                        faceting {
+                            minimumCount = 1
+                            sortBy = count
+                            limit = 10
+                            singleFacetMode = 0
+                            showEmptyFacets = 0
+                            keepAllFacetsOnSelection = 0
+
+                            facetLinkATagParams = rel="nofollow" class="facet"
+
+                            facetLinkUrlParameters = &foo=bar
+
+                            facets {
+                                type {
+                                    label = Content Type
+                                    field = type
+                                }
+                                subtitle {
+                                    label = Subtitle
+                                    field = subTitle
+                                    keepAllOptionsOnSelection = 1
+                                }
+                                pageHierarchy {
+                                    field = rootline
+                                    label = Rootline
+
+                                    type = hierarchy
+
+                                    hierarchy = HMENU
+                                    hierarchy {
+                                        1 = TMENU
+                                        1 {
+                                            NO = 1
+                                            NO {
+                                                wrapItemAndSub = <li class="rootlinefacet-item">|</li>
+                                            }
+                                        }
+
+                                        2 < .1
+                                        2.wrap = <ul>|</ul>
+
+                                        3 < .2
+                                    }
+                                }
+
+
+                                pid {
+                                    label = Uid Range
+                                    field = uid
+
+                                    type = queryGroup
+                                    queryGroup {
+                                        small {
+                                            query = [* TO 2]
+                                        }
+                                        medium {
+                                            query = [2 TO 5]
+                                        }
+
+                                        large {
+                                            query = [5 TO *]
+                                        }
+                                    }
+
+                                    renderingInstruction = CASE
+                                    renderingInstruction {
+                                        key.field = optionValue
+
+                                        default = TEXT
+                                        default.field = optionValue
+
+                                        small = TEXT
+                                        small.value = Small (1 & 2)
+
+                                        medium = TEXT
+                                        medium.value = Medium (2 to 5)
+
+                                        large = TEXT
+                                        large.value = Large (5 to *)
+                                    }
+                                }
+                            }
+
+                            // available place holders: @facetValue, @facetName, @facetLabel, @facetText
+                            removeFacetLinkText = @facetLabel: @facetText
+
+                            showAllLink.wrap = <li>|</li>
+                        }
+
+                        elevation = 1
+                        elevation {
+                            markElevatedResults = 1
+                            forceElevation = 1
+                        }
+
+                    }
+
+                    suggest = 1
+                    suggest {
+                        numberOfSuggestions = 10
+                        suggestField = spell
+                        forceHttps = 0
+                    }
+
+                    statistics = 1
+                    statistics {
+                        anonymizeIP = 0
+                    }
+
+                    viewHelpers {
+                        crop {
+                            maxLength = 300
+                            cropIndicator = ...
+                        }
+
+                        sortIndicator {
+                            up {
+                                altText = sort ascending
+                                file = EXT:solr/Resources/Public/Images/IndicatorUp.png
+                            }
+                            down {
+                                altText = sort descending
+                                file = EXT:solr/Resources/Public/Images/IndicatorDown.png
+                            }
+                        }
+                    }
+
+                    logging {
+                        exceptions = 1
+
+                        indexing {
+                            indexQueueInitialization = 0
+                            missingTypo3SearchMarkers = 1
+                            pageIndexed = 0
+
+                            queue {
+                                pages = 0
+                            }
+                        }
+
+                        query {
+                            filters = 0
+                            searchWords = 0
+                            queryString = 0
+                            rawPost = 0
+                            rawGet = 0
+                            rawDelete = 0
                         }
                     }
                 }
@@ -250,68 +470,61 @@
         <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Woman Products</title>
+        <title>Socks</title>
+        <subtitle>Men</subtitle>
     </pages>
     <pages>
         <uid>3</uid>
         <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Men Products</title>
+        <title>Jeans</title>
+        <subtitle>Men</subtitle>
     </pages>
     <pages>
         <uid>4</uid>
-        <pid>3</pid>
+        <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Men Socks</title>
+        <title>Shoes</title>
+        <subtitle>Woman</subtitle>
     </pages>
     <pages>
         <uid>5</uid>
-        <pid>3</pid>
+        <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Men Jeans</title>
+        <title>T-Shirts</title>
+        <subtitle>Woman</subtitle>
     </pages>
     <pages>
         <uid>6</uid>
-        <pid>2</pid>
+        <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Woman Shoes</title>
+        <title>T-Shirts</title>
+        <subtitle>Men</subtitle>
     </pages>
     <pages>
         <uid>7</uid>
-        <pid>2</pid>
+        <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Woman T-Shirts</title>
+        <title>Sweatshirts</title>
+        <subtitle>Men</subtitle>
     </pages>
     <pages>
         <uid>8</uid>
-        <pid>3</pid>
+        <pid>1</pid>
         <is_siteroot>0</is_siteroot>
         <doktype>1</doktype>
-        <title>Men T-Shirts</title>
-    </pages>
-    <pages>
-        <uid>9</uid>
-        <pid>3</pid>
-        <is_siteroot>0</is_siteroot>
-        <doktype>1</doktype>
-        <title>Men Sweatshirts</title>
-    </pages>
-    <pages>
-        <uid>10</uid>
-        <pid>2</pid>
-        <is_siteroot>0</is_siteroot>
-        <doktype>1</doktype>
-        <title>Woman Sweatshirts</title>
+        <title>Sweatshirts</title>
+        <subtitle>Woman</subtitle>
     </pages>
 
     <tt_content>
         <uid>1</uid>
-        <pid>4</pid>
+        <pid>2</pid>
         <CType>text</CType>
         <bodytext>Our awesome new sock products prices starting at 10€</bodytext>
         <colPos>0</colPos>
@@ -319,17 +532,15 @@
 
     <tt_content>
         <uid>2</uid>
-        <pid>5</pid>
+        <pid>3</pid>
         <CType>text</CType>
         <bodytext>Our awesome men jeans products prices starting at 50€</bodytext>
         <colPos>0</colPos>
     </tt_content>
 
-    <tt_content>
-        <uid>3</uid>
-        <pid>5</pid>
-        <CType>text</CType>
-        <bodytext>Men jeans with best prices</bodytext>
-        <colPos>0</colPos>
-    </tt_content>
+    <tx_solr_statistics>
+        <pid>1</pid>
+        <num_found>100</num_found>
+        <keywords>shoes</keywords>
+    </tx_solr_statistics>
 </dataset>

@@ -16,8 +16,10 @@ namespace ApacheSolrForTypo3\Solr\Controller\Frontend;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\TemplateView;
 
 /**
  * Class SearchController
@@ -29,7 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SearchController extends AbstractBaseController
 {
     /**
-     * @var \TYPO3\CMS\Fluid\View\TemplateView
+     * @var TemplateView
      */
     protected $view;
 
@@ -44,6 +46,30 @@ class SearchController extends AbstractBaseController
         if ($query !== null) {
             $this->request->setArgument('q', $query);
         }
+    }
+
+    /**
+     * @param ViewInterface $view
+     */
+    public function initializeView(ViewInterface $view)
+    {
+        if($view instanceof TemplateView) {
+            $customTemplate = $this->getCustomTemplateFromConfiguration();
+            if($customTemplate === '') {
+                return;
+            }
+            $view->setTemplatePathAndFilename($customTemplate);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCustomTemplateFromConfiguration()
+    {
+        $templateKey = str_replace('Action', '', $this->actionMethodName);
+        $customTemplate = $this->typoScriptConfiguration->getTemplateByFileKey($templateKey);
+        return $customTemplate;
     }
 
     /**
