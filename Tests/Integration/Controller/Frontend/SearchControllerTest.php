@@ -686,9 +686,11 @@ class SearchControllerTest extends IntegrationTest
     }
 
     /**
+     * The template root path is configured in the typoscript template to point to another folder-
+     *
      * @test
      */
-    public function canRenderAsUserObjectWithCustomTemplate()
+    public function canRenderAsUserObjectWithCustomTemplatePath()
     {
         $_GET['q'] = '*';
         $this->importDataSetFromFixture('can_render_search_customTemplate.xml');
@@ -698,8 +700,8 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $result = $this->searchResponse->getContent();
 
-        $this->assertContains('Custom Integration Test Search Template', $result, 'Could not find page 3 in result set');
-        $this->assertContains('Custom Integration Test Pagination Template', $result, 'Could not find page 2 in result set');
+        $this->assertContains('Custom Integration Test Search Templatepath', $result, 'Can not overwrite template path');
+        $this->assertContains('Custom Integration Test Pagination Templatepath', $result, 'Can not overwrite template path');
     }
 
     /**
@@ -727,6 +729,25 @@ class SearchControllerTest extends IntegrationTest
 
         $this->assertContains('mytestsetting', $result, 'Can not output passed test setting');
     }
+
+    /**
+     * Only the entry template points to a different file.
+     *
+     * @test
+     */
+    public function canRenderAsUserObjectWithCustomTemplateInTypoScript()
+    {
+        $_GET['q'] = '*';
+        $this->importDataSetFromFixture('can_render_search_customTemplateFromTs.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+        $this->searchRequest->setArgument('resultsPerPage', 5);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $result = $this->searchResponse->getContent();
+
+        $this->assertContains('Custom Integration Test Search Template entry Template', $result, 'Can not set entry template file name in typoscript');
+    }
+
 
     /**
      * @param string $content
