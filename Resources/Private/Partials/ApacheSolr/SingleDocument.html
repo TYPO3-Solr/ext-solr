@@ -1,4 +1,4 @@
-{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
+{namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers\Backend}
 
 <f:if condition="{document}">
     <div class="panel panel-default">
@@ -39,7 +39,7 @@
             </solr:isString>
             <f:if condition="{showBoostedColumn}">
                 <f:then>
-                    <td>{solr:document.isBoostedField(document:document, fieldName:tableRowFiledName, then:'true', else:'false')}</td>
+                    <td>{solr:backend.document.isBoostedField(document:document, fieldName:tableRowFiledName, then:'true', else:'false')}</td>
                 </f:then>
             </f:if>
         </tr>

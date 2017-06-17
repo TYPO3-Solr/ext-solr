@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Document;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend\Document;
 
 /***************************************************************
  *  Copyright notice
@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Document;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\ViewHelpers\Document\IsBoostedFieldViewHelper;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Document\IsBoostedFieldViewHelper;
 
 
 /**

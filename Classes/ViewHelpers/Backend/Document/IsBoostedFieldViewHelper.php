@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
+namespace ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Document;
 
 /***************************************************************
  *  Copyright notice
