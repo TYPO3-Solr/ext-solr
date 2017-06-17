@@ -367,3 +367,36 @@ Yes, currently(v. 6.1) only one for initializing solr connections.
 But check for new ones with :code:`bin/typo3 list` command.
 
 |
+
+
+**I want to overwrite the type field, why is this not possible?**
+
+The type field is a system field that EXT:solr uses to keep the system in sync. Overwritting this field might result in inconsistency.
+However, if you need something like a custom type you can also write the information to a dynamic solr field and use that one as a type.
+
+The following example shows, how to fill the field "mytype_stringS" and build a facet on this field:
+
+::
+
+    plugin.tx_solr {
+        index{
+            queue{
+                news = 1
+                news {
+                    table = tt_news
+
+                    fields {
+                        mytype_stringS = TEXT
+                        mytype_stringS.value = news
+
+                    }
+                }
+            }
+        }
+        search.faceting.facets.mytype_stringS {
+             label = Type
+             field = mytype_stringS
+        }
+    }
+
+|
