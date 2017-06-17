@@ -221,44 +221,6 @@
                                 spell = skip
                             }
 
-                            fieldRenderingInstructions {
-
-                                url = CASE
-                                url {
-                                    key.field = type
-
-                                    default = TEXT
-                                    default {
-                                        field = url
-                                        htmlSpecialChars = 1
-                                        htmlSpecialChars.preserveEntities = 1
-                                    }
-                                }
-
-                                link = CASE
-                                link {
-                                    key.field = type
-
-                                    pages  = TEXT
-                                    pages {
-                                        field = title
-
-                                        typolink {
-                                            parameter.field = uid
-                                        }
-                                    }
-
-                                    default  = TEXT
-                                    default {
-                                        field = title
-
-                                        typolink {
-                                            parameter.field = url
-                                            extTarget =
-                                        }
-                                    }
-                                }
-                            }
                             showDocumentScoreAnalysis = 0
                         }
                     }

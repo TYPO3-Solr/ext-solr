@@ -278,21 +278,6 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the configured css file for a specific fileKey.
-     *
-     * plugin.tx_solr.cssFiles.<fileKey>
-     *
-     * @param string $fileKey
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getCssFileByFileKey($fileKey, $defaultIfEmpty = '')
-    {
-        $cssFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.cssFiles.' . $fileKey, $defaultIfEmpty);
-        return (string)$cssFileName;
-    }
-
-    /**
      * Returns the configured additionalFields configured for the indexing.
      *
      * plugin.tx_solr.index.additionalFields.
@@ -682,35 +667,6 @@ class TypoScriptConfiguration
         $className = $this->getValueByPathOrDefaultValue($path, $defaultIfEmpty);
 
         return $className;
-    }
-
-    /**
-     * Returns the configured javascript file for a specific fileKey.
-     *
-     * plugin.tx_solr.javascriptFiles.<fileKey>
-     *
-     * @param string $fileKey
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getJavaScriptFileByFileKey($fileKey, $defaultIfEmpty = '')
-    {
-        $javaScriptFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.javascriptFiles.' . $fileKey, $defaultIfEmpty);
-        return (string)$javaScriptFileName;
-    }
-
-    /**
-     * Returns the configuration where to load the javascript
-     *
-     * plugin.tx_solr.javascriptFiles.loadIn
-     *
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getJavaScriptLoadIn($defaultIfEmpty = 'footer')
-    {
-        $loadIn = $this->getValueByPathOrDefaultValue('plugin.tx_solr.javascriptFiles.loadIn', $defaultIfEmpty);
-        return (string)$loadIn;
     }
 
     /**
@@ -1349,20 +1305,6 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the search results fieldRenderingInstructions configuration array
-     *
-     * plugin.tx_solr.search.results.fieldRenderingInstructions.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
-     */
-    public function getSearchResultsFieldRenderingInstructionsConfiguration(array $defaultIfEmpty = [])
-    {
-        $result = $this->getObjectByPathOrDefault('plugin.tx_solr.search.results.fieldRenderingInstructions.', $defaultIfEmpty);
-        return $result;
-    }
-
-    /**
      * Indicates if the results of an initial empty query should be shown or not.
      *
      * plugin.tx_solr.search.showResultsOfInitialEmptyQuery
@@ -1605,20 +1547,6 @@ class TypoScriptConfiguration
     public function getSearchTargetPageConfiguration(array $defaultIfEmpty = [])
     {
         $result = $this->getObjectByPathOrDefault('plugin.tx_solr.search.targetPage.', $defaultIfEmpty);
-        return $result;
-    }
-
-    /**
-     * Retrieves the pagebrowser configuration.
-     *
-     * plugin.tx_solr.search.results.pagebrowser.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
-     */
-    public function getSearchResultsPageBrowserConfiguration(array $defaultIfEmpty = [])
-    {
-        $result = $this->getObjectByPathOrDefault('plugin.tx_solr.search.results.pagebrowser.', $defaultIfEmpty);
         return $result;
     }
 

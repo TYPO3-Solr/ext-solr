@@ -374,15 +374,6 @@ Mapping of fieldname to processing instructions. Available instructions: timesta
 
 The utf8Decode option has been removed in version 2.8.
 
-results.fieldRenderingInstructions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: cObject
-:TS Path: plugin.tx_solr.search.results.fieldRenderingInstructions
-:Since: 1.0
-
-Additional rendering instructions for specified fields.
-
 results.pagebrowser
 ~~~~~~~~~~~~~~~~~~~
 
