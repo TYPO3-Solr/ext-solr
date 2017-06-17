@@ -152,21 +152,6 @@ class TypoScriptConfigurationTest extends UnitTest
     /**
      * @test
      */
-    public function canGetJavaScriptFileByName()
-    {
-        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
-            'javascriptFiles.' => [
-                'ui' => 'ui.js'
-            ]
-        ];
-
-        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $this->assertSame('ui.js', $configuration->getJavaScriptFileByFileKey('ui'), 'Could get configured javascript file');
-    }
-
-    /**
-     * @test
-     */
     public function canGetIndexQueueTableOrFallbackToConfigurationName()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [
