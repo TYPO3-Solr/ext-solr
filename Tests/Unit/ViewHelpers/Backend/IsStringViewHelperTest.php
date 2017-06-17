@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend;
 
 /***************************************************************
  *  Copyright notice
@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\ViewHelpers\IsStringViewHelper;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\IsStringViewHelper;
 
 
 /**
