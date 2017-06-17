@@ -412,7 +412,9 @@ class Relation
             '*',
             $foreignTable,
             'uid IN (' . implode(',', $uids) . ')'
-            . $whereClause
+            . $whereClause,
+            '',
+            'FIELD(uid, ' . implode(',', $uids) . ')'
         );
     }
 }
