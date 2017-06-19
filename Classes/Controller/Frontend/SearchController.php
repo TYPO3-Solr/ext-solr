@@ -107,14 +107,27 @@ class SearchController extends AbstractBaseController
             $rawUserQuery = $this->request->getArgument('q');
         }
 
-        $arguments = $this->request->getArguments();
-        $page = isset($arguments['page']) ? $arguments['page'] - 1 : 0;
-        $arguments['page'] = max($page, 0);
+        $arguments = (array)$this->request->getArguments();
+        $arguments = $this->adjustPageArgumentToPositiveInteger($arguments);
 
         /** @var $searchRequest SearchRequest */
         $searchRequest = $this->getRequest(['q' => $rawUserQuery, 'tx_solr' => $arguments]);
 
         return $searchRequest;
+    }
+
+    /**
+     * This methods sets the page argument to an expected positive integer value in the arguments array.
+     *
+     * @param array $arguments
+     * @return array
+     */
+    protected function adjustPageArgumentToPositiveInteger(array $arguments)
+    {
+        $page = isset($arguments['page']) ? intval($arguments['page']) - 1 : 0;
+        $arguments['page'] = max($page, 0);
+
+        return $arguments;
     }
 
     /**
