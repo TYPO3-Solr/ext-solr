@@ -47,7 +47,8 @@ class PageModuleSummaryTest extends IntegrationTest
         $summary = new PageModuleSummary();
         $result = $summary->getSummary($data);
 
-        $this->assertContains('<td>filter:filter</td>', $result, 'Summary did not contain filter');
+        $this->assertContains('>Filter appKey</td>', $result, 'Summary did not contain filter label');
+        $this->assertContains('<td>test</td>', $result, 'Summary did not contain filter value');
         $this->assertContains('<td>sorting</td>', $result, 'Summary did not contain sorting');
         $this->assertContains('<td>boostFunction</td>', $result, 'Summary did not contain boostFunction');
         $this->assertContains('<td>boostQuery</td>', $result, 'Summary did not contain boostQuery');
