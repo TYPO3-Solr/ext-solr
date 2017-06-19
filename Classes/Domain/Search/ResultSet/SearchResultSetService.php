@@ -335,7 +335,25 @@ class SearchResultSetService
      */
     protected function wrapResultDocumentInResultObject(\Apache_Solr_Response $response)
     {
-        $documents = $response->response->docs;
+        try {
+            $documents = $response->response->docs;
+        } catch (Apache_Solr_ParserException $e) {
+            // when variant are enable and the index is empty, we get a parse exception, because of a
+            // Apache Solr Bug.
+            // see: https://github.com/TYPO3-Solr/ext-solr/issues/668
+            // @todo this try/catch block can be removed after upgrading to Apache Solr 6.4
+            if (!$this->typoScriptConfiguration->getSearchVariants()) {
+                throw $e;
+            }
+
+            $response->response = new \stdClass();
+            $response->spellcheck = [];
+            $response->debug = [];
+            $response->responseHeader = [];
+            $response->facet_counts = [];
+
+            $documents = [];
+        }
 
         if (!is_array($documents)) {
             return;
