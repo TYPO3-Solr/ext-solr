@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
@@ -63,13 +64,12 @@ class PageModuleSummary
         $this->initialize($parameters['row']);
 
         $this->addTargetPage();
-        $this->addSettingFromFlexForm('Filter', 'filter');
-        $this->addSettingFromFlexForm('Sorting', 'sortBy');
-        $this->addSettingFromFlexForm('Results per Page', 'resultsPerPage');
-        $this->addSettingFromFlexForm('Boost Function', 'boostFunction');
-        $this->addSettingFromFlexForm('Boost Query', 'boostQuery');
-        $this->addSettingFromFlexForm('Template', 'templateFile', 'sOptions');
-
+        $this->addSettingFromFlexForm('Filter', 'search.query.filter');
+        $this->addSettingFromFlexForm('Sorting', 'search.query.sortBy');
+        $this->addSettingFromFlexForm('Results per Page', 'search.results.resultsPerPage');
+        $this->addSettingFromFlexForm('Boost Function', 'search.query.boostFunction');
+        $this->addSettingFromFlexForm('Boost Query', 'search.query.boostQuery');
+        $this->addSettingFromFlexForm('Template', 'templateFile.results');
         return $this->render();
     }
 
@@ -78,10 +78,10 @@ class PageModuleSummary
      */
     protected function initialize(array $contentElement)
     {
+        /** @var $service \TYPO3\CMS\Extbase\Service\FlexFormService::class */
+        $service = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Service\FlexFormService::class);
+        $this->flexformData  = $service->convertFlexFormContentToArray($contentElement['pi_flexform']);
         $this->pluginContentElement = $contentElement;
-
-        $flexformAsArray = GeneralUtility::xml2array($contentElement['pi_flexform']);
-        $this->flexformData = $flexformAsArray['data'];
     }
 
     /**
@@ -89,7 +89,7 @@ class PageModuleSummary
      */
     protected function addTargetPage()
     {
-        $targetPageId = $this->getFieldFromFlexform('targetPage');
+        $targetPageId = $this->getFieldFromFlexform('search.targetPage');
         if (!empty($targetPageId)) {
             $page = BackendUtility::getRecord('pages', $targetPageId, 'title');
             $this->settings['Target Page'] = '[' . (int)$targetPageId . '] ' . $page['title'];
@@ -99,14 +99,45 @@ class PageModuleSummary
     /**
      * @param string $settingName
      * @param string $flexFormField
-     * @param string $sheetName
      */
-    protected function addSettingFromFlexForm($settingName, $flexFormField, $sheetName = 'sQuery')
+    protected function addSettingFromFlexForm($settingName, $flexFormField)
     {
-        $templateFile = $this->getFieldFromFlexform($flexFormField, $sheetName);
+        $value = $this->getFieldFromFlexform($flexFormField);
 
-        if (!empty($templateFile)) {
-            $this->settings[$settingName] = $templateFile;
+        if (is_array($value)) {
+            $value = $this->addSettingFromFlexFormArray($settingName, $value);
+        }
+        $this->addSettingIfNotEmpty($settingName, (string)$value);
+    }
+
+    /**
+     * @param string $settingName
+     * @param array $values
+     * @return bool
+     */
+    protected function addSettingFromFlexFormArray($settingName, $values)
+    {
+        foreach ($values as $item) {
+            if (!isset($item['field'])) {
+                continue;
+            }
+            $field = $item['field'];
+
+            $label = $settingName . ' ';
+            $label .= isset($field['field']) ? $field['field'] : '';
+            $fieldValue = isset($field['value']) ? $field['value'] : '';
+            $this->addSettingIfNotEmpty($label, (string)$fieldValue);
+        }
+    }
+
+    /**
+     * @param string $settingName
+     * @param string $value
+     */
+    protected function addSettingIfNotEmpty($settingName, $value)
+    {
+        if (!empty($value)) {
+            $this->settings[$settingName] = $value;
         }
     }
 
@@ -114,22 +145,12 @@ class PageModuleSummary
      * Gets a field's value from flexform configuration, will check if
      * flexform configuration is available.
      *
-     * @param string $fieldName name of the field
-     * @param string $sheetName name of the sheet, defaults to "sDEF"
+     * @param string $path name of the field
      * @return string if nothing found, value if found
      */
-    protected function getFieldFromFlexform($fieldName, $sheetName = 'sDEF')
+    protected function getFieldFromFlexform($path)
     {
-        $fieldValue = '';
-
-        if (array_key_exists($sheetName,
-                $this->flexformData) && array_key_exists($fieldName,
-                $this->flexformData[$sheetName]['lDEF'])
-        ) {
-            $fieldValue = $this->flexformData[$sheetName]['lDEF'][$fieldName]['vDEF'];
-        }
-
-        return $fieldValue;
+        return ObjectAccess::getPropertyPath($this->flexformData, $path);
     }
 
     /**

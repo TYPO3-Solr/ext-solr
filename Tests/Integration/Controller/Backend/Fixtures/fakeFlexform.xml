@@ -3,45 +3,72 @@
     <data>
         <sheet index="sDEF">
             <language index="lDEF">
-                <field index="targetPage">
-                    <value index="vDEF"></value>
+                <field index="search.targetPage">
+                    <value index="vDEF">4711</value>
                 </field>
             </language>
         </sheet>
         <sheet index="sQuery">
             <language index="lDEF">
-                <field index="initializeWithEmptyQuery">
-                    <value index="vDEF">1</value>
+                <field index="search.initializeWithEmptyQuery">
+                    <value index="vDEF">0</value>
                 </field>
-                <field index="showResultsOfInitialEmptyQuery">
-                    <value index="vDEF">1</value>
+                <field index="search.showResultsOfInitialEmptyQuery">
+                    <value index="vDEF">0</value>
                 </field>
-                <field index="initializeWithQuery">
-                    <value index="vDEF">foobar</value>
+                <field index="search.initializeWithQuery">
+                    <value index="vDEF">test</value>
                 </field>
-                <field index="showResultsOfInitialQuery">
-                    <value index="vDEF">1</value>
+                <field index="search.showResultsOfInitialQuery">
+                    <value index="vDEF">0</value>
                 </field>
-                <field index="filter">
-                    <value index="vDEF">filter:filter</value>
-                </field>
-                <field index="sortBy">
+                <field index="search.query.sortBy">
                     <value index="vDEF">sorting</value>
                 </field>
-                <field index="resultsPerPage">
+                <field index="search.results.resultsPerPage">
                     <value index="vDEF">10</value>
                 </field>
-                <field index="boostFunction">
+                <field index="search.query.boostFunction">
                     <value index="vDEF">boostFunction</value>
                 </field>
-                <field index="boostQuery">
+                <field index="search.query.boostQuery">
                     <value index="vDEF">boostQuery</value>
+                </field>
+                <field index="search.query.filter">
+                    <el index="el">
+                        <field index="5947784b97b1e034174380">
+                            <value index="field">
+                                <el>
+                                    <field index="field">
+                                        <value index="vDEF">appKey</value>
+                                    </field>
+                                    <field index="value">
+                                        <value index="vDEF">test</value>
+                                    </field>
+                                </el>
+                            </value>
+                            <value index="_TOGGLE">0</value>
+                        </field>
+                        <field index="59477a29d19e9226739710">
+                            <value index="field">
+                                <el>
+                                    <field index="field">
+                                        <value index="vDEF">changed</value>
+                                    </field>
+                                    <field index="value">
+                                        <value index="vDEF">1</value>
+                                    </field>
+                                </el>
+                            </value>
+                            <value index="_TOGGLE">0</value>
+                        </field>
+                    </el>
                 </field>
             </language>
         </sheet>
         <sheet index="sOptions">
             <language index="lDEF">
-                <field index="templateFile">
+                <field index="templateFiles.results">
                     <value index="vDEF"></value>
                 </field>
             </language>
