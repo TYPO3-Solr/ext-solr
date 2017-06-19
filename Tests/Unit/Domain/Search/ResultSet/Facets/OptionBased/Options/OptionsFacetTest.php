@@ -88,4 +88,32 @@ class OptionsFacetTest extends UnitTest
 
         $this->assertEquals('options', $myFacet->getType());
     }
+
+    /**
+     * @return array
+     */
+    public function getIncludeInAvailableFacetsDataProvider()
+    {
+        return [
+            'default' => [null, true],
+            'zero' => [0, false],
+            'one' => [1, true],
+            '1' => ['1', true],
+            '0' => ['0', false]
+        ];
+    }
+
+    /**
+     * @param mixed $includeInAvailableFacetsConfiguration
+     * @param mixed $expectedResult
+     * @dataProvider getIncludeInAvailableFacetsDataProvider
+     * @test
+     */
+    public function getIncludeInAvailableFacets($includeInAvailableFacetsConfiguration, $expectedResult)
+    {
+        $resultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $myFacet = new OptionsFacet($resultSetMock, 'myFacet', 'myFacetFieldName', 'myTitle', ['includeInAvailableFacets' => $includeInAvailableFacetsConfiguration]);
+
+        $this->assertSame($myFacet->getIncludeInAvailableFacets(), $expectedResult, 'Method getIncludeInAvailableFacets returns unexpected result');
+    }
 }

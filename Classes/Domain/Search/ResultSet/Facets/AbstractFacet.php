@@ -200,9 +200,46 @@ abstract class AbstractFacet
     }
 
     /**
+     * Indicates if this facet should ne included in the available facets. When nothing is configured,
+     * the method return TRUE.
+     *
+     * @return boolean
+     */
+    public function getIncludeInAvailableFacets()
+    {
+        return ((int)$this->getFacetSettingOrDefaultValue('includeInAvailableFacets', 1)) === 1;
+    }
+
+    /**
+     * Indicates if this facets should be included in the used facets. When nothing is configured,
+     * the methods returns true.
+     *
+     * @return boolean
+     */
+    public function getIncludeInUsedFacets()
+    {
+
+        return ((int) $this->getFacetSettingOrDefaultValue('includeInUsedFacets', 1)) === 1;
+    }
+
+    /**
      * The implementation of this method should return a "flatten" collection of all items.
      *
      * @return AbstractFacetItemCollection
      */
     abstract public function getAllFacetItems();
+
+    /**
+     * @param string $key
+     * @param mixed $defaultValue
+     * @return mixed
+     */
+    protected function getFacetSettingOrDefaultValue($key, $defaultValue)
+    {
+        if (!isset($this->configuration[$key])) {
+            return $defaultValue;
+        }
+
+        return ((string)$this->configuration[$key]);
+    }
 }

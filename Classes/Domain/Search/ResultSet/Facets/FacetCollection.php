@@ -26,7 +26,7 @@ class FacetCollection extends AbstractCollection
     {
         return $this->getFilteredCopy(
             function(AbstractFacet $facet) {
-                return $facet->getIsUsed();
+                return $facet->getIsUsed() && $facet->getIncludeInUsedFacets();
             }
         );
     }
@@ -38,7 +38,7 @@ class FacetCollection extends AbstractCollection
     {
         return $this->getFilteredCopy(
             function(AbstractFacet $facet) {
-                return $facet->getIsAvailable();
+                return $facet->getIsAvailable() && $facet->getIncludeInAvailableFacets();
             }
         );
     }
