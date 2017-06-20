@@ -16,4 +16,4 @@ detail in the template where they belong to:
     * **Search**: All templates that are used to render the actions in the SearchController
     * **ViewHelper**: All templates that are use in the widgets (FrequentSearched, LastSearches, ResultPaginate)
 
-To differentiate between Frontend and Backend each folder (Layouts/Partials/Templates) contains one folder for Frontend and Backend that contains the related files.
+All backend related files are in a "Backend" folder. Everything else is frontend related.

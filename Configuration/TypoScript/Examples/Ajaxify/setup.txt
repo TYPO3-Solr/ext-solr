@@ -17,7 +17,7 @@ tx_solr_ajaxPage {
 		extensionName = Solr
 		pluginName = pi_results
 		vendorName = ApacheSolrForTypo3
-		controller = Frontend\Search
+		controller = Search
 		action = results
 		switchableControllerActions {
 			Frontend\Search {

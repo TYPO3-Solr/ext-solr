@@ -12,9 +12,9 @@ After these steps solrfluid is usable and using the default Templates, Layouts a
 
     plugin.tx_solr {
         view {
-            layoutRootPaths.10 = EXT:yourpath/Layouts/Frontend/
-            partialRootPaths.10 = EXT:yourpath/Partials/Frontend/
-            templateRootPaths.10 = EXT:yourpath/Templates/Frontend/
+            layoutRootPaths.10 = EXT:yourpath/Layouts/
+            partialRootPaths.10 = EXT:yourpath/Partials/
+            templateRootPaths.10 = EXT:yourpath/Templates/
         }
     }
 

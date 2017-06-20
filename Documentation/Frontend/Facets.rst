@@ -64,7 +64,7 @@ indexed into solr. Shown in the frontend it will look like this:
 +-----------------+------------------------------------------------------------+
 | Type            | options                                                    |
 +-----------------+------------------------------------------------------------+
-| DefaultPartial  | Partials\\Frontend\\Facets\\Options.html                   |
+| DefaultPartial  | Partials\\Facets\\Options.html                             |
 +-----------------+------------------------------------------------------------+
 | Domain Classes  | Domain\\Search\\ResultSet\\Facets\\OptionBased\\Options\\* |
 +-----------------+---------------+--------------------------------------------+
@@ -115,7 +115,7 @@ this example makes also use of renderingInstructions to render nice labels for t
 +-----------------+---------------------------------------------------------------+
 | Type            | queryGroup                                                    |
 +-----------------+---------------------------------------------------------------+
-| DefaultPartial  | Partials\\Frontend\\Facets\\Options.html                      |
+| DefaultPartial  | Partials\\Facets\\Options.html                                |
 +-----------------+---------------------------------------------------------------+
 | Domain Classes  | Domain\\Search\\ResultSet\\Facets\\OptionBased\\QueryGroup\\* |
 +-----------------+---------------+-----------------------------------------------+
@@ -163,7 +163,7 @@ including the example TypoScript **"Search - (Example) Fluid hierarchy facet on 
 +-----------------+---------------------------------------------------------------+
 | Type            | hierarchy                                                     |
 +-----------------+---------------------------------------------------------------+
-| DefaultPartial  | Partials\\Frontend\\Facets\\Hierarchy.html                    |
+| DefaultPartial  | Partials\\Facets\\Hierarchy.html                              |
 +-----------------+---------------------------------------------------------------+
 | Domain Classes  | Domain\\Search\\ResultSet\\Facets\\OptionBased\\Hierarchy\\*  |
 +-----------------+---------------+-----------------------------------------------+
