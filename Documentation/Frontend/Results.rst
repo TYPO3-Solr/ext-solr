@@ -3,7 +3,7 @@ Result List
 ===========
 
 The most important part of a search are the results. The rendering of the results is done in the "Results.html" template
-(Located in Templates/Frontend/Search/Results.html)
+(Located in Templates/Search/Results.html)
 
 The following part of the default template iterates over the results and renders every document with the Document.html partial (Partials/Frontend/Result/Document.html)
 

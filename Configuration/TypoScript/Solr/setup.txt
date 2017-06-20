@@ -21,9 +21,9 @@ plugin.tx_solr {
 	# If you want to define a different entry template, you can do this here to overwrite the convensional default template
 
 	#templateFiles {
-	#	frequentSearched = EXT:solr/Resources/Private/Templates/Frontend/Search/FrequentlySearched.html
-	#	results = EXT:solr/Resources/Private/Templates/Frontend/Search/Results.html
-	#	form = EXT:solr/Resources/Private/Templates/Frontend/Search/Form.html
+	#	frequentSearched = EXT:solr/Resources/Private/Templates/Search/FrequentlySearched.html
+	#	results = EXT:solr/Resources/Private/Templates/Search/Results.html
+	#	form = EXT:solr/Resources/Private/Templates/Search/Form.html
 	#}
 
 	index {
@@ -262,9 +262,6 @@ plugin.tx_solr {
 	}
 
 	view {
-		layoutRootPaths.10 = EXT:solr/Resources/Private/Layouts/Frontend/
-		partialRootPaths.10 = EXT:solr/Resources/Private/Partials/Frontend/
-		templateRootPaths.10 = EXT:solr/Resources/Private/Templates/Frontend/
 		pluginNamespace = tx_solr
 	}
 

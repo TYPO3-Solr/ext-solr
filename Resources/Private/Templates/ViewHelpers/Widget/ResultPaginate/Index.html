@@ -1,0 +1,65 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers/">
+<f:if condition="{configuration.insertAbove}">
+	<f:render section="paginator" arguments="{pagination: contentArguments.pagination, configuration:configuration, resultSet:resultSet}" />
+</f:if>
+
+<f:renderChildren arguments="{contentArguments}" />
+
+<f:if condition="{configuration.insertBelow}">
+	<f:render section="paginator" arguments="{pagination: contentArguments.pagination, configuration:configuration, resultSet:resultSet}"  />
+</f:if>
+
+<f:section name="paginator">
+	<f:if condition="{pagination.numberOfPages} > 1">
+		<div id="solr-pagination">
+			<ul class="pagination">
+				<f:if condition="{pagination.previousPage}">
+					<li class="previous">
+						<f:if condition="{pagination.previousPage} > 1">
+							<f:then>
+								<a href="{s:uri.paginate.resultPage(page: pagination.previousPage)}" class="solr-ajaxified"><s:translate key="paginate_previous">&laquo;</s:translate></a>
+							</f:then>
+							<f:else>
+								<a href="{s:uri.paginate.resultPage()}" class="solr-ajaxified"><s:translate key="paginate_previous">&laquo;</s:translate></a>
+							</f:else>
+						</f:if>
+					</li>
+				</f:if>
+				<f:if condition="{pagination.hasLessPages}">
+					<li><a>....</a></li>
+				</f:if>
+				<f:for each="{pagination.pages}" as="page">
+					<f:if condition="{page.isCurrent}">
+						<f:then>
+							<li class="active">
+								<a href="{s:uri.paginate.resultPage()}" class="solr-ajaxified">{page.number}</a>
+							</li>
+						</f:then>
+						<f:else>
+							<li>
+								<f:if condition="{page.number} > 1">
+									<f:then>
+										<a href="{s:uri.paginate.resultPage(page: page.number)}" class="solr-ajaxified">{page.number}</a>
+									</f:then>
+									<f:else>
+										<a href="{s:uri.paginate.resultPage()}" class="solr-ajaxified">{page.number}</a>
+									</f:else>
+								</f:if>
+							</li>
+						</f:else>
+					</f:if>
+				</f:for>
+				<f:if condition="{pagination.hasMorePages}">
+					<li><a>....</a></li>
+				</f:if>
+				<f:if condition="{pagination.nextPage}">
+					<li class="last next">
+						<a href="{s:uri.paginate.resultPage(page: pagination.nextPage)}" class="solr-ajaxified"><s:translate key="paginate_next">&raquo;</s:translate></a>
+					</li>
+				</f:if>
+			</ul>
+		</div>
+	</f:if>
+</f:section>

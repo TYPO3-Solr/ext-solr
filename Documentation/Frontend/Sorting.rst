@@ -43,6 +43,6 @@ reset the sorting to sort by the natural solr relevance.
 
 **Templating**
 
-The rendering of the sorting is done on "Resources/Private/Partials/Frontend/Results/Sorting.html" this partial is using the configuration and
+The rendering of the sorting is done on "Resources/Private/Partials/Results/Sorting.html" this partial is using the configuration and
 the view helpers to generate sorting links with the same behaviour as in ext:solr. For sure you can modifiy this template and use the ViewHelpers
 in the way how you want to implement your custom sorting.

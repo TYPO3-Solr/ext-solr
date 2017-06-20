@@ -202,10 +202,10 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
     'ApacheSolrForTypo3.solr',
     'pi_results',
     [
-        'Frontend\Search' => 'results,form,detail'
+        'Search' => 'results,form,detail'
     ],
     [
-        'Frontend\Search' => 'results'
+        'Search' => 'results'
     ]
 );
 
@@ -213,7 +213,7 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
     'ApacheSolrForTypo3.solr',
     'pi_search',
     [
-        'Frontend\Search' => 'form'
+        'Search' => 'form'
     ]
 );
 
@@ -221,9 +221,9 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
     'ApacheSolrForTypo3.solr',
     'pi_frequentlySearched',
     [
-        'Frontend\Search' => 'frequentlySearched'
+        'Search' => 'frequentlySearched'
     ],
     [
-        'Frontend\Search' => 'frequentlySearched'
+        'Search' => 'frequentlySearched'
     ]
 );
