@@ -156,7 +156,7 @@ class IndexService
     protected function generateIndexingErrorLog(Item $itemToIndex, \Exception $e)
     {
         $message = 'Failed indexing Index Queue item ' . $itemToIndex->getIndexQueueUid();
-        $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTrace(), 'item' => (array)$itemToIndex];
+        $data = ['code' => $e->getCode(), 'message' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'item' => (array)$itemToIndex];
 
         $this->logger->log(
             SolrLogManager::ERROR,
