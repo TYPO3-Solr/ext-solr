@@ -115,7 +115,7 @@ class IndexService
                     array(
                         'code' => $e->getCode(),
                         'message' => $e->getMessage(),
-                        'trace' => $e->getTrace(),
+                        'trace' => $e->getTraceAsString(),
                         'item' => (array)$itemToIndex
                     )
                 );
