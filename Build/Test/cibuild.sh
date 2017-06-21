@@ -35,6 +35,11 @@ fi
 
 echo "Run unit tests"
 .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --coverage-clover=coverage.unit.clover --bootstrap=$UNIT_BOOTSTRAP
+if [ $? -ne "0" ]; then
+    echo "Error during running the unit tests please check and fix them"
+    exit 1
+fi
+
 
 echo "Run integration tests"
 
