@@ -792,6 +792,34 @@ class RecordMonitorTest extends IntegrationTest
     /**
      * @test
      */
+    public function updateRecordOutsideSiteRootLocatedInOtherSite()
+    {
+        $this->importDumpFromFixture('fake_extension_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
+
+        $this->importDataSetFromFixture('update_record_outside_siteroot_from_other_siteroot.xml');
+
+        $this->assertEmptyIndexQueue();
+
+        // create faked tce main call data
+        $status = 'update';
+        $table = 'tx_fakeextension_domain_model_foo';
+        $uid = 8;
+        $fields = [
+            'title' => 'i am in siteroot b but references also in siteroot a',
+            'starttime' => 1000000,
+            'endtime' => 1100000,
+            'tsstamp' => 1000000,
+            'pid' => 3
+        ];
+
+        $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields, $this->dataHandler);
+        $this->assertIndexQueueContainsItemAmount(2);
+    }
+
+    /**
+     * @test
+     */
     public function updateRecordMonitoringTablesConfiguredDefault()
     {
         $this->importDataSetFromFixture('update_page_use_configuration_monitor_tables.xml');
