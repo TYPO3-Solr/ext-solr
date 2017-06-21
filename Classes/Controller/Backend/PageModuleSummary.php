@@ -69,7 +69,7 @@ class PageModuleSummary
         $this->addSettingFromFlexForm('Results per Page', 'search.results.resultsPerPage');
         $this->addSettingFromFlexForm('Boost Function', 'search.query.boostFunction');
         $this->addSettingFromFlexForm('Boost Query', 'search.query.boostQuery');
-        $this->addSettingFromFlexForm('Template', 'templateFile.results');
+        $this->addSettingFromFlexForm('Template', 'templateFiles.results');
         return $this->render();
     }
 
