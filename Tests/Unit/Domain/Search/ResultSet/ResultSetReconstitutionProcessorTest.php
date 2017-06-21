@@ -398,6 +398,44 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     /**
      * @test
      */
+    public function includeIsUsedFacetsCanBeSetToFalse()
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
+        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
+            $this->returnCallback(function ($name) {
+                return $name == 'type' ? ['tx_solr_file'] : [];
+
+            })
+        );
+
+        // before the reconstitution of the domain object from the response we expect that no facets
+        // are present
+        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+
+        $facetConfiguration = [
+            'showEmptyFacets' => 1,
+            'facets.' => [
+                'type.' => [
+                    'label' => 'My Type',
+                    'field' => 'type',
+                    'includeInUsedFacets' => '0'
+                ]
+            ]
+        ];
+
+        $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
+        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
+        $processor->process($searchResultSet);
+
+        $facets = $searchResultSet->getFacets();
+
+        $this->assertCount(1, $facets, 'we have one facets at all');
+        $this->assertCount(0, $facets->getUsed(), 'we should have 0 used facets because type has configuration includeInUsedFacets=0');
+    }
+
+    /**
+     * @test
+     */
     public function canGetConfiguredFacetNotInResponseAsUnavailableFacet()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
@@ -553,6 +591,66 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
 
         $facets = $searchResultSet->getFacets();
         $this->assertCount(2, $facets, 'we have two facets at all');
+    }
+
+    /**
+     * @test
+     */
+    public function includeInAvailableFacetsCanBeSetToFalse()
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
+
+        // before the reconstitution of the domain object from the response we expect that no facets
+        // are present
+        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+
+        $facetConfiguration = [
+            'facets.' => [
+                'type.' => [
+                    'label' => 'My Type',
+                    'field' => 'type',
+                    'includeInAvailableFacets' => 0
+                ]
+            ]
+        ];
+
+        $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
+        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
+        $processor->process($searchResultSet);
+
+        $facets = $searchResultSet->getFacets();
+        $this->assertCount(1, $facets, 'we have one facets at all');
+        $this->assertCount(0, $facets->getAvailable(), 'but non is available, the first is set to includeInAvailableFacets=0');
+    }
+
+    /**
+     * @test
+     */
+    public function includeInAvailableFacetsCanBeSetToTrue()
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
+
+        // before the reconstitution of the domain object from the response we expect that no facets
+        // are present
+        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+
+        $facetConfiguration = [
+            'facets.' => [
+                'type.' => [
+                    'label' => 'My Type',
+                    'field' => 'type',
+                    'includeInAvailableFacets' => 1
+                ]
+            ]
+        ];
+
+        $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
+        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
+        $processor->process($searchResultSet);
+
+        $facets = $searchResultSet->getFacets();
+        $this->assertCount(1, $facets, 'we have one facets at all');
+        $this->assertCount(1, $facets->getAvailable(), 'but non is available, the first is set to includeInAvailableFacets=0');
     }
 
     /**
