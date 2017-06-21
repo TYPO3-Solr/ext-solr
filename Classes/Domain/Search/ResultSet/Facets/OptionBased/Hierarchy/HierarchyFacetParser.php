@@ -55,6 +55,9 @@ class HierarchyFacetParser extends AbstractFacetParser
         $nodesToCreate = $this->getMergedFacetValueFromSearchRequestAndSolrResponse($optionsFromSolrResponse, $optionsFromRequest);
 
         foreach ($nodesToCreate as $value => $count) {
+            if ($this->getIsExcludedFacetValue($value, $facetConfiguration)) {
+                continue;
+            }
             $isActive = in_array($value, $optionsFromRequest);
             $delimiterPosition = strpos($value, '-');
             $path = substr($value, $delimiterPosition + 1);

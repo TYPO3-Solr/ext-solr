@@ -151,6 +151,40 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
     /**
      * @test
      */
+    public function canSkipOptionsMarkedAsExcludeValue()
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
+
+        // before the reconstitution of the domain object from the response we expect that no facets
+        // are present
+        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+
+        $facetConfiguration = [
+            'showEmptyFacets' => 1,
+            'facets.' => [
+                'type.' => [
+                    'label' => 'My Type',
+                    'field' => 'type_stringS',
+                    'excludeValues' => 'somethingelse, page, whatever'
+                ]
+            ]
+        ];
+
+        $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
+        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
+        $processor->process($searchResultSet);
+
+        $this->assertCount(1, $searchResultSet->getFacets());
+
+            /** @var $optionFacet OptionsFacet */
+        $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
+        $this->assertCount(1, $optionFacet->getOptions());
+        $this->assertSame('event', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Skipping configured value not working as expected');
+    }
+
+    /**
+     * @test
+     */
     public function canGetOptionsInExpectedOrder()
     {
         $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
