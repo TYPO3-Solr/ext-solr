@@ -208,7 +208,7 @@ With the following typoscript you create a date range facet:
 
     plugin.tx_solr.search {
         faceting = 1
-        faceting {
+        faceting.facets {
             creationDateRange {
                 label = Created Between
                 field = created
@@ -256,7 +256,7 @@ The following example configures a **numericRange** facet for the field **"pid"*
 
     plugin.tx_solr.search {
         faceting = 1
-        faceting {
+        faceting.facets {
             pidRangeRange {
                 field = pid
                 label = Pid Range
@@ -330,7 +330,7 @@ When you now want to render the facet at another place you can change the group 
 
     plugin.tx_solr.search {
         faceting = 1
-        faceting {
+        faceting.facets {
             contentType {
                 field = type
                 label = Content Type
@@ -353,7 +353,7 @@ If you need another rendering for one facet you can overwrite the used partial w
 
     plugin.tx_solr.search {
         faceting = 1
-        faceting {
+        faceting.facets {
             contentType {
                 field = type
                 label = Content Type

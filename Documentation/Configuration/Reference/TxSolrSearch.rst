@@ -819,19 +819,6 @@ faceting.facets.[facetName].label
 
 Used as a headline or title to describe the options of a facet.
 
-faceting.facets.[facetName]. selectingSelectedFacetOptionRemovesFilter
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].selectingSelectedFacetOptionRemovesFilter
-:Since: 1.2, 2.0
-:Default: 0
-:Options: 0, 1
-
-Activating this option for a facet makes the facets option links behave like on/off switches: You click them once to activate a facet, you click them a second time to deactivate the facet again.
-
-Feel free to suggest a better name for this option.
-
 faceting.facets.[facetName].keepAllOptionsOnSelection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
