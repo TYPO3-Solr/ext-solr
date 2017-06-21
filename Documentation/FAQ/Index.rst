@@ -400,3 +400,39 @@ The following example shows, how to fill the field "mytype_stringS" and build a 
     }
 
 |
+
+
+**I want to implement a toggle functionality for facet options as previously possible with selectingSelectedFacetOptionRemovesFilter. How can i do that?**
+
+This is completely possible with Fluid core ViewHelpers and the domain model. The following steps are required.
+
+Register a custom partial to render the facet:
+
+::
+
+    plugin.tx_solr.search.faceting.facets.<facetName>.partialName = OptionsToggle
+
+This is the content of the OptionsToggle Partial (Feel free to adapt it to your needs):
+
+::
+
+    <h5 class="facet-label">{facet.label}</h5>
+    <ul class="facet-option-list facet-type-options fluidfacet" data-facet-name="{facet.name}" data-facet-label="{facet.label}">
+        <f:for each="{facet.options}" as="option" iteration="iteration">
+            <li class="facet-option{f:if(condition:'{iteration.index} > 9', then:' tx-solr-facet-hidden')}" data-facet-item-value="{option.value}">
+                <f:if condition="{option.selected}">
+                    <f:then><a class="facet solr-ajaxified" href="{s:uri.facet.removeFacetItem(facet: facet, facetItem: option)}">{option.label}</a></f:then>
+                    <f:else><a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: option)}">{option.label}</a></f:else>
+                </f:if>
+                <span class="facet-result-count">({option.documentCount})</span>
+            </li>
+        </f:for>
+        <f:if condition="{facet.options -> f:count()} > 10">
+            <li>
+                <a href="#" class="tx-solr-facet-show-all" data-label-more="{s:translate(key:'faceting_showMore', extensionName:'solr')}"
+                    data-label-less="{s:translate(key:'faceting_showFewer', extensionName:'solr')}">
+                    <s:translate key="faceting_showMore" extensionName="solr">Show more</s:translate>
+                </a>
+            </li>
+        </f:if>
+    </ul>
