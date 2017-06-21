@@ -53,6 +53,8 @@ class PageModuleSummaryTest extends IntegrationTest
         $this->assertContains('<td>boostFunction</td>', $result, 'Summary did not contain boostFunction');
         $this->assertContains('<td>boostQuery</td>', $result, 'Summary did not contain boostQuery');
         $this->assertContains('<td>10</td>', $result, 'Summary did not contain resultsPerPage');
+        $this->assertContains('<td>myTemplateFile.html</td>', $result, 'Templatefile not in summary');
+
     }
 
 }
