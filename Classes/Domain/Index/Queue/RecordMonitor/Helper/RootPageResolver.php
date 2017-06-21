@@ -183,7 +183,11 @@ class RootPageResolver implements SingletonInterface
             $rootPages[] = $rootPageId;
         }
         if ($this->extensionConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot()) {
-            $alternativeSiteRoots = $this->getAlternativeSiteRootPagesIds($table, $uid, $rootPageId);
+            $recordPageId = $this->getRecordPageId($table, $uid);
+            if ($recordPageId === 0) {
+                return $rootPages;
+            }
+            $alternativeSiteRoots = $this->getAlternativeSiteRootPagesIds($table, $uid, $recordPageId);
             $rootPages = array_merge($rootPages, $alternativeSiteRoots);
         }
 
@@ -204,10 +208,23 @@ class RootPageResolver implements SingletonInterface
             $rootPageId = $this->getRootPageId($uid);
             return $rootPageId;
         } else {
-            $record = BackendUtility::getRecord($table, $uid, 'pid');
-            $rootPageId = $this->getRootPageId($record['pid'], true);
+            $recordPageId = $this->getRecordPageId($table, $uid);
+            $rootPageId = $this->getRootPageId($recordPageId, true);
             return $rootPageId;
         }
+    }
+
+    /**
+     * Returns the pageId of the record or 0 when no valid record was given.
+     *
+     * @param string $table
+     * @param integer $uid
+     * @return mixed
+     */
+    protected function getRecordPageId($table, $uid)
+    {
+        $record = BackendUtility::getRecord($table, $uid, 'pid');
+        return !empty($record['pid']) ? (int)$record['pid'] : 0;
     }
 
     /**
