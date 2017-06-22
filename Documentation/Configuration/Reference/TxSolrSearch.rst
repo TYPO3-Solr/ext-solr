@@ -819,6 +819,18 @@ faceting.facets.[facetName].label
 
 Used as a headline or title to describe the options of a facet.
 
+faceting.facets.[facetName].excludeValues
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].excludeValues
+:Since: 7.0
+:Required: no
+
+Defines a comma separated list of options that are excluded (The value needs to match the value in solr)
+
+Important: This setting only makes sence for option based facets (option, query, hierarchy)
+
 faceting.facets.[facetName].keepAllOptionsOnSelection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

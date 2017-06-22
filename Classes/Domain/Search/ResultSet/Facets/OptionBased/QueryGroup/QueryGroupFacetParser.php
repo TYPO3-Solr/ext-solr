@@ -69,6 +69,10 @@ class QueryGroupFacetParser extends AbstractFacetParser
                     continue;
                 }
 
+                if ($this->getIsExcludedFacetValue($query, $facetConfiguration)) {
+                    continue;
+                }
+
                 $isOptionsActive = $resultSet->getUsedSearchRequest()->getHasFacetValue($facetName, $value);
                 $label = $this->getLabelFromRenderingInstructions(
                     $value,

@@ -168,4 +168,19 @@ abstract class AbstractFacetParser implements FacetParserInterface
 
         return $facet;
     }
+
+    /**
+     * @param mixed $value
+     * @param array $facetConfiguration
+     * @return boolean
+     */
+    protected function getIsExcludedFacetValue($value, array $facetConfiguration)
+    {
+        if (!isset($facetConfiguration['excludeValues'])) {
+            return false;
+        }
+
+        $excludedValue = GeneralUtility::trimExplode(',', $facetConfiguration['excludeValues']);
+        return in_array($value, $excludedValue);
+    }
 }
