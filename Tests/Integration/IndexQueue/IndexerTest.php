@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue;
 use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
@@ -343,5 +344,28 @@ class IndexerTest extends IntegrationTest
         }
 
         return $result;
+    }
+
+    /**
+     * @test
+     */
+    public function getSolrConnectionsByItemReturnsNoDefaultConnectionIfRootPageIsHideDefaultLanguage()
+    {
+        $this->importDataSetFromFixture('can_index_with_rootPage_set_to_hide_default_language.xml');
+        $itemMetaData = [
+            'uid' => 1,
+            'root' => 1,
+            'item_type' => 'pages',
+            'item_uid' => 1,
+            'indexing_configuration' => '',
+            'has_indexing_properties' => false
+        ];
+        $item = new Item($itemMetaData);
+
+        $result = $this->callInaccessibleMethod($this->indexer,'getSolrConnectionsByItem', $item);
+
+        $this->assertInstanceOf(SolrService::class, $result[1], "Expect SolrService object in connection array item with key 1.");
+        $this->assertCount(1, $result, "Expect only one SOLR connection.");
+        $this->assertArrayNotHasKey(0, $result, "Expect, that there is no solr connection returned for default language,");
     }
 }
