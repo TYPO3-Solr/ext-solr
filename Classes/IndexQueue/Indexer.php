@@ -27,10 +27,10 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use Apache_Solr_Document;
 use Apache_Solr_Response;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
@@ -556,7 +556,11 @@ class Indexer extends AbstractIndexer
 
         $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
 
-        $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode($defaultLanguageUid));
+        $translationOverlays = $this->getTranslationOverlaysForPage(
+            $pageId,
+            $site->getSysLanguageMode($defaultLanguageUid)
+        );
+
         foreach ($translationOverlays as $key => $translationOverlay) {
             if (!in_array($translationOverlay['sys_language_uid'],
                 $siteLanguages)
@@ -590,8 +594,8 @@ class Indexer extends AbstractIndexer
     private function getDefaultLanguageUid($item, $rootPage, $siteLanguages)
     {
         $defaultLanguageUid = 0;
-        if ( ($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1 ) {
-            unset($siteLanguages[array_search('0',$siteLanguages)]);
+        if (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1) {
+            unset($siteLanguages[array_search('0', $siteLanguages)]);
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
         } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
             throw new \Apache_Solr_Exception('Root page ' .
