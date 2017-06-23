@@ -554,7 +554,17 @@ class Indexer extends AbstractIndexer
             $siteLanguages[] = $solrConfiguration['language'];
         }
 
-        $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode());
+        $defaultLanguageUid = 0;
+        if ( ($site->getRootPage()['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1 ) {
+            unset($siteLanguages[array_search('0',$siteLanguages)]);
+            $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
+        } elseif (($site->getRootPage()['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
+            throw new \Apache_Solr_Exception('Root page ' .
+                                             $item->getRootPageUid() .
+                                             ' is set to hide default translation, but no other language is configured!');
+        }
+
+        $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode($defaultLanguageUid));
         foreach ($translationOverlays as $key => $translationOverlay) {
             if (!in_array($translationOverlay['sys_language_uid'],
                 $siteLanguages)
