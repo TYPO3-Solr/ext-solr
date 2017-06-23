@@ -395,12 +395,14 @@ class Site
     /**
      * Gets the site's config.sys_language_mode setting
      *
+     * @param int $languageUid
+     *
      * @return string The site's config.sys_language_mode
      */
-    public function getSysLanguageMode()
+    public function getSysLanguageMode($languageUid = 0)
     {
         if (is_null($this->sysLanguageMode)) {
-            Util::initializeTsfe($this->getRootPageId());
+            Util::initializeTsfe($this->getRootPageId(), $languageUid);
             $this->sysLanguageMode = $GLOBALS['TSFE']->sys_language_mode;
         }
 
