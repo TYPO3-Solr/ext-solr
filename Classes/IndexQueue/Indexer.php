@@ -556,9 +556,11 @@ class Indexer extends AbstractIndexer
         }
 
         $defaultLanguageUid = 0;
+        $useDefaultConnection = true;
         if ( ($site->getRootPage()['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1 ) {
             unset($siteLanguages[array_search('0',$siteLanguages)]);
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
+            $useDefaultConnection = false;
         } elseif (($site->getRootPage()['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
             throw new \Apache_Solr_Exception('Root page ' .
                                              $item->getRootPageUid() .
@@ -577,7 +579,9 @@ class Indexer extends AbstractIndexer
         $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, 0, $item->getMountPointIdentifier());
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
 
-        $solrConnections[0] = $defaultConnection;
+        if ($useDefaultConnection) {
+            $solrConnections[0] = $defaultConnection;
+        }
         foreach ($translationConnections as $systemLanguageUid => $solrConnection) {
             $solrConnections[$systemLanguageUid] = $solrConnection;
         }
