@@ -535,7 +535,6 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
-     * @throws \Apache_Solr_Exception
      */
     protected function getSolrConnectionsByItem(Item $item)
     {
@@ -555,17 +554,7 @@ class Indexer extends AbstractIndexer
             $siteLanguages[] = $solrConfiguration['language'];
         }
 
-        $defaultLanguageUid = 0;
-        $useDefaultConnection = true;
-        if ( ($site->getRootPage()['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1 ) {
-            unset($siteLanguages[array_search('0',$siteLanguages)]);
-            $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
-            $useDefaultConnection = false;
-        } elseif (($site->getRootPage()['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
-            throw new \Apache_Solr_Exception('Root page ' .
-                                             $item->getRootPageUid() .
-                                             ' is set to hide default translation, but no other language is configured!');
-        }
+        $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
 
         $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode($defaultLanguageUid));
         foreach ($translationOverlays as $key => $translationOverlay) {
@@ -579,14 +568,38 @@ class Indexer extends AbstractIndexer
         $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, 0, $item->getMountPointIdentifier());
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
 
-        if ($useDefaultConnection) {
+        if ($defaultLanguageUid == 0) {
             $solrConnections[0] = $defaultConnection;
         }
+
         foreach ($translationConnections as $systemLanguageUid => $solrConnection) {
             $solrConnections[$systemLanguageUid] = $solrConnection;
         }
 
         return $solrConnections;
+    }
+
+    /**
+     * @param $item
+     * @param $rootPage
+     * @param $siteLanguages
+     *
+     * @return int
+     * @throws \Apache_Solr_Exception
+     */
+    private function getDefaultLanguageUid($item, $rootPage, $siteLanguages)
+    {
+        $defaultLanguageUid = 0;
+        if ( ($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1 ) {
+            unset($siteLanguages[array_search('0',$siteLanguages)]);
+            $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
+        } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
+            throw new \Apache_Solr_Exception('Root page ' .
+                                             $item->getRootPageUid() .
+                                             ' is set to hide default translation, but no other language is configured!');
+        }
+
+        return $defaultLanguageUid;
     }
 
     /**
