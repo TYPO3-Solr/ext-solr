@@ -535,6 +535,7 @@ class Indexer extends AbstractIndexer
      *
      * @param Item $item An index queue item
      * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+     * @throws \Apache_Solr_Exception
      */
     protected function getSolrConnectionsByItem(Item $item)
     {
