@@ -344,4 +344,24 @@ class IndexerTest extends IntegrationTest
 
         return $result;
     }
+
+    /**
+     * @test
+     */
+    public function getSolrConnectionsByItemReturnsNoDefaultConnectionIfRootPageIsHideDefaultLanguage()
+    {
+        $this->importDataSetFromFixture('can_index_with_rootPage_set_to_hide_default_language.xml');
+        $itemMetaData = [
+            'uid' => 1,
+            'root' => 1,
+            'item_type' => 'pages',
+            'item_uid' => 1,
+            'indexing_configuration' => '',
+            'has_indexing_properties' => false
+        ];
+        $item = new Item($itemMetaData);
+
+        $result = $this->callInaccessibleMethod($this->indexer,'getSolrConnectionsByItem', $item);
+        $this->assertNotEquals(null, $result);
+    }
 }

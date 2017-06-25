@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<pages>
+		<uid>1</uid>
+		<is_siteroot>1</is_siteroot>
+		<doktype>1</doktype>
+		<hidden>0</hidden>
+		<extendToSubpages>1</extendToSubpages>
+		<l18n_cfg>1</l18n_cfg>
+	</pages>
+</dataset>
