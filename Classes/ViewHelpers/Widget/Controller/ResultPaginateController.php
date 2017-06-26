@@ -71,9 +71,20 @@ class ResultPaginateController extends AbstractWidgetController
         $this->resultSet = $this->widgetConfiguration['resultSet'];
 
         ArrayUtility::mergeRecursiveWithOverrule($this->configuration, $this->widgetConfiguration['configuration'], false);
-        $this->configuration['itemsPerPage'] = (int)$this->resultSet->getUsedSearch()->getQuery()->getResultsPerPage();
+        $this->configuration['itemsPerPage'] = $this->getItemsPerPage();
         $this->numberOfPages = (int)ceil($this->resultSet->getUsedSearch()->getNumberOfResults() / $this->configuration['itemsPerPage']);
         $this->maximumNumberOfLinks = (int)$this->configuration['maximumNumberOfLinks'];
+    }
+
+    /**
+     * Determines the number of results per page. When nothing is configured 10 will be returned.
+     *
+     * @return int
+     */
+    protected function getItemsPerPage()
+    {
+        $perPage = (int)$this->resultSet->getUsedSearch()->getQuery()->getResultsPerPage();
+        return $perPage > 0 ? $perPage : 10;
     }
 
     /**
