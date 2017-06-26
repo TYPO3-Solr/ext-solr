@@ -684,4 +684,79 @@ class TypoScriptConfigurationTest extends UnitTest
         $this->assertEquals(['foo', 'bar'], $configuration->GetSearchQueryReturnFieldsAsArray());
     }
 
+    /**
+     * @test
+     */
+    public function canGetSearchSortingDefaultOrderBySortOptionNameIsFallingBackToDefaultSortOrder()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'sorting.' => [
+                    'defaultOrder' => 'desc',
+                    'options.' => [
+                        'title.' => [
+                            'field' => 'title',
+                            'label' => 'Titel'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $retrievedSorting = $configuration->getSearchSortingDefaultOrderBySortOptionName('title');
+        $this->assertEquals('desc', $retrievedSorting);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSearchSortingDefaultOrderBySortOptionName()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'sorting.' => [
+                    'defaultOrder' => 'desc',
+                    'options.' => [
+                        'title.' => [
+                            'defaultOrder' => 'asc',
+                            'field' => 'title',
+                            'label' => 'Titel'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $retrievedSorting = $configuration->getSearchSortingDefaultOrderBySortOptionName('title');
+        $this->assertEquals('asc', $retrievedSorting);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSearchSortingDefaultOrderBySortOptionNameInLowerCase()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'sorting.' => [
+                    'options.' => [
+                        'title.' => [
+                            'defaultOrder' => 'DESC',
+                            'field' => 'title',
+                            'label' => 'Titel'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $retrievedSorting = $configuration->getSearchSortingDefaultOrderBySortOptionName('title');
+        $this->assertEquals('desc', $retrievedSorting);
+    }
 }

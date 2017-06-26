@@ -1381,13 +1381,13 @@ class TypoScriptConfiguration
 
         // if we have a concrete setting, use it
         if ($specificSortOrder !== null) {
-            return $specificSortOrder;
+            return strtolower($specificSortOrder);
         }
 
         // no specific setting, check common setting
         $commonPath = 'plugin.tx_solr.search.sorting.defaultOrder';
         $commonATagParamOrDefaultValue = $this->getValueByPathOrDefaultValue($commonPath, $defaultIfEmpty);
-        return $commonATagParamOrDefaultValue;
+        return strtolower($commonATagParamOrDefaultValue);
     }
 
     /**
@@ -1402,7 +1402,7 @@ class TypoScriptConfiguration
     public function getSearchSortingFixedOrderBySortOptionName($sortOptionName = '', $defaultIfEmpty = '')
     {
         $fixedOrder = 'plugin.tx_solr.search.sorting.options.' . $sortOptionName . '.fixedOrder';
-        return $this->getValueByPathOrDefaultValue($fixedOrder, $defaultIfEmpty);
+        return strtolower($this->getValueByPathOrDefaultValue($fixedOrder, $defaultIfEmpty));
     }
 
     /**
