@@ -436,3 +436,19 @@ This is the content of the OptionsToggle Partial (Feel free to adapt it to your 
             </li>
         </f:if>
     </ul>
+
+**I want to store HTML in solr, how can i retrieve that?**
+
+In general it is not recommend to allow html in the solr field. Especially when you index content that can be changed by the user.
+
+However, if you want to allow html in a solr field, you need to add the field as trusted field and the content will not be escaped during the retrieval from solr.
+
+The following example shows how to avoid html in the content field:
+
+::
+
+    plugin.tx_solr.search.trustedFields = url, content
+
+
+Note: When you allow html in the content please make sure that the usage of crop ViewHelpers or a limit of the field length does not break your markup.
+
