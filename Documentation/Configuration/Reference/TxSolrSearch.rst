@@ -33,6 +33,24 @@ Sets the target page ID for links. If it is empty or 0, the current page ID will
 
 Note: This setting can be overwritten by the plugins flexform.
 
+
+trustedFields
+-------------
+
+:Type: String
+:TS Path: plugin.tx_solr.search.trustedFields
+:Default: url
+:Since: 3.1
+
+    The data in EXT:solr is escaped right after the retrieval from Solr. In rare cases when you need to store HTML in Solr documents you can use this configuration to mark these fields as trusted fields and skip the escaping. Typically this is needed when you want to retrieve html from solr.
+
+
+    The following example shows how to avoid html in the content field:
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.trustedFields = url, content
+
 initializeWithEmptyQuery
 ------------------------
 
