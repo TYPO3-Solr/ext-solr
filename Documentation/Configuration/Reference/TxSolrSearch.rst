@@ -543,8 +543,8 @@ sorting.defaultOrder
 :Type: String
 :TS Path: plugin.tx_solr.search.sorting.defaultOrder
 :Since: 1.0
-:Default: ASC
-:Options: ASC, DESC
+:Default: asc
+:Options: asc, desc
 
 Sets the default sort order for all sort options.
 
@@ -600,8 +600,8 @@ sorting.options.[optionName].defaultOrder
 :Type: String
 :TS Path: plugin.tx_solr.search.sorting.options.[optionName].defaultOrder
 :Since: 2.2
-:Default: ASC
-:Options: ASC, DESC
+:Default: asc
+:Options: asc, desc
 
 Sets the default sort order for a particular sort option.
 
@@ -611,8 +611,8 @@ sorting.options.[optionName].fixedOrder
 :Type: String
 :TS Path: plugin.tx_solr.search.sorting.options.[optionName].fixedOrder
 :Since: 2.2
-:Default: ASC
-:Options: ASC, DESC
+:Default: asc
+:Options: asc, desc
 
 Sets a fixed sort order for a particular sort option that can not be changed.
 
