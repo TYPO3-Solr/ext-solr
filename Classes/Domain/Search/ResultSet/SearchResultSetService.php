@@ -26,10 +26,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\QueryAware;
+use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
+use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -172,8 +176,6 @@ class SearchResultSetService
 
         $query->setResultsPerPage($resultsPerPage);
 
-        $this->initializeRegisteredSearchComponents($query);
-
         if ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchQueryAllowEmptyQuery()) {
             // empty main query, but using a "return everything"
             // alternative query in q.alt
@@ -193,8 +195,9 @@ class SearchResultSetService
 
     /**
      * @param Query $query
+     * @param SearchRequest $searchRequest
      */
-    protected function initializeRegisteredSearchComponents(Query $query)
+    protected function initializeRegisteredSearchComponents(Query $query, SearchRequest $searchRequest)
     {
         $searchComponents = $this->getRegisteredSearchComponents();
 
@@ -204,6 +207,10 @@ class SearchResultSetService
 
             if ($searchComponent instanceof QueryAware && $this->useQueryAwareComponents) {
                 $searchComponent->setQuery($query);
+            }
+
+            if ($searchComponent instanceof SearchRequestAware) {
+                $searchComponent->setSearchRequest($searchRequest);
             }
 
             $searchComponent->initializeSearchComponent();
@@ -265,7 +272,21 @@ class SearchResultSetService
         $this->wrapResultDocumentInResultObject($response);
         $this->addExpandedDocumentsFromVariants($response);
 
+        $this->applySearchResponseProcessors($query, $response);
+    }
+
+    /**
+     * Executes the register searchResponse processors.
+     *
+     * @deprecated Please use $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] now to register your SearchResultSetProcessor will be removed in 8.0
+     * @param Query $query
+     * @param \Apache_Solr_Response $response
+     */
+    private function applySearchResponseProcessors(Query $query, \Apache_Solr_Response $response)
+    {
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'])) {
+            GeneralUtility::logDeprecatedFunction();
+
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
                 $responseProcessor = GeneralUtility::getUserObj($classReference);
                 if ($responseProcessor instanceof ResponseProcessor) {
@@ -507,7 +528,7 @@ class SearchResultSetService
         $rawQuery = $searchRequest->getRawUserQuery();
         $resultsPerPage = $this->getNumberOfResultsPerPage($rawQuery, $searchRequest->getResultsPerPage());
         $query = $this->getPreparedQuery($rawQuery, $resultsPerPage);
-
+        $this->initializeRegisteredSearchComponents($query, $searchRequest);
         $resultSet->setUsedQuery($query);
 
         $currentPage = max(0, $searchRequest->getPage());
@@ -517,10 +538,14 @@ class SearchResultSetService
         }
 
         $offSet = $currentPage * $resultsPerPage;
+
         // performing the actual search, sending the query to the Solr server
+        $query = $this->modifyQuery($query, $searchRequest, $this->search);
         $response = $this->search->search($query, $offSet, null);
+        $response = $this->modifyResponse($response, $searchRequest, $this->search);
 
         $this->processResponse($rawQuery, $query, $response);
+
         $this->addSearchResultsToResultSet($response, $resultSet);
 
         $resultSet->setResponse($response);
@@ -536,6 +561,86 @@ class SearchResultSetService
         return $this->handleSearchHook('afterSearch', $resultSet);
     }
 
+    /**
+     * Allows to modify a query before eventually handing it over to Solr.
+     *
+     * @param Query $query The current query before it's being handed over to Solr.
+     * @param SearchRequest $searchRequest The searchRequest, relevant in the current context
+     * @param Search $search The search, relevant in the current context
+     * @throws \UnexpectedValueException
+     * @return Query The modified query that is actually going to be given to Solr.
+     */
+    protected function modifyQuery(Query $query, SearchRequest $searchRequest, Search $search)
+    {
+        // hook to modify the search query
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
+                $queryModifier = GeneralUtility::getUserObj($classReference);
+
+                if ($queryModifier instanceof Modifier) {
+                    if ($queryModifier instanceof SearchAware) {
+                        $queryModifier->setSearch($search);
+                    }
+
+                    if ($queryModifier instanceof SearchRequestAware) {
+                        $queryModifier->setSearchRequest($searchRequest);
+                    }
+
+                    $query = $queryModifier->modifyQuery($query);
+                } else {
+                    throw new \UnexpectedValueException(
+                        get_class($queryModifier) . ' must implement interface ' . Modifier::class,
+                        1310387414
+                    );
+                }
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Allows to modify a response returned from Solr before returning it to
+     * the rest of the extension.
+     *
+     * @deprecated Please use $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] now to register your SearchResultSetProcessor will be removed in 8.0
+     * @param \Apache_Solr_Response $response The response as returned by Solr
+     * @param SearchRequest $searchRequest The searchRequest, relevant in the current context
+     * @param Search $search The search, relevant in the current context
+     * @return \Apache_Solr_Response The modified response that is actually going to be returned to the extension.
+     * @throws \UnexpectedValueException if a response modifier does not implement interface ApacheSolrForTypo3\Solr\Search\ResponseModifier
+     */
+    protected function modifyResponse(\Apache_Solr_Response $response, SearchRequest $searchRequest, Search $search)
+    {
+        // hook to modify the search response
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'])) {
+            GeneralUtility::logDeprecatedFunction();
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'] as $classReference) {
+                $responseModifier = GeneralUtility::getUserObj($classReference);
+
+                if ($responseModifier instanceof ResponseModifier) {
+                    if ($responseModifier instanceof SearchAware) {
+                        $responseModifier->setSearch($search);
+                    }
+
+                    if ($responseModifier instanceof SearchRequestAware) {
+                        $responseModifier->setSearchRequest($searchRequest);
+                    }
+                    $response = $responseModifier->modifyResponse($response);
+                } else {
+                    throw new \UnexpectedValueException(
+                        get_class($responseModifier) . ' must implement interface ' . ResponseModifier::class,
+                        1343147211
+                    );
+                }
+            }
+
+            // add modification indicator
+            $response->response->isModified = true;
+        }
+
+        return $response;
+    }
     /**
      * Retrieves a single document from solr by document id.
      *

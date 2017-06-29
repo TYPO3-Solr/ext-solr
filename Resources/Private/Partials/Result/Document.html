@@ -12,7 +12,9 @@
 		<f:if condition="{document.isElevated}">
 			<div class="results-elevated-label"><s:translate key="sponsored"/></div>
 		</f:if>
-		<h5 class="results-topic"><a href="{document.url}">{document.title}</a></h5>
+
+		<h5 class="results-topic"><a href="{s:uri.result.addSearchWordList(url:document.url, searchWords:resultSet.usedQuery.keywords)}">{document.title}</a></h5>
+
 		<div class="results-teaser">
 			<f:render partial="Result/RelevanceBar" section="RelevanceBar" arguments="{resultSet:resultSet, document:document}" />
 

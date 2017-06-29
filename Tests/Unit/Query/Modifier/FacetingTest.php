@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Query\Modifier;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Faceting;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -43,9 +44,10 @@ class FacetingTest extends UnitTest
 {
     /**
      * @param $fakeConfigurationArray
+     * @param SearchRequest SearchRequest
      * @return array
      */
-    private function getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray)
+    private function getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, SearchRequest $fakeSearchRequest)
     {
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
@@ -62,6 +64,8 @@ class FacetingTest extends UnitTest
         $query = GeneralUtility::makeInstance(Query::class, 'test', $fakeConfiguration);
         /** @var $facetModifier \ApacheSolrForTypo3\Solr\Query\Modifier\Faceting */
         $facetModifier = GeneralUtility::makeInstance(Faceting::class, $fakeConfiguration, $facetRegistry);
+        $facetModifier->setSearchRequest($fakeSearchRequest);
+
         $facetModifier->modifyQuery($query);
 
         $queryParameter = $query->getQueryParameters();
@@ -88,7 +92,11 @@ class FacetingTest extends UnitTest
                 'field' => 'type'
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertContains('type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
     }
@@ -115,7 +123,11 @@ class FacetingTest extends UnitTest
                 'sortBy' => 'index'
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertContains('lex',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
     }
@@ -151,7 +163,11 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
 
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertEquals('{!ex=type,color}type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
@@ -190,7 +206,10 @@ class FacetingTest extends UnitTest
             ]
         ];
 
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertEquals('{!ex=type}type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
         $this->assertEquals('color',  $queryParameter['facet.field'][1], 'Query string did not contain expected snipped');
@@ -202,11 +221,9 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFilters()
     {
-        $fakeRequest = [
-            'tx_solr' => ['filter' => [urlencode('color:red'),urlencode('type:product')]]
-        ];
-
-        $_GET = $fakeRequest;
+        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
 
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -218,7 +235,7 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?
@@ -231,11 +248,9 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFiltersWithKeepAllOptionsOnSelectionFacet()
     {
-        $fakeRequest = [
-            'tx_solr' => ['filter' => [urlencode('color:red'),urlencode('type:product')]]
-        ];
-
-        $_GET = $fakeRequest;
+        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
 
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -248,7 +263,7 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?
@@ -261,11 +276,10 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFiltersWithGlobalKeepAllOptionsOnSelection()
     {
-        $fakeRequest = [
-            'tx_solr' => ['filter' => [urlencode('color:red'),urlencode('type:product')]]
-        ];
+        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
 
-        $_GET = $fakeRequest;
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
 
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -278,7 +292,7 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?

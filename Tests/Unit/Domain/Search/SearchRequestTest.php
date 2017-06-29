@@ -72,7 +72,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canGetActiveFilterNames()
     {
-        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
+        $query = 'tx_solr%5Bq%5D=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertEquals(['type'], $request->getActiveFacetNames());
     }
@@ -82,7 +82,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canGetRawQueryString()
     {
-        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
+        $query = 'tx_solr%5Bq%5D=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertEquals('typo3', $request->getRawUserQuery());
     }
@@ -94,7 +94,7 @@ class SearchRequestTest extends UnitTest
     {
         $request = $this->getSearchRequestFromQueryString('');
         $data  = $request->setRawQueryString('foobar')->getAsArray();
-        $this->assertEquals(['q' => 'foobar'], $data, 'The argument container did not contain the expected argument');
+        $this->assertEquals(['tx_solr' => ['q' => 'foobar']], $data, 'The argument container did not contain the expected argument');
     }
 
     /**
@@ -132,7 +132,7 @@ class SearchRequestTest extends UnitTest
         $arguments  = $request->setRawQueryString('mysearch')->addFacetValue('type', 'tt_content')->getAsArray();
 
         $expectedArguments = [];
-        $expectedArguments['q'] = 'mysearch';
+        $expectedArguments['tx_solr']['q'] = 'mysearch';
         $expectedArguments['tx_solr']['filter'][0] = 'type:tt_content';
 
         $this->assertSame($arguments, $expectedArguments, 'Could not set a query and add a facet at the same time');
@@ -163,7 +163,7 @@ class SearchRequestTest extends UnitTest
                             ->getAsArray();
 
         $expectedArguments = [];
-        $expectedArguments['q'] = 'mysearch';
+        $expectedArguments['tx_solr']['q'] = 'mysearch';
         $expectedArguments['tx_solr']['filter'][0] = 'type:tt_content';
 
         $this->assertSame($arguments, $expectedArguments, 'Could not reset arguments');
@@ -183,7 +183,7 @@ class SearchRequestTest extends UnitTest
                                 ->getCopyForSubRequest()->getAsArray();
 
         $expectedArguments = [];
-        $expectedArguments['q'] = 'mysearch';
+        $expectedArguments['tx_solr']['q'] = 'mysearch';
         $expectedArguments['tx_solr']['filter'][0] = 'type:tt_content';
 
         $this->assertSame($arguments, $expectedArguments);
@@ -212,7 +212,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canRemoveFacetValue()
     {
-        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
+        $query = 'tx_solr%5Bq%5D=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages';
         $request = $this->getSearchRequestFromQueryString($query);
 
         $this->assertTrue($request->getHasFacetValue('type', 'pages'), 'Facet was not present');
@@ -225,7 +225,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canGetFacetValues()
     {
-        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Anews';
+        $query = 'tx_solr%5Bq%5D=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Anews';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertEquals(['pages', 'news'], $request->getActiveFacetValuesByName('type'));
     }
@@ -235,7 +235,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canRemoveAllFacets()
     {
-        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Aevents';
+        $query = 'tx_solr%5Bq%5D=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Aevents';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertSame(2, $request->getActiveFacetCount(), 'Expected to have two active facets');
         $request->removeAllFacets();
@@ -247,7 +247,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canRemoveFacetsByName()
     {
-        $query = 'q=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Aevents&tx_solr%5Bfilter%5D%5B2%5D=created%253A1-4';
+        $query = 'tx_solr%5Bq%5D=typo3&tx_solr%5Bfilter%5D%5B0%5D=type%253Apages&tx_solr%5Bfilter%5D%5B1%5D=type%253Aevents&tx_solr%5Bfilter%5D%5B2%5D=created%253A1-4';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertSame(3, $request->getActiveFacetCount(), 'Expected to have two active facets');
         $request->removeAllFacetValuesByName('type');
@@ -259,7 +259,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canGetSortingField()
     {
-        $query = 'q=typo3&tx_solr%5Bsort%5D=title asc';
+        $query = 'tx_solr%5Bq%5D=typo3&tx_solr%5Bsort%5D=title asc';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertTrue($request->getHasSorting(), 'Passed query has no sorting');
         $this->assertSame('title', $request->getSortingName(), 'Expected sorting name was title');
@@ -271,7 +271,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canRemoveSorting()
     {
-        $query = 'q=typo3&tx_solr%5Bsort%5D=title asc';
+        $query = 'tx_solr%5Bq%5D=typo3&tx_solr%5Bsort%5D=title asc';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertTrue($request->getHasSorting(), 'Passed query has no sorting');
         $this->assertSame('title', $request->getSortingName(), 'Expected sorting name was title');
@@ -290,7 +290,7 @@ class SearchRequestTest extends UnitTest
      */
     public function canSetSorting()
     {
-        $query = 'q=typo3';
+        $query = 'tx_solr%5Bq%5D=typo3';
         $request = $this->getSearchRequestFromQueryString($query);
         $this->assertFalse($request->getHasSorting(), 'Passed query has no sorting');
 

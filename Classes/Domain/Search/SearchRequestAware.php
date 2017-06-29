@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Search;
+namespace ApacheSolrForTypo3\Solr\Domain\Search;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2012-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2017 Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -15,6 +15,9 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *
  *  The GNU General Public License can be found at
  *  http://www.gnu.org/copyleft/gpl.html.
+ *  A copy is found in the textfile GPL.txt and important notices to the license
+ *  from the author is found in LICENSE.txt distributed with these scripts.
+ *
  *
  *  This script is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,42 +27,18 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Query;
-
 /**
- * Highlighting search component
+ * SearchRequest awareness interface for extension components.
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-class HighlightingComponent extends AbstractComponent implements QueryAware
+interface SearchRequestAware
 {
 
     /**
-     * Solr query
+     * Provides a component that is aware of the current SearchRequest
      *
-     * @var Query
+     * @param SearchRequest $searchRequest
      */
-    protected $query;
-
-    /**
-     * Initializes the search component.
-     *
-     *
-     */
-    public function initializeSearchComponent()
-    {
-        if ($this->searchConfiguration['results.']['resultsHighlighting']) {
-            $this->query->setHighlighting(true, $this->searchConfiguration['results.']['resultsHighlighting.']['fragmentSize']);
-        }
-    }
-
-    /**
-     * Provides the extension component with an instance of the current query.
-     *
-     * @param Query $query Current query
-     */
-    public function setQuery(Query $query)
-    {
-        $this->query = $query;
-    }
+    public function setSearchRequest(SearchRequest $searchRequest);
 }

@@ -84,6 +84,17 @@ keepExistingParametersForNewSearches
 
 When doing a new search, existing parameters like filters will be carried over to the new search. This is useful for a scenario where you want to list all available documents first, then allow the user to filter the documents using facets and finally allow him to specify a search term to refine the search.
 
+ignoreGlobalQParameter
+----------------------
+
+:Type: Boolean
+:TS Path: plugin.tx_solr.search.ignoreGlobalQParameter
+:Default: 0
+:Options: 0,1
+:Since: 7.0
+
+In some cases you want EXT:solr to react on the parameter "q" in the url. Normally plugins are bounded to a namespace to allow multiple instances of the search on the same page. In this case you might want to disable this and let EXT:solr only react on the namespaced query parameter (tx_solr[q] by default).
+
 query
 -----
 

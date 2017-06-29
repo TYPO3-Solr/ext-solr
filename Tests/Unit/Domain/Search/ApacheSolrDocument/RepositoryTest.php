@@ -118,7 +118,7 @@ class RepositoryTest extends UnitTest
         $mockedSingletons = [ConnectionManager::class => $solrConnectionManager];
 
         $search = $this->getAccessibleMock(Search::class, ['search', 'getResultDocumentsEscaped'], [], '', false);
-        $mockedSingletons[Search::class] = $search;
+
         GeneralUtility::resetSingletonInstances($mockedSingletons);
 
         $expectedApacheSolrDocumentCollection = [new \Apache_Solr_Document(), new \Apache_Solr_Document()];
@@ -126,7 +126,8 @@ class RepositoryTest extends UnitTest
         $search->expects($this->any())->method('getResultDocumentsEscaped')->willReturn($expectedApacheSolrDocumentCollection);
 
         /* @var $apacheSolrDocumentRepository Repository */
-        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getQueryForPage']);
+        $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getQueryForPage', 'getSearch']);
+        $apacheSolrDocumentRepository->expects($this->once())->method('getSearch')->willReturn($search);
         $apacheSolrDocumentRepository->expects($this->any())->method('getQueryForPage')->willReturn(GeneralUtility::makeInstance(Query::class, ''));
         $actualApacheSolrDocumentCollection = $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(777, 0);
 

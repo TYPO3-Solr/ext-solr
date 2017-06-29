@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Sorting;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,7 +37,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class SortingComponent extends AbstractComponent implements QueryAware
+class SortingComponent extends AbstractComponent implements QueryAware, SearchRequestAware
 {
 
     /**
@@ -44,6 +46,11 @@ class SortingComponent extends AbstractComponent implements QueryAware
      * @var Query
      */
     protected $query;
+
+    /**
+     * @var SearchRequest
+     */
+    protected $searchRequest;
 
     /**
      * Initializes the search component.
@@ -58,18 +65,18 @@ class SortingComponent extends AbstractComponent implements QueryAware
                 $this->searchConfiguration['query.']['sortBy']);
         }
 
-        $solrGetParameters = GeneralUtility::_GET('tx_solr');
+        $arguments = $this->searchRequest->getArguments();
 
         if (!empty($this->searchConfiguration['sorting'])
-            && !empty($solrGetParameters['sort'])
+            && !empty($arguments['sort'])
             && preg_match('/^([a-z0-9_]+ (asc|desc)[, ]*)*([a-z0-9_]+ (asc|desc))+$/i',
-                $solrGetParameters['sort'])
+                $arguments['sort'])
         ) {
             $sortHelper = GeneralUtility::makeInstance(
                 Sorting::class,
                 $this->searchConfiguration['sorting.']['options.']
             );
-            $sortField = $sortHelper->getSortFieldFromUrlParameter($solrGetParameters['sort']);
+            $sortField = $sortHelper->getSortFieldFromUrlParameter($arguments['sort']);
 
             $this->query->setSorting($sortField);
         }
@@ -84,4 +91,13 @@ class SortingComponent extends AbstractComponent implements QueryAware
     {
         $this->query = $query;
     }
+
+    /**
+     * @param SearchRequest $searchRequest
+     */
+    public function setSearchRequest(SearchRequest $searchRequest)
+    {
+        $this->searchRequest = $searchRequest;
+    }
+
 }

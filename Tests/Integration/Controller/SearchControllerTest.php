@@ -208,7 +208,6 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->setResetConfigurationBeforeInitialize(false);
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
-
         $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
         $this->assertContains('remove-facet-option', $resultPage1, 'No link to remove facet option found');
     }
@@ -232,7 +231,6 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
         $this->assertContains('remove-facet-option', $resultPage1, 'No link to remove facet option found');
     }
 
