@@ -353,7 +353,7 @@ class Relation
             $value = array_pop($relatedItemsFromForeignTable);
 
             // restore
-            $this->configuration= $backupConfiguration;
+            $this->configuration = $backupConfiguration;
             $parentContentObject->data = $backupRecord;
         }
 
