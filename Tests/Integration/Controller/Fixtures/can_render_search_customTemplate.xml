@@ -482,7 +482,7 @@
         <uid>1</uid>
         <pid>2</pid>
         <CType>text</CType>
-        <bodytext>Our awesome new sock products prices starting at 10€</bodytext>
+        <bodytext>Our awesome new sock products prices starting at 10 euro</bodytext>
         <colPos>0</colPos>
     </tt_content>
 
@@ -490,7 +490,7 @@
         <uid>2</uid>
         <pid>3</pid>
         <CType>text</CType>
-        <bodytext>Our awesome men jeans products prices starting at 50€</bodytext>
+        <bodytext>Our awesome men jeans products prices starting at 50 euro</bodytext>
         <colPos>0</colPos>
     </tt_content>
 

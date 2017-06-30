@@ -9,7 +9,6 @@ php:
 
 jdk:
   - oraclejdk8
-  - mysql-5.6
 
 addons:
   apt:
@@ -23,8 +22,9 @@ env:
     - TYPO3_DATABASE_HOST="127.0.0.1"
     - TYPO3_DATABASE_USERNAME="root"
     - TYPO3_DATABASE_PASSWORD=""
+    - PHP_CS_FIXER_VERSION="v2.3.2"
   matrix:
-    - TYPO3_VERSION="~8.7.0"
+    - TYPO3_VERSION="^8.7"
     - TYPO3_VERSION="8.x-dev"
 
 matrix:
@@ -33,30 +33,21 @@ matrix:
 before_install:
   - composer self-update
   - composer --version
-  - composer global require friendsofphp/php-cs-fixer:v2.3.2
-  - composer global require namelesscoder/typo3-repository-client
-
-  # set root password
-  - mysql -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('')"
-
   # resources for solr
   - sudo update-java-alternatives -s java-8-oracle
 
 install:
   - Build/Test/bootstrap.sh
-script:
-  # test extension
-  - Build/Test/cibuild.sh
 
-  # test docker file
+script:
+  - Build/Test/cibuild.sh
   - Build/Test/cibuild_docker.sh
 
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.unit.clover
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.integration.clover
+  - Build/Test/publish_coverage.sh
   - Build/Test/cleanup.sh
   - Build/Release/ter_tag_uploader.sh
+
 cache:
   directories:
     - $HOME/.composer/cache

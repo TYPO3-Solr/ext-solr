@@ -25,7 +25,8 @@
     "typo3/cms": ">=8.7.0"
   },
   "require-dev": {
-    "phpunit/phpunit": ">=4.8.0 <6.0.0"
+    "phpunit/phpunit": "^5.6",
+    "nimut/testing-framework": "^1.1"
   },
   "replace": {
     "solr": "self.version",
@@ -42,10 +43,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "ApacheSolrForTypo3\\Solr\\Tests\\": "Tests/",
-      "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/",
-      "TYPO3\\CMS\\Components\\TestingFramework\\Core\\": ".Build/vendor/typo3/cms/components/testing_framework/core/",
-      "TYPO3\\CMS\\Components\\TestingFramework\\Fluid\\": ".Build/vendor/typo3/cms/components/testing_framework/fluid/"
+      "ApacheSolrForTypo3\\Solr\\Tests\\": "Tests/"
     }
   },
   "config": {
