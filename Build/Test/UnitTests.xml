@@ -6,8 +6,8 @@
 	convertWarningsToExceptions="false"
 	forceCoversAnnotation="false"
 	processIsolation="false"
-	stopOnError="false"
-	stopOnFailure="false"
+	stopOnError="true"
+	stopOnFailure="true"
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
 	verbose="false">
@@ -22,4 +22,7 @@
 			<directory suffix=".php">../../Classes/</directory>
 		</whitelist>
 	</filter>
+	<logging>
+		<log type="coverage-clover" target="coverage.unit.clover"/>
+	</logging>
 </phpunit>

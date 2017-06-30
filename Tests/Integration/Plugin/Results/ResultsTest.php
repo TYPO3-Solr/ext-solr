@@ -80,7 +80,7 @@ class ResultsTest extends AbstractPluginTest
         $this->assertTrue($resultPositionDocument3 < $resultPositionDocument2, 'Could not find document 3 before 2, sorting not working?');
 
         $this->assertContains('class="facet"', $result, 'Facet links do not contain facet class from TypoScript setup');
-        $this->assertContains('10€', $result, 'Search response did not contain price of product');
+        $this->assertContains('10 euro', $result, 'Search response did not contain price of product');
         $this->assertPaginationNotVisible($result);
     }
 

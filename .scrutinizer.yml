@@ -20,11 +20,6 @@ tools:
     php_cs_fixer:
         enabled: false
 
-    php_hhvm:
-        enabled: true
-        config:
-            use_undeclared_constant:  false
-
     php_mess_detector:
         enabled: true
         config:
