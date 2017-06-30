@@ -214,7 +214,7 @@ class SolrConfigurationStatus extends AbstractSolrStatus
         if (empty($GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'])) {
             return false;
         }
-        return (bool) $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'];
+        return (bool)$GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['enabled'];
     }
 
     /**

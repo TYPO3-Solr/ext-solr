@@ -48,7 +48,7 @@ class ExtensionConfiguration
     public function __construct($configurationToUse = [])
     {
         if (empty($configurationToUse)) {
-            $this->configuration =  unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr']);
+            $this->configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['solr']);
         } else {
             $this->configuration = $configurationToUse;
         }

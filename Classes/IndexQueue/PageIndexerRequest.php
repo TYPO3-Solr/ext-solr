@@ -323,7 +323,7 @@ class PageIndexerRequest
      * Sets a request's parameter and its value.
      *
      * @param string $parameter Parameter name
-     * @param mixed $value Parameter value.
+     * @param string $value Parameter value.
      */
     public function setParameter($parameter, $value)
     {

@@ -208,10 +208,10 @@ class ArrayAccessor
             // direct access for small paths
             case 1:
                 unset($this->data[$pathArray[0]]);
-                return;
+                 return;
             case 2:
                 unset($this->data[$pathArray[0]][$pathArray[1]]);
-                return;
+                 return;
             default:
                 $this->resetDeepElementWithLoop($pathArray);
         }
@@ -246,12 +246,12 @@ class ArrayAccessor
     protected function getPathAsArray($path)
     {
         if (!$this->includePathSeparatorInKeys) {
-            $pathArray =  explode($this->pathSeparator, $path);
+            $pathArray = explode($this->pathSeparator, $path);
             return $pathArray;
         }
 
         $substitutedPath = str_replace($this->pathSeparator, $this->pathSeparator . '@@@', trim($path));
-        $pathArray =  array_filter(explode('@@@', $substitutedPath));
+        $pathArray = array_filter(explode('@@@', $substitutedPath));
         return $pathArray;
     }
 }
