@@ -5,12 +5,11 @@ echo "PWD: $(pwd)"
 export TYPO3_PATH_WEB="$(pwd)/.Build/Web/"
 export TYPO3_PATH_PACKAGES="$(pwd)/.Build/vendor/"
 
-if [ $TRAVIS ]; then
-    # Travis does not have composer's bin dir in $PATH
-    export PATH="$PATH:$HOME/.composer/vendor/bin"
-fi
+export TYPO3_BIN_DIR="$(pwd)/.Build/bin/"
+export COMPOSER_BIN_DIR="$HOME/.composer/vendor/bin"
 
-ls -l .Build/bin/
+# Add TYPO3_BIN_DIR and COMPOSER_BIN_DIR to $PATH
+export PATH="$TYPO3_BIN_DIR:$COMPOSER_BIN_DIR:$PATH"
 
 echo "Run PHP Lint"
 find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
@@ -29,17 +28,13 @@ if [ $? -eq "0" ]; then
 fi
 
 
-UNIT_BOOTSTRAP=".Build/vendor/typo3/testing-framework/Resources/Core/Build/UnitTestsBootstrap.php"
-
 echo "Run unit tests"
+UNIT_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/UnitTestsBootstrap.php"
 .Build/bin/phpunit --colors -c Build/Test/UnitTests.xml --coverage-clover=coverage.unit.clover --bootstrap=$UNIT_BOOTSTRAP
 if [ $? -ne "0" ]; then
     echo "Error during running the unit tests please check and fix them"
     exit 1
 fi
-
-
-echo "Run integration tests"
 
 #
 # Map the travis and shell variable names to the expected
@@ -73,6 +68,6 @@ else
 	exit 1
 fi
 
-INTEGRATION_BOOTSTRAP=".Build/vendor/typo3/testing-framework/Resources/Core/Build/FunctionalTestsBootstrap.php"
-
+echo "Run integration tests"
+INTEGRATION_BOOTSTRAP=".Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTestsBootstrap.php"
 .Build/bin/phpunit --colors -c Build/Test/IntegrationTests.xml --coverage-clover=coverage.integration.clover --bootstrap=$INTEGRATION_BOOTSTRAP

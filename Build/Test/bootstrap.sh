@@ -5,7 +5,7 @@ EXTENSION_ROOTPATH="$SCRIPTPATH/../../"
 SOLR_INSTALL_PATH="/opt/solr-tomcat/"
 
 if [[ $* == *--local* ]]; then
-    echo -n "Choose a TYPO3 Version (e.g. dev-master,~8.7.0): "
+    echo -n "Choose a TYPO3 Version (e.g. dev-master,^8.7): "
     read typo3Version
     export TYPO3_VERSION=$typo3Version
 
@@ -24,10 +24,14 @@ if [[ $* == *--local* ]]; then
     echo -n "Choose a database password: "
     read typo3DbPassword
     export TYPO3_DATABASE_PASSWORD=$typo3DbPassword
+
+    echo -n "Choose a php-cs-fixer version (v2.3.2): "
+    read phpCSFixerVersion
+    export PHP_CS_FIXER_VERSION=$phpCSFixerVersion
 fi
 
 if [ -z $TYPO3_VERSION ]; then
-	echo "Must set env var TYPO3_VERSION (e.g. dev-master or ~8.7.0)"
+	echo "Must set env var TYPO3_VERSION (e.g. dev-master or ^8.7)"
 	exit 1
 fi
 
@@ -37,19 +41,23 @@ if [ $? -ne "0" ]; then
 	exit 1
 fi
 
+# Install build tools
+composer global require friendsofphp/php-cs-fixer:"$PHP_CS_FIXER_VERSION"
+composer global require scrutinizer/ocular:"1.3.1"
+composer global require namelesscoder/typo3-repository-client
+
+# Setup TYPO3 environment variables
 export TYPO3_PATH_PACKAGES="${EXTENSION_ROOTPATH}.Build/vendor/"
 export TYPO3_PATH_WEB="${EXTENSION_ROOTPATH}.Build/Web/"
-
 echo "Using extension path $EXTENSION_ROOTPATH"
 echo "Using package path $TYPO3_PATH_PACKAGES"
 echo "Using web path $TYPO3_PATH_WEB"
 
+# Install TYPO3 sources
 composer require --dev typo3/cms="$TYPO3_VERSION"
-composer require --dev --prefer-source typo3/testing-framework="1.0.1"
 
 # Restore composer.json
 git checkout composer.json
-
 mkdir -p $TYPO3_PATH_WEB/uploads $TYPO3_PATH_WEB/typo3temp
 
 # Setup Solr Using our install script
