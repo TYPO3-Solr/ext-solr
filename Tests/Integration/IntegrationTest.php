@@ -32,7 +32,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase as TYPO3IntegrationTest;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -47,7 +47,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * @author Timo Schmidt
  */
-abstract class IntegrationTest extends TYPO3IntegrationTest
+abstract class IntegrationTest extends FunctionalTestCase
 {
 
     /**
