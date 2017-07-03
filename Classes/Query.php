@@ -659,11 +659,7 @@ class Query
      */
     public function addGroupField($fieldName)
     {
-        if (!isset($this->queryParameters['group.field'])) {
-            $this->queryParameters['group.field'] = [];
-        }
-
-        $this->queryParameters['group.field'][] = $fieldName;
+        $this->appendToArrayQueryParameter('group.field', $fieldName);
     }
 
     /**
@@ -683,10 +679,7 @@ class Query
      */
     public function addGroupSorting($sorting)
     {
-        if (!isset($this->queryParameters['group.sort'])) {
-            $this->queryParameters['group.sort'] = [];
-        }
-        $this->queryParameters['group.sort'][] = $sorting;
+        $this->appendToArrayQueryParameter('group.sort', $sorting);
     }
 
     /**
@@ -708,11 +701,7 @@ class Query
      */
     public function addGroupQuery($query)
     {
-        if (!isset($this->queryParameters['group.query'])) {
-            $this->queryParameters['group.query'] = [];
-        }
-
-        $this->queryParameters['group.query'][] = $query;
+        $this->appendToArrayQueryParameter('group.query', $query);
     }
 
     /**
@@ -837,7 +826,7 @@ class Query
      */
     public function addFacetField($facetField)
     {
-        $this->queryParameters['facet.field'][] = $facetField;
+        $this->appendToArrayQueryParameter('facet.field', $facetField);
     }
 
     /**
@@ -1038,11 +1027,7 @@ class Query
      */
     public function setQueryType($queryType)
     {
-        if ($queryType) {
-            $this->queryParameters['qt'] = $queryType;
-        } else {
-            unset($this->queryParameters['qt']);
-        }
+        $this->setQueryParameterWhenStringOrUnsetWhenEmpty('qt', $queryType);
     }
 
     /**
@@ -1082,11 +1067,7 @@ class Query
      */
     public function setAlternativeQuery($alternativeQuery)
     {
-        if ($alternativeQuery) {
-            $this->queryParameters['q.alt'] = $alternativeQuery;
-        } else {
-            unset($this->queryParameters['q.alt']);
-        }
+        $this->setQueryParameterWhenStringOrUnsetWhenEmpty('q.alt', $alternativeQuery);
     }
 
     // keywords
@@ -1098,11 +1079,8 @@ class Query
      */
     public function setOmitHeader($omitHeader = true)
     {
-        if ($omitHeader) {
-            $this->queryParameters['omitHeader'] = 'true';
-        } else {
-            unset($this->queryParameters['omitHeader']);
-        }
+        $omitHeader = ($omitHeader === true) ? 'true' : $omitHeader;
+        $this->setQueryParameterWhenStringOrUnsetWhenEmpty('omitHeader', $omitHeader);
     }
 
     /**
@@ -1195,11 +1173,7 @@ class Query
      */
     public function setMinimumMatch($minimumMatch)
     {
-        if (is_string($minimumMatch) && !empty($minimumMatch)) {
-            $this->queryParameters['mm'] = $minimumMatch;
-        } else {
-            unset($this->queryParameters['mm']);
-        }
+        $this->setQueryParameterWhenStringOrUnsetWhenEmpty('mm', $minimumMatch);
     }
 
     /**
@@ -1210,11 +1184,7 @@ class Query
      */
     public function setBoostFunction($boostFunction)
     {
-        if (is_string($boostFunction) && !empty($boostFunction)) {
-            $this->queryParameters['bf'] = $boostFunction;
-        } else {
-            unset($this->queryParameters['bf']);
-        }
+        $this->setQueryParameterWhenStringOrUnsetWhenEmpty('bf', $boostFunction);
     }
 
     // query fields
@@ -1228,11 +1198,11 @@ class Query
      */
     public function setBoostQuery($boostQuery)
     {
-        if ((is_string($boostQuery) || is_array($boostQuery)) && !empty($boostQuery)) {
+        if (is_array($boostQuery)) {
             $this->queryParameters['bq'] = $boostQuery;
-        } else {
-            unset($this->queryParameters['bq']);
+            return;
         }
+        $this->setQueryParameterWhenStringOrUnsetWhenEmpty('bq', $boostQuery);
     }
 
     /**
@@ -1361,6 +1331,22 @@ class Query
     }
 
     /**
+     * This method can be used to set a query parameter when the value is a string and not empty or unset it
+     * in any other case. Extracted to avoid duplicate code.
+     *
+     * @param string $parameterName
+     * @param mixed $value
+     */
+    private function setQueryParameterWhenStringOrUnsetWhenEmpty($parameterName, $value)
+    {
+        if (is_string($value) && !empty($value)) {
+            $this->addQueryParameter($parameterName, $value);
+        } else {
+            unset($this->queryParameters[$parameterName]);
+        }
+    }
+
+    /**
      * Adds any generic query parameter.
      *
      * @param string $parameterName Query parameter name
@@ -1369,6 +1355,21 @@ class Query
     public function addQueryParameter($parameterName, $parameterValue)
     {
         $this->queryParameters[$parameterName] = $parameterValue;
+    }
+
+    /**
+     * Appends an item to a queryParameter that is an array or initializes it as empty array when it is not set.
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    private function appendToArrayQueryParameter($key, $value)
+    {
+        if (!isset($this->queryParameters[$key])) {
+            $this->queryParameters[$key] = [];
+        }
+
+        $this->queryParameters[$key][] = $value;
     }
 
     /**
