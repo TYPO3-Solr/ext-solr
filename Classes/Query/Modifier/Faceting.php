@@ -78,22 +78,29 @@ class Faceting implements Modifier, SearchRequestAware
      */
     public function modifyQuery(Query $query)
     {
-        $query->setFaceting();
+        $query->getFaceting()->setIsEnabled(true);
         $typoScriptConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
         $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
 
         $facetParameters = $this->buildFacetingParameters($allFacets, $typoScriptConfiguration);
         foreach ($facetParameters as $facetParameter => $value) {
-            $query->addQueryParameter($facetParameter, $value);
+            if(strtolower($facetParameter) === 'facet.field') {
+                $query->getFaceting()->setFields($value);
+            } else {
+                $query->getFaceting()->addAdditionalParameter($facetParameter, $value);
+            }
         }
 
         $searchArguments = $this->searchRequest->getArguments();
-        if (is_array($searchArguments)) {
-            $keepAllOptionsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
-            $facetFilters = $this->addFacetQueryFilters($searchArguments, $allFacets, $keepAllOptionsOnSelection);
-            foreach ($facetFilters as $filter) {
-                $query->addFilter($filter);
-            }
+        if (!is_array($searchArguments)) {
+            return $query;
+        }
+
+        $keepAllOptionsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
+        $facetFilters = $this->addFacetQueryFilters($searchArguments, $allFacets, $keepAllOptionsOnSelection);
+
+        foreach ($facetFilters as $filter) {
+            $query->getFilters()->add($filter);
         }
 
         return $query;

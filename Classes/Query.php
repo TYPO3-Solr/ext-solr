@@ -24,6 +24,13 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Filters;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Grouping;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -34,6 +41,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * A Solr search query
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
 class Query
 {
@@ -74,9 +82,11 @@ class Query
     protected $keywordsRaw;
 
     /**
-     * @var array
+     * ParameterBuilder for filters.
+     *
+     * @var Filters
      */
-    protected $filters = [];
+    protected $filters = null;
 
     /**
      * @var string
@@ -116,25 +126,41 @@ class Query
      *
      * Used in Solr's qf parameter
      *
-     * @var array
+     * @var QueryFields
      * @see http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
      */
-    protected $queryFields = [];
+    protected $queryFields = null;
 
     /**
      * List of fields that will be returned in the result documents.
      *
      * used in Solr's fl parameter
      *
-     * @var array
+     * @var ReturnFields
      * @see http://wiki.apache.org/solr/CommonQueryParameters#fl
      */
-    protected $fieldList = [];
+    protected $returnFields = null;
 
     /**
-     * @var array
+     * ParameterBuilder for the highlighting.
+     *
+     * @var Highlighting
      */
-    protected $filterFields;
+    protected $highlighting = null;
+
+    /**
+     * ParameterBuilder for the faceting.
+     *
+     * @var Faceting
+     */
+    protected $faceting = null;
+
+    /**
+     * ParameterBuilder for the grouping.
+     *
+     * @var Grouping
+     */
+    protected $grouping = null;
 
     /**
      * @var bool
@@ -158,30 +184,28 @@ class Query
     protected $logger = null;
 
     /**
+     * @var EscapeService
+     */
+    protected $escapeService = null;
+
+    /**
      * Query constructor.
      * @param string $keywords
      * @param TypoScriptConfiguration $solrConfiguration
      * @param SiteHashService|null $siteHashService
+     * @param EscapeService|null $escapeService
      */
-    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null)
+    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null, EscapeService $escapeService = null)
     {
         $keywords = (string)$keywords;
 
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->solrConfiguration = is_null($solrConfiguration) ? Util::getSolrConfiguration() : $solrConfiguration;
         $this->siteHashService = is_null($siteHashService) ? GeneralUtility::makeInstance(SiteHashService::class) : $siteHashService;
-
+        $this->escapeService = is_null($escapeService) ? GeneralUtility::makeInstance(EscapeService::class) : $escapeService;
         $this->setKeywords($keywords);
         $this->sorting = '';
 
-        // What fields to search
-        $queryFields = $this->solrConfiguration->getSearchQueryQueryFields();
-        if ($queryFields != '') {
-            $this->setQueryFieldsFromString($queryFields);
-        }
-
-        // What fields to return from Solr
-        $this->fieldList = $this->solrConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
         $this->linkTargetPageId = $this->solrConfiguration->getSearchTargetPage();
 
         $this->initializeQuery();
@@ -194,6 +218,29 @@ class Query
      */
     protected function initializeQuery()
     {
+        // Filters
+        $this->initializeFilters();
+
+        // What fields to search
+        $queryFields = QueryFields::fromString($this->solrConfiguration->getSearchQueryQueryFields());
+        $this->setQueryFields($queryFields);
+
+        // What fields to return from Solr
+        $returnFieldsArray = $this->solrConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
+        $returnFields = ReturnFields::fromArray($returnFieldsArray);
+        $this->setReturnFields($returnFields);
+
+        // Configure highlighting
+        $highlighting = Highlighting::fromTypoScriptConfiguration($this->solrConfiguration);
+        $this->setHighlighting($highlighting);
+
+        // Configure faceting
+        $this->initializeFaceting();
+
+        // Initialize grouping
+        $this->initializeGrouping();
+
+        // Configure collapsing
         $this->initializeCollapsingFromConfiguration();
     }
 
@@ -207,23 +254,14 @@ class Query
      * a boost of 2.0, content with a default boost of 1.0 and the author field
      * with a boost of 0.5
      *
+     * @deprecated use setQueryFields with QueryFields instead, will be removed in 8.0
      * @param string $queryFields A string defining which fields to query and their associated boosts
      * @return void
      */
     public function setQueryFieldsFromString($queryFields)
     {
-        $fields = GeneralUtility::trimExplode(',', $queryFields, true);
-
-        foreach ($fields as $field) {
-            $fieldNameAndBoost = explode('^', $field);
-
-            $boost = 1.0;
-            if (isset($fieldNameAndBoost[1])) {
-                $boost = floatval($fieldNameAndBoost[1]);
-            }
-
-            $this->setQueryField($fieldNameAndBoost[0], $boost);
-        }
+        GeneralUtility::logDeprecatedFunction();
+        $this->setQueryFields(QueryFields::fromString($queryFields));
     }
 
     /**
@@ -231,13 +269,31 @@ class Query
      * gets added. Boost is optional, if left out a default boost of 1.0 is
      * applied.
      *
+     * @deprecated use getQueryFields()->set($fieldName, $boost) instead, will be removed in 8.0
      * @param string $fieldName The field's name
      * @param float $boost Optional field boost, defaults to 1.0
      * @return void
      */
     public function setQueryField($fieldName, $boost = 1.0)
     {
-        $this->queryFields[$fieldName] = (float)$boost;
+        GeneralUtility::logDeprecatedFunction();
+        $this->getQueryFields()->set($fieldName, $boost);
+    }
+
+    /**
+     * @param QueryFields $queryFields
+     */
+    public function setQueryFields(QueryFields $queryFields)
+    {
+        $this->queryFields = $queryFields;
+    }
+
+    /**
+     * @return QueryFields
+     */
+    public function getQueryFields()
+    {
+        return $this->queryFields;
     }
 
     /**
@@ -324,101 +380,15 @@ class Query
      * Quote and escape search strings
      *
      * @param string $string String to escape
+     * @deprecated Please use EscapeService noew, will be removed in 8.0
      * @return string The escaped/quoted string
      */
     public function escape($string)
     {
-        // when we have a numeric string only, nothing needs to be done
-        if (is_numeric($string)) {
-            return $string;
-        }
-
-        // when no whitespaces are in the query we can also just escape the special characters
-        if (preg_match('/\W/', $string) != 1) {
-            return $this->escapeSpecialCharacters($string);
-        }
-
-        // when there are no quotes inside the query string we can also just escape the whole string
-        $hasQuotes = strrpos($string, '"') !== false;
-        if (!$hasQuotes) {
-            return $this->escapeSpecialCharacters($string);
-        }
-
-        $result = $this->tokenizeByQuotesAndEscapeDependingOnContext($string);
-
-        return $result;
-    }
-
-    /**
-     * This method is used to escape the content in the query string surrounded by quotes
-     * different then when it is not in a quoted context.
-     *
-     * @param string $string
-     * @return string
-     */
-    protected function tokenizeByQuotesAndEscapeDependingOnContext($string)
-    {
-        $result = '';
-        $quotesCount = substr_count($string, '"');
-        $isEvenAmountOfQuotes = $quotesCount % 2 === 0;
-
-        // go over all quote segments and apply escapePhrase inside a quoted
-        // context and escapeSpecialCharacters outside the quoted context.
-        $segments = explode('"', $string);
-        $segmentsIndex = 0;
-        foreach ($segments as $segment) {
-            $isInQuote = $segmentsIndex % 2 !== 0;
-            $isLastQuote = $segmentsIndex === $quotesCount;
-
-            if ($isLastQuote && !$isEvenAmountOfQuotes) {
-                $result .= '\"';
-            }
-
-            if ($isInQuote && !$isLastQuote) {
-                $result .= $this->escapePhrase($segment);
-            } else {
-                $result .= $this->escapeSpecialCharacters($segment);
-            }
-
-            $segmentsIndex++;
-        }
-
-        return $result;
-    }
-
-    // pagination
-
-    /**
-     * Escapes a value meant to be contained in a phrase with characters with
-     * special meanings in Lucene query syntax.
-     *
-     * @param string $value Unescaped - "dirty" - string
-     * @return string Escaped - "clean" - string
-     */
-    protected function escapePhrase($value)
-    {
-        $pattern = '/("|\\\)/';
-        $replace = '\\\$1';
-
-        return '"' . preg_replace($pattern, $replace, $value) . '"';
-    }
-
-    /**
-     * Escapes characters with special meanings in Lucene query syntax.
-     *
-     * @param string $value Unescaped - "dirty" - string
-     * @return string Escaped - "clean" - string
-     */
-    protected function escapeSpecialCharacters($value)
-    {
-        // list taken from http://lucene.apache.org/core/4_4_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#package_description
-        // which mentions: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /
-        // of which we escape: ( ) { } [ ] ^ " ~ : \ /
-        // and explicitly don't escape: + - && || ! * ?
-        $pattern = '/(\\(|\\)|\\{|\\}|\\[|\\]|\\^|"|~|\:|\\\\|\\/)/';
-        $replace = '\\\$1';
-
-        return preg_replace($pattern, $replace, $value);
+        GeneralUtility::logDeprecatedFunction();
+            /** @var EscapeService $escapeService */
+        $escapeService = GeneralUtility::makeInstance(EscapeService::class);
+        return $escapeService->escape($string);
     }
 
     /**
@@ -472,22 +442,19 @@ class Query
      * @param bool $markElevatedResults Mark elevated results
      * @return void
      */
-    public function setQueryElevation(
-        $elevation = true,
-        $forceElevation = true,
-        $markElevatedResults = true
-    ) {
+    public function setQueryElevation($elevation = true, $forceElevation = true, $markElevatedResults = true)
+    {
         if ($elevation) {
             $this->queryParameters['enableElevation'] = 'true';
             $this->setForceElevation($forceElevation);
             if ($markElevatedResults) {
-                $this->addReturnField('isElevated:[elevated]');
+                $this->getReturnFields()->add('isElevated:[elevated]');
             }
         } else {
             $this->queryParameters['enableElevation'] = 'false';
             unset($this->queryParameters['forceElevation']);
-            $this->removeReturnField('isElevated:[elevated]');
-            $this->removeReturnField('[elevated]'); // fallback
+            $this->getReturnFields()->remove('isElevated:[elevated]');
+            $this->getReturnFields()->remove('[elevated]'); // fallback
         }
     }
 
@@ -514,7 +481,7 @@ class Query
      */
     public function getIsCollapsing()
     {
-        return array_key_exists('collapsing', $this->filters);
+        return $this->getFilters()->hasWithName('collapsing');
     }
 
     /**
@@ -539,72 +506,79 @@ class Query
     public function setCollapsing($collapsing = true)
     {
         if ($collapsing) {
-            $this->filters['collapsing'] = '{!collapse field=' . $this->variantField . '}';
+            $this->getFilters()->add('{!collapse field=' . $this->variantField . '}', 'collapsing');
             if ($this->solrConfiguration->getSearchVariantsExpand()) {
                 $this->queryParameters['expand'] = 'true';
                 $this->queryParameters['expand.rows'] = $this->solrConfiguration->getSearchVariantsLimit();
             }
         } else {
-            unset($this->filters['collapsing']);
+            $this->getFilters()->removeByName('collapsing');
             unset($this->queryParameters['expand']);
             unset($this->queryParameters['expand.rows']);
         }
     }
 
-    // grouping
 
     /**
      * Adds a field to the list of fields to return. Also checks whether * is
      * set for the fields, if so it's removed from the field list.
      *
+     * @deprecated Use getReturnFields()->add() instead, will be removed in 8.0
      * @param string $fieldName Name of a field to return in the result documents
      */
     public function addReturnField($fieldName)
     {
-        if (strpos($fieldName, '[') === false
-            && strpos($fieldName, ']') === false
-            && in_array('*', $this->fieldList)
-        ) {
-            $this->fieldList = array_diff($this->fieldList, ['*']);
-        }
-
-        $this->fieldList[] = $fieldName;
+        GeneralUtility::logDeprecatedFunction();
+        $this->returnFields->add($fieldName);
     }
 
     /**
      * Removes a field from the list of fields to return (fl parameter).
      *
+     * @deprecated Use getReturnFields()->remove() instead, will be removed in 8.0
      * @param string $fieldName Field to remove from the list of fields to return
      */
     public function removeReturnField($fieldName)
     {
-        $key = array_search($fieldName, $this->fieldList);
-
-        if ($key !== false) {
-            unset($this->fieldList[$key]);
-        }
+        GeneralUtility::logDeprecatedFunction();
+        $this->returnFields->remove($fieldName);
     }
+
+    // grouping
 
     /**
      * Activates and deactivates grouping for the current query.
      *
-     * @param bool $grouping TRUE to enable grouping, FALSE to disable grouping
+     * @param bool|Grouping $grouping TRUE to enable grouping, FALSE to disable grouping
      * @return void
      */
     public function setGrouping($grouping = true)
     {
-        if ($grouping) {
-            $this->queryParameters['group'] = 'true';
-            $this->queryParameters['group.format'] = 'grouped';
-            $this->queryParameters['group.ngroups'] = 'true';
-        } else {
-            foreach ($this->queryParameters as $key => $value) {
-                // remove all group.* settings
-                if (GeneralUtility::isFirstPartOfStr($key, 'group')) {
-                    unset($this->queryParameters[$key]);
-                }
-            }
+        if ($grouping instanceof Grouping) {
+            $this->grouping = $grouping;
+            return;
         }
+
+        /**
+         * @deprecated
+         * @todo When starting with 8.0 we can add a typehint Grouping to the grouping argument, to drop backwards compatibility.
+         */
+        $grouping = (bool)$grouping;
+
+        if ($grouping) {
+            GeneralUtility::deprecationLog('Usage of setGrouping with boolean deprecated please use getGrouping()->setIsEnabled()');
+            $this->getGrouping()->setIsEnabled($grouping);
+        } else {
+            $this->initializeGrouping();
+        }
+    }
+
+    /**
+     * @return Grouping
+     */
+    public function getGrouping()
+    {
+        return $this->grouping;
     }
 
     /**
@@ -612,11 +586,13 @@ class Query
      *
      * Internally uses the rows parameter.
      *
+     * @deprecated Use getGrouping()->setNumberOfGroups() instead, will be removed in 8.0
      * @param int $numberOfGroups Number of groups per group.field or group.query
      */
     public function setNumberOfGroups($numberOfGroups)
     {
-        $this->setResultsPerPage($numberOfGroups);
+        GeneralUtility::logDeprecatedFunction();
+        $this->getGrouping()->setNumberOfGroups($numberOfGroups);
     }
 
     /**
@@ -624,11 +600,13 @@ class Query
      *
      * Internally uses the rows parameter.
      *
+     * @deprecated Use getGrouping()->getNumberOfGroups() instead, will be removed in 8.0
      * @return int Number of groups per group.field or group.query
      */
     public function getNumberOfGroups()
     {
-        return $this->getResultsPerPage();
+        GeneralUtility::logDeprecatedFunction();
+        return $this->getGrouping()->getNumberOfGroups();
     }
 
     /**
@@ -638,6 +616,10 @@ class Query
      */
     public function getResultsPerPage()
     {
+        if ($this->getGrouping() instanceof Grouping && $this->getGrouping()->getIsEnabled()) {
+            return $this->getGrouping()->getNumberOfGroups();
+        }
+
         return $this->resultsPerPage;
     }
 
@@ -655,41 +637,50 @@ class Query
     /**
      * Adds a field that should be used for grouping.
      *
+     * @deprecated Use getGrouping()->addField() instead, will be removed in 8.0
      * @param string $fieldName Name of a field for grouping
      */
     public function addGroupField($fieldName)
     {
-        $this->appendToArrayQueryParameter('group.field', $fieldName);
+        GeneralUtility::logDeprecatedFunction();
+        $this->getGrouping()->addField($fieldName);
     }
 
     /**
      * Gets the fields set for grouping.
      *
+     * @deprecated Use getGrouping()->getFields() instead, will be removed in 8.0
      * @return array An array of fields set for grouping.
      */
     public function getGroupFields()
     {
-        return (array)$this->getQueryParameter('group.field', []);
+        GeneralUtility::logDeprecatedFunction();
+        return $this->getGrouping()->getFields();
     }
 
     /**
      * Adds sorting configuration for grouping.
      *
+     * @deprecated Use getGrouping()->addSorting() instead, will be removed in 8.0
+     * @param string $sorting value of sorting configuration
      * @param string $sorting value of sorting configuration
      */
     public function addGroupSorting($sorting)
     {
-        $this->appendToArrayQueryParameter('group.sort', $sorting);
+        GeneralUtility::logDeprecatedFunction();
+        $this->getGrouping()->addSorting($sorting);
     }
 
     /**
      * Gets the sorting set for grouping.
      *
+     * @deprecated Use getGrouping()->getSortings() instead, will be removed in 8.0
      * @return array An array of sorting configurations for grouping.
      */
     public function getGroupSortings()
     {
-        return (array)$this->getQueryParameter('group.sort', []);
+        GeneralUtility::logDeprecatedFunction();
+        return $this->getGrouping()->getSortings();
     }
 
     // faceting
@@ -697,163 +688,136 @@ class Query
     /**
      * Adds a query that should be used for grouping.
      *
+     * @deprecated Use getGrouping()->addQuery() instead, will be removed in 8.0
      * @param string $query Lucene query for grouping
      */
     public function addGroupQuery($query)
     {
-        $this->appendToArrayQueryParameter('group.query', $query);
+        GeneralUtility::logDeprecatedFunction();
+        $this->getGrouping()->addQuery($query);
     }
 
     /**
      * Gets the queries set for grouping.
      *
+     * @deprecated Use getGrouping()->getQueries() instead, will be removed in 8.0
      * @return array An array of queries set for grouping.
      */
     public function getGroupQueries()
     {
-        return (array)$this->getQueryParameter('group.query', []);
+        GeneralUtility::logDeprecatedFunction();
+        return $this->getGrouping()->getQueries();
     }
 
     /**
      * Sets the maximum number of results to be returned per group.
      *
+     * @deprecated Use getGrouping()->setResultsPerGroup() instead, will be removed in 8.0
      * @param int $numberOfResults Maximum number of results per group to return
      */
     public function setNumberOfResultsPerGroup($numberOfResults)
     {
-        $numberOfResults = max(intval($numberOfResults), 0);
-
-        $this->queryParameters['group.limit'] = $numberOfResults;
+        GeneralUtility::logDeprecatedFunction();
+        $this->getGrouping()->setResultsPerGroup($numberOfResults);
     }
 
-    // filter
 
     /**
      * Gets the maximum number of results to be returned per group.
      *
+     * @deprecated Use getGrouping()->getResultsPerGroup() instead, will be removed in 8.0
      * @return int Maximum number of results per group to return
      */
     public function getNumberOfResultsPerGroup()
     {
-        // default if nothing else set is 1, @see http://wiki.apache.org/solr/FieldCollapsing
-        $numberOfResultsPerGroup = 1;
-
-        if (!empty($this->queryParameters['group.limit'])) {
-            $numberOfResultsPerGroup = $this->queryParameters['group.limit'];
-        }
-
-        return $numberOfResultsPerGroup;
+        GeneralUtility::logDeprecatedFunction();
+        return $this->getGrouping()->getResultsPerGroup();
     }
 
     /**
      * Activates and deactivates faceting for the current query.
      *
-     * @param bool $faceting TRUE to enable faceting, FALSE to disable faceting
+     * @param bool|Faceting $faceting TRUE to enable faceting, FALSE to disable faceting
      * @return void
      */
     public function setFaceting($faceting = true)
     {
-        if ($faceting) {
-            $this->queryParameters['facet'] = 'true';
-            $this->queryParameters['facet.mincount'] = $this->solrConfiguration->getSearchFacetingMinimumCount();
-            $this->queryParameters['facet.limit'] = $this->solrConfiguration->getSearchFacetingFacetLimit();
-
-            $this->applyConfiguredFacetSorting();
-        } else {
-            $this->removeFacetingParametersFromQuery();
-        }
-    }
-
-    /**
-     * Removes all facet.* or f.*.facet.* parameters from the query.
-     *
-     * @return void
-     */
-    protected function removeFacetingParametersFromQuery()
-    {
-        foreach ($this->queryParameters as $key => $value) {
-            // remove all facet.* settings
-            if (GeneralUtility::isFirstPartOfStr($key, 'facet')) {
-                unset($this->queryParameters[$key]);
-            }
-
-            // remove all f.*.facet.* settings (overrides for individual fields)
-            if (GeneralUtility::isFirstPartOfStr($key, 'f.') && strpos($key, '.facet.') !== false) {
-                unset($this->queryParameters[$key]);
-            }
-        }
-    }
-
-    /**
-     * Reads the facet sorting configuration and applies it to the queryParameters.
-     *
-     * @return void
-     */
-    protected function applyConfiguredFacetSorting()
-    {
-        $sorting = $this->solrConfiguration->getSearchFacetingSortBy();
-        if (!GeneralUtility::inList('count,index,alpha,lex,1,0,true,false', $sorting)) {
-            // when the sorting is not in the list of valid values we do not apply it.
+        if ($faceting instanceof Faceting) {
+            $this->faceting = $faceting;
             return;
         }
 
-        // alpha and lex alias for index
-        if ($sorting == 'alpha' || $sorting == 'lex') {
-            $sorting = 'index';
-        }
+        /**
+         * @deprecated
+         * @todo When starting with 8.0 we can add a typehint Faceting to the faceting argument, to drop backwards compatibility.
+         */
+        $faceting = (bool)$faceting;
 
-        $this->queryParameters['facet.sort'] = $sorting;
+        if ($faceting) {
+            GeneralUtility::deprecationLog('Usage of setFaceting with boolean deprecated please use getFaceting()->setIsEnabled()');
+            $this->getFaceting()->setIsEnabled($faceting);
+        } else {
+            $this->initializeFaceting();
+        }
+    }
+
+    /**
+     * @return Faceting
+     */
+    public function getFaceting()
+    {
+        return $this->faceting;
     }
 
     /**
      * Sets facet fields for a query.
      *
+     * @deprecated Use getFaceting()->setFields() instead, will be removed in 8.0
      * @param array $facetFields Array of field names
      */
     public function setFacetFields(array $facetFields)
     {
-        $this->queryParameters['facet.field'] = [];
-
-        foreach ($facetFields as $facetField) {
-            $this->addFacetField($facetField);
-        }
+        GeneralUtility::logDeprecatedFunction();
+        $this->getFaceting()->setIsEnabled(true);
+        $this->getFaceting()->setFields($facetFields);
     }
 
     /**
      * Adds a single facet field.
      *
+     * @deprecated Use getFaceting()->addField() instead, will be removed in 8.0
      * @param string $facetField field name
      */
     public function addFacetField($facetField)
     {
-        $this->appendToArrayQueryParameter('facet.field', $facetField);
+        GeneralUtility::logDeprecatedFunction();
+        $this->getFaceting()->setIsEnabled(true);
+        $this->getFaceting()->addField($facetField);
     }
 
     /**
      * Removes a filter on a field
      *
+     * @deprecated Use getFilters()->removeByFieldName() instead, will be removed in 8.0
      * @param string $filterFieldName The field name the filter should be removed for
      * @return void
      */
     public function removeFilter($filterFieldName)
     {
-        foreach ($this->filters as $key => $filterString) {
-            if (GeneralUtility::isFirstPartOfStr($filterString,
-                $filterFieldName . ':')
-            ) {
-                unset($this->filters[$key]);
-            }
-        }
+        GeneralUtility::logDeprecatedFunction();
+        $this->getFilters()->removeByFieldName($filterFieldName);
     }
 
     /**
      * Removes a filter based on key of filter array
      *
+     * @deprecated Use getFilters()->removeByName() instead, will be removed in 8.0
      * @param string $key array key
      */
     public function removeFilterByKey($key)
     {
-        unset($this->filters[$key]);
+        GeneralUtility::logDeprecatedFunction();
+        $this->getFilters()->removeByName($key);
     }
 
     /**
@@ -861,26 +825,33 @@ class Query
      *
      * "fieldname:value"
      *
+     * @deprecated Use getFilters()->removeByValue() instead, will be removed in 8.0
      * @param string $filterString The filter to remove, in the form of field:value
      */
     public function removeFilterByValue($filterString)
     {
-        $key = array_search($filterString, $this->filters);
-        if ($key === false) {
-            // value not found, nothing to do
-            return;
-        }
-        unset($this->filters[$key]);
+        GeneralUtility::logDeprecatedFunction();
+        $this->getFilters()->removeByValue($filterString);
     }
 
     /**
      * Gets all currently applied filters.
      *
-     * @return array Array of filters
+     * @return Filters Array of filters
      */
     public function getFilters()
     {
         return $this->filters;
+    }
+
+    /**
+     * Sets the filters to use.
+     *
+     * @param Filters $filters
+     */
+    public function setFilters(Filters $filters)
+    {
+        $this->filters = $filters;
     }
 
     // sorting
@@ -898,36 +869,22 @@ class Query
         sort($groups, SORT_NUMERIC);
 
         $accessFilter = '{!typo3access}' . implode(',', $groups);
-
-        foreach ($this->filters as $key => $filter) {
-            if (GeneralUtility::isFirstPartOfStr($filter, '{!typo3access}')) {
-                unset($this->filters[$key]);
-            }
-        }
-
-        $this->addFilter($accessFilter);
+        $this->getFilters()->removeByPrefix('{!typo3access}');
+        $this->getFilters()->add($accessFilter);
     }
 
     /**
      * Adds a filter parameter.
      *
+     * @deprecated Use getFilters()->add() instead, will be removed in 8.0
      * @param string $filterString The filter to add, in the form of field:value
      * @return void
      */
     public function addFilter($filterString)
     {
-        // TODO refactor to split filter field and filter value, @see Drupal
-        if ($this->solrConfiguration->getLoggingQueryFilters()) {
-            $this->logger->log(
-                SolrLogManager::INFO,
-                'Adding filter',
-                [
-                    $filterString
-                ]
-            );
-        }
+        GeneralUtility::logDeprecatedFunction();
 
-        $this->filters[] = $filterString;
+        $this->getFilters()->add($filterString);
     }
 
 
@@ -952,7 +909,7 @@ class Query
             $filters[] = 'siteHash:"' . $siteHash . '"';
         }
 
-        $this->addFilter(implode(' OR ', $filters));
+        $this->getFilters()->add(implode(' OR ', $filters));
     }
 
     /**
@@ -974,39 +931,64 @@ class Query
             $filters[] = 'rootline:"' . $lastLevel . '"';
         }
 
-        $this->addFilter(implode(' OR ', $filters));
+        $this->getFilters()->add(implode(' OR ', $filters));
     }
 
     /**
      * Gets the list of fields a query will return.
      *
-     * @return array Array of field names the query will return
+     * @deprecated Use method getReturnFields() instead, will be removed in 8.0
+     * @return array List of field names the query will return
      */
     public function getFieldList()
     {
-        return $this->fieldList;
+        GeneralUtility::logDeprecatedFunction();
+        return $this->getReturnFields()->getValues();
     }
 
     /**
      * Sets the fields to return by a query.
      *
+     * @deprecated Use method setReturnFields() instead, will be removed in 8.0
      * @param array|string $fieldList an array or comma-separated list of field names
      * @throws \UnexpectedValueException on parameters other than comma-separated lists and arrays
      */
     public function setFieldList($fieldList = ['*', 'score'])
     {
+        GeneralUtility::logDeprecatedFunction();
+        if ($fieldList === null) {
+            $this->setReturnFields(ReturnFields::fromArray(['*', 'score']));
+            return;
+        }
+
+
         if (is_string($fieldList)) {
-            $fieldList = GeneralUtility::trimExplode(',', $fieldList);
+            $this->setReturnFields(ReturnFields::fromString($fieldList));
+            return;
         }
 
-        if (!is_array($fieldList) || empty($fieldList)) {
-            throw new \UnexpectedValueException(
-                'Field list must be a comma-separated list or array and must not be empty.',
-                1310740308
-            );
+        if (is_array($fieldList)) {
+            $this->setReturnFields(ReturnFields::fromArray($fieldList));
+            return;
         }
 
-        $this->fieldList = $fieldList;
+        throw new \UnexpectedValueException('Field list must be a FieldList object.', 1310740308);
+    }
+
+    /**
+     * @param ReturnFields $returnFields
+     */
+    public function setReturnFields(ReturnFields $returnFields)
+    {
+        $this->returnFields = $returnFields;
+    }
+
+    /**
+     * @return ReturnFields
+     */
+    public function getReturnFields()
+    {
+        return $this->returnFields;
     }
 
     /**
@@ -1100,7 +1082,7 @@ class Query
      */
     public function setKeywords($keywords)
     {
-        $this->keywords = $this->escape($keywords);
+        $this->keywords = $this->escapeService->escape($keywords);
         $this->keywordsRaw = $keywords;
     }
 
@@ -1124,13 +1106,7 @@ class Query
     {
         $keywords = trim($keywords);
         $keywords = GeneralUtility::removeXSS($keywords);
-        $keywords = htmlentities($keywords, ENT_QUOTES,
-            $GLOBALS['TSFE']->metaCharset);
-
-        // escape triple hashes as they are used in the template engine
-        // TODO remove after switching to fluid templates
-        $keywords = static::escapeMarkers($keywords);
-
+        $keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
         return $keywords;
     }
 
@@ -1139,10 +1115,13 @@ class Query
      * executed in templates.
      *
      * @param string $content Content potentially containing markers
+     * @deprecated Only needed for old templating. Will be removed in 8.0
      * @return string Content with markers escaped
      */
     protected static function escapeMarkers($content)
     {
+        GeneralUtility::logDeprecatedFunction();
+
         // escape marker hashes
         $content = str_replace('###', '&#35;&#35;&#35;', $content);
         // escape pipe character used for parameter separation
@@ -1225,18 +1204,13 @@ class Query
      */
     public function getQueryParameters()
     {
-        $queryParameters = array_merge(
-            [
-                'fl' => implode(',', $this->fieldList),
-                'fq' => array_values($this->filters)
-            ],
-            $this->queryParameters
-        );
-
-        $queryFieldString = $this->getQueryFieldsAsString();
-        if (!empty($queryFieldString)) {
-            $queryParameters['qf'] = $queryFieldString;
-        }
+        $queryParameters = $this->getReturnFields()->build();
+        $queryParameters = array_merge($queryParameters, $this->getFilters()->build());
+        $queryParameters = array_merge($queryParameters, $this->queryParameters);
+        $queryParameters = array_merge($queryParameters, $this->getQueryFields()->build());
+        $queryParameters = array_merge($queryParameters, $this->getHighlighting()->build());
+        $queryParameters = array_merge($queryParameters, $this->getFaceting()->build());
+        $queryParameters = array_merge($queryParameters, $this->getGrouping()->build());
 
         return $queryParameters;
     }
@@ -1246,67 +1220,46 @@ class Query
     /**
      * Compiles the query fields into a string to be used in Solr's qf parameter.
      *
+     * @deprecated Use getQueryFields()->toString() please. Will be removed in 8.0
      * @return string A string of query fields with their associated boosts
      */
     public function getQueryFieldsAsString()
     {
-        $queryFieldString = '';
-
-        foreach ($this->queryFields as $fieldName => $fieldBoost) {
-            $queryFieldString .= $fieldName;
-
-            if ($fieldBoost != 1.0) {
-                $queryFieldString .= '^' . number_format($fieldBoost, 1, '.', '');
-            }
-
-            $queryFieldString .= ' ';
-        }
-
-        return trim($queryFieldString);
+        GeneralUtility::logDeprecatedFunction();
+        return $this->getQueryFields()->toString();
     }
 
     /**
      * Enables or disables highlighting of search terms in result teasers.
      *
-     * @param bool $highlighting Enables highlighting when set to TRUE, deactivates highlighting when set to FALSE, defaults to TRUE.
+     * @param Highlighting|bool $highlighting Enables highlighting when set to TRUE, deactivates highlighting when set to FALSE, defaults to TRUE.
      * @param int $fragmentSize Size, in characters, of fragments to consider for highlighting.
      * @see http://wiki.apache.org/solr/HighlightingParameters
      * @return void
      */
     public function setHighlighting($highlighting = true, $fragmentSize = 200)
     {
-        if ($highlighting) {
-            $this->queryParameters['hl'] = 'true';
-            $this->queryParameters['hl.fragsize'] = (int)$fragmentSize;
-
-            $highlightingFields = $this->solrConfiguration->getSearchResultsHighlightingFields();
-            if ($highlightingFields != '') {
-                $this->queryParameters['hl.fl'] = $highlightingFields;
-            }
-
-            // the fast vector highlighter can only be used, when the fragmentSize is
-            // higher then 17 otherwise solr throws an exception
-            $useFastVectorHighlighter = ($fragmentSize >= 18);
-            $wrap = explode('|', $this->solrConfiguration->getSearchResultsHighlightingWrap());
-
-            if ($useFastVectorHighlighter) {
-                $this->queryParameters['hl.useFastVectorHighlighter'] = 'true';
-                $this->queryParameters['hl.tag.pre'] = $wrap[0];
-                $this->queryParameters['hl.tag.post'] = $wrap[1];
-            }
-
-            if (isset($wrap[0]) && isset($wrap[1])) {
-                $this->queryParameters['hl.simple.pre'] = $wrap[0];
-                $this->queryParameters['hl.simple.post'] = $wrap[1];
-            }
-        } else {
-            // remove all hl.* settings
-            foreach ($this->queryParameters as $key => $value) {
-                if (GeneralUtility::isFirstPartOfStr($key, 'hl')) {
-                    unset($this->queryParameters[$key]);
-                }
-            }
+        if ($highlighting instanceof Highlighting) {
+            $this->highlighting = $highlighting;
+            return;
         }
+
+        /**
+         * @deprecated
+         * @todo When starting with 8.0 we can add a typehint Highlighting to the highlighting argument and remove fragmentsize, to drop backwards compatibility.
+         */
+        GeneralUtility::deprecationLog('Usage of setHighlighting with boolean or fragmentSize is deprecated please use getHighlighting()->setIsEnabled() or getHighlighting()->setFragmentSize() please');
+        $highlighting = (bool)$highlighting;
+        $this->getHighlighting()->setIsEnabled($highlighting);
+        $this->getHighlighting()->setFragmentSize($fragmentSize);
+    }
+
+    /**
+     * @return Highlighting
+     */
+    public function getHighlighting()
+    {
+        return $this->highlighting;
     }
 
     // misc
@@ -1355,21 +1308,6 @@ class Query
     public function addQueryParameter($parameterName, $parameterValue)
     {
         $this->queryParameters[$parameterName] = $parameterValue;
-    }
-
-    /**
-     * Appends an item to a queryParameter that is an array or initializes it as empty array when it is not set.
-     *
-     * @param string $key
-     * @param mixed $value
-     */
-    private function appendToArrayQueryParameter($key, $value)
-    {
-        if (!isset($this->queryParameters[$key])) {
-            $this->queryParameters[$key] = [];
-        }
-
-        $this->queryParameters[$key][] = $value;
     }
 
     /**
@@ -1459,5 +1397,32 @@ class Query
         }
 
         return false;
+    }
+
+    /**
+     * @return void
+     */
+    protected function initializeFaceting()
+    {
+        $faceting = Faceting::fromTypoScriptConfiguration($this->solrConfiguration);
+        $this->setFaceting($faceting);
+    }
+
+    /**
+     * @return void
+     */
+    protected function initializeGrouping()
+    {
+        $grouping = Grouping::fromTypoScriptConfiguration($this->solrConfiguration);
+        $this->setGrouping($grouping);
+    }
+
+    /**
+     * @return void
+     */
+    protected function initializeFilters()
+    {
+        $filters = Filters::fromTypoScriptConfiguration($this->solrConfiguration);
+        $this->setFilters($filters);
     }
 }

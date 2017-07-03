@@ -105,6 +105,7 @@ class Repository implements SingletonInterface
      */
     protected function getQueryForPage($pageId)
     {
+            /** @var $siteRepository SiteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
         /* @var Query $query */
@@ -112,9 +113,9 @@ class Repository implements SingletonInterface
         $query->setQueryType('standard');
         $query->useRawQueryString(true);
         $query->setQueryString('*:*');
-        $query->addFilter('(type:pages AND uid:' . $pageId . ') OR (*:* AND pid:' . $pageId . ' NOT type:pages)');
-        $query->addFilter('siteHash:' . $site->getSiteHash());
-        $query->setFieldList('*');
+        $query->getFilters()->add('(type:pages AND uid:' . $pageId . ') OR (*:* AND pid:' . $pageId . ' NOT type:pages)');
+        $query->getFilters()->add('siteHash:' . $site->getSiteHash());
+        $query->getReturnFields()->add('*');
         $query->setSorting('type asc, title asc');
 
         return $query;

@@ -100,6 +100,8 @@ class SearchResultSetTest extends UnitTest
             // later if we retrieve the expected result
         $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my search', 0, $fakeResponse);
+        $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
+
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my search']]);
 
@@ -118,6 +120,7 @@ class SearchResultSetTest extends UnitTest
         $fakeResponse = $this->getDumbMock(Apache_Solr_Response::class);
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my 2. search', 50, $fakeResponse);
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPage')->will($this->returnValue(25));
+        $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 2. search','page' => 2]]);
 
@@ -132,6 +135,7 @@ class SearchResultSetTest extends UnitTest
     public function testQueryAwareComponentGetsInitialized()
     {
         $this->configurationMock->expects($this->once())->method('getSearchConfiguration')->will($this->returnValue([]));
+        $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
             // we expect that the initialize method of our component will be called
         $fakeQueryAwareSpellChecker = $this->getDumbMock(SpellcheckingComponent::class);
@@ -154,6 +158,8 @@ class SearchResultSetTest extends UnitTest
      */
     public function canRegisterSearchResponseProcessor()
     {
+        $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
+
         $processSearchResponseBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'];
 
         $testProcessor = TestSearchResponseProcessor::class;
@@ -189,6 +195,7 @@ class SearchResultSetTest extends UnitTest
         $this->fakeRegisteredSearchComponents([]);
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPageSwitchOptionsAsArray')
                                 ->will($this->returnValue([10, 25]));
+        $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
         $fakeRequest = new SearchRequest(
             [
@@ -216,6 +223,7 @@ class SearchResultSetTest extends UnitTest
 
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('test', 0, $fakeResponse);
 
+        $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
         $this->configurationMock->expects($this->any())->method('getSearchQueryFilterConfiguration')->will(
             $this->returnValue(['type:pages'])
         );
@@ -240,6 +248,9 @@ class SearchResultSetTest extends UnitTest
 
             // in this case we collapse on the type field
         $this->configurationMock->expects($this->atLeastOnce())->method('getSearchVariantsField')->will($this->returnValue('type'));
+
+        $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
+
 
         $this->fakeRegisteredSearchComponents([]);
         $fakedSolrResponse = $this->getFixtureContentByName('fakeCollapsedResponse.json');

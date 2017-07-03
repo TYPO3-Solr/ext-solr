@@ -759,4 +759,87 @@ class TypoScriptConfigurationTest extends UnitTest
         $retrievedSorting = $configuration->getSearchSortingDefaultOrderBySortOptionName('title');
         $this->assertEquals('desc', $retrievedSorting);
     }
+
+    /**
+     * @test
+     */
+    public function canGetSearchGroupingHighestGroupResultsLimit()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'grouping.' => [
+                    'numberOfResultsPerGroup' => 3,
+                    'groups.' => [
+                        'typeGroup.' => [
+                            'field' => 'type',
+                            'numberOfResultsPerGroup' => 5
+                        ],
+                        'priceGroup.' => [
+                            'field' => 'price',
+                            'numberOfResultsPerGroup' => 2
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $highestResultsPerGroup = $configuration->getSearchGroupingHighestGroupResultsLimit();
+        $this->assertEquals(5, $highestResultsPerGroup, 'Can not get highest result per group value');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSearchGroupingHighestGroupResultsLimitAsGlobalFallback()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'grouping.' => [
+                    'numberOfResultsPerGroup' => 8,
+                    'groups.' => [
+                        'typeGroup.' => [
+                            'field' => 'type',
+                            'numberOfResultsPerGroup' => 5
+                        ],
+                        'priceGroup.' => [
+                            'field' => 'price',
+                            'numberOfResultsPerGroup' => 2
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $highestResultsPerGroup = $configuration->getSearchGroupingHighestGroupResultsLimit();
+        $this->assertEquals(8, $highestResultsPerGroup, 'Can not get highest result per group value');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSearchGroupingWhenDisabled()
+    {
+        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
+            'search.' => [
+                'grouping' => 0,
+                'grouping.' => [
+                    'numberOfResultsPerGroup' => 8,
+                    'groups.' => [
+                        'typeGroup.' => [
+                            'field' => 'type',
+                            'numberOfResultsPerGroup' => 5
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $this->assertFalse($configuration->getSearchGrouping(), 'Expected grouping to be disabled');
+    }
 }

@@ -1565,6 +1565,21 @@ class TypoScriptConfiguration
         return $this->getBool($isSiteHightlightingEnabled);
     }
 
+
+    /**
+     * Can be used to check if the highlighting is enabled
+     *
+     * plugin.tx_solr.search.results.resultsHighlighting
+     *
+     * @param boolean $defaultIfEmpty
+     * @return string
+     */
+    public function getSearchResultsHighlighting($defaultIfEmpty = false)
+    {
+        $isHighlightingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting', $defaultIfEmpty);
+        return $this->getBool($isHighlightingEnabled);
+    }
+
     /**
      * Returns the result highlighting fields.
      *
@@ -1595,6 +1610,19 @@ class TypoScriptConfiguration
         }
 
         return GeneralUtility::trimExplode(',', $highlightingFields, true);
+    }
+
+    /**
+     * Returns the fragmentSize for highlighted segments.
+     *
+     * plugin.tx_solr.search.results.resultsHighlighting.fragmentSize
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getSearchResultsHighlightingFragmentSize($defaultIfEmpty = 200)
+    {
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.resultsHighlighting.fragmentSize', $defaultIfEmpty);
     }
 
     /**
@@ -2126,6 +2154,78 @@ class TypoScriptConfiguration
     {
         $enableQParameter = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.ignoreGlobalQParameter', $defaultIfEmpty);
         return $this->getBool($enableQParameter);
+
+    }
+
+    /**
+     * Method to check if grouping was enabled with typoscript.
+     *
+     * plugin.tx_solr.search.grouping
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getSearchGrouping($defaultIfEmpty = false)
+    {
+        $groupingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.grouping', $defaultIfEmpty);
+        return $this->getBool($groupingEnabled);
+    }
+
+    /**
+     * Returns the configured numberOfGroups.
+     *
+     * plugin.tx_solr.search.grouping.numberOfGroups
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getSearchGroupingNumberOfGroups($defaultIfEmpty = 5)
+    {
+        return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.grouping.numberOfGroups', $defaultIfEmpty);
+    }
+
+    /**
+     * Returns the highestValue of the numberOfResultsPerGroup configuration that is globally configured and
+     * for each group.
+     *
+     * plugin.tx_solr.search.grouping.
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getSearchGroupingHighestGroupResultsLimit($defaultIfEmpty = 1)
+    {
+        $groupingConfiguration = $this->getObjectByPathOrDefault('plugin.tx_solr.search.grouping.', []);
+        $highestLimit = $defaultIfEmpty;
+        if (!empty($groupingConfiguration['numberOfResultsPerGroup'])) {
+            $highestLimit = $groupingConfiguration['numberOfResultsPerGroup'];
+        }
+
+        $configuredGroups = $groupingConfiguration['groups.'];
+        if (!is_array($configuredGroups)) {
+            return $highestLimit;
+        }
+
+        foreach ($configuredGroups as $groupName => $groupConfiguration) {
+            if (!empty($groupConfiguration['numberOfResultsPerGroup']) && $groupConfiguration['numberOfResultsPerGroup'] > $highestLimit) {
+                $highestLimit = $groupConfiguration['numberOfResultsPerGroup'];
+            }
+        }
+
+        return $highestLimit;
+    }
+
+    /**
+     * Returns everything that is configured for the groups (plugin.tx_solr.search.grouping.groups.)
+     *
+     * plugin.tx_solr.search.grouping.groups.
+     *
+     * @param array $defaultIfEmpty
+     * @return array
+     */
+    public function getSearchGroupingGroupsConfiguration($defaultIfEmpty = [])
+    {
+        return $this->getObjectByPathOrDefault('plugin.tx_solr.search.grouping.groups.', $defaultIfEmpty);
     }
 
     /*

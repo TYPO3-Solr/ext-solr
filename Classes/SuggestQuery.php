@@ -60,7 +60,7 @@ class SuggestQuery extends Query
         $this->configuration = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.suggest.', []);
 
         if (!empty($this->configuration['treatMultipleTermsAsSingleTerm'])) {
-            $this->prefix = $this->escape($keywords);
+            $this->prefix = $this->escapeService->escape($keywords);
         } else {
             $matches = [];
             preg_match('/^(:?(.* |))([^ ]+)$/', $keywords, $matches);
@@ -68,7 +68,7 @@ class SuggestQuery extends Query
             $partialKeyword = trim($matches[3]);
 
             $this->setKeywords($fullKeywords);
-            $this->prefix = $this->escape($partialKeyword);
+            $this->prefix = $this->escapeService->escape($partialKeyword);
         }
 
         $this->setAlternativeQuery('*:*');
@@ -79,6 +79,7 @@ class SuggestQuery extends Query
      */
     protected function initializeQuery()
     {
+        $this->initializeFilters();
     }
 
     /**

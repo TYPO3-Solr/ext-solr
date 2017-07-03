@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Query;
@@ -187,7 +188,7 @@ class SearchResultSetService
         }
 
         foreach ($this->getAdditionalFilters() as $additionalFilter) {
-            $query->addFilter($additionalFilter);
+            $query->getFilters()->add($additionalFilter);
         }
 
         return $query;
@@ -651,7 +652,7 @@ class SearchResultSetService
     {
         /* @var $query Query */
         $query = GeneralUtility::makeInstance(Query::class, $documentId);
-        $query->setQueryFieldsFromString('id');
+        $query->setQueryFields(QueryFields::fromString('id'));
 
         $response = $this->search->search($query, 0, 1);
         $this->processResponse($documentId, $query, $response);
