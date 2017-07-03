@@ -83,7 +83,7 @@ class FrequentSearches extends CommandPluginBase
      * @param \ApacheSolrForTypo3\Solr\Template $template
      * @return \ApacheSolrForTypo3\Solr\Template
      */
-    protected function postInitializeTemplateEngine($template)
+    protected function postInitializeTemplateEngine(\ApacheSolrForTypo3\Solr\Template $template)
     {
         $template->addVariable('tx_solr', $this->getSolrVariables());
 
