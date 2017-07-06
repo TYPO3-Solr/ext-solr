@@ -1551,6 +1551,21 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Method to check if the site highlighting is enabled. When the siteHighlighting is enabled the
+     * sword_list parameter is added to the results link.
+     *
+     * plugin.tx_solr.searcb.results.siteHighlighting
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getSearchResultsSiteHighlighting($defaultIfEmpty = true)
+    {
+        $isSiteHightlightingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.results.siteHighlighting', $defaultIfEmpty);
+        return $this->getBool($isSiteHightlightingEnabled);
+    }
+
+    /**
      * Returns the result highlighting fields.
      *
      * plugin.tx_solr.search.results.resultsHighlighting.highlightFields
@@ -2082,6 +2097,35 @@ class TypoScriptConfiguration
     {
         $enableCommits = $this->getValueByPathOrDefaultValue('plugin.tx_solr.index.enableCommits', $defaultIfEmpty);
         return $this->getBool($enableCommits);
+    }
+
+    /**
+     * Returns the url namespace that is used for the arguments.
+     *
+     * plugin.tx_solr.view.pluginNamespace
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSearchPluginNamespace($defaultIfEmpty = 'tx_solr')
+    {
+        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.view.pluginNamespace', $defaultIfEmpty);
+    }
+
+    /**
+     * Returns true if the global url parameter q, that indicates the query should be used.
+     *
+     * Should be set to false, when multiple instance on the same page should have their querystring.
+     *
+     * plugin.tx_solr.search.ignoreGlobalQParameter
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getSearchIgnoreGlobalQParameter($defaultIfEmpty = false)
+    {
+        $enableQParameter = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.ignoreGlobalQParameter', $defaultIfEmpty);
+        return $this->getBool($enableQParameter);
     }
 
     /*

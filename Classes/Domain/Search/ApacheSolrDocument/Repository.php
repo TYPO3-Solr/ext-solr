@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -93,7 +94,7 @@ class Repository implements SingletonInterface
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $solrConnection = $connectionManager->getConnectionByPageId($pageId, $languageId);
 
-        $this->search = GeneralUtility::makeInstance(Search::class, $solrConnection);
+        $this->search = $this->getSearch($solrConnection);
     }
 
     /**
@@ -117,5 +118,16 @@ class Repository implements SingletonInterface
         $query->setSorting('type asc, title asc');
 
         return $query;
+    }
+
+    /**
+     * Retrieves an instance of the Search object.
+     *
+     * @param SolrService $solrConnection
+     * @return Search
+     */
+    protected function getSearch($solrConnection)
+    {
+        return  GeneralUtility::makeInstance(Search::class, $solrConnection);
     }
 }

@@ -5,7 +5,7 @@ if (!defined ('TYPO3_MODE')) {
 }
 
 // Register the plugins
-$pluginSignature = 'solr_pi_form';
+$pluginSignature = 'solr_pi_search';
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'solr',
     'pi_search',
@@ -13,6 +13,12 @@ $pluginSignature = 'solr_pi_form';
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$pluginSignature]
     = 'layout,select_key,pages,recursive';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature]
+    = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    $pluginSignature,
+    'FILE:EXT:solr/Configuration/FlexForms/Form.xml'
+);
 
 
 $pluginSignature = 'solr_pi_frequentlysearched';

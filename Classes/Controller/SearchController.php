@@ -41,9 +41,19 @@ class SearchController extends AbstractBaseController
     protected function initializeAction()
     {
         parent::initializeAction();
+        $this->mapGlobalQueryStringWhenEnabled();
+    }
 
+    /**
+     * @return void
+     */
+    protected function mapGlobalQueryStringWhenEnabled()
+    {
         $query = GeneralUtility::_GET('q');
-        if ($query !== null) {
+
+        $useGlobalQueryString = $query !== null && !$this->typoScriptConfiguration->getSearchIgnoreGlobalQParameter();
+
+        if ($useGlobalQueryString) {
             $this->request->setArgument('q', $query);
         }
     }
@@ -84,6 +94,7 @@ class SearchController extends AbstractBaseController
         $searchRequest = $this->buildSearchRequest();
         $searchResultSet = $this->searchService->search($searchRequest);
 
+
         // we pass the search result set to the controller context, to have the possibility
         // to access it without passing it from partial to partial
         $this->controllerContext->setSearchResultSet($searchResultSet);
@@ -92,7 +103,8 @@ class SearchController extends AbstractBaseController
             [
                 'hasSearched' => $this->searchService->getHasSearched(),
                 'additionalFilters' => $this->searchService->getAdditionalFilters(),
-                'resultSet' => $searchResultSet
+                'resultSet' => $searchResultSet,
+                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
             ]
         );
     }
@@ -102,16 +114,12 @@ class SearchController extends AbstractBaseController
      */
     protected function buildSearchRequest()
     {
-        $rawUserQuery = null;
-        if ($this->request->hasArgument('q')) {
-            $rawUserQuery = $this->request->getArgument('q');
-        }
-
         $arguments = (array)$this->request->getArguments();
         $arguments = $this->adjustPageArgumentToPositiveInteger($arguments);
 
         /** @var $searchRequest SearchRequest */
-        $searchRequest = $this->getRequest(['q' => $rawUserQuery, 'tx_solr' => $arguments]);
+        $argumentsNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
+        $searchRequest = $this->getRequest([$argumentsNamespace => $arguments]);
 
         return $searchRequest;
     }
@@ -153,7 +161,8 @@ class SearchController extends AbstractBaseController
         $this->view->assignMultiple(
             [
                 'search' => $this->searchService->getSearch(),
-                'additionalFilters' => $this->searchService->getAdditionalFilters()
+                'additionalFilters' => $this->searchService->getAdditionalFilters(),
+                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
             ]
         );
     }

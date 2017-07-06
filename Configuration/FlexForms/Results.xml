@@ -166,6 +166,28 @@
                             </config>
                         </TCEforms>
                     </templateFiles.results>
+                    <view.pluginNamespace>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>Plugin Namespace</label>
+                            <config>
+                                <type>input</type>
+                                <eval>trim</eval>
+                                <default>tx_solr</default>
+                            </config>
+                        </TCEforms>
+                    </view.pluginNamespace>
+
+                    <search.ignoreGlobalQParameter>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>Ignore the global q parameter</label>
+                            <config>
+                                <type>check</type>
+                                <default>0</default>
+                            </config>
+                        </TCEforms>
+                    </search.ignoreGlobalQParameter>
                 </el>
             </ROOT>
         </sOptions>

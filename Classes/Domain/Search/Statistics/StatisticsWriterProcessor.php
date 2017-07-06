@@ -1,5 +1,6 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Response\Processor;
+
+namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 /***************************************************************
  *  Copyright notice
@@ -24,79 +25,83 @@ namespace ApacheSolrForTypo3\Solr\Response\Processor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\Query;
-use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Writes statistics after searches have been conducted.
  *
  * @author Ingo Renner <ingo@typo3.org>
  * @author Dimitri Ebert <dimitri.ebert@dkd.de>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-class StatisticsWriter implements ResponseProcessor
+class StatisticsWriterProcessor implements SearchResultSetProcessor
 {
 
     /**
-     * Processes a query and its response after searching for that query.
-     *
-     * @param Query $query The query that has been searched for.
-     * @param \Apache_Solr_Response $response The response for the last query.
+     * @param SearchResultSet $resultSet
+     * @return SearchResultSet
      */
-    public function processResponse(
-        Query $query,
-        \Apache_Solr_Response $response
-    ) {
-        $urlParameters = GeneralUtility::_GP('tx_solr');
-        $keywords = $query->getKeywords();
-        $filters = isset($urlParameters['filter']) ? $urlParameters['filter'] : [];
+    public function process(SearchResultSet $resultSet) {
+        $searchRequest = $resultSet->getUsedSearchRequest();
+        $response = $resultSet->getResponse();
+        $configuration = $searchRequest->getContextTypoScriptConfiguration();
+        $keywords = $this->getProcessedKeywords($resultSet->getUsedQuery(), $configuration->getSearchFrequentSearchesUseLowercaseKeywords());
 
         if (empty($keywords)) {
             // do not track empty queries
-            return;
+            return $resultSet;
         }
 
-        $keywords = $this->sanitizeString($keywords);
-
-        $sorting = '';
-        if (!empty($urlParameters['sort'])) {
-            $sorting = $this->sanitizeString($urlParameters['sort']);
-        }
-
-        $configuration = Util::getSolrConfiguration();
-        if ($configuration->getSearchFrequentSearchesUseLowercaseKeywords()) {
-            $keywords = strtolower($keywords);
-        }
-
+        $filters = $searchRequest->getActiveFacets();
+        $sorting = $this->sanitizeString($searchRequest->getSorting());
+        $page = (int)$searchRequest->getPage();
         $ipMaskLength = $configuration->getStatisticsAnonymizeIP();
 
-        $insertFields = [
-            'pid' => $GLOBALS['TSFE']->id,
-            'root_pid' => $GLOBALS['TSFE']->tmpl->rootLine[0]['uid'],
-            'tstamp' => $GLOBALS['EXEC_TIME'],
-            'language' => $GLOBALS['TSFE']->sys_language_uid,
-
+        $TSFE = $this->getTSFE();
+        $statisticData = [
+            'pid' => $TSFE->id,
+            'root_pid' => $TSFE->tmpl->rootLine[0]['uid'],
+            'tstamp' => $this->getTime(),
+            'language' => $TSFE->sys_language_uid,
             'num_found' => isset($response->response->numFound) ? (int)$response->response->numFound : 0,
             'suggestions_shown' => is_object($response->spellcheck->suggestions) ? (int)get_object_vars($response->spellcheck->suggestions) : 0,
             'time_total' => isset($response->debug->timing->time) ? $response->debug->timing->time : 0,
             'time_preparation' => isset($response->debug->timing->prepare->time) ? $response->debug->timing->prepare->time : 0,
             'time_processing' => isset($response->debug->timing->process->time) ? $response->debug->timing->process->time : 0,
-
-            'feuser_id' => (int)$GLOBALS['TSFE']->fe_user->user['uid'],
-            'cookie' => $GLOBALS['TSFE']->fe_user->id,
-            'ip' => $this->applyIpMask(GeneralUtility::getIndpEnv('REMOTE_ADDR'),
-                $ipMaskLength),
-
-            'page' => (int)$urlParameters['page'],
+            'feuser_id' => (int)$TSFE->fe_user->user['uid'],
+            'cookie' => $TSFE->fe_user->id,
+            'ip' => $this->applyIpMask($this->getUserIp(), $ipMaskLength),
+            'page' => (int)$page,
             'keywords' => $keywords,
             'filters' => serialize($filters),
             'sorting' => $sorting,
             'parameters' => serialize($response->responseHeader->params)
         ];
 
-        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_statistics',
-            $insertFields);
+        $this->saveStatisticDate($statisticData);
+
+        return $resultSet;
+    }
+
+    /**
+     * @param Query $query
+     * @param boolean $lowerCaseQuery
+     * @return string
+     */
+    protected function getProcessedKeywords(Query $query, $lowerCaseQuery = false)
+    {
+        $keywords = $query->getKeywords();
+        $keywords = $this->sanitizeString($keywords);
+        if ($lowerCaseQuery) {
+            $keywords = strtolower($keywords);
+        }
+
+        return $keywords;
     }
 
     /**
@@ -146,5 +151,37 @@ class StatisticsWriter implements ResponseProcessor
         }
 
         return $ip;
+    }
+
+    /**
+     * @param array $insertFields
+     */
+    protected function saveStatisticDate($insertFields)
+    {
+        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_statistics', $insertFields);
+    }
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected function getTSFE()
+    {
+        return $GLOBALS['TSFE'];
+    }
+
+    /**
+     * @return string
+     */
+    protected function getUserIp()
+    {
+        return GeneralUtility::getIndpEnv('REMOTE_ADDR');
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getTime()
+    {
+        return $GLOBALS['EXEC_TIME'];
     }
 }

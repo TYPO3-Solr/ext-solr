@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<T3DataStructure>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <sheets>
+        <sDEF>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Search</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <search.targetPage>
+                        <TCEforms>
+                            <label>Target Page</label>
+                            <config>
+                                <type>group</type>
+                                <internal_type>db</internal_type>
+                                <allowed>pages</allowed>
+                                <size>1</size>
+                                <maxitems>1</maxitems>
+                                <minitems>0</minitems>
+                                <show_thumbs>1</show_thumbs>
+                                <wizards>
+                                    <suggest>
+                                        <type>suggest</type>
+                                    </suggest>
+                                </wizards>
+                            </config>
+                        </TCEforms>
+                    </search.targetPage>
+                </el>
+            </ROOT>
+        </sDEF>
+        <sOptions>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>Options</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <templateFiles.form>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>Custom Entry Template</label>
+                            <config>
+                                <type>input</type>
+                                <eval>trim</eval>
+                                <size>45</size>
+                            </config>
+                        </TCEforms>
+                    </templateFiles.form>
+                    <view.pluginNamespace>
+                        <TCEforms>
+                            <exclude>1</exclude>
+                            <label>Plugin Namespace</label>
+                            <config>
+                                <type>input</type>
+                                <eval>trim</eval>
+                                <default>tx_solr</default>
+                            </config>
+                        </TCEforms>
+                    </view.pluginNamespace>
+                </el>
+            </ROOT>
+        </sOptions>
+    </sheets>
+</T3DataStructure>

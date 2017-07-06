@@ -24,9 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetUrlDecoderRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
@@ -40,7 +40,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  * @author Daniel Poetzinger <poetzinger@aoemedia.de>
  * @author Sebastian Kurfuerst <sebastian@typo3.org>
  */
-class Faceting implements Modifier
+class Faceting implements Modifier, SearchRequestAware
 {
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
@@ -62,21 +62,27 @@ class Faceting implements Modifier
     protected $facetRegistry = null;
 
     /**
+     * @var SearchRequest
+     */
+    protected $searchRequest;
+
+    /**
      * @param TypoScriptConfiguration $solrConfiguration
      * @param FacetRegistry $facetRegistry
      */
     public function __construct($solrConfiguration = null, FacetRegistry $facetRegistry = null)
     {
-        if (!is_null($solrConfiguration)) {
-            $this->configuration = $solrConfiguration;
-        } else {
-            $this->configuration = Util::getSolrConfiguration();
-        }
-
+        $this->configuration = is_null($solrConfiguration) ? Util::getSolrConfiguration() : $solrConfiguration;
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->facetRegistry = is_null($facetRegistry) ? $objectManager->get(FacetRegistry::class) : $facetRegistry;
-
         $this->allConfiguredFacets = $this->configuration->getSearchFacetingFacets();
+    }
+
+    /**
+     * @param SearchRequest $searchRequest
+     */
+    public function setSearchRequest(SearchRequest $searchRequest) {
+        $this->searchRequest = $searchRequest;
     }
 
     /**
@@ -90,7 +96,11 @@ class Faceting implements Modifier
     {
         $query->setFaceting();
         $this->buildFacetingParameters();
-        $this->addFacetQueryFilters();
+
+        $searchArguments = $this->searchRequest->getArguments();
+        if (is_array($searchArguments)) {
+            $this->addFacetQueryFilters($searchArguments);
+        }
 
         foreach ($this->facetParameters as $facetParameter => $value) {
             $query->addQueryParameter($facetParameter, $value);
@@ -128,12 +138,10 @@ class Faceting implements Modifier
      * Adds filters specified through HTTP GET as filter query parameters to
      * the Solr query.
      *
+     * @param array $resultParameters
      */
-    protected function addFacetQueryFilters()
+    protected function addFacetQueryFilters($resultParameters)
     {
-        // todo refactor to use a request object
-        $resultParameters = GeneralUtility::_GET('tx_solr');
-
         // format for filter URL parameter:
         // tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
         if (is_array($resultParameters['filter'])) {

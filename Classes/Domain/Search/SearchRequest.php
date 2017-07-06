@@ -42,6 +42,8 @@ class SearchRequest
     protected $id;
 
     /**
+     * Default namespace overwritten with the configured plugin namespace.
+     *
      * @var string
      */
     protected $argumentNameSpace = 'tx_solr';
@@ -49,9 +51,11 @@ class SearchRequest
     /**
      * Arguments that should be kept for sub requests.
      *
+     * Default values, overwritten in the constructor with the namespaced arguments
+     *
      * @var array
      */
-    protected $persistentArgumentsPaths = ['q', 'tx_solr:filter', 'tx_solr:sort'];
+    protected $persistentArgumentsPaths = ['tx_solr:q', 'tx_solr:filter', 'tx_solr:sort'];
 
     /**
      * @var bool
@@ -106,6 +110,13 @@ class SearchRequest
         $this->contextSystemLanguageUid = $sysLanguageUid;
         $this->contextTypoScriptConfiguration = $typoScriptConfiguration;
         $this->id = spl_object_hash($this);
+
+        // overwrite the plugin namespace and the persistentArgumentsPaths
+        if (!is_null($typoScriptConfiguration)) {
+            $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace();
+        }
+
+        $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort'];
         $this->reset();
     }
 
@@ -184,7 +195,7 @@ class SearchRequest
     /**
      * @return array
      */
-    protected function getActiveFacets()
+    public function getActiveFacets()
     {
         $path = $this->prefixWithNamespace('filter');
         $pathValue = $this->argumentsAccessor->get($path, []);
@@ -321,10 +332,10 @@ class SearchRequest
      *
      * @return string
      */
-    protected function getSorting()
+    public function getSorting()
     {
         $path = $this->prefixWithNamespace('sort');
-        return $this->argumentsAccessor->get($path);
+        return $this->argumentsAccessor->get($path, '');
     }
 
     /**
@@ -336,7 +347,7 @@ class SearchRequest
     protected function getSortingPart($index)
     {
         $sorting = $this->getSorting();
-        if ($sorting === null) {
+        if ($sorting === '') {
             return null;
         }
 
@@ -424,7 +435,8 @@ class SearchRequest
     public function setRawQueryString($rawQueryString)
     {
         $this->stateChanged = true;
-        $this->argumentsAccessor->set('q', $rawQueryString);
+        $path = $this->prefixWithNamespace('q');
+        $this->argumentsAccessor->set($path, $rawQueryString);
         return $this;
     }
 
@@ -435,7 +447,8 @@ class SearchRequest
      */
     public function getRawUserQuery()
     {
-        return $this->argumentsAccessor->get('q');
+        $path = $this->prefixWithNamespace('q');
+        return $this->argumentsAccessor->get($path);
     }
 
     /**
@@ -447,7 +460,8 @@ class SearchRequest
      */
     public function getRawUserQueryIsEmptyString()
     {
-        $query = $this->argumentsAccessor->get('q', null);
+        $path = $this->prefixWithNamespace('q');
+        $query = $this->argumentsAccessor->get($path, null);
 
         if ($query === null) {
             return false;
@@ -468,7 +482,8 @@ class SearchRequest
      */
     public function getRawUserQueryIsNull()
     {
-        $query = $this->argumentsAccessor->get('q', null);
+        $path = $this->prefixWithNamespace('q');
+        $query = $this->argumentsAccessor->get($path, null);
         return $query === null;
     }
 
@@ -578,10 +593,27 @@ class SearchRequest
     }
 
     /**
+     * @return string
+     */
+    public function getArgumentNameSpace()
+    {
+        return $this->argumentNameSpace;
+    }
+
+    /**
      * @return array
      */
     public function getAsArray()
     {
         return $this->argumentsAccessor->getData();
+    }
+
+    /**
+     * Returns only the arguments as array.
+     *
+     * @return array
+     */
+    public function getArguments() {
+        return $this->argumentsAccessor->get($this->argumentNameSpace, []);
     }
 }

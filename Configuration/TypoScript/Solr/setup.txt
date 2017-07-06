@@ -87,6 +87,8 @@ plugin.tx_solr {
 
 		keepExistingParametersForNewSearches = 0
 
+		ignoreGlobalQParameter = 0
+
 		query {
 			allowEmptyQuery = 0
 

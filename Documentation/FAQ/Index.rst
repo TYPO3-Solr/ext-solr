@@ -452,3 +452,6 @@ The following example shows how to avoid html in the content field:
 
 Note: When you allow html in the content please make sure that the usage of crop ViewHelpers or a limit of the field length does not break your markup.
 
+**I want to use two instances of the search plugin on the same page, how can i do that?**
+
+If you want to use two search plugins on the same page you can add two instances and assign a different "Plugin Namespace" in the flexform. If you want to avoid, that both plugins react on the global "q" parameter, you can disable this also in the flexform. Each instance is using the querystring from <pluginNamespace>[q] then.

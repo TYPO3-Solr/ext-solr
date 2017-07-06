@@ -14,7 +14,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
@@ -84,8 +83,6 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 
         // here we can reconstitute other domain objects from the solr response
         $resultSet = $this->parseFacetsIntoObjects($resultSet);
-
-        $this->storeLastSearches($resultSet);
 
         return $resultSet;
     }
@@ -239,29 +236,5 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
         }
 
         return $resultSet;
-    }
-
-    /**
-     * @param SearchResultSet $resultSet
-     */
-    protected function storeLastSearches(SearchResultSet $resultSet)
-    {
-        if ($resultSet->getAllResultCount() === 0) {
-            // when the search does not produce a result we do not store the last searches
-            return;
-        }
-
-        if (!isset($GLOBALS['TSFE']) || !isset($GLOBALS['TYPO3_DB'])) {
-            return;
-        }
-
-        /** @var $lastSearchesService \ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService */
-        $lastSearchesService = GeneralUtility::makeInstance(LastSearchesService::class,
-            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration(),
-            $GLOBALS['TSFE'],
-            $GLOBALS['TYPO3_DB']);
-
-
-        $lastSearchesService->addToLastSearches($resultSet->getUsedSearchRequest()->getRawUserQuery());
     }
 }

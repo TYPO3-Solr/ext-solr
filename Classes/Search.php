@@ -24,10 +24,7 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
-use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
 use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
-use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -38,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Search implements SingletonInterface
+class Search
 {
 
     /**
@@ -139,7 +136,6 @@ class Search implements SingletonInterface
      */
     public function search(Query $query, $offset = 0, $limit = 10)
     {
-        $query = $this->modifyQuery($query);
         $this->query = $query;
 
         if (empty($limit)) {
@@ -183,78 +179,10 @@ class Search implements SingletonInterface
             }
         }
 
-        $response = $this->modifyResponse($response);
         $this->response = $response;
         $this->hasSearched = true;
 
         return $this->response;
-    }
-
-    /**
-     * Allows to modify a query before eventually handing it over to Solr.
-     *
-     * @param Query $query The current query before it's being handed over to Solr.
-     * @return Query The modified query that is actually going to be given to Solr.
-     */
-    protected function modifyQuery(Query $query)
-    {
-        // hook to modify the search query
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
-                $queryModifier = GeneralUtility::getUserObj($classReference);
-
-                if ($queryModifier instanceof Modifier) {
-                    if ($queryModifier instanceof SearchAware) {
-                        $queryModifier->setSearch($this);
-                    }
-
-                    $query = $queryModifier->modifyQuery($query);
-                } else {
-                    throw new \UnexpectedValueException(
-                        get_class($queryModifier) . ' must implement interface ' . Modifier::class,
-                        1310387414
-                    );
-                }
-            }
-        }
-
-        return $query;
-    }
-
-    /**
-     * Allows to modify a response returned from Solr before returning it to
-     * the rest of the extension.
-     *
-     * @param \Apache_Solr_Response $response The response as returned by Solr
-     * @return \Apache_Solr_Response The modified response that is actually going to be returned to the extension.
-     * @throws \UnexpectedValueException if a response modifier does not implement interface ApacheSolrForTypo3\Solr\Search\ResponseModifier
-     */
-    protected function modifyResponse(\Apache_Solr_Response $response)
-    {
-        // hook to modify the search response
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'] as $classReference) {
-                $responseModifier = GeneralUtility::getUserObj($classReference);
-
-                if ($responseModifier instanceof ResponseModifier) {
-                    if ($responseModifier instanceof SearchAware) {
-                        $responseModifier->setSearch($this);
-                    }
-
-                    $response = $responseModifier->modifyResponse($response);
-                } else {
-                    throw new \UnexpectedValueException(
-                        get_class($responseModifier) . ' must implement interface ' . ResponseModifier::class,
-                        1343147211
-                    );
-                }
-            }
-
-            // add modification indicator
-            $response->response->isModified = true;
-        }
-
-        return $response;
     }
 
     /**

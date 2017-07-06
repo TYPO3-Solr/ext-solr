@@ -8,7 +8,7 @@
 
 	<div id="tx-solr-search">
 
-		<f:render partial="Search/Form" section="Form" arguments="{search:search, additionalFilters:additionalFilters, resultSet: resultSet}" />
+		<f:render partial="Search/Form" section="Form" arguments="{search:search, additionalFilters:additionalFilters, pluginNamespace: pluginNamespace, resultSet: resultSet}" />
 
 		<f:if condition="{resultSet.usedQuery.keywordsCleaned}">
 			<span class="searched-for">

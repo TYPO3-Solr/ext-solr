@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ResultsetModifier\LastSearches;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\LastSearchesWriterProcessor;
 
 /**
  * Last searches search component
@@ -41,7 +41,7 @@ class LastSearchesComponent extends AbstractComponent
     public function initializeSearchComponent()
     {
         if ($this->searchConfiguration['lastSearches']) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet']['lastSearches'] = LastSearches::class;
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['lastSearches'] = LastSearchesWriterProcessor::class;
         }
     }
 }

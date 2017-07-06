@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Response\Processor\StatisticsWriter;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsWriterProcessor;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
 use ApacheSolrForTypo3\Solr\Util;
 
@@ -45,7 +45,7 @@ class StatisticsComponent extends AbstractComponent
         $solrConfiguration = Util::getSolrConfiguration();
 
         if ($solrConfiguration->getStatistics()) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['statistics'] = StatisticsWriter::class;
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'] = StatisticsWriterProcessor::class;
             // Only if addDebugData is enabled add Query modifier
             if ($solrConfiguration->getStatisticsAddDebugData()) {
                 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery']['statistics'] = Statistics::class;

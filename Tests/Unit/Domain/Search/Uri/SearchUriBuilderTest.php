@@ -63,11 +63,15 @@ class SearchUriBuilderTest extends UnitTest
      */
     public function addFacetLinkIsCalledWithSubstitutedArguments()
     {
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue([]));
+
         $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
 
-        $previousRequest =  new SearchRequest();
+        $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
         $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'foo', 'bar');
     }
 
@@ -84,6 +88,8 @@ class SearchUriBuilderTest extends UnitTest
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->with()->will($this->returnValue($result));
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+
         $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue(['foo=bar']));
         $previousRequest =  new SearchRequest([], 1, 0, $configurationMock);
         $result = $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'option', 'value');
@@ -96,11 +102,16 @@ class SearchUriBuilderTest extends UnitTest
      */
     public function setArgumentsIsOnlyCalledOnceEvenWhenMultipleFacetsGetRendered()
     {
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+        $configurationMock->expects($this->once())->method('getSearchFacetingFacetLinkUrlParametersAsArray')->will($this->returnValue([]));
+
         $expectedArguments = ['tx_solr' => ['filter' => ['###tx_solr:filter:0###']]];
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue(urlencode('tx_solr[filter][0]=###tx_solr:filter:0###')));
-        $previousRequest =  new SearchRequest();
+
+        $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
         $previousRequest->removeAllFacets();
         $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'color', 'green');
 
@@ -119,6 +130,8 @@ class SearchUriBuilderTest extends UnitTest
     {
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $configurationMock->expects($this->once())->method('getSearchTargetPage')->will($this->returnValue(4711));
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+
         $previousRequest =  new SearchRequest([], 0, 0, $configurationMock);
 
         $expectedArguments = ['tx_solr' => ['sort' => '###tx_solr:sort###']];
@@ -138,6 +151,8 @@ class SearchUriBuilderTest extends UnitTest
     public function canGetRemoveFacetOptionUri()
     {
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+
         $previousRequest =  new SearchRequest([
                     'tx_solr' => [
                         'filter' => [
@@ -162,6 +177,8 @@ class SearchUriBuilderTest extends UnitTest
     public function canGetRemoveFacetUri()
     {
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->any())->method('getSearchPluginNamespace')->will($this->returnValue('tx_solr'));
+
         $previousRequest =  new SearchRequest([
                     'tx_solr' => [
                         'filter' => [

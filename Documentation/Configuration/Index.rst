@@ -40,6 +40,7 @@ Configuration Reference
 
 	./Reference/TxSolr
 	./Reference/TxSolrGeneral
+	./Reference/TxSolrView
 	./Reference/TxSolrSolr
 	./Reference/TxSolrIndex
 	./Reference/TxSolrSearch

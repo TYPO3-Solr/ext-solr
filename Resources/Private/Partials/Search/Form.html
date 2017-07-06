@@ -9,7 +9,7 @@
 	<s:searchForm id="tx-solr-search-form-pi-results" additionalFilters="{additionalFilters}">
 		<input type="hidden" name="L" value="{languageUid}" />
 		<input type="hidden" name="id" value="{pageUid}" />
-		<input type="text" class="tx-solr-q js-solr-q" name="q" value="{q}" />
+		<input type="text" class="tx-solr-q js-solr-q" name="{pluginNamespace}[q]" value="{q}" />
 		<input type="submit" class="tx-solr-submit" value="{s:translate(key:'submit',default:'Search')}" />
 
 	</s:searchForm>
