@@ -20,7 +20,7 @@ tx_solr_ajaxPage {
 		controller = Search
 		action = results
 		switchableControllerActions {
-			Frontend\Search {
+			Search {
 				1 = results
 				2 = form
 			}
