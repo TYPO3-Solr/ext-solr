@@ -160,7 +160,7 @@ class SearchResultSetService
     protected function getPreparedQuery($rawQuery, $resultsPerPage)
     {
         /* @var $query Query */
-        $query = GeneralUtility::makeInstance(Query::class, $rawQuery);
+        $query = GeneralUtility::makeInstance(Query::class, $rawQuery, $this->typoScriptConfiguration);
 
         $this->applyPageSectionsRootLineFilter($query);
 

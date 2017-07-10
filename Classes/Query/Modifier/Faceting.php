@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -42,19 +41,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class Faceting implements Modifier, SearchRequestAware
 {
-    /**
-     * @var \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration
-     */
-    protected $configuration;
-
-    protected $facetParameters = [];
-
-    protected $facetFilters = [];
-
-    /**
-     * @var array
-     */
-    protected $allConfiguredFacets = [];
 
     /**
      * @var FacetRegistry
@@ -67,21 +53,19 @@ class Faceting implements Modifier, SearchRequestAware
     protected $searchRequest;
 
     /**
-     * @param TypoScriptConfiguration $solrConfiguration
      * @param FacetRegistry $facetRegistry
      */
-    public function __construct($solrConfiguration = null, FacetRegistry $facetRegistry = null)
+    public function __construct(FacetRegistry $facetRegistry = null)
     {
-        $this->configuration = is_null($solrConfiguration) ? Util::getSolrConfiguration() : $solrConfiguration;
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->facetRegistry = is_null($facetRegistry) ? $objectManager->get(FacetRegistry::class) : $facetRegistry;
-        $this->allConfiguredFacets = $this->configuration->getSearchFacetingFacets();
     }
 
     /**
      * @param SearchRequest $searchRequest
      */
-    public function setSearchRequest(SearchRequest $searchRequest) {
+    public function setSearchRequest(SearchRequest $searchRequest)
+    {
         $this->searchRequest = $searchRequest;
     }
 
@@ -95,19 +79,21 @@ class Faceting implements Modifier, SearchRequestAware
     public function modifyQuery(Query $query)
     {
         $query->setFaceting();
-        $this->buildFacetingParameters();
+        $typoScriptConfiguration = $this->searchRequest->getContextTypoScriptConfiguration();
+        $allFacets = $typoScriptConfiguration->getSearchFacetingFacets();
 
-        $searchArguments = $this->searchRequest->getArguments();
-        if (is_array($searchArguments)) {
-            $this->addFacetQueryFilters($searchArguments);
-        }
-
-        foreach ($this->facetParameters as $facetParameter => $value) {
+        $facetParameters = $this->buildFacetingParameters($allFacets, $typoScriptConfiguration);
+        foreach ($facetParameters as $facetParameter => $value) {
             $query->addQueryParameter($facetParameter, $value);
         }
 
-        foreach ($this->facetFilters as $filter) {
-            $query->addFilter($filter);
+        $searchArguments = $this->searchRequest->getArguments();
+        if (is_array($searchArguments)) {
+            $keepAllOptionsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
+            $facetFilters = $this->addFacetQueryFilters($searchArguments, $allFacets, $keepAllOptionsOnSelection);
+            foreach ($facetFilters as $filter) {
+                $query->addFilter($filter);
+            }
         }
 
         return $query;
@@ -118,9 +104,11 @@ class Faceting implements Modifier, SearchRequestAware
      * the type of facet to add.
      *
      */
-    protected function buildFacetingParameters()
+    protected function buildFacetingParameters($allFacets, TypoScriptConfiguration $typoScriptConfiguration)
     {
-        foreach ($this->allConfiguredFacets as $facetName => $facetConfiguration) {
+        $facetParameters = [];
+
+        foreach ($allFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
             $type = isset($facetConfiguration['type']) ? $facetConfiguration['type'] : 'options';
             $facetParameterBuilder = $this->facetRegistry->getPackage($type)->getQueryBuilder();
@@ -129,9 +117,10 @@ class Faceting implements Modifier, SearchRequestAware
                 throw new \InvalidArgumentException('No query build configured for facet ' . htmlspecialchars($facetName));
             }
 
-            $facetParameters = $facetParameterBuilder->build($facetName, $this->configuration);
-            $this->facetParameters = array_merge_recursive($this->facetParameters, $facetParameters);
+            $facetParameters = array_merge_recursive($facetParameters, $facetParameterBuilder->build($facetName, $typoScriptConfiguration));
         }
+
+        return $facetParameters;
     }
 
     /**
@@ -139,69 +128,91 @@ class Faceting implements Modifier, SearchRequestAware
      * the Solr query.
      *
      * @param array $resultParameters
+     * @param array $allFacets
+     * @param bool $keepAllOptionsOnSelection
+     * @return array
      */
-    protected function addFacetQueryFilters($resultParameters)
+    protected function addFacetQueryFilters($resultParameters, $allFacets, $keepAllOptionsOnSelection)
+    {
+        $facetFilters = [];
+
+        if (!is_array($resultParameters['filter'])) {
+            return $facetFilters;
+        }
+
+        $filtersByFacetName = $this->getFiltersByFacetName($resultParameters, $allFacets);
+        foreach ($filtersByFacetName as $facetName => $filterValues) {
+            $facetConfiguration = $allFacets[$facetName . '.'];
+            $type = isset($facetConfiguration['type']) ? $facetConfiguration['type'] : 'options';
+            $filterEncoder = $this->facetRegistry->getPackage($type)->getUrlDecoder();
+
+            if (is_null($filterEncoder)) {
+                throw new \InvalidArgumentException('No encoder configured for facet ' . htmlspecialchars($facetName));
+            }
+
+            $tag = '';
+            if ($facetConfiguration['keepAllOptionsOnSelection'] == 1 || $keepAllOptionsOnSelection) {
+                $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
+            }
+
+            $filterParts = [];
+            foreach ($filterValues as $filterValue) {
+                $filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
+                if (empty($filterOptions)) {
+                    $filterOptions = [];
+                }
+
+                $filterValue = $filterEncoder->decode($filterValue, $filterOptions);
+                $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
+            }
+
+            $operator = ($facetConfiguration['operator'] == 'OR') ? ' OR ' : ' AND ';
+            $facetFilters[] = $tag . '(' . implode($operator, $filterParts) . ')';
+        }
+        return $facetFilters;
+    }
+
+    /**
+     * Groups facet values by facet name.
+     *
+     * @param array $resultParameters
+     * @param array $allFacets
+     * @return array
+     */
+    protected function getFiltersByFacetName($resultParameters, $allFacets)
     {
         // format for filter URL parameter:
         // tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
-        if (is_array($resultParameters['filter'])) {
-            $filters = array_map('urldecode', $resultParameters['filter']);
-            // $filters look like ['name:value1','name:value2','fieldname2:foo']
-            $configuredFacets = $this->getConfiguredFacets();
-            // first group the filters by facetName - so that we can
-            // decide later whether we need to do AND or OR for multiple
-            // filters for a certain facet/field
-            // $filtersByFacetName look like ['name' =>  ['value1', 'value2'], 'fieldname2' => ['foo']]
-            $filtersByFacetName = [];
-            foreach ($filters as $filter) {
-                // only split by the first colon to allow using colons in the filter value itself
-                list($filterFacetName, $filterValue) = explode(':', $filter, 2);
-                if (in_array($filterFacetName, $configuredFacets)) {
-                    $filtersByFacetName[$filterFacetName][] = $filterValue;
-                }
-            }
-
-            foreach ($filtersByFacetName as $facetName => $filterValues) {
-                $facetConfiguration = $this->allConfiguredFacets[$facetName . '.'];
-                $type = isset($facetConfiguration['type']) ? $facetConfiguration['type'] : 'options';
-                $filterEncoder = $this->facetRegistry->getPackage($type)->getUrlDecoder();
-
-                if (is_null($filterEncoder)) {
-                    throw new \InvalidArgumentException('No encoder configured for facet ' . htmlspecialchars($facetName));
-                }
-
-                $tag = '';
-                if ($facetConfiguration['keepAllOptionsOnSelection'] == 1 || $this->configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
-                    $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
-                }
-
-                $filterParts = [];
-                foreach ($filterValues as $filterValue) {
-                    $filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
-                    if (empty($filterOptions)) {
-                        $filterOptions = [];
-                    }
-
-                    $filterValue = $filterEncoder->decode($filterValue, $filterOptions);
-                    $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
-                }
-
-                $operator = ($facetConfiguration['operator'] == 'OR') ? ' OR ' : ' AND ';
-                $this->facetFilters[] = $tag . '(' . implode($operator, $filterParts) . ')';
+        $filters = array_map('urldecode', $resultParameters['filter']);
+        // $filters look like ['name:value1','name:value2','fieldname2:foo']
+        $configuredFacets = $this->getFacetNamesWithConfiguredField($allFacets);
+        // first group the filters by facetName - so that we can
+        // decide later whether we need to do AND or OR for multiple
+        // filters for a certain facet/field
+        // $filtersByFacetName look like ['name' =>  ['value1', 'value2'], 'fieldname2' => ['foo']]
+        $filtersByFacetName = [];
+        foreach ($filters as $filter) {
+            // only split by the first colon to allow using colons in the filter value itself
+            list($filterFacetName, $filterValue) = explode(':', $filter, 2);
+            if (in_array($filterFacetName, $configuredFacets)) {
+                $filtersByFacetName[$filterFacetName][] = $filterValue;
             }
         }
+
+        return $filtersByFacetName;
     }
 
     /**
      * Gets the facets as configured through TypoScript
      *
+     * @param array $allFacets
      * @return array An array of facet names as specified in TypoScript
      */
-    protected function getConfiguredFacets()
+    protected function getFacetNamesWithConfiguredField(array $allFacets)
     {
         $facets = [];
 
-        foreach ($this->allConfiguredFacets as $facetName => $facetConfiguration) {
+        foreach ($allFacets as $facetName => $facetConfiguration) {
             $facetName = substr($facetName, 0, -1);
 
             if (empty($facetConfiguration['field'])) {
