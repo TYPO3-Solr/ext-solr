@@ -3,6 +3,8 @@
         <f:render partial="Backend/NoSiteAvailable" arguments="{_all}"/>
     </f:then>
     <f:else>
+
+        <f:render partial="Backend/FlashMessages" />
         <f:render section="Main"/>
     </f:else>
 </f:if>
