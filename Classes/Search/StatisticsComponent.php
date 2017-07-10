@@ -24,17 +24,33 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsWriterProcessor;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
-use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Statistics search component
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class StatisticsComponent extends AbstractComponent
+class StatisticsComponent extends AbstractComponent implements SearchRequestAware
 {
+
+    /**
+     * @var SearchRequest
+     */
+    protected $seachRequest;
+
+    /**
+     * Provides a component that is aware of the current SearchRequest
+     *
+     * @param SearchRequest $searchRequest
+     */
+    public function setSearchRequest(SearchRequest $searchRequest)
+    {
+        $this->seachRequest = $searchRequest;
+    }
 
     /**
      * Initializes the search component.
@@ -42,7 +58,7 @@ class StatisticsComponent extends AbstractComponent
      */
     public function initializeSearchComponent()
     {
-        $solrConfiguration = Util::getSolrConfiguration();
+        $solrConfiguration = $this->seachRequest->getContextTypoScriptConfiguration();
 
         if ($solrConfiguration->getStatistics()) {
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'] = StatisticsWriterProcessor::class;
@@ -52,4 +68,5 @@ class StatisticsComponent extends AbstractComponent
             }
         }
     }
+
 }

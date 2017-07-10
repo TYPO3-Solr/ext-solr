@@ -43,13 +43,12 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class FacetingTest extends UnitTest
 {
     /**
-     * @param $fakeConfigurationArray
-     * @param SearchRequest SearchRequest
+     * @param TypoScriptConfiguration $fakeConfiguration
+     * @param SearchRequest $fakeSearchRequest
      * @return array
      */
-    private function getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, SearchRequest $fakeSearchRequest)
+    private function getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, SearchRequest $fakeSearchRequest)
     {
-        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $fakeObjectManager = $this->getMockBuilder(ObjectManager::class)->disableOriginalConstructor()->setMethods(['get'])->getMock();
         $fakeObjectManager->expects($this->any())->method('get')->will($this->returnCallback(function($className) {
@@ -59,13 +58,11 @@ class FacetingTest extends UnitTest
         $facetRegistry = new FacetRegistry();
         $facetRegistry->injectObjectManager($fakeObjectManager);
 
-
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = GeneralUtility::makeInstance(Query::class, 'test', $fakeConfiguration);
         /** @var $facetModifier \ApacheSolrForTypo3\Solr\Query\Modifier\Faceting */
-        $facetModifier = GeneralUtility::makeInstance(Faceting::class, $fakeConfiguration, $facetRegistry);
+        $facetModifier = GeneralUtility::makeInstance(Faceting::class, $facetRegistry);
         $facetModifier->setSearchRequest($fakeSearchRequest);
-
         $facetModifier->modifyQuery($query);
 
         $queryParameter = $query->getQueryParameters();
@@ -92,11 +89,13 @@ class FacetingTest extends UnitTest
                 'field' => 'type'
             ]
         ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
         $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
 
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertContains('type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
     }
@@ -123,11 +122,15 @@ class FacetingTest extends UnitTest
                 'sortBy' => 'index'
             ]
         ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+
         $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
 
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertContains('lex',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
     }
@@ -163,11 +166,13 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
 
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
 
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertEquals('{!ex=type,color}type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
@@ -205,11 +210,13 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
 
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
         $this->assertEquals('{!ex=type}type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
         $this->assertEquals('color',  $queryParameter['facet.field'][1], 'Query string did not contain expected snipped');
@@ -221,10 +228,6 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFilters()
     {
-        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
-        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
-
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
@@ -235,7 +238,15 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
+
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?
@@ -248,10 +259,6 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFiltersWithKeepAllOptionsOnSelectionFacet()
     {
-        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
-        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
-
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
@@ -263,7 +270,14 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?
@@ -276,11 +290,6 @@ class FacetingTest extends UnitTest
      */
     public function testCanAddQueryFiltersWithGlobalKeepAllOptionsOnSelection()
     {
-        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
-
-        $fakeRequest = $this->getDumbMock(SearchRequest::class);
-        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
-
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
@@ -292,7 +301,15 @@ class FacetingTest extends UnitTest
                 'field' => 'color',
             ]
         ];
-        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray, $fakeRequest);
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+
+        $fakeArguments = ['filter' => [urlencode('color:red'),urlencode('type:product')]];
+
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue($fakeArguments));
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
 
         //do we have a filter query for both present?

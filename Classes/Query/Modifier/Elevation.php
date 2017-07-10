@@ -24,6 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
+use ApacheSolrForTypo3\Solr\Plugin\Search\Search;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Util;
 
@@ -32,8 +35,20 @@ use ApacheSolrForTypo3\Solr\Util;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class Elevation implements Modifier
+class Elevation implements Modifier, SearchRequestAware
 {
+
+    /**
+     * @var SearchRequest
+     */
+    protected $searchRequest;
+
+    /**
+     * @param SearchRequest $searchRequest
+     */
+    public function setSearchRequest(SearchRequest $searchRequest) {
+        $this->searchRequest = $searchRequest;
+    }
 
     /**
      * Enables the query's elevation mode.
@@ -43,7 +58,7 @@ class Elevation implements Modifier
      */
     public function modifyQuery(Query $query)
     {
-        $configuration = Util::getSolrConfiguration();
+        $configuration = $this->searchRequest->getContextTypoScriptConfiguration();
         $query->setQueryElevation(
             $configuration->getSearchElevation(),
             $configuration->getSearchElevationForceElevation(),
