@@ -391,18 +391,6 @@ results.resultsPerPageSwitchOptions
 
 Defines the shown options of possible results per page.
 
-results.fieldProcessingInstructions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: Array
-:TS Path: plugin.tx_solr.search.results.fieldProcessingInstructions
-:Since: 1.0
-:Options: timestamp, utf8Decode, skip
-
-Mapping of fieldname to processing instructions. Available instructions: timestamp, utf8Decode, skip (removes the field from the result).
-
-The utf8Decode option has been removed in version 2.8.
-
 results.pagebrowser
 ~~~~~~~~~~~~~~~~~~~
 

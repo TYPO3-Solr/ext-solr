@@ -130,15 +130,6 @@ plugin.tx_solr {
 			resultsPerPage = {$plugin.tx_solr.search.results.resultsPerPage}
 			resultsPerPageSwitchOptions = 10, 25, 50
 
-			// fieldname => processing instruction, available instructions: timestamp, skip (removes the field from the result)
-			fieldProcessingInstructions {
-				changed = timestamp
-				created = timestamp
-				indexed = timestamp
-				# TODO rename the skip instruction to remove?!
-				spell = skip
-			}
-
 			showDocumentScoreAnalysis = 0
 		}
 

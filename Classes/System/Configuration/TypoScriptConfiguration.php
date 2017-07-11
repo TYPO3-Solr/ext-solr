@@ -1291,20 +1291,6 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the search results fieldProcessingInstructions configuration array
-     *
-     * plugin.tx_solr.search.results.fieldProcessingInstructions.
-     *
-     * @param array $defaultIfEmpty
-     * @return array
-     */
-    public function getSearchResultsFieldProcessingInstructionsConfiguration(array $defaultIfEmpty = [])
-    {
-        $result = $this->getObjectByPathOrDefault('plugin.tx_solr.search.results.fieldProcessingInstructions.', $defaultIfEmpty);
-        return $result;
-    }
-
-    /**
      * Indicates if the results of an initial empty query should be shown or not.
      *
      * plugin.tx_solr.search.showResultsOfInitialEmptyQuery
@@ -1451,7 +1437,7 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Returns the fieldProcessingInstructions configuration array
+     * Returns the filter configuration array
      *
      * plugin.tx_solr.search.query.filter.
      *
