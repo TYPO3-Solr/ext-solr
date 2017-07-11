@@ -38,7 +38,7 @@ class FacetCollection extends AbstractCollection
     {
         return $this->getFilteredCopy(
             function(AbstractFacet $facet) {
-                return $facet->getIsAvailable() && $facet->getIncludeInAvailableFacets();
+                return $facet->getIsAvailable() && $facet->getIncludeInAvailableFacets() && $facet->getAllRequirementsMet();
             }
         );
     }
@@ -52,6 +52,18 @@ class FacetCollection extends AbstractCollection
         return $this->getFilteredCopy(
             function(AbstractFacet $facet) use ($requiredGroup) {
                 return $facet->getGroupName() == $requiredGroup;
+            }
+        );
+    }
+
+    /**
+     * @param string $requiredName
+     * @return AbstractCollection
+     */
+    public function getByName($requiredName) {
+        return $this->getFilteredCopy(
+            function(AbstractFacet $facet) use ($requiredName) {
+                return $facet->getName() == $requiredName;
             }
         );
     }
