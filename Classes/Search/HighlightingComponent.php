@@ -24,7 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting;
 use ApacheSolrForTypo3\Solr\Query;
+use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Highlighting search component
@@ -43,13 +45,13 @@ class HighlightingComponent extends AbstractComponent implements QueryAware
 
     /**
      * Initializes the search component.
-     *
-     *
      */
     public function initializeSearchComponent()
     {
-        if ($this->searchConfiguration['results.']['resultsHighlighting']) {
-            $this->query->setHighlighting(true, $this->searchConfiguration['results.']['resultsHighlighting.']['fragmentSize']);
+        $solrConfiguration = Util::getSolrConfiguration();
+
+        if ($solrConfiguration->getSearchResultsHighlighting()) {
+            $this->query->setHighlighting(Highlighting::fromTypoScriptConfiguration($solrConfiguration));
         }
     }
 
