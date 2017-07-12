@@ -193,6 +193,117 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      */
+    public function canDoAnInitialEmptySearchWithoutResults()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+
+        // now we set the facet type for "type" facet to fluid and expect that we get a rendered facet
+        $overwriteConfiguration = [];
+        $overwriteConfiguration['search.']['initializeWithEmptyQuery'] = 1;
+        $overwriteConfiguration['search.']['showResultsOfInitialEmptyQuery'] = 0;
+
+        /** @var $configurationManager ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        $this->assertNotContains('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialEmptyQuery was set to false');
+    }
+
+    /**
+     * @test
+     */
+    public function canDoAnInitialEmptySearchWithResults()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+
+        // now we set the facet type for "type" facet to fluid and expect that we get a rendered facet
+        $overwriteConfiguration = [];
+        $overwriteConfiguration['search.']['initializeWithEmptyQuery'] = 1;
+        $overwriteConfiguration['search.']['showResultsOfInitialEmptyQuery'] = 1;
+
+        /** @var $configurationManager ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
+        $this->assertContains('results-entry', $resultPage1, 'Results should be visible since showResultsOfInitialEmptyQuery was set to true');
+    }
+
+    /**
+     * @test
+     */
+    public function canDoAnInitialSearchWithoutResults()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        // now we set the facet type for "type" facet to fluid and expect that we get a rendered facet
+        $overwriteConfiguration = [];
+        $overwriteConfiguration['search.']['initializeWithQuery'] = 'product';
+        $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 0;
+
+        /** @var $configurationManager ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        $this->assertContains('fluidfacet', $resultPage1, 'fluidfacet should be generated since initializeWithQuery was configured with a query that should produce results');
+        $this->assertNotContains('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialQuery was set to false');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canDoAnInitialSearchWithResults()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        // now we set the facet type for "type" facet to fluid and expect that we get a rendered facet
+        $overwriteConfiguration = [];
+        $overwriteConfiguration['search.']['initializeWithQuery'] = 'product';
+        $overwriteConfiguration['search.']['showResultsOfInitialQuery'] = 1;
+
+        /** @var $configurationManager ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        $this->assertContains('fluidfacet', $resultPage1, 'fluidfacet should be generated since initializeWithQuery was configured with a query that should produce results');
+        $this->assertContains('results-entry', $resultPage1, 'Results should be visible since showResultsOfInitialQuery was set to true');
+    }
+
+    /**
+     * @test
+     */
     public function removeOptionLinkWillBeShownWhenFacetWasSelected()
     {
         $this->importDataSetFromFixture('can_render_search_controller.xml');
