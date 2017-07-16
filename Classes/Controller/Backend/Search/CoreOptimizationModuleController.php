@@ -151,8 +151,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $destinationFile = PATH_site . 'typo3temp/' . md5($_COOKIE['PHPSESSID']) .$synonymFileUpload['name'];
         GeneralUtility::upload_copy_move($synonymFileUpload['tmp_name'], $destinationFile);
 
-        $fh = fopen($destinationFile, 'r');
-        while ($line = fgets($fh)) {
+        $fileHandler = fopen($destinationFile, 'r');
+        while ($line = fgets($fileHandler)) {
             $lineParts = GeneralUtility::trimExplode('=>', $line, true);
 
             if (isset($lineParts[1])) {
@@ -177,7 +177,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 );
             }
         }
-        fclose($fh);
+        fclose($fileHandler);
         $this->redirect('index');
 
     }
