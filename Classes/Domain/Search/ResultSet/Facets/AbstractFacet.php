@@ -70,6 +70,11 @@ abstract class AbstractFacet
     protected $isUsed = false;
 
     /**
+     * @var bool
+     */
+    protected $allRequirementsMet = true;
+
+    /**
      * AbstractFacet constructor.
      *
      * @param SearchResultSet $resultSet
@@ -164,6 +169,22 @@ abstract class AbstractFacet
     }
 
     /**
+     * @return boolean
+     */
+    public function getAllRequirementsMet()
+    {
+        return $this->allRequirementsMet;
+    }
+
+    /**
+     * @param boolean $allRequirementsMet
+     */
+    public function setAllRequirementsMet($allRequirementsMet)
+    {
+        $this->allRequirementsMet = $allRequirementsMet;
+    }
+
+    /**
      * @return SearchResultSet
      */
     public function getResultSet()
@@ -223,6 +244,16 @@ abstract class AbstractFacet
     }
 
     /**
+     * Returns the configured requirements
+     *
+     * @return array
+     */
+    public function getRequirements()
+    {
+        return $this->getFacetSettingOrDefaultValue('requirements.', []);
+    }
+
+    /**
      * The implementation of this method should return a "flatten" collection of all items.
      *
      * @return AbstractFacetItemCollection
@@ -240,6 +271,6 @@ abstract class AbstractFacet
             return $defaultValue;
         }
 
-        return ((string)$this->configuration[$key]);
+        return ($this->configuration[$key]);
     }
 }

@@ -144,7 +144,7 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
         $processor->process($searchResultSet);
 
-        // after the reconstitution they should be 1 facet present
+        // after the reconstitution they should be 2 facets present
         $this->assertCount(2, $searchResultSet->getFacets());
     }
 
@@ -180,6 +180,99 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $optionFacet = $searchResultSet->getFacets()->getByPosition(0);
         $this->assertCount(1, $optionFacet->getOptions());
         $this->assertSame('event', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Skipping configured value not working as expected');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canSetRequirementsMetToFalseOnFacetThatMissesARequirement()
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_multiple_fields_facets.json');
+
+        // before the reconstitution of the domain object from the response we expect that no facets
+        // are present
+        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+
+        $facetConfiguration = [
+            'showEmptyFacets' => 1,
+            'facets.' => [
+                'myType.' => [
+                    'label' => 'My Type',
+                    'field' => 'type_stringS',
+                    'requirements.' => [
+                        'categoryIsInternal.' => [
+                            'facet' => 'myCategory',
+                            'values' => 'internal'
+                        ]
+                    ]
+                ],
+                'myCategory.' => [
+                    'label' => 'My Category',
+                    'field' => 'category_stringM',
+                ]
+            ]
+        ];
+
+        $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
+        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
+        $processor->process($searchResultSet);
+
+        // after the reconstitution they should be 1 facet present
+        $this->assertCount(2, $searchResultSet->getFacets());
+
+        $firstFacet = $searchResultSet->getFacets()->getByPosition(0);
+        $this->assertSame('myType', $firstFacet->getName(), 'Unexpected facet name for first facet');
+        $this->assertFalse($firstFacet->getAllRequirementsMet(), 'Unexpected state of allRequirementsMet');
+    }
+
+
+    /**
+     * @test
+     */
+    public function canSetRequirementsMetToTrueOnFacetThatFullFillsARequirement()
+    {
+        $searchResultSet = $this->initializeSearchResultSetFromFakeResponse('fake_solr_response_with_used_facet.json');
+        $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
+            $this->returnCallback(function ($name) {
+                return $name == 'myType' ? ['pages'] : [];
+            })
+        );
+
+        // before the reconstitution of the domain object from the response we expect that no facets
+        // are present
+        $this->assertEquals([], $searchResultSet->getFacets()->getArrayCopy());
+
+        $facetConfiguration = [
+            'showEmptyFacets' => 1,
+            'facets.' => [
+                'myType.' => [
+                    'label' => 'My Type',
+                    'field' => 'type',
+                ],
+                'myCategory.' => [
+                    'label' => 'My Category',
+                    'field' => 'category',
+                    'requirements.' => [
+                        'typeIsPage.' => [
+                            'facet' => 'myType',
+                            'values' => 'pages'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $configuration = $this->getConfigurationArrayFromFacetConfigurationArray($facetConfiguration);
+        $processor = $this->getConfiguredReconstitutionProcessor($configuration, $searchResultSet);
+        $processor->process($searchResultSet);
+
+        // after the reconstitution they should be 1 facet present
+        $this->assertCount(2, $searchResultSet->getFacets());
+
+        $secondFacet = $searchResultSet->getFacets()->getByPosition(1);
+        $this->assertSame('myCategory', $secondFacet->getName(), 'Unexpected facet name for first facet');
+        $this->assertTrue($secondFacet->getAllRequirementsMet(), 'Unexpected state of allRequirementsMet');
     }
 
     /**
