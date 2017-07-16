@@ -111,6 +111,117 @@ class CoreOptimizationModuleController extends AbstractModuleController
     }
 
     /**
+     * @return void
+     */
+    public function exportStopWordsAction()
+    {
+        $this->exportFile(implode(PHP_EOL, $this->selectedSolrCoreConnection->getStopWords()), 'stopwords');
+    }
+
+    /**
+     * @return void
+     */
+    public function exportSynonymsAction()
+    {
+        $synonyms = $this->selectedSolrCoreConnection->getSynonyms();
+        $contentLines = '';
+        if (count($synonyms)) {
+            foreach ($synonyms as $synonymBaseWord => $synonymWords) {
+                $contentLines[] = ((in_array($synonymBaseWord, $synonymWords)) ?
+                        '' : ($synonymBaseWord . ' => ')) . implode(',', $synonymWords);
+
+            }
+            $this->exportFile(implode(PHP_EOL, $contentLines), 'synonyms');
+
+        } else {
+            $this->addFlashMessage(
+                'No synonyms to export.'
+            );
+        }
+        $this->redirect('index');
+
+    }
+
+    /**
+     * @param array $synonymFileUpload
+     * @return void
+     */
+    public function uploadSynonymFileAction(array $synonymFileUpload)
+    {
+        $destinationFile = PATH_site . 'typo3temp/' . md5($_COOKIE['PHPSESSID']) .$synonymFileUpload['name'];
+        GeneralUtility::upload_copy_move($synonymFileUpload['tmp_name'], $destinationFile);
+
+        $fh = fopen($destinationFile, 'r');
+        while ($line = fgets($fh)) {
+            $lineParts = GeneralUtility::trimExplode('=>', $line, true);
+
+            if (isset($lineParts[1])) {
+                $baseWord = $this->stringUtility->toLower($lineParts[0]);
+                $synonyms = GeneralUtility::trimExplode(',', $this->stringUtility->toLower($lineParts[1]), true);
+            } else {
+                $synonyms = GeneralUtility::trimExplode(',', $this->stringUtility->toLower($lineParts[0]), true);
+                $baseWord = $this->stringUtility->toLower(reset($synonyms));
+            }
+
+            if (isset($baseWord) && !empty($synonyms)) {
+                if ($this->selectedSolrCoreConnection->getSynonyms($baseWord)) {
+                    $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+                }
+                $this->selectedSolrCoreConnection->addSynonym(
+                    $baseWord,
+                    $synonyms
+                );
+                $this->selectedSolrCoreConnection->reloadCore();
+                $this->addFlashMessage(
+                    '"' . implode(',', $synonyms) . '" added as synonyms for base word "' . $baseWord . '"'
+                );
+            }
+        }
+        fclose($fh);
+        $this->redirect('index');
+
+    }
+    /**
+     * @param array $stopwordsFileUpload
+     * @return void
+     */
+    public function uploadStopWordsFileAction(array $stopwordsFileUpload)
+    {
+        $destinationFile = PATH_site . 'typo3temp/' . md5($_COOKIE['PHPSESSID']) .$stopwordsFileUpload['name'];
+        GeneralUtility::upload_copy_move($stopwordsFileUpload['tmp_name'], $destinationFile);
+
+        $this->saveStopWordsAction(file_get_contents($destinationFile));
+
+    }
+
+    public function deleteAllSynonymsAction()
+    {
+        $synonyms = $this->selectedSolrCoreConnection->getSynonyms();
+        $allSynonymsCouldBeDeleted = true;
+
+        foreach ($synonyms as $baseWord => $synonym) {
+            $deleteResponse = $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+            $allSynonymsCouldBeDeleted = $allSynonymsCouldBeDeleted && $deleteResponse->getHttpStatus() == 200;
+        }
+
+        $reloadResponse = $this->selectedSolrCoreConnection->reloadCore();
+
+        if ($allSynonymsCouldBeDeleted
+            && $reloadResponse->getHttpStatus() == 200
+        ) {
+            $this->addFlashMessage(
+                'All synonym removed.'
+            );
+        } else {
+            $this->addFlashMessage(
+                'Failed to remove all synonyms.',
+                'An error occurred',
+                FlashMessage::ERROR
+            );
+        }
+        $this->redirect('index');
+    }
+    /**
      * Deletes a synonym mapping by its base word.
      *
      * @param string $baseWord Synonym mapping base word
@@ -180,5 +291,19 @@ class CoreOptimizationModuleController extends AbstractModuleController
         }
 
         $this->redirect('index');
+    }
+
+    /**
+     * @param string $content
+     * @param string $type
+     */
+    protected function exportFile($content, $type = 'synonyms')
+    {
+        // output headers so that the file is downloaded rather than displayed
+        header('Content-type: text/plain');
+        header('Content-disposition: attachment; filename ='. $type . '_' .
+            $this->selectedSolrCoreConnection->getCoreName(). '.txt');
+        echo $content;
+        die();
     }
 }
