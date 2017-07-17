@@ -84,13 +84,6 @@ class Indexer extends AbstractIndexer
     protected $variantIdBuilder;
 
     /**
-     * Cache of the sys_language_overlay information
-     *
-     * @var array
-     */
-    protected static $sysLanguageOverlay = [];
-
-    /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
      */
     protected $logger = null;
@@ -194,30 +187,10 @@ class Indexer extends AbstractIndexer
      */
     protected function getFullItemRecord(Item $item, $language = 0)
     {
-        $rootPageUid = $item->getRootPageUid();
-        $overlayIdentifier = $rootPageUid . '|' . $language;
-        if (!isset(self::$sysLanguageOverlay[$overlayIdentifier])) {
-            Util::initializeTsfe($rootPageUid, $language);
-            self::$sysLanguageOverlay[$overlayIdentifier] = $GLOBALS['TSFE']->sys_language_contentOL;
-        }
+        Util::initializeTsfe($item->getRootPageUid(), $language);
 
-        $itemRecord = $item->getRecord();
-
-        if ($language > 0) {
-            $page = GeneralUtility::makeInstance(PageRepository::class);
-            $page->init(false);
-
-            $itemRecord = $page->getRecordOverlay(
-                $item->getType(),
-                $itemRecord,
-                $language,
-                self::$sysLanguageOverlay[$overlayIdentifier]
-            );
-        }
-
-        if (!$itemRecord) {
-            $itemRecord = null;
-        }
+        $systemLanguageContentOverlay = $GLOBALS['TSFE']->sys_language_contentOL;
+        $itemRecord = $this->getItemRecordOverlayed($item, $language, $systemLanguageContentOverlay);
 
         /*
          * Skip disabled records. This happens if the default language record
@@ -247,7 +220,7 @@ class Indexer extends AbstractIndexer
 
         $languageField = $GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'];
         if ($itemRecord[$translationOriginalPointerField] == 0
-            && self::$sysLanguageOverlay[$overlayIdentifier] != 1
+            && $systemLanguageContentOverlay != 1
             && !empty($languageField)
             && $itemRecord[$languageField] != $language
             && $itemRecord[$languageField] != '-1'
@@ -257,6 +230,31 @@ class Indexer extends AbstractIndexer
 
         if (!is_null($itemRecord)) {
             $itemRecord['__solr_index_language'] = $language;
+        }
+
+        return $itemRecord;
+    }
+
+    /**
+     * Returns the overlayed item record.
+     *
+     * @param Item $item
+     * @param int $language
+     * @param string|null $systemLanguageContentOverlay
+     * @return array|mixed|null
+     */
+    protected function getItemRecordOverlayed(Item $item, $language, $systemLanguageContentOverlay)
+    {
+        $itemRecord = $item->getRecord();
+
+        if ($language > 0) {
+            $page = GeneralUtility::makeInstance(PageRepository::class);
+            $page->init(false);
+            $itemRecord = $page->getRecordOverlay($item->getType(), $itemRecord, $language, $systemLanguageContentOverlay);
+        }
+
+        if (!$itemRecord) {
+            $itemRecord = null;
         }
 
         return $itemRecord;
@@ -641,7 +639,6 @@ class Indexer extends AbstractIndexer
         } else {
             // ! If no sys_language_mode is configured, all languages will be indexed !
             $languages = $this->getSystemLanguages();
-
             foreach ($languages as $language) {
                 if ($language['uid'] <= 0) {
                     continue;
