@@ -154,7 +154,7 @@ class SearchResultSetService
      * Initializes the Query object and SearchComponents and returns
      * the initialized query object, when a search should be executed.
      *
-     * @param string $rawQuery
+     * @param string|null $rawQuery
      * @param int $resultsPerPage
      * @return Query
      */
@@ -224,12 +224,12 @@ class SearchResultSetService
      * Also influences how many result documents are returned by the Solr
      * server as the return value is used in the Solr "rows" GET parameter.
      *
-     * @param string $rawQuery
-     * @param int|null $requestedPerPage
+     * @param SearchRequest $searchRequest
      * @return int number of results to show per page
      */
-    protected function getNumberOfResultsPerPage($rawQuery, $requestedPerPage = null)
+    protected function getNumberOfResultsPerPage(SearchRequest $searchRequest)
     {
+        $requestedPerPage = $searchRequest->getResultsPerPage();
         $perPageSwitchOptions = $this->typoScriptConfiguration->getSearchResultsPerPageSwitchOptionsAsArray();
         if (isset($requestedPerPage) && in_array($requestedPerPage, $perPageSwitchOptions)) {
             $this->setPerPageInSession($requestedPerPage);
@@ -244,7 +244,7 @@ class SearchResultSetService
             $currentNumberOfResultsShown = (int)$sessionResultPerPage;
         }
 
-        if ($this->shouldHideResultsFromInitialSearch($rawQuery)) {
+        if ($this->shouldHideResultsFromInitialSearch($searchRequest)) {
             // initialize search with an empty query, which would by default return all documents
             // anyway, tell Solr to not return any result documents
             // Solr will still return facets though
@@ -257,19 +257,11 @@ class SearchResultSetService
     /**
      * Provides a hook for other classes to process the search's response.
      *
-     * @param string $rawQuery
      * @param Query $query The query that has been searched for.
      * @param \Apache_Solr_Response $response The search's response.
      */
-    protected function processResponse($rawQuery, Query $query, \Apache_Solr_Response $response)
+    protected function processResponse(Query $query, \Apache_Solr_Response $response)
     {
-        if ($this->shouldHideResultsFromInitialSearch($rawQuery)) {
-            // explicitly set number of results to 0 as we just wanted
-            // facets and the like according to configuration
-            // @see getNumberOfResultsPerPage()
-            $response->response->numFound = 0;
-        }
-
         $this->wrapResultDocumentInResultObject($response);
         $this->addExpandedDocumentsFromVariants($response);
 
@@ -429,12 +421,12 @@ class SearchResultSetService
     /**
      * Checks it the results should be hidden in the response.
      *
-     * @param string $rawQuery
+     * @param SearchRequest $searchRequest
      * @return bool
      */
-    protected function shouldHideResultsFromInitialSearch($rawQuery)
+    protected function shouldHideResultsFromInitialSearch(SearchRequest $searchRequest)
     {
-        return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchInitializeWithQuery()) && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery() && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery() && $rawQuery === null;
+        return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchInitializeWithQuery()) && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery() && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery() && $searchRequest->getRawUserQueryIsNull();
     }
 
     /**
@@ -527,7 +519,7 @@ class SearchResultSetService
         }
 
         $rawQuery = $searchRequest->getRawUserQuery();
-        $resultsPerPage = $this->getNumberOfResultsPerPage($rawQuery, $searchRequest->getResultsPerPage());
+        $resultsPerPage = $this->getNumberOfResultsPerPage($searchRequest);
         $query = $this->getPreparedQuery($rawQuery, $resultsPerPage);
         $this->initializeRegisteredSearchComponents($query, $searchRequest);
         $resultSet->setUsedQuery($query);
@@ -545,7 +537,13 @@ class SearchResultSetService
         $response = $this->search->search($query, $offSet, null);
         $response = $this->modifyResponse($response, $searchRequest, $this->search);
 
-        $this->processResponse($rawQuery, $query, $response);
+        if ($resultsPerPage === 0) {
+            // when resultPerPage was forced to 0 we also set the numFound to 0 to hide results, e.g.
+            // when results for the initial search should not be shown.
+            $response->response->numFound = 0;
+        }
+
+        $this->processResponse($query, $response);
 
         $this->addSearchResultsToResultSet($response, $resultSet);
 
@@ -655,7 +653,7 @@ class SearchResultSetService
         $query->setQueryFields(QueryFields::fromString('id'));
 
         $response = $this->search->search($query, 0, 1);
-        $this->processResponse($documentId, $query, $response);
+        $this->processResponse($query, $response);
 
         $resultDocument = isset($response->response->docs[0]) ? $response->response->docs[0] : null;
         return $resultDocument;

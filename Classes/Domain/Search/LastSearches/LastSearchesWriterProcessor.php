@@ -53,8 +53,12 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
             return $resultSet;
         }
 
-        $lastSearchesService = $this->getLastSearchesService($resultSet);
-        $lastSearchesService->addToLastSearches($resultSet->getUsedSearchRequest()->getRawUserQuery());
+        $query = $resultSet->getUsedSearchRequest()->getRawUserQuery();
+
+        if (is_string($query)) {
+            $lastSearchesService = $this->getLastSearchesService($resultSet);
+            $lastSearchesService->addToLastSearches($query);
+        }
 
         return $resultSet;
     }

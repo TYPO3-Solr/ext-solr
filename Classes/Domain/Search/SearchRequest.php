@@ -443,12 +443,13 @@ class SearchRequest
     /**
      * Returns the passed rawQueryString.
      *
-     * @return string
+     * @return string|null
      */
     public function getRawUserQuery()
     {
         $path = $this->prefixWithNamespace('q');
-        return $this->argumentsAccessor->get($path);
+        $query = $this->argumentsAccessor->get($path, null);
+        return is_null($query) ? $query : (string)$query;
     }
 
     /**
