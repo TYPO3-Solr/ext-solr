@@ -63,6 +63,15 @@ abstract class IntegrationTest extends FunctionalTestCase
     ];
 
     /**
+     * @var array
+     */
+    protected $testSolrCores = [
+        'core_en',
+        'core_de',
+        'core_dk'
+    ];
+
+    /**
      * @return void
      */
     public function setUp()
@@ -183,12 +192,15 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
+     * @param string $coreName
      * @return void
      */
-    protected function cleanUpSolrServerAndAssertEmpty()
+    protected function cleanUpSolrServerAndAssertEmpty($coreName = 'core_en')
     {
+        $this->validateTestCoreName($coreName);
+
         // cleanup the solr server
-        $result = file_get_contents('http://localhost:8999/solr/core_en/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
+        $result = file_get_contents('http://localhost:8999/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
 
         if (strpos($result, '<int name="QTime">') == false) {
             $this->fail('Could not empty solr test index');
@@ -201,12 +213,25 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
+     * @param string $coreName
      * @return void
      */
-    protected function waitToBeVisibleInSolr()
+    protected function waitToBeVisibleInSolr($coreName = 'core_en')
     {
-        $url = 'http://localhost:8999/solr/core_en/update?softCommit=true';
+        $this->validateTestCoreName($coreName);
+        $url = 'http://localhost:8999/solr/' . $coreName . '/update?softCommit=true';
         get_headers($url);
+    }
+
+    /**
+     * @param string $coreName
+     * @throws \InvalidArgumentException
+     */
+    protected function validateTestCoreName($coreName)
+    {
+        if(!in_array($coreName, $this->testSolrCores)) {
+            throw new \InvalidArgumentException('No valid testcore passed');
+        }
     }
 
     /**

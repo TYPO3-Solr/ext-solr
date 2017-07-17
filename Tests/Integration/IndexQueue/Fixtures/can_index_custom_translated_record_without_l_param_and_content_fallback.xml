@@ -15,9 +15,11 @@
         <clear>3</clear>
         <config>
             <![CDATA[
-
-                config.sys_language_mode = ignore
+                config.sys_language_overlay = hideNonTranslated
+                config.sys_language_mode = content_fallback; 0
                 config.sys_language_uid = 0
+                config.linkVars = L
+
                 page = PAGE
                 page.typeNum = 0
                 page.bodyTag = <body>
@@ -59,24 +61,26 @@
                             foo = 1
                             foo {
                                 table = tx_fakeextension_domain_model_bar
-
                                 fields {
                                     title = title
-                                    category_stringM = SOLR_RELATION
-                                    category_stringM {
-                                        localField = tags
-                                        multiValue = 1
+                                    url = TEXT
+                                    url {
+                                        typolink.parameter = 1
+                                        typolink.additionalParams = &tx_foo[uid]={field:uid}
+                                        typolink.additionalParams.insertData = 1
+                                        typolink.returnLast = url
+                                        typolink.useCacheHash = 1
                                     }
                                 }
                             }
                         }
                     }
                 }
-
                 [globalVar = GP:L = 1]
                     plugin.tx_solr.solr.path = /solr/core_de/
                     config.sys_language_uid = 1
                 [end]
+
             ]]>
         </config>
         <sorting>100</sorting>
@@ -91,11 +95,13 @@
         <pid>1</pid>
         <sys_language_uid>1</sys_language_uid>
         <doktype>1</doktype>
+        <hidden>0</hidden>
+        <deleted>0</deleted>
     </pages_language_overlay>
     <tx_fakeextension_domain_model_bar>
         <uid>88</uid>
         <pid>1</pid>
-        <title>orignal</title>
+        <title>original</title>
     </tx_fakeextension_domain_model_bar>
 
     <tx_fakeextension_domain_model_bar>
@@ -106,21 +112,29 @@
         <l10n_parent>88</l10n_parent>
     </tx_fakeextension_domain_model_bar>
 
-    <tx_fakeextension_domain_model_related_mm>
-        <uid_local>99</uid_local>
-        <uid_foreign>12</uid_foreign>
-        <tablenames>tx_fakeextension_domain_model_mmrelated</tablenames>
-    </tx_fakeextension_domain_model_related_mm>
 
-    <tx_fakeextension_domain_model_mmrelated>
-        <uid>8</uid>
+    <tx_fakeextension_domain_model_bar>
+        <uid>777</uid>
         <pid>1</pid>
-        <tag>the tag</tag>
-    </tx_fakeextension_domain_model_mmrelated>
+        <title>original2</title>
+    </tx_fakeextension_domain_model_bar>
 
-    <tx_fakeextension_domain_model_mmrelated>
-        <uid>12</uid>
+    <tx_fakeextension_domain_model_bar>
+        <uid>9999</uid>
         <pid>1</pid>
-        <tag>translated tag</tag>
-    </tx_fakeextension_domain_model_mmrelated>
+        <title>translation2</title>
+        <sys_language_uid>1</sys_language_uid>
+        <l10n_parent>777</l10n_parent>
+    </tx_fakeextension_domain_model_bar>
+
+    <sys_language>
+        <uid>1</uid>
+        <pid>0</pid>
+        <hidden>0</hidden>
+        <title>German</title>
+        <flag>de</flag>
+        <language_isocode>de</language_isocode>
+        <static_lang_isocode>0</static_lang_isocode>
+        <sorting>128</sorting>
+    </sys_language>
 </dataset>
