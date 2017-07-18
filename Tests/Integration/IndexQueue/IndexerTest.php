@@ -101,13 +101,67 @@ class IndexerTest extends IntegrationTest
     }
 
     /**
+     * @return array
+     */
+    public function getTranslatedRecordDataProvider()
+    {
+        return [
+            'with_l_paramater' => ['can_index_custom_translated_record_with_l_param.xml'],
+            'without_l_paramater' => ['can_index_custom_translated_record_without_l_param.xml']
+        ];
+    }
+
+    /**
+     * @dataProvider getTranslatedRecordDataProvider
+     * @test
+     */
+    public function testCanIndexTranslatedCustomRecord($fixture)
+    {
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+
+        // create fake extension database table and TCA
+        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
+
+        $this->importDataSetFromFixture($fixture);
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 888);
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the value from the mm relation?
+        $this->waitToBeVisibleInSolr('core_en');
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"numFound":2', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"original"', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"original2"', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"url":"index.php?id=1&L=0&tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
+        $this->assertContains('"url":"index.php?id=1&L=0&tx_foo%5Buid%5D=888', $solrContent, 'Can not build typolink as expected');
+
+        $this->waitToBeVisibleInSolr('core_de');
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_de/select?q=*:*');
+        $this->assertContains('"numFound":2', $solrContent, 'Could not find translated record in solr document into solr');
+        $this->assertContains('"title":"translation"', $solrContent, 'Could not index  translated document into solr');
+        $this->assertContains('"title":"translation2"', $solrContent, 'Could not index  translated document into solr');
+        $this->assertContains('"url":"index.php?id=1&L=1&tx_foo%5Buid%5D=88', $solrContent, 'Can not build typolink as expected');
+        $this->assertContains('"url":"index.php?id=1&L=1&tx_foo%5Buid%5D=888', $solrContent, 'Can not build typolink as expected');
+
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+    }
+
+    /**
      * This testcase should check if we can queue an custom record with MM relations.
      *
      * @test
      */
     public function canIndexTranslatedItemWithMMRelation()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
         // create fake extension database table and TCA
         $this->importDumpFromFixture('fake_extension2_table.sql');
@@ -119,14 +173,16 @@ class IndexerTest extends IntegrationTest
         $this->assertTrue($result, 'Indexing was not indicated to be successful');
 
         // do we have the record in the index with the value from the mm relation?
-        $this->waitToBeVisibleInSolr();
-        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->waitToBeVisibleInSolr('core_de');
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_de/select?q=*:*');
 
         $this->assertContains('"category_stringM":["translated tag"]', $solrContent, 'Did not find MM related tag');
         $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
         $this->assertContains('"title":"translation"', $solrContent, 'Could not index document into solr');
-        $this->cleanUpSolrServerAndAssertEmpty();
-    }
+
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+     }
 
     /**
      * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
