@@ -27,6 +27,7 @@ CREATE TABLE tx_fakeextension_domain_model_bar (
 	sorting int(11) DEFAULT '0' NOT NULL,
 	title varchar(128) DEFAULT '' NOT NULL,
 	category varchar(128) DEFAULT '' NOT NULL,
+	page_relations int(11) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid)
 );
@@ -42,6 +43,16 @@ CREATE TABLE tx_fakeextension_domain_model_related_mm (
    KEY uid_foreign (uid_foreign)
 );
 
+DROP TABLE IF EXISTS tx_fakeextension_domain_model_related_pages_mm;
+
+CREATE TABLE tx_fakeextension_domain_model_related_pages_mm (
+   uid_local int(11) unsigned DEFAULT '0' NOT NULL,
+   uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
+   tablenames varchar(90) NOT NULL,
+   sorting int(11) unsigned DEFAULT '0' NOT NULL,
+   KEY uid_local (uid_local),
+   KEY uid_foreign (uid_foreign)
+);
 
 DROP TABLE IF EXISTS tx_fakeextension_domain_model_mmrelated;
 
