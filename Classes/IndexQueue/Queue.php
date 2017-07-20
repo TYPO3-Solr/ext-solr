@@ -472,6 +472,10 @@ class Queue
     {
         $localizedChangedTime = 0;
 
+        if ($itemType === 'pages') {
+            $itemType = 'pages_language_overlay';
+        }
+
         if (isset($GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'])) {
             // table is localizable
             $translationOriginalPointerField = $GLOBALS['TCA'][$itemType]['ctrl']['transOrigPointerField'];
