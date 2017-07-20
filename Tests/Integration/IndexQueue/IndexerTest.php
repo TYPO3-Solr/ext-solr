@@ -81,7 +81,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePathByName('fake_extension2_mmrelated_tca.php'));
         $this->importDataSetFromFixture('can_index_custom_record_with_mm_relation.xml');
@@ -122,7 +122,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
 
         $this->importDataSetFromFixture($fixture);
@@ -165,7 +165,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePathByName('fake_extension2_mmrelated_tca.php'));
         $this->importDataSetFromFixture('can_index_custom_translated_record_with_mm_relation.xml');
@@ -195,7 +195,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePathByName('fake_extension2_mmrelated_tca.php'));
         $this->importDataSetFromFixture('can_index_custom_record_with_mm_relationAndAdditionalWhere.xml');
@@ -214,6 +214,39 @@ class IndexerTest extends IntegrationTest
     }
 
     /**
+     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     *
+     * @test
+     */
+    public function canIndexItemWithMMRelationToATranslatedPage()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+
+
+        // create fake extension database table and TCA
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
+        $this->importDataSetFromFixture('can_index_custom_translated_record_with_mm_relation_to_a_page.xml');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the value from the mm relation?
+        $this->waitToBeVisibleInSolr('core_en');
+        $this->waitToBeVisibleInSolr('core_de');
+
+        $solrContentEn = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $solrContentDe = file_get_contents('http://localhost:8999/solr/core_de/select?q=*:*');
+
+        $this->assertContains('"relatedPageTitles_stringM":["Related page"]', $solrContentEn, 'Can not find related page title');
+        $this->assertContains('"relatedPageTitles_stringM":["Translated related page"]', $solrContentDe, 'Can not find translated related page title');
+
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+    }
+
+    /**
      * This testcase is used to check if direct relations can be resolved with the RELATION configuration
      *
      * @test
@@ -223,7 +256,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePathByName('fake_extension2_directrelated_tca.php'));
         $this->importDataSetFromFixture('can_index_custom_record_with_direct_relation.xml');
@@ -255,7 +288,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePathByName('fake_extension2_directrelated_tca.php'));
         $this->importDataSetFromFixture('can_index_custom_record_with_direct_relationAndAdditionalWhere.xml');
@@ -281,7 +314,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePathByName('fake_extension2_directrelated_tca.php'));
         $this->importDataSetFromFixture('can_index_custom_record_with_configuration_in_rootline.xml');
@@ -366,7 +399,7 @@ class IndexerTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePathByName('fake_extension2_mmrelated_tca.php'));
         $this->importDataSetFromFixture('can_index_custom_record_outside_site_root.xml');

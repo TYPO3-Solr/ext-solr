@@ -109,7 +109,7 @@ class IndexServiceTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
         $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePathByName('fake_extension2_directrelated_tca.php'));
 

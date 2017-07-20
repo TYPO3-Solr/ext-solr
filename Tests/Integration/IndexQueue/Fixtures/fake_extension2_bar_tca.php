@@ -150,6 +150,7 @@ return [
                 'type' => 'check'
             ]
         ],
+        // mm relation
         'tags' => [
             'exclude' => 1,
             'label' => 'Tags:',
@@ -164,8 +165,25 @@ return [
                 'maxitems' => '200',
                 'minitems' => '0',
                 'show_thumbs' => '1'
-              ]
+            ]
         ],
+        // mm relation to a page
+        'page_relations' => [
+            'exclude' => 1,
+            'label' => 'Page relations',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
+                'enableMultiSelectFilterTextfield' => true,
+                'foreign_table' => 'pages',
+                'MM' => 'tx_fakeextension_domain_model_related_pages_mm',
+                'size' => 10,
+                'autoSizeMax' => 30,
+                'maxitems' => 9999,
+                'readOnly' => true,
+            ],
+        ],
+        // direct relation
         'category' => [
             'exclude' => 1,
             'label' => 'Category',
@@ -178,9 +196,9 @@ return [
                     'expandSingle' => 1,
                 ],
             ],
-        ]
-     ],
-     'types' => [
+        ],
+    ],
+    'types' => [
         '0' => [
             'showitem' => 'l10n_parent, l10n_diffsource,title,tags'
         ]

@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS tx_fakeextension_domain_model_foo;
-
 CREATE TABLE tx_fakeextension_domain_model_foo (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,

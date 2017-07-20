@@ -44,9 +44,22 @@ class PageIndexerTest extends IntegrationTest
     /**
      * Executed after each test. Emptys solr and checks if the index is empty
      */
+    public function setUp()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+
+        parent::setUp();
+    }
+
+    /**
+     * Executed after each test. Emptys solr and checks if the index is empty
+     */
     public function tearDown()
     {
-        $this->cleanUpSolrServerAndAssertEmpty();
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+
         parent::tearDown();
     }
 
@@ -87,6 +100,49 @@ class PageIndexerTest extends IntegrationTest
         $this->assertContains('"custom_stringS":"my text from custom page type"', $solrContent, 'Document does not contains value build with typoscript');
     }
 
+
+    /**
+     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     *
+     * @test
+     */
+    public function canIndexTranslatedPageToPageRelation()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+
+        // create fake extension database table and TCA
+        $this->importExtTablesDefinition('fake_extension3_table.sql');
+
+        $additionalPageTca = include($this->getFixturePathByName('fake_extension3_pages_tca.php'));
+        $GLOBALS['TCA']['pages']['columns']['page_relations'] = $additionalPageTca['columns']['page_relations'];
+        $GLOBALS['TCA']['pages']['columns']['relations'] = $additionalPageTca['columns']['relations'];
+
+        $additionalPageLanguageOverlayTca = include($this->getFixturePathByName('fake_extension3_pages_language_overlay_tca.php'));
+        $GLOBALS['TCA']['pages_language_overlay']['columns']['page_relations'] = $additionalPageLanguageOverlayTca['columns']['page_relations'];
+        $GLOBALS['TCA']['pages_language_overlay']['columns']['relations'] = $additionalPageLanguageOverlayTca['columns']['relations'];
+
+        $this->importDataSetFromFixture('can_index_page_with_relation_to_page.xml');
+
+        $this->executePageIndexer([], 1, 0, '', '', null, '', '', 0);
+        $this->executePageIndexer([], 1, 0, '', '', null, '', '', 1);
+
+        // do we have the record in the index with the value from the mm relation?
+        $this->waitToBeVisibleInSolr('core_en');
+        $this->waitToBeVisibleInSolr('core_de');
+
+        $solrContentEn = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"title":"Page"', $solrContentEn, 'Solr did not contain the english page');
+        $this->assertNotContains('relatedPageTitles_stringM', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
+
+        $solrContentDe = file_get_contents('http://localhost:8999/solr/core_de/select?q=*:*');
+        $this->assertContains('"title":"Seite"', $solrContentDe, 'Solr did not contain the translated page');
+        $this->assertContains('"relatedPageTitles_stringM":["Verwante Seite"]', $solrContentDe, 'Did not get content of releated field');
+
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+        $this->cleanUpSolrServerAndAssertEmpty('core_de');
+    }
+
     /**
      * @test
      */
@@ -120,7 +176,7 @@ class PageIndexerTest extends IntegrationTest
     public function canIndexPageIntoSolrWithAdditionalFieldsFromRootLine()
     {
         $this->importDataSetFromFixture('can_overwrite_configuration_in_rootline.xml');
-        $this->executePageIndexer(2);
+        $this->executePageIndexer([], 2);
 
         // we wait to make sure the document will be available in solr
         $this->waitToBeVisibleInSolr();
@@ -173,13 +229,28 @@ class PageIndexerTest extends IntegrationTest
     /**
      * @param int $pageId
      * @param int $type
+     * @param string $no_cache
+     * @param string $cHash
+     * @param null $_2
+     * @param string $MP
+     * @param string $RDCT
+     * @param int $languageId
      */
-    protected function executePageIndexer($pageId = 1, $type = 0)
+    protected function executePageIndexer($typo3ConfVars = [], $pageId = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $languageId = 0)
     {
+        GeneralUtility::_GETset('L', $languageId);
         $GLOBALS['TT'] = $this->getMockBuilder(TimeTracker::class)->disableOriginalConstructor()->getMock();
 
-        $TSFE = $this->getConfiguredTSFE([], $pageId, $type = 0);
-        $TSFE->config['config']['index_enable'] = 1;
+
+        $config = [
+            'config' => [
+                'index_enable' => 1,
+                'sys_language_uid' => $languageId
+            ]
+        ];
+
+        unset($GLOBALS['TSFE']);
+        $TSFE = $this->getConfiguredTSFE($typo3ConfVars, $pageId, $type, $no_cache, $cHash, $_2, $MP, $RDCT, $config);
         $TSFE->cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
         $GLOBALS['TSFE'] = $TSFE;
 
