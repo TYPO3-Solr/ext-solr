@@ -717,16 +717,6 @@ faceting.keepAllFacetsOnSelection
 
 When enabled selecting an option from a facet will not reduce the number of options available in other facets.
 
-faceting.removeFacetLinkText
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: String
-:TS Path: plugin.tx_solr.search.faceting.removeFacetLinkText
-:Since: 1.0
-:Default: @facetLabel: @facetText
-
-Defines the text for a link used for removing a given facet from the search results. You can use the following placeholders in this text: @facetValue, @facetName, @facetLabel, @facetText
-
 faceting.showAllLink.wrap
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -747,21 +737,6 @@ faceting.showEmptyFacets
 :Options: 0, 1
 
 By setting this option to 1, you will allow rendering of empty facets. Usually, if a facet does not offer any options to filter a resultset of documents, the facet header will not be shown. Using this option allows the header still to be rendered when no filter options are provided.
-
-faceting.facetLinkATagParams
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: String
-:TS Path: plugin.tx_solr.search.faceting.facetLinkATagParams
-:Since: 2.0
-:Default: rel="nofollow"
-
-With this option you can add A-Tag attributes for links of all facet-options.
-
-.. code-block:: typoscript
-
-    plugin.tx_solr.search.faceting.facetLinkATagParams = class="green"
-
 
 faceting.facetLinkUrlParameters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1141,16 +1116,6 @@ A common usecase for this is, when the datatype in solr needs to be sortable (da
             }
         }
     }
-
-
-faceting.facets.[facetName].facetLinkATagParams
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: String
-:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].facetLinkATagParams
-:Since: 2.0
-
-With this option you have the possibility to add A-Tag attributes for all option-links of a single facet. This option overwrites the global setting "faceting.facetLinkATagParams". See "faceting.facetLinkATagParams" for more information.
 
 elevation
 ---------

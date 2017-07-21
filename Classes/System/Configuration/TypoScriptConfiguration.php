@@ -1738,50 +1738,6 @@ class TypoScriptConfiguration
     }
 
     /**
-     * Retrieves the facetLinkATagParams for a facet by facet name. If nothing specific is configured
-     * the global facetLinkATagParams with be returned.
-     *
-     * plugin.tx_solr.search.faceting.facets.<facetName>.facetLinkATagParams
-     *
-     * or
-     *
-     * plugin.tx_solr.search.faceting.facetLinkATagParams
-     *
-     *
-     * @param string $facetName
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getSearchFacetingFacetLinkATagParamsByName($facetName = '', $defaultIfEmpty = '')
-    {
-        $facetSpecificPath = 'plugin.tx_solr.search.faceting.facets.' . $facetName . '.facetLinkATagParams';
-        $specificATagParam = $this->getValueByPathOrDefaultValue($facetSpecificPath, null);
-
-            // if we have a concrete setting, use it
-        if ($specificATagParam !== null) {
-            return $specificATagParam;
-        }
-
-            // no specific setting, check common setting
-        $commonPath = 'plugin.tx_solr.search.faceting.facetLinkATagParams';
-        $commonATagParamOrDefaultValue = $this->getValueByPathOrDefaultValue($commonPath, $defaultIfEmpty);
-        return $commonATagParamOrDefaultValue;
-    }
-
-    /**
-     * Returns the test that should be used to remove a faceting link
-     *
-     * plugin.tx_solr.search.faceting.removeFacetLinkText
-     *
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getSearchFacetingRemoveFacetLinkText($defaultIfEmpty = '@facetLabel: @facetText')
-    {
-        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.removeFacetLinkText', $defaultIfEmpty);
-    }
-
-    /**
      * Retrieves the showEvenWhenEmpty for a facet by facet name. If nothing specific is configured
      * the global showEmptyFacets with be returned.
      *
