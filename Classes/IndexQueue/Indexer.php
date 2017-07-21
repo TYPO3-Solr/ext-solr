@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
@@ -545,27 +546,15 @@ class Indexer extends AbstractIndexer
 
         // Solr configurations possible for this item
         $site = $item->getSite();
-        $solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($site);
 
+        $solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($site);
         $siteLanguages = [];
         foreach ($solrConfigurationsBySite as $solrConfiguration) {
             $siteLanguages[] = $solrConfiguration['language'];
         }
 
         $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
-
-        $translationOverlays = $this->getTranslationOverlaysForPage(
-            $pageId,
-            $site->getSysLanguageMode($defaultLanguageUid)
-        );
-
-        foreach ($translationOverlays as $key => $translationOverlay) {
-            if (!in_array($translationOverlay['sys_language_uid'],
-                $siteLanguages)
-            ) {
-                unset($translationOverlays[$key]);
-            }
-        }
+        $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite($pageId, $site, $defaultLanguageUid, $siteLanguages);
 
         $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, 0, $item->getMountPointIdentifier());
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
@@ -579,6 +568,28 @@ class Indexer extends AbstractIndexer
         }
 
         return $solrConnections;
+    }
+
+    /**
+     * Retrieves only translation overlays where a solr site is configured.
+     *
+     * @param int $pageId
+     * @param Site $site
+     * @param int $defaultLanguageUid
+     * @param $siteLanguages
+     * @return array
+     */
+    protected function getTranslationOverlaysWithConfiguredSite($pageId, Site $site, $defaultLanguageUid, $siteLanguages)
+    {
+        $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode($defaultLanguageUid));
+
+        foreach ($translationOverlays as $key => $translationOverlay) {
+            if (!in_array($translationOverlay['sys_language_uid'], $siteLanguages)) {
+                unset($translationOverlays[$key]);
+            }
+        }
+
+        return $translationOverlays;
     }
 
     /**
@@ -596,9 +607,8 @@ class Indexer extends AbstractIndexer
             unset($siteLanguages[array_search('0', $siteLanguages)]);
             $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
         } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
-            throw new \Apache_Solr_Exception('Root page ' .
-                                             $item->getRootPageUid() .
-                                             ' is set to hide default translation, but no other language is configured!');
+            $message = 'Root page ' . (int)$item->getRootPageUid() . ' is set to hide default translation, but no other language is configured!';
+            throw new \Apache_Solr_Exception($message);
         }
 
         return $defaultLanguageUid;
