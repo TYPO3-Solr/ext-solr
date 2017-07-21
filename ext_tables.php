@@ -41,7 +41,7 @@ if (TYPO3_MODE == 'BE') {
         null,
         [
             'name' => 'searchbackend',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_main_label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod.xlf',
             'iconIdentifier' => 'extensions-solr-module-main'
         ]
     );
@@ -58,7 +58,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_info_label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_info.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
     );
@@ -82,7 +82,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleCoreOptimization.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_core_optimization_label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
     );
@@ -98,7 +98,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueue.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_indexqueue_label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexqueue.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
     );
@@ -114,7 +114,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexAdministration.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:solr.backend.index_administration.label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexadmin.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
     );

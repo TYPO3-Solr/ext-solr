@@ -6,32 +6,6 @@
 		</header>
 		<body>
 
-		<!-- Backend module -->
-			<trans-unit id="module_main_label" xml:space="preserve">
-				<source>Apache Solr</source>
-			</trans-unit>
-
-			<trans-unit id="module_core_optimization_label" xml:space="preserve">
-				<source>Core Optimization</source>
-			</trans-unit>
-
-			<trans-unit id="module_indexqueue_label" xml:space="preserve">
-				<source>Index Queue</source>
-			</trans-unit>
-
-			<trans-unit id="solr.backend.index_administration.label" xml:space="preserve">
-				<source>Index Administration</source>
-			</trans-unit>
-
-			<trans-unit id="module_searchstatistics_label" xml:space="preserve">
-				<source>Search Statistics</source>
-			</trans-unit>
-
-			<trans-unit id="module_info_label" xml:space="preserve">
-				<source>Info</source>
-			</trans-unit>
-		<!-- End: Backend module -->
-
 			<trans-unit id="cache_initialize_solr_connections" xml:space="preserve">
 				<source>Initialize Solr connections</source>
 			</trans-unit>
