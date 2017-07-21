@@ -96,8 +96,8 @@ class Faceting implements Modifier, SearchRequestAware
             return $query;
         }
 
-        $keepAllOptionsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
-        $facetFilters = $this->addFacetQueryFilters($searchArguments, $allFacets, $keepAllOptionsOnSelection);
+        $keepAllFacetsOnSelection = $typoScriptConfiguration->getSearchFacetingKeepAllFacetsOnSelection();
+        $facetFilters = $this->addFacetQueryFilters($searchArguments, $allFacets, $keepAllFacetsOnSelection);
 
         foreach ($facetFilters as $filter) {
             $query->getFilters()->add($filter);
@@ -136,10 +136,10 @@ class Faceting implements Modifier, SearchRequestAware
      *
      * @param array $resultParameters
      * @param array $allFacets
-     * @param bool $keepAllOptionsOnSelection
+     * @param bool $keepAllFacetsOnSelection
      * @return array
      */
-    protected function addFacetQueryFilters($resultParameters, $allFacets, $keepAllOptionsOnSelection)
+    protected function addFacetQueryFilters($resultParameters, $allFacets, $keepAllFacetsOnSelection)
     {
         $facetFilters = [];
 
@@ -148,35 +148,66 @@ class Faceting implements Modifier, SearchRequestAware
         }
 
         $filtersByFacetName = $this->getFiltersByFacetName($resultParameters, $allFacets);
+
         foreach ($filtersByFacetName as $facetName => $filterValues) {
             $facetConfiguration = $allFacets[$facetName . '.'];
-            $type = isset($facetConfiguration['type']) ? $facetConfiguration['type'] : 'options';
-            $filterEncoder = $this->facetRegistry->getPackage($type)->getUrlDecoder();
-
-            if (is_null($filterEncoder)) {
-                throw new \InvalidArgumentException('No encoder configured for facet ' . htmlspecialchars($facetName));
-            }
-
-            $tag = '';
-            if ($facetConfiguration['keepAllOptionsOnSelection'] == 1 || $keepAllOptionsOnSelection) {
-                $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
-            }
-
-            $filterParts = [];
-            foreach ($filterValues as $filterValue) {
-                $filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
-                if (empty($filterOptions)) {
-                    $filterOptions = [];
-                }
-
-                $filterValue = $filterEncoder->decode($filterValue, $filterOptions);
-                $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
-            }
-
+            $tag = $this->getFilterTag($facetConfiguration, $keepAllFacetsOnSelection);
+            $filterParts = $this->getFilterParts($facetConfiguration, $facetName, $filterValues);
             $operator = ($facetConfiguration['operator'] == 'OR') ? ' OR ' : ' AND ';
             $facetFilters[] = $tag . '(' . implode($operator, $filterParts) . ')';
         }
+
         return $facetFilters;
+    }
+
+    /**
+     * Builds the tag part of the query depending on the keepAllOptionsOnSelection configuration or the global configuration
+     * keepAllFacetsOnSelection.
+     *
+     * @param array $facetConfiguration
+     * @param boolean $keepAllFacetsOnSelection
+     * @return string
+     */
+    protected function getFilterTag($facetConfiguration, $keepAllFacetsOnSelection)
+    {
+        $tag = '';
+        if ($facetConfiguration['keepAllOptionsOnSelection'] == 1 || $keepAllFacetsOnSelection) {
+            $tag = '{!tag=' . addslashes($facetConfiguration['field']) . '}';
+        }
+
+        return $tag;
+    }
+
+    /**
+     * This method is used to build the filter parts of the query.
+     *
+     * @param array $facetConfiguration
+     * @param string $facetName
+     * @param array $filterValues
+     * @return array
+     */
+    protected function getFilterParts($facetConfiguration, $facetName, $filterValues)
+    {
+        $filterParts = [];
+
+        $type = isset($facetConfiguration['type']) ? $facetConfiguration['type'] : 'options';
+        $filterEncoder = $this->facetRegistry->getPackage($type)->getUrlDecoder();
+
+        if (is_null($filterEncoder)) {
+            throw new \InvalidArgumentException('No encoder configured for facet ' . htmlspecialchars($facetName));
+        }
+
+        foreach ($filterValues as $filterValue) {
+            $filterOptions = $facetConfiguration[$facetConfiguration['type'] . '.'];
+            if (empty($filterOptions)) {
+                $filterOptions = [];
+            }
+
+            $filterValue = $filterEncoder->decode($filterValue, $filterOptions);
+            $filterParts[] = $facetConfiguration['field'] . ':' . $filterValue;
+        }
+
+        return $filterParts;
     }
 
     /**
