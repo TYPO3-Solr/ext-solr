@@ -77,33 +77,6 @@ class TypoScriptConfigurationTest extends UnitTest
     /**
      * @test
      */
-    public function canGetFacetLinkOptionsByFacetName()
-    {
-        $fakeConfigurationArray['plugin.']['tx_solr.'] = [
-            'search.' => [
-                'faceting.' => [
-                    'facetLinkATagParams' => 'class="all-facets"',
-                    'facets.' => [
-                        'color.' => [],
-                        'type.' => [
-                            'facetLinkATagParams' => 'class="type-facets"'
-                        ]
-                    ]
-                ]
-            ]
-        ];
-
-        $configuration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $typeATagParams = $configuration->getSearchFacetingFacetLinkATagParamsByName('type');
-        $this->assertSame('class="type-facets"', $typeATagParams, 'can not get concrete a tag param for type');
-
-        $typeATagParams = $configuration->getSearchFacetingFacetLinkATagParamsByName('color');
-        $this->assertSame('class="all-facets"', $typeATagParams, 'can not get concrete a tag param for color');
-    }
-
-    /**
-     * @test
-     */
     public function canShowEvenIfEmptyFallBackToGlobalSetting()
     {
         $fakeConfigurationArray['plugin.']['tx_solr.'] = [

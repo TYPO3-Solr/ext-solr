@@ -210,8 +210,6 @@ plugin.tx_solr {
 			showEmptyFacets = 0
 			keepAllFacetsOnSelection = 0
 
-			facetLinkATagParams = rel="nofollow"
-
 			facetLinkUrlParameters =
 
 			facets {
@@ -220,9 +218,6 @@ plugin.tx_solr {
 					field = type
 				}
 			}
-
-			// available place holders: @facetValue, @facetName, @facetLabel, @facetText
-			removeFacetLinkText = @facetLabel: @facetText
 
 			showAllLink.wrap = <li>|</li>
 		}
