@@ -123,10 +123,7 @@
 					<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
 				</div>
 				<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" class="btn btn-sm btn-default"/>
-				<solr:backend.button.HelpButton title="Index Queue Initialization">
-					<f:translate key="solr.backend.index_queue_module.help" />
-				</solr:backend.button.HelpButton>
-
+				<solr:backend.button.helpButton title="Index Queue Initialization" description="{f:translate(key:'solr.backend.index_queue_module.help')}" />
 			</f:form>
 		</div>
 	</div>
