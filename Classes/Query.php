@@ -1105,8 +1105,7 @@ class Query
     public static function cleanKeywords($keywords)
     {
         $keywords = trim($keywords);
-        $keywords = GeneralUtility::removeXSS($keywords);
-        $keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+        $keywords = htmlspecialchars($keywords);
         return $keywords;
     }
 
