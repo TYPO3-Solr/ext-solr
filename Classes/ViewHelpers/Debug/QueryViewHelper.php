@@ -44,7 +44,7 @@ class QueryViewHelper extends AbstractSolrFrontendViewHelper
         $content = '';
         $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!empty($GLOBALS['TSFE']->beUserLogin) && $resultSet && $resultSet->getUsedSearch() !== null) {
-            $content = '<br><strong>Parsed Query:</strong><br>' . $resultSet->getUsedSearch()->getDebugResponse()->parsedquery;
+            $content = '<br><strong>Parsed Query:</strong><br>' . htmlspecialchars($resultSet->getUsedSearch()->getDebugResponse()->parsedquery);
         }
         return $content;
     }
