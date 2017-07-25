@@ -42,7 +42,7 @@ class InitializeConnectionProvider extends AbstractProvider
     protected $itemsConfiguration = [
         'solrconnection' => [
             'type' => 'item',
-            'label' => 'Initialize Solr Connections',
+            'label' => 'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:cache_initialize_solr_connections',
             'iconIdentifier' => 'extensions-solr-module-initsolrconnection',
             'callbackAction' => 'initializeSolrConnections'
         ]
