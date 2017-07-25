@@ -55,11 +55,6 @@ abstract class AbstractModuleController extends ActionController
     protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Utility\StringUtility
-     */
-    protected $stringUtility;
-
-    /**
      * In the pagetree selected page UID
      *
      * @var int
@@ -96,17 +91,6 @@ abstract class AbstractModuleController extends ActionController
      * @inject
      */
     protected $moduleDataStorageService = null;
-
-    /**
-     * Method to pass a StringUtil object.
-     * Use to overwrite injected object in unit test context.
-     *
-     * @param \ApacheSolrForTypo3\Solr\Utility\StringUtility $stringUtility
-     */
-    public function injectStringHelper(StringUtility $stringUtility)
-    {
-        $this->stringUtility = $stringUtility;
-    }
 
     /**
      * Initializes the controller and sets needed vars.
