@@ -390,7 +390,7 @@ class Util
         $cacheId = $pageId . '|' . $language;
 
         if (!is_object($GLOBALS['TT'])) {
-            $GLOBALS['TT'] = GeneralUtility::makeInstance(TimeTracker::class);
+            $GLOBALS['TT'] = GeneralUtility::makeInstance(TimeTracker::class, false);
         }
 
         if (!isset($tsfeCache[$cacheId]) || !$useCache) {
