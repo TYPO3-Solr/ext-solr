@@ -18,26 +18,29 @@
  * @exports TYPO3/CMS/Solr/ContextMenuActions
  */
 define(function () {
-    'use strict';
+	'use strict';
 
-    /**
-     * @exports TYPO3/CMS/Solr/ContextMenuActions
-     */
-    var ContextMenuActions = {};
+	/**
+	 * @exports TYPO3/CMS/Solr/ContextMenuActions
+	 */
+	var ContextMenuActions = {};
 
-    ContextMenuActions.initializeSolrConnections = function (table, uid) {
-        TYPO3.Solr.ContextMenuActionController.initializeSolrConnectionsByRootPage(
-            {'id': uid},
-            function(response) {
-                if (response) {
-                    TYPO3.Notification.error(response);
-                } else {
-                    TYPO3.Notification.info('Solr Connections initialized!');
-                }
-            },
-            this
-        );
-    };
+	ContextMenuActions.initializeSolrConnections = function (table, uid) {
+		var url = TYPO3.settings.ajaxUrls['solr_updateConnection'];
+		url += '&id=' + uid;
+		$.ajax(url).done(function (response) {
+			if (response.success) {
+				top.TYPO3.Notification.success(
+					response.message
+				);
+			} else {
+				top.TYPO3.Notification.error(
+					response.message
+				);
+			}
 
-    return ContextMenuActions;
+		});
+	};
+
+	return ContextMenuActions;
 });
