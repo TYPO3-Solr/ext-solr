@@ -194,7 +194,6 @@ class IndexingConfigurationSelectorField
             'fieldTSConfig' => ['noMatchingValue_label' => '']
         ];
 
-        /** @var \TYPO3\CMS\Backend\Form\NodeFactory $nodeFactory */
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $options = ['renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector', 'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray];
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
@@ -205,7 +204,7 @@ class IndexingConfigurationSelectorField
         $formResultCompiler->mergeResult($selectCheckboxResult);
 
         $formHtml = isset($selectCheckboxResult['html']) ? $selectCheckboxResult['html'] : '';
-        $content = $formResultCompiler->JStop() . $formHtml . $formResultCompiler->printNeededJSFunctions();
+        $content = $formResultCompiler->addCssFiles() . $formHtml . $formResultCompiler->printNeededJSFunctions();
 
         return $content;
     }
