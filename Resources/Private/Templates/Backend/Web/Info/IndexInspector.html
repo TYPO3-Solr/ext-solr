@@ -1,17 +1,17 @@
 {namespace solr=ApacheSolrForTypo3\Solr\ViewHelpers}
 {namespace core=TYPO3\CMS\Core\ViewHelpers}
 
-<f:layout name="Backend/IndexInspector"/>
+<div>
+	<h1>Index Inspector</h1>
 
-<f:section name="Main"> <f:comment><!-- This View shows panel groups for each document type.--></f:comment>
-    <div class="panel-group">
-    <f:for each="{documentsByType}" as="documents" key="documentType">
-        <f:if condition="{documents}"> <f:comment><!-- Don't show emty panel groups if array with documents is empty. --></f:comment>
-            <f:render section="PanelGroupForDocumentType" arguments="{_all}"/>
-        </f:if>
-    </f:for>
-    </div>
-</f:section>
+	<div class="panel-group">
+		<f:for each="{documentsByType}" as="documents" key="documentType">
+			<f:if condition="{documents}"> <f:comment><!-- Don't show emty panel groups if array with documents is empty. --></f:comment>
+				<f:render section="PanelGroupForDocumentType" arguments="{_all}"/>
+			</f:if>
+		</f:for>
+	</div>
+</div>
 
 <f:section name="PanelGroupForDocumentType">
     <div class="panel panel-default">

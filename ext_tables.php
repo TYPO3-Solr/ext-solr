@@ -66,7 +66,7 @@ if (TYPO3_MODE == 'BE') {
     // Index Inspector is hidden under Web->Info->Index Inspector
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
         'web_info',
-        \ApacheSolrForTypo3\Solr\Backend\IndexInspector\ModuleBootstrap::class,
+        \ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info\IndexInspectorController::class,
         null,
         'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:module_indexinspector'
     );
