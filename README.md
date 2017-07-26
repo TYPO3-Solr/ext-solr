@@ -42,7 +42,7 @@ Please find further information regarding Apache Solr and its related projects a
 
 To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration. Another showcase can be found here: [search.dkd.de](http://search.dkd.de/solr)
 
-![dkd Internet Service GmbH](http://www.dkd.de/typo3conf/ext/dkd_standard/res/dkd.de/assets/images/logo-top.png)
+![dkd Internet Service GmbH](./dkd_logo.png)
 
 ## Documentation and Support
 
