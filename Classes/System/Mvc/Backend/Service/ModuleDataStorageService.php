@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service;
 
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\ModuleData;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Module data storage service. Used to store and retrieve module state (eg.
@@ -40,12 +41,6 @@ class ModuleDataStorageService implements SingletonInterface
     const KEY = 'tx_solr';
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     * @inject
-     */
-    protected $objectManager;
-
-    /**
      * Loads module data for user settings or returns a fresh object initially
      *
      * @return ModuleData
@@ -56,7 +51,7 @@ class ModuleDataStorageService implements SingletonInterface
 
         $this->unsetModuleDataIfCanNotBeSerialized($moduleData);
         if (empty($moduleData) || !$moduleData) {
-            $moduleData = $this->objectManager->get(ModuleData::class);
+            $moduleData = GeneralUtility::makeInstance(ModuleData::class);
         } else {
             $moduleData = unserialize($moduleData);
         }

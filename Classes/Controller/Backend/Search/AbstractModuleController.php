@@ -24,10 +24,12 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService as SolrCoreConnection;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
+use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use ApacheSolrForTypo3\Solr\Utility\StringUtility;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -62,10 +64,6 @@ abstract class AbstractModuleController extends ActionController
     protected $selectedPageUID;
 
     /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
-    /**
      * @var Site
      */
     protected $selectedSite;
@@ -81,14 +79,12 @@ abstract class AbstractModuleController extends ActionController
     protected $coreSelectorMenu = null;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\ConnectionManager
-     * @inject
+     * @var ConnectionManager
      */
     protected $solrConnectionManager = null;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService
-     * @inject
+     * @var ModuleDataStorageService
      */
     protected $moduleDataStorageService = null;
 
@@ -98,6 +94,9 @@ abstract class AbstractModuleController extends ActionController
     protected function initializeAction()
     {
         parent::initializeAction();
+        $this->configurationManager = GeneralUtility::makeInstance(ConnectionManager::class);
+        $this->moduleDataStorageService = GeneralUtility::makeInstance(ModuleDataStorageService::class);
+
         $this->selectedPageUID = (int)GeneralUtility::_GP('id');
         if ($this->request->hasArgument('id')) {
             $this->selectedPageUID = (int)$this->request->getArgument('id');
@@ -107,10 +106,9 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
 
-        $this->siteRepository = $this->objectManager->get(SiteRepository::class);
-
         try {
-            $this->selectedSite = $this->siteRepository->getSiteByPageId($this->selectedPageUID);
+            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+            $this->selectedSite = $siteRepository->getSiteByPageId($this->selectedPageUID);
         } catch (\InvalidArgumentException $exception) {
             return;
         }

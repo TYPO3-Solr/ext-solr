@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Api;
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
@@ -39,11 +40,18 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 class InfoModuleController extends AbstractModuleController
 {
     /**
-     * @var \ApacheSolrForTypo3\Solr\ConnectionManager
-     * @inject
+     * @var ConnectionManager
      */
     protected $solrConnectionManager;
 
+    /**
+     * Initializes the controller before invoking an action method.
+     */
+    protected function initializeAction()
+    {
+        parent::initializeAction();
+        $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+    }
     /**
      * Set up the doc header properly here
      *

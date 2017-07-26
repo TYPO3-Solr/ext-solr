@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
@@ -46,8 +47,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
     protected $indexQueue;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\ConnectionManager
-     * @inject
+     * @var ConnectionManager
      */
     protected $solrConnectionManager = null;
 
@@ -58,6 +58,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
     {
         parent::initializeAction();
         $this->indexQueue = GeneralUtility::makeInstance(Queue::class);
+        $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
     }
 
     /**
