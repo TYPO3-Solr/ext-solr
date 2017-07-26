@@ -16,12 +16,11 @@ namespace ApacheSolrForTypo3\Solr\System\Service;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager as ExtbaseConfigurationManager;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Extbase\Service\FlexFormService;
-use TYPO3\CMS\Extbase\Service\TypoScriptService;
 
 /**
  * Service to ease work with configurations.
@@ -31,19 +30,23 @@ use TYPO3\CMS\Extbase\Service\TypoScriptService;
 class ConfigurationService
 {
     /**
-     * @var \TYPO3\CMS\Extbase\Service\FlexFormService
-     * @inject
+     * @var FlexFormService
      */
     protected $flexFormService;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Service\TypoScriptService
-     * @inject
+     * @var TypoScriptService
      */
     protected $typoScriptService;
 
+    public function __construct()
+    {
+        $this->flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
+        $this->typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+    }
+
     /**
-     * @param \TYPO3\CMS\Extbase\Service\FlexFormService $flexFormService
+     * @param FlexFormService $flexFormService
      */
     public function setFlexFormService($flexFormService)
     {
@@ -72,7 +75,7 @@ class ConfigurationService
             return;
         }
 
-        $flexFormConfiguration = $this->flexFormService->convertflexFormContentToArray($flexFormData);
+        $flexFormConfiguration = $this->flexFormService->convertFlexFormContentToArray($flexFormData);
         $flexFormConfiguration = $this->overrideFilter($flexFormConfiguration);
         $flexFormConfiguration = $this->typoScriptService->convertPlainArrayToTypoScriptArray($flexFormConfiguration);
 

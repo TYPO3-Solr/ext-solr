@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
@@ -50,8 +51,7 @@ class ApacheSolrDocumentController extends ActionController
     protected $languageId = 0;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository
-     * @inject
+     * @var Repository
      */
     protected $apacheSolrDocumentRepository;
 
@@ -63,6 +63,8 @@ class ApacheSolrDocumentController extends ActionController
     protected function initializeAction()
     {
         parent::initializeAction();
+        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
+
         $pageId = (int)GeneralUtility::_GP('id');
         $languageId = (int)GeneralUtility::_GP('L');
         $this->initializePageIdAndLanguageId($pageId, $languageId);
