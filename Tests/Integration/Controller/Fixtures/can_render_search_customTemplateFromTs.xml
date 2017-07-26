@@ -56,10 +56,6 @@
                         path   = /solr/core_en/
                     }
 
-                    templateFiles {
-                    	results = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/Search/MyResults.html
-                    }
-
                     index {
                         additionalFields {
 
@@ -351,6 +347,13 @@
                     statistics = 1
                     statistics {
                         anonymizeIP = 0
+                    }
+
+
+                    view {
+                        templateFiles {
+                            results = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/Search/MyResults.html
+                        }
                     }
 
                     viewHelpers {
