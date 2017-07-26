@@ -15,7 +15,6 @@ ext_localconf.php
 workflow
 Classes
 README.md
-class.ext_update.php
 ext_emconf.php
 ext_tables.php
 Ressources/Css
