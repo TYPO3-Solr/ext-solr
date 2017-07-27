@@ -89,7 +89,7 @@ class DebugWriter
     {
         $parameters = ['extKey' => 'solr', 'msg' => $message, 'level' => $level, 'data' => $data];
         $message = isset($parameters['msg']) ? $parameters['msg'] : '';
-        if (TYPO3_MODE == 'BE') {
+        if (TYPO3_MODE === 'BE') {
             DebugUtility::debug($parameters, $parameters['extKey'], 'DevLog ext:solr: ' . $message);
         } else {
             echo $message . ':<br/>';

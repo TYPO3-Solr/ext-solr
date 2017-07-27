@@ -245,7 +245,7 @@ class Relation
      */
     protected function getTranslationOverlay($tableName, $record)
     {
-        if ($tableName == 'pages') {
+        if ($tableName === 'pages') {
             return $GLOBALS['TSFE']->sys_page->getPageOverlay($record, $GLOBALS['TSFE']->sys_language_uid);
         }
 

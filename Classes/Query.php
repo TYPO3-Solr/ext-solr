@@ -1345,7 +1345,7 @@ class Query
     {
         $sortParameter = $sorting;
         list($sortField) = explode(' ', $sorting);
-        if ($sortField == 'relevance') {
+        if ($sortField === 'relevance') {
             $sortParameter = '';
             return $sortParameter;
         }

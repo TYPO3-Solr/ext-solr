@@ -166,7 +166,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             // the key contains the misspelled word expect the internal key "collation"
-            if ($key == 'collation') {
+            if ($key === 'collation') {
                 continue;
             }
             //create the spellchecking object structure

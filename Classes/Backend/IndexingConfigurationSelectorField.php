@@ -163,7 +163,7 @@ class IndexingConfigurationSelectorField
 
         foreach ($tablesToIndex as $configurationName => $tableName) {
             $icon = 'tcarecords-' . $tableName . '-default';
-            if ($tableName == 'pages') {
+            if ($tableName === 'pages') {
                 $icon = 'apps-pagetree-page-default';
             }
 

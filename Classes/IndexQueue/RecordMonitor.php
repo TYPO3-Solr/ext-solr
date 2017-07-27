@@ -128,7 +128,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $value,
         DataHandler $tceMain
     ) {
-        if ($command == 'delete' && $table == 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
+        if ($command === 'delete' && $table === 'tt_content' && $GLOBALS['BE_USER']->workspace == 0) {
             // skip workspaces: index only LIVE workspace
             $pid = $this->getValidatedPid($tceMain, $table, $uid);
             $this->indexQueue->updateItem('pages', $pid, time());
@@ -159,7 +159,7 @@ class RecordMonitor extends AbstractDataHandlerListener
 
         // track publish / swap events for records (workspace support)
         // command "version"
-        if ($command == 'version' && $value['action'] == 'swap') {
+        if ($command === 'version' && $value['action'] === 'swap') {
             switch ($table) {
                 /** @noinspection PhpMissingBreakStatementInspection */
                 case 'tt_content':
@@ -207,7 +207,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             }
         }
 
-        if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
+        if ($command === 'move' && $table === 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
             // moving pages in LIVE workspace
             $solrConfiguration = Util::getSolrConfigurationFromPageId($uid);
             $record = $this->configurationAwareRecordService->getRecord('pages', $uid, $solrConfiguration);
@@ -248,7 +248,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             return;
         }
 
-        if ($status == 'new') {
+        if ($status === 'new') {
             $recordUid = $tceMain->substNEWwithIDs[$recordUid];
         }
         if (Util::isDraftRecord($table, $recordUid)) {
@@ -259,7 +259,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         $recordPageId = $this->getRecordPageId($status, $recordTable, $recordUid, $uid, $fields, $tceMain);
 
         // when a content element changes we need to updated the page instead
-        if ($recordTable == 'tt_content') {
+        if ($recordTable === 'tt_content') {
             $recordTable = 'pages';
             $recordUid = $recordPageId;
         }
@@ -330,7 +330,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         // Clear existing index queue items to prevent mount point duplicates.
         // This needs to be done before the overlay handling, because handling an overlay record should
         // not trigger a deletion.
-        if ($recordTable == 'pages') {
+        if ($recordTable === 'pages') {
             $this->indexQueue->deleteItem('pages', $recordUid);
         }
 
@@ -339,7 +339,7 @@ class RecordMonitor extends AbstractDataHandlerListener
         if ($isLocalizedRecord) {
             // if it's a localization overlay, update the original record instead
             $recordUid = $record[$GLOBALS['TCA'][$recordTable]['ctrl']['transOrigPointerField']];
-            if ($recordTable == 'pages_language_overlay') {
+            if ($recordTable === 'pages_language_overlay') {
                 $recordTable = 'pages';
             }
         }
@@ -353,7 +353,7 @@ class RecordMonitor extends AbstractDataHandlerListener
             $this->indexQueue->updateItem($recordTable, $recordUid);
         }
 
-        if ($recordTable == 'pages') {
+        if ($recordTable === 'pages') {
             $this->doPagesPostUpdateOperations($fields, $recordUid);
         }
     }
@@ -423,9 +423,9 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function getRecordPageId($status, $recordTable, $recordUid, $originalUid, array $fields, DataHandler $tceMain)
     {
-        if ($status == 'update' && !isset($fields['pid'])) {
+        if ($status === 'update' && !isset($fields['pid'])) {
             $recordPageId = $this->getValidatedPid($tceMain, $recordTable, $recordUid);
-            if (($recordTable == 'pages') && ($this->rootPageResolver->getIsRootPageId($recordUid))) {
+            if (($recordTable === 'pages') && ($this->rootPageResolver->getIsRootPageId($recordUid))) {
                 $recordPageId = $originalUid;
             }
 

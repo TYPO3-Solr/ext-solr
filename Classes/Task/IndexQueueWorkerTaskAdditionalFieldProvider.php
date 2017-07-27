@@ -74,13 +74,13 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
             return $additionalFields;
         }
 
-        if ($schedulerModule->CMD == 'add') {
+        if ($schedulerModule->CMD === 'add') {
             $taskInfo['site'] = null;
             $taskInfo['documentsToIndexLimit'] = 50;
             $taskInfo['forcedWebRoot'] = '';
         }
 
-        if ($schedulerModule->CMD == 'edit') {
+        if ($schedulerModule->CMD === 'edit') {
             $taskInfo['site'] = $task->getSite();
             $taskInfo['documentsToIndexLimit'] = $task->getDocumentsToIndexLimit();
             $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();

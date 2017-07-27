@@ -91,7 +91,7 @@ class FrequentSearchesService
         } else {
             $terms = $this->getFrequentSearchTermsFromStatistics($frequentSearchConfiguration);
 
-            if ($frequentSearchConfiguration['sortBy'] == 'hits') {
+            if ($frequentSearchConfiguration['sortBy'] === 'hits') {
                 arsort($terms);
             } else {
                 ksort($terms);
