@@ -53,7 +53,7 @@ class AjaxController
         // Currently no return value from connection manager
         $content = [
             'success' => true,
-            'message' => 'The cache has bee cleared'
+            'message' => 'Solr connection has been updated'
         ];
         if ($pageId) {
             $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
