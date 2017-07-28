@@ -373,14 +373,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     }
 
     /**
-     * Entrypoint for the ajax request
-     */
-    public function updateConnectionsInCacheMenu()
-    {
-        $this->updateConnections();
-    }
-
-    /**
      * Updates the Solr connections for a specific root page ID / site.
      *
      * @param int $rootPageId A site root page id
