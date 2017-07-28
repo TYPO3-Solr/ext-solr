@@ -110,47 +110,6 @@ class Util
     }
 
     /**
-     * Returns given word as CamelCased.
-     *
-     * Converts a word like "send_email" to "SendEmail". It
-     * will remove non alphanumeric characters from the word, so
-     * "who's online" will be converted to "WhoSOnline"
-     *
-     * @param string $word Word to convert to camel case
-     * @return string UpperCamelCasedWord
-     */
-    public static function camelize($word)
-    {
-        return str_replace(' ', '',
-            ucwords(preg_replace('![^A-Z^a-z^0-9]+!', ' ', $word)));
-    }
-
-    /**
-     * Returns a given CamelCasedString as an lowercase string with underscores.
-     * Example: Converts BlogExample to blog_example, and minimalValue to minimal_value
-     *
-     * @param string $string String to be converted to lowercase underscore
-     * @return string     lowercase_and_underscored_string
-     */
-    public static function camelCaseToLowerCaseUnderscored($string)
-    {
-        return strtolower(preg_replace('/(?<=\w)([A-Z])/', '_\\1', $string));
-    }
-
-    /**
-     * Returns a given string with underscores as UpperCamelCase.
-     * Example: Converts blog_example to BlogExample
-     *
-     * @param string $string String to be converted to camel case
-     * @return string     UpperCamelCasedWord
-     */
-    public static function underscoredToUpperCamelCase($string)
-    {
-        return str_replace(' ', '',
-            ucwords(str_replace('_', ' ', strtolower($string))));
-    }
-
-    /**
      * Shortcut to retrieve the TypoScript configuration for EXT:solr
      * (plugin.tx_solr) from TSFE.
      *
@@ -158,19 +117,8 @@ class Util
      */
     public static function getSolrConfiguration()
     {
-        $configurationManager = self::getConfigurationManager();
-
-        return $configurationManager->getTypoScriptConfiguration();
-    }
-
-    /**
-     * @return ConfigurationManager
-     */
-    private static function getConfigurationManager()
-    {
-        /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        return $configurationManager;
+        return $configurationManager->getTypoScriptConfiguration();
     }
 
     /**
@@ -297,7 +245,7 @@ class Util
      */
     protected static function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
     {
-        $configurationManager = self::getConfigurationManager();
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
     }
 
@@ -521,23 +469,6 @@ class Util
         $rootPath = '';
         $configuration = self::getConfigurationFromPageId($pageId, $rootPath);
         return $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
-    }
-
-    /**
-     * Method to check if a page exists.
-     *
-     * @param int $pageId
-     * @return bool
-     */
-    public static function pageExists($pageId)
-    {
-        $page = BackendUtility::getRecord('pages', (int)$pageId, 'uid');
-
-        if (!is_array($page) || $page['uid'] != $pageId) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
