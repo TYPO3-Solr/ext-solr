@@ -200,7 +200,7 @@ class Site
         $pageIds = [];
         $maxDepth = intval($maxDepth);
 
-        if ($rootPageId == 'SITE_ROOT') {
+        if ($rootPageId === 'SITE_ROOT') {
             $rootPageId = $this->rootPage['uid'];
             $pageIds[] = (int)$this->rootPage['uid'];
         }

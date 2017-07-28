@@ -540,7 +540,7 @@ class Indexer extends AbstractIndexer
         $solrConnections = [];
 
         $pageId = $item->getRootPageUid();
-        if ($item->getType() == 'pages') {
+        if ($item->getType() === 'pages') {
             $pageId = $item->getRecordUid();
         }
 

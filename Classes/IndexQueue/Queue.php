@@ -329,13 +329,13 @@ class Queue
     private function addNewItem($itemType, $itemUid, $indexingConfiguration, $rootPageId)
     {
         $additionalRecordFields = '';
-        if ($itemType == 'pages') {
+        if ($itemType === 'pages') {
             $additionalRecordFields = ', doktype, uid';
         }
 
         $record = $this->getRecordCached($itemType, $itemUid, $additionalRecordFields);
 
-        if (empty($record) || ($itemType == 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
+        if (empty($record) || ($itemType === 'pages' && !Util::isAllowedPageType($record, $indexingConfiguration))) {
             return;
         }
 
@@ -401,7 +401,7 @@ class Queue
             $itemTypeHasStartTimeColumn = true;
             $changedTimeColumns .= ', ' . $GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime'];
         }
-        if ($itemType == 'pages') {
+        if ($itemType === 'pages') {
             // does not carry time information directly, but needed to support
             // canonical pages
             $changedTimeColumns .= ', content_from_pid';
@@ -414,7 +414,7 @@ class Queue
             $startTime = $record[$GLOBALS['TCA'][$itemType]['ctrl']['enablecolumns']['starttime']];
         }
 
-        if ($itemType == 'pages') {
+        if ($itemType === 'pages') {
             $record['uid'] = $itemUid;
             // overrule the page's last changed time with the most recent
             //content element change

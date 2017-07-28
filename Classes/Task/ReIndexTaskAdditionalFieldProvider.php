@@ -108,7 +108,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
 
-        if ($schedulerModule->CMD == 'edit') {
+        if ($schedulerModule->CMD === 'edit') {
             $this->site = $task->getSite();
         }
     }

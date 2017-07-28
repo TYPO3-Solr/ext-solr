@@ -82,10 +82,10 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         DataHandler $tceMain
     ) {
         // workspaces: collect garbage only for LIVE workspace
-        if ($command == 'delete' && $GLOBALS['BE_USER']->workspace == 0) {
+        if ($command === 'delete' && $GLOBALS['BE_USER']->workspace == 0) {
             $this->collectGarbage($table, $uid);
 
-            if ($table == 'pages') {
+            if ($table === 'pages') {
                 $this->getIndexQueue()->deleteItem($table, $uid);
             }
         }
@@ -123,7 +123,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     public function collectGarbage($table, $uid)
     {
-        if ($table == 'tt_content' || $table == 'pages' || $table == 'pages_language_overlay') {
+        if ($table === 'tt_content' || $table === 'pages' || $table === 'pages_language_overlay') {
             $this->collectPageGarbage($table, $uid);
         } else {
             $this->collectRecordGarbage($table, $uid);
@@ -269,7 +269,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         DataHandler $tceMain
     ) {
         // workspaces: collect garbage only for LIVE workspace
-        if ($command == 'move' && $table == 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
+        if ($command === 'move' && $table === 'pages' && $GLOBALS['BE_USER']->workspace == 0) {
             // TODO the below comment is not valid anymore, pid has been removed from doc ID
             // ...still needed?
 
@@ -353,7 +353,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         /** @noinspection PhpUnusedParameterInspection */
         DataHandler $tceMain
     ) {
-        if ($status == 'new') {
+        if ($status === 'new') {
             // a newly created record, skip
             return;
         }
@@ -377,12 +377,12 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
         if ($this->tcaService->isHidden($table, $record)
             || $this->isInvisibleByStartOrEndtime($table, $record)
             || $this->hasFrontendGroupsRemoved($table, $record)
-            || ($table == 'pages' && $this->isPageExcludedFromSearch($record))
-            || ($table == 'pages' && !$this->isIndexablePageType($record))
+            || ($table === 'pages' && $this->isPageExcludedFromSearch($record))
+            || ($table === 'pages' && !$this->isIndexablePageType($record))
         ) {
             $this->collectGarbage($table, $uid);
 
-            if ($table == 'pages') {
+            if ($table === 'pages') {
                 $this->deleteSubpagesWhenExtendToSubpagesIsSet($table, $uid, $fields);
             }
         }
@@ -416,7 +416,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function isRelatedQueueRecordMarkedAsIndexed($table, $record)
     {
-        if ($table == 'tt_content' || $table == 'pages_language_overlay') {
+        if ($table === 'tt_content' || $table === 'pages_language_overlay') {
             $table = 'pages';
             $uid = $record['pid'];
         } else {

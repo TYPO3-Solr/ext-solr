@@ -350,7 +350,7 @@ class TypoScriptConfiguration
     {
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.additionalPageIds';
         $result = $this->getValueByPathOrDefaultValue($path, '');
-        if (trim($result) == '') {
+        if (trim($result) === '') {
             return $defaultIfEmpty;
         }
 
@@ -370,7 +370,7 @@ class TypoScriptConfiguration
     {
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.allowedPageTypes';
         $result = $this->getValueByPathOrDefaultValue($path, '');
-        if (trim($result) == '') {
+        if (trim($result) === '') {
             return $defaultIfEmpty;
         }
 
@@ -390,7 +390,7 @@ class TypoScriptConfiguration
         $path = 'plugin.tx_solr.index.queue.pages.excludeContentByClass';
         $result = $this->getValueByPathOrDefaultValue($path, '');
 
-        if (trim($result) == '') {
+        if (trim($result) === '') {
             return $defaultIfEmpty;
         }
 
@@ -444,7 +444,7 @@ class TypoScriptConfiguration
         foreach ($indexingConfigurations as $indexingConfigurationName) {
             $monitoredTable = $this->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
             $monitoredTables[] = $monitoredTable;
-            if ($monitoredTable == 'pages') {
+            if ($monitoredTable === 'pages') {
                 // when monitoring pages, also monitor creation of translations
                 $monitoredTables[] = 'pages_language_overlay';
             }
@@ -634,7 +634,7 @@ class TypoScriptConfiguration
         $possibleConfigurations = [];
 
         foreach ($configuration as $configurationName => $indexingEnabled) {
-            $isObject = substr($configurationName, -1) == '.';
+            $isObject = substr($configurationName, -1) === '.';
             if ($isObject || !$indexingEnabled) {
                 continue;
             }
