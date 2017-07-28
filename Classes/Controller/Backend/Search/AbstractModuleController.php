@@ -94,7 +94,7 @@ abstract class AbstractModuleController extends ActionController
     protected function initializeAction()
     {
         parent::initializeAction();
-        $this->configurationManager = GeneralUtility::makeInstance(ConnectionManager::class);
+        $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->moduleDataStorageService = GeneralUtility::makeInstance(ModuleDataStorageService::class);
 
         $this->selectedPageUID = (int)GeneralUtility::_GP('id');
