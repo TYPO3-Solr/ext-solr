@@ -1,4 +1,5 @@
 <?php
+
 namespace ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info;
 
 /***************************************************************
@@ -25,15 +26,14 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
+use TYPO3\CMS\Backend\Module\AbstractFunctionModule;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Administration module controller
- *
- * @author Ingo Renner <ingo@typo3.org>
  */
-class ApacheSolrDocumentController extends ActionController
+class IndexInspectorController extends AbstractFunctionModule
 {
 
     /**
@@ -44,42 +44,17 @@ class ApacheSolrDocumentController extends ActionController
     protected $pageId = 0;
 
     /**
-     * Page ID in page context
-     *
-     * @var int
-     */
-    protected $languageId = 0;
-
-    /**
      * @var Repository
      */
     protected $apacheSolrDocumentRepository;
 
     /**
-     * Initializes action
-     *
-     * @return void
+     * Initializes properties
      */
-    protected function initializeAction()
+    public function __construct()
     {
-        parent::initializeAction();
         $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
-
-        $pageId = (int)GeneralUtility::_GP('id');
-        $languageId = (int)GeneralUtility::_GP('L');
-        $this->initializePageIdAndLanguageId($pageId, $languageId);
-    }
-
-    /**
-     * Initializes required for processing properties page and language Ids
-     *
-     * @param $pageId
-     * @param $languageId
-     */
-    public function initializePageIdAndLanguageId($pageId, $languageId)
-    {
-        $this->pageId = $pageId;
-        $this->languageId = $languageId;
+        $this->pageId = (int)GeneralUtility::_GP('id');
     }
 
     /**
@@ -87,7 +62,7 @@ class ApacheSolrDocumentController extends ActionController
      *
      * @return string|void
      */
-    public function indexAction()
+    public function main()
     {
         $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->pageId, 0);
         $documentsByType = [];
@@ -95,9 +70,15 @@ class ApacheSolrDocumentController extends ActionController
             $documentsByType[$document->type][] = $document;
         }
 
-        $this->view->assignMultiple([
+        $path = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/Web/Info/IndexInspector.html');
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->getRequest()->setControllerExtensionName('solr');
+        $view->setTemplatePathAndFilename($path);
+        $view->assignMultiple([
             'pageId' => $this->pageId,
             'documentsByType' => $documentsByType
         ]);
+
+        return $view->render();
     }
 }
