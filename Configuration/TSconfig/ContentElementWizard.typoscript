@@ -1,0 +1,13 @@
+mod.wizards.newContentElement.wizardItems.plugins {
+  elements {
+    tx_solr_results {
+      iconIdentifier = extensions-solr-plugin-contentelement
+      title = LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results
+      description = LLL:EXT:solr/Resources/Private/Language/locallang.xlf:plugin_results_description
+      tt_content_defValues {
+        CType = list
+        list_type = solr_pi_results
+      }
+    }
+  }
+}
