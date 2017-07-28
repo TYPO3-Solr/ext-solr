@@ -31,11 +31,6 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * @var bool
-     */
-    protected $escapeOutput = false;
-
-    /**
      * Initializes the arguments
      */
     public function initializeArguments()
@@ -71,7 +66,6 @@ class RelevanceViewHelper extends AbstractSolrFrontendViewHelper
         $multiplier = 100 / $maximumScore;
         $scorePercentage = round($score * $multiplier);
         $content = $scorePercentage;
-
         return $content;
     }
 }
