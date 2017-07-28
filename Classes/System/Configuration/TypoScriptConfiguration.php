@@ -2010,16 +2010,30 @@ class TypoScriptConfiguration
     /**
      * Returns the configured template for a specific template fileKey.
      *
-     * plugin.tx_solr.search.templateFiles.<fileKey>
+     * plugin.tx_solr.view.templateFiles.<fileKey>
      *
      * @param string $fileKey
      * @param string $defaultIfEmpty
      * @return string
      */
-    public function getTemplateByFileKey($fileKey, $defaultIfEmpty = '')
+    public function getViewTemplateByFileKey($fileKey, $defaultIfEmpty = '')
     {
-        $templateFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.templateFiles.' . $fileKey, $defaultIfEmpty);
+        $templateFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.view.templateFiles.' . $fileKey, $defaultIfEmpty);
         return (string)$templateFileName;
+    }
+
+    /**
+     * Returns the configured available template files for the flexform.
+     *
+     * plugin.tx_solr.view.templateFiles.[fileKey].availableTemplates.
+     *
+     * @param string $fileKey
+     * @return array
+     */
+    public function getAvailableTemplatesByFileKey($fileKey)
+    {
+        $path = 'plugin.tx_solr.view.templateFiles.' . $fileKey . '.availableTemplates.';
+        return (array)$this->getObjectByPathOrDefault($path, []);
     }
 
     /**

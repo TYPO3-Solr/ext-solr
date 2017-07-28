@@ -90,7 +90,7 @@ class FlexFormUserFunctions
      */
     protected function getConfiguredFacetsForPage($pid)
     {
-        $typoScriptConfiguration = Util::getSolrConfigurationFromPageId($pid);
+        $typoScriptConfiguration = $this->getConfigurationFromPageId($pid);
         return $typoScriptConfiguration->getSearchFacetingFacets();
     }
 
@@ -115,5 +115,77 @@ class FlexFormUserFunctions
     protected function getFieldNamesFromSolrMetaDataForPage(array $pageRecord)
     {
         return array_keys((array)$this->getConnection($pageRecord)->getFieldsMetaData());
+    }
+
+    /**
+     * @param array $parentInformation
+     */
+    public function getAvailableTemplates(array &$parentInformation)
+    {
+        $pageRecord = $parentInformation['flexParentDatabaseRow'];
+        if (!is_array($pageRecord) || !isset ($pageRecord['pid'])) {
+            $parentInformation['items'] = [];
+            return;
+        }
+
+        $pageId = $pageRecord['pid'];
+
+        $templateKey = $this->getTypoScriptTemplateKeyFromFieldName($parentInformation);
+        $availableTemplate = $this->getAvailableTemplateFromTypoScriptConfiguration($pageId, $templateKey);
+        $newItems = $this->buildSelectItemsFromAvailableTemplate($availableTemplate);
+
+        $parentInformation['items'] = $newItems;
+    }
+
+    /**
+     * @param array $parentInformation
+     * @return string
+     */
+    protected function getTypoScriptTemplateKeyFromFieldName(array &$parentInformation)
+    {
+        $field = $parentInformation['field'];
+        return str_replace('view.templateFiles.', '', $field);
+    }
+
+    /**
+     * @param $pid
+     * @return \ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration|array
+     */
+    protected function getConfigurationFromPageId($pid)
+    {
+        $typoScriptConfiguration = Util::getSolrConfigurationFromPageId($pid);
+        return $typoScriptConfiguration;
+    }
+
+    /**
+     * Retrieves the configured templates from TypoScript.
+     *
+     * @param integer $pageId
+     * @param string $templateKey
+     * @return array
+     */
+    protected function getAvailableTemplateFromTypoScriptConfiguration($pageId, $templateKey)
+    {
+        $configuration = $this->getConfigurationFromPageId($pageId);
+        return $configuration->getAvailableTemplatesByFileKey($templateKey);
+    }
+
+    /**
+     * Returns the available templates as needed for the flexform.
+     *
+     * @param array $availableTemplates
+     * @return array
+     */
+    protected function buildSelectItemsFromAvailableTemplate($availableTemplates)
+    {
+        $newItems = [];
+        $newItems['Use Default'] = ['Use Default', null];
+        foreach ($availableTemplates as $availableTemplate) {
+            $label = isset($availableTemplate['label']) ? $availableTemplate['label'] : '';
+            $value = isset($availableTemplate['file']) ? $availableTemplate['file'] : '';
+            $newItems[$label] = [$label, $value];
+        }
+
+        return $newItems;
     }
 }

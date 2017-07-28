@@ -155,17 +155,16 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <templateFiles.results>
+                    <view.templateFiles.results>
                         <TCEforms>
-                            <exclude>1</exclude>
-                            <label>Custom Entry Template</label>
+                            <label>Custom Template</label>
                             <config>
-                                <type>input</type>
-                                <eval>trim</eval>
-                                <size>45</size>
+                                <section>1</section>
+                                <type>select</type>
+                                <itemsProcFunc>ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions->getAvailableTemplates</itemsProcFunc>
                             </config>
                         </TCEforms>
-                    </templateFiles.results>
+                    </view.templateFiles.results>
                     <view.pluginNamespace>
                         <TCEforms>
                             <exclude>1</exclude>

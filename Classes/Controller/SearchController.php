@@ -68,7 +68,12 @@ class SearchController extends AbstractBaseController
             if($customTemplate === '') {
                 return;
             }
-            $view->setTemplatePathAndFilename($customTemplate);
+
+            if(strpos($customTemplate, 'EXT:') !== false) {
+                $view->setTemplatePathAndFilename($customTemplate);
+            } else {
+                $view->setTemplate($customTemplate);
+            }
         }
     }
 
@@ -78,7 +83,7 @@ class SearchController extends AbstractBaseController
     protected function getCustomTemplateFromConfiguration()
     {
         $templateKey = str_replace('Action', '', $this->actionMethodName);
-        $customTemplate = $this->typoScriptConfiguration->getTemplateByFileKey($templateKey);
+        $customTemplate = $this->typoScriptConfiguration->getViewTemplateByFileKey($templateKey);
         return $customTemplate;
     }
 

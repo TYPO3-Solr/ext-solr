@@ -68,7 +68,7 @@
         </sheet>
         <sheet index="sOptions">
             <language index="lDEF">
-                <field index="templateFiles.results">
+                <field index="view.templateFiles.results">
                     <value index="vDEF">myTemplateFile.html</value>
                 </field>
             </language>
