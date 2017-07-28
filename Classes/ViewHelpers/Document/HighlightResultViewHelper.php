@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Document;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
@@ -58,13 +59,52 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
         $resultSet = $arguments['resultSet'];
         $fieldName = $arguments['fieldName'];
         $document = $arguments['document'];
+        $content = self::getHighlightedContent($resultSet, $document, $fieldName);
+        return self::escapeEverythingExceptAllowedTags($resultSet, $content);
+    }
 
+    /**
+     * @param SearchResultSet $resultSet
+     * @param $document
+     * @param $fieldName
+     * @return mixed|string
+     */
+    protected static function getHighlightedContent(SearchResultSet $resultSet, $document, $fieldName)
+    {
         $fragmentSeparator = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsHighlightingFragmentSeparator();
+
         $content = call_user_func([$document, 'get' . $fieldName]);
         $highlightedContent = $resultSet->getUsedSearch()->getHighlightedContent();
         if (!empty($highlightedContent->{$document->getId()}->{$fieldName}[0])) {
             $content = implode(' ' . $fragmentSeparator . ' ', $highlightedContent->{$document->getId()}->{$fieldName});
+            return $content;
         }
         return $content;
+    }
+
+    /**
+     * @param SearchResultSet $resultSet
+     * @param $content
+     * @return string
+     */
+    protected static function escapeEverythingExceptAllowedTags(SearchResultSet $resultSet, $content)
+    {
+        $wrap = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration()->getSearchResultsHighlightingWrap();
+        if ($wrap === '') {
+            return htmlspecialchars($content);
+        }
+
+        $wrapParts = GeneralUtility::trimExplode("|", $wrap);
+        if (count($wrapParts) !== 2) {
+            return htmlspecialchars($content);
+        }
+
+        $substitutedContent = str_replace($wrapParts[0], '___highlight_begin___', $content);
+        $substitutedContent = str_replace($wrapParts[1], '___highlight_end___', $substitutedContent);
+        $output = htmlspecialchars($substitutedContent);
+        $output = str_replace('___highlight_begin___', $wrapParts[0], $output);
+        $output = str_replace('___highlight_end___', $wrapParts[1], $output);
+
+        return $output;
     }
 }
