@@ -98,12 +98,13 @@ class SearchResultSetService
     /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
+     * @param SolrLogManager $solrLogManager
      */
-    public function __construct(TypoScriptConfiguration $configuration, Search $search)
+    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
+        $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
     }
 
     /**
@@ -161,7 +162,7 @@ class SearchResultSetService
     protected function getPreparedQuery($rawQuery, $resultsPerPage)
     {
         /* @var $query Query */
-        $query = GeneralUtility::makeInstance(Query::class, $rawQuery, $this->typoScriptConfiguration);
+        $query = $this->getQueryInstance($rawQuery);
 
         $this->applyPageSectionsRootLineFilter($query);
 
@@ -753,5 +754,15 @@ class SearchResultSetService
         foreach ($response->response->docs as $searchResult) {
             $resultSet->addSearchResult($searchResult);
         }
+    }
+
+    /**
+     * @param string $rawQuery
+     * @return Query|object
+     */
+    protected function getQueryInstance($rawQuery)
+    {
+        $query = GeneralUtility::makeInstance(Query::class, $rawQuery, $this->typoScriptConfiguration);
+        return $query;
     }
 }

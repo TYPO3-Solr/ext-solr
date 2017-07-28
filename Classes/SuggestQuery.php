@@ -23,7 +23,10 @@ namespace ApacheSolrForTypo3\Solr;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 
 /**
  * A query specialized to get search suggestions
@@ -47,15 +50,18 @@ class SuggestQuery extends Query
      *
      * @param string $keywords
      * @param TypoScriptConfiguration $solrConfiguration
+     * @param SiteHashService $siteHashService
+     * @param EscapeService $escapeService
+     * @param SolrLogManager $solrLogManager
      */
-    public function __construct($keywords, $solrConfiguration = null)
+    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null, EscapeService $escapeService = null, SolrLogManager $solrLogManager = null)
     {
         $keywords = (string)$keywords;
         if ($solrConfiguration == null) {
             $solrConfiguration = Util::getSolrConfiguration();
         }
 
-        parent::__construct('', $solrConfiguration);
+        parent::__construct('', $solrConfiguration, $siteHashService, $escapeService, $solrLogManager);
 
         $this->configuration = $solrConfiguration->getObjectByPathOrDefault('plugin.tx_solr.suggest.', []);
 

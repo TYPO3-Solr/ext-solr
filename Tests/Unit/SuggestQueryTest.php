@@ -24,8 +24,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\SuggestQuery;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SuggestQuery class
@@ -45,7 +48,11 @@ class SuggestQueryTest extends UnitTest
         ];
 
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-        $suggestQuery = new SuggestQuery('typ', $fakeConfiguration);
+        $siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
+        $escapeServiceMock = $this->getDumbMock(EscapeService::class);
+        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+
+        $suggestQuery = new SuggestQuery('typ', $fakeConfiguration, $siteHashServiceMock, $escapeServiceMock, $solrLogManagerMock);
 
         $this->assertFalse($suggestQuery->getIsCollapsing(), 'Collapsing should never be active for a suggest query, even when active');
     }

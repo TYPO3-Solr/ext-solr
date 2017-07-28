@@ -53,15 +53,32 @@ class SolrLogManager
     protected $debugWriter = null;
 
     /**
+     * @var string
+     */
+    protected $className = '';
+
+    /**
      * SolrLogManager constructor.
      *
-     * @param $className
+     * @param string $className
      * @param DebugWriter $debugWriter
      */
     public function __construct($className, DebugWriter $debugWriter = null)
     {
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger($className);
+        $this->className = $className;
         $this->debugWriter = isset($debugWriter) ? $debugWriter : GeneralUtility::makeInstance(DebugWriter::class);
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Log\Logger
+     */
+    protected function getLogger()
+    {
+        if ($this->logger === null) {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger($this->className);
+        }
+
+        return $this->logger;
     }
 
     /**
@@ -75,7 +92,7 @@ class SolrLogManager
      */
     public function log($level, $message, array $data = [])
     {
-        $this->logger->log($level, $message, $data);
+        $this->getLogger()->log($level, $message, $data);
         $this->debugWriter->write($level, $message, $data);
     }
 }

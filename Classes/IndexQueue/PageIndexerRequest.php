@@ -106,13 +106,16 @@ class PageIndexerRequest
      * PageIndexerRequest constructor.
      *
      * @param string $jsonEncodedParameters json encoded header
+     * @param SolrLogManager|null $solrLogManager
+     * @param ExtensionConfiguration|null $extensionConfiguration
      */
-    public function __construct($jsonEncodedParameters = null)
+    public function __construct($jsonEncodedParameters = null, SolrLogManager $solrLogManager = null, ExtensionConfiguration $extensionConfiguration = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->requestId = uniqid();
         $this->timeout = (float)ini_get('default_socket_timeout');
-        $this->extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+
+        $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
+        $this->extensionConfiguration = is_null($extensionConfiguration) ? GeneralUtility::makeInstance(ExtensionConfiguration::class) : $extensionConfiguration;
 
         if (is_null($jsonEncodedParameters)) {
             return;

@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use Dkd\DkdReports\Reports\Status;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
@@ -61,12 +62,18 @@ class IndexServiceTest extends UnitTest
     protected $indexService;
 
     /**
+     * @var SolrLogManager
+     */
+    protected $logManagerMock;
+
+    /**
      * @return void
      */
     public function setUp() {
         $this->siteMock = $this->getDumbMock(Site::class);
         $this->queueMock = $this->getDumbMock(Queue::class);
         $this->dispatcherMock = $this->getDumbMock(Dispatcher::class);
+        $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
     }
 
     /**
@@ -79,7 +86,7 @@ class IndexServiceTest extends UnitTest
 
         // we create an IndexeService where indexItem is mocked to avoid real indexing in the unit test
         $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock])
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
             ->setMethods(['indexItem'])
             ->getMock();
 
@@ -106,7 +113,7 @@ class IndexServiceTest extends UnitTest
         $this->queueMock->expects($this->once())->method('getStatisticsBySite')->will($this->returnValue($statisticMock));
 
         $indexService = $this->getMockBuilder(IndexService::class)
-            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock])
+            ->setConstructorArgs([$this->siteMock, $this->queueMock, $this->dispatcherMock, $this->logManagerMock])
             ->setMethods(['indexItem'])
             ->getMock();
 
