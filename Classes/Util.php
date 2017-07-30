@@ -134,7 +134,7 @@ class Util
      */
     public static function camelCaseToLowerCaseUnderscored($string)
     {
-        return strtolower(preg_replace('/(?<=\w)([A-Z])/', '_\\1', $string));
+        return mb_strtolower(preg_replace('/(?<=\w)([A-Z])/', '_\\1', $string));
     }
 
     /**
@@ -147,7 +147,7 @@ class Util
     public static function underscoredToUpperCamelCase($string)
     {
         return str_replace(' ', '',
-            ucwords(str_replace('_', ' ', strtolower($string))));
+            ucwords(str_replace('_', ' ', mb_strtolower($string))));
     }
 
     /**

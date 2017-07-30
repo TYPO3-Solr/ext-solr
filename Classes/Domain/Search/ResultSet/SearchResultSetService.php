@@ -316,7 +316,7 @@ class SearchResultSetService
                 continue;
             }
 
-            $variantAccessKey = strtolower($variantId);
+            $variantAccessKey = mb_strtolower($variantId);
             if (!isset($response->{'expanded'}) || !isset($response->{'expanded'}->{$variantAccessKey})) {
                 continue;
             }

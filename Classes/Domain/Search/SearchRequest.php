@@ -372,7 +372,7 @@ class SearchRequest
      */
     public function getSortingDirection()
     {
-        return strtolower($this->getSortingPart(1));
+        return mb_strtolower($this->getSortingPart(1));
     }
 
     /**
