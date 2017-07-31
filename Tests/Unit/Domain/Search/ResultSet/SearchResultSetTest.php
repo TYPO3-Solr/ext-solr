@@ -26,12 +26,16 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 
 use Apache_Solr_Response;
 use Apache_Solr_HttpTransport_Response;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
+use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
@@ -64,18 +68,49 @@ class SearchResultSetTest extends UnitTest
     protected $searchResultSetService;
 
     /**
+     * @var SolrLogManager
+     */
+    protected $solrLogManagerMock;
+
+    /**
+     * @var Query
+     */
+    protected $queryMock;
+
+    /**
+     * @var SiteHashService
+     */
+    protected $siteHashServiceMock;
+
+    /**
+     * @var EscapeService
+     */
+    protected $escapeServiceMock;
+
+    /**
      * @return void
      */
     public function setUp()
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
         $this->searchMock = $this->getDumbMock(Search::class);
-        $this->pluginMock = $this->getDumbMock(AbstractPlugin::class);
+        $this->solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+
+        $this->siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
+        $this->escapeServiceMock = $this->getDumbMock(EscapeService::class);
+        $this->escapeServiceMock->expects($this->any())->method('escape')->will($this->returnArgument(0));
 
         $this->searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
-            ->setMethods(['setPerPageInSession', 'getPerPageFromSession', 'getRegisteredSearchComponents'])
-            ->setConstructorArgs([$this->configurationMock, $this->searchMock, $this->pluginMock])
+            ->setMethods(['setPerPageInSession', 'getPerPageFromSession', 'getRegisteredSearchComponents', 'getQueryInstance'])
+            ->setConstructorArgs([$this->configurationMock, $this->searchMock, $this->solrLogManagerMock])
             ->getMock();
+
+        // @todo we should fake the result of getQueryInstance with a mock and move the tests that test Query partly into the QueryTest
+        $this->searchResultSetService->expects($this->any())->method('getQueryInstance')->will(
+            $this->returnCallback(function($queryString){
+                return new Query($queryString, $this->configurationMock, $this->siteHashServiceMock, $this->escapeServiceMock, $this->solrLogManagerMock);
+            })
+        );
     }
 
     /**
@@ -277,8 +312,16 @@ class SearchResultSetTest extends UnitTest
      */
     public function assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse($expextedQueryString, $expectedOffset, \Apache_Solr_Response $fakeResponse)
     {
-        $this->searchMock->expects($this->once())->method('search')->with($expextedQueryString, $expectedOffset, null)->will(
-            $this->returnValue($fakeResponse)
+        $this->searchMock->expects($this->once())->method('search')->will(
+            $this->returnCallback(
+                function(Query $query, $offset) use($expextedQueryString, $expectedOffset, $fakeResponse) {
+
+                    $this->assertSame($expextedQueryString, $query->getKeywords(), "Search was not triggered with an expected queryString");
+                    $this->assertSame($expectedOffset, $offset);
+                    return $fakeResponse;
+                }
+
+            )
         );
     }
 

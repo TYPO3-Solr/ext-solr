@@ -24,10 +24,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -1432,7 +1435,13 @@ class QueryTest extends UnitTest
      */
     protected function getInitializedTestQuery($queryString = 'test', TypoScriptConfiguration $solrConfiguration = null)
     {
-        $query = GeneralUtility::makeInstance(Query::class, $queryString, $solrConfiguration);
+        $siteHashServiceMock = $this->getDumbMock(SiteHashService::class);
+        $solrLogManagerMock = $this->getDumbMock(SolrLogManager::class);
+
+        // since the escape service does not have any dependencies and is just doing some simple escape logic we pass a real instance
+        $escapeService = new EscapeService();
+
+        $query = new Query($queryString, $solrConfiguration, $siteHashServiceMock, $escapeService, $solrLogManagerMock);
         return $query;
     }
 }

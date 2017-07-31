@@ -27,6 +27,13 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageRepository;
+use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -44,6 +51,21 @@ class ConnectionManagerTest extends UnitTest
      * @var ConnectionManager
      */
     protected $connectionManager;
+
+    /**
+     * @var SolrLogManager
+     */
+    protected $logManagerMock;
+
+    /**
+     * @var SystemLanguageRepository
+     */
+    protected $languageRepositoryMock;
+
+    /**
+     * @var PagesRepository
+     */
+    protected $pageRepositoryMock;
 
     /**
      * Set up the connection manager test
@@ -67,8 +89,15 @@ class ConnectionManagerTest extends UnitTest
         $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_solr.']['search.']['targetPage'] = 25;
         $GLOBALS['TSFE']->tmpl->setup['config.']['tx_realurl_enable'] = '0';
 
-        $this->configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)->setMethods(['buildSolrService'])->getMock();
+        $this->logManagerMock = $this->getDumbMock(SolrLogManager::class);
+        $this->languageRepositoryMock = $this->getDumbMock(SystemLanguageRepository::class);
+        $this->pageRepository = $this->getDumbMock(PagesRepository::class);
+
+        $this->configurationManager = new ConfigurationManager();
+        $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)
+            ->setConstructorArgs([$this->languageRepositoryMock, $this->pageRepositoryMock, $this->logManagerMock])
+            ->setMethods(['buildSolrService'])
+            ->getMock();
     }
 
     /**
@@ -101,9 +130,16 @@ class ConnectionManagerTest extends UnitTest
      */
     public function canConnect($host, $port, $path, $scheme, $expectsException, $expectedConnectionString)
     {
+        $self = $this;
         $this->connectionManager->expects($this->once())->method('buildSolrService')->will(
-            $this->returnCallback(function($host, $port, $path, $scheme) {
-                return GeneralUtility::makeInstance(SolrService::class, $host, $port, $path, $scheme);
+            $this->returnCallback(function($host, $port, $path, $scheme) use ($self) {
+
+                $typoScriptConfigurationMock = $self->getDumbMock(TypoScriptConfiguration::class);
+                $synonymsParserMock = $self->getDumbMock(SynonymParser::class);
+                $stopWordParserMock = $self->getDumbMock(StopWordParser::class);
+                $schemaParserMock = $self->getDumbMock(SchemaParser::class);
+
+                return new SolrService($host, $port, $path, $scheme, $typoScriptConfigurationMock, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $self->logManagerMock);
             })
         );
         $exceptionOccured = false;

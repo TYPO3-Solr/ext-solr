@@ -71,11 +71,13 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     /**
      * @param SystemLanguageRepository $systemLanguageRepository
      * @param PagesRepositoryAtExtSolr|null $pagesRepositoryAtExtSolr
+     * @param SolrLogManager $solrLogManager
      */
-    public function __construct(SystemLanguageRepository $systemLanguageRepository = null, PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null)
+    public function __construct(SystemLanguageRepository $systemLanguageRepository = null, PagesRepositoryAtExtSolr $pagesRepositoryAtExtSolr = null, SolrLogManager $solrLogManager = null)
     {
         $this->systemLanguageRepository = isset($systemLanguageRepository) ? $systemLanguageRepository : GeneralUtility::makeInstance(SystemLanguageRepository::class);
         $this->pagesRepositoryAtExtSolr = isset($pagesRepositoryAtExtSolr) ? $pagesRepositoryAtExtSolr : GeneralUtility::makeInstance(PagesRepositoryAtExtSolr::class);
+        $this->logger                   = isset($solrLogManager) ? $solrLogManager : GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
@@ -96,7 +98,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     public function getConnection($host = '', $port = 8983, $path = '/solr/', $scheme = 'http', $username = '', $password = '')
     {
         if (empty($host)) {
-            $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
             $this->logger->log(
                 SolrLogManager::WARNING,
                 'ApacheSolrForTypo3\Solr\ConnectionManager::getConnection() called with empty host parameter. Using configuration from TSFE, might be inaccurate. Always provide a host or use the getConnectionBy* methods.'

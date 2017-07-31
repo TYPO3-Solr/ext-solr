@@ -194,12 +194,13 @@ class Query
      * @param TypoScriptConfiguration $solrConfiguration
      * @param SiteHashService|null $siteHashService
      * @param EscapeService|null $escapeService
+     * @param SolrLogManager|null $solrLogManager
      */
-    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null, EscapeService $escapeService = null)
+    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null, EscapeService $escapeService = null, SolrLogManager $solrLogManager = null)
     {
         $keywords = (string)$keywords;
 
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
         $this->solrConfiguration = is_null($solrConfiguration) ? Util::getSolrConfiguration() : $solrConfiguration;
         $this->siteHashService = is_null($siteHashService) ? GeneralUtility::makeInstance(SiteHashService::class) : $siteHashService;
         $this->escapeService = is_null($escapeService) ? GeneralUtility::makeInstance(EscapeService::class) : $escapeService;

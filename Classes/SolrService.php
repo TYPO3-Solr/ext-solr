@@ -168,6 +168,7 @@ class SolrService extends \Apache_Solr_Service
      * @param SynonymParser $synonymParser
      * @param StopWordParser $stopWordParser
      * @param SchemaParser $schemaParser
+     * @param SolrLogManager $logManager
      */
     public function __construct(
         $host = '',
@@ -177,11 +178,13 @@ class SolrService extends \Apache_Solr_Service
         TypoScriptConfiguration $typoScriptConfiguration = null,
         SynonymParser $synonymParser = null,
         StopWordParser $stopWordParser = null,
-        SchemaParser $schemaParser = null
+        SchemaParser $schemaParser = null,
+        SolrLogManager $logManager = null
     ) {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 
         $this->setScheme($scheme);
+
+        $this->logger = is_null($logManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $logManager;
         $this->configuration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
         $this->synonymParser = is_null($synonymParser) ? GeneralUtility::makeInstance(SynonymParser::class) : $synonymParser;
         $this->stopWordParser = is_null($stopWordParser) ? GeneralUtility::makeInstance(StopWordParser::class) : $stopWordParser;
