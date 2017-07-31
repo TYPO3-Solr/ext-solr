@@ -1704,7 +1704,7 @@ class TypoScriptConfiguration
      * @param int $defaultIfEmpty
      * @return int
      */
-    public function getSearchSpellcheckingNumberOfSuggestionsToTry($defaultIfEmpty = 0)
+    public function getSearchSpellcheckingNumberOfSuggestionsToTry($defaultIfEmpty = 1)
     {
         return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking.numberOfSuggestionsToTry', $defaultIfEmpty);
     }

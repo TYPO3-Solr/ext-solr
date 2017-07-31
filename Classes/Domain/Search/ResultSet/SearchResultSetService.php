@@ -558,7 +558,69 @@ class SearchResultSetService
         $searchResultReconstitutionProcessor = GeneralUtility::makeInstance(ResultSetReconstitutionProcessor::class);
         $searchResultReconstitutionProcessor->process($resultSet);
 
+        $resultSet = $this->getAutoCorrection($resultSet);
+
         return $this->handleSearchHook('afterSearch', $resultSet);
+    }
+
+    /**
+     * @param SearchResultSet $searchResultSet
+     * @return SearchResultSet
+     */
+    protected function getAutoCorrection(SearchResultSet $searchResultSet)
+    {
+        // no secondary search configured
+        if (!$this->typoScriptConfiguration->getSearchSpellcheckingSearchUsingSpellCheckerSuggestion()) {
+            return $searchResultSet;
+        }
+
+        // more then zero results
+        if ($searchResultSet->getAllResultCount() > 0) {
+            return $searchResultSet;
+        }
+
+        // no corrections present
+        if (!$searchResultSet->getHasSpellCheckingSuggestions()) {
+            return $searchResultSet;
+        }
+
+        $searchResultSet = $this->peformAutoCorrection($searchResultSet);
+
+        return $searchResultSet;
+    }
+
+    /**
+     * @param SearchResultSet $searchResultSet
+     * @return SearchResultSet
+     */
+    protected function peformAutoCorrection(SearchResultSet $searchResultSet)
+    {
+        $searchRequest = $searchResultSet->getUsedSearchRequest();
+        $suggestions = $searchResultSet->getSpellCheckingSuggestions();
+
+        $maximumRuns = $this->typoScriptConfiguration->getSearchSpellcheckingNumberOfSuggestionsToTry(1);
+        $runs = 0;
+
+        foreach ($suggestions as $suggestion) {
+            $runs++;
+
+            $correction = $suggestion->getSuggestion();
+            $initialQuery = $searchRequest->getRawUserQuery();
+
+            $searchRequest->setRawQueryString($correction);
+            $searchResultSet = $this->search($searchRequest);
+            if ($searchResultSet->getAllResultCount() > 0) {
+                $searchResultSet->setIsAutoCorrected(true);
+                $searchResultSet->setCorrectedQueryString($correction);
+                $searchResultSet->setInitialQueryString($initialQuery);
+                break;
+            }
+
+            if ($runs > $maximumRuns) {
+                break;
+            }
+        }
+        return $searchResultSet;
     }
 
     /**
