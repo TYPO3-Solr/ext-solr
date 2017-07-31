@@ -104,6 +104,21 @@ class SearchResultSet
     protected $sortings = null;
 
     /**
+     * @var bool
+     */
+    protected $isAutoCorrected = false;
+
+    /**
+     * @var string
+     */
+    protected $initialQueryString = '';
+
+    /**
+     * @var string
+     */
+    protected $correctedQueryString = '';
+
+    /**
      * @return \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
      */
     public function __construct()
@@ -340,5 +355,53 @@ class SearchResultSet
     public function addSearchResult(SearchResult $searchResult)
     {
         $this->searchResults[] = $searchResult;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsAutoCorrected()
+    {
+        return $this->isAutoCorrected;
+    }
+
+    /**
+     * @param boolean $wasAutoCorrected
+     */
+    public function setIsAutoCorrected($wasAutoCorrected)
+    {
+        $this->isAutoCorrected = $wasAutoCorrected;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInitialQueryString()
+    {
+        return $this->initialQueryString;
+    }
+
+    /**
+     * @param string $initialQueryString
+     */
+    public function setInitialQueryString($initialQueryString)
+    {
+        $this->initialQueryString = $initialQueryString;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCorrectedQueryString()
+    {
+        return $this->correctedQueryString;
+    }
+
+    /**
+     * @param string $correctedQueryString
+     */
+    public function setCorrectedQueryString($correctedQueryString)
+    {
+        $this->correctedQueryString = $correctedQueryString;
     }
 }

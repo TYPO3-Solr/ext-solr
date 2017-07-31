@@ -171,6 +171,35 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      */
+    public function canAutoCorrectATypo()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        //not in the content but we expect to get shoes suggested
+        $_GET['q'] = 'shoo';
+
+        $overwriteConfiguration = [];
+        $overwriteConfiguration['search.']['spellchecking.']['searchUsingSpellCheckerSuggestion'] = 1;
+        $overwriteConfiguration['search.']['spellchecking.']['numberOfSuggestionsToTry'] = 1;
+
+        /** @var $configurationManager ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $resultPage1 = $this->searchResponse->getContent();
+
+        $this->assertContains("Nothing found for shoo", $resultPage1, 'Could not find nothing found message');
+        $this->assertContains("Search instead for shoes", $resultPage1, 'Could not find correction message');
+    }
+
+    /**
+     * @test
+     */
     public function canRenderAFacetWithFluid()
     {
         $this->importDataSetFromFixture('can_render_search_controller.xml');
