@@ -70,10 +70,14 @@ class IndexInspectorController extends AbstractFunctionModule
             $documentsByType[$document->type][] = $document;
         }
 
-        $path = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/Web/Info/IndexInspector.html');
+        $templatePathAndFilename = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Templates/Backend/Web/Info/IndexInspector.html');
+        $partialsRootPath = GeneralUtility::getFileAbsFileName('EXT:solr/Resources/Private/Partials');
+
+        /* @var StandaloneView $view */
         $view = GeneralUtility::makeInstance(StandaloneView::class);
         $view->getRequest()->setControllerExtensionName('solr');
-        $view->setTemplatePathAndFilename($path);
+        $view->setTemplatePathAndFilename($templatePathAndFilename);
+        $view->setPartialRootPaths([$partialsRootPath]);
         $view->assignMultiple([
             'pageId' => $this->pageId,
             'documentsByType' => $documentsByType
