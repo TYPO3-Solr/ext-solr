@@ -105,7 +105,7 @@ class Service
                         $fieldValue = $processor->process($fieldValue);
                         break;
                     case 'uppercase':
-                        $fieldValue = array_map('strtoupper', $fieldValue);
+                        $fieldValue = array_map('mb_strtoupper', $fieldValue);
                         break;
                 }
 
