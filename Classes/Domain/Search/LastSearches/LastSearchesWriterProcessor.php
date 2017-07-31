@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
 /***************************************************************
  *  Copyright notice

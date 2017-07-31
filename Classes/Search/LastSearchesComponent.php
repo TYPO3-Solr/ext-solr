@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\LastSearchesWriterProcessor;
+use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesWriterProcessor;
 
 /**
  * Last searches search component
