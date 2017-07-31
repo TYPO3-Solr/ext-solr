@@ -59,25 +59,15 @@ class Util
      * @param string $mountPointParameter The mount point parameter that is used to access the page.
      * @return string The document id for that page
      */
-    public static function getPageDocumentId(
-        $uid,
-        $typeNum = 0,
-        $language = 0,
-        $accessGroups = '0,-1',
-        $mountPointParameter = ''
-    ) {
+    public static function getPageDocumentId($uid, $typeNum = 0, $language = 0, $accessGroups = '0,-1', $mountPointParameter = '')
+    {
         $additionalParameters = $typeNum . '/' . $language . '/' . $accessGroups;
 
         if ((string)$mountPointParameter !== '') {
             $additionalParameters = $mountPointParameter . '/' . $additionalParameters;
         }
 
-        $documentId = self::getDocumentId(
-            'pages',
-            $uid,
-            $uid,
-            $additionalParameters
-        );
+        $documentId = self::getDocumentId('pages', $uid, $uid, $additionalParameters);
 
         return $documentId;
     }
@@ -91,12 +81,8 @@ class Util
      * @param string $additionalIdParameters Additional ID parameters
      * @return string A document id
      */
-    public static function getDocumentId(
-        $table,
-        $rootPageId,
-        $uid,
-        $additionalIdParameters = ''
-    ) {
+    public static function getDocumentId($table, $rootPageId, $uid, $additionalIdParameters = '')
+    {
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($rootPageId);
         $siteHash = $site->getSiteHash();
@@ -110,47 +96,6 @@ class Util
     }
 
     /**
-     * Returns given word as CamelCased.
-     *
-     * Converts a word like "send_email" to "SendEmail". It
-     * will remove non alphanumeric characters from the word, so
-     * "who's online" will be converted to "WhoSOnline"
-     *
-     * @param string $word Word to convert to camel case
-     * @return string UpperCamelCasedWord
-     */
-    public static function camelize($word)
-    {
-        return str_replace(' ', '',
-            ucwords(preg_replace('![^A-Z^a-z^0-9]+!', ' ', $word)));
-    }
-
-    /**
-     * Returns a given CamelCasedString as an lowercase string with underscores.
-     * Example: Converts BlogExample to blog_example, and minimalValue to minimal_value
-     *
-     * @param string $string String to be converted to lowercase underscore
-     * @return string     lowercase_and_underscored_string
-     */
-    public static function camelCaseToLowerCaseUnderscored($string)
-    {
-        return mb_strtolower(preg_replace('/(?<=\w)([A-Z])/', '_\\1', $string));
-    }
-
-    /**
-     * Returns a given string with underscores as UpperCamelCase.
-     * Example: Converts blog_example to BlogExample
-     *
-     * @param string $string String to be converted to camel case
-     * @return string     UpperCamelCasedWord
-     */
-    public static function underscoredToUpperCamelCase($string)
-    {
-        return str_replace(' ', '',
-            ucwords(str_replace('_', ' ', mb_strtolower($string))));
-    }
-
-    /**
      * Shortcut to retrieve the TypoScript configuration for EXT:solr
      * (plugin.tx_solr) from TSFE.
      *
@@ -158,19 +103,8 @@ class Util
      */
     public static function getSolrConfiguration()
     {
-        $configurationManager = self::getConfigurationManager();
-
-        return $configurationManager->getTypoScriptConfiguration();
-    }
-
-    /**
-     * @return ConfigurationManager
-     */
-    private static function getConfigurationManager()
-    {
-        /** @var ConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
-        return $configurationManager;
+        return $configurationManager->getTypoScriptConfiguration();
     }
 
     /**
@@ -182,11 +116,8 @@ class Util
      * @param int $language System language uid, optional, defaults to 0
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
-    public static function getSolrConfigurationFromPageId(
-        $pageId,
-        $initializeTsfe = false,
-        $language = 0
-    ) {
+    public static function getSolrConfigurationFromPageId($pageId, $initializeTsfe = false, $language = 0)
+    {
         $rootPath = '';
         return self::getConfigurationFromPageId($pageId, $rootPath, $initializeTsfe, $language);
     }
@@ -203,13 +134,8 @@ class Util
      * @param bool $useTwoLevelCache Flag to enable the two level cache for the typoscript configuration array
      * @return TypoScriptConfiguration The Solr configuration for the requested tree.
      */
-    public static function getConfigurationFromPageId(
-        $pageId,
-        $path,
-        $initializeTsfe = false,
-        $language = 0,
-        $useTwoLevelCache = true
-    ) {
+    public static function getConfigurationFromPageId($pageId, $path, $initializeTsfe = false, $language = 0, $useTwoLevelCache = true)
+    {
         $pageId = self::getConfigurationPageIdToUse($pageId);
 
         static $configurationObjectCache = [];
@@ -297,7 +223,7 @@ class Util
      */
     protected static function buildTypoScriptConfigurationFromArray(array $configurationToUse, $pageId, $languageId, $typoScriptPath)
     {
-        $configurationManager = self::getConfigurationManager();
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         return $configurationManager->getTypoScriptConfiguration($configurationToUse, $pageId, $languageId, $typoScriptPath);
     }
 
@@ -377,11 +303,8 @@ class Util
      * @param bool $useCache Use cache to reuse TSFE
      * @return void
      */
-    public static function initializeTsfe(
-        $pageId,
-        $language = 0,
-        $useCache = true
-    ) {
+    public static function initializeTsfe($pageId, $language = 0, $useCache = true)
+    {
         static $tsfeCache = [];
 
         // resetting, a TSFE instance with data from a different page Id could be set already
@@ -521,23 +444,6 @@ class Util
         $rootPath = '';
         $configuration = self::getConfigurationFromPageId($pageId, $rootPath);
         return $configuration->getIndexQueueAllowedPageTypesArrayByConfigurationName($configurationName);
-    }
-
-    /**
-     * Method to check if a page exists.
-     *
-     * @param int $pageId
-     * @return bool
-     */
-    public static function pageExists($pageId)
-    {
-        $page = BackendUtility::getRecord('pages', (int)$pageId, 'uid');
-
-        if (!is_array($page) || $page['uid'] != $pageId) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
