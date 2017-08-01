@@ -31,7 +31,13 @@ class ResultPaginateController extends AbstractWidgetController
     /**
      * @var array
      */
-    protected $configuration = ['insertAbove' => true, 'insertBelow' => true, 'maximumNumberOfLinks' => 10, 'addQueryStringMethod' => ''];
+    protected $configuration = [
+        'insertAbove' => true,
+        'insertBelow' => true,
+        'maximumNumberOfLinks' => 10,
+        'addQueryStringMethod' => '',
+        'templatePath' => ''
+    ];
 
     /**
      * @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet
@@ -64,6 +70,11 @@ class ResultPaginateController extends AbstractWidgetController
     protected $numberOfPages = 1;
 
     /**
+     * @var string
+     */
+    protected $templatePath = '';
+
+    /**
      * @return void
      */
     public function initializeAction()
@@ -74,6 +85,9 @@ class ResultPaginateController extends AbstractWidgetController
         $this->configuration['itemsPerPage'] = $this->getItemsPerPage();
         $this->numberOfPages = (int)ceil($this->resultSet->getUsedSearch()->getNumberOfResults() / $this->configuration['itemsPerPage']);
         $this->maximumNumberOfLinks = (int)$this->configuration['maximumNumberOfLinks'];
+        if (!empty($this->configuration['templatePath'])) {
+            $this->templatePath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($this->configuration['templatePath']);
+        }
     }
 
     /**
@@ -109,6 +123,9 @@ class ResultPaginateController extends AbstractWidgetController
         $this->view->assign('contentArguments', [$this->widgetConfiguration['as'] => $this->getDocuments(), 'pagination' => $this->buildPagination()]);
         $this->view->assign('configuration', $this->configuration);
         $this->view->assign('resultSet', $this->resultSet);
+        if (!empty($this->templatePath)) {
+            $this->view->setTemplatePathAndFilename($this->templatePath);
+        }
     }
 
     /**
