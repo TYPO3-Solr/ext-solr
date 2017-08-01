@@ -85,9 +85,10 @@ We provide an addon called EXT:solrfal, that allows you to index files from FAL 
 
 |
 
-**How can i use fluid templates with EXT:solr?**
+**How can i use Fluid templates with EXT:solr < v7.0.0?**
 
-For the fluid rendering we provide the addon EXT:solrfluid, that allows you to render your search results with fluid.
+For the Fluid rendering in EXT:Solr >= 5.0 <= 6.1 we provide the addon EXT:solrfluid, that allows you to render your search results with Fluid.
+Since EXT:Solr 7.0 Fluid is the default templating engine.
 
 |
 
