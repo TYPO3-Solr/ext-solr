@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService as SolrCoreConnection;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
-use ApacheSolrForTypo3\Solr\Utility\StringUtility;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -102,12 +101,21 @@ abstract class AbstractModuleController extends ActionController
             $this->selectedPageUID = (int)$this->request->getArgument('id');
         }
 
+        /* @var SiteRepository $siteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+
+        // Autoselect the only one available site
+        if (count($siteRepository->getAvailableSites()) == 1) {
+            $this->selectedSite = $siteRepository->getFirstAvailableSite();
+            $this->selectedPageUID = $this->selectedSite->getRootPageId();
+            return;
+        }
+
         if ($this->selectedPageUID < 1) {
             return;
         }
 
         try {
-            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
             $this->selectedSite = $siteRepository->getSiteByPageId($this->selectedPageUID);
         } catch (\InvalidArgumentException $exception) {
             return;
