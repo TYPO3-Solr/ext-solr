@@ -20,7 +20,7 @@
 
 			<p class="result-content">{s:document.highlightResult(resultSet:resultSet, document:document, fieldName:'content')}</p>
 
-			<f:if condition="{0:document.type} == {0:'tx_solr_file'}">
+			<f:if condition="{document.type} == 'tx_solr_file'">
 				<p>
 					<s:translate key="file_mimetype" />: {document.fileMimeType}<br />
 					<s:translate key="file_referenced" />:
