@@ -47,7 +47,7 @@ class ResultPaginateViewHelper extends AbstractWidgetViewHelper
      * @return \TYPO3\CMS\Extbase\Mvc\ResponseInterface
      * @throws \TYPO3\CMS\Fluid\Core\Widget\Exception\MissingControllerException
      */
-    public function render(SearchResultSet $resultSet, $as = 'documents', array $configuration = ['insertAbove' => true, 'insertBelow' => true, 'maximumNumberOfLinks' => 10])
+    public function render(SearchResultSet $resultSet, $as = 'documents', array $configuration = ['insertAbove' => true, 'insertBelow' => true, 'maximumNumberOfLinks' => 10, 'templatePath' => ''])
     {
         return $this->initiateSubRequest();
     }
