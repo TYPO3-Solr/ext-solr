@@ -456,3 +456,31 @@ Note: When you allow html in the content please make sure that the usage of crop
 **I want to use two instances of the search plugin on the same page, how can i do that?**
 
 If you want to use two search plugins on the same page you can add two instances and assign a different "Plugin Namespace" in the flexform. If you want to avoid, that both plugins react on the global "q" parameter, you can disable this also in the flexform. Each instance is using the querystring from <pluginNamespace>[q] then.
+
+
+**How can i configure switchable templates for the results plugin?**
+
+The following example shows, how you can configure a custom switchable entry template for the Results plugin:
+
+::
+
+   plugin.tx_solr {
+       view {
+           templateRootPaths.100 = EXT:your_config_extension/Resources/Private/Templates/
+           partialRootPaths.100 = EXT:your_config_extension/Resources/Private/Partials/
+           layoutRootPaths.100 = EXT:your_config_extension/Resources/Private/Layouts/
+           templateFiles {
+               results = Results
+               results.availableTemplates {
+                   default {
+                       label = Default Searchresults Template
+                       file = Results
+                   }
+                   products {
+                       label = Products Template
+                       file = ProductResults
+                   }
+               }
+           }
+       }
+   }
