@@ -96,10 +96,52 @@ The example below will exclude the option "red" from the results when it is in t
 Allow to configure custom entry Template
 ----------------------------------------
 
-By convention the actionName is used in extbase for the entry template. You can now configure this template to use another entry template.
-This is useful, when you setup multiple instances with own entry templates.
+In previous EXT:solr versions it was possible to set a custom entry templating using:
+
+.. code-block:: typoscript
+
+   plugin.tx_solr.templateFiles.search = EXT:solr/Resources/Templates/PiSearch/search.htm
+
+
+This configuration could be overwritten with a text value in the flexform.
+
+With the move to FLUID we improved this part and made it more editor friendly:
+
+* Since the view related settings are located in the <view> section we've move the template configuration there as well.
+* You can now set a Templatename only (e.g. MySearch) to benefit from FLUID fallbacks (while setting a full path is still supported.
+* You can configure availableTemplates that can be selected by the editor in the flexform.
+
+The following example shows, how you can load your own partials and provide different entry templates for the editor:
+
+.. code-block:: typoscript
+
+   plugin.tx_solr {
+       view {
+           templateRootPaths.100 = EXT:your_config_extension/Resources/Private/Templates/
+           partialRootPaths.100 = EXT:your_config_extension/Resources/Private/Partials/
+           layoutRootPaths.100 = EXT:your_config_extension/Resources/Private/Layouts/
+           templateFiles {
+               results = Results
+               results.availableTemplates {
+                   default {
+                       label = Default Searchresults Template
+                       file = Results
+                   }
+                   products {
+                       label = Products Template
+                       file = ProductResults
+                   }
+               }
+           }
+       }
+   }
+
+
+With the prevision configuration the editor can switch from "Default Searchresults Template" to "Products Template".
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1325
+* https://github.com/TYPO3-Solr/ext-solr/pull/1483
+
 
 Refactoring of Query API
 ------------------------
@@ -170,9 +212,26 @@ This setting was not evaluated in EXT:solrfluid before and is now available also
 Respect requirements facet setting with fluid
 ---------------------------------------------
 
-This setting was not evaluated in EXT:solrfluid before and is now available also with the FLUID rendering-
+This setting was not evaluated in EXT:solrfluid before and is now available also with the FLUID rendering.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1401
+
+Respect setting searchUsingSpellCheckerSuggestion with fluid
+------------------------------------------------------------
+
+This setting was not evaluated in EXT:solrfluid before and is now available also with the FLUID rendering.
+
+* https://github.com/TYPO3-Solr/ext-solr/pull/1501
+
+
+Preparations for TYPO3 9
+------------------------
+
+Several things that will be removed with 9 have been changed:
+
+* https://github.com/TYPO3-Solr/ext-solr/pull/1443
+* https://github.com/TYPO3-Solr/ext-solr/pull/1452
+* https://github.com/TYPO3-Solr/ext-solr/pull/1462
 
 Bugfixes
 ========
@@ -186,6 +245,26 @@ Bugfixes
 * Fix logging of error when devlog is enabled: https://github.com/TYPO3-Solr/ext-solr/pull/1341
 * Tracking changes in record from other siteroot is not working as expected https://github.com/TYPO3-Solr/ext-solr/pull/1348
 * Relation handler should handle pages overlays correctly https://github.com/TYPO3-Solr/ext-solr/pull/1400
+
+
+Removed Code
+============
+
+The following code has been removed since it is not used anymore:
+
+Classes:
+
+* ScriptViewHelper
+* StyleViewHelper
+* AbstractSolrBackendViewHelper
+* StringUtility
+
+Methods:
+
+* Util::camelize
+* Util::camelCaseToLowerCaseUnderscored
+* Util::underscoredToUpperCamelCase
+* Util::pageExists
 
 Deprecated Code
 ===============
@@ -240,9 +319,12 @@ awesome community. Here are the contributors for this release.
 * Andreas Lappe
 * Felix Eckhofer
 * Frans Saris
+* Georg Ringer
+* Helmut Hummel
 * Jonas Ulrich
 * Marco Bresch
 * Markus Friedrich
+* Michael Skrynski
 * Rafael Kähm
 * Rémy DANIEL
 * Sascha Egerer
