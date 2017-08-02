@@ -57,7 +57,10 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithRootSiteUidOK() {
         $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
-        $this->site = GeneralUtility::makeInstance(Site::class, 1);
+
+            /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $this->site = $siteRepository->getSiteByRootPageId(1);
         $this->assertEquals(1, $this->site->getRootPageId());
     }
 
@@ -66,8 +69,10 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithRootSiteUidNOK() {
         $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
-        $this->setExpectedException(\InvalidArgumentException::class);
-        $this->site = GeneralUtility::makeInstance(Site::class, 2);
+        $this->expectException(\InvalidArgumentException::class);
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $this->site = $siteRepository->getSiteByRootPageId(2);
     }
 
     /**
@@ -75,8 +80,11 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithNonRootSiteUidOK() {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
-        $this->setExpectedException(\InvalidArgumentException::class);
-        $this->site = GeneralUtility::makeInstance(Site::class, 1);
+        $this->expectException(\InvalidArgumentException::class);
+
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $this->site = $siteRepository->getSiteByRootPageId(1);
     }
 
     /**
@@ -84,7 +92,10 @@ class SiteTest extends IntegrationTest
      */
     public function canCreateInstanceWithNonRootSiteUidNOK() {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
-        $this->setExpectedException(\InvalidArgumentException::class);
-        $this->site = GeneralUtility::makeInstance(Site::class, 2);
+        $this->expectException(\InvalidArgumentException::class);
+
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $this->site = $siteRepository->getSiteByRootPageId(2);
     }
 }

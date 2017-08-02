@@ -24,13 +24,10 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Backend\SiteSelectorField;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Page\PageRepository;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 
 /**
  * A site is a branch in a TYPO3 installation. Each site's root page is marked
@@ -40,6 +37,12 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
  */
 class Site
 {
+
+    /**
+     * @var TypoScriptConfiguration
+     */
+    protected $configuration;
+
     /**
      * Cache for ApacheSolrForTypo3\Solr\Site objects
      *
@@ -74,31 +77,26 @@ class Site
     protected $sysLanguageMode = null;
 
     /**
+     * @var string
+     */
+    protected $domain;
+
+    /**
+     * @var string
+     */
+    protected $siteHash;
+
+    /**
      * Constructor.
      *
-     * @param int $rootPageId Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
+     * @param array $page Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
      */
-    public function __construct($rootPageId)
+    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash)
     {
-        $page = (array)BackendUtility::getRecord('pages', $rootPageId);
-
-        if (empty($page)) {
-            throw new \InvalidArgumentException(
-                'The page for the given page ID \'' . $rootPageId
-                . '\' could not be found in the database and can therefore not be used as site root page.',
-                1487326416
-            );
-        }
-
-        if (!self::isRootPage($page)) {
-            throw new \InvalidArgumentException(
-                'The page for the given page ID \'' . $rootPageId
-                . '\' is not marked as root page and can therefore not be used as site root page.',
-                1309272922
-            );
-        }
-
+        $this->configuration = $configuration;
         $this->rootPage = $page;
+        $this->domain = $domain;
+        $this->siteHash = $siteHash;
     }
 
     /**
@@ -161,7 +159,7 @@ class Site
      */
     public function getSolrConfiguration()
     {
-        return Util::getSolrConfigurationFromPageId($this->rootPage['uid']);
+        return $this->configuration;
     }
 
     /**
@@ -272,9 +270,7 @@ class Site
      */
     public function getSiteHash()
     {
-        /** @var $siteHashService SiteHashService */
-        $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);
-        return $siteHashService->getSiteHashForDomain($this->getDomain());
+        return $this->siteHash;
     }
 
     /**
@@ -285,10 +281,7 @@ class Site
      */
     public function getDomain()
     {
-        $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-        $rootLine = $pageSelect->getRootLine($this->rootPage['uid']);
-
-        return BackendUtility::firstDomainRecord($rootLine);
+        return $this->domain;
     }
 
     /**
