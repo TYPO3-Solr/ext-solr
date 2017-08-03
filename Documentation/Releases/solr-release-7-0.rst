@@ -238,6 +238,10 @@ $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][###rootPageId###]['domai
 
 There might be an approach to support this in TYPO3 Version 9 by the core and we will adopt this then.
 
+During the implementation of this the logic to retrieve the SiteHash and get the SolrConfiguration was moved to the SiteRepository,
+this requires an update of the scheduler instances because the scheduler saves a serialized task. Please run the shipped migration to
+update scheduler tasks created with 6.1.x.
+
 * https://github.com/TYPO3-Solr/ext-solr/pull/1512
 
 Preparations for TYPO3 9

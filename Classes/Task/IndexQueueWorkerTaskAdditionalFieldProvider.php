@@ -67,6 +67,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         $task,
         SchedulerModuleController $schedulerModule
     ) {
+        /** @var $task IndexQueueWorkerTask */
         $additionalFields = [];
         $siteSelectorField = GeneralUtility::makeInstance(SiteSelectorField::class);
 
@@ -81,7 +82,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         }
 
         if ($schedulerModule->CMD === 'edit') {
-            $taskInfo['site'] = $task->getSite();
+            $taskInfo['site'] = $this->siteRepository->getSiteByRootPageId($task->getRootPageId());
             $taskInfo['documentsToIndexLimit'] = $task->getDocumentsToIndexLimit();
             $taskInfo['forcedWebRoot'] = $task->getForcedWebRoot();
         }
@@ -152,7 +153,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
             return;
         }
 
-        $task->setSite($this->siteRepository->getSiteByRootPageId($submittedData['site']));
+        $task->setRootPageId($submittedData['site']);
         $task->setDocumentsToIndexLimit($submittedData['documentsToIndexLimit']);
         $task->setForcedWebRoot($submittedData['forcedWebRoot']);
     }

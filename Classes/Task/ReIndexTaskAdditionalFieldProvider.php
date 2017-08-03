@@ -71,8 +71,6 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * @var Site
      */
     protected $site = null;
-
-
     /**
      * SiteRepository
      *
@@ -94,7 +92,6 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
     }
 
     /**
-     *
      * @param array $taskInfo
      * @param \TYPO3\CMS\Scheduler\Task\AbstractTask|NULL $task
      * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
@@ -104,12 +101,13 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         AbstractTask $task = null,
         SchedulerModuleController $schedulerModule
     ) {
+        /** @var $task ReIndexTask */
         $this->taskInformation = $taskInfo;
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
 
         if ($schedulerModule->CMD === 'edit') {
-            $this->site = $task->getSite();
+            $this->site = $this->siteRepository->getSiteByRootPageId($task->getRootPageId());
         }
     }
 
@@ -209,11 +207,12 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
         array $submittedData,
         AbstractTask $task
     ) {
+        /** @var $task ReIndexTask */
         if (!$this->isTaskInstanceofReIndexTask($task)) {
             return;
         }
 
-        $task->setSite($this->siteRepository->getSiteByRootPageId($submittedData['site']));
+        $task->setRootPageId($submittedData['site']);
 
         $indexingConfigurations = [];
         if (!empty($submittedData['indexingConfigurations'])) {
