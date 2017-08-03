@@ -28,9 +28,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Extracted logic from the RecordMonitor to trigger mount page updates.
@@ -39,6 +39,20 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  */
 class MountPagesUpdater
 {
+
+    /**
+     * @var PagesRepository
+     */
+    protected $pagesRepository;
+
+    /**
+     * MountPagesUpdater constructor.
+     *
+     * @param PagesRepository|null $pagesRepository
+     */
+    public function __construct(PagesRepository $pagesRepository = null) {
+        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
+    }
 
     /**
      * Handles updates of the Index Queue in case a newly created or changed
@@ -51,9 +65,20 @@ class MountPagesUpdater
         // get the root line of the page, every parent page could be a Mount Page source
         /** @var $pageSelect PageRepository */
         $pageSelect = GeneralUtility::makeInstance(PageRepository::class);
-        $rootLine = $pageSelect->getRootLine($pageId);
+        $rootLineArray = $pageSelect->getRootLine($pageId);
 
-        $destinationMountProperties = $this->getDestinationMountPropertiesByRootLine($rootLine);
+        $currentPage = array_shift($rootLineArray);
+        $currentPageUid = (int)$currentPage['uid'];
+
+        if (empty($rootLineArray) && $currentPageUid === 0) {
+            return;
+        }
+
+        /** @var $rootLine Rootline */
+        $rootLine = GeneralUtility::makeInstance(Rootline::class, $rootLineArray);
+        $rootLineParentPageIds = $rootLine->getParentPageIds();
+
+        $destinationMountProperties = $this->pagesRepository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds($currentPageUid, $rootLineParentPageIds);
 
         if (empty($destinationMountProperties)) {
             return;
@@ -62,47 +87,6 @@ class MountPagesUpdater
         foreach ($destinationMountProperties as $destinationMount) {
             $this->addPageToMountingSiteIndexQueue($pageId, $destinationMount);
         }
-    }
-
-    /**
-     * Finds Mount Pages that mount pages in a given root line.
-     *
-     * @param array $rootLineArray Root line of pages to check for usage as mount source
-     * @return array Array of pages found to be mounting pages from the root line.
-     */
-    protected function getDestinationMountPropertiesByRootLine(array $rootLineArray)
-    {
-        $mountPages = [];
-
-        $currentPage = array_shift($rootLineArray);
-        $currentPageUid = (int)$currentPage['uid'];
-
-        if (empty($rootLineArray) && $currentPageUid === 0) {
-            return $mountPages;
-        }
-
-        /** @var $rootLine Rootline */
-        $rootLine = GeneralUtility::makeInstance(Rootline::class, $rootLineArray);
-        $rootLineParentPageIds = $rootLine->getParentPageIds();
-
-        $pageQueryConditions = [];
-        if (!empty($rootLineParentPageIds)) {
-            $pageQueryConditions[] = '(mount_pid IN(' . implode(',', $rootLineParentPageIds) . '))';
-        }
-
-        if ($currentPageUid !== 0) {
-            $pageQueryConditions[] = '(mount_pid=' . $currentPageUid . ' AND mount_pid_ol=1)';
-        }
-        $pageQueryCondition = implode(' OR ', $pageQueryConditions);
-
-        $mountPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed',
-            'pages',
-            'doktype = 7 AND no_search = 0 '
-            . BackendUtility::deleteClause('pages') . ' AND (' . $pageQueryCondition . ') '
-        );
-
-        return $mountPages;
     }
 
     /**

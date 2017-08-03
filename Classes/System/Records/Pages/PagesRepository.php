@@ -58,4 +58,71 @@ class PagesRepository extends AbstractRepository
 
         return $result;
     }
+
+    /**
+     * Finds the MountPointProperties array for mount points(destinations) by mounted page UID(source) or by the rootline array of mounted page.
+     *
+     * @param int $mountedPageUid
+     * @param array $rootLineParentPageIds
+     * @return array
+     */
+    public function findMountPointPropertiesByPageIdOrByRootLineParentPageIds(int $mountedPageUid, array $rootLineParentPageIds) : array
+    {
+        if (empty($rootLineParentPageIds)) {
+            return $this->findMountPointPropertiesByMountedPageUid($mountedPageUid);
+        }
+        // check if there are integers
+        if (!array_filter($rootLineParentPageIds,       'is_int')) {
+            throw new \InvalidArgumentException('Given $rootLineParentPageIds array is not valid. Allowed only the arrays with the root line page UIDs as integers.', 1502459711);
+        }
+
+        $queryBuilder = $this->getQueryBuilder();
+        $result = $queryBuilder
+            // uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed
+            ->select('uid', 'uid AS mountPageDestination', 'mount_pid AS mountPageSource', 'mount_pid_ol AS mountPageOverlayed')
+            ->from($this->table)
+            ->andWhere(
+                $queryBuilder->expr()->eq('doktype', 7),
+                $queryBuilder->expr()->eq('no_search', 0),
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq('mount_pid', $mountedPageUid),
+                        $queryBuilder->expr()->eq('mount_pid_ol', 1)
+                    ),
+                    $queryBuilder->expr()->in('mount_pid', $rootLineParentPageIds)
+                )
+            )
+            ->execute()->fetchAll();
+
+        return $result;
+    }
+
+    /**
+     * Finds the MountPointProperties array for mount points(destinations) by mounted page UID(source).
+     *
+     * @param int $mountedPageUid
+     * @return array
+     */
+    public function findMountPointPropertiesByMountedPageUid(int $mountedPageUid) : array
+    {
+        if ($mountedPageUid === 0) {
+            throw new \InvalidArgumentException('The $mountedPageUid parameter is invalid, allowed are integers != 0', 1502459700);
+        }
+
+        $queryBuilder = $this->getQueryBuilder();
+
+        $result = $queryBuilder
+            // uid, uid AS mountPageDestination, mount_pid AS mountPageSource, mount_pid_ol AS mountPageOverlayed
+            ->select('uid', 'uid AS mountPageDestination', 'mount_pid AS mountPageSource', 'mount_pid_ol AS mountPageOverlayed')
+            ->from($this->table)
+            ->andWhere(
+                $queryBuilder->expr()->eq('doktype', 7),
+                $queryBuilder->expr()->eq('no_search', 0),
+                $queryBuilder->expr()->eq('mount_pid', $mountedPageUid),
+                $queryBuilder->expr()->eq('mount_pid_ol', 1)
+            )
+            ->execute()->fetchAll();
+
+        return $result;
+    }
 }
