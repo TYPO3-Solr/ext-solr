@@ -66,4 +66,57 @@ class PagesRepositoryTest extends IntegrationTest
         $result = $this->repository->findAllRootPages();
         $this->assertEquals($expectedResult, $result);
     }
+
+    /**
+     * @test
+     *
+     * There is following scenario:
+     *
+     * [0]
+     * |
+     * ——[ 1] Page (Root)
+     * |   |
+     * |   ——[14] Mount Point 1 (to [24] to show contents from) <—— Try to find this
+     * |
+     * ——[ 3] Page2 (Root)
+     * |  |
+     * |   ——[34] Mount Point 2 (to [25] to show contents from) <—— Try to find this
+     * |
+     * ——[20] Shared-Pages (Folder: Not root)
+     * |   |
+     * |   ——[24] FirstShared
+     * |       |
+     * |       ——[25] first sub page from FirstShared
+     * |       |
+     * |       ——[26] second sub page from FirstShared
+     */
+    public function canfindMountPointPagesByRootLineParentPageIdsIfMountedPagesIsOutsideOfTheSite()
+    {
+        $this->importDataSetFromFixture('can_find_mout_pages_in_rootline.xml');
+
+        $expectedResult = [
+            [
+                'uid' => 14,
+                'mountPageDestination' => 14,
+                'mountPageSource' => 24,
+                'mountPageOverlayed' => 1
+            ],
+            [
+                'uid' => 34,
+                'mountPageDestination' => 34,
+                'mountPageSource' => 25,
+                'mountPageOverlayed' => 1
+            ]
+        ];
+
+        $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(24);
+        $this->assertSame([$expectedResult[0]], $result);
+
+        $rootLine = [24,20];
+
+        // Page [14] has both pages [24] and [25], because mounting works recursive
+        $result = $this->repository->findMountPointPropertiesByPageIdOrByRootLineParentPageIds(25, $rootLine);
+        $this->assertSame($expectedResult, $result);
+
+    }
 }
