@@ -224,6 +224,22 @@ This setting was not evaluated in EXT:solrfluid before and is now available also
 * https://github.com/TYPO3-Solr/ext-solr/pull/1501
 
 
+Get rid of dependency to sys_domain record
+------------------------------------------
+
+By now EXT:solr had the dependency on an existing domain record. This can be a problem, when you domain is dynamic or
+you need to be able to generate it.
+
+Now you can configure a domain by the rootPageId in the TYPO3_CONF_VARS, the domain record is still used, when nothing is configured here.
+
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][###rootPageId###]['domains'] = ['mydomain.com'];
+
+**Note:**
+
+There might be an approach to support this in TYPO3 Version 9 by the core and we will adopt this then.
+
+* https://github.com/TYPO3-Solr/ext-solr/pull/1512
+
 Preparations for TYPO3 9
 ------------------------
 
