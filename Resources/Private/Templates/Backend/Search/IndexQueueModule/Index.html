@@ -4,13 +4,8 @@
 <f:section name="Main">
 	<f:be.pageRenderer includeCssFiles="{0: '{f:uri.resource(path:\'StyleSheets/Backend/IndexQueueModule.css\')}'}" includeRequireJsModules="{0:'TYPO3/CMS/Solr/FormModal'}"/>
 
-	<div class="row">
-		<div class="col-md-12">
-			<f:be.infobox title="Index Queue">
-				<f:translate key="solr.backend.index_queue_module.description" />
-			</f:be.infobox>
-		</div>
-	</div>
+	<h1>Index Queue</h1>
+	<p class="lead"><f:translate key="solr.backend.index_queue_module.description" /></p>
 
 	<hr class="section-divider" />
 
@@ -62,12 +57,12 @@
 				<hr />
 				<f:if condition="{indexqueue_errors}">
 					<div class="row">
-						<div class="col-md-12 well">
+						<div class="col-md-12">
 							<h2>
 								<f:translate key="solr.backend.index_queue_module.errors.headline"/>
 							</h2>
 
-							<table class="table">
+							<table class="table table-condensed table-hover table-striped">
 								<tr>
 									<th>
 										<f:translate key="solr.backend.index_queue_module.errors.id"/>
