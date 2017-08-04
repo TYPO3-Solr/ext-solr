@@ -24,7 +24,7 @@ namespace ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Extbase\Mvc\Exception;
+use TYPO3\CMS\Extbase\Mvc\Exception;
 
 class InvalidViewObjectNameException extends Exception
 {

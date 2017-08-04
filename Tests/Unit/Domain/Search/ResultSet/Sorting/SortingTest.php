@@ -24,9 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.

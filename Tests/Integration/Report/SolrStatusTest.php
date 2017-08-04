@@ -47,7 +47,7 @@ class SolrStatusTest extends IntegrationTest
         $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
         $statusCollection = $solrStatus->getStatus();
 
-        foreach($statusCollection as $status) {
+        foreach ($statusCollection as $status) {
             /** @var $status Status */
             $this->assertSame(Status::OK, $status->getSeverity(), 'Expected that all status objects should be ok');
         }
@@ -64,7 +64,7 @@ class SolrStatusTest extends IntegrationTest
         $solrStatus = GeneralUtility::makeInstance(SolrStatus::class);
         $statusCollection = $solrStatus->getStatus();
 
-        foreach($statusCollection as $status) {
+        foreach ($statusCollection as $status) {
             /** @var $status Status */
             $this->assertSame(Status::ERROR, $status->getSeverity(), 'Expected that all status objects should indicate an error');
         }

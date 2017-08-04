@@ -13,15 +13,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
  *
  * The TYPO3 project - inspiring people to share!
 */
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
-use DateTime;
 
 /**
  * Value object that represent an date range count. The count has a date and the count of documents
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 class NumericRangeCount
 {
@@ -38,7 +35,7 @@ class NumericRangeCount
 
     /**
      * @param float $rangeItem
-     * @param integer $documentCount
+     * @param int $documentCount
      */
     public function __construct($rangeItem, $documentCount)
     {

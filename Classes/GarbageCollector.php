@@ -398,10 +398,10 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function isInvisibleByStartOrEndtime($table, $record)
     {
-        return (
+        return
             ($this->tcaService->isStartTimeInFuture($table, $record) || $this->tcaService->isEndTimeInPast($table, $record)) &&
             $this->isRelatedQueueRecordMarkedAsIndexed($table, $record)
-        );
+        ;
     }
 
     /**

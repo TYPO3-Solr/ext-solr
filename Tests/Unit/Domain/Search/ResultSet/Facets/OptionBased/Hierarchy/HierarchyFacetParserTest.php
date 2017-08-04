@@ -14,13 +14,9 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Hierarchy\HierarchyFacetParser;
 use ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\AbstractFacetParserTest;
-use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 
 /**
  * Class HierarchyFacetParserTest

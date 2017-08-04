@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Apache_Solr_Response;
 use Apache_Solr_HttpTransport_Response;
+use Apache_Solr_Response;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
@@ -38,8 +38,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
-
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 
 /**
  * @author Timo Schmidt <timo.schmidt@dkd.de>
@@ -107,7 +105,7 @@ class SearchResultSetTest extends UnitTest
 
         // @todo we should fake the result of getQueryInstance with a mock and move the tests that test Query partly into the QueryTest
         $this->searchResultSetService->expects($this->any())->method('getQueryInstance')->will(
-            $this->returnCallback(function($queryString){
+            $this->returnCallback(function ($queryString) {
                 return new Query($queryString, $this->configurationMock, $this->siteHashServiceMock, $this->escapeServiceMock, $this->solrLogManagerMock);
             })
         );
@@ -137,7 +135,6 @@ class SearchResultSetTest extends UnitTest
         $this->assertOneSearchWillBeTriggeredWithQueryAndShouldReturnFakeResponse('my search', 0, $fakeResponse);
         $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-
         $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my search']]);
 
         $this->assertPerPageInSessionWillNotBeChanged();
@@ -157,7 +154,7 @@ class SearchResultSetTest extends UnitTest
         $this->configurationMock->expects($this->once())->method('getSearchResultsPerPage')->will($this->returnValue(25));
         $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 2. search','page' => 2]]);
+        $fakeRequest = new SearchRequest(['tx_solr' => ['q' => 'my 2. search', 'page' => 2]]);
 
         $this->assertPerPageInSessionWillNotBeChanged();
         $resultSet = $this->searchResultSetService->search($fakeRequest);
@@ -286,7 +283,6 @@ class SearchResultSetTest extends UnitTest
 
         $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-
         $this->fakeRegisteredSearchComponents([]);
         $fakedSolrResponse = $this->getFixtureContentByName('fakeCollapsedResponse.json');
         $fakeHttpResponse = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
@@ -314,9 +310,8 @@ class SearchResultSetTest extends UnitTest
     {
         $this->searchMock->expects($this->once())->method('search')->will(
             $this->returnCallback(
-                function(Query $query, $offset) use($expextedQueryString, $expectedOffset, $fakeResponse) {
-
-                    $this->assertSame($expextedQueryString, $query->getKeywords(), "Search was not triggered with an expected queryString");
+                function (Query $query, $offset) use ($expextedQueryString, $expectedOffset, $fakeResponse) {
+                    $this->assertSame($expextedQueryString, $query->getKeywords(), 'Search was not triggered with an expected queryString');
                     $this->assertSame($expectedOffset, $offset);
                     return $fakeResponse;
                 }

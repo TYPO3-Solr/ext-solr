@@ -22,7 +22,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\QueryGroupFacet
  */
 class QueryGroupFacetParser extends AbstractFacetParser
 {
@@ -83,7 +82,6 @@ class QueryGroupFacetParser extends AbstractFacetParser
                 $facet->addOption(new Option($facet, $label, $value, $count, $isOptionsActive));
             }
         }
-
 
         // after all options have been created we apply a manualSortOrder if configured
         // the sortBy (lex,..) is done by the solr server and triggered by the query, therefore it does not

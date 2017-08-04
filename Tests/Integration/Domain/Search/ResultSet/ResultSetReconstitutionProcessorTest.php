@@ -24,20 +24,20 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\ContentObject\CaseContentObject;
 use TYPO3\CMS\Frontend\ContentObject\TextContentObject;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -182,7 +182,7 @@ class ResultSetReconstitutionProcessorTest extends IntegrationTest
      */
     protected function fakeTSFEToUseCObject()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = array_merge($GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'], ['TEXT' => TextContentObject::class, 'CASE' => CaseContentObject::class, ]);
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'] = array_merge($GLOBALS['TYPO3_CONF_VARS']['FE']['ContentObjects'], ['TEXT' => TextContentObject::class, 'CASE' => CaseContentObject::class]);
 
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class, [], 1, 0);
         $TSFE->cObjectDepthCounter = 5;

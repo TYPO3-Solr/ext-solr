@@ -16,11 +16,11 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
-use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
-use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
+use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -33,7 +33,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Controller
  */
 abstract class AbstractBaseController extends ActionController
 {
@@ -114,7 +113,7 @@ abstract class AbstractBaseController extends ActionController
     }
 
     /**
-     * @param boolean $resetConfigurationBeforeInitialize
+     * @param bool $resetConfigurationBeforeInitialize
      */
     public function setResetConfigurationBeforeInitialize($resetConfigurationBeforeInitialize)
     {

@@ -41,7 +41,8 @@ class SiteHashServiceTest extends UnitTest
     /**
      * @return array
      */
-    public function canResolveSiteHashAllowedSitesDataProvider() {
+    public function canResolveSiteHashAllowedSitesDataProvider()
+    {
         return [
             'siteHashDisabled' => ['*', '*'],
             'allSitesInSystem' => ['__all', 'solrtesta.local,solrtestb.local'],
@@ -53,7 +54,7 @@ class SiteHashServiceTest extends UnitTest
      * @dataProvider canResolveSiteHashAllowedSitesDataProvider
      * @test
      */
-    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration , $expectedAllowedSites)
+    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
     {
         $siteA = $this->getDumbMock(Site::class);
         $siteA->expects($this->any())->method('getDomain')->will($this->returnValue('solrtesta.local'));
@@ -62,7 +63,7 @@ class SiteHashServiceTest extends UnitTest
         $allSites = [$siteA, $siteB];
 
             /** @var $siteHashServiceMock SiteHashService */
-        $siteHashServiceMock = $this->getMockBuilder(SiteHashService::class)->setMethods(['getAvailableSites','getSiteByPageId'])->getMock();
+        $siteHashServiceMock = $this->getMockBuilder(SiteHashService::class)->setMethods(['getAvailableSites', 'getSiteByPageId'])->getMock();
         $siteHashServiceMock->expects($this->any())->method('getAvailableSites')->will($this->returnValue($allSites));
         $siteHashServiceMock->expects($this->any())->method('getSiteByPageId')->will($this->returnValue($siteA));
 

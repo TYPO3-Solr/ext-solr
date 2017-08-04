@@ -24,4 +24,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-class InvalidQueryBuilderException extends \Exception {}
+class InvalidQueryBuilderException extends \Exception
+{
+}

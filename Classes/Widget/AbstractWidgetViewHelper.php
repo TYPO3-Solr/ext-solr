@@ -22,9 +22,8 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\Facets\ChildNodeAccessInterface;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper as AbstractCoreWidgetViewHelper;
 use TYPO3\CMS\Fluid\Core\Widget\AjaxWidgetContextHolder;
 use TYPO3\CMS\Fluid\Core\Widget\Exception\MissingControllerException;
-use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest as CoreWidgetRequest;
 use TYPO3\CMS\Fluid\Core\Widget\WidgetContext;
-
+use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest as CoreWidgetRequest;
 
 /**
  * Class AbstractWidgetViewHelper
@@ -35,7 +34,6 @@ use TYPO3\CMS\Fluid\Core\Widget\WidgetContext;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Widget
  */
 abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper implements ChildNodeAccessInterface
 {
@@ -53,7 +51,7 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
     /**
      * If set to TRUE, it is an AJAX widget.
      *
-     * @var boolean
+     * @var bool
      * @api
      */
     protected $ajaxWidget = false;

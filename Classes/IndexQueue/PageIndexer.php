@@ -338,9 +338,9 @@ class PageIndexer extends Indexer
         return $mountPageUrlParameter;
     }
 
-    #
-    # Frontend User Groups Access
-    #
+    //
+    // Frontend User Groups Access
+    //
 
     /**
      * Creates a single Solr Document for a page in a specific language and for

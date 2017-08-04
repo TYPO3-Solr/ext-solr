@@ -97,7 +97,7 @@ class ConfigurationAwareRecordService
      * Otherwise an empty array will be returned.
      *
      * @param string $recordTable
-     * @param integer $recordUid
+     * @param int $recordUid
      * @param string $indexingConfigurationName
      * @param TypoScriptConfiguration $solrConfiguration
      * @return array
@@ -124,7 +124,7 @@ class ConfigurationAwareRecordService
      * or from cache
      *
      * @param string $recordTable
-     * @param integer $recordUid
+     * @param int $recordUid
      * @param string $recordWhereClause
      *
      * @return array
@@ -151,7 +151,7 @@ class ConfigurationAwareRecordService
      * @param string $recordTable
      * @param string $indexingConfigurationName
      * @param TypoScriptConfiguration $solrConfiguration
-     * @return boolean
+     * @return bool
      */
     protected function isValidTableForIndexConfigurationName($recordTable, $indexingConfigurationName, TypoScriptConfiguration $solrConfiguration)
     {

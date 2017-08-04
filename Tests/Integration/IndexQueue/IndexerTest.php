@@ -183,7 +183,7 @@ class IndexerTest extends IntegrationTest
 
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
-     }
+    }
 
     /**
      * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
@@ -222,7 +222,6 @@ class IndexerTest extends IntegrationTest
     {
         $this->cleanUpSolrServerAndAssertEmpty('core_en');
         $this->cleanUpSolrServerAndAssertEmpty('core_de');
-
 
         // create fake extension database table and TCA
         $this->importExtTablesDefinition('fake_extension2_table.sql');
@@ -343,7 +342,7 @@ class IndexerTest extends IntegrationTest
         $metaData = ['item_type' => 'pages'];
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
-        $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
+        $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
     }
 
     /**
@@ -372,7 +371,7 @@ class IndexerTest extends IntegrationTest
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
 
-        $result = $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
+        $result = $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
     }
 
     /**
@@ -386,10 +385,9 @@ class IndexerTest extends IntegrationTest
         $record = [];
         $item = GeneralUtility::makeInstance(Item::class, $metaData, $record);
 
-        $result = $this->callInaccessibleMethod($this->indexer,'getAdditionalDocuments', $item, 0, $document);
+        $result = $this->callInaccessibleMethod($this->indexer, 'getAdditionalDocuments', $item, 0, $document);
         $this->assertSame([], $result);
     }
-
 
     /**
      * @test
@@ -452,10 +450,10 @@ class IndexerTest extends IntegrationTest
         ];
         $item = new Item($itemMetaData);
 
-        $result = $this->callInaccessibleMethod($this->indexer,'getSolrConnectionsByItem', $item);
+        $result = $this->callInaccessibleMethod($this->indexer, 'getSolrConnectionsByItem', $item);
 
-        $this->assertInstanceOf(SolrService::class, $result[1], "Expect SolrService object in connection array item with key 1.");
-        $this->assertCount(1, $result, "Expect only one SOLR connection.");
-        $this->assertArrayNotHasKey(0, $result, "Expect, that there is no solr connection returned for default language,");
+        $this->assertInstanceOf(SolrService::class, $result[1], 'Expect SolrService object in connection array item with key 1.');
+        $this->assertCount(1, $result, 'Expect only one SOLR connection.');
+        $this->assertArrayNotHasKey(0, $result, 'Expect, that there is no solr connection returned for default language,');
     }
 }

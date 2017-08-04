@@ -46,7 +46,7 @@ class SiteHashService
      *   __all - Adds all domains as allowed sites
      *   * - Means all sites are allowed, same as no siteHash
      *
-     * @param integer $pageId A page ID that is then resolved to the site it belongs to
+     * @param int $pageId A page ID that is then resolved to the site it belongs to
      * @param string $allowedSitesConfiguration TypoScript setting for allowed sites
      * @return string List of allowed sites/domains, magic keywords resolved
      */
@@ -78,7 +78,6 @@ class SiteHashService
         return $siteHashes[$domain];
     }
 
-
     /**
      * Returns a comma separated list of all domains from all sites.
      *
@@ -100,7 +99,7 @@ class SiteHashService
      * Retrieves the domain of the site that belongs to the passed pageId and replaces their markers __solr_current_site
      * and __current_site.
      *
-     * @param integer $pageId
+     * @param int $pageId
      * @param string $allowedSitesConfiguration
      * @return string
      */

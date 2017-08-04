@@ -20,7 +20,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItemColl
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 class NodeCollection extends AbstractFacetItemCollection
 {

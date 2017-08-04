@@ -61,7 +61,6 @@ class IfHasAccessToModuleViewHelper extends AbstractConditionViewHelper
         $this->registerArgument('signature', 'string', 'The full signature of module. Simply mainmodulename_submodulename in most cases.');
     }
 
-
     protected static function evaluateCondition($arguments = null)
     {
         /* @var BackendUserAuthentication $beUser */

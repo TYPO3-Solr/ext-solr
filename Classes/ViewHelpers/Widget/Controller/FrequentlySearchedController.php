@@ -18,7 +18,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesServi
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -26,7 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller
  */
 class FrequentlySearchedController extends AbstractWidgetController
 {
@@ -72,8 +70,8 @@ class FrequentlySearchedController extends AbstractWidgetController
      * Enrich the frequentSearches
      *
      * @param array Frequent search terms as array with terms as keys and hits as the value
-     * @param integer $minimumSize
-     * @param integer $maximumSize
+     * @param int $minimumSize
+     * @param int $maximumSize
      * @return array An array with content for the frequent terms markers
      */
     protected function enrichFrequentSearchesInfo(array $frequentSearchTerms, $minimumSize, $maximumSize)

@@ -32,9 +32,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Removes the Site property from the SchedulerTask and set the rootPageId property.
  *
- * @package ApacheSolrForTypo3\Solr\Migrations
  */
-class RemoveSiteFromScheduler implements Migration {
+class RemoveSiteFromScheduler implements Migration
+{
 
     /**
      * Called by the extension manager to determine if the update menu entry
@@ -59,7 +59,7 @@ class RemoveSiteFromScheduler implements Migration {
     {
         $taskRows = $this->getTasksWithAssignedSite();
         $legacySchedulerTasks = $taskRows->fetchAll();
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable("tx_scheduler_task");
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_scheduler_task');
 
         $status = FlashMessage::OK;
         $title = 'Remove site from scheduler task';
@@ -92,10 +92,10 @@ class RemoveSiteFromScheduler implements Migration {
      */
     protected function getTasksWithAssignedSite()
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable("tx_scheduler_task");
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_scheduler_task');
         $taskRows = $queryBuilder
             ->select('uid', 'serialized_task_object')
-            ->from("tx_scheduler_task")
+            ->from('tx_scheduler_task')
             ->where(
                 $queryBuilder->expr()->andX(
                     $queryBuilder->expr()->like('serialized_task_object', "'%ApacheSolrForTypo3%'"),

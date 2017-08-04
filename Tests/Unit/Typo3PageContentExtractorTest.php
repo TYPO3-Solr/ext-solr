@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Typo3PageContentExtractor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

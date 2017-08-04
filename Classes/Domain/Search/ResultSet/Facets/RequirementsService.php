@@ -20,7 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Service class to check for a facet if allRequirements are met for that facet.
  *
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facet
  */
 class RequirementsService
 {
@@ -59,7 +58,8 @@ class RequirementsService
      * @param array $requirement
      * @return bool
      */
-    protected function getRequirementMet(AbstractFacet $facet, $requirement = []) {
+    protected function getRequirementMet(AbstractFacet $facet, $requirement = [])
+    {
         $activeFacetItemValues = $this->getActiveItemValues($facet, $requirement['facet']);
         $csvActiveFacetItemValues = implode(', ', $activeFacetItemValues);
         $requirementValues = GeneralUtility::trimExplode(',', $requirement['values']);
@@ -108,9 +108,9 @@ class RequirementsService
     /**
      * Negates the result when configured.
      *
-     * @param boolean $value
+     * @param bool $value
      * @param array $configuration
-     * @return boolean
+     * @return bool
      */
     protected function getNegationWhenConfigured($value, $configuration)
     {

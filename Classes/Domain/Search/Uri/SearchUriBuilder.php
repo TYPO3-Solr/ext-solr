@@ -29,9 +29,7 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Uri
  */
-
 class SearchUriBuilder
 {
 
@@ -46,12 +44,12 @@ class SearchUriBuilder
     protected static $preCompiledLinks = [];
 
     /**
-     * @var integer
+     * @var int
      */
     protected static $hitCount;
 
     /**
-     * @var integer
+     * @var int
      */
     protected static $missCount;
 
@@ -243,7 +241,6 @@ class SearchUriBuilder
             ->getCopyForSubRequest()
             ->getAsArray();
 
-
         $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
@@ -271,7 +268,7 @@ class SearchUriBuilder
 
     /**
      * @param SearchRequest $request
-     * @return integer|null
+     * @return int|null
      */
     protected function getTargetPageUidFromRequestConfiguration(SearchRequest $request)
     {
@@ -283,7 +280,7 @@ class SearchUriBuilder
     }
 
     /**
-     * @param integer $pageUid
+     * @param int $pageUid
      * @param array $arguments
      * @return string
      */
@@ -304,10 +301,10 @@ class SearchUriBuilder
             self::$preCompiledLinks[$hash] = $template;
         }
 
-        $keys = array_map(function($value) {
+        $keys = array_map(function ($value) {
             return urlencode($value);
         }, array_keys($values));
-        $values = array_map(function($value) {
+        $values = array_map(function ($value) {
             return urlencode($value);
         }, $values);
         $uri = str_replace($keys, $values, $template);

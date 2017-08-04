@@ -32,7 +32,6 @@ use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
  */
 class SiteHighlighterUrlModifierTest extends UnitTest
 {
-
     public function canModifyDataProvider()
     {
         return [
@@ -65,7 +64,6 @@ class SiteHighlighterUrlModifierTest extends UnitTest
                 'http://mywebsite.de/home/index.html?cHash=HHZUUUdfsdf&foo=bar&sword_list%5B0%5D=hello&sword_list%5B1%5D=world&no_cache=1#test'
             ]
         ];
-
     }
 
     /**

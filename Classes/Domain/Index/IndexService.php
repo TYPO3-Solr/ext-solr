@@ -145,7 +145,7 @@ class IndexService
             }
         }
 
-        return ($errors === 0);
+        return $errors === 0;
     }
 
     /**

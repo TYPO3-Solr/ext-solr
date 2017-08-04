@@ -23,7 +23,6 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller
  */
 class ResultPaginateController extends AbstractWidgetController
 {
@@ -105,7 +104,8 @@ class ResultPaginateController extends AbstractWidgetController
      * @param \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext $controllerContext
      * @return \ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext
      */
-    protected function setActiveSearchResultSet($controllerContext) {
+    protected function setActiveSearchResultSet($controllerContext)
+    {
         $controllerContext->setSearchResultSet($this->resultSet);
         return $controllerContext;
     }

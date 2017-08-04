@@ -30,13 +30,12 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Grouping ParameterProvider is responsible to build the solr query parameters
  * that are needed for the grouping.
  *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Grouping implements ParameterBuilder
 {
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isEnabled = false;
 
@@ -120,7 +119,7 @@ class Grouping implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsEnabled()
     {
@@ -128,7 +127,7 @@ class Grouping implements ParameterBuilder
     }
 
     /**
-     * @param boolean $isEnabled
+     * @param bool $isEnabled
      */
     public function setIsEnabled($isEnabled)
     {
@@ -248,7 +247,7 @@ class Grouping implements ParameterBuilder
     {
         $isEnabled = $solrConfiguration->getSearchGrouping();
         if (!$isEnabled) {
-            return new Grouping(false);
+            return new self(false);
         }
 
         $fields = [];
@@ -270,6 +269,6 @@ class Grouping implements ParameterBuilder
             }
         }
 
-        return new Grouping($isEnabled, $fields, $sortings, $queries, $numberOfGroups, $resultsPerGroup);
+        return new self($isEnabled, $fields, $sortings, $queries, $numberOfGroups, $resultsPerGroup);
     }
 }

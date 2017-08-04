@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * This class encapsulates the access to the extension configuration.
  *
- * @package ApacheSolrForTypo3\Solr\System\Configuration
  * @author Timo Hund <timo.hund@dkd.de>
  */
 class ExtensionConfiguration

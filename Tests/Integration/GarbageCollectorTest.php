@@ -26,8 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
+use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -368,7 +368,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertContains('Will stay after update!', $solrContent, 'solr did not contain rendered page content, which is needed for test.');
 
         $this->waitToBeVisibleInSolr();
-        
+
         $this->assertIndexQueryContainsItemAmount(1);
         $items = $this->indexQueue->getItems('pages', 1);
 
@@ -433,7 +433,6 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertContains('will stay!', $solrContent, 'solr did not contain rendered page content');
     }
 
-
     /**
      * @test
      */
@@ -442,7 +441,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_page.xml');
 
-        $this->indexPageIds([1,2]);
+        $this->indexPageIds([1, 2]);
 
         // we index two pages and check that both are visible
         $this->waitToBeVisibleInSolr();
@@ -476,7 +475,7 @@ class GarbageCollectorTest extends IntegrationTest
         $site = $siteRepository->getFirstAvailableSite();
         $items = $this->indexQueue->getItemsToIndex($site);
         $pages = [];
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $pages[] = $item->getRecordUid();
         }
         $this->indexPageIds($pages);
@@ -497,7 +496,7 @@ class GarbageCollectorTest extends IntegrationTest
         $this->cleanUpSolrServerAndAssertEmpty();
         $this->importDataSetFromFixture('can_remove_page.xml');
 
-        $this->indexPageIds([1,2]);
+        $this->indexPageIds([1, 2]);
 
         // we index two pages and check that both are visible
         $this->waitToBeVisibleInSolr();
@@ -525,7 +524,7 @@ class GarbageCollectorTest extends IntegrationTest
         $site = $siteRepository->getFirstAvailableSite();
         $items = $this->indexQueue->getItemsToIndex($site);
         $pages = [];
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $pages[] = $item->getRecordUid();
         }
         $this->indexPageIds($pages);

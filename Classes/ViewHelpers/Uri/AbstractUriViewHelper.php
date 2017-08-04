@@ -27,7 +27,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Uri
  */
 abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
 {
@@ -63,10 +62,11 @@ abstract class AbstractUriViewHelper extends AbstractSolrFrontendViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return mixed
      */
-    protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext) {
+    protected static function getUsedSearchRequestFromRenderingContext(RenderingContextInterface $renderingContext)
+    {
         $resultSet = static::getUsedSearchResultSetFromRenderingContext($renderingContext);
         if (!$resultSet instanceof SearchResultSet) {
-            throw new \InvalidArgumentException("The variable resultSet need to be defined in the scope of " . static::class);
+            throw new \InvalidArgumentException('The variable resultSet need to be defined in the scope of ' . static::class);
         }
 
         return $resultSet->getUsedSearchRequest();

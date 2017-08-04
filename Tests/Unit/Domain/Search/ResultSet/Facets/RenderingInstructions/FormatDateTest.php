@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Facets\Rend
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RenderingInstructions\FormatDate;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
-
 /**
  * @author Timo Hund <timo.hund@dkd.de>
  */

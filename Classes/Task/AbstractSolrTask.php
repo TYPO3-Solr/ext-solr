@@ -33,9 +33,9 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  * Abstract scheduler task for solr scheduler tasks, contains the logic to
  * retrieve the site, avoids serialization of site, when scheduler task is saved.
  *
- * @package ApacheSolrForTypo3\Solr\Task
  */
-abstract class AbstractSolrTask extends AbstractTask {
+abstract class AbstractSolrTask extends AbstractTask
+{
     /**
      * The site this task is supposed to initialize the index queue for.
      *
@@ -46,7 +46,7 @@ abstract class AbstractSolrTask extends AbstractTask {
     /**
      * The rootPageId of the site that should be reIndexed
      *
-     * @var integer
+     * @var int
      */
     protected $rootPageId;
 

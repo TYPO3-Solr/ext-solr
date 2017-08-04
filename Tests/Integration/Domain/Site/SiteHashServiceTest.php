@@ -41,7 +41,8 @@ class SiteHashServiceTest extends IntegrationTest
     /**
      * @return array
      */
-    public function canResolveSiteHashAllowedSitesDataProvider() {
+    public function canResolveSiteHashAllowedSitesDataProvider()
+    {
         return [
             'siteHashDisabled' => ['*', '*'],
             'allSitesInSystem' => ['__all', 'solrtesta.local,solrtestb.local'],
@@ -53,7 +54,7 @@ class SiteHashServiceTest extends IntegrationTest
      * @dataProvider canResolveSiteHashAllowedSitesDataProvider
      * @test
      */
-    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration , $expectedAllowedSites)
+    public function canResolveSiteHashAllowedSites($allowedSitesConfiguration, $expectedAllowedSites)
     {
         $this->importDataSetFromFixture('can_resolve_site_hash.xml');
         $siteHashService = GeneralUtility::makeInstance(SiteHashService::class);

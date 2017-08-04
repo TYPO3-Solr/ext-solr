@@ -44,7 +44,7 @@ class IdBuilder
      *
      * By default the variantId is used
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
     public function buildFromTypeAndUid($type, $uid)
@@ -62,7 +62,7 @@ class IdBuilder
      * @param string $variantId
      * @param string $systemHash
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
     protected function applyHook($variantId, $systemHash, $type, $uid)
@@ -89,7 +89,7 @@ class IdBuilder
     protected function getSystemHash()
     {
         if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'])) {
-            throw new \InvalidArgumentException("No sitename set in TYPO3_CONF_VARS|SYS|sitename");
+            throw new \InvalidArgumentException('No sitename set in TYPO3_CONF_VARS|SYS|sitename');
         }
 
         $siteName = $GLOBALS['TYPO3_CONF_VARS']['SYS']['sitename'];

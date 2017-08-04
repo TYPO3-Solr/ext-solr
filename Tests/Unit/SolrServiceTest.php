@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Apache_Solr_HttpTransport_Response;
 use Apache_Solr_HttpTransport_Interface;
+use Apache_Solr_HttpTransport_Response;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -104,7 +104,7 @@ class SolrServiceTest extends UnitTest
         $schemaParserMock = $this->getDumbMock(SchemaParser::class);
         $logManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        $solrService = new SolrService('localhost','8080','/solr/','http', $configuration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
+        $solrService = new SolrService('localhost', '8080', '/solr/', 'http', $configuration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
         $this->assertSame(99.0, $solrService->getHttpTransport()->getDefaultTimeout(), 'Default timeout was not set from configuration');
     }
 
@@ -162,7 +162,7 @@ class SolrServiceTest extends UnitTest
         $schemaParserMock = $this->getDumbMock(SchemaParser::class);
         $logManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        $solrService = new SolrService('localhost','8080', $path,'http', $fakeConfiguration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
+        $solrService = new SolrService('localhost', '8080', $path, 'http', $fakeConfiguration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
         $this->assertSame($expectedCoreName, $solrService->getCoreName());
     }
 
@@ -189,7 +189,7 @@ class SolrServiceTest extends UnitTest
         $schemaParserMock = $this->getDumbMock(SchemaParser::class);
         $logManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        $solrService = new SolrService('localhost','8080', $path,'http', $fakeConfiguration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
+        $solrService = new SolrService('localhost', '8080', $path, 'http', $fakeConfiguration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
         $this->assertSame($expectedCoreBasePath, $solrService->getCoreBasePath());
     }
 

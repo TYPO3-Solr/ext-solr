@@ -17,7 +17,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderInterface;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
-class DateRangeFacetQueryBuilder implements FacetQueryBuilderInterface {
+class DateRangeFacetQueryBuilder implements FacetQueryBuilderInterface
+{
 
     /**
      * @param string $facetName

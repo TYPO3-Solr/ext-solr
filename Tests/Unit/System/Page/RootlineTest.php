@@ -38,11 +38,12 @@ class RootlineTest extends UnitTest
     /**
      * @test
      */
-    public function getRootPageIdReturnUidOfRootPage() {
+    public function getRootPageIdReturnUidOfRootPage()
+    {
         $testRootLineArray = [
-            ['uid' => 100,'pid' => 10, 'title' => 'level 2'],
-            ['uid' => 10,'pid' => 1, 'title' => 'level 1'],
-            ['uid' => 1,'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
+            ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],
+            ['uid' => 10, 'pid' => 1, 'title' => 'level 1'],
+            ['uid' => 1, 'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
         ];
 
         $rootline = new Rootline($testRootLineArray);
@@ -52,7 +53,8 @@ class RootlineTest extends UnitTest
     /**
      * @test
      */
-    public function getRootPageIdReturnsZeroWhenNoSiteRootIsPresent() {
+    public function getRootPageIdReturnsZeroWhenNoSiteRootIsPresent()
+    {
         $rootline = new Rootline([]);
         $this->assertSame(0, $rootline->getRootPageId(), 'Expecting null when no rootline given');
     }
@@ -60,7 +62,8 @@ class RootlineTest extends UnitTest
     /**
      * @test
      */
-    public function getHasRootPageReturnsFalseOnEmptyRootLine() {
+    public function getHasRootPageReturnsFalseOnEmptyRootLine()
+    {
         $rootline = new Rootline([]);
         $this->assertFalse($rootline->getHasRootPage(), 'Expecting false when no rootline given');
     }
@@ -68,11 +71,12 @@ class RootlineTest extends UnitTest
     /**
      * @test
      */
-    public function getHasRootPageRturnsTrueWithGivenRootLine() {
+    public function getHasRootPageRturnsTrueWithGivenRootLine()
+    {
         $testRootLineArray = [
-            ['uid' => 100,'pid' => 10, 'title' => 'level 2'],
-            ['uid' => 10,'pid' => 1, 'title' => 'level 1'],
-            ['uid' => 1,'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
+            ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],
+            ['uid' => 10, 'pid' => 1, 'title' => 'level 1'],
+            ['uid' => 1, 'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
         ];
 
         $rootline = new Rootline($testRootLineArray);
@@ -82,14 +86,15 @@ class RootlineTest extends UnitTest
     /**
      * @test
      */
-    public function canGetParentPageIds() {
+    public function canGetParentPageIds()
+    {
         $testRootLineArray = [
-            ['uid' => 100,'pid' => 10, 'title' => 'level 2'],
-            ['uid' => 10,'pid' => 1, 'title' => 'level 1'],
-            ['uid' => 1,'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
+            ['uid' => 100, 'pid' => 10, 'title' => 'level 2'],
+            ['uid' => 10, 'pid' => 1, 'title' => 'level 1'],
+            ['uid' => 1, 'pid' => 0, 'title' => 'rootpage', 'is_siteroot' => 1]
         ];
 
         $rootline = new Rootline($testRootLineArray);
-        $this->assertEquals([100,10,1], $rootline->getParentPageIds(), 'Expecting true when rootline with rootpage given');
+        $this->assertEquals([100, 10, 1], $rootline->getParentPageIds(), 'Expecting true when rootline with rootpage given');
     }
 }

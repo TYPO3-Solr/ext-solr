@@ -24,10 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\Plugin\Results;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
+use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
-use ApacheSolrForTypo3\Solr\Controller\SearchController;
+use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -164,8 +164,8 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertContains("Did you mean", $resultPage1, 'Could not find did you mean in response');
-        $this->assertContains("shoes", $resultPage1, 'Could not find shoes in response');
+        $this->assertContains('Did you mean', $resultPage1, 'Could not find did you mean in response');
+        $this->assertContains('shoes', $resultPage1, 'Could not find shoes in response');
     }
 
     /**
@@ -193,8 +193,8 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
         $resultPage1 = $this->searchResponse->getContent();
 
-        $this->assertContains("Nothing found for shoo", $resultPage1, 'Could not find nothing found message');
-        $this->assertContains("Search instead for shoes", $resultPage1, 'Could not find correction message');
+        $this->assertContains('Nothing found for shoo', $resultPage1, 'Could not find nothing found message');
+        $this->assertContains('Search instead for shoes', $resultPage1, 'Could not find correction message');
     }
 
     /**
@@ -229,7 +229,6 @@ class SearchControllerTest extends IntegrationTest
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
-
         // now we set the facet type for "type" facet to fluid and expect that we get a rendered facet
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['initializeWithEmptyQuery'] = 1;
@@ -256,7 +255,6 @@ class SearchControllerTest extends IntegrationTest
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
-
 
         // now we set the facet type for "type" facet to fluid and expect that we get a rendered facet
         $overwriteConfiguration = [];
@@ -301,7 +299,6 @@ class SearchControllerTest extends IntegrationTest
         $this->assertContains('fluidfacet', $resultPage1, 'fluidfacet should be generated since initializeWithQuery was configured with a query that should produce results');
         $this->assertNotContains('results-entry', $resultPage1, 'No results should be visible since showResultsOfInitialQuery was set to false');
     }
-
 
     /**
      * @test
@@ -412,7 +409,6 @@ class SearchControllerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
-
         $this->indexPages([1, 2]);
 
         //not in the content but we expect to get shoes suggested
@@ -434,7 +430,7 @@ class SearchControllerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
-        $womanPages = [4,5,8];
+        $womanPages = [4, 5, 8];
         $menPages = [2];
         $this->indexPages($womanPages);
         $this->indexPages($menPages);
@@ -445,7 +441,6 @@ class SearchControllerTest extends IntegrationTest
         // when we sort by lex "men" should appear before "woman" even when only one option is available
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['faceting.']['facets.']['subtitle.']['sortBy'] = 'lex';
-
 
         /** @var $configurationManager ConfigurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
@@ -475,7 +470,7 @@ class SearchControllerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
-        $womanPages = [4,5,8];
+        $womanPages = [4, 5, 8];
         $menPages = [2];
         $this->indexPages($womanPages);
         $this->indexPages($menPages);
@@ -530,7 +525,7 @@ class SearchControllerTest extends IntegrationTest
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
 
-        $womanPages = [4,5,8];
+        $womanPages = [4, 5, 8];
         $menPages = [2];
         $this->indexPages($womanPages);
         $this->indexPages($menPages);
@@ -541,7 +536,6 @@ class SearchControllerTest extends IntegrationTest
         // when we sort by lex "men" should appear before "woman" even when only one option is available
         $overwriteConfiguration = [];
         $overwriteConfiguration['search.']['faceting.']['facets.']['subtitle.']['manualSortOrder'] = 'men, woman';
-
 
         /** @var $configurationManager ConfigurationManager */
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
@@ -562,7 +556,6 @@ class SearchControllerTest extends IntegrationTest
         $this->assertContains('fluidfacet', $resultPage1, 'Could not find fluidfacet class that indicates the facet was rendered with fluid');
         $this->assertContains('pages</a> <span class="facet-result-count">', $resultPage1, 'Could not find facet option for pages');
     }
-
 
     /**
      * @test
@@ -600,7 +593,7 @@ class SearchControllerTest extends IntegrationTest
         $resultPage1 = $this->searchResponse->getContent();
 
         $this->assertEquals('503 Service Unavailable', $this->searchResponse->getStatus());
-        $this->assertContains("Search is currently not available.", $resultPage1, 'Response did not contain solr unavailable error message');
+        $this->assertContains('Search is currently not available.', $resultPage1, 'Response did not contain solr unavailable error message');
     }
 
     /**
@@ -622,7 +615,6 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($searchRequest2, $searchResponse2);
         $resultPage2 = $this->searchResponse->getContent();
 
-
         $this->assertContainerByIdContains('>shoe</a>', $resultPage2, 'tx-solr-lastsearches');
     }
 
@@ -643,10 +635,9 @@ class SearchControllerTest extends IntegrationTest
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
 
         $resultPage = $this->searchResponse->getContent();
-        $this->assertContains("Displaying results 1 to 8 of 8", $resultPage, '');
+        $this->assertContains('Displaying results 1 to 8 of 8', $resultPage, '');
         $this->assertContainerByIdContains('<option selected="selected" value="10">10</option>', $resultPage, 'results-per-page');
     }
-
 
     /**
      * @test
@@ -806,7 +797,7 @@ class SearchControllerTest extends IntegrationTest
 
         $this->indexPages([1, 2]);
         $this->searchController->processRequest($request, $this->searchResponse);
-        $this->assertContains("Products", $this->searchResponse->getContent());
+        $this->assertContains('Products', $this->searchResponse->getContent());
     }
 
     /**
@@ -852,7 +843,6 @@ class SearchControllerTest extends IntegrationTest
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
         $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
 
-
         $overwriteConfiguration = [];
         $overwriteConfiguration['settings.']['foo.']['bar'] = 'mytestsetting';
 
@@ -886,7 +876,6 @@ class SearchControllerTest extends IntegrationTest
         $this->assertContains('Custom Integration Test Search Template entry Template', $result, 'Can not set entry template file name in typoscript');
     }
 
-
     /**
      * @param string $content
      * @param string $id
@@ -912,7 +901,7 @@ class SearchControllerTest extends IntegrationTest
     protected function assertContainerByIdContains($expectedToContain, $content, $id)
     {
         $containerContent = $this->getIdContent($content, $id);
-        $this->assertContains($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id .' contains ' . $expectedToContain);
+        $this->assertContains($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id . ' contains ' . $expectedToContain);
     }
 
     /**
@@ -925,9 +914,8 @@ class SearchControllerTest extends IntegrationTest
     protected function assertContainerByIdNotContains($expectedToContain, $content, $id)
     {
         $containerContent = $this->getIdContent($content, $id);
-        $this->assertNotContains($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id .' not contains ' . $expectedToContain);
+        $this->assertNotContains($expectedToContain, $containerContent, 'Failed asserting that container with id ' . $id . ' not contains ' . $expectedToContain);
     }
-
 
     /**
      * Assertion to check if the pagination markup is present in the response.
@@ -980,7 +968,6 @@ class SearchControllerTest extends IntegrationTest
 
         return $request;
     }
-
 
     /**
      * @return Response

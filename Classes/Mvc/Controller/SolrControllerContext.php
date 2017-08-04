@@ -23,7 +23,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Mvc\Controller
  */
 class SolrControllerContext extends ControllerContext
 {

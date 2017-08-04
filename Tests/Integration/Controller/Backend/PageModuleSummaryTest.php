@@ -39,7 +39,8 @@ class PageModuleSummaryTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetSummary() {
+    public function canGetSummary()
+    {
         $flexFormData = $this->getFixtureContentByName('fakeFlexform.xml');
 
         $fakeRow = ['pi_flexform' => $flexFormData];
@@ -54,7 +55,5 @@ class PageModuleSummaryTest extends IntegrationTest
         $this->assertContains('<td>boostQuery</td>', $result, 'Summary did not contain boostQuery');
         $this->assertContains('<td>10</td>', $result, 'Summary did not contain resultsPerPage');
         $this->assertContains('<td>myTemplateFile.html</td>', $result, 'Templatefile not in summary');
-
     }
-
 }

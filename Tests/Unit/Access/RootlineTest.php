@@ -43,7 +43,7 @@ class RootlineTest extends UnitTest
         return [
             'simple' => ['string' => 'c:0', 'expectedGroups' => [0]],
             'simpleOneGroup' => ['string' => 'c:1', 'expectedGroups' => [1]],
-            'mixed' => ['string' => '35:1/c:0', 'expectedGroups' => [0,1]]
+            'mixed' => ['string' => '35:1/c:0', 'expectedGroups' => [0, 1]]
         ];
     }
 

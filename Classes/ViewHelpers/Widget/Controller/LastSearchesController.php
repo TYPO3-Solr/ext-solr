@@ -15,9 +15,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
-use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,7 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller
  */
 class LastSearchesController extends AbstractWidgetController
 {

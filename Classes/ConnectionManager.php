@@ -489,8 +489,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
         return $connection;
     }
 
-
-
     /**
      * Creates a human readable label from the connections' configuration.
      *
@@ -503,7 +501,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
             . ' (pid: ' . $connection['rootPageUid']
             . ', language: ' . $this->systemLanguageRepository->findOneLanguageTitleByLanguageId($connection['language'])
             . ') - '
-#			. $connection['solrScheme'] . '://'
+//			. $connection['solrScheme'] . '://'
             . $connection['solrHost'] . ':'
             . $connection['solrPort']
             . $connection['solrPath'];

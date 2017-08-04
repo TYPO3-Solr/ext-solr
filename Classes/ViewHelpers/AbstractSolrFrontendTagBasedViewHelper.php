@@ -14,17 +14,15 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
-use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrTagBasedViewHelper;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
 /**
  * Class AbstractTagBasedViewHelper
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers
  */
 abstract class AbstractSolrFrontendTagBasedViewHelper extends AbstractSolrTagBasedViewHelper
 {

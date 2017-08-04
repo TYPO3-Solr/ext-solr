@@ -358,7 +358,7 @@ class SearchResultSet
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsAutoCorrected()
     {
@@ -366,7 +366,7 @@ class SearchResultSet
     }
 
     /**
-     * @param boolean $wasAutoCorrected
+     * @param bool $wasAutoCorrected
      */
     public function setIsAutoCorrected($wasAutoCorrected)
     {

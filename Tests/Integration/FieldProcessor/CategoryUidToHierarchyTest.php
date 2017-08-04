@@ -44,7 +44,7 @@ class CategoryUidToHierarchyTest extends IntegrationTest
             /** @var $processor CategoryUidToHierarchy */
         $processor = GeneralUtility::makeInstance(CategoryUidToHierarchy::class);
         $result = $processor->process([2]);
-        $expectedResult = ['0-1/','1-1/2/'];
+        $expectedResult = ['0-1/', '1-1/2/'];
         $this->assertSame($result, $expectedResult, 'Hierarchy processor did not build expected hierarchy');
     }
 }

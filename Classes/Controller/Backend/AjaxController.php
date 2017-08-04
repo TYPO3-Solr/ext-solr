@@ -76,5 +76,4 @@ class AjaxController
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $connectionManager->updateConnections();
     }
-
 }

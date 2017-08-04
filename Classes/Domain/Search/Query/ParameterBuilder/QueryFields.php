@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * The QueryFields class holds all information for the query which fields should be used to query (Solr qf parameter).
  *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class QueryFields implements ParameterBuilder
 {
@@ -76,7 +75,8 @@ class QueryFields implements ParameterBuilder
      * @param string $delimiter
      * @return string
      */
-    public function toString($delimiter = ' ') {
+    public function toString($delimiter = ' ')
+    {
         $queryFieldString = '';
 
         foreach ($this->queryFields as $fieldName => $fieldBoost) {
@@ -99,7 +99,8 @@ class QueryFields implements ParameterBuilder
      * @param string $delimiter
      * @return QueryFields
      */
-    public static function fromString($queryFieldsString, $delimiter = ',') {
+    public static function fromString($queryFieldsString, $delimiter = ',')
+    {
         $fields = GeneralUtility::trimExplode($delimiter, $queryFieldsString, true);
         $queryFields = [];
 
@@ -115,6 +116,6 @@ class QueryFields implements ParameterBuilder
             $queryFields[$fieldName] = $boost;
         }
 
-        return new QueryFields($queryFields);
+        return new self($queryFields);
     }
 }

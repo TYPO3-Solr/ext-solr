@@ -14,8 +14,8 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Debug;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\Score\ScoreCalculationService;
 use ApacheSolrForTypo3\Solr\ViewHelpers\AbstractSolrFrontendViewHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -26,7 +26,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Debug
  */
 class DocumentScoreAnalyzerViewHelper extends AbstractSolrFrontendViewHelper
 {

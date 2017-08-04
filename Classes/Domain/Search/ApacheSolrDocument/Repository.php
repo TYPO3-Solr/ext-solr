@@ -105,7 +105,7 @@ class Repository implements SingletonInterface
      */
     protected function getQueryForPage($pageId)
     {
-            /** @var $siteRepository SiteRepository */
+        /** @var $siteRepository SiteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getSiteByPageId($pageId);
         /* @var Query $query */

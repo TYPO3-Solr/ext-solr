@@ -24,20 +24,17 @@ namespace ApacheSolrForTypo3\Solr;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationPageResolver;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\System\DateTime\FormatService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\TypoScript\ExtendedTemplateService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 
@@ -194,10 +191,10 @@ class Util
     /**
      * Initializes a TSFE, if required and builds an configuration array, containing the solr configuration.
      *
-     * @param integer $pageId
+     * @param int $pageId
      * @param string $path
-     * @param boolean $initializeTsfe
-     * @param integer $language
+     * @param bool $initializeTsfe
+     * @param int $language
      * @return array
      */
     protected static function buildConfigurationArray($pageId, $path, $initializeTsfe, $language)

@@ -40,7 +40,8 @@ class TCAServiceTest extends UnitTest
      *
      * @test
      */
-    public function getIsEnabledRecordDetectDeletedRecord() {
+    public function getIsEnabledRecordDetectDeletedRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -64,7 +65,8 @@ class TCAServiceTest extends UnitTest
      *
      * @test
      */
-    public function getIsEnabledRecordDetectNonDeletedRecord() {
+    public function getIsEnabledRecordDetectNonDeletedRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -88,7 +90,8 @@ class TCAServiceTest extends UnitTest
      *
      * @test
      */
-    public function getIsEnabledRecordDetectsPageConfiguredWithNoSearch() {
+    public function getIsEnabledRecordDetectsPageConfiguredWithNoSearch()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -112,7 +115,8 @@ class TCAServiceTest extends UnitTest
      *
      * @test
      */
-    public function getIsEnabledRecordEmptyRecord() {
+    public function getIsEnabledRecordEmptyRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -132,7 +136,8 @@ class TCAServiceTest extends UnitTest
     /**
      * @test
      */
-    public function isEndTimeInPastCanDetectedEndtimeThatIsInPast() {
+    public function isEndTimeInPastCanDetectedEndtimeThatIsInPast()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -153,11 +158,11 @@ class TCAServiceTest extends UnitTest
         $this->assertTrue($isEndTimeInPast, 'Endtime in past was not detected as endtime in past');
     }
 
-
     /**
      * @test
      */
-    public function isEndTimeInPastCanDetectedEndtimeThatIsNotInPast() {
+    public function isEndTimeInPastCanDetectedEndtimeThatIsNotInPast()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -181,7 +186,8 @@ class TCAServiceTest extends UnitTest
     /**
      * @test
      */
-    public function isEndTimeInPastCanDetectedEndtimeIsEmpty(){
+    public function isEndTimeInPastCanDetectedEndtimeIsEmpty()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -206,7 +212,8 @@ class TCAServiceTest extends UnitTest
     /**
      * @test
      */
-    public function isStartTimeInFutureCanDetectedStartTimeInFuture() {
+    public function isStartTimeInFutureCanDetectedStartTimeInFuture()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -230,7 +237,8 @@ class TCAServiceTest extends UnitTest
     /**
      * @test
      */
-    public function isStartTimeInFutureCanDetectedStartTimeNotInFuture() {
+    public function isStartTimeInFutureCanDetectedStartTimeNotInFuture()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -254,7 +262,8 @@ class TCAServiceTest extends UnitTest
     /**
      * @test
      */
-    public function isHiddenCanDetectHiddenRecord() {
+    public function isHiddenCanDetectHiddenRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -277,7 +286,8 @@ class TCAServiceTest extends UnitTest
     /**
      * @test
      */
-    public function isHiddenCanDetectNonHiddenRecord() {
+    public function isHiddenCanDetectNonHiddenRecord()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [
@@ -300,7 +310,8 @@ class TCAServiceTest extends UnitTest
     /**
      * @test
      */
-    public function canNormalizeFrontendGroupField() {
+    public function canNormalizeFrontendGroupField()
+    {
         $fakeTCA = [
             'pages' => [
                 'ctrl' => [

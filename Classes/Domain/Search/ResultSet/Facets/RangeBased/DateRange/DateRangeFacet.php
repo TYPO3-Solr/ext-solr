@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 class DateRangeFacet extends AbstractFacet
 {
@@ -69,7 +68,6 @@ class DateRangeFacet extends AbstractFacet
     {
         return $this->range;
     }
-
 
     /**
      * Get facet partial name used for rendering the facet

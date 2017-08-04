@@ -24,15 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Test\System\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
-use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
 use ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
-use TYPO3\CMS\Extbase\Service\TypoScriptService;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>
@@ -147,5 +140,4 @@ class FlexFormUserFunctionsTest extends UnitTest
         // we expect to get to options, the configured option and a default reset option
         $this->assertCount(2, $parentInformation['items']);
     }
-
 }

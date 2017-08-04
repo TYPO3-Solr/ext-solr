@@ -144,6 +144,6 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor::class;
 }
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;

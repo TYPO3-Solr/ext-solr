@@ -28,12 +28,10 @@ use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\Query\Modifier\Statistics;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use Dkd\DkdReports\Reports\Status;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
@@ -69,7 +67,8 @@ class IndexServiceTest extends UnitTest
     /**
      * @return void
      */
-    public function setUp() {
+    public function setUp()
+    {
         $this->siteMock = $this->getDumbMock(Site::class);
         $this->queueMock = $this->getDumbMock(Queue::class);
         $this->dispatcherMock = $this->getDumbMock(Dispatcher::class);

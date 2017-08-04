@@ -32,7 +32,6 @@ use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Testcase to check if we can index page documents using the PageIndexer
@@ -87,7 +86,6 @@ class PageIndexerTest extends IntegrationTest
         $this->assertContains('"title":"hello solr"', $solrContent, 'Could not index document into solr');
         $this->assertContains('"custom_stringS":"my text from custom page type"', $solrContent, 'Document does not contains value build with typoscript');
     }
-
 
     /**
      * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.

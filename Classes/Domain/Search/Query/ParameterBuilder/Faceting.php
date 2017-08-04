@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The Faceting ParameterProvider is responsible to build the solr query parameters
  * that are needed for the highlighting.
  *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Faceting implements ParameterBuilder
 {
@@ -88,7 +87,7 @@ class Faceting implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsEnabled()
     {
@@ -96,7 +95,7 @@ class Faceting implements ParameterBuilder
     }
 
     /**
-     * @param boolean $isEnabled
+     * @param bool $isEnabled
      */
     public function setIsEnabled($isEnabled)
     {
@@ -255,14 +254,13 @@ class Faceting implements ParameterBuilder
     {
         $isEnabled = $solrConfiguration->getSearchFaceting();
         if (!$isEnabled) {
-            return new Faceting(false);
+            return new self(false);
         }
 
         $minCount = $solrConfiguration->getSearchFacetingMinimumCount();
         $limit = $solrConfiguration->getSearchFacetingFacetLimit();
         $sorting = $solrConfiguration->getSearchFacetingSortBy();
 
-        return new Faceting($isEnabled, $sorting, $minCount, $limit);
+        return new self($isEnabled, $sorting, $minCount, $limit);
     }
-
 }

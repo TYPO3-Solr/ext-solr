@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

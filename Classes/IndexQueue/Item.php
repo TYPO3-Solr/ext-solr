@@ -177,7 +177,7 @@ class Item
     }
 
     /**
-     * @param integer $uid
+     * @param int $uid
      */
     public function setRootPageUid($uid)
     {

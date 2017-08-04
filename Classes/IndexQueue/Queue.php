@@ -519,7 +519,7 @@ class Queue
      * @param string $itemType The item's type, usually a table name.
      * @param string $itemUid The item's uid, usually an integer uid, could be a
      *      different value for non-database-record types.
-     * @param integer $rootPageId
+     * @param int $rootPageId
      * @return bool TRUE if the item is found in the queue, FALSE otherwise
      */
     public function containsItemWithRootPageId($itemType, $itemUid, $rootPageId)

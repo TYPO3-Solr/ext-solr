@@ -22,7 +22,6 @@ use DateTime;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 class DateRange extends AbstractRangeFacetItem
 {
@@ -70,7 +69,6 @@ class DateRange extends AbstractRangeFacetItem
         if ($startRequested instanceof DateTime && $endRequested instanceof DateTime) {
             $label = $this->getRangeString();
         }
-
 
         parent::__construct($facet, $label, $documentCount, $selected);
     }

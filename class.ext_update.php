@@ -31,9 +31,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Update class for the extension manager.
  *
- * @package TYPO3
  */
-class ext_update {
+class ext_update
+{
     /**
      * Array of flash messages (params) array[][status,title,message]
      *
@@ -49,7 +49,8 @@ class ext_update {
     /**
      * Constructor initializing all migrations
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->migrators[] = new \ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler();
     }
 
@@ -59,13 +60,14 @@ class ext_update {
      *
      * @return bool
      */
-    public function access() {
+    public function access()
+    {
         foreach ($this->migrators as $migration) {
             if ($migration->isNeeded()) {
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -73,7 +75,8 @@ class ext_update {
      *
      * @return string
      */
-    public function main() {
+    public function main()
+    {
         foreach ($this->migrators as $migration) {
             if ($migration->isNeeded()) {
                 try {
@@ -91,7 +94,8 @@ class ext_update {
      *
      * @return string
      */
-    protected function generateOutput() {
+    protected function generateOutput()
+    {
         $flashMessages = [];
         foreach ($this->messages as $messageItem) {
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
