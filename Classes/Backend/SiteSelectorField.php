@@ -52,16 +52,16 @@ class SiteSelectorField
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
 
         $sites = $siteRepository->getAvailableSites();
-        $selector = '<select name="' . $selectorName . '" class="form-control">';
+        $selector = '<select name="' . htmlspecialchars($selectorName) . '" class="form-control">';
 
         foreach ($sites as $site) {
             $selectedAttribute = '';
-            if ($selectedSite !== null && $site->getRootPageId() == $selectedSite->getRootPageId()) {
+            if ($selectedSite !== null && $site->getRootPageId() === $selectedSite->getRootPageId()) {
                 $selectedAttribute = ' selected="selected"';
             }
 
-            $selector .= '<option value="' . $site->getRootPageId() . '"' . $selectedAttribute . '>'
-                . $site->getLabel()
+            $selector .= '<option value="' . htmlspecialchars($site->getRootPageId()) . '"' . $selectedAttribute . '>'
+                . htmlspecialchars($site->getLabel())
                 . '</option>';
         }
 
