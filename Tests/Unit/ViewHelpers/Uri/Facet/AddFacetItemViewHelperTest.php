@@ -34,7 +34,6 @@ use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
 class AddFacetItemViewHelperTest extends AbstractFacetItemViewHelperTest
 {
 
-
     /**
      * @test
      */

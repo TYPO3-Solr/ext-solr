@@ -4,7 +4,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 use ApacheSolrForTypo3\Solr\PageDocumentPostProcessor;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-class TestPostProcessor implements PageDocumentPostProcessor{
+class TestPostProcessor implements PageDocumentPostProcessor
+{
 
     /**
      * Allows Modification of the PageDocument
@@ -16,6 +17,6 @@ class TestPostProcessor implements PageDocumentPostProcessor{
      */
     public function postProcessPageDocument(\Apache_Solr_Document $pageDocument, TypoScriptFrontendController $page)
     {
-        $pageDocument->addField('postProcessorField_stringS','postprocessed');
+        $pageDocument->addField('postProcessorField_stringS', 'postprocessed');
     }
 }

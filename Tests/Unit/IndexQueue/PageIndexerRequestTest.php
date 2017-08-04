@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Index Queue Page Indexer request test.
@@ -143,7 +142,7 @@ class PageIndexerRequestTest extends UnitTest
     public function canSetTimeOutFromPHPConfiguration()
     {
         $initialTimeout = ini_get('default_socket_timeout');
-        ini_set('default_socket_timeout',122.5);
+        ini_set('default_socket_timeout', 122.5);
 
         $pageIndexerRequest = $this->getPageIndexerRequest();
         $this->assertSame(122.5, $pageIndexerRequest->getTimeout());
@@ -174,7 +173,7 @@ class PageIndexerRequestTest extends UnitTest
 
         $pageIndexerRequest = $this->getPageIndexerRequest();
         $pageIndexerRequest->setIndexQueueItem($queueItemMock);
-        $pageIndexerRequest->setAuthorizationCredentials('bob','topsecret');
+        $pageIndexerRequest->setAuthorizationCredentials('bob', 'topsecret');
 
         $headers = $pageIndexerRequest->getHeaders();
 
@@ -195,7 +194,6 @@ class PageIndexerRequestTest extends UnitTest
 
         $pageIndexerRequest->setParameter('test', 4711);
         $this->assertSame(4711, $pageIndexerRequest->getParameter('test'), 'Could not get parameter foo after setting it');
-
     }
 
     /**

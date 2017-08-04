@@ -79,7 +79,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      */
     public function activate()
     {
-        $pageIndexingHookRegistration = PageIndexer::class;
+        $pageIndexingHookRegistration = self::class;
 
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['initFEuser'][__CLASS__] = '&' . $pageIndexingHookRegistration . '->authorizeFrontendUser';
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['tslib_fe-PostProc'][__CLASS__] = '&' . $pageIndexingHookRegistration . '->disableCaching';
@@ -109,9 +109,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         return $this->responseData;
     }
 
-    #
-    # Indexer authorisation for access restricted pages / content
-    #
+    //
+    // Indexer authorisation for access restricted pages / content
+    //
 
     /**
      * Fakes a logged in user to retrieve access restricted content.
@@ -215,9 +215,9 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
         return $highestPriority;
     }
 
-    #
-    # Indexing
-    #
+    //
+    // Indexing
+    //
 
     /**
      * Generates the current page's URL.

@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\RangeBased
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacetQueryBuilder;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange\DateRangeFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
@@ -74,6 +73,5 @@ class QueryGroupFacetQueryBuilderTest extends UnitTest
 
         $this->assertSame($facetParameters['facet.query'][0], '{!ex=created}created:[NOW/DAY-7DAYS TO *]', ' Can not build first facet query as expected');
         $this->assertSame($facetParameters['facet.query'][1], '{!ex=created}created:[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]', 'Can not build second facet query as expected');
-
     }
 }

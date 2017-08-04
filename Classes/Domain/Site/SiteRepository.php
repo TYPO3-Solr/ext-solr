@@ -28,7 +28,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Site;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Service\SiteService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -185,7 +184,7 @@ class SiteRepository
     /**
      * Creates an instance of the Site object.
      *
-     * @param integer $rootPageId
+     * @param int $rootPageId
      * @throws \InvalidArgumentException
      * @return Site
      */
@@ -218,7 +217,7 @@ class SiteRepository
      */
     protected function getDomainFromConfigurationOrFallbackToDomainRecord($rootPageId)
     {
-            /** @var $siteService SiteService */
+        /** @var $siteService SiteService */
         $siteService = GeneralUtility::makeInstance(SiteService::class);
         $domain = $siteService->getFirstDomainForRootPage($rootPageId);
         if ($domain === '') {

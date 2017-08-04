@@ -169,13 +169,12 @@ class RootPageResolver implements SingletonInterface
         return $rootPageFromRootLine === 0 ? $rootPageId : $rootPageFromRootLine;
     }
 
-
     /**
      * This method determines the responsible site roots for a record by getting the rootPage of the record and checking
      * if the pid is references in another site with additionalPageIds and returning those rootPageIds as well.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return array
      */
     protected function buildResponsibleRootPageIds($table, $uid)
@@ -187,7 +186,7 @@ class RootPageResolver implements SingletonInterface
         }
         if ($this->extensionConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot()) {
             $recordPageId = $this->getRecordPageId($table, $uid);
-            if($recordPageId === 0) {
+            if ($recordPageId === 0) {
                 return $rootPages;
             }
             $alternativeSiteRoots = $this->getAlternativeSiteRootPagesIds($table, $uid, $recordPageId);
@@ -221,7 +220,7 @@ class RootPageResolver implements SingletonInterface
      * Returns the pageId of the record or 0 when no valid record was given.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return mixed
      */
     protected function getRecordPageId($table, $uid)
@@ -254,7 +253,7 @@ class RootPageResolver implements SingletonInterface
      * Retrieves an optimized array structure we the monitored pageId as key and the relevant site rootIds as value.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return array
      */
     protected function getSiteRootsByObservedPageIds($table, $uid)
@@ -276,7 +275,7 @@ class RootPageResolver implements SingletonInterface
      * are responsible for this record by referencing the pageId in additionalPageIds configuration.
      *
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @return array
      */
     protected function buildSiteRootsByObservedPageIds($table, $uid)

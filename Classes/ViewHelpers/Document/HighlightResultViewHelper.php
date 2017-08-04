@@ -25,7 +25,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Document
  */
 class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
 {
@@ -94,7 +93,7 @@ class HighlightResultViewHelper extends AbstractSolrFrontendViewHelper
             return htmlspecialchars($content);
         }
 
-        $wrapParts = GeneralUtility::trimExplode("|", $wrap);
+        $wrapParts = GeneralUtility::trimExplode('|', $wrap);
         if (count($wrapParts) !== 2) {
             return htmlspecialchars($content);
         }

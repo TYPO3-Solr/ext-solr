@@ -62,7 +62,7 @@ class RootPageResolverTest extends UnitTest
         /** @var $rootPageResolver RootPageResolver */
         $this->rootPageResolver = $this->getMockBuilder(RootPageResolver::class)
             ->setConstructorArgs([$this->recordServiceMock, $this->cacheMock])
-            ->setMethods(['getIsRootPageId','getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid', 'getRecordPageId'])->getMock();
+            ->setMethods(['getIsRootPageId', 'getAlternativeSiteRootPagesIds', 'getRootPageIdByTableAndUid', 'getRecordPageId'])->getMock();
     }
 
     /**
@@ -74,12 +74,12 @@ class RootPageResolverTest extends UnitTest
         $this->rootPageResolver->expects($this->once())->method('getRecordPageId')->will($this->returnValue(111));
 
         $this->rootPageResolver->expects($this->once())->method('getIsRootPageId')->will($this->returnValue(true));
-        $this->rootPageResolver->expects($this->once())->method('getAlternativeSiteRootPagesIds')->will($this->returnValue([333,444]));
+        $this->rootPageResolver->expects($this->once())->method('getAlternativeSiteRootPagesIds')->will($this->returnValue([333, 444]));
 
         $resolvedRootPages = $this->rootPageResolver->getResponsibleRootPageIds('pages', 41);
 
         $message = 'Root page resolver did not retrieve and merge root page ids from root line and typoscript references';
-        $this->assertEquals([222,333,444], $resolvedRootPages, $message);
+        $this->assertEquals([222, 333, 444], $resolvedRootPages, $message);
     }
 
     /**
@@ -91,18 +91,19 @@ class RootPageResolverTest extends UnitTest
         $this->rootPageResolver->expects($this->once())->method('getRecordPageId')->will($this->returnValue(111));
 
         $this->rootPageResolver->expects($this->once())->method('getIsRootPageId')->will($this->returnValue(false));
-        $this->rootPageResolver->expects($this->once())->method('getAlternativeSiteRootPagesIds')->will($this->returnValue([333,444]));
+        $this->rootPageResolver->expects($this->once())->method('getAlternativeSiteRootPagesIds')->will($this->returnValue([333, 444]));
 
         $resolvedRootPages = $this->rootPageResolver->getResponsibleRootPageIds('pages', 41);
 
         $message = 'Root page resolver should only return rootPageIds from references';
-        $this->assertEquals([333,444], $resolvedRootPages, $message);
+        $this->assertEquals([333, 444], $resolvedRootPages, $message);
     }
 
     /**
      * @test
      */
-    public function getIsRootPageIdWithPageIdZero() {
+    public function getIsRootPageIdWithPageIdZero()
+    {
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
         $rootPage = $rootPageResolver->getIsRootPageId(0);
 
@@ -112,7 +113,8 @@ class RootPageResolverTest extends UnitTest
     /**
      * @test
      */
-    public function getIsRootPageWithPageIdMinusOne() {
+    public function getIsRootPageWithPageIdMinusOne()
+    {
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
         $rootPage = $rootPageResolver->getIsRootPageId(-1);
 
@@ -122,7 +124,8 @@ class RootPageResolverTest extends UnitTest
     /**
      * @test
      */
-    public function getIsRootPageIdWithUnknownPageId() {
+    public function getIsRootPageIdWithUnknownPageId()
+    {
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
 
         $this->setExpectedException(\InvalidArgumentException::class);
@@ -137,6 +140,4 @@ class RootPageResolverTest extends UnitTest
         $this->cacheMock = $this->getDumbMock(TwoLevelCache::class);
         $this->cacheMock->method('get')->will($this->returnValue(false));
     }
-
-
 }

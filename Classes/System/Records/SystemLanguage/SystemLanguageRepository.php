@@ -26,10 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Records\SystemLanguage;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * SystemLanguageRepository to encapsulate the database access for records used in solr.

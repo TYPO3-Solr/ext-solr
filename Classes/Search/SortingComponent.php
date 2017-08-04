@@ -99,5 +99,4 @@ class SortingComponent extends AbstractComponent implements QueryAware, SearchRe
     {
         $this->searchRequest = $searchRequest;
     }
-
 }

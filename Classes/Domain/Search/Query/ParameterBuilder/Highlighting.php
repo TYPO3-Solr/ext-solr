@@ -30,7 +30,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
  * The Highlighting ParameterProvider is responsible to build the solr query parameters
  * that are needed for the highlighting.
  *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Highlighting implements ParameterBuilder
 {
@@ -145,7 +144,7 @@ class Highlighting implements ParameterBuilder
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsEnabled()
     {
@@ -153,7 +152,7 @@ class Highlighting implements ParameterBuilder
     }
 
     /**
-     * @param boolean $isEnabled
+     * @param bool $isEnabled
      */
     public function setIsEnabled($isEnabled)
     {
@@ -203,7 +202,7 @@ class Highlighting implements ParameterBuilder
     {
         $isEnabled = $solrConfiguration->getSearchResultsHighlighting();
         if (!$isEnabled) {
-            return new Highlighting(false);
+            return new self(false);
         }
 
         $fragmentSize = $solrConfiguration->getSearchResultsHighlightingFragmentSize();
@@ -212,7 +211,6 @@ class Highlighting implements ParameterBuilder
         $prefix = isset($wrap[0]) ? $wrap[0] : '';
         $postfix = isset($wrap[1]) ? $wrap[1] : '';
 
-
-        return new Highlighting($isEnabled, $fragmentSize, $highlightingFields, $prefix, $postfix);
+        return new self($isEnabled, $fragmentSize, $highlightingFields, $prefix, $postfix);
     }
 }

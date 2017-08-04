@@ -135,7 +135,7 @@ class SiteRepositoryTest extends UnitTest
             '234|2' => ['rootPageUid' => 234],
         ]);
 
-        $this->assertThatSitesAreCreatedWithPageIds([123,234]);
+        $this->assertThatSitesAreCreatedWithPageIds([123, 234]);
         $this->assertCacheIsWritten();
 
         $sites = $this->siteRepository->getAvailableSites();
@@ -154,11 +154,11 @@ class SiteRepositoryTest extends UnitTest
             '123|2' => ['rootPageUid' => 123],
             '234|0' => ['rootPageUid' => 234]
         ]);
-        $this->assertThatSitesAreCreatedWithPageIds([123,234]);
+        $this->assertThatSitesAreCreatedWithPageIds([123, 234]);
 
         $siteOne = $this->siteRepository->getFirstAvailableSite();
         $languages = $this->siteRepository->getAllLanguages($siteOne);
-        $this->assertEquals([0,1,2], $languages, 'Could not get languages for site');
+        $this->assertEquals([0, 1, 2], $languages, 'Could not get languages for site');
     }
 
     /**
@@ -183,8 +183,8 @@ class SiteRepositoryTest extends UnitTest
     protected function assertThatSitesAreCreatedWithPageIds(array $pageIds)
     {
         $this->siteRepository->expects($this->any())->method('buildSite')->will(
-            $this->returnCallback(function($idToUse) use ($pageIds) {
-                if(in_array($idToUse, $pageIds)) {
+            $this->returnCallback(function ($idToUse) use ($pageIds) {
+                if (in_array($idToUse, $pageIds)) {
                     $site = $this->getDumbMock(Site::class);
                     $site->expects($this->any())->method('getRootPageId')->will(
                         $this->returnValue($idToUse)
@@ -196,8 +196,8 @@ class SiteRepositoryTest extends UnitTest
     }
 
     /**
-     * @param integer $forPageId
-     * @param integer $rootPageId
+     * @param int $forPageId
+     * @param int $rootPageId
      */
     protected function fakeExistingRootPage($forPageId, $rootPageId)
     {
@@ -213,4 +213,4 @@ class SiteRepositoryTest extends UnitTest
             $this->returnValue($sitesInRegistry)
         );
     }
- }
+}

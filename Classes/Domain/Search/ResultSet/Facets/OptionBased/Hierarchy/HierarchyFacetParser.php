@@ -83,9 +83,9 @@ class HierarchyFacetParser extends AbstractFacetParser
     protected function getPathAsArray($path)
     {
         $path = str_replace('\/', '@@@', $path);
-        $path = rtrim($path, "/");
+        $path = rtrim($path, '/');
         $segments = explode('/', $path);
-        return array_map(function($item) {
+        return array_map(function ($item) {
             return str_replace('@@@', '/', $item);
         }, $segments);
     }

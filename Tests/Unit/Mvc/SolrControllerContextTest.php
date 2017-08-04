@@ -24,10 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Test\Mvc\ControllerContext;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>

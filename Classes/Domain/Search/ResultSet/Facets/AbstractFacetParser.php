@@ -25,7 +25,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets
  */
 abstract class AbstractFacetParser implements FacetParserInterface
 {
@@ -83,7 +82,7 @@ abstract class AbstractFacetParser implements FacetParserInterface
 
     /**
      * @param mixed $value
-     * @param integer $count
+     * @param int $count
      * @param string $facetName
      * @param array $facetConfiguration
      * @return string
@@ -102,7 +101,6 @@ abstract class AbstractFacetParser implements FacetParserInterface
         );
     }
 
-
     /**
      * Retrieves the active facetValue for a facet from the search request.
      * @param SearchResultSet $resultSet
@@ -116,7 +114,6 @@ abstract class AbstractFacetParser implements FacetParserInterface
 
         return $activeFacetValues;
     }
-
 
     /**
      * @param array $facetValuesFromSolrResponse
@@ -172,7 +169,7 @@ abstract class AbstractFacetParser implements FacetParserInterface
     /**
      * @param mixed $value
      * @param array $facetConfiguration
-     * @return boolean
+     * @return bool
      */
     protected function getIsExcludedFacetValue($value, array $facetConfiguration)
     {

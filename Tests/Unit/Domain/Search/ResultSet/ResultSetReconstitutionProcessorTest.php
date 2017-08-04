@@ -24,20 +24,15 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\ResultSetReconstitutionProcessor;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\Helper\FakeObjectManager;
-use TYPO3\CMS\Core\TimeTracker\TimeTracker;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\ContentObject\CaseContentObject;
-use TYPO3\CMS\Frontend\ContentObject\TextContentObject;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test case for the ObjectReconstitutionProcessor.
@@ -77,7 +72,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         // before the reconstitution of the domain object from the response we expect that no spelling suggestions
         // are present
         $this->assertFalse($searchResultSet->getHasSpellCheckingSuggestions());
-
 
         $processor = new ResultSetReconstitutionProcessor();
         $processor->process($searchResultSet);
@@ -182,7 +176,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $this->assertSame('event', $optionFacet->getOptions()->getByPosition(0)->getValue(), 'Skipping configured value not working as expected');
     }
 
-
     /**
      * @test
      */
@@ -225,7 +218,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $this->assertSame('myType', $firstFacet->getName(), 'Unexpected facet name for first facet');
         $this->assertFalse($firstFacet->getAllRequirementsMet(), 'Unexpected state of allRequirementsMet');
     }
-
 
     /**
      * @test
@@ -348,7 +340,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $this->assertSame('page', $option2->getValue());
     }
 
-
     /**
      * @test
      */
@@ -427,7 +418,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $this->assertCount(2, $facets->getByPosition(0)->getOptions());
     }
 
-
     /**
      * @test
      */
@@ -437,7 +427,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
             $this->returnCallback(function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-
             })
         );
 
@@ -488,7 +477,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
             $this->returnCallback(function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-
             })
         );
 
@@ -531,7 +519,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
             $this->returnCallback(function ($name) {
                 return $name == 'type' ? ['tx_solr_file'] : [];
-
             })
         );
 
@@ -569,7 +556,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $searchResultSet->getUsedSearchRequest()->expects($this->any())->method('getActiveFacetValuesByName')->will(
             $this->returnCallback(function ($name) {
                 return $name == 'type' ? ['pages'] : [];
-
             })
         );
 
@@ -617,7 +603,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
                 } else {
                     return [];
                 }
-
             })
         );
 
@@ -1014,7 +999,6 @@ class ResultSetReconstitutionProcessorTest extends UnitTest
         $this->assertEquals(1, $searchResultSet->getSortings()->getCount(), 'No sorting was created');
         $this->assertFalse($searchResultSet->getSortings()->getHasSelected(), 'Expected that no selected sorting was present');
     }
-
 
     /**
      * @test

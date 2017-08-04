@@ -78,5 +78,4 @@ class PathTest extends UnitTest
 
         $this->assertFalse($isValidPath);
     }
-
 }

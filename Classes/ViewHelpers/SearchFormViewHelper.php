@@ -16,13 +16,11 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
 
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-
 /**
  * Class SearchFormViewHelper
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers
  */
 class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
 {
@@ -78,12 +76,12 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * @param int|NULL $pageUid When not set current page is used
      * @param array|NULL $additionalFilters Additional filters
      * @param array $additionalParams query parameters to be attached to the resulting URI
-     * @param integer $pageType type of the target page. See typolink.parameter
-     * @param boolean $noCache set this to disable caching for the target page. You should not need this.
-     * @param boolean $noCacheHash set this to supress the cHash query parameter created by TypoLink. You should not need this.
+     * @param int $pageType type of the target page. See typolink.parameter
+     * @param bool $noCache set this to disable caching for the target page. You should not need this.
+     * @param bool $noCacheHash set this to supress the cHash query parameter created by TypoLink. You should not need this.
      * @param string $section The anchor to be added to the action URI (only active if $actionUri is not set)
-     * @param boolean $absolute If set, the URI of the rendered link is absolute
-     * @param boolean $addQueryString If set, the current query parameters will be kept in the URI
+     * @param bool $absolute If set, the URI of the rendered link is absolute
+     * @param bool $addQueryString If set, the current query parameters will be kept in the URI
      * @param array $argumentsToBeExcludedFromQueryString arguments to be removed from the URI. Only active if $addQueryString = TRUE
      * @param string $addQueryStringMethod Set which parameters will be kept. Only active if $addQueryString = TRUE
      * @param bool $addSuggestUrl

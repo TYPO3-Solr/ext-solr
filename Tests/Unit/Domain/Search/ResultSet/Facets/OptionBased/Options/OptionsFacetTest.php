@@ -14,11 +14,10 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Facets\OptionBase
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\Option;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Unit test for the OptionsFacet

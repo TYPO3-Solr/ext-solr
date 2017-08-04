@@ -19,7 +19,8 @@ namespace ApacheSolrForTypo3\Solr\System\Url;
  * @author Timo Hund <timo.hund@dkd.de>
  * @package ApacheSolrForTypo3\Solr\System\Url
  */
-class UrlHelper {
+class UrlHelper
+{
 
     /**
      * @var string
@@ -55,7 +56,7 @@ class UrlHelper {
         }
         $parts = parse_url($this->initialUrl);
         if (!is_array($parts)) {
-            throw new \InvalidArgumentException("Non parseable url passed to UrlHelper", 1498751529);
+            throw new \InvalidArgumentException('Non parseable url passed to UrlHelper', 1498751529);
         }
         $this->parts = $parts;
         $this->wasParsed = true;
@@ -119,5 +120,4 @@ class UrlHelper {
         $fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
         return $scheme . $user . $pass . $host . $port . $path . $query . $fragment;
     }
-
 }

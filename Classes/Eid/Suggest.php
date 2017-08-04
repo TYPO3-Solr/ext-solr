@@ -32,7 +32,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 
-# TSFE initialization
+// TSFE initialization
 
 $pageId = filter_var(GeneralUtility::_GET('id'), FILTER_SANITIZE_NUMBER_INT);
 $languageId = filter_var(
@@ -59,9 +59,9 @@ $GLOBALS['TSFE']->sys_language_uid = $languageId;
 
 $solrConfiguration = Util::getSolrConfiguration();
 
-#--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+//--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-# Building Suggest Query
+// Building Suggest Query
 $q = trim(GeneralUtility::_GP('termLowercase'));
 
 $isOpenSearchRequest = false;
@@ -86,7 +86,7 @@ if (!empty($additionalFilters)) {
     }
 }
 
-#--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+//--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 // Search
 $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId(

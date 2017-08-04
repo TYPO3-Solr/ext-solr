@@ -28,9 +28,7 @@ use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\PingFailedException;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
-use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides an status report about whether a connection to the Solr server can

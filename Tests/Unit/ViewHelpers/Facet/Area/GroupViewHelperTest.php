@@ -24,10 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Facet\Area;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Facet\Area\GroupViewHelper;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3\CMS\Fluid\Core\ViewHelper\TemplateVariableContainer;
@@ -51,7 +51,8 @@ class GroupViewHelperTest extends UnitTest
         $testArguments['facets'] = $facetCollection;
         $testArguments['groupName'] = 'left';
 
-        GroupViewHelper::renderStatic($testArguments, function () {}, $renderingContextMock);
+        GroupViewHelper::renderStatic($testArguments, function () {
+        }, $renderingContextMock);
         $this->assertTrue($variableContainer->exists('areaFacets'), 'Expected that filteredFacets has been set');
 
             /** @var  $facetCollection FacetCollection */
@@ -61,7 +62,6 @@ class GroupViewHelperTest extends UnitTest
         $facetKeys = array_keys($facetCollection->getArrayCopy());
         $this->assertEquals(['color', 'brand'], $facetKeys);
     }
-
 
     /**
      * @test

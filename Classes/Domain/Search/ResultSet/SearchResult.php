@@ -147,7 +147,7 @@ class SearchResult extends \Apache_Solr_Document
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsElevated()
     {
@@ -163,7 +163,7 @@ class SearchResult extends \Apache_Solr_Document
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId()
     {

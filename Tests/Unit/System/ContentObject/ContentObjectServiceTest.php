@@ -46,7 +46,8 @@ class ContentObjectServiceTest extends UnitTest
      */
     protected $contentObjectService;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->contentObjectRendererMock = $this->getDumbMock(ContentObjectRenderer::class);
         $this->contentObjectService = new ContentObjectService($this->contentObjectRendererMock);
     }
@@ -61,7 +62,7 @@ class ContentObjectServiceTest extends UnitTest
             'field.' => ['value' => 'test']
         ];
 
-        $this->contentObjectRendererMock->expects($this->once())->method('cObjGetSingle')->with('TEXT',  ['value' => 'test']);
+        $this->contentObjectRendererMock->expects($this->once())->method('cObjGetSingle')->with('TEXT', ['value' => 'test']);
         $this->contentObjectService->renderSingleContentObjectByArrayAndKey($fakeStdWrapConfiguration, 'field');
     }
 

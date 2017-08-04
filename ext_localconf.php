@@ -3,7 +3,7 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // Windows compatibility
 
@@ -11,7 +11,7 @@ if (!function_exists('strptime')) {
     require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr') . 'Resources/Private/Php/strptime/strptime.php');
 }
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // registering Index Queue page indexer helpers
 
@@ -30,13 +30,13 @@ if (TYPO3_MODE == 'FE' && isset($_SERVER['HTTP_X_TX_SOLR_IQ'])) {
     );
 }
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // page module plugin settings summary
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][$_EXTKEY . '_pi_results'][$_EXTKEY] = \ApacheSolrForTypo3\Solr\Controller\Backend\PageModuleSummary::class . '->getSummary';
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // register search components
 
@@ -95,7 +95,7 @@ ApacheSolrForTypo3\Solr\Search\SearchComponentManager::registerSearchComponent(
     \ApacheSolrForTypo3\Solr\Search\ElevationComponent::class
 );
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // adding scheduler tasks
 
@@ -113,14 +113,14 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['ApacheSolrForTy
     'additionalFields' => \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTaskAdditionalFieldProvider::class
 ];
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // registering the eID scripts
 // TODO move to suggest form modifier
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_suggest'] = 'EXT:solr/Classes/Eid/Suggest.php';
 $TYPO3_CONF_VARS['FE']['eID_include']['tx_solr_api'] = 'EXT:solr/Classes/Eid/Api.php';
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // add custom Solr content objects
 
@@ -139,7 +139,7 @@ $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClas
     \ApacheSolrForTypo3\Solr\ContentObject\Relation::class
 ];
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 // Register cache for frequent searches
 
@@ -164,11 +164,11 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['tx_solr_configuration']['groups'] = ['all'];
 }
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \ApacheSolrForTypo3\Solr\Command\SolrCommandController::class;
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '])) {
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult::class;
@@ -196,7 +196,7 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
     ];
 }
 
-# ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
+// ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'ApacheSolrForTypo3.solr',

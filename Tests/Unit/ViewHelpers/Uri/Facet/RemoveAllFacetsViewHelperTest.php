@@ -24,8 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Uri\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;

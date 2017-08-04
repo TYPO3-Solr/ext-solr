@@ -71,5 +71,4 @@ class EscapeHelperTest extends UnitTest
         $output = $escapeHelper->escape($input);
         $this->assertSame($expectedOutput, $output, 'Query was not escaped as expected');
     }
-
 }

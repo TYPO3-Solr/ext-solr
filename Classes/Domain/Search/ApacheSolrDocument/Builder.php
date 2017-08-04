@@ -130,7 +130,7 @@ class Builder
     }
 
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @return Site
      */
     protected function getSiteByPageId($pageId)

@@ -51,7 +51,7 @@ use TYPO3\CMS\Frontend\Page\PageRepository;
 class Indexer extends AbstractIndexer
 {
 
-    # TODO change to singular $document instead of plural $documents
+    // TODO change to singular $document instead of plural $documents
 
     /**
      * A Solr service instance to interact with the Solr server
@@ -288,7 +288,7 @@ class Indexer extends AbstractIndexer
      * The method retrieves the field configuration of the items record page id (pid).
      *
      * @param Item $item
-     * @param integer $language
+     * @param int $language
      * @param string $indexConfigurationName
      * @return array
      */
@@ -306,7 +306,7 @@ class Indexer extends AbstractIndexer
      * The method returns the field configuration of the items root page id (uid of the related root page).
      *
      * @param Item $item
-     * @param integer $language
+     * @param int $language
      * @param string $indexConfigurationName
      * @return array
      */

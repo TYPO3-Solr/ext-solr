@@ -31,7 +31,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Apache_Solr_HttpTransportException;
 
 /**
  * Solr Service Access
@@ -181,7 +180,6 @@ class SolrService extends \Apache_Solr_Service
         SchemaParser $schemaParser = null,
         SolrLogManager $logManager = null
     ) {
-
         $this->setScheme($scheme);
 
         $this->logger = is_null($logManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $logManager;
@@ -222,7 +220,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Returns the current time in milliseconds.
      *
-     * @return double
+     * @return float
      */
     protected function getMilliseconds()
     {
@@ -269,21 +267,21 @@ class SolrService extends \Apache_Solr_Service
      * Also does not report the time, see https://forge.typo3.org/issues/64551
      *
      * @param int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
-     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
+     * @param bool $useCache indicates if the ping result should be cached in the instance or not
      * @return bool TRUE if Solr can be reached, FALSE if not
      */
     public function ping($timeout = 2, $useCache = true)
     {
         $httpResponse = $this->performPingRequest($timeout, $useCache);
-        return ($httpResponse->getStatusCode() === 200);
+        return $httpResponse->getStatusCode() === 200;
     }
 
     /**
      * Call the /admin/ping servlet, can be used to get the runtime of a ping request.
      *
      * @param int $timeout maximum time to wait for ping in seconds, -1 for unlimited (default is 2)
-     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
-     * @return double runtime in milliseconds
+     * @param bool $useCache indicates if the ping result should be cached in the instance or not
+     * @return float runtime in milliseconds
      * @throws \ApacheSolrForTypo3\Solr\PingFailedException
      */
     public function getPingRoundTripRuntime($timeout = 2, $useCache = true)
@@ -307,7 +305,7 @@ class SolrService extends \Apache_Solr_Service
      * Performs a ping request and returns the result.
      *
      * @param int $timeout
-     * @param boolean $useCache indicates if the ping result should be cached in the instance or not
+     * @param bool $useCache indicates if the ping result should be cached in the instance or not
      * @return \Apache_Solr_HttpTransport_Response
      */
     protected function performPingRequest($timeout = 2, $useCache = true)
@@ -801,7 +799,7 @@ class SolrService extends \Apache_Solr_Service
     /**
      * Build the log data and writes the message to the log
      *
-     * @param integer $logSeverity
+     * @param int $logSeverity
      * @param string $message
      * @param string $url
      * @param \Apache_Solr_Response $solrResponse
@@ -905,8 +903,8 @@ class SolrService extends \Apache_Solr_Service
      */
     public function getCoreBasePath()
     {
-        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->_path), "/");
-        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, "/"));
+        $pathWithoutLeadingAndTrailingSlashes = trim(trim($this->_path), '/');
+        $pathWithoutLastSegment = substr($pathWithoutLeadingAndTrailingSlashes, 0, strrpos($pathWithoutLeadingAndTrailingSlashes, '/'));
         return '/' . $pathWithoutLastSegment . '/';
     }
 

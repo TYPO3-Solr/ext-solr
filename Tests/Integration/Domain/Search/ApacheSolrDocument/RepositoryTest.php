@@ -28,7 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ApacheSolrDocumentRepositoryTest extends IntegrationTest
+class RepositoryTest extends IntegrationTest
 {
     /**
      * @var Repository

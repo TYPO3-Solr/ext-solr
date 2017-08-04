@@ -17,14 +17,12 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\System\Data\DateTime;
-use ApacheSolrForTypo3\Solr\System\Data\DateTimeProxy;
 
 /**
  * Class DateRangeFacetParser
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets
  */
 class DateRangeFacetParser extends AbstractRangeFacetParser
 {

@@ -174,7 +174,6 @@ class QueueTest extends IntegrationTest
 
         $this->indexQueue->initialize($site, 'pages');
         $this->assertItemsInQueue(4);
-
     }
 
     /**
@@ -245,15 +244,14 @@ class QueueTest extends IntegrationTest
             }
         }
 
-
-        $firstRootPage = $this->indexQueue->getItems('pages',1);
-        $secondRootPage = $this->indexQueue->getItems('pages',2);
+        $firstRootPage = $this->indexQueue->getItems('pages', 1);
+        $secondRootPage = $this->indexQueue->getItems('pages', 2);
 
         $this->assertCount(1, $firstRootPage);
         $this->assertCount(1, $secondRootPage);
 
-        $firstSubPage = $this->indexQueue->getItems('pages',10);
-        $secondSubPage = $this->indexQueue->getItems('pages',20);
+        $firstSubPage = $this->indexQueue->getItems('pages', 10);
+        $secondSubPage = $this->indexQueue->getItems('pages', 20);
 
         $this->assertCount(1, $firstSubPage);
         $this->assertCount(1, $secondSubPage);

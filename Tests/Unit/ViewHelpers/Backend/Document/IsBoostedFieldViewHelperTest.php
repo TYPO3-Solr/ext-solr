@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend\Document;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\Document\IsBoostedFieldViewHelper;
 
-
 /**
  * Testcase for the IsBoostedFieldViewHelper
  */
@@ -88,5 +87,4 @@ class IsBoostedFieldViewHelperTest extends UnitTest
         $actualResult = $this->viewHelper->render();
         $this->assertEquals('else', $actualResult);
     }
-
 }

@@ -91,15 +91,13 @@ class PageTest extends IntegrationTest
         /* @var $siteRepository SiteRepository */
         $sites = $siteRepository->getAvailableSites();
 
-        foreach($sites as $site) {
+        foreach ($sites as $site) {
             $this->pageInitializer->setIndexingConfigurationName('pages');
             $this->pageInitializer->setSite($site);
             $this->pageInitializer->setType('pages');
             $this->pageInitializer->initialize();
         }
     }
-
-
 
     /**
      * In this testcase we check if the pages queue will be initialized as expected
@@ -243,9 +241,6 @@ class PageTest extends IntegrationTest
         $secondItem = $items[1];
         $this->assertSame('24-34-1', $secondItem->getMountPointIdentifier());
     }
-
-
-
 
     /**
      * Check if invalid mount page is ignored and messages were added to the flash

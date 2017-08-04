@@ -43,5 +43,4 @@ class QueryFieldsTest extends UnitTest
 
         $this->assertSame($input, $output, 'Parsing QueryFields from and to string did not produce the same result');
     }
-
 }

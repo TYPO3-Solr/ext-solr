@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ViewHelpers\Backend;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Backend\IsStringViewHelper;
 
-
 /**
  * Testcase for the IsStringViewHelper
  */

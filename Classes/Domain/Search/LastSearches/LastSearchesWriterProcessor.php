@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -42,8 +41,8 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
      */
-    public function process(SearchResultSet $resultSet) {
-
+    public function process(SearchResultSet $resultSet)
+    {
         if ($resultSet->getAllResultCount() === 0) {
             // when the search does not produce a result we do not store the last searches
             return $resultSet;
@@ -67,7 +66,8 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
      * @param SearchResultSet $resultSet
      * @return LastSearchesService
      */
-    protected function getLastSearchesService(SearchResultSet $resultSet) {
+    protected function getLastSearchesService(SearchResultSet $resultSet)
+    {
         return GeneralUtility::makeInstance(LastSearchesService::class,
             $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration(),
             $GLOBALS['TSFE'],

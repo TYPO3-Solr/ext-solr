@@ -42,7 +42,6 @@ class StatisticsComponentTest extends UnitTest
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics']  = null;
         $this->assertEmpty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], 'Expected that no statistic component was registered');
 
-
         $typoScriptConfiguration = new TypoScriptConfiguration([
             'plugin.' => [
                 'tx_solr.' => [
@@ -59,5 +58,4 @@ class StatisticsComponentTest extends UnitTest
         $statisticsComponent->initializeSearchComponent();
         $this->assertNotEmpty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['statistics'], 'Expected that a statistic component was registered');
     }
-
 }

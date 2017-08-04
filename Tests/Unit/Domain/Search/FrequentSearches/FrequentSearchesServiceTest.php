@@ -64,7 +64,7 @@ class FrequentSearchesServiceTest extends UnitTest
     public function setUp()
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
-        $this->databaseMock = $this->getDumbMock(DatabaseConnection::class );
+        $this->databaseMock = $this->getDumbMock(DatabaseConnection::class);
         $this->cacheMock = $this->getDumbMock(AbstractFrontend::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 

@@ -166,5 +166,4 @@ class RequirementsServiceTest extends UnitTest
         $service = new RequirementsService();
         $this->assertTrue($service->getAllRequirementsMet($categoryFacet), 'Requirement should be met because of negate but is not met');
     }
-
 }

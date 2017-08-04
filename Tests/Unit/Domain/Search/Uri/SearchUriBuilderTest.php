@@ -25,9 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\Uri;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
@@ -84,7 +84,7 @@ class SearchUriBuilderTest extends UnitTest
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
 
-        $result = 'filter='.urlencode('###tx_solr:filter:0###').'&'.urlencode('###tx_solr:0###');
+        $result = 'filter=' . urlencode('###tx_solr:filter:0###') . '&' . urlencode('###tx_solr:0###');
         $this->extBaseUriBuilderMock->expects($this->once())->method('build')->with()->will($this->returnValue($result));
 
         $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
@@ -122,7 +122,6 @@ class SearchUriBuilderTest extends UnitTest
         $this->searchUrlBuilder->getAddFacetValueUri($previousRequest, 'color', 'red');
     }
 
-
     /**
      * @test
      */
@@ -140,7 +139,7 @@ class SearchUriBuilderTest extends UnitTest
         $this->extBaseUriBuilderMock->expects($this->once())->method('setTargetPageUid')->with(4711)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setArguments')->with($expectedArguments)->will($this->returnValue($this->extBaseUriBuilderMock));
         $this->extBaseUriBuilderMock->expects($this->once())->method('setUseCacheHash')->with(false)->will($this->returnValue($this->extBaseUriBuilderMock));
-        $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue('tx_solr[sort]='.urlencode('###tx_solr:sort###')));
+        $this->extBaseUriBuilderMock->expects($this->once())->method('build')->will($this->returnValue('tx_solr[sort]=' . urlencode('###tx_solr:sort###')));
         $result = $this->searchUrlBuilder->getSetSortingUri($previousRequest, 'title', 'desc');
         $this->assertEquals('tx_solr[sort]=title+desc', $result);
     }

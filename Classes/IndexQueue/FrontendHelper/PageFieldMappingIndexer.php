@@ -80,7 +80,6 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
     {
         $substitutePageDocument = clone $pageDocument;
 
-
         $mappedFields = $this->getMappedFields();
         foreach ($mappedFields as $fieldName => $fieldValue) {
             if (isset($substitutePageDocument->{$fieldName})) {

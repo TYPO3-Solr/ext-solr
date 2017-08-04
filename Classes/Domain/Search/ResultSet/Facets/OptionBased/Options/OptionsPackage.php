@@ -18,14 +18,15 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class HierarchyPackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options
  */
-class OptionsPackage extends AbstractFacetPackage {
+class OptionsPackage extends AbstractFacetPackage
+{
 
     /**
      * @return string
      */
-    public function getParserClassName() {
+    public function getParserClassName()
+    {
         return (string)OptionsFacetParser::class;
     }
 }

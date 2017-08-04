@@ -17,9 +17,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Class AbstractFacetPackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets
  */
-abstract class AbstractFacetPackage {
+abstract class AbstractFacetPackage
+{
     /**
      * @var ObjectManagerInterface
      */
@@ -46,7 +46,7 @@ abstract class AbstractFacetPackage {
     {
         $parser = $this->objectManager->get($this->getParserClassName());
         if (!$parser instanceof FacetParserInterface) {
-            throw new InvalidFacetPackageException('Invalid parser for package ' . __CLASS__ );
+            throw new InvalidFacetPackageException('Invalid parser for package ' . __CLASS__);
         }
         return $parser;
     }
@@ -54,7 +54,8 @@ abstract class AbstractFacetPackage {
     /**
      * @return string
      */
-    public function getUrlDecoderClassName() {
+    public function getUrlDecoderClassName()
+    {
         return (string)DefaultUrlDecoder::class;
     }
 
@@ -66,7 +67,7 @@ abstract class AbstractFacetPackage {
     {
         $urlDecoder = $this->objectManager->get($this->getUrlDecoderClassName());
         if (!$urlDecoder instanceof FacetUrlDecoderInterface) {
-            throw new InvalidUrlDecoderException('Invalid urldecoder for package ' . __CLASS__ );
+            throw new InvalidUrlDecoderException('Invalid urldecoder for package ' . __CLASS__);
         }
         return $urlDecoder;
     }
@@ -74,7 +75,8 @@ abstract class AbstractFacetPackage {
     /**
      * @return string
      */
-    public function getQueryBuilderClassName() {
+    public function getQueryBuilderClassName()
+    {
         return (string)DefaultFacetQueryBuilder::class;
     }
 
@@ -85,8 +87,8 @@ abstract class AbstractFacetPackage {
     public function getQueryBuilder()
     {
         $urlDecoder = $this->objectManager->get($this->getQueryBuilderClassName());
-        if(!$urlDecoder instanceof FacetQueryBuilderInterface) {
-            throw new InvalidQueryBuilderException('Invalid querybuilder for package ' . __CLASS__ );
+        if (!$urlDecoder instanceof FacetQueryBuilderInterface) {
+            throw new InvalidQueryBuilderException('Invalid querybuilder for package ' . __CLASS__);
         }
         return $urlDecoder;
     }

@@ -82,7 +82,7 @@ class Page extends AbstractInitializer
         $pagesInitialized = parent::initialize();
         $mountPagesInitialized = $this->initializeMountPages();
 
-        return ($pagesInitialized && $mountPagesInitialized);
+        return $pagesInitialized && $mountPagesInitialized;
     }
 
     /**
@@ -121,7 +121,6 @@ class Page extends AbstractInitializer
             if (!$this->validateMountPage($mountPage)) {
                 continue;
             }
-
 
             $mountedPages = $this->resolveMountPageTree($mountPage);
 
@@ -270,7 +269,7 @@ class Page extends AbstractInitializer
         $queueItemsOfExistingMountPoints = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             'COUNT(*) AS queueItemCount,item_uid',
             'tx_solr_indexqueue_item',
-            'item_type="pages" AND pages_mountidentifier = '. $identifier,
+            'item_type="pages" AND pages_mountidentifier = ' . $identifier,
             'item_uid',
             '',
             '',

@@ -157,7 +157,7 @@ class SolrServiceTest extends IntegrationTest
     {
         $pingRuntime = $this->solrService->getPingRoundTripRuntime();
         $this->assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');
-        $this->assertTrue(is_double($pingRuntime),'Ping runtime should be an integer');
+        $this->assertTrue(is_float($pingRuntime), 'Ping runtime should be an integer');
     }
 
     /**

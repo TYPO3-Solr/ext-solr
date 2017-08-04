@@ -68,5 +68,4 @@ class StatisticsComponent extends AbstractComponent implements SearchRequestAwar
             }
         }
     }
-
 }

@@ -55,7 +55,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithRootSiteUidOK() {
+    public function canCreateInstanceWithRootSiteUidOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
 
             /** @var $siteRepository SiteRepository */
@@ -67,7 +68,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithRootSiteUidNOK() {
+    public function canCreateInstanceWithRootSiteUidNOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_root_site.xml');
         $this->expectException(\InvalidArgumentException::class);
         /** @var $siteRepository SiteRepository */
@@ -78,7 +80,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithNonRootSiteUidOK() {
+    public function canCreateInstanceWithNonRootSiteUidOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
         $this->expectException(\InvalidArgumentException::class);
 
@@ -90,7 +93,8 @@ class SiteTest extends IntegrationTest
     /**
      * @test
      */
-    public function canCreateInstanceWithNonRootSiteUidNOK() {
+    public function canCreateInstanceWithNonRootSiteUidNOK()
+    {
         $this->importDataSetFromFixture('can_create_instance_with_non_root_site.xml');
         $this->expectException(\InvalidArgumentException::class);
 

@@ -362,9 +362,9 @@ class RecordMonitor extends AbstractDataHandlerListener
      * This method is used to determine the pageId that should be used to retrieve the index queue configuration.
      *
      * @param string $recordTable
-     * @param integer $recordPageId
-     * @param integer $recordUid
-     * @return integer
+     * @param int $recordPageId
+     * @param int $recordUid
+     * @return int
      */
     protected function getConfigurationPageId($recordTable, $recordPageId, $recordUid)
     {
@@ -382,7 +382,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      * Checks if the parent record of the translated record is enabled.
      *
      * @param string $recordTable
-     * @param integer $recordUid
+     * @param int $recordUid
      * @return bool
      */
     protected function getIsTranslationParentRecordEnabled($recordTable, $recordUid)
@@ -486,9 +486,9 @@ class RecordMonitor extends AbstractDataHandlerListener
      *
      * @param DataHandler $tceMain
      * @param string $table
-     * @param integer $uid
+     * @param int $uid
      * @throws NoPidException
-     * @return integer
+     * @return int
      */
     protected function getValidatedPid(DataHandler $tceMain, $table, $uid)
     {

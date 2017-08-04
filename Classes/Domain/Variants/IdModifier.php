@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Variants;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * An implementation of this class can be used to modify the variantId.
  *
@@ -38,7 +37,7 @@ interface IdModifier
      * @param string $variantId
      * @param string $systemHash
      * @param string $type
-     * @param integer $uid
+     * @param int $uid
      * @return string
      */
     public function modifyVariantId($variantId, $systemHash, $type, $uid);
