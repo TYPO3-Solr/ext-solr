@@ -293,7 +293,7 @@
 				<source>Clear Index Queue</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.back" xml:space="preserve">
-				<source>&lt; Go back</source>
+				<source>Go back</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error" xml:space="preserve">
 				<source>No valid queue item passed to show the error information!</source>
