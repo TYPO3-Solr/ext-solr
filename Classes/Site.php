@@ -130,7 +130,7 @@ class Site
      */
     public function getRootPageId()
     {
-        return $this->rootPage['uid'];
+        return (int)$this->rootPage['uid'];
     }
 
     /**
