@@ -24,14 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Core\Tests\UnitTestCase as TYPO3UnitTest;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Base class for all unit tests in the solr project
  *
  * @author Timo Schmidt
  */
-abstract class UnitTest extends TYPO3UnitTest
+abstract class UnitTest extends UnitTestCase
 {
 
     /**

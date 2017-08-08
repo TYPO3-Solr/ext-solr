@@ -24,22 +24,14 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Access\Rootline;
-use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
-
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Tests\FunctionalTestCase as TYPO3IntegrationTest;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 
 /**
@@ -47,7 +39,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  *
  * @author Timo Schmidt
  */
-abstract class IntegrationTest extends TYPO3IntegrationTest
+abstract class IntegrationTest extends FunctionalTestCase
 {
 
     /**
