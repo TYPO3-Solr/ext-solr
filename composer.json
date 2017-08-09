@@ -2,7 +2,6 @@
   "name": "apache-solr-for-typo3/solr",
   "type": "typo3-cms-extension",
   "description": "Apache Solr for TYPO3",
-  "minimum-stability": "alpha",
   "license": "GPL-2.0+",
   "keywords": ["typo3", "TYPO3 CMS", "solr", "search"],
   "homepage": "http://www.typo3-solr.com",
@@ -46,7 +45,6 @@
     }
   },
   "config": {
-    "optimize-autoloader": true,
     "vendor-dir": ".Build/vendor",
     "bin-dir": ".Build/bin"
   },
@@ -61,6 +59,7 @@
       "dev-master": "6.1.x-dev"
     },
     "typo3/cms": {
+      "extension-key": "solr",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
     }
