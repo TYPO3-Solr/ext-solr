@@ -124,12 +124,18 @@ class Relation
         list($localTableName, $localRecordUid) = explode(':',
             $parentContentObject->currentRecord);
 
+        $localTableNameOrg = $localTableName;
+        // pages has a special overlay table constriction
+        if ($GLOBALS['TSFE']->sys_language_uid > 0 && $localTableName === 'pages') {
+            $localTableName = 'pages_language_overlay';
+        }
+
         $localTableTca = $GLOBALS['TCA'][$localTableName];
         $localFieldName = $this->configuration['localField'];
 
         if (isset($localTableTca['columns'][$localFieldName])) {
             $localFieldTca = $localTableTca['columns'][$localFieldName];
-            $localRecordUid = $this->getUidOfRecordOverlay($localTableName, $localRecordUid);
+            $localRecordUid = $this->getUidOfRecordOverlay($localTableNameOrg, $localRecordUid);
             if (isset($localFieldTca['config']['MM']) && trim($localFieldTca['config']['MM']) !== '') {
                 $relatedItems = $this->getRelatedItemsFromMMTable($localTableName,
                     $localRecordUid, $localFieldTca);
@@ -387,10 +393,30 @@ class Relation
             return $localRecordUid;
         }
 
-        $record = $this->getTranslationOverlay($localTableName, $record);
-        // when there is a _LOCALIZED_UID in the overlay, we return it
-        $localRecordUid = $record['_LOCALIZED_UID'] ? $record['_LOCALIZED_UID'] : $localRecordUid;
+        $overlayUid = $this->getLocalRecordUidFromOverlay($localTableName, $record);
+        $localRecordUid = ($overlayUid !== 0) ? $overlayUid : $localRecordUid;
         return $localRecordUid;
+    }
+
+    /**
+     * This method retrieves the _PAGES_OVERLAY_UID or _LOCALIZED_UID from the localized record.
+     *
+     * @param string $localTableName
+     * @param array $overlayRecord
+     * @return int
+     */
+    protected function getLocalRecordUidFromOverlay($localTableName, $overlayRecord)
+    {
+        $overlayRecord = $this->getTranslationOverlay($localTableName, $overlayRecord);
+
+        // when there is a _PAGES_OVERLAY_UID | _LOCALIZED_UID in the overlay, we return it
+        if ($localTableName === 'pages' && isset($overlayRecord['_PAGES_OVERLAY_UID'])) {
+            return (int)$overlayRecord['_PAGES_OVERLAY_UID'];
+        } elseif (isset($overlayRecord['_LOCALIZED_UID'])) {
+            return (int)$overlayRecord['_LOCALIZED_UID'];
+        }
+
+        return 0;
     }
 
     /**

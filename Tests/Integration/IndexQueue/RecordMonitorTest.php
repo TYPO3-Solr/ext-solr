@@ -139,7 +139,7 @@ class RecordMonitorTest extends IntegrationTest
     public function canUseCorrectIndexingConfigurationForANewNonPagesRecord()
     {
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension_table.sql');
+        $this->importExtTablesDefinition('fake_extension_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         // create faked tce main call data
@@ -257,7 +257,7 @@ class RecordMonitorTest extends IntegrationTest
         $this->setExpectedException(NoPidException::class);
 
         // create fake extension database table and TCA
-        $this->importDumpFromFixture('fake_extension_table.sql');
+        $this->importExtTablesDefinition('fake_extension_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         // create faked tce main call data
@@ -732,7 +732,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRecordOutsideSiteRoot()
     {
-        $this->importDumpFromFixture('fake_extension_table.sql');
+        $this->importExtTablesDefinition('fake_extension_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot.xml');
@@ -760,7 +760,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRecordOutsideSiteRootReferencedInTwoSites()
     {
-        $this->importDumpFromFixture('fake_extension_table.sql');
+        $this->importExtTablesDefinition('fake_extension_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_two_sites.xml');
@@ -788,7 +788,7 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function updateRecordOutsideSiteRootLocatedInOtherSite()
     {
-        $this->importDumpFromFixture('fake_extension_table.sql');
+        $this->importExtTablesDefinition('fake_extension_table.sql');
         $GLOBALS['TCA']['tx_fakeextension_domain_model_foo'] = include($this->getFixturePathByName('fake_extension_tca.php'));
 
         $this->importDataSetFromFixture('update_record_outside_siteroot_from_other_siteroot.xml');

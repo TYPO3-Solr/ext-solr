@@ -29,12 +29,15 @@ use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
+use TYPO3\CMS\Install\Service\SqlExpectedSchemaService;
+use TYPO3\CMS\Install\Service\SqlSchemaMigrationService;
 
 
 /**
@@ -124,19 +127,56 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string $fixtureName
+     * @param boolean $debugOutput
      */
-    protected function importDumpFromFixture($fixtureName)
+    protected function importDumpFromFixture($fixtureName, $debugOutput = true)
     {
         /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
         $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
-
+        $database->debugOutput = $debugOutput;
         $dumpContent = $this->getFixtureContentByName($fixtureName);
         $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
-
         $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
         foreach ($queries as $query) {
             $database->sql_query($query);
+        }
+    }
+
+    /**
+     * Imports an ext_tables.sql definition as done by the install tool.
+     *
+     * @param string $fixtureName
+     */
+    protected function importExtTablesDefinition($fixtureName)
+    {
+        // create fake extension database table and TCA
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var $schemaMigrationService SqlSchemaMigrationService */
+        $schemaMigrationService = $objectManager->get(SqlSchemaMigrationService::class);
+        /** @var  $expectedSchemaService SqlExpectedSchemaService */
+        $expectedSchemaService = $objectManager->get(SqlExpectedSchemaService::class);
+
+        $expectedSchemaString = $expectedSchemaService->getTablesDefinitionString(true);
+        $statements = $schemaMigrationService->getStatementArray($expectedSchemaString, true);
+        list($_, $insertCount) = $schemaMigrationService->getCreateTables($statements, true);
+
+        $fieldDefinitionsFile = $schemaMigrationService->getFieldDefinitions_fileContent($this->getFixtureContentByName($fixtureName));
+        $fieldDefinitionsDatabase = $schemaMigrationService->getFieldDefinitions_database();
+        $difference = $schemaMigrationService->getDatabaseExtra($fieldDefinitionsFile, $fieldDefinitionsDatabase);
+        $updateStatements = $schemaMigrationService->getUpdateSuggestions($difference);
+
+        $schemaMigrationService->performUpdateQueries($updateStatements['add'], $updateStatements['add']);
+        $schemaMigrationService->performUpdateQueries($updateStatements['change'], $updateStatements['change']);
+        $schemaMigrationService->performUpdateQueries($updateStatements['create_table'], $updateStatements['create_table']);
+
+        foreach ($insertCount as $table => $count) {
+            $insertStatements = $schemaMigrationService->getTableInsertStatements($statements, $table);
+            foreach ($insertStatements as $insertQuery) {
+                $insertQuery = rtrim($insertQuery, ';');
+                /** @var DatabaseConnection $database */
+                $database = $GLOBALS['TYPO3_DB'];
+                $database->admin_query($insertQuery);
+            }
         }
     }
 
@@ -164,11 +204,13 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0)
+    protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $config = [])
     {
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
-            $TYPO3_CONF_VARS, $id, $type);
+            $TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT);
+
+
         EidUtility::initLanguage();
         $TSFE->initFEuser();
         $TSFE->set_no_cache();
@@ -176,7 +218,12 @@ abstract class IntegrationTest extends FunctionalTestCase
         $TSFE->determineId();
         $TSFE->initTemplate();
         $TSFE->getConfigArray();
+        $TSFE->config = array_merge($TSFE->config, $config);
+
         Bootstrap::getInstance();
+
+        // only needed for FrontendGroupRestriction.php
+        $GLOBALS['TSFE']->gr_list =  $TSFE->gr_list;
         $TSFE->settingLanguage();
         $TSFE->settingLocale();
 
