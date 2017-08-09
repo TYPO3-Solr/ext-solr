@@ -18,7 +18,6 @@
                                 <type>group</type>
                                 <internal_type>db</internal_type>
                                 <allowed>pages</allowed>
-                                <renderType>selectSingle</renderType>
                                 <show_thumbs>1</show_thumbs>
                                 <wizards>
                                     <suggest>
