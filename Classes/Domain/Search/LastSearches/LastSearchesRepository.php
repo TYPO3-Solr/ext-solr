@@ -76,4 +76,96 @@ class LastSearchesRepository extends AbstractRepository
             ->orderBy('tstamp', 'DESC')
             ->setMaxResults($limit)->execute()->fetchAll();
     }
+
+    /**
+     * Adds keywords to last searches or updates the oldest row by given limit.
+     *
+     * @param string $lastSearchesKeywords
+     * @param int $lastSearchesLimit
+     * @return void
+     */
+    public function add(string $lastSearchesKeywords, int $lastSearchesLimit)
+    {
+        $nextSequenceId = $this->resolveNextSequenceIdForGivenLimit($lastSearchesLimit);
+        $rowsCount = $this->count();
+        if ($nextSequenceId < $rowsCount) {
+            $this->update([
+                'sequence_id' => $nextSequenceId,
+                'keywords' => $lastSearchesKeywords
+            ]);
+            return;
+        }
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->insert($this->table)
+            ->values([
+                'sequence_id' => $nextSequenceId,
+                'keywords' => $lastSearchesKeywords,
+                'tstamp' => time()
+            ])
+            ->execute();
+    }
+
+    /**
+     * Returns current count of last searches
+     *
+     * @return int
+     */
+    protected function count() : int
+    {
+        return $this->getQueryBuilder()
+            ->count('*')
+            ->from($this->table)
+            ->execute()->fetchColumn(0);
+    }
+
+    /**
+     * Resolves next sequence id by given last searches limit.
+     *
+     * @param int $lastSearchesLimit
+     * @return int
+     */
+    protected function resolveNextSequenceIdForGivenLimit(int $lastSearchesLimit) : int
+    {
+        $nextSequenceId = 0;
+
+        $queryBuilder = $this->getQueryBuilder();
+        $result = $queryBuilder->select('sequence_id')
+            ->from($this->table)
+            ->orderBy('tstamp', 'DESC')
+            ->setMaxResults(1)
+            ->execute()->fetch();
+
+        if (!empty($result)) {
+            $nextSequenceId = ($result['sequence_id'] + 1) % $lastSearchesLimit;
+        }
+
+        return $nextSequenceId;
+    }
+
+    /**
+     * Updates last searches row by using sequence_id from given $lastSearchesRow array
+     *
+     * @param array $lastSearchesRow
+     * @return void
+     * @throws \InvalidArgumentException
+     */
+    protected function update(array $lastSearchesRow)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $affectedRows = $queryBuilder
+            ->update($this->table)
+            ->where(
+                $queryBuilder->expr()->eq('sequence_id', $queryBuilder->createNamedParameter($lastSearchesRow['sequence_id']))
+            )
+            ->set('tstamp', time())
+            ->set('keywords', $lastSearchesRow['keywords'])
+            ->execute();
+
+        if ($affectedRows < 1) {
+            throw new \InvalidArgumentException(vsprintf('By trying to update last searches row with values "%s" nothing was updated, make sure the given "sequence_id" exists in database.', [\json_encode($lastSearchesRow)]), 1502717923);
+        }
+    }
 }

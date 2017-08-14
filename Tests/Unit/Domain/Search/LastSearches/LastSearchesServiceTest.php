@@ -28,7 +28,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class LastSearchesServiceTest extends UnitTest
@@ -42,11 +41,6 @@ class LastSearchesServiceTest extends UnitTest
      * @var TypoScriptFrontendController
      */
     protected $tsfeMock;
-
-    /**
-     * @var DatabaseConnection
-     */
-    protected $databaseMock;
 
     /**
      * @var TypoScriptConfiguration
@@ -64,7 +58,6 @@ class LastSearchesServiceTest extends UnitTest
     public function setUp()
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
-        $this->databaseMock = $this->getDumbMock(DatabaseConnection::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
         $this->lastSearchesRepositoryMock = $this->getMockBuilder(LastSearchesRepository::class)
@@ -74,7 +67,6 @@ class LastSearchesServiceTest extends UnitTest
             ->setMethods(['getLastSearchesFromFrontendSession'])
             ->setConstructorArgs([  $this->configurationMock,
                 $this->tsfeMock,
-                $this->databaseMock,
                 $this->lastSearchesRepositoryMock])->getMock();
     }
 
@@ -89,7 +81,7 @@ class LastSearchesServiceTest extends UnitTest
             $fakedLastSearchesInSession
         ));
 
-        $this->assertDatabaseWillNeverBeQueried();
+        $this->assertRepositoryWillNeverBeCalled();
         $this->fakeLastSearchMode('user');
         $this->fakeLastSearchLimit(10);
 
@@ -137,9 +129,9 @@ class LastSearchesServiceTest extends UnitTest
     /**
      * @return void
      */
-    protected function assertDatabaseWillNeverBeQueried()
+    protected function assertRepositoryWillNeverBeCalled()
     {
-        $this->databaseMock->expects($this->never())->method('exec_SELECTgetRows');
+        $this->lastSearchesRepositoryMock->expects($this->never())->method('findAllKeywords');
     }
 
     /**

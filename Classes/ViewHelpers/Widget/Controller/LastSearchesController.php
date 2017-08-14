@@ -15,9 +15,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
-use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\Widget\AbstractWidgetController;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,10 +32,9 @@ class LastSearchesController extends AbstractWidgetController
      */
     public function indexAction()
     {
-        $databaseConnection = $GLOBALS['TYPO3_DB'];
         $tsfe = $GLOBALS['TSFE'];
         $typoScriptConfiguration = $this->controllerContext->getTypoScriptConfiguration();
-        $lastSearchesService = GeneralUtility::makeInstance(LastSearchesService::class, $typoScriptConfiguration, $tsfe, $databaseConnection);
+        $lastSearchesService = GeneralUtility::makeInstance(LastSearchesService::class, $typoScriptConfiguration, $tsfe);
         $this->view->assign('contentArguments', ['lastSearches' => $lastSearchesService->getLastSearches()]);
     }
 }

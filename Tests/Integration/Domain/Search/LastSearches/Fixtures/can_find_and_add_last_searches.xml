@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tx_solr_last_searches>
+        <sequence_id>0</sequence_id>
+        <tstamp>1502721178</tstamp>
+        <keywords>0</keywords>
+    </tx_solr_last_searches>
+
+    <tx_solr_last_searches>
+        <sequence_id>1</sequence_id>
+        <tstamp>1502721184</tstamp>
+        <keywords>1</keywords>
+    </tx_solr_last_searches>
+
+    <tx_solr_last_searches>
+        <sequence_id>2</sequence_id>
+        <tstamp>1502721199</tstamp>
+        <keywords>2</keywords>
+    </tx_solr_last_searches>
+
+    <tx_solr_last_searches>
+        <sequence_id>3</sequence_id>
+        <tstamp>1502721206</tstamp>
+        <keywords>3</keywords>
+    </tx_solr_last_searches>
+
+    <tx_solr_last_searches>
+        <sequence_id>4</sequence_id>
+        <tstamp>1502721213</tstamp>
+        <keywords>4</keywords>
+    </tx_solr_last_searches>
+</dataset>
