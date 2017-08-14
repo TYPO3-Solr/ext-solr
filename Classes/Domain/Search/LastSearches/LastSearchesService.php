@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -54,15 +55,22 @@ class LastSearchesService
     protected $database;
 
     /**
+     * @var LastSearchesRepository
+     */
+    protected $lastSearchesRepository;
+
+    /**
      * @param TypoScriptConfiguration $typoscriptConfiguration
      * @param TypoScriptFrontendController $tsfe
      * @param DatabaseConnection $database
+     * @param LastSearchesRepository|null $lastSearchesRepository
      */
-    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, TypoScriptFrontendController $tsfe, DatabaseConnection $database)
+    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, TypoScriptFrontendController $tsfe, DatabaseConnection $database, LastSearchesRepository $lastSearchesRepository = null)
     {
         $this->configuration = $typoscriptConfiguration;
         $this->tsfe = $tsfe;
         $this->database = $database;
+        $this->lastSearchesRepository = isset($lastSearchesRepository) ? $lastSearchesRepository : GeneralUtility::makeInstance(LastSearchesRepository::class);
     }
 
     /**
@@ -81,7 +89,7 @@ class LastSearchesService
                 $lastSearchesKeywords = $this->getLastSearchesFromSession($limit);
                 break;
             case 'global':
-                $lastSearchesKeywords = $this->getLastSearchesFromDatabase($limit);
+                $lastSearchesKeywords = $this->lastSearchesRepository->findAllKeywords($limit);
                 break;
         }
 
@@ -127,37 +135,6 @@ class LastSearchesService
         }
 
         $lastSearches = array_slice(array_reverse(array_unique($lastSearches)), 0, $limit);
-
-        return $lastSearches;
-    }
-
-    /**
-     * Gets the last searched keywords from the database
-     *
-     * @param int $limit
-     * @return array An array containing the last searches of the current user
-     */
-    protected function getLastSearchesFromDatabase($limit = 10)
-    {
-        $lastSearchesRows = $this->database->exec_SELECTgetRows(
-            'DISTINCT keywords',
-            'tx_solr_last_searches',
-            '',
-            '',
-            'tstamp DESC',
-            $limit
-        );
-
-        // If no records could be found return empty result
-        if (empty($lastSearchesRows)) {
-            return [];
-        }
-
-        $lastSearches = [];
-
-        foreach ($lastSearchesRows as $row) {
-            $lastSearches[] = html_entity_decode($row['keywords'], ENT_QUOTES, 'UTF-8');
-        }
 
         return $lastSearches;
     }
