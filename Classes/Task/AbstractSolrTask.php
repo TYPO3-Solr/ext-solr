@@ -67,16 +67,6 @@ abstract class AbstractSolrTask extends AbstractTask {
     }
 
     /**
-     * @deprecated Use setRootPageId() with rootPageId of the site instead, will be removed in 8.0
-     * @param Site $site
-     */
-    public function setSite(Site $site)
-    {
-        $this->site = $site;
-        $this->rootPageId = $site->getRootPageId();
-    }
-
-    /**
      * @return Site
      */
     public function getSite()

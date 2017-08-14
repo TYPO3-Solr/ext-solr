@@ -114,7 +114,7 @@ class ReIndexTaskTest extends IntegrationTest
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        $this->task->setSite($site);
+        $this->task->setRootPageId($site->getRootPageId());
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $this->task->execute();
 
