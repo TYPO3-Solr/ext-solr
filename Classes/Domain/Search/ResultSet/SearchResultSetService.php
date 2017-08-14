@@ -30,10 +30,8 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
-use ApacheSolrForTypo3\Solr\Response\Processor\ResponseProcessor;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\QueryAware;
-use ApacheSolrForTypo3\Solr\Search\ResponseModifier;
 use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -256,38 +254,14 @@ class SearchResultSetService
     }
 
     /**
-     * Provides a hook for other classes to process the search's response.
+     * Does post processing of the response.
      *
-     * @param Query $query The query that has been searched for.
      * @param \Apache_Solr_Response $response The search's response.
      */
-    protected function processResponse(Query $query, \Apache_Solr_Response $response)
+    protected function processResponse(\Apache_Solr_Response $response)
     {
         $this->wrapResultDocumentInResultObject($response);
         $this->addExpandedDocumentsFromVariants($response);
-
-        $this->applySearchResponseProcessors($query, $response);
-    }
-
-    /**
-     * Executes the register searchResponse processors.
-     *
-     * @deprecated Please use $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] now to register your SearchResultSetProcessor will be removed in 8.0
-     * @param Query $query
-     * @param \Apache_Solr_Response $response
-     */
-    private function applySearchResponseProcessors(Query $query, \Apache_Solr_Response $response)
-    {
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'])) {
-            GeneralUtility::logDeprecatedFunction();
-
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] as $classReference) {
-                $responseProcessor = GeneralUtility::getUserObj($classReference);
-                if ($responseProcessor instanceof ResponseProcessor) {
-                    $responseProcessor->processResponse($query, $response);
-                }
-            }
-        }
     }
 
     /**
@@ -536,7 +510,6 @@ class SearchResultSetService
         // performing the actual search, sending the query to the Solr server
         $query = $this->modifyQuery($query, $searchRequest, $this->search);
         $response = $this->search->search($query, $offSet, null);
-        $response = $this->modifyResponse($response, $searchRequest, $this->search);
 
         if ($resultsPerPage === 0) {
             // when resultPerPage was forced to 0 we also set the numFound to 0 to hide results, e.g.
@@ -544,7 +517,7 @@ class SearchResultSetService
             $response->response->numFound = 0;
         }
 
-        $this->processResponse($query, $response);
+        $this->processResponse($response);
 
         $this->addSearchResultsToResultSet($response, $resultSet);
 
@@ -662,48 +635,6 @@ class SearchResultSetService
     }
 
     /**
-     * Allows to modify a response returned from Solr before returning it to
-     * the rest of the extension.
-     *
-     * @deprecated Please use $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] now to register your SearchResultSetProcessor will be removed in 8.0
-     * @param \Apache_Solr_Response $response The response as returned by Solr
-     * @param SearchRequest $searchRequest The searchRequest, relevant in the current context
-     * @param Search $search The search, relevant in the current context
-     * @return \Apache_Solr_Response The modified response that is actually going to be returned to the extension.
-     * @throws \UnexpectedValueException if a response modifier does not implement interface ApacheSolrForTypo3\Solr\Search\ResponseModifier
-     */
-    protected function modifyResponse(\Apache_Solr_Response $response, SearchRequest $searchRequest, Search $search)
-    {
-        // hook to modify the search response
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'])) {
-            GeneralUtility::logDeprecatedFunction();
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchResponse'] as $classReference) {
-                $responseModifier = GeneralUtility::getUserObj($classReference);
-
-                if ($responseModifier instanceof ResponseModifier) {
-                    if ($responseModifier instanceof SearchAware) {
-                        $responseModifier->setSearch($search);
-                    }
-
-                    if ($responseModifier instanceof SearchRequestAware) {
-                        $responseModifier->setSearchRequest($searchRequest);
-                    }
-                    $response = $responseModifier->modifyResponse($response);
-                } else {
-                    throw new \UnexpectedValueException(
-                        get_class($responseModifier) . ' must implement interface ' . ResponseModifier::class,
-                        1343147211
-                    );
-                }
-            }
-
-            // add modification indicator
-            $response->response->isModified = true;
-        }
-
-        return $response;
-    }
-    /**
      * Retrieves a single document from solr by document id.
      *
      * @param string $documentId
@@ -716,7 +647,7 @@ class SearchResultSetService
         $query->setQueryFields(QueryFields::fromString('id'));
 
         $response = $this->search->search($query, 0, 1);
-        $this->processResponse($query, $response);
+        $this->processResponse($response);
 
         $resultDocument = isset($response->response->docs[0]) ? $response->response->docs[0] : null;
         return $resultDocument;

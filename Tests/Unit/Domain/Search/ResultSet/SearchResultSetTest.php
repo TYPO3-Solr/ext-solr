@@ -39,7 +39,6 @@ use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 
 /**
  * @author Timo Schmidt <timo.schmidt@dkd.de>
@@ -191,14 +190,14 @@ class SearchResultSetTest extends UnitTest
     /**
      * @test
      */
-    public function canRegisterSearchResponseProcessor()
+    public function canRegisterSearchResultSetProcessor()
     {
         $this->configurationMock->expects($this->once())->method('getSearchQueryReturnFieldsAsArray')->willReturn(['*']);
 
-        $processSearchResponseBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'];
+        $processSearchResponseBackup = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'];
 
-        $testProcessor = TestSearchResponseProcessor::class;
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse']['testProcessor'] = $testProcessor;
+        $testProcessor = TestSearchResultSetProcessor::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['testProcessor'] = $testProcessor;
         $this->fakeRegisteredSearchComponents([]);
 
         $fakedSolrResponse = $this->getFixtureContentByName('fakeResponse.json');
@@ -219,7 +218,7 @@ class SearchResultSetTest extends UnitTest
         $firstResult = $documents[0];
         $this->assertSame('PAGES', $firstResult->type, 'Could not get modified type from result');
 
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['processSearchResponse'] = $processSearchResponseBackup;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] = $processSearchResponseBackup;
     }
 
     /**

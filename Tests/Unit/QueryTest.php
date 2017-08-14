@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Grouping;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
@@ -89,7 +90,7 @@ class QueryTest extends UnitTest
     public function noFiltersAreSetAfterInitialization()
     {
         $query = $this->getInitializedTestQuery();
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
 
 
         $this->assertCount(
@@ -106,7 +107,7 @@ class QueryTest extends UnitTest
     {
         $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups([-1, 0]);
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
 
         $this->assertContains(
             '{!typo3access}-1,0',
@@ -122,7 +123,7 @@ class QueryTest extends UnitTest
     {
         $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups([]);
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
 
         $this->assertContains(
             '{!typo3access}0',
@@ -138,7 +139,7 @@ class QueryTest extends UnitTest
     {
         $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups([5]);
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
 
         $this->assertContains(
             '{!typo3access}0,5',
@@ -154,7 +155,7 @@ class QueryTest extends UnitTest
     {
         $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups([1, 1]);
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
 
         $this->assertContains(
             '{!typo3access}0,1',
@@ -171,7 +172,7 @@ class QueryTest extends UnitTest
         $query = $this->getInitializedTestQuery();
         $query->setUserAccessGroups([1]);
         $query->setUserAccessGroups([2]);
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
 
         $this->assertSame(
             count($filters),
@@ -209,8 +210,7 @@ class QueryTest extends UnitTest
     public function settingGroupingTrueActivatesGrouping()
     {
         $query = $this->getInitializedTestQuery();
-
-        $query->setGrouping(true);
+        $query->getGrouping()->setIsEnabled(true);
 
         $queryParameters = $query->getQueryParameters();
         $this->assertArrayHasKey('group', $queryParameters);
@@ -231,7 +231,7 @@ class QueryTest extends UnitTest
      */
     public function settingGroupingFalseDeactivatesGrouping(Query $query)
     {
-        $query->setGrouping(false);
+        $query->getGrouping()->setIsEnabled(false);
 
         $queryParameters = $query->getQueryParameters();
 
@@ -254,17 +254,6 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canSetNumberOfGroupsCompatibility()
-    {
-        $query = $this->getInitializedTestQuery('test');
-        $query->setNumberOfGroups(2);
-        $this->assertSame(2, $query->getNumberOfGroups(), 'Could not set and get number of groups');
-    }
-
-    /**
      * @test
      */
     public function canAddGroupField()
@@ -276,44 +265,17 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canAddGroupFieldCompatibility()
-    {
-        $query = $this->getInitializedTestQuery('test');
-        $this->assertSame([], $query->getGroupFields(), 'Unexpected default state of groupFields');
-        $query->addGroupField('category_s');
-        $this->assertSame(['category_s'], $query->getGroupFields(), 'groupFields has unexpected state after adding a group field');
-    }
-
-    /**
      * @test
      */
     public function canGetGroupSorting()
     {
         $query = $this->getInitializedTestQuery('test');
-        $this->assertSame([], $query->getGroupSortings(), 'By default getGroupSortings should return an empty array');
+        $this->assertSame([], $query->getGrouping()->getSortings(), 'By default getGroupSortings should return an empty array');
 
         $query->getGrouping()->addSorting('price_f');
         $query->getGrouping()->addSorting('author_s');
 
         $this->assertSame(['price_f', 'author_s'], $query->getGrouping()->getSortings(), 'Can not get groupSortings after adding');
-    }
-
-    /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canGetGroupSortingCompatibility()
-    {
-        $query = $this->getInitializedTestQuery('test');
-        $this->assertSame([], $query->getGroupSortings(), 'By default getGroupSortings should return an empty array');
-
-        $query->addGroupSorting('price_f');
-        $query->addGroupSorting('author_s');
-
-        $this->assertSame(['price_f', 'author_s'], $query->getGroupSortings(), 'Can not get groupSortings after adding');
     }
 
     /**
@@ -330,20 +292,6 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canSetNumberOfResultsByGroupCompatibility()
-    {
-        $query = $this->getInitializedTestQuery('group test');
-        $initialValue = $query->getNumberOfResultsPerGroup();
-        $this->assertSame(1, $initialValue);
-
-        $query->setNumberOfResultsPerGroup(22);
-        $this->assertSame(22, $query->getNumberOfResultsPerGroup(), 'Can not set number of results per group');
-    }
-
-    /**
      * @test
      */
     public function canAddGroupQuery()
@@ -355,20 +303,6 @@ class QueryTest extends UnitTest
         $this->assertSame(['price:[* TO 500]'], $query->getGrouping()->getQueries(), 'Could not retrieve group queries after adding one');
     }
 
-    /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canAddGroupQueryCompatibility()
-    {
-        $query = $this->getInitializedTestQuery('group test');
-        $initialGroupQueries = $query->getGroupQueries();
-        $this->assertSame([], $initialGroupQueries, 'Group queries should be an empty array at the beginning');
-        $query->addGroupQuery('price:[* TO 500]');
-
-        $this->assertSame(['price:[* TO 500]'], $query->getGroupQueries(), 'Could not retrieve group queries after adding one');
-    }
-
     // highlighting
     /**
      * @test
@@ -377,7 +311,7 @@ class QueryTest extends UnitTest
     {
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = $this->getInitializedTestQuery();
-        $query->setHighlighting(true);
+        $query->getHighlighting()->setIsEnabled(true);
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
@@ -391,12 +325,12 @@ class QueryTest extends UnitTest
     {
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = $this->getInitializedTestQuery();
-        $query->setHighlighting(true);
+        $query->getHighlighting()->setIsEnabled(true);
 
         $queryParameters = $query->getQueryParameters();
         $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
 
-        $query->setHighlighting(false);
+        $query->getHighlighting()->setIsEnabled(false);
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['hl'], 'Could not disable highlighting');
     }
@@ -412,7 +346,7 @@ class QueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->setHighlighting(true);
+        $query->getHighlighting()->setIsEnabled(true);
         $queryParameters = $query->getQueryParameters();
         $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
         $this->assertSame('title', $queryParameters['hl.fl'], 'Can set highlighting field list');
@@ -429,7 +363,8 @@ class QueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->setHighlighting(true);
+        $query->getHighlighting()->setIsEnabled(true);
+
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame('[A]', $queryParameters['hl.tag.pre'], 'Can set highlighting hl.tag.pre');
@@ -451,7 +386,9 @@ class QueryTest extends UnitTest
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
 
         // fragSize 10 is to small for FastVectorHighlighter
-        $query->setHighlighting(true, 17);
+        $query->getHighlighting()->setIsEnabled(true);
+        $query->getHighlighting()->setFragmentSize(17);
+
         $queryParameters = $query->getQueryParameters();
         $this->assertSame('[A]', $queryParameters['hl.simple.pre'], 'Can set highlighting field list');
         $this->assertSame('[B]', $queryParameters['hl.simple.post'], 'Can set highlighting field list');
@@ -468,7 +405,8 @@ class QueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->setHighlighting(true, 200);
+        $query->getHighlighting()->setIsEnabled(true);
+        $query->getHighlighting()->setFragmentSize(200);
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
@@ -484,7 +422,8 @@ class QueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->setHighlighting(true, 0);
+        $query->getHighlighting()->setIsEnabled(true);
+        $query->getHighlighting()->setFragmentSize(0);
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame('true', $queryParameters['hl'], 'Enable highlighting did not set the "hl" query parameter');
@@ -682,20 +621,6 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canEnableFacetingCompatibility()
-    {
-        /** @var $query \ApacheSolrForTypo3\Solr\Query */
-        $query = $this->getInitializedTestQuery();
-        $query->setFaceting(true);
-        $queryParameters = $query->getQueryParameters();
-
-        $this->assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
-    }
-
-    /**
      * @test
      */
     public function canDisableFaceting()
@@ -709,26 +634,6 @@ class QueryTest extends UnitTest
         $this->assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
         $this->assertSame('lex', $queryParameters['f.title.facet.sort'], 'Facet sorting parameter should be lex');
         $query->getFaceting()->setIsEnabled(false);
-        $queryParameters = $query->getQueryParameters();
-        $this->assertNull($queryParameters['facet'], 'Facet argument should be null after reset');
-        $this->assertNull($queryParameters['f.title.facet.sort'], 'Facet sorting parameter should also be removed after reset');
-    }
-
-    /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canDisableFacetingCompatibility()
-    {
-        $query = $this->getInitializedTestQuery();
-
-        $query->getFaceting()->setIsEnabled(true);
-        $query->getFaceting()->addAdditionalParameter('f.title.facet.sort', 'lex');
-
-        $queryParameters = $query->getQueryParameters();
-        $this->assertSame('true', $queryParameters['facet'], 'Enable faceting did not set the "facet" query parameter');
-        $this->assertSame('lex', $queryParameters['f.title.facet.sort'], 'Facet sorting parameter should be lex');
-        $query->setFaceting(false);
         $queryParameters = $query->getQueryParameters();
         $this->assertNull($queryParameters['facet'], 'Facet argument should be null after reset');
         $this->assertNull($queryParameters['f.title.facet.sort'], 'Facet sorting parameter should also be removed after reset');
@@ -755,26 +660,6 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canAddFacetFieldCompatibility()
-    {
-        $fakeConfiguration = new TypoScriptConfiguration([]);
-
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $facetFields = $query->getQueryParameter('facet.field');
-        $this->assertNull($facetFields, 'facet.field query parameter was expected to be null after init.');
-
-        // after adding a few facet fields we should be able to retrieve them
-        $query->addFacetField('color_s');
-        $query->addFacetField('price_f');
-
-        $facetFields = $query->getQueryParameter('facet.field');
-        $this->assertSame(['color_s', 'price_f'], $facetFields, 'facet.field should not be empty after adding a few fields.');
-    }
-
-    /**
      * @test
      */
     public function canSetFacetFields()
@@ -792,22 +677,6 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canSetFacetFieldsCompatibility()
-    {
-        $fakeConfiguration = new TypoScriptConfiguration([]);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-
-        $fakeFields = ['lastname_s', 'role_s'];
-        $query->setFacetFields($fakeFields);
-        $retrievedFields = $query->getQueryParameter('facet.field');
-
-        $this->assertSame(['lastname_s', 'role_s'], $retrievedFields, 'Could not use setFacetFields to pass facet fields');
-    }
-
-    /**
      * @test
      */
     public function canUseFacetMinCountFromConfiguration()
@@ -819,7 +688,7 @@ class QueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->setFaceting(true);
+        $query->getFaceting()->setIsEnabled(true);
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame(10, $queryParameters['facet.mincount'], 'Can not use facet.minimumCount from configuration');
@@ -837,7 +706,7 @@ class QueryTest extends UnitTest
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $query->setFaceting(true);
+        $query->getFaceting()->setIsEnabled(true);
         $queryParameters = $query->getQueryParameters();
 
         $this->assertSame('index', $queryParameters['facet.sort'], 'Can not use facet.sort from configuration');
@@ -870,7 +739,7 @@ class QueryTest extends UnitTest
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = $this->getInitializedTestQuery();
         $query->setSiteHashFilter('*');
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
         $this->assertEmpty($filters, 'The filters should be empty when a wildcard sitehash was passed');
     }
 
@@ -882,7 +751,7 @@ class QueryTest extends UnitTest
         /** @var $query \ApacheSolrForTypo3\Solr\Query */
         $query = $this->getInitializedTestQuery();
         $query->setSiteHashFilter('solrtest.local');
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
 
         $this->assertCount(1, $filters, 'We expected that one filter was added');
 
@@ -955,17 +824,17 @@ class QueryTest extends UnitTest
     {
         $fakeConfiguration = new TypoScriptConfiguration([]);
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
         $this->assertNull($filters['collapsing'], 'No collapsing filter should be set without collpasing');
 
         // can we enable collapsing
         $query->setCollapsing(true);
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
         $this->assertSame($filters['collapsing'], '{!collapse field=variantId}', 'No filter should be set without collpasing');
 
         // can we disable it again
         $query->setCollapsing(false);
-        $filters = $query->getFilters();
+        $filters = $query->getFilters()->getValues();
         $this->assertNull($filters['collapsing'], 'No collapsing filter should be set after disables collpasing');
     }
 
@@ -998,40 +867,6 @@ class QueryTest extends UnitTest
 
         // @todo analyze this: why is the key different between php5.6 and php7
         $query->getFilters()->removeByName($name);
-        $filters = $query->getFilters()->getValues();
-        $this->assertSame([], $filters, 'Could not remove filters from query object by filter key');
-    }
-
-    /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canAddAndRemoveFiltersCompatibility()
-    {
-        $fakeConfiguration = new TypoScriptConfiguration([]);
-        $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
-
-        // can we add a filter?
-        $query->addFilter('foo:bar');
-        $filters = $query->getFilters()->getValues();
-
-        $this->assertSame(['foo:bar'], $filters, 'Could not get filters from query object');
-
-        // can we remove the filter after adding?
-        $query->removeFilter('foo');
-        $filters = $query->getFilters()->getValues();
-        $this->assertSame([], $filters, 'Could not remove filters from query object');
-
-        // can we add a new filter
-        $query->addFilter('title:test');
-        $filters = $query->getFilters()->getValues();
-        $this->assertSame(['title:test'], array_values($filters), 'Could not get filters from query object');
-
-        // can we remove the filter by key?
-        $key = array_search('title:test', $filters);
-
-        // @todo analyze this: why is the key different between php5.6 and php7
-        $query->removeFilterByKey($key);
         $filters = $query->getFilters()->getValues();
         $this->assertSame([], $filters, 'Could not remove filters from query object by filter key');
     }
@@ -1153,35 +988,6 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * Tests backwards compatibility
-     *
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canSetFieldListCompatibility()
-    {
-        // check initial value
-        $query = $this->getInitializedTestQuery('test');
-        $this->assertSame(['*', 'score'], $query->getFieldList(), 'FieldList initially contained unexpected values');
-
-        // set from string
-        $query->setFieldList('content, title');
-        $this->assertSame(['content', 'title'], $query->getFieldList(), 'Can not set fieldList from string');
-
-        // set from array
-        $query->setFieldList(['content', 'title']);
-        $this->assertSame(['content', 'title'], $query->getFieldList(), 'Can not set fieldList from array');
-
-        // other arguments throws exception
-        $this->setExpectedException(\UnexpectedValueException::class);
-        $query->setFieldList(12);
-
-        // default value is *, score
-        $query->setFieldList();
-        $this->assertSame(['*', 'score'], $query->getFieldList(), 'FieldList should be setted to default when calling with no arguments');
-    }
-
-    /**
      * @test
      */
     public function canSetSorting()
@@ -1217,19 +1023,19 @@ class QueryTest extends UnitTest
 
         $this->assertNull($query->getQueryParameter('enableElevation'));
         $this->assertNull($query->getQueryParameter('forceElevation'));
-        $this->assertNotContains('isElevated:[elevated]', $query->getFieldList());
+        $this->assertNotContains('isElevated:[elevated]', $query->getReturnFields()->getValues());
 
         // do we get the expected default values, when calling setQueryElevantion with no arguments?
         $query->setQueryElevation();
         $this->assertSame('true', $query->getQueryParameter('enableElevation'), 'enabledElevation was not set after enabling elevation');
         $this->assertSame('true', $query->getQueryParameter('forceElevation'), 'forceElevation was not set after enabling elevation');
-        $this->assertContains('isElevated:[elevated]', $query->getFieldList(), 'isElevated should be in the list of return fields');
+        $this->assertContains('isElevated:[elevated]', $query->getReturnFields()->getValues(), 'isElevated should be in the list of return fields');
 
         // can we reset the elevantion?
         $query->setQueryElevation(false);
         $this->assertSame('false', $query->getQueryParameter('enableElevation'));
         $this->assertNull($query->getQueryParameter('forceElevation'));
-        $this->assertNotContains('isElevated:[elevated]', $query->getFieldList());
+        $this->assertNotContains('isElevated:[elevated]', $query->getReturnFields()->getValues());
     }
 
     /**
@@ -1334,27 +1140,6 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canSetQueryFieldsCompatibility()
-    {
-        $query = $this->getInitializedTestQuery('foo bar');
-        $this->assertSame('', $query->getQueryFieldsAsString(), 'QueryFields are not empty by default');
-
-        $query->setQueryField('content', 10);
-        $query->setQueryField('title', 11);
-
-        $this->assertSame('content^10.0 title^11.0', $query->getQueryFieldsAsString());
-
-        // overwrite the boost of title
-        $query->setQueryField('title', 9);
-
-        $parameters = $query->getQueryParameters();
-        $this->assertSame('content^10.0 title^9.0', $parameters['qf'], 'qf parameter not set in QueryParameters');
-    }
-
-    /**
      * @test
      */
     public function canGetResultsPerPage()
@@ -1377,35 +1162,12 @@ class QueryTest extends UnitTest
     }
 
     /**
-     * @deprecated Will be removed in 8.0
-     * @test
-     */
-    public function canGetResultsPerPageCompatibility()
-    {
-        $query = $this->getInitializedTestQuery('foo bar');
-
-        // is this wanted behaviour?
-        $this->assertSame(null, $query->getResultsPerPage());
-
-        $query->setResultsPerPage(10);
-        $this->assertSame(10, $query->getResultsPerPage());
-
-        $query->setResultsPerPage(-1);
-        $this->assertSame(0, $query->getResultsPerPage());
-
-        // setNumberOfGroups implicitly changes the results per page since the row argument is used for the number of groups
-        $query->getGrouping()->setIsEnabled(true);
-        $query->setNumberOfGroups(5);
-        $this->assertSame(5, $query->getResultsPerPage());
-    }
-
-    /**
      * @test
      */
     public function canDisablingGroupingRemoveTheGroupSorting()
     {
         $query = $this->getInitializedTestQuery('foo bar');
-        $query->setGrouping(true);
+        $query->getGrouping()->setIsEnabled(true);
 
         $parameters = $query->getQueryParameters();
 
@@ -1419,7 +1181,7 @@ class QueryTest extends UnitTest
         $this->assertEmpty($parameters['group.field'], 'No field was passed, so it should not be set');
         $this->assertEmpty($parameters['group.query'], 'No query was passed, so it should not be set');
 
-        $query->setGrouping(false);
+        $query->getGrouping()->setIsEnabled(false);
         $parameters = $query->getQueryParameters();
 
         $this->assertEmpty($parameters['group.sort'], 'Grouping parameters should be removed');

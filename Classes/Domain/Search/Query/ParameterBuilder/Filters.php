@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-class Filters implements ParameterBuilder, \ArrayAccess, \Countable, \IteratorAggregate
+class Filters implements ParameterBuilder
 {
 
     /**
@@ -146,72 +146,5 @@ class Filters implements ParameterBuilder, \ArrayAccess, \Countable, \IteratorAg
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
     {
         return new Filters();
-    }
-
-    /**
-     * @deprecated Just for backwards compatibility of the filters array, will be dropped in 8.0.
-     * @param mixed $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        if (is_null($offset)) {
-            $this->filters[] = $value;
-        } else {
-            $this->filters[$offset] = $value;
-        }
-    }
-
-    /**
-     * @deprecated Just for backwards compatibility of the filters array, will be dropped in 8.0.
-     * @param mixed $offset
-     * @return bool
-     */
-    public function offsetExists($offset)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return isset($this->filters[$offset]);
-    }
-
-    /**
-     * @deprecated Just for backwards compatibility of the filters array, will be dropped in 8.0.
-     * @param mixed $offset
-     */
-    public function offsetUnset($offset)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        unset($this->filters[$offset]);
-    }
-
-    /**
-     * @deprecated Just for backwards compatibility of the filters array, will be dropped in 8.0.
-     * @param mixed $offset
-     * @return mixed|null
-     */
-    public function offsetGet($offset)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return isset($this->filters[$offset]) ? $this->filters[$offset] : null;
-    }
-
-    /**
-     * @deprecated Just for backwards compatibility of the filters array, will be dropped in 8.0.
-     * @return int
-     */
-    public function count()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return count($this->filters);
-    }
-
-    /**
-     * @deprecated Just for backwards compatibility of the filters array, will be dropped in 8.0.
-     * @return \ArrayIterator
-     */
-    public function getIterator()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return new \ArrayIterator($this->filters);
     }
 }
