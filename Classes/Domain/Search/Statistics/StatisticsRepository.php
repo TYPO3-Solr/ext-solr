@@ -63,7 +63,7 @@ class StatisticsRepository
             $sumCount += $statisticsRow['count'];
         }
 
-        $statisticsRows = array_map(function($row) use ($sumCount) {
+        $statisticsRows = array_map(function ($row) use ($sumCount) {
             $row['percent'] = $row['count'] * 100 / $sumCount;
             return $row;
         }, $statisticsRows);

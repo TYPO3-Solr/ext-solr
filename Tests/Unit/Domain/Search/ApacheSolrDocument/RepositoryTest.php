@@ -103,7 +103,6 @@ class RepositoryTest extends UnitTest
 
         $apacheSolrDocumentCollection = $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(777, 0);
         $this->assertEmpty($apacheSolrDocumentCollection);
-
     }
 
     /**
@@ -111,7 +110,6 @@ class RepositoryTest extends UnitTest
      */
     public function findByPageIdAndByLanguageIdReturnsResultFromSearch()
     {
-
         $solrServiceMock = $this->getDumbMock(SolrService::class);
         $solrConnectionManager = $this->getAccessibleMock(ConnectionManager::class, ['getConnectionByPageId'], [], '', false);
         $solrConnectionManager->expects($this->any())->method('getConnectionByPageId')->will($this->returnValue($solrServiceMock));
@@ -134,5 +132,4 @@ class RepositoryTest extends UnitTest
 
         $this->assertSame($expectedApacheSolrDocumentCollection, $actualApacheSolrDocumentCollection);
     }
-
 }

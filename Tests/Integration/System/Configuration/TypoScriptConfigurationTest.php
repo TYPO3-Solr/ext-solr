@@ -39,7 +39,8 @@ class TypoScriptConfigurationTest extends IntegrationTest
     /**
      * @return void
      */
-    public function setUp() {
+    public function setUp()
+    {
         $tsfe = $this->getMockBuilder(TypoScriptFrontendController::class)->setMethods([])->disableOriginalConstructor()->getMock();
         $tsfe->cObjectDepthCounter = 50;
         $GLOBALS['TSFE'] = $tsfe;
@@ -49,7 +50,8 @@ class TypoScriptConfigurationTest extends IntegrationTest
     /**
      * @test
      */
-    public function testCanRenderCObjectInConfiguration() {
+    public function testCanRenderCObjectInConfiguration()
+    {
 
         // we fake some deployment settings
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['host'] = 'mydeployhostname';
@@ -92,11 +94,11 @@ class TypoScriptConfigurationTest extends IntegrationTest
         unset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['path']);
     }
 
-
     /**
      * @test
      */
-    public function testValueOfCObjectIsUsedWhenNoTYPO3ConfVarIsPresent() {
+    public function testValueOfCObjectIsUsedWhenNoTYPO3ConfVarIsPresent()
+    {
         // no configuration in TYPO3_CONF_VARS done we expect that the fallback configuration in value will be used
 
         $configuration = [
@@ -136,7 +138,8 @@ class TypoScriptConfigurationTest extends IntegrationTest
     /**
      * @test
      */
-    public function testCanUsePlainValuesFromConfiguration() {
+    public function testCanUsePlainValuesFromConfiguration()
+    {
         $configuration = [
             'plugin.' => [
                 'tx_solr.' => [

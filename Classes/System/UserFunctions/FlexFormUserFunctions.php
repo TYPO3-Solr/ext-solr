@@ -63,12 +63,12 @@ class FlexFormUserFunctions
     {
         $newItems = [];
 
-        array_map(function($fieldName) use (&$newItems, $configuredFacets) {
+        array_map(function ($fieldName) use (&$newItems, $configuredFacets) {
             $value = $fieldName;
             $label = $fieldName;
 
-            $facetNameFilter = function($facet) use ($fieldName) {
-                return ($facet['field'] === $fieldName);
+            $facetNameFilter = function ($facet) use ($fieldName) {
+                return $facet['field'] === $fieldName;
             };
             $configuredFacets = array_filter($configuredFacets, $facetNameFilter);
             if (!empty($configuredFacets)) {
@@ -85,7 +85,7 @@ class FlexFormUserFunctions
     /**
      * Retrieves the configured facets for a page.
      *
-     * @param integer $pid
+     * @param int $pid
      * @return array
      */
     protected function getConfiguredFacetsForPage($pid)
@@ -123,7 +123,7 @@ class FlexFormUserFunctions
     public function getAvailableTemplates(array &$parentInformation)
     {
         $pageRecord = $parentInformation['flexParentDatabaseRow'];
-        if (!is_array($pageRecord) || !isset ($pageRecord['pid'])) {
+        if (!is_array($pageRecord) || !isset($pageRecord['pid'])) {
             $parentInformation['items'] = [];
             return;
         }
@@ -160,7 +160,7 @@ class FlexFormUserFunctions
     /**
      * Retrieves the configured templates from TypoScript.
      *
-     * @param integer $pageId
+     * @param int $pageId
      * @param string $templateKey
      * @return array
      */

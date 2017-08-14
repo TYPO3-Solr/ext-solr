@@ -18,14 +18,15 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class DateRangePackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\DateRange
  */
-class DateRangePackage extends AbstractFacetPackage {
+class DateRangePackage extends AbstractFacetPackage
+{
 
     /**
      * @return string
      */
-    public function getParserClassName() {
+    public function getParserClassName()
+    {
         return (string)DateRangeFacetParser::class;
     }
 

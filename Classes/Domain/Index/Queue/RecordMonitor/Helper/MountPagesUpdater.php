@@ -28,9 +28,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page;
 use ApacheSolrForTypo3\Solr\System\Page\Rootline;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageRepository;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Extracted logic from the RecordMonitor to trigger mount page updates.

@@ -33,9 +33,8 @@
 */
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
-use ApacheSolrForTypo3\Solr\Util;
-use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\HttpUtility;
 
 $domain = GeneralUtility::_GP('domain');
 $returnData = '';

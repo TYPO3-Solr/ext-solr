@@ -5,7 +5,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting
  */
 class Sorting
 {
@@ -54,14 +53,14 @@ class Sorting
      * @param string $field
      * @param string $direction
      * @param string $label
-     * @param boolean $selected
-     * @param boolean $isResetOption
+     * @param bool $selected
+     * @param bool $isResetOption
      * @throws \InvalidArgumentException
      */
     public function __construct(SearchResultSet $resultSet, $name, $field, $direction, $label, $selected, $isResetOption)
     {
         if (!self::getIsValidDirection($direction)) {
-            throw new \InvalidArgumentException("Invalid sorting direction");
+            throw new \InvalidArgumentException('Invalid sorting direction');
         }
         $this->name = $name;
         $this->direction = $direction;
@@ -130,7 +129,7 @@ class Sorting
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getSelected()
     {
@@ -160,7 +159,7 @@ class Sorting
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsResetOption()
     {

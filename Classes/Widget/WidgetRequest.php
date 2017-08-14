@@ -21,7 +21,6 @@ use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest as CoreWidgetRequest;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Widget
  */
 class WidgetRequest extends CoreWidgetRequest
 {

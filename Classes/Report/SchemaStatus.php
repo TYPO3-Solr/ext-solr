@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
 
 /**

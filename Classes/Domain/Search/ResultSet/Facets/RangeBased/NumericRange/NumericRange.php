@@ -14,15 +14,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Nume
  * The TYPO3 project - inspiring people to share!
 */
 
-use ApacheSolrForTypo3\Solr\ViewHelper\Date;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetItem;
+use ApacheSolrForTypo3\Solr\ViewHelper\Date;
 
 /**
  * Value object that represent an option of a numric range facet.
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 class NumericRange extends AbstractRangeFacetItem
 {
@@ -70,7 +69,6 @@ class NumericRange extends AbstractRangeFacetItem
         if ($startRequested !== null && $endRequested !== null) {
             $label = $this->getRangeString();
         }
-
 
         parent::__construct($facet, $label, $documentCount, $selected);
     }

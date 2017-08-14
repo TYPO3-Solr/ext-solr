@@ -14,11 +14,11 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
 /**
@@ -26,7 +26,6 @@ use TYPO3\CMS\Fluid\View\TemplateView;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Controller
  */
 class SearchController extends AbstractBaseController
 {
@@ -63,13 +62,13 @@ class SearchController extends AbstractBaseController
      */
     public function initializeView(ViewInterface $view)
     {
-        if($view instanceof TemplateView) {
+        if ($view instanceof TemplateView) {
             $customTemplate = $this->getCustomTemplateFromConfiguration();
-            if($customTemplate === '') {
+            if ($customTemplate === '') {
                 return;
             }
 
-            if(strpos($customTemplate, 'EXT:') !== false) {
+            if (strpos($customTemplate, 'EXT:') !== false) {
                 $view->setTemplatePathAndFilename($customTemplate);
             } else {
                 $view->setTemplate($customTemplate);
@@ -98,7 +97,6 @@ class SearchController extends AbstractBaseController
 
         $searchRequest = $this->buildSearchRequest();
         $searchResultSet = $this->searchService->search($searchRequest);
-
 
         // we pass the search result set to the controller context, to have the possibility
         // to access it without passing it from partial to partial

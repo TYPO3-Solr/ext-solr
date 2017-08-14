@@ -26,9 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
-use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides a status report about which solrconfig version is used and checks

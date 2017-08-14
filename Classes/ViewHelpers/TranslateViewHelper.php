@@ -14,15 +14,14 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper as CoreTranslateViewHelper;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3\CMS\Fluid\ViewHelpers\TranslateViewHelper as CoreTranslateViewHelper;
 
 /**
  * Class TranslateViewHelper
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers
  */
 class TranslateViewHelper extends CoreTranslateViewHelper
 {

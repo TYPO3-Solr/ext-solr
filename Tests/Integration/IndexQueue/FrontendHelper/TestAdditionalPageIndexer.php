@@ -3,8 +3,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\FrontendHelper;
 
 use ApacheSolrForTypo3\Solr\AdditionalPageIndexer;
 
-class TestAdditionalPageIndexer implements AdditionalPageIndexer {
-
+class TestAdditionalPageIndexer implements AdditionalPageIndexer
+{
 
     /**
      * Provides additional documents that should be indexed together with a page.

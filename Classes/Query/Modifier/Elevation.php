@@ -26,9 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Query\Modifier;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
-use ApacheSolrForTypo3\Solr\Plugin\Search\Search;
 use ApacheSolrForTypo3\Solr\Query;
-use ApacheSolrForTypo3\Solr\Util;
 
 /**
  * Enables query elevation
@@ -46,7 +44,8 @@ class Elevation implements Modifier, SearchRequestAware
     /**
      * @param SearchRequest $searchRequest
      */
-    public function setSearchRequest(SearchRequest $searchRequest) {
+    public function setSearchRequest(SearchRequest $searchRequest)
+    {
         $this->searchRequest = $searchRequest;
     }
 

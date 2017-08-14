@@ -35,7 +35,6 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -132,8 +131,7 @@ class ConnectionManagerTest extends UnitTest
     {
         $self = $this;
         $this->connectionManager->expects($this->once())->method('buildSolrService')->will(
-            $this->returnCallback(function($host, $port, $path, $scheme) use ($self) {
-
+            $this->returnCallback(function ($host, $port, $path, $scheme) use ($self) {
                 $typoScriptConfigurationMock = $self->getDumbMock(TypoScriptConfiguration::class);
                 $synonymsParserMock = $self->getDumbMock(SynonymParser::class);
                 $stopWordParserMock = $self->getDumbMock(StopWordParser::class);

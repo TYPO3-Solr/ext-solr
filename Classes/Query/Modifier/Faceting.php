@@ -84,7 +84,7 @@ class Faceting implements Modifier, SearchRequestAware
 
         $facetParameters = $this->buildFacetingParameters($allFacets, $typoScriptConfiguration);
         foreach ($facetParameters as $facetParameter => $value) {
-            if(strtolower($facetParameter) === 'facet.field') {
+            if (strtolower($facetParameter) === 'facet.field') {
                 $query->getFaceting()->setFields($value);
             } else {
                 $query->getFaceting()->addAdditionalParameter($facetParameter, $value);
@@ -165,7 +165,7 @@ class Faceting implements Modifier, SearchRequestAware
      * keepAllFacetsOnSelection.
      *
      * @param array $facetConfiguration
-     * @param boolean $keepAllFacetsOnSelection
+     * @param bool $keepAllFacetsOnSelection
      * @return string
      */
     protected function getFilterTag($facetConfiguration, $keepAllFacetsOnSelection)

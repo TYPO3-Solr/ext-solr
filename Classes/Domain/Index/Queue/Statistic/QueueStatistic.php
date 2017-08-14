@@ -124,7 +124,7 @@ class QueueStatistic
     }
 
     /**
-     * @param integer $count
+     * @param int $count
      * @return float
      */
     protected function getPercentage($count)

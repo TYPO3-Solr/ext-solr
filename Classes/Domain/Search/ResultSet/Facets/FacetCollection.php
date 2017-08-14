@@ -6,7 +6,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
  * Class FacetCollection
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets
  */
 class FacetCollection extends AbstractCollection
 {
@@ -25,7 +24,7 @@ class FacetCollection extends AbstractCollection
     public function getUsed()
     {
         return $this->getFilteredCopy(
-            function(AbstractFacet $facet) {
+            function (AbstractFacet $facet) {
                 return $facet->getIsUsed() && $facet->getIncludeInUsedFacets();
             }
         );
@@ -37,7 +36,7 @@ class FacetCollection extends AbstractCollection
     public function getAvailable()
     {
         return $this->getFilteredCopy(
-            function(AbstractFacet $facet) {
+            function (AbstractFacet $facet) {
                 return $facet->getIsAvailable() && $facet->getIncludeInAvailableFacets() && $facet->getAllRequirementsMet();
             }
         );
@@ -50,7 +49,7 @@ class FacetCollection extends AbstractCollection
     public function getByGroupName($requiredGroup = 'all')
     {
         return $this->getFilteredCopy(
-            function(AbstractFacet $facet) use ($requiredGroup) {
+            function (AbstractFacet $facet) use ($requiredGroup) {
                 return $facet->getGroupName() == $requiredGroup;
             }
         );
@@ -60,9 +59,10 @@ class FacetCollection extends AbstractCollection
      * @param string $requiredName
      * @return AbstractCollection
      */
-    public function getByName($requiredName) {
+    public function getByName($requiredName)
+    {
         return $this->getFilteredCopy(
-            function(AbstractFacet $facet) use ($requiredName) {
+            function (AbstractFacet $facet) use ($requiredName) {
                 return $facet->getName() == $requiredName;
             }
         );

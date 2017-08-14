@@ -24,10 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Document;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Search;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\RelevanceViewHelper;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
 
@@ -55,7 +55,8 @@ class RelevanceViewHelperTest extends UnitTest
             'document' => $documentMock
         ];
         $renderingContextMock = $this->getDumbMock(RenderingContextInterface::class);
-        $score = RelevanceViewHelper::renderStatic($arguments, function () {}, $renderingContextMock);
+        $score = RelevanceViewHelper::renderStatic($arguments, function () {
+        }, $renderingContextMock);
 
         $this->assertEquals(10.0, $score, 'Unexpected score');
     }

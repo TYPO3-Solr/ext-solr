@@ -27,8 +27,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
-use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\HtmlContentExtractor;
+use ApacheSolrForTypo3\Solr\Query;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -46,7 +46,8 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
      * @param SearchResultSet $resultSet
      * @return SearchResultSet
      */
-    public function process(SearchResultSet $resultSet) {
+    public function process(SearchResultSet $resultSet)
+    {
         $searchRequest = $resultSet->getUsedSearchRequest();
         $response = $resultSet->getResponse();
         $configuration = $searchRequest->getContextTypoScriptConfiguration();
@@ -90,7 +91,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
 
     /**
      * @param Query $query
-     * @param boolean $lowerCaseQuery
+     * @param bool $lowerCaseQuery
      * @return string
      */
     protected function getProcessedKeywords(Query $query, $lowerCaseQuery = false)

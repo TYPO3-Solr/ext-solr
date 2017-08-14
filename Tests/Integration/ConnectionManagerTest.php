@@ -25,12 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\SolrService;
-use ApacheSolrForTypo3\Solrfal\Queue\Queue;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -140,7 +136,8 @@ class ConnectionManagerTest extends IntegrationTest
     /**
      * @test
      */
-    public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConfigurationByRootPageId() {
+    public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConfigurationByRootPageId()
+    {
         $this->setExpectedException(NoSolrConnectionFoundException::class);
 
         /** @var $connectionManager ConnectionManager */
@@ -151,7 +148,8 @@ class ConnectionManagerTest extends IntegrationTest
     /**
      * @test
      */
-    public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByPageId() {
+    public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByPageId()
+    {
         $this->setExpectedException(NoSolrConnectionFoundException::class);
 
         /** @var $connectionManager ConnectionManager */

@@ -24,11 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Uri\Facet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 use ApacheSolrForTypo3\Solr\Domain\Search\Uri\SearchUriBuilder;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
-
 
 /**
  * @author Timo Hund <timo.hund@dkd.de>

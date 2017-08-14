@@ -64,7 +64,7 @@ class ReIndexTask extends AbstractSolrTask
             $indexQueueInitializationResults = $indexQueue->initialize($this->getSite(), $indexingConfigurationName);
         }
 
-        return ($cleanUpResult && !in_array(false, $indexQueueInitializationResults));
+        return $cleanUpResult && !in_array(false, $indexQueueInitializationResults);
     }
 
     /**
@@ -90,7 +90,7 @@ class ReIndexTask extends AbstractSolrTask
             $solrServer->deleteByQuery($deleteQuery);
 
             if (!$enableCommitsSetting) {
-                # Do not commit
+                // Do not commit
                 continue;
             }
 

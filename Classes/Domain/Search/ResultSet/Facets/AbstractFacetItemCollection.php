@@ -13,7 +13,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
@@ -21,7 +20,6 @@ use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 abstract class AbstractFacetItemCollection extends AbstractCollection
 {
@@ -63,7 +61,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
      */
     public function getSelected()
     {
-        return $this->getFilteredCopy(function(AbstractFacetItem $item) {
+        return $this->getFilteredCopy(function (AbstractFacetItem $item) {
             return $item->getSelected();
         });
     }

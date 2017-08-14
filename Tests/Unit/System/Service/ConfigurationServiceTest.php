@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Test\System\Service;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Extbase\Service\TypoScriptService;

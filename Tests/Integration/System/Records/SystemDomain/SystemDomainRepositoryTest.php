@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\System\Records\SystemDomain\SystemDomainRepository;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-
 /**
  * Integration test for the SystemDomainRepository
  */

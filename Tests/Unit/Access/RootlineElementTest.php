@@ -64,7 +64,7 @@ class RootlineElementTest extends UnitTest
             'no_prefix_multiple' => [
                 'stringRepresentation' => '0,1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [0,1,2],
+                'expectedGroups' => [0, 1, 2],
                 'expectedPageId' => null,
                 'expectedToString' => 'c:0,1,2'
             ],
@@ -78,14 +78,14 @@ class RootlineElementTest extends UnitTest
             'contentWithPermissionContent' => [
                 'stringRepresentation' => 'c:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_CONTENT,
-                'expectedGroups' => [1,2],
+                'expectedGroups' => [1, 2],
                 'expectedPageId' => null,
                 'expectedToString' => 'c:1,2'
             ],
             'record' => [
                 'stringRepresentation' => 'r:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_RECORD,
-                'expectedGroups' => [1,2],
+                'expectedGroups' => [1, 2],
                 'expectedPageId' => null,
                 'expectedToString' => 'r:1,2'
             ],
@@ -99,7 +99,7 @@ class RootlineElementTest extends UnitTest
             'pageList' => [
                 'stringRepresentation' => '4711:1,2',
                 'expectedType' => RootlineElement::ELEMENT_TYPE_PAGE,
-                'expectedGroups' => [1,2],
+                'expectedGroups' => [1, 2],
                 'expectedPageId' => 4711,
                 'expectedToString' => '4711:1,2'
             ],

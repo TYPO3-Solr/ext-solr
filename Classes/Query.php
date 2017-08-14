@@ -519,7 +519,6 @@ class Query
         }
     }
 
-
     /**
      * Adds a field to the list of fields to return. Also checks whether * is
      * set for the fields, if so it's removed from the field list.
@@ -722,7 +721,6 @@ class Query
         $this->getGrouping()->setResultsPerGroup($numberOfResults);
     }
 
-
     /**
      * Gets the maximum number of results to be returned per group.
      *
@@ -888,7 +886,6 @@ class Query
         $this->getFilters()->add($filterString);
     }
 
-
     // query parameters
 
     /**
@@ -961,7 +958,6 @@ class Query
             $this->setReturnFields(ReturnFields::fromArray(['*', 'score']));
             return;
         }
-
 
         if (is_string($fieldList)) {
             $this->setReturnFields(ReturnFields::fromString($fieldList));

@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Apache_Solr_ParserException;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
@@ -40,7 +41,6 @@ use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use Apache_Solr_ParserException;
 
 /**
  * The SearchResultSetService is responsible to build a SearchResultSet from a SearchRequest.

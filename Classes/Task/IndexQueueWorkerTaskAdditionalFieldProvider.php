@@ -162,7 +162,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
      * Check that a task is an instance of IndexQueueWorkerTask
      *
      * @param AbstractTask $task
-     * @return boolean
+     * @return bool
      * @throws \LogicException
      */
     protected function isTaskInstanceofIndexQueueWorkerTask($task)
@@ -170,7 +170,7 @@ class IndexQueueWorkerTaskAdditionalFieldProvider implements AdditionalFieldProv
         if ((!is_null($task)) && (!($task instanceof IndexQueueWorkerTask))) {
             throw new \LogicException(
                 '$task must be an instance of IndexQueueWorkerTask, '
-                .'other instances are not supported.', 1487499814
+                . 'other instances are not supported.', 1487499814
             );
         }
         return true;

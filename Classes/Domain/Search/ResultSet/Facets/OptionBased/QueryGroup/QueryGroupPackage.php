@@ -18,14 +18,15 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class QueryGroupPackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup
  */
-class QueryGroupPackage extends AbstractFacetPackage {
+class QueryGroupPackage extends AbstractFacetPackage
+{
 
     /**
      * @return string
      */
-    public function getParserClassName() {
+    public function getParserClassName()
+    {
         return (string)QueryGroupFacetParser::class;
     }
 

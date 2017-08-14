@@ -18,14 +18,15 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetPackage;
 
 /**
  * Class NumericRangePackage
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\NumericRange
  */
-class NumericRangePackage extends AbstractFacetPackage {
+class NumericRangePackage extends AbstractFacetPackage
+{
 
     /**
      * @return string
      */
-    public function getParserClassName() {
+    public function getParserClassName()
+    {
         return (string)NumericRangeFacetParser::class;
     }
 

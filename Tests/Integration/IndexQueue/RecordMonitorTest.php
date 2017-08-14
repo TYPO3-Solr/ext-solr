@@ -448,7 +448,6 @@ class RecordMonitorTest extends IntegrationTest
             'First queue item has unexpected indexingConfigurationName');
     }
 
-
     /**
      * @test
      */

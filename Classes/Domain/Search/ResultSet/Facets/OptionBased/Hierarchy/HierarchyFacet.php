@@ -23,7 +23,6 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 class HierarchyFacet extends AbstractFacet
 {
@@ -89,8 +88,8 @@ class HierarchyFacet extends AbstractFacet
      * @param string $key
      * @param string $label
      * @param string $value
-     * @param integer $count
-     * @param boolean $selected
+     * @param int $count
+     * @param bool $selected
      */
     public function createNode($parentKey, $key, $label, $value, $count, $selected)
     {

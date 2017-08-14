@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The ReturnFields class is responsible to hold a list of field names that should be returned from
  * solr.
  *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class ReturnFields implements ParameterBuilder
 {
@@ -96,7 +95,7 @@ class ReturnFields implements ParameterBuilder
     public function toString($delimiter = ',')
     {
         return implode($delimiter, $this->fieldList);
-    }    
+    }
 
     /**
      * @param string $fieldList
@@ -115,7 +114,7 @@ class ReturnFields implements ParameterBuilder
      */
     public static function fromArray(array $fieldListArray)
     {
-        return new ReturnFields($fieldListArray);
+        return new self($fieldListArray);
     }
 
     /**

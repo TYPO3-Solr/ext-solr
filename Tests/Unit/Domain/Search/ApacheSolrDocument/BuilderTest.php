@@ -59,7 +59,8 @@ class BuilderTest extends UnitTest
      */
     protected $documentBuilder;
 
-    public function setUp() {
+    public function setUp()
+    {
         /** @var $variantIdBuilderMock */
         $this->variantIdBuilderMock = $this->getDumbMock(IdBuilder::class);
         $this->siteMock = $this->getDumbMock(Site::class);
@@ -67,7 +68,7 @@ class BuilderTest extends UnitTest
 
         /** @var $documentBuilder Builder */
         $this->documentBuilder = $this->getMockBuilder(Builder::class)->setConstructorArgs([$this->variantIdBuilderMock ])->setMethods(
-            ['getExtractorForPageContent', 'getSiteByPageId','getPageDocumentId']
+            ['getExtractorForPageContent', 'getSiteByPageId', 'getPageDocumentId']
         )->getMock();
 
         $this->documentBuilder->expects($this->any())->method('getExtractorForPageContent')->will($this->returnValue($this->typo3PageExtractorMock));
@@ -110,7 +111,7 @@ class BuilderTest extends UnitTest
         $document = $this->documentBuilder->fromPage($fakePage, 'http://www.typo3-solr.com', $fakeRootLine, '');
         $keywords = $document->getField('keywords');
 
-        $this->assertSame($keywords['value'], ['foo','bar'], 'Could not set keywords from page document');
+        $this->assertSame($keywords['value'], ['foo', 'bar'], 'Could not set keywords from page document');
     }
 
     /**

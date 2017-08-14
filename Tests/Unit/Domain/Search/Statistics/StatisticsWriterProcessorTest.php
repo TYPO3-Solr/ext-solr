@@ -69,12 +69,11 @@ class StatisticsWriterProcessorTest extends UnitTest
         $resultSetMock->expects($this->once())->method('getUsedSearchRequest')->will($this->returnValue($searchRequestMock));
 
         $self = $this;
-        $processor->expects($this->once())->method('saveStatisticDate')->will($this->returnCallback(function($statisticData) use ($self) {
+        $processor->expects($this->once())->method('saveStatisticDate')->will($this->returnCallback(function ($statisticData) use ($self) {
             $this->assertSame('my search', $statisticData['keywords'], 'Unexpected keywords given');
             $this->assertSame('192.168.2.22', $statisticData['ip'], 'Unexpected ip given');
         }));
 
         $processor->process($resultSetMock);
     }
-
 }

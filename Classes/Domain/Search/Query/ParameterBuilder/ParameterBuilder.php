@@ -30,10 +30,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder;
  * the query parameter that are needed for solr
  *
  * Interface ParameterProvider
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
-interface ParameterBuilder {
-
+interface ParameterBuilder
+{
 
     /**
      * @return array

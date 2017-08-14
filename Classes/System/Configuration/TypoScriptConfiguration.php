@@ -267,8 +267,8 @@ class TypoScriptConfiguration
     /**
      * Returns true when ext_solr is enabled
      *
-     * @param boolean $defaultIfEmpty
-     * @return boolean
+     * @param bool $defaultIfEmpty
+     * @return bool
      */
     public function getEnabled($defaultIfEmpty = false)
     {
@@ -574,7 +574,6 @@ class TypoScriptConfiguration
         // For easier check later on we return an array by combining $recursiveUpdateFields
         return array_combine($recursiveUpdateFields, $recursiveUpdateFields);
     }
-
 
     /**
      * Retrieves and initialPagesAdditionalWhereClause where clause when configured or an empty string.
@@ -910,8 +909,8 @@ class TypoScriptConfiguration
      *
      * plugin.tx_solr.solr.
      *
-     * @param boolean $defaultIfEmpty
-     * @return boolean
+     * @param bool $defaultIfEmpty
+     * @return bool
      */
     public function getSolrHasConnectionConfiguration($defaultIfEmpty = false)
     {
@@ -1551,13 +1550,12 @@ class TypoScriptConfiguration
         return $this->getBool($isSiteHightlightingEnabled);
     }
 
-
     /**
      * Can be used to check if the highlighting is enabled
      *
      * plugin.tx_solr.search.results.resultsHighlighting
      *
-     * @param boolean $defaultIfEmpty
+     * @param bool $defaultIfEmpty
      * @return string
      */
     public function getSearchResultsHighlighting($defaultIfEmpty = false)
@@ -2110,7 +2108,6 @@ class TypoScriptConfiguration
     {
         $enableQParameter = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.ignoreGlobalQParameter', $defaultIfEmpty);
         return $this->getBool($enableQParameter);
-
     }
 
     /**

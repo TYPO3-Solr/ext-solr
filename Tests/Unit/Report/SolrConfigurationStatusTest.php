@@ -29,7 +29,6 @@ use ApacheSolrForTypo3\Solr\System\Records\SystemDomain\SystemDomainRepository;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Reports\Status;
 
-
 /**
  * Testcase for the SolrConfigurationStatus class.
  *
@@ -48,7 +47,8 @@ class SolrConfigurationStatusTest extends UnitTest
      */
     protected $systemDomainRepository;
 
-    public function setUp() {
+    public function setUp()
+    {
         // we mock the methods to external dependencies.
         $this->systemDomainRepository = $this->getMockBuilder(SystemDomainRepository::class)->setMethods(
             ['findDomainRecordsByRootPagesIds']
@@ -72,7 +72,8 @@ class SolrConfigurationStatusTest extends UnitTest
     /**
      * @test
      */
-    public function canGetEmptyResultWhenEverythingIsOK() {
+    public function canGetEmptyResultWhenEverythingIsOK()
+    {
         $fakedRootPages =  [1 => ['uid' => 1, 'title' => 'My Siteroot']];
         $fakedDomainRecords = [1 => ['uid' => 1, 'pid' => 1]];
 
@@ -93,7 +94,8 @@ class SolrConfigurationStatusTest extends UnitTest
     /**
      * @test
      */
-    public function canGetViolationWhenSolrIsEnabledButIndexingNot() {
+    public function canGetViolationWhenSolrIsEnabledButIndexingNot()
+    {
         $fakedRootPages =  [1 => ['uid' => 1, 'title' => 'My Siteroot']];
         $fakedDomainRecords = [1 => ['uid' => 1, 'pid' => 1]];
 
@@ -119,5 +121,4 @@ class SolrConfigurationStatusTest extends UnitTest
         $firstState = $states[0];
         $this->assertSame(Status::WARNING, $firstState->getSeverity(), 'Expected to have one violation');
     }
-
 }

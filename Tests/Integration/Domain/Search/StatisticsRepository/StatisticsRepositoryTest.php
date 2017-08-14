@@ -90,7 +90,8 @@ class StatisticsRepositoryTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetSearchStatisticsNoResult() {
+    public function canGetSearchStatisticsNoResult()
+    {
         $this->importDataSetFromFixture('can_get_statistics.xml');
         $fixtureTimestamp = 1480000000;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;

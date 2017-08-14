@@ -24,11 +24,6 @@ namespace ApacheSolrForTypo3\Solr\FieldProcessor;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\FieldProcessor\CategoryUidToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\PathToHierarchy;
-use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToIsoDate;
-use ApacheSolrForTypo3\Solr\FieldProcessor\TimestampToUtcIsoDate;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**

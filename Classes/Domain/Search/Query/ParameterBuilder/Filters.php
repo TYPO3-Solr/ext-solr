@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The Filters ParameterProvider is responsible to build the solr query parameters
  * that are needed for the filtering.
  *
- * @package ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder
  */
 class Filters implements ParameterBuilder, \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -46,7 +45,9 @@ class Filters implements ParameterBuilder, \ArrayAccess, \Countable, \IteratorAg
      *
      * private constructor should only be created with the from* methods
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Removes a filter on a field
@@ -65,7 +66,7 @@ class Filters implements ParameterBuilder, \ArrayAccess, \Countable, \IteratorAg
     public function removeByPrefix($filterFieldName)
     {
         foreach ($this->filters as $key => $filterString) {
-            if (GeneralUtility::isFirstPartOfStr($filterString, $filterFieldName )) {
+            if (GeneralUtility::isFirstPartOfStr($filterString, $filterFieldName)) {
                 unset($this->filters[$key]);
             }
         }
@@ -80,7 +81,6 @@ class Filters implements ParameterBuilder, \ArrayAccess, \Countable, \IteratorAg
     {
         unset($this->filters[$name]);
     }
-
 
     /**
      * @param string $filterString
@@ -145,7 +145,7 @@ class Filters implements ParameterBuilder, \ArrayAccess, \Countable, \IteratorAg
      */
     public static function fromTypoScriptConfiguration(TypoScriptConfiguration $solrConfiguration)
     {
-        return new Filters();
+        return new self();
     }
 
     /**

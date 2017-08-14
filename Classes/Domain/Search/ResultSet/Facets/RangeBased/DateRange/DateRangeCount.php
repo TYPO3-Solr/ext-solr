@@ -14,7 +14,6 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\Date
  * The TYPO3 project - inspiring people to share!
 */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacetItem;
 use DateTime;
 
 /**
@@ -22,7 +21,6 @@ use DateTime;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionsFacet
  */
 class DateRangeCount
 {

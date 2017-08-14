@@ -26,13 +26,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -40,10 +37,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Install\Service\SqlExpectedSchemaService;
 use TYPO3\CMS\Install\Service\SqlSchemaMigrationService;
-
 
 /**
  * Base class for all integration tests in the EXT:solr project
@@ -132,7 +127,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string $fixtureName
-     * @param boolean $debugOutput
+     * @param bool $debugOutput
      */
     protected function importDumpFromFixture($fixtureName, $debugOutput = true)
     {
@@ -215,7 +210,6 @@ abstract class IntegrationTest extends FunctionalTestCase
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
             $TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT);
 
-
         EidUtility::initLanguage();
 
         $TSFE->initFEuser();
@@ -275,7 +269,7 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected function validateTestCoreName($coreName)
     {
-        if(!in_array($coreName, $this->testSolrCores)) {
+        if (!in_array($coreName, $this->testSolrCores)) {
             throw new \InvalidArgumentException('No valid testcore passed');
         }
     }
@@ -337,7 +331,8 @@ abstract class IntegrationTest extends FunctionalTestCase
      * @param int $workspace
      * @return BackendUserAuthentication
      */
-    protected function fakeBEUser($isAdmin = 0, $workspace = 0) {
+    protected function fakeBEUser($isAdmin = 0, $workspace = 0)
+    {
         /** @var $beUser  BackendUserAuthentication */
         $beUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $beUser->user['admin'] = $isAdmin;
@@ -348,7 +343,7 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
-     * @param integer $pageId
+     * @param int $pageId
      * @param array $feUserGroupArray
      * @return TypoScriptFrontendController
      */

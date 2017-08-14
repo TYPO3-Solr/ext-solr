@@ -52,7 +52,7 @@ class TCAService
     }
 
     /**
-     * @return integer
+     * @return int
      */
     protected function getTime()
     {
@@ -129,10 +129,10 @@ class TCAService
      */
     public function isEnableColumn($table, $columnName)
     {
-        return (
+        return
             isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']) &&
             array_key_exists($columnName, $GLOBALS['TCA'][$table]['ctrl']['enablecolumns'])
-        );
+        ;
     }
 
     /**
@@ -155,7 +155,6 @@ class TCAService
 
         return $startTimeInFuture;
     }
-
 
     /**
      * Checks whether a hidden field exists for the current table and if so

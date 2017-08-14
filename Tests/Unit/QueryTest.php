@@ -91,7 +91,6 @@ class QueryTest extends UnitTest
         $query = $this->getInitializedTestQuery();
         $filters = $query->getFilters();
 
-
         $this->assertCount(
             0,
             $filters,
@@ -633,7 +632,7 @@ class QueryTest extends UnitTest
         $fakeConfigurationArray = [];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
 
-        $initialReturnFieldList = ['title','content','url'];
+        $initialReturnFieldList = ['title', 'content', 'url'];
         $query = $this->getInitializedTestQuery('test', $fakeConfiguration);
         $query->setReturnFields(ReturnFields::fromArray($initialReturnFieldList));
         $query->getReturnFields()->remove('content');
@@ -906,7 +905,6 @@ class QueryTest extends UnitTest
 
         $this->assertSame($input, $queryParameters['spellcheck.maxCollationTries'], 'Could not set spellcheck.maxCollationTries as expected');
     }
-
 
     /**
      * @test
@@ -1261,7 +1259,7 @@ class QueryTest extends UnitTest
         $query->getReturnFields()->add('title');
         $query->getFaceting()->addField('color');
         $query->setCollapsing(true);
-        $query->setUserAccessGroups([1,2,3]);
+        $query->setUserAccessGroups([1, 2, 3]);
         $query->setPage(3);
 
         $parameters = $query->getQueryParameters();

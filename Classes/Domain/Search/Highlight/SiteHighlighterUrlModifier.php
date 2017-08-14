@@ -29,18 +29,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class SiteHighlighterUrlModifier
- * @package ApacheSolrForTypo3\Solr\System\Service
  */
-class SiteHighlighterUrlModifier {
+class SiteHighlighterUrlModifier
+{
 
     /**
      * @param string $url
      * @param string $searchWords
-     * @param boolean $addNoCache
-     * @param boolean $keepCHash
+     * @param bool $addNoCache
+     * @param bool $keepCHash
      * @return string
      */
-    public function modify($url, $searchWords, $addNoCache = true, $keepCHash = false) {
+    public function modify($url, $searchWords, $addNoCache = true, $keepCHash = false)
+    {
         $searchWords = str_replace('&quot;', '', $searchWords);
         $searchWords = GeneralUtility::trimExplode(' ', $searchWords, true);
 

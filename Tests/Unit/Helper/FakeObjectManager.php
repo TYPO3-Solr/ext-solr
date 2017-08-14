@@ -33,7 +33,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  * of an object to GeneralUtitlity::makeInstance. When the object contains a method,
  * injectObjectManager it injects the object manager into the instance.
  *
- * @package ApacheSolrForTypo3\Solr\Tests\Unit\Helper
  */
 class FakeObjectManager implements ObjectManagerInterface
 {
@@ -46,7 +45,7 @@ class FakeObjectManager implements ObjectManagerInterface
      */
     public function isRegistered($objectName)
     {
-        throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
+        throw new InvalidArgumentException('Not implemented in the FakeObjectManager');
     }
 
     /**
@@ -77,7 +76,7 @@ class FakeObjectManager implements ObjectManagerInterface
      */
     public function getEmptyObject($className)
     {
-        throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
+        throw new InvalidArgumentException('Not implemented in the FakeObjectManager');
     }
 
     /**
@@ -88,6 +87,6 @@ class FakeObjectManager implements ObjectManagerInterface
      */
     public function getScope($objectName)
     {
-        throw new InvalidArgumentException("Not implemented in the FakeObjectManager");
+        throw new InvalidArgumentException('Not implemented in the FakeObjectManager');
     }
 }

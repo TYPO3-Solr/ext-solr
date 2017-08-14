@@ -65,5 +65,4 @@ class SchemaParserTest extends UnitTest
         $schema = $parser->parseJson('{}');
         $this->assertInstanceOf(Schema::class, $schema, 'Can not get schema object from empty response');
     }
-
 }

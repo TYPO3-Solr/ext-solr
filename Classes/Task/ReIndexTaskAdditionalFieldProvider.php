@@ -236,7 +236,7 @@ class ReIndexTaskAdditionalFieldProvider implements AdditionalFieldProviderInter
      * Check that a task is an instance of ReIndexTask
      *
      * @param AbstractTask $task
-     * @return boolean
+     * @return bool
      * @throws \LogicException
      */
     protected function isTaskInstanceofReIndexTask($task)

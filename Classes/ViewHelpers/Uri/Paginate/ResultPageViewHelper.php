@@ -22,7 +22,6 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
- * @package ApacheSolrForTypo3\Solr\ViewHelpers\Link
  */
 class ResultPageViewHelper extends AbstractUriViewHelper
 {
@@ -34,7 +33,6 @@ class ResultPageViewHelper extends AbstractUriViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('page', 'int', 'The page', false, 0);
-
     }
 
     /**
