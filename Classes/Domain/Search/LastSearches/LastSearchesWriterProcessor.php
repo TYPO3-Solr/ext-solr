@@ -70,7 +70,6 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
     protected function getLastSearchesService(SearchResultSet $resultSet) {
         return GeneralUtility::makeInstance(LastSearchesService::class,
             $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration(),
-            $GLOBALS['TSFE'],
-            $GLOBALS['TYPO3_DB']);
+            $GLOBALS['TSFE']);
     }
 }
