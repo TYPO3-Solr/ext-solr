@@ -54,12 +54,11 @@ class FrequentlySearchedController extends AbstractWidgetController
      */
     public function indexAction()
     {
-        $databaseConnection = $GLOBALS['TYPO3_DB'];
         $tsfe = $GLOBALS['TSFE'];
         $cache = $this->getInitializedCache();
         $configuration = $this->controllerContext->getTypoScriptConfiguration();
 
-        $frequentSearchesService = GeneralUtility::makeInstance(FrequentSearchesService::class, $configuration, $cache, $tsfe, $databaseConnection);
+        $frequentSearchesService = GeneralUtility::makeInstance(FrequentSearchesService::class, $configuration, $cache, $tsfe);
 
         $frequentSearches = $frequentSearchesService->getFrequentSearchTerms();
         $minimumSize = $configuration->getSearchFrequentSearchesMinSize();
