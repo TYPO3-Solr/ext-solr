@@ -74,11 +74,6 @@ class SearchResultSetService
     protected $lastResultSet = null;
 
     /**
-     * @var bool
-     */
-    protected $useQueryAwareComponents = true;
-
-    /**
      * @var
      */
     protected $isSolrAvailable = false;
@@ -131,22 +126,6 @@ class SearchResultSetService
     public function getSearch()
     {
         return $this->search;
-    }
-
-    /**
-     * @param bool $useQueryAwareComponents
-     */
-    public function setUseQueryAwareComponents($useQueryAwareComponents)
-    {
-        $this->useQueryAwareComponents = $useQueryAwareComponents;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getUseQueryAwareComponents()
-    {
-        return $this->useQueryAwareComponents;
     }
 
     /**
@@ -205,7 +184,7 @@ class SearchResultSetService
             /** @var Search\SearchComponent $searchComponent */
             $searchComponent->setSearchConfiguration($this->typoScriptConfiguration->getSearchConfiguration());
 
-            if ($searchComponent instanceof QueryAware && $this->useQueryAwareComponents) {
+            if ($searchComponent instanceof QueryAware) {
                 $searchComponent->setQuery($query);
             }
 
