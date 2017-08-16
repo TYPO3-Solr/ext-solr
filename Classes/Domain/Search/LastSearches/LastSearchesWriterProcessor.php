@@ -49,7 +49,7 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
             return $resultSet;
         }
 
-        if (!isset($GLOBALS['TSFE']) || !isset($GLOBALS['TYPO3_DB'])) {
+        if (!isset($GLOBALS['TSFE'])) {
             return $resultSet;
         }
 
@@ -69,7 +69,6 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
      */
     protected function getLastSearchesService(SearchResultSet $resultSet) {
         return GeneralUtility::makeInstance(LastSearchesService::class,
-            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration(),
-            $GLOBALS['TSFE']);
+            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration());
     }
 }

@@ -26,7 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -44,9 +46,9 @@ class LastSearchesService
     protected $configuration;
 
     /**
-     * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     * @var FrontendUserSession
      */
-    protected $tsfe;
+    protected $session;
 
     /**
      * @var LastSearchesRepository
@@ -55,13 +57,13 @@ class LastSearchesService
 
     /**
      * @param TypoScriptConfiguration $typoscriptConfiguration
-     * @param TypoScriptFrontendController $tsfe
+     * @param FrontendUserSession|null $session
      * @param LastSearchesRepository|null $lastSearchesRepository
      */
-    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, TypoScriptFrontendController $tsfe, LastSearchesRepository $lastSearchesRepository = null)
+    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, FrontendUserSession $session = null, LastSearchesRepository $lastSearchesRepository = null)
     {
         $this->configuration = $typoscriptConfiguration;
-        $this->tsfe = $tsfe;
+        $this->session = isset($session) ? $session : GeneralUtility::makeInstance(FrontendUserSession::class);
         $this->lastSearchesRepository = isset($lastSearchesRepository) ? $lastSearchesRepository : GeneralUtility::makeInstance(LastSearchesRepository::class);
     }
 
@@ -120,23 +122,10 @@ class LastSearchesService
      */
     protected function getLastSearchesFromSession($limit)
     {
-        $lastSearches = $this->getLastSearchesFromFrontendSession();
-
-        if (!is_array($lastSearches)) {
-            return [];
-        }
-
+        $lastSearches = $this->session->getLastSearches();
         $lastSearches = array_slice(array_reverse(array_unique($lastSearches)), 0, $limit);
 
         return $lastSearches;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getLastSearchesFromFrontendSession()
-    {
-        return $this->tsfe->fe_user->getKey('ses', 'tx_solr_lastSearches');
     }
 
     /**
@@ -147,12 +136,7 @@ class LastSearchesService
      */
     protected function storeKeywordsToSession($keywords)
     {
-        $currentLastSearches = $this->tsfe->fe_user->getKey('ses', 'tx_solr_lastSearches');
-
-        if (!is_array($currentLastSearches)) {
-            $currentLastSearches = [];
-        }
-
+        $currentLastSearches = $this->session->getLastSearches();
         $lastSearches = $currentLastSearches;
         $newLastSearchesCount = array_push($lastSearches, $keywords);
 
@@ -161,10 +145,6 @@ class LastSearchesService
             $newLastSearchesCount = count($lastSearches);
         }
 
-        $this->tsfe->fe_user->setKey(
-            'ses',
-            'tx_solr_lastSearches',
-            $lastSearches
-        );
+        $this->session->setLastSearches($lastSearches);
     }
 }

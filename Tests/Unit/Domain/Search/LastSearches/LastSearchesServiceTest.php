@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\LastSearches;
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -38,9 +39,9 @@ class LastSearchesServiceTest extends UnitTest
     protected $lastSearchesService;
 
     /**
-     * @var TypoScriptFrontendController
+     * @var FrontendUserSession
      */
-    protected $tsfeMock;
+    protected $sessionMock;
 
     /**
      * @var TypoScriptConfiguration
@@ -57,7 +58,7 @@ class LastSearchesServiceTest extends UnitTest
      */
     public function setUp()
     {
-        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
+        $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
         $this->lastSearchesRepositoryMock = $this->getMockBuilder(LastSearchesRepository::class)
@@ -66,7 +67,7 @@ class LastSearchesServiceTest extends UnitTest
         $this->lastSearchesService = $this->getMockBuilder(LastSearchesService::class)
             ->setMethods(['getLastSearchesFromFrontendSession'])
             ->setConstructorArgs([  $this->configurationMock,
-                $this->tsfeMock,
+                $this->sessionMock,
                 $this->lastSearchesRepositoryMock])->getMock();
     }
 
@@ -77,7 +78,7 @@ class LastSearchesServiceTest extends UnitTest
     {
         $fakedLastSearchesInSession = ['first search', 'second search'];
 
-        $this->lastSearchesService->expects($this->once())->method('getLastSearchesFromFrontendSession')->will($this->returnValue(
+        $this->sessionMock->expects($this->once())->method('getLastSearches')->will($this->returnValue(
             $fakedLastSearchesInSession
         ));
 

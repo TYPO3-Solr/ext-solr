@@ -36,6 +36,7 @@ use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use Apache_Solr_ParserException;
@@ -64,7 +65,7 @@ class SearchResultSetService
     protected $resultsPerPageChanged = false;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Search
+     * @var Search
      */
     protected $search;
 
@@ -74,7 +75,7 @@ class SearchResultSetService
     protected $lastResultSet = null;
 
     /**
-     * @var
+     * @var boolean
      */
     protected $isSolrAvailable = false;
 
@@ -84,20 +85,27 @@ class SearchResultSetService
     protected $typoScriptConfiguration;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+     * @var SolrLogManager;
      */
     protected $logger = null;
+
+    /**
+     * @var FrontendUserSession
+     */
+    protected $session = null;
 
     /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
      * @param SolrLogManager $solrLogManager
+     * @param FrontendUserSession $frontendUserSession
      */
-    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null)
+    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null, FrontendUserSession $frontendUserSession = null)
     {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
         $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
+        $this->session = is_null($frontendUserSession) ? GeneralUtility::makeInstance(FrontendUserSession::class) : $frontendUserSession;
     }
 
     /**
@@ -210,16 +218,17 @@ class SearchResultSetService
         $requestedPerPage = $searchRequest->getResultsPerPage();
         $perPageSwitchOptions = $this->typoScriptConfiguration->getSearchResultsPerPageSwitchOptionsAsArray();
         if (isset($requestedPerPage) && in_array($requestedPerPage, $perPageSwitchOptions)) {
-            $this->setPerPageInSession($requestedPerPage);
+            $this->session->setPerPage($requestedPerPage);
             $this->resultsPerPageChanged = true;
         }
 
         $defaultResultsPerPage = $this->typoScriptConfiguration->getSearchResultsPerPage();
-        $sessionResultPerPage = $this->getPerPageFromSession();
-
         $currentNumberOfResultsShown = $defaultResultsPerPage;
-        if (!is_null($sessionResultPerPage) && in_array($sessionResultPerPage, $perPageSwitchOptions)) {
-            $currentNumberOfResultsShown = (int)$sessionResultPerPage;
+        if ($this->session->getHasPerPage()) {
+            $sessionResultPerPage = $this->session->getPerPage();
+            if (in_array($sessionResultPerPage, $perPageSwitchOptions)) {
+                $currentNumberOfResultsShown = (int)$sessionResultPerPage;
+            }
         }
 
         if ($this->shouldHideResultsFromInitialSearch($searchRequest)) {
@@ -677,22 +686,6 @@ class SearchResultSetService
         }
 
         return $wasEmptyQueryString;
-    }
-
-    /**
-     * @param int $requestedPerPage
-     */
-    protected function setPerPageInSession($requestedPerPage)
-    {
-        $GLOBALS['TSFE']->fe_user->setKey('ses', 'tx_solr_resultsPerPage', intval($requestedPerPage));
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getPerPageFromSession()
-    {
-        return $GLOBALS['TSFE']->fe_user->getKey('ses', 'tx_solr_resultsPerPage');
     }
 
     /**
