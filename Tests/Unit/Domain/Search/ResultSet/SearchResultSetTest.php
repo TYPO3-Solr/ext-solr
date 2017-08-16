@@ -36,6 +36,7 @@ use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Search\SpellcheckingComponent;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
@@ -87,6 +88,11 @@ class SearchResultSetTest extends UnitTest
     protected $escapeServiceMock;
 
     /**
+     * @var FrontendUserSession
+     */
+    protected $sessionMock;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -99,9 +105,11 @@ class SearchResultSetTest extends UnitTest
         $this->escapeServiceMock = $this->getDumbMock(EscapeService::class);
         $this->escapeServiceMock->expects($this->any())->method('escape')->will($this->returnArgument(0));
 
+        $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);
+
         $this->searchResultSetService = $this->getMockBuilder(SearchResultSetService::class)
-            ->setMethods(['setPerPageInSession', 'getPerPageFromSession', 'getRegisteredSearchComponents', 'getQueryInstance'])
-            ->setConstructorArgs([$this->configurationMock, $this->searchMock, $this->solrLogManagerMock])
+            ->setMethods(['getRegisteredSearchComponents', 'getQueryInstance'])
+            ->setConstructorArgs([$this->configurationMock, $this->searchMock, $this->solrLogManagerMock, $this->sessionMock])
             ->getMock();
 
         // @todo we should fake the result of getQueryInstance with a mock and move the tests that test Query partly into the QueryTest
@@ -329,7 +337,7 @@ class SearchResultSetTest extends UnitTest
      */
     private function assertPerPageInSessionWillBeChanged()
     {
-        $this->searchResultSetService->expects($this->once())->method('setPerPageInSession');
+        $this->sessionMock->expects($this->once())->method('setPerPage');
     }
 
     /**
@@ -337,6 +345,6 @@ class SearchResultSetTest extends UnitTest
      */
     private function assertPerPageInSessionWillNotBeChanged()
     {
-        $this->searchResultSetService->expects($this->never())->method('setPerPageInSession');
+        $this->sessionMock->expects($this->never())->method('setPerPage');
     }
 }
