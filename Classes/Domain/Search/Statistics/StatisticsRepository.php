@@ -108,7 +108,7 @@ class StatisticsRepository extends AbstractRepository
      * @param int $limit
      * @return array
      */
-    public function getTopKeyWordsWithHits($rootPageId, $days = 30, $limit = 10)
+    public function getTopKeyWordsWithHits(int $rootPageId, int $days = 30, int $limit = 10) : array
     {
         return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, false);
     }
@@ -121,7 +121,7 @@ class StatisticsRepository extends AbstractRepository
      * @param int $limit
      * @return array
      */
-    public function getTopKeyWordsWithoutHits($rootPageId, $days = 30, $limit = 10)
+    public function getTopKeyWordsWithoutHits(int $rootPageId, int $days = 30, int $limit = 10) : array
     {
         return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, true);
     }
@@ -135,14 +135,10 @@ class StatisticsRepository extends AbstractRepository
      * @param bool $withoutHits
      * @return array
      */
-    protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $days = 30, $limit = 10, $withoutHits = false)
+    protected function getTopKeyWordsWithOrWithoutHits(int $rootPageId, int $days = 30, int $limit = 10, bool $withoutHits = false) : array
     {
-        $rootPageId = (int)$rootPageId;
-        $limit = (int)$limit;
-        $withoutHits = (bool)$withoutHits;
-
         $now = time();
-        $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
+        $timeStart = $now - 86400 * $days; // 86400 seconds/day
 
         $queryBuilder = $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit);
         // Check if we want without or with hits
@@ -165,7 +161,7 @@ class StatisticsRepository extends AbstractRepository
      * @param array $statisticsRows
      * @return array
      */
-    protected function mergeRowsWithSameKeyword(array $statisticsRows)
+    protected function mergeRowsWithSameKeyword(array $statisticsRows) : array
     {
         $result = [];
         foreach ($statisticsRows as $statisticsRow) {
@@ -196,7 +192,7 @@ class StatisticsRepository extends AbstractRepository
      * @param int $bucketSeconds Seconds per bucket
      * @return array [labels, data]
      */
-    public function getQueriesOverTime($rootPageId, $days = 30, $bucketSeconds = 3600)
+    public function getQueriesOverTime(int $rootPageId, int $days = 30, int $bucketSeconds = 3600) : array
     {
         $now = time();
         $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
@@ -222,6 +218,29 @@ class StatisticsRepository extends AbstractRepository
     }
 
     /**
+     * Regurns a result set by given plugin.tx_solr.search.frequentSearches.select configuration.
+     *
+     * @param array $frequentSearchConfiguration
+     * @return array Array of frequent search terms, keys are the terms, values are hits
+     */
+    public function getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration(array $frequentSearchConfiguration) : array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $resultSet = $queryBuilder
+            ->addSelectLiteral(
+                $frequentSearchConfiguration['select.']['SELECT']
+            )
+            ->from($frequentSearchConfiguration['select.']['FROM'])
+            ->add('where', $frequentSearchConfiguration['select.']['ADD_WHERE'], true)
+            ->add('groupBy', $frequentSearchConfiguration['select.']['GROUP_BY'], true)
+            ->add('orderBy', $frequentSearchConfiguration['select.']['ORDER_BY'])
+            ->setMaxResults((int)$frequentSearchConfiguration['limit'])
+            ->execute()->fetchAll();
+
+        return $resultSet;
+    }
+
+    /**
      * This method is used to get an average value from merged statistic rows.
      *
      * @param array $mergedRow
@@ -229,7 +248,7 @@ class StatisticsRepository extends AbstractRepository
      * @param string $fieldName
      * @return float|int
      */
-    protected function getAverageFromField(array &$mergedRow, array $statisticsRow, $fieldName)
+    protected function getAverageFromField(array &$mergedRow, array $statisticsRow, string $fieldName)
     {
         // when this is the first row we can take it.
         if ($mergedRow['mergedrows'] === 1) {

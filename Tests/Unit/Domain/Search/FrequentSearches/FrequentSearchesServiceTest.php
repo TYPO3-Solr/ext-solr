@@ -25,10 +25,10 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\FrequentSearches;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches\FrequentSearchesService;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class FrequentSearchesServiceTest extends UnitTest
@@ -44,11 +44,6 @@ class FrequentSearchesServiceTest extends UnitTest
     protected $tsfeMock;
 
     /**
-     * @var DatabaseConnection
-     */
-    protected $databaseMock;
-
-    /**
      * @var AbstractFrontend
      */
     protected $cacheMock;
@@ -59,12 +54,17 @@ class FrequentSearchesServiceTest extends UnitTest
     protected $configurationMock;
 
     /**
+     * @var StatisticsRepository|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $statisticsRepositoryMock;
+
+    /**
      * @return void
      */
     public function setUp()
     {
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
-        $this->databaseMock = $this->getDumbMock(DatabaseConnection::class );
+        $this->statisticsRepositoryMock = $this->getDumbMock(StatisticsRepository::class );
         $this->cacheMock = $this->getDumbMock(AbstractFrontend::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
 
@@ -72,7 +72,7 @@ class FrequentSearchesServiceTest extends UnitTest
             $this->configurationMock,
             $this->cacheMock,
             $this->tsfeMock,
-            $this->databaseMock
+            $this->statisticsRepositoryMock
         );
     }
 
@@ -111,7 +111,7 @@ class FrequentSearchesServiceTest extends UnitTest
 
         $this->configurationMock->expects($this->once())->method('getSearchFrequentSearchesConfiguration')->will($this->returnValue($fakeConfiguration));
 
-        $this->databaseMock->expects($this->once())->method('exec_SELECTgetRows')->will($this->returnValue([
+        $this->statisticsRepositoryMock->expects($this->once())->method('getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration')->will($this->returnValue([
             [
                'search_term' => 'my search',
                 'hits' => 22
