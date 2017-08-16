@@ -28,6 +28,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
+use ApacheSolrForTypo3\Solr\Domain\Variants\VariantsProcessor;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Query\Modifier\Modifier;
 use ApacheSolrForTypo3\Solr\Search;
@@ -95,17 +96,24 @@ class SearchResultSetService
     protected $session = null;
 
     /**
+     * @var SearchResultBuilder
+     */
+    protected $searchResultBuilder;
+
+    /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
      * @param SolrLogManager $solrLogManager
      * @param FrontendUserSession $frontendUserSession
+     * @param SearchResultBuilder $resultBuilder
      */
-    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null, FrontendUserSession $frontendUserSession = null)
+    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null, FrontendUserSession $frontendUserSession = null, SearchResultBuilder $resultBuilder = null)
     {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
         $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
         $this->session = is_null($frontendUserSession) ? GeneralUtility::makeInstance(FrontendUserSession::class) : $frontendUserSession;
+        $this->searchResultBuilder = is_null($resultBuilder) ? GeneralUtility::makeInstance(SearchResultBuilder::class) : $resultBuilder;
     }
 
     /**
@@ -249,53 +257,6 @@ class SearchResultSetService
     protected function processResponse(\Apache_Solr_Response $response)
     {
         $this->wrapResultDocumentInResultObject($response);
-        $this->addExpandedDocumentsFromVariants($response);
-    }
-
-    /**
-     * This method is used to add documents to the expanded documents of the SearchResult
-     * when collapsing is configured.
-     *
-     * @param \Apache_Solr_Response $response
-     */
-    protected function addExpandedDocumentsFromVariants(\Apache_Solr_Response $response)
-    {
-        if (!is_array($response->response->docs)) {
-            return;
-        }
-
-        if (!$this->typoScriptConfiguration->getSearchVariants()) {
-            return;
-        }
-
-        $variantsField = $this->typoScriptConfiguration->getSearchVariantsField();
-        foreach ($response->response->docs as $key => $resultDocument) {
-            /** @var $resultDocument SearchResult */
-            $variantField = $resultDocument->getField($variantsField);
-            $variantId = isset($variantField['value']) ? $variantField['value'] : null;
-
-                // when there is no value in the collapsing field, we can return
-            if ($variantId === null) {
-                continue;
-            }
-
-            $variantAccessKey = mb_strtolower($variantId);
-            if (!isset($response->{'expanded'}) || !isset($response->{'expanded'}->{$variantAccessKey})) {
-                continue;
-            }
-
-            foreach ($response->{'expanded'}->{$variantAccessKey}->{'docs'} as $variantDocumentArray) {
-                $variantDocument = new \Apache_Solr_Document();
-                foreach (get_object_vars($variantDocumentArray) as $propertyName => $propertyValue) {
-                    $variantDocument->{$propertyName} = $propertyValue;
-                }
-                $variantSearchResult = $this->wrapApacheSolrDocumentInResultObject($variantDocument);
-                $variantSearchResult->setIsVariant(true);
-                $variantSearchResult->setVariantParent($resultDocument);
-
-                $resultDocument->addVariant($variantSearchResult);
-            }
-        }
     }
 
     /**
@@ -337,39 +298,11 @@ class SearchResultSetService
         }
 
         foreach ($documents as $key => $originalDocument) {
-            $result = $this->wrapApacheSolrDocumentInResultObject($originalDocument);
+            $result = $this->searchResultBuilder->fromApacheSolrDocument($originalDocument);
             $documents[$key] = $result;
         }
 
         $response->response->docs = $documents;
-    }
-
-    /**
-     * This method is used to wrap the \Apache_Solr_Document instance in an instance of the configured SearchResult
-     * class.
-     *
-     * @param \Apache_Solr_Document $originalDocument
-     * @throws \InvalidArgumentException
-     * @return SearchResult
-     */
-    protected function wrapApacheSolrDocumentInResultObject(\Apache_Solr_Document $originalDocument)
-    {
-        $searchResultClassName = $this->getResultClassName();
-        $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
-        if (!$result instanceof SearchResult) {
-            throw new \InvalidArgumentException('Could not create result object with class: ' . (string)$searchResultClassName, 1470037679);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getResultClassName()
-    {
-        return isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName ']) ?
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] : SearchResult::class;
     }
 
     /**
@@ -506,7 +439,6 @@ class SearchResultSetService
         }
 
         $this->processResponse($response);
-
         $this->addSearchResultsToResultSet($response, $resultSet);
 
         $resultSet->setResponse($response);
@@ -514,6 +446,10 @@ class SearchResultSetService
         $resultSet->setUsedResultsPerPage($resultsPerPage);
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
         $resultSet->setUsedSearch($this->search);
+
+        /** @var $variantsProcessor VariantsProcessor */
+        $variantsProcessor = GeneralUtility::makeInstance(VariantsProcessor::class, $this->typoScriptConfiguration, $this->searchResultBuilder);
+        $variantsProcessor->process($resultSet);
 
         /** @var $searchResultReconstitutionProcessor ResultSetReconstitutionProcessor */
         $searchResultReconstitutionProcessor = GeneralUtility::makeInstance(ResultSetReconstitutionProcessor::class);
@@ -730,4 +666,5 @@ class SearchResultSetService
         $query = GeneralUtility::makeInstance(Query::class, $rawQuery, $this->typoScriptConfiguration);
         return $query;
     }
+
 }
