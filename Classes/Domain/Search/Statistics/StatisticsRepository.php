@@ -84,7 +84,7 @@ class StatisticsRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilder();
         $statisticsQueryBuilder = $queryBuilder
-            ->select('keywords', 'num_found as hits')
+            ->select('keywords', 'num_found AS hits')
             ->add('select', $queryBuilder->expr()->count('keywords', 'count'), true)
             ->from($this->table)
             ->andWhere(
