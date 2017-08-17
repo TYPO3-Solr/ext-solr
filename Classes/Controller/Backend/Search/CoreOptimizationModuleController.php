@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Utility\ManagedResourcesUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -119,26 +120,14 @@ class CoreOptimizationModuleController extends AbstractModuleController
     }
 
     /**
-     * @return void
+     * Exports synonyms to a download file.
+     *
+     * @return string
      */
     public function exportSynonymsAction()
     {
         $synonyms = $this->selectedSolrCoreConnection->getSynonyms();
-        $contentLines = '';
-        if (count($synonyms)) {
-            foreach ($synonyms as $synonymBaseWord => $synonymWords) {
-                $contentLines[] = $synonymBaseWord . ' => ' . implode(',', $synonymWords);
-
-            }
-            $this->exportFile(implode(PHP_EOL, $contentLines), 'synonyms');
-
-        } else {
-            $this->addFlashMessage(
-                'No synonyms to export.'
-            );
-        }
-        $this->redirect('index');
-
+        return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms));
     }
 
     /**
@@ -297,14 +286,14 @@ class CoreOptimizationModuleController extends AbstractModuleController
     /**
      * @param string $content
      * @param string $type
+     * @return string
      */
-    protected function exportFile($content, $type = 'synonyms')
+    protected function exportFile($content, $type = 'synonyms') : string
     {
-        // output headers so that the file is downloaded rather than displayed
-        header('Content-type: text/plain');
-        header('Content-disposition: attachment; filename ='. $type . '_' .
-            $this->selectedSolrCoreConnection->getCoreName(). '.txt');
-        echo $content;
-        die();
+        $this->response->setHeader('Content-type', 'text/plain', TRUE);
+        $this->response->setHeader('Cache-control', 'public', TRUE);
+        $this->response->setHeader('Content-Description', 'File transfer', TRUE);
+        $this->response->setHeader('Content-disposition', 'attachment; filename ='. $type . '_' . $this->selectedSolrCoreConnection->getCoreName(). '.txt', TRUE);
+        return $content;
     }
 }
