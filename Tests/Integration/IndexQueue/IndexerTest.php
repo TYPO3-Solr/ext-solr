@@ -155,6 +155,46 @@ class IndexerTest extends IntegrationTest
     }
 
     /**
+     * This testcase should check if we can queue an custom record with ordered MM relations.
+     *
+     * @test
+     */
+    public function canIndexItemWithMMRelationsInTheExpectedOrder()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+
+        // create fake extension database table and TCA
+        $this->importDumpFromFixture('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePathByName('fake_extension2_mmrelated_tca.php'));
+        $this->importDataSetFromFixture('can_index_custom_record_with_multiple_mm_relations.xml');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
+
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the values from the mm relation?
+        $this->waitToBeVisibleInSolr();
+        $solrContentJson = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $solrContent = json_decode($solrContentJson, true);
+        $solrContentResponse = $solrContent['response'];
+
+        $this->assertArrayHasKey('docs', $solrContentResponse, 'Did not find docs in solr response');
+
+        $solrDocs = $solrContentResponse['docs'];
+
+        $this->assertCount(1, $solrDocs, 'Could not found index document into solr');
+        $this->assertInternalType('array', $solrDocs[0]);
+        $this->assertEquals('testnews', (string)$solrDocs[0]['title'], 'Title of Solr document is not as expected.');
+        $this->assertArrayHasKey('category_stringM', $solrDocs[0], 'Did not find MM related tags.');
+        $this->assertCount(2, $solrDocs[0]['category_stringM'], 'Did not find all MM related tags.');
+        $this->assertSame(['the tag', 'another tag'], $solrDocs[0]['category_stringM']);
+
+        $this->cleanUpSolrServerAndAssertEmpty();
+    }
+
+
+    /**
      * This testcase should check if we can queue an custom record with MM relations.
      *
      * @test
