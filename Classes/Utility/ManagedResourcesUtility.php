@@ -24,6 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Http\Stream;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class ManagedResourcesUtility
@@ -51,11 +53,23 @@ class ManagedResourcesUtility
         return rtrim($contentLines);
     }
 
-    public static function importSynonymsFromPlainTextContents(string $)
+    /**
+     * @param array $synonymFileUpload
+     * @return array
+     */
+    public static function importSynonymsFromPlainTextContents(array $synonymFileUpload) : array
     {
+        $fileStream = new Stream($synonymFileUpload['tmp_name']);
 
+        $fileLines = GeneralUtility::trimExplode(PHP_EOL, $fileStream->getContents(), true);
+
+        $synonymList = [];
+        foreach ($fileLines as $line) {
+            $synonymList = self::analyseSynonymFileLine($line);
+        }
+
+        return $synonymList;
     }
-
 
 
     public function importSynonymsFromYamlContents()
@@ -66,5 +80,23 @@ class ManagedResourcesUtility
     public function importStopWordsFromYamlContents()
     {
 
+    }
+
+    /**
+     * @param string $line
+     * @return array
+     */
+    protected static function convertSynonymFileLineForImport($line) : array
+    {
+        $lineParts = GeneralUtility::trimExplode('=>', $line, true);
+
+        if (isset($lineParts[1])) {
+            $baseWord = mb_strtolower($lineParts[0]);
+            $synonyms = GeneralUtility::trimExplode(',', mb_strtolower($lineParts[1]), true);
+        } else {
+            $synonyms = GeneralUtility::trimExplode(',', mb_strtolower($lineParts[0]), true);
+            $baseWord = mb_strtolower(reset($synonyms));
+        }
+        return [$baseWord => $synonyms];
     }
 }

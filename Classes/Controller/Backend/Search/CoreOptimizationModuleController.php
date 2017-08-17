@@ -134,24 +134,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param array $synonymFileUpload
      * @return void
      */
-    public function uploadSynonymFileAction(array $synonymFileUpload)
+    public function importSynonymListAction(array $synonymFileUpload)
     {
-        $destinationFile = PATH_site . 'typo3temp/' . md5($_COOKIE['PHPSESSID']) .$synonymFileUpload['name'];
-        GeneralUtility::upload_copy_move($synonymFileUpload['tmp_name'], $destinationFile);
-
-        $fileHandler = fopen($destinationFile, 'r');
+        $fileLines = ManagedResourcesUtility::importSynonymsFromPlainTextContents($synonymFileUpload);
         $synonymCount = 0;
-        while ($line = fgets($fileHandler)) {
-            $lineParts = GeneralUtility::trimExplode('=>', $line, true);
-
-            if (isset($lineParts[1])) {
-                $baseWord = $this->stringUtility->toLower($lineParts[0]);
-                $synonyms = GeneralUtility::trimExplode(',', $this->stringUtility->toLower($lineParts[1]), true);
-            } else {
-                $synonyms = GeneralUtility::trimExplode(',', $this->stringUtility->toLower($lineParts[0]), true);
-                $baseWord = $this->stringUtility->toLower(reset($synonyms));
-            }
-
+        foreach ($fileLines as $bsseWord => $synonyms) {
             if (isset($baseWord) && !empty($synonyms)) {
                 if ($this->selectedSolrCoreConnection->getSynonyms($baseWord)) {
                     $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
@@ -164,7 +151,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 $synonymCount++;
             }
         }
-        fclose($fileHandler);
+
         $this->addFlashMessage(
             $synonymCount . ' synonyms imported.'
         );
@@ -175,7 +162,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * @param array $stopwordsFileUpload
      * @return void
      */
-    public function uploadStopWordsFileAction(array $stopwordsFileUpload)
+    public function importStopWordListAction(array $stopwordsFileUpload)
     {
         $destinationFile = PATH_site . 'typo3temp/' . md5($_COOKIE['PHPSESSID']) .$stopwordsFileUpload['name'];
         GeneralUtility::upload_copy_move($stopwordsFileUpload['tmp_name'], $destinationFile);
@@ -290,10 +277,14 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     protected function exportFile($content, $type = 'synonyms') : string
     {
-        $this->response->setHeader('Content-type', 'text/plain', TRUE);
-        $this->response->setHeader('Cache-control', 'public', TRUE);
-        $this->response->setHeader('Content-Description', 'File transfer', TRUE);
-        $this->response->setHeader('Content-disposition', 'attachment; filename ='. $type . '_' . $this->selectedSolrCoreConnection->getCoreName(). '.txt', TRUE);
+        $this->response->setHeader('Content-type', 'text/plain', true);
+        $this->response->setHeader('Cache-control', 'public', true);
+        $this->response->setHeader('Content-Description', 'File transfer', true);
+        $this->response->setHeader(
+            'Content-disposition',
+            'attachment; filename ='. $type . '_' . $this->selectedSolrCoreConnection->getCoreName(). '.txt',
+            true
+        );
         return $content;
     }
 }

@@ -77,7 +77,7 @@ if (TYPO3_MODE == 'BE') {
         'CoreOptimization',
         '',
         [
-            'Backend\\Search\\CoreOptimizationModule' => 'index, addSynonyms, uploadSynonymFile, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, uploadStopWordsFile, exportStopWords, switchSite, switchCore'
+            'Backend\\Search\\CoreOptimizationModule' => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore'
         ],
         [
             'access' => 'user,group',
