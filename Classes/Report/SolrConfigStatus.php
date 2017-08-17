@@ -26,9 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
-use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides a status report about which solrconfig version is used and checks
@@ -50,7 +48,7 @@ class SolrConfigStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-7-0-0--20170530';
+    const RECOMMENDED_SOLRCONFIG_VERSION = 'tx_solr-8-0-0--20170817';
 
     /**
      * Compiles a collection of solrconfig version checks against each configured
