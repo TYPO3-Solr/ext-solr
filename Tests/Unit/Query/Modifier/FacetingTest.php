@@ -105,7 +105,9 @@ class FacetingTest extends UnitTest
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertContains('type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
+
+        $expectedJsonFacet = '{"type":{"type":"terms","field":"type","limit":100,"mincount":1,"domain":{"excludeTags":"type"}}}';
+        $this->assertSame($expectedJsonFacet,  $queryParameter['json.facet'], 'Query string did not contain expected snipped');
     }
 
     /**
@@ -135,9 +137,11 @@ class FacetingTest extends UnitTest
         $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
         $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
+
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertContains('index',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
+        $this->assertContains('"sort":"index"',  $queryParameter['json.facet'], 'Query string did not contain expected snipped');
     }
+
     /**
      * Checks if the faceting modifier can add a simple facet with a sortBy property with the value count.
      *
@@ -164,9 +168,11 @@ class FacetingTest extends UnitTest
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
         $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertContains('count',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
+
+        $this->assertContains('"sort":"count"',  $queryParameter['json.facet'], 'Query string did not contain expected snipped');
     }
 
     /**
@@ -207,10 +213,11 @@ class FacetingTest extends UnitTest
         $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
-
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertEquals('{!ex=type,color}type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
-        $this->assertEquals('{!ex=type,color}color',  $queryParameter['facet.field'][1], 'Query string did not contain expected snipped');
+
+        $jsonData = \json_decode($queryParameter['json.facet']);
+        $this->assertEquals('type,color', $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEquals('type,color', $jsonData->color->domain->excludeTags, 'Query string did not contain expected snipped');
     }
 
     /**
@@ -251,9 +258,10 @@ class FacetingTest extends UnitTest
         $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
 
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
+        $jsonData = \json_decode($queryParameter['json.facet']);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertEquals('{!ex=type}type',  $queryParameter['facet.field'][0], 'Query string did not contain expected snipped');
-        $this->assertEquals('color',  $queryParameter['facet.field'][1], 'Query string did not contain expected snipped');
+        $this->assertEquals('type',  $jsonData->type->domain->excludeTags, 'Query string did not contain expected snipped');
+        $this->assertEquals('color',  $jsonData->color->field, 'Query string did not contain expected snipped');
     }
 
     /**

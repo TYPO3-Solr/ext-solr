@@ -792,6 +792,35 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      */
+    public function canRenderASecondFacetOnTheTypeField()
+    {
+        $this->importDataSetFromFixture('can_render_search_controller.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $this->indexPages([1, 2, 3, 4, 5, 6, 7, 8]);
+
+        $overwriteConfiguration = [];
+        $overwriteConfiguration['search.']['faceting.']['facets.']['myType.'] = [
+            'label' => 'My Type',
+            'field' => 'type',
+        ];
+
+        /** @var $configurationManager ConfigurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->getTypoScriptConfiguration()->mergeSolrConfiguration($overwriteConfiguration);
+        $this->searchController->setResetConfigurationBeforeInitialize(false);
+
+        //not in the content but we expect to get shoes suggested
+        $_GET['q'] = '*';
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
+        $this->assertContains('id="facetmyType"', $this->searchResponse->getContent());
+        $this->assertContains('id="facettype"', $this->searchResponse->getContent());
+
+    }
+
+    /**
+     * @test
+     */
     public function formActionIsRenderingTheForm()
     {
         $this->importDataSetFromFixture('can_render_search_controller.xml');

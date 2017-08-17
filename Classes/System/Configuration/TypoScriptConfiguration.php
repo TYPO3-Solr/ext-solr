@@ -1911,6 +1911,21 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns if the facet count should be calculated based on the facet selection when
+     * plugin.tx_solr.search.faceting.keepAllFacetsOnSelection has been enabled
+     *
+     * plugin.tx_solr.search.faceting.countAllFacetsForSelection
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getSearchFacetingCountAllFacetsForSelection($defaultIfEmpty = false)
+    {
+        $countAllFacetsForSelection = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.countAllFacetsForSelection', $defaultIfEmpty);
+        return $this->getBool($countAllFacetsForSelection);
+    }
+
+    /**
      * Returns the configured faceting configuration.
      *
      * plugin.tx_solr.search.faceting.facets
