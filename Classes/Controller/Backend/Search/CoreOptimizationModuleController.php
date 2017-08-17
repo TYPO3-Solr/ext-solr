@@ -127,8 +127,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $contentLines = '';
         if (count($synonyms)) {
             foreach ($synonyms as $synonymBaseWord => $synonymWords) {
-                $contentLines[] = ((in_array($synonymBaseWord, $synonymWords)) ?
-                        current($synonymWords) : $synonymBaseWord) . ' => ' . implode(',', $synonymWords);
+                $contentLines[] = $synonymBaseWord . ' => ' . implode(',', $synonymWords);
 
             }
             $this->exportFile(implode(PHP_EOL, $contentLines), 'synonyms');
