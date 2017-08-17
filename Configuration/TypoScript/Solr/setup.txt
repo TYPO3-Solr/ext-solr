@@ -1,6 +1,6 @@
 plugin.tx_solr {
 
-	enabled = 1
+	enabled = {$plugin.tx_solr.enabled}
 
 	enableDebugMode = 0
 
