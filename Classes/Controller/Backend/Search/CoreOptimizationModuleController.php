@@ -128,7 +128,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         if (count($synonyms)) {
             foreach ($synonyms as $synonymBaseWord => $synonymWords) {
                 $contentLines[] = ((in_array($synonymBaseWord, $synonymWords)) ?
-                        '' : ($synonymBaseWord . ' => ')) . implode(',', $synonymWords);
+                        current($synonymWords) : $synonymBaseWord) . ' => ' . implode(',', $synonymWords);
 
             }
             $this->exportFile(implode(PHP_EOL, $contentLines), 'synonyms');
@@ -152,6 +152,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         GeneralUtility::upload_copy_move($synonymFileUpload['tmp_name'], $destinationFile);
 
         $fileHandler = fopen($destinationFile, 'r');
+        $synonymCount = 0;
         while ($line = fgets($fileHandler)) {
             $lineParts = GeneralUtility::trimExplode('=>', $line, true);
 
@@ -172,12 +173,13 @@ class CoreOptimizationModuleController extends AbstractModuleController
                     $synonyms
                 );
                 $this->selectedSolrCoreConnection->reloadCore();
-                $this->addFlashMessage(
-                    '"' . implode(',', $synonyms) . '" added as synonyms for base word "' . $baseWord . '"'
-                );
+                $synonymCount++;
             }
         }
         fclose($fileHandler);
+        $this->addFlashMessage(
+            $synonymCount . ' synonyms imported.'
+        );
         $this->redirect('index');
 
     }
