@@ -13,10 +13,11 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Que
  * The TYPO3 project - inspiring people to share!
 */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\DefaultFacetQueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetQueryBuilderInterface;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 
-class QueryGroupFacetQueryBuilder implements FacetQueryBuilderInterface {
+class QueryGroupFacetQueryBuilder extends DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
 
     /**
      * @param string $facetName
@@ -27,23 +28,9 @@ class QueryGroupFacetQueryBuilder implements FacetQueryBuilderInterface {
     {
         $facetParameters = [];
         $facetConfiguration = $configuration->getSearchFacetingFacetByName($facetName);
-
         foreach ($facetConfiguration['queryGroup.'] as $queryName => $queryConfiguration) {
-            $tag = '';
-            if ($configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
-                // TODO This code is duplicated from "Query/Modifier/Faceting.php"
-                // Eventually the "exclude fields" should get passed to this method beforehand instead
-                // of generating them in each different "buildFacetParameters" implementation
-                $facets = [];
-                foreach ($configuration->getSearchFacetingFacets() as $facet) {
-                    $facets[] = $facet['field'];
-                }
-                $tag = '{!ex=' . implode(',', $facets) . '}';
-            } elseif ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
-                $tag = '{!ex=' . $facetConfiguration['field'] . '}';
-            }
-
-            $facetParameters['facet.query'][] = $tag . $facetConfiguration['field'] . ':' . $queryConfiguration['query'];
+            $tags = $this->buildExcludeTags($facetConfiguration, $configuration);
+            $facetParameters['facet.query'][] = $tags . $facetConfiguration['field'] . ':' . $queryConfiguration['query'];
         }
 
         return $facetParameters;

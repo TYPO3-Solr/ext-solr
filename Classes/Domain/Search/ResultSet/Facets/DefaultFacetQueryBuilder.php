@@ -28,6 +28,23 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
         $facetParameters = [];
         $facetConfiguration = $configuration->getSearchFacetingFacetByName($facetName);
 
+        $tags = $this->buildExcludeTags($facetConfiguration, $configuration);
+        $facetParameters['facet.field'][] = $tags . $facetConfiguration['field'];
+
+        if (in_array($facetConfiguration['sortBy'], ['alpha', 'index', 'lex'])) {
+            $facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = 'lex';
+        }
+
+        return $facetParameters;
+    }
+
+    /**
+     * @param array $facetConfiguration
+     * @param TypoScriptConfiguration $configuration
+     * @return string
+     */
+    protected function buildExcludeTags(array $facetConfiguration, TypoScriptConfiguration $configuration)
+    {
         // simple for now, may add overrides f.<field_name>.facet.* later
         if ($configuration->getSearchFacetingKeepAllFacetsOnSelection()) {
             $facets = [];
@@ -35,18 +52,12 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
                 $facets[] = $facet['field'];
             }
 
-            $facetParameters['facet.field'][] = '{!ex=' . implode(',', $facets) . '}' . $facetConfiguration['field'];
+            return '{!ex=' . implode(',', $facets) . '}';
         } elseif ($facetConfiguration['keepAllOptionsOnSelection'] == 1) {
-            $facetParameters['facet.field'][] = '{!ex=' . $facetConfiguration['field'] . '}' . $facetConfiguration['field'];
-        } else {
-            $facetParameters['facet.field'][] = $facetConfiguration['field'];
+            return '{!ex=' . $facetConfiguration['field'] . '}';
         }
 
-        if (in_array($facetConfiguration['sortBy'], ['alpha', 'index', 'lex'])) {
-            $facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = 'lex';
-        }
-
-        return $facetParameters;
+        return '';
     }
 }
 
