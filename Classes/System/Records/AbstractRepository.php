@@ -69,4 +69,17 @@ abstract class AbstractRepository
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
         return $queryBuilder;
     }
+
+    /**
+     * Returns current count of last searches
+     *
+     * @return int
+     */
+    public function count() : int
+    {
+        return (int)$this->getQueryBuilder()
+            ->count('*')
+            ->from($this->table)
+            ->execute()->fetchColumn(0);
+    }
 }
