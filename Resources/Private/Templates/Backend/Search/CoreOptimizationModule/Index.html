@@ -110,6 +110,10 @@
                 <f:form.textfield id="synonyms" name="synonyms" class="form-control" />
                 <span class="example">comma-separated; f.e. smartphone, cellphone</span>
             </div>
+            <div class="form-group">
+                <f:form.checkbox id="overrideExisting" name="overrideExisting" value="1" />
+                <label for="overrideExisting"> Override, if synonym already exists</label>
+            </div>
             <div class="submit">
                 <f:form.submit value="Add Synonyms" class="btn btn-sm btn-default"/>
             </div>
@@ -120,6 +124,14 @@
         <f:form action="importSynonymList" id="upload-synonyms" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <f:form.upload id="synonymFileUpload" name="synonymFileUpload" />
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="overrideExisting" name="overrideExisting" value="1" />
+                <label for="overrideExisting"> Override synonym, if synonym already exists</label>
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="deleteSynonymsBefore" name="deleteSynonymsBefore" value="1" />
+                <label for="deleteSynonymsBefore"> Replace complete synonym list</label>
             </div>
             <div class="submit">
                 <f:form.submit value="Upload file" class="btn btn-sm btn-default"/>
@@ -172,6 +184,10 @@
         <f:form action="importStopWordList" id="upload-stopwords" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <f:form.upload id="stopwordsFileUpload" name="stopwordsFileUpload" />
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="replaceStopwords" name="replaceStopwords" value="1" checked="1"/>
+                <label for="replaceStopwords"> Override complete list</label>
             </div>
             <div class="submit">
                 <f:form.submit value="Upload file" class="btn btn-sm btn-default"/>
