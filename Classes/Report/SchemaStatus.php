@@ -27,7 +27,6 @@ namespace ApacheSolrForTypo3\Solr\Report;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\SolrService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
 
 /**
@@ -50,7 +49,7 @@ class SchemaStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-7-0-0--20170530';
+    const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-8-0-0--20170817';
 
     /**
      * Compiles a collection of schema version checks against each configured
