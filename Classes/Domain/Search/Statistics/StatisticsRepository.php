@@ -68,6 +68,8 @@ class StatisticsRepository extends AbstractRepository
             return $row;
         }, $statisticsRows);
 
+        $statisticsRows = array_slice($statisticsRows,0,$limit);
+
         return $statisticsRows;
     }
 
@@ -94,8 +96,7 @@ class StatisticsRepository extends AbstractRepository
             ->groupBy('keywords', 'num_found')
             ->orderBy('count', 'DESC')
             ->addOrderBy('hits', 'DESC')
-            ->addOrderBy('keywords', 'ASC')
-            ->setMaxResults($limit);
+            ->addOrderBy('keywords', 'ASC');
 
         return $statisticsQueryBuilder;
     }
@@ -151,6 +152,8 @@ class StatisticsRepository extends AbstractRepository
         $statisticsRows = $queryBuilder->execute()->fetchAll();
         $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
 
+        $statisticsRows = array_slice($statisticsRows,0,$limit);
+
         return $statisticsRows;
     }
 
@@ -181,7 +184,25 @@ class StatisticsRepository extends AbstractRepository
             $result[$term] = $mergedRow;
         }
 
+        $result = $this->sortStatisticsRowsByCount($result);
+
         return array_values($result);
+    }
+
+    /**
+     * Sort the $statisticsRows by count
+     * @param array $statisticsRows
+     * @return array
+     */
+    protected function sortStatisticsRowsByCount(array $statisticsRows) : array
+    {
+        $numbers = [];
+        foreach ($statisticsRows as $key => $row) {
+            $numbers[$key] = $row['count'];
+        }
+        array_multisort($numbers, SORT_DESC, $statisticsRows);
+
+        return $statisticsRows;
     }
 
     /**
