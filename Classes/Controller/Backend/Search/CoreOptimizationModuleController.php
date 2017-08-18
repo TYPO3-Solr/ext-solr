@@ -117,22 +117,28 @@ class CoreOptimizationModuleController extends AbstractModuleController
     }
 
     /**
+     * @param string $fileFormat
      * @return void
      */
-    public function exportStopWordsAction()
+    public function exportStopWordsAction($fileFormat = 'txt')
     {
-        $this->exportFile(implode(PHP_EOL, $this->selectedSolrCoreConnection->getStopWords()), 'stopwords');
+        $this->exportFile(
+            implode(PHP_EOL, $this->selectedSolrCoreConnection->getStopWords()),
+            'stopwords',
+            $fileFormat
+        );
     }
 
     /**
      * Exports synonyms to a download file.
      *
+     * @param string $fileFormat
      * @return string
      */
-    public function exportSynonymsAction()
+    public function exportSynonymsAction($fileFormat = 'txt')
     {
         $synonyms = $this->selectedSolrCoreConnection->getSynonyms();
-        return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms));
+        return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat);
     }
 
     /**
