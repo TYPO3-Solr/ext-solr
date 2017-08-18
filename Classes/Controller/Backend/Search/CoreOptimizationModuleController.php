@@ -150,17 +150,21 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $fileLines = ManagedResourcesUtility::importSynonymsFromPlainTextContents($synonymFileUpload);
         $synonymCount = 0;
         foreach ($fileLines as $baseWord => $synonyms) {
-            if (isset($baseWord) && !empty($synonyms)) {
-                if (!$deleteSynonymsBefore && $overrideExisting && $this->selectedSolrCoreConnection->getSynonyms($baseWord)) {
-                    $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
-                }
-                $this->selectedSolrCoreConnection->addSynonym(
-                    $baseWord,
-                    $synonyms
-                );
-                $this->selectedSolrCoreConnection->reloadCore();
-                $synonymCount++;
+            if (!isset($baseWord) || empty($synonyms)) {
+                continue;
             }
+            if (!$deleteSynonymsBefore &&
+                $overrideExisting &&
+                $this->selectedSolrCoreConnection->getSynonyms($baseWord)
+            ) {
+                $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+            }
+            $this->selectedSolrCoreConnection->addSynonym(
+                $baseWord,
+                $synonyms
+            );
+            $this->selectedSolrCoreConnection->reloadCore();
+            $synonymCount++;
         }
 
         $this->addFlashMessage(
@@ -169,6 +173,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $this->redirect('index');
 
     }
+
     /**
      * @param array $stopwordsFileUpload
      * @param int $replaceStopwords
@@ -182,6 +187,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
         );
     }
 
+    /**
+     * Delete complete synonym list
+     *
+     * @return void
+     */
     public function deleteAllSynonymsAction()
     {
         $allSynonymsCouldBeDeleted = $this->deleteAllSynonyms();
@@ -203,6 +213,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         }
         $this->redirect('index');
     }
+
     /**
      * Deletes a synonym mapping by its base word.
      *
@@ -245,20 +256,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $oldStopWords = $this->selectedSolrCoreConnection->getStopWords();
 
         if ($replaceStopwords) {
-            $wordsRemoved = true;
             $removedStopWords = array_diff($oldStopWords, $newStopWords);
-            foreach ($removedStopWords as $word) {
-                $response = $this->selectedSolrCoreConnection->deleteStopWord($word);
-                if ($response->getHttpStatus() != 200) {
-                    $wordsRemoved = false;
-                    $this->addFlashMessage(
-                        'Failed to remove stop word "' . $word . '".',
-                        'An error occurred',
-                        FlashMessage::ERROR
-                    );
-                    break;
-                }
-            }
+            $wordsRemoved = $this->removeStopsWordsFromIndex($removedStopWords);
         } else {
             $wordsRemoved = true;
         }
@@ -283,22 +282,26 @@ class CoreOptimizationModuleController extends AbstractModuleController
     /**
      * @param string $content
      * @param string $type
+     * @param string $fileExtension
      * @return string
      */
-    protected function exportFile($content, $type = 'synonyms') : string
+    protected function exportFile($content, $type = 'synonyms', $fileExtension = 'txt') : string
     {
         $this->response->setHeader('Content-type', 'text/plain', true);
         $this->response->setHeader('Cache-control', 'public', true);
         $this->response->setHeader('Content-Description', 'File transfer', true);
         $this->response->setHeader(
             'Content-disposition',
-            'attachment; filename ='. $type . '_' . $this->selectedSolrCoreConnection->getCoreName(). '.txt',
+            'attachment; filename =' . $type . '_' .
+            $this->selectedSolrCoreConnection->getCoreName(). '.' . $fileExtension,
             true
         );
         return $content;
     }
 
     /**
+     * Delete complete synonym list form solr
+     *
      * @return bool
      */
     protected function deleteAllSynonyms() : bool
@@ -312,5 +315,28 @@ class CoreOptimizationModuleController extends AbstractModuleController
         }
 
         return $allSynonymsCouldBeDeleted;
+    }
+
+    /**
+     * @param $stopwordsToRemove
+     * @return bool
+     */
+    protected function removeStopsWordsFromIndex($stopwordsToRemove) : bool
+    {
+        $wordsRemoved = true;
+        foreach ($stopwordsToRemove as $word) {
+            $response = $this->selectedSolrCoreConnection->deleteStopWord($word);
+            if ($response->getHttpStatus() != 200) {
+                $wordsRemoved = false;
+                $this->addFlashMessage(
+                    'Failed to remove stop word "' . $word . '".',
+                    'An error occurred',
+                    FlashMessage::ERROR
+                );
+                break;
+            }
+        }
+
+        return $wordsRemoved;
     }
 }

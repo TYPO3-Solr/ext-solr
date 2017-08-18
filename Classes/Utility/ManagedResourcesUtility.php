@@ -70,7 +70,6 @@ class ManagedResourcesUtility
         return $synonymList;
     }
 
-
     /**
      * @param array $stopwordsFileUpload
      * @return string
@@ -80,17 +79,6 @@ class ManagedResourcesUtility
         $fileStream = new Stream($stopwordsFileUpload['tmp_name']);
 
         return $fileStream->getContents();
-    }
-
-
-    public function importSynonymsFromYamlContents()
-    {
-
-    }
-
-    public function importStopWordsFromYamlContents()
-    {
-
     }
 
     /**
