@@ -7,7 +7,7 @@ tx_solr_ajaxPage {
 		disableAllHeaderCode = 1
 		xhtml_cleaning = 0
 		admPanel = 0
-		additionalHeaders = Content-type: text/plain
+		additionalHeaders.10.header = Content-type: text/plain
 		no_cache = 0
 	}
 
