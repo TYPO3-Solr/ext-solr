@@ -41,8 +41,7 @@ class ManagedResourcesUtility
      */
     public static function exportSynonymsToTxt(array $synonyms) : string
     {
-        if (empty($synonyms))
-        {
+        if (empty($synonyms)) {
             throw new \InvalidArgumentException('Nothing to export!', 1502978329);
         }
 
@@ -65,10 +64,22 @@ class ManagedResourcesUtility
 
         $synonymList = [];
         foreach ($fileLines as $line) {
-            $synonymList = self::analyseSynonymFileLine($line);
+            $synonymList = self::convertSynonymFileLineForImport($line, $synonymList);
         }
 
         return $synonymList;
+    }
+
+
+    /**
+     * @param array $stopwordsFileUpload
+     * @return string
+     */
+    public static function importStopwordsFromPlainTextContents(array $stopwordsFileUpload) : string
+    {
+        $fileStream = new Stream($stopwordsFileUpload['tmp_name']);
+
+        return $fileStream->getContents();
     }
 
 
@@ -84,9 +95,10 @@ class ManagedResourcesUtility
 
     /**
      * @param string $line
+     * @param array $synonymList
      * @return array
      */
-    protected static function convertSynonymFileLineForImport($line) : array
+    protected static function convertSynonymFileLineForImport($line, $synonymList) : array
     {
         $lineParts = GeneralUtility::trimExplode('=>', $line, true);
 
@@ -97,6 +109,8 @@ class ManagedResourcesUtility
             $synonyms = GeneralUtility::trimExplode(',', mb_strtolower($lineParts[0]), true);
             $baseWord = mb_strtolower(reset($synonyms));
         }
-        return [$baseWord => $synonyms];
+        $synonymList[$baseWord] = $synonyms;
+
+        return $synonymList;
     }
 }

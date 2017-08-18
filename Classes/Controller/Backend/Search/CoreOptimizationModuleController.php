@@ -32,6 +32,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
  * Manage Synonyms and Stop words in Backend Module
+ * @property \TYPO3\CMS\Extbase\Mvc\Web\Response $response
  */
 class CoreOptimizationModuleController extends AbstractModuleController
 {
@@ -138,7 +139,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
     {
         $fileLines = ManagedResourcesUtility::importSynonymsFromPlainTextContents($synonymFileUpload);
         $synonymCount = 0;
-        foreach ($fileLines as $bsseWord => $synonyms) {
+        foreach ($fileLines as $baseWord => $synonyms) {
             if (isset($baseWord) && !empty($synonyms)) {
                 if ($this->selectedSolrCoreConnection->getSynonyms($baseWord)) {
                     $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
@@ -164,11 +165,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function importStopWordListAction(array $stopwordsFileUpload)
     {
-        $destinationFile = PATH_site . 'typo3temp/' . md5($_COOKIE['PHPSESSID']) .$stopwordsFileUpload['name'];
-        GeneralUtility::upload_copy_move($stopwordsFileUpload['tmp_name'], $destinationFile);
-
-        $this->saveStopWordsAction(file_get_contents($destinationFile));
-
+        $this->saveStopWordsAction(ManagedResourcesUtility::importStopwordsFromPlainTextContents($stopwordsFileUpload));
     }
 
     public function deleteAllSynonymsAction()
@@ -277,6 +274,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     protected function exportFile($content, $type = 'synonyms') : string
     {
+
         $this->response->setHeader('Content-type', 'text/plain', true);
         $this->response->setHeader('Cache-control', 'public', true);
         $this->response->setHeader('Content-Description', 'File transfer', true);
