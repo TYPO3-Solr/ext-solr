@@ -294,7 +294,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $this->response->setHeader(
             'Content-disposition',
             'attachment; filename =' . $type . '_' .
-            $this->selectedSolrCoreConnection->getCoreName(). '.' . $fileExtension,
+            $this->selectedSolrCoreConnection->getCoreName() . '.' . $fileExtension,
             true
         );
         return $content;
