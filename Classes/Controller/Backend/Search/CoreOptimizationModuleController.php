@@ -164,10 +164,10 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 $baseWord,
                 $synonyms
             );
-            $this->selectedSolrCoreConnection->reloadCore();
             $synonymCount++;
         }
 
+        $this->selectedSolrCoreConnection->reloadCore();
         $this->addFlashMessage(
             $synonymCount . ' synonyms imported.'
         );
