@@ -84,7 +84,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
      *
      * @param string $baseWord
      * @param string $synonyms
-     * @param int $overrideExisting
+     * @param bool $overrideExisting
      * @return void
      */
     public function addSynonymsAction(string $baseWord, string $synonyms, $overrideExisting)
@@ -143,8 +143,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * @param array $synonymFileUpload
-     * @param int $overrideExisting
-     * @param int $deleteSynonymsBefore
+     * @param bool $overrideExisting
+     * @param bool $deleteSynonymsBefore
      * @return void
      */
     public function importSynonymListAction(array $synonymFileUpload, $overrideExisting, $deleteSynonymsBefore)
@@ -182,7 +182,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
     /**
      * @param array $stopwordsFileUpload
-     * @param int $replaceStopwords
+     * @param bool $replaceStopwords
      * @return void
      */
     public function importStopWordListAction(array $stopwordsFileUpload, $replaceStopwords)
@@ -251,10 +251,10 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * Saves the edited stop word list to Solr
      *
      * @param string $stopWords
-     * @param int $replaceStopwords
+     * @param bool $replaceStopwords
      * @return void
      */
-    public function saveStopWordsAction(string $stopWords, $replaceStopwords = 1)
+    public function saveStopWordsAction(string $stopWords, $replaceStopwords = true)
     {
         // lowercase stopword before saving because terms get lowercased before stopword filtering
         $newStopWords = mb_strtolower($stopWords);

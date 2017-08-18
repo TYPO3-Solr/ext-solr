@@ -34,8 +34,7 @@ class ManagedResourcesUtility
 {
 
     /**
-     *
-     *
+     * Export synonyms in plain text format
      * @param array $synonyms
      * @return string
      */
@@ -53,6 +52,7 @@ class ManagedResourcesUtility
     }
 
     /**
+     * Read plain text synonym file and import these synonyms
      * @param array $synonymFileUpload
      * @return array
      */
@@ -71,6 +71,7 @@ class ManagedResourcesUtility
     }
 
     /**
+     * Read plain text stopword file
      * @param array $stopwordsFileUpload
      * @return string
      */
@@ -82,6 +83,7 @@ class ManagedResourcesUtility
     }
 
     /**
+     * Convert synonym file line for import
      * @param string $line
      * @param array $synonymList
      * @return array
