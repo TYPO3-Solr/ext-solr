@@ -1,6 +1,12 @@
 # Apache Solr for TYPO3 CMS
 
 [![Build Status](https://travis-ci.org/TYPO3-Solr/ext-solr.svg?branch=master)](https://travis-ci.org/TYPO3-Solr/ext-solr)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/TYPO3-Solr/ext-solr/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/apache-solr-for-typo3/solr/v/stable)](https://packagist.org/packages/apache-solr-for-typo3/solr)
+[![Latest Unstable Version](https://poser.pugx.org/apache-solr-for-typo3/solr/v/unstable)](https://packagist.org/packages/apache-solr-for-typo3/solr)
+[![License](https://poser.pugx.org/apache-solr-for-typo3/solr/license)](https://packagist.org/packages/apache-solr-for-typo3/solr)
+[![Monthly Downloads](https://poser.pugx.org/apache-solr-for-typo3/solr/d/monthly)](https://packagist.org/packages/apache-solr-for-typo3/solr)
 
 An extension that integrates the Apache Solr enterprise search server with TYPO3 CMS.
 
@@ -36,7 +42,7 @@ Please find further information regarding Apache Solr and its related projects a
 
 To try out Apache Solr for TYPO3 visit [www.typo3-solr.com](http://www.typo3-solr.com) where we've set up a basic configuration. Another showcase can be found here: [search.dkd.de](http://search.dkd.de/solr)
 
-![dkd Internet Service GmbH](http://www.dkd.de/typo3conf/ext/dkd_standard/res/dkd.de/assets/images/logo-top.png)
+![dkd Internet Service GmbH](./Resources/Public/Images/dkd_logo.png)
 
 ## Documentation and Support
 

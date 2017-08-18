@@ -235,8 +235,6 @@
                             showEmptyFacets = 0
                             keepAllFacetsOnSelection = 0
 
-                            facetLinkATagParams = rel="nofollow" class="facet"
-
                             facetLinkUrlParameters = &foo=bar
 
                             facets {
@@ -245,9 +243,6 @@
                                     field = type
                                 }
                             }
-
-                            // available place holders: @facetValue, @facetName, @facetLabel, @facetText
-                            removeFacetLinkText = @facetLabel: @facetText
 
                             showAllLink.wrap = <li>|</li>
                         }

@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 /***************************************************************
@@ -25,13 +24,21 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+
 /**
  * Calculates the SearchQueryStatistics
  *
  * @author Thomas Hohn <tho@systime.dk>
  */
-class StatisticsRepository
+class StatisticsRepository extends AbstractRepository
 {
+    /**
+     * @var string
+     */
+    protected $table = 'tx_solr_statistics';
+
     /**
      * Fetches must popular search keys words from the table tx_solr_statistics
      *
@@ -40,21 +47,14 @@ class StatisticsRepository
      * @param int $limit
      * @return mixed
      */
-    public function getSearchStatistics($rootPageId, $days = 30, $limit = 10)
+    public function getSearchStatistics(int $rootPageId, int $days = 30, $limit = 10)
     {
         $now = time();
-        $timeStart = (int)($now - 86400 * intval($days)); // 86400 seconds/day
-        $rootPageId = (int)$rootPageId;
+        $timeStart = (int)($now - 86400 * $days); // 86400 seconds/day
         $limit = (int)$limit;
 
-        $statisticsRows = (array)$this->getDatabase()->exec_SELECTgetRows(
-            'keywords, count(keywords) as count, num_found as hits',
-            'tx_solr_statistics',
-            'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
-            'keywords, num_found',
-            'count DESC, hits DESC, keywords ASC',
-            $limit
-        );
+        $statisticsRows = $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit)
+            ->execute()->fetchAll();
 
         $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
 
@@ -72,6 +72,35 @@ class StatisticsRepository
     }
 
     /**
+     * Returns prepared QueryBuilder for two purposes:
+     * for getSearchStatistics() and getTopKeyWordsWithOrWithoutHits() methods
+     *
+     * @param int $rootPageId
+     * @param int $timeStart
+     * @param int $limit
+     * @return QueryBuilder
+     */
+    protected function getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(int $rootPageId, int $timeStart, int $limit) : QueryBuilder
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $statisticsQueryBuilder = $queryBuilder
+            ->select('keywords', 'num_found AS hits')
+            ->add('select', $queryBuilder->expr()->count('keywords', 'count'), true)
+            ->from($this->table)
+            ->andWhere(
+                $queryBuilder->expr()->gt('tstamp', $timeStart),
+                $queryBuilder->expr()->eq('root_pid', $rootPageId)
+            )
+            ->groupBy('keywords', 'num_found')
+            ->orderBy('count', 'DESC')
+            ->addOrderBy('hits', 'DESC')
+            ->addOrderBy('keywords', 'ASC')
+            ->setMaxResults($limit);
+
+        return $statisticsQueryBuilder;
+    }
+
+    /**
      * Find Top search keywords with results
      *
      * @param int $rootPageId
@@ -79,7 +108,7 @@ class StatisticsRepository
      * @param int $limit
      * @return array
      */
-    public function getTopKeyWordsWithHits($rootPageId, $days = 30, $limit = 10)
+    public function getTopKeyWordsWithHits(int $rootPageId, int $days = 30, int $limit = 10) : array
     {
         return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, false);
     }
@@ -92,7 +121,7 @@ class StatisticsRepository
      * @param int $limit
      * @return array
      */
-    public function getTopKeyWordsWithoutHits($rootPageId, $days = 30, $limit = 10)
+    public function getTopKeyWordsWithoutHits(int $rootPageId, int $days = 30, int $limit = 10) : array
     {
         return $this->getTopKeyWordsWithOrWithoutHits($rootPageId, $days, $limit, true);
     }
@@ -106,31 +135,20 @@ class StatisticsRepository
      * @param bool $withoutHits
      * @return array
      */
-    protected function getTopKeyWordsWithOrWithoutHits($rootPageId, $days = 30, $limit = 10, $withoutHits = false)
+    protected function getTopKeyWordsWithOrWithoutHits(int $rootPageId, int $days = 30, int $limit = 10, bool $withoutHits = false) : array
     {
-        $rootPageId = (int)$rootPageId;
-        $limit = (int)$limit;
-        $withoutHits = (bool)$withoutHits;
-
         $now = time();
-        $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
+        $timeStart = $now - 86400 * $days; // 86400 seconds/day
 
+        $queryBuilder = $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit);
         // Check if we want without or with hits
         if ($withoutHits === true) {
-            $comparisonOperator = '=';
+            $queryBuilder->andWhere($queryBuilder->expr()->eq('num_found', 0));
         } else {
-            $comparisonOperator = '>';
+            $queryBuilder->andWhere($queryBuilder->expr()->gt('num_found', 0));
         }
 
-        $statisticsRows = (array)$this->getDatabase()->exec_SELECTgetRows(
-            'keywords, count(keywords) as count, num_found as hits',
-            'tx_solr_statistics',
-            'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId . ' AND num_found ' . $comparisonOperator . ' 0',
-            'keywords, num_found',
-            'count DESC, hits DESC, keywords ASC',
-            $limit
-        );
-
+        $statisticsRows = $queryBuilder->execute()->fetchAll();
         $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
 
         return $statisticsRows;
@@ -143,7 +161,7 @@ class StatisticsRepository
      * @param array $statisticsRows
      * @return array
      */
-    protected function mergeRowsWithSameKeyword(array $statisticsRows)
+    protected function mergeRowsWithSameKeyword(array $statisticsRows) : array
     {
         $result = [];
         foreach ($statisticsRows as $statisticsRow) {
@@ -174,20 +192,52 @@ class StatisticsRepository
      * @param int $bucketSeconds Seconds per bucket
      * @return array [labels, data]
      */
-    public function getQueriesOverTime($rootPageId, $days = 30, $bucketSeconds = 3600)
+    public function getQueriesOverTime(int $rootPageId, int $days = 30, int $bucketSeconds = 3600) : array
     {
         $now = time();
         $timeStart = $now - 86400 * intval($days); // 86400 seconds/day
 
-        $queries = $this->getDatabase()->exec_SELECTgetRows(
-            'FLOOR(tstamp/' . $bucketSeconds . ') AS bucket, unix_timestamp(from_unixtime(tstamp, "%y-%m-%d")) as timestamp, COUNT(*) AS numQueries',
-            'tx_solr_statistics',
-            'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
-            'bucket, timestamp',
-            'bucket ASC'
-        );
+        $queryBuilder = $this->getQueryBuilder();
+        $result = $queryBuilder
+            ->addSelectLiteral(
+                'FLOOR(`tstamp`/' . $bucketSeconds . ') AS `bucket`',
+                // @todo: Works only with MySQL. Add own column with Date type to prevent converting DateTime to Date
+                'unix_timestamp(from_unixtime(`tstamp`, "%y-%m-%d")) AS `timestamp`',
+                $queryBuilder->expr()->count('*', 'numQueries')
+            )
+            ->from($this->table)
+            ->andWhere(
+                $queryBuilder->expr()->gt('tstamp', $timeStart),
+                $queryBuilder->expr()->eq('root_pid', $rootPageId)
+            )
+            ->groupBy('bucket', 'timestamp')
+            ->orderBy('bucket', 'ASC')
+            ->execute()->fetchAll();
 
-        return (array)$queries;
+        return $result;
+    }
+
+    /**
+     * Regurns a result set by given plugin.tx_solr.search.frequentSearches.select configuration.
+     *
+     * @param array $frequentSearchConfiguration
+     * @return array Array of frequent search terms, keys are the terms, values are hits
+     */
+    public function getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration(array $frequentSearchConfiguration) : array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $resultSet = $queryBuilder
+            ->addSelectLiteral(
+                $frequentSearchConfiguration['select.']['SELECT']
+            )
+            ->from($frequentSearchConfiguration['select.']['FROM'])
+            ->add('where', $frequentSearchConfiguration['select.']['ADD_WHERE'], true)
+            ->add('groupBy', $frequentSearchConfiguration['select.']['GROUP_BY'], true)
+            ->add('orderBy', $frequentSearchConfiguration['select.']['ORDER_BY'])
+            ->setMaxResults((int)$frequentSearchConfiguration['limit'])
+            ->execute()->fetchAll();
+
+        return $resultSet;
     }
 
     /**
@@ -198,7 +248,7 @@ class StatisticsRepository
      * @param string $fieldName
      * @return float|int
      */
-    protected function getAverageFromField(array &$mergedRow, array $statisticsRow, $fieldName)
+    protected function getAverageFromField(array &$mergedRow, array $statisticsRow, string $fieldName)
     {
         // when this is the first row we can take it.
         if ($mergedRow['mergedrows'] === 1) {
@@ -211,13 +261,5 @@ class StatisticsRepository
         $oldCount = $oldAverage * $oldMergeRows;
         $avgCount = (($oldCount + $statisticsRow[$fieldName]) / $mergedRow['mergedrows']);
         return $avgCount;
-    }
-
-    /**
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabase()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 }

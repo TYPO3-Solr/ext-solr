@@ -115,7 +115,7 @@ class IndexQueueWorkerTest extends IntegrationTest
         /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
-        $indexQueueQueueWorkerTask->setSite($site);
+        $indexQueueQueueWorkerTask->setRootPageId($site->getRootPageId());
 
         $progressBefore = $indexQueueQueueWorkerTask->getProgress();
         $indexQueueQueueWorkerTask->execute();
@@ -138,7 +138,7 @@ class IndexQueueWorkerTest extends IntegrationTest
         /** @var $indexQueueQueueWorkerTask \ApacheSolrForTypo3\Solr\Task\IndexQueueWorkerTask */
         $indexQueueQueueWorkerTask = GeneralUtility::makeInstance(IndexQueueWorkerTask::class);
         $indexQueueQueueWorkerTask->setDocumentsToIndexLimit(1);
-        $indexQueueQueueWorkerTask->setSite($site);
+        $indexQueueQueueWorkerTask->setRootPageId($site->getRootPageId());
 
         $additionalInformation = $indexQueueQueueWorkerTask->getAdditionalInformation();
 

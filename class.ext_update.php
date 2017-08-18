@@ -1,8 +1,10 @@
 <?php
+
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2014-2015 Ingo Renner <ingo@typo3.org>
+ *  (c) 2015 Steffen Ritter <info@rs-websystems.de>
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,38 +24,48 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Update class for the extension manager.
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @package TYPO3
  */
-class ext_update
-{
+class ext_update {
+    /**
+     * Array of flash messages (params) array[][status,title,message]
+     *
+     * @var array
+     */
+    protected $messages = [];
 
     /**
-     * Determines whether the update menu entry should by shown.
-     *
-     * @return bool TRUE if we need ti run an update, FALSE otherwise
+     * @var \ApacheSolrForTypo3\Solrfal\Migrations\Migration[]
      */
-    public function access()
-    {
-        return $this->needsStaticIncludeUpdate();
+    protected $migrators = [];
+
+    /**
+     * Constructor initializing all migrations
+     */
+    public function __construct() {
+        $this->migrators[] = new \ApacheSolrForTypo3\Solr\Migrations\RemoveSiteFromScheduler();
     }
 
     /**
-     * Checks for old static includes.
+     * Called by the extension manager to determine if the update menu entry
+     * should by showed.
      *
-     * @return bool TRUE if old static includes are found, FALSE if everything's ok
+     * @return bool
      */
-    protected function needsStaticIncludeUpdate()
-    {
-        $numInvalidIncludes = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
-            'uid',
-            'sys_template',
-            'include_static_file LIKE \'%EXT:solr/static/%\''
-        );
-
-        return ($numInvalidIncludes > 0);
+    public function access() {
+        foreach ($this->migrators as $migration) {
+            if ($migration->isNeeded()) {
+                return TRUE;
+            }
+        }
+        return FALSE;
     }
 
     /**
@@ -61,60 +73,34 @@ class ext_update
      *
      * @return string
      */
-    public function main()
-    {
-        $this->updateStaticIncludes();
-
-        return 'Done.';
+    public function main() {
+        foreach ($this->migrators as $migration) {
+            if ($migration->isNeeded()) {
+                try {
+                    $this->messages[] = $migration->process();
+                } catch (\Exception $e) {
+                    $this->messages[] = [FlashMessage::ERROR, 'Execution failed', $e->getMessage()];
+                }
+            }
+        }
+        return $this->generateOutput();
     }
 
     /**
-     * Updates references to static TypoScript includes
+     * Generates output by using flash messages
      *
-     * @return void
+     * @return string
      */
-    protected function updateStaticIncludes()
-    {
-        $GLOBALS['TYPO3_DB']->sql_query(
-            'UPDATE sys_template
-			 SET include_static_file = REPLACE(include_static_file, \'/static/\', \'/Configuration/TypoScript/\')
-			 WHERE include_static_file LIKE \'%EXT:solr/%\''
-        );
+    protected function generateOutput() {
+        $flashMessages = [];
+        foreach ($this->messages as $messageItem) {
+            /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+            $flashMessages[] = GeneralUtility::makeInstance(FlashMessage::class, $messageItem[2], $messageItem[1], $messageItem[0]);
+        }
 
-        $GLOBALS['TYPO3_DB']->sql_query(
-            'UPDATE sys_template
-			 SET include_static_file = REPLACE(include_static_file, \'/solr/\', \'/Solr/\')
-			 WHERE include_static_file LIKE \'%EXT:solr/%\''
-        );
-
-        $GLOBALS['TYPO3_DB']->sql_query(
-            'UPDATE sys_template
-			 SET include_static_file = REPLACE(include_static_file, \'/opensearch/\', \'/OpenSearch/\')
-			 WHERE include_static_file LIKE \'%EXT:solr/%\''
-        );
-
-        $GLOBALS['TYPO3_DB']->sql_query(
-            'UPDATE sys_template
-			 SET include_static_file = REPLACE(include_static_file, \'/everything-on/\', \'/EverythingOn/\')
-			 WHERE include_static_file LIKE \'%EXT:solr/%\''
-        );
-
-        $GLOBALS['TYPO3_DB']->sql_query(
-            'UPDATE sys_template
-			 SET include_static_file = REPLACE(include_static_file, \'/filter-pages/\', \'/FilterPages/\')
-			 WHERE include_static_file LIKE \'%EXT:solr/%\''
-        );
-
-        $GLOBALS['TYPO3_DB']->sql_query(
-            'UPDATE sys_template
-			 SET include_static_file = REPLACE(include_static_file, \'/indexqueue-news/\', \'/IndexQueueNews/\')
-			 WHERE include_static_file LIKE \'%EXT:solr/%\''
-        );
-
-        $GLOBALS['TYPO3_DB']->sql_query(
-            'UPDATE sys_template
-			 SET include_static_file = REPLACE(include_static_file, \'/indexqueue-ttnews/\', \'/IndexQueueTtNews/\')
-			 WHERE include_static_file LIKE \'%EXT:solr/%\''
-        );
+            /** @var $resolver FlashMessageRendererResolver */
+        $resolver = GeneralUtility::makeInstance(FlashMessageRendererResolver::class);
+        $renderer = $resolver->resolve();
+        return $renderer->render($flashMessages);
     }
 }

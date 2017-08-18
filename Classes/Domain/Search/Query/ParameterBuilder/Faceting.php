@@ -238,7 +238,7 @@ class Faceting implements ParameterBuilder
         $solrSorting = $this->sorting;
 
         // alpha and lex alias for index
-        if ($this->sorting == 'alpha' || $this->sorting == 'lex') {
+        if ($this->sorting === 'alpha' || $this->sorting === 'lex') {
             $solrSorting = 'index';
         }
 

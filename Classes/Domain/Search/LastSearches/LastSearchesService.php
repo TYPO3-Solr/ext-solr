@@ -26,7 +26,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -44,25 +46,25 @@ class LastSearchesService
     protected $configuration;
 
     /**
-     * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     * @var FrontendUserSession
      */
-    protected $tsfe;
+    protected $session;
 
     /**
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @var LastSearchesRepository
      */
-    protected $database;
+    protected $lastSearchesRepository;
 
     /**
      * @param TypoScriptConfiguration $typoscriptConfiguration
-     * @param TypoScriptFrontendController $tsfe
-     * @param DatabaseConnection $database
+     * @param FrontendUserSession|null $session
+     * @param LastSearchesRepository|null $lastSearchesRepository
      */
-    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, TypoScriptFrontendController $tsfe, DatabaseConnection $database)
+    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, FrontendUserSession $session = null, LastSearchesRepository $lastSearchesRepository = null)
     {
         $this->configuration = $typoscriptConfiguration;
-        $this->tsfe = $tsfe;
-        $this->database = $database;
+        $this->session = isset($session) ? $session : GeneralUtility::makeInstance(FrontendUserSession::class);
+        $this->lastSearchesRepository = isset($lastSearchesRepository) ? $lastSearchesRepository : GeneralUtility::makeInstance(LastSearchesRepository::class);
     }
 
     /**
@@ -81,7 +83,7 @@ class LastSearchesService
                 $lastSearchesKeywords = $this->getLastSearchesFromSession($limit);
                 break;
             case 'global':
-                $lastSearchesKeywords = $this->getLastSearchesFromDatabase($limit);
+                $lastSearchesKeywords = $this->lastSearchesRepository->findAllKeywords($limit);
                 break;
         }
 
@@ -102,7 +104,7 @@ class LastSearchesService
                 $this->storeKeywordsToSession($keywords);
                 break;
             case 'global':
-                $this->storeKeywordsToDatabase($keywords);
+                $this->lastSearchesRepository->add($keywords, (int)$this->configuration->getSearchLastSearchesLimit());
                 break;
             default:
                 throw new \UnexpectedValueException(
@@ -120,54 +122,10 @@ class LastSearchesService
      */
     protected function getLastSearchesFromSession($limit)
     {
-        $lastSearches = $this->getLastSearchesFromFrontendSession();
-
-        if (!is_array($lastSearches)) {
-            return [];
-        }
-
+        $lastSearches = $this->session->getLastSearches();
         $lastSearches = array_slice(array_reverse(array_unique($lastSearches)), 0, $limit);
 
         return $lastSearches;
-    }
-
-    /**
-     * Gets the last searched keywords from the database
-     *
-     * @param int $limit
-     * @return array An array containing the last searches of the current user
-     */
-    protected function getLastSearchesFromDatabase($limit = 10)
-    {
-        $lastSearchesRows = $this->database->exec_SELECTgetRows(
-            'DISTINCT keywords',
-            'tx_solr_last_searches',
-            '',
-            '',
-            'tstamp DESC',
-            $limit
-        );
-
-        // If no records could be found return empty result
-        if (empty($lastSearchesRows)) {
-            return [];
-        }
-
-        $lastSearches = [];
-
-        foreach ($lastSearchesRows as $row) {
-            $lastSearches[] = html_entity_decode($row['keywords'], ENT_QUOTES, 'UTF-8');
-        }
-
-        return $lastSearches;
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getLastSearchesFromFrontendSession()
-    {
-        return $this->tsfe->fe_user->getKey('ses', 'tx_solr_lastSearches');
     }
 
     /**
@@ -178,12 +136,7 @@ class LastSearchesService
      */
     protected function storeKeywordsToSession($keywords)
     {
-        $currentLastSearches = $this->tsfe->fe_user->getKey('ses', 'tx_solr_lastSearches');
-
-        if (!is_array($currentLastSearches)) {
-            $currentLastSearches = [];
-        }
-
+        $currentLastSearches = $this->session->getLastSearches();
         $lastSearches = $currentLastSearches;
         $newLastSearchesCount = array_push($lastSearches, $keywords);
 
@@ -192,59 +145,6 @@ class LastSearchesService
             $newLastSearchesCount = count($lastSearches);
         }
 
-        $this->tsfe->fe_user->setKey(
-            'ses',
-            'tx_solr_lastSearches',
-            $lastSearches
-        );
-    }
-
-    /**
-     * Stores the keywords from the current query to the database.
-     *
-     * @param string $keywords The current query's keywords
-     * @return void
-     */
-    protected function storeKeywordsToDatabase($keywords)
-    {
-        $nextSequenceId = $this->getNextSequenceId();
-
-        $this->database->sql_query(
-            'INSERT INTO tx_solr_last_searches (sequence_id, tstamp, keywords)
-			VALUES ('
-            . $nextSequenceId . ', '
-            . time() . ', '
-            . $this->database->fullQuoteStr($keywords,
-                'tx_solr_last_searches')
-            . ')
-			ON DUPLICATE KEY UPDATE tstamp = ' . time() . ', keywords = ' . $this->database->fullQuoteStr($keywords,
-                'tx_solr_last_searches')
-        );
-    }
-
-    /**
-     * Gets the sequence id for the next search entry.
-     *
-     * @return int The id to be used as the next sequence id for storing the last search keywords.
-     */
-    protected function getNextSequenceId()
-    {
-        $nextSequenceId = 0;
-        $numberOfLastSearchesToLog = (int)$this->configuration->getSearchLastSearchesLimit();
-
-        $row = $this->database->exec_SELECTgetRows(
-            '(sequence_id + 1) % ' . $numberOfLastSearchesToLog . ' as next_sequence_id',
-            'tx_solr_last_searches',
-            '',
-            '',
-            'tstamp DESC',
-            1
-        );
-
-        if (!empty($row)) {
-            $nextSequenceId = $row[0]['next_sequence_id'];
-        }
-
-        return $nextSequenceId;
+        $this->session->setLastSearches($lastSearches);
     }
 }

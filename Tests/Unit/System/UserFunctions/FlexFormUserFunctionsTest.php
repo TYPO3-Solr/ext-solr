@@ -113,4 +113,39 @@ class FlexFormUserFunctionsTest extends UnitTest
         $userFunc->getFacetFieldsFromSchema($parentInformation);
         $this->assertCount(0, $parentInformation['items']);
     }
+
+    /**
+     * @test
+     */
+    public function canGetExpectedSelectOptions()
+    {
+        /** @var FlexFormUserFunctions $userFunc */
+        $userFunc = $this->getMockBuilder(FlexFormUserFunctions::class)
+            ->setMethods([
+                'getAvailableTemplateFromTypoScriptConfiguration',
+                'getConfigurationFromPageId'
+            ])->getMock();
+
+        $userFunc->expects($this->once())->method('getAvailableTemplateFromTypoScriptConfiguration')
+            ->with(4711, 'results')
+            ->will($this->returnValue([
+            'myTemplate.' => [
+                'label' => 'MyCustomTemplate',
+                'file' => 'Results'
+            ]
+        ]));
+
+        $parentInformation = [
+            'flexParentDatabaseRow' => [
+                'pid' => 4711,
+            ],
+            'field' => 'view.templateFiles.results'
+        ];
+
+        $userFunc->getAvailableTemplates($parentInformation);
+
+        // we expect to get to options, the configured option and a default reset option
+        $this->assertCount(2, $parentInformation['items']);
+    }
+
 }

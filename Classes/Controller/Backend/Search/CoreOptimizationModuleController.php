@@ -96,8 +96,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
                 FlashMessage::ERROR
             );
         } else {
-            $baseWord = $this->stringUtility->toLower($baseWord);
-            $synonyms = $this->stringUtility->toLower($synonyms);
+            $baseWord = mb_strtolower($baseWord);
+            $synonyms = mb_strtolower($synonyms);
 
             if ($overrideExisting && $this->selectedSolrCoreConnection->getSynonyms($baseWord)) {
                 $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
@@ -240,7 +240,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
     public function saveStopWordsAction(string $stopWords, $replaceStopwords = 1)
     {
         // lowercase stopword before saving because terms get lowercased before stopword filtering
-        $newStopWords = $this->stringUtility->toLower($stopWords);
+        $newStopWords = mb_strtolower($stopWords);
         $newStopWords = GeneralUtility::trimExplode("\n", $newStopWords, true);
         $oldStopWords = $this->selectedSolrCoreConnection->getStopWords();
 

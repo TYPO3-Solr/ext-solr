@@ -5,10 +5,6 @@ if (!defined('TYPO3_MODE')) {
 }
 
 if (TYPO3_MODE == 'BE') {
-    // add search plugin to content element wizard
-    $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['ApacheSolrForTypo3\\Solr\\Backend\\ContentElementWizardIconProvider'] =
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Backend/ContentElementWizardIconProvider.php';
-
     $modulePrefix = 'extensions-solr-module';
     $svgProvider = \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class;
 
@@ -41,7 +37,7 @@ if (TYPO3_MODE == 'BE') {
         null,
         [
             'name' => 'searchbackend',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_main_label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod.xlf',
             'iconIdentifier' => 'extensions-solr-module-main'
         ]
     );
@@ -58,7 +54,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleInfo.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_info_label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_info.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
     );
@@ -66,7 +62,7 @@ if (TYPO3_MODE == 'BE') {
     // Index Inspector is hidden under Web->Info->Index Inspector
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
         'web_info',
-        \ApacheSolrForTypo3\Solr\Backend\IndexInspector\ModuleBootstrap::class,
+        \ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info\IndexInspectorController::class,
         null,
         'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:module_indexinspector'
     );
@@ -82,7 +78,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleCoreOptimization.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_core_optimization_label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_coreoptimize.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
     );
@@ -98,7 +94,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexQueue.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:module_indexqueue_label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexqueue.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
     );
@@ -114,7 +110,7 @@ if (TYPO3_MODE == 'BE') {
         [
             'access' => 'user,group',
             'icon' => 'EXT:solr/Resources/Public/Images/Icons/ModuleIndexAdministration.svg',
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:solr.backend.index_administration.label',
+            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_indexadmin.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
     );
@@ -151,13 +147,3 @@ if ((TYPO3_MODE === 'BE') || (TYPO3_MODE === 'FE' && isset($_POST['TSFE_EDIT']))
 # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- # ----- #
 
 $GLOBALS['TYPO3_CONF_VARS']['BE']['ContextMenu']['ItemProviders'][1487876780] = \ApacheSolrForTypo3\Solr\ContextMenu\ItemProviders\InitializeConnectionProvider::class;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerExtDirectComponent(
-    'TYPO3.Solr.ContextMenuActionController',
-    \ApacheSolrForTypo3\Solr\ContextMenuActionController::class,
-    'web',
-    'admin'
-);
-
-// include JS in backend
-$GLOBALS['TYPO3_CONF_VARS']['typo3/backend.php']['additionalBackendItems']['Solr.ContextMenuInitializeSolrConnectionsAction'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('solr') . 'Classes/BackendItem/ContextMenuActionJavascriptRegistration.php';

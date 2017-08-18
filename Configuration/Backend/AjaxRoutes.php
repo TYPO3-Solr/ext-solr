@@ -4,9 +4,12 @@
  * Definitions for routes provided by EXT:solr
  */
 return [
-    // Update Connections
     'solr_updateConnections' => [
         'path' => '/solr/updateConnections',
-        'target' => \ApacheSolrForTypo3\Solr\ConnectionManager::class . '::updateConnectionsInCacheMenu'
+        'target' => \ApacheSolrForTypo3\Solr\Controller\Backend\AjaxController::class . '::updateConnections'
+    ],
+    'solr_updateConnection' => [
+        'path' => '/solr/updateConnection',
+        'target' => \ApacheSolrForTypo3\Solr\Controller\Backend\AjaxController::class . '::updateConnection'
     ]
 ];

@@ -194,12 +194,13 @@ class Query
      * @param TypoScriptConfiguration $solrConfiguration
      * @param SiteHashService|null $siteHashService
      * @param EscapeService|null $escapeService
+     * @param SolrLogManager|null $solrLogManager
      */
-    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null, EscapeService $escapeService = null)
+    public function __construct($keywords, $solrConfiguration = null, SiteHashService $siteHashService = null, EscapeService $escapeService = null, SolrLogManager $solrLogManager = null)
     {
         $keywords = (string)$keywords;
 
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
         $this->solrConfiguration = is_null($solrConfiguration) ? Util::getSolrConfiguration() : $solrConfiguration;
         $this->siteHashService = is_null($siteHashService) ? GeneralUtility::makeInstance(SiteHashService::class) : $siteHashService;
         $this->escapeService = is_null($escapeService) ? GeneralUtility::makeInstance(EscapeService::class) : $escapeService;
@@ -242,42 +243,6 @@ class Query
 
         // Configure collapsing
         $this->initializeCollapsingFromConfiguration();
-    }
-
-    /**
-     * Takes a string of comma separated query fields and _overwrites_ the
-     * currently set query fields. Boost can also be specified in through the
-     * given string.
-     *
-     * Example: "title^5, subtitle^2, content, author^0.5"
-     * This sets the query fields to title with  a boost of 5.0, subtitle with
-     * a boost of 2.0, content with a default boost of 1.0 and the author field
-     * with a boost of 0.5
-     *
-     * @deprecated use setQueryFields with QueryFields instead, will be removed in 8.0
-     * @param string $queryFields A string defining which fields to query and their associated boosts
-     * @return void
-     */
-    public function setQueryFieldsFromString($queryFields)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->setQueryFields(QueryFields::fromString($queryFields));
-    }
-
-    /**
-     * Sets a query field and its boost. If the field does not exist yet, it
-     * gets added. Boost is optional, if left out a default boost of 1.0 is
-     * applied.
-     *
-     * @deprecated use getQueryFields()->set($fieldName, $boost) instead, will be removed in 8.0
-     * @param string $fieldName The field's name
-     * @param float $boost Optional field boost, defaults to 1.0
-     * @return void
-     */
-    public function setQueryField($fieldName, $boost = 1.0)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getQueryFields()->set($fieldName, $boost);
     }
 
     /**
@@ -374,21 +339,6 @@ class Query
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Quote and escape search strings
-     *
-     * @param string $string String to escape
-     * @deprecated Please use EscapeService noew, will be removed in 8.0
-     * @return string The escaped/quoted string
-     */
-    public function escape($string)
-    {
-        GeneralUtility::logDeprecatedFunction();
-            /** @var EscapeService $escapeService */
-        $escapeService = GeneralUtility::makeInstance(EscapeService::class);
-        return $escapeService->escape($string);
     }
 
     /**
@@ -518,59 +468,17 @@ class Query
         }
     }
 
-
-    /**
-     * Adds a field to the list of fields to return. Also checks whether * is
-     * set for the fields, if so it's removed from the field list.
-     *
-     * @deprecated Use getReturnFields()->add() instead, will be removed in 8.0
-     * @param string $fieldName Name of a field to return in the result documents
-     */
-    public function addReturnField($fieldName)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->returnFields->add($fieldName);
-    }
-
-    /**
-     * Removes a field from the list of fields to return (fl parameter).
-     *
-     * @deprecated Use getReturnFields()->remove() instead, will be removed in 8.0
-     * @param string $fieldName Field to remove from the list of fields to return
-     */
-    public function removeReturnField($fieldName)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->returnFields->remove($fieldName);
-    }
-
     // grouping
 
     /**
      * Activates and deactivates grouping for the current query.
      *
-     * @param bool|Grouping $grouping TRUE to enable grouping, FALSE to disable grouping
+     * @param Grouping $grouping TRUE to enable grouping, FALSE to disable grouping
      * @return void
      */
-    public function setGrouping($grouping = true)
+    public function setGrouping(Grouping $grouping)
     {
-        if ($grouping instanceof Grouping) {
-            $this->grouping = $grouping;
-            return;
-        }
-
-        /**
-         * @deprecated
-         * @todo When starting with 8.0 we can add a typehint Grouping to the grouping argument, to drop backwards compatibility.
-         */
-        $grouping = (bool)$grouping;
-
-        if ($grouping) {
-            GeneralUtility::deprecationLog('Usage of setGrouping with boolean deprecated please use getGrouping()->setIsEnabled()');
-            $this->getGrouping()->setIsEnabled($grouping);
-        } else {
-            $this->initializeGrouping();
-        }
+        $this->grouping = $grouping;
     }
 
     /**
@@ -579,34 +487,6 @@ class Query
     public function getGrouping()
     {
         return $this->grouping;
-    }
-
-    /**
-     * Sets the number of groups to return per group field or group query
-     *
-     * Internally uses the rows parameter.
-     *
-     * @deprecated Use getGrouping()->setNumberOfGroups() instead, will be removed in 8.0
-     * @param int $numberOfGroups Number of groups per group.field or group.query
-     */
-    public function setNumberOfGroups($numberOfGroups)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getGrouping()->setNumberOfGroups($numberOfGroups);
-    }
-
-    /**
-     * Gets the number of groups to return per group field or group query
-     *
-     * Internally uses the rows parameter.
-     *
-     * @deprecated Use getGrouping()->getNumberOfGroups() instead, will be removed in 8.0
-     * @return int Number of groups per group.field or group.query
-     */
-    public function getNumberOfGroups()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getGrouping()->getNumberOfGroups();
     }
 
     /**
@@ -634,131 +514,17 @@ class Query
         $this->resultsPerPage = max(intval($resultsPerPage), 0);
     }
 
-    /**
-     * Adds a field that should be used for grouping.
-     *
-     * @deprecated Use getGrouping()->addField() instead, will be removed in 8.0
-     * @param string $fieldName Name of a field for grouping
-     */
-    public function addGroupField($fieldName)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getGrouping()->addField($fieldName);
-    }
-
-    /**
-     * Gets the fields set for grouping.
-     *
-     * @deprecated Use getGrouping()->getFields() instead, will be removed in 8.0
-     * @return array An array of fields set for grouping.
-     */
-    public function getGroupFields()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getGrouping()->getFields();
-    }
-
-    /**
-     * Adds sorting configuration for grouping.
-     *
-     * @deprecated Use getGrouping()->addSorting() instead, will be removed in 8.0
-     * @param string $sorting value of sorting configuration
-     * @param string $sorting value of sorting configuration
-     */
-    public function addGroupSorting($sorting)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getGrouping()->addSorting($sorting);
-    }
-
-    /**
-     * Gets the sorting set for grouping.
-     *
-     * @deprecated Use getGrouping()->getSortings() instead, will be removed in 8.0
-     * @return array An array of sorting configurations for grouping.
-     */
-    public function getGroupSortings()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getGrouping()->getSortings();
-    }
-
     // faceting
-
-    /**
-     * Adds a query that should be used for grouping.
-     *
-     * @deprecated Use getGrouping()->addQuery() instead, will be removed in 8.0
-     * @param string $query Lucene query for grouping
-     */
-    public function addGroupQuery($query)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getGrouping()->addQuery($query);
-    }
-
-    /**
-     * Gets the queries set for grouping.
-     *
-     * @deprecated Use getGrouping()->getQueries() instead, will be removed in 8.0
-     * @return array An array of queries set for grouping.
-     */
-    public function getGroupQueries()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getGrouping()->getQueries();
-    }
-
-    /**
-     * Sets the maximum number of results to be returned per group.
-     *
-     * @deprecated Use getGrouping()->setResultsPerGroup() instead, will be removed in 8.0
-     * @param int $numberOfResults Maximum number of results per group to return
-     */
-    public function setNumberOfResultsPerGroup($numberOfResults)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getGrouping()->setResultsPerGroup($numberOfResults);
-    }
-
-
-    /**
-     * Gets the maximum number of results to be returned per group.
-     *
-     * @deprecated Use getGrouping()->getResultsPerGroup() instead, will be removed in 8.0
-     * @return int Maximum number of results per group to return
-     */
-    public function getNumberOfResultsPerGroup()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getGrouping()->getResultsPerGroup();
-    }
 
     /**
      * Activates and deactivates faceting for the current query.
      *
-     * @param bool|Faceting $faceting TRUE to enable faceting, FALSE to disable faceting
+     * @param Faceting $faceting TRUE to enable faceting, FALSE to disable faceting
      * @return void
      */
-    public function setFaceting($faceting = true)
+    public function setFaceting(Faceting $faceting)
     {
-        if ($faceting instanceof Faceting) {
-            $this->faceting = $faceting;
-            return;
-        }
-
-        /**
-         * @deprecated
-         * @todo When starting with 8.0 we can add a typehint Faceting to the faceting argument, to drop backwards compatibility.
-         */
-        $faceting = (bool)$faceting;
-
-        if ($faceting) {
-            GeneralUtility::deprecationLog('Usage of setFaceting with boolean deprecated please use getFaceting()->setIsEnabled()');
-            $this->getFaceting()->setIsEnabled($faceting);
-        } else {
-            $this->initializeFaceting();
-        }
+        $this->faceting = $faceting;
     }
 
     /**
@@ -769,70 +535,6 @@ class Query
         return $this->faceting;
     }
 
-    /**
-     * Sets facet fields for a query.
-     *
-     * @deprecated Use getFaceting()->setFields() instead, will be removed in 8.0
-     * @param array $facetFields Array of field names
-     */
-    public function setFacetFields(array $facetFields)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getFaceting()->setIsEnabled(true);
-        $this->getFaceting()->setFields($facetFields);
-    }
-
-    /**
-     * Adds a single facet field.
-     *
-     * @deprecated Use getFaceting()->addField() instead, will be removed in 8.0
-     * @param string $facetField field name
-     */
-    public function addFacetField($facetField)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getFaceting()->setIsEnabled(true);
-        $this->getFaceting()->addField($facetField);
-    }
-
-    /**
-     * Removes a filter on a field
-     *
-     * @deprecated Use getFilters()->removeByFieldName() instead, will be removed in 8.0
-     * @param string $filterFieldName The field name the filter should be removed for
-     * @return void
-     */
-    public function removeFilter($filterFieldName)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getFilters()->removeByFieldName($filterFieldName);
-    }
-
-    /**
-     * Removes a filter based on key of filter array
-     *
-     * @deprecated Use getFilters()->removeByName() instead, will be removed in 8.0
-     * @param string $key array key
-     */
-    public function removeFilterByKey($key)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getFilters()->removeByName($key);
-    }
-
-    /**
-     * Removes a filter by the filter value. The value has the following format:
-     *
-     * "fieldname:value"
-     *
-     * @deprecated Use getFilters()->removeByValue() instead, will be removed in 8.0
-     * @param string $filterString The filter to remove, in the form of field:value
-     */
-    public function removeFilterByValue($filterString)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        $this->getFilters()->removeByValue($filterString);
-    }
 
     /**
      * Gets all currently applied filters.
@@ -872,21 +574,6 @@ class Query
         $this->getFilters()->removeByPrefix('{!typo3access}');
         $this->getFilters()->add($accessFilter);
     }
-
-    /**
-     * Adds a filter parameter.
-     *
-     * @deprecated Use getFilters()->add() instead, will be removed in 8.0
-     * @param string $filterString The filter to add, in the form of field:value
-     * @return void
-     */
-    public function addFilter($filterString)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        $this->getFilters()->add($filterString);
-    }
-
 
     // query parameters
 
@@ -932,47 +619,6 @@ class Query
         }
 
         $this->getFilters()->add(implode(' OR ', $filters));
-    }
-
-    /**
-     * Gets the list of fields a query will return.
-     *
-     * @deprecated Use method getReturnFields() instead, will be removed in 8.0
-     * @return array List of field names the query will return
-     */
-    public function getFieldList()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getReturnFields()->getValues();
-    }
-
-    /**
-     * Sets the fields to return by a query.
-     *
-     * @deprecated Use method setReturnFields() instead, will be removed in 8.0
-     * @param array|string $fieldList an array or comma-separated list of field names
-     * @throws \UnexpectedValueException on parameters other than comma-separated lists and arrays
-     */
-    public function setFieldList($fieldList = ['*', 'score'])
-    {
-        GeneralUtility::logDeprecatedFunction();
-        if ($fieldList === null) {
-            $this->setReturnFields(ReturnFields::fromArray(['*', 'score']));
-            return;
-        }
-
-
-        if (is_string($fieldList)) {
-            $this->setReturnFields(ReturnFields::fromString($fieldList));
-            return;
-        }
-
-        if (is_array($fieldList)) {
-            $this->setReturnFields(ReturnFields::fromArray($fieldList));
-            return;
-        }
-
-        throw new \UnexpectedValueException('Field list must be a FieldList object.', 1310740308);
     }
 
     /**
@@ -1044,7 +690,7 @@ class Query
      *
      * This query supports the complete Lucene Query Language.
      *
-     * @param mixed $alternativeQuery String alternative query or boolean FALSE to disable / reset the q.alt parameter.
+     * @param string $alternativeQuery String alternative query or boolean FALSE to disable / reset the q.alt parameter.
      * @see http://wiki.apache.org/solr/DisMaxQParserPlugin#q.alt
      */
     public function setAlternativeQuery($alternativeQuery)
@@ -1105,29 +751,8 @@ class Query
     public static function cleanKeywords($keywords)
     {
         $keywords = trim($keywords);
-        $keywords = GeneralUtility::removeXSS($keywords);
-        $keywords = htmlentities($keywords, ENT_QUOTES, $GLOBALS['TSFE']->metaCharset);
+        $keywords = htmlspecialchars($keywords);
         return $keywords;
-    }
-
-    /**
-     * Escapes marker hashes and the pipe symbol so that they will not be
-     * executed in templates.
-     *
-     * @param string $content Content potentially containing markers
-     * @deprecated Only needed for old templating. Will be removed in 8.0
-     * @return string Content with markers escaped
-     */
-    protected static function escapeMarkers($content)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        // escape marker hashes
-        $content = str_replace('###', '&#35;&#35;&#35;', $content);
-        // escape pipe character used for parameter separation
-        $content = str_replace('|', '&#124;', $content);
-
-        return $content;
     }
 
     // relevance, matching
@@ -1218,40 +843,15 @@ class Query
     // general query parameters
 
     /**
-     * Compiles the query fields into a string to be used in Solr's qf parameter.
-     *
-     * @deprecated Use getQueryFields()->toString() please. Will be removed in 8.0
-     * @return string A string of query fields with their associated boosts
-     */
-    public function getQueryFieldsAsString()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->getQueryFields()->toString();
-    }
-
-    /**
      * Enables or disables highlighting of search terms in result teasers.
      *
-     * @param Highlighting|bool $highlighting Enables highlighting when set to TRUE, deactivates highlighting when set to FALSE, defaults to TRUE.
-     * @param int $fragmentSize Size, in characters, of fragments to consider for highlighting.
+     * @param Highlighting $highlighting
      * @see http://wiki.apache.org/solr/HighlightingParameters
      * @return void
      */
-    public function setHighlighting($highlighting = true, $fragmentSize = 200)
+    public function setHighlighting(Highlighting $highlighting)
     {
-        if ($highlighting instanceof Highlighting) {
-            $this->highlighting = $highlighting;
-            return;
-        }
-
-        /**
-         * @deprecated
-         * @todo When starting with 8.0 we can add a typehint Highlighting to the highlighting argument and remove fragmentsize, to drop backwards compatibility.
-         */
-        GeneralUtility::deprecationLog('Usage of setHighlighting with boolean or fragmentSize is deprecated please use getHighlighting()->setIsEnabled() or getHighlighting()->setFragmentSize() please');
-        $highlighting = (bool)$highlighting;
-        $this->getHighlighting()->setIsEnabled($highlighting);
-        $this->getHighlighting()->setFragmentSize($fragmentSize);
+        $this->highlighting = $highlighting;
     }
 
     /**
@@ -1346,7 +946,7 @@ class Query
     {
         $sortParameter = $sorting;
         list($sortField) = explode(' ', $sorting);
-        if ($sortField == 'relevance') {
+        if ($sortField === 'relevance') {
             $sortParameter = '';
             return $sortParameter;
         }

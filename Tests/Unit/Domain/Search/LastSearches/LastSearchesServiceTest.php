@@ -24,10 +24,11 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\LastSearches;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\LastSearches\LastSearchesService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class LastSearchesServiceTest extends UnitTest
@@ -38,14 +39,9 @@ class LastSearchesServiceTest extends UnitTest
     protected $lastSearchesService;
 
     /**
-     * @var TypoScriptFrontendController
+     * @var FrontendUserSession
      */
-    protected $tsfeMock;
-
-    /**
-     * @var DatabaseConnection
-     */
-    protected $databaseMock;
+    protected $sessionMock;
 
     /**
      * @var TypoScriptConfiguration
@@ -53,19 +49,26 @@ class LastSearchesServiceTest extends UnitTest
     protected $configurationMock;
 
     /**
+     * @var LastSearchesRepository
+     */
+    protected $lastSearchesRepositoryMock;
+
+    /**
      * @return void
      */
     public function setUp()
     {
-        $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
-        $this->databaseMock = $this->getDumbMock(DatabaseConnection::class);
+        $this->sessionMock = $this->getDumbMock(FrontendUserSession::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+
+        $this->lastSearchesRepositoryMock = $this->getMockBuilder(LastSearchesRepository::class)
+            ->setMethods(['getLastSearchesResultSet', 'findAllKeywords'])->getMock();
 
         $this->lastSearchesService = $this->getMockBuilder(LastSearchesService::class)
             ->setMethods(['getLastSearchesFromFrontendSession'])
             ->setConstructorArgs([  $this->configurationMock,
-                $this->tsfeMock,
-                $this->databaseMock])->getMock();
+                $this->sessionMock,
+                $this->lastSearchesRepositoryMock])->getMock();
     }
 
     /**
@@ -75,11 +78,11 @@ class LastSearchesServiceTest extends UnitTest
     {
         $fakedLastSearchesInSession = ['first search', 'second search'];
 
-        $this->lastSearchesService->expects($this->once())->method('getLastSearchesFromFrontendSession')->will($this->returnValue(
+        $this->sessionMock->expects($this->once())->method('getLastSearches')->will($this->returnValue(
             $fakedLastSearchesInSession
         ));
 
-        $this->assertDatabaseWillNeverBeQueried();
+        $this->assertRepositoryWillNeverBeCalled();
         $this->fakeLastSearchMode('user');
         $this->fakeLastSearchLimit(10);
 
@@ -92,20 +95,20 @@ class LastSearchesServiceTest extends UnitTest
      */
     public function canGetLastSearchesFromDatabaseInGlobalMode()
     {
-        $fakedLastSearchesInDatabase = [
-            ['keywords' => 'test'],
-            ['keywords' => 'test 2']
+        $fakedLastSearchesFromRepository = [
+            'test',
+            'test 2'
         ];
 
         $this->fakeLastSearchMode('global');
         $this->fakeLastSearchLimit(10);
         $this->assertSessionWillNeverBeQueried();
 
-        $this->databaseMock->expects($this->once())->method('exec_SELECTgetRows')->will($this->returnValue($fakedLastSearchesInDatabase));
+        $this->lastSearchesRepositoryMock->method('findAllKeywords')->will($this->returnValue($fakedLastSearchesFromRepository));
 
         $lastSearches = $this->lastSearchesService->getLastSearches();
 
-        $this->assertSame(['test', 'test 2'], $lastSearches, 'Did not get last searches from database');
+        $this->assertSame($fakedLastSearchesFromRepository, $lastSearches, 'Did not get last searches from database');
     }
 
     /**
@@ -127,9 +130,9 @@ class LastSearchesServiceTest extends UnitTest
     /**
      * @return void
      */
-    protected function assertDatabaseWillNeverBeQueried()
+    protected function assertRepositoryWillNeverBeCalled()
     {
-        $this->databaseMock->expects($this->never())->method('exec_SELECTgetRows');
+        $this->lastSearchesRepositoryMock->expects($this->never())->method('findAllKeywords');
     }
 
     /**

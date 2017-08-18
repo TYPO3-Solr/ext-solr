@@ -27,10 +27,11 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
 use Apache_Solr_Document;
 use Apache_Solr_Response;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
+use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\Util;
@@ -82,13 +83,6 @@ class Indexer extends AbstractIndexer
      * @var IdBuilder
      */
     protected $variantIdBuilder;
-
-    /**
-     * Cache of the sys_language_overlay information
-     *
-     * @var array
-     */
-    protected static $sysLanguageOverlay = [];
 
     /**
      * @var \ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager
@@ -194,30 +188,10 @@ class Indexer extends AbstractIndexer
      */
     protected function getFullItemRecord(Item $item, $language = 0)
     {
-        $rootPageUid = $item->getRootPageUid();
-        $overlayIdentifier = $rootPageUid . '|' . $language;
-        if (!isset(self::$sysLanguageOverlay[$overlayIdentifier])) {
-            Util::initializeTsfe($rootPageUid, $language);
-            self::$sysLanguageOverlay[$overlayIdentifier] = $GLOBALS['TSFE']->sys_language_contentOL;
-        }
+        Util::initializeTsfe($item->getRootPageUid(), $language);
 
-        $itemRecord = $item->getRecord();
-
-        if ($language > 0) {
-            $page = GeneralUtility::makeInstance(PageRepository::class);
-            $page->init(false);
-
-            $itemRecord = $page->getRecordOverlay(
-                $item->getType(),
-                $itemRecord,
-                $language,
-                self::$sysLanguageOverlay[$overlayIdentifier]
-            );
-        }
-
-        if (!$itemRecord) {
-            $itemRecord = null;
-        }
+        $systemLanguageContentOverlay = $GLOBALS['TSFE']->sys_language_contentOL;
+        $itemRecord = $this->getItemRecordOverlayed($item, $language, $systemLanguageContentOverlay);
 
         /*
          * Skip disabled records. This happens if the default language record
@@ -247,7 +221,7 @@ class Indexer extends AbstractIndexer
 
         $languageField = $GLOBALS['TCA'][$item->getType()]['ctrl']['languageField'];
         if ($itemRecord[$translationOriginalPointerField] == 0
-            && self::$sysLanguageOverlay[$overlayIdentifier] != 1
+            && $systemLanguageContentOverlay != 1
             && !empty($languageField)
             && $itemRecord[$languageField] != $language
             && $itemRecord[$languageField] != '-1'
@@ -257,6 +231,31 @@ class Indexer extends AbstractIndexer
 
         if (!is_null($itemRecord)) {
             $itemRecord['__solr_index_language'] = $language;
+        }
+
+        return $itemRecord;
+    }
+
+    /**
+     * Returns the overlayed item record.
+     *
+     * @param Item $item
+     * @param int $language
+     * @param string|null $systemLanguageContentOverlay
+     * @return array|mixed|null
+     */
+    protected function getItemRecordOverlayed(Item $item, $language, $systemLanguageContentOverlay)
+    {
+        $itemRecord = $item->getRecord();
+
+        if ($language > 0) {
+            $page = GeneralUtility::makeInstance(PageRepository::class);
+            $page->init(false);
+            $itemRecord = $page->getRecordOverlay($item->getType(), $itemRecord, $language, $systemLanguageContentOverlay);
+        }
+
+        if (!$itemRecord) {
+            $itemRecord = null;
         }
 
         return $itemRecord;
@@ -541,37 +540,78 @@ class Indexer extends AbstractIndexer
         $solrConnections = [];
 
         $pageId = $item->getRootPageUid();
-        if ($item->getType() == 'pages') {
+        if ($item->getType() === 'pages') {
             $pageId = $item->getRecordUid();
         }
 
         // Solr configurations possible for this item
         $site = $item->getSite();
-        $solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($site);
 
+        $solrConfigurationsBySite = $this->connectionManager->getConfigurationsBySite($site);
         $siteLanguages = [];
         foreach ($solrConfigurationsBySite as $solrConfiguration) {
             $siteLanguages[] = $solrConfiguration['language'];
         }
 
-        $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode());
-        foreach ($translationOverlays as $key => $translationOverlay) {
-            if (!in_array($translationOverlay['sys_language_uid'],
-                $siteLanguages)
-            ) {
-                unset($translationOverlays[$key]);
-            }
-        }
+        $defaultLanguageUid = $this->getDefaultLanguageUid($item, $site->getRootPage(), $siteLanguages);
+        $translationOverlays = $this->getTranslationOverlaysWithConfiguredSite($pageId, $site, $defaultLanguageUid, $siteLanguages);
 
         $defaultConnection = $this->connectionManager->getConnectionByPageId($pageId, 0, $item->getMountPointIdentifier());
         $translationConnections = $this->getConnectionsForIndexableLanguages($translationOverlays);
 
-        $solrConnections[0] = $defaultConnection;
+        if ($defaultLanguageUid == 0) {
+            $solrConnections[0] = $defaultConnection;
+        }
+
         foreach ($translationConnections as $systemLanguageUid => $solrConnection) {
             $solrConnections[$systemLanguageUid] = $solrConnection;
         }
 
         return $solrConnections;
+    }
+
+    /**
+     * Retrieves only translation overlays where a solr site is configured.
+     *
+     * @param int $pageId
+     * @param Site $site
+     * @param int $defaultLanguageUid
+     * @param $siteLanguages
+     * @return array
+     */
+    protected function getTranslationOverlaysWithConfiguredSite($pageId, Site $site, $defaultLanguageUid, $siteLanguages)
+    {
+        $translationOverlays = $this->getTranslationOverlaysForPage($pageId, $site->getSysLanguageMode($defaultLanguageUid));
+
+        foreach ($translationOverlays as $key => $translationOverlay) {
+            if (!in_array($translationOverlay['sys_language_uid'], $siteLanguages)) {
+                unset($translationOverlays[$key]);
+            }
+        }
+
+        return $translationOverlays;
+    }
+
+    /**
+     * @param Item $item An index queue item
+     * @param array $rootPage
+     * @param array $siteLanguages
+     *
+     * @return int
+     * @throws \Apache_Solr_Exception
+     */
+    private function getDefaultLanguageUid(Item $item, array $rootPage, array $siteLanguages)
+    {
+        $defaultLanguageUid = 0;
+        if (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) > 1) {
+            unset($siteLanguages[array_search('0', $siteLanguages)]);
+            $defaultLanguageUid = $siteLanguages[min(array_keys($siteLanguages))];
+        } elseif (($rootPage['l18n_cfg'] & 1) == 1 && count($siteLanguages) == 1) {
+            $message = 'Root page ' . (int)$item->getRootPageUid() . ' is set to hide default translation, but no other language is configured!';
+            throw new \Apache_Solr_Exception($message);
+        }
+
+        return $defaultLanguageUid;
     }
 
     /**
@@ -609,7 +649,6 @@ class Indexer extends AbstractIndexer
         } else {
             // ! If no sys_language_mode is configured, all languages will be indexed !
             $languages = $this->getSystemLanguages();
-
             foreach ($languages as $language) {
                 if ($language['uid'] <= 0) {
                     continue;

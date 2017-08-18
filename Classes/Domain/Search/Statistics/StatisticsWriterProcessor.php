@@ -98,7 +98,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         $keywords = $query->getKeywords();
         $keywords = $this->sanitizeString($keywords);
         if ($lowerCaseQuery) {
-            $keywords = strtolower($keywords);
+            $keywords = mb_strtolower($keywords);
         }
 
         return $keywords;

@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS tx_fakeextension_domain_model_bar;
-
 CREATE TABLE tx_fakeextension_domain_model_bar (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
@@ -27,11 +25,10 @@ CREATE TABLE tx_fakeextension_domain_model_bar (
 	sorting int(11) DEFAULT '0' NOT NULL,
 	title varchar(128) DEFAULT '' NOT NULL,
 	category varchar(128) DEFAULT '' NOT NULL,
+	page_relations int(11) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid)
 );
-
-DROP TABLE IF EXISTS tx_fakeextension_domain_model_related_mm;
 
 CREATE TABLE tx_fakeextension_domain_model_related_mm (
    uid_local int(11) unsigned DEFAULT '0' NOT NULL,
@@ -42,8 +39,15 @@ CREATE TABLE tx_fakeextension_domain_model_related_mm (
    KEY uid_foreign (uid_foreign)
 );
 
-
-DROP TABLE IF EXISTS tx_fakeextension_domain_model_mmrelated;
+CREATE TABLE tx_fakeextension_domain_model_related_pages_mm (
+   uid_local int(11) unsigned DEFAULT '0' NOT NULL,
+   uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
+   tablenames varchar(90) NOT NULL,
+   fieldname varchar(90) NOT NULL,
+   sorting int(11) unsigned DEFAULT '0' NOT NULL,
+   KEY uid_local (uid_local),
+   KEY uid_foreign (uid_foreign)
+);
 
 CREATE TABLE tx_fakeextension_domain_model_mmrelated (
 	uid int(11) NOT NULL auto_increment,
@@ -74,8 +78,6 @@ CREATE TABLE tx_fakeextension_domain_model_mmrelated (
 	PRIMARY KEY (uid)
 );
 
-
-DROP TABLE IF EXISTS tx_fakeextension_domain_model_directrelated;
 
 CREATE TABLE tx_fakeextension_domain_model_directrelated (
 	uid int(11) NOT NULL auto_increment,

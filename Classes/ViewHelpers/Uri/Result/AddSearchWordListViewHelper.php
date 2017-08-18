@@ -32,11 +32,6 @@ class AddSearchWordListViewHelper extends AbstractSolrFrontendViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * @var bool
-     */
-    protected $escapeOutput = false;
-
-    /**
      * Initializes the arguments
      */
     public function initializeArguments()

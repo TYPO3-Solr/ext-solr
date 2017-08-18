@@ -42,11 +42,12 @@ class QueryGroupFacetQueryBuilderTest extends UnitTest
     /**
      * @test
      */
-    public function canBuild()
+    public function canBuildQueryGroupFacetWithKeepAllOptionsOnSelection()
     {
 
         /**
          * queryGroup {
+         *    keepAllOptionsOnSelection = 1
          *    week {
          *       query = [NOW/DAY-7DAYS TO *]
          *    }
@@ -71,9 +72,108 @@ class QueryGroupFacetQueryBuilderTest extends UnitTest
 
         $builder = new QueryGroupFacetQueryBuilder();
         $facetParameters = $builder->build('testFacet', $configurationMock);
+        $expectedFacetParameters = [
+            'facet.query' => [
+                '{!ex=created}created:[NOW/DAY-7DAYS TO *]',
+                '{!ex=created}created:[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'
+            ]
+        ];
 
-        $this->assertSame($facetParameters['facet.query'][0], '{!ex=created}created:[NOW/DAY-7DAYS TO *]', ' Can not build first facet query as expected');
-        $this->assertSame($facetParameters['facet.query'][1], '{!ex=created}created:[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]', 'Can not build second facet query as expected');
+        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
+    }
 
+
+    /**
+     * @test
+     */
+    public function canBuildQueryGroupFacetWithKeepAllFacetsOnSelection()
+    {
+
+        /**
+         * faceting {
+         *    keepAllFacetsOnSelection = 1
+         *    facets {
+         *       queryGroup {
+         *          week {
+         *          query = [NOW/DAY-7DAYS TO *]
+         *       }
+         *       month {
+         *          query = [NOW/DAY-1MONTH TO NOW/DAY-7DAYS]
+         *       }
+         *    }
+         * }
+         */
+        $fakeFacetConfiguration = [
+            'keepAllFacetsOnSelection' => 1,
+            'facets.' => [
+                'type.' => [
+                    'field' => 'type',
+                ],
+                'creations.' => [
+                    'type' => 'queryGroup',
+                    'field' => 'created',
+                    'queryGroup.' => [
+                        'week.' => ['query' => '[NOW/DAY-7DAYS TO *]'],
+                        'month.' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]']
+                    ]
+                ]
+
+            ]
+        ];
+
+        $fakeConfiguration['plugin.']['tx_solr.']['search.']['faceting.'] = $fakeFacetConfiguration;
+        $configuration = new TypoScriptConfiguration($fakeConfiguration);
+        $builder = new QueryGroupFacetQueryBuilder();
+
+        $facetParameters = $builder->build('creations', $configuration);
+        $expectedFacetParameters = [
+            'facet.query' => [
+                '{!ex=type,created}created:[NOW/DAY-7DAYS TO *]',
+                '{!ex=type,created}created:[NOW/DAY-1MONTH TO NOW/DAY-7DAYS]'
+            ]
+        ];
+
+        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
+    }
+
+    /**
+     * @test
+     */
+    public function canBuild()
+    {
+
+        /**
+         * queryGroup {
+         *    week {
+         *       query = [NOW/DAY-7DAYS TO *]
+         *    }
+         *    month {
+         *       query = [NOW/DAY-1MONTH TO NOW/DAY-7DAYS]
+         *    }
+         * }
+         */
+        $fakeFacetConfiguration = [
+            'type' => 'queryGroup',
+            'field' => 'created',
+            'queryGroup.' => [
+                'week.' => ['query' => '[NOW/DAY-14DAYS TO *]'],
+                'month.' => ['query' => '[NOW/DAY-1MONTH TO NOW/DAY-14DAYS]']
+            ]
+        ];
+        $configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $configurationMock->expects($this->once())->method('getSearchFacetingFacetByName')->with('testFacet')->will(
+            $this->returnValue($fakeFacetConfiguration)
+        );
+
+        $builder = new QueryGroupFacetQueryBuilder();
+        $facetParameters = $builder->build('testFacet', $configurationMock);
+        $expectedFacetParameters = [
+            'facet.query' => [
+                'created:[NOW/DAY-14DAYS TO *]',
+                'created:[NOW/DAY-1MONTH TO NOW/DAY-14DAYS]'
+            ]
+        ];
+
+        $this->assertSame($expectedFacetParameters, $facetParameters, 'Can not build facet parameters as expected');
     }
 }

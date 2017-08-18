@@ -85,9 +85,10 @@ We provide an addon called EXT:solrfal, that allows you to index files from FAL 
 
 |
 
-**How can i use fluid templates with EXT:solr?**
+**How can i use Fluid templates with EXT:solr < v7.0.0?**
 
-For the fluid rendering we provide the addon EXT:solrfluid, that allows you to render your search results with fluid.
+For the Fluid rendering in EXT:Solr >= 5.0 <= 6.1 we provide the addon EXT:solrfluid, that allows you to render your search results with Fluid.
+Since EXT:Solr 7.0 Fluid is the default templating engine.
 
 |
 
@@ -455,3 +456,76 @@ Note: When you allow html in the content please make sure that the usage of crop
 **I want to use two instances of the search plugin on the same page, how can i do that?**
 
 If you want to use two search plugins on the same page you can add two instances and assign a different "Plugin Namespace" in the flexform. If you want to avoid, that both plugins react on the global "q" parameter, you can disable this also in the flexform. Each instance is using the querystring from <pluginNamespace>[q] then.
+
+
+**How can i configure switchable templates for the results plugin?**
+
+The following example shows, how you can configure a custom switchable entry template for the Results plugin:
+
+::
+
+   plugin.tx_solr {
+       view {
+           templateRootPaths.100 = EXT:your_config_extension/Resources/Private/Templates/
+           partialRootPaths.100 = EXT:your_config_extension/Resources/Private/Partials/
+           layoutRootPaths.100 = EXT:your_config_extension/Resources/Private/Layouts/
+           templateFiles {
+               results = Results
+               results.availableTemplates {
+                   default {
+                       label = Default Searchresults Template
+                       file = Results
+                   }
+                   products {
+                       label = Products Template
+                       file = ProductResults
+                   }
+               }
+           }
+       }
+   }
+
+
+**I want to use EXT:solr with a deployment and pass connection settings from outside e.g. by the environment, how can i do that?**
+
+When you deploy a system automatically and you use EXT:solr there are some things that might be complicated:
+
+* You want to use a different solr endpoint for each environment
+* EXT:solr depends on an existing domain record
+
+To avoid that, you can set or generate these settings in the TYPO3 AdditionalConfigruation.php file and use them in your system.
+
+To configure a used domain you cat set:
+
+::
+
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][###rootPageId###]['domains'] = ['mydomain.com'];
+
+You can also define the data for your solr endpoints there and use them in the typoscript:
+
+::
+
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][###rootPageId###]['solrhost'] = 'solr1.local';
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][###rootPageId###]['solrport'] = 8083;
+
+And use them in your TypoScript configuration:
+
+::
+
+    plugin.tx_solr {
+        solr {
+            host = TEXT
+            host {
+                value = {$plugin.tx_solr.solr.host}
+                override.data = global:TYPO3_CONF_VARS|EXTCONF|solr|sites|###rootPageId###|solrhost
+            }
+            port = TEXT
+            port {
+                value = {$plugin.tx_solr.solr.port}
+                override.data = global:TYPO3_CONF_VARS|EXTCONF|solr|sites|###rootPageId###|solrport
+            }
+        }
+    }
+
+
+

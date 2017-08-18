@@ -80,7 +80,7 @@ class TCAService
             ||
             (isset($this->tca[$table]['ctrl']['delete']) && !empty($record[$this->tca[$table]['ctrl']['delete']]))
             ||
-            ($table == 'pages' && !empty($record['no_search']))
+            ($table === 'pages' && !empty($record['no_search']))
         ) {
             return false;
         }
@@ -220,7 +220,7 @@ class TCAService
             $fields[] = $this->tca[$table]['ctrl']['delete'];
         }
 
-        if ($table == 'pages') {
+        if ($table === 'pages') {
             $fields[] = 'no_search';
             $fields[] = 'doktype';
         }

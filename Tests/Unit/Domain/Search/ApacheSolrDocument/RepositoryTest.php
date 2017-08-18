@@ -128,7 +128,8 @@ class RepositoryTest extends UnitTest
         /* @var $apacheSolrDocumentRepository Repository */
         $apacheSolrDocumentRepository = $this->getAccessibleMock(Repository::class, ['getQueryForPage', 'getSearch']);
         $apacheSolrDocumentRepository->expects($this->once())->method('getSearch')->willReturn($search);
-        $apacheSolrDocumentRepository->expects($this->any())->method('getQueryForPage')->willReturn(GeneralUtility::makeInstance(Query::class, ''));
+        $queryMock = $this->getDumbMock(Query::class);
+        $apacheSolrDocumentRepository->expects($this->any())->method('getQueryForPage')->willReturn($queryMock);
         $actualApacheSolrDocumentCollection = $apacheSolrDocumentRepository->findByPageIdAndByLanguageId(777, 0);
 
         $this->assertSame($expectedApacheSolrDocumentCollection, $actualApacheSolrDocumentCollection);

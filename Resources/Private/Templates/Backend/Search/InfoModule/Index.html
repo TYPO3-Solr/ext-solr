@@ -83,6 +83,9 @@
     </f:if>
 
     <hr class="double" />
+    Used domain: {site.domain}
+
+    <hr class="double" />
     API key: {apiKey}
 
     <hr class="double" />
@@ -94,7 +97,6 @@
     <!-- TODO add buttons to select time frame [last 24h] [last 30 days] [all] -->
 
     <f:be.pageRenderer
-            loadJQuery="true"
             includeJsFiles="{
         0: '{f:uri.resource(path:\'JavaScript/SearchStatistics.js\')}'
     }"
@@ -159,7 +161,7 @@
 
             <f:if condition="{search_phrases_statistics}">
                 <f:then>
-                    <table class="table table-striped">
+                    <table class="table table-condensed table-hover table-striped">
                         <thead>
                         <tr class="t3-row-header">
                             <th class="nowrap">&nbsp;</th>

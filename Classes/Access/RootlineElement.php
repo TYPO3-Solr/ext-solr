@@ -96,7 +96,7 @@ class RootlineElement
     {
         $elementAccess = explode(self::PAGE_ID_GROUP_DELIMITER, $element);
 
-        if (count($elementAccess) === 1 || $elementAccess[0] == 'c') {
+        if (count($elementAccess) === 1 || $elementAccess[0] === 'c') {
             // the content access groups part of the access rootline
             $this->type = self::ELEMENT_TYPE_CONTENT;
 
@@ -105,7 +105,7 @@ class RootlineElement
             } else {
                 $elementGroups = $elementAccess[1];
             }
-        } elseif ($elementAccess[0] == 'r') {
+        } elseif ($elementAccess[0] === 'r') {
             // record element type
             if (count($elementAccess) !== 2) {
                 throw new RootlineElementFormatException(

@@ -1,6 +1,6 @@
 plugin.tx_solr {
 
-	enabled = 1
+	enabled = {$plugin.tx_solr.enabled}
 
 	enableDebugMode = 0
 
@@ -16,15 +16,6 @@ plugin.tx_solr {
 		username = {$plugin.tx_solr.solr.username}
 		password = {$plugin.tx_solr.solr.password}
 	}
-
-	# By convention the templates get loaded from EXT:solr/Resources/Private/Templates/Frontend/Search/(ActionName).html
-	# If you want to define a different entry template, you can do this here to overwrite the convensional default template
-
-	#templateFiles {
-	#	frequentSearched = EXT:solr/Resources/Private/Templates/Search/FrequentlySearched.html
-	#	results = EXT:solr/Resources/Private/Templates/Search/Results.html
-	#	form = EXT:solr/Resources/Private/Templates/Search/Form.html
-	#}
 
 	index {
 		additionalFields {
@@ -137,7 +128,7 @@ plugin.tx_solr {
 		spellchecking {
 			wrap = |<div class="spelling-suggestions">###LLL:didYouMean### |</div>|
 			searchUsingSpellCheckerSuggestion = 0
-			numberOfSuggestionsToTry = 0
+			numberOfSuggestionsToTry = 1
 		}
 
 		lastSearches = 0
@@ -210,8 +201,6 @@ plugin.tx_solr {
 			showEmptyFacets = 0
 			keepAllFacetsOnSelection = 0
 
-			facetLinkATagParams = rel="nofollow"
-
 			facetLinkUrlParameters =
 
 			facets {
@@ -220,9 +209,6 @@ plugin.tx_solr {
 					field = type
 				}
 			}
-
-			// available place holders: @facetValue, @facetName, @facetLabel, @facetText
-			removeFacetLinkText = @facetLabel: @facetText
 
 			showAllLink.wrap = <li>|</li>
 		}
@@ -256,6 +242,28 @@ plugin.tx_solr {
 
 	view {
 		pluginNamespace = tx_solr
+
+        // By convention the templates is loaded from EXT:solr/Resources/Private/Templates/Frontend/Search/(ActionName).html
+        // If you want to define a different entry template, you can do this here to overwrite the conventional default template
+        // if you want to use FLUID fallbacks you can just configure the template name, otherwise you could also use a full reference EXT:/.../
+        // The templates that you configure in availableTemplate can be used in the flexform by the editor to select a template for the concrete plugin instance.
+        templateFiles {
+            //	results = Results
+            //	results.availableTemplates {
+            // 		default {
+            // 			label = Default Searchresults Template
+            // 			file = Results
+            // 		}
+            //	}
+            //	form = Form
+            //	form.availableTemplates {
+            //	 	default {
+            //			label = Default Searchform Template
+            //			file = Form
+            // 		}
+            // }
+            //	frequentSearched = FrequentlySearched
+        }
 	}
 
 	logging {

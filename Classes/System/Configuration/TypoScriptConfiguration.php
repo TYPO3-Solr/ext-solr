@@ -350,7 +350,7 @@ class TypoScriptConfiguration
     {
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.additionalPageIds';
         $result = $this->getValueByPathOrDefaultValue($path, '');
-        if (trim($result) == '') {
+        if (trim($result) === '') {
             return $defaultIfEmpty;
         }
 
@@ -370,7 +370,7 @@ class TypoScriptConfiguration
     {
         $path = 'plugin.tx_solr.index.queue.' . $configurationName . '.allowedPageTypes';
         $result = $this->getValueByPathOrDefaultValue($path, '');
-        if (trim($result) == '') {
+        if (trim($result) === '') {
             return $defaultIfEmpty;
         }
 
@@ -390,7 +390,7 @@ class TypoScriptConfiguration
         $path = 'plugin.tx_solr.index.queue.pages.excludeContentByClass';
         $result = $this->getValueByPathOrDefaultValue($path, '');
 
-        if (trim($result) == '') {
+        if (trim($result) === '') {
             return $defaultIfEmpty;
         }
 
@@ -444,7 +444,7 @@ class TypoScriptConfiguration
         foreach ($indexingConfigurations as $indexingConfigurationName) {
             $monitoredTable = $this->getIndexQueueTableNameOrFallbackToConfigurationName($indexingConfigurationName);
             $monitoredTables[] = $monitoredTable;
-            if ($monitoredTable == 'pages') {
+            if ($monitoredTable === 'pages') {
                 // when monitoring pages, also monitor creation of translations
                 $monitoredTables[] = 'pages_language_overlay';
             }
@@ -634,7 +634,7 @@ class TypoScriptConfiguration
         $possibleConfigurations = [];
 
         foreach ($configuration as $configurationName => $indexingEnabled) {
-            $isObject = substr($configurationName, -1) == '.';
+            $isObject = substr($configurationName, -1) === '.';
             if ($isObject || !$indexingEnabled) {
                 continue;
             }
@@ -1367,13 +1367,13 @@ class TypoScriptConfiguration
 
         // if we have a concrete setting, use it
         if ($specificSortOrder !== null) {
-            return strtolower($specificSortOrder);
+            return mb_strtolower($specificSortOrder);
         }
 
         // no specific setting, check common setting
         $commonPath = 'plugin.tx_solr.search.sorting.defaultOrder';
         $commonATagParamOrDefaultValue = $this->getValueByPathOrDefaultValue($commonPath, $defaultIfEmpty);
-        return strtolower($commonATagParamOrDefaultValue);
+        return mb_strtolower($commonATagParamOrDefaultValue);
     }
 
     /**
@@ -1388,7 +1388,7 @@ class TypoScriptConfiguration
     public function getSearchSortingFixedOrderBySortOptionName($sortOptionName = '', $defaultIfEmpty = '')
     {
         $fixedOrder = 'plugin.tx_solr.search.sorting.options.' . $sortOptionName . '.fixedOrder';
-        return strtolower($this->getValueByPathOrDefaultValue($fixedOrder, $defaultIfEmpty));
+        return mb_strtolower($this->getValueByPathOrDefaultValue($fixedOrder, $defaultIfEmpty));
     }
 
     /**
@@ -1704,7 +1704,7 @@ class TypoScriptConfiguration
      * @param int $defaultIfEmpty
      * @return int
      */
-    public function getSearchSpellcheckingNumberOfSuggestionsToTry($defaultIfEmpty = 0)
+    public function getSearchSpellcheckingNumberOfSuggestionsToTry($defaultIfEmpty = 1)
     {
         return (int)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.spellchecking.numberOfSuggestionsToTry', $defaultIfEmpty);
     }
@@ -1735,50 +1735,6 @@ class TypoScriptConfiguration
     {
         $isFacetingEnabled = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting', $defaultIfEmpty);
         return $this->getBool($isFacetingEnabled);
-    }
-
-    /**
-     * Retrieves the facetLinkATagParams for a facet by facet name. If nothing specific is configured
-     * the global facetLinkATagParams with be returned.
-     *
-     * plugin.tx_solr.search.faceting.facets.<facetName>.facetLinkATagParams
-     *
-     * or
-     *
-     * plugin.tx_solr.search.faceting.facetLinkATagParams
-     *
-     *
-     * @param string $facetName
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getSearchFacetingFacetLinkATagParamsByName($facetName = '', $defaultIfEmpty = '')
-    {
-        $facetSpecificPath = 'plugin.tx_solr.search.faceting.facets.' . $facetName . '.facetLinkATagParams';
-        $specificATagParam = $this->getValueByPathOrDefaultValue($facetSpecificPath, null);
-
-            // if we have a concrete setting, use it
-        if ($specificATagParam !== null) {
-            return $specificATagParam;
-        }
-
-            // no specific setting, check common setting
-        $commonPath = 'plugin.tx_solr.search.faceting.facetLinkATagParams';
-        $commonATagParamOrDefaultValue = $this->getValueByPathOrDefaultValue($commonPath, $defaultIfEmpty);
-        return $commonATagParamOrDefaultValue;
-    }
-
-    /**
-     * Returns the test that should be used to remove a faceting link
-     *
-     * plugin.tx_solr.search.faceting.removeFacetLinkText
-     *
-     * @param string $defaultIfEmpty
-     * @return string
-     */
-    public function getSearchFacetingRemoveFacetLinkText($defaultIfEmpty = '@facetLabel: @facetText')
-    {
-        return (string)$this->getValueByPathOrDefaultValue('plugin.tx_solr.search.faceting.removeFacetLinkText', $defaultIfEmpty);
     }
 
     /**
@@ -2054,16 +2010,30 @@ class TypoScriptConfiguration
     /**
      * Returns the configured template for a specific template fileKey.
      *
-     * plugin.tx_solr.search.templateFiles.<fileKey>
+     * plugin.tx_solr.view.templateFiles.<fileKey>
      *
      * @param string $fileKey
      * @param string $defaultIfEmpty
      * @return string
      */
-    public function getTemplateByFileKey($fileKey, $defaultIfEmpty = '')
+    public function getViewTemplateByFileKey($fileKey, $defaultIfEmpty = '')
     {
-        $templateFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.templateFiles.' . $fileKey, $defaultIfEmpty);
+        $templateFileName = $this->getValueByPathOrDefaultValue('plugin.tx_solr.view.templateFiles.' . $fileKey, $defaultIfEmpty);
         return (string)$templateFileName;
+    }
+
+    /**
+     * Returns the configured available template files for the flexform.
+     *
+     * plugin.tx_solr.view.templateFiles.[fileKey].availableTemplates.
+     *
+     * @param string $fileKey
+     * @return array
+     */
+    public function getAvailableTemplatesByFileKey($fileKey)
+    {
+        $path = 'plugin.tx_solr.view.templateFiles.' . $fileKey . '.availableTemplates.';
+        return (array)$this->getObjectByPathOrDefault($path, []);
     }
 
     /**

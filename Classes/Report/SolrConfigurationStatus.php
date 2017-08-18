@@ -24,7 +24,9 @@ namespace ApacheSolrForTypo3\Solr\Report;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\Records\SystemDomain\SystemDomainRepository;
+use ApacheSolrForTypo3\Solr\System\Service\SiteService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -149,7 +151,21 @@ class SolrConfigurationStatus extends AbstractSolrStatus
 
         $domainRecords = $this->systemDomainRepository->findDomainRecordsByRootPagesIds($rootPageIds);
         foreach ($rootPageIds as $rootPageId) {
+            $hasDomainRecord = true;
+            $hasDomainInTypoScript = true;
+
             if (!array_key_exists($rootPageId, $domainRecords)) {
+                $hasDomainRecord = false;
+            }
+
+            /** @var $siteService SiteService */
+            $siteService = GeneralUtility::makeInstance(SiteService::class);
+            $domain = $siteService->getFirstDomainForRootPage($rootPageId);
+            if ($domain === '') {
+                $hasDomainInTypoScript = false;
+            }
+
+            if (!$hasDomainRecord && !$hasDomainInTypoScript) {
                 $rootPagesWithoutDomain[$rootPageId] = $rootPages[$rootPageId];
             }
         }
@@ -195,13 +211,9 @@ class SolrConfigurationStatus extends AbstractSolrStatus
      */
     protected function getRootPages()
     {
-        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid, title',
-            'pages',
-            'is_siteroot = 1 AND deleted = 0 AND hidden = 0 AND pid != -1 AND doktype IN(1,4) ',
-            '', '', '',
-            'uid'
-        );
+        $pagesRepository = GeneralUtility::makeInstance(PagesRepository::class);
+
+        return $pagesRepository->findAllRootPages();
     }
 
     /**

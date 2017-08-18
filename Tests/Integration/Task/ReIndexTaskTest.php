@@ -114,7 +114,7 @@ class ReIndexTaskTest extends IntegrationTest
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        $this->task->setSite($site);
+        $this->task->setRootPageId($site->getRootPageId());
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $this->task->execute();
 
@@ -131,7 +131,7 @@ class ReIndexTaskTest extends IntegrationTest
 
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $site = $siteRepository->getFirstAvailableSite();
-        $this->task->setSite($site);
+        $this->task->setRootPageId($site->getRootPageId());
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $additionalInformation = $this->task->getAdditionalInformation();
 
@@ -157,7 +157,7 @@ class ReIndexTaskTest extends IntegrationTest
         $this->waitToBeVisibleInSolr();
 
         $this->assertSolrContainsDocumentCount(1);
-        $this->task->setSite($site);
+        $this->task->setRootPageId($site->getRootPageId());
         $this->task->setIndexingConfigurationsToReIndex(['pages']);
         $this->task->execute();
 

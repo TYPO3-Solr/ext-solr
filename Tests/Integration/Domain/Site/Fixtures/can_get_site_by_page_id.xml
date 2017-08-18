@@ -16,5 +16,10 @@
 		<uid>2</uid>
 		<pid>1</pid>
 	</pages>
+	<sys_domain>
+		<uid>1</uid>
+		<pid>1</pid>
+		<domainName>my-database-domain.de</domainName>
+	</sys_domain>
 
 </dataset>

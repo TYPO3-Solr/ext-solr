@@ -25,11 +25,9 @@ namespace ApacheSolrForTypo3\Solr\Task;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Index\IndexService;
-use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Environment\CliEnvironment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * A worker indexing the items in the index queue. Needs to be set up as one
@@ -37,16 +35,8 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInterface
+class IndexQueueWorkerTask extends AbstractSolrTask implements ProgressProviderInterface
 {
-
-    /**
-     * The site this task is indexing.
-     *
-     * @var Site
-     */
-    protected $site;
-
     /**
      * @var int
      */
@@ -131,7 +121,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
      */
     public function getAdditionalInformation()
     {
-        $message = 'Site: ' . $this->site->getLabel();
+        $message = 'Site: ' . $this->getSite()->getLabel();
 
         /** @var $indexService \ApacheSolrForTypo3\Solr\Domain\Index\IndexService */
         $indexService = $this->getInitializedIndexService();
@@ -157,27 +147,6 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
         $indexService = $this->getInitializedIndexService();
 
         return $indexService->getProgress();
-    }
-
-    /**
-     * Gets the site / the site's root page uid this task is indexing.
-     *
-     * @return Site The site's root page uid this task is indexing
-     */
-    public function getSite()
-    {
-        return $this->site;
-    }
-
-    /**
-     * Sets the task's site to indexing.
-     *
-     * @param Site $site The site to index by this task
-     * @return void
-     */
-    public function setSite(Site $site)
-    {
-        $this->site = $site;
     }
 
     /**
@@ -219,7 +188,7 @@ class IndexQueueWorkerTask extends AbstractTask implements ProgressProviderInter
      */
     protected function getInitializedIndexService()
     {
-        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->site);
+        $indexService = GeneralUtility::makeInstance(IndexService::class, $this->getSite());
         $indexService->setContextTask($this);
         return $indexService;
     }

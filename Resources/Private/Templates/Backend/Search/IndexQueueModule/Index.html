@@ -2,17 +2,10 @@
 <f:layout name="Backend/WithPageTree"/>
 
 <f:section name="Main">
-	<f:be.pageRenderer loadJQuery="true" includeRequireJsModules="{0:'TYPO3/CMS/Solr/FormModal'}"/>
+	<f:be.pageRenderer includeCssFiles="{0: '{f:uri.resource(path:\'StyleSheets/Backend/IndexQueueModule.css\')}'}" includeRequireJsModules="{0:'TYPO3/CMS/Solr/FormModal'}"/>
 
-	<solr:backend.style file="{f:uri.resource(path:'StyleSheets/Backend/IndexQueueModule.css')}" />
-
-	<div class="row">
-		<div class="col-md-12">
-			<f:be.infobox title="Index Queue">
-				<f:translate key="solr.backend.index_queue_module.description" />
-			</f:be.infobox>
-		</div>
-	</div>
+	<h1>Index Queue</h1>
+	<p class="lead"><f:translate key="solr.backend.index_queue_module.description" /></p>
 
 	<hr class="section-divider" />
 
@@ -64,12 +57,12 @@
 				<hr />
 				<f:if condition="{indexqueue_errors}">
 					<div class="row">
-						<div class="col-md-12 well">
+						<div class="col-md-12">
 							<h2>
 								<f:translate key="solr.backend.index_queue_module.errors.headline"/>
 							</h2>
 
-							<table class="table">
+							<table class="table table-condensed table-hover table-striped">
 								<tr>
 									<th>
 										<f:translate key="solr.backend.index_queue_module.errors.id"/>
@@ -123,10 +116,7 @@
 					<f:format.raw>{indexQueueInitializationSelector}</f:format.raw>
 				</div>
 				<f:form.submit name="initializeIndexQueue" value="Queue Selected Content for Indexing" class="btn btn-sm btn-default"/>
-				<solr:backend.button.HelpButton title="Index Queue Initialization">
-					<f:translate key="solr.backend.index_queue_module.help" />
-				</solr:backend.button.HelpButton>
-
+				<solr:backend.button.helpButton title="Index Queue Initialization" description="{f:translate(key:'solr.backend.index_queue_module.help')}" />
 			</f:form>
 		</div>
 	</div>

@@ -24,11 +24,12 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService as SolrCoreConnection;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
-use ApacheSolrForTypo3\Solr\Utility\StringUtility;
+use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -55,21 +56,12 @@ abstract class AbstractModuleController extends ActionController
     protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\Utility\StringUtility
-     */
-    protected $stringUtility;
-
-    /**
      * In the pagetree selected page UID
      *
      * @var int
      */
     protected $selectedPageUID;
 
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
     /**
      * @var Site
      */
@@ -86,27 +78,14 @@ abstract class AbstractModuleController extends ActionController
     protected $coreSelectorMenu = null;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\ConnectionManager
-     * @inject
+     * @var ConnectionManager
      */
     protected $solrConnectionManager = null;
 
     /**
-     * @var \ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService
-     * @inject
+     * @var ModuleDataStorageService
      */
     protected $moduleDataStorageService = null;
-
-    /**
-     * Method to pass a StringUtil object.
-     * Use to overwrite injected object in unit test context.
-     *
-     * @param \ApacheSolrForTypo3\Solr\Utility\StringUtility $stringUtility
-     */
-    public function injectStringHelper(StringUtility $stringUtility)
-    {
-        $this->stringUtility = $stringUtility;
-    }
 
     /**
      * Initializes the controller and sets needed vars.
@@ -114,19 +93,30 @@ abstract class AbstractModuleController extends ActionController
     protected function initializeAction()
     {
         parent::initializeAction();
+        $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+        $this->moduleDataStorageService = GeneralUtility::makeInstance(ModuleDataStorageService::class);
+
         $this->selectedPageUID = (int)GeneralUtility::_GP('id');
         if ($this->request->hasArgument('id')) {
             $this->selectedPageUID = (int)$this->request->getArgument('id');
+        }
+
+        /* @var SiteRepository $siteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+
+        // Autoselect the only one available site
+        if (count($siteRepository->getAvailableSites()) == 1) {
+            $this->selectedSite = $siteRepository->getFirstAvailableSite();
+            $this->selectedPageUID = $this->selectedSite->getRootPageId();
+            return;
         }
 
         if ($this->selectedPageUID < 1) {
             return;
         }
 
-        $this->siteRepository = $this->objectManager->get(SiteRepository::class);
-
         try {
-            $this->selectedSite = $this->siteRepository->getSiteByPageId($this->selectedPageUID);
+            $this->selectedSite = $siteRepository->getSiteByPageId($this->selectedPageUID);
         } catch (\InvalidArgumentException $exception) {
             return;
         }

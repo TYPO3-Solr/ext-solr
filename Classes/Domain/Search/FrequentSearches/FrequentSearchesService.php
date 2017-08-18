@@ -1,5 +1,4 @@
-<?php
-
+<?php declare(strict_types = 1);
 namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
 
 /***************************************************************
@@ -25,9 +24,10 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\FrequentSearches;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -52,9 +52,9 @@ class FrequentSearchesService
     protected $tsfe;
 
     /**
-     * @var DatabaseConnection
+     * @var StatisticsRepository
      */
-    protected $database;
+    protected $statisticsRepository;
 
     /**
      * @var TypoScriptConfiguration
@@ -65,14 +65,14 @@ class FrequentSearchesService
      * @param TypoScriptConfiguration $typoscriptConfiguration
      * @param AbstractFrontend $cache
      * @param TypoScriptFrontendController $tsfe
-     * @param DatabaseConnection $database
+     * @param StatisticsRepository $statisticsRepository
      */
-    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, AbstractFrontend $cache, TypoScriptFrontendController $tsfe, DatabaseConnection $database)
+    public function __construct(TypoScriptConfiguration $typoscriptConfiguration, AbstractFrontend $cache, TypoScriptFrontendController $tsfe, StatisticsRepository $statisticsRepository = null)
     {
         $this->configuration = $typoscriptConfiguration;
         $this->cache = $cache;
         $this->tsfe = $tsfe;
-        $this->database = $database;
+        $this->statisticsRepository = isset($statisticsRepository) ? $statisticsRepository : GeneralUtility::makeInstance(StatisticsRepository::class);
     }
 
     /**
@@ -80,7 +80,7 @@ class FrequentSearchesService
      *
      * @return array Tags as array with terms and hits
      */
-    public function getFrequentSearchTerms()
+    public function getFrequentSearchTerms() : array
     {
         $frequentSearchConfiguration = $this->configuration->getSearchFrequentSearchesConfiguration();
 
@@ -91,7 +91,7 @@ class FrequentSearchesService
         } else {
             $terms = $this->getFrequentSearchTermsFromStatistics($frequentSearchConfiguration);
 
-            if ($frequentSearchConfiguration['sortBy'] == 'hits') {
+            if ($frequentSearchConfiguration['sortBy'] === 'hits') {
                 arsort($terms);
             } else {
                 ksort($terms);
@@ -114,7 +114,7 @@ class FrequentSearchesService
      * @param array $frequentSearchConfiguration
      * @return array Array of frequent search terms, keys are the terms, values are hits
      */
-    protected function getFrequentSearchTermsFromStatistics($frequentSearchConfiguration)
+    protected function getFrequentSearchTermsFromStatistics(array $frequentSearchConfiguration) : array
     {
         $terms = [];
 
@@ -133,15 +133,7 @@ class FrequentSearchesService
             $checkLanguageWhere . ' ' .
             $frequentSearchConfiguration['select.']['ADD_WHERE'];
 
-        /** @noinspection PhpUndefinedMethodInspection */
-        $frequentSearchTerms = $this->database->exec_SELECTgetRows(
-            $frequentSearchConfiguration['select.']['SELECT'],
-            $frequentSearchConfiguration['select.']['FROM'],
-            $frequentSearchConfiguration['select.']['ADD_WHERE'],
-            $frequentSearchConfiguration['select.']['GROUP_BY'],
-            $frequentSearchConfiguration['select.']['ORDER_BY'],
-            $frequentSearchConfiguration['limit']
-        );
+        $frequentSearchTerms = $this->statisticsRepository->getFrequentSearchTermsFromStatisticsByFrequentSearchConfiguration($frequentSearchConfiguration);
 
         if (!is_array($frequentSearchTerms)) {
             return $terms;
@@ -159,7 +151,7 @@ class FrequentSearchesService
      * @param array $frequentSearchConfiguration
      * @return string
      */
-    protected function getCacheIdentifier(array $frequentSearchConfiguration)
+    protected function getCacheIdentifier(array $frequentSearchConfiguration) : string
     {
         // Use configuration as cache identifier
         $identifier = 'frequentSearchesTags';

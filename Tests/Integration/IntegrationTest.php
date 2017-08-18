@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -40,6 +41,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Install\Service\SqlExpectedSchemaService;
+use TYPO3\CMS\Install\Service\SqlSchemaMigrationService;
 
 
 /**
@@ -60,6 +63,15 @@ abstract class IntegrationTest extends FunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/solr'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $testSolrCores = [
+        'core_en',
+        'core_de',
+        'core_dk'
     ];
 
     /**
@@ -120,19 +132,56 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string $fixtureName
+     * @param boolean $debugOutput
      */
-    protected function importDumpFromFixture($fixtureName)
+    protected function importDumpFromFixture($fixtureName, $debugOutput = true)
     {
         /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
         $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
-
+        $database->debugOutput = $debugOutput;
         $dumpContent = $this->getFixtureContentByName($fixtureName);
         $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
-
         $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
         foreach ($queries as $query) {
             $database->sql_query($query);
+        }
+    }
+
+    /**
+     * Imports an ext_tables.sql definition as done by the install tool.
+     *
+     * @param string $fixtureName
+     */
+    protected function importExtTablesDefinition($fixtureName)
+    {
+        // create fake extension database table and TCA
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var $schemaMigrationService SqlSchemaMigrationService */
+        $schemaMigrationService = $objectManager->get(SqlSchemaMigrationService::class);
+        /** @var  $expectedSchemaService SqlExpectedSchemaService */
+        $expectedSchemaService = $objectManager->get(SqlExpectedSchemaService::class);
+
+        $expectedSchemaString = $expectedSchemaService->getTablesDefinitionString(true);
+        $statements = $schemaMigrationService->getStatementArray($expectedSchemaString, true);
+        list($_, $insertCount) = $schemaMigrationService->getCreateTables($statements, true);
+
+        $fieldDefinitionsFile = $schemaMigrationService->getFieldDefinitions_fileContent($this->getFixtureContentByName($fixtureName));
+        $fieldDefinitionsDatabase = $schemaMigrationService->getFieldDefinitions_database();
+        $difference = $schemaMigrationService->getDatabaseExtra($fieldDefinitionsFile, $fieldDefinitionsDatabase);
+        $updateStatements = $schemaMigrationService->getUpdateSuggestions($difference);
+
+        $schemaMigrationService->performUpdateQueries($updateStatements['add'], $updateStatements['add']);
+        $schemaMigrationService->performUpdateQueries($updateStatements['change'], $updateStatements['change']);
+        $schemaMigrationService->performUpdateQueries($updateStatements['create_table'], $updateStatements['create_table']);
+
+        foreach ($insertCount as $table => $count) {
+            $insertStatements = $schemaMigrationService->getTableInsertStatements($statements, $table);
+            foreach ($insertStatements as $insertQuery) {
+                $insertQuery = rtrim($insertQuery, ';');
+                /** @var DatabaseConnection $database */
+                $database = $GLOBALS['TYPO3_DB'];
+                $database->admin_query($insertQuery);
+            }
         }
     }
 
@@ -160,11 +209,13 @@ abstract class IntegrationTest extends FunctionalTestCase
     /**
      * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
      */
-    protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '')
+    protected function getConfiguredTSFE($TYPO3_CONF_VARS = [], $id = 1, $type = 0, $no_cache = '', $cHash = '', $_2 = null, $MP = '', $RDCT = '', $config = [])
     {
         /** @var $TSFE \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController */
         $TSFE = GeneralUtility::makeInstance(TypoScriptFrontendController::class,
             $TYPO3_CONF_VARS, $id, $type, $no_cache, $cHash, $_2, $MP, $RDCT);
+
+
         EidUtility::initLanguage();
 
         $TSFE->initFEuser();
@@ -174,8 +225,12 @@ abstract class IntegrationTest extends FunctionalTestCase
         $TSFE->determineId();
         $TSFE->initTemplate();
         $TSFE->getConfigArray();
+        $TSFE->config = array_merge($TSFE->config, $config);
 
         Bootstrap::getInstance();
+
+        // only needed for FrontendGroupRestriction.php
+        $GLOBALS['TSFE']->gr_list =  $TSFE->gr_list;
         $TSFE->settingLanguage();
         $TSFE->settingLocale();
 
@@ -183,12 +238,15 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
+     * @param string $coreName
      * @return void
      */
-    protected function cleanUpSolrServerAndAssertEmpty()
+    protected function cleanUpSolrServerAndAssertEmpty($coreName = 'core_en')
     {
+        $this->validateTestCoreName($coreName);
+
         // cleanup the solr server
-        $result = file_get_contents('http://localhost:8999/solr/core_en/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
+        $result = file_get_contents('http://localhost:8999/solr/' . $coreName . '/update?stream.body=<delete><query>*:*</query></delete>&commit=true');
 
         if (strpos($result, '<int name="QTime">') == false) {
             $this->fail('Could not empty solr test index');
@@ -201,12 +259,25 @@ abstract class IntegrationTest extends FunctionalTestCase
     }
 
     /**
+     * @param string $coreName
      * @return void
      */
-    protected function waitToBeVisibleInSolr()
+    protected function waitToBeVisibleInSolr($coreName = 'core_en')
     {
-        $url = 'http://localhost:8999/solr/core_en/update?softCommit=true';
+        $this->validateTestCoreName($coreName);
+        $url = 'http://localhost:8999/solr/' . $coreName . '/update?softCommit=true';
         get_headers($url);
+    }
+
+    /**
+     * @param string $coreName
+     * @throws \InvalidArgumentException
+     */
+    protected function validateTestCoreName($coreName)
+    {
+        if(!in_array($coreName, $this->testSolrCores)) {
+            throw new \InvalidArgumentException('No valid testcore passed');
+        }
     }
 
     /**

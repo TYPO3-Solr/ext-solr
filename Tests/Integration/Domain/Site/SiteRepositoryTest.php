@@ -75,7 +75,7 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetSiteByRootPageIdNonExistingRoot()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_root_page_id.xml');
         $siteRepository->getSiteByRootPageId(42);
@@ -97,9 +97,34 @@ class SiteRepositoryTest extends IntegrationTest
      */
     public function canGetSiteByPageIdNonExistingPage()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
         $siteRepository->getSiteByPageId(42);
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSiteWithDomainFromTYPO3CONFVARS()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['sites'][1]['domains'] = ['my-confvars-domain.de'];
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
+        $domain = $siteRepository->getSiteByPageId(1)->getDomain();
+        $this->assertSame('my-confvars-domain.de', $domain, 'Can not configured domain with TYPO3_CONF_VARS');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetSiteWithDomainFromDomainRecord()
+    {
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $this->importDataSetFromFixture('can_get_site_by_page_id.xml');
+        $site = $siteRepository->getSiteByPageId(1);
+        $domain = $site->getDomain();
+        $this->assertSame('my-database-domain.de', $domain, 'Can not configured domain with sys_domain record');
     }
 }

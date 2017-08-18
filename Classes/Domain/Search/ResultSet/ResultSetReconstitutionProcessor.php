@@ -14,7 +14,9 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetRegistry;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RequirementsService;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -164,7 +166,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
 
             // the key contains the misspelled word expect the internal key "collation"
-            if ($key == 'collation') {
+            if ($key === 'collation') {
                 continue;
             }
             //create the spellchecking object structure
@@ -235,6 +237,30 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
             }
         }
 
+        $this->applyRequirements($resultSet);
+
         return $resultSet;
+    }
+
+    /**
+     * @param SearchResultSet $resultSet
+     */
+    protected function applyRequirements(SearchResultSet $resultSet)
+    {
+        $requirementsService = $this->getRequirementsService();
+        $facets = $resultSet->getFacets();
+        foreach ($facets as $facet) {
+            /** @var $facet AbstractFacet */
+            $requirementsMet = $requirementsService->getAllRequirementsMet($facet);
+            $facet->setAllRequirementsMet($requirementsMet);
+        }
+    }
+
+    /**
+     * @return RequirementsService
+     */
+    protected function getRequirementsService()
+    {
+        return $this->getObjectManager()->get(RequirementsService::class);
     }
 }

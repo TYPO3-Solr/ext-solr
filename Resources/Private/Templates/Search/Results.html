@@ -10,10 +10,21 @@
 
 		<f:render partial="Search/Form" section="Form" arguments="{search:search, additionalFilters:additionalFilters, pluginNamespace: pluginNamespace, resultSet: resultSet}" />
 
-		<f:if condition="{resultSet.usedQuery.keywordsCleaned}">
-			<span class="searched-for">
-				<s:translate key="results_searched_for" arguments="{0:'\"{resultSet.usedQuery.keywordsCleaned}\"'}">Searched for %s</s:translate>
-			</span>
+		<f:if condition="{resultSet.isAutoCorrected}">
+			<f:then>
+				<span class="searched-for">
+					<s:translate key="no_results_nothing_found" arguments="{0: resultSet.initialQueryString}">Nothing found for "%s".</s:translate>
+					<s:translate key="no_results_search_for_original" arguments="{0: resultSet.correctedQueryString}">Search instead for "%s".</s:translate>
+				</span>
+			</f:then>
+
+			<f:else>
+				<f:if condition="{resultSet.usedQuery.keywordsCleaned}">
+					<span class="searched-for">
+						<s:translate key="results_searched_for" arguments="{0: resultSet.usedQuery.keywordsCleaned}">Searched for "%s"</s:translate>
+					</span>
+				</f:if>
+			</f:else>
 		</f:if>
 
 		<f:if condition="{resultSet.hasSpellCheckingSuggestions}">
@@ -54,11 +65,20 @@
 
 	<div id="tx-solr-search-functions">
 		<f:if condition="{hasSearched}">
-			<f:render partial="Result/Sorting" section="Sorting" arguments="{resultSet:resultSet}" />
-			<f:render partial="Result/Facets" section="Facets" arguments="{resultSet:resultSet}" />
+			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchSorting}">
+				<f:render partial="Result/Sorting" section="Sorting" arguments="{resultSet:resultSet}" />
+			</f:if>
+			<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchFaceting}">
+				<f:render partial="Result/Facets" section="Facets" arguments="{resultSet:resultSet}" />
+			</f:if>
 		</f:if>
-		<f:render partial="Search/LastSearches" section="LastSearches" arguments="{resultSet:resultSet}" />
-		<f:render partial="Search/FrequentlySearched" section="FrequentlySearched" />
+
+		<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchLastSearches}">
+			<f:render partial="Search/LastSearches" section="LastSearches" arguments="{resultSet:resultSet}" />
+		</f:if>
+		<f:if condition="{resultSet.usedSearchRequest.contextTypoScriptConfiguration.searchFrequentSearches}">
+			<f:render partial="Search/FrequentlySearched" section="FrequentlySearched" />
+		</f:if>
 	</div>
 
 </f:section>

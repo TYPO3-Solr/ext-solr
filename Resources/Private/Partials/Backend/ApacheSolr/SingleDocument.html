@@ -12,7 +12,7 @@
         </div>
         <div id="panel-group4document-id-{document.fields._version_}" class="panel-collapse collapse {f:if(condition: '{documentsCount} < 2', then: 'in', else: '')}">
             <div class="panel-body">
-                <table class="table table-bordered">
+                <table class="table table-condensed table-hover table-striped">
                     <thead><tr><th>Fieldname</th><th>Value</th><th>Boosted</th></tr></thead>
                     <tbody id="document-tbody-pid-{document.fields.uid}">
                     <f:render section="Rows" arguments="{tableRows: document.fields, showBoostedColumn: 1, document: document}"/>
@@ -47,7 +47,7 @@
 </f:section>
 
 <f:section name="SubTable">
-    <table class="table table-bordered">
+    <table class="table table-condensed table-hover table-striped table-bordered">
         <thead><tr><th>Fieldname</th><th>Value</th></tr></thead>
         <tbody>
             <f:render section="Rows" arguments="{tableRows: tableRows}"/>

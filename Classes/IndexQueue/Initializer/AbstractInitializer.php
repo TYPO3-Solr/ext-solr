@@ -215,7 +215,7 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $pages = $this->getPages();
 
         $pageIdField = 'pid';
-        if ($this->type == 'pages') {
+        if ($this->type === 'pages') {
             $pageIdField = 'uid';
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\LastSearches;
 
 /***************************************************************
  *  Copyright notice
@@ -49,12 +49,16 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
             return $resultSet;
         }
 
-        if (!isset($GLOBALS['TSFE']) || !isset($GLOBALS['TYPO3_DB'])) {
+        if (!isset($GLOBALS['TSFE'])) {
             return $resultSet;
         }
 
-        $lastSearchesService = $this->getLastSearchesService($resultSet);
-        $lastSearchesService->addToLastSearches($resultSet->getUsedSearchRequest()->getRawUserQuery());
+        $query = $resultSet->getUsedSearchRequest()->getRawUserQuery();
+
+        if (is_string($query)) {
+            $lastSearchesService = $this->getLastSearchesService($resultSet);
+            $lastSearchesService->addToLastSearches($query);
+        }
 
         return $resultSet;
     }
@@ -65,8 +69,6 @@ class LastSearchesWriterProcessor implements SearchResultSetProcessor
      */
     protected function getLastSearchesService(SearchResultSet $resultSet) {
         return GeneralUtility::makeInstance(LastSearchesService::class,
-            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration(),
-            $GLOBALS['TSFE'],
-            $GLOBALS['TYPO3_DB']);
+            $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration());
     }
 }

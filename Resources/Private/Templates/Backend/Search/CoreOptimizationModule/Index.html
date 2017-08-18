@@ -41,29 +41,23 @@
 </f:section>
 
 <f:section name="Synonyms">
-    <div class="row">
-        <div class="col-md-12">
-            <f:be.infobox title="Synonyms"> <f:comment><!-- Move to native CMS   --></f:comment>
-                By defining synonyms you can allow to find documents by words that do not occur in the documents but have the same meaning:<br/>
-                <b>Note:</b> The word that you want replace with a synonym needs to appear on <b>both</b> sides when you want to find it with the term itself later!<br/>
-                Example:<br/>
-                <ul>
-                    <li><b>"smartphone" => "smartphone, cellphone, mobile, mobilephone"</b>
-                        <ul>
-                            <li>will match <b>"smartphone, cellphone, mobile, mobilephone"</b></li>
-                            <li>And when "smartphone" were missing on the right side, then you could not find the documents with "smartphone" anymore!</li>
-                        </ul>
-                    </li>
-                </ul>
-                <b>Note: The changes do not apply on the fly, you need to reindex all the pages whith occurrences of changed synonyms.</b>
-            </f:be.infobox>
-        </div>
-    </div>
+	By defining synonyms you can allow to find documents by words that do not occur in the documents but have the same meaning:<br/>
+	<b>Note:</b> The word that you want replace with a synonym needs to appear on <b>both</b> sides when you want to find it with the term itself later!<br/>
+		Example:<br />
+	<ul>
+		<li><b>"smartphone" => "smartphone, cellphone, mobile, mobilephone"</b>
+			<ul>
+				<li>will match <b>"smartphone, cellphone, mobile, mobilephone"</b></li>
+				<li>And when "smartphone" were missing on the right side, then you could not find the documents with "smartphone" anymore!</li>
+			</ul>
+		</li>
+	</ul>
+	<b>Note: The changes do not apply on the fly, you need to reindex all the pages whith occurrences of changed synonyms.</b>
 
     <f:if condition="{synonyms}">
         <f:then>
             <h3>Manage Synonyms</h3>
-            <table class="table table-striped table-hover">
+            <table class="table table-condensed table-hover table-striped">
                 <thead>
                 <tr class="t3-row-header">
                     <th>Base Word</th><th>Synonyms</th>
@@ -111,8 +105,8 @@
                 <span class="example">comma-separated; f.e. smartphone, cellphone</span>
             </div>
             <div class="form-group">
-                <f:form.checkbox id="overrideExisting" name="overrideExisting" value="1" />
-                <label for="overrideExisting"> Override, if synonym already exists</label>
+                <f:form.checkbox id="overrideExistingSingle" name="overrideExisting" value="1" />
+                <label for="overrideExistingSingle"> Override, if synonym already exists</label>
             </div>
             <div class="submit">
                 <f:form.submit value="Add Synonyms" class="btn btn-sm btn-default"/>
@@ -141,19 +135,12 @@
 </f:section>
 
 <f:section name="StopWords">
-    <div class="row">
-        <div class="col-md-12">
-            <f:be.infobox title="Stop Words">
-                Stop words allow you to specify a list of words that will be discarded during indexing.<br/>
-                Usually they are very small and very common words (such as "the" and "and") that often have <br/>
-                little bearing on whether a document is a good match or not.<br/>
-                The format is one word per line.
-            </f:be.infobox>
-        </div>
-    </div>
-    <br/>
+	<p>	Stop words allow you to specify a list of words that will be discarded during indexing.<br/>
+		Usually they are very small and very common words (such as "the" and "and") that often have <br/>
+		little bearing on whether a document is a good match or not.<br/>
+		The format is one word per line.</p>
 
-    <h3 style="margin-top: -20px;">Stop Word List (one per line, lowercase)</h3>
+    <h3>Stop Word List (one per line, lowercase)</h3>
     <div class="section section-with-header">
         <div class="row">
             <div class="col-md-12">
@@ -174,7 +161,6 @@
                         </f:if>
                     </div>
                 </f:form>
-
             </div>
         </div>
     </div>

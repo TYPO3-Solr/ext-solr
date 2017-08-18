@@ -18,13 +18,13 @@
                                 <type>group</type>
                                 <internal_type>db</internal_type>
                                 <allowed>pages</allowed>
-                                <size>1</size>
-                                <maxitems>1</maxitems>
-                                <minitems>0</minitems>
                                 <show_thumbs>1</show_thumbs>
                                 <wizards>
                                     <suggest>
                                         <type>suggest</type>
+                                        <default>
+                                            <searchWholePhrase>1</searchWholePhrase>
+                                        </default>
                                     </suggest>
                                 </wizards>
                             </config>
@@ -155,17 +155,17 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-                    <templateFiles.results>
+                    <view.templateFiles.results>
                         <TCEforms>
-                            <exclude>1</exclude>
-                            <label>Custom Entry Template</label>
+                            <label>Custom Template</label>
                             <config>
-                                <type>input</type>
-                                <eval>trim</eval>
-                                <size>45</size>
+                                <section>1</section>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <itemsProcFunc>ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions->getAvailableTemplates</itemsProcFunc>
                             </config>
                         </TCEforms>
-                    </templateFiles.results>
+                    </view.templateFiles.results>
                     <view.pluginNamespace>
                         <TCEforms>
                             <exclude>1</exclude>
