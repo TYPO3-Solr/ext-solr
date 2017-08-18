@@ -56,10 +56,19 @@
 
     <f:if condition="{synonyms}">
         <f:then>
+            <h3>Manage Synonyms</h3>
             <table class="table table-condensed table-hover table-striped">
                 <thead>
                 <tr class="t3-row-header">
-                    <th>Base Word</th><th>Synonyms</th><th>&nbsp;</th>
+                    <th>Base Word</th><th>Synonyms</th>
+                    <th>
+                        <f:link.action action="deleteAllSynonyms" title="Delete all synonyms" class="btn btn-default btn-sm">
+                            <core:icon identifier="actions-edit-delete"/>
+                        </f:link.action>
+                        <f:link.action action="exportSynonyms" title="Export all synonyms" class="btn btn-default btn-sm">
+                            <core:icon identifier="actions-document-export-csv"/>
+                        </f:link.action>
+                        </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -95,8 +104,31 @@
                 <f:form.textfield id="synonyms" name="synonyms" class="form-control" />
                 <span class="example">comma-separated; f.e. smartphone, cellphone</span>
             </div>
+            <div class="form-group">
+                <f:form.checkbox id="overrideExistingSingle" name="overrideExisting" value="1" />
+                <label for="overrideExistingSingle"> Override, if synonym already exists</label>
+            </div>
             <div class="submit">
                 <f:form.submit value="Add Synonyms" class="btn btn-sm btn-default"/>
+            </div>
+        </f:form>
+    </div>
+    <h3>Upload Synonym List</h3>
+    <div class="section">
+        <f:form action="importSynonymList" id="upload-synonyms" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <f:form.upload id="synonymFileUpload" name="synonymFileUpload" />
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="overrideExisting" name="overrideExisting" value="1" />
+                <label for="overrideExisting"> Override synonym, if synonym already exists</label>
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="deleteSynonymsBefore" name="deleteSynonymsBefore" value="1" />
+                <label for="deleteSynonymsBefore"> Replace complete synonym list</label>
+            </div>
+            <div class="submit">
+                <f:form.submit value="Upload file" class="btn btn-sm btn-default"/>
             </div>
         </f:form>
     </div>
@@ -122,9 +154,30 @@
                     <f:form.textarea name="stopWords" rows="20" cols="50" style="width: auto;" value="{stopWords}"/>
                     <div class="submit">
                         <f:form.submit value="Save Stop Word List" class="btn btn-sm btn-default"/>
+                        <f:if condition="{stopWordsCount} > 0">
+                            <f:link.action action="exportStopWords" title="Export StopWords" class="btn btn-default btn-sm">
+                                <core:icon identifier="actions-document-export-csv"/>
+                            </f:link.action>
+                        </f:if>
                     </div>
                 </f:form>
             </div>
         </div>
+    </div>
+
+    <h3>Upload StopWords List</h3>
+    <div class="section section-with-header">
+        <f:form action="importStopWordList" id="upload-stopwords" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <f:form.upload id="stopwordsFileUpload" name="stopwordsFileUpload" />
+            </div>
+            <div class="form-group">
+                <f:form.checkbox id="replaceStopwords" name="replaceStopwords" value="1" checked="1"/>
+                <label for="replaceStopwords"> Override complete list</label>
+            </div>
+            <div class="submit">
+                <f:form.submit value="Upload file" class="btn btn-sm btn-default"/>
+            </div>
+        </f:form>
     </div>
 </f:section>

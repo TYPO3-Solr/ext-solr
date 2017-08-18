@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Utility\ManagedResourcesUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -31,6 +32,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
  * Manage Synonyms and Stop words in Backend Module
+ * @property \TYPO3\CMS\Extbase\Mvc\Web\Response $response
  */
 class CoreOptimizationModuleController extends AbstractModuleController
 {
@@ -82,9 +84,10 @@ class CoreOptimizationModuleController extends AbstractModuleController
      *
      * @param string $baseWord
      * @param string $synonyms
+     * @param bool $overrideExisting
      * @return void
      */
-    public function addSynonymsAction(string $baseWord, string $synonyms)
+    public function addSynonymsAction(string $baseWord, string $synonyms, $overrideExisting)
     {
         if (empty($baseWord) || empty($synonyms)) {
             $this->addFlashMessage(
@@ -96,6 +99,9 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $baseWord = mb_strtolower($baseWord);
             $synonyms = mb_strtolower($synonyms);
 
+            if ($overrideExisting && $this->selectedSolrCoreConnection->getSynonyms($baseWord)) {
+                $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+            }
             $this->selectedSolrCoreConnection->addSynonym(
                 $baseWord,
                 GeneralUtility::trimExplode(',', $synonyms, true)
@@ -107,6 +113,105 @@ class CoreOptimizationModuleController extends AbstractModuleController
             );
         }
 
+        $this->redirect('index');
+    }
+
+    /**
+     * @param string $fileFormat
+     * @return void
+     */
+    public function exportStopWordsAction($fileFormat = 'txt')
+    {
+        $this->exportFile(
+            implode(PHP_EOL, $this->selectedSolrCoreConnection->getStopWords()),
+            'stopwords',
+            $fileFormat
+        );
+    }
+
+    /**
+     * Exports synonyms to a download file.
+     *
+     * @param string $fileFormat
+     * @return string
+     */
+    public function exportSynonymsAction($fileFormat = 'txt')
+    {
+        $synonyms = $this->selectedSolrCoreConnection->getSynonyms();
+        return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat);
+    }
+
+    /**
+     * @param array $synonymFileUpload
+     * @param bool $overrideExisting
+     * @param bool $deleteSynonymsBefore
+     * @return void
+     */
+    public function importSynonymListAction(array $synonymFileUpload, $overrideExisting, $deleteSynonymsBefore)
+    {
+        if ($deleteSynonymsBefore) {
+            $this->deleteAllSynonyms();
+        }
+
+        $fileLines = ManagedResourcesUtility::importSynonymsFromPlainTextContents($synonymFileUpload);
+        $synonymCount = 0;
+        foreach ($fileLines as $baseWord => $synonyms) {
+            if (!isset($baseWord) || empty($synonyms)) {
+                continue;
+            }
+            $this->deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord);
+            $this->selectedSolrCoreConnection->addSynonym(
+                $baseWord,
+                $synonyms
+            );
+            $synonymCount++;
+        }
+
+        $this->selectedSolrCoreConnection->reloadCore();
+        $this->addFlashMessage(
+            $synonymCount . ' synonyms imported.'
+        );
+        $this->redirect('index');
+
+    }
+
+    /**
+     * @param array $stopwordsFileUpload
+     * @param bool $replaceStopwords
+     * @return void
+     */
+    public function importStopWordListAction(array $stopwordsFileUpload, $replaceStopwords)
+    {
+        $this->saveStopWordsAction(
+            ManagedResourcesUtility::importStopwordsFromPlainTextContents($stopwordsFileUpload),
+            $replaceStopwords
+        );
+    }
+
+    /**
+     * Delete complete synonym list
+     *
+     * @return void
+     */
+    public function deleteAllSynonymsAction()
+    {
+        $allSynonymsCouldBeDeleted = $this->deleteAllSynonyms();
+
+        $reloadResponse = $this->selectedSolrCoreConnection->reloadCore();
+
+        if ($allSynonymsCouldBeDeleted
+            && $reloadResponse->getHttpStatus() == 200
+        ) {
+            $this->addFlashMessage(
+                'All synonym removed.'
+            );
+        } else {
+            $this->addFlashMessage(
+                'Failed to remove all synonyms.',
+                'An error occurred',
+                FlashMessage::ERROR
+            );
+        }
         $this->redirect('index');
     }
 
@@ -141,28 +246,21 @@ class CoreOptimizationModuleController extends AbstractModuleController
      * Saves the edited stop word list to Solr
      *
      * @param string $stopWords
+     * @param bool $replaceStopwords
      * @return void
      */
-    public function saveStopWordsAction(string $stopWords)
+    public function saveStopWordsAction(string $stopWords, $replaceStopwords = true)
     {
         // lowercase stopword before saving because terms get lowercased before stopword filtering
         $newStopWords = mb_strtolower($stopWords);
         $newStopWords = GeneralUtility::trimExplode("\n", $newStopWords, true);
         $oldStopWords = $this->selectedSolrCoreConnection->getStopWords();
 
-        $wordsRemoved = true;
-        $removedStopWords = array_diff($oldStopWords, $newStopWords);
-        foreach ($removedStopWords as $word) {
-            $response = $this->selectedSolrCoreConnection->deleteStopWord($word);
-            if ($response->getHttpStatus() != 200) {
-                $wordsRemoved = false;
-                $this->addFlashMessage(
-                    'Failed to remove stop word "' . $word . '".',
-                    'An error occurred',
-                    FlashMessage::ERROR
-                );
-                break;
-            }
+        if ($replaceStopwords) {
+            $removedStopWords = array_diff($oldStopWords, $newStopWords);
+            $wordsRemoved = $this->removeStopsWordsFromIndex($removedStopWords);
+        } else {
+            $wordsRemoved = true;
         }
 
         $wordsAdded = true;
@@ -180,5 +278,83 @@ class CoreOptimizationModuleController extends AbstractModuleController
         }
 
         $this->redirect('index');
+    }
+
+    /**
+     * @param string $content
+     * @param string $type
+     * @param string $fileExtension
+     * @return string
+     */
+    protected function exportFile($content, $type = 'synonyms', $fileExtension = 'txt') : string
+    {
+        $this->response->setHeader('Content-type', 'text/plain', true);
+        $this->response->setHeader('Cache-control', 'public', true);
+        $this->response->setHeader('Content-Description', 'File transfer', true);
+        $this->response->setHeader(
+            'Content-disposition',
+            'attachment; filename =' . $type . '_' .
+            $this->selectedSolrCoreConnection->getCoreName() . '.' . $fileExtension,
+            true
+        );
+        return $content;
+    }
+
+    /**
+     * Delete complete synonym list form solr
+     *
+     * @return bool
+     */
+    protected function deleteAllSynonyms() : bool
+    {
+        $synonyms = $this->selectedSolrCoreConnection->getSynonyms();
+        $allSynonymsCouldBeDeleted = true;
+
+        foreach ($synonyms as $baseWord => $synonym) {
+            $deleteResponse = $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+            $allSynonymsCouldBeDeleted = $allSynonymsCouldBeDeleted && $deleteResponse->getHttpStatus() == 200;
+        }
+
+        return $allSynonymsCouldBeDeleted;
+    }
+
+    /**
+     * @param $stopwordsToRemove
+     * @return bool
+     */
+    protected function removeStopsWordsFromIndex($stopwordsToRemove) : bool
+    {
+        $wordsRemoved = true;
+        foreach ($stopwordsToRemove as $word) {
+            $response = $this->selectedSolrCoreConnection->deleteStopWord($word);
+            if ($response->getHttpStatus() != 200) {
+                $wordsRemoved = false;
+                $this->addFlashMessage(
+                    'Failed to remove stop word "' . $word . '".',
+                    'An error occurred',
+                    FlashMessage::ERROR
+                );
+                break;
+            }
+        }
+
+        return $wordsRemoved;
+    }
+
+    /**
+     * Delete synonym entry if selceted before
+     * @param bool $overrideExisting
+     * @param bool $deleteSynonymsBefore
+     * @param string $baseWord
+     */
+    protected function deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord)
+    {
+        if (!$deleteSynonymsBefore &&
+            $overrideExisting &&
+            $this->selectedSolrCoreConnection->getSynonyms($baseWord)
+        ) {
+            $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+        }
+
     }
 }

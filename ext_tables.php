@@ -73,7 +73,7 @@ if (TYPO3_MODE == 'BE') {
         'CoreOptimization',
         '',
         [
-            'Backend\\Search\\CoreOptimizationModule' => 'index, addSynonyms, deleteSynonyms, saveStopWords, switchSite, switchCore'
+            'Backend\\Search\\CoreOptimizationModule' => 'index, addSynonyms, importSynonymList, deleteAllSynonyms, exportSynonyms, deleteSynonyms, saveStopWords, importStopWordList, exportStopWords, switchSite, switchCore'
         ],
         [
             'access' => 'user,group',
@@ -89,7 +89,7 @@ if (TYPO3_MODE == 'BE') {
         'IndexQueue',
         '',
         [
-            'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, , resetLogErrors, showError, doIndexingRun, switchSite'
+            'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, resetLogErrors, showError, doIndexingRun, switchSite'
         ],
         [
             'access' => 'user,group',
