@@ -138,7 +138,7 @@
                             allowedSites = __solr_current_site
 
                             // qf parameter http://wiki.apache.org/solr/DisMaxQParserPlugin#qf_.28Query_Fields.29
-                            queryFields = content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0
+                            queryFields = content^40.0, title^5.0, keywords^2.0, tagsH1^5.0, tagsH2H3^3.0, tagsH4H5H6^2.0, tagsInline^1.0, description^4.0, abstract^1.0, subtitle^1.0, navtitle^1.0, author^1.0
 
                             // fl parameter http://wiki.apache.org/solr/CommonQueryParameters#fl
                             returnFields = *, score
