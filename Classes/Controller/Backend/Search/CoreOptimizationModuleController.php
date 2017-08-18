@@ -159,12 +159,7 @@ class CoreOptimizationModuleController extends AbstractModuleController
             if (!isset($baseWord) || empty($synonyms)) {
                 continue;
             }
-            if (!$deleteSynonymsBefore &&
-                $overrideExisting &&
-                $this->selectedSolrCoreConnection->getSynonyms($baseWord)
-            ) {
-                $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
-            }
+            $this->deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord);
             $this->selectedSolrCoreConnection->addSynonym(
                 $baseWord,
                 $synonyms
@@ -344,5 +339,22 @@ class CoreOptimizationModuleController extends AbstractModuleController
         }
 
         return $wordsRemoved;
+    }
+
+    /**
+     * Delete synonym entry if selceted before
+     * @param bool $overrideExisting
+     * @param bool $deleteSynonymsBefore
+     * @param string $baseWord
+     */
+    protected function deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord)
+    {
+        if (!$deleteSynonymsBefore &&
+            $overrideExisting &&
+            $this->selectedSolrCoreConnection->getSynonyms($baseWord)
+        ) {
+            $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+        }
+
     }
 }
