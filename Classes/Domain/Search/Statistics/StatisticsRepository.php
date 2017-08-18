@@ -47,16 +47,15 @@ class StatisticsRepository
         $rootPageId = (int)$rootPageId;
         $limit = (int)$limit;
 
+        $countRows = $this->countByRootPageId($rootPageId);
         $statisticsRows = (array)$this->getDatabase()->exec_SELECTgetRows(
-            'keywords, count(keywords) as count, num_found as hits',
+            'keywords, count(keywords) as count, AVG(num_found) as hits, (COUNT(keywords) * 100 / ' . $countRows . ') AS percent',
             'tx_solr_statistics',
             'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId,
-            'keywords, num_found',
+            'keywords',
             'count DESC, hits DESC, keywords ASC',
             $limit
         );
-
-        $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
 
         $sumCount = $statisticsRows['sumCount'];
         foreach ($statisticsRows as $statisticsRow) {
@@ -123,47 +122,15 @@ class StatisticsRepository
         }
 
         $statisticsRows = (array)$this->getDatabase()->exec_SELECTgetRows(
-            'keywords, count(keywords) as count, num_found as hits',
+            'keywords, count(keywords) as count, AVG(num_found) as hits',
             'tx_solr_statistics',
             'tstamp > ' . $timeStart . ' AND root_pid = ' . $rootPageId . ' AND num_found ' . $comparisonOperator . ' 0',
-            'keywords, num_found',
+            'keywords',
             'count DESC, hits DESC, keywords ASC',
             $limit
         );
 
-        $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
-
         return $statisticsRows;
-    }
-
-    /**
-     * This method groups rows with the same term and different count and hits
-     * and calculates the average.
-     *
-     * @param array $statisticsRows
-     * @return array
-     */
-    protected function mergeRowsWithSameKeyword(array $statisticsRows)
-    {
-        $result = [];
-        foreach ($statisticsRows as $statisticsRow) {
-            $term = html_entity_decode($statisticsRow['keywords'], ENT_QUOTES);
-
-            $mergedRow = isset($result[$term]) ? $result[$term] : ['mergedrows' => 0, 'count' => 0];
-            $mergedRow['mergedrows']++;
-
-            // for the hits we need to take the average
-            $avgHits = $this->getAverageFromField($mergedRow, $statisticsRow, 'hits');
-            $mergedRow['hits'] = (int)$avgHits;
-
-            // for the count we need to take the sum, because it's the sum of searches
-            $mergedRow['count'] = $mergedRow['count'] + $statisticsRow['count'];
-
-            $mergedRow['keywords'] = $term;
-            $result[$term] = $mergedRow;
-        }
-
-        return array_values($result);
     }
 
     /**
@@ -219,5 +186,16 @@ class StatisticsRepository
     protected function getDatabase()
     {
         return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * Counts the rows.
+     *
+     * @return int
+     */
+    protected function countByRootPageId($rootPageId)
+    {
+        $this->cachedCountRows = $this->getDatabase()->exec_SELECTgetSingleRow('COUNT(*) AS count', 'tx_solr_statistics', 'root_pid = ' . (int)$rootPageId)['count'];
+        return $this->cachedCountRows;
     }
 }
