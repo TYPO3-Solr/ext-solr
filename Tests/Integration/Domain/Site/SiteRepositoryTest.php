@@ -56,7 +56,7 @@ class SiteRepositoryTest extends IntegrationTest
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
         $this->importDataSetFromFixture('can_get_all_pages_from_sites.xml');
         $site = $siteRepository->getFirstAvailableSite();
-        $this->assertEquals([1,2,21,22,3,30], $site->getPages(), 'Can not get all pages from site');
+        $this->assertSame([1,2,21,22,3,30], $site->getPages(), 'Can not get all pages from site');
     }
 
     /**
