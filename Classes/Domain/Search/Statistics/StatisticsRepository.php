@@ -262,4 +262,32 @@ class StatisticsRepository extends AbstractRepository
         $avgCount = (($oldCount + $statisticsRow[$fieldName]) / $mergedRow['mergedrows']);
         return $avgCount;
     }
+
+    /**
+     * Persists statistics record
+     *
+     * @param array $statisticsRecord
+     * @return void
+     */
+    public function saveStatisticsRecord(array $statisticsRecord)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->insert($this->table)->values($statisticsRecord)->execute();
+    }
+
+    /**
+     * Counts rows for specified site
+     *
+     * @param int $rootPageId
+     * @return int
+     */
+    public function countByRootPageId(int $rootPageId): int
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        return (int)$this->getQueryBuilder()
+            ->count('*')
+            ->from($this->table)
+            ->andWhere($queryBuilder->expr()->eq('root_pid', $rootPageId))
+            ->execute()->fetchColumn(0);
+    }
 }
