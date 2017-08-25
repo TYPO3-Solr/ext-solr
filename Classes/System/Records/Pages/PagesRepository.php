@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\System\Records\Pages;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
 /**
@@ -115,4 +116,23 @@ class PagesRepository extends AbstractRepository
         return $queryBuilder;
     }
 
+    /**
+     * Finds translation overlays by given page Id.
+     *
+     * @param int $pageId
+     * @return array
+     */
+    public function findTranslationOverlaysByPageId(int $pageId) : array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->getRestrictions()->removeAll();
+        return $queryBuilder
+            ->select('pid', 'sys_language_uid')
+            ->from('pages_language_overlay')
+            ->add('where',
+                $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
+                . BackendUtility::deleteClause('pages_language_overlay')
+                . BackendUtility::BEenableFields('pages_language_overlay')
+            )->execute()->fetchAll();
+    }
 }

@@ -34,6 +34,7 @@ use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -90,17 +91,24 @@ class Indexer extends AbstractIndexer
     protected $logger = null;
 
     /**
+     * @var PagesRepository
+     */
+    protected $pagesRepository;
+
+    /**
      * Constructor
      *
      * @param array $options array of indexer options
      * @param IdBuilder $idBuilder
+     * @param PagesRepository|null $pagesRepository
      */
-    public function __construct(array $options = [], IdBuilder $idBuilder = null)
+    public function __construct(array $options = [], IdBuilder $idBuilder = null, PagesRepository $pagesRepository = null)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->options = $options;
         $this->connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
         $this->variantIdBuilder = is_null($idBuilder) ? GeneralUtility::makeInstance(IdBuilder::class) : $idBuilder;
+        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
@@ -639,13 +647,7 @@ class Indexer extends AbstractIndexer
         $isContentFallbackMode = ($languageMode === 'content_fallback');
 
         if ($hasOverlayMode && !$isContentFallbackMode) {
-            $translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                'pid, sys_language_uid',
-                'pages_language_overlay',
-                'pid = ' . $pageId
-                . BackendUtility::deleteClause('pages_language_overlay')
-                . BackendUtility::BEenableFields('pages_language_overlay')
-            );
+            $translationOverlays = $this->pagesRepository->findTranslationOverlaysByPageId($pageId);
         } else {
             // ! If no sys_language_mode is configured, all languages will be indexed !
             $languages = $this->getSystemLanguages();
