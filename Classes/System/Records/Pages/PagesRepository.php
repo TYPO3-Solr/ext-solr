@@ -37,7 +37,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PagesRepository extends AbstractRepository
 {
-
     /**
      * @var string
      */
@@ -223,6 +222,25 @@ class PagesRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
                 . BackendUtility::deleteClause('pages_language_overlay')
                 . BackendUtility::BEenableFields('pages_language_overlay')
+            )->execute()->fetchAll();
+    }
+
+    /**
+     * Finds Pages, which are showing content from the page currently being updated.
+     *
+     * @param int $pageId UID of the page currently being updated
+     * @return array with page Uids from pages, which are showing contents from given Page Id
+     */
+    public function findPageUidsWithContentsFromPid(int $pageId) : array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->getRestrictions()->removeAll();
+        return $queryBuilder
+            ->select('uid')
+            ->from($this->table)
+            ->add('where',
+                $queryBuilder->expr()->eq('content_from_pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
+                . BackendUtility::deleteClause('pages')
             )->execute()->fetchAll();
     }
 }

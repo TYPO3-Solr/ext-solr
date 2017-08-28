@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\MountPagesUp
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\System\Configuration\ExtensionConfiguration;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use ApacheSolrForTypo3\Solr\System\TCA\TCAService;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -43,7 +44,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RecordMonitor extends AbstractDataHandlerListener
 {
-
     /**
      * Index Queue
      *
@@ -73,20 +73,27 @@ class RecordMonitor extends AbstractDataHandlerListener
     protected $rootPageResolver;
 
     /**
+     * @var PagesRepository
+     */
+    protected $pagesRepository;
+
+    /**
      * RecordMonitor constructor.
      *
      * @param Queue|null $indexQueue
      * @param MountPagesUpdater|null $mountPageUpdater
      * @param TCAService|null $TCAService
      * @param RootPageResolver $rootPageResolver
+     * @param PagesRepository|null $pagesRepository
      */
-    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null)
+    public function __construct(Queue $indexQueue = null, MountPagesUpdater $mountPageUpdater = null, TCAService $TCAService = null, RootPageResolver $rootPageResolver = null, PagesRepository $pagesRepository = null)
     {
         parent::__construct();
         $this->indexQueue = is_null($indexQueue) ? GeneralUtility::makeInstance(Queue::class) : $indexQueue;
         $this->mountPageUpdater = is_null($mountPageUpdater) ? GeneralUtility::makeInstance(MountPagesUpdater::class) : $mountPageUpdater;
         $this->tcaService = is_null($TCAService) ? GeneralUtility::makeInstance(TCAService::class) : $TCAService;
         $this->rootPageResolver = is_null($rootPageResolver) ? GeneralUtility::makeInstance(RootPageResolver::class) : $rootPageResolver;
+        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository: GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
@@ -469,13 +476,7 @@ class RecordMonitor extends AbstractDataHandlerListener
      */
     protected function updateCanonicalPages($pageId)
     {
-        $canonicalPages = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'uid',
-            'pages',
-            'content_from_pid = ' . $pageId
-            . BackendUtility::deleteClause('pages')
-        );
-
+        $canonicalPages = $this->pagesRepository->findPageUidsWithContentsFromPid((int)$pageId);
         foreach ($canonicalPages as $page) {
             $this->indexQueue->updateItem('pages', $page['uid']);
         }
