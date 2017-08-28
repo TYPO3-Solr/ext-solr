@@ -43,9 +43,10 @@ class StatisticsRepositoryTest extends IntegrationTest
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithHits(1, $daysSinceFixture);
         $expectedResult = [
-            ['mergedrows' => 2, 'count' => 2, 'hits' => 5, 'keywords' => 'content'],
-            ['mergedrows' => 1, 'count' => 1, 'hits' => 6, 'keywords' => 'typo3']
+            ['keywords' => 'content', 'count' => 2, 'hits' => '5.0000', 'percent' => '50.0000'],
+            ['keywords' => 'typo3', 'count' => 1, 'hits' => '6.0000', 'percent' => '25.0000']
         ];
+
         $this->assertSame($expectedResult, $topHits);
     }
 
@@ -63,7 +64,7 @@ class StatisticsRepositoryTest extends IntegrationTest
         $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
 
         $expectedResult = [
-            ['mergedrows' => 1, 'count' => 1, 'hits' => 0, 'keywords' => 'cms'],
+            ['keywords' => 'cms', 'count' => 1, 'hits' => '0.0000', 'percent' => '25.0000']
         ];
 
         $this->assertSame($expectedResult, $topHits);

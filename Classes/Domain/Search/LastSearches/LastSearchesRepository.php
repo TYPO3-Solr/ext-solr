@@ -108,19 +108,6 @@ class LastSearchesRepository extends AbstractRepository
     }
 
     /**
-     * Returns current count of last searches
-     *
-     * @return int
-     */
-    protected function count() : int
-    {
-        return $this->getQueryBuilder()
-            ->count('*')
-            ->from($this->table)
-            ->execute()->fetchColumn(0);
-    }
-
-    /**
      * Resolves next sequence id by given last searches limit.
      *
      * @param int $lastSearchesLimit
