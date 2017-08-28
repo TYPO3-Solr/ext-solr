@@ -43,9 +43,10 @@ class StatisticsRepositoryTest extends IntegrationTest
         $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
         $topHits = $repository->getTopKeyWordsWithHits(1, $daysSinceFixture);
         $expectedResult = [
-            ['mergedrows' => 2, 'count' => 2, 'hits' => 5, 'keywords' => 'content'],
-            ['mergedrows' => 1, 'count' => 1, 'hits' => 6, 'keywords' => 'typo3']
+            ['keywords' => 'content', 'count' => 2, 'hits' => '5.0000', 'percent' => '50.0000'],
+            ['keywords' => 'typo3', 'count' => 1, 'hits' => '6.0000', 'percent' => '25.0000']
         ];
+
         $this->assertSame($expectedResult, $topHits);
     }
 
@@ -63,7 +64,7 @@ class StatisticsRepositoryTest extends IntegrationTest
         $topHits = $repository->getTopKeyWordsWithoutHits(1, $daysSinceFixture);
 
         $expectedResult = [
-            ['mergedrows' => 1, 'count' => 1, 'hits' => 0, 'keywords' => 'cms'],
+            ['keywords' => 'cms', 'count' => 1, 'hits' => '0.0000', 'percent' => '25.0000']
         ];
 
         $this->assertSame($expectedResult, $topHits);
@@ -90,7 +91,8 @@ class StatisticsRepositoryTest extends IntegrationTest
     /**
      * @test
      */
-    public function canGetSearchStatisticsNoResult() {
+    public function canGetSearchStatisticsNoResult()
+    {
         $this->importDataSetFromFixture('can_get_statistics.xml');
         $fixtureTimestamp = 1480000000;
         $daysSinceFixture = self::getDaysSinceTimestamp($fixtureTimestamp) + 1;
@@ -102,6 +104,41 @@ class StatisticsRepositoryTest extends IntegrationTest
         $expectedResult = [];
 
         $this->assertSame($expectedResult, $topHits);
+    }
+
+    /**
+     * @test
+     */
+    public function canSaveStatisticsRecord()
+    {
+        $this->importDataSetFromFixture('can_save_statistics_record.xml');
+        /** @var $repository StatisticsRepository */
+        $repository = GeneralUtility::makeInstance(StatisticsRepository::class);
+
+        $this->assertEquals(4, $repository->countByRootPageId(1), 'Does not contain all statistics records from fixtures.');
+
+        $statisticRecord = [
+            'pid' => 317,
+            'root_pid' => 1,
+            'tstamp' => $GLOBALS['EXEC_TIME'],
+            'language' => 0,
+            'num_found' => 21,
+            'suggestions_shown' => 0,
+            'time_total' => 13,
+            'time_preparation' => 2,
+            'time_processing' => 27,
+            'feuser_id' => 0,
+            'cookie' => '0ad2582d058e2843c9bc3b2273309248s',
+            'ip' => '192.168.144.1',
+            'page' => 0,
+            'keywords' => 'inserted record',
+            'filters' => 'a:0:{}',
+            'sorting' => '',
+            'parameters' => ''
+        ];
+        $repository->saveStatisticsRecord($statisticRecord);
+
+        $this->assertEquals(5, $repository->countByRootPageId(1), 'Does not contain shortly inserted statistic record.');
     }
 
     /**

@@ -185,8 +185,8 @@
                                 <td class="nowrap"><strong>{i.cycle}.</strong></td>
                                 <td>{item.keywords}</td>
                                 <td>{item.count}</td>
-                                <td>{item.hits}</td>
-                                <td><f:format.number decimals="1">{item.percent}</f:format.number>%</td>
+                                <td>{item.hits -> f:format.number(decimals: 1)}</td>
+                                <td>{item.percent -> f:format.number(decimals: 1)}%</td>
                             </tr>
                         </f:for>
                         </tbody>

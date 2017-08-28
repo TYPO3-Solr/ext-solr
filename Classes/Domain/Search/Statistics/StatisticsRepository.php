@@ -53,22 +53,8 @@ class StatisticsRepository extends AbstractRepository
         $timeStart = (int)($now - 86400 * $days); // 86400 seconds/day
         $limit = (int)$limit;
 
-        $statisticsRows = $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit)
+        return $this->getPreparedQueryBuilderForSearchStatisticsAndTopKeywords($rootPageId, $timeStart, $limit)
             ->execute()->fetchAll();
-
-        $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
-
-        $sumCount = $statisticsRows['sumCount'];
-        foreach ($statisticsRows as $statisticsRow) {
-            $sumCount += $statisticsRow['count'];
-        }
-
-        $statisticsRows = array_map(function($row) use ($sumCount) {
-            $row['percent'] = $row['count'] * 100 / $sumCount;
-            return $row;
-        }, $statisticsRows);
-
-        return $statisticsRows;
     }
 
     /**
@@ -82,16 +68,19 @@ class StatisticsRepository extends AbstractRepository
      */
     protected function getPreparedQueryBuilderForSearchStatisticsAndTopKeywords(int $rootPageId, int $timeStart, int $limit) : QueryBuilder
     {
+        $countRows = $this->countByRootPageId($rootPageId);
         $queryBuilder = $this->getQueryBuilder();
         $statisticsQueryBuilder = $queryBuilder
-            ->select('keywords', 'num_found AS hits')
+            ->select('keywords')
             ->add('select', $queryBuilder->expr()->count('keywords', 'count'), true)
+            ->add('select', $queryBuilder->expr()->avg('num_found', 'hits'), true)
+            ->add('select', '(' . $queryBuilder->expr()->count('keywords') . ' * 100 / ' . $countRows . ') AS percent', true)
             ->from($this->table)
             ->andWhere(
                 $queryBuilder->expr()->gt('tstamp', $timeStart),
                 $queryBuilder->expr()->eq('root_pid', $rootPageId)
             )
-            ->groupBy('keywords', 'num_found')
+            ->groupBy('keywords')
             ->orderBy('count', 'DESC')
             ->addOrderBy('hits', 'DESC')
             ->addOrderBy('keywords', 'ASC')
@@ -148,40 +137,7 @@ class StatisticsRepository extends AbstractRepository
             $queryBuilder->andWhere($queryBuilder->expr()->gt('num_found', 0));
         }
 
-        $statisticsRows = $queryBuilder->execute()->fetchAll();
-        $statisticsRows = $this->mergeRowsWithSameKeyword($statisticsRows);
-
-        return $statisticsRows;
-    }
-
-    /**
-     * This method groups rows with the same term and different count and hits
-     * and calculates the average.
-     *
-     * @param array $statisticsRows
-     * @return array
-     */
-    protected function mergeRowsWithSameKeyword(array $statisticsRows) : array
-    {
-        $result = [];
-        foreach ($statisticsRows as $statisticsRow) {
-            $term = html_entity_decode($statisticsRow['keywords'], ENT_QUOTES);
-
-            $mergedRow = isset($result[$term]) ? $result[$term] : ['mergedrows' => 0, 'count' => 0];
-            $mergedRow['mergedrows']++;
-
-            // for the hits we need to take the average
-            $avgHits = $this->getAverageFromField($mergedRow, $statisticsRow, 'hits');
-            $mergedRow['hits'] = (int)$avgHits;
-
-            // for the count we need to take the sum, because it's the sum of searches
-            $mergedRow['count'] = $mergedRow['count'] + $statisticsRow['count'];
-
-            $mergedRow['keywords'] = $term;
-            $result[$term] = $mergedRow;
-        }
-
-        return array_values($result);
+        return $queryBuilder->execute()->fetchAll();
     }
 
     /**
@@ -201,8 +157,7 @@ class StatisticsRepository extends AbstractRepository
         $result = $queryBuilder
             ->addSelectLiteral(
                 'FLOOR(`tstamp`/' . $bucketSeconds . ') AS `bucket`',
-                // @todo: Works only with MySQL. Add own column with Date type to prevent converting DateTime to Date
-                'unix_timestamp(from_unixtime(`tstamp`, "%y-%m-%d")) AS `timestamp`',
+                '(`tstamp` - (`tstamp` % 86400)) AS `timestamp`',
                 $queryBuilder->expr()->count('*', 'numQueries')
             )
             ->from($this->table)
@@ -241,25 +196,48 @@ class StatisticsRepository extends AbstractRepository
     }
 
     /**
-     * This method is used to get an average value from merged statistic rows.
+     * Counts rows for specified site
      *
-     * @param array $mergedRow
-     * @param array $statisticsRow
-     * @param string $fieldName
-     * @return float|int
+     * @param int $rootPageId sites root page id
+     * @return int
      */
-    protected function getAverageFromField(array &$mergedRow, array $statisticsRow, string $fieldName)
+    public function countByRootPageId(int $rootPageId) : int
     {
-        // when this is the first row we can take it.
-        if ($mergedRow['mergedrows'] === 1) {
-            $avgCount = $statisticsRow[$fieldName];
-            return $avgCount;
-        }
+        $queryBuilder = $this->getQueryBuilder();
+        $numberRows = $this->getQueryBuilder()
+            ->count('*')
+            ->from($this->table)
+            ->andWhere($queryBuilder->expr()->eq('root_pid', $rootPageId))
+            ->execute()->fetchColumn(0);
 
-        $oldAverage = $mergedRow[$fieldName];
-        $oldMergeRows = $mergedRow['mergedrows'] - 1;
-        $oldCount = $oldAverage * $oldMergeRows;
-        $avgCount = (($oldCount + $statisticsRow[$fieldName]) / $mergedRow['mergedrows']);
-        return $avgCount;
+        return (int)$numberRows;
+    }
+
+    /**
+     * Persists statistics record
+     *
+     * @param array $statisticsRecord
+     * @return void
+     */
+    public function saveStatisticsRecord(array $statisticsRecord)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->insert($this->table)->values($statisticsRecord)->execute();
+    }
+
+    /**
+     * Counts rows for specified site
+     *
+     * @param int $rootPageId
+     * @return int
+     */
+    public function countByRootPageId(int $rootPageId): int
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        return (int)$this->getQueryBuilder()
+            ->count('*')
+            ->from($this->table)
+            ->andWhere($queryBuilder->expr()->eq('root_pid', $rootPageId))
+            ->execute()->fetchColumn(0);
     }
 }
