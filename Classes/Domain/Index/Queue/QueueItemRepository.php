@@ -51,10 +51,12 @@ class QueueItemRepository extends AbstractRepository
 
     /**
      * QueueItemRepository constructor.
+     *
+     * @param SolrLogManager|null $logManager
      */
-    public function __construct()
+    public function __construct(SolrLogManager $logManager = null)
     {
-        $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+        $this->logger = isset($logManager) ? $logManager : GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
     }
 
     /**
@@ -70,8 +72,7 @@ class QueueItemRepository extends AbstractRepository
             ->select('uid', 'indexed')
             ->from($this->table)
             ->where($queryBuilder->expr()->eq('root', $rootPageId))
-            // @todo: without following line this query returns some row if nothing is indexed -> clarify if this behaviour is OK or we need following line
-            //->andWhere($queryBuilder->expr()->neq('indexed', 0))
+            ->andWhere($queryBuilder->expr()->neq('indexed', 0))
             ->orderBy('indexed', 'DESC')
             ->setMaxResults(1)
             ->execute()->fetchAll();
@@ -533,10 +534,20 @@ class QueueItemRepository extends AbstractRepository
      */
     protected function getIndexQueueItemObjectsFromRecords(array $indexQueueItemRecords) : array
     {
-        $indexQueueItems = [];
+        $tableRecords = $this->getAllQueueItemRecordsByUidsGroupedByTable($indexQueueItemRecords);
+        return $this->getQueueItemObjectsByRecords($indexQueueItemRecords, $tableRecords);
+    }
+
+    /**
+     * Returns the records for suitable item type.
+     *
+     * @param array $indexQueueItemRecords
+     * @return array
+     */
+    protected function getAllQueueItemRecordsByUidsGroupedByTable(array $indexQueueItemRecords) : array
+    {
         $tableUids = [];
         $tableRecords = [];
-
         // grouping records by table
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
             $tableUids[$indexQueueItemRecord['item_type']][] = $indexQueueItemRecord['item_uid'];
@@ -559,18 +570,42 @@ class QueueItemRepository extends AbstractRepository
             }
 
             $tableRecords[$table] = $records;
-
-            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'])) {
-                $params = ['table' => $table, 'uids' => $uids, 'tableRecords' => &$tableRecords];
-                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'] as $reference) {
-                    GeneralUtility::callUserFunction($reference, $params, $this);
-                }
-                unset($params);
-            }
+            $this->hookPostProcessFetchRecordsForIndexQueueItem($table, $uids, $tableRecords);
         }
 
-        // creating index queue item objects and assigning / mapping
-        // records to index queue items
+        return $tableRecords;
+    }
+
+    /**
+     * Calls defined in postProcessFetchRecordsForIndexQueueItem hook method.
+     *
+     * @param string $table
+     * @param array $uids
+     * @param array $tableRecords
+     *
+     * @return void
+     */
+    protected function hookPostProcessFetchRecordsForIndexQueueItem(string $table, array $uids, array &$tableRecords)
+    {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'])) {
+            return;
+        }
+        $params = ['table' => $table, 'uids' => $uids, 'tableRecords' => &$tableRecords];
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessFetchRecordsForIndexQueueItem'] as $reference) {
+            GeneralUtility::callUserFunction($reference, $params, $this);
+        }
+    }
+
+    /**
+     * Instantiates a list of Item objects from database records.
+     *
+     * @param array $indexQueueItemRecords records from database
+     * @param array $tableRecords
+     * @return array
+     */
+    protected function getQueueItemObjectsByRecords(array $indexQueueItemRecords, array $tableRecords) : array
+    {
+        $indexQueueItems = [];
         foreach ($indexQueueItemRecords as $indexQueueItemRecord) {
             if (isset($tableRecords[$indexQueueItemRecord['item_type']][$indexQueueItemRecord['item_uid']])) {
                 $indexQueueItems[] = GeneralUtility::makeInstance(
