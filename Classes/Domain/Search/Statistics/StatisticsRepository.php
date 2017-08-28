@@ -196,24 +196,6 @@ class StatisticsRepository extends AbstractRepository
     }
 
     /**
-     * Counts rows for specified site
-     *
-     * @param int $rootPageId sites root page id
-     * @return int
-     */
-    public function countByRootPageId(int $rootPageId) : int
-    {
-        $queryBuilder = $this->getQueryBuilder();
-        $numberRows = $this->getQueryBuilder()
-            ->count('*')
-            ->from($this->table)
-            ->andWhere($queryBuilder->expr()->eq('root_pid', $rootPageId))
-            ->execute()->fetchColumn(0);
-
-        return (int)$numberRows;
-    }
-
-    /**
      * Persists statistics record
      *
      * @param array $statisticsRecord
