@@ -1,5 +1,4 @@
 <?php
-
 namespace ApacheSolrForTypo3\Solr\Domain\Search\Statistics;
 
 /***************************************************************
@@ -41,6 +40,18 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class StatisticsWriterProcessor implements SearchResultSetProcessor
 {
+    /**
+     * @var StatisticsRepository
+     */
+    protected $statisticsRepository;
+
+    /**
+     * @param StatisticsRepository $statisticsRepository
+     */
+    public function __construct(StatisticsRepository $statisticsRepository = null)
+    {
+        $this->statisticsRepository = isset($statisticsRepository) ? $statisticsRepository : GeneralUtility::makeInstance(StatisticsRepository::class);
+    }
 
     /**
      * @param SearchResultSet $resultSet
@@ -83,7 +94,7 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
             'parameters' => serialize($response->responseHeader->params)
         ];
 
-        $this->saveStatisticDate($statisticData);
+        $this->statisticsRepository->saveStatisticsRecord($statisticData);
 
         return $resultSet;
     }
@@ -151,14 +162,6 @@ class StatisticsWriterProcessor implements SearchResultSetProcessor
         }
 
         return $ip;
-    }
-
-    /**
-     * @param array $insertFields
-     */
-    protected function saveStatisticDate($insertFields)
-    {
-        $GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_solr_statistics', $insertFields);
     }
 
     /**

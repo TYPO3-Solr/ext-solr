@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\Statistics;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\Statistics;
 
 /***************************************************************
  *  Copyright notice
@@ -26,10 +26,12 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\Statistics;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
+use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsWriterProcessor;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
+use PHPUnit_Framework_MockObject_MockObject;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -39,42 +41,68 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class StatisticsWriterProcessorTest extends UnitTest
 {
+    /**
+     * @var StatisticsRepository|PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $statisticsRepositoryMock;
+
+    /**
+     * @var StatisticsWriterProcessor|PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $processor;
+
+    /**
+     * @var TypoScriptConfiguration|PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $typoScriptConfigurationMock;
+
+    /**
+     * @var SearchRequest|PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $searchRequestMock;
+
+    /**
+     * @var Query|PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $queryMock;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->statisticsRepositoryMock = $this->getMockBuilder(StatisticsRepository::class)->setMethods(['saveStatisticsRecord'])->getMock();
+        $this->processor = $this->getMockBuilder(StatisticsWriterProcessor::class)->setConstructorArgs([$this->statisticsRepositoryMock])->setMethods(['getTSFE', 'getTime', 'getUserIp'])->getMock();
+        $this->typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->searchRequestMock = $this->getDumbMock(SearchRequest::class);
+        $this->queryMock = $this->getDumbMock(Query::class);
+    }
 
     /**
      * @test
      */
-    public function canWritExpectedStatisticData()
+    public function canWriteExpectedStatisticsData()
     {
         $fakeTSFE = $this->getDumbMock(TypoScriptFrontendController::class);
         $fakeTime = 100;
         $fakeIP = '192.168.2.22';
-
-            /** @var StatisticsWriterProcessor $processor */
-        $processor = $this->getMockBuilder(StatisticsWriterProcessor::class)->setMethods(['getTSFE', 'getTime', 'getUserIp', 'saveStatisticDate'])->getMock();
-        $processor->expects($this->once())->method('getTSFE')->will($this->returnValue($fakeTSFE));
-        $processor->expects($this->once())->method('getUserIp')->will($this->returnValue($fakeIP));
-        $processor->expects($this->once())->method('getTime')->will($this->returnValue($fakeTime));
-
-        $typoScriptConfigurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $typoScriptConfigurationMock->expects($this->once())->method('getStatisticsAnonymizeIP')->will($this->returnValue(0));
-
-        $searchRequestMock = $this->getDumbMock(SearchRequest::class);
-        $searchRequestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->will($this->returnValue($typoScriptConfigurationMock));
-
-        $queryMock = $this->getDumbMock(Query::class);
-        $queryMock->expects($this->once())->method('getKeywords')->will($this->returnValue('my search'));
+        
+        $this->processor->expects($this->once())->method('getTSFE')->will($this->returnValue($fakeTSFE));
+        $this->processor->expects($this->once())->method('getUserIp')->will($this->returnValue($fakeIP));
+        $this->processor->expects($this->once())->method('getTime')->will($this->returnValue($fakeTime));
+        $this->typoScriptConfigurationMock->expects($this->once())->method('getStatisticsAnonymizeIP')->will($this->returnValue(0));
+        $this->searchRequestMock->expects($this->once())->method('getContextTypoScriptConfiguration')->will($this->returnValue($this->typoScriptConfigurationMock));
+        $this->queryMock->expects($this->once())->method('getKeywords')->will($this->returnValue('my search'));
 
         $resultSetMock = $this->getDumbMock(SearchResultSet::class);
-        $resultSetMock->expects($this->once())->method('getUsedQuery')->will($this->returnValue($queryMock));
-        $resultSetMock->expects($this->once())->method('getUsedSearchRequest')->will($this->returnValue($searchRequestMock));
+        $resultSetMock->expects($this->once())->method('getUsedQuery')->will($this->returnValue($this->queryMock));
+        $resultSetMock->expects($this->once())->method('getUsedSearchRequest')->will($this->returnValue($this->searchRequestMock));
 
         $self = $this;
-        $processor->expects($this->once())->method('saveStatisticDate')->will($this->returnCallback(function($statisticData) use ($self) {
+        $this->statisticsRepositoryMock->expects($this->any())->method('saveStatisticsRecord')->will($this->returnCallback(function($statisticData) use ($self) {
             $this->assertSame('my search', $statisticData['keywords'], 'Unexpected keywords given');
             $this->assertSame('192.168.2.22', $statisticData['ip'], 'Unexpected ip given');
         }));
 
-        $processor->process($resultSetMock);
+        $this->processor->process($resultSetMock);
     }
 
 }
