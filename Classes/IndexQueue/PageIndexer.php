@@ -125,13 +125,7 @@ class PageIndexer extends Indexer
                 $accessibleSolrConnections[0] = $solrConnections[0];
             }
 
-            $translationOverlays = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                'pid, sys_language_uid',
-                'pages_language_overlay',
-                'pid = ' . $page['uid']
-                . BackendUtility::deleteClause('pages_language_overlay')
-                . BackendUtility::BEenableFields('pages_language_overlay')
-            );
+            $translationOverlays = $this->pagesRepository->findTranslationOverlaysByPageId((int)$page['uid']);
 
             foreach ($translationOverlays as $overlay) {
                 $languageId = $overlay['sys_language_uid'];
