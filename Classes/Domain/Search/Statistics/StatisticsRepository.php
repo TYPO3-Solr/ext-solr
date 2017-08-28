@@ -157,8 +157,7 @@ class StatisticsRepository extends AbstractRepository
         $result = $queryBuilder
             ->addSelectLiteral(
                 'FLOOR(`tstamp`/' . $bucketSeconds . ') AS `bucket`',
-                // @todo: Works only with MySQL. Add own column with Date type to prevent converting DateTime to Date
-                'unix_timestamp(from_unixtime(`tstamp`, "%y-%m-%d")) AS `timestamp`',
+                '(`tstamp` - (`tstamp` % 86400)) AS `timestamp`',
                 $queryBuilder->expr()->count('*', 'numQueries')
             )
             ->from($this->table)
