@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr;
 
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -87,16 +88,26 @@ class Site
     protected $siteHash;
 
     /**
+     * @var PagesRepository
+     */
+    protected $pagesRepository;
+
+    /**
      * Constructor.
      *
+     * @param TypoScriptConfiguration $configuration
      * @param array $page Site root page ID (uid). The page must be marked as site root ("Use as Root Page" flag).
+     * @param string $domain The domain record used by this Site
+     * @param string $siteHash The site hash used by this site
+     * @param PagesRepository $pagesRepository
      */
-    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash)
+    public function __construct(TypoScriptConfiguration $configuration, array $page, $domain, $siteHash, PagesRepository $pagesRepository = null)
     {
         $this->configuration = $configuration;
         $this->rootPage = $page;
         $this->domain = $domain;
         $this->siteHash = $siteHash;
+        $this->pagesRepository = isset($pagesRepository) ? $pagesRepository : GeneralUtility::makeInstance(PagesRepository::class);
     }
 
     /**
@@ -196,67 +207,18 @@ class Site
     public function getPages($rootPageId = 'SITE_ROOT', $maxDepth = 999)
     {
         $pageIds = [];
-        $maxDepth = intval($maxDepth);
-
         if ($rootPageId === 'SITE_ROOT') {
-            $rootPageId = $this->rootPage['uid'];
-            $pageIds[] = (int)$this->rootPage['uid'];
+            $rootPageId = (int)$this->rootPage['uid'];
+            $pageIds[] = $rootPageId;
         }
 
-        $recursionRootPageId = intval($rootPageId);
+        $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
+        // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
+        $solrConfiguration = $this->getSolrConfiguration();
+        $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
+        $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
 
-        // when we have a cached value, we can return it.
-        if (!empty(self::$sitePagesCache[$rootPageId])) {
-            return self::$sitePagesCache[$rootPageId];
-        }
-
-        if ($maxDepth <= 0) {
-            // exiting the recursion loop, may write to cache now
-            self::$sitePagesCache[$rootPageId] = $pageIds;
-            return $pageIds;
-        }
-
-        // get the page ids of the current level and if needed call getPages recursive
-        $pageIds = $this->getPageIdsFromCurrentDepthAndCallRecursive($maxDepth, $recursionRootPageId, $pageIds);
-
-        // exiting the recursion loop, may write to cache now
-        self::$sitePagesCache[$rootPageId] = $pageIds;
-        return $pageIds;
-    }
-
-    /**
-     * This method retrieves the pages ids from the current tree level an calls getPages recursive,
-     * when the maxDepth has not been reached.
-     *
-     * @param int $maxDepth
-     * @param int $recursionRootPageId
-     * @param array $pageIds
-     * @return array
-     */
-    protected function getPageIdsFromCurrentDepthAndCallRecursive($maxDepth, $recursionRootPageId, $pageIds)
-    {
-        static $initialPagesAdditionalWhereClause;
-
-        // Only fetch $initialPagesAdditionalWhereClause on first call
-        if (empty($initialPagesAdditionalWhereClause)) {
-            $configurationAwareRecordService = GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
-            // Fetch configuration in order to be able to read initialPagesAdditionalWhereClause
-            $solrConfiguration = $this->getSolrConfiguration();
-            $indexQueueConfigurationName = $configurationAwareRecordService->getIndexingConfigurationName('pages', $this->rootPage['uid'], $solrConfiguration);
-            $initialPagesAdditionalWhereClause = $solrConfiguration->getInitialPagesAdditionalWhereClause($indexQueueConfigurationName);
-        }
-
-        $result = $GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', 'pages', 'pid = ' . $recursionRootPageId . ' ' . BackendUtility::deleteClause('pages') . $initialPagesAdditionalWhereClause);
-
-        while ($page = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($result)) {
-            $pageIds[] = (int)$page['uid'];
-
-            if ($maxDepth > 1) {
-                $pageIds = array_merge($pageIds, $this->getPages($page['uid'], $maxDepth - 1));
-            }
-        }
-        $GLOBALS['TYPO3_DB']->sql_free_result($result);
-        return $pageIds;
+        return array_merge($pageIds, $this->pagesRepository->findAllSubPageIdsByRootPage($rootPageId, $maxDepth, $initialPagesAdditionalWhereClause));
     }
 
     /**

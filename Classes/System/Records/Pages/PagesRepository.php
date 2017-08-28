@@ -25,9 +25,12 @@ namespace ApacheSolrForTypo3\Solr\System\Records\Pages;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * PagesRepository to encapsulate the database access.
@@ -39,6 +42,21 @@ class PagesRepository extends AbstractRepository
      * @var string
      */
     protected $table = 'pages';
+
+    /**
+     * @var TwoLevelCache
+     */
+    protected $transientVariableCache;
+
+    /**
+     * PagesRepository constructor.
+     *
+     * @param TwoLevelCache|null $transientVariableCache
+     */
+    public function __construct(TwoLevelCache $transientVariableCache = null)
+    {
+        $this->transientVariableCache = isset($transientVariableCache) ? $transientVariableCache : GeneralUtility::makeInstance(TwoLevelCache::class, 'cache_runtime');
+    }
 
     /**
      * Gets the site's root pages. The "Is root of website" flag must be set,
@@ -116,6 +134,78 @@ class PagesRepository extends AbstractRepository
         return $queryBuilder;
     }
 
+    /**
+     * Generates a list of page IDs in this site.
+     * Attention: Includes all page types except Deleted pages!
+     *
+     * @param int $rootPageId Page ID from where to start collection sub pages
+     * @param int $maxDepth Maximum depth to descend into the site tree
+     * @param string $initialPagesAdditionalWhereClause
+     * @return array Array of pages (IDs) in this site
+     */
+    public function findAllSubPageIdsByRootPage(int $rootPageId, int $maxDepth = 999, string $initialPagesAdditionalWhereClause = '') : array
+    {
+        $pageIds = [];
+
+        $recursionRootPageId = $rootPageId;
+
+        // when we have a cached value, we can return it.
+        $cacheIdentifier = sha1('getPages' . (string)$rootPageId);
+        if ($this->transientVariableCache->get($cacheIdentifier) !== false) {
+            return $this->transientVariableCache->get($cacheIdentifier);
+        }
+
+        if ($maxDepth <= 0) {
+            // exiting the recursion loop, may write to cache now
+            $this->transientVariableCache->set($cacheIdentifier, $pageIds);
+            return $pageIds;
+        }
+
+        // get the page ids of the current level and if needed call getPages recursive
+        $pageIds = $this->getPageIdsFromCurrentDepthAndCallRecursive($maxDepth, $recursionRootPageId, $pageIds, $initialPagesAdditionalWhereClause);
+
+        // exiting the recursion loop, may write to cache now
+        $this->transientVariableCache->set($cacheIdentifier, $pageIds);
+        return $pageIds;
+    }
+
+    /**
+     * This method retrieves the pages ids from the current tree level an calls getPages recursive,
+     * when the maxDepth has not been reached.
+     *
+     * @param int $maxDepth
+     * @param int $recursionRootPageId
+     * @param array $pageIds
+     * @param string $initialPagesAdditionalWhereClause
+     * @return array
+     */
+    protected function getPageIdsFromCurrentDepthAndCallRecursive(int $maxDepth, int $recursionRootPageId, array $pageIds, string $initialPagesAdditionalWhereClause = '')
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
+        $queryBuilder
+            ->select('uid')
+            ->from($this->table)
+            ->where(
+                $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($recursionRootPageId, \PDO::PARAM_INT))
+            );
+        if (!empty($initialPagesAdditionalWhereClause)) {
+            $queryBuilder->add('where', $initialPagesAdditionalWhereClause, true);
+        }
+
+        $resultSet = $queryBuilder->execute();
+        while ($page = $resultSet->fetch()) {
+            $pageIds[] = $page['uid'];
+
+            if ($maxDepth > 1) {
+                $pageIds = array_merge($pageIds, $this->findAllSubPageIdsByRootPage($page['uid'], $maxDepth - 1));
+            }
+        }
+
+        return $pageIds;
+    }
+  
     /**
      * Finds translation overlays by given page Id.
      *
