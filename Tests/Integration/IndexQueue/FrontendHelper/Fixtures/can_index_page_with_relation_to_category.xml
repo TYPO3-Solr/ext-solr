@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <sys_registry>
+        <uid>4711</uid>
+        <entry_namespace>tx_solr</entry_namespace>
+        <entry_key>servers</entry_key>
+        <entry_value>a:2:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8999";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:1;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8999/solr/core_en/";}s:3:"1|1";a:9:{s:13:"connectionKey";s:3:"1|1";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8999";s:8:"solrPath";s:14:"/solr/core_de/";s:8:"language";i:1;s:5:"label";s:73:"Congratulations (pid: 1, language: german) - localhost:8999/solr/core_de/";}}</entry_value>
+    </sys_registry>
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                config.sys_language_overlay = 1
+                config.sys_language_mode = content_fallback
+                config.sys_language_uid = 0
+                config.linkVars = L
+
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                # very simple rendering
+                page.10 = CONTENT
+                page.10 {
+                    table = tt_content
+                    select.orderBy = sorting
+                    select.where = colPos=0
+                    renderObj = COA
+                    renderObj {
+                        10 = TEXT
+                        10.field = bodytext
+                    }
+                }
+
+                plugin.tx_solr {
+
+                    enabled = 1
+
+                    solr {
+                        scheme = http
+                        host   = localhost
+                        port   = 8999
+                        path   = /solr/core_en/
+                    }
+
+                    index {
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                            pageHierarchy_stringM = pathToHierarchy
+                        }
+
+                        queue {
+                            pages = 1
+                            pages {
+                                table = pages
+                                fields {
+                                    title = title
+                                    categories_stringM = SOLR_RELATION
+                                    categories_stringM {
+                                        localField = categories
+                                        foreignLabelField = title
+                                        multiValue = 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <title>Page</title>
+    </pages>
+
+    <pages>
+        <uid>10</uid>
+        <pid>1</pid>
+        <doktype>1</doktype>
+        <title>Sub page</title>
+    </pages>
+
+    <sys_category_record_mm>
+        <!-- the category id -->
+        <uid_local>123</uid_local>
+        <!-- the page id -->
+        <uid_foreign>10</uid_foreign>
+        <tablenames>pages</tablenames>
+        <fieldname>categories</fieldname>
+        <sorting>1</sorting>
+        <sorting_foreign>1</sorting_foreign>
+    </sys_category_record_mm>
+
+    <sys_category>
+        <uid>123</uid>
+        <pid>0</pid>
+        <title>Test</title>
+        <sys_language_uid>0</sys_language_uid>
+    </sys_category>
+
+    <tx_solr_indexqueue_item>
+        <uid>4711</uid>
+        <root>1</root>
+        <item_type>pages</item_type>
+        <item_uid>10</item_uid>
+        <indexing_configuration>pages</indexing_configuration>
+        <has_indexing_properties>0</has_indexing_properties>
+        <indexing_priority>0</indexing_priority>
+        <changed>1449151778</changed>
+        <indexed>0</indexed>
+        <errors></errors>
+        <pages_mountidentifier></pages_mountidentifier>
+    </tx_solr_indexqueue_item>
+</dataset>
