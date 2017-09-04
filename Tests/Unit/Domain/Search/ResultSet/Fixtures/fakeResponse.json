@@ -29,7 +29,7 @@
             "facet.field": ["type",
                 "{!ex=subTitle}subTitle",
                 "rootline"],
-            "fq": ["siteHash:\"b8c8d04e66c58f01283ef81a4ded197f26ab402a\"",
+            "fq": ["siteHash:\"23c51a0d5cf548afecc043a7068902e8f82a22a0\"",
                 "{!typo3access}-1,0"],
             "hl.requireFieldMatch": "true",
             "mm": "2<-35%",
@@ -56,9 +56,9 @@
         "maxScore": 1.0,
         "docs": [
             {
-                "id": "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/6/0/0/0",
+                "id": "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/6/0/0/0",
                 "site": "",
-                "siteHash": "b8c8d04e66c58f01283ef81a4ded197f26ab402a",
+                "siteHash": "23c51a0d5cf548afecc043a7068902e8f82a22a0",
                 "type": "pages",
                 "uid": 6,
                 "pid": 1,
@@ -83,9 +83,9 @@
                 "isElevated": false
             },
             {
-                "id": "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/7/0/0/0",
+                "id": "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/7/0/0/0",
                 "site": "",
-                "siteHash": "b8c8d04e66c58f01283ef81a4ded197f26ab402a",
+                "siteHash": "23c51a0d5cf548afecc043a7068902e8f82a22a0",
                 "type": "pages",
                 "uid": 7,
                 "pid": 1,
@@ -110,9 +110,9 @@
                 "isElevated": false
             },
             {
-                "id": "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/8/0/0/0",
+                "id": "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/8/0/0/0",
                 "site": "",
-                "siteHash": "b8c8d04e66c58f01283ef81a4ded197f26ab402a",
+                "siteHash": "23c51a0d5cf548afecc043a7068902e8f82a22a0",
                 "type": "pages",
                 "uid": 8,
                 "pid": 1,
@@ -164,13 +164,13 @@
         "facet_intervals": {}
     },
     "highlighting": {
-        "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/6/0/0/0": {
+        "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/6/0/0/0": {
             "content": [""]
         },
-        "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/7/0/0/0": {
+        "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/7/0/0/0": {
             "content": [""]
         },
-        "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/8/0/0/0": {
+        "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/8/0/0/0": {
             "content": [""]
         }
     },
@@ -184,18 +184,18 @@
         "parsedquery": "(+MatchAllDocsQuery(*:*) ())/no_coord",
         "parsedquery_toString": "+*:* ()",
         "explain": {
-            "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/6/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n",
-            "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/7/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n",
-            "b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/8/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n"
+            "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/6/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n",
+            "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/7/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n",
+            "23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/8/0/0/0": "\n1.0 = (MATCH) sum of:\n  1.0 = (MATCH) MatchAllDocsQuery, product of:\n    1.0 = queryNorm\n"
         },
         "QParser": "ExtendedDismaxQParser",
         "altquerystring": null,
         "boost_queries": null,
         "parsed_boost_queries": [],
         "boostfuncs": null,
-        "filter_queries": ["siteHash:\"b8c8d04e66c58f01283ef81a4ded197f26ab402a\"",
+        "filter_queries": ["siteHash:\"23c51a0d5cf548afecc043a7068902e8f82a22a0\"",
             "{!typo3access}-1,0"],
-        "parsed_filter_queries": ["siteHash:b8c8d04e66c58f01283ef81a4ded197f26ab402a",
+        "parsed_filter_queries": ["siteHash:23c51a0d5cf548afecc043a7068902e8f82a22a0",
             "ConstantScore(org.typo3.solr.search.AccessFilter@7b7c4a74)"],
         "timing": {
             "time": 9.0,
