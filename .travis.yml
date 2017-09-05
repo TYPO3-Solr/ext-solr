@@ -35,10 +35,6 @@ matrix:
       php: 7.0
     - env: TYPO3_VERSION="9.x-dev"
       php: 7.1
-    - env: TYPO3_VERSION="8.x-dev"
-      php: 7.0
-    - env: TYPO3_VERSION="8.x-dev"
-      php: 7.1
 
 before_install:
   - composer self-update
