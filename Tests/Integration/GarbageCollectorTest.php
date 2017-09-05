@@ -100,9 +100,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canQueueAPageAndRemoveItWithTheGarbageCollector()
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
         $this->importDataSetFromFixture('can_queue_a_page_and_remove_it_with_the_garbage_collector.xml');
 
         // we expect that the index queue is empty before we start
@@ -125,9 +122,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSet()
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
         $this->importDataSetFromFixture('can_collect_garbage_from_subPages_when_page_is_set_to_hidden_and_extendToSubpages_is_set.xml');
 
         // we expect that the index queue is empty before we start
@@ -141,7 +135,9 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(3);
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', ['hidden' => 1]);
+        $connection = $this->getDatabaseConnectionBC();
+        $connection->exec('UPDATE pages SET hidden=1 WHERE uid=1');
+
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
@@ -157,9 +153,6 @@ class GarbageCollectorTest extends IntegrationTest
      */
     public function canCollectGarbageFromSubPagesWhenPageIsSetToHiddenAndExtendToSubPagesIsSetForMultipleSubpages()
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
         $this->importDataSetFromFixture('can_collect_garbage_from_subPages_when_page_is_set_to_hidden_and_extendToSubpages_is_set_multiple_subpages.xml');
 
         // we expect that the index queue is empty before we start
@@ -174,7 +167,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(4);
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', ['hidden' => 1]);
+        $connection = $this->getDatabaseConnectionBC();
+        $connection->exec('UPDATE pages SET hidden=1 WHERE uid=1');
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;

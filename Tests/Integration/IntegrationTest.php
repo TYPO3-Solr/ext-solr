@@ -26,21 +26,17 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
 
 use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageIndexer;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerRequest;
-use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerResponse;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageGenerator;
 use TYPO3\CMS\Frontend\Utility\EidUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Install\Service\SqlExpectedSchemaService;
 use TYPO3\CMS\Install\Service\SqlSchemaMigrationService;
 
@@ -132,19 +128,30 @@ abstract class IntegrationTest extends FunctionalTestCase
 
     /**
      * @param string $fixtureName
-     * @param boolean $debugOutput
      */
-    protected function importDumpFromFixture($fixtureName, $debugOutput = true)
+    protected function importDumpFromFixture($fixtureName)
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = $debugOutput;
         $dumpContent = $this->getFixtureContentByName($fixtureName);
         $dumpContent = str_replace(["\r", "\n"], '', $dumpContent);
         $queries = GeneralUtility::trimExplode(';', $dumpContent, true);
+
+        $connection = $this->getDatabaseConnectionBC();
         foreach ($queries as $query) {
-            $database->sql_query($query);
+            $connection->exec($query);
         }
+    }
+
+    /**
+     * @todo: remove this method after increasing to nimut/testing-framework v 2.0
+     *        and use getDatabaseConnection() instead of this
+     *
+     * @return \TYPO3\CMS\Core\Database\Connection
+     */
+    protected function getDatabaseConnectionBC()
+    {
+        /* @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        return $connectionPool->getConnectionByName($connectionPool->getConnectionNames()[0]);
     }
 
     /**
@@ -174,13 +181,12 @@ abstract class IntegrationTest extends FunctionalTestCase
         $schemaMigrationService->performUpdateQueries($updateStatements['change'], $updateStatements['change']);
         $schemaMigrationService->performUpdateQueries($updateStatements['create_table'], $updateStatements['create_table']);
 
+        $connection = $this->getDatabaseConnectionBC();
         foreach ($insertCount as $table => $count) {
             $insertStatements = $schemaMigrationService->getTableInsertStatements($statements, $table);
             foreach ($insertStatements as $insertQuery) {
                 $insertQuery = rtrim($insertQuery, ';');
-                /** @var DatabaseConnection $database */
-                $database = $GLOBALS['TYPO3_DB'];
-                $database->admin_query($insertQuery);
+                $connection->exec($insertQuery);
             }
         }
     }
