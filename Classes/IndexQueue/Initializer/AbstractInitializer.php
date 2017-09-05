@@ -27,8 +27,10 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue\Initializer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -82,17 +84,21 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     protected $logger = null;
 
-    // Object initialization
+    /**
+     * @var QueueItemRepository
+     */
+    protected $queueItemRepository;
 
     /**
      * Constructor, prepares the flash message queue
-     *
+     * @param QueueItemRepository|null $queueItemRepository
      */
-    public function __construct()
+    public function __construct(QueueItemRepository $queueItemRepository = null)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $this->flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier('solr.queue.initializer');
+        $this->queueItemRepository = isset($queueItemRepository) ? $queueItemRepository : GeneralUtility::makeInstance(QueueItemRepository::class);
     }
 
     /**
@@ -135,8 +141,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         $this->indexingConfigurationName = (string)$indexingConfigurationName;
     }
 
-    // Index Queue initialization
-
     /**
      * Initializes Index Queue items for a certain site and indexing
      * configuration.
@@ -145,8 +149,6 @@ abstract class AbstractInitializer implements IndexQueueInitializer
      */
     public function initialize()
     {
-        $initialized = false;
-
         $initializationQuery = 'INSERT INTO tx_solr_indexqueue_item (root, item_type, item_uid, indexing_configuration, indexing_priority, changed, errors) '
             . $this->buildSelectStatement() . ',"" '
             . 'FROM ' . $this->type . ' '
@@ -154,15 +156,16 @@ abstract class AbstractInitializer implements IndexQueueInitializer
             . $this->buildPagesClause()
             . $this->buildTcaWhereClause()
             . $this->buildUserWhereClause();
+        $logData = ['query' => $initializationQuery];
 
-        $GLOBALS['TYPO3_DB']->sql_query($initializationQuery);
-        if (!$GLOBALS['TYPO3_DB']->sql_error()) {
-            $initialized = true;
+        try {
+            $logData['rows'] = $this->queueItemRepository->initializeByNativeSQLStatement($initializationQuery);
+        } catch (DBALException $DBALException) {
+            $logData['error'] = $DBALException->getCode() . ': ' . $DBALException->getMessage();
         }
 
-        $this->logInitialization($initializationQuery);
-
-        return $initialized;
+        $this->logInitialization($logData);
+        return true;
     }
 
     /**
@@ -365,23 +368,20 @@ abstract class AbstractInitializer implements IndexQueueInitializer
         */
     }
 
-    protected function logInitialization($initializationQuery)
+    protected function logInitialization(array $logData)
     {
         $solrConfiguration = $this->site->getSolrConfiguration();
 
         $logSeverity = SolrLogManager::NOTICE;
-        $logData = [
+        if (isset($logData['error'])) {
+            $logSeverity = SolrLogManager::ERROR;
+        }
+
+        $logData = array_merge($logData, [
             'site' => $this->site->getLabel(),
             'indexing configuration name' => $this->indexingConfigurationName,
             'type' => $this->type,
-            'query' => $initializationQuery,
-            'rows' => $GLOBALS['TYPO3_DB']->sql_affected_rows()
-        ];
-
-        if ($GLOBALS['TYPO3_DB']->sql_errno()) {
-            $logSeverity = SolrLogManager::ERROR;
-            $logData['error'] = $GLOBALS['TYPO3_DB']->sql_errno() . ': ' . $GLOBALS['TYPO3_DB']->sql_error();
-        }
+        ]);
 
         if ($solrConfiguration->getLoggingIndexingIndexQueueInitialization()) {
             $this->logger->log(

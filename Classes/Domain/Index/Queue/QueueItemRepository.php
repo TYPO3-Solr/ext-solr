@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -672,5 +673,20 @@ class QueueItemRepository extends AbstractRepository
             ->set('indexed', time())
             ->where($queryBuilder->expr()->eq('uid', $item->getIndexQueueUid()))
             ->execute();
+    }
+
+    /**
+     * Initializes Queue by given sql
+     *
+     * Note: Do not use platform specific functions!
+     *
+     * @param string $sqlStatement Native SQL statement
+     * @return int The number of affected rows.
+     * @internal
+     * @throws DBALException
+     */
+    public function initializeByNativeSQLStatement(string $sqlStatement) : int
+    {
+        return $this->getQueryBuilder()->getConnection()->exec($sqlStatement);
     }
 }

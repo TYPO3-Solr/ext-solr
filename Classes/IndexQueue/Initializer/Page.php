@@ -255,7 +255,16 @@ class Page extends AbstractInitializer
             . $this->buildUserWhereClause();
 
         $GLOBALS['TYPO3_DB']->sql_query($initializationQuery);
-        $this->logInitialization($initializationQuery);
+
+        $logData = [
+            'query' => $initializationQuery,
+            'rows' => $GLOBALS['TYPO3_DB']->sql_affected_rows()
+        ];
+        if ($GLOBALS['TYPO3_DB']->sql_errno()) {
+            $logData['error'] = $GLOBALS['TYPO3_DB']->sql_errno() . ': ' . $GLOBALS['TYPO3_DB']->sql_error();
+        }
+
+        $this->logInitialization($logData);
     }
 
     /**
