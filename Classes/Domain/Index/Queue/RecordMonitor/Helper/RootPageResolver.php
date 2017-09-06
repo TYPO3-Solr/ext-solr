@@ -187,7 +187,7 @@ class RootPageResolver implements SingletonInterface
         }
         if ($this->extensionConfiguration->getIsUseConfigurationTrackRecordsOutsideSiteroot()) {
             $recordPageId = $this->getRecordPageId($table, $uid);
-            if($recordPageId === 0) {
+            if ($recordPageId === 0) {
                 return $rootPages;
             }
             $alternativeSiteRoots = $this->getAlternativeSiteRootPagesIds($table, $uid, $recordPageId);

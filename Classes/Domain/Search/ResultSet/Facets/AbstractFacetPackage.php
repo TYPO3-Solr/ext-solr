@@ -46,7 +46,7 @@ abstract class AbstractFacetPackage {
     {
         $parser = $this->objectManager->get($this->getParserClassName());
         if (!$parser instanceof FacetParserInterface) {
-            throw new InvalidFacetPackageException('Invalid parser for package ' . __CLASS__ );
+            throw new InvalidFacetPackageException('Invalid parser for package ' . __CLASS__);
         }
         return $parser;
     }
@@ -66,7 +66,7 @@ abstract class AbstractFacetPackage {
     {
         $urlDecoder = $this->objectManager->get($this->getUrlDecoderClassName());
         if (!$urlDecoder instanceof FacetUrlDecoderInterface) {
-            throw new InvalidUrlDecoderException('Invalid urldecoder for package ' . __CLASS__ );
+            throw new InvalidUrlDecoderException('Invalid urldecoder for package ' . __CLASS__);
         }
         return $urlDecoder;
     }
@@ -86,7 +86,7 @@ abstract class AbstractFacetPackage {
     {
         $urlDecoder = $this->objectManager->get($this->getQueryBuilderClassName());
         if(!$urlDecoder instanceof FacetQueryBuilderInterface) {
-            throw new InvalidQueryBuilderException('Invalid querybuilder for package ' . __CLASS__ );
+            throw new InvalidQueryBuilderException('Invalid querybuilder for package ' . __CLASS__);
         }
         return $urlDecoder;
     }

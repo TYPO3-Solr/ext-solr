@@ -65,7 +65,7 @@ class Filters implements ParameterBuilder
     public function removeByPrefix($filterFieldName)
     {
         foreach ($this->filters as $key => $filterString) {
-            if (GeneralUtility::isFirstPartOfStr($filterString, $filterFieldName )) {
+            if (GeneralUtility::isFirstPartOfStr($filterString, $filterFieldName)) {
                 unset($this->filters[$key]);
             }
         }
