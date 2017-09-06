@@ -243,4 +243,25 @@ class PagesRepository extends AbstractRepository
                 . BackendUtility::deleteClause('pages')
             )->execute()->fetchAll();
     }
+
+    /**
+     * Finds all pages by given where clause
+     *
+     * @param string $whereClause
+     * @return array
+     */
+    public function findAllMountPagesByWhereClause(string $whereClause) : array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->getRestrictions()->removeAll();
+        return $queryBuilder
+            ->select(
+                'uid',
+                'mount_pid AS mountPageSource',
+                'uid AS mountPageDestination',
+                'mount_pid_ol AS mountPageOverlayed')
+            ->from($this->table)
+            ->add('where', $whereClause)
+            ->execute()->fetchAll();
+    }
 }

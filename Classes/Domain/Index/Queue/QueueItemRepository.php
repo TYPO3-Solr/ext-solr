@@ -389,7 +389,7 @@ class QueueItemRepository extends AbstractRepository
                 'items',
                 (string)$queryBuilderForDeletingProperties->expr()->andX(
                     $queryBuilderForDeletingProperties->expr()->eq('items.uid', $queryBuilderForDeletingProperties->quoteIdentifier('properties.item_id')),
-                    $queryBuilderForDeletingProperties->expr()->eq('items.root' , $site->getRootPageId()),
+                    $queryBuilderForDeletingProperties->expr()->eq('items.root', $site->getRootPageId()),
                     empty($indexingConfigurationName) ? '' : $queryBuilderForDeletingProperties->expr()->eq(
                         'items.indexing_configuration', $queryBuilderForDeletingProperties->createNamedParameter($indexingConfigurationName)
                     )
@@ -469,7 +469,7 @@ class QueueItemRepository extends AbstractRepository
      */
     protected function getItemsByCompositeExpression(CompositeExpression $expression = null, QueryBuilder $queryBuilder = null) : array
     {
-        if (! $queryBuilder instanceof QueryBuilder) {
+        if (!$queryBuilder instanceof QueryBuilder) {
             $queryBuilder = $this->getQueryBuilder();
         }
 
@@ -688,5 +688,59 @@ class QueueItemRepository extends AbstractRepository
     public function initializeByNativeSQLStatement(string $sqlStatement) : int
     {
         return $this->getQueryBuilder()->getConnection()->exec($sqlStatement);
+    }
+
+    /**
+     * Retrieves an array of pageIds from mountPoints that allready have a queue entry.
+     *
+     * @param string $identifier identifier of the mount point
+     * @return array pageIds from mountPoints that allready have a queue entry
+     */
+    public function findPageIdsOfExistingMountPagesByMountIdentifier(string $identifier) : array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $resultSet = $queryBuilder
+            ->select('item_uid')
+            ->add('select', $queryBuilder->expr()->count('*', 'queueItemCount'), true)
+            ->from($this->table)
+            ->where(
+                $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter('pages')),
+                $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($identifier))
+            )
+            ->groupBy('item_uid')
+            ->execute();
+
+        $mountedPagesIdsWithQueueItems = [];
+        while ($record = $resultSet->fetch()) {
+            if ($record['queueItemCount'] > 0) {
+                $mountedPagesIdsWithQueueItems[] = $record['item_uid'];
+            }
+        }
+
+        return $mountedPagesIdsWithQueueItems;
+    }
+
+    /**
+     * Retrieves an array of items for mount destinations mathed by root page ID, Mount Identifier and a list of mounted page IDs.
+     *
+     * @param int $rootPid
+     * @param string $identifier identifier of the mount point
+     * @param array $mountedPids An array of mounted page IDs
+     * @return array
+     */
+    public function findAllIndexQueueItemsByRootPidAndMountIdentifierAndMountedPids(int $rootPid, string $identifier, array $mountedPids) : array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder
+            ->select('*')
+            ->from($this->table)
+            ->where(
+                $queryBuilder->expr()->eq('root', $queryBuilder->createNamedParameter($rootPid, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('item_type', $queryBuilder->createNamedParameter('pages')),
+                $queryBuilder->expr()->in('item_uid', $mountedPids),
+                $queryBuilder->expr()->eq('has_indexing_properties', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)),
+                $queryBuilder->expr()->eq('pages_mountidentifier', $queryBuilder->createNamedParameter($identifier))
+            )
+            ->execute()->fetchAll();
     }
 }
