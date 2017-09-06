@@ -132,6 +132,27 @@ class PageIndexerTest extends IntegrationTest
     }
 
     /**
+     * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
+     *
+     * @test
+     */
+    public function canIndexPageToCategoryRelation()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+
+        $this->importDataSetFromFixture('can_index_page_with_relation_to_category.xml');
+        $this->executePageIndexer([], 10, 0, '', '', null, '', '', 0);
+
+        $this->waitToBeVisibleInSolr('core_en');
+
+        $solrContentEn = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $this->assertContains('"title":"Sub page"', $solrContentEn, 'Solr did not contain the english page');
+        $this->assertContains('"categories_stringM":["Test"]', $solrContentEn, 'There is no relation for the original, so ther should not be a related field');
+
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+    }
+
+    /**
      * @test
      */
     public function canIndexPageIntoSolrWithAdditionalFields()
