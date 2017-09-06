@@ -2,6 +2,12 @@ plugin.tx_solr {
 	# cat=solr: basic/10/enable; type=boolean; label=Enable/disable Solr extension: EXT:solr should only be enabled for relevant sys_languages, to avoid unnecessary connections and overwritten contents.
 	enabled = 1
 
+	view {
+		templateRootPath = EXT:solr/Resources/Private/Templates/
+		partialRootPath = EXT:solr/Resources/Private/Partials/
+		layoutRootPath = EXT:solr/Resources/Private/Layouts/
+	}
+
 	solr {
 		scheme = http
 		host = localhost
