@@ -243,6 +243,16 @@ plugin.tx_solr {
 	view {
 		pluginNamespace = tx_solr
 
+		templateRootPaths {
+			0 = {$plugin.tx_solr.templateRootPath}
+		}
+		partialRootPaths {
+			0 = {$plugin.tx_solr.partialRootPath}
+		}
+		layoutRootPaths {
+			0 = {$plugin.tx_solr.layoutRootPath}
+		}
+
         // By convention the templates is loaded from EXT:solr/Resources/Private/Templates/Frontend/Search/(ActionName).html
         // If you want to define a different entry template, you can do this here to overwrite the conventional default template
         // if you want to use FLUID fallbacks you can just configure the template name, otherwise you could also use a full reference EXT:/.../
