@@ -113,7 +113,7 @@ class Grouping implements ParameterBuilder
         }
 
         if (count($this->fields) > 0) {
-            $groupingParameter['group.field'] = $this->sortings;
+            $groupingParameter['group.field'] = $this->fields;
         }
 
         return $groupingParameter;
