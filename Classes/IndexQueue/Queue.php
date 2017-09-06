@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\Domain\Index\Queue\QueueItemRepository;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\ConfigurationAwareRecordService;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\RecordMonitor\Helper\RootPageResolver;
 use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatistic;
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\Statistic\QueueStatisticsRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
@@ -64,17 +65,24 @@ class Queue
     protected $queueItemRepository;
 
     /**
+     * @var QueueStatisticsRepository
+     */
+    protected $queueStatisticsRepository;
+
+    /**
      * Queue constructor.
      * @param RootPageResolver|null $rootPageResolver
      * @param ConfigurationAwareRecordService|null $recordService
      * @param QueueItemRepository|null $queueItemRepository
+     * @param QueueStatisticsRepository|null $queueStatisticsRepository
      */
-    public function __construct(RootPageResolver $rootPageResolver = null, ConfigurationAwareRecordService $recordService = null, QueueItemRepository $queueItemRepository = null)
+    public function __construct(RootPageResolver $rootPageResolver = null, ConfigurationAwareRecordService $recordService = null, QueueItemRepository $queueItemRepository = null, QueueStatisticsRepository $queueStatisticsRepository = null)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
         $this->rootPageResolver = isset($rootPageResolver) ? $rootPageResolver : GeneralUtility::makeInstance(RootPageResolver::class);
         $this->recordService = isset($recordService) ? $recordService : GeneralUtility::makeInstance(ConfigurationAwareRecordService::class);
         $this->queueItemRepository = isset($queueItemRepository) ? $queueItemRepository : GeneralUtility::makeInstance(QueueItemRepository::class);
+        $this->queueStatisticsRepository = isset($queueStatisticsRepository) ? $queueStatisticsRepository : GeneralUtility::makeInstance(QueueStatisticsRepository::class);
     }
 
     // FIXME some of the methods should be renamed to plural forms
@@ -513,19 +521,7 @@ class Queue
      */
     public function getAllItemsCount()
     {
-        return $this->getItemCount();
-    }
-
-    /**
-     * @param string $where
-     * @return int
-     */
-    private function getItemCount($where = '1=1')
-    {
-        /**  @var $db \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $db = $GLOBALS['TYPO3_DB'];
-
-        return (int)$db->exec_SELECTcountRows('uid', 'tx_solr_indexqueue_item', $where);
+        return $this->queueItemRepository->count();
     }
 
     /**
@@ -539,47 +535,7 @@ class Queue
      */
     public function getStatisticsBySite(Site $site, $indexingConfigurationName = '')
     {
-        $indexingConfigurationConstraint = $this->buildIndexConfigurationConstraint($indexingConfigurationName);
-        $where = 'root = ' . (int)$site->getRootPageId() . $indexingConfigurationConstraint;
-
-        $indexQueueStats = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-            'indexed < changed as pending,'
-            . '(errors not like "") as failed,'
-            . 'COUNT(*) as count',
-            'tx_solr_indexqueue_item',
-            $where,
-            'pending, failed'
-        );
-            /** @var $statistic QueueStatistic */
-        $statistic = GeneralUtility::makeInstance(QueueStatistic::class);
-
-        foreach ($indexQueueStats as $row) {
-            if ($row['failed'] == 1) {
-                $statistic->setFailedCount((int)$row['count']);
-            } elseif ($row['pending'] == 1) {
-                $statistic->setPendingCount((int)$row['count']);
-            } else {
-                $statistic->setSuccessCount((int)$row['count']);
-            }
-        }
-
-        return $statistic;
-    }
-
-    /**
-     * Build a database constraint that limits to a certain indexConfigurationName
-     *
-     * @param string $indexingConfigurationName
-     * @return string
-     */
-    protected function buildIndexConfigurationConstraint($indexingConfigurationName)
-    {
-        $indexingConfigurationConstraint = '';
-        if (!empty($indexingConfigurationName)) {
-            $indexingConfigurationConstraint = ' AND indexing_configuration = \'' . $indexingConfigurationName . '\'';
-            return $indexingConfigurationConstraint;
-        }
-        return $indexingConfigurationConstraint;
+        return $this->queueStatisticsRepository->findOneByRootPidAndOptionalIndexingConfigurationName($site->getRootPageId(), $indexingConfigurationName);
     }
 
     /**
