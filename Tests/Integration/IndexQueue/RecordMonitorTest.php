@@ -102,9 +102,6 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canUpdateRootPageRecordWithoutSQLErrorFromMountPages()
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
         $this->importDataSetFromFixture('update_mount_point_is_updating_the_mount_point_correctly.xml');
 
         // we expect that the index queue is empty before we start
@@ -177,16 +174,14 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canQueueSubPagesWhenExtendToSubPagesWasSetAndHiddenFlagWasRemoved()
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
         $this->importDataSetFromFixture('reindex_subpages_when_extendToSubpages_set_and_hidden_removed.xml');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', ['hidden' => 0]);
+        $connection = $this->getDatabaseConnectionBC();
+        $connection->exec('UPDATE pages SET hidden=0 WHERE uid=1');
         $changeSet = ['hidden' => 0];
 
         $dataHandler = $this->dataHandler;
@@ -202,16 +197,14 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canQueueSubPagesWhenHiddenFlagIsSetAndExtendToSubPagesFlagWasRemoved()
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
         $this->importDataSetFromFixture('reindex_subpages_when_hidden_set_and_extendToSubpage_removed.xml');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', ['extendToSubpages' => 0]);
+        $connection = $this->getDatabaseConnectionBC();
+        $connection->exec('UPDATE pages SET extendToSubpages=0 WHERE uid=1');
         $changeSet = ['extendToSubpages' => 0];
 
         $dataHandler = $this->dataHandler;
@@ -227,16 +220,14 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function queueIsNotFilledWhenItemIsSetToHidden()
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
         $this->importDataSetFromFixture('reindex_subpages_when_hidden_set_and_extendToSubpage_removed.xml');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=1', ['hidden' => 1]);
+        $connection = $this->getDatabaseConnectionBC();
+        $connection->exec('UPDATE pages SET hidden=1 WHERE uid=1');
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
@@ -361,16 +352,15 @@ class RecordMonitorTest extends IntegrationTest
      */
     public function canQueueUpdatePagesWithCustomPageType()
     {
-        /** @var $database  \TYPO3\CMS\Core\Database\DatabaseConnection */
-        $database = $GLOBALS['TYPO3_DB'];
-        $database->debugOutput = true;
         $this->importDataSetFromFixture('can_use_correct_indexing_configuration_for_a_new_custom_page_type_record.xml');
 
         // we expect that the index queue is empty before we start
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $database->exec_UPDATEquery('pages', 'uid=8', ['hidden' => 0]);
+        $connection = $this->getDatabaseConnectionBC();
+        $connection->exec('UPDATE pages SET hidden=0 WHERE uid=8');
+
         $changeSet = ['hidden' => 0];
 
         $dataHandler = $this->dataHandler;
