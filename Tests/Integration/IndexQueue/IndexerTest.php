@@ -186,6 +186,38 @@ class IndexerTest extends IntegrationTest
      }
 
     /**
+     * This testcase should check if we can queue an custom record with multiple MM relations.
+     *
+     * @test
+     */
+    public function canIndexMultipleMMRelatedItems()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+
+        // create fake extension database table and TCA
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_mmrelated'] = include($this->getFixturePathByName('fake_extension2_mmrelated_tca.php'));
+        $this->importDataSetFromFixture('can_index_custom_record_with_mulitple_mm_relations.xml');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 88);
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the value from the mm relation?
+        $this->waitToBeVisibleInSolr('core_en');
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+
+        $decodedSolrContent = json_decode($solrContent);
+        $tags = $decodedSolrContent->response->docs[0]->tags_stringM;
+
+        $this->assertSame(["the tag","the second tag"], $tags, $solrContent, 'Did not find MM related tags');
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"the document"', $solrContent, 'Could not index document into solr');
+
+        $this->cleanUpSolrServerAndAssertEmpty('core_en');
+    }
+
+    /**
      * This testcase should check if we can queue an custom record with MM relations and respect the additionalWhere clause.
      *
      * @test
@@ -274,6 +306,44 @@ class IndexerTest extends IntegrationTest
         $this->assertContains('"sysCategoryId_stringM":["1"]', $solrContent, 'Uid of related sys_category couldn\'t be resolved by using "foreignLabelField"');
         $this->assertContains('"sysCategory_stringM":["sys_category"]', $solrContent, 'Label of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
         $this->assertContains('"sysCategoryDescription_stringM":["sys_category description"]', $solrContent, 'Description of related sys_category couldn\'t be resolved by using "foreignLabelField" and "enableRecursiveValueResolution"');
+        $this->cleanUpSolrServerAndAssertEmpty();
+    }
+
+    /**
+     * This testcase is used to check if multiple direct relations can be resolved with the RELATION configuration
+     *
+     * @test
+     */
+    public function canIndexItemWithMultipleDirectRelation()
+    {
+        $this->cleanUpSolrServerAndAssertEmpty();
+
+        // create fake extension database table and TCA
+        $this->importExtTablesDefinition('fake_extension2_table.sql');
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_bar'] = include($this->getFixturePathByName('fake_extension2_bar_tca.php'));
+        $GLOBALS['TCA']['tx_fakeextension_domain_model_directrelated'] = include($this->getFixturePathByName('fake_extension2_directrelated_tca.php'));
+        $this->importDataSetFromFixture('can_index_custom_record_with_multiple_direct_relations.xml');
+
+        $result = $this->addToQueueAndIndexRecord('tx_fakeextension_domain_model_bar', 111);
+        $this->assertTrue($result, 'Indexing was not indicated to be successful');
+
+        // do we have the record in the index with the value from the mm relation?
+        $this->waitToBeVisibleInSolr();
+        $solrContent = file_get_contents('http://localhost:8999/solr/core_en/select?q=*:*');
+        $decodedSolrContent = json_decode($solrContent);
+
+        $this->assertContains('"numFound":1', $solrContent, 'Could not index document into solr');
+        $this->assertContains('"title":"testnews"', $solrContent, 'Could not index document into solr');
+
+        $category_stringM = $decodedSolrContent->response->docs[0]->category_stringM;
+        $this->assertSame(['the category','the second category'], $category_stringM, 'Unexpected category_stringM value');
+        $sysCategoryId_stringM = $decodedSolrContent->response->docs[0]->sysCategoryId_stringM;
+        $this->assertSame(['1','2'], $sysCategoryId_stringM, 'Unexpected sysCategoryId_stringM value');
+        $sysCategory_stringM = $decodedSolrContent->response->docs[0]->sysCategory_stringM;
+        $this->assertSame(['sys_category','sys_category 2'], $sysCategory_stringM, 'Unexpected sysCategory_stringM value');
+        $sysCategoryDescription_stringM = $decodedSolrContent->response->docs[0]->sysCategoryDescription_stringM;
+        $this->assertSame(['sys_category description','second sys_category description'], $sysCategoryDescription_stringM, 'Unexpected sysCategoryDescription_stringM value');
+
         $this->cleanUpSolrServerAndAssertEmpty();
     }
 

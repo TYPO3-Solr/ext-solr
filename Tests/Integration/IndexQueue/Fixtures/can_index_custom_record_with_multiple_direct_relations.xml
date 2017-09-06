@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <sys_registry>
+        <uid>4711</uid>
+        <entry_namespace>tx_solr</entry_namespace>
+        <entry_key>servers</entry_key>
+        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8999";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8999/solr/core_en/";}}</entry_value>
+    </sys_registry>
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                # very simple rendering
+                page.10 = CONTENT
+                page.10 {
+                    table = tt_content
+                    select.orderBy = sorting
+                    select.where = colPos=0
+                    renderObj = COA
+                    renderObj {
+                        10 = TEXT
+                        10.field = bodytext
+                    }
+                }
+
+                plugin.tx_solr {
+
+                    enabled = 1
+
+                    solr {
+                        scheme = http
+                        host   = localhost
+                        port   = 8081
+                        path   = /solr/core_en/
+                    }
+
+                    index {
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                            pageHierarchy_stringM = pathToHierarchy
+                        }
+
+                        queue {
+                            foo = 1
+                            foo {
+                                table = tx_fakeextension_domain_model_bar
+
+                                fields {
+                                    title = title
+                                    category_stringM = SOLR_RELATION
+                                    category_stringM {
+                                        localField = category
+                                        foreignLabelField = category_label
+                                        multiValue = 1
+                                    }
+
+                                    sysCategoryId_stringM = SOLR_RELATION
+                                    sysCategoryId_stringM {
+                                        localField = category
+                                        foreignLabelField = sys_category
+                                        enableRecursiveValueResolution = 0
+                                        multiValue = 1
+                                    }
+
+                                    sysCategory_stringM = SOLR_RELATION
+                                    sysCategory_stringM {
+                                        localField = category
+                                        foreignLabelField = sys_category
+                                        enableRecursiveValueResolution = 1
+                                        multiValue = 1
+                                    }
+
+                                    sysCategoryDescription_stringM = SOLR_RELATION
+                                    sysCategoryDescription_stringM {
+                                        localField = category
+                                        foreignLabelField = sys_category.description
+                                        enableRecursiveValueResolution = 1
+                                        multiValue = 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+    </pages>
+    <sys_category>
+        <uid>1</uid>
+        <pid>0</pid>
+        <l10n_diffsource></l10n_diffsource>
+        <title>sys_category</title>
+        <description>sys_category description</description>
+    </sys_category>
+    <sys_category>
+        <uid>2</uid>
+        <pid>0</pid>
+        <l10n_diffsource></l10n_diffsource>
+        <title>sys_category 2</title>
+        <description>second sys_category description</description>
+    </sys_category>
+    <tx_fakeextension_domain_model_bar>
+        <uid>111</uid>
+        <pid>1</pid>
+        <title>testnews</title>
+        <category>4711,4712</category>
+    </tx_fakeextension_domain_model_bar>
+
+    <tx_fakeextension_domain_model_directrelated>
+        <uid>4711</uid>
+        <pid>1</pid>
+        <category_label>the category</category_label>
+        <sys_category>1</sys_category>
+    </tx_fakeextension_domain_model_directrelated>
+
+    <tx_fakeextension_domain_model_directrelated>
+        <uid>4712</uid>
+        <pid>1</pid>
+        <category_label>the second category</category_label>
+        <sys_category>2</sys_category>
+    </tx_fakeextension_domain_model_directrelated>
+</dataset>
