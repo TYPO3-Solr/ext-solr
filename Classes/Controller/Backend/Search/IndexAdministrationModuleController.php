@@ -146,7 +146,7 @@ class IndexAdministrationModuleController extends AbstractModuleController
 
         if ($coresReloaded) {
             $this->addFlashMessage(
-                'Core configuration reloaded ('.implode(', ', $reloadedCores).').',
+                'Core configuration reloaded (' . implode(', ', $reloadedCores) . ').',
                 '',
                 FlashMessage::OK
             );

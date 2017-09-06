@@ -240,7 +240,7 @@ abstract class AbstractFacet
     public function getIncludeInUsedFacets()
     {
 
-        return ((int) $this->getFacetSettingOrDefaultValue('includeInUsedFacets', 1)) === 1;
+        return ((int)$this->getFacetSettingOrDefaultValue('includeInUsedFacets', 1)) === 1;
     }
 
     /**

@@ -80,7 +80,7 @@ class PageModuleSummary
     {
         /** @var $service \TYPO3\CMS\Extbase\Service\FlexFormService::class */
         $service = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Service\FlexFormService::class);
-        $this->flexformData  = $service->convertFlexFormContentToArray($contentElement['pi_flexform']);
+        $this->flexformData = $service->convertFlexFormContentToArray($contentElement['pi_flexform']);
         $this->pluginContentElement = $contentElement;
     }
 
