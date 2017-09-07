@@ -37,10 +37,11 @@ use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Session\FrontendUserSession;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrIncompleteResponseException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrInternalServerErrorException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
-use Apache_Solr_ParserException;
 
 /**
  * The SearchResultSetService is responsible to build a SearchResultSet from a SearchRequest.
@@ -91,11 +92,6 @@ class SearchResultSetService
     protected $logger = null;
 
     /**
-     * @var FrontendUserSession
-     */
-    protected $session = null;
-
-    /**
      * @var SearchResultBuilder
      */
     protected $searchResultBuilder;
@@ -104,15 +100,13 @@ class SearchResultSetService
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
      * @param SolrLogManager $solrLogManager
-     * @param FrontendUserSession $frontendUserSession
      * @param SearchResultBuilder $resultBuilder
      */
-    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null, FrontendUserSession $frontendUserSession = null, SearchResultBuilder $resultBuilder = null)
+    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null, SearchResultBuilder $resultBuilder = null)
     {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
         $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
-        $this->session = is_null($frontendUserSession) ? GeneralUtility::makeInstance(FrontendUserSession::class) : $frontendUserSession;
         $this->searchResultBuilder = is_null($resultBuilder) ? GeneralUtility::makeInstance(SearchResultBuilder::class) : $resultBuilder;
     }
 
@@ -213,43 +207,6 @@ class SearchResultSetService
     }
 
     /**
-     * Returns the number of results per Page.
-     *
-     * Also influences how many result documents are returned by the Solr
-     * server as the return value is used in the Solr "rows" GET parameter.
-     *
-     * @param SearchRequest $searchRequest
-     * @return int number of results to show per page
-     */
-    protected function getNumberOfResultsPerPage(SearchRequest $searchRequest)
-    {
-        $requestedPerPage = $searchRequest->getResultsPerPage();
-        $perPageSwitchOptions = $this->typoScriptConfiguration->getSearchResultsPerPageSwitchOptionsAsArray();
-        if (isset($requestedPerPage) && in_array($requestedPerPage, $perPageSwitchOptions)) {
-            $this->session->setPerPage($requestedPerPage);
-            $this->resultsPerPageChanged = true;
-        }
-
-        $defaultResultsPerPage = $this->typoScriptConfiguration->getSearchResultsPerPage();
-        $currentNumberOfResultsShown = $defaultResultsPerPage;
-        if ($this->session->getHasPerPage()) {
-            $sessionResultPerPage = $this->session->getPerPage();
-            if (in_array($sessionResultPerPage, $perPageSwitchOptions)) {
-                $currentNumberOfResultsShown = (int)$sessionResultPerPage;
-            }
-        }
-
-        if ($this->shouldHideResultsFromInitialSearch($searchRequest)) {
-            // initialize search with an empty query, which would by default return all documents
-            // anyway, tell Solr to not return any result documents
-            // Solr will still return facets though
-            $currentNumberOfResultsShown = 0;
-        }
-
-        return $currentNumberOfResultsShown;
-    }
-
-    /**
      * Does post processing of the response.
      *
      * @param \Apache_Solr_Response $response The search's response.
@@ -273,25 +230,7 @@ class SearchResultSetService
      */
     protected function wrapResultDocumentInResultObject(\Apache_Solr_Response $response)
     {
-        try {
-            $documents = $response->response->docs;
-        } catch (Apache_Solr_ParserException $e) {
-            // when variant are enable and the index is empty, we get a parse exception, because of a
-            // Apache Solr Bug.
-            // see: https://github.com/TYPO3-Solr/ext-solr/issues/668
-            // @todo this try/catch block can be removed after upgrading to Apache Solr 6.4
-            if (!$this->typoScriptConfiguration->getSearchVariants()) {
-                throw $e;
-            }
-
-            $response->response = new \stdClass();
-            $response->spellcheck = [];
-            $response->debug = [];
-            $response->responseHeader = [];
-            $response->facet_counts = [];
-
-            $documents = [];
-        }
+        $documents = $response->response->docs;
 
         if (!is_array($documents)) {
             return;
@@ -312,17 +251,6 @@ class SearchResultSetService
     {
         return isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName ']) ?
             $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultSetClassName '] : SearchResultSet::class;
-    }
-
-    /**
-     * Checks it the results should be hidden in the response.
-     *
-     * @param SearchRequest $searchRequest
-     * @return bool
-     */
-    protected function shouldHideResultsFromInitialSearch(SearchRequest $searchRequest)
-    {
-        return ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchInitializeWithQuery()) && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialEmptyQuery() && !$this->typoScriptConfiguration->getSearchShowResultsOfInitialQuery() && $searchRequest->getRawUserQueryIsNull();
     }
 
     /**
@@ -415,22 +343,18 @@ class SearchResultSetService
         }
 
         $rawQuery = $searchRequest->getRawUserQuery();
-        $resultsPerPage = $this->getNumberOfResultsPerPage($searchRequest);
+        $resultsPerPage = (int)$searchRequest->getResultsPerPage();
         $query = $this->getPreparedQuery($rawQuery, $resultsPerPage);
         $this->initializeRegisteredSearchComponents($query, $searchRequest);
         $resultSet->setUsedQuery($query);
 
-        $currentPage = max(0, $searchRequest->getPage());
-        // if the number of results per page has been changed by the current request, reset the pagebrowser
-        if ($this->resultsPerPageChanged) {
-            $currentPage = 0;
-        }
-
-        $offSet = $currentPage * $resultsPerPage;
+        // the offset mulitplier is page - 1 but not less then zero
+        $offsetMultiplier = max(0, $searchRequest->getPage() - 1);
+        $offSet = $offsetMultiplier * $resultsPerPage;
 
         // performing the actual search, sending the query to the Solr server
         $query = $this->modifyQuery($query, $searchRequest, $this->search);
-        $response = $this->search->search($query, $offSet, null);
+        $response = $this->doASearch($query, $offSet);
 
         if ($resultsPerPage === 0) {
             // when resultPerPage was forced to 0 we also set the numFound to 0 to hide results, e.g.
@@ -442,7 +366,7 @@ class SearchResultSetService
         $this->addSearchResultsToResultSet($response, $resultSet);
 
         $resultSet->setResponse($response);
-        $resultSet->setUsedPage($currentPage);
+        $resultSet->setUsedPage((int)$searchRequest->getPage());
         $resultSet->setUsedResultsPerPage($resultsPerPage);
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
         $resultSet->setUsedSearch($this->search);
@@ -458,6 +382,43 @@ class SearchResultSetService
         $resultSet = $this->getAutoCorrection($resultSet);
 
         return $this->handleSearchHook('afterSearch', $resultSet);
+    }
+
+    /**
+     * Executes the search and builds a fake response for a current bug in Apache Solr 6.3
+     *
+     * @param Query $query
+     * @param int $offSet
+     * @throws SolrCommunicationException
+     * @return \Apache_Solr_Response
+     */
+    protected function doASearch($query, $offSet)
+    {
+        try {
+            $response = $this->search->search($query, $offSet, null);
+        } catch (SolrInternalServerErrorException $e) {
+            // when variants are enable and the index is empty, we get a parse exception, because of a
+            // Apache Solr Bug.
+            // see: https://github.com/TYPO3-Solr/ext-solr/issues/668
+            // @todo this try/catch block can be removed after upgrading to Apache Solr 6.4
+            if (!$this->typoScriptConfiguration->getSearchVariants()) {
+                throw $e;
+            }
+
+            $response = $e->getSolrResponse();
+            $response->response = new \stdClass();
+            $response->spellcheck = [];
+            $response->debug = [];
+            $response->responseHeader = [];
+            $response->facet_counts = [];
+            $response->response->docs = [];
+        }
+
+        if($response === null) {
+            throw new SolrIncompleteResponseException('The response retrieved from solr was incomplete', 1505989678);
+        }
+
+        return $response;
     }
 
     /**

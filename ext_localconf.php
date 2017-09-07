@@ -228,5 +228,16 @@ if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['ApacheSolrForTypo3']['Solr']['wri
     ]
 );
 
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+    'ApacheSolrForTypo3.solr',
+    'pi_suggest',
+    [
+        'Suggest' => 'suggest'
+    ],
+    [
+        'Suggest' => 'suggest'
+    ]
+);
+
 // add tsconfig
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:solr/Configuration/TSconfig/ContentElementWizard.typoscript">');

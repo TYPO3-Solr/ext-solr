@@ -215,7 +215,9 @@
 			<trans-unit id="pagebrowser_last" xml:space="preserve">
 				<source>Last</source>
 			</trans-unit>
-
+			<trans-unit id="suggest_header" xml:space="preserve">
+				<source>Top Results</source>
+			</trans-unit>
 			<!-- From locallang.xlf -->
 			<trans-unit id="solr.backend.index_queue_module.description" xml:space="preserve">
 				<source>The Index Queue manages content indexing. Content enters the Index Queue by initialization below or when new content is created based on configuration. Items in the Index Queue are indexed newest changes first until all items in the queue have been indexed.</source>

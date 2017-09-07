@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr;
 use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -162,9 +163,7 @@ class Search
                     ]
                 );
             }
-        } catch (\RuntimeException $e) {
-            $response = $this->solr->getResponse();
-
+        } catch (SolrCommunicationException $e) {
             if ($this->configuration->getLoggingExceptions()) {
                 $this->logger->log(
                     SolrLogManager::ERROR,
@@ -177,6 +176,8 @@ class Search
                     ]
                 );
             }
+
+            throw $e;
         }
 
         $this->response = $response;

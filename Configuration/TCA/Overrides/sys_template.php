@@ -41,7 +41,7 @@
     'Search - (Example) Use connection settings from TYPO3_CONF_VARS');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/Examples/Suggest/',
-    'Search - (Example) Suggest/autocomplete with jquery ui');
+    'Search - (Example) Suggest/autocomplete with jquery');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/Examples/Facets/OptionsToggle/',

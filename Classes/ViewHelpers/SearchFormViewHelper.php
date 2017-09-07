@@ -87,9 +87,10 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
      * @param array $argumentsToBeExcludedFromQueryString arguments to be removed from the URI. Only active if $addQueryString = TRUE
      * @param string $addQueryStringMethod Set which parameters will be kept. Only active if $addQueryString = TRUE
      * @param bool $addSuggestUrl
+     * @param string $suggestHeader The header for the top results
      * @return string
      */
-    public function render($pageUid = null, $additionalFilters = null, array $additionalParams = [], $noCache = false, $pageType = 0, $noCacheHash = false, $section = '', $absolute = false, $addQueryString = false, array $argumentsToBeExcludedFromQueryString = [], $addQueryStringMethod = null, $addSuggestUrl = true)
+    public function render($pageUid = null, $additionalFilters = null, array $additionalParams = [], $noCache = false, $pageType = 0, $noCacheHash = false, $section = '', $absolute = false, $addQueryString = false, array $argumentsToBeExcludedFromQueryString = [], $addQueryStringMethod = null, $addSuggestUrl = true, $suggestHeader = 'Top Results')
     {
         if ($pageUid === null && !empty($this->getTypoScriptConfiguration()->getSearchTargetPage())) {
             $pageUid = $this->getTypoScriptConfiguration()->getSearchTargetPage();
@@ -102,6 +103,7 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
         if ($addSuggestUrl) {
             $this->tag->addAttribute('data-suggest', $this->getSuggestEidUrl($additionalFilters, $pageUid));
         }
+        $this->tag->addAttribute('data-suggest-header', htmlspecialchars($suggestHeader));
         $this->tag->addAttribute('accept-charset', $this->frontendController->metaCharset);
 
         // Get search term
@@ -131,13 +133,6 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     }
 
     /**
-     * Returns the eID URL for the AJAX suggestion request
-     *
-     * This link should be touched by realurl etc
-     *
-     * @return string the full URL to the eID script including the needed parameters
-     */
-    /**
      * @param NULL|array $additionalFilters
      * @param int $pageUid
      * @return string
@@ -145,7 +140,8 @@ class SearchFormViewHelper extends AbstractSolrFrontendTagBasedViewHelper
     protected function getSuggestEidUrl($additionalFilters, $pageUid)
     {
         $suggestUrl = $this->frontendController->absRefPrefix;
-        $suggestUrl .= '?eID=tx_solr_suggest&id=' . $pageUid;
+
+        $suggestUrl .= '?type=7384&id=' . $pageUid;
 
         // add filters
         if (!empty($additionalFilters)) {
