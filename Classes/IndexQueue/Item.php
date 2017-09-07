@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Index\Queue\IndexQueueIndexingPropertyRepository;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -123,15 +124,19 @@ class Item
     protected $errors = '';
 
     /**
+     * @var IndexQueueIndexingPropertyRepository
+     */
+    protected $indexQueueIndexingPropertyRepository;
+
+    /**
      * Constructor, takes item meta data information and resolves that to the full record.
      *
      * @param array $itemMetaData Metadata describing the item to index using the index queue. Is expected to contain a record from table tx_solr_indexqueue_item
      * @param array $fullRecord Optional full record for the item. If provided, can save some SQL queries.
+     * @param IndexQueueIndexingPropertyRepository|null $indexQueueIndexingPropertyRepository
      */
-    public function __construct(
-        array $itemMetaData,
-        array $fullRecord = []
-    ) {
+    public function __construct(array $itemMetaData, array $fullRecord = [], IndexQueueIndexingPropertyRepository $indexQueueIndexingPropertyRepository = null)
+    {
         $this->indexQueueUid = $itemMetaData['uid'];
         $this->rootPageUid = $itemMetaData['root'];
         $this->type = $itemMetaData['item_type'];
@@ -146,10 +151,13 @@ class Item
         if (!empty($fullRecord)) {
             $this->record = $fullRecord;
         }
+        $this->indexQueueIndexingPropertyRepository = isset($indexQueueIndexingPropertyRepository) ? $indexQueueIndexingPropertyRepository : GeneralUtility::makeInstance(IndexQueueIndexingPropertyRepository::class);
     }
 
     /**
-     * @return int|mixed
+     * Getter for Index Queue UID
+     *
+     * @return integer
      */
     public function getIndexQueueUid()
     {
@@ -283,34 +291,13 @@ class Item
      */
     public function storeIndexingProperties()
     {
-        $this->removeIndexingProperties();
+        $this->indexQueueIndexingPropertyRepository->removeByRootPidAndIndexQueueUid(intval($this->rootPageUid), intval($this->indexQueueUid));
 
         if ($this->hasIndexingProperties()) {
             $this->writeIndexingProperties();
         }
 
         $this->updateHasIndexingPropertiesFlag();
-    }
-
-    /**
-     * Removes existing indexing properties.
-     *
-     * @throws \RuntimeException when an SQL error occurs
-     */
-    protected function removeIndexingProperties()
-    {
-        $GLOBALS['TYPO3_DB']->exec_DELETEquery(
-            'tx_solr_indexqueue_indexing_property',
-            'root = ' . intval($this->rootPageUid)
-            . ' AND item_id = ' . intval($this->indexQueueUid)
-        );
-
-        if ($GLOBALS['TYPO3_DB']->sql_error()) {
-            throw new \RuntimeException(
-                'Could not remove indexing properties for item ' . $this->indexQueueUid,
-                1323802532
-            );
-        }
     }
 
     public function hasIndexingProperties()
@@ -320,39 +307,26 @@ class Item
 
     /**
      * Writes all indexing properties.
-     *
-     * @throws \RuntimeException when an SQL error occurs
      */
     protected function writeIndexingProperties()
     {
         $properties = [];
         foreach ($this->indexingProperties as $propertyKey => $propertyValue) {
             $properties[] = [
-                $this->rootPageUid,
-                $this->indexQueueUid,
-                $propertyKey,
-                $propertyValue
+                'root' => $this->rootPageUid,
+                'item_id' => $this->indexQueueUid,
+                'property_key' => $propertyKey,
+                'property_value' => $propertyValue
             ];
         }
-
-        $GLOBALS['TYPO3_DB']->exec_INSERTmultipleRows(
-            'tx_solr_indexqueue_indexing_property',
-            ['root', 'item_id', 'property_key', 'property_value'],
-            $properties
-        );
-
-        if ($GLOBALS['TYPO3_DB']->sql_error()) {
-            throw new \RuntimeException(
-                'Could not insert indexing properties for item ' . $this->indexQueueUid,
-                1323802570
-            );
+        if (empty($properties)) {
+            return;
         }
+        $this->indexQueueIndexingPropertyRepository->bulkInsert($properties);
     }
 
     /**
      * Updates the "has_indexing_properties" flag in the Index Queue.
-     *
-     * @throws \RuntimeException when an SQL error occurs
      */
     protected function updateHasIndexingPropertiesFlag()
     {
@@ -388,16 +362,11 @@ class Item
 
     /**
      * Loads the indexing properties for the item - if not already loaded.
-     *
      */
     public function loadIndexingProperties()
     {
         if (!$this->indexingPropertiesLoaded) {
-            $indexingProperties = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-                'property_key, property_value',
-                'tx_solr_indexqueue_indexing_property',
-                'item_id = ' . intval($this->indexQueueUid)
-            );
+            $indexingProperties = $this->indexQueueIndexingPropertyRepository->findAllByIndexQueueUid(intval($this->indexQueueUid));
 
             if (!empty($indexingProperties)) {
                 foreach ($indexingProperties as $indexingProperty) {
