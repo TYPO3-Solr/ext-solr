@@ -279,6 +279,27 @@ class QueueTest extends IntegrationTest
     /**
      * @test
      */
+    public function canGetStatisticsByCustomIndexingConfigurationName()
+    {
+        $this->importDataSetFromFixture('can_get_statistics_by_site_and_custom_indexing_configuration.xml');
+        $this->assertItemsInQueue(4);
+
+        $site = $this->siteRepository->getSiteByPageId(2);
+        $statistics = $this->indexQueue->getStatisticsBySite($site, 'customIndexingConfigurationName');
+
+        $this->assertSame(1, $statistics->getSuccessCount(), 'Can not get successful processed custom items from queue');
+        $this->assertSame(1, $statistics->getFailedCount(), 'Can not get failed processed custom items from queue');
+        $this->assertSame(1, $statistics->getPendingCount(), 'Can not get pending processed custom items from queue');
+
+        $notExistingIndexingConfStatistic = $this->indexQueue->getStatisticsBySite($site, 'notExistingIndexingConfigurationName');
+        $this->assertSame(0, $notExistingIndexingConfStatistic->getSuccessCount(), 'Can not get successful processed items from queue for not existing indexing configuration');
+        $this->assertSame(0, $notExistingIndexingConfStatistic->getFailedCount(), 'Can not get failed processed items from queue for not existing indexing configuration');
+        $this->assertSame(0, $notExistingIndexingConfStatistic->getPendingCount(), 'Can not get pending processed items from queue for not existing indexing configuration');
+    }
+
+    /**
+     * @test
+     */
     public function canGetLastIndexNonExistingRoot()
     {
         $this->importDataSetFromFixture('can_get_last_index_time.xml');
