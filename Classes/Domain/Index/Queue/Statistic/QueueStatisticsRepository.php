@@ -56,7 +56,7 @@ class QueueStatisticsRepository extends AbstractRepository
                 $queryBuilder->quoteIdentifier('changed'),
                 $queryBuilder->quoteIdentifier('pending')
             ]), true)
-            ->add('select', vsprintf('%s AS %s', [
+            ->add('select', vsprintf('(%s) AS %s', [
                 $queryBuilder->expr()->notLike('errors', '""'),
                 $queryBuilder->quoteIdentifier('failed')
             ]), true)
@@ -66,8 +66,7 @@ class QueueStatisticsRepository extends AbstractRepository
             ->groupBy('pending', 'failed');
 
         if (!empty($indexingConfigurationName)) {
-            $queryBuilder->add('where',
-                $queryBuilder->expr()->eq('indexing_configuration', $queryBuilder->createNamedParameter($indexingConfigurationName)), true);
+            $queryBuilder->andWhere($queryBuilder->expr()->eq('indexing_configuration', $queryBuilder->createNamedParameter($indexingConfigurationName)));
         }
 
         return $this->buildQueueStatisticFromResultSet($queryBuilder->execute()->fetchAll());
