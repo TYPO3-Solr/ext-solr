@@ -743,4 +743,21 @@ class QueueItemRepository extends AbstractRepository
             )
             ->execute()->fetchAll();
     }
+
+    /**
+     * Updates has_indexing_properties field for given Item
+     *
+     * @param int $itemUid
+     * @param bool $hasIndexingPropertiesFlag
+     * @return int number of affected rows, 1 on success
+     */
+    public function updateHasIndexingPropertiesFlagByItemUid(int $itemUid, bool $hasIndexingPropertiesFlag): int
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder
+            ->update($this->table)
+            ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($itemUid, \PDO::PARAM_INT)))
+            ->set('has_indexing_properties', $queryBuilder->createNamedParameter($hasIndexingPropertiesFlag, \PDO::PARAM_BOOL))
+            ->execute();
+    }
 }
