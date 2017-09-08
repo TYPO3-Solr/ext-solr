@@ -24,13 +24,27 @@ namespace ApacheSolrForTypo3\Solr\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Database utility class to do things the core currently does not support
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @deprecated Since 8.0.0, will be removed in 9.0.0. Use doctrines DBAL Connection::beginTransaction()|commit()|rollBack()
+ *             See ApacheSolrForTypo3\Solr\System\Records\AbstractRepository::getConnectionForAllInTransactionInvolvedTables()
  */
 class DatabaseUtility
 {
+
+    /**
+     * @return Connection
+     */
+    protected static function getFirstAvailableConnection()
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('pages');
+    }
 
     /**
      * Start a transaction
@@ -39,7 +53,7 @@ class DatabaseUtility
      */
     public static function transactionStart()
     {
-        $GLOBALS['TYPO3_DB']->sql_query('START TRANSACTION');
+        self::getFirstAvailableConnection()->beginTransaction();
     }
 
     /**
@@ -49,7 +63,7 @@ class DatabaseUtility
      */
     public static function transactionCommit()
     {
-        $GLOBALS['TYPO3_DB']->sql_query('COMMIT');
+        self::getFirstAvailableConnection()->commit();
     }
 
     /**
@@ -59,6 +73,6 @@ class DatabaseUtility
      */
     public static function transactionRollback()
     {
-        $GLOBALS['TYPO3_DB']->sql_query('ROLLBACK');
+        self::getFirstAvailableConnection()->rollBack();
     }
 }

@@ -33,7 +33,6 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
-use ApacheSolrForTypo3\Solr\Utility\DatabaseUtility;
 use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
@@ -128,11 +127,15 @@ class Page extends AbstractInitializer
             return $mountPagesInitialized;
         }
 
+        $databaseConnection = $this->queueItemRepository->getConnectionForAllInTransactionInvolvedTables(
+            'tx_solr_indexqueue_item',
+            'tx_solr_indexqueue_indexing_property'
+        );
+
         foreach ($mountPages as $mountPage) {
             if (!$this->validateMountPage($mountPage)) {
                 continue;
             }
-
 
             $mountedPages = $this->resolveMountPageTree($mountPage);
 
@@ -153,15 +156,15 @@ class Page extends AbstractInitializer
                 continue;
             }
 
-            DatabaseUtility::transactionStart();
+            $databaseConnection->beginTransaction();
             try {
                 $this->addMountedPagesToIndexQueue($mountedPages, $mountPage);
                 $this->addIndexQueueItemIndexingProperties($mountPage, $mountedPages);
 
-                DatabaseUtility::transactionCommit();
+                $databaseConnection->commit();
                 $mountPagesInitialized = true;
             } catch (\Exception $e) {
-                DatabaseUtility::transactionRollback();
+                $databaseConnection->rollBack();
 
                 $this->logger->log(
                     SolrLogManager::ERROR,
@@ -293,6 +296,7 @@ class Page extends AbstractInitializer
         $mountPageItems = $this->queueItemRepository->findAllIndexQueueItemsByRootPidAndMountIdentifierAndMountedPids($this->site->getRootPageId(), $mountIdentifier, $mountedPages);
 
         foreach ($mountPageItems as $mountPageItemRecord) {
+            /* @var Item $mountPageItem */
             $mountPageItem = GeneralUtility::makeInstance(Item::class, $mountPageItemRecord);
             $mountPageItem->setIndexingProperty('mountPageSource', $mountPage['mountPageSource']);
             $mountPageItem->setIndexingProperty('mountPageDestination', $mountPage['mountPageDestination']);
