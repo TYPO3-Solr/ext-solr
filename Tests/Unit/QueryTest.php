@@ -25,7 +25,6 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
-use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Grouping;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
@@ -1159,6 +1158,48 @@ class QueryTest extends UnitTest
         $query->getGrouping()->setIsEnabled(true);
         $query->getGrouping()->setNumberOfGroups(5);
         $this->assertSame(5, $query->getResultsPerPage());
+    }
+
+    /**
+     * @test
+     */
+    public function addingQueriesToGroupingAddsToRightGroupingParameter()
+    {
+        $query = $this->getInitializedTestQuery('group test');
+        $query->getGrouping()->setIsEnabled(true);
+        $query->getGrouping()->addQuery('price:[* TO 500]');
+        $query->getGrouping()->addQuery('someField:someValue');
+
+        $parameters = $query->getQueryParameters();
+        $this->assertSame(['price:[* TO 500]', 'someField:someValue'], $parameters['group.query'], 'Could not add group queries properly');
+    }
+
+    /**
+     * @test
+     */
+    public function addingSortingsToGroupingAddsToRightGroupingParameter()
+    {
+        $query = $this->getInitializedTestQuery('group test');
+        $query->getGrouping()->setIsEnabled(true);
+        $query->getGrouping()->addSorting('price_f');
+        $query->getGrouping()->addSorting('title desc');
+
+        $parameters = $query->getQueryParameters();
+        $this->assertSame(['price_f', 'title desc'], $parameters['group.sort'], 'Could not add group sortings properly');
+    }
+
+    /**
+     * @test
+     */
+    public function addingFieldsToGroupingAddsToRightGroupingParameter()
+    {
+        $query = $this->getInitializedTestQuery('group test');
+        $query->getGrouping()->setIsEnabled(true);
+        $query->getGrouping()->addField('price_f');
+        $query->getGrouping()->addField('category_s');
+
+        $parameters = $query->getQueryParameters();
+        $this->assertSame(['price_f', 'category_s'], $parameters['group.field'], 'Could not add group fields properly');
     }
 
     /**
