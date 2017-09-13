@@ -1,6 +1,12 @@
 
 plugin.tx_solr {
 
+	view {
+		templateRootPath = EXT:solr/Resources/Private/Templates/
+		partialRootPath = EXT:solr/Resources/Private/Partials/
+		layoutRootPath = EXT:solr/Resources/Private/Layouts/
+	}
+
 	solr {
 		scheme = http
 		host = localhost

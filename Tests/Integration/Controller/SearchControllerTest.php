@@ -799,7 +799,7 @@ class SearchControllerTest extends IntegrationTest
     public function canRenderDetailAction()
     {
         $request = $this->getPreparedRequest('detail');
-        $request->setArgument('documentId', 'b8c8d04e66c58f01283ef81a4ded197f26ab402a/pages/1/0/0/0');
+        $request->setArgument('documentId', '23c51a0d5cf548afecc043a7068902e8f82a22a0/pages/1/0/0/0');
 
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);

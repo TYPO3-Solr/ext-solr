@@ -16,7 +16,9 @@
         <config>
             <![CDATA[
                 config.disableAllHeaderCode = 1
-                config.tx_extbase {
+
+                //todo: using modules.tx_solr is required since this runs in BE context. We should find a solution to test it in a real frontend context
+                module.tx_solr {
                 	view {
                         templateRootPaths.10 = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/
                         widget.ApacheSolrForTypo3\Solr\ViewHelpers\Widget\ResultPaginateViewHelper.templateRootPath = EXT:solr/Tests/Integration/Controller/Fixtures/customTemplates/
