@@ -32,11 +32,6 @@ class TranslateViewHelper extends CoreTranslateViewHelper
     protected $escapeChildren = true;
 
     /**
-     * @var bool
-     */
-    protected $escapeOutput = false;
-
-    /**
      * @param array $arguments
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
