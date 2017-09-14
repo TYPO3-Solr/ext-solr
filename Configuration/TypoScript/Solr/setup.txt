@@ -305,3 +305,47 @@ plugin.tx_solr {
 		useRawDocuments = 1
 	}
 }
+
+# Provide typoscript libraries
+lib.solr_extbase_bootstrap = USER
+lib.solr_extbase_bootstrap {
+	userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+	vendorName = ApacheSolrForTypo3
+	extensionName = Solr
+	settings =< plugin.tx_solr.settings
+	persistence =< plugin.tx_solr.persistence
+	view =< plugin.tx_solr.view
+}
+
+plugin.tx_solr_PiResults_Results < lib.solr_extbase_bootstrap
+plugin.tx_solr_PiResults_Results = USER_INT
+plugin.tx_solr_PiResults_Results {
+	pluginName = pi_results
+	switchableControllerActions {
+		Search {
+			1 = results
+			2 = form
+		}
+	}
+}
+
+plugin.tx_solr_PiSearch_Search < lib.solr_extbase_bootstrap
+plugin.tx_solr_PiSearch_Search {
+	pluginName = pi_search
+	switchableControllerActions {
+		Search {
+			1 = form
+		}
+	}
+}
+
+plugin.tx_solr_PiFrequentSearches_FrequentSearches < lib.solr_extbase_bootstrap
+plugin.tx_solr_PiFrequentSearches_FrequentSearches {
+	pluginName = pi_frequentlySearched
+	switchableControllerActions {
+		Search {
+			1 = frequentlySearched
+		}
+	}
+}
+
