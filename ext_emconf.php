@@ -2,7 +2,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Apache Solr for TYPO3 - Enterprise Search',
     'description' => 'Apache Solr for TYPO3 is the enterprise search server you were looking for with special features such as Faceted Search or Synonym Support and incredibly fast response times of results within milliseconds.',
-    'version' => '7.0.1',
+    'version' => '7.0.2',
     'state' => 'stable',
     'category' => 'plugin',
     'author' => 'Ingo Renner, Timo Hund, Markus Friedrich',
