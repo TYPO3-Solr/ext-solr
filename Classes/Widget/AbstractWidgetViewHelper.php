@@ -80,16 +80,6 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
     private $widgetContext;
 
     /**
-     * @var bool
-     */
-    protected $escapeChildren = false;
-
-    /**
-     * @var bool
-     */
-    protected $escapeOutput = false;
-
-    /**
      * @param AjaxWidgetContextHolder $ajaxWidgetContextHolder
      * @return void
      */
