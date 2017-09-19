@@ -167,7 +167,7 @@ class Faceting implements Modifier
         // format for filter URL parameter:
         // tx_solr[filter]=$facetName0:$facetValue0,$facetName1:$facetValue1,$facetName2:$facetValue2
         if (is_array($resultParameters['filter'])) {
-            $filters = array_map('urldecode', $resultParameters['filter']);
+            $filters = array_map('rawurldecode', $resultParameters['filter']);
             // $filters look like ['name:value1','name:value2','fieldname2:foo']
             $configuredFacets = $this->getConfiguredFacets();
             // first group the filters by facetName - so that we can

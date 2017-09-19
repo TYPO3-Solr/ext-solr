@@ -271,4 +271,42 @@ class FacetingTest extends UnitTest
         $this->assertEquals('{!tag=color}(color:"red")', $queryParameter['fq'][0], 'Did not build filter query from color');
         $this->assertEquals('{!tag=type}(type:"product")', $queryParameter['fq'][1], 'Did not build filter query from type');
     }
+
+    /**
+     * @test
+     */
+    public function testCanAddQueryFiltersContainingPlusSign()
+    {
+        $fakeRequest = [
+            'tx_solr' => [
+                'filter' => [
+                    'something0%3AA+B',
+                    'something1%3AA%2BB',
+                    'something2%3AA%20B'
+                ]
+            ]
+        ];
+
+        $_GET = $fakeRequest;
+
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['keepAllFacetsOnSelection'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'something0.' => [
+                'field' => 'something0'
+            ],
+            'something1.' => [
+                'field' => 'something1'
+            ],
+            'something2.' => [
+                'field' => 'something2'
+            ]
+        ];
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfigurationArray);
+
+        $this->assertEquals('{!tag=something0}(something0:"A+B")', $queryParameter['fq'][0], 'Can handle plus as plus');
+        $this->assertEquals('{!tag=something1}(something1:"A+B")', $queryParameter['fq'][1], 'Can handle %2B as plus');
+        $this->assertEquals('{!tag=something2}(something2:"A B")', $queryParameter['fq'][2], 'Can handle %20 as space');
+    }
 }
