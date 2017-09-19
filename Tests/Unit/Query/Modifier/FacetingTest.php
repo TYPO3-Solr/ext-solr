@@ -510,6 +510,7 @@ class FacetingTest extends UnitTest
         $this->assertEquals('{!tag=type}(type:"product")', $queryParameter['fq'], 'Did not build filter query from color');
     }
 
+
     /**
      * @test
      */
