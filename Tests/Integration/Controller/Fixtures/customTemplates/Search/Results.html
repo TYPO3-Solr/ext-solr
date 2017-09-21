@@ -2,9 +2,9 @@
 	  xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
 	  xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers/">
 
-<f:layout name="Main"/>
+<f:layout name="Split"/>
 
-<f:section name="main">
+<f:section name="content">
 	<div>Custom Integration Test Search Templatepath</div>
 
 
@@ -54,7 +54,8 @@
 		</f:if>
 
 	</div>
-
+</f:section>
+<f:section name="extra">
 	<div id="tx-solr-search-functions">
 		<f:if condition="{hasSearched}">
 			<f:render partial="Result/Sorting" section="Sorting" arguments="{resultSet:resultSet}" />

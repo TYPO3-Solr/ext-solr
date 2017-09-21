@@ -4,24 +4,47 @@
       data-namespace-typo3-fluid="true"
 >
 
-<h5 class="facet-label">{facet.label}</h5>
-<ul class="facet-option-list facet-type-options fluidfacet" data-facet-name="{facet.name}" data-facet-label="{facet.label}">
-    <s:facet.options.group.prefix.labelPrefixes options="{facet.options}" length="1" sortBy="alpha">
-        <f:for each="{prefixes}" as="prefix">
-            <li>
-                {prefix}
-                <ul>
-                    <s:facet.options.group.prefix.labelFilter options="{facet.options}" prefix="{prefix}">
-                        <f:for each="{filteredOptions}" as="option">
-                            <li class="facet-option" data-facet-item-value="{option.value}">
-                                + <a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: option)}">{option.label}</a><span class="facet-result-count">({option.documentCount})</span>
-                            </li>
-                        </f:for>
-                    </s:facet.options.group.prefix.labelFilter>
-                </ul>
-            </li>
-        </f:for>
-    </s:facet.options.group.prefix.labelPrefixes>
-</ul>
+
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="facet-label panel-title">
+            <span class="glyphicon glyphicon-filter"></span>
+            <a data-toggle="collapse" data-parent="#facet-accordion{facet.name}" href="#facet{facet.name}">{facet.label}</a>
+        </h3>
+    </div>
+    <div class="facet-option-list facet-type-options fluidfacet panel-collapse collapse" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
+        <s:facet.options.group.prefix.labelPrefixes options="{facet.options}" length="1" sortBy="alpha">
+
+            <!-- build tabs-->
+            <ul class="nav nav-tabs prefixgroup-tabs" role="tablist">
+                <f:for each="{prefixes}" iteration="iteration"  as="prefix">
+                        <li role="presentation" class="{f:if(condition:'{iteration.index} == 0', then:'active')}"><a href="#tab_{prefix}" aria-controls="tab_{prefix}" role="tab" data-toggle="tab">{prefix}</a></li>
+                </f:for>
+             </ul>
+
+            <!-- build tab contents -->
+            <div class="tab-content">
+                <f:for each="{prefixes}" iteration="iteration" as="prefix">
+                    {key}
+                    <div role="tabpanel" class="tab-pane panel{f:if(condition:'{iteration.index} == 0', then:' active')}" id="tab_{prefix}">
+                        <s:facet.options.group.prefix.labelFilter options="{facet.options}" prefix="{prefix}">
+                            <div class="list-group">
+                                <f:for each="{filteredOptions}" as="option">
+                                    <div class="facet-option list-group-item" data-facet-item-value="{option.value}">
+                                        <a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: option)}">{option.label}</a>
+                                        <span class="facet-result-count badge">
+                                            {option.documentCount}
+                                        </span>
+                                    </div>
+                                </f:for>
+                            </div>
+                        </s:facet.options.group.prefix.labelFilter>
+                    </div>
+                </f:for>
+            </div>
+
+        </s:facet.options.group.prefix.labelPrefixes>
+    </div>
+</div>
 
 </html>
