@@ -219,6 +219,10 @@ class Faceting implements ParameterBuilder
             $facetParameters[$additionalParameterKey] = $additionalParameterValue;
         }
 
+        if ($facetParameters['json.facet']) {
+            $facetParameters['json.facet'] = json_encode($facetParameters['json.facet']);
+        }
+
         $facetParameters = $this->applySorting($facetParameters);
 
         return $facetParameters;
