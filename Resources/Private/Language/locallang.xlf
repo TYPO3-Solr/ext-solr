@@ -164,6 +164,9 @@
 			<trans-unit id="results_found" xml:space="preserve">
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
 			</trans-unit>
+			<trans-unit id="results_found.singular" xml:space="preserve">
+				<source>Found 1 result in @resultsTime milliseconds.</source>
+			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve">
 				<source>Searched for &quot;@searchWord&quot;.</source>
 			</trans-unit>

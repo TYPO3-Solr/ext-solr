@@ -37,8 +37,16 @@
 		</f:if>
 
 		<f:if condition="{resultSet.usedSearch.numberOfResults}">
+			
 			<span class="result-found">
-				<s:translate key="results_found" arguments="{0:resultSet.usedSearch.numberOfResults, 1: resultSet.usedSearch.queryTime}">Found %d results in %d seconds</s:translate>
+				<f:if condition="{resultSet.usedSearch.numberOfResults} == 1">
+					<f:then>
+						<s:translate key="results_found.singular" arguments="{0:resultSet.usedSearch.queryTime}">Found 1 result in %d seconds</s:translate>
+					</f:then>
+					<f:else>
+						<s:translate key="results_found" arguments="{0:resultSet.usedSearch.numberOfResults, 1: resultSet.usedSearch.queryTime}">Found %d results in %d seconds</s:translate>
+					</f:else>
+				</f:if>
 			</span>
 
 			<span class="result-range">
