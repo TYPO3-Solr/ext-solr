@@ -262,7 +262,7 @@
 				<source>All errors have been reset.</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.success.index_manual" xml:space="preserve">
-				<source>Indexing from the backend was finished successful.</source>
+				<source>Indexing from the backend was successfully finished.</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
 				<source>Index Queue</source>
