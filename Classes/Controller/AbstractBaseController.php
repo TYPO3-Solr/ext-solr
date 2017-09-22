@@ -16,6 +16,7 @@ namespace ApacheSolrForTypo3\Solr\Controller;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
@@ -73,6 +74,11 @@ abstract class AbstractBaseController extends ActionController
      * @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService
      */
     protected $searchService;
+
+    /**
+     * @var \ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder
+     */
+    protected $searchRequestBuilder;
 
     /**
      * @var bool
@@ -212,5 +218,17 @@ abstract class AbstractBaseController extends ActionController
         $search = GeneralUtility::makeInstance(Search::class, $solrConnection);
 
         $this->searchService = GeneralUtility::makeInstance(SearchResultSetService::class, $this->typoScriptConfiguration, $search);
+    }
+
+    /**
+     * @return SearchRequestBuilder
+     */
+    protected function getSearchRequestBuilder()
+    {
+        if ($this->searchRequestBuilder === null) {
+            $this->searchRequestBuilder = GeneralUtility::makeInstance(SearchRequestBuilder::class, $this->typoScriptConfiguration);
+        }
+
+        return $this->searchRequestBuilder;
     }
 }

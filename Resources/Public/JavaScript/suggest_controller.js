@@ -1,74 +1,134 @@
-
 function SuggestController() {
-    var _this = this;
 
-    var request = {};
-
-    var response = {};
-
-    this.init = function() {
-        // Change back to the old behavior of auto-complete
-        // http://jqueryui.com/docs/Upgrade_Guide_184#Autocomplete
-        jQuery.ui.autocomplete.prototype._renderItem = function (ul, item) {
-            return jQuery("<li></li>").data("item.autocomplete", item).append("<a>" + item.label + "</a>").appendTo(ul);
-        };
-
-        var req = false;
+    this.init = function () {
 
         jQuery('form[data-suggest]').each(function () {
-            var $form = $(this);
-            $form.find('input.js-solr-q').autocomplete({
-                source: function (request, response) {
-                    _this.request = request;
-                    _this.response = response;
-                    if (req) {
-                        req.abort();
-                        response();
+            var $form = $(this), $searchBox = $form.closest('.tx-solr-suggest');
+
+            $form.find('.tx-solr-suggest').focus();
+
+            jQuery.ajaxSetup({jsonp: "tx_solr[callback]"})
+
+            // when no specific container found, use the form as container
+            if ($searchBox.length === 0) {
+                $searchBox = $form;
+            }
+            $searchBox.css('position', 'relative');
+
+            // Prevent submit of empty search form
+            $form.on('submit', function (e) {
+                if ($form.find('.tx-solr-suggest').val() === '') {
+                    e.preventDefault();
+                    $form.find('.tx-solr-suggest').focus();
+                }
+            });
+
+            $form.find('.tx-solr-suggest').devbridgeAutocomplete({
+                serviceUrl: $form.data('suggest'),
+                dataType: 'jsonp',
+                paramName: 'tx_solr[queryString]',
+                groupBy: 'category',
+                maxHeight: 1000,
+                appendTo: $searchBox,
+                autoSelectFirst: false,
+                width: $searchBox.width() * 0.66,
+                onSelect: function (suggestion) {
+                    // go to link when selecting found result
+                    if (suggestion.data.link) {
+                        // Open youtube in overlay
+                        if (suggestion.data.link.indexOf('https://www.youtube.com') === 0) {
+                            openVideoOverlay(suggestion.data.link);
+                        } else {
+                            location.href = suggestion.data.link;
+                        }
+                        // else trigger form submit (do search)
+                    } else {
+                        $form.trigger('submit');
+                    }
+                },
+                transformResult: function (response) {
+                    if (!response.suggestions) return {suggestions: []};
+                    var firstSuggestion, result = {
+                        suggestions: $.map(response.suggestions, function (count, suggestion) {
+                            if (!firstSuggestion) firstSuggestion = suggestion;
+                            return {value: suggestion, data: {category: 'suggestion', count: count}};
+                        })
+                    };
+
+                    $.each(response.documents, function (key, value) {
+                        var dataObject = value;
+                        dataObject.category = $form.data('suggest-header') ? $form.data('suggest-header') : 'Top results';
+                        result.suggestions.push(
+                            {
+                                value: firstSuggestion,
+                                data: dataObject
+                            }
+                        );
+                    });
+
+                    // 1 result means not result for given input; then we don't show is as suggestion
+                    // also prevents autosubmit when selecting input box
+                    if (result.suggestions.length <= 1) {
+                        result.suggestions = [];
                     }
 
-                    req = jQuery.ajax({
-                        url: $form.data('suggest'),
-                        dataType: 'json',
-                        data: {
-                            termLowercase: request.term.toLowerCase(),
-                            termOriginal: request.term,
-                            L: $form.find('input[name="L"]').val()
-                        },
-                        success: _this.handleSuggestResponse
-                    });
+                    return result;
                 },
-                select: function (event, ui) {
-                    this.value = ui.item.value;
-                    $form.submit();
+                beforeRender: function (container) {
+                    // remove first group header
+                    container.find('.autocomplete-group:first').remove();
+                    container.addClass('tx-solr-autosuggest');
+
+                    // add active class to container
+                    $searchBox.parent().addClass('autocomplete-active').fadeIn();
                 },
-                delay: 0,
-                minLength: 3
+                formatResult: function (suggestion, currentValue) {
+                    // Do not replace anything if there current value is empty
+                    if (!currentValue) {
+                        return suggestion.value;
+                    }
+                    var pattern = '(' + $.Autocomplete.utils.escapeRegExChars(currentValue.trim()) + ')';
+                    // normal suggestion
+                    if (suggestion.data.category === 'suggestion') {
+                        return suggestion.value
+                            .replace(new RegExp(pattern, 'gi'), '<strong>$1<\/strong>')
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
+
+                        // results
+                    } else {
+                        var title = suggestion.data.title
+                            .replace(new RegExp(pattern, 'gi'), '<em>$1<\/em>')
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/&lt;(\/?em)&gt;/g, '<$1>');
+
+                        return '<div class="' + suggestion.data.type + '">' +
+                            (!!suggestion.data.previewImage ? '<figure ' + (!!suggestion.data.hasVideo ? 'class="hasVideo"' : '') + '><img src="' + suggestion.data.previewImage + '" /></figure>' : '') +
+                            '<a href="' + suggestion.data.link + '" class="internal-link">' + title + '</a>' +
+                            '</div>';
+                    }
+
+                }
+            }).on('blur', function () {
+                $searchBox.parent().removeClass('autocomplete-active');
+                var $box = $(this);
+                setTimeout(function () {
+                    $box.devbridgeAutocomplete('hide');
+                }, 200);
             });
         });
-    };
-
-    this.handleSuggestResponse = function (data) {
-        req = false;
-        var output = [];
-        jQuery.each(data, function (term, termIndex) {
-            output.push({
-                label: term.replace(new RegExp('(?![^&;]+;)(?!<[^<>]*)(' +
-                    jQuery.ui.autocomplete.escapeRegex(_this.request.term) +
-                    ')(?![^<>]*>)(?![^&;]+;)', 'gi'), '<strong>$1</strong>'),
-                value: term
-            });
-        });
-
-        _this.response(output);
     };
 }
-jQuery(document).ready(function () {
+
+jQuery(document).ready(function() {
+    /** solr search autocomplete **/
     var solrSuggestController = new SuggestController();
     solrSuggestController.init();
-
-    jQuery("body").on("tx_solr_updated", function() {
-        solrSuggestController.init();
-    });
 });
-
 

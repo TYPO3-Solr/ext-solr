@@ -187,7 +187,10 @@
 				<source>Last</source>
 				<target>Letzte</target>
 			</trans-unit>
-
+			<trans-unit id="suggest_header" xml:space="preserve">
+				<source>Top Results</source>
+				<target>Top Treffer</target>
+			</trans-unit>
 
 			<!-- From locallang_db.xlf -->
 			<trans-unit id="tt_content.list_type_pi_frequentsearches" xml:space="preserve" approved="yes">

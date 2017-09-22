@@ -14,7 +14,6 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
@@ -96,7 +95,11 @@ class SearchController extends AbstractBaseController
             $this->forward('solrNotAvailable');
         }
 
-        $searchRequest = $this->buildSearchRequest();
+        $arguments = (array)$this->request->getArguments();
+        $pageId = $this->typoScriptFrontendController->getRequestedId();
+        $languageId = $this->typoScriptFrontendController->sys_language_uid;
+        $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
+
         $searchResultSet = $this->searchService->search($searchRequest);
 
 
@@ -112,50 +115,6 @@ class SearchController extends AbstractBaseController
                 'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
             ]
         );
-    }
-
-    /**
-     * @return SearchRequest
-     */
-    protected function buildSearchRequest()
-    {
-        $arguments = (array)$this->request->getArguments();
-        $arguments = $this->adjustPageArgumentToPositiveInteger($arguments);
-
-        /** @var $searchRequest SearchRequest */
-        $argumentsNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
-        $searchRequest = $this->getRequest([$argumentsNamespace => $arguments]);
-
-        return $searchRequest;
-    }
-
-    /**
-     * This methods sets the page argument to an expected positive integer value in the arguments array.
-     *
-     * @param array $arguments
-     * @return array
-     */
-    protected function adjustPageArgumentToPositiveInteger(array $arguments)
-    {
-        $page = isset($arguments['page']) ? intval($arguments['page']) - 1 : 0;
-        $arguments['page'] = max($page, 0);
-
-        return $arguments;
-    }
-
-    /**
-     * @param array $requestArguments
-     * @return SearchRequest
-     */
-    private function getRequest(array $requestArguments = [])
-    {
-        $searchRequest = GeneralUtility::makeInstance(
-            SearchRequest::class,
-            $requestArguments,
-            $this->typoScriptFrontendController->getRequestedId(),
-            $this->typoScriptFrontendController->sys_language_uid,
-            $this->typoScriptConfiguration);
-        return $searchRequest;
     }
 
     /**
@@ -179,9 +138,13 @@ class SearchController extends AbstractBaseController
     {
         /** @var  $searchResultSet SearchResultSet */
         $searchResultSet = GeneralUtility::makeInstance(SearchResultSet::class);
-        $searchResultSet->setUsedSearchRequest($this->getRequest());
-        $this->controllerContext->setSearchResultSet($searchResultSet);
 
+        $pageId = $this->typoScriptFrontendController->getRequestedId();
+        $languageId = $this->typoScriptFrontendController->sys_language_uid;
+        $searchRequest = $this->getSearchRequestBuilder()->buildForFrequentSearches($pageId, $languageId);
+        $searchResultSet->setUsedSearchRequest($searchRequest);
+
+        $this->controllerContext->setSearchResultSet($searchResultSet);
         $this->view->assignMultiple(
             [
                 'hasSearched' => $this->searchService->getHasSearched(),

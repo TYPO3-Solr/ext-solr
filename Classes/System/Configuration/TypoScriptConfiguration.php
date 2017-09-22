@@ -2008,6 +2008,48 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns the allowed number of suggestions.
+     *
+     * plugin.tx_solr.suggest.numberOfSuggestions
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getSuggestNumberOfSuggestions($defaultIfEmpty = 10)
+    {
+        $numberOfSuggestions = $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest.numberOfSuggestions', $defaultIfEmpty);
+        return (int)$numberOfSuggestions;
+    }
+
+    /**
+     * Indicates if the topResults should be shown or not
+     *
+     * plugin.tx_solr.suggest.showTopResults
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getSuggestShowTopResults($defaultIfEmpty = true)
+    {
+        $showTopResults = $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest.showTopResults', $defaultIfEmpty);
+        return $this->getBool($showTopResults);
+    }
+
+    /**
+     * Returns the configured number of top results to show
+     *
+     * plugin.tx_solr.suggest.numberOfTopResults
+     *
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getSuggestNumberOfTopResults($defaultIfEmpty = 5)
+    {
+        $numberOfTopResults = $this->getValueByPathOrDefaultValue('plugin.tx_solr.suggest.numberOfTopResults', $defaultIfEmpty);
+        return (int)$numberOfTopResults;
+    }
+
+    /**
      * Returns the configured template for a specific template fileKey.
      *
      * plugin.tx_solr.view.templateFiles.<fileKey>

@@ -233,6 +233,8 @@ plugin.tx_solr {
 		numberOfSuggestions = 10
 		suggestField = spell
 		forceHttps = 0
+		showTopResults = 1
+		numberOfTopResults = 5
 	}
 
 	statistics = 0

@@ -30,6 +30,9 @@ use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Schema\Schema;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrInternalServerErrorException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Apache_Solr_HttpTransportException;
 
@@ -247,16 +250,43 @@ class SolrService extends \Apache_Solr_Service
 
         $this->responseCache = $response;
 
-        if ($response->getHttpStatus() != 200) {
-            throw new \RuntimeException(
-                'Invalid query. Solr returned an error: '
-                . $response->getHttpStatus() . ' '
-                . $response->getHttpStatusMessage(),
-                1293109870
-            );
+        $status = $response->getHttpStatus();
+        $isValidResponse = $status === 200;
+        if ($isValidResponse) {
+            return $response;
         }
 
-        return $response;
+        $this->handleErrorResponses($response);
+    }
+
+    /**
+     * This method maps the failed solr requests to a meaningful exception.
+     *
+     * @param \Apache_Solr_Response $response
+     * @throws SolrCommunicationException
+     * @return \Apache_Solr_Response
+     */
+    protected function handleErrorResponses(\Apache_Solr_Response $response)
+    {
+        $status = $response->getHttpStatus();
+        $message = $response->getHttpStatusMessage();
+
+        if ($status === 0) {
+            $e = new SolrUnavailableException('Solr Server not available: ' . $message, 1505989391);
+            $e->setSolrResponse($response);
+            throw $e;
+        }
+
+        if ($status === 500) {
+            $e = new SolrInternalServerErrorException('Internal Server error during search: ' . $message, 1505989897);
+            $e->setSolrResponse($response);
+            throw $e;
+        }
+
+        $e = new SolrCommunicationException('Invalid query. Solr returned an error: ' . $status . ' ' . $message, 1293109870);
+        $e->setSolrResponse($response);
+
+        throw $e;
     }
 
     /**

@@ -1,4 +1,26 @@
 # Enable search field autocomplete/suggest
+# Ajaxify the suggest/results
+tx_solr_suggest = PAGE
+tx_solr_suggest {
+    typeNum = 7384
+    config {
+        disableAllHeaderCode = 1
+        xhtml_cleaning = 0
+        admPanel = 0
+        additionalHeaders = Content-type: text/plain
+        no_cache = 0
+    }
+
+    10 = USER
+    10 {
+        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+        extensionName = Solr
+        pluginName = pi_suggest
+        vendorName = ApacheSolrForTypo3
+        controller = Suggest
+        action = suggest
+    }
+}
 
 # Enable suggest
 plugin.tx_solr.search {
@@ -12,10 +34,10 @@ plugin.tx_solr.search {
 # Load js files
 page.includeJSFooterlibs {
     solr-jquery = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.min.js
-    solr-ui = EXT:solr/Resources/Public/JavaScript/JQuery/jquery-ui.min.js
+    solr-autocomplete = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.autocomplete.min.js
     solr-suggest = EXT:solr/Resources/Public/JavaScript/suggest_controller.js
 }
 
 page.includeCSS {
-    solr-ui = EXT:solr/Resources/Css/JQueryUi/jquery-ui.custom.css
+    solr-suggest = EXT:solr/Resources/Public/StyleSheets/Frontend/suggest.css
 }
