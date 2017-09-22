@@ -162,10 +162,7 @@ class Apache_Solr_Response
      */
     public function __get($key)
     {
-        if (!$this->_isParsed) {
-            $this->_parseData();
-            $this->_isParsed = true;
-        }
+        $this->executeParser();
 
         if (isset($this->_parsedData->$key)) {
             return $this->_parsedData->$key;
@@ -229,11 +226,39 @@ class Apache_Solr_Response
      */
     public function __isset($key)
     {
+        $this->executeParser();
+
+        return isset($this->_parsedData->$key);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParsedData()
+    {
+        $this->executeParser();
+
+        return $this->_parsedData;
+    }
+
+    /**
+     * @param mixed $parsedData
+     */
+    public function setParsedData($parsedData)
+    {
+        $this->_isParsed = true;
+        $this->_parsedData = $parsedData;
+    }
+
+    /**
+     * @return void
+     */
+    protected function executeParser()
+    {
         if (!$this->_isParsed) {
             $this->_parseData();
             $this->_isParsed = true;
         }
-
-        return isset($this->_parsedData->$key);
     }
+
 }

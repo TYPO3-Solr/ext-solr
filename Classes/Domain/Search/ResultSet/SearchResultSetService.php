@@ -230,18 +230,20 @@ class SearchResultSetService
      */
     protected function wrapResultDocumentInResultObject(\Apache_Solr_Response $response)
     {
-        $documents = $response->response->docs;
+        $parsedData = $response->getParsedData();
 
-        if (!is_array($documents)) {
+        if (!is_array($parsedData->response->docs)) {
             return;
         }
 
+        $documents = $parsedData->response->docs;
         foreach ($documents as $key => $originalDocument) {
             $result = $this->searchResultBuilder->fromApacheSolrDocument($originalDocument);
             $documents[$key] = $result;
         }
 
-        $response->response->docs = $documents;
+        $parsedData->response->docs = $documents;
+        $response->setParsedData($parsedData);
     }
 
     /**
@@ -406,12 +408,15 @@ class SearchResultSetService
             }
 
             $response = $e->getSolrResponse();
-            $response->response = new \stdClass();
-            $response->spellcheck = [];
-            $response->debug = [];
-            $response->responseHeader = [];
-            $response->facet_counts = [];
-            $response->response->docs = [];
+
+            $parsedData = new \stdClass();
+            $parsedData->response = new \stdClass();
+            $parsedData->response->docs = [];
+            $parsedData->spellcheck = [];
+            $parsedData->debug = [];
+            $parsedData->responseHeader = [];
+            $parsedData->facet_counts = [];
+            $response->setParsedData($parsedData);
         }
 
         if($response === null) {
@@ -534,7 +539,8 @@ class SearchResultSetService
         $response = $this->search->search($query, 0, 1);
         $this->processResponse($response);
 
-        $resultDocument = isset($response->response->docs[0]) ? $response->response->docs[0] : null;
+        $parsedData = $response->getParsedData();
+        $resultDocument = isset($parsedData->response->docs[0]) ? $parsedData->response->docs[0] : null;
         return $resultDocument;
     }
 
@@ -609,11 +615,12 @@ class SearchResultSetService
      */
     protected function addSearchResultsToResultSet($response, $resultSet)
     {
-        if (!is_array($response->response->docs)) {
+        $parsedData = $response->getParsedData();
+        if (!is_array($parsedData->response->docs)) {
             return;
         }
 
-        foreach ($response->response->docs as $searchResult) {
+        foreach ($parsedData->response->docs as $searchResult) {
             $resultSet->addSearchResult($searchResult);
         }
     }

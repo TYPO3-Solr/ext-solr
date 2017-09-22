@@ -96,11 +96,11 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
     protected function parseResultCount(SearchResultSet $resultSet)
     {
         $response = $resultSet->getResponse();
-        if (!isset($response->response->numFound)) {
+        $solrResponse = $response->__get('response');
+        if (!isset($solrResponse->numFound)) {
             return $resultSet;
         }
-
-        $resultSet->setAllResultCount($response->response->numFound);
+        $resultSet->setAllResultCount($solrResponse->numFound);
         return $resultSet;
     }
 
