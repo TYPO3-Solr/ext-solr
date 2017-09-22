@@ -67,7 +67,7 @@
                         scheme = http
                         host   = localhost
                         port   = 8999
-                        path   = /solr/core_en/
+                        path   = /solr/core_fail/
                     }
 
                     index {

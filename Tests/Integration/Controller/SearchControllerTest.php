@@ -31,6 +31,7 @@ use ApacheSolrForTypo3\Solr\Controller\SearchController;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Fluid\View\Exception\InvalidTemplateResourceException;
@@ -588,12 +589,10 @@ class SearchControllerTest extends IntegrationTest
     /**
      * @test
      */
-    public function frontendWillRenderErrorMessageWhenSolrIsNotAvailable()
+    public function frontendWillRenderErrorMessageForSolrNotAvailableAction()
     {
         $this->importDataSetFromFixture('can_render_error_message_when_solr_unavailable.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
-
-        $this->indexPages([1]);
 
         $this->searchRequest->setControllerActionName('solrNotAvailable');
         $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
@@ -601,6 +600,37 @@ class SearchControllerTest extends IntegrationTest
 
         $this->assertEquals('503 Service Unavailable', $this->searchResponse->getStatus());
         $this->assertContains("Search is currently not available.", $resultPage1, 'Response did not contain solr unavailable error message');
+    }
+
+    /**
+     * @return array
+     */
+    public function frontendWillForwardsToErrorActionWhenSolrEndpointIsNotAvailableDataProvider()
+    {
+        return [
+            ['action' => 'results', 'getArguments' =>['q' => '*']],
+            ['action' => 'detail', 'getArguments' =>['id' => 1]],
+        ];
+    }
+
+    /**
+     * @param string $action
+     * @param array $getArguments
+     * @dataProvider frontendWillForwardsToErrorActionWhenSolrEndpointIsNotAvailableDataProvider
+     * @test
+     */
+    public function frontendWillForwardsToErrorActionWhenSolrEndpointIsNotAvailable($action, $getArguments)
+    {
+        $this->expectException(StopActionException::class);
+        $this->expectExceptionMessage('forward');
+        $this->expectExceptionCode(1476045801);
+
+        $this->importDataSetFromFixture('can_render_error_message_when_solr_unavailable.xml');
+        $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
+
+        $_GET = $getArguments;
+        $this->searchRequest->setControllerActionName($action);
+        $this->searchController->processRequest($this->searchRequest, $this->searchResponse);
     }
 
     /**

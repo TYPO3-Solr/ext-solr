@@ -26,7 +26,6 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Suggest\SuggestService;
-use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -68,20 +67,6 @@ class SuggestController extends AbstractBaseController
         }
 
         return htmlspecialchars($jsonPCallback) . '(' . json_encode($result) . ')';
-    }
-
-    /**
-     * Called when the solr server is unavailable.
-     *
-     * @return void
-     */
-    protected function handleSolrUnavailable()
-    {
-        if ($this->typoScriptConfiguration->getLoggingExceptions()) {
-                /** @var SolrLogManager $logger */
-            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
-            $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
-        }
     }
 
 }

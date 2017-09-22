@@ -20,6 +20,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestBuilder;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Service\ConfigurationService;
 use ApacheSolrForTypo3\Solr\System\Configuration\ConfigurationManager as SolrConfigurationManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -230,5 +231,19 @@ abstract class AbstractBaseController extends ActionController
         }
 
         return $this->searchRequestBuilder;
+    }
+
+    /**
+     * Called when the solr server is unavailable.
+     *
+     * @return void
+     */
+    protected function handleSolrUnavailable()
+    {
+        if ($this->typoScriptConfiguration->getLoggingExceptions()) {
+            /** @var SolrLogManager $logger */
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $logger->log(SolrLogManager::ERROR, 'Solr server is not available');
+        }
     }
 }

@@ -15,6 +15,8 @@ namespace ApacheSolrForTypo3\Solr\Controller;
  */
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -91,30 +93,29 @@ class SearchController extends AbstractBaseController
      */
     public function resultsAction()
     {
-        if (!$this->searchService->getIsSolrAvailable()) {
-            $this->forward('solrNotAvailable');
+        try {
+            $arguments = (array)$this->request->getArguments();
+            $pageId = $this->typoScriptFrontendController->getRequestedId();
+            $languageId = $this->typoScriptFrontendController->sys_language_uid;
+            $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
+
+            $searchResultSet = $this->searchService->search($searchRequest);
+
+            // we pass the search result set to the controller context, to have the possibility
+            // to access it without passing it from partial to partial
+            $this->controllerContext->setSearchResultSet($searchResultSet);
+
+            $this->view->assignMultiple(
+                [
+                    'hasSearched' => $this->searchService->getHasSearched(),
+                    'additionalFilters' => $this->searchService->getAdditionalFilters(),
+                    'resultSet' => $searchResultSet,
+                    'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
+                ]
+            );
+        } catch (SolrUnavailableException $e) {
+            $this->handleSolrUnavailable();
         }
-
-        $arguments = (array)$this->request->getArguments();
-        $pageId = $this->typoScriptFrontendController->getRequestedId();
-        $languageId = $this->typoScriptFrontendController->sys_language_uid;
-        $searchRequest = $this->getSearchRequestBuilder()->buildForSearch($arguments, $pageId, $languageId);
-
-        $searchResultSet = $this->searchService->search($searchRequest);
-
-
-        // we pass the search result set to the controller context, to have the possibility
-        // to access it without passing it from partial to partial
-        $this->controllerContext->setSearchResultSet($searchResultSet);
-
-        $this->view->assignMultiple(
-            [
-                'hasSearched' => $this->searchService->getHasSearched(),
-                'additionalFilters' => $this->searchService->getAdditionalFilters(),
-                'resultSet' => $searchResultSet,
-                'pluginNamespace' => $this->typoScriptConfiguration->getSearchPluginNamespace()
-            ]
-        );
     }
 
     /**
@@ -161,12 +162,12 @@ class SearchController extends AbstractBaseController
      */
     public function detailAction($documentId = '')
     {
-        if (!$this->searchService->getIsSolrAvailable()) {
-            $this->forward('solrNotAvailable');
+        try {
+            $document = $this->searchService->getDocumentById($documentId);
+            $this->view->assign('document', $document);
+        } catch (SolrUnavailableException $e) {
+            $this->handleSolrUnavailable();
         }
-
-        $document = $this->searchService->getDocumentById($documentId);
-        $this->view->assign('document', $document);
     }
 
     /**
@@ -178,5 +179,16 @@ class SearchController extends AbstractBaseController
         if ($this->response instanceof Response) {
             $this->response->setStatus(503);
         }
+    }
+
+    /**
+     * Called when the solr server is unavailable.
+     *
+     * @return void
+     */
+    protected function handleSolrUnavailable()
+    {
+        parent::handleSolrUnavailable();
+        $this->forward('solrNotAvailable');
     }
 }
