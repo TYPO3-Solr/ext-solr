@@ -120,7 +120,7 @@ class FacetingTest extends UnitTest
      *
      * @test
      */
-    public function testCanAddSortByQueryArgument()
+    public function testCanAddSortByIndexArgument()
     {
         $fakeConfigurationArray = [];
         $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
@@ -131,16 +131,42 @@ class FacetingTest extends UnitTest
             ]
         ];
         $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
-
         $fakeRequest = $this->getDumbMock(SearchRequest::class);
         $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
-
-
         $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
-
         $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
         $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
-        $this->assertContains('lex',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
+        $this->assertContains('index',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
+    }
+    /**
+     * Checks if the faceting modifier can add a simple facet with a sortBy property with the value count.
+     *
+     *  facets {
+     *     type {
+     *        field = type
+     *        sortBy = count
+     *     }
+     *  }
+     *
+     * @test
+     */
+    public function testCanAddSortByCountArgument()
+    {
+        $fakeConfigurationArray = [];
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting'] = 1;
+        $fakeConfigurationArray['plugin.']['tx_solr.']['search.']['faceting.']['facets.'] = [
+            'type.' => [
+                'field' => 'type',
+                'sortBy' => 'count'
+            ]
+        ];
+        $fakeConfiguration = new TypoScriptConfiguration($fakeConfigurationArray);
+        $fakeRequest = $this->getDumbMock(SearchRequest::class);
+        $fakeRequest->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($fakeConfiguration));
+        $fakeRequest->expects($this->once())->method('getArguments')->will($this->returnValue([]));
+        $queryParameter = $this->getQueryParametersFromExecutedFacetingModifier($fakeConfiguration, $fakeRequest);
+        $this->assertContains('true',  $queryParameter['facet'], 'Query string did not contain expected snipped');
+        $this->assertContains('count',  $queryParameter['f.type.facet.sort'], 'Query string did not contain expected snipped');
     }
 
     /**
