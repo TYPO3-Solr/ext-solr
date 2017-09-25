@@ -31,8 +31,10 @@ class DefaultFacetQueryBuilder implements FacetQueryBuilderInterface {
         $tags = $this->buildExcludeTags($facetConfiguration, $configuration);
         $facetParameters['facet.field'][] = $tags . $facetConfiguration['field'];
 
-        if (in_array($facetConfiguration['sortBy'], ['alpha', 'index', 'lex'])) {
-            $facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = 'lex';
+        $sortingExpression = new SortingExpression();
+        $facetSortExpression = $sortingExpression->getForFacet($facetConfiguration['sortBy']);
+        if (!empty($facetSortExpression)) {
+            $facetParameters['f.' . $facetConfiguration['field'] . '.facet.sort'] = $facetSortExpression;
         }
 
         return $facetParameters;
