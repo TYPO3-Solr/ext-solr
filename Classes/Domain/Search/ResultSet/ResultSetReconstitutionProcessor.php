@@ -215,7 +215,7 @@ class ResultSetReconstitutionProcessor implements SearchResultSetProcessor
 
         // Read the response
         $response = $resultSet->getResponse();
-        if (!is_object($response->facet_counts)) {
+        if (!is_object($response->facet_counts) && !is_object($response->facets)) {
             return $resultSet;
         }
 

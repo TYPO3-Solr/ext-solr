@@ -416,7 +416,9 @@ class SearchResultSetService
             $parsedData->debug = [];
             $parsedData->responseHeader = [];
             $parsedData->facet_counts = [];
+            $parsedData->facets = [];
             $response->setParsedData($parsedData);
+
         }
 
         if($response === null) {
