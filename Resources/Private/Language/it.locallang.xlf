@@ -57,6 +57,10 @@
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
 				<target>@resultsTotal risultati trovati in @resultsTime millisecondi.</target>
 			</trans-unit>
+			<trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
+				<source>Found 1 result in @resultsTime milliseconds.</source>
+				<target>1 risultati trovati in @resultsTime millisecondi.</target>
+			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
 				<source>Searched for &quot;@searchWord&quot;.</source>
 				<target>Eseguita ricerca di &quot;@searchWord&quot;.</target>

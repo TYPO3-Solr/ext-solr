@@ -56,6 +56,10 @@
 				<source>Found @resultsTotal results in @resultsTime milliseconds.</source>
 				<target>找到相关结果共 @resultsTotal 条，用时 @resultsTime 毫秒。</target>
 			</trans-unit>
+			<trans-unit id="results_found.singular" xml:space="preserve" approved="yes">
+				<source>Found 1 result in @resultsTime milliseconds.</source>
+				<target>找到相关结果共 1 条，用时 @resultsTime 毫秒。</target>
+			</trans-unit>
 			<trans-unit id="results_searched_for" xml:space="preserve" approved="yes">
 				<source>Searched for &quot;@searchWord&quot;.</source>
 				<target>搜索&quot;@searchWord&quot;</target>
