@@ -52,14 +52,18 @@ class PageBrowserRangeViewHelper extends AbstractSolrFrontendViewHelper
         $to = $arguments['to'];
         $total = $arguments['total'];
 
-        $search = self::getUsedSearchResultSetFromRenderingContext($renderingContext)->getUsedSearch();
+        $resultSet = self::getUsedSearchResultSetFromRenderingContext($renderingContext);
+        $search = $resultSet->getUsedSearch();
         $variableProvider = $renderingContext->getVariableProvider();
 
+        $numberOfResultsOnPage = $resultSet->getSearchResults()->getCount();
+        $numberOfAllResults = $resultSet->getAllResultCount();
+
         $resultsFrom = $search->getResponseBody()->start + 1;
-        $resultsTo = $resultsFrom + count($search->getResultDocumentsRaw()) - 1;
+        $resultsTo = $resultsFrom + $numberOfResultsOnPage - 1;
         $variableProvider->add($from, $resultsFrom);
         $variableProvider->add($to, $resultsTo);
-        $variableProvider->add($total, $search->getNumberOfResults());
+        $variableProvider->add($total, $numberOfAllResults);
 
         $content = $renderChildrenClosure();
 

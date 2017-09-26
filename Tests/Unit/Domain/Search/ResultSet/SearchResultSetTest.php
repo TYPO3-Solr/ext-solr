@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet;
 use Apache_Solr_Response;
 use Apache_Solr_HttpTransport_Response;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
@@ -212,12 +212,11 @@ class SearchResultSetTest extends UnitTest
 
         $resultSet  = $this->searchResultSetService->search($fakeRequest);
 
-        $response   = $resultSet->getResponse();
-        $documents  = $response->response->docs;
+        $documents  = $resultSet->getSearchResults();
 
         $this->assertSame(3, count($documents), 'Did not get 3 documents from fake response');
         $firstResult = $documents[0];
-        $this->assertSame('PAGES', $firstResult->type, 'Could not get modified type from result');
+        $this->assertSame('PAGES', $firstResult->getType(), 'Could not get modified type from result');
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'] = $processSearchResponseBackup;
     }
@@ -273,10 +272,10 @@ class SearchResultSetTest extends UnitTest
         $fakeRequest->setResultsPerPage(10);
 
         $resultSet = $this->searchResultSetService->search($fakeRequest);
-        $this->assertSame(1, count($resultSet->getResponse()->response->docs), 'Unexpected amount of document');
+        $this->assertSame(1, count($resultSet->getSearchResults()), 'Unexpected amount of document');
 
             /** @var  $fistResult SearchResult */
-        $fistResult = $resultSet->getResponse()->response->docs[0];
+        $fistResult = $resultSet->getSearchResults()[0];
         $this->assertSame(5, count($fistResult->getVariants()), 'Unexpected amount of expanded result');
     }
 

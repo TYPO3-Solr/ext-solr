@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Variants;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultBuilder;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -80,7 +80,7 @@ class VariantsProcessor implements SearchResultSetProcessor {
         }
 
         $variantsField = $this->typoScriptConfiguration->getSearchVariantsField();
-        foreach ($response->response->docs as $key => $resultDocument) {
+        foreach ($resultSet->getSearchResults() as $key => $resultDocument) {
             /** @var $resultDocument SearchResult */
             $variantField = $resultDocument->getField($variantsField);
             $variantId = isset($variantField['value']) ? $variantField['value'] : null;

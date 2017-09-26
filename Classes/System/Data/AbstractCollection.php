@@ -147,6 +147,10 @@ abstract class AbstractCollection implements \IteratorAggregate, \Countable, \Ar
      */
     public function offsetSet($offset, $value)
     {
+        if ($offset === null) {
+            $this->data[] = $value;
+            return;
+        }
         $this->data[$offset] = $value;
     }
 

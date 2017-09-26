@@ -1,6 +1,5 @@
 <?php
-
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Result\Parser;
 
 /***************************************************************
  *  Copyright notice
@@ -24,23 +23,36 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\AbstractResultParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DefaultResultParser;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 /**
- * The SearchResultBuilder is responsible to build a SearchResult object from an Apache_Solr_Document
- * and should use a different class as SearchResult if configured.
+ * Fake test parser
  *
- * @deprecated This class was moved to the \Domain\Search\ResultSet\Result package, please use this one. Will be removed in 9.0
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-class SearchResultBuilder extends \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder {
-
+class TestResultParser extends AbstractResultParser
+{
 
     /**
-     * @deprecated Since 8.0.0 will be removed in 9.0.0 This class was moved to the \Domain\Search\ResultSet\Result package, please use this one
+     * @param SearchResultSet $resultSet
+     * @param bool $useRawDocuments
+     * @return SearchResultCollection
      */
-    public function __contruct()
+    public function parse(SearchResultSet $resultSet, bool $useRawDocuments = true)
     {
-        GeneralUtility::logDeprecatedFunction();
+        // TODO: Implement parse() method.
+    }
+
+    /**
+     * @param SearchResultSet $resultSet
+     * @return mixed
+     */
+    public function canParse(SearchResultSet $resultSet)
+    {
+        return true;
     }
 }

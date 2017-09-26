@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result;
 
 /***************************************************************
  *  Copyright notice
@@ -24,23 +24,42 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The SearchResultBuilder is responsible to build a SearchResult object from an Apache_Solr_Document
  * and should use a different class as SearchResult if configured.
  *
- * @deprecated This class was moved to the \Domain\Search\ResultSet\Result package, please use this one. Will be removed in 9.0
  * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet
  */
-class SearchResultBuilder extends \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder {
-
+class SearchResultBuilder {
 
     /**
-     * @deprecated Since 8.0.0 will be removed in 9.0.0 This class was moved to the \Domain\Search\ResultSet\Result package, please use this one
+     * This method is used to wrap the \Apache_Solr_Document instance in an instance of the configured SearchResult
+     * class.
+     *
+     * @param \Apache_Solr_Document $originalDocument
+     * @throws \InvalidArgumentException
+     * @return SearchResult
      */
-    public function __contruct()
+    public function fromApacheSolrDocument(\Apache_Solr_Document $originalDocument)
     {
-        GeneralUtility::logDeprecatedFunction();
+        $searchResultClassName = $this->getResultClassName();
+        $result = GeneralUtility::makeInstance($searchResultClassName, $originalDocument);
+        if (!$result instanceof SearchResult) {
+            throw new \InvalidArgumentException('Could not create result object with class: ' . (string)$searchResultClassName, 1470037679);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getResultClassName()
+    {
+        return isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName ']) ?
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] : SearchResult::class;
     }
 }

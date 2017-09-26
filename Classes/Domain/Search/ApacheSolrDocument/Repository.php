@@ -25,11 +25,14 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,6 +48,26 @@ class Repository implements SingletonInterface
      * @var \ApacheSolrForTypo3\Solr\Search
      */
     protected $search;
+
+    /**
+     * @var DocumentEscapeService
+     */
+    protected $documentEscapeService = null;
+
+    /**
+     * @var TypoScriptConfiguration|null
+     */
+    protected $typoScriptConfiguration = null;
+
+    /**
+     * Repository constructor.
+     * @param DocumentEscapeService|null $documentEscapeService
+     */
+    public function __construct(DocumentEscapeService $documentEscapeService = null, TypoScriptConfiguration $typoScriptConfiguration = null)
+    {
+        $this->typoScriptConfiguration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
+        $this->documentEscapeService = is_null($documentEscapeService) ? GeneralUtility::makeInstance(DocumentEscapeService::class, $typoScriptConfiguration) : $documentEscapeService;
+    }
 
     /**
      * Returns firs found Apache_Solr_Document for current page by given language id.
@@ -70,11 +93,12 @@ class Repository implements SingletonInterface
     {
         try {
             $this->initializeSearch($pageId, $languageId);
-            $this->search->search($this->getQueryForPage($pageId), 0, 10000);
+            $response = $this->search->search($this->getQueryForPage($pageId), 0, 10000);
         } catch (NoSolrConnectionFoundException $exception) {
             return [];
         }
-        return $this->search->getResultDocumentsEscaped();
+        $data = $response->getParsedData();
+        return $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($data->response->docs);
     }
 
     /**

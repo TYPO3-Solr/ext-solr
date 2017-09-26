@@ -25,7 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
@@ -139,10 +140,12 @@ class SuggestServiceTest extends UnitTest
         ]));
 
         $fakeTopResults = $this->getDumbMock(SearchResultSet::class);
-        $fakeResultDocuments = [
-            $this->getFakedSearchResult('http://www.typo3-solr.com/a','pages','hello solr','my suggestions'),
-            $this->getFakedSearchResult('http://www.typo3-solr.com/b','news','what new in solr','new autosuggest'),
-        ];
+        $fakeResultDocuments = new SearchResultCollection(
+            [
+                $this->getFakedSearchResult('http://www.typo3-solr.com/a','pages','hello solr','my suggestions'),
+                $this->getFakedSearchResult('http://www.typo3-solr.com/b','news','what new in solr','new autosuggest'),
+            ]
+        );
 
         $fakeTopResults->expects($this->once())->method('getSearchResults')->will($this->returnValue($fakeResultDocuments));
         $this->searchResultSetServiceMock->expects($this->once())->method('search')->will($this->returnValue($fakeTopResults));

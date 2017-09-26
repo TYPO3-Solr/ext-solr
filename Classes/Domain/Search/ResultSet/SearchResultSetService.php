@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
 use ApacheSolrForTypo3\Solr\Domain\Variants\VariantsProcessor;
@@ -207,46 +208,6 @@ class SearchResultSetService
     }
 
     /**
-     * Does post processing of the response.
-     *
-     * @param \Apache_Solr_Response $response The search's response.
-     */
-    protected function processResponse(\Apache_Solr_Response $response)
-    {
-        $this->wrapResultDocumentInResultObject($response);
-    }
-
-    /**
-     * Wrap all results document it a custom EXT:solr SearchResult object.
-     *
-     * Can be overwritten:
-     *
-     * $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['searchResultClassName '] = ''
-     *
-     * to use a custom result object.
-     *
-     * @param \Apache_Solr_Response $response
-     * @throws \Apache_Solr_ParserException
-     */
-    protected function wrapResultDocumentInResultObject(\Apache_Solr_Response $response)
-    {
-        $parsedData = $response->getParsedData();
-
-        if (!is_array($parsedData->response->docs)) {
-            return;
-        }
-
-        $documents = $parsedData->response->docs;
-        foreach ($documents as $key => $originalDocument) {
-            $result = $this->searchResultBuilder->fromApacheSolrDocument($originalDocument);
-            $documents[$key] = $result;
-        }
-
-        $parsedData->response->docs = $documents;
-        $response->setParsedData($parsedData);
-    }
-
-    /**
      * @return string
      */
     protected function getResultSetClassName()
@@ -364,14 +325,18 @@ class SearchResultSetService
             $response->response->numFound = 0;
         }
 
-        $this->processResponse($response);
-        $this->addSearchResultsToResultSet($response, $resultSet);
-
+        $resultSet->setUsedSearch($this->search);
         $resultSet->setResponse($response);
+
+            /** @var ResultParserRegistry $parserRegistry */
+        $parserRegistry = GeneralUtility::makeInstance(ResultParserRegistry::class, $this->typoScriptConfiguration);
+        $useRawDocuments = (bool)$this->typoScriptConfiguration->getValueByPathOrDefaultValue('plugin.tx_solr.features.useRawDocuments', false);
+        $searchResults = $parserRegistry->getParser($resultSet)->parse($resultSet, $useRawDocuments);
+        $resultSet->setSearchResults($searchResults);
+
         $resultSet->setUsedPage((int)$searchRequest->getPage());
         $resultSet->setUsedResultsPerPage($resultsPerPage);
         $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
-        $resultSet->setUsedSearch($this->search);
 
         /** @var $variantsProcessor VariantsProcessor */
         $variantsProcessor = GeneralUtility::makeInstance(VariantsProcessor::class, $this->typoScriptConfiguration, $this->searchResultBuilder);
@@ -537,13 +502,11 @@ class SearchResultSetService
         /* @var $query Query */
         $query = GeneralUtility::makeInstance(Query::class, $documentId);
         $query->setQueryFields(QueryFields::fromString('id'));
-
         $response = $this->search->search($query, 0, 1);
-        $this->processResponse($response);
-
         $parsedData = $response->getParsedData();
         $resultDocument = isset($parsedData->response->docs[0]) ? $parsedData->response->docs[0] : null;
-        return $resultDocument;
+
+        return $this->searchResultBuilder->fromApacheSolrDocument($resultDocument);
     }
 
     /**
@@ -610,24 +573,6 @@ class SearchResultSetService
     }
 
     /**
-     * This method is used to reference the SearchResult object from the response in the SearchResultSet object.
-     *
-     * @param \Apache_Solr_Response $response
-     * @param SearchResultSet $resultSet
-     */
-    protected function addSearchResultsToResultSet($response, $resultSet)
-    {
-        $parsedData = $response->getParsedData();
-        if (!is_array($parsedData->response->docs)) {
-            return;
-        }
-
-        foreach ($parsedData->response->docs as $searchResult) {
-            $resultSet->addSearchResult($searchResult);
-        }
-    }
-
-    /**
      * @param string $rawQuery
      * @return Query|object
      */
@@ -636,5 +581,4 @@ class SearchResultSetService
         $query = GeneralUtility::makeInstance(Query::class, $rawQuery, $this->typoScriptConfiguration);
         return $query;
     }
-
 }
