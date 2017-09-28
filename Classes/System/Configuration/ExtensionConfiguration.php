@@ -75,13 +75,13 @@ class ExtensionConfiguration
     }
 
     /**
-     * Get configuration for allowSelfSignedCertificates
+     * Get configuration for allowInvalidCertificates
      *
      * @return bool
      */
-    public function getIsSelfSignedCertificatesEnabled()
+    public function getIsInvalidCertificatesEnabled()
     {
-        return (bool)$this->getConfigurationOrDefaultValue('allowSelfSignedCertificates', false);
+        return (bool)$this->getConfigurationOrDefaultValue('allowInvalidCertificates', false);
     }
 
     /**

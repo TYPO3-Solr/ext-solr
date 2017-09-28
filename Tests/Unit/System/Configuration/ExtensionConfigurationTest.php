@@ -110,13 +110,13 @@ class ExtensionConfigurationTest extends UnitTest
     /**
      * @test
      */
-    public function testIsGetIsSelfSignedCertificatesEnabled()
+    public function testIsGetIsInvalidCertificatesEnabled()
     {
         $defaultConfiguration = new ExtensionConfiguration();
-        $this->assertFalse($defaultConfiguration->getIsSelfSignedCertificatesEnabled());
-        $configurationUseConfigurationAllowSelfSignedCertificates = new ExtensionConfiguration(
-            ['allowSelfSignedCertificates' => 1]
+        $this->assertFalse($defaultConfiguration->getIsInvalidCertificatesEnabled());
+        $configurationUseConfigurationAllowInvalidCertificates = new ExtensionConfiguration(
+            ['allowInvalidCertificates' => 1]
         );
-        $this->assertTrue($configurationUseConfigurationAllowSelfSignedCertificates->getIsSelfSignedCertificatesEnabled());
+        $this->assertTrue($configurationUseConfigurationAllowInvalidCertificates->getIsInvalidCertificatesEnabled());
     }
 }

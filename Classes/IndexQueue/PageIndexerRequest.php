@@ -396,9 +396,10 @@ class PageIndexerRequest
             ],
         ];
 
-        if ($this->extensionConfiguration->getIsSelfSignedCertificatesEnabled()) {
+        if ($this->extensionConfiguration->getIsInvalidCertificatesEnabled()) {
             $options['ssl'] = [
                 'verify_peer' => false,
+                'verify_peer_name' => false,
                 'allow_self_signed'=> true
             ];
         }
