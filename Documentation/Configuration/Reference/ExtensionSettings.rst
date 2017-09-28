@@ -42,11 +42,11 @@ A common common scenario is to have a site and a storage folder for records para
 on the same level (f.e.)
 If you don't want this behaviour - it should be set to false.
 
-allowInvalidCertificates
+allowSelfSignedCertificates
 ---------------------------
 
 :Type: Boolean
 :Since: 6.1
 :Default: 0
 
-Can be used to allow invalid (e.g. self signed) certificates - when using the SSL protocol.
+Can be used to allow self signed certificates - when using the SSL protocol.
