@@ -25,7 +25,7 @@ The example below shows how to install a solr server to /home/developer
 .. code-block:: bash
 
     chmod u+x ./Resources/Private/Install/install-solr.sh
-    ./Resources/Private/Install/install-solr.sh -p /home/developer
+    ./Resources/Private/Install/install-solr.sh -d /home/developer
 
 After running the script you are able to open a solr server with over the loopback address. Which means, when you want to access it from outside, you need to create an ssh tunnel.
 
