@@ -24,173 +24,27 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Proxy class for \Apache_Solr_Document to customize \Apache_Solr_Document without
  * changing the library code.
  *
  * Implements
- *
+ * @deprecated This class was moved to the \Domain\Search\ResultSet\Result package, please use this one. Will be removed in 9.0
  * @author Timo Schmidt <timo.schmidt@dkd.de>
  */
-class SearchResult extends \Apache_Solr_Document
+class SearchResult extends \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult
 {
-
     /**
-     * @var bool
-     */
-    protected $throwExceptions = false;
-
-    /**
-     * @var SearchResult[]
-     */
-    protected $variants = [];
-
-    /**
-     * Indicates if an instance of this document is a variant (a sub document of another).
+     * @deprecated This class was moved to the \Domain\Search\ResultSet\Result package, please use this one. Will be removed in 9.0
      *
-     * @var bool
-     */
-    protected $isVariant = false;
-
-    /**
-     * References the parent document of the document is a variant.
-     *
-     * @var null
-     */
-    protected $variantParent = null;
-
-    /**
      * @param \Apache_Solr_Document $document
      * @param bool $throwExceptions
      */
     public function __construct(\Apache_Solr_Document $document, $throwExceptions = false)
     {
-        $this->throwExceptions = false;
-        $this->_documentBoost = $document->_documentBoost;
-        $this->_fields = $document->_fields;
-        $this->_fieldBoosts = $document->_fieldBoosts;
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     * @throws \Exception
-     * @throws \RuntimeException
-     * @return string
-     */
-    public function __call($name, $arguments)
-    {
-        try {
-            return parent::__call($name, $arguments);
-        } catch (\RuntimeException $e) {
-            if ($this->throwExceptions) {
-                throw $e;
-            }
-        }
-    }
-
-    /**
-     * @return SearchResult[]
-     */
-    public function getVariants()
-    {
-        return $this->variants;
-    }
-
-    /**
-     * @param SearchResult $expandedResult
-     */
-    public function addVariant(SearchResult $expandedResult)
-    {
-        $this->variants[] = $expandedResult;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsVariant()
-    {
-        return $this->isVariant;
-    }
-
-    /**
-     * @param bool $isVariant
-     */
-    public function setIsVariant($isVariant)
-    {
-        $this->isVariant = $isVariant;
-    }
-
-    /**
-     * @return null
-     */
-    public function getVariantParent()
-    {
-        return $this->variantParent;
-    }
-
-    /**
-     * @param null $variantParent
-     */
-    public function setVariantParent($variantParent)
-    {
-        $this->variantParent = $variantParent;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent()
-    {
-        return $this->_fields['content'];
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getIsElevated()
-    {
-        return $this->_fields['isElevated'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->_fields['type'];
-    }
-
-    /**
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->_fields['id'];
-    }
-
-    /**
-     * @return float
-     */
-    public function getScore()
-    {
-        return $this->_fields['score'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->_fields['url'];
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->_fields['title'];
+        GeneralUtility::logDeprecatedFunction();
+        parent::__construct($document, $throwExceptions);
     }
 }

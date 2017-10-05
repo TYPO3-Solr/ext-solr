@@ -1,6 +1,6 @@
 <?php
 
-namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result;
 
 /***************************************************************
  *  Copyright notice
@@ -24,23 +24,45 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupCollection;
+use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
- * The SearchResultBuilder is responsible to build a SearchResult object from an Apache_Solr_Document
- * and should use a different class as SearchResult if configured.
+ * The SearchResultCollection contains the SearchResult object and related objects. e.g groups.
  *
- * @deprecated This class was moved to the \Domain\Search\ResultSet\Result package, please use this one. Will be removed in 9.0
- * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet
+ * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result
  */
-class SearchResultBuilder extends \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder {
-
+class SearchResultCollection extends AbstractCollection {
 
     /**
-     * @deprecated Since 8.0.0 will be removed in 9.0.0 This class was moved to the \Domain\Search\ResultSet\Result package, please use this one
+     * @var GroupCollection
      */
-    public function __contruct()
+    protected $groups = null;
+
+    /**
+     * SearchResultCollection constructor.
+     * @param array $data
+     */
+    public function __construct(array $data = [])
     {
-        GeneralUtility::logDeprecatedFunction();
+        parent::__construct($data);
+        $this->groups = new GroupCollection();
+    }
+
+    /**
+     * @return GroupCollection
+     */
+    public function getGroups(): GroupCollection
+    {
+        return $this->groups;
+    }
+
+    /**
+     * @param GroupCollection $groups
+     */
+    public function setGroups(GroupCollection $groups)
+    {
+        $this->groups = $groups;
     }
 }

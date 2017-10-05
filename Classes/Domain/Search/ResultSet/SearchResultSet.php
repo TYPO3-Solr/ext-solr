@@ -27,12 +27,18 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\FacetCollection;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\Sorting;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Sorting\SortingCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
+
+//@deprecated
+//@todo this alias can be removed when the old class was dropped
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult as NewSearchResult;
+
 
 /**
  * The SearchResultSet is used to provided access to the \Apache_Solr_Response and
@@ -79,9 +85,9 @@ class SearchResultSet
     protected $usedAdditionalFilters = [];
 
     /**
-     * @var array
+     * @var SearchResultCollection
      */
-    protected $searchResults = [];
+    protected $searchResults = null;
 
     /**
      * @var int
@@ -125,6 +131,7 @@ class SearchResultSet
     {
         $this->facets = new FacetCollection();
         $this->sortings = new SortingCollection();
+        $this->searchResults = new SearchResultCollection();
     }
 
     /**
@@ -334,7 +341,7 @@ class SearchResultSet
     }
 
     /**
-     * @return array
+     * @return SearchResultCollection
      */
     public function getSearchResults()
     {
@@ -342,7 +349,7 @@ class SearchResultSet
     }
 
     /**
-     * @param array $searchResults
+     * @param SearchResultCollection $searchResults
      */
     public function setSearchResults($searchResults)
     {
@@ -352,7 +359,7 @@ class SearchResultSet
     /**
      * @param SearchResult $searchResult
      */
-    public function addSearchResult(SearchResult $searchResult)
+    public function addSearchResult(NewSearchResult $searchResult)
     {
         $this->searchResults[] = $searchResult;
     }
@@ -404,4 +411,6 @@ class SearchResultSet
     {
         $this->correctedQueryString = $correctedQueryString;
     }
+
+
 }

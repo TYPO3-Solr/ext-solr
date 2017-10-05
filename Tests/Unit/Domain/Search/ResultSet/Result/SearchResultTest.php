@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Result;
 
 /***************************************************************
  *  Copyright notice
@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 
 /**
  * Unit test case for the SearchResult.

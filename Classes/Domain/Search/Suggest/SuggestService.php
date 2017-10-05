@@ -26,7 +26,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Suggest;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetService;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
@@ -190,11 +191,11 @@ class SuggestService {
      * Adds documents from a collection to the result collection as soon as the limit is not reached.
      *
      * @param array $documents
-     * @param \Apache_Solr_Document[] $documentsToAdd
+     * @param SearchResultCollection $documentsToAdd
      * @param integer $maxDocuments
      * @return array
      */
-    protected function addDocumentsWhenLimitNotReached(array $documents, array $documentsToAdd, int $maxDocuments)  : array
+    protected function addDocumentsWhenLimitNotReached(array $documents, SearchResultCollection $documentsToAdd, int $maxDocuments)  : array
     {
         /** @var SearchResult $document */
         foreach ($documentsToAdd as $document) {

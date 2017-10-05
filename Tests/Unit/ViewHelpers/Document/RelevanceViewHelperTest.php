@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Test\ViewHelpers\Document;
 
 use ApacheSolrForTypo3\Solr\Search;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\RelevanceViewHelper;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
