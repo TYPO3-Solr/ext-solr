@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -69,7 +70,8 @@ class DefaultResultParser extends AbstractResultParser {
     public function canParse(SearchResultSet $resultSet)
     {
         // This parsers should not be used when grouping is enabled
-        if ($this->typoScriptConfiguration->getSearchGrouping())
+        $configuration = $resultSet->getUsedSearchRequest()->getContextTypoScriptConfiguration();
+        if ($configuration instanceof TypoScriptConfiguration && $configuration->getSearchGrouping())
         {
             return false;
         }

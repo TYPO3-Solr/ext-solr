@@ -53,20 +53,6 @@ class ResultParserRegistry implements SingletonInterface
     protected $parserInstances;
 
     /**
-     * @var TypoScriptConfiguration
-     */
-    protected $typoScriptConfiguration;
-
-    /**
-     * ResultParserRegistry constructor.
-     * @param TypoScriptConfiguration $configuration
-     */
-    public function __construct(TypoScriptConfiguration $configuration)
-    {
-        $this->typoScriptConfiguration = $configuration;
-    }
-
-    /**
      * Get registered parser classNames
      *
      * @return array
@@ -138,6 +124,6 @@ class ResultParserRegistry implements SingletonInterface
      */
     protected function createParserInstance($className)
     {
-        return GeneralUtility::makeInstance($className, $this->typoScriptConfiguration);
+        return GeneralUtility::makeInstance($className);
     }
 }
