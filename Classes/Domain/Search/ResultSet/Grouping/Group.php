@@ -24,11 +24,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
-
 /**
- * Class Group
+ * A group is identified by a groupName and can contain multiple groupItems (that reference the search results).
  *
  * @author Frans Saris <frans@beech.it>
  * @author Timo Hund <timo.hund@dkd.de>
@@ -39,103 +36,60 @@ class Group
     /**
      * @var string
      */
-    protected $groupValue = '';
+    protected $groupName = '';
 
     /**
-     * @var int
+     * @var GroupItemCollection
      */
-    protected $numFound = 0;
+    protected $groupItems = null;
 
     /**
-     * @var int
+     * Group constructor.
+     * @param string $groupName
      */
-    protected $start = 0;
-
-    /**
-     * @var float
-     */
-    protected $maxScore = 0;
-
-    /**
-     * @var SearchResultCollection
-     */
-    protected $searchResults;
-
-    /**
-     * @param string $groupValue
-     * @param int $numFound
-     * @param int $start
-     * @param float $maxScore
-     */
-    public function __construct($groupValue, $numFound, $start, $maxScore)
+    public function __construct(string $groupName)
     {
-        $this->groupValue = $groupValue;
-        $this->numFound = $numFound;
-        $this->start = $start;
-        $this->maxScore = $maxScore;
+        $this->groupName = $groupName;
+        $this->groupItems = new GroupItemCollection();
     }
 
     /**
-     * Get groupValue
-     *
      * @return string
      */
-    public function getGroupValue()
+    public function getGroupName(): string
     {
-        return $this->groupValue;
+        return $this->groupName;
     }
 
     /**
-     * Get numFound
-     *
-     * @return int
+     * @param string $groupName
      */
-    public function getNumFound()
+    public function setGroupName(string $groupName)
     {
-        return $this->numFound;
+        $this->groupName = $groupName;
     }
 
     /**
-     * Get start
-     *
-     * @return int
+     * @return GroupItemCollection
      */
-    public function getStart()
+    public function getGroupItems(): GroupItemCollection
     {
-        return $this->start;
+        return $this->groupItems;
     }
 
     /**
-     * Get maxScore
-     *
-     * @return float
+     * @param GroupItemCollection $groupItems
      */
-    public function getMaxScore()
+    public function setGroupItems(GroupItemCollection $groupItems)
     {
-        return $this->maxScore;
+        $this->groupItems = $groupItems;
     }
 
     /**
-     * @return SearchResultCollection
+     * @param GroupItem $groupItem
      */
-    public function getSearchResults(): SearchResultCollection
+    public function addGroupItem(GroupItem $groupItem)
     {
-        return $this->searchResults;
-    }
-
-    /**
-     * @param SearchResultCollection $searchResults
-     */
-    public function setSearchResults(SearchResultCollection $searchResults)
-    {
-        $this->searchResults = $searchResults;
-    }
-
-    /**
-     * @param SearchResult $searchResult
-     */
-    public function addSearchResult(SearchResult $searchResult)
-    {
-        $this->searchResults[] = $searchResult;
+        $this->groupItems[] = $groupItem;
     }
 }
