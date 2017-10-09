@@ -25,7 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\Group;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 
 /**
  * Proxy class for \Apache_Solr_Document to customize \Apache_Solr_Document without
@@ -63,9 +63,9 @@ class SearchResult extends \Apache_Solr_Document
     protected $variantParent = null;
 
     /**
-     * @var Group
+     * @var GroupItem
      */
-    protected $group = null;
+    protected $groupItem = null;
 
     /**
      * @param \Apache_Solr_Document $document
@@ -98,19 +98,19 @@ class SearchResult extends \Apache_Solr_Document
     }
 
     /**
-     * @return Group
+     * @return GroupItem
      */
-    public function getGroup(): Group
+    public function getGroupItem(): GroupItem
     {
-        return $this->group;
+        return $this->groupItem;
     }
 
     /**
-     * @param Group $group
+     * @param GroupItem $group
      */
-    public function setGroup(Group $group)
+    public function setGroupItem(GroupItem $group)
     {
-        $this->group = $group;
+        $this->groupItem = $group;
     }
 
     /**

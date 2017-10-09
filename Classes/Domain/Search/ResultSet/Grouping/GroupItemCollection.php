@@ -28,55 +28,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping;
 use ApacheSolrForTypo3\Solr\System\Data\AbstractCollection;
 
 /**
- * The Group contains the Group objects.
+ * The GroupItemCollection contains the GroupItem objects.
  *
  * @package ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping
  */
-class GroupCollection extends AbstractCollection {
-
-    /**
-     * @param string $name
-     * @return Group
-     */
-    public function getByName($name): Group
-    {
-        foreach($this->data as $group) {
-            /** @var $group Group */
-            if($group->getGroupName() === $name) {
-                return $group;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $name
-     * @return boolean
-     */
-    public function getHasWithName($name): bool
-    {
-        foreach($this->data as $group) {
-            /** @var $group Group */
-            if($group->getGroupName() === $name) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @return array
-     */
-    public function getGroupNames(): array
-    {
-        $names = [];
-        foreach($this->data as $group) {
-            /** @var $group Group */
-            $names[] = $group->getGroupName();
-        }
-
-        return $names;
-    }
-}
+class GroupItemCollection extends AbstractCollection {}
