@@ -25,8 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
-use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -85,6 +85,22 @@ class ResultParserRegistry implements SingletonInterface
         }
 
         $this->parsers[(int)$priority] = $className;
+    }
+
+    /**
+     * Method to check if a certain parser is allready registered
+     *
+     * @param string $className
+     * @param int $priority
+     * @return boolean
+     */
+    public function hasParser($className, $priority)
+    {
+        if (empty($this->parsers[$priority])) {
+            return false;
+        }
+
+        return $this->parsers[$priority] === $className;
     }
 
     /**

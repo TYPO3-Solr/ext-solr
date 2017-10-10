@@ -4,7 +4,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
+ *  (c) 2017 Timo Hund <timo.schmidt@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -140,5 +140,13 @@ class GroupItem
     public function addSearchResult(SearchResult $searchResult)
     {
         $this->searchResults[] = $searchResult;
+    }
+
+    /**
+     * @return Group
+     */
+    public function getGroup(): Group
+    {
+        return $this->group;
     }
 }

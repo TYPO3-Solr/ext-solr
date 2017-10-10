@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 
 
@@ -24,13 +25,18 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
  * @author Timo Hund <timo.hund@dkd.de>
  * @package ApacheSolrForTypo3\Solr\ViewHelpers\Widget\Controller
  */
-class ResultPaginateController extends AbstractPaginateWidgetController
+class GroupItemPaginateController extends AbstractPaginateWidgetController
 {
 
     /**
      * @var SearchResultSet
      */
     protected $resultSet;
+
+    /**
+     * @var GroupItem
+     */
+    protected $groupItem;
 
     /**
      * @return void
@@ -40,9 +46,10 @@ class ResultPaginateController extends AbstractPaginateWidgetController
         parent::initializeAction();
 
         $this->resultSet = $this->widgetConfiguration['resultSet'];
+        $this->groupItem = $this->widgetConfiguration['groupItem'];
         $this->configuration['itemsPerPage'] = $this->getItemsPerPage();
 
-        $this->numberOfPages = (int)ceil($this->resultSet->getUsedSearch()->getNumberOfResults() / $this->configuration['itemsPerPage']);
+        $this->numberOfPages = (int)ceil($this->groupItem->getNumFound() / $this->configuration['itemsPerPage']);
     }
 
     /**
@@ -52,7 +59,7 @@ class ResultPaginateController extends AbstractPaginateWidgetController
      */
     protected function getItemsPerPage()
     {
-        $perPage = (int)$this->resultSet->getUsedSearch()->getQuery()->getResultsPerPage();
+        $perPage = (int)$this->groupItem->getGroup()->getResultsPerPage();
         return $perPage > 0 ? $perPage : 10;
     }
 
@@ -71,13 +78,17 @@ class ResultPaginateController extends AbstractPaginateWidgetController
     public function indexAction()
     {
         // set current page
-        $this->currentPage = $this->resultSet->getUsedPage();
+        $groupName = $this->groupItem->getGroup()->getGroupName();
+        $groupItemValue = $this->groupItem->getGroupValue();
+        $this->currentPage = $this->resultSet->getUsedSearchRequest()->getGroupItemPage($groupName, $groupItemValue);
         if ($this->currentPage < 1) {
             $this->currentPage = 1;
         }
-        $this->view->assign('contentArguments', [$this->widgetConfiguration['as'] => $this->resultSet->getSearchResults(), 'pagination' => $this->buildPagination()]);
+        $this->view->assign('contentArguments', [$this->widgetConfiguration['as'] => $this->groupItem->getSearchResults(), 'pagination' => $this->buildPagination()]);
         $this->view->assign('configuration', $this->configuration);
         $this->view->assign('resultSet', $this->resultSet);
+        $this->view->assign('groupItem', $this->groupItem);
+
         if (!empty($this->templatePath)) {
             $this->view->setTemplatePathAndFilename($this->templatePath);
         }

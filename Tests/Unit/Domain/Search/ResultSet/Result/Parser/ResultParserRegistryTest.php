@@ -67,4 +67,14 @@ class ResultParserRegistryTest extends UnitTest
         $retrievedParser = $this->registry->getParser($fakeResultSet);
         $this->assertInstanceOf(TestResultParser::class, $retrievedParser, 'Did not retrieve register custom parser with higher priority');
     }
+
+    /**
+     * @test
+     */
+    public function hasParser()
+    {
+        $this->registry->registerParser(TestResultParser::class, 200);
+        $this->assertTrue($this->registry->hasParser(TestResultParser::class, 200), 'hasParser returned unexpected result for a parser that should exist');
+        $this->assertFalse($this->registry->hasParser('Fooo', 100), 'hasParser returned unexpected result for a parser that not should exist');
+    }
 }

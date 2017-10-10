@@ -301,6 +301,18 @@ class SearchRequestTest extends UnitTest
     /**
      * @test
      */
+    public function canSetGroupItemPage()
+    {
+        $query = 'tx_solr%5Bq%5D=typo3';
+        $request = $this->getSearchRequestFromQueryString($query);
+        $request->setGroupItemPage('typeGroup', 'pages', 2);
+
+        $this->assertSame(2, $request->getGroupItemPage('typeGroup', 'pages'), 'Can not set and get groupItemPage');
+    }
+
+    /**
+     * @test
+     */
     public function twoDifferentRequestsHaveADifferentId()
     {
         $newSearchRequest = new SearchRequest();

@@ -36,13 +36,13 @@ class GroupCollection extends AbstractCollection {
 
     /**
      * @param string $name
-     * @return Group
+     * @return Group|null
      */
-    public function getByName($name): Group
+    public function getByName($name)
     {
-        foreach($this->data as $group) {
+        foreach ($this->data as $group) {
             /** @var $group Group */
-            if($group->getGroupName() === $name) {
+            if ($group->getGroupName() === $name) {
                 return $group;
             }
         }
@@ -56,9 +56,9 @@ class GroupCollection extends AbstractCollection {
      */
     public function getHasWithName($name): bool
     {
-        foreach($this->data as $group) {
+        foreach ($this->data as $group) {
             /** @var $group Group */
-            if($group->getGroupName() === $name) {
+            if ($group->getGroupName() === $name) {
                 return true;
             }
         }
@@ -72,11 +72,19 @@ class GroupCollection extends AbstractCollection {
     public function getGroupNames(): array
     {
         $names = [];
-        foreach($this->data as $group) {
+        foreach ($this->data as $group) {
             /** @var $group Group */
             $names[] = $group->getGroupName();
         }
 
         return $names;
+    }
+
+    /**
+     * @param Group $group
+     */
+    public function add(Group $group)
+    {
+        $this->data[] = $group;
     }
 }

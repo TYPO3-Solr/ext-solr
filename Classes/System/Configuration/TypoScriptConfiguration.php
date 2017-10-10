@@ -2214,6 +2214,36 @@ class TypoScriptConfiguration
     }
 
     /**
+     * Returns the valid numberOfResultsPerGroup value for a group.
+     *
+     * Returns:
+     *
+     * plugin.tx_solr.search.grouping.groups.<groupName>.numberOfResultsPerGroup if it is set otherwise
+     * plugin.tx_solr.search.grouping.numberOfResultsPerGroup
+     *
+     * @param string $groupName
+     * @param int $defaultIfEmpty
+     * @return int
+     */
+    public function getSearchGroupingResultLimit($groupName, $defaultIfEmpty = 1)
+    {
+        $specificPath = 'plugin.tx_solr.search.grouping.groups.' . $groupName . 'numberOfResultsPerGroup';
+        $specificResultsPerGroup = $this->getValueByPathOrDefaultValue($specificPath, null);
+
+        if ($specificResultsPerGroup !== null) {
+            return (int) $specificResultsPerGroup;
+        }
+
+        $commonPath = 'plugin.tx_solr.search.grouping.numberOfResultsPerGroup';
+        $commonValue = $this->getValueByPathOrDefaultValue($commonPath, null);
+        if ($commonValue !== null) {
+            return (int) $commonValue;
+        }
+
+        return $defaultIfEmpty;
+    }
+
+    /**
      * Returns everything that is configured for the groups (plugin.tx_solr.search.grouping.groups.)
      *
      * plugin.tx_solr.search.grouping.groups.

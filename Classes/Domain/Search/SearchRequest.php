@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Util\ArrayAccessor;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -116,7 +117,7 @@ class SearchRequest
             $this->argumentNameSpace = $typoScriptConfiguration->getSearchPluginNamespace();
         }
 
-        $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort'];
+        $this->persistentArgumentsPaths = [$this->argumentNameSpace . ':q', $this->argumentNameSpace . ':filter', $this->argumentNameSpace . ':sort', $this->argumentNameSpace . ':groupPage'];
         $this->reset();
     }
 
@@ -424,6 +425,57 @@ class SearchRequest
     {
         $path = $this->prefixWithNamespace('page');
         return $this->argumentsAccessor->get($path);
+    }
+
+    /**
+     * Can be used to paginate within a groupItem.
+     *
+     * @param string $groupName e.g. type
+     * @param string $groupItemValue e.g. pages
+     * @param int $page
+     * @return SearchRequest
+     */
+    public function setGroupItemPage(string $groupName, string $groupItemValue, int $page): SearchRequest
+    {
+        $this->stateChanged = true;
+        $path = $this->prefixWithNamespace('groupPage:' . $groupName . ':' . $groupItemValue);
+        $this->argumentsAccessor->set($path, $page);
+        return $this;
+    }
+
+    /**
+     * Retrieves the current page for this group item.
+     *
+     * @param string $groupName
+     * @param string $groupItemValue
+     * @return int
+     */
+    public function getGroupItemPage(string $groupName, string $groupItemValue): int
+    {
+        $path = $this->prefixWithNamespace('groupPage:' . $groupName . ':' . $groupItemValue);
+        return max(1, (int)$this->argumentsAccessor->get($path));
+    }
+
+    /**
+     * Retrieves the highest page of the groups.
+     *
+     * @return int
+     */
+    public function getHighestGroupPage()
+    {
+        $max = 1;
+        $path = $this->prefixWithNamespace('groupPage');
+        $groupPages = $this->argumentsAccessor->get($path);
+        foreach ($groupPages as $groups) {
+            if (!is_array($groups)) continue;
+            foreach ($groups as $groupItemPage) {
+                if ($groupItemPage > $max) {
+                    $max = $groupItemPage;
+                }
+            }
+        }
+
+        return $max;
     }
 
     /**
