@@ -45,27 +45,19 @@ abstract class AbstractResultParser {
     protected $searchResultBuilder;
 
     /**
-     * @var TypoScriptConfiguration
-     */
-    protected $typoScriptConfiguration;
-
-    /**
      * @var DocumentEscapeService
      */
     protected $documentEscapeService;
 
     /**
      * AbstractResultParser constructor.
-     * @param TypoScriptConfiguration|null $typoScriptConfiguration
      * @param SearchResultBuilder|null $resultBuilder
      * @param DocumentEscapeService|null $documentEscapeService
      */
-    public function __construct(TypoScriptConfiguration $typoScriptConfiguration = null,
-                                SearchResultBuilder $resultBuilder = null,
+    public function __construct(SearchResultBuilder $resultBuilder = null,
                                 DocumentEscapeService $documentEscapeService = null) {
-        $this->typoScriptConfiguration = $typoScriptConfiguration;
         $this->searchResultBuilder = is_null($resultBuilder) ? GeneralUtility::makeInstance(SearchResultBuilder::class) : $resultBuilder;
-        $this->documentEscapeService = is_null($documentEscapeService) ? GeneralUtility::makeInstance(DocumentEscapeService::class, $typoScriptConfiguration) : $documentEscapeService;
+        $this->documentEscapeService = is_null($documentEscapeService) ? GeneralUtility::makeInstance(DocumentEscapeService::class) : $documentEscapeService;
     }
 
     /**

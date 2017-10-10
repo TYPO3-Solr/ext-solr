@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet\Result\Parser;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DefaultResultParser;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
@@ -49,7 +50,7 @@ class DefaultParserTest extends UnitTest
     public function setUp()
     {
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
-        $this->parser = new DefaultResultParser($this->configurationMock);
+        $this->parser = new DefaultResultParser();
     }
 
     /**
@@ -74,9 +75,13 @@ class DefaultParserTest extends UnitTest
      */
     public function canParseReturnsFalseWhenGroupingIsEnabled()
     {
-        $resultMock = $this->getDumbMock(SearchResultSet::class);
+        $requestMock = $this->getDumbMock(SearchRequest::class);
+        $requestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($this->configurationMock));
+        $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
+        $fakeResultSet->expects($this->any())->method('getUsedSearchRequest')->will($this->returnValue($requestMock));
+
         $this->configurationMock->expects($this->once())->method('getSearchGrouping')->will($this->returnValue(true));
-        $this->assertFalse($this->parser->canParse($resultMock));
+        $this->assertFalse($this->parser->canParse($fakeResultSet));
     }
 
     /**
@@ -84,9 +89,13 @@ class DefaultParserTest extends UnitTest
      */
     public function canParseReturnsTrueWhenGroupingIsDisabled()
     {
-        $resultMock = $this->getDumbMock(SearchResultSet::class);
+        $requestMock = $this->getDumbMock(SearchRequest::class);
+        $requestMock->expects($this->any())->method('getContextTypoScriptConfiguration')->will($this->returnValue($this->configurationMock));
+        $fakeResultSet = $this->getDumbMock(SearchResultSet::class);
+        $fakeResultSet->expects($this->any())->method('getUsedSearchRequest')->will($this->returnValue($requestMock));
+
         $this->configurationMock->expects($this->once())->method('getSearchGrouping')->will($this->returnValue(false));
-        $this->assertTrue($this->parser->canParse($resultMock));
+        $this->assertTrue($this->parser->canParse($fakeResultSet));
     }
 
 }
