@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Uri;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping\GroupItem;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -184,6 +185,21 @@ class SearchUriBuilder
         return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
     }
 
+    /**
+     * @param SearchRequest $previousSearchRequest
+     * @param GroupItem $groupItem
+     * @param int $page
+     * @return string
+     */
+    public function getResultGroupItemPageUri(SearchRequest $previousSearchRequest, GroupItem $groupItem, int $page)
+    {
+        $persistentAndFacetArguments = $previousSearchRequest
+            ->getCopyForSubRequest()->setGroupItemPage($groupItem->getGroup()->getGroupName(), $groupItem->getGroupValue(), $page)
+            ->getAsArray();
+
+        $pageUid = $this->getTargetPageUidFromRequestConfiguration($previousSearchRequest);
+        return $this->buildLinkWithInMemoryCache($pageUid, $persistentAndFacetArguments);
+    }
     /**
      * @param SearchRequest $previousSearchRequest
      * @param $queryString

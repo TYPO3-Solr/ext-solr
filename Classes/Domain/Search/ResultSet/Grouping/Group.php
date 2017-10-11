@@ -4,7 +4,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Grouping;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015-2016 Timo Schmidt <timo.schmidt@dkd.de>
+ *  (c) 2017 Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -39,18 +39,30 @@ class Group
     protected $groupName = '';
 
     /**
+     * @var int
+     */
+    protected $resultsPerPage = 10;
+
+    /**
      * @var GroupItemCollection
      */
     protected $groupItems = null;
 
     /**
+     * @var array
+     */
+    protected $groupConfiguration = [];
+
+    /**
      * Group constructor.
      * @param string $groupName
+     * @param int $resultsPerPage
      */
-    public function __construct(string $groupName)
+    public function __construct(string $groupName, int $resultsPerPage = 10)
     {
         $this->groupName = $groupName;
         $this->groupItems = new GroupItemCollection();
+        $this->resultsPerPage = $resultsPerPage;
     }
 
     /**
@@ -91,5 +103,21 @@ class Group
     public function addGroupItem(GroupItem $groupItem)
     {
         $this->groupItems[] = $groupItem;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResultsPerPage(): int
+    {
+        return $this->resultsPerPage;
+    }
+
+    /**
+     * @param int $resultsPerPage
+     */
+    public function setResultsPerPage(int $resultsPerPage)
+    {
+        $this->resultsPerPage = $resultsPerPage;
     }
 }

@@ -65,4 +65,12 @@ class SearchResultCollection extends AbstractCollection {
     {
         $this->groups = $groups;
     }
+
+    /**
+     * @return bool
+     */
+    public function getHasGroups(): bool
+    {
+        return $this->groups->getCount() > 0;
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Test\Domain\Search\ResultSet;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search\ResultSet\Grouping;
 
 /***************************************************************
  *  Copyright notice
@@ -51,6 +51,8 @@ class GroupCollectionTest extends UnitTest
         $groupCollection[] = $groupC;
 
         $this->assertSame($groupB, $groupCollection->getByName('color'), 'Could not get groupByName');
+        $this->assertNull($groupCollection->getByName('unexisting'), 'Could not get groupByName');
+
     }
 
     /**
@@ -68,6 +70,19 @@ class GroupCollectionTest extends UnitTest
         $groupCollection[] = $groupC;
 
         $this->assertSame(['type','color','price'], $groupCollection->getGroupNames(), 'Could not get groupNames');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetHasWithName()
+    {
+        $groupA = new Group('price');
+        $groupCollection = new GroupCollection();
+        $groupCollection[] = $groupA;
+
+        $this->assertTrue($groupCollection->getHasWithName('price'), 'Item that should be in GroupCollection does not occure in GroupCollection');
+        $this->assertFalse($groupCollection->getHasWithName('nonexisting'), 'Unexisting GroupCollection item was indicated to exist in the collection');
     }
 
 }
