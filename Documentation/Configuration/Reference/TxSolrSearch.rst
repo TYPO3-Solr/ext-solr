@@ -288,7 +288,7 @@ query.sortBy
 :TS Path: plugin.tx_solr.search.query.sortBy
 :Since: 1.0
 
-Allows to set a custom sorting for the query. By default Solr will sort by releavance, using this setting you can sort by any sortable field.
+Allows to set a custom sorting for the query. By default Solr will sort by relevance, using this setting you can sort by any sortable field.
 
 Needs a Solr field name followed by asc for ascending order or desc for descending.
 
