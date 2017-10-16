@@ -207,7 +207,7 @@ Technically the parameter will be mapped to the **"bf"** parameter in the solr q
 
 Use cases for example could be:
 
-**"Give never documents a higher priority":**
+**"Give newer documents a higher priority":**
 
 This could be done with a recip function:
 
