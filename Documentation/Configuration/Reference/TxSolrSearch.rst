@@ -248,6 +248,18 @@ Example (boosts tt_news documents by factor 10):
     plugin.tx_solr.search.query.boostQuery = (type:tt_news)^10
 
 
+query.tieParameter
+~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.query.tieParameter
+:Since: 8.0
+:See: `Lucene Documentation / TheDisMaxQueryParser TieParameter <http://lucene.apache.org/solr/guide/7_0/the-dismax-query-parser.html#the-tie-tie-breaker-parameter>`
+
+This parameter ties the scores together. Setting is to "0" (default) uses the maximum score of all computed scores.
+A value of "1.0" adds all scores. The value is a number between "0.0" and "1.0".
+
+
 query.filter
 ~~~~~~~~~~~~
 
