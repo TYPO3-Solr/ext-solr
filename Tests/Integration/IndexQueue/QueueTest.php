@@ -138,7 +138,7 @@ class QueueTest extends IntegrationTest
         $this->assertEmptyQueue();
 
         // record does not exist in fixture
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->indexQueue->updateItem('pages', 5);
 
         // queue should still be empty

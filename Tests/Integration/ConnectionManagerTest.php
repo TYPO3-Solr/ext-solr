@@ -141,7 +141,7 @@ class ConnectionManagerTest extends IntegrationTest
      * @test
      */
     public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConfigurationByRootPageId() {
-        $this->setExpectedException(NoSolrConnectionFoundException::class);
+        $this->expectException(NoSolrConnectionFoundException::class);
 
         /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
@@ -152,7 +152,7 @@ class ConnectionManagerTest extends IntegrationTest
      * @test
      */
     public function exceptionIsThrownForUnAvailableSolrConnectionOnGetConnectionByPageId() {
-        $this->setExpectedException(NoSolrConnectionFoundException::class);
+        $this->expectException(NoSolrConnectionFoundException::class);
 
         /** @var $connectionManager ConnectionManager */
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
