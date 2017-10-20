@@ -58,7 +58,7 @@ class CliEnvironmentTest extends IntegrationTest
      */
     public function canNotInitializeTwiceWithTwoInstances()
     {
-        $this->setExpectedException(WebRootAllReadyDefinedException::class);
+        $this->expectException(WebRootAllReadyDefinedException::class);
         $this->assertFalse(defined('TYPO3_PATH_WEB'));
 
         $cliEnvironment = new CliEnvironment();

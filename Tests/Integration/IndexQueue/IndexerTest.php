@@ -337,7 +337,7 @@ class IndexerTest extends IntegrationTest
      */
     public function canGetAdditionalDocumentsInterfaceOnly()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\IndexQueue\AdditionalIndexQueueItemIndexer::class;
         $document = new \Apache_Solr_Document;
         $metaData = ['item_type' => 'pages'];
@@ -351,7 +351,7 @@ class IndexerTest extends IntegrationTest
      */
     public function canGetAdditionalDocumentsNotImplementingInterface()
     {
-        $this->setExpectedException(\UnexpectedValueException::class);
+        $this->expectException(\UnexpectedValueException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = \ApacheSolrForTypo3\Solr\Tests\Integration\IndexQueue\Helpers\DummyIndexer::class;
         $document = new \Apache_Solr_Document;
         $metaData = ['item_type' => 'pages'];
@@ -365,7 +365,7 @@ class IndexerTest extends IntegrationTest
      */
     public function canGetAdditionalDocumentsNonExistingClass()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['indexItemAddDocuments'][] = 'NonExistingClass';
         $document = new \Apache_Solr_Document;
         $metaData = ['item_type' => 'pages'];
