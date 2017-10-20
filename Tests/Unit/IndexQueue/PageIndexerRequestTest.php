@@ -117,7 +117,8 @@ class PageIndexerRequestTest extends UnitTest
 
         $requestMock->setIndexQueueItem($queueItemMock);
 
-        $this->setExpectedException(\RuntimeException::class, 'Request ID mismatch');
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Request ID mismatch');
         $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
     }
 
@@ -133,7 +134,8 @@ class PageIndexerRequestTest extends UnitTest
         $queueItemMock = $this->getDumbMock(Item::class);
         $requestMock->setIndexQueueItem($queueItemMock);
 
-        $this->setExpectedException(\RuntimeException::class, 'Failed to execute Page Indexer Request');
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Failed to execute Page Indexer Request');
         $requestMock->send('http://7.6.local.typo3.org/about/typo3/');
     }
 

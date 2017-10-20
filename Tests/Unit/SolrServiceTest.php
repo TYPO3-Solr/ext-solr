@@ -123,7 +123,7 @@ class SolrServiceTest extends UnitTest
      */
     public function setSchemeThrowsExceptionWhenEmptySchemeWasPassed()
     {
-        $this->setExpectedException(\UnexpectedValueException::class, 'Scheme parameter is empty');
+        $this->expectException(\UnexpectedValueException::class, 'Scheme parameter is empty');
         $solrService = $this->getDefaultSolrServiceWithMockedDependencies();
         $solrService->setScheme('');
     }
@@ -133,7 +133,7 @@ class SolrServiceTest extends UnitTest
      */
     public function setSchemeThrowsExceptionWhenInvalidSchemeWasPassed()
     {
-        $this->setExpectedException(\UnexpectedValueException::class, 'Unsupported scheme parameter, scheme must be http or https');
+        $this->expectException(\UnexpectedValueException::class, 'Unsupported scheme parameter, scheme must be http or https');
         $solrService = $this->getDefaultSolrServiceWithMockedDependencies();
         $solrService->setScheme('invalidscheme');
     }

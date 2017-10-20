@@ -66,7 +66,7 @@ class SortingTest extends UnitTest
      */
     public function canNotCreateWhenInvalidDirectionIsPassed()
     {
-        $this->setExpectedExceptionRegExp(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new Sorting($this->resultSetMock, 'Color', 'color_s', 'invalid direction', 'the color', false, false);
     }
 

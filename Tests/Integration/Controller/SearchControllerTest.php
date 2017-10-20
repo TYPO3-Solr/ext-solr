@@ -382,7 +382,8 @@ class SearchControllerTest extends IntegrationTest
     {
         // we expected that an exception will be thrown when a facet is rendered
         // where an unknown partialName is referenced
-        $this->setExpectedExceptionRegExp(InvalidTemplateResourceException::class, '#(.*The partial files.*NotFound.*|.*The Fluid template files .*NotFound.*)#');
+        $this->expectException(InvalidTemplateResourceException::class);
+        $this->expectExceptionMessageRegExp('#(.*The partial files.*NotFound.*|.*The Fluid template files .*NotFound.*)#');
 
         $this->importDataSetFromFixture('can_render_search_controller.xml');
         $GLOBALS['TSFE'] = $this->getConfiguredTSFE([], 1);
