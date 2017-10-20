@@ -44,7 +44,7 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
     /**
      * Initializes the search component.
      *
-     * Sets minimum match, boost function, and boost query.
+     * Sets minimum match, boost function, boost query and tie breaker.
      *
      */
     public function initializeSearchComponent()
@@ -70,6 +70,9 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
             }
 
             $this->query->setBoostQuery($boostQueries);
+        }
+        if (!empty($this->searchConfiguration['query.']['tieParameter'])) {
+            $this->query->setTieParameter($this->searchConfiguration['query.']['tieParameter']);
         }
     }
 

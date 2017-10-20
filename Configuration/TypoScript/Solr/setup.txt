@@ -100,6 +100,9 @@ plugin.tx_solr {
 			// see http://wiki.apache.org/solr/DisMaxQParserPlugin#bq_.28Boost_Query.29
 			boostQuery =
 
+			// see http://lucene.apache.org/solr/guide/7_0/the-dismax-query-parser.html#the-tie-tie-breaker-parameter
+			tieParameter = 
+
 			filter {
 
 			}

@@ -810,6 +810,17 @@ class Query
     }
 
     /**
+     * Set the tie breaker (tie) parameter
+     *
+     * @param mixed $tieParameter tie breaker parameter as string or boolean FALSE to disable / reset the tie parameter
+     * @return void
+     */
+    public function setTieParameter($tieParameter)
+    {
+        $this->setQueryParameterWhenStringOrUnsetWhenEmpty('tie', $tieParameter);
+    }
+
+    /**
      * Gets a specific query parameter by its name.
      *
      * @param string $parameterName The parameter to return
