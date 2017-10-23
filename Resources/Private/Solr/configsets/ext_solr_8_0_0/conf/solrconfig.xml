@@ -1,6 +1,6 @@
-<config name="tx_solr-8-0-0--20170817">
+<config name="tx_solr-8-0-0--20171020">
 
-	<luceneMatchVersion>6.3.0</luceneMatchVersion>
+	<luceneMatchVersion>6.6.0</luceneMatchVersion>
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 

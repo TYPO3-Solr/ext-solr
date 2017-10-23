@@ -356,36 +356,11 @@ class SearchResultSetService
      *
      * @param Query $query
      * @param int $offSet
-     * @throws SolrCommunicationException
      * @return \Apache_Solr_Response
      */
     protected function doASearch($query, $offSet)
     {
-        try {
-            $response = $this->search->search($query, $offSet, null);
-        } catch (SolrInternalServerErrorException $e) {
-            // when variants are enable and the index is empty, we get a parse exception, because of a
-            // Apache Solr Bug.
-            // see: https://github.com/TYPO3-Solr/ext-solr/issues/668
-            // @todo this try/catch block can be removed after upgrading to Apache Solr 6.4
-            if (!$this->typoScriptConfiguration->getSearchVariants()) {
-                throw $e;
-            }
-
-            $response = $e->getSolrResponse();
-
-            $parsedData = new \stdClass();
-            $parsedData->response = new \stdClass();
-            $parsedData->response->docs = [];
-            $parsedData->spellcheck = [];
-            $parsedData->debug = [];
-            $parsedData->responseHeader = [];
-            $parsedData->facet_counts = [];
-            $parsedData->facets = [];
-            $response->setParsedData($parsedData);
-
-        }
-
+        $response = $this->search->search($query, $offSet, null);
         if($response === null) {
             throw new SolrIncompleteResponseException('The response retrieved from solr was incomplete', 1505989678);
         }
