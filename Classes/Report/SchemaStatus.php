@@ -50,7 +50,7 @@ class SchemaStatus extends AbstractSolrStatus
      *
      * @var string
      */
-    const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-7-0-0--20170530';
+    const RECOMMENDED_SCHEMA_VERSION = 'tx_solr-7-5-0--20171023';
 
     /**
      * Compiles a collection of schema version checks against each configured
