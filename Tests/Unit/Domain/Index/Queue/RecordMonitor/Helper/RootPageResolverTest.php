@@ -125,7 +125,7 @@ class RootPageResolverTest extends UnitTest
     public function getIsRootPageIdWithUnknownPageId() {
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
 
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $rootPageResolver->getIsRootPageId(42);
     }
 
