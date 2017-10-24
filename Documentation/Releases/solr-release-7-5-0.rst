@@ -21,19 +21,15 @@
 7.5.0 - Maintenance release - Apache Solr 6.6.2 security release
 ================================================================
 
-
 This release is a bugfix only release. It contains all patches from 6.1.3 + the update to Apache Solr 6.6.2.
 This release is for everyone who needs to stay on TYPO3 7 LTS, if you are using 8 LTS you should update to 7.5.0 when possible.
 
 Update to Apache Solr 6.6.2
 ===========================
 
-There was a zero day exploit discovered in Apache Solr that allows to load external entities by manipulating the doctype
-of the response. The Apache Solr release 6.6.2 fixes this issue. This patch add's the support for Apache Solr 6.6.2 and updates
-the docker container to be based on Apache Solr 6.6.2.
+There was a zero day exploit discovered in Apache Solr that allows to load external entities by manipulating the doctype of the response. The Apache Solr release 6.6.2 fixes this issue. This patch add's the support for Apache Solr 6.6.2 and updates the docker container to be based on Apache Solr 6.6.2.
 
-During the update you should update your Apache Solr server to the shipped and supported version 6.6.2 by using the shipped
-docker container or using your own install process for apache solr. Just updating the extension is not enough.
+During the update you should update your Apache Solr server to the shipped and supported version 6.6.2 by using the shipped docker container or using your own install process for apache solr. Just updating the extension is not enough.
 
 * https://github.com/TYPO3-Solr/ext-solr/pull/1697
 * https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12629
