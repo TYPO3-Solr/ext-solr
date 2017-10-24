@@ -21,7 +21,7 @@
 7.5.0 - Maintenance release - Apache Solr 6.6.2 security release
 ================================================================
 
-This release is a bugfix only release. It contains all patches from 6.1.3 + the update to Apache Solr 6.6.2.
+This release is a bugfix only release. It contains all patches from 7.0.2 + the update to Apache Solr 6.6.2.
 This release is for everyone who needs to stay on TYPO3 7 LTS, if you are using 8 LTS you should update to 7.5.0 when possible.
 
 Update to Apache Solr 6.6.2
