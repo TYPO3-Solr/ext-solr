@@ -138,7 +138,7 @@ abstract class AbstractDataHandlerListener
         $fieldsForCurrentState = $this->getAllRelevantFieldsForCurrentState();
         $fieldListToRetrieve = implode(',', $fieldsForCurrentState);
         $page = BackendUtility::getRecord('pages', $pageId, $fieldListToRetrieve, '', false);
-        foreach ($this->getUpdateSubPagesRecursiveTriggerConfiguration() as $configurationName => $triggerConfiguration) {
+        foreach ($this->getUpdateSubPagesRecursiveTriggerConfiguration() as $triggerConfiguration) {
             $allCurrentStateFieldsMatch = $this->getAllCurrentStateFieldsMatch($triggerConfiguration, $page);
             $allChangeSetValuesMatch = $this->getAllChangeSetValuesMatch($triggerConfiguration, $changedFields);
 
