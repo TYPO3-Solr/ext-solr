@@ -289,14 +289,14 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     public function getAllConnections()
     {
-        $connections = [];
+        $solrConnections = [];
 
         $solrConfigurations = $this->getAllConfigurations();
         foreach ($solrConfigurations as $solrConfiguration) {
-            $connections[] = $this->getConnectionFromConfiguration($solrConfiguration);
+            $solrConnections[] = $this->getConnectionFromConfiguration($solrConfiguration);
         }
 
-        return $connections;
+        return $solrConnections;
     }
 
     /**
