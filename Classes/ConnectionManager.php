@@ -409,7 +409,6 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     protected function getConfiguredSolrConnections()
     {
         $configuredSolrConnections = [];
-
         // find website roots and languages for this installation
         $rootPages = $this->pagesRepositoryAtExtSolr->findAllRootPages();
         $languages = $this->systemLanguageRepository->findSystemLanguages();
@@ -499,16 +498,14 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
      */
     protected function buildConnectionLabel(array $connection)
     {
-        $connectionLabel = $connection['rootPageTitle']
+        return $connection['rootPageTitle']
             . ' (pid: ' . $connection['rootPageUid']
             . ', language: ' . $this->systemLanguageRepository->findOneLanguageTitleByLanguageId($connection['language'])
             . ') - '
-#			. $connection['solrScheme'] . '://'
+//            . $connection['solrScheme'] . '://'
             . $connection['solrHost'] . ':'
             . $connection['solrPort']
             . $connection['solrPath'];
-
-        return $connectionLabel;
     }
 
     /**
