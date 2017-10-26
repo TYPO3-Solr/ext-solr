@@ -440,7 +440,7 @@ class ConnectionManager implements SingletonInterface, ClearCacheActionsHookInte
     {
         $connection = [];
 
-        $languageId = intval($languageId);
+        $languageId = (int)$languageId;
         GeneralUtility::_GETset($languageId, 'L');
         $connectionKey = $rootPage['uid'] . '|' . $languageId;
 
