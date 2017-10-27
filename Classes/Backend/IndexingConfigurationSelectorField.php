@@ -124,13 +124,11 @@ class IndexingConfigurationSelectorField
         $formField = $this->renderSelectCheckbox($this->buildSelectorItems($tablesToIndex), $selectedValues);
 
         // need to wrap the field in a TCEforms table to make the CSS apply
-        $form = '
-		<div class="typo3-TCEforms tx_solr-TCEforms">
-            ' . "\n" . $formField . "\n" . '
-		</div>
-		';
+        $form[] = '<div class="typo3-TCEforms tx_solr-TCEforms">';
+        $form[] = $formField;
+        $form[] = '</div>';
 
-        return $form;
+        return implode(LF, $form);
     }
 
     /**
@@ -142,8 +140,8 @@ class IndexingConfigurationSelectorField
     {
         $indexingTableMap = [];
 
-        $solrConfiguration      = $this->site->getSolrConfiguration();
-        $configurationNames     = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
+        $solrConfiguration = $this->site->getSolrConfiguration();
+        $configurationNames = $solrConfiguration->getEnabledIndexQueueConfigurationNames();
         foreach ($configurationNames as $configurationName) {
             $indexingTableMap[$configurationName] = $solrConfiguration->getIndexQueueTableNameOrFallbackToConfigurationName($configurationName);
         }
@@ -155,6 +153,7 @@ class IndexingConfigurationSelectorField
      * Builds the items to render in the TCEforms select field.
      *
      * @param array $tablesToIndex A map of indexing configuration to database tables
+     *
      * @return array Selectable items for the TCEforms select field
      */
     protected function buildSelectorItems(array $tablesToIndex)
@@ -181,6 +180,7 @@ class IndexingConfigurationSelectorField
     /**
      * @param array $items
      * @param string $selectedValues
+     *
      * @return string
      * @throws \TYPO3\CMS\Backend\Form\Exception
      */
@@ -195,7 +195,10 @@ class IndexingConfigurationSelectorField
         ];
 
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
-        $options = ['renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector', 'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray];
+        $options = [
+            'renderType' => 'selectCheckBox', 'table' => 'tx_solr_classes_backend_indexingconfigurationselector',
+            'fieldName' => 'additionalFields', 'databaseRow' => [], 'parameterArray' => $parameterArray
+        ];
         $options['parameterArray']['fieldConf']['config']['items'] = $items;
         $options['parameterArray']['fieldTSConfig']['noMatchingValue_label'] = '';
 
