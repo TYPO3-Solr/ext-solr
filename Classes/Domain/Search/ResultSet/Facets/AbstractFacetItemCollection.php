@@ -79,7 +79,7 @@ abstract class AbstractFacetItemCollection extends AbstractCollection
         $sortedOptions = [];
         foreach ($manualSorting as $item) {
             if (isset($copiedItems[$item])) {
-                $sortedOptions[] = $copiedItems[$item];
+                $sortedOptions[$item] = $copiedItems[$item];
                 unset($copiedItems[$item]);
             }
         }
