@@ -75,7 +75,7 @@ class InitializeConnectionProvider extends AbstractProvider
 
         /** @var $rootPageResolver RootPageResolver */
         $rootPageResolver = GeneralUtility::makeInstance(RootPageResolver::class);
-        return $rootPageResolver->getIsRootPageId($this->identifier);
+        return $rootPageResolver->getIsRootPageId((int)$this->identifier);
     }
 
     /**
