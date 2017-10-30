@@ -50,6 +50,9 @@
     'Configuration/TypoScript/Examples/Facets/OptionsToggle/',
     'Search - (Example) Options with on/off toggle');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Facets/OptionsPrefixGrouped/',
+    'Search - (Example) Options grouped by prefix');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/Examples/Facets/QueryGroup/',
     'Search - (Example) QueryGroup facet on the created field');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
