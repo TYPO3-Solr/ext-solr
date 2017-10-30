@@ -44,6 +44,9 @@
     'Search - (Example) Suggest/autocomplete with jquery');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Facets/Options/',
+    'Search - (Example) Options facet on author field');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/Examples/Facets/OptionsToggle/',
     'Search - (Example) Options with on/off toggle');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
