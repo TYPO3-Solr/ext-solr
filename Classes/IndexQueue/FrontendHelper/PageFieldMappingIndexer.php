@@ -81,7 +81,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
         $substitutePageDocument = clone $pageDocument;
 
 
-        $mappedFields = $this->getMappedFields();
+        $mappedFields = $this->getMappedFields($pageDocument);
         foreach ($mappedFields as $fieldName => $fieldValue) {
             if (isset($substitutePageDocument->{$fieldName})) {
                 // reset = overwrite, especially important to not make fields
@@ -102,9 +102,10 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * Gets the mapped fields as an array mapping field names to values.
      *
      * @throws InvalidFieldNameException
+     * @param \Apache_Solr_Document $pageDocument The original page document.
      * @return array An array mapping field names to their values.
      */
-    protected function getMappedFields()
+    protected function getMappedFields(\Apache_Solr_Document $pageDocument)
     {
         $fields = [];
 
@@ -117,7 +118,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
                     1435441863
                 );
             }
-            $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName);
+            $fields[$mappedFieldName] = $this->resolveFieldValue($mappedFieldName, $pageDocument);
         }
 
         return $fields;
@@ -132,13 +133,17 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
      * @param string $solrFieldName The Solr field name to resolve the value from the item's record
      * @return string The resolved string value to be indexed
      */
-    protected function resolveFieldValue($solrFieldName)
+    protected function resolveFieldValue($solrFieldName, \Apache_Solr_Document $pageDocument)
     {
         $pageRecord = $GLOBALS['TSFE']->page;
 
         $pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName($this->pageIndexingConfigurationName);
 
         if (isset($pageIndexingConfiguration[$solrFieldName . '.'])) {
+            // add a virtual field with the page content to the record to allow post processing
+            $contentField = $pageDocument->getField('content');
+            $pageRecord['__solr_page_content'] = isset($contentField['value']) ? $contentField['value'] : '';
+
             // configuration found => need to resolve a cObj
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $contentObject->start($pageRecord, 'pages');

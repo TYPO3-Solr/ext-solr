@@ -384,10 +384,9 @@ class PageIndexer extends Indexer
         }
 
         if (!$indexActionResult['pageIndexed']) {
-            throw new \RuntimeException(
-                'Failed indexing page Index Queue item ' . $item->getIndexQueueUid(),
-                1331837081
-            );
+            $message = 'Failed indexing page Index Queue item: ' . $item->getIndexQueueUid() . ' url: ' . $indexRequestUrl;
+
+            throw new \RuntimeException($message, 1331837081);
         }
 
         return $response;

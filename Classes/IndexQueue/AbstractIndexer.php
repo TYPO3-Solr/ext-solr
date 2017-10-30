@@ -24,6 +24,7 @@ namespace ApacheSolrForTypo3\Solr\IndexQueue;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
 use ApacheSolrForTypo3\Solr\ContentObject\Relation;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
@@ -205,29 +206,31 @@ abstract class AbstractIndexer
      * @param string $solrFieldName Current field being indexed
      * @return bool TRUE if the value is expected to be serialized, FALSE otherwise
      */
-    public static function isSerializedValue(
-        array $indexingConfiguration,
-        $solrFieldName
-    ) {
+    public static function isSerializedValue(array $indexingConfiguration, $solrFieldName)
+    {
+        $isSerialized = static::isSerializedResultFromRegisteredHook($indexingConfiguration, $solrFieldName);
+        if ($isSerialized === true) {
+            return $isSerialized;
+        }
+
+        $isSerialized = static::isSerializedResultFromCustomContentElement($indexingConfiguration, $solrFieldName);
+        return $isSerialized;
+    }
+
+    /**
+     * Checks if the response comes from a custom content element that returns a serialized value.
+     *
+     * @param array $indexingConfiguration
+     * @param string $solrFieldName
+     * @return bool
+     */
+    protected static function isSerializedResultFromCustomContentElement(array $indexingConfiguration, $solrFieldName): bool
+    {
         $isSerialized = false;
 
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] as $classReference) {
-                $serializedValueDetector = GeneralUtility::getUserObj($classReference);
-
-                if ($serializedValueDetector instanceof SerializedValueDetector) {
-                    $isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration,
-                        $solrFieldName);
-                    if ($isSerialized) {
-                        return true;
-                    }
-                } else {
-                    throw new \UnexpectedValueException(
-                        get_class($serializedValueDetector) . ' must implement interface ' . SerializedValueDetector::class,
-                        1404471741
-                    );
-                }
-            }
+        // SOLR_CLASSIFICATION - always returns serialized array
+        if ($indexingConfiguration[$solrFieldName] == Classification::CONTENT_OBJECT_NAME) {
+            $isSerialized = true;
         }
 
         // SOLR_MULTIVALUE - always returns serialized array
@@ -236,13 +239,38 @@ abstract class AbstractIndexer
         }
 
         // SOLR_RELATION - returns serialized array if multiValue option is set
-        if ($indexingConfiguration[$solrFieldName] == Relation::CONTENT_OBJECT_NAME
-            && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])
-        ) {
+        if ($indexingConfiguration[$solrFieldName] == Relation::CONTENT_OBJECT_NAME && !empty($indexingConfiguration[$solrFieldName . '.']['multiValue'])) {
             $isSerialized = true;
         }
 
         return $isSerialized;
+    }
+
+    /**
+     * Checks registered hooks if a SerializedValueDetector detects a serialized response.
+     *
+     * @param array $indexingConfiguration
+     * @param string $solrFieldName
+     * @return bool
+     */
+    protected static function isSerializedResultFromRegisteredHook(array $indexingConfiguration, $solrFieldName)
+    {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'])) {
+            return false;
+        }
+
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['detectSerializedValue'] as $classReference) {
+            $serializedValueDetector = GeneralUtility::getUserObj($classReference);
+            if (!$serializedValueDetector instanceof SerializedValueDetector) {
+                $message = get_class($serializedValueDetector) . ' must implement interface ' . SerializedValueDetector::class;
+                throw new \UnexpectedValueException($message, 1404471741);
+            }
+
+            $isSerialized = (boolean)$serializedValueDetector->isSerializedValue($indexingConfiguration, $solrFieldName);
+            if ($isSerialized) {
+                return true;
+            }
+        }
     }
 
     /**
