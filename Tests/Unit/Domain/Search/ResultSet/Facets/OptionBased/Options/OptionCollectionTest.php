@@ -59,4 +59,55 @@ class OptionCollectionTest extends UnitTest
         $this->assertSame($blue, $sortedOptions->getByPosition(1), 'First sorted item was not blue');
         $this->assertSame($red, $sortedOptions->getByPosition(2), 'First sorted item was not blue');
     }
+
+    /**
+     * @test
+     */
+    public function canGetLabelPrefixes()
+    {
+        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
+
+        $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
+        $blue = new Option($facet, 'Polar Blue', 'polar_blue', 12);
+        $yellow = new Option($facet, 'Lemon Yellow', 'lemon_yellow', 3);
+        $red = new Option($facet, 'Rubin Red', 'rubin_red', 9);
+        $royalGreen = new Option($facet, 'Royal Green', 'royal_green', 14);
+
+        $facet->addOption($red);
+        $facet->addOption($blue);
+        $facet->addOption($yellow);
+        $facet->addOption($roseRed);
+        $facet->addOption($royalGreen);
+
+        $labelPrefixes = $facet->getOptions()->getLowercaseLabelPrefixes(1);
+        $this->assertSame(['r','p','l'], $labelPrefixes, 'Can not get expected label prefixes');
+    }
+
+    /**
+     * @test
+     */
+    public function canGetByLowercaseLabelPrefix()
+    {
+        $searchResultSetMock = $this->getDumbMock(SearchResultSet::class);
+        $facet = new OptionsFacet($searchResultSetMock, 'colors', 'colors_s');
+
+        $roseRed = new Option($facet, 'Rose Red', 'rose_red', 14);
+        $blue = new Option($facet, 'Polar Blue', 'polar_blue', 12);
+        $yellow = new Option($facet, 'Lemon Yellow', 'lemon_yellow', 3);
+        $red = new Option($facet, 'Rubin Red', 'rubin_red', 9);
+        $royalGreen = new Option($facet, 'Royal Green', 'royal_green', 14);
+
+        $facet->addOption($red);
+        $facet->addOption($blue);
+        $facet->addOption($yellow);
+        $facet->addOption($roseRed);
+        $facet->addOption($royalGreen);
+
+        $optionsStartingWithL = $facet->getOptions()->getByLowercaseLabelPrefix('l');
+        $this->assertCount(1, $optionsStartingWithL, 'Unexpected amount of options starting with l');
+
+        $optionsStartingWithR = $facet->getOptions()->getByLowercaseLabelPrefix('r');
+        $this->assertCount(3, $optionsStartingWithR, 'Unexpected amount of options starting with r');
+    }
 }

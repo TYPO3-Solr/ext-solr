@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+      xmlns:s="http://typo3.org/ns/ApacheSolrForTypo3/Solr/ViewHelpers"
+      data-namespace-typo3-fluid="true"
+>
+
+<h5 class="facet-label">{facet.label}</h5>
+<ul class="facet-option-list facet-type-options fluidfacet" data-facet-name="{facet.name}" data-facet-label="{facet.label}">
+    <s:facet.options.group.prefix.labelPrefixes options="{facet.options}" length="1" sortBy="alpha">
+        <f:for each="{prefixes}" as="prefix">
+            <li>
+                {prefix}
+                <ul>
+                    <s:facet.options.group.prefix.labelFilter options="{facet.options}" prefix="{prefix}">
+                        <f:for each="{filteredOptions}" as="option">
+                            <li class="facet-option" data-facet-item-value="{option.value}">
+                                + <a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: option)}">{option.label}</a><span class="facet-result-count">({option.documentCount})</span>
+                            </li>
+                        </f:for>
+                    </s:facet.options.group.prefix.labelFilter>
+                </ul>
+            </li>
+        </f:for>
+    </s:facet.options.group.prefix.labelPrefixes>
+</ul>
+
+</html>

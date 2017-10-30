@@ -1,0 +1,13 @@
+plugin.tx_solr.search.faceting = 1
+plugin.tx_solr.search.faceting.facets {
+    author {
+        label = Author
+        field = author
+        partialName = OptionsPrefixGrouped
+    }
+}
+
+page.includeJSFooterlibs {
+    solr-jquery = EXT:solr/Resources/Public/JavaScript/JQuery/jquery.min.js
+    solr-options = EXT:solr/Resources/Public/JavaScript/facet_options_controller.js
+}

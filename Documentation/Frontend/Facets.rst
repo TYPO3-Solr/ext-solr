@@ -69,6 +69,31 @@ indexed into solr. Shown in the frontend it will look like this:
 | Domain Classes  | Domain\\Search\\ResultSet\\Facets\\OptionBased\\Options\\* |
 +-----------------+---------------+--------------------------------------------+
 
+**Grouping by option prefix**:
+
+When you have an option facet with very much options you might want to group the options by an prefix of an option. This can be used e.g. to group the options alphabetically.
+
+The following example shows how options can be grouped by prefix (from EXT:solr/Configuration/TypoScript/Examples/Facets/OptionsPrefixGrouped/setup.txt):
+
+.. code-block:: xml
+
+    <s:facet.options.group.prefix.labelPrefixes options="{facet.options}" length="1" sortBy="alpha">
+        <f:for each="{prefixes}" as="prefix">
+            <li>
+                {prefix}
+                <ul>
+                    <s:facet.options.group.prefix.labelFilter options="{facet.options}" prefix="{prefix}">
+                        <f:for each="{filteredOptions}" as="option">
+                            <li class="facet-option" data-facet-item-value="{option.value}">
+                                + <a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: option)}">{option.label}</a>
+                                <span class="facet-result-count">({option.documentCount})</span>
+                            </li>
+                        </f:for>
+                    </s:facet.options.group.prefix.labelFilter>
+                </ul>
+            </li>
+        </f:for>
+    </s:facet.options.group.prefix.labelPrefixes>
 
 Query Group
 -----------
@@ -318,8 +343,8 @@ This template is used to render only the area for a few facets. The following pa
 
 Looking at the code above we see to important details that are important for solr.
 
-Facet Grouping
---------------
+Facet Grouping (Areas)
+----------------------
 
 The first important part if the **facet.area.group** ViewHelper. By default all facets in the group **main** will be rendered.
 This value is the default value.
@@ -364,3 +389,4 @@ If you need another rendering for one facet you can overwrite the used partial w
 
 Combining all of these concepts together with the flexibility of fluid you are able to render facets in a very
 flexible way.
+
