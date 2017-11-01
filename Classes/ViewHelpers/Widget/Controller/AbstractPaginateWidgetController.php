@@ -123,6 +123,9 @@ abstract class AbstractPaginateWidgetController extends AbstractWidgetController
         if ($this->currentPage > 1) {
             $pagination['previousPage'] = $this->currentPage - 1;
         }
+
+        // calculate starting count for <ol> (items per page multiplied by (number of pages -1) and adding +1)
+        $pagination['resultCountStart'] = (($this->getItemsPerPage() * ($this->currentPage-1))+1);
         return $pagination;
     }
 

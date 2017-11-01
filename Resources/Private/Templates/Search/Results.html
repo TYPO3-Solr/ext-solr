@@ -61,7 +61,7 @@
 				<f:render partial="Result/PerPage" section="PerPage" arguments="{resultSet: resultSet}" />
 			</f:if>
 			<s:widget.resultPaginate resultSet="{resultSet}">
-				<ol start="{pagination.displayRangeStart}" class="results-list">
+				<ol start="{pagination.resultCountStart}" class="results-list">
 					<f:for each="{documents}" as="document">
 						<f:render partial="Result/Document" section="Document" arguments="{resultSet:resultSet, document:document}" />
 					</f:for>
