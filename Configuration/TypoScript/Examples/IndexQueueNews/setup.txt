@@ -46,7 +46,7 @@ plugin.tx_solr.index.queue {
 			url = TEXT
 			url {
 				typolink.parameter = {$plugin.tx_news.settings.detailPid}
-				typolink.additionalParams = &tx_news_pi1[controller]=News&tx_news_pi1[action]=detail&tx_news_pi1[news]={field:uid}&L={GP:L}
+				typolink.additionalParams = &tx_news_pi1[controller]=News&tx_news_pi1[action]=detail&tx_news_pi1[news]={field:uid}&L={field:__solr_index_language}
 				typolink.additionalParams.insertData = 1
 				typolink.useCacheHash = 1
 				typolink.returnLast = url
