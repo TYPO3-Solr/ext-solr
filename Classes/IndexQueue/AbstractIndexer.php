@@ -76,6 +76,7 @@ abstract class AbstractIndexer
         array $indexingConfiguration,
         array $data
     ) {
+        $data = static::addVirtualContentFieldToRecord($document, $data);
 
         // mapping of record fields => solr document fields, resolving cObj
         foreach ($indexingConfiguration as $solrFieldName => $recordFieldName) {
@@ -91,8 +92,7 @@ abstract class AbstractIndexer
                 );
             }
 
-            $fieldValue = $this->resolveFieldValue($indexingConfiguration,
-                $solrFieldName, $data);
+            $fieldValue = $this->resolveFieldValue($indexingConfiguration, $solrFieldName, $data);
 
             if (is_array($fieldValue)) {
                 // multi value
@@ -107,6 +107,25 @@ abstract class AbstractIndexer
         }
 
         return $document;
+    }
+
+
+    /**
+     * Add's the content of the field 'content' from the solr document as virtual field __solr_content in the record,
+     * to have it available in typoscript.
+     *
+     * @param \Apache_Solr_Document $document
+     * @param array $data
+     * @return array
+     */
+    public static function addVirtualContentFieldToRecord(\Apache_Solr_Document $document, array $data): array
+    {
+        $contentField = $document->getField('content');
+        if (isset($contentField['value'])) {
+            $data['__solr_content'] = $contentField['value'];
+            return $data;
+        }
+        return $data;
     }
 
     /**

@@ -35,7 +35,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * keywords = SOLR_CLASSIFICATION # supports stdWrap
  * keywords {
- *   field = __solr_page_content # a comma separated field. instead of field you can also use "value"
+ *   field = __solr_content # a comma separated field. instead of field you can also use "value"
  *   classes {
  *     1 {
  *        patterns = smartphone, mobile, mobilephone # list of patterns that need to match to assign that class

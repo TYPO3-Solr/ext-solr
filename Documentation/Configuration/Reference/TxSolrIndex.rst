@@ -671,7 +671,7 @@ Example:
 
     topic_stringM = SOLR_CLASSIFICATION
     topic_stringM {
-        field = __solr_page_content
+        field = __solr_content
         classes {
             programming {
                 patterns = php, java, javascript, go
@@ -695,8 +695,8 @@ Example:
 :TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].field
 :Since: 8.0
 
-Name of the database field, that should be used to as content to classify. The special field __solr_page_content can
-be used during page indexing to classify the content of the page.
+Name of the database field, that should be used to as content to classify. The special field __solr_content can
+be used during indexing to classify the content of the page or file or any other record that fills the content field before.
 
 **classes**
 

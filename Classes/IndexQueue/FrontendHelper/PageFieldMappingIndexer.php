@@ -140,9 +140,7 @@ class PageFieldMappingIndexer implements SubstitutePageIndexer
         $pageIndexingConfiguration = $this->configuration->getIndexQueueFieldsConfigurationByConfigurationName($this->pageIndexingConfigurationName);
 
         if (isset($pageIndexingConfiguration[$solrFieldName . '.'])) {
-            // add a virtual field with the page content to the record to allow post processing
-            $contentField = $pageDocument->getField('content');
-            $pageRecord['__solr_page_content'] = isset($contentField['value']) ? $contentField['value'] : '';
+            $pageRecord = AbstractIndexer::addVirtualContentFieldToRecord($pageDocument, $pageRecord);
 
             // configuration found => need to resolve a cObj
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
