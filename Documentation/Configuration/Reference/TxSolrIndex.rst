@@ -658,6 +658,58 @@ Example:
         additionalWhereClause = pid=2
     }
 
+SOLR_CLASSIFICATION
+~~~~~~~~~~~~~~~~~~~
+
+:Since: 8.0
+
+Allows to classify documents based on a configured pattern
+
+Example:
+
+.. code-block:: typoscript
+
+    topic_stringM = SOLR_CLASSIFICATION
+    topic_stringM {
+        field = __solr_page_content
+        classes {
+            programming {
+                patterns = php, java, javascript, go
+                class = programming
+            }
+            cms {
+                patterns = TYPO3, joomla
+                class = cms
+            }
+            database {
+                patterns = mysql, MariaDB, postgreSQL
+                class = database
+            }
+        }
+    }
+
+
+**field**
+
+:Type: String
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].field
+:Since: 8.0
+
+Name of the database field, that should be used to as content to classify. The special field __solr_page_content can
+be used during page indexing to classify the content of the page.
+
+**classes**
+
+:Type: Array
+:TS Path: plugin.tx_solr.index.queue.[indexConfig].fields.[fieldName].field
+:Since: 8.0
+
+Array of classification configurations. Each configuration needs to have the property "patterns", that is a list of patters that need to match and "class", that is the mapped class that will be indexed then.
+
+**Note**:
+
+The output field needs to be a multivalue field since an indexed item can have multiple classes.
+
 enableCommits
 -------------
 

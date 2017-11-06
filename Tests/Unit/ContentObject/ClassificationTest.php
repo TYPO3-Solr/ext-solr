@@ -24,17 +24,17 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\ContentObject;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ContentObject\Multivalue;
+use ApacheSolrForTypo3\Solr\ContentObject\Classification;
 use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
- * Tests for the SOLR_MULTIVALUE cObj.
+ * Tests for the SOLR_CLASSIFICATION cObj.
  *
- * @author Ingo Renner <ingo@typo3.org>
+ * @author Timo Hund <timo.hund@dkd.de>
  */
-class MultivalueTest extends UnitTest
+class ClassificationTest extends UnitTest
 {
     /**
      * @var ContentObjectRenderer
@@ -44,53 +44,37 @@ class MultivalueTest extends UnitTest
     /**
      * @test
      */
-    public function convertsCommaSeparatedListFromRecordToSerializedArrayOfTrimmedValues()
+    public function canClassifyContent()
     {
         $GLOBALS['TSFE']->cObjectDepthCounter = 2;
+        $content = 'i like TYPO3 more then joomla';
+        $this->contentObject->start(['content' => $content]);
 
-        $list = 'abc, def, ghi, jkl, mno, pqr, stu, vwx, yz';
-        $expected = 'a:9:{i:0;s:3:"abc";i:1;s:3:"def";i:2;s:3:"ghi";i:3;s:3:"jkl";i:4;s:3:"mno";i:5;s:3:"pqr";i:6;s:3:"stu";i:7;s:3:"vwx";i:8;s:2:"yz";}';
-
-        $this->contentObject->start(['list' => $list]);
-
-        $actual = $this->contentObject->cObjGetSingle(
-            Multivalue::CONTENT_OBJECT_NAME,
-            [
-                'field' => 'list',
-                'separator' => ','
+        $configuration = [
+            'field' => 'content',
+            'classes.' => [
+                [
+                    'patterns' => 'TYPO3, joomla, core media',
+                    'class' => 'cms'
+                ],
+                [
+                    'patterns' => 'php, java, go, groovy',
+                    'class' => 'programming_language'
+                ]
             ]
-        );
+        ];
 
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function convertsCommaSeparatedListFromValueToSerializedArrayOfTrimmedValues()
-    {
-        $list = 'abc, def, ghi, jkl, mno, pqr, stu, vwx, yz';
-        $expected = 'a:9:{i:0;s:3:"abc";i:1;s:3:"def";i:2;s:3:"ghi";i:3;s:3:"jkl";i:4;s:3:"mno";i:5;s:3:"pqr";i:6;s:3:"stu";i:7;s:3:"vwx";i:8;s:2:"yz";}';
-
-        $this->contentObject->start([]);
-
-        $actual = $this->contentObject->cObjGetSingle(
-            Multivalue::CONTENT_OBJECT_NAME,
-            [
-                'value' => $list,
-                'separator' => ','
-            ]
-        );
-
+        $actual = $this->contentObject->cObjGetSingle(Classification::CONTENT_OBJECT_NAME, $configuration);
+        $expected = serialize(['cms']);
         $this->assertEquals($expected, $actual);
     }
 
     protected function setUp()
     {
         // fake a registered hook
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Multivalue::CONTENT_OBJECT_NAME] = [
-            Multivalue::CONTENT_OBJECT_NAME,
-            Multivalue::class
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['cObjTypeAndClass'][Classification::CONTENT_OBJECT_NAME] = [
+            Classification::CONTENT_OBJECT_NAME,
+            Classification::class
         ];
 
         $GLOBALS['TSFE'] = $this->getDumbMock(TypoScriptFrontendController::class);
