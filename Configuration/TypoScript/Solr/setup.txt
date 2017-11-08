@@ -101,7 +101,7 @@ plugin.tx_solr {
 			boostQuery =
 
 			// see http://lucene.apache.org/solr/guide/7_0/the-dismax-query-parser.html#the-tie-tie-breaker-parameter
-			tieParameter = 
+			tieParameter =
 
 			filter {
 
@@ -249,13 +249,16 @@ plugin.tx_solr {
 		pluginNamespace = tx_solr
 
 		templateRootPaths {
-			0 = {$plugin.tx_solr.templateRootPath}
+			0 = EXT:solr/Resources/Private/Templates/
+			10 = {$plugin.tx_solr.view.templateRootPath}
 		}
 		partialRootPaths {
-			0 = {$plugin.tx_solr.partialRootPath}
+			0 = EXT:solr/Resources/Private/Partials/
+			10 = {$plugin.tx_solr.view.partialRootPath}
 		}
 		layoutRootPaths {
-			0 = {$plugin.tx_solr.layoutRootPath}
+			0 = EXT:solr/Resources/Private/Layouts/
+			10 = {$plugin.tx_solr.view.layoutRootPath}
 		}
 
         // By convention the templates is loaded from EXT:solr/Resources/Private/Templates/Frontend/Search/(ActionName).html
