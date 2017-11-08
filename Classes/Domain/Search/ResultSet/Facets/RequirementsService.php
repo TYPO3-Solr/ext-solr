@@ -60,15 +60,15 @@ class RequirementsService
      * @return bool
      */
     protected function getRequirementMet(AbstractFacet $facet, $requirement = []) {
-        $activeFacetItemValues = $this->getActiveItemValues($facet, $requirement['facet']);
-        $csvActiveFacetItemValues = implode(', ', $activeFacetItemValues);
+        $selectedItemValues = $this->getSelectedItemValues($facet, $requirement['facet']);
+        $csvActiveFacetItemValues = implode(', ', $selectedItemValues);
         $requirementValues = GeneralUtility::trimExplode(',', $requirement['values']);
 
         foreach ($requirementValues as $value) {
-            $noFacetOptionSelectedRequirementMet = ($value === '__none' && empty($activeFacetItemValues));
-            $anyFacetOptionSelectedRequirementMet = ($value === '__any' && !empty($activeFacetItemValues));
+            $noFacetOptionSelectedRequirementMet = ($value === '__none' && empty($selectedItemValues));
+            $anyFacetOptionSelectedRequirementMet = ($value === '__any' && !empty($selectedItemValues));
 
-            if ($noFacetOptionSelectedRequirementMet || $anyFacetOptionSelectedRequirementMet || in_array($value, $activeFacetItemValues) || fnmatch($value, $csvActiveFacetItemValues)) {
+            if ($noFacetOptionSelectedRequirementMet || $anyFacetOptionSelectedRequirementMet || in_array($value, $selectedItemValues) || fnmatch($value, $csvActiveFacetItemValues)) {
                 // when we find a single matching requirement we can exit and return true
                 return true;
             }
@@ -83,7 +83,7 @@ class RequirementsService
      * @param string $facetNameToCheckRequirementsOn
      * @return AbstractFacetItem[]
      */
-    protected function getActiveItemValues(AbstractFacet $facet, $facetNameToCheckRequirementsOn)
+    protected function getSelectedItemValues(AbstractFacet $facet, $facetNameToCheckRequirementsOn)
     {
         $facetToCheckRequirements = $facet->getResultSet()->getFacets()->getByName($facetNameToCheckRequirementsOn)->getByPosition(0);
         if (!$facetToCheckRequirements instanceof AbstractFacet) {
@@ -99,7 +99,9 @@ class RequirementsService
         $activeFacetItems = $facetToCheckRequirements->getAllFacetItems();
         foreach ($activeFacetItems as $item) {
             /** @var AbstractFacetItem $item */
-            $itemValues[] = $item->getUriValue();
+            if ($item->getSelected()) {
+                $itemValues[] = $item->getUriValue();
+            }
         }
 
         return $itemValues;
