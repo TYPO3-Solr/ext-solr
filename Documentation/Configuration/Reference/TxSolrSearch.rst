@@ -835,6 +835,18 @@ Defines a comma separated list of options that are excluded (The value needs to 
 
 Important: This setting only makes sence for option based facets (option, query, hierarchy)
 
+faceting.facets.[facetName].partialName
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: String
+:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].partialName
+:Since: 7.0
+:Required: no
+
+By convention a facet is rendered by it's default partial that is located in "Resources/Private/Partials/Facets/<Type>.html".
+
+If you want to render a single facet with another, none conventional partial, your can configure it with "partialName = MyFacetPartial".
+
 faceting.facets.[facetName].keepAllOptionsOnSelection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
