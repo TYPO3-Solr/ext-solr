@@ -134,12 +134,12 @@ class ReIndexTask extends AbstractSolrTask
      */
     public function getAdditionalInformation()
     {
-        $information = '';
-
-        if ($this->getSite()) {
-            $information = 'Site: ' . $this->getSite()->getLabel();
+        $site = $this->getSite();
+        if (is_null($site)) {
+            return 'Invalid site configuration for scheduler please re-create the task!';
         }
 
+        $information = 'Site: ' . $this->getSite()->getLabel();
         if (!empty($this->indexingConfigurationsToReIndex)) {
             $information .= ', Indexing Configurations: ' . implode(', ',
                     $this->indexingConfigurationsToReIndex);
