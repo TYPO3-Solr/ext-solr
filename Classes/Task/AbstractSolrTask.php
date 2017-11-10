@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Task;
 
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
+use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -74,9 +75,15 @@ abstract class AbstractSolrTask extends AbstractTask {
         if (!is_null($this->site)) {
             return $this->site;
         }
+
+        try {
             /** @var $siteRepository SiteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $this->site = $siteRepository->getSiteByRootPageId($this->rootPageId);
+            $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+            $this->site = $siteRepository->getSiteByRootPageId($this->rootPageId);
+        } catch (\InvalidArgumentException $e) {
+            $logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
+            $logger->log(SolrLogManager::ERROR, 'Scheduler task tried to get invalid site');
+        }
 
         return $this->site;
     }
