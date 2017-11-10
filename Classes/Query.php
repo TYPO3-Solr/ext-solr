@@ -25,12 +25,15 @@ namespace ApacheSolrForTypo3\Solr;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\Helper\EscapeService;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\BigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Faceting;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Filters;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Grouping;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\Highlighting;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\PhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\ReturnFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\TrigramPhraseFields;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteHashService;
 use ApacheSolrForTypo3\Solr\FieldProcessor\PageUidToHierarchy;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
@@ -132,6 +135,36 @@ class Query
     protected $queryFields = null;
 
     /**
+     * Holds the phrase fields with their associated boosts. The key represents
+     * the field name, value represents the field's boost. These are the fields
+     * for those Apache Solr should build phrase quieries and by phrase occurrences should be boosted.
+     *
+     * @var PhraseFields
+     * @see https://lucene.apache.org/solr/guide/7_0/the-dismax-query-parser.html#pf-phrase-fields-parameter
+     */
+    protected $phraseFields;
+
+    /**
+     * Holds the bigram phrase fields with their associated boosts. The key represents
+     * the field name, value represents the field's boost. These are the fields
+     * for those Apache Solr should build the phrases from triplets and sentences.
+     *
+     * @var BigramPhraseFields
+     * @see "pf2" https://lucene.apache.org/solr/guide/7_0/the-extended-dismax-query-parser.html#extended-dismax-parameters
+     */
+    protected $bigramPhraseFields;
+
+    /**
+     * Holds the trigram phrase fields with their associated boosts. The key represents
+     * the field name, value represents the field's boost. These are the fields
+     * for those Apache Solr should build the phrases from triplets and sentences.
+     *
+     * @var TrigramPhraseFields
+     * @see "pf3" https://lucene.apache.org/solr/guide/7_0/the-extended-dismax-query-parser.html#extended-dismax-parameters
+     */
+    protected $trigramPhraseFields;
+
+    /**
      * List of fields that will be returned in the result documents.
      *
      * used in Solr's fl parameter
@@ -226,6 +259,18 @@ class Query
         $queryFields = QueryFields::fromString($this->solrConfiguration->getSearchQueryQueryFields());
         $this->setQueryFields($queryFields);
 
+        // What fields to boost by phrase matching
+        $phraseFields = PhraseFields::fromString((string)$this->solrConfiguration->getSearchQueryPhraseFields());
+        $this->setPhraseFields($phraseFields);
+
+        // For which fields to build bigram phrases and boost by phrase matching
+        $bigramPhraseFields = BigramPhraseFields::fromString((string)$this->solrConfiguration->getSearchQueryBigramPhraseFields());
+        $this->setBigramPhraseFields($bigramPhraseFields);
+
+        // For which fields to build trigram phrases and boost by phrase matching
+        $trigramPhraseFields = TrigramPhraseFields::fromString((string)$this->solrConfiguration->getSearchQueryTrigramPhraseFields());
+        $this->setTrigramPhraseFields($trigramPhraseFields);
+
         // What fields to return from Solr
         $returnFieldsArray = $this->solrConfiguration->getSearchQueryReturnFieldsAsArray(['*', 'score']);
         $returnFields = ReturnFields::fromArray($returnFieldsArray);
@@ -259,6 +304,57 @@ class Query
     public function getQueryFields()
     {
         return $this->queryFields;
+    }
+
+    /**
+     * @param PhraseFields $phraseFields
+     * @return void
+     */
+    public function setPhraseFields(PhraseFields $phraseFields)
+    {
+        $this->phraseFields = $phraseFields;
+    }
+
+    /**
+     * @return PhraseFields
+     */
+    public function getPhraseFields()
+    {
+        return $this->phraseFields;
+    }
+
+    /**
+     * @return BigramPhraseFields
+     */
+    public function getBigramPhraseFields()
+    {
+        return $this->bigramPhraseFields;
+    }
+
+    /**
+     * @param BigramPhraseFields $bigramPhraseFields
+     * @return void
+     */
+    public function setBigramPhraseFields(BigramPhraseFields $bigramPhraseFields)
+    {
+        $this->bigramPhraseFields = $bigramPhraseFields;
+    }
+
+    /**
+     * @return TrigramPhraseFields
+     */
+    public function getTrigramPhraseFields()
+    {
+        return $this->trigramPhraseFields;
+    }
+
+    /**
+     * @param TrigramPhraseFields $trigramPhraseFields
+     * @return void
+     */
+    public function setTrigramPhraseFields(TrigramPhraseFields $trigramPhraseFields)
+    {
+        $this->trigramPhraseFields = $trigramPhraseFields;
     }
 
     /**
@@ -821,6 +917,51 @@ class Query
     }
 
     /**
+     * Set the phrase slop (ps) parameter
+     *
+     * @param int $phraseSlop Phrase Slop parameter as int or null to unset this parameter
+     * @return void
+     */
+    public function setPhraseSlopParameter(int $phraseSlop = null)
+    {
+        $this->setQueryParameterWhenIntOrUnsetWhenNull('ps', $phraseSlop);
+    }
+
+    /**
+     * Set the Query Phrase Slop (qs) parameter
+     *
+     * @param int $queryPhraseSlop Query Phrase Slop parameter as int or null to unset this parameter
+     * @return void
+     */
+    public function setQueryPhraseSlopParameter(int $queryPhraseSlop = null)
+    {
+        $this->setQueryParameterWhenIntOrUnsetWhenNull('qs', $queryPhraseSlop);
+    }
+
+    /**
+     * Set the bigram phrase slop (ps2) parameter
+     *
+     * @param int $bigramPhraseSlop Bigram Phrase Slop parameter as int or null to unset this parameter
+     * @return void
+     */
+    public function setBigramPhraseSlopParameter(int $bigramPhraseSlop = null)
+    {
+        $this->setQueryParameterWhenIntOrUnsetWhenNull('ps2', $bigramPhraseSlop);
+    }
+
+    /**
+     * Set the trigram phrase slop (ps3) parameter
+     *
+     * @param int $trigramPhraseSlop Trigram Phrase Slop parameter as int or null to unset this parameter
+     * @return void
+     */
+    public function setTrigramPhraseSlopParameter(int $trigramPhraseSlop = null)
+    {
+        $this->setQueryParameterWhenIntOrUnsetWhenNull('ps3', $trigramPhraseSlop);
+    }
+
+
+    /**
      * Gets a specific query parameter by its name.
      *
      * @param string $parameterName The parameter to return
@@ -844,6 +985,17 @@ class Query
         $queryParameters = array_merge($queryParameters, $this->getFilters()->build());
         $queryParameters = array_merge($queryParameters, $this->queryParameters);
         $queryParameters = array_merge($queryParameters, $this->getQueryFields()->build());
+
+        if ($this->solrConfiguration->getPhraseSearchIsEnabled()) {
+            $queryParameters = array_merge($queryParameters, $this->getPhraseFields()->build());
+        }
+        if ($this->solrConfiguration->getBigramPhraseSearchIsEnabled()) {
+            $queryParameters = array_merge($queryParameters, $this->getBigramPhraseFields()->build());
+        }
+        if ($this->solrConfiguration->getTrigramPhraseSearchIsEnabled()) {
+            $queryParameters = array_merge($queryParameters, $this->getTrigramPhraseFields()->build());
+        }
+
         $queryParameters = array_merge($queryParameters, $this->getHighlighting()->build());
         $queryParameters = array_merge($queryParameters, $this->getFaceting()->build());
         $queryParameters = array_merge($queryParameters, $this->getGrouping()->build());
@@ -908,6 +1060,22 @@ class Query
         } else {
             unset($this->queryParameters[$parameterName]);
         }
+    }
+
+    /**
+     * This method can be used to set a query parameter when the value is a int and not empty or unset it
+     * in any other case. Extracted to avoid duplicate code.
+     *
+     * @param string $parameterName
+     * @param int $value
+     */
+    private function setQueryParameterWhenIntOrUnsetWhenNull(string $parameterName, int $value = null)
+    {
+        if (null === $value) {
+            unset($this->queryParameters[$parameterName]);
+            return;
+        }
+        $this->addQueryParameter($parameterName, $value);
     }
 
     /**

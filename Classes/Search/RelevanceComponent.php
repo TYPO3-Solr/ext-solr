@@ -71,9 +71,13 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
 
             $this->query->setBoostQuery($boostQueries);
         }
+
         if (!empty($this->searchConfiguration['query.']['tieParameter'])) {
             $this->query->setTieParameter($this->searchConfiguration['query.']['tieParameter']);
         }
+
+        $this->initializePhraseParameters();
+        $this->initializeXgramPhraseParameters();
     }
 
     /**
@@ -85,4 +89,47 @@ class RelevanceComponent extends AbstractComponent implements QueryAware
     {
         $this->query = $query;
     }
+
+    /**
+     * Initializes all for phrase search relevant params
+     *
+     * Folowing Query Parameters:
+     *   "ps" Phrase Slop
+     *   "qs" Query Phrase Slop
+     *
+     */
+    protected function initializePhraseParameters() {
+        if (empty($this->searchConfiguration['query.']['phrase']) || $this->searchConfiguration['query.']['phrase'] !== 1) {
+            return;
+        }
+
+        if (!empty($this->searchConfiguration['query.']['phrase']['slop'])) {
+            $this->query->setPhraseSlopParameter($this->searchConfiguration['query.']['phrase']['slop']);
+        }
+
+        if (!empty($this->searchConfiguration['query.']['phrase']['querySlop'])) {
+            $this->query->setQueryPhraseSlopParameter($this->searchConfiguration['query.']['phrase']['querySlop']);
+        }
+    }
+
+    /**
+     * Initializes all for bigram phrase search relevant params
+     *
+     * Folowing Query Parameters:
+     *   "ps" Phrase Slop
+     *   "qs" Query Phrase Slop
+     *
+     */
+    protected function initializeXgramPhraseParameters() {
+        if (!empty($this->searchConfiguration['query.']['bigramPhrase']) && $this->searchConfiguration['query.']['bigramPhrase'] === 1
+            && !empty($this->searchConfiguration['query.']['bigramPhrase']['slop'])) {
+            $this->query->setQueryPhraseSlopParameter($this->searchConfiguration['query.']['bigramPhrase']['slop']);
+        }
+
+        if (!empty($this->searchConfiguration['query.']['trigramPhrase']) && $this->searchConfiguration['query.']['trigramPhrase'] === 1
+            && !empty($this->searchConfiguration['query.']['trigramPhrase']['slop'])) {
+            $this->query->setQueryPhraseSlopParameter($this->searchConfiguration['query.']['trigramPhrase']['slop']);
+        }
+    }
+
 }

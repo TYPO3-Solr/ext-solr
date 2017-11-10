@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+
+    <sys_registry>
+        <uid>4711</uid>
+        <entry_namespace>tx_solr</entry_namespace>
+        <entry_key>servers</entry_key>
+        <entry_value>a:1:{s:3:"1|0";a:9:{s:13:"connectionKey";s:3:"1|0";s:13:"rootPageTitle";s:15:"Congratulations";s:11:"rootPageUid";s:1:"1";s:10:"solrScheme";s:4:"http";s:8:"solrHost";s:9:"localhost";s:8:"solrPort";s:4:"8999";s:8:"solrPath";s:14:"/solr/core_en/";s:8:"language";i:0;s:5:"label";s:74:"Congratulations (pid: 1, language: default) - localhost:8999/solr/core_en/";}}</entry_value>
+    </sys_registry>
+
+    <sys_template>
+        <uid>1</uid>
+        <pid>1</pid>
+        <root>1</root>
+        <clear>3</clear>
+        <config>
+            <![CDATA[
+
+                page = PAGE
+                page.typeNum = 0
+                page.bodyTag = <body>
+
+                plugin.tx_solr {
+
+                    search.query.phrase = 1
+
+                    enabled = 1
+
+                    solr {
+                        scheme = http
+                        host   = localhost
+                        port   = 8999
+                        path   = /solr/core_en/
+                    }
+
+                    index {
+                        fieldProcessingInstructions {
+                            changed = timestampToIsoDate
+                            created = timestampToIsoDate
+                            endtime = timestampToUtcIsoDate
+                            rootline = pageUidToHierarchy
+                        }
+
+                        queue {
+
+                            // mapping tableName.fields.SolrFieldName => TableFieldName (+ cObj processing)
+
+                            pages = 1
+                            pages {
+                                initialization = ApacheSolrForTypo3\Solr\IndexQueue\Initializer\Page
+
+                                // allowed page types (doktype) when indexing records from table "pages"
+                                allowedPageTypes = 1,7
+
+                                indexingPriority = 0
+
+                                indexer = ApacheSolrForTypo3\Solr\IndexQueue\PageIndexer
+                                indexer {
+                                    // add options for the indexer here
+                                }
+
+                                // Only index standard pages and mount points that are not overlayed.
+                                additionalWhereClause = (doktype = 1 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+                                fields {
+                                    sortSubTitle_stringS = subtitle
+                                }
+                            }
+
+                        }
+                    }
+                }
+            ]]>
+        </config>
+        <sorting>100</sorting>
+    </sys_template>
+
+    <pages>
+        <uid>1</uid>
+        <is_siteroot>1</is_siteroot>
+        <doktype>1</doktype>
+        <title>World Hello Search Test</title>
+    </pages>
+        <pages>
+            <uid>2</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Hello you can improve the precision by using phrase configuration World</title>
+        </pages>
+        <pages>
+            <uid>3</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Hello phrase search World</title>
+        </pages>
+        <pages>
+            <uid>4</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Hello Test wonderful World</title>
+        </pages>
+        <pages>
+            <uid>5</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Hello wonderful Test World</title>
+        </pages>
+        <pages>
+            <uid>6</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Bigraming phrases strip down the sentence to the two-word combinations.</title>
+        </pages>
+        <pages>
+            <uid>7</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Trigraming phrases strip down the sentence to triplets phrases</title>
+        </pages>
+        <pages>
+            <uid>8</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Difference to bi is tri, which means building of triplets phrases.</title>
+        </pages>
+        <pages>
+            <uid>9</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Hello Solr Wolrd</title>
+        </pages>
+        <pages>
+            <uid>10</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Hello Test Wolrd</title>
+        </pages>
+        <pages>
+            <uid>11</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Test Hello Solr World</title>
+        </pages>
+        <pages>
+            <uid>12</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Test Hello Search World</title>
+        </pages>
+        <pages>
+            <uid>13</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Hello the Test Search World</title>
+        </pages>
+        <pages>
+            <uid>14</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Hello World for phrase searching</title>
+        </pages>
+        <pages>
+            <uid>15</uid>
+            <pid>1</pid>
+            <is_siteroot>0</is_siteroot>
+            <doktype>1</doktype>
+            <hidden>0</hidden>
+            <title>Solr is blazing-fast and open source enterprise search platform built on Apache Lucene</title>
+        </pages>
+</dataset>
