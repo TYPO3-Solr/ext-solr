@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ResultSet;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\Domain\Search\Query\ParameterBuilder\QueryFields;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\ResultParserRegistry;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequest;
 use ApacheSolrForTypo3\Solr\Domain\Search\SearchRequestAware;
@@ -38,11 +39,9 @@ use ApacheSolrForTypo3\Solr\Search\SearchAware;
 use ApacheSolrForTypo3\Solr\Search\SearchComponentManager;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrIncompleteResponseException;
-use ApacheSolrForTypo3\Solr\System\Solr\SolrInternalServerErrorException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultBuilder;
 
 /**
  * The SearchResultSetService is responsible to build a SearchResultSet from a SearchRequest.
@@ -52,13 +51,6 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class SearchResultSetService
 {
-    /**
-     * Additional filters, which will be added to the query, as well as to
-     * suggest queries.
-     *
-     * @var array
-     */
-    protected $additionalFilters = [];
 
     /**
      * Track, if the number of results per page has been changed by the current request
@@ -98,17 +90,24 @@ class SearchResultSetService
     protected $searchResultBuilder;
 
     /**
+     * @var QueryBuilder
+     */
+    protected $queryBuilder;
+
+    /**
      * @param TypoScriptConfiguration $configuration
      * @param Search $search
      * @param SolrLogManager $solrLogManager
      * @param SearchResultBuilder $resultBuilder
+     * @param QueryBuilder $queryBuilder
      */
-    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null, SearchResultBuilder $resultBuilder = null)
+    public function __construct(TypoScriptConfiguration $configuration, Search $search, SolrLogManager $solrLogManager = null, SearchResultBuilder $resultBuilder = null, QueryBuilder $queryBuilder = null)
     {
         $this->search = $search;
         $this->typoScriptConfiguration = $configuration;
         $this->logger = is_null($solrLogManager) ? GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__) : $solrLogManager;
         $this->searchResultBuilder = is_null($resultBuilder) ? GeneralUtility::makeInstance(SearchResultBuilder::class) : $resultBuilder;
+        $this->queryBuilder = is_null($queryBuilder) ? GeneralUtility::makeInstance(QueryBuilder::class, $configuration, $solrLogManager) : $queryBuilder;
     }
 
     /**
@@ -137,50 +136,6 @@ class SearchResultSetService
     public function getSearch()
     {
         return $this->search;
-    }
-
-    /**
-     * Initializes the Query object and SearchComponents and returns
-     * the initialized query object, when a search should be executed.
-     *
-     * @param string|null $rawQuery
-     * @param int $resultsPerPage
-     * @return Query
-     */
-    protected function getPreparedQuery($rawQuery, $resultsPerPage)
-    {
-        /* @var $query Query */
-        $query = $this->getQueryInstance($rawQuery);
-
-        $this->applyPageSectionsRootLineFilter($query);
-
-        if ($this->typoScriptConfiguration->getLoggingQuerySearchWords()) {
-            $this->logger->log(
-                SolrLogManager::INFO,
-                'Received search query',
-                [
-                    $rawQuery
-                ]
-            );
-        }
-
-        $query->setResultsPerPage($resultsPerPage);
-
-        if ($this->typoScriptConfiguration->getSearchInitializeWithEmptyQuery() || $this->typoScriptConfiguration->getSearchQueryAllowEmptyQuery()) {
-            // empty main query, but using a "return everything"
-            // alternative query in q.alt
-            $query->setAlternativeQuery('*:*');
-        }
-
-        if ($this->typoScriptConfiguration->getSearchInitializeWithQuery()) {
-            $query->setAlternativeQuery($this->typoScriptConfiguration->getSearchInitializeWithQuery());
-        }
-
-        foreach ($this->getAdditionalFilters() as $additionalFilter) {
-            $query->getFilters()->add($additionalFilter);
-        }
-
-        return $query;
     }
 
     /**
@@ -217,69 +172,6 @@ class SearchResultSetService
     }
 
     /**
-     * Initializes additional filters configured through TypoScript and
-     * Flexforms for use in regular queries and suggest queries.
-     *
-     * @param Query $query
-     * @return void
-     */
-    protected function applyPageSectionsRootLineFilter(Query $query)
-    {
-        $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
-        if (count($searchQueryFilters) <= 0) {
-            return;
-        }
-
-        // special filter to limit search to specific page tree branches
-        if (array_key_exists('__pageSections', $searchQueryFilters)) {
-            $query->setRootlineFilter($searchQueryFilters['__pageSections']);
-            $this->typoScriptConfiguration->removeSearchQueryFilterForPageSections();
-        }
-    }
-
-    /**
-     * Retrieves the configuration filters from the TypoScript configuration, except the __pageSections filter.
-     *
-     * @return array
-     */
-    public function getAdditionalFilters()
-    {
-        // when we've build the additionalFilter once, we could return them
-        if (count($this->additionalFilters) > 0) {
-            return $this->additionalFilters;
-        }
-
-        $searchQueryFilters = $this->typoScriptConfiguration->getSearchQueryFilterConfiguration();
-        if (count($searchQueryFilters) <= 0) {
-            return [];
-        }
-
-        $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-
-        // all other regular filters
-        foreach ($searchQueryFilters as $filterKey => $filter) {
-            // the __pageSections filter should not be handled as additional filter
-            if ($filterKey === '__pageSections') {
-                continue;
-            }
-
-            $filterIsArray = is_array($searchQueryFilters[$filterKey]);
-            if ($filterIsArray) {
-                continue;
-            }
-
-            $hasSubConfiguration = is_array($searchQueryFilters[$filterKey . '.']);
-            if ($hasSubConfiguration) {
-                $filter = $cObj->stdWrap($searchQueryFilters[$filterKey], $searchQueryFilters[$filterKey . '.']);
-            }
-
-            $this->additionalFilters[$filterKey] = $filter;
-        }
-
-        return $this->additionalFilters;
-    }
-
-    /**
      * Performs a search and returns a SearchResultSet.
      *
      * @param SearchRequest $searchRequest
@@ -307,7 +199,7 @@ class SearchResultSetService
 
         $rawQuery = $searchRequest->getRawUserQuery();
         $resultsPerPage = (int)$searchRequest->getResultsPerPage();
-        $query = $this->getPreparedQuery($rawQuery, $resultsPerPage);
+        $query = $this->queryBuilder->buildSearchQuery($rawQuery, $resultsPerPage);
         $this->initializeRegisteredSearchComponents($query, $searchRequest);
         $resultSet->setUsedQuery($query);
 
@@ -336,7 +228,7 @@ class SearchResultSetService
 
         $resultSet->setUsedPage((int)$searchRequest->getPage());
         $resultSet->setUsedResultsPerPage($resultsPerPage);
-        $resultSet->setUsedAdditionalFilters($this->getAdditionalFilters());
+        $resultSet->setUsedAdditionalFilters($this->queryBuilder->getAdditionalFilters());
 
         /** @var $variantsProcessor VariantsProcessor */
         $variantsProcessor = GeneralUtility::makeInstance(VariantsProcessor::class, $this->typoScriptConfiguration, $this->searchResultBuilder);
@@ -349,6 +241,16 @@ class SearchResultSetService
         $resultSet = $this->getAutoCorrection($resultSet);
 
         return $this->handleSearchHook('afterSearch', $resultSet);
+    }
+
+    /**
+     * Retrieves the configuration filters from the TypoScript configuration, except the __pageSections filter.
+     *
+     * @return array
+     */
+    public function getAdditionalFilters()
+    {
+        return $this->queryBuilder->getAdditionalFilters();
     }
 
     /**
@@ -545,15 +447,5 @@ class SearchResultSetService
     protected function getRegisteredSearchComponents()
     {
         return GeneralUtility::makeInstance(SearchComponentManager::class)->getSearchComponents();
-    }
-
-    /**
-     * @param string $rawQuery
-     * @return Query|object
-     */
-    protected function getQueryInstance($rawQuery)
-    {
-        $query = GeneralUtility::makeInstance(Query::class, $rawQuery, $this->typoScriptConfiguration);
-        return $query;
     }
 }

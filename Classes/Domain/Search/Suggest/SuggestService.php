@@ -26,6 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\Suggest;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
@@ -63,15 +64,22 @@ class SuggestService {
     protected $typoScriptConfiguration;
 
     /**
+     * @var QueryBuilder
+     */
+    protected $queryBuilder;
+
+    /**
      * SuggestService constructor.
      * @param TypoScriptFrontendController $tsfe
      * @param SearchResultSetService $searchResultSetService
+     * @param QueryBuilder|null $queryBuilder
      */
-    public function __construct(TypoScriptFrontendController $tsfe, SearchResultSetService $searchResultSetService, TypoScriptConfiguration $typoScriptConfiguration)
+    public function __construct(TypoScriptFrontendController $tsfe, SearchResultSetService $searchResultSetService, TypoScriptConfiguration $typoScriptConfiguration, QueryBuilder $queryBuilder = null)
     {
         $this->tsfe = $tsfe;
         $this->searchService = $searchResultSetService;
         $this->typoScriptConfiguration = $typoScriptConfiguration;
+        $this->queryBuilder = is_null($queryBuilder) ? GeneralUtility::makeInstance(QueryBuilder::class, $typoScriptConfiguration) : $queryBuilder;
     }
 
     /**
@@ -83,7 +91,10 @@ class SuggestService {
      */
     public function getSuggestions(SearchRequest $searchRequest, $additionalFilters) : array
     {
-        $suggestQuery = $this->buildSuggestQuery($searchRequest->getRawUserQuery(), $additionalFilters);
+        $requestId = (int)$this->tsfe->getRequestedId();
+        $groupList = (string)$this->tsfe->gr_list;
+
+        $suggestQuery = $this->queryBuilder->buildSuggestQuery($searchRequest->getRawUserQuery(), $additionalFilters, $requestId, $groupList);
         $solrSuggestions = $this->getSolrSuggestions($suggestQuery);
 
         if ($solrSuggestions === []) {
@@ -250,37 +261,5 @@ class SuggestService {
         return ['suggestions' => $suggestions, 'suggestion' => $searchRequest->getRawUserQuery(), 'documents' => $documents, 'didSecondSearch' => $didASecondSearch];
     }
 
-    /**
-     * Builds a SuggestQuery with all applied filters.
-     *
-     * @param string $queryString
-     * @param string $additionalFilters
-     * @return SuggestQuery
-     */
-    protected function buildSuggestQuery(string $queryString ,string $additionalFilters) : SuggestQuery
-    {
-        $suggestQuery = GeneralUtility::makeInstance(SuggestQuery::class, $queryString);
 
-        $allowedSitesConfig = $this->typoScriptConfiguration->getObjectByPathOrDefault('plugin.tx_solr.search.query.', []);
-        $siteService = GeneralUtility::makeInstance(SiteHashService::class);
-        $allowedSites = $siteService->getAllowedSitesForPageIdAndAllowedSitesConfiguration($this->tsfe->getRequestedId(), $allowedSitesConfig['allowedSites']);
-        $suggestQuery->setUserAccessGroups(explode(',', $this->tsfe->gr_list));
-        $suggestQuery->setSiteHashFilter($allowedSites);
-        $suggestQuery->setOmitHeader();
-
-        if (!empty($allowedSitesConfig['filter.'])) {
-            foreach ($allowedSitesConfig['filter.'] as $additionalFilter) {
-                $suggestQuery->addFilter($additionalFilter);
-            }
-        }
-
-        if (!empty($additionalFilters)) {
-            $additionalFilters = json_decode($additionalFilters);
-            foreach ($additionalFilters as $additionalFilter) {
-                $suggestQuery->addFilter($additionalFilter);
-            }
-        }
-
-        return $suggestQuery;
-    }
 }

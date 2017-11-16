@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit\Domain\Search;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResultCollection;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
@@ -62,6 +63,11 @@ class SuggestServiceTest extends UnitTest
     protected $configurationMock;
 
     /**
+     * @var QueryBuilder
+     */
+    protected $queryBuilderMock;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -69,10 +75,11 @@ class SuggestServiceTest extends UnitTest
         $this->tsfeMock = $this->getDumbMock(TypoScriptFrontendController::class);
         $this->searchResultSetServiceMock = $this->getDumbMock(SearchResultSetService::class);
         $this->configurationMock = $this->getDumbMock(TypoScriptConfiguration::class);
+        $this->queryBuilderMock = $this->getDumbMock(QueryBuilder::class);
 
         $this->suggestService = $this->getMockBuilder(SuggestService::class)
-            ->setMethods(['getSolrSuggestions','buildSuggestQuery'])
-            ->setConstructorArgs([$this->tsfeMock, $this->searchResultSetServiceMock, $this->configurationMock])
+            ->setMethods(['getSolrSuggestions'])
+            ->setConstructorArgs([$this->tsfeMock, $this->searchResultSetServiceMock, $this->configurationMock, $this->queryBuilderMock])
             ->getMock();
     }
 
