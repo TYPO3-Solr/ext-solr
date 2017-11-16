@@ -25,6 +25,7 @@ namespace ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
+use ApacheSolrForTypo3\Solr\Domain\Search\Query\QueryBuilder;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\Parser\DocumentEscapeService;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
@@ -60,13 +61,20 @@ class Repository implements SingletonInterface
     protected $typoScriptConfiguration = null;
 
     /**
+     * @var QueryBuilder
+     */
+    protected $queryBuilder;
+
+    /**
      * Repository constructor.
      * @param DocumentEscapeService|null $documentEscapeService
+     * @param QueryBuilder|null $queryBuilder
      */
-    public function __construct(DocumentEscapeService $documentEscapeService = null, TypoScriptConfiguration $typoScriptConfiguration = null)
+    public function __construct(DocumentEscapeService $documentEscapeService = null, TypoScriptConfiguration $typoScriptConfiguration = null, QueryBuilder $queryBuilder = null)
     {
         $this->typoScriptConfiguration = is_null($typoScriptConfiguration) ? Util::getSolrConfiguration() : $typoScriptConfiguration;
         $this->documentEscapeService = is_null($documentEscapeService) ? GeneralUtility::makeInstance(DocumentEscapeService::class, $typoScriptConfiguration) : $documentEscapeService;
+        $this->queryBuilder = is_null($queryBuilder) ? GeneralUtility::makeInstance(QueryBuilder::class, $this->typoScriptConfiguration) : $queryBuilder;
     }
 
     /**
@@ -93,7 +101,8 @@ class Repository implements SingletonInterface
     {
         try {
             $this->initializeSearch($pageId, $languageId);
-            $response = $this->search->search($this->getQueryForPage($pageId), 0, 10000);
+            $pageQuery = $this->queryBuilder->buildPageQuery($pageId);
+            $response = $this->search->search($pageQuery, 0, 10000);
         } catch (NoSolrConnectionFoundException $exception) {
             return [];
         }
@@ -119,30 +128,6 @@ class Repository implements SingletonInterface
         $solrConnection = $connectionManager->getConnectionByPageId($pageId, $languageId);
 
         $this->search = $this->getSearch($solrConnection);
-    }
-
-    /**
-     * Returns Query for Saearch which finds document for given page.
-     * Note: The Connection is per language as recommended in ext-solr docs.
-     *
-     * @return Query
-     */
-    protected function getQueryForPage($pageId)
-    {
-            /** @var $siteRepository SiteRepository */
-        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
-        $site = $siteRepository->getSiteByPageId($pageId);
-        /* @var Query $query */
-        $query = GeneralUtility::makeInstance(Query::class, '');
-        $query->setQueryType('standard');
-        $query->useRawQueryString(true);
-        $query->setQueryString('*:*');
-        $query->getFilters()->add('(type:pages AND uid:' . $pageId . ') OR (*:* AND pid:' . $pageId . ' NOT type:pages)');
-        $query->getFilters()->add('siteHash:' . $site->getSiteHash());
-        $query->getReturnFields()->add('*');
-        $query->setSorting('type asc, title asc');
-
-        return $query;
     }
 
     /**
