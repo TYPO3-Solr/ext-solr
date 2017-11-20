@@ -4,21 +4,38 @@
 	  data-namespace-typo3-fluid="true"
 		>
 
-	<h5 class="facet-label">{facet.label}</h5>
-	<ul class="facet-option-list fluidfacet facet-type-dateRange"
-		data-facet-name="{facet.name}"
-		data-facet-label="{facet.label}"
-		data-range-min="{facet.range.startInResponse}"
-		data-range-max="{facet.range.endInResponse}"
-		data-range-min-selected="{facet.range.startRequested}"
-		data-range-max-selected="{facet.range.endRequested}"
-		data-range-gap="{facet.range.gap}"
-		data-facet-url="{s:uri.facet.setFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}"
-	>
-		<li>
-			<input type="hidden" value="{s:uri.facet.addFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}" id="created_url">
-			<input type="text" class="dateselector" id="start_date_created">
-			<input type="text" class="dateselector" id="end_date_created">
-		</li>
-	</ul>
+	<div class="panel">
+		<div class="panel-heading">
+			<h3 class="facet-label panel-title">
+				<span class="glyphicon glyphicon-filter"></span>
+				<a data-toggle="collapse" data-parent="#facet-accordion{facet.name}" href="#facet{facet.name}">{facet.label}</a>
+			</h3>
+		</div>
+
+		<div class="panel-collapse collapse" id="facet{facet.name}">
+			<div class="facet-option-list fluidfacet facet-type-dateRange"
+				data-facet-name="{facet.name}"
+				data-facet-label="{facet.label}"
+				data-range-min="{facet.range.startInResponse}"
+				data-range-max="{facet.range.endInResponse}"
+				data-range-min-selected="{facet.range.startRequested}"
+				data-range-max-selected="{facet.range.endRequested}"
+				data-range-gap="{facet.range.gap}"
+				data-facet-url="{s:uri.facet.setFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}"
+			>
+				<input type="hidden" value="{s:uri.facet.addFacetItem(facet: facet, facetItemValue: '___FROM___-___TO___')}" id="created_url">
+
+				<div class="row panel">
+					<div class="col-sm-6">
+						<input type="text" class="dateselector form-control" id="start_date_created">
+					</div>
+					<div class="col-sm-6">
+						<input type="text" class="dateselector form-control" id="end_date_created">
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 </html>

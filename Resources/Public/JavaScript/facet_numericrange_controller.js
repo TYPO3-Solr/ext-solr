@@ -6,7 +6,7 @@ function NumericRangeFacetController() {
     var _this = this;
 
     this.init = function () {
-        jQuery(".facet-type-numericRange").each(function () {
+        jQuery(".facet-type-numericRange-data").each(function () {
             var facetName = jQuery(this).data("facet-name");
             var rangeMin = jQuery(this).data("range-min");
             var rangeMax = jQuery(this).data("range-max");

@@ -4,14 +4,13 @@
 
 <f:section name="RelevanceBar">
 
-<div class="relevance">
-	<div class="relevance-label"><s:translate key="relevance" />: </div>
-	<div class="relevance-bar">
-		<div class="tx-solr-relevance-bar">
-			<div class="tx-solr-relevance themeColorBackground" style="width: {s:document.relevance(resultSet:resultSet, document:document)}%">&nbsp;</div>
+<div class="relevance hidden-xs">
+	<s:translate key="relevance" />:
+	<div class="progress" style="max-width: 100px; height: 5px;">
+		<div class="progress-bar" role="progressbar" aria-valuenow="{s:document.relevance(resultSet:resultSet, document:document)}" aria-valuemin="0" aria-valuemax="100" style="width: {s:document.relevance(resultSet:resultSet, document:document)}%;">
 		</div>
 	</div>
-	<div class="relevance-percent">{s:document.relevance(resultSet:resultSet, document:document)}%</div>
+
 </div>
 
 </f:section>

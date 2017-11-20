@@ -6,18 +6,25 @@
 
 	<f:section name="hierarchyTree">
 		<f:for each="{node.childNodes}" as="childNode" iteration="iteration">
-			<li class="facet-option{f:if(condition:'{iteration.index} > 9', then:' tx-solr-facet-hidden')}" data-facet-item-value="{childNode.value}">
-				+ <a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: childNode)}"><f:cObject typoscriptObjectPath="lib.tx_solr.pagetitle">{childNode.label}</f:cObject></a> <span class="facet-result-count">({childNode.documentCount})</span>
-			</li>
+			<div class="facet-option{f:if(condition:'{iteration.index} > 9', then:' tx-solr-facet-hidden')} list-group-item" data-facet-item-value="{childNode.value}">
+				<a class="facet solr-ajaxified" href="{s:uri.facet.addFacetItem(facet: facet, facetItem: childNode)}"><f:cObject typoscriptObjectPath="lib.tx_solr.pagetitle">{childNode.label}</f:cObject></a>
+				<span class="facet-result-count badge">{childNode.documentCount}</span>
+			</div>
 			<f:if condition="{childNode.childNodes}">
-				<li><ul><f:render section="hierarchyTree" arguments="{node: childNode, facet: facet}" /></ul></li>
+				<div class="list-group-item list-group"><f:render section="hierarchyTree" arguments="{node: childNode, facet: facet}" /></div>
 			</f:if>
 		</f:for>
 	</f:section>
 
-    <h5 class="facet-label">{facet.label}</h5>
-    <ul class="facet-option-list facet-type-hierarchy fluidfacet" data-facet-name="{facet.name}" data-facet-label="{facet.label}">
-		<f:render section="hierarchyTree" arguments="{node: facet, facet: facet}" />
-    </ul>
-
+	<div class="panel">
+		<div class="panel-heading">
+			<h3 class="facet-label panel-title">
+				<span class="glyphicon glyphicon-filter"></span>
+				<a data-toggle="collapse" data-parent="#facet-accordion{facet.name}" href="#facet{facet.name}">{facet.label}</a>
+			</h3>
+		</div>
+		<div class="facet-option-list facet-type-hierarchy fluidfacet list-group panel-collapse collapse" data-facet-name="{facet.name}" data-facet-label="{facet.label}" id="facet{facet.name}">
+			<f:render section="hierarchyTree" arguments="{node: facet, facet: facet}" />
+		</div>
+	</div>
 </html>
