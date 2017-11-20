@@ -158,6 +158,9 @@
 			<trans-unit id="faceting_removeAllFilters" xml:space="preserve">
 				<source>Remove all filters</source>
 			</trans-unit>
+			<trans-unit id="faceting_filter" xml:space="preserve">
+				<source>Filter</source>
+			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
 			</trans-unit>
