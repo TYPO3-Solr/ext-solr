@@ -111,6 +111,10 @@
 				<source>Remove all filters</source>
 				<target>Alle Filter entfernen</target>
 			</trans-unit>
+			<trans-unit id="faceting_filter" xml:space="preserve" approved="yes">
+		 	  	<source>Filter</source>
+				<target>Filtern</target>
+			</trans-unit>
 			<trans-unit id="results_range" xml:space="preserve" approved="yes">
 				<source>Displaying results @resultsFrom to @resultsTo of @resultsTotal.</source>
 				<target>Zeige Ergebnisse @resultsFrom bis @resultsTo von @resultsTotal.</target>
