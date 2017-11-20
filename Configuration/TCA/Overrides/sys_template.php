@@ -53,6 +53,9 @@
     'Configuration/TypoScript/Examples/Facets/OptionsPrefixGrouped/',
     'Search - (Example) Options grouped by prefix');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
+    'Configuration/TypoScript/Examples/Facets/OptionsSinglemode/',
+    'Search - (Example) Options with singlemode (only one option at a time)');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
     'Configuration/TypoScript/Examples/Facets/QueryGroup/',
     'Search - (Example) QueryGroup facet on the created field');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('solr',
