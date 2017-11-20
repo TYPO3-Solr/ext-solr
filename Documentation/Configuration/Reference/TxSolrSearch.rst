@@ -860,19 +860,6 @@ Normally, when clicking any option link of a facet this would result in only tha
 
 This is useful if you want to allow the user to select more than one option from a single facet.
 
-faceting.facets.[facetName].singleOptionMode
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: Boolean
-:TS Path: plugin.tx_solr.search.faceting.facets.[facetName].singleOptionMode
-:Since: 1.3, 2.0
-:Default: 0
-:Options: 0, 1
-
-When enabled together with keepAllOptionsOnSelection a user can select one option of the facet only at a time. Selecting a different option than the currently selected option results in the new option to replace the old one. The behavior thus is similar to a select box or a set of radio buttons.
-
-This option can not be used together with selectingSelectedFacetOptionRemovesFilter as it overrides its behavior.
-
 faceting.facets.[facetName].operator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

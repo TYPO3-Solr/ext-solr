@@ -528,4 +528,10 @@ And use them in your TypoScript configuration:
     }
 
 
+**I want to use faceting.facets.[facetName].singleOptionMode why was it removed?**
 
+This setting belongs to the rendering and not to the facet itself. You can implement the same behaviour just with the given ViewHelpers.
+
+The behaviour is the same, when you just call the ViewHelper s:uri.facet.setFacetItem instead of s:uri.facet.addFacetItem, which semantically just overwrites the current value.
+
+We've added an example partial "OptionsSinglemode" that shows this behaviour. The example TypoScript template "Search - (Example) Options with singlemode (only one option at a time)" shows how to use this partial in combination with the setting "keepAllOptionsOnSelection".
