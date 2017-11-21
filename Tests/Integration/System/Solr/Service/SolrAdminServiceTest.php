@@ -1,10 +1,10 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Integration;
+namespace ApacheSolrForTypo3\Solr\Tests\Integration\System\Solr\Service;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2010-2015 Timo Schmidt <timo.schmidt@dkd.de>
+ *  (c) 2010-2015 Timo Hund <timo.hund@dkd.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -24,22 +24,22 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use ApacheSolrForTypo3\Solr\ExtractingQuery;
-use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
+use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Testcase to check if the solr service is working as expected.
+ * Testcase to check if the solr admin service is working as expected.
  *
- * @author Timo Schmidt
+ * @author Timo Hund
  */
-class SolrServiceTest extends IntegrationTest
+class SolrAdminServiceTest extends IntegrationTest
 {
 
     /**
-     * @var SolrService
+     * @var SolrAdminService
      */
-    protected $solrService;
+    protected $solrAdminService;
 
     /**
      * @return void
@@ -47,20 +47,7 @@ class SolrServiceTest extends IntegrationTest
     public function setUp()
     {
         parent::setUp();
-        $this->solrService = GeneralUtility::makeInstance(SolrService::class, 'localhost', 8999, '/solr/core_en/');
-    }
-
-    /**
-     * @test
-     */
-    public function canExtractByQuery()
-    {
-        $testFilePath = $this->getFixturePathByName('testpdf.pdf');
-            /** @var $extractQuery \ApacheSolrForTypo3\Solr\ExtractingQuery */
-        $extractQuery = GeneralUtility::makeInstance(ExtractingQuery::class, $testFilePath);
-        $extractQuery->setExtractOnly();
-        $response = $this->solrService->extractByQuery($extractQuery);
-        $this->assertContains('PDF Test', $response[0], 'Could not extract text');
+        $this->solrAdminService = GeneralUtility::makeInstance(SolrAdminService::class, 'localhost', 8999, '/solr/core_en/');
     }
 
     /**
@@ -84,18 +71,18 @@ class SolrServiceTest extends IntegrationTest
     public function canAddSynonym($baseWord, $synonyms = [])
     {
         // make sure old synonyms have been deleted
-        $this->solrService->deleteSynonym($baseWord);
+        $this->solrAdminService->deleteSynonym($baseWord);
 
-        $synonymsBeforeAdd = $this->solrService->getSynonyms($baseWord);
+        $synonymsBeforeAdd = $this->solrAdminService->getSynonyms($baseWord);
         $this->assertEquals([], $synonymsBeforeAdd, 'Synonyms was not empty');
 
-        $this->solrService->addSynonym($baseWord, $synonyms);
-        $synonymsAfterAdd = $this->solrService->getSynonyms($baseWord);
+        $this->solrAdminService->addSynonym($baseWord, $synonyms);
+        $synonymsAfterAdd = $this->solrAdminService->getSynonyms($baseWord);
         $this->assertEquals($synonyms, $synonymsAfterAdd, 'Could not retrieve synonym after adding');
 
-        $this->solrService->deleteSynonym($baseWord);
+        $this->solrAdminService->deleteSynonym($baseWord);
 
-        $synonymsAfterRemove = $this->solrService->getSynonyms($baseWord);
+        $synonymsAfterRemove = $this->solrAdminService->getSynonyms($baseWord);
         $this->assertEquals([], $synonymsAfterRemove, 'Synonym was not removed');
     }
 
@@ -117,16 +104,16 @@ class SolrServiceTest extends IntegrationTest
     public function canAddStopWord($stopWord)
     {
         // make sure old stopwords are deleted
-        $this->solrService->deleteStopWord($stopWord);
-        $stopWords = $this->solrService->getStopWords();
+        $this->solrAdminService->deleteStopWord($stopWord);
+        $stopWords = $this->solrAdminService->getStopWords();
         $this->assertNotContains($stopWord, $stopWords, 'Stopwords are not empty after initializing');
 
-        $this->solrService->addStopWords($stopWord);
-        $stopWordsAfterAdd = $this->solrService->getStopWords();
+        $this->solrAdminService->addStopWords($stopWord);
+        $stopWordsAfterAdd = $this->solrAdminService->getStopWords();
         $this->assertContains($stopWord, $stopWordsAfterAdd, 'Stopword was not added');
 
-        $this->solrService->deleteStopWord($stopWord);
-        $stopWordsAfterDelete = $this->solrService->getStopWords();
+        $this->solrAdminService->deleteStopWord($stopWord);
+        $stopWordsAfterDelete = $this->solrAdminService->getStopWords();
         $this->assertNotContains($stopWord, $stopWordsAfterDelete, 'Stopwords are not empty after removing');
     }
 
@@ -137,7 +124,7 @@ class SolrServiceTest extends IntegrationTest
      */
     public function containsDefaultStopWord()
     {
-        $stopWordsInSolr = $this->solrService->getStopWords();
+        $stopWordsInSolr = $this->solrAdminService->getStopWords();
         $this->assertContains('and', $stopWordsInSolr, 'Default stopword and was not present');
     }
 
@@ -146,7 +133,7 @@ class SolrServiceTest extends IntegrationTest
      */
     public function canGetSystemInformation()
     {
-        $informationResponse = $this->solrService->getSystemInformation();
+        $informationResponse = $this->solrAdminService->getSystemInformation();
         $this->assertSame(200, $informationResponse->getHttpStatus(), 'Could not get information response from solr server');
     }
 
@@ -155,7 +142,7 @@ class SolrServiceTest extends IntegrationTest
      */
     public function canGetPingRoundtrimRunTime()
     {
-        $pingRuntime = $this->solrService->getPingRoundTripRuntime();
+        $pingRuntime = $this->solrAdminService->getPingRoundTripRuntime();
         $this->assertGreaterThan(0, $pingRuntime, 'Ping runtime should be larger then 0');
         $this->assertTrue(is_double($pingRuntime),'Ping runtime should be an integer');
     }
@@ -165,7 +152,7 @@ class SolrServiceTest extends IntegrationTest
      */
     public function canGetSolrServiceVersion()
     {
-        $solrServerVersion = $this->solrService->getSolrServerVersion();
+        $solrServerVersion = $this->solrAdminService->getSolrServerVersion();
         $isVersionHigherSix = version_compare('6.0.0', $solrServerVersion, '<');
         $this->assertTrue($isVersionHigherSix, 'Expecting to run on version larger then 6.0.0');
     }
@@ -175,7 +162,7 @@ class SolrServiceTest extends IntegrationTest
      */
     public function canReloadCore()
     {
-        $result = $this->solrService->reloadCore();
+        $result = $this->solrAdminService->reloadCore();
         $this->assertSame(200, $result->getHttpStatus(), 'Reload core did not responde with a 200 ok status');
     }
 }

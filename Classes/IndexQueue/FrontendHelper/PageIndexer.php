@@ -28,8 +28,8 @@ use ApacheSolrForTypo3\Solr\Access\Rootline;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Typo3PageIndexer;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -336,7 +336,7 @@ class PageIndexer extends AbstractFrontendHelper implements SingletonInterface
      * Index Queue item's properties.
      *
      * @param Item $indexQueueItem
-     * @return SolrService Solr server connection
+     * @return SolrConnection Solr server connection
      */
     protected function getSolrConnection(Item $indexQueueItem)
     {

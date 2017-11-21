@@ -27,7 +27,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\SolrService as SolrCoreConnection;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection as SolrCoreConnection;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Component\Exception\InvalidViewObjectNameException;
 use ApacheSolrForTypo3\Solr\System\Mvc\Backend\Service\ModuleDataStorageService;
 use TYPO3\CMS\Backend\Template\Components\Menu\Menu;
@@ -199,17 +199,18 @@ abstract class AbstractModuleController extends ActionController
         $this->initializeSelectedSolrCoreConnection();
         $cores = $this->solrConnectionManager->getConnectionsBySite($site);
         foreach ($cores as $core) {
+            $coreAdmin = $core->getAdminService();
             $menuItem = $this->coreSelectorMenu->makeMenuItem();
-            $menuItem->setTitle($core->getPath());
+            $menuItem->setTitle($coreAdmin->getPath());
             $uri = $this->uriBuilder->reset()->uriFor('switchCore',
                 [
-                    'corePath' => $core->getPath(),
+                    'corePath' => $coreAdmin->getPath(),
                     'uriToRedirectTo' => $uriToRedirectTo
                 ]
             );
             $menuItem->setHref($uri);
 
-            if ($core->getPath() == $this->selectedSolrCoreConnection->getPath()) {
+            if ($coreAdmin->getPath() == $this->selectedSolrCoreConnection->getAdminService()->getPath()) {
                 $menuItem->setActive(true);
             }
             $this->coreSelectorMenu->addMenuItem($menuItem);
@@ -253,13 +254,13 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
         foreach ($solrCoreConnections as $solrCoreConnection) {
-            if ($solrCoreConnection->getPath() == $currentSolrCorePath) {
+            if ($solrCoreConnection->getAdminService()->getPath() == $currentSolrCorePath) {
                 $this->selectedSolrCoreConnection = $solrCoreConnection;
             }
         }
         if (!$this->selectedSolrCoreConnection instanceof SolrCoreConnection && count($solrCoreConnections) > 0) {
             $this->initializeFirstAvailableSolrCoreConnection($solrCoreConnections, $moduleData);
-            $message = LocalizationUtility::translate('coreselector_switched_to_default_core', 'solr', [$currentSolrCorePath, $this->selectedSite->getLabel(), $this->selectedSolrCoreConnection->getPath()]);
+            $message = LocalizationUtility::translate('coreselector_switched_to_default_core', 'solr', [$currentSolrCorePath, $this->selectedSite->getLabel(), $this->selectedSolrCoreConnection->getAdminService()->getPath()]);
             $this->addFlashMessage($message, '', AbstractMessage::NOTICE);
         }
     }
@@ -273,7 +274,7 @@ abstract class AbstractModuleController extends ActionController
             return;
         }
         $this->selectedSolrCoreConnection = $solrCoreConnections[0];
-        $moduleData->setCore($this->selectedSolrCoreConnection->getPath());
+        $moduleData->setCore($this->selectedSolrCoreConnection->getAdminService()->getPath());
         $this->moduleDataStorageService->persistModuleData($moduleData);
     }
 }

@@ -141,7 +141,7 @@ class IndexService
         if ($enableCommitsSetting && count($itemsToIndex) > 0) {
             $solrServers = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionsBySite($this->site);
             foreach ($solrServers as $solrServer) {
-                $solrServer->commit(false, false, false);
+                $solrServer->getWriteService()->commit(false, false, false);
             }
         }
 

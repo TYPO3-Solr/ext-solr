@@ -34,6 +34,8 @@ use ApacheSolrForTypo3\Solr\System\Records\SystemLanguage\SystemLanguageReposito
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
 use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -96,7 +98,7 @@ class ConnectionManagerTest extends UnitTest
         $this->configurationManager = new ConfigurationManager();
         $this->connectionManager = $this->getMockBuilder(ConnectionManager::class)
             ->setConstructorArgs([$this->languageRepositoryMock, $this->pageRepositoryMock, $this->logManagerMock])
-            ->setMethods(['buildSolrService'])
+            ->setMethods(['buildSolrConnection'])
             ->getMock();
     }
 
@@ -131,21 +133,21 @@ class ConnectionManagerTest extends UnitTest
     public function canConnect($host, $port, $path, $scheme, $expectsException, $expectedConnectionString)
     {
         $self = $this;
-        $this->connectionManager->expects($this->once())->method('buildSolrService')->will(
-            $this->returnCallback(function($host, $port, $path, $scheme) use ($self) {
+        $this->connectionManager->expects($this->once())->method('buildSolrConnection')->will(
+            $this->returnCallback(function($host, $port, $path, $scheme, $username, $password) use ($self) {
 
                 $typoScriptConfigurationMock = $self->getDumbMock(TypoScriptConfiguration::class);
                 $synonymsParserMock = $self->getDumbMock(SynonymParser::class);
                 $stopWordParserMock = $self->getDumbMock(StopWordParser::class);
                 $schemaParserMock = $self->getDumbMock(SchemaParser::class);
 
-                return new SolrService($host, $port, $path, $scheme, $typoScriptConfigurationMock, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $self->logManagerMock);
+                return new SolrConnection($host, $port, $path, $scheme, $username, $password, $typoScriptConfigurationMock, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $self->logManagerMock);
             })
         );
         $exceptionOccured = false;
         try {
             $solrService = $this->connectionManager->getConnection($host, $port, $path, $scheme);
-            $this->assertEquals($expectedConnectionString, $solrService->__toString());
+            $this->assertEquals($expectedConnectionString, $solrService->getReadService()->__toString());
         } catch (\UnexpectedValueException $exception) {
             $exceptionOccured = true;
         }
@@ -157,10 +159,12 @@ class ConnectionManagerTest extends UnitTest
      */
     public function authenticationIsNotTriggeredWithoutUsername()
     {
-        $solrServiceMock = $this->getDumbMock(SolrService::class);
-        $solrServiceMock->expects($this->never())->method('setAuthenticationCredentials');
-        $this->connectionManager->expects($this->once())->method('buildSolrService')->will($this->returnValue($solrServiceMock));
-        $this->connectionManager->getConnection('127.0.0.1', 8080, '/solr/core_en/', 'https', ' ', '');
+        $adminServiceMock = $this->getDumbMock(SolrAdminService::class);
+        $adminServiceMock->expects($this->never())->method('setAuthenticationCredentials');
+        $solrConnectionMock = $this->getMockBuilder(SolrConnection::class)->setMethods(['buildAdminService'])->getMock();
+        $solrConnectionMock->expects($this->once())->method('buildAdminService')->will($this->returnValue($adminServiceMock));
+        $this->connectionManager->expects($this->once())->method('buildSolrConnection')->will($this->returnValue($solrConnectionMock));
+        $this->connectionManager->getConnection('127.0.0.1', 8080, '/solr/core_en/', 'https', ' ', '')->getAdminService();
     }
 
     /**
@@ -168,9 +172,11 @@ class ConnectionManagerTest extends UnitTest
      */
     public function authenticationIsTriggeredWhenUsernameIsPassed()
     {
-        $solrServiceMock = $this->getDumbMock(SolrService::class);
-        $solrServiceMock->expects($this->once())->method('setAuthenticationCredentials');
-        $this->connectionManager->expects($this->once())->method('buildSolrService')->will($this->returnValue($solrServiceMock));
-        $this->connectionManager->getConnection('127.0.0.1', 8080, '/solr/core_en/', 'https', 'foo', 'bar');
+        $adminServiceMock = $this->getDumbMock(SolrAdminService::class);
+        $adminServiceMock->expects($this->never())->method('setAuthenticationCredentials');
+        $solrConnectionMock = $this->getMockBuilder(SolrConnection::class)->setMethods(['buildAdminService'])->getMock();
+        $solrConnectionMock->expects($this->once())->method('buildAdminService')->will($this->returnValue($adminServiceMock));
+        $this->connectionManager->expects($this->once())->method('buildSolrConnection')->will($this->returnValue($solrConnectionMock));
+        $this->connectionManager->getConnection('127.0.0.1', 8080, '/solr/core_en/', 'https', 'foo', 'bar')->getAdminService();
     }
 }

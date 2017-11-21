@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
-use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Backend\Routing\UriBuilder as BackendUriBuilder;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -86,10 +86,11 @@ class IndexAdministrationModuleController extends AbstractModuleController
             $affectedCores = [];
             $solrServers = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
             foreach ($solrServers as $solrServer) {
-                /* @var $solrServer SolrService */
-                $solrServer->deleteByQuery('siteHash:' . $siteHash);
-                $solrServer->commit(false, false, false);
-                $affectedCores[] = $solrServer->getCoreName();
+                $writeService = $solrServer->getWriteService();
+                /* @var $solrServer SolrConnection */
+                $writeService->deleteByQuery('siteHash:' . $siteHash);
+                $writeService->commit(false, false, false);
+                $affectedCores[] = $writeService->getCoreName();
             }
             $this->addFlashMessage(LocalizationUtility::translate('solr.backend.index_administration.index_emptied_all', 'Solr', [$this->selectedSite->getLabel(), implode(', ', $affectedCores)]));
         } catch (\Exception $e) {
@@ -126,9 +127,10 @@ class IndexAdministrationModuleController extends AbstractModuleController
         $solrServers = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
 
         foreach ($solrServers as $solrServer) {
-            /* @var $solrServer SolrService */
-            $coreReloaded = $solrServer->reloadCore()->getHttpStatus() === 200;
-            $coreName = $solrServer->getCoreName();
+            /* @var $solrServer SolrConnection */
+            $coreAdmin = $solrServer->getAdminService();
+            $coreReloaded = $coreAdmin->reloadCore()->getHttpStatus() === 200;
+            $coreName = $coreAdmin->getCoreName();
 
             if (!$coreReloaded) {
                 $coresReloaded = false;

@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\PingFailedException;
-use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrAdminService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
@@ -91,20 +91,20 @@ class SolrStatus extends AbstractSolrStatus
         $header = 'Your site has contacted the Apache Solr server.';
         $this->responseStatus = Status::OK;
 
-        $solr = $this->connectionManager->getConnection(
+        $solrAdmin = $this->connectionManager->getConnection(
             $solrConnection['solrHost'],
             $solrConnection['solrPort'],
             $solrConnection['solrPath'],
             $solrConnection['solrScheme'],
             $solrConnection['solrUsername'],
             $solrConnection['solrPassword']
-        );
+        )->getAdminService();
 
-        $solrVersion = $this->checkSolrVersion($solr);
-        $accessFilter = $this->checkAccessFilter($solr);
-        $pingTime = $this->checkPingTime($solr);
-        $configName = $this->checkSolrConfigName($solr);
-        $schemaName = $this->checkSolrSchemaName($solr);
+        $solrVersion = $this->checkSolrVersion($solrAdmin);
+        $accessFilter = $this->checkAccessFilter($solrAdmin);
+        $pingTime = $this->checkPingTime($solrAdmin);
+        $configName = $this->checkSolrConfigName($solrAdmin);
+        $schemaName = $this->checkSolrSchemaName($solrAdmin);
 
         if ($this->responseStatus !== Status::OK) {
             $header = 'Failed contacting the Solr server.';
@@ -113,7 +113,7 @@ class SolrStatus extends AbstractSolrStatus
         $variables = [
             'header' => $header,
             'connection' => $solrConnection,
-            'solr' => $solr,
+            'solr' => $solrAdmin,
             'solrVersion' => $solrVersion,
             'pingTime' => $pingTime,
             'configName' => $configName,
@@ -128,10 +128,10 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Checks the solr version and adds it to the report.
      *
-     * @param SolrService $solr
+     * @param SolrAdminService $solr
      * @return string solr version
      */
-    protected function checkSolrVersion(SolrService $solr)
+    protected function checkSolrVersion(SolrAdminService $solr)
     {
         try {
             $solrVersion = $this->formatSolrVersion($solr->getSolrServerVersion());
@@ -146,14 +146,14 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Checks the access filter setup and adds it to the report.
      *
-     * @param SolrService $solr
+     * @param SolrAdminService $solrAdminService
      * @return string
      */
-    protected function checkAccessFilter(SolrService $solr)
+    protected function checkAccessFilter(SolrAdminService $solrAdminService)
     {
         try {
             $accessFilterPluginStatus = GeneralUtility::makeInstance(AccessFilterPluginInstalledStatus::class);
-            $accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solr);
+            $accessFilterPluginVersion = $accessFilterPluginStatus->getInstalledPluginVersion($solrAdminService);
             $accessFilterMessage = $accessFilterPluginVersion;
         } catch (\Exception $e) {
             $this->responseStatus = Status::ERROR;
@@ -165,13 +165,13 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Checks the ping time and adds it to the report.
      *
-     * @param SolrService $solr
+     * @param SolrAdminService $solrAdminService
      * @return string
      */
-    protected function checkPingTime(SolrService $solr)
+    protected function checkPingTime(SolrAdminService $solrAdminService)
     {
         try {
-            $pingQueryTime = $solr->getPingRoundTripRuntime();
+            $pingQueryTime = $solrAdminService->getPingRoundTripRuntime();
             $pingMessage = (int)$pingQueryTime . ' ms';
         } catch (PingFailedException $e) {
             $this->responseStatus = Status::ERROR;
@@ -183,13 +183,13 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Checks the solr config name and adds it to the report.
      *
-     * @param SolrService $solr
+     * @param SolrAdminService $solrAdminService
      * @return string
      */
-    protected function checkSolrConfigName(SolrService $solr)
+    protected function checkSolrConfigName(SolrAdminService $solrAdminService)
     {
         try {
-            $solrConfigMessage = $solr->getSolrconfigName();
+            $solrConfigMessage = $solrAdminService->getSolrconfigName();
         } catch (\Exception $e) {
             $this->responseStatus = Status::ERROR;
             $solrConfigMessage = 'Error determining solr config: ' . $e->getMessage();
@@ -201,13 +201,13 @@ class SolrStatus extends AbstractSolrStatus
     /**
      * Checks the solr schema name and adds it to the report.
      *
-     * @param SolrService $solr
+     * @param SolrAdminService $solrAdminService
      * @return string
      */
-    protected function checkSolrSchemaName(SolrService $solr)
+    protected function checkSolrSchemaName(SolrAdminService $solrAdminService)
     {
         try {
-            $solrSchemaMessage = $solr->getSchema()->getName();
+            $solrSchemaMessage = $solrAdminService->getSchema()->getName();
         } catch (\Exception $e) {
             $this->responseStatus = Status::ERROR;
             $solrSchemaMessage = 'Error determining schema name: ' . $e->getMessage();

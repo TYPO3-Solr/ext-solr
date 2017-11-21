@@ -62,8 +62,10 @@ class SolrConfigStatus extends AbstractSolrStatus
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-            if ($solrConnection->ping() && $solrConnection->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
-                $variables = ['solr' => $solrConnection, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
+            $adminService = $solrConnection->getAdminService();
+
+            if ($adminService->ping() && $adminService->getSolrconfigName() != self::RECOMMENDED_SOLRCONFIG_VERSION) {
+                $variables = ['solr' => $adminService, 'recommendedVersion' => self::RECOMMENDED_SOLRCONFIG_VERSION];
                 $report = $this->getRenderedReport('SolrConfigStatus.html', $variables);
                 $status = GeneralUtility::makeInstance(Status::class, 'Solrconfig Version', 'Unsupported solrconfig.xml', $report, Status::WARNING);
 

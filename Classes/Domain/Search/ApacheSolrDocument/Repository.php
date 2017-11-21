@@ -31,8 +31,8 @@ use ApacheSolrForTypo3\Solr\Domain\Site\SiteRepository;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Query;
 use ApacheSolrForTypo3\Solr\Search;
-use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -133,7 +133,7 @@ class Repository implements SingletonInterface
     /**
      * Retrieves an instance of the Search object.
      *
-     * @param SolrService $solrConnection
+     * @param SolrConnection $solrConnection
      * @return Search
      */
     protected function getSearch($solrConnection)

@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\Search\FacetsModifier;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -43,7 +44,7 @@ class Search
     /**
      * An instance of the Solr service
      *
-     * @var SolrService
+     * @var SolrConnection
      */
     protected $solr = null;
 
@@ -83,9 +84,9 @@ class Search
     /**
      * Constructor
      *
-     * @param SolrService $solrConnection The Solr connection to use for searching
+     * @param SolrConnection $solrConnection The Solr connection to use for searching
      */
-    public function __construct(SolrService $solrConnection = null)
+    public function __construct(SolrConnection $solrConnection = null)
     {
         $this->logger = GeneralUtility::makeInstance(SolrLogManager::class, __CLASS__);
 
@@ -103,7 +104,7 @@ class Search
     /**
      * Gets the Solr connection used by this search.
      *
-     * @return SolrService Solr connection
+     * @return SolrConnection Solr connection
      */
     public function getSolrConnection()
     {
@@ -117,9 +118,9 @@ class Search
      * be able to switch between multiple cores/connections during
      * one request
      *
-     * @param SolrService $solrConnection
+     * @param SolrConnection $solrConnection
      */
-    public function setSolrConnection(SolrService $solrConnection)
+    public function setSolrConnection(SolrConnection $solrConnection)
     {
         $this->solr = $solrConnection;
     }
@@ -135,6 +136,7 @@ class Search
      * @param int $offset Result offset for pagination.
      * @param int $limit Maximum number of results to return. If set to NULL, this value is taken from the query object.
      * @return \Apache_Solr_Response Solr response
+     * @throws \Exception
      */
     public function search(Query $query, $offset = 0, $limit = 10)
     {
@@ -145,7 +147,7 @@ class Search
         }
 
         try {
-            $response = $this->solr->search(
+            $response = $this->solr->getReadService()->search(
                 $query->getQueryString(),
                 $offset,
                 $limit,
@@ -199,7 +201,7 @@ class Search
         $solrAvailable = false;
 
         try {
-            if (!$this->solr->ping(2, $useCache)) {
+            if (!$this->solr->getReadService()->ping(2, $useCache)) {
                 throw new \Exception('Solr Server not responding.', 1237475791);
             }
 

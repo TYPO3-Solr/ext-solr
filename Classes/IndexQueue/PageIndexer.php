@@ -106,7 +106,7 @@ class PageIndexer extends Indexer
      * for translations of a page.
      *
      * @param Item $item An index queue item
-     * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+     * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections, the array's keys are the sys_language_uid of the language of the connection
      */
     protected function getSolrConnectionsByItem(Item $item)
     {
