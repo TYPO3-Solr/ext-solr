@@ -36,17 +36,30 @@ use TYPO3\CMS\Extbase\Service\TypoScriptService;
  */
 class ConfigurationServiceTest extends UnitTest
 {
+
     /**
+     * @return array
+     */
+    public function overrideFilterDataProvider()
+    {
+        return [
+            'simpleInteger' => ['id', 4711, 'id:"4711"'],
+            'escapedString' => ['id', 'foo"bar', 'id:"foo\"bar"']
+        ];
+    }
+
+    /**
+     * @dataProvider overrideFilterDataProvider
      * @test
      */
-    public function canOverrideConfigurationWithFlexFormSettings()
+    public function canOverrideConfigurationWithFlexFormSettings($filterField, $filterValue, $expectedFilterString)
     {
         $fakeFlexFormArrayData = [
             'search' =>
                 [
                     'query' => [
                         'filter' => [
-                            ['field' => ['field' => 'id', 'value' => 4711]]
+                            ['field' => ['field' => $filterField, 'value' => $filterValue]]
                         ]
                     ]
                 ]
@@ -65,6 +78,6 @@ class ConfigurationServiceTest extends UnitTest
         $configurationService->overrideConfigurationWithFlexFormSettings('foobar', $typoScriptConfiguration);
 
             // the filter should be overwritten by the flexform
-        $this->assertEquals(['id:4711'], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
+        $this->assertEquals([$expectedFilterString], $typoScriptConfiguration->getSearchQueryFilterConfiguration());
     }
 }
