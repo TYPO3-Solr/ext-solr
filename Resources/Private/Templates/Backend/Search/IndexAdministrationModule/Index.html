@@ -5,20 +5,20 @@
 	<f:be.pageRenderer includeRequireJsModules="{0:'TYPO3/CMS/Solr/FormModal'}"/>
 
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-xs-12">
 			<h1>{f:translate(key: 'solr.backend.index_administration.label', default: 'Index Administration')}</h1>
 			<p class="lead"><f:translate key="solr.backend.index_administration.description" /></p>
 		</div>
 	</div>
 
+	<h3>Reload Core Configuration</h3>
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-xs-3">
 			<f:form action="reloadIndexConfiguration">
 				<f:form.submit value="Reload Configuration" class="btn btn-sm btn-default" />
 			</f:form>
 		</div>
-		<div class="col-md-9 action-description">
-			<h3>Reload Core Configuration</h3>
+		<div class="col-xs-9 action-description">
 			<p>
 			A core in Solr is what holds your index. When changing core/index configuration
 			such as synonyms, stop words, or protected words you need to reload the core
@@ -29,8 +29,9 @@
 		</div>
 	</div>
 
+	<h3>Empty Index</h3>
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-xs-3">
 			<f:form action="emptyIndex" method="POST">
 				<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
 							   data="{title: 'Please confirm', content: 'Are you sure you want to clear the index? All Solr documents will be removed.', severity: 'warning'}"
@@ -38,9 +39,7 @@
 
 			</f:form>
 		</div>
-		<div class="col-md-9 action-description">
-			<h3>Empty Index</h3>
-
+		<div class="col-xs-9 action-description">
 			<p>
 				This will simply empty the site's index. When doing so it will take
 				care of
@@ -50,21 +49,18 @@
 		</div>
 	</div>
 
-	<hr class="section-divider" />
-
-	<div class="row section-with-header">
-		<div class="col-md-3">
+	<h3>
+		<f:translate key="solr.backend.index_queue_module.button.clear_index_queue"/>
+	</h3>
+	<div class="row">
+		<div class="col-xs-3">
 			<f:form action="clearIndexQueue" method="POST">
 				<f:form.submit class="btn btn-sm btn-default btn-danger t3js-modal-formsubmit-trigger"
 							   data="{title: 'Please confirm', content: 'Are you sure you want to clear the Index Queue?', severity: 'warning'}"
 							   value="{f:translate(key:'solr.backend.index_queue_module.button.clear_index_queue')}"/>
 			</f:form>
 		</div>
-		<div class="col-md-9 action-description">
-			<h3>
-				<f:translate key="solr.backend.index_queue_module.button.clear_index_queue"/>
-			</h3>
-
+		<div class="col-xs-9 action-description">
 			<p>
 				This will empty the Index Queue. It will take care of only deleting
 				the currently selected site's Index Queue entries.
