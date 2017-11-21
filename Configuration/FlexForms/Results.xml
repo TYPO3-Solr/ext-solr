@@ -18,15 +18,6 @@
                                 <type>group</type>
                                 <internal_type>db</internal_type>
                                 <allowed>pages</allowed>
-                                <show_thumbs>1</show_thumbs>
-                                <wizards>
-                                    <suggest>
-                                        <type>suggest</type>
-                                        <default>
-                                            <searchWholePhrase>1</searchWholePhrase>
-                                        </default>
-                                    </suggest>
-                                </wizards>
                             </config>
                         </TCEforms>
                     </search.targetPage>
@@ -88,6 +79,7 @@
                                             <config>
                                                 <section>1</section>
                                                 <type>select</type>
+                                                <renderType>selectSingle</renderType>
                                                 <itemsProcFunc>ApacheSolrForTypo3\Solr\System\UserFunctions\FlexFormUserFunctions->getFacetFieldsFromSchema</itemsProcFunc>
                                             </config>
                                         </TCEforms>
