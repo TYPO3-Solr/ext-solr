@@ -282,6 +282,14 @@ Example:
         badKeywords.data = GP:q
     }
 
+Note: When you want to filter for something with whitespaces you might need to quote the filter term.
+
+.. code-block:: typoscript
+
+    plugin.tx_solr.search.query.filter {
+        johnsDoesPages = author:"John Doe"
+    }
+
 
 query.filter.__pageSections
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
