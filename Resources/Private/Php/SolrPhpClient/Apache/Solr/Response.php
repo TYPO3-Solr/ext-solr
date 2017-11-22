@@ -199,13 +199,6 @@ class Apache_Solr_Response
                 }
 
                 foreach ($originalDocument as $key => $value) {
-                    //If a result is an array with only a single
-                    //value then its nice to be able to access
-                    //it as if it were always a single value
-                    if ($this->_collapseSingleValueArrays && is_array($value) && count($value) <= 1) {
-                        $value = array_shift($value);
-                    }
-
                     $document->$key = $value;
                 }
 
