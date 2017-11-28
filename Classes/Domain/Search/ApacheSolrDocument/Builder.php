@@ -66,7 +66,7 @@ class Builder
      * @param string $mountPointParameter
      * @return Apache_Solr_Document|object
      */
-    public function fromPage(TypoScriptFrontendController $page, $url, Rootline $pageAccessRootline, $mountPointParameter)
+    public function fromPage(TypoScriptFrontendController $page, $url, Rootline $pageAccessRootline, $mountPointParameter): \Apache_Solr_Document
     {
         /* @var $document \Apache_Solr_Document */
         $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
@@ -118,15 +118,81 @@ class Builder
         return $document;
     }
 
+
+    /**
+     * Creates a Solr document with the basic / core fields set already.
+     *
+     * @param array $itemRecord
+     * @param string $type
+     * @param int $rootPageUid
+     * @param string $accessRootLine
+     * @return Apache_Solr_Document
+     */
+    public function fromRecord(array $itemRecord, string $type, int $rootPageUid, string $accessRootLine): \Apache_Solr_Document
+    {
+        /* @var $document Apache_Solr_Document */
+        $document = GeneralUtility::makeInstance(Apache_Solr_Document::class);
+
+        $site = $this->getSiteByPageId($rootPageUid);
+
+        $documentId = $this->getDocumentId($type, $site->getRootPageId(), $itemRecord['uid']);
+
+        // required fields
+        $document->setField('id', $documentId);
+        $document->setField('type', $type);
+        $document->setField('appKey', 'EXT:solr');
+
+        // site, siteHash
+        $document->setField('site', $site->getDomain());
+        $document->setField('siteHash', $site->getSiteHash());
+
+        // uid, pid
+        $document->setField('uid', $itemRecord['uid']);
+        $document->setField('pid', $itemRecord['pid']);
+
+        // variantId
+        $variantId = $this->variantIdBuilder->buildFromTypeAndUid($type, $itemRecord['uid']);
+        $document->setField('variantId', $variantId);
+
+        // created, changed
+        if (!empty($GLOBALS['TCA'][$type]['ctrl']['crdate'])) {
+            $document->setField('created', $itemRecord[$GLOBALS['TCA'][$type]['ctrl']['crdate']]);
+        }
+        if (!empty($GLOBALS['TCA'][$type]['ctrl']['tstamp'])) {
+            $document->setField('changed', $itemRecord[$GLOBALS['TCA'][$type]['ctrl']['tstamp']]);
+        }
+
+        // access, endtime
+        $document->setField('access', $accessRootLine);
+        if (!empty($GLOBALS['TCA'][$type]['ctrl']['enablecolumns']['endtime'])
+            && $itemRecord[$GLOBALS['TCA'][$type]['ctrl']['enablecolumns']['endtime']] != 0
+        ) {
+            $document->setField('endtime', $itemRecord[$GLOBALS['TCA'][$type]['ctrl']['enablecolumns']['endtime']]);
+        }
+
+        return $document;
+    }
+
     /**
      * @param TypoScriptFrontendController  $page
      * @param string $accessGroups
      * @param string $mountPointParameter
      * @return string
      */
-    protected function getPageDocumentId($page, $accessGroups, $mountPointParameter)
+    protected function getPageDocumentId(TypoScriptFrontendController $page, string $accessGroups, string $mountPointParameter): string
     {
         return Util::getPageDocumentId($page->id, $page->type, $page->sys_language_uid, $accessGroups, $mountPointParameter);
+    }
+
+    /**
+     * @param string $type
+     * @param int $rootPageId
+     * @param int $recordUid
+     * @return string
+     */
+    protected function getDocumentId(string $type, int $rootPageId, int $recordUid): string
+    {
+        return Util::getDocumentId($type, $rootPageId, $recordUid);
     }
 
     /**
