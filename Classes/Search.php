@@ -317,10 +317,15 @@ class Search
     /**
      * Gets all facets with their fields, options, and counts.
      *
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
+     * The parsing of facets count's is now done in the parser of the corresponding facet type
+     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\
+     *
      * @return array
      */
     public function getFacetCounts()
     {
+        GeneralUtility::logDeprecatedFunction();
         static $facetCountsModified = false;
         static $facetCounts = null;
 
@@ -351,8 +356,17 @@ class Search
         return $facetCounts;
     }
 
+    /**
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
+     * The parsing of the "options" is now done in the facet parser of the OptionsFacets
+     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\Options\OptionsFacetParser
+     *
+     * @param $facetField
+     * @return array|null
+     */
     public function getFacetFieldOptions($facetField)
     {
+        GeneralUtility::logDeprecatedFunction();
         $facetOptions = null;
 
         if (property_exists($this->getFacetCounts()->facet_fields,
@@ -363,8 +377,17 @@ class Search
         return $facetOptions;
     }
 
+    /**
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
+     * The parsing of the "query options" is now done in the facet parser of the QueryFacets
+     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\QueryGroup\QueryGroupFacetParser
+     *
+     * @param string $facetField
+     * @return array
+     */
     public function getFacetQueryOptions($facetField)
     {
+        GeneralUtility::logDeprecatedFunction();
         $options = [];
 
         $facetQueries = get_object_vars($this->getFacetCounts()->facet_queries);
@@ -385,8 +408,17 @@ class Search
         return $options;
     }
 
+    /**
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getFacets instead.
+     * The parsing of the range options is now done in the facet parser of the RangeFacets
+     * @see \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\RangeBased\AbstractRangeFacetParser
+     *
+     * @param string $rangeFacetField
+     * @return array
+     */
     public function getFacetRangeOptions($rangeFacetField)
     {
+        GeneralUtility::logDeprecatedFunction();
         return get_object_vars($this->getFacetCounts()->facet_ranges->$rangeFacetField);
     }
 
@@ -426,8 +458,15 @@ class Search
         return $highlightedContent;
     }
 
+    /**
+     * @deprecated Since 8.0.0 will be removed in 9.0.0. This method is deprecated. Use SearchResultSet::getSpellcheckingSuggestions
+     * and the domain model instead
+     * @return array|bool
+     */
     public function getSpellcheckingSuggestions()
     {
+        GeneralUtility::logDeprecatedFunction();
+
         $spellcheckingSuggestions = false;
 
         $suggestions = (array)$this->response->spellcheck->suggestions;
