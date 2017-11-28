@@ -535,3 +535,24 @@ This setting belongs to the rendering and not to the facet itself. You can imple
 The behaviour is the same, when you just call the ViewHelper s:uri.facet.setFacetItem instead of s:uri.facet.addFacetItem, which semantically just overwrites the current value.
 
 We've added an example partial "OptionsSinglemode" that shows this behaviour. The example TypoScript template "Search - (Example) Options with singlemode (only one option at a time)" shows how to use this partial in combination with the setting "keepAllOptionsOnSelection".
+
+
+**I want to build a tab facet where all options remain, even with an option count of 0. How can i do that?**
+
+This can be done with the combination of several settings:
+
+::
+
+    plugin.tx_solr.search.faceting {
+        minimumCount = 0
+        keepAllFacetsOnSelection = 1
+        facets {
+            typeTab {
+                field = type
+                keepAllOptionsOnSelection = 1
+            }
+        }
+    }
+
+The example above changes the minimumCount to 0, the default value i 1. Setting it to zero allows to have options without any results.
+The setting "keepAllFacetsOnSelection" let all facets remain and with keepAllOptionsOnSelection the options in the type facet remain.
