@@ -26,7 +26,7 @@ namespace ApacheSolrForTypo3\Solr\Report;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Reports\Status;
@@ -59,16 +59,17 @@ class SolrVersionStatus extends AbstractSolrStatus
         $solrConnections = GeneralUtility::makeInstance(ConnectionManager::class)->getAllConnections();
 
         foreach ($solrConnections as $solrConnection) {
-            /** @var $solrConnection SolrService */
-            if (!$solrConnection->ping()) {
-                $url = $solrConnection->__toString();
+            $coreAdmin = $solrConnection->getAdminService();
+            /** @var $solrConnection SolrConnection */
+            if (!$coreAdmin->ping()) {
+                $url = $coreAdmin->__toString();
                 $pingFailedMsg = 'Could not ping solr server, can not check version ' . (string)$url;
                 $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Not accessible', $pingFailedMsg, Status::ERROR);
                 $reports[] = $status;
                 continue;
             }
 
-            $solrVersion = $solrConnection->getSolrServerVersion();
+            $solrVersion = $coreAdmin->getSolrServerVersion();
             $isOutdatedVersion = version_compare($this->getCleanSolrVersion($solrVersion), self::REQUIRED_SOLR_VERSION, '<');
 
             if (!$isOutdatedVersion) {
@@ -76,7 +77,7 @@ class SolrVersionStatus extends AbstractSolrStatus
             }
 
             $formattedVersion = $this->formatSolrVersion($solrVersion);
-            $variables = ['requiredVersion' => self::REQUIRED_SOLR_VERSION, 'currentVersion' => $formattedVersion, 'solr' => $solrConnection];
+            $variables = ['requiredVersion' => self::REQUIRED_SOLR_VERSION, 'currentVersion' => $formattedVersion, 'solr' => $coreAdmin];
             $report = $this->getRenderedReport('SolrVersionStatus.html', $variables);
             $status = GeneralUtility::makeInstance(Status::class, 'Apache Solr Version', 'Outdated, Unsupported', $report, Status::ERROR);
 

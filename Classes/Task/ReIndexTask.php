@@ -87,14 +87,14 @@ class ReIndexTask extends AbstractSolrTask
 
         foreach ($solrServers as $solrServer) {
             $deleteQuery = 'type:(' . implode(' OR ', $typesToCleanUp) . ')' . ' AND siteHash:' . $this->getSite()->getSiteHash();
-            $solrServer->deleteByQuery($deleteQuery);
+            $solrServer->getWriteService()->deleteByQuery($deleteQuery);
 
             if (!$enableCommitsSetting) {
                 # Do not commit
                 continue;
             }
 
-            $response = $solrServer->commit(false, false, false);
+            $response = $solrServer->getWriteService()->commit(false, false, false);
             if ($response->getHttpStatus() != 200) {
                 $cleanUpResult = false;
                 break;

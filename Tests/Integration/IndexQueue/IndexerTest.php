@@ -28,6 +28,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Indexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\SolrService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
@@ -564,7 +565,7 @@ class IndexerTest extends IntegrationTest
 
         $result = $this->callInaccessibleMethod($this->indexer,'getSolrConnectionsByItem', $item);
 
-        $this->assertInstanceOf(SolrService::class, $result[1], "Expect SolrService object in connection array item with key 1.");
+        $this->assertInstanceOf(SolrConnection::class, $result[1], "Expect SolrConnection object in connection array item with key 1.");
         $this->assertCount(1, $result, "Expect only one SOLR connection.");
         $this->assertArrayNotHasKey(0, $result, "Expect, that there is no solr connection returned for default language,");
     }

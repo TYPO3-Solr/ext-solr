@@ -32,9 +32,9 @@ use ApacheSolrForTypo3\Solr\Domain\Variants\IdBuilder;
 use ApacheSolrForTypo3\Solr\FieldProcessor\Service;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
 use ApacheSolrForTypo3\Solr\Site;
-use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
 use ApacheSolrForTypo3\Solr\System\Records\Pages\PagesRepository;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Configuration\TranslationConfigurationProvider;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -57,7 +57,7 @@ class Indexer extends AbstractIndexer
     /**
      * A Solr service instance to interact with the Solr server
      *
-     * @var SolrService
+     * @var SolrConnection
      */
     protected $solr;
 
@@ -173,7 +173,7 @@ class Indexer extends AbstractIndexer
         $documents = $this->processDocuments($item, $documents);
         $documents = $this->preAddModifyDocuments($item, $language, $documents);
 
-        $response = $this->solr->addDocuments($documents);
+        $response = $this->solr->getWriteService()->addDocuments($documents);
         if ($response->getHttpStatus() == 200) {
             $itemIndexed = true;
         }
@@ -541,7 +541,7 @@ class Indexer extends AbstractIndexer
      * for translations of an item.
      *
      * @param Item $item An index queue item
-     * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections, the array's keys are the sys_language_uid of the language of the connection
+     * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections, the array's keys are the sys_language_uid of the language of the connection
      */
     protected function getSolrConnectionsByItem(Item $item)
     {
@@ -680,7 +680,7 @@ class Indexer extends AbstractIndexer
      * these connections.
      *
      * @param array $translationOverlays An array of translation overlays to check for configured connections.
-     * @return array An array of ApacheSolrForTypo3\Solr\SolrService connections.
+     * @return array An array of ApacheSolrForTypo3\Solr\System\Solr\SolrConnection connections.
      */
     protected function getConnectionsForIndexableLanguages(
         array $translationOverlays

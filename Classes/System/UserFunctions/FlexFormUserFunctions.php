@@ -99,7 +99,7 @@ class FlexFormUserFunctions
      *
      * @param array $pageRecord
      *
-     * @return \ApacheSolrForTypo3\Solr\SolrService
+     * @return \ApacheSolrForTypo3\Solr\System\Solr\SolrConnection
      */
     protected function getConnection(array $pageRecord)
     {
@@ -114,7 +114,7 @@ class FlexFormUserFunctions
      */
     protected function getFieldNamesFromSolrMetaDataForPage(array $pageRecord)
     {
-        return array_keys((array)$this->getConnection($pageRecord)->getFieldsMetaData());
+        return array_keys((array)$this->getConnection($pageRecord)->getAdminService()->getFieldsMetaData());
     }
 
     /**

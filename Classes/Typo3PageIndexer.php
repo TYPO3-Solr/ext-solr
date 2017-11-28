@@ -33,6 +33,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\FrontendHelper\PageFieldMappingIndexer;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -67,7 +68,7 @@ class Typo3PageIndexer
     /**
      * Solr server connection.
      *
-     * @var SolrService
+     * @var SolrConnection
      */
     protected $solrConnection = null;
     /**
@@ -170,7 +171,7 @@ class Typo3PageIndexer
         $solr = GeneralUtility::makeInstance(ConnectionManager::class)->getConnectionByPageId($this->page->id, $this->page->sys_language_uid);
 
         // do not continue if no server is available
-        if (!$solr->ping()) {
+        if (!$solr->getWriteService()->ping()) {
             throw new \Exception(
                 'No Solr instance available while trying to index a page.',
                 1234790825
@@ -204,12 +205,12 @@ class Typo3PageIndexer
      * Allows to provide a Solr server connection other than the one
      * initialized by the constructor.
      *
-     * @param SolrService $solrConnection Solr connection
+     * @param SolrConnection $solrConnection Solr connection
      * @throws \Exception if the Solr server cannot be reached
      */
-    public function setSolrConnection(SolrService $solrConnection)
+    public function setSolrConnection(SolrConnection $solrConnection)
     {
-        if (!$solrConnection->ping()) {
+        if (!$solrConnection->getWriteService()->ping()) {
             throw new \Exception(
                 'Could not connect to Solr server.',
                 1323946472
@@ -436,7 +437,7 @@ class Typo3PageIndexer
             // chunk adds by 20
             $documentChunks = array_chunk($documents, 20);
             foreach ($documentChunks as $documentChunk) {
-                $response = $this->solrConnection->addDocuments($documentChunk);
+                $response = $this->solrConnection->getWriteService()->addDocuments($documentChunk);
 
                 if ($response->getHttpStatus() != 200) {
                     $transportException = new \Apache_Solr_HttpTransportException($response);

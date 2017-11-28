@@ -25,12 +25,8 @@ namespace ApacheSolrForTypo3\Solr\Tests\Integration;
  ***************************************************************/
 
 use ApacheSolrForTypo3\Solr\ConnectionManager;
-use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\NoSolrConnectionFoundException;
-use ApacheSolrForTypo3\Solr\SolrService;
-use ApacheSolrForTypo3\Solrfal\Queue\Queue;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -131,10 +127,10 @@ class ConnectionManagerTest extends IntegrationTest
         $connectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
 
         $solrService = $connectionManager->getConnectionByPageId(24, 0, '24-14');
-        $this->assertInstanceOf(SolrService::class, $solrService, 'Should find solr connection for level 0 of mounted page.');
+        $this->assertInstanceOf(SolrConnection::class, $solrService, 'Should find solr connection for level 0 of mounted page.');
 
         $solrService1 = $connectionManager->getConnectionByPageId(25, 0, '24-14');
-        $this->assertInstanceOf(SolrService::class, $solrService1, 'Should find solr connection for level 1 of mounted page.');
+        $this->assertInstanceOf(SolrConnection::class, $solrService1, 'Should find solr connection for level 1 of mounted page.');
     }
 
     /**

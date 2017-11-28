@@ -227,9 +227,9 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
             // a site can have multiple connections (cores / languages)
             $solrConnections = $connectionManager->getConnectionsBySite($site);
             foreach ($solrConnections as $solr) {
-                $solr->deleteByQuery('type:' . $table . ' AND uid:' . intval($uid));
+                $solr->getWriteService()->deleteByQuery('type:' . $table . ' AND uid:' . intval($uid));
                 if ($enableCommitsSetting) {
-                    $solr->commit(false, false, false);
+                    $solr->getWriteService()->commit(false, false, false);
                 }
             }
         }

@@ -66,12 +66,13 @@ class CoreOptimizationModuleController extends AbstractModuleController
         }
 
         $synonyms = [];
-        $rawSynonyms = $this->selectedSolrCoreConnection->getSynonyms();
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+        $rawSynonyms = $coreAdmin->getSynonyms();
         foreach ($rawSynonyms as $baseWord => $synonymList) {
             $synonyms[$baseWord] = implode(', ', $synonymList);
         }
 
-        $stopWords = $this->selectedSolrCoreConnection->getStopWords();
+        $stopWords = $coreAdmin->getStopWords();
         $this->view->assignMultiple([
             'synonyms' => $synonyms,
             'stopWords' => implode(PHP_EOL, $stopWords),
@@ -99,14 +100,12 @@ class CoreOptimizationModuleController extends AbstractModuleController
             $baseWord = mb_strtolower($baseWord);
             $synonyms = mb_strtolower($synonyms);
 
-            if ($overrideExisting && $this->selectedSolrCoreConnection->getSynonyms($baseWord)) {
-                $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+            $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+            if ($overrideExisting && $coreAdmin->getSynonyms($baseWord)) {
+                $coreAdmin->deleteSynonym($baseWord);
             }
-            $this->selectedSolrCoreConnection->addSynonym(
-                $baseWord,
-                GeneralUtility::trimExplode(',', $synonyms, true)
-            );
-            $this->selectedSolrCoreConnection->reloadCore();
+            $coreAdmin->addSynonym($baseWord, GeneralUtility::trimExplode(',', $synonyms, true));
+            $coreAdmin->reloadCore();
 
             $this->addFlashMessage(
                 '"' . $synonyms . '" added as synonyms for base word "' . $baseWord . '"'
@@ -122,8 +121,9 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function exportStopWordsAction($fileFormat = 'txt')
     {
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         $this->exportFile(
-            implode(PHP_EOL, $this->selectedSolrCoreConnection->getStopWords()),
+            implode(PHP_EOL, $coreAdmin->getStopWords()),
             'stopwords',
             $fileFormat
         );
@@ -137,7 +137,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function exportSynonymsAction($fileFormat = 'txt')
     {
-        $synonyms = $this->selectedSolrCoreConnection->getSynonyms();
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+        $synonyms = $coreAdmin->getSynonyms();
         return $this->exportFile(ManagedResourcesUtility::exportSynonymsToTxt($synonyms), 'synonyms', $fileFormat);
     }
 
@@ -155,19 +156,18 @@ class CoreOptimizationModuleController extends AbstractModuleController
 
         $fileLines = ManagedResourcesUtility::importSynonymsFromPlainTextContents($synonymFileUpload);
         $synonymCount = 0;
+
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
         foreach ($fileLines as $baseWord => $synonyms) {
             if (!isset($baseWord) || empty($synonyms)) {
                 continue;
             }
             $this->deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord);
-            $this->selectedSolrCoreConnection->addSynonym(
-                $baseWord,
-                $synonyms
-            );
+            $coreAdmin->addSynonym($baseWord, $synonyms);
             $synonymCount++;
         }
 
-        $this->selectedSolrCoreConnection->reloadCore();
+        $coreAdmin->reloadCore();
         $this->addFlashMessage(
             $synonymCount . ' synonyms imported.'
         );
@@ -197,7 +197,8 @@ class CoreOptimizationModuleController extends AbstractModuleController
     {
         $allSynonymsCouldBeDeleted = $this->deleteAllSynonyms();
 
-        $reloadResponse = $this->selectedSolrCoreConnection->reloadCore();
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+        $reloadResponse = $coreAdmin->reloadCore();
 
         if ($allSynonymsCouldBeDeleted
             && $reloadResponse->getHttpStatus() == 200
@@ -222,8 +223,9 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     public function deleteSynonymsAction($baseWord)
     {
-        $deleteResponse = $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
-        $reloadResponse = $this->selectedSolrCoreConnection->reloadCore();
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+        $deleteResponse = $coreAdmin->deleteSynonym($baseWord);
+        $reloadResponse = $coreAdmin->reloadCore();
 
         if ($deleteResponse->getHttpStatus() == 200
             && $reloadResponse->getHttpStatus() == 200
@@ -254,7 +256,9 @@ class CoreOptimizationModuleController extends AbstractModuleController
         // lowercase stopword before saving because terms get lowercased before stopword filtering
         $newStopWords = mb_strtolower($stopWords);
         $newStopWords = GeneralUtility::trimExplode("\n", $newStopWords, true);
-        $oldStopWords = $this->selectedSolrCoreConnection->getStopWords();
+
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+        $oldStopWords = $coreAdmin->getStopWords();
 
         if ($replaceStopwords) {
             $removedStopWords = array_diff($oldStopWords, $newStopWords);
@@ -266,11 +270,11 @@ class CoreOptimizationModuleController extends AbstractModuleController
         $wordsAdded = true;
         $addedStopWords = array_diff($newStopWords, $oldStopWords);
         if (!empty($addedStopWords)) {
-            $wordsAddedResponse = $this->selectedSolrCoreConnection->addStopWords($addedStopWords);
+            $wordsAddedResponse = $coreAdmin->addStopWords($addedStopWords);
             $wordsAdded = ($wordsAddedResponse->getHttpStatus() == 200);
         }
 
-        $reloadResponse = $this->selectedSolrCoreConnection->reloadCore();
+        $reloadResponse = $coreAdmin->reloadCore();
         if ($wordsRemoved && $wordsAdded && $reloadResponse->getHttpStatus() == 200) {
             $this->addFlashMessage(
                 'Stop Words Updated.'
@@ -288,13 +292,15 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     protected function exportFile($content, $type = 'synonyms', $fileExtension = 'txt') : string
     {
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+
         $this->response->setHeader('Content-type', 'text/plain', true);
         $this->response->setHeader('Cache-control', 'public', true);
         $this->response->setHeader('Content-Description', 'File transfer', true);
         $this->response->setHeader(
             'Content-disposition',
             'attachment; filename =' . $type . '_' .
-            $this->selectedSolrCoreConnection->getCoreName() . '.' . $fileExtension,
+            $coreAdmin->getCoreName() . '.' . $fileExtension,
             true
         );
         return $content;
@@ -307,11 +313,12 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     protected function deleteAllSynonyms() : bool
     {
-        $synonyms = $this->selectedSolrCoreConnection->getSynonyms();
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+        $synonyms = $coreAdmin->getSynonyms();
         $allSynonymsCouldBeDeleted = true;
 
         foreach ($synonyms as $baseWord => $synonym) {
-            $deleteResponse = $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+            $deleteResponse = $coreAdmin->deleteSynonym($baseWord);
             $allSynonymsCouldBeDeleted = $allSynonymsCouldBeDeleted && $deleteResponse->getHttpStatus() == 200;
         }
 
@@ -325,8 +332,10 @@ class CoreOptimizationModuleController extends AbstractModuleController
     protected function removeStopsWordsFromIndex($stopwordsToRemove) : bool
     {
         $wordsRemoved = true;
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+
         foreach ($stopwordsToRemove as $word) {
-            $response = $this->selectedSolrCoreConnection->deleteStopWord($word);
+            $response = $coreAdmin->deleteStopWord($word);
             if ($response->getHttpStatus() != 200) {
                 $wordsRemoved = false;
                 $this->addFlashMessage(
@@ -349,11 +358,13 @@ class CoreOptimizationModuleController extends AbstractModuleController
      */
     protected function deleteExistingSynonym($overrideExisting, $deleteSynonymsBefore, $baseWord)
     {
+        $coreAdmin = $this->selectedSolrCoreConnection->getAdminService();
+
         if (!$deleteSynonymsBefore &&
             $overrideExisting &&
-            $this->selectedSolrCoreConnection->getSynonyms($baseWord)
+            $coreAdmin->getSynonyms($baseWord)
         ) {
-            $this->selectedSolrCoreConnection->deleteSynonym($baseWord);
+            $coreAdmin->deleteSynonym($baseWord);
         }
 
     }

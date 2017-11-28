@@ -1,5 +1,5 @@
 <?php
-namespace ApacheSolrForTypo3\Solr\Tests\Unit;
+namespace ApacheSolrForTypo3\Solr\Tests\Unit\System\Solr\Service;
 
 /***************************************************************
  *  Copyright notice
@@ -26,19 +26,20 @@ namespace ApacheSolrForTypo3\Solr\Tests\Unit;
 
 use Apache_Solr_HttpTransport_Response;
 use Apache_Solr_HttpTransport_Interface;
-use ApacheSolrForTypo3\Solr\SolrService;
 use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\System\Logging\SolrLogManager;
-use ApacheSolrForTypo3\Solr\System\Solr\Parser\SchemaParser;
-use ApacheSolrForTypo3\Solr\System\Solr\Parser\StopWordParser;
-use ApacheSolrForTypo3\Solr\System\Solr\Parser\SynonymParser;
+use ApacheSolrForTypo3\Solr\System\Solr\Service\SolrReadService;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrCommunicationException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrInternalServerErrorException;
+use ApacheSolrForTypo3\Solr\System\Solr\SolrUnavailableException;
+use ApacheSolrForTypo3\Solr\Tests\Unit\UnitTest;
 
 /**
  * Tests the ApacheSolrForTypo3\Solr\SolrService class
  *
  * @author Timo Hund <timo.hund@dkd.de>
  */
-class SolrServiceTest extends UnitTest
+class SolrReadServiceTest extends UnitTest
 {
     /**
      * @test
@@ -64,7 +65,7 @@ class SolrServiceTest extends UnitTest
     /**
      * @test
      */
-    public function pingIsOnlyDoingMayPingCallsWhenCacheIsDisabled()
+    public function pingIsOnlyDoingManyPingCallsWhenCacheIsDisabled()
     {
 
         // we fake a 200 OK response and expect that
@@ -77,7 +78,7 @@ class SolrServiceTest extends UnitTest
         // we expect that exactly one get request is done
         $transportMock->expects($this->exactly(2))->method('performGetRequest')->will($this->returnValue($responseMock));
 
-        /** @var $solrService SolrService */
+        /** @var $solrService SolrReadService */
         $solrService = $this->getMockedSolrServiceReturningFakeRepsone($transportMock);
 
         $solrService->ping(2, false);
@@ -99,12 +100,9 @@ class SolrServiceTest extends UnitTest
             ]
         ]);
 
-        $synonymsParserMock = $this->getDumbMock(SynonymParser::class);
-        $stopWordParserMock = $this->getDumbMock(StopWordParser::class);
-        $schemaParserMock = $this->getDumbMock(SchemaParser::class);
         $logManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        $solrService = new SolrService('localhost','8080','/solr/','http', $configuration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
+        $solrService = new SolrReadService('localhost','8080','/solr/','http', $configuration, $logManagerMock);
         $this->assertSame(99.0, $solrService->getHttpTransport()->getDefaultTimeout(), 'Default timeout was not set from configuration');
     }
 
@@ -157,12 +155,9 @@ class SolrServiceTest extends UnitTest
     public function canGetCoreName($path, $expectedCoreName)
     {
         $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
-        $synonymsParserMock = $this->getDumbMock(SynonymParser::class);
-        $stopWordParserMock = $this->getDumbMock(StopWordParser::class);
-        $schemaParserMock = $this->getDumbMock(SchemaParser::class);
         $logManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        $solrService = new SolrService('localhost','8080', $path,'http', $fakeConfiguration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
+        $solrService = new SolrReadService('localhost','8080', $path,'http', $fakeConfiguration, $logManagerMock);
         $this->assertSame($expectedCoreName, $solrService->getCoreName());
     }
 
@@ -184,47 +179,95 @@ class SolrServiceTest extends UnitTest
     public function canGetCoreBasePath($path, $expectedCoreBasePath)
     {
         $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
-        $synonymsParserMock = $this->getDumbMock(SynonymParser::class);
-        $stopWordParserMock = $this->getDumbMock(StopWordParser::class);
-        $schemaParserMock = $this->getDumbMock(SchemaParser::class);
         $logManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        $solrService = new SolrService('localhost','8080', $path,'http', $fakeConfiguration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
+        $solrService = new SolrReadService('localhost','8080', $path,'http', $fakeConfiguration, $logManagerMock);
         $this->assertSame($expectedCoreBasePath, $solrService->getCoreBasePath());
     }
 
     /**
+     * @test
+     */
+    public function searchMethodIsTriggeringGetRequest()
+    {
+        // we fake a 200 OK response and expect that
+        /** @var  \Apache_Solr_HttpTransport_Response $responseMock */
+        $responseMock = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
+        $responseMock->expects($this->any())->method('getStatusCode')->will($this->returnValue(200));
+
+        /** @var \Apache_Solr_HttpTransport_Interface $transportMock */
+        $transportMock = $this->getDumbMock(Apache_Solr_HttpTransport_Interface::class);
+        // we expect that exactly one get request is done
+        $transportMock->expects($this->exactly(1))->method('performGetRequest')->will($this->returnValue($responseMock));
+
+        $readService = $this->getMockedSolrServiceReturningFakeRepsone($transportMock);
+        $result = $readService->search('foo');
+
+        $this->assertSame(200, $result->getHttpStatus(), 'Expecting to get a 200 OK response');
+        $this->assertTrue($readService->hasSearched(), 'hasSearch indicates that no search was triggered');
+    }
+
+    /**
+     * @return array
+     */
+    public function readServiceExceptionDataProvider()
+    {
+        return [
+            'Communication error' => ['exceptionClass' => SolrUnavailableException::class, 0],
+            'Internal Server eror' => ['expcetionClass' => SolrInternalServerErrorException::class, 500],
+            'Other unspecific error' => ['expcetionClass' => SolrCommunicationException::class, 555]
+        ];
+    }
+
+    /**
+     * @dataProvider readServiceExceptionDataProvider
+     * @param string $exceptionClass
+     * @param int $statusCode
+     * @test
+     */
+    public function searchThrowsExpectedExceptionForStatusCode($exceptionClass, $statusCode)
+    {
+        /** @var  \Apache_Solr_HttpTransport_Response $responseMock */
+        $responseMock = $this->getDumbMock(Apache_Solr_HttpTransport_Response::class);
+        $responseMock->expects($this->any())->method('getStatusCode')->will($this->returnValue($statusCode));
+
+        /** @var \Apache_Solr_HttpTransport_Interface $transportMock */
+        $transportMock = $this->getDumbMock(Apache_Solr_HttpTransport_Interface::class);
+        // we expect that exactly one get request is done
+        $transportMock->expects($this->exactly(1))->method('performGetRequest')->will($this->returnValue($responseMock));
+
+        $readService = $this->getMockedSolrServiceReturningFakeRepsone($transportMock);
+
+        $this->expectException($exceptionClass);
+        $readService->search('foo');
+    }
+
+    /**
      * @param $transportMock
-     * @return SolrService
+     * @return SolrReadService
      */
     protected function getMockedSolrServiceReturningFakeRepsone($transportMock)
     {
         $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
-        $synonymsParserMock = $this->getDumbMock(SynonymParser::class);
-        $stopWordParserMock = $this->getDumbMock(StopWordParser::class);
-        $schemaParserMock = $this->getDumbMock(SchemaParser::class);
         $logManagerMock = $this->getDumbMock(SolrLogManager::class);
 
-        /** @var $solrService SolrService */
-        $solrService = $this->getMockBuilder(SolrService::class)
+        /** @var $solrService SolrReadService */
+        $solrService = $this->getMockBuilder(SolrReadService::class)
             ->setMethods(['getHttpTransport'])
-            ->setConstructorArgs(['test', 8983, '/solr/', 'http', $fakeConfiguration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock])
+            ->setConstructorArgs(['test', 8983, '/solr/', 'http', $fakeConfiguration, $logManagerMock])
             ->getMock();
         $solrService->expects($this->any())->method('getHttpTransport')->will($this->returnValue($transportMock));
         return $solrService;
     }
 
     /**
-     * @return SolrService
+     * @return SolrReadService
      */
     protected function getDefaultSolrServiceWithMockedDependencies()
     {
         $fakeConfiguration = $this->getDumbMock(TypoScriptConfiguration::class);
-        $synonymsParserMock = $this->getDumbMock(SynonymParser::class);
-        $stopWordParserMock = $this->getDumbMock(StopWordParser::class);
-        $schemaParserMock = $this->getDumbMock(SchemaParser::class);
         $logManagerMock = $this->getDumbMock(SolrLogManager::class);
-        $solrService = new SolrService('localhost', '8080', '/solr/', 'http', $fakeConfiguration, $synonymsParserMock, $stopWordParserMock, $schemaParserMock, $logManagerMock);
+        $solrService = new SolrReadService('localhost', '8080', '/solr/', 'http', $fakeConfiguration, $logManagerMock);
         return $solrService;
     }
 }

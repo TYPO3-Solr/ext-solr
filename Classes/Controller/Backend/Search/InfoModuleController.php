@@ -107,16 +107,17 @@ class InfoModuleController extends AbstractModuleController
         }
 
         foreach ($connections as $connection) {
-            $coreUrl = $connection->getScheme() . '://' . $connection->getHost() . ':' . $connection->getPort() . $connection->getPath();
+            $coreAdmin = $connection->getAdminService();
+            $coreUrl = $coreAdmin->getScheme() . '://' . $coreAdmin->getHost() . ':' . $coreAdmin->getPort() . $coreAdmin->getPath();
 
-            if ($connection->ping()) {
+            if ($coreAdmin->ping()) {
                 $connectedHosts[] = $coreUrl;
             } else {
                 $missingHosts[] = $coreUrl;
             }
 
-            if (!$path->isValidSolrPath($connection->getPath())) {
-                $invalidPaths[] = $connection->getPath();
+            if (!$path->isValidSolrPath($coreAdmin->getPath())) {
+                $invalidPaths[] = $coreAdmin->getPath();
             }
         }
 
@@ -180,11 +181,13 @@ class InfoModuleController extends AbstractModuleController
 
         $solrCoreConnections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
         foreach ($solrCoreConnections as $solrCoreConnection) {
+            $coreAdmin = $solrCoreConnection->getAdminService();
+
             $indexFieldsInfo = [
-                'corePath' => $solrCoreConnection->getPath()
+                'corePath' => $coreAdmin->getPath()
             ];
-            if ($solrCoreConnection->ping()) {
-                $lukeData = $solrCoreConnection->getLukeMetaData();
+            if ($coreAdmin->ping()) {
+                $lukeData = $coreAdmin->getLukeMetaData();
 
                 /* @var Registry $registry */
                 $registry = GeneralUtility::makeInstance(Registry::class);
@@ -197,7 +200,7 @@ class InfoModuleController extends AbstractModuleController
                     $limitNote = 'Nothing indexed';
                     // below limit, so we can get more data
                     // Note: we use 2 since 1 fails on Ubuntu Hardy.
-                    $lukeData = $solrCoreConnection->getLukeMetaData(2);
+                    $lukeData = $coreAdmin->getLukeMetaData(2);
                 }
 
                 $fields = $this->getFields($lukeData, $limitNote);
@@ -211,11 +214,11 @@ class InfoModuleController extends AbstractModuleController
 
                 $this->addFlashMessage(
                     '',
-                    'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $solrCoreConnection->getPath(),
+                    'Unable to contact Apache Solr server: ' . $this->selectedSite->getLabel() . ' ' . $coreAdmin->getPath(),
                     FlashMessage::ERROR
                 );
             }
-            $indexFieldsInfoByCorePaths[$solrCoreConnection->getPath()] = $indexFieldsInfo;
+            $indexFieldsInfoByCorePaths[$coreAdmin->getPath()] = $indexFieldsInfo;
         }
         $this->view->assign('indexFieldsInfoByCorePaths', $indexFieldsInfoByCorePaths);
     }
