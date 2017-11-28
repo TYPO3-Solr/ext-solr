@@ -283,7 +283,7 @@ class Typo3PageIndexer
     protected function getPageDocument()
     {
         $documentBuilder = GeneralUtility::makeInstance(Builder::class);
-        $document = $documentBuilder->fromPage($this->page, $this->pageUrl, $this->pageAccessRootline, $this->mountPointParameter);
+        $document = $documentBuilder->fromPage($this->page, $this->pageUrl, $this->pageAccessRootline, (string)$this->mountPointParameter);
         $idField = $document->getField('id');
 
         self::$pageSolrDocumentId = $idField['value'];

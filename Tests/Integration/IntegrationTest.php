@@ -224,6 +224,7 @@ abstract class IntegrationTest extends FunctionalTestCase
 
         EidUtility::initLanguage();
 
+        $TSFE->id = $id;
         $TSFE->initFEuser();
         $TSFE->set_no_cache();
         $TSFE->checkAlternativeIdMethods();

@@ -67,7 +67,7 @@ class BuilderTest extends UnitTest
 
         /** @var $documentBuilder Builder */
         $this->documentBuilder = $this->getMockBuilder(Builder::class)->setConstructorArgs([$this->variantIdBuilderMock ])->setMethods(
-            ['getExtractorForPageContent', 'getSiteByPageId','getPageDocumentId']
+            ['getExtractorForPageContent', 'getSiteByPageId','getPageDocumentId', 'getDocumentId']
         )->getMock();
 
         $this->documentBuilder->expects($this->any())->method('getExtractorForPageContent')->will($this->returnValue($this->typo3PageExtractorMock));
@@ -83,7 +83,7 @@ class BuilderTest extends UnitTest
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 
-        $this->fakeDocumentId('siteHash/pages/4711');
+        $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
         $fakePage->page = [];
@@ -103,7 +103,7 @@ class BuilderTest extends UnitTest
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 
-        $this->fakeDocumentId('siteHash/pages/4711');
+        $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
         $fakePage->page = ['keywords' => 'foo,bar'];
@@ -122,7 +122,7 @@ class BuilderTest extends UnitTest
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 
-        $this->fakeDocumentId('siteHash/pages/4711');
+        $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent([]);
 
         $fakePage->page = ['endtime' => 1234];
@@ -141,7 +141,7 @@ class BuilderTest extends UnitTest
         $fakeRootLine = $this->getDumbMock(Rootline::class);
         $fakeRootLine->expects($this->once())->method('getGroups')->will($this->returnValue([1]));
 
-        $this->fakeDocumentId('siteHash/pages/4711');
+        $this->fakePageDocumentId('siteHash/pages/4711');
         $this->fakeTagContent(['tagsH1' => 'Fake H1 content']);
 
         $fakePage->page = [];
@@ -152,11 +152,46 @@ class BuilderTest extends UnitTest
     }
 
     /**
+     * @test
+     */
+    public function canBuildFromRecord()
+    {
+        $fakeRecord = ['uid' => 4711, 'pid' => 88,'type' => 'news'];
+        $type = 'news';
+        $this->fakeDocumentId('testSiteHash/news/4711');
+
+        $this->siteMock->expects($this->any())->method('getRootPageId')->willReturn(99);
+        $this->siteMock->expects($this->once())->method('getDomain')->willReturn('test.typo3.org');
+        $this->siteMock->expects($this->any())->method('getSiteHash')->willReturn('testSiteHash');
+        $this->variantIdBuilderMock->expects($this->once())->method('buildFromTypeAndUid')->with('news', 4711)->willReturn('testVariantId');
+
+        $document = $this->documentBuilder->fromRecord($fakeRecord, $type, 99, 'r:0');
+
+        $this->assertSame(4711, $document->uid, 'Uid field was not set as expected');
+        $this->assertSame(88, $document->pid, 'Pid field was not set as expected');
+        $this->assertSame('test.typo3.org', $document->site, 'Site field was not set as expected');
+        $this->assertSame('testSiteHash', $document->siteHash, 'SiteHash field was not set as expected');
+        $this->assertSame('testVariantId', $document->variantId, 'VariantId field was not set as expected');
+        $this->assertSame('r:0', $document->access, 'Access field was not set as expected');
+        $this->assertSame('testSiteHash/news/4711', $document->id, 'Id field was not set as expected');
+        $this->assertSame('news', $document->type, 'Type field was not set as expected');
+        $this->assertSame('EXT:solr', $document->appKey, 'appKey field was not set as expected');
+    }
+
+    /**
+     * @param string $documentId
+     */
+    protected function fakePageDocumentId($documentId)
+    {
+        $this->documentBuilder->expects($this->once())->method('getPageDocumentId')->will($this->returnValue($documentId));
+    }
+
+    /**
      * @param string $documentId
      */
     protected function fakeDocumentId($documentId)
     {
-        $this->documentBuilder->expects($this->once())->method('getPageDocumentId')->will($this->returnValue($documentId));
+        $this->documentBuilder->expects($this->once())->method('getDocumentId')->will($this->returnValue($documentId));
     }
 
     /**
