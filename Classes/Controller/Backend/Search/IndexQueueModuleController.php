@@ -71,6 +71,14 @@ class IndexQueueModuleController extends AbstractModuleController
     }
 
     /**
+     * @param Queue $indexQueue
+     */
+    public function setIndexQueue(Queue $indexQueue)
+    {
+        $this->indexQueue = $indexQueue;
+    }
+
+    /**
      * Set up the doc header properly here
      *
      * @param ViewInterface $view
@@ -201,11 +209,31 @@ class IndexQueueModuleController extends AbstractModuleController
             $severity = FlashMessage::ERROR;
         }
 
-        $this->addFlashMessage(
-            LocalizationUtility::translate($label, 'Solr'),
-            LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'),
-            $severity
-        );
+        $this->addIndexQueueFlashMessage($label, $severity);
+
+        $this->redirect('index');
+    }
+
+    /**
+     * ReQueues a single item in the indexQueue.
+     *
+     * @param string $type
+     * @param int $uid
+     *
+     * @return void
+     */
+    public function requeueDocumentAction(string $type, int $uid)
+    {
+        $label = 'solr.backend.index_queue_module.flashmessage.error.single_item_not_requeued';
+        $severity = FlashMessage::ERROR;
+
+        $updateCount = $this->indexQueue->updateItem($type, $uid, time());
+        if ($updateCount > 0) {
+            $label = 'solr.backend.index_queue_module.flashmessage.success.single_item_was_requeued';
+            $severity = FlashMessage::OK;
+        }
+
+        $this->addIndexQueueFlashMessage($label, $severity);
 
         $this->redirect('index');
     }
@@ -222,12 +250,7 @@ class IndexQueueModuleController extends AbstractModuleController
             // add a flash message and quit
             $label = 'solr.backend.index_queue_module.flashmessage.error.no_queue_item_for_queue_error';
             $severity = FlashMessage::ERROR;
-            $this->addFlashMessage(
-                LocalizationUtility::translate($label, 'Solr'),
-                LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title',
-                    'Solr'),
-                $severity
-            );
+            $this->addIndexQueueFlashMessage($label, $severity);
 
             return;
         }
@@ -260,5 +283,16 @@ class IndexQueueModuleController extends AbstractModuleController
         );
 
         $this->redirect('index');
+    }
+
+    /**
+     * Adds a flash message for the index queue module.
+     *
+     * @param string $label
+     * @param int $severity
+     */
+    protected function addIndexQueueFlashMessage($label, $severity)
+    {
+        $this->addFlashMessage(LocalizationUtility::translate($label, 'Solr'), LocalizationUtility::translate('solr.backend.index_queue_module.flashmessage.title', 'Solr'), $severity);
     }
 }

@@ -48,8 +48,7 @@ if (TYPO3_MODE == 'BE') {
         'Info',
         '',
         [
-            'Backend\\Search\\InfoModule' => 'index, switchSite, switchCore',
-            'Backend\\Web\\Info\\ApacheSolrDocument' => 'index'
+            'Backend\\Search\\InfoModule' => 'index, switchSite, switchCore, documentsDetails',
         ],
         [
             'access' => 'user,group',
@@ -57,14 +56,6 @@ if (TYPO3_MODE == 'BE') {
             'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang_mod_info.xlf',
             'navigationComponentId' => 'typo3-pagetree'
         ]
-    );
-
-    // Index Inspector is hidden under Web->Info->Index Inspector
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
-        'web_info',
-        \ApacheSolrForTypo3\Solr\Controller\Backend\Web\Info\IndexInspectorController::class,
-        null,
-        'LLL:EXT:solr/Resources/Private/Language/locallang.xlf:module_indexinspector'
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
@@ -89,7 +80,7 @@ if (TYPO3_MODE == 'BE') {
         'IndexQueue',
         '',
         [
-            'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, resetLogErrors, showError, doIndexingRun, switchSite'
+            'Backend\\Search\\IndexQueueModule' => 'index, initializeIndexQueue, requeueDocument, resetLogErrors, showError, doIndexingRun, switchSite'
         ],
         [
             'access' => 'user,group',

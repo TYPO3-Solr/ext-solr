@@ -19,6 +19,11 @@
                     Index Fields
                 </a>
             </li>
+            <li role="presentation" class="t3js-tabmenu-item">
+                <a href="#index_inspector-tab" title="" aria-controls="tab-2" role="tab" data-toggle="tab">
+                    Index Documents
+                </a>
+            </li>
         </ul>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="connections-tab">
@@ -39,6 +44,13 @@
                 <div class="panel panel-tab">
                     <div class="panel-body">
                         <f:render section="IndexFields" arguments="{_all}"/>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="index_inspector-tab">
+                <div class="panel panel-tab">
+                    <div class="panel-body">
+                        <f:render section="IndexInspector" arguments="{_all}"/>
                     </div>
                 </div>
             </div>
@@ -226,4 +238,93 @@
             </div>
         </f:for>
     </div>
+</f:section>
+
+
+<f:section name="IndexInspector">
+    <div class="panel-group" id="index-inspector_accordion">
+
+
+        <f:for each="{indexInspectorDocumentsByLanguageAndType}" as="indexInspectorDocumentsByType" key="language" iteration="currentCore">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a href="#panel-group3document-core-{currentCore.index}" data-toggle="collapse">{indexInspectorDocumentsByType.core.path}</a>
+                        <a href="#panel-group3document-core-{currentCore.index}" title="Collapse table" class="pull-right" data-toggle="collapse">
+                            <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                        </a>
+                    </h3>
+                </div>
+
+                <div id="panel-group3document-core-{currentCore.index}" class="panel-collapse collapse {f:if(condition: '{iterator.isFirst}', then: 'in')}">
+                    <div class="panel-body">
+                        <f:for each="{indexInspectorDocumentsByType.documents}" as="documents" key="documentType">
+                            <f:if condition="{documents}"> <f:comment><!-- Don't show emty panel groups if array with documents is empty. --></f:comment>
+                                <f:render section="PanelGroupForDocumentType" arguments="{_all}"/>
+                            </f:if>
+                        </f:for>
+                    </div>
+                </div>
+            </div>
+        </f:for>
+    </div>
+
+    <f:section name="PanelGroupForDocumentType">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" data-toggle="collapse">Type: {documentType} ({f:count(subject: documents)})</a>
+                    <a href="#panel-group4document-type-{currentCore.index}-{documentType}" title="Collapse table" class="pull-right" data-toggle="collapse">
+                        <core:icon identifier="actions-view-list-expand" size="small"/><f:comment><!-- @todo: make Icon toggable between actions-view-list-collapse/actions-view-list-expand --></f:comment>
+                    </a>
+                </h3>
+            </div>
+            <div id="panel-group4document-type-{currentCore.index}-{documentType}" class="panel-collapse collapse {f:if(condition: '{f:count(subject: documentsByType)} < 2', then: 'in', else: '')}">
+                <div class="panel-body">
+                    <div class="panel-group">
+                        <table class="table table-striped table-condensed">
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th>Url</th>
+                                <th>Created</th>
+                                <th>Indexed</th>
+                                <th>Actions</th>
+
+                            </tr>
+                            <f:for each="{documents}" as="document">
+                                <tr>
+                                    <td>{document.uid}</td>
+                                    <td><f:format.crop maxCharacters="20">{document.title}</f:format.crop></td>
+                                    <td><f:format.crop maxCharacters="40">{document.url}</f:format.crop></td>
+                                    <td><f:format.date format="d.m.Y H:i:s">{document.created}</f:format.date></td>
+                                    <td><f:format.date format="d.m.Y H:i:s">{document.indexed}</f:format.date></td>
+
+                                    <td>
+                                        <span class="btn btn-default">
+                                            <f:link.action action="documentsDetails" arguments="{uid: document.uid, type: document.type, languageUid: language, pageId: pageId}" title="Show details">
+                                                <core:icon identifier="actions-document-view" />
+                                            </f:link.action>
+                                        </span>
+
+                                        <solr:backend.security.ifHasAccessToModule extension="Solr" main="searchbackend" sub="indexqueue">
+                                            <span class="btn btn-default">
+                                                <f:link.action action="requeueDocument" arguments="{uid: document.uid, type: document.type}"
+                                                               controller="Backend\Search\IndexQueueModule"
+                                                               pluginName="searchbackend_SolrIndexqueue"
+                                                               additionalParams="{M:'searchbackend_SolrIndexqueue'}" title="ReQueue for all languages">
+                                                    <core:icon identifier="actions-refresh" />
+                                                </f:link.action>
+                                            </span>
+                                        </solr:backend.security.ifHasAccessToModule>
+                                    </td>
+                                </tr>
+                            </f:for>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </f:section>
 </f:section>

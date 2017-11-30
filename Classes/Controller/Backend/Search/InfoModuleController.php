@@ -27,11 +27,14 @@ namespace ApacheSolrForTypo3\Solr\Controller\Backend\Search;
 use ApacheSolrForTypo3\Solr\Api;
 use ApacheSolrForTypo3\Solr\ConnectionManager;
 use ApacheSolrForTypo3\Solr\Domain\Search\Statistics\StatisticsRepository;
+use ApacheSolrForTypo3\Solr\Domain\Search\ApacheSolrDocument\Repository;
 use ApacheSolrForTypo3\Solr\System\Validator\Path;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
@@ -45,12 +48,19 @@ class InfoModuleController extends AbstractModuleController
     protected $solrConnectionManager;
 
     /**
+     * @var Repository
+     */
+    protected $apacheSolrDocumentRepository;
+
+    /**
      * Initializes the controller before invoking an action method.
      */
     protected function initializeAction()
     {
         parent::initializeAction();
         $this->solrConnectionManager = GeneralUtility::makeInstance(ConnectionManager::class);
+        $this->apacheSolrDocumentRepository = GeneralUtility::makeInstance(Repository::class);
+
     }
     /**
      * Set up the doc header properly here
@@ -83,6 +93,20 @@ class InfoModuleController extends AbstractModuleController
         $this->collectConnectionInfos();
         $this->collectStatistics();
         $this->collectIndexFieldsInfo();
+        $this->collectIndexInspectorInfo();
+    }
+
+    /**
+     * @param string $type
+     * @param int $uid
+     * @param int $pageId
+     * @param int $languageUid
+     * @return void
+     */
+    public function documentsDetailsAction(string $type, int $uid, int $pageId, int $languageUid)
+    {
+        $documents = $this->apacheSolrDocumentRepository->findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageUid);
+        $this->view->assign('documents', $documents);
     }
 
     /**
@@ -221,6 +245,34 @@ class InfoModuleController extends AbstractModuleController
             $indexFieldsInfoByCorePaths[$coreAdmin->getPath()] = $indexFieldsInfo;
         }
         $this->view->assign('indexFieldsInfoByCorePaths', $indexFieldsInfoByCorePaths);
+    }
+
+    /**
+     * Retrieves the information for the index inspector.
+     *
+     * @return void
+     */
+    protected function collectIndexInspectorInfo()
+    {
+        $solrCoreConnections = $this->solrConnectionManager->getConnectionsBySite($this->selectedSite);
+        $documentsByCoreAndType = [];
+        foreach ($solrCoreConnections as $languageId => $solrCoreConnection) {
+            $coreAdmin = $solrCoreConnection->getAdminService();
+            $documents = $this->apacheSolrDocumentRepository->findByPageIdAndByLanguageId($this->requestedPageUID, $languageId);
+
+            $documentsByType = [];
+            foreach ($documents as $document) {
+                $documentsByType[$document->type][] = $document;
+            }
+
+            $documentsByCoreAndType[$languageId]['core'] = $coreAdmin;
+            $documentsByCoreAndType[$languageId]['documents'] = $documentsByType;
+        }
+
+        $this->view->assignMultiple([
+            'pageId' => $this->requestedPageUID,
+            'indexInspectorDocumentsByLanguageAndType' => $documentsByCoreAndType
+        ]);
     }
 
     /**

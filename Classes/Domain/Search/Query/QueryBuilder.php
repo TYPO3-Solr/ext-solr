@@ -165,6 +165,30 @@ class QueryBuilder {
         return $query;
     }
 
+
+    /**
+     * Returns a query for single record
+     *
+     * @return Query
+     */
+    public function buildRecordQuery($type, $uid, $pageId): Query
+    {
+        /** @var $siteRepository SiteRepository */
+        $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);
+        $site = $siteRepository->getSiteByPageId($pageId);
+        /* @var Query $query */
+        $query = GeneralUtility::makeInstance(Query::class, '');
+        $query->setQueryType('standard');
+        $query->useRawQueryString(true);
+        $query->setQueryString('*:*');
+        $query->getFilters()->add('type:' . $type . ' AND uid:' . $uid);
+        $query->getFilters()->add('siteHash:' . $site->getSiteHash());
+        $query->getReturnFields()->add('*');
+        $query->setSorting('type asc, title asc');
+
+        return $query;
+    }
+
     /**
      * Initializes additional filters configured through TypoScript and
      * Flexforms for use in regular queries and suggest queries.
