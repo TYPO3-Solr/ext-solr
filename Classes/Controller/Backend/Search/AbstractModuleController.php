@@ -63,6 +63,14 @@ abstract class AbstractModuleController extends ActionController
     protected $selectedPageUID;
 
     /**
+     * Holds the requested page UID because the selected page uid,
+     * might be overwritten by the automatic site selection.
+     *
+     * @var int
+     */
+    protected $requestedPageUID;
+
+    /**
      * @var Site
      */
     protected $selectedSite;
@@ -100,6 +108,8 @@ abstract class AbstractModuleController extends ActionController
         if ($this->request->hasArgument('id')) {
             $this->selectedPageUID = (int)$this->request->getArgument('id');
         }
+
+        $this->requestedPageUID = $this->selectedPageUID;
 
         /* @var SiteRepository $siteRepository */
         $siteRepository = GeneralUtility::makeInstance(SiteRepository::class);

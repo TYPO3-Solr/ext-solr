@@ -107,10 +107,12 @@ class QueueTest extends IntegrationTest
         $this->importDataSetFromFixture('adding_the_same_item_twice_will_only_produce_one_queue_item.xml');
         $this->assertEmptyQueue();
 
-        $this->indexQueue->updateItem('pages', 1);
+        $updateCount = $this->indexQueue->updateItem('pages', 1);
+        $this->assertSame(1, $updateCount);
         $this->assertItemsInQueue(1);
 
-        $this->indexQueue->updateItem('pages', 1);
+        $updateCount = $this->indexQueue->updateItem('pages', 1);
+        $this->assertSame(0, $updateCount);
         $this->assertItemsInQueue(1);
     }
 
@@ -154,7 +156,8 @@ class QueueTest extends IntegrationTest
         $this->assertEmptyQueue();
 
             // record does not exist in fixture
-        $this->indexQueue->updateItem('pages', 22);
+        $updateCount = $this->indexQueue->updateItem('pages', 22);
+        $this->assertSame(0, $updateCount, 'Expected that no record was updated');
 
             // queue should still be empty
         $this->assertEmptyQueue();

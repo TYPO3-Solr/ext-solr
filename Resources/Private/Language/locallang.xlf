@@ -252,9 +252,13 @@
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.reset_errors" xml:space="preserve">
 				<source>An error occurred while resetting the error log in the index queue.</source>
 			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.error.single_item_not_requeued" xml:space="preserve">
+				<source>Single item was not requeued.</source>
+			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.no_selection" xml:space="preserve">
 				<source>No indexing configurations selected.</source>
 			</trans-unit>
+
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.initialize.success" xml:space="preserve">
 				<source>Initialized indexing configurations: %s</source>
 			</trans-unit>
@@ -269,6 +273,9 @@
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.success.index_manual" xml:space="preserve">
 				<source>Indexing from the backend was successfully finished.</source>
+			</trans-unit>
+			<trans-unit id="solr.backend.index_queue_module.flashmessage.success.single_item_was_requeued" xml:space="preserve">
+				<source>Single item was successfully marked for reindexing.</source>
 			</trans-unit>
 			<trans-unit id="solr.backend.index_queue_module.flashmessage.title" xml:space="preserve">
 				<source>Index Queue</source>

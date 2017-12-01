@@ -111,6 +111,26 @@ class Repository implements SingletonInterface
     }
 
     /**
+     * @param string $type
+     * @param int $uid
+     * @param int $pageId
+     * @param int $languageId
+     * @return \Apache_Solr_Document[]|array
+     */
+    public function findByTypeAndPidAndUidAndLanguageId($type, $uid, $pageId, $languageId): array
+    {
+        try {
+            $this->initializeSearch($pageId, $languageId);
+            $recordQuery = $this->queryBuilder->buildRecordQuery($type, $uid, $pageId);
+            $response = $this->search->search($recordQuery, 0, 10000);
+        } catch (NoSolrConnectionFoundException $exception) {
+            return [];
+        }
+        $data = $response->getParsedData();
+        return $this->documentEscapeService->applyHtmlSpecialCharsOnAllFields($data->response->docs);
+    }
+
+    /**
      * Initializes Search for given language
      *
      * @param int $languageId
