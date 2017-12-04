@@ -146,23 +146,35 @@ class HtmlContentExtractor
     public static function cleanContent($content)
     {
         $content = self::stripControlCharacters($content);
-
         // remove Javascript
-        $content = preg_replace('@<script[^>]*>.*?<\/script>@msi', '',
-            $content);
+        $content = preg_replace('@<script[^>]*>.*?<\/script>@msi', '', $content);
 
         // remove internal CSS styles
         $content = preg_replace('@<style[^>]*>.*?<\/style>@msi', '', $content);
 
         // prevents concatenated words when stripping tags afterwards
         $content = str_replace(['<', '>'], [' <', '> '], $content);
-        $content = strip_tags($content);
-        $content = str_replace(["\t", "\n", "\r", '&nbsp;'], ' ',
-            $content);
+        $content = static::stripTags($content);
+
+        $content = str_replace(["\t", "\n", "\r", '&nbsp;'], ' ', $content);
         $content = self::stripUnicodeRanges($content);
         $content = trim($content);
 
         return $content;
+    }
+
+    /**
+     * Strips html tags, but keeps single < and > characters.
+     *
+     * @param string $content
+     * @return mixed
+     */
+    protected static function stripTags($content)
+    {
+        $content = preg_replace('@<([^>]+(<|\z))@msi', '##lt##$1', $content);
+        $content = strip_tags($content);
+        // unescape < that are not used to open a tag
+        return str_replace('##lt##', '<', $content);
     }
 
     /**
