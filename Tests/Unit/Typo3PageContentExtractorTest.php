@@ -109,4 +109,49 @@ class Typo3PageContentExtractorTest extends UnitTest
         $this->assertContains('100€', $actualResult);
         $this->assertNotContains('Remove me', $actualResult);
     }
+
+    public function canGetIndexableContentDataProvider() {
+        return [
+            'can extract simple text' => [
+                'content' => '<p>Hello solr for TYPO3</p>',
+                'expectedResult' => 'Hello solr for TYPO3'
+            ],
+            'can extract umlauts' => [
+                'content' => '<p>Heute ist ein sch&ouml;ner tag</p>',
+                'expectedResult' => 'Heute ist ein schöner tag'
+            ],
+            'can extract subtag content' => [
+                'content' => '<p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
+                'expectedResult' => 'Heute ist ein schöner tag'
+            ],
+            'removes inline styles' => [
+                'content' => '<style> body { background-color: linen; }</style><p>Heute ist ein <strong>sch&ouml;ner</strong> tag</p>',
+                'expectedResult' => 'Heute ist ein schöner tag'
+            ],
+            'removes a line break' => [
+                'content' => '<p>If <b>the value</b> is <br/> please contact me</p>',
+                'expectedResult' => 'If the value is please contact me'
+            ],
+            'keep less then character' => [
+                'content' => '<p>If <b>the value</b> is &lt;50 please contact me</p>',
+                'expectedResult' => 'If the value is <50 please contact me'
+            ]
+        ];
+    }
+
+    /**
+     *
+     * @dataProvider canGetIndexableContentDataProvider
+     * @test
+     */
+    public function canGetIndexableContent($content, $expectedResult)
+    {
+        $content = '<!-- TYPO3SEARCH_begin -->' . $content . '<!-- TYPO3SEARCH_end -->';
+
+        $contentExtractor = GeneralUtility::makeInstance(Typo3PageContentExtractor::class, $content);
+        $contentExtractor->setConfiguration($this->typoScripConfigurationMock);
+
+        $actualResult = $contentExtractor->getIndexableContent();
+        $this->assertContains($expectedResult, $actualResult);
+    }
 }
