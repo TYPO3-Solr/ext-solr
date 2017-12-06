@@ -29,6 +29,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\NoPidException;
 use ApacheSolrForTypo3\Solr\IndexQueue\Queue;
 use ApacheSolrForTypo3\Solr\IndexQueue\RecordMonitor;
 use ApacheSolrForTypo3\Solr\Tests\Integration\IntegrationTest;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -180,8 +181,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnectionBC();
-        $connection->exec('UPDATE pages SET hidden=0 WHERE uid=1');
+        $connection = $this->getDatabaseConnection();
+        $connection->updateArray('pages', ['uid' => 1], ['hidden' => 0]);
         $changeSet = ['hidden' => 0];
 
         $dataHandler = $this->dataHandler;
@@ -203,8 +204,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnectionBC();
-        $connection->exec('UPDATE pages SET extendToSubpages=0 WHERE uid=1');
+        $connection = $this->getDatabaseConnection();
+        $connection->updateArray('pages', ['uid' => 1], ['extendToSubpages' => 0]);
         $changeSet = ['extendToSubpages' => 0];
 
         $dataHandler = $this->dataHandler;
@@ -226,8 +227,9 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnectionBC();
-        $connection->exec('UPDATE pages SET hidden=1 WHERE uid=1');
+        $connection = $this->getDatabaseConnection();
+        $connection->updateArray('pages', ['uid' => 1], ['hidden' => 1]);
+
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;
@@ -358,8 +360,8 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnectionBC();
-        $connection->exec('UPDATE pages SET hidden=0 WHERE uid=8');
+        $connection = $this->getDatabaseConnection();
+        $connection->updateArray('pages', ['uid' => 8], ['hidden' => 0]);
 
         $changeSet = ['hidden' => 0];
 
@@ -421,18 +423,29 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
-        $table = 'pages_language_overlay';
         $uid = 2;
-        $fields = [
-            'title' => 'New Translated Rootpage',
-            'pid' => 1
-        ];
 
+        // @todo the handling for pages_language_overlay can be removed when the TYPO3 8 support is dropped
+        if (Util::getIsTYPO3VersionBelow9()) {
+            $table = 'pages_language_overlay';
+            $fields = [
+                'title' => 'New Translated Rootpage',
+                'pid' => 1
+            ];
+        } else {
+            $table = 'pages';
+            $fields = [
+                'title' => 'New Translated Rootpage',
+                'l10n_parent' => 1,
+                'pid' => 0
+            ];
+        }
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
             $this->dataHandler);
-        $this->assertIndexQueueContainsItemAmount(1);
 
+        $this->assertIndexQueueContainsItemAmount(1);
         $firstQueueItem = $this->indexQueue->getItem(1);
+
         $this->assertSame('pages', $firstQueueItem->getType(), 'First queue item has unexpected type');
         $this->assertSame('pages', $firstQueueItem->getIndexingConfigurationName(),
             'First queue item has unexpected indexingConfigurationName');
@@ -448,13 +461,15 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertIndexQueueContainsItemAmount(1);
 
         $status = 'update';
-        $table = 'pages_language_overlay';
         $uid = 2;
-        $fields = [
-            'title' => 'New Translated Rootpage',
-            'pid' => 1,
-            'hidden' => 1
-        ];
+        $fields = ['title' => 'New Translated Rootpage', 'pid' => 1, 'hidden' => 1];
+
+        if (Util::getIsTYPO3VersionBelow9()) {
+            $table = 'pages_language_overlay';
+        } else {
+            $table = 'pages';
+        }
+
 
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
             $this->dataHandler);
@@ -476,12 +491,15 @@ class RecordMonitorTest extends IntegrationTest
         $this->assertEmptyIndexQueue();
 
         $status = 'update';
-        $table = 'pages_language_overlay';
         $uid = 2;
-        $fields = [
-            'title' => 'New Translated Rootpage',
-            'pid' => 1
-        ];
+        $fields = ['title' => 'New Translated Rootpage', 'pid' => 1];
+
+        // @todo the handling for pages_language_overlay can be removed when the TYPO3 8 support is dropped
+        if (Util::getIsTYPO3VersionBelow9()) {
+            $table = 'pages_language_overlay';
+        } else {
+            $table = 'pages';
+        }
 
         $this->recordMonitor->processDatamap_afterDatabaseOperations($status, $table, $uid, $fields,
             $this->dataHandler);

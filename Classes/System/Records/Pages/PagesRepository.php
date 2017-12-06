@@ -27,6 +27,7 @@ namespace ApacheSolrForTypo3\Solr\System\Records\Pages;
 
 use ApacheSolrForTypo3\Solr\System\Cache\TwoLevelCache;
 use ApacheSolrForTypo3\Solr\System\Records\AbstractRepository;
+use ApacheSolrForTypo3\Solr\Util;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
@@ -215,14 +216,27 @@ class PagesRepository extends AbstractRepository
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll();
-        return $queryBuilder
-            ->select('pid', 'sys_language_uid')
-            ->from('pages_language_overlay')
-            ->add('where',
-                $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
-                . BackendUtility::deleteClause('pages_language_overlay')
-                . BackendUtility::BEenableFields('pages_language_overlay')
-            )->execute()->fetchAll();
+
+        //@todo this is only needed for TYPO3 8 backwards compatibility and can be dropped when TYPO3 8 is not supported anymore
+        if (Util::getIsTYPO3VersionBelow9()) {
+            return $queryBuilder
+                ->select('pid', 'sys_language_uid')
+                ->from('pages_language_overlay')
+                ->add('where',
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
+                    . BackendUtility::deleteClause('pages_language_overlay')
+                    . BackendUtility::BEenableFields('pages_language_overlay')
+                )->execute()->fetchAll();
+        } else {
+            return $queryBuilder
+                ->select('pid', 'l10n_parent', 'sys_language_uid')
+                ->from('pages')
+                ->add('where',
+                    $queryBuilder->expr()->eq('l10n_parent', $queryBuilder->createNamedParameter($pageId, \PDO::PARAM_INT))
+                    . BackendUtility::deleteClause('pages')
+                    . BackendUtility::BEenableFields('pages')
+                )->execute()->fetchAll();
+        }
     }
 
     /**

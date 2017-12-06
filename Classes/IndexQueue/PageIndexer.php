@@ -288,7 +288,7 @@ class PageIndexer extends Indexer
         }
 
         if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']) {
-            $dataUrlModifier = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
+            $dataUrlModifier = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueuePageIndexer']['dataUrlModifier']);
 
             if ($dataUrlModifier instanceof PageIndexerDataUrlModifier) {
                 $dataUrl = $dataUrlModifier->modifyDataUrl($dataUrl, [

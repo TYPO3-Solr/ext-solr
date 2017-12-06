@@ -980,7 +980,7 @@ class SearchControllerTest extends IntegrationTest
             $fakeTSFE = $this->getConfiguredTSFE([], $importPageId);
             $GLOBALS['TSFE'] = $fakeTSFE;
             $fakeTSFE->newCObj();
-            PageGenerator::pagegenInit();
+            $fakeTSFE->preparePageContentGeneration();
             PageGenerator::renderContent();
             /** @var $pageIndexer \ApacheSolrForTypo3\Solr\Typo3PageIndexer */
             $pageIndexer = GeneralUtility::makeInstance(Typo3PageIndexer::class, $fakeTSFE);

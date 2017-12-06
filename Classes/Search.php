@@ -336,7 +336,7 @@ class Search
                 $facetCounts = $unmodifiedFacetCounts;
 
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyFacets'] as $classReference) {
-                    $facetsModifier = GeneralUtility::getUserObj($classReference);
+                    $facetsModifier = GeneralUtility::makeInstance($classReference);
 
                     if ($facetsModifier instanceof FacetsModifier) {
                         $facetCounts = $facetsModifier->modifyFacets($facetCounts);

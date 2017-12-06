@@ -72,7 +72,7 @@ class IdBuilder
         }
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyVariantId'] as $classReference) {
-            $variantIdModifier = GeneralUtility::getUserObj($classReference);
+            $variantIdModifier = GeneralUtility::makeInstance($classReference);
             if ($variantIdModifier instanceof IdModifier) {
                 $variantId = $variantIdModifier->modifyVariantId($variantId, $systemHash, $type, $uid);
             }

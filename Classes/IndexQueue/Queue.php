@@ -159,7 +159,7 @@ class Queue
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessIndexQueueInitialization'] as $classReference) {
-                $indexQueueInitializationPostProcessor = GeneralUtility::getUserObj($classReference);
+                $indexQueueInitializationPostProcessor = GeneralUtility::makeInstance($classReference);
 
                 if ($indexQueueInitializationPostProcessor instanceof InitializationPostProcessor) {
                     $indexQueueInitializationPostProcessor->postProcessIndexQueueInitialization(
@@ -296,7 +296,7 @@ class Queue
      */
     protected function getHookImplementation($classReference)
     {
-        return GeneralUtility::getUserObj($classReference);
+        return GeneralUtility::makeInstance($classReference);
     }
 
     /**

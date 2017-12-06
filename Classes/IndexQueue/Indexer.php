@@ -123,7 +123,6 @@ class Indexer extends AbstractIndexer
         $this->setLogging($item);
 
         $solrConnections = $this->getSolrConnectionsByItem($item);
-
         foreach ($solrConnections as $systemLanguageUid => $solrConnection) {
             $this->solr = $solrConnection;
 
@@ -461,7 +460,7 @@ class Indexer extends AbstractIndexer
     {
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'] as $classReference) {
-                $documentsModifier = GeneralUtility::getUserObj($classReference);
+                $documentsModifier = GeneralUtility::makeInstance($classReference);
 
                 if ($documentsModifier instanceof PageIndexerDocumentsModifier) {
                     $documents = $documentsModifier->modifyDocuments($item, $language, $documents);
@@ -522,7 +521,6 @@ class Indexer extends AbstractIndexer
         foreach ($translationConnections as $systemLanguageUid => $solrConnection) {
             $solrConnections[$systemLanguageUid] = $solrConnection;
         }
-
         return $solrConnections;
     }
 
@@ -605,6 +603,7 @@ class Indexer extends AbstractIndexer
                 }
                 $translationOverlays[] = [
                     'pid' => $pageId,
+                    'l10n_parent' => $pageId,
                     'sys_language_uid' => $language['uid'],
                 ];
             }
@@ -635,7 +634,8 @@ class Indexer extends AbstractIndexer
         $connections = [];
 
         foreach ($translationOverlays as $translationOverlay) {
-            $pageId = $translationOverlay['pid'];
+            // @todo usage of pid can be removed when TYPO3 8 compatibility is dropped
+            $pageId = (Util::getIsTYPO3VersionBelow9()) ? $translationOverlay['pid'] : $translationOverlay['l10n_parent'];
             $languageId = $translationOverlay['sys_language_uid'];
 
             try {

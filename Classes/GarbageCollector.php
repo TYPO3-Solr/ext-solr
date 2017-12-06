@@ -131,7 +131,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['postProcessGarbageCollector'] as $classReference) {
-                $garbageCollectorPostProcessor = GeneralUtility::getUserObj($classReference);
+                $garbageCollectorPostProcessor = GeneralUtility::makeInstance($classReference);
 
                 if ($garbageCollectorPostProcessor instanceof GarbageCollectorPostProcessor) {
                     $garbageCollectorPostProcessor->postProcessGarbageCollector($table,
@@ -166,6 +166,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
                 // only a content element was removed, now update/re-index the page
                 $this->getIndexQueue()->updateItem($table, $uid);
                 break;
+            // @todo This case can be deleted when TYPO3 8 compatibility is dropped
             case 'pages_language_overlay':
                 $pageOverlayRecord = BackendUtility::getRecord('pages_language_overlay', $uid, 'uid, pid', '', false);
 
@@ -177,6 +178,12 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
                 $this->getIndexQueue()->updateItem($table, $uid);
                 break;
             case 'pages':
+
+                // @todo The content of this if statement can allways be executed when TYPO3 8 support is dropped
+                if (!Util::getIsTYPO3VersionBelow9()) {
+                    $pageOverlay = BackendUtility::getRecord('pages', $uid, 'l10n_parent', '', false);
+                    $uid = empty($pageOverlay['l10n_parent']) ? $uid : $pageOverlay['l10n_parent'];
+                }
 
                 $this->deleteIndexDocuments($table, $uid);
                 $this->getIndexQueue()->deleteItem($table, $uid);
@@ -416,6 +423,7 @@ class GarbageCollector extends AbstractDataHandlerListener implements SingletonI
      */
     protected function isRelatedQueueRecordMarkedAsIndexed($table, $record)
     {
+        //@todo check for pages_language_overlay can be dropped when TYPO3 8 compatibility is dropped.
         if ($table === 'tt_content' || $table === 'pages_language_overlay') {
             $table = 'pages';
             $uid = $record['pid'];

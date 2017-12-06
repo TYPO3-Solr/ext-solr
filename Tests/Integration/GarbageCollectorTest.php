@@ -135,8 +135,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(3);
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnectionBC();
-        $connection->exec('UPDATE pages SET hidden=1 WHERE uid=1');
+        $connection = $this->getDatabaseConnection();
+        $connection->updateArray('pages', ['uid' => 1], ['hidden' => 1]);
 
         $changeSet = ['hidden' => 1];
 
@@ -167,8 +167,8 @@ class GarbageCollectorTest extends IntegrationTest
         $this->assertIndexQueryContainsItemAmount(4);
 
         // simulate the database change and build a faked changeset
-        $connection = $this->getDatabaseConnectionBC();
-        $connection->exec('UPDATE pages SET hidden=1 WHERE uid=1');
+        $connection = $this->getDatabaseConnection();
+        $connection->updateArray('pages', ['uid' => 1], ['hidden' => 1]);
         $changeSet = ['hidden' => 1];
 
         $dataHandler = $this->dataHandler;

@@ -344,7 +344,7 @@ class SearchResultSetService
         // hook to modify the search query
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifySearchQuery'] as $classReference) {
-                $queryModifier = GeneralUtility::getUserObj($classReference);
+                $queryModifier = GeneralUtility::makeInstance($classReference);
 
                 if ($queryModifier instanceof Modifier) {
                     if ($queryModifier instanceof SearchAware) {
@@ -400,7 +400,7 @@ class SearchResultSetService
         }
 
         foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr'][$eventName] as $classReference) {
-            $afterSearchProcessor = GeneralUtility::getUserObj($classReference);
+            $afterSearchProcessor = GeneralUtility::makeInstance($classReference);
             if ($afterSearchProcessor instanceof SearchResultSetProcessor) {
                 $afterSearchProcessor->process($resultSet);
             }

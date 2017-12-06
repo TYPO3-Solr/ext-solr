@@ -14,6 +14,7 @@ namespace ApacheSolrForTypo3\Solr\Widget;
  * The TYPO3 project - inspiring people to share!
  */
 
+use ApacheSolrForTypo3\Solr\Mvc\Controller\SolrControllerContext;
 use ApacheSolrForTypo3\Solr\Widget\WidgetRequest as SolrFluidWidgetRequest;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
@@ -112,6 +113,27 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
     }
 
     /**
+     * @todo The fallback on $this->controllerContext is only needed for TYPO3 8 backwards compatibility and can be dropped when TYPO3 8 is not supported anymore
+     * @return SolrControllerContext
+     * @throws \InvalidArgumentException
+     */
+    protected function getControllerContext()
+    {
+        $controllerContext = null;
+        if (!is_null($this->controllerContext)) {
+            $controllerContext = $this->controllerContext;
+        } elseif (method_exists($this->renderingContext, 'getControllerContext')) {
+            $controllerContext = $this->renderingContext->getControllerContext();
+        }
+
+        if (!$controllerContext instanceof SolrControllerContext) {
+            throw new \InvalidArgumentException('No valid SolrControllerContext found', 1512998673);
+        }
+
+        return $controllerContext;
+    }
+
+    /**
      * Initialize the Widget Context, before the Render method is called.
      *
      * @return void
@@ -121,13 +143,15 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
         $this->widgetContext->setWidgetConfiguration($this->getWidgetConfiguration());
         $this->initializeWidgetIdentifier();
         $this->widgetContext->setControllerObjectName(get_class($this->controller));
-        $extensionName = $this->controllerContext->getRequest()->getControllerExtensionName();
-        $pluginName = $this->controllerContext->getRequest()->getPluginName();
+
+        $extensionName = $this->getControllerContext()->getRequest()->getControllerExtensionName();
+        $pluginName = $this->getControllerContext()->getRequest()->getPluginName();
         $this->widgetContext->setParentExtensionName($extensionName);
         $this->widgetContext->setParentPluginName($pluginName);
         $pluginNamespace = $this->extensionService->getPluginNamespace($extensionName, $pluginName);
         $this->widgetContext->setParentPluginNamespace($pluginNamespace);
         $this->widgetContext->setWidgetViewHelperClassName(get_class($this));
+
         if ($this->ajaxWidget === true) {
             $this->ajaxWidgetContextHolder->store($this->widgetContext);
         }
@@ -146,7 +170,6 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
         foreach ($childNodes as $childNode) {
             $rootNode->addChildNode($childNode);
         }
-
         $this->widgetContext->setViewHelperChildNodes($rootNode, $this->renderingContext);
     }
 
@@ -179,6 +202,7 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
             /** @var $subRequest \ApacheSolrForTypo3\Solr\Widget\WidgetRequest */
         $subRequest = $this->objectManager->get(SolrFluidWidgetRequest::class);
         $subRequest->setWidgetContext($this->widgetContext);
+
         $this->passArgumentsToSubRequest($subRequest);
         $subResponse = $this->objectManager->get(Response::class);
         $this->controller->processRequest($subRequest, $subResponse);
@@ -193,7 +217,8 @@ abstract class AbstractWidgetViewHelper extends AbstractCoreWidgetViewHelper imp
      */
     private function passArgumentsToSubRequest(CoreWidgetRequest $subRequest)
     {
-        $arguments = $this->controllerContext->getRequest()->getArguments();
+        $arguments = $this->getControllerContext()->getRequest()->getArguments();
+
         if (isset($arguments)) {
             if (isset($arguments['action'])) {
                 $subRequest->setControllerActionName($arguments['action']);
