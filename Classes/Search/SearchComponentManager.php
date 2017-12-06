@@ -99,4 +99,18 @@ class SearchComponentManager
 
         return $searchComponent;
     }
+
+    /**
+     * Unregisters a search component
+     *
+     * @param string $componentName Search component name
+     */
+    public function removeSearchComponent($componentName)
+    {
+        if (!array_key_exists($componentName, self::$searchComponents)) {
+            return;
+        }
+
+        unset(self::$searchComponents[$componentName]);
+    }
 }
