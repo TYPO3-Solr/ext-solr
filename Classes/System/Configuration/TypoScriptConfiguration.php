@@ -1486,6 +1486,87 @@ class TypoScriptConfiguration
     }
 
     /**
+     * This method is used to check if a phrase search is enabled or not
+     *
+     * plugin.tx_solr.search.query.phrase = 1
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getPhraseSearchIsEnabled(bool $defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.phrase', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * Returns the configured phrase fields from TypoScript
+     *
+     * plugin.tx_solr.search.query.phrase.fields
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSearchQueryPhraseFields(string $defaultIfEmpty = '')
+    {
+        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.phrase.fields', $defaultIfEmpty);
+    }
+
+    /**
+     * This method is used to check if a bigram phrase search is enabled or not
+     *
+     * plugin.tx_solr.search.query.bigramPhrase = 1
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getBigramPhraseSearchIsEnabled(bool $defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.bigramPhrase', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * Returns the configured phrase fields from TypoScript
+     *
+     * plugin.tx_solr.search.query.bigramPhrase.fields
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSearchQueryBigramPhraseFields(string $defaultIfEmpty = '')
+    {
+        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.bigramPhrase.fields', $defaultIfEmpty);
+    }
+
+    /**
+     * This method is used to check if a trigram phrase search is enabled or not
+     *
+     * plugin.tx_solr.search.query.trigramPhrase = 1
+     *
+     * @param bool $defaultIfEmpty
+     * @return bool
+     */
+    public function getTrigramPhraseSearchIsEnabled(bool $defaultIfEmpty = false)
+    {
+        $result = $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.trigramPhrase', $defaultIfEmpty);
+        return $this->getBool($result);
+    }
+
+    /**
+     * Returns the configured trigram phrase fields from TypoScript
+     *
+     * plugin.tx_solr.search.query.trigramPhrase.fields
+     *
+     * @param string $defaultIfEmpty
+     * @return string
+     */
+    public function getSearchQueryTrigramPhraseFields(string $defaultIfEmpty = '')
+    {
+        return $this->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.trigramPhrase.fields', $defaultIfEmpty);
+    }
+
+    /**
      * Returns the configured returnFields as array.
      *
      * plugin.tx_solr.search.query.returnFields
